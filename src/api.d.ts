@@ -5,9 +5,9 @@ export interface Service {
 }
 
 export interface API {
-  store(files:Iterable<File>, service:Service):Promise<StoreResult>
-  status(cid:CID):Promise<StatusResult>
-  delete(cid: CID):Promise<DeleteResult>
+  store(files: Iterable<File>, service: Service): Promise<StoreResult>
+  status(cid: CID): Promise<StatusResult>
+  delete(cid: CID): Promise<DeleteResult>
 }
 
 export interface StoreResult {
@@ -17,15 +17,20 @@ export interface StoreResult {
 
 export interface StatusResult {
   cid: CID
-  deals: Deal[]
+  deals: Deals
   pin: Pin
   created: Date
 }
 
+type Deals =
+  | { status: "initializing" }
+  | { status: "pending"; deals: Deal[] }
+  | { status: "ready"; deals: Deal[] }
+
 export interface Deal {
   id: number
   miner: string
-  state: DealState
+  status: DealState
   startEpoch: number
   endEpoch: number
 }
@@ -38,8 +43,7 @@ export interface Pin {
   created: Date
 }
 
-export type DealState = "activated"
+export type DealStatus = "requested" | "activated"
 export type PinStatus = "queued" | "pinning" | "pinned" | "failed"
 
-export interface DeleteResult {
-}
+export interface DeleteResult {}
