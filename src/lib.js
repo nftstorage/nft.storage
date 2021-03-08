@@ -41,12 +41,9 @@ export class NFTStore {
       headers: NFTStore.auth(token),
       body,
     })
-    const { requestid, cid } = await request.json()
+    const { cid } = await request.json()
 
-    return {
-      cid: CID.parse(cid),
-      requestid,
-    }
+    return CID.parse(cid)
   }
 
   /**
@@ -64,7 +61,7 @@ export class NFTStore {
 
     return {
       cid: CID.parse(json.cid),
-      deal: json.deal,
+      deals: json.deals,
       pin: {
         ...json.pin,
         cid: CID.parse(json.pin.cid),
@@ -77,7 +74,7 @@ export class NFTStore {
    *
    * @param {CID} cid
    * @param {API.Service} service
-   * @returns {Promise<API.DeleteResult>}
+   * @returns {Promise<void>}
    */
   static async delete(cid, { endpoint, token }) {
     const url = new URL(`/${cid}`, endpoint)
@@ -85,8 +82,6 @@ export class NFTStore {
       method: "DELETE",
       headers: NFTStore.auth(token),
     })
-    const json = await request.json()
-
-    return {}
+    await request.json()
   }
 }

@@ -5,14 +5,9 @@ export interface Service {
 }
 
 export interface API {
-  store(files: Iterable<File>, service: Service): Promise<StoreResult>
+  store(files: Iterable<File>, service: Service): Promise<CID>
   status(cid: CID): Promise<StatusResult>
-  delete(cid: CID): Promise<DeleteResult>
-}
-
-export interface StoreResult {
-  cid: CID
-  requestid: string
+  delete(cid: CID): Promise<void>
 }
 
 export interface StatusResult {
@@ -45,5 +40,3 @@ export interface Pin {
 
 export type DealStatus = "requested" | "activated"
 export type PinStatus = "queued" | "pinning" | "pinned" | "failed"
-
-export interface DeleteResult {}
