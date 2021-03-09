@@ -12,21 +12,51 @@ export interface API {
 
 export interface StatusResult {
   cid: CID
-  deals: Deal[] // this array is instantiated immediately on `store` with the preconfigured number of Deal's in 'queued' state
+  deals: Deals,
   pin: Pin
   created: Date
 }
 
+// this array is instantiated immediately on `store` with the preconfigured number of Deal's in 'queued' state
+export type Deals =
+  | { type: "ongoing", ongoing: Deals[] }
+  | { type: "complete", complete: FinalizedDeal[] }
 
-export interface Deal {
-  sequence: number  // a unique integer for the "slot", immutable, does not disappear
-  status: DealStatus // see below
-  lastStatusChangeTimestamp: timestamp // datetime/epoch/whatever
-  miner: string
-  chainDealId: integer
-  dealActivationTimestamp: timestamp // null OR when deal shows up on chain
-  dealExpirationTimestamp: timestamp // null OR when deal will terminate after a successful `active`
+export type Deal = QueuedDeal | PendingDeal | PublishedDeal | FinalizedDeal
+
+export interface QueuedDeal {
+  status: "queued"
+  sequence: number
+  lastStatusChangeTimestamp: Date
 }
+
+export inerface PendingDeal {
+  status: 'proposing' | "rejected" | "accepted" | "errored"
+  sequence: number
+  // changed
+  lastStatusChangeTimestamp: Date
+  miner: string
+}
+
+
+export interface PublishedDeal {
+  status: "published"
+  sequence: number
+  lastStatusChangeTimestamp: Date
+  miner: string
+  chainDealId: number
+}
+
+export interface FinalizedDeal {
+  status: "active" | "terminated" 
+  sequence: number
+  lastStatusChangeTimestamp: Date
+  miner: string
+  chainDealId: number
+  dealActivationTimestamp: Date
+  dealExpirationTimestamp: Date
+}
+
 
 export interface Pin {
   requestid: string
@@ -36,5 +66,5 @@ export interface Pin {
   created: Date
 }
 
-export type DealStatus = "queued" | "proposed" | "rejected" | "accepted" | "published" | "active" | "terminated" | "errored"
+export type DealStatus = | 
 export type PinStatus = "queued" | "pinning" | "pinned" | "failed"
