@@ -1,1 +1,5 @@
+dist
 node_modules
+worker
+yarn.lock
+package-lock.json

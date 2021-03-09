@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>NFT Storage</title>
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
+      defer
+    ></script>
+  </head>
+  <body class="antialiased font-sans bg-gray-200">
+    <div
+      class="max-w-7xl mx-auto py-12 sm:px-6 lg:px-8"
+      x-data="{ show: false }"
+      x-show="show"
+      x-init="setTimeout(() => show = true, 500)"
+      x-transition:enter="ease-out duration-500"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+    >
+      <div
+        class="max-w-3xl mx-auto"
+        x-data="JSON.parse(document.querySelector('script#edge_state').innerText)"
+      >
+        <div class="bg-white shadow sm:rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <img class="h-8 w-8 rounded-full" x-bind:src="picture" alt="" />
+            <h3 class="text-xl leading-6 font-medium text-gray-900">
+              Hello <span x-text="name"></span> 👋
+            </h3>
+            <div class="mt-3 max-w-xl text-md leading-5 text-gray-500">
+              <p>
+                <!-- <span x-text="bio"></span> -->
+              </p>
+            </div>
+            <div class="mt-3 text-md leading-5">
+              <a
+                href="/logout"
+                class="font-medium text-red-600 hover:text-red-500 focus:outline-none focus:underline transition ease-in-out duration-150"
+              >
+                Log out &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

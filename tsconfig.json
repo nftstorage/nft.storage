@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+      "outDir": "./dist",
+      "module": "commonjs",
+      "allowJs": true,
+      "checkJs": true,
+      "target": "esnext",
+      "lib": ["esnext", "webworker", "DOM"],
+      "strict": true,
+      "moduleResolution": "node",
+      "sourceMap": true,
+      "esModuleInterop": true,
+      "types": ["./site/node_modules/@cloudflare/workers-types"]
+    },
+    "include": [
+      "site/src/*.js",
+      "site/src/bindings.d.ts",
+      "site/node_modules/@cloudflare/workers-types/index.d.ts"
+    ],
+    "exclude": ["node_modules/", "dist/"]
+  }

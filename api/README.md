@@ -1,4 +1,12 @@
-# API Client
+# API Server
+
+### Setup
+
+Install Workers CLI
+
+```
+yarn global add @cloudflare/wrangler
+```
 
 ### Local development
 
