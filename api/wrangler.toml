@@ -1,0 +1,9 @@
+name = "nft-storage-api"
+type = "webpack"
+account_id = "fffa4b4363a7e5250af8357087263b3a"
+workers_dev = true
+route = ""
+zone_id = ""
+
+[dev]
+port=8888
