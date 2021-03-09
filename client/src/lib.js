@@ -1,11 +1,12 @@
 import * as API from "./api.js"
 import CID from "multiformats/cid"
 
+
+
 /**
  * @implements {API.Service}
- * @implements {API.API}
  */
-export class NFTStore {
+export default class NFTStore {
   /**
    * @param {Object} options
    * @param {string} options.token
@@ -26,10 +27,25 @@ export class NFTStore {
     return { Authorization: `Bearer ${token}` }
   }
   /**
-   * @param {Iterable<File>} files
    * @param {API.Service} service
+   * @param {Blob} blob
    */
-  static async store(files, { endpoint, token }) {
+  static async storeBlob({ endpoint, token }, blob) {
+    const url = new URL("/", endpoint)
+    const request = await fetch(url.toString(), {
+      method: "PUT",
+      headers: NFTStore.auth(token),
+      body: blob
+    })
+    const { cid } = await request.json()
+
+    return CID.parse(cid)
+  }
+  /**
+   * @param {API.Service} service
+   * @param {Iterable<File>} files
+   */
+  static async storeDirectory({ endpoint, token }, files) {
     const url = new URL("/", endpoint)
     const body = new FormData()
     for (const file of files) {
@@ -47,11 +63,11 @@ export class NFTStore {
   }
 
   /**
-   * @param {CID} cid
    * @param {API.Service} service
+   * @param {CID} cid
    * @returns {Promise<API.StatusResult>}
    */
-  static async status(cid, { endpoint, token }) {
+  static async status({ endpoint, token }, cid) {
     const url = new URL(`/${cid}`, endpoint)
     const request = await fetch(url.toString(), {
       method: "GET",
@@ -71,12 +87,11 @@ export class NFTStore {
   }
 
   /**
-   *
-   * @param {CID} cid
    * @param {API.Service} service
+   * @param {CID} cid
    * @returns {Promise<void>}
    */
-  static async delete(cid, { endpoint, token }) {
+  static async delete({ endpoint, token }, cid) {
     const url = new URL(`/${cid}`, endpoint)
     const request = await fetch(url.toString(), {
       method: "DELETE",
@@ -84,4 +99,37 @@ export class NFTStore {
     })
     await request.json()
   }
+
+  // Just a sugar so you don't have to pass around endpoint and token around.
+
+  /**
+   * @param {Blob} blob 
+   */
+  storeBlob(blob) {
+    return NFTStore.storeBlob(this, blob)
+  }
+  /**
+   * @param {Iterable<File>} files
+   */
+  storeDirectory(files) {
+    return NFTStore.storeDirectory(this, files)
+  }
+  /**
+   * @param {CID} cid
+   */
+  status(cid) {
+    return NFTStore.status(this, cid)
+  }
+  /**
+   * @param {CID} cid
+   */
+  delete(cid) {
+    return NFTStore.delete(this, cid)
+  }
 }
+
+/**
+ * Just to verify API compatibility.
+ * @type {API.API}
+ */
+const api = NFTStore
