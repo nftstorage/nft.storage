@@ -1,9 +1,21 @@
-# nft.storage
+# nft.storage <!-- omit in toc -->
 
 Unlimited storage of NFT data on IPFS, backed by Filecoin and provided free to [NFTHack](https://nfthack.ethglobal.co/) participants during the hackathon.
 
+# Table of Contents <!-- omit in toc -->
+- [`site` Setup](#site-setup)
+  - [Cloudflare Workers CLI](#cloudflare-workers-cli)
+  - [Auth0 account](#auth0-account)
+  - [Cloudflare Workers initial setup:](#cloudflare-workers-initial-setup)
+    - [Development Setup](#development-setup)
+    - [Production Setup `[env.production]`](#production-setup-envproduction)
+- [`site` Usage](#site-usage)
+  - [Local development](#local-development)
+  - [Deploy](#deploy)
+   
 
-## Setup 
+
+## `site` Setup 
 ### Cloudflare Workers CLI
 ```bash
 npm install -g @cloudflare/wrangler
@@ -23,6 +35,7 @@ Go to auth0.com create an account and create two "REGULAR WEB APPLICATION" appli
 Open `wrangler.toml` and delete everything inside the root `kv_namespaces` array so `wrangler` doesn't get confused.
 
 ```bash
+cd site
 # dev and preview KVs
 wrangler kv:namespace create USERS --preview
 # cli output something like: `{ binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" }`
@@ -59,7 +72,7 @@ wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in 
 wrangler publish --env production
 ```
 
-## `site` instructions
+## `site` Usage
 
 ### Local development
 ```bash
