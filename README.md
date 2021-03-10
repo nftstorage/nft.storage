@@ -17,7 +17,7 @@ Cloudflare Workers initial setup:
 
 ### Development Setup   
 
-Open `wrangler.toml` and delete anything inside the root `kv_namespaces` array so `wrangler` doesn't get confused.
+Open `wrangler.toml` and delete everything inside the root `kv_namespaces` array so `wrangler` doesn't get confused.
 
 ```bash
 # dev and preview KVs
