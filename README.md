@@ -8,7 +8,7 @@ Cloudflare Workers CLI
 ```bash
 npm install -g @cloudflare/wrangler
 wrangler login
-# when using personal accounts you may need to manual change the `account_id` inside `wrangler.toml` 
+# when using personal accounts you may need to manually change the `account_id` inside `wrangler.toml` 
 ```
 
 Cloudflare Workers initial setup:
