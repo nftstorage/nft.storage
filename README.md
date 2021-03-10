@@ -4,18 +4,21 @@ Unlimited storage of NFT data on IPFS, backed by Filecoin and provided free to [
 
 
 ## Setup 
-Cloudflare Workers CLI
+### Cloudflare Workers CLI
 ```bash
 npm install -g @cloudflare/wrangler
 wrangler login
 # when using personal accounts you may need to manually change the `account_id` inside `wrangler.toml` 
 ```
 
-Cloudflare Workers initial setup:
+### Auth0 account
+Go to auth0.com create an account and create two "REGULAR WEB APPLICATION" applications one for dev and another for production. In the settings of each application you will find the secrets needed to complete the initial setup.
+
+### Cloudflare Workers initial setup:
 > This only needs to be ran once when setting up from scratch.  
    
 
-### Development Setup   
+#### Development Setup   
 
 Open `wrangler.toml` and delete everything inside the root `kv_namespaces` array so `wrangler` doesn't get confused.
 
@@ -40,7 +43,7 @@ wrangler secret put SALT # open `https://csprng.xyz/v1/api` in the browser and u
 ```
 Go to `/site/src/constants.js` *comment* the first line and run `wrangler publish`.
 
-## Production Setup `[env.production]`
+#### Production Setup `[env.production]`
 ```bash
 # production KVs
 wrangler kv:namespace create USERS --env production
@@ -56,7 +59,7 @@ wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in 
 wrangler publish --env production
 ```
 
-## Site
+## `site` instructions
 
 ### Local development
 ```bash
