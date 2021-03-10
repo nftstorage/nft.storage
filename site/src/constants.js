@@ -1,4 +1,3 @@
-
 // let AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, SALT
 const stores = {
     auth: SESSION,
