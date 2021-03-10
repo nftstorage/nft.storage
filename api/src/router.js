@@ -118,4 +118,6 @@ class Router {
   }
 }
 
+console.log('!!!! START !!!', globalThis.PINATA_TOKEN)
+
 module.exports = Router

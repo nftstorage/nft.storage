@@ -1,9 +1,11 @@
 name = "nft-storage-api"
 type = "webpack"
-account_id = "fffa4b4363a7e5250af8357087263b3a"
 workers_dev = true
 route = ""
 zone_id = ""
+kv_namespaces = [ 
+  { binding = "NFT", preview_id = "e9fadfaa475e4ccbac94c84fd4d05fa6", id = "f339275e847c4d75a02709b5a05844c0" }
+]
 
 [dev]
 port=8888

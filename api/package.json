@@ -15,7 +15,9 @@
   "devDependencies": {
     "prettier": "^1.17.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "multiformats": "4.5.3"
+  },
   "prettier": {
     "trailingComma": "es5",
     "tabWidth": 2,

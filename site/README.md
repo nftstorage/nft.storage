@@ -9,10 +9,6 @@ yarn global add @cloudflare/wrangler
 ```
 
 
-```
-yarn global add @cloudflare/wrangler
-```
-
 ### Local development
 
 ```bash
