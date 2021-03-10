@@ -83,4 +83,6 @@ yarn start
 ```
 
 ### Deploy
-`yarn deploy`
+```bash
+yarn deploy
+```
