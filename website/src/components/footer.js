@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Footer () {
   return (
-    <footer className='bg-black flex justify-between f7 white pa3'>
+    <footer className='bg-black flex justify-between f7 white pv3 ph3 ph5-ns'>
       <div>
         <span className='v-mid'>Made with ❤️ by Protocol Labs</span>
         <span className='mh2 v-mid b'>•</span>

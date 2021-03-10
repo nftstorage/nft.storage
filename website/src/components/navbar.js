@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Navbar () {
   return (
-    <nav className='nsgray bg-nsgreen flex justify-between ph5 pv4'>
+    <nav className='nsgray bg-nsgreen flex justify-between ph3 ph5-ns pv4'>
       <div>
         <Link href='/#getting-started'><a className='f4 nsgray no-underline underline-hover'>Getting Started</a></Link>
         <span className='mh2 b'>|</span>
