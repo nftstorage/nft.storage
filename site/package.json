@@ -6,7 +6,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "wrangler dev",
-    "publish": "wrangler publish --env production",
+    "deploy": "wrangler publish --env production",
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write '**/*.{js,css,json,md}'"
   },

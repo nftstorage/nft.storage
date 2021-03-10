@@ -1,6 +1,7 @@
 import { auth0, cookieKey, stores } from '../constants'
 import { parseJWT } from './jwt'
 import { createOrUpdate } from '../models/users'
+import { auth } from '../routes/auth'
 
 /**
  * Parse the incoming URL, and pass the code login parameter to exchangeCode. We’ll also check for a state parameter, which we’ll use to prevent CSRF attacks. This state parameter should be matched to a known key in KV, indicating that the authorization request is valid
@@ -70,7 +71,7 @@ const persistAuth = async (exchange) => {
     return { status: 401 }
   }
 
-  const text = new TextEncoder().encode(`${SALT}-${decoded.sub}`)
+  const text = new TextEncoder().encode(`${auth0.salt}-${decoded.sub}`)
   const digest = await crypto.subtle.digest({ name: 'SHA-256' }, text)
   const digestArray = new Uint8Array(digest)
   const id = btoa(String.fromCharCode.apply(null, digestArray))
