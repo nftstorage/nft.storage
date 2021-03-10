@@ -10,13 +10,12 @@
       "moduleResolution": "node",
       "sourceMap": true,
       "esModuleInterop": true,
-      "types": ["./site/node_modules/@cloudflare/workers-types"]
+      "types": ["@cloudflare/workers-types"]
     },
     "include": [
-      "api/src/*.js",
-      "site/src/*.js",
-      "site/src/bindings.d.ts",
-      "site/node_modules/@cloudflare/workers-types/index.d.ts"
+      "src",
+      "src/bindings.d.ts",
+      "node_modules/@cloudflare/workers-types/index.d.ts"
     ],
     "exclude": ["node_modules/", "dist/"]
   }

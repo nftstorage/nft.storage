@@ -5,18 +5,19 @@ workers_dev = true
 route = ""
 zone_id = ""
 kv_namespaces = [
-    { binding = "SESSION", id = "e2d2cb80e2574a618e8ac0d7a88c47f7", preview_id = "e2d2cb80e2574a618e8ac0d7a88c47f7" },
-    { binding = "CSRF", id = "18cc557e531c4b8ab114eaa717244f87", preview_id = "18cc557e531c4b8ab114eaa717244f87" },
-    { binding = "USERS", id = "d996c1df67e14327a86107336a781740", preview_id = "d996c1df67e14327a86107336a781740" }
+    { binding = "SESSION", preview_id = "115a82b82bbf444caf7def921968133f" },
+    { binding = "CSRF", preview_id = "afc15a61a0414febafabfc724c904b50" },
+    { binding = "USERS", preview_id = "fb402ca278864e89bc8e82331f434b4e" },
 ]
-vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth" }
+vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true }
 
 [env.production]
 name = "nft-storage"
-vars = { AUTH0_CALLBACK_URL = "https://nft-storage.protocol-labs.workers.dev/auth" }
+vars = { AUTH0_CALLBACK_URL = "https://nft-storage.protocol-labs.workers.dev/auth", DEBUG = false }
 kv_namespaces = [
-    { binding = "SESSION", id = "9952233ff0f649e4b15b2f8621abbdbd" },
-    { binding = "CSRF", id = "60cab97c1ce948b0b1670ba4b40b99d7" }
+    { binding = "SESSION", id = "e2f62c4f14b94017a1fe1640aac4dd15", preview_id = "115a82b82bbf444caf7def921968133f" },
+    { binding = "CSRF", id = "6e9e1e62b6a746e1b1df4966629328a6", preview_id = "afc15a61a0414febafabfc724c904b50" },
+    { binding = "USERS", id = "0989c8ffff4946c5b5964e8264966059", preview_id = "fb402ca278864e89bc8e82331f434b4e" },
 ]
 
 [site]

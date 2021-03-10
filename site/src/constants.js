@@ -11,8 +11,11 @@ const auth0 = {
 };
 const cookieKey = 'AUTH0-AUTH';
 
+const isDebug = DEBUG === 'true'
+
 export {
     auth0,
     cookieKey,
-    stores
+    stores,
+    isDebug
 }

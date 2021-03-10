@@ -15,10 +15,14 @@ Cloudflare Workers initial setup:
 ### KV namespaces
 
 ```bash
-wrangler kv:namespace create USERS
-wrangler kv:namespace create SESSION
+# dev and preview KVs
+wrangler kv:namespace create USERS --preview
+wrangler kv:namespace create SESSION --preview
+wrangler kv:namespace create CSRF --preview
+
+# production KVs
+wrangler kv:namespace create USERS --env production
 wrangler kv:namespace create SESSION --env production
-wrangler kv:namespace create CSRF
 wrangler kv:namespace create CSRF --env production
 ```
 
@@ -26,13 +30,13 @@ wrangler kv:namespace create CSRF --env production
 Get random strings from `https://csprng.xyz/v1/api`
 
 ```bash
-# dev 
+# dev and preview secrets
 wrangler secret put AUTH0_DOMAIN
 wrangler secret put AUTH0_CLIENT_ID
 wrangler secret put AUTH0_CLIENT_SECRET
 wrangler secret put SALT
 
-#production
+# production secrets
 wrangler secret put AUTH0_DOMAIN --env production
 wrangler secret put AUTH0_CLIENT_ID --env production
 wrangler secret put AUTH0_CLIENT_SECRET --env production
@@ -44,20 +48,6 @@ wrangler secret put SALT --env production
 ### Local development
 ```bash
 cd site
-yarn install
-yarn start
-```
-
-### Publish
-`yarn publish`
-
-
-
-## API - wip
-
-### Local development
-```bash
-cd api
 yarn install
 yarn start
 ```

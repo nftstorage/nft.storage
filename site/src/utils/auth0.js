@@ -1,5 +1,5 @@
 import cookie from 'cookie'
-import { auth0, cookieKey, stores } from './constants'
+import { auth0, cookieKey, stores } from '../constants'
 import { generateStateParam } from './utils'
 import { parseJWT } from './jwt'
 
@@ -67,20 +67,4 @@ const verify = async (event) => {
     return { accessToken, idToken, userInfo }
   }
   return {}
-}
-
-/**
- *
- * @param {string} user
- * @returns
- */
-export async function getUser(user) {
-  const out = await fetch(`https://${auth0.domain}/api/v2/users/${user}`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${manageToken}`,
-      'content-type': 'application/json',
-    },
-  })
-  return await out.json()
 }

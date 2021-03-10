@@ -1,4 +1,4 @@
-import { signJWT } from './jwt'
+import { signJWT } from '../utils/jwt'
 
 const users = USERS
 
