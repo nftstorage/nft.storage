@@ -20,7 +20,6 @@ export default class NFTStore {
   }
 
   /**
-   * @private
    * @param {string} token
    */
   static auth(token) {

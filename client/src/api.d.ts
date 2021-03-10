@@ -54,7 +54,7 @@ export interface OngoingDeals {
  * Finilized deals. In this state all the deals are finilized and are not going
  * to change.
  */
-export interface FinilizedDeals {
+export interface FinalizedDeals {
   readonly status: 'finalized'
   readonly deals: FinilizedDeals[]
 }
@@ -90,8 +90,8 @@ export interface FinalizedDeal {
   lastStatusChangeTimestamp: Date
   miner: string
   chainDealId: number
-  dealActivationTimestamp: Date
-  dealExpirationTimestamp: Date
+  dealActivation: Date
+  dealExpiration: Date
 }
 
 export interface Pin {
