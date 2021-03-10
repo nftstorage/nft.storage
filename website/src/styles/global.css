@@ -1,0 +1,50 @@
+:root {
+  --nsblue: #47aed7;
+  --nsgray: #d8dad9;
+  --nsgreen: #0a854c;
+  --nshotpink: #fe32cd;
+  --nsnavy: #336bad;
+  --nspeach: #ffe1c5;
+  --nspink: #f7cdcf;
+  --nsred: #e11e2e;
+  --nsyellow: #e2ba36;
+}
+
+@font-face {
+  font-family: ChicagoFLF;
+  src: url(/fonts/ChicagoFLF.ttf);
+}
+.chicagoflf {
+  font-family: ChicagoFLF, sans-serif;
+}
+
+.bg-nsblue {
+  background-color: var(--nsblue);
+}
+.nsgray {
+  color: var(--nsgray);
+}
+.bg-nsgray {
+  background-color: var(--nsgray);
+}
+.bg-nsgreen {
+  background-color: var(--nsgreen);
+}
+.bg-nshotpink {
+  background-color: var(--nshotpink);
+}
+.nsnavy {
+  color: var(--nsnavy);
+}
+.bg-nsnavy {
+  background-color: var(--nsnavy);
+}
+.nspeach {
+  color: var(--nspeach);
+}
+.nspink {
+  color: var(--nspeach);
+}
+.bg-nsyellow {
+  background-color: var(--nsyellow);
+}

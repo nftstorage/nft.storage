@@ -1,0 +1,30 @@
+{
+  "name": "nft-storega-site",
+  "version": "1.0.0",
+  "description": "NFT Storage Site",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {
+    "start": "wrangler dev",
+    "publish": "wrangler publish --env production",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write '**/*.{js,css,json,md}'"
+  },
+  "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
+  "license": "MIT",
+  "dependencies": {
+    "@cloudflare/kv-asset-handler": "~0.1.0",
+    "cookie": "^0.4.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^2.1.0",
+    "@types/auth0-js": "^9.14.2",
+    "@types/cookie": "^0.4.0"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true
+  }
+}
