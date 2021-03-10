@@ -1,0 +1,25 @@
+{
+  "name": "nft-storage-api",
+  "version": "1.0.0",
+  "description": "NFT Storage API",
+  "main": "src/index.js",
+  "private": true,
+  "scripts": {
+    "start": "wrangler dev",
+    "publish": "wrangler publish",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write '**/*.{js,css,json,md}'"
+  },
+  "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^1.17.0"
+  },
+  "dependencies": {},
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true
+  }
+}

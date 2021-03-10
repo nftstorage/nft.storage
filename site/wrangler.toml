@@ -1,0 +1,24 @@
+name = "nft-storage-dev"
+type = "webpack"
+account_id = "fffa4b4363a7e5250af8357087263b3a"
+workers_dev = true
+route = ""
+zone_id = ""
+kv_namespaces = [
+    { binding = "SESSION", id = "e2d2cb80e2574a618e8ac0d7a88c47f7", preview_id = "e2d2cb80e2574a618e8ac0d7a88c47f7" },
+    { binding = "CSRF", id = "18cc557e531c4b8ab114eaa717244f87", preview_id = "18cc557e531c4b8ab114eaa717244f87" },
+    { binding = "USERS", id = "d996c1df67e14327a86107336a781740", preview_id = "d996c1df67e14327a86107336a781740" }
+]
+vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth" }
+
+[env.production]
+name = "nft-storage"
+vars = { AUTH0_CALLBACK_URL = "https://nft-storage.protocol-labs.workers.dev/auth" }
+kv_namespaces = [
+    { binding = "SESSION", id = "9952233ff0f649e4b15b2f8621abbdbd" },
+    { binding = "CSRF", id = "60cab97c1ce948b0b1670ba4b40b99d7" }
+]
+
+[site]
+bucket = "./public"
+entry-point = "."
