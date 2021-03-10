@@ -36,6 +36,7 @@ Open `wrangler.toml` and delete everything inside the root `kv_namespaces` array
 
 ```bash
 cd site
+yarn install
 # dev and preview KVs
 wrangler kv:namespace create USERS --preview
 # cli output something like: `{ binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" }`
