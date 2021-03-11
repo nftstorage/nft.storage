@@ -7,11 +7,11 @@ export default function Footer () {
         <span className='db db-m dib-ns mv3'>Made with ❤️ by Protocol Labs</span>
         <Dot />
         <span className='db db-m dib-ns mv3'>
-          <span>Made for</span> <a href='https://nfthack.ethglobal.co/' className='nspink no-underline v-mid'>NFTHack</a>
+          <span>Made for</span> <a href='https://nfthack.ethglobal.co/' className='nspink no-underline underline-hover v-mid'>NFTHack</a>
         </span>
         <Dot />
         <span className='db db-m dib-ns mv3'>
-          <span>Powered by <a href='https://pinata.cloud/' className='nspink no-underline v-mid'>Pinata</a></span>
+          <span>Powered by <a href='https://pinata.cloud/' className='nspink no-underline underline-hover v-mid'>Pinata</a></span>
           <img src='/images/logo-pinata.svg' width={20} alt='Pinata logo' className='v-mid' />
         </span>
       </div>
