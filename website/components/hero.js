@@ -28,7 +28,7 @@ export default function Hero () {
         </GreenBox>
         <div className='relative relative-m absolute-ns top-0 w-100 ph3 tc' style={{ height: '100%' }}>
           <img src='images/logo-nft.storage.png' style={{ width: '75vw', maxWidth: '1002px' }} className='mt4 mb2 mb4-ns' />
-          <hgroup className='chicagoflf nsgray'>
+          <hgroup className='chicagoflf white'>
             <h1 className='f4 f2-m f1-ns fw4 mv3'>Free Storage for NFTs</h1>
             <h2 className='f5 fw4 mw7 center mv3 lh-copy'>Unlimited<sup>*</sup> storage of NFT data on IPFS, backed by Filecoin and provided free to <a href='https://nfthack.ethglobal.co/' className='white no-underline underline-hover'>NFTHack</a> participants during the hackathon.</h2>
           </hgroup>
