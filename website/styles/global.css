@@ -55,6 +55,9 @@
 .bg-nspink {
   background-color: var(--nspink);
 }
+.bg-nsred {
+  background-color: var(--nsred);
+}
 .bg-nsyellow {
   background-color: var(--nsyellow);
 }

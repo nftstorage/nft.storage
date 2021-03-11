@@ -51,6 +51,14 @@ function About () {
 }
 
 function GettingStarted () {
+  const jsUsage = `import {NFTStore} from 'nft.storage'
+
+const apiKey = 'YOUR_API_KEY'
+const client = new NFTStore(apiKey)
+
+const data = new File()
+const cid = await client.storeBlob(data)`
+
   return (
     <article className='bg-yellow'>
       <div className='mw9 center pa5'>
@@ -73,7 +81,31 @@ function GettingStarted () {
             <p className='chicagoflf f3 mw6 center'>Choose a method to get your NFT data stored:</p>
           </li>
         </ol>
-        <Box />
+        <div className='db-m flex-ns justify-center center mw9 mw-none-m mw-none-ns mh-3'>
+          <Box borderColor='nsnavy' wrapperClassName='w-100 w-100-m w-33-ns mh0 mh0-m mh3-ns mb4'>
+            <h2 class='chicagoflf f5 fw4'><HashLink id='js-client-library'>JS Client Library</HashLink></h2>
+            <p class='lh-copy'>Install the <a href='https://npmjs.org/package/nft.storage' target='_blank' rel='noopener noreferrer' className='black'>JS library</a>:</p>
+            <pre class='f6 white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll'>npm install nft.storage</pre>
+            <p class='lh-copy'>Use the client in the browser or from Node.js:</p>
+            <pre class='f6 white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll'>{jsUsage}</pre>
+            <p class='lh-copy'>View the <a href='#' target='_blank' rel='noopener noreferrer' className='black'>full library reference docs</a>.</p>
+          </Box>
+          <Box borderColor='nspink' wrapperClassName='w-100 w-100-m w-33-ns mh0 mh0-m mh3-ns mb4'>
+            <h2 class='chicagoflf f5 fw4'><HashLink id='raw-http-request'>Raw HTTP Request</HashLink></h2>
+            <p class='lh-copy'>Configure your HTTP client and set the <code class='f6 bg-nspink ph2 pv1 br1 ba b--black code'>Authorization</code> header:</p>
+            <pre class='f6 bg-nspink pa3 br1 ba b--black code overflow-x-scroll'>"Authorization": "Bearer YOUR_API_KEY"</pre>
+            <p class='lh-copy'>Submit a <code class='f6 bg-nspink ph2 pv1 br1 ba b--black code'>multipart/form-data</code> HTTP <code class='f6 bg-nspink ph2 pv1 br1 ba b--black code'>POST</code> request to <a href='https://api.nft.storage' className='black'>https://api.nft.storage</a>.</p>
+            <p class='lh-copy'>The request should contain a <code class='f6 bg-nspink ph2 pv1 br1 ba b--black code'>file</code> property, the data for the file you want to add.</p>
+            <p class='lh-copy'>The response is a JSON object. Check the <a href='#api-docs' className='black'>API Docs</a> for information about the response and to find out how to query the request to see IPFS pinning status and Filecoin deal state.</p>
+          </Box>
+          <Box borderColor='nsred' wrapperClassName='w-100 w-100-m w-33-ns mh0 mh0-m mh3-ns mb4'>
+            <h2 class='chicagoflf f5 fw4'><HashLink id='configure-as-a-remote-pinning-service'>Configure as a Remote Pinning Service</HashLink></h2>
+            <p class='lh-copy'>You can use <strong>nft.storage</strong> as a <a href='https://ipfs.github.io/pinning-services-api-spec' className='black'>remote pinning service</a> in IPFS.</p>
+            <pre class='f6 white bg-nsred pa3 br1 ba b--black code overflow-x-scroll'>ipfs pin remote service add nftstorage https://api.nft.storage/pins YOUR_API_KEY</pre>
+            <p class='lh-copy'>Use the <code class='f6 white bg-nsred ph2 pv1 br1 ba b--black code'>--help</code> option for information on other remote pinning service commands:</p>
+            <pre class='f6 white bg-nsred pa3 br1 ba b--black code overflow-x-scroll'>ipfs pin remote --help</pre>
+          </Box>
+        </div>
       </div>
     </article>
   )
