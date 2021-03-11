@@ -73,7 +73,7 @@ const cid = await client.storeBlob(data)`
           </li>
           <li>
             <Step>2</Step>
-            <p className='chicagoflf f3 mw6 center'><a href='manage-keys' className='no-underline underline-hover nsnavy'>Create an API access key</a> and note it down.</p>
+            <p className='chicagoflf f3 mw6 center'><a href='manage-keys.html' className='no-underline underline-hover nsnavy'>Create an API access key</a> and note it down.</p>
             <img src='images/icon-arrow-down.svg' alt='arrow down' className='mb3' />
           </li>
           <li>

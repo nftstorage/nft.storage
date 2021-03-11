@@ -30,7 +30,7 @@ export default withRouter(function Navbar ({ authenticated, router }) {
           {authenticated ? (
             <>
               <span className='mh2 v-mid b black'>•</span>
-              <Link href='/'><a className='f4 black no-underline underline-hover v-mid'>Manage API Keys</a></Link>
+              <Link href='/manage-keys.html'><a className='f4 black no-underline underline-hover v-mid'>Manage API Keys</a></Link>
             </>
           ) : null}
         </div>
