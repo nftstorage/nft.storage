@@ -3,6 +3,8 @@ import Navbar from '../components/navbar.js'
 import Hero from '../components/hero.js'
 import Footer from '../components/footer.js'
 import HashLink from '../components/hashlink.js'
+import Step from '../components/step.js'
+import Box from '../components/box.js'
 
 export default function Home () {
   return (
@@ -52,9 +54,26 @@ function GettingStarted () {
   return (
     <article className='bg-yellow'>
       <div className='mw9 center pa5'>
-        <h1 className='chicagoflf tc'>
+        <h1 className='chicagoflf tc mb5'>
           <HashLink id='getting-started'>Getting started</HashLink>
         </h1>
+        <ol className='list tc pl0 mb5'>
+          <li>
+            <Step>1</Step>
+            <p className='chicagoflf f3 mw6 center'><a href='#' className='no-underline underline-hover nsnavy'>Register an nft.storage account</a> so that you can create API access keys.</p>
+            <img src='images/icon-arrow-down.svg' alt='arrow down' className='mb3' />
+          </li>
+          <li>
+            <Step>2</Step>
+            <p className='chicagoflf f3 mw6 center'><a href='manage-keys' className='no-underline underline-hover nsnavy'>Create an API access key</a> and note it down.</p>
+            <img src='images/icon-arrow-down.svg' alt='arrow down' className='mb3' />
+          </li>
+          <li>
+            <Step>3</Step>
+            <p className='chicagoflf f3 mw6 center'>Choose a method to get your NFT data stored:</p>
+          </li>
+        </ol>
+        <Box />
       </div>
     </article>
   )

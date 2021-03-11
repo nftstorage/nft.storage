@@ -46,6 +46,9 @@
 .nspeach {
   color: var(--nspeach);
 }
+.bg-nspeach {
+  background-color: var(--nspeach);
+}
 .nspink {
   color: var(--nspink);
 }
