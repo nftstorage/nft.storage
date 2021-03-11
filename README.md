@@ -18,7 +18,7 @@ Unlimited storage of NFT data on IPFS, backed by Filecoin and provided free to [
 ## `site` Setup 
 ### Cloudflare Workers CLI
 ```bash
-npm install -g @cloudflare/wrangler
+yarn global add @cloudflare/wrangler
 wrangler login
 # when using personal accounts you may need to manually change the `account_id` inside `wrangler.toml` 
 ```
@@ -45,6 +45,8 @@ wrangler kv:namespace create SESSION --preview
 # same as above
 wrangler kv:namespace create CSRF --preview
 # same as above
+wrangler kv:namespace create NFTS --preview
+# same as above
 ```
 Go to `/site/src/constants.js` *uncomment* the first line and run `wrangler publish`.
 
@@ -54,6 +56,7 @@ wrangler secret put AUTH0_DOMAIN # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_ID # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_SECRET # Get from auth0 account
 wrangler secret put SALT # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
+wrangler secret put PINATA_JWT # Get from Pinata
 ```
 Go to `/site/src/constants.js` *comment* the first line and run `wrangler publish`.
 
@@ -66,10 +69,13 @@ wrangler kv:namespace create SESSION --env production
 # Follow the instructions from the cli output
 wrangler kv:namespace create CSRF --env production
 # Follow the instructions from the cli output
+wrangler kv:namespace create NFTS --env production
+# Follow the instructions from the cli output
 wrangler secret put AUTH0_DOMAIN --env production # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_ID --env production # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_SECRET --env production # Get from auth0 account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
+wrangler secret put PINATA_JWT --env production # Get from Pinata
 wrangler publish --env production
 ```
 

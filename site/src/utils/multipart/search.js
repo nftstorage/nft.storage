@@ -1,4 +1,4 @@
-import { stringToArray, mergeArrays, arrayToString } from './utils'
+import { stringToArray, mergeArrays, arrayToString } from './utils.js'
 
 /*
   Based heavily on the Streaming Boyer-Moore-Horspool C++ implementation

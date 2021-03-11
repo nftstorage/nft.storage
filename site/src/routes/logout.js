@@ -1,8 +1,8 @@
-const { logoutHeaders, getAsset } = require("../utils/utils")
+import { logoutHeaders, getAsset } from '../utils/utils.js'
 
 /**
  * Logout route
- * 
+ *
  * @param {FetchEvent} event
  */
 export async function logout(event) {

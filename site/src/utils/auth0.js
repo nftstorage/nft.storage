@@ -1,7 +1,7 @@
 import cookie from 'cookie'
-import { auth0, cookieKey, stores } from '../constants'
-import { generateStateParam } from './utils'
-import { parseJWT } from './jwt'
+import { auth0, cookieKey, stores } from '../constants.js'
+import { generateStateParam } from './utils.js'
+import { parseJWT } from './jwt.js'
 
 /**
  * Create redirect URL
@@ -22,49 +22,54 @@ function redirectUrl(state) {
  * Authorize User
  *
  * @param {FetchEvent} event
- * @returns
+ * @returns {Promise<{ok:true,value:Authorization}|{ok:false, error:{redirectUrl: string}}>}
  */
 export const authorize = async (event) => {
   const authorization = await verify(event)
-  if (authorization.accessToken) {
-    return [true, { authorization }]
+  if (authorization) {
+    return { ok: true, value: authorization }
   } else {
     const state = await generateStateParam()
-    return [false, { redirectUrl: redirectUrl(state) }]
+    return { ok: false, error: { redirectUrl: redirectUrl(state) } }
   }
 }
 
 /**
+ * @typedef {Object} Authorization
+ * @property {string} accessToken
+ * @property {string} idToken
+ * @property {import('./jwt').JWT} userInfo
+ *
  * Verify our application’s users based on the Cookie field and make any authorization information * * available as part of the authorization object
  *
  * @param {FetchEvent} event
- * @returns
  */
 const verify = async (event) => {
   const cookieHeader = event.request.headers.get('Cookie')
   if (cookieHeader && cookieHeader.includes(cookieKey)) {
     const cookies = cookie.parse(cookieHeader)
     if (!cookies[cookieKey]) {
-      return {}
+      return null
     }
     const sub = cookies[cookieKey]
     const kvData = await stores.auth.get(sub)
     if (!kvData) {
       console.error('Unable to find authorization data')
-      return {}
+      return null
     }
 
+    /** @type {{id_token:string, access_token:string}} */
     let kvStored
     try {
       kvStored = JSON.parse(kvData)
     } catch (err) {
       console.error('Unable to parse auth information from Workers KV')
-      return {}
+      return null
     }
 
     const { access_token: accessToken, id_token: idToken } = kvStored
     const userInfo = parseJWT(idToken)
     return { accessToken, idToken, userInfo }
   }
-  return {}
+  return null
 }

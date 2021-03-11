@@ -1,21 +1,21 @@
 {
-    "compilerOptions": {
-      "outDir": "./dist",
-      "module": "commonjs",
-      "allowJs": true,
-      "checkJs": true,
-      "target": "esnext",
-      "lib": ["esnext", "webworker", "DOM"],
-      "strict": true,
-      "moduleResolution": "node",
-      "sourceMap": true,
-      "esModuleInterop": true,
-      "types": ["@cloudflare/workers-types"]
-    },
-    "include": [
-      "src",
-      "src/bindings.d.ts",
-      "node_modules/@cloudflare/workers-types/index.d.ts"
-    ],
-    "exclude": ["node_modules/", "dist/"]
-  }
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "commonjs",
+    "allowJs": true,
+    "checkJs": true,
+    "target": "esnext",
+    "lib": ["esnext", "webworker", "DOM"],
+    "strict": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "types": ["@cloudflare/workers-types"]
+  },
+  "include": [
+    "src",
+    "src/bindings.d.ts",
+    "node_modules/@cloudflare/workers-types/index.d.ts"
+  ],
+  "exclude": ["node_modules/", "dist/"]
+}
