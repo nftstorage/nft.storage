@@ -1,17 +1,17 @@
 import Link from 'next/link'
+import Button from './button.js'
 
 export default function Navbar () {
   return (
-    <nav className='nsgray bg-nsgreen flex justify-between ph3 ph5-ns pv4'>
+    <nav className='dn dn-m bg-nsorange flex-ns items-center justify-between ph3 ph5-ns pv3'>
       <div>
-        <Link href='/#getting-started'><a className='f4 nsgray no-underline underline-hover'>Getting Started</a></Link>
-        <span className='mh2 b'>|</span>
-        <Link href='/#api-docs'><a className='f4 nsgray no-underline underline-hover'>API Docs</a></Link>
+        <Link href='/#getting-started'><a className='f4 nsgray no-underline underline-hover v-mid'>Getting Started</a></Link>
+        <span className='mh2 v-mid b white'>•</span>
+        <Link href='/#api-docs'><a className='f4 nsgray no-underline underline-hover v-mid'>API Docs</a></Link>
       </div>
       <div>
-        <a href='#' className='f4 nsgray no-underline underline-hover'>Login</a>
-        <span className='mh2 b'>|</span>
-        <a href='#' className='f4 nsgray no-underline underline-hover'>Register</a>
+        <Button wrapperClassName='mr3' href='#'>Register</Button>
+        <Button href='#'>Login</Button>
       </div>
     </nav>
   )
