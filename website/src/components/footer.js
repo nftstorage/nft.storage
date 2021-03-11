@@ -11,7 +11,7 @@ export default function Footer () {
         </span>
         <Dot />
         <span className='db db-m dib-ns mv3'>
-          <span>Powered by Pinata</span>
+          <span>Powered by <a href='https://pinata.cloud/' className='nspink no-underline v-mid'>Pinata</a></span>
           <img src='/images/logo-pinata.svg' width={20} alt='Pinata logo' className='v-mid' />
         </span>
       </div>
