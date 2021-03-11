@@ -14,7 +14,8 @@
   "license": "MIT",
   "dependencies": {
     "@cloudflare/kv-asset-handler": "~0.1.0",
-    "cookie": "^0.4.1"
+    "cookie": "^0.4.1",
+    "multiformats": "^4.5.3"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^2.1.0",

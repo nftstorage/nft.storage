@@ -30,22 +30,26 @@ export default class NFTStore {
    * @param {Blob} blob
    */
   static async storeBlob({ endpoint, token }, blob) {
-    const url = new URL("/", endpoint)
+    const url = new URL("/api/upload", endpoint)
     const request = await fetch(url.toString(), {
-      method: "PUT",
+      method: "POST",
       headers: NFTStore.auth(token),
       body: blob
     })
-    const { cid } = await request.json()
+    const result = await request.json()
 
-    return CID.parse(cid)
+    if (result.ok) {
+      return CID.parse(result.value.cid)
+    } else {
+      throw new Error(result.error)
+    }
   }
   /**
    * @param {API.Service} service
    * @param {Iterable<File>} files
    */
   static async storeDirectory({ endpoint, token }, files) {
-    const url = new URL("/", endpoint)
+    const url = new URL("/api/upload", endpoint)
     const body = new FormData()
     for (const file of files) {
       body.append("file", file, file.name)
@@ -67,21 +71,25 @@ export default class NFTStore {
    * @returns {Promise<API.StatusResult>}
    */
   static async status({ endpoint, token }, cid) {
-    const url = new URL(`/${cid}`, endpoint)
-    const request = await fetch(url.toString(), {
+    const url = new URL(`/api/status/${cid}`, endpoint)
+    const response = await fetch(url.toString(), {
       method: "GET",
       headers: NFTStore.auth(token),
-    })
-    const json = await request.json()
-
-    return {
-      cid: CID.parse(json.cid),
-      deals: json.deals,
-      pin: {
-        ...json.pin,
-        cid: CID.parse(json.pin.cid),
-      },
-      created: new Date(json.created),
+    })   
+    const result = await response.json()
+    
+    if (result.ok) {
+      return {
+        cid: CID.parse(result.value.cid),
+        deals: result.value.deals,
+        pin: {
+          ...result.value.pin,
+          cid: CID.parse(result.value.pin.cid),
+        },
+        created: new Date(result.value.created),
+      }
+    } else {
+      throw new Error(result.error.message)
     }
   }
 
@@ -91,12 +99,15 @@ export default class NFTStore {
    * @returns {Promise<void>}
    */
   static async delete({ endpoint, token }, cid) {
-    const url = new URL(`/${cid}`, endpoint)
-    const request = await fetch(url.toString(), {
+    const url = new URL(`/api/delete/${cid}`, endpoint)
+    const response = await fetch(url.toString(), {
       method: "DELETE",
       headers: NFTStore.auth(token),
     })
-    await request.json()
+    const result = await response.json()
+    if (!result.ok) {
+      throw new Error(result.error.message)
+    }
   }
 
   // Just a sugar so you don't have to pass around endpoint and token around.
@@ -132,3 +143,4 @@ export default class NFTStore {
  * @type {API.API}
  */
 const api = NFTStore
+void api

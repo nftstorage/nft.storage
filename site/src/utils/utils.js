@@ -1,9 +1,10 @@
-import { cookieKey, stores, isDebug } from '../constants'
+import { cookieKey, stores, isDebug } from '../constants.js'
 import cookie from 'cookie'
 import { getAssetFromKV } from '@cloudflare/kv-asset-handler'
-import { parseJWT, verifyJWT } from './jwt'
-import { getUser } from '../models/users'
-import { HTTPError } from '../errors'
+import { parseJWT, verifyJWT } from './jwt.js'
+import { getUser } from '../models/users.js'
+import { HTTPError } from '../errors.js'
+import { CID } from 'multiformats'
 
 export function hydrateState(state = {}) {
   return {
@@ -101,11 +102,10 @@ export async function notFound(event) {
 }
 
 /**
- *
  * @param {FetchEvent} event
+ * @returns {Promise<{ok:false, error:HTTPError}|{ok:true, value:import('../models/users').User}>}
  */
 export async function verifyToken(event) {
-  let error
   const auth = event.request.headers.get('Authorization') || ''
   const [, token] = auth.match(/Bearer (.+)/) || []
   if (token) {
@@ -114,12 +114,12 @@ export async function verifyToken(event) {
       const decoded = parseJWT(token)
       const user = await getUser(decoded.sub)
       if (user.token === token) {
-        return [error, user]
+        return { ok: true, value: user }
       } else {
-        return [new HTTPError('Session expired', 403)]
+        return { ok: false, error: new HTTPError('Session expired', 403) }
       }
     } else {
-      return [new HTTPError('Token is not valid', 403)]
+      return { ok: false, error: new HTTPError('Token is not valid', 403) }
     }
   }
 
@@ -132,13 +132,28 @@ export async function verifyToken(event) {
       const token = JSON.parse(kvData)['id_token']
       const decoded = parseJWT(token)
       const user = await getUser(decoded.sub)
-      return [error, user]
+      return { ok: true, value: user }
     } else {
-      return [new HTTPError('Session expired', 403)]
+      return { ok: false, error: new HTTPError('Session expired', 403) }
     }
   }
 
-  return [new HTTPError('Unauthorized', 401)]
+  return { ok: false, error: new HTTPError('Unauthorized', 401) }
+}
+
+/**
+ * 
+ * @param {Request} request
+ * @returns {{ok: true, value:CID}|{ok: false, error: Error}}
+ */
+export const parseRequestCID = (request) => {
+  try {
+    const url = new URL(request.url)
+    const [_, _api, _status, cid] = url.pathname.split('/')
+    return { ok: true, value: CID.parse(cid) }
+  } catch(error) {
+    return { ok: false, error }
+  }
 }
 
 /**
