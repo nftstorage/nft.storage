@@ -1,9 +1,11 @@
-export default function Button ({ wrapperClassName, className, href, children }) {
+
+export default function Button ({ wrapperClassName, className, href, type = 'button', children }) {
   wrapperClassName = `dib bg-nsgray ba b--black grow ${wrapperClassName ?? ''}`.trim()
+  const wrapperStyle = { minWidth: '12rem' }
   className = `button-reset relative w-100 ba b--black pv2 ph3 chicagoflf f5 pointer bg-white ${className ?? ''}`.trim()
-  return (
-    <a href={href ?? '#'} className={wrapperClassName} style={{ minWidth: '12rem' }}>
-      <button className={className} style={{ top: 3, left: 3 }}>{children}</button>
-    </a>
-  )
+  const btnStyle = { top: 3, left: 3 }
+  const btn = <button type={type} className={className} style={btnStyle}>{children}</button>
+  return href
+    ? <a href={href} className={wrapperClassName} style={wrapperStyle}>{btn}</a>
+    : <div className={wrapperClassName} style={wrapperStyle}>{btn}</div>
 }

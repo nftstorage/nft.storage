@@ -15,7 +15,7 @@ export default function ManageKeys () {
         <div>
           <div className='flex mb3 items-center'>
             <h1 className='chicagoflf mv4 flex-auto'>Manage API Keys</h1>
-            <Button href='#' className='flex-none'>+ New Key</Button>
+            <Button href='/new-key.html' className='flex-none'>+ New Key</Button>
           </div>
           <table className='bg-white ba b--black w-100 collapse mb4'>
             <tr className='bb b--black'>
@@ -31,7 +31,10 @@ export default function ManageKeys () {
                 <code>djksnfiufwebfuwenf</code>
               </td>
               <td className='pa2'>
-                <Button className='bg-nsorange white'>Delete</Button>
+                <form action='/delete' method='DELETE'>
+                  <input type='hidden' name='id' value='1' />
+                  <Button className='bg-nsorange white' type='submit'>Delete</Button>
+                </form>
               </td>
             </tr>
             <tr className='bb b--black'>
@@ -42,7 +45,10 @@ export default function ManageKeys () {
                 <code>incbvbyudbvrvrssdc</code>
               </td>
               <td className='pa2'>
-                <Button className='bg-nsorange white'>Delete</Button>
+                <form action='/delete' method='DELETE'>
+                  <input type='hidden' name='id' value='2' />
+                  <Button className='bg-nsorange white' type='submit'>Delete</Button>
+                </form>
               </td>
             </tr>
           </table>
