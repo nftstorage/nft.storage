@@ -95,7 +95,8 @@ export interface FinalizedDeal {
 }
 
 export interface Pin {
-  requestid: string
+  // Pinata does not provide this
+  // requestid: string
   cid: CID
   name?: string
   status: PinStatus

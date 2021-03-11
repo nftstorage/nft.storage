@@ -2,6 +2,6 @@
   "private": true,
   "workspaces": ["site", "client"],
   "scripts": {
-    "start": "yarn --cwd start"
+    "start": "yarn --cwd site start"
   }
 }

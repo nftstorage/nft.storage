@@ -1,4 +1,4 @@
-import { handleRedirect } from '../utils/redirect'
+import { handleRedirect } from '../utils/redirect.js'
 
 /**
  *

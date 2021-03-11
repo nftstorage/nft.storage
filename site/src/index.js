@@ -1,12 +1,14 @@
-import { Router } from './utils/router'
-import { isDebug } from './constants'
-import { homepage } from './routes/homepage'
-import { auth } from './routes/auth'
-import { logout } from './routes/logout'
-import { notFound, verifyToken } from './utils/utils'
-import { HTTPError } from './errors'
-import { cors } from './routes/cors'
-import { upload } from './routes/upload'
+import { Router } from './utils/router.js'
+import { isDebug } from './constants.js'
+import { homepage } from './routes/homepage.js'
+import { auth } from './routes/auth.js'
+import { logout } from './routes/logout.js'
+import { notFound, verifyToken } from './utils/utils.js'
+import { HTTPError } from './errors.js'
+import { cors } from './routes/cors.js'
+import { upload } from './routes/upload.js'
+import { status } from './routes/status.js'
+import { remove } from './routes/delete.js'
 
 addEventListener('fetch', (event) => {
   event.respondWith(handleEvent(event))
@@ -27,6 +29,8 @@ async function handleEvent(event) {
   r.get('/api', () => new Response('ping'))
   r.get('/api/error', () => HTTPError.respond(new HTTPError('http error')))
   r.post('/api/upload', upload)
+  r.get('/api/status/.*', status)
+  r.delete('/api/delete/.*', remove)
   r.all(notFound)
 
   try {

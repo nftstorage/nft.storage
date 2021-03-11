@@ -1,4 +1,4 @@
-const { logoutHeaders, getAsset } = require("../utils/utils")
+import { logoutHeaders, getAsset } from "../utils/utils.js"
 
 /**
  * Logout route

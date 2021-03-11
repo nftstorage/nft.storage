@@ -192,7 +192,10 @@ export function decodeJWT(token) {
 }
 
 /**
+ * @typedef {{iss: string; sub:string, aud: string; exp: number; iat: number}} JWT
+ * 
  * @param {string} token
+ * @returns {JWT}
  */
 export function parseJWT(token) {
   // TODO: Handle when decodeJWT fails.

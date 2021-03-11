@@ -18,7 +18,7 @@ class HTTPError extends Error {
   }
 
   /**
-   * @param {HTTPError} error
+   * @param {Error & { status?: number }} error
    */
   static respond(error) {
     return new Response(JSON.stringify({

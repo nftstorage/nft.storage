@@ -1,4 +1,4 @@
-import { HTTPError } from '../errors'
+import { HTTPError } from '../errors.js'
 
 /**
  * @param {FetchEvent} event
@@ -16,7 +16,7 @@ export function cors(event) {
     let respHeaders = {
       'Content-Length': '0',
       'Access-Control-Allow-Origin': headers.get('origin') || '*',
-      'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
+      'Access-Control-Allow-Methods': 'GET,POST,DELETE,OPTIONS',
       'Access-Control-Max-Age': '86400',
       // Allow all future content Request headers to go back to browser
       // such as Authorization (Bearer) or X-Client-Name-Version
