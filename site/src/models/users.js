@@ -11,7 +11,7 @@ const users = USERS
  *   email?: string
  *   picture?: string
  * }} User
- * 
+ *
  * @expample
  * ```json
  * {

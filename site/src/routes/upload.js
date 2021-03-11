@@ -2,7 +2,7 @@ import { HTTPError } from '../errors.js'
 import { verifyToken, hash } from '../utils/utils.js'
 import { parseMultipart } from '../utils/multipart/index.js'
 import * as pinata from '../pinata.js'
-import * as nfts from "../models/nfts.js"
+import * as nfts from '../models/nfts.js'
 
 /**
  * @param {FetchEvent} event
@@ -39,29 +39,30 @@ export async function upload(event) {
     const pin = await pinata.pinFile(blob)
     if (pin.ok) {
       const { IpfsHash: cid, Timestamp: created } = pin.value
-      // 
+      //
       if (await nfts.has({ user, cid })) {
-        await nfts.set({ user, cid }, {
-          cid,
-          deals: { status: 'ongoing', deals: [] },
-          pin: {
+        await nfts.set(
+          { user, cid },
+          {
             cid,
-            status: "pinned",
+            deals: { status: 'ongoing', deals: [] },
+            pin: {
+              cid,
+              status: 'pinned',
+              // @ts-expect-error - TODO: Define encoded types.
+              created,
+            },
             // @ts-expect-error - TODO: Define encoded types.
-            created
-          },
-          // @ts-expect-error - TODO: Define encoded types.
-          created
-        })
+            created,
+          }
+        )
       }
 
-
       return new Response(JSON.stringify({ ok: true, value: { cid } }), {
-          headers: {
-            'content-type': 'application/json;charset=UTF-8',
-          },
-        }
-      )
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+        },
+      })
     } else {
       return HTTPError.respond(new HTTPError(pin.error.statusText))
     }

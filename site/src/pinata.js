@@ -1,4 +1,4 @@
-import { pinata } from "./constants.js"
+import { pinata } from './constants.js'
 
 const endpoint = new URL('https://api.pinata.cloud')
 
@@ -10,19 +10,22 @@ const endpoint = new URL('https://api.pinata.cloud')
 export const pinFile = async (blob) => {
   const body = new FormData()
   body.append('file', blob)
-  body.append('pinataMetadata', JSON.stringify({
-    keyvalues: {
-      origin: 'https://nft.storage/'
-    }
-  }))
+  body.append(
+    'pinataMetadata',
+    JSON.stringify({
+      keyvalues: {
+        origin: 'https://nft.storage/',
+      },
+    })
+  )
   const url = new URL('/pinning/pinFileToIPFS', endpoint)
 
   const response = await fetch(url.toString(), {
     body,
     method: 'POST',
     headers: {
-      'authorization': `Bearer ${pinata.jwt}`
-    }
+      authorization: `Bearer ${pinata.jwt}`,
+    },
   })
 
   if (response.ok) {

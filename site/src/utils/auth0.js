@@ -39,7 +39,7 @@ export const authorize = async (event) => {
  * @property {string} accessToken
  * @property {string} idToken
  * @property {import('./jwt').JWT} userInfo
- * 
+ *
  * Verify our application’s users based on the Cookie field and make any authorization information * * available as part of the authorization object
  *
  * @param {FetchEvent} event

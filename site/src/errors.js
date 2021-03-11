@@ -21,20 +21,20 @@ class HTTPError extends Error {
    * @param {Error & { status?: number }} error
    */
   static respond(error) {
-    return new Response(JSON.stringify({
-      ok: false,
-      error: {
-        name: error.name,
-        message: error.message
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        error: {
+          name: error.name,
+          message: error.message,
+        },
+      }),
+      {
+        statusText: error.message,
+        status: error.status || 500,
       }
-    }), {
-      statusText: error.message,
-      status: error.status || 500,
-    })
+    )
   }
 }
 
-
-export {
-    HTTPError
-}
+export { HTTPError }

@@ -1,4 +1,4 @@
-import { auth0 } from "../constants"
+import { auth0 } from '../constants'
 
 /** @type {Record<string, HmacImportParams>} */
 const algorithms = {
@@ -12,7 +12,7 @@ const algorithms = {
 
 // Adapted from https://chromium.googlesource.com/chromium/blink/+/master/LayoutTests/crypto/subtle/hmac/sign-verify.html
 var Base64URL = {
-  stringify: function(/** @type {Uint8Array} */ a) {
+  stringify: function (/** @type {Uint8Array} */ a) {
     // @ts-ignore
     var base64string = btoa(String.fromCharCode.apply(0, a))
     return base64string
@@ -20,14 +20,11 @@ var Base64URL = {
       .replace(/\+/g, '-')
       .replace(/\//g, '_')
   },
-  parse: function(/** @type {string} */ s) {
-    s = s
-      .replace(/-/g, '+')
-      .replace(/_/g, '/')
-      .replace(/\s/g, '')
+  parse: function (/** @type {string} */ s) {
+    s = s.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '')
     return new Uint8Array(
       // @ts-ignore
-      Array.prototype.map.call(atob(s), function(c) {
+      Array.prototype.map.call(atob(s), function (c) {
         return c.charCodeAt(0)
       })
     )
@@ -164,10 +161,7 @@ export async function signJWT(payload, secret = auth0.salt, alg = 'HS256') {
  * @param {string} token
  */
 export function decodeJWT(token) {
-  var output = token
-    .split('.')[1]
-    .replace(/-/g, '+')
-    .replace(/_/g, '/')
+  var output = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
   switch (output.length % 4) {
     case 0:
       break
@@ -193,7 +187,7 @@ export function decodeJWT(token) {
 
 /**
  * @typedef {{iss: string; sub:string, aud: string; exp: number; iat: number}} JWT
- * 
+ *
  * @param {string} token
  * @returns {JWT}
  */

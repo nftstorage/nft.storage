@@ -20,7 +20,8 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^2.1.0",
     "@types/auth0-js": "^9.14.2",
-    "@types/cookie": "^0.4.0"
+    "@types/cookie": "^0.4.0",
+    "prettier": "^2.2.1"
   },
   "prettier": {
     "trailingComma": "es5",

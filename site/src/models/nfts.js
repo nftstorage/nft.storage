@@ -8,15 +8,14 @@ import { stores } from '../constants.js'
 /**
  * @param {Key} key
  */
-const encodeKey = ({user, cid}) => `${user.sub}:${cid}`
-
+const encodeKey = ({ user, cid }) => `${user.sub}:${cid}`
 
 /**
- * @param {Key} key 
+ * @param {Key} key
  * @returns {Promise<boolean>}
  */
 export const has = async (key) => {
-  return null == await stores.nfts.get(encodeKey(key))
+  return null == (await stores.nfts.get(encodeKey(key)))
 }
 
 /**
@@ -29,7 +28,7 @@ export const set = async (key, value) => {
 }
 
 /**
- * @param {Key} key 
+ * @param {Key} key
  * @returns {Promise<NFT|null>}
  */
 export const get = async (key) => {
@@ -42,7 +41,6 @@ export const get = async (key) => {
 }
 
 /**
- * @param {Key} key 
+ * @param {Key} key
  */
 export const remove = async (key) => stores.nfts.delete(encodeKey(key))
-

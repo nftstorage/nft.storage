@@ -56,7 +56,7 @@ wrangler secret put AUTH0_DOMAIN # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_ID # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_SECRET # Get from auth0 account
 wrangler secret put SALT # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
-wrangler secret put SALT # Get from Pinata
+wrangler secret put PINATA_JWT # Get from Pinata
 ```
 Go to `/site/src/constants.js` *comment* the first line and run `wrangler publish`.
 
@@ -75,7 +75,7 @@ wrangler secret put AUTH0_DOMAIN --env production # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_ID --env production # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_SECRET --env production # Get from auth0 account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
-wrangler secret put SALT --env production # Get from Pinata
+wrangler secret put PINATA_JWT --env production # Get from Pinata
 wrangler publish --env production
 ```
 

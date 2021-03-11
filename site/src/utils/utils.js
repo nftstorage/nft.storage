@@ -142,7 +142,7 @@ export async function verifyToken(event) {
 }
 
 /**
- * 
+ *
  * @param {Request} request
  * @returns {{ok: true, value:CID}|{ok: false, error: Error}}
  */
@@ -151,7 +151,7 @@ export const parseRequestCID = (request) => {
     const url = new URL(request.url)
     const [_, _api, _status, cid] = url.pathname.split('/')
     return { ok: true, value: CID.parse(cid) }
-  } catch(error) {
+  } catch (error) {
     return { ok: false, error }
   }
 }
