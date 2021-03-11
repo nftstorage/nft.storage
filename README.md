@@ -75,7 +75,7 @@ wrangler secret put AUTH0_DOMAIN --env production # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_ID --env production # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_SECRET --env production # Get from auth0 account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
-wrangler secret put SALT --env production# Get from Pinata
+wrangler secret put SALT --env production # Get from Pinata
 wrangler publish --env production
 ```
 
