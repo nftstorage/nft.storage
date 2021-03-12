@@ -1,48 +1,36 @@
+import { CID } from 'multiformats'
 import { HTTPError } from '../errors.js'
-import { verifyToken, parseRequestCID } from '../utils/utils.js'
+import { verifyToken } from '../utils/utils.js'
 import * as nfts from '../models/nfts.js'
+import { JSONResponse } from '../utils/json-response.js'
 
 /**
  * @param {FetchEvent} event
+ * @param {Record<string,string>} params
  * @returns {Promise<Response>}
  */
-export const status = async (event) => {
-  const authResult = await verifyToken(event)
-  if (!authResult.ok) {
-    return HTTPError.respond(authResult.error)
+export const status = async (event, params) => {
+  const auth = await verifyToken(event)
+  if (!auth.ok) {
+    return HTTPError.respond(auth.error)
   }
-  const user = authResult.value
-  const parseResult = parseRequestCID(event.request)
-  if (!parseResult.ok) {
-    return HTTPError.respond(parseResult.error)
-  }
-  const cid = parseResult.value
+  const user = auth.value
 
-  const status = await nfts.get({ user, cid })
-  if (status) {
-    return new Response(
-      JSON.stringify({
+  try {
+    const cid = CID.parse(params.cid)
+    const status = await nfts.get({ user, cid })
+
+    if (status) {
+      return new JSONResponse({
         ok: true,
         value: status,
-      }),
-      {
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-        },
-      }
-    )
-  } else {
-    return new Response(
-      JSON.stringify({
-        ok: false,
-        error: { message: `NFT with a CID ${cid} not found` },
-      }),
-      {
-        status: 404,
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-        },
-      }
-    )
+      })
+    }
+    return new JSONResponse({
+      ok: false,
+      error: { message: `NFT with a CID ${cid} not found` },
+    })
+  } catch (err) {
+    return HTTPError.respond(err)
   }
 }

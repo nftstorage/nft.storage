@@ -1,6 +1,9 @@
+import regexparam from 'regexparam'
+import parse from 'regexparam'
+
 /**
- * @typedef {(event: FetchEvent) => Promise<Response> | Response} Handler
- * @typedef {(req: Request) => boolean} Condition
+ * @typedef {(event: FetchEvent, params: Record<string,string>) => Promise<Response> | Response} Handler
+ * @typedef {(req: Request) => boolean | Record<string,string>} Condition
  * @typedef {string} Matcher
  */
 
@@ -30,14 +33,37 @@ const Trace = Method('trace')
 // const Referrer = (host) => Header('referrer', host.toLowerCase())
 
 /**
+ * @param {string} path
+ * @param {{ keys: string[]; pattern: RegExp;}} result
+ */
+function matchParams(path, result) {
+  let i = 0
+  /** @type {Record<string, string>} */
+  const out = {}
+  const { keys, pattern } = result
+  let matches = pattern.exec(path)
+  if (!matches) {
+    return out
+  }
+  while (i < keys.length) {
+    out[keys[i]] = matches[++i]
+  }
+  return out
+}
+/**
  * @param {Matcher} regExp
  */
 function Path(regExp) {
+  const parsed = regexparam(regExp)
   return (/** @type {Request} */ req) => {
     const url = new URL(req.url)
     const path = url.pathname
-    const match = path.match(regExp) || []
-    return match[0] === path
+
+    const match = parsed.pattern.test(path)
+    if (match) {
+      return matchParams(path, parsed)
+    }
+    return false
   }
 }
 
@@ -139,12 +165,12 @@ class Router {
    */
   async route(event) {
     const origin = event.request.headers.get('origin')
-    const route = this.resolve(event.request)
+    const [handler, params] = this.resolve(event.request)
     const url = new URL(event.request.url)
     const isAPI = url.pathname.startsWith('/api')
 
-    if (route) {
-      const rsp = await route.handler(event)
+    if (handler) {
+      const rsp = await handler(event, params)
       if (isAPI) {
         if (origin) {
           rsp.headers.set('Access-Control-Allow-Origin', origin)
@@ -166,22 +192,25 @@ class Router {
   }
 
   /**
-   * resolve returns the matching route for a request that returns
+   * Resolve returns the matching route for a request that returns
    * true for all conditions (if any).
    * @param {Request} req
+   * @return {[Handler|false, Record<string,string>]}
    */
   resolve(req) {
-    return this.routes.find((r) => {
-      if (!r.conditions || (Array.isArray(r) && !r.conditions.length)) {
-        return true
+    for (let i = 0; i < this.routes.length; i++) {
+      const route = this.routes[i]
+      if (route.conditions.length !== 2) {
+        return [route.handler, {}]
       }
+      const method = route.conditions[0](req)
+      const pattern = route.conditions[1](req)
+      if (method && typeof pattern !== 'boolean') {
+        return [route.handler, pattern]
+      }
+    }
 
-      // if (typeof r.conditions === 'function') {
-      //   return r.conditions(req)
-      // }
-
-      return r.conditions.every((c) => c(req))
-    })
+    return [false, {}]
   }
 }
 

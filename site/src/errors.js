@@ -1,4 +1,6 @@
-class HTTPError extends Error {
+import { JSONResponse } from './utils/json-response'
+
+export class HTTPError extends Error {
   /**
    *
    * @param {string} message
@@ -21,14 +23,14 @@ class HTTPError extends Error {
    * @param {Error & { status?: number }} error
    */
   static respond(error) {
-    return new Response(
-      JSON.stringify({
+    return new JSONResponse(
+      {
         ok: false,
         error: {
           name: error.name,
           message: error.message,
         },
-      }),
+      },
       {
         statusText: error.message,
         status: error.status || 500,
@@ -36,5 +38,3 @@ class HTTPError extends Error {
     )
   }
 }
-
-export { HTTPError }

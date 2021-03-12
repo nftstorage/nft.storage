@@ -9,6 +9,7 @@ import { cors } from './routes/cors.js'
 import { upload } from './routes/upload.js'
 import { status } from './routes/status.js'
 import { remove } from './routes/delete.js'
+import { list } from './routes/list.js'
 
 addEventListener('fetch', (event) => {
   event.respondWith(handleEvent(event))
@@ -17,19 +18,29 @@ addEventListener('fetch', (event) => {
 /**
  * Request handler
  *
+ * Static (/foo, /foo/bar)
+ * Parameter (/:title, /books/:title, /books/:genre/:title)
+ * Parameter w/ Suffix (/movies/:title.mp4, /movies/:title.(mp4|mov))
+ * Optional Parameters (/:title?, /books/:title?, /books/:genre/:title?)
+ * Wildcards (*, /books/*, /books/:genre/*)
+ *
+ * @see https://github.com/lukeed/regexparam
  * @param {FetchEvent} event
  * @returns
  */
 async function handleEvent(event) {
   const r = new Router()
+
+  // Site
   r.get('/', homepage)
   r.get('/auth', auth)
   r.get('/logout', logout)
+
+  // API
   r.options('/api/.*', cors)
-  r.get('/api', () => new Response('ping'))
-  r.get('/api/error', () => HTTPError.respond(new HTTPError('http error')))
   r.post('/api/upload', upload)
-  r.get('/api/status/.*', status)
+  r.get('/api/list', list)
+  r.get('/api/status/:cid', status)
   r.delete('/api/delete/.*', remove)
   r.all(notFound)
 

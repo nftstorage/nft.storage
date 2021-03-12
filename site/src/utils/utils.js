@@ -4,7 +4,6 @@ import { getAssetFromKV } from '@cloudflare/kv-asset-handler'
 import { parseJWT, verifyJWT } from './jwt.js'
 import { getUser } from '../models/users.js'
 import { HTTPError } from '../errors.js'
-import { CID } from 'multiformats'
 
 export function hydrateState(state = {}) {
   return {
@@ -139,21 +138,6 @@ export async function verifyToken(event) {
   }
 
   return { ok: false, error: new HTTPError('Unauthorized', 401) }
-}
-
-/**
- *
- * @param {Request} request
- * @returns {{ok: true, value:CID}|{ok: false, error: Error}}
- */
-export const parseRequestCID = (request) => {
-  try {
-    const url = new URL(request.url)
-    const [_, _api, _status, cid] = url.pathname.split('/')
-    return { ok: true, value: CID.parse(cid) }
-  } catch (error) {
-    return { ok: false, error }
-  }
 }
 
 /**

@@ -1,4 +1,5 @@
 import { stores } from '../constants.js'
+import merge from 'merge-options'
 
 /**
  * @typedef {{user: import('./users').User, cid: import('multiformats').CID|string}} Key
@@ -21,10 +22,17 @@ export const has = async (key) => {
 /**
  * @param {Key} key
  * @param {NFT} value
- * @returns {Promise<void>}
+ * @returns {Promise<NFT>}
  */
 export const set = async (key, value) => {
-  await stores.nfts.put(encodeKey(key), JSON.stringify(value))
+  const savedValue = await get(key)
+  if (savedValue === null) {
+    await stores.nfts.put(encodeKey(key), JSON.stringify(value))
+    return value
+  }
+  const data = merge(savedValue, value)
+  await stores.nfts.put(encodeKey(key), JSON.stringify(data))
+  return data
 }
 
 /**
@@ -44,3 +52,20 @@ export const get = async (key) => {
  * @param {Key} key
  */
 export const remove = async (key) => stores.nfts.delete(encodeKey(key))
+
+/**
+ * @param {any} prefix
+ */
+export async function list(prefix) {
+  const nfts = await stores.nfts.list({
+    prefix,
+  })
+  if (nfts.keys.length > 0) {
+    return await Promise.all(
+      nfts.keys.map((key) => {
+        return stores.nfts.get(key.name).then((v) => JSON.parse(v))
+      })
+    )
+  }
+  return []
+}

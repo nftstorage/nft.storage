@@ -242,6 +242,13 @@ export async function* iterateMultipart(body, boundary) {
     }
   }
 }
+
+/**
+ *
+ * @param {ReadableStream<Uint8Array> | null} body
+ * @param {string} boundary
+ * @returns {Promise<FileParts>}
+ */
 export async function parseMultipart(body, boundary) {
   const parts = []
   for await (const part of iterateMultipart(body, boundary)) {
@@ -249,3 +256,7 @@ export async function parseMultipart(body, boundary) {
   }
   return parts
 }
+
+/**
+ * @typedef {{name: string, filename: string, contentType: string, data: Uint8Array}[]} FileParts
+ */

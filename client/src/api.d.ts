@@ -30,9 +30,10 @@ export interface API {
 
 export interface StatusResult {
   cid: CID
+  size: number,
   deals: Deals,
   pin: Pin
-  created: Date
+  created: string
 }
 
 export type Deals = OngoingDeals | FinalizedDeals
