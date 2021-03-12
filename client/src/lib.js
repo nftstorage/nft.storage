@@ -58,14 +58,18 @@ export default class NFTStore {
       body.append("file", file, file.name)
     }
 
-    const request = await fetch(url.toString(), {
+    const response = await fetch(url.toString(), {
       method: "POST",
       headers: NFTStore.auth(token),
       body,
     })
-    const { cid } = await request.json()
+    const result = await response.json()
 
-    return CID.parse(cid)
+    if (result.ok) {
+      return CID.parse(result.value.cid)
+    } else {
+      throw new Error(result.error)
+    }
   }
 
   /**
