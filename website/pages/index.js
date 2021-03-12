@@ -33,17 +33,56 @@ export default function Home () {
 }
 
 function About () {
+  const storeText = (
+    <>
+      <h2 className='chicagoflf'><HashLink id='store'>Store</HashLink></h2>
+      <p class="lh-copy">Just upload your data and you'll recieve an IPFS hash of the content (a CID) that can be used in <strong>on-chain</strong> NFT data as a pointer to the content.</p>
+      <p class="lh-copy">Filecoin provides long term storage for the data ensuring that even if <strong>nft.storage</strong> is attacked or taken down the NFT data persists, permanently<sup>**</sup>!</p>
+    </>
+  )
+  const retrieveText = (
+    <>
+      <h2 className='chicagoflf'><HashLink id='retrieve'>Retrieve</HashLink></h2>
+      <p class="lh-copy">NFT data stored by <strong>nft.storage</strong> can be accessed from the decentralized IPFS network from <em>any</em> peer that has the content. CIDs reference <strong>immutable</strong> content so you can be sure the content you access is the content referenced in the NFT.</p>
+      <p class="lh-copy">The data can be fetched directly in the browser using <a href="https://brave.com/ipfs-support/" className='black' target='_blank' rel='noopener noreferrer'>Brave</a>, or via a <a href="https://docs.ipfs.io/concepts/ipfs-gateway/#public-gateways" className='black' target='_blank' rel='noopener noreferrer'>public IPFS gateway</a>, or by using <a href="https://github.com/ipfs-shipyard/ipfs-desktop" className='black' target='_blank' rel='noopener noreferrer'>IPFS Desktop</a> or the <a href="https://docs.ipfs.io/how-to/command-line-quick-start/" className='black' target='_blank' rel='noopener noreferrer'>IPFS command line</a>.</p>
+    </>
+  )
   return (
-    <article className='bg-pink'>
+    <article className='bg-nsgreen'>
       <div className='mw9 center pa5'>
         <h1 className='chicagoflf'>
           <HashLink id='about'>About</HashLink>
         </h1>
-        <p className='lh-copy mw6'>
+        <p className='lh-copy mw-none mw-none-m mw6-ns'>
           <strong>nft.storage</strong> is a brand new service in private BETA, built specifically for storing <strong>off-chain</strong> NFT data. Data is stored <em>decentralized</em> on <a href='https://ipfs.io' className='black'>IPFS</a> and <em>backed up</em> in cold storage by <a href='https://filecoin.io' className='black'>Filecoin</a>.
         </p>
-        <div className='tc chicagoflf pv6'>
-          Diagram here
+        <div className='db db-m dn-ns'>
+          <div>
+            {storeText}
+            <div className='tc mv4'>
+              <img src='images/diagram-store.png' alt='diagram of storage with nft.storage' width='576' />
+            </div>
+          </div>
+          <div>
+            {retrieveText}
+            <div className='tc mv4'>
+              <img src='images/diagram-retrieve.png' alt='diagram of retrieval with nft.storage' width='631' />
+            </div>
+          </div>
+        </div>
+        <div className='relative dn dn-m db-ns'>
+          <div className='tr pl5'>
+            <img src='images/diagram-store-and-retrieve.png' alt='diagram of storage and retrieval with nft.storage' width='1177' />
+          </div>
+          <div className='absolute top-0 w-100 h-100 flex'>
+            <div className='flex-auto w-50'>
+              <div className='pt6 pr4'>{storeText}</div>
+            </div>
+            <div className='flex-none' style={{ width: 400 }} />
+            <div className='flex-auto flex items-center w-50'>
+              <div>{retrieveText}</div>
+            </div>
+          </div>
         </div>
       </div>
     </article>
@@ -54,7 +93,7 @@ function GettingStarted () {
   const jsUsage = `import NFTStore from 'nft.storage'
 
 const apiKey = 'YOUR_API_KEY'
-const client = new NFTStore(apiKey)
+const client = new NFTStore({ token: apiKey })
 
 const data = new File()
 const cid = await client.storeBlob(data)`
@@ -94,14 +133,14 @@ const cid = await client.storeBlob(data)`
             <h2 class='chicagoflf f5 fw4'><HashLink id='raw-http-request'>Raw HTTP Request</HashLink></h2>
             <p class='lh-copy'>Configure your HTTP client and set the <code class='f6 bg-nspink ph2 pv1 br1 ba b--black code'>Authorization</code> header:</p>
             <pre class='f6 bg-nspink pa3 br1 ba b--black code overflow-x-scroll'>"Authorization": "Bearer YOUR_API_KEY"</pre>
-            <p class='lh-copy'>Submit a <code class='f6 bg-nspink ph2 pv1 br1 ba b--black code'>multipart/form-data</code> HTTP <code class='f6 bg-nspink ph2 pv1 br1 ba b--black code'>POST</code> request to <a href='https://api.nft.storage' className='black'>https://api.nft.storage</a>.</p>
+            <p class='lh-copy'>Submit a <code class='f6 bg-nspink ph2 pv1 br1 ba b--black code'>multipart/form-data</code> HTTP <code class='f6 bg-nspink ph2 pv1 br1 ba b--black code'>POST</code> request to <a href='https://nft.storage/api/' className='black'>https://nft.storage/api/</a>.</p>
             <p class='lh-copy'>The request should contain a <code class='f6 bg-nspink ph2 pv1 br1 ba b--black code'>file</code> property, the data for the file you want to add.</p>
             <p class='lh-copy'>The response is a JSON object. Check the <a href='#api-docs' className='black'>API Docs</a> for information about the response and to find out how to query the request to see IPFS pinning status and Filecoin deal state.</p>
           </Box>
           <Box bgColor='nspeach' borderColor='nsred' wrapperClassName='w-100 w-100-m w-33-ns mh0 mh0-m mh3-ns mb4'>
             <h2 class='chicagoflf f5 fw4'><HashLink id='configure-as-a-remote-pinning-service'>Configure as a Remote Pinning Service</HashLink></h2>
             <p class='lh-copy'>You can use <strong>nft.storage</strong> as a <a href='https://ipfs.github.io/pinning-services-api-spec' className='black'>remote pinning service</a> in IPFS.</p>
-            <pre class='f6 white bg-nsred pa3 br1 ba b--black code overflow-x-scroll'>ipfs pin remote service add nftstorage https://api.nft.storage/pins YOUR_API_KEY</pre>
+            <pre class='f6 white bg-nsred pa3 br1 ba b--black code overflow-x-scroll'>ipfs pin remote service add nftstorage https://nft.storage/api/pins YOUR_API_KEY</pre>
             <p class='lh-copy'>Use the <code class='f6 white bg-nsred ph2 pv1 br1 ba b--black code'>--help</code> option for information on other remote pinning service commands:</p>
             <pre class='f6 white bg-nsred pa3 br1 ba b--black code overflow-x-scroll'>ipfs pin remote --help</pre>
           </Box>
@@ -138,9 +177,9 @@ function APIDocs () {
         <h1 className='chicagoflf white'>
           <HashLink id='api-docs'>API Documentation</HashLink>
         </h1>
-        <p class='lh-copy white'>The root API URL is <code class='f6 black bg-white ph2 pv1 br1 ba b--black code'>https://api.nft.storage</code>.</p>
+        <p class='lh-copy white'>The root API URL is <code class='f6 black bg-white ph2 pv1 br1 ba b--black code'>https://nft.storage/api</code>.</p>
         <p class='lh-copy white'>All requests to the HTTP API must be authenticated with a JWT access token, generated by the website and passed in the HTTP <code class='f6 black bg-white ph2 pv1 br1 ba b--black code'>Authorization</code> header like:</p>
-        <pre class='dib f6 bg-white pa3 br1 ba b--black code'>"Authorization": "Bearer YOUR_API_KEY"</pre>
+        <pre class='db mw6 f6 bg-white pa3 br1 ba b--black code overflow-x-scroll'>"Authorization": "Bearer YOUR_API_KEY"</pre>
         <div className='db-m flex-ns justify-center center mw9 mw-none-m mw-none-ns mh-3 mv4'>
           <Box bgColor='nsgray' borderColor='nspink' wrapperClassName='w-100 w-100-m w-33-ns mh0 mh0-m mh3-ns mb4'>
             <h2 class='f5 fw4'><HashLink id='post-'><code class='bg-white ph2 pv1 br1 ba b--black'>POST /</code></HashLink></h2>

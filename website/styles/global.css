@@ -1,6 +1,7 @@
 :root {
   --nsblue: #47aed7;
   --nsgray: #d8dad9;
+  --nsgreen: #D3E7DC;
   --nslime: #66FECB;
   --nsnavy: #336bad;
   --nsorange: #EE4116;
@@ -26,6 +27,9 @@
 }
 .bg-nsgray {
   background-color: var(--nsgray);
+}
+.bg-nsgreen {
+  background-color: var(--nsgreen);
 }
 .bg-nsorange {
   background-color: var(--nsorange);
