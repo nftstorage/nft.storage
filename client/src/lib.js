@@ -15,7 +15,7 @@ export default class NFTStore {
    * @param {string} options.token
    * @param {URL} [options.endpoint]
    */
-  constructor({ token, endpoint = new URL("https://api.nft.storage") }) {
+  constructor({ token, endpoint = new URL("https://nft.storage") }) {
     /** @readonly */
     this.token = token
     /** @readonly */
