@@ -37,7 +37,7 @@ function About () {
     <>
       <h2 className='chicagoflf'><HashLink id='store'>Store</HashLink></h2>
       <p class="lh-copy">Just upload your data and you'll recieve an IPFS hash of the content (a CID) that can be used in <strong>on-chain</strong> NFT data as a pointer to the content.</p>
-      <p class="lh-copy">Filecoin provides long term storage for the data ensuring that even if <strong>nft.storage</strong> is attacked or taken down the NFT data persists, permanently<sup>**</sup>!</p>
+      <p class="lh-copy">Filecoin provides long term storage for the data ensuring that even if <strong>nft.storage</strong> is attacked or taken down the NFT data persists!</p>
     </>
   )
   const retrieveText = (
