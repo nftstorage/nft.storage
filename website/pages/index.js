@@ -51,7 +51,7 @@ function About () {
 }
 
 function GettingStarted () {
-  const jsUsage = `import {NFTStore} from 'nft.storage'
+  const jsUsage = `import NFTStore from 'nft.storage'
 
 const apiKey = 'YOUR_API_KEY'
 const client = new NFTStore(apiKey)
