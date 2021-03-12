@@ -4,7 +4,7 @@ import Footer from '../components/footer.js'
 import Box from '../components/box.js'
 import Button from '../components/button.js'
 
-export default function ManageKeys () {
+export default function NewKey () {
   return (
     <div className='sans-serif'>
       <Head>

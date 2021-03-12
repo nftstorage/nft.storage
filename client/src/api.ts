@@ -1,4 +1,4 @@
-import type { CID } from "multiformats/cid"
+import type { CID } from "multiformats"
 
 export interface Service {
   endpoint: URL
@@ -57,7 +57,7 @@ export interface OngoingDeals {
  */
 export interface FinalizedDeals {
   readonly status: 'finalized'
-  readonly deals: FinilizedDeals[]
+  readonly deals: FinalizedDeals[]
 }
 
 

@@ -10,6 +10,7 @@ yarn start
 ### Publish
 
 ```
+yarn run build
 yarn publish
 ```
 
