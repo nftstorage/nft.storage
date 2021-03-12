@@ -7,6 +7,9 @@ import CID from "multiformats/cid"
  * @implements {API.Service}
  */
 export default class NFTStore {
+  static get CID() {
+    return CID
+  }
   /**
    * @param {Object} options
    * @param {string} options.token
