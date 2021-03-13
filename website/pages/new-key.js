@@ -14,7 +14,7 @@ export default function NewKey () {
       <Navbar authenticated />
       <main className='mw9 center bg-nspeach pv3 ph5 min-vh-100'>
         <Box bgColor='nsgray' borderColor='nspink' wrapperClassName='center mv4 mw6'>
-          <h1 class='chicagoflf f4 fw4'>New API Key</h1>
+          <h1 className='chicagoflf f4 fw4'>New API Key</h1>
           <form action='/keys' method='POST'>
             <div className='mv3'>
               <label for='name' className='dib mb2'>Name</label>
