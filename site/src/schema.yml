@@ -1,0 +1,81 @@
+openapi: '3.0.2'
+info:
+  title: NFT Storage API
+  version: '1.0'
+  description: NFT Storage API Documentation
+servers:
+  - url: https://nft.storage/v1
+paths:
+  /upload:
+    post:
+      description: Upload NFTs
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+  /:
+    get:
+      description: List NFTs
+      responses:
+        '200':
+          description: OK
+components:
+  responses:
+    unauthorized:
+      description: Unauthorized
+      content:
+        'application/json':
+          schema:
+            type: object
+            properties:
+              ok:
+                type: boolean
+                default: false
+              error:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    default: HTTP Error
+                  message:
+                    type: string
+                    default: Unauthorized
+    forbidden:
+      description: Forbidden
+      content:
+        'application/json':
+          schema:
+            type: object
+            properties:
+              ok:
+                type: boolean
+                default: false
+              error:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    default: HTTP Error
+                  message:
+                    type: string
+                    enum: [Token is not valid, Session expired]
+              
