@@ -1,11 +1,14 @@
 import Head from 'next/head'
+import useSWR from 'swr'
 import Navbar from '../components/navbar.js'
 import Footer from '../components/footer.js'
 import Box from '../components/box.js'
 import Button from '../components/button.js'
 import { getEdgeState } from '../lib/state.js'
 
-export default function NewKey ({ user, loginUrl = '#' }) {
+export default function NewKey () {
+  const { data } = useSWR('edge_state', getEdgeState)
+  const { user, loginUrl = '#' } = data ?? {}
   return (
     <div className='sans-serif'>
       <Head>
@@ -30,11 +33,4 @@ export default function NewKey ({ user, loginUrl = '#' }) {
       <Footer />
     </div>
   )
-}
-
-export async function getStaticProps() {
-  return {
-    props: getEdgeState(),
-    revalidate: 1 // In seconds
-  }
 }

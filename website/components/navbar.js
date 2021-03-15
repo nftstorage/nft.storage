@@ -15,6 +15,8 @@ export default function Navbar ({ user, loginUrl, bgColor = 'nsorange' }) {
             <>
               <span className='mh2 v-mid b black'>•</span>
               <a href='/manage' className='f4 black no-underline underline-hover v-mid'>Manage API Keys</a>
+              <span className='mh2 v-mid b black'>•</span>
+              <a href='/files' className='f4 black no-underline underline-hover v-mid'>Files</a>
             </>
           ) : null}
         </div>
