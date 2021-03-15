@@ -28,7 +28,7 @@ export default function Home () {
       <Hero user={user} loginUrl={loginUrl} />
       <main>
         <About />
-        <GettingStarted />
+        <GettingStarted loginUrl={loginUrl} />
         <APIDocs />
       </main>
       <Footer />
@@ -93,7 +93,7 @@ function About () {
   )
 }
 
-function GettingStarted () {
+function GettingStarted ({ loginUrl }) {
   const jsUsage = `import NFTStore from 'nft.storage'
 
 const apiKey = 'YOUR_API_KEY'
@@ -111,7 +111,7 @@ const cid = await client.storeBlob(data)`
         <ol className='list tc pl0 mb5'>
           <li>
             <Step>1</Step>
-            <p className='chicagoflf f3 mw6 center'><a href='#' className='no-underline underline-hover nsnavy'>Register an nft.storage account</a> so that you can create API access keys.</p>
+            <p className='chicagoflf f3 mw6 center'><a href={loginUrl} className='no-underline underline-hover nsnavy'>Register an nft.storage account</a> so that you can create API access keys.</p>
             <img src='images/icon-arrow-down.svg' alt='arrow down' className='mb3' />
           </li>
           <li>
