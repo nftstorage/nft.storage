@@ -3,15 +3,16 @@ import Navbar from '../components/navbar.js'
 import Footer from '../components/footer.js'
 import Box from '../components/box.js'
 import Button from '../components/button.js'
+import { getEdgeState } from '../lib/state.js'
 
-export default function NewKey () {
+export default function NewKey ({ user, loginUrl = '#' }) {
   return (
     <div className='sans-serif'>
       <Head>
         <title>New API Key</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <Navbar authenticated />
+      <Navbar user={user} loginUrl={loginUrl} />
       <main className='mw9 center bg-nspeach pv3 ph5 min-vh-100'>
         <Box bgColor='nsgray' borderColor='nspink' wrapperClassName='center mv4 mw6'>
           <h1 className='chicagoflf f4 fw4'>New API Key</h1>
@@ -29,4 +30,11 @@ export default function NewKey () {
       <Footer />
     </div>
   )
+}
+
+export async function getStaticProps() {
+  return {
+    props: getEdgeState(),
+    revalidate: 1 // In seconds
+  }
 }

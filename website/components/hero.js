@@ -1,5 +1,4 @@
 import Button from './button.js'
-import { LOGIN_URL } from '../constants.js'
 
 const crossStyle = {
   backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><line x1='0' y1='0' x2='100' y2='100' stroke='black' vector-effect='non-scaling-stroke'/><line x1='0' y1='100' x2='100' y2='0' stroke='black' vector-effect='non-scaling-stroke'/></svg>\")",
@@ -8,7 +7,7 @@ const crossStyle = {
   backgroundSize: '100% 100%'
 }
 
-export default function Hero () {
+export default function Hero ({ user, loginUrl }) {
   return (
     <div className='bg-nsorange'>
       <div className='center mw9 ba b--black relative'>
@@ -34,8 +33,12 @@ export default function Hero () {
             <h2 className='f5 fw4 mw7 center mv3 lh-copy'>Unlimited<sup>*</sup> storage of NFT data on <img src='images/logo-ipfs-sm.png' width='28' className='v-mid' /> IPFS, backed by <img src='images/logo-filecoin-sm.png' width='30' className='v-mid' /> Filecoin and provided free to <a href='https://nfthack.ethglobal.co/' className='white'>NFTHack</a> participants during the hackathon.</h2>
           </hgroup>
           <div className='mt3 mb4'>
-            <Button wrapperClassName='mh3 mb3' className='bg-nslime' href={LOGIN_URL}>Register</Button>
-            <Button wrapperClassName='mh3 mb3 dib-m dn-ns' href={LOGIN_URL}>Login</Button>
+            {user ? null : (
+              <>
+                <Button wrapperClassName='mh3 mb3' className='bg-nslime' href={loginUrl}>Register</Button>
+                <Button wrapperClassName='mh3 mb3 dib-m dn-ns' href={loginUrl}>Login</Button>
+              </>
+            )}
             <Button wrapperClassName='mh3 mb3' href='#about'>Find out more</Button>
           </div>
         </div>

@@ -1,13 +1,16 @@
 import Head from 'next/head'
+import useSWR from 'swr'
 import Navbar from '../components/navbar.js'
 import Hero from '../components/hero.js'
 import Footer from '../components/footer.js'
 import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
 import Box from '../components/box.js'
+import { getEdgeState } from '../lib/state.js'
 
-export default function Home (props) {
-  console.log({ props })
+export default function Home () {
+  const { data } = useSWR('edge_state', getEdgeState)
+  const { user, loginUrl = '#' } = data ?? {}
   return (
     <div className='sans-serif'>
       <Head>
@@ -21,8 +24,8 @@ export default function Home (props) {
         <meta name='og:title' content='nft.storage' />
         <meta name='twitter:card' content='summary_large_image' />
       </Head>
-      <Navbar />
-      <Hero />
+      <Navbar user={user} loginUrl={loginUrl} />
+      <Hero user={user} loginUrl={loginUrl} />
       <main>
         <About />
         <GettingStarted />
@@ -113,7 +116,7 @@ const cid = await client.storeBlob(data)`
           </li>
           <li>
             <Step>2</Step>
-            <p className='chicagoflf f3 mw6 center'><a href='manage-keys.html' className='no-underline underline-hover nsnavy'>Create an API access key</a> and note it down.</p>
+            <p className='chicagoflf f3 mw6 center'><a href='/manage' className='no-underline underline-hover nsnavy'>Create an API access key</a> and note it down.</p>
             <img src='images/icon-arrow-down.svg' alt='arrow down' className='mb3' />
           </li>
           <li>
