@@ -13,6 +13,8 @@ import { list } from './routes/nfts-list.js'
 import { tokensList } from './routes/tokens-list.js'
 import { tokensCreate } from './routes/tokens-create.js'
 import { tokensDelete } from './routes/tokens-delete.js'
+import { manage } from './routes/manage.js'
+import { files } from './routes/files.js'
 
 addEventListener('fetch', (event) => {
   event.respondWith(handleEvent(event))
@@ -38,6 +40,8 @@ async function handleEvent(event) {
   r.get('/', homepage)
   r.get('/auth', auth)
   r.get('/logout', logout)
+  r.get('/manage', manage)
+  r.get('/files', files)
 
   // Public API
   r.options('/api/.*', cors)

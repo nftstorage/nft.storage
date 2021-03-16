@@ -9,20 +9,16 @@ import { list } from '../models/nfts.js'
  */
 export async function homepage(event) {
   const result = await authorize(event)
+  const rsp = await getAsset(event)
+  let state
   if (result.ok) {
-    const rsp = await getAsset(event)
-    const userInfo = await getUser(result.value.userInfo.sub)
-    const nfts = await list(result.value.userInfo.sub)
-
-    return new HTMLRewriter()
-      .on(
-        'head',
-        hydrateState({
-          user: userInfo,
-          nfts,
-        })
-      )
-      .transform(rsp)
+    const user = await getUser(result.value.userInfo.sub)
+    state = { user }
+  } else {
+    state = { loginUrl: result.error.redirectUrl }
   }
-  return Response.redirect(result.error.redirectUrl)
+
+  return new HTMLRewriter()
+    .on('head', hydrateState(state))
+    .transform(rsp)
 }
