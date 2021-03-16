@@ -3,13 +3,16 @@ import { isDebug } from './constants.js'
 import { homepage } from './routes/homepage.js'
 import { auth } from './routes/auth.js'
 import { logout } from './routes/logout.js'
-import { notFound, verifyToken } from './utils/utils.js'
+import { notFound } from './utils/utils.js'
 import { HTTPError } from './errors.js'
 import { cors } from './routes/cors.js'
-import { upload } from './routes/upload.js'
-import { status } from './routes/status.js'
-import { remove } from './routes/delete.js'
-import { list } from './routes/list.js'
+import { upload } from './routes/nfts-upload.js'
+import { status } from './routes/nfts-get.js'
+import { remove } from './routes/nfts-delete.js'
+import { list } from './routes/nfts-list.js'
+import { tokensList } from './routes/tokens-list.js'
+import { tokensCreate } from './routes/tokens-create.js'
+import { tokensDelete } from './routes/tokens-delete.js'
 
 addEventListener('fetch', (event) => {
   event.respondWith(handleEvent(event))
@@ -36,20 +39,25 @@ async function handleEvent(event) {
   r.get('/auth', auth)
   r.get('/logout', logout)
 
-  // API
+  // Public API
   r.options('/api/.*', cors)
   r.post('/api/upload', upload)
-  r.get('/api/list', list)
-  r.get('/api/status/:cid', status)
-  r.delete('/api/delete/.*', remove)
+  r.get('/api', list)
+  r.get('/api/:cid', status)
+  r.delete('/api/:cid', remove)
+
+  // Private API
+  r.get('/api/internal/tokens', tokensList)
+  r.post('/api/internal/tokens', tokensCreate)
+  r.delete('/api/internal/tokens', tokensDelete)
+
   r.all(notFound)
 
   try {
     return await r.route(event)
   } catch (err) {
     if (isDebug) {
-      console.error(err)
-      return new Response(err.message || err.toString(), { status: 500 })
+      return HTTPError.respond(err)
     }
     return notFound(event)
   }

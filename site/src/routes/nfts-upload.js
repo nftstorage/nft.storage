@@ -1,5 +1,5 @@
 import { HTTPError } from '../errors.js'
-import { verifyToken, hash } from '../utils/utils.js'
+import { verifyToken } from '../utils/utils.js'
 import { parseMultipart } from '../utils/multipart/index.js'
 import * as pinata from '../pinata.js'
 import * as nfts from '../models/nfts.js'
@@ -19,7 +19,8 @@ export async function upload(event) {
   if (!result.ok) {
     return HTTPError.respond(result.error)
   }
-  const user = result.value
+  const {user, tokenName} = result
+  
 
   if (contentType.includes('multipart/form-data')) {
     const boundary = contentType.split('boundary=')[1].trim()
@@ -33,6 +34,7 @@ export async function upload(event) {
         size,
         created,
         type: 'directory',
+        scope: tokenName,
         files: parts.map((f) => ({ name: f.filename, type: f.contentType })),
         deals: { status: 'ongoing', deals: [] },
         pin: {
@@ -75,6 +77,7 @@ export async function upload(event) {
         size: blob.size,
         created,
         type: blob.type,
+        scope: tokenName,
         deals: { status: 'ongoing', deals: [] },
         pin: {
           cid,

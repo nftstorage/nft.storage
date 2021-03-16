@@ -61,6 +61,30 @@
               >
                 Log out &rarr;
               </a>
+              <form method="get" action="http://127.0.0.1:8787/api/internal/tokens">
+                <button type="submit">List tokenss</button>
+              </form>
+
+                <button @click="createToken()">Create Token</button>
+                <script>
+                  function createToken() {
+                    fetch('http://127.0.0.1:8787/api/internal/tokens', {
+                      body: JSON.stringify({name: 'dev'}),
+                      method: 'post'
+                    })
+                    console.log('create')
+                  }
+                </script>
+                <button @click="deleteToken()">Delete Token</button>
+                <script>
+                  function deleteToken() {
+                    fetch('http://127.0.0.1:8787/api/internal/tokens', {
+                      body: JSON.stringify({name: 'dev'}),
+                      method: 'delete'
+                    })
+                    console.log('create')
+                  }
+                </script>
             </div>
 
             <!-- This example requires Tailwind CSS v2.0+ -->

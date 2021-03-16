@@ -2,7 +2,7 @@ import { stores } from '../constants.js'
 import merge from 'merge-options'
 
 /**
- * @typedef {{user: import('./users').User, cid: import('multiformats').CID|string}} Key
+ * @typedef {{user: import('./users').User, cid: string}} Key
  * @typedef {import('../../../client/src/api').StatusResult} NFT
  */
 

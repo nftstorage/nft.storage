@@ -11,7 +11,8 @@ export async function list(event) {
   if (!token.ok) {
     return HTTPError.respond(token.error)
   }
-  const user = token.value
+  const user = token.user
+  console.log(token);
 
   return new JSONResponse(await nfts.list(user.sub))
 }
