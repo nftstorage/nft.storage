@@ -12,6 +12,21 @@ kv_namespaces = [
 ]
 vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true }
 
+[env.staging]
+name = "nft-storage-staging"
+type = "webpack"
+account_id = "fffa4b4363a7e5250af8357087263b3a"
+workers_dev = true
+route = ""
+zone_id = ""
+vars = { AUTH0_CALLBACK_URL = "https://staging.nft.storage/auth", DEBUG = true }
+kv_namespaces = [
+    { binding = "USERS", preview_id = "8964654a0a1d4f7586b59db90ef97594", id = "8964654a0a1d4f7586b59db90ef97594" },
+    { binding = "SESSION", preview_id = "7cf078ca01934227abedac1b29cd385c", id = "7cf078ca01934227abedac1b29cd385c" },
+    { binding = "CSRF", preview_id = "67c398acd70744a785995a59a5fcfff7", id = "67c398acd70744a785995a59a5fcfff7" },
+    { binding = "NFTS", preview_id = "21763d3a9ce2465b875a49ae57a5a598", id = "21763d3a9ce2465b875a49ae57a5a598" }
+]
+
 [env.production]
 name = "nft-storage"
 vars = { AUTH0_CALLBACK_URL = "https://nft.storage/auth", DEBUG = false }
