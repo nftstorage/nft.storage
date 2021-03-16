@@ -1,10 +1,11 @@
 import { signJWT } from '../utils/jwt.js'
+import merge from 'merge-options'
 
 const users = USERS
 
 /**
  * @typedef {{
- *   token: string
+ *   tokens: Record<string,string>
  *   sub: string
  *   nickname?: string
  *   name?: string
@@ -48,18 +49,16 @@ export async function createOrUpdate(newUser) {
       sub: newUser.sub,
       iss: 'nft-storage',
       iat: Date.now(),
+      name: 'default',
     })
     const data = {
       ...partialData,
-      token,
+      tokens: { default: token },
     }
     return await users.put(newUser.sub, JSON.stringify(data))
   }
 
-  const data = {
-    ...JSON.parse(user),
-    ...partialData,
-  }
+  const data = merge(JSON.parse(user), partialData)
   return await users.put(newUser.sub, JSON.stringify(data))
 }
 
@@ -73,4 +72,72 @@ export async function getUser(sub) {
     throw new Error('user not found')
   }
   return JSON.parse(user)
+}
+
+/**
+ * Match a token and returns the token name
+ * @param {User} user
+ * @param {string} token
+ */
+export function matchToken(user, token) {
+  for (const key in user.tokens) {
+    const value = user.tokens[key]
+    if (token === value) {
+      return key
+    }
+  }
+
+  return false
+}
+
+/**
+ * List user tokens
+ *
+ * @param {string} sub
+ * @returns {Promise<User>}
+ */
+export async function tokens(sub) {
+  const user = await users.get(sub)
+  if (user === null) {
+    throw new Error('user not found')
+  }
+  return JSON.parse(user).tokens
+}
+
+/**
+ * Create new token
+ * 
+ * @param {string} sub
+ * @param {string} name
+ */
+export async function createToken(sub, name) {
+  const user = await getUser(sub)
+  const token = user.tokens[name]
+
+  if (token) {
+    throw new Error(`A token with name "${name}" already exists.`)
+  }
+  user.tokens[name] = await signJWT({
+    sub: sub,
+    iss: 'nft-storage',
+    iat: Date.now(),
+    name: name,
+  })
+  return await users.put(sub, JSON.stringify(user))
+}
+
+/**
+ * Delete new token
+ * 
+ * @param {string} sub
+ * @param {string} name
+ */
+ export async function deleteToken(sub, name) {
+  const user = await getUser(sub)
+  const token = user.tokens[name]
+
+  if (token) {
+    delete user.tokens[name]
+  }
+  return await users.put(sub, JSON.stringify(user))
 }

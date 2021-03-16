@@ -2,8 +2,13 @@ import { cookieKey, stores, isDebug } from '../constants.js'
 import cookie from 'cookie'
 import { getAssetFromKV } from '@cloudflare/kv-asset-handler'
 import { parseJWT, verifyJWT } from './jwt.js'
-import { getUser } from '../models/users.js'
+import { getUser, matchToken } from '../models/users.js'
 import { HTTPError } from '../errors.js'
+
+
+/**
+ * @typedef {import('../models/users').User} User
+ */
 
 export function hydrateState(state = {}) {
   return {
@@ -87,7 +92,7 @@ export async function notFound(event) {
     try {
       let notFoundResponse = await getAsset(event, {
         mapRequestToAsset: (req) =>
-          new Request(`${new URL(req.url).origin}/404.html`, req),
+          new Request(`${new URL(req.url).origin}/404/index.html`, req),
       })
 
       return new Response(notFoundResponse.body, {
@@ -102,18 +107,20 @@ export async function notFound(event) {
 
 /**
  * @param {FetchEvent} event
- * @returns {Promise<{ok:false, error:HTTPError}|{ok:true, value:import('../models/users').User}>}
+ * @param { 'session' | 'token' | 'both' } mode
+ * @returns {Promise<{ok:false, error:HTTPError}|{ok:true, user:User, tokenName: string}>}
  */
-export async function verifyToken(event) {
+export async function verifyToken(event, mode = 'both') {
   const auth = event.request.headers.get('Authorization') || ''
   const [, token] = auth.match(/Bearer (.+)/) || []
-  if (token) {
+  if (mode !== 'session' && token) {
     const isValid = await verifyJWT(token)
     if (isValid) {
       const decoded = parseJWT(token)
       const user = await getUser(decoded.sub)
-      if (user.token === token) {
-        return { ok: true, value: user }
+      const tokenName = matchToken(user, token)
+      if (typeof tokenName === 'string') {
+        return { ok: true, user, tokenName }
       } else {
         return { ok: false, error: new HTTPError('Session expired', 403) }
       }
@@ -125,25 +132,17 @@ export async function verifyToken(event) {
   const cookieHeader = event.request.headers.get('Cookie') || ''
   const cookies = cookie.parse(cookieHeader)
 
-  if (cookies[cookieKey]) {
+  if (mode !== 'token' && cookies[cookieKey]) {
     const kvData = await stores.auth.get(cookies[cookieKey])
     if (kvData) {
       const token = JSON.parse(kvData)['id_token']
       const decoded = parseJWT(token)
       const user = await getUser(decoded.sub)
-      return { ok: true, value: user }
+      return { ok: true, user, tokenName: 'session' }
     } else {
       return { ok: false, error: new HTTPError('Session expired', 403) }
     }
   }
 
   return { ok: false, error: new HTTPError('Unauthorized', 401) }
-}
-
-/**
- * @param {ArrayBuffer | Uint8Array | Int8Array | Int16Array | Int32Array | Uint16Array | Uint32Array | Uint8ClampedArray | Float32Array | Float64Array | DataView} data
- */
-export async function hash(data) {
-  const digest = await crypto.subtle.digest({ name: 'SHA-256' }, data)
-  return btoa(String.fromCharCode(...new Uint8Array(digest)))
 }
