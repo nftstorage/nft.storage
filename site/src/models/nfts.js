@@ -3,7 +3,7 @@ import merge from 'merge-options'
 
 /**
  * @typedef {{user: import('./users').User, cid: string}} Key
- * @typedef {import('../../../client/src/api').StatusResult} NFT
+ * @typedef {import('../bindings').NFT} NFT
  */
 
 /**

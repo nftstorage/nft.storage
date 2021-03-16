@@ -17,7 +17,8 @@ export async function manage (event) {
     getAsset(event),
     getUser(result.value.userInfo.sub)
   ])
-  const tokens = [{ name: 'Default', token: user.token }] // TODO: multiple tokens
+  console.log(user.tokens)
+  const tokens = [{ name: 'Default', token: user.tokens['default'] }] // TODO: multiple tokens
 
   return new HTMLRewriter()
     .on('head', hydrateState({ user, tokens }))
