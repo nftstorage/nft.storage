@@ -103,7 +103,7 @@ wrangler publish --env production
 ```bash
 cd site
 yarn install
-yarn start
+yarn dev
 ```
 
 ### Deploy

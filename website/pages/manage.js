@@ -4,10 +4,25 @@ import Navbar from '../components/navbar.js'
 import Footer from '../components/footer.js'
 import Button from '../components/button.js'
 import { getEdgeState } from '../lib/state.js'
+import configs from '../lib/config.js'
 
 export default function ManageKeys () {
   const { data } = useSWR('edge_state', getEdgeState)
   const { user, loginUrl = '#', tokens = [] } = data ?? {}
+  async function deleteToken(e) {
+    e.preventDefault()
+    const name = e.target.name.value
+    const rsp = await fetch(configs.api + '/api/internal/tokens', {
+      method: 'delete',
+      body: JSON.stringify({ name }),
+    })
+    const data = await rsp.json()
+    if (data.ok) {
+      location = '/manage'
+    } else {
+      console.error(data.error)
+    }
+  }
   return (
     <div className='sans-serif'>
       <Head>
@@ -19,12 +34,12 @@ export default function ManageKeys () {
         <div>
           <div className='flex mb3 items-center'>
             <h1 className='chicagoflf mv4 flex-auto'>Manage API Keys</h1>
-            <Button href='/new-key.html' className='flex-none'>+ New Key</Button>
+            <Button href='/new-key' className='flex-none'>+ New Key</Button>
           </div>
           {tokens.length ? (
             <table className='bg-white ba b--black w-100 collapse mb4'>
               <tr className='bb b--black'>
-                <th className='pa2 tl bg-nsgray br b--black w-50'>Name</th>
+                <th className='pa2 tl bg-nsgray br b--black w-20'>Name</th>
                 <th className='pa2 tl bg-nsgray br b--black w-50'>Key</th>
                 <th className='pa2 tc bg-nsgray' />
               </tr>
@@ -34,11 +49,12 @@ export default function ManageKeys () {
                     {t.name}
                   </td>
                   <td className='pa2 br b--black mw7'>
-                    <code style={{ wordWrap: 'break-word' }}>{t.token}</code>
+                    <input className='w-90' value={t.token}/>
+                    {/* <code style={{ wordWrap: 'break-word' }}>{t.token}</code> */}
                   </td>
                   <td className='pa2'>
-                    <form action='/delete' method='DELETE'>
-                      <input type='hidden' name='id' value='1' />
+                    <form onSubmit={deleteToken}>
+                      <input type='hidden' name='name' id='name' value={t.name} />
                       <Button className='bg-nsorange white' type='submit'>Delete</Button>
                     </form>
                   </td>
