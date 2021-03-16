@@ -1,5 +1,3 @@
-import type { CID } from "multiformats"
-
 export interface Service {
   endpoint: URL
   token: string
@@ -9,31 +7,31 @@ export interface API {
   /**
    * Stores a single file and returns a corresponding CID.
    */
-  storeBlob(service: Service, content: Blob|File): Promise<CID>
+  storeBlob(service: Service, content: Blob|File): Promise<string>
   /**
    * Stores a directory of files and returns a CID. Provided files **MUST**
    * be within a same directory, otherwise error is raised. E.g. `foo/bar.png`,
    * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
    */
-  storeDirectory(service: Service, files: Iterable<File>): Promise<CID>
+  storeDirectory(service: Service, files: Iterable<File>): Promise<string>
   /**
    * Returns current status of the stored content by its CID.
    */
-  status(service: Service, cid: CID): Promise<StatusResult>
+  status(service: Service, cid: string): Promise<StatusResult>
   /**
    * Removes stored content by its CID from the service. Please note that
    * even if content is removed from the service other nodes that have
    * replicated it might still continue providing it.
    */
-  delete(service: Service, cid: CID): Promise<void>
+  delete(service: Service, cid: string): Promise<void>
 }
 
 export interface StatusResult {
-  cid: CID
+  cid: string
   size: number,
   deals: Deals,
   pin: Pin
-  created: string
+  created: Date
 }
 
 export type Deals = OngoingDeals | FinalizedDeals
@@ -98,7 +96,7 @@ export interface FinalizedDeal {
 export interface Pin {
   // Pinata does not provide this
   // requestid: string
-  cid: CID
+  cid: string
   name?: string
   status: PinStatus
   created: Date
