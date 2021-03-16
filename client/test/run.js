@@ -22,7 +22,7 @@ const main = async () => {
 
   const service = await activate(async (request) => {
     const url = new URL(request.url)
-    const [_, api, endpoint, param] = url.pathname.split('/')
+    const [_, api, param] = url.pathname.split('/')
     const auth = request.headers.get('authorization')
     const [, token] = (auth && auth.match(/Bearer (.+)/)) || []
 
@@ -44,7 +44,7 @@ const main = async () => {
       })
     }
 
-    switch (`${request.method} /${api}/${endpoint}`) {
+    switch (`${request.method} /${api}/${param}`) {
       case 'POST /api/upload': {
         const contentType = request.headers.get('content-type') || ''
         if (contentType.includes('multipart/form-data')) {
@@ -72,7 +72,7 @@ const main = async () => {
           })
         }
       }
-      case 'GET /api/status': {
+      case `GET /api/${param}`: {
         const cid = CID.parse(param || '')
         const value = store.get(`${token}:${cid}`)
         const [status, result] = value
@@ -84,7 +84,7 @@ const main = async () => {
           headers: headers(request)
         })
       }
-      case 'DELETE /api/delete': {
+      case `DELETE /api/${param}`: {
         const cid = CID.parse(param || '')
         store.delete(`${token}:${cid}`)
         return new Response(JSON.stringify({ ok: true }), {
