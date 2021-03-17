@@ -1,7 +1,7 @@
 /**
- * A client library for https://nft.storage/ service. It provides convenient
- * interface for working with [RAW HTTP API](https://nft.storage/#api-docs)
- * from web browser or [nodejs](https://nodejs.org/) and comes bundled with
+ * A client library for the https://nft.storage/ service. It provides a convenient
+ * interface for working with the [Raw HTTP API](https://nft.storage/#api-docs)
+ * from a web browser or [Node.js](https://nodejs.org/) and comes bundled with
  * TS for out-of-the box type inference and better IntelliSense.
  * 
  * @example
@@ -156,10 +156,10 @@ export class NFTStorage {
   // Just a sugar so you don't have to pass around endpoint and token around.
 
   /**
-   * Stores a single file and returns a corresponding Content Identifier (CID).
+   * Stores a single file and returns the corresponding Content Identifier (CID).
    * Takes a [Blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)
    * or a [File](https://developer.mozilla.org/en-US/docs/Web/API/File). Note
-   * that no file name or it's metadata is retained.
+   * that no file name or file metadata is retained.
    * 
    * @example
    * ```js
@@ -174,7 +174,7 @@ export class NFTStorage {
     return NFTStorage.storeBlob(this, blob)
   }
   /**
-   * Stores a directory of files and returns a CID for a directory.
+   * Stores a directory of files and returns a CID for the directory.
    * 
    * @example
    * ```js
@@ -196,7 +196,7 @@ export class NFTStorage {
    * Returns current status of the stored content by its CID.
    * @example
    * ```js
-   * const statu = await client.status('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
+   * const status = await client.status('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
    * 
    * ```
    *

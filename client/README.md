@@ -6,11 +6,11 @@
 [![size][size.icon]][size.url]
 [![deps][deps.icon][deps.url]]
 
-A client library for https://nft.storage/ service. It provides convenient interface for working with [RAW HTTP API][] from web browser or [nodejs][] and comes bundled with TS for out-of-the box type inference and better IntelliSense.
+A client library for the https://nft.storage/ service. It provides a convenient interface for working with the [Raw HTTP API][] from a web browser or [Node.js][] and comes bundled with TS for out-of-the box type inference and better IntelliSense.
 
 ## Install
 
-Install the package from npm using using npm
+Install the package using npm
 
 ```
 npm install nft.storage
@@ -25,6 +25,8 @@ yarn add nft.storage
 
 ### Usage
 
+First, obtain an API token from https://nft.storage and use it in place of `API_TOKEN` below:
+
 ```js
 import { NFTStorage } from "nft.storage"
 const client = new NFTStorage({ token: API_TOKEN }) 
@@ -34,8 +36,8 @@ const cid = await client.storeBlob(new Blob(['hello world']))
 For more examples please see [API documentation][]
 
 
-[RAW HTTP API]:https://nft.storage/#api-docs
-[nodejs]:https://nodejs.org/
+[Raw HTTP API]:https://nft.storage/#api-docs
+[Node.js]:https://nodejs.org/
 [API documentation]:https://ipfs-shipyard.github.io/nft.storage/client/
 
 
