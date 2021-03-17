@@ -1,8 +1,12 @@
-import { CID } from 'multiformats'
 import { HTTPError } from '../errors.js'
 import { verifyToken } from '../utils/utils.js'
-import * as nfts from '../models/nfts.js'
+import { get as getNft } from '../models/nfts.js'
 import { JSONResponse } from '../utils/json-response.js'
+import { get as getDeals } from '../models/deals.js'
+
+/**
+ * @typedef {import('../../../client/src/api').Deal} Deal
+ */
 
 /**
  * @param {FetchEvent} event
@@ -16,9 +20,29 @@ export const status = async (event, params) => {
   }
   const user = token.user
 
-  const status = await nfts.get({ user, cid: params.cid })
+  const [nft, deals] = await Promise.all([
+    getNft({ user, cid: params.cid }),
+    getDeals(params.cid)
+  ])
+
+  if (nft == null) {
+    return HTTPError.respond(new HTTPError('not found', 404))
+  }
+
   return new JSONResponse({
     ok: true,
-    value: status,
+    value: {
+      ...nft,
+      deals: { status: getOverallDealStatus(deals), deals }
+    },
   })
+}
+
+/**
+ * @param {Deal[]} deals
+ * @returns {'ongoing'|'finalized'}
+ */
+function getOverallDealStatus (deals) {
+  if (!deals.length) return 'ongoing'
+  return deals.some(d => d.status !== 'active') ? 'ongoing' : 'finalized'
 }

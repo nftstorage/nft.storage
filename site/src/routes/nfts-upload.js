@@ -6,7 +6,7 @@ import * as nfts from '../models/nfts.js'
 import { JSONResponse } from '../utils/json-response.js'
 
 /**
- * @typedef {import('../../../client/src/api').StatusResult} NFT
+ * @typedef {import('../bindings').NFT} NFT
  */
 
 /**
@@ -20,7 +20,6 @@ export async function upload(event) {
     return HTTPError.respond(result.error)
   }
   const {user, tokenName} = result
-  
 
   if (contentType.includes('multipart/form-data')) {
     const boundary = contentType.split('boundary=')[1].trim()
@@ -32,11 +31,10 @@ export async function upload(event) {
       let data = {
         cid,
         size,
-        created,
+        created: new Date(),
         type: 'directory',
         scope: tokenName,
         files: parts.map((f) => ({ name: f.filename, type: f.contentType })),
-        deals: { status: 'ongoing', deals: [] },
         pin: {
           cid,
           size,
@@ -49,7 +47,7 @@ export async function upload(event) {
       return new JSONResponse({
         ok: true,
         value: {
-          ...result,
+          ...Object.assign(result, { deals: { status: 'ongoing', deals: [] } }),
           links: {
             ipfs: `ipfs://${cid}`,
             http: `https://${cid}.ipfs.dweb.link`,
@@ -75,10 +73,10 @@ export async function upload(event) {
       let data = {
         cid,
         size: blob.size,
-        created,
+        created: new Date(),
         type: blob.type,
         scope: tokenName,
-        deals: { status: 'ongoing', deals: [] },
+        files: [],
         pin: {
           cid,
           size,
@@ -92,7 +90,7 @@ export async function upload(event) {
       return new JSONResponse({
         ok: true,
         value: {
-          ...result,
+          ...Object.assign(result, { deals: { status: 'ongoing', deals: [] } }),
           links: {
             ipfs: `ipfs://${cid}`,
             http: `https://${cid}.ipfs.dweb.link`,
