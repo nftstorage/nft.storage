@@ -8,21 +8,9 @@ import configs from '../lib/config.js'
 
 export default function ManageKeys () {
   const { data } = useSWR('edge_state', getEdgeState)
-  const { user, loginUrl = '#', tokens = [] } = data ?? {}
-  async function deleteToken(e) {
-    e.preventDefault()
-    const name = e.target.name.value
-    const rsp = await fetch(configs.api + '/api/internal/tokens', {
-      method: 'delete',
-      body: JSON.stringify({ name }),
-    })
-    const data = await rsp.json()
-    if (data.ok) {
-      location = '/manage'
-    } else {
-      console.error(data.error)
-    }
-  }
+  const { user, loginUrl = '#' } = data ?? {}
+  const tokens = user ? Object.keys(user.tokens).map(k => ({ name: k, token: user.tokens[k] })) : []
+
   return (
     <div className='sans-serif'>
       <Head>
@@ -39,7 +27,7 @@ export default function ManageKeys () {
           {tokens.length ? (
             <table className='bg-white ba b--black w-100 collapse mb4'>
               <tr className='bb b--black'>
-                <th className='pa2 tl bg-nsgray br b--black w-20'>Name</th>
+                <th className='pa2 tl bg-nsgray br b--black w-50'>Name</th>
                 <th className='pa2 tl bg-nsgray br b--black w-50'>Key</th>
                 <th className='pa2 tc bg-nsgray' />
               </tr>
@@ -49,11 +37,10 @@ export default function ManageKeys () {
                     {t.name}
                   </td>
                   <td className='pa2 br b--black mw7'>
-                    <input className='w-90' value={t.token}/>
-                    {/* <code style={{ wordWrap: 'break-word' }}>{t.token}</code> */}
+                    <code style={{ wordWrap: 'break-word' }}>{t.token}</code>
                   </td>
                   <td className='pa2'>
-                    <form onSubmit={deleteToken}>
+                    <form onSubmit={handleDeleteToken}>
                       <input type='hidden' name='name' id='name' value={t.name} />
                       <Button className='bg-nsorange white' type='submit'>Delete</Button>
                     </form>
@@ -67,4 +54,21 @@ export default function ManageKeys () {
       <Footer />
     </div>
   )
+}
+
+async function handleDeleteToken (e) {
+  e.preventDefault()
+  if (!confirm('Are you sure? Deleted keys cannot be recovered!')) {
+    return
+  }
+  const name = e.target.name.value
+  const rsp = await fetch(configs.api + '/api/internal/tokens', {
+    method: 'delete',
+    body: JSON.stringify({ name }),
+  })
+  const data = await rsp.json()
+  if (!data.ok) {
+    throw new Error(`deleting token: ${data.error}`)
+  }
+  location = '/manage'
 }
