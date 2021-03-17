@@ -2,12 +2,12 @@ name: Client
 on:
   push:
     branches:
-    - $default-branch
+    - main
     paths:
     - 'client/**'
   pull_request:
     branches:
-    - $default-branch
+    - main
     paths:
     - 'client/**'
 
