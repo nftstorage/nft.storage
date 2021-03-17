@@ -96,7 +96,6 @@ jobs:
           key: 12.x-${{ runner.OS }}-build-${{ hashFiles('package.json') }}
 
       - name: Install
-        if: steps.cache-modules.outputs.cache-hit != 'true'
         run: yarn install
       
       - name: Generate
