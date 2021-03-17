@@ -2,7 +2,6 @@
   "name": "nft.storage",
   "version": "0.0.0-dev",
   "description": "nft.storage client",
-  "author": "Irakli Gozalishvili <contact@gozala.io>",
   "license": "(Apache-2.0 AND MIT)",
   "type": "module",
   "types": "./dist/src/lib.d.ts",
@@ -25,12 +24,14 @@
   },
   "scripts": {
     "test": "node test/run.js",
-    "build": "tsc --build"
+    "build": "tsc --build",
+    "precommit": "lint-staged"
   },
   "dependencies": {
     "multiformats": "4.5.3"
   },
   "devDependencies": {
+    "prettier": "2.2.1",
     "@types/node-fetch": "2.5.8",
     "ipfs-unixfs-importer": "6.0.1",
     "ipld": "0.29.0",
@@ -40,7 +41,18 @@
     "multihashing-async": "2.1.2",
     "node-fetch": "2.6.1",
     "playwright-test": "2.0.3",
+    "typedoc": "0.20.32",
     "typescript": "4.2.3",
-    "zora": "4.0.2"
-  }
+    "zora": "4.0.2",
+    "husky": "4.2.5",
+    "lint-staged": "10.2.11"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --no-semi --write",
+      "git add"
+    ]
+  },
+  "homepage": "https://github.com/ipfs-shipyard/nft.storage/tree/main/client",
+  "bugs": "https://github.com/ipfs-shipyard/nft.storage/issues"
 }

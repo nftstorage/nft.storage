@@ -1,11 +1,15 @@
-name: CI
+name: Client
 on:
   push:
     branches:
-      - main
+    - main
+    paths:
+    - 'client/**'
   pull_request:
     branches:
-      - '**'
+    - main
+    paths:
+    - 'client/**'
 
 jobs:
   check:
@@ -16,18 +20,22 @@ jobs:
         node-version: [15.x]
     steps:
       - uses: actions/checkout@v1
-      - name: Use Node.js ${{ matrix.node-version }}
+
+      - name: Setup node
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+
       - name: Install dependencies
         run: yarn install
-      - name: Typecheck Client
+
+      - name: Typecheck
         uses: gozala/typescript-error-reporter-action@v1.0.8
         with:
           project: client/tsconfig.json
+
   test:
-    name: Test client
+    name: Test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -41,6 +49,7 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: yarn install
       - run: yarn --cwd client test
+  
   publish:
     name: Publish client
     needs:
@@ -69,3 +78,33 @@ jobs:
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
           SRC_PACKAGE_DIR: client
           DEPLOY_DIR: client
+
+  docs:
+    name: Generate documentation
+    needs:
+      - publish
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache node_modules
+        id: cache-modules
+        uses: actions/cache@v1
+        with:
+          path: node_modules
+          key: 12.x-${{ runner.OS }}-build-${{ hashFiles('package.json') }}
+
+      - name: Install
+        if: steps.cache-modules.outputs.cache-hit != 'true'
+        run: yarn install
+      
+      - name: Generate
+        run: yarn build:client:docs
+
+      - name: Commit
+        uses: EndBug/add-and-commit@v7
+        with:
+          author_name: documentation-generator
+          add: docs/client
+          message: 'chore: generate client docs'

@@ -1,22 +1,64 @@
-import * as API from "./api.js"
+/**
+ * A client library for the https://nft.storage/ service. It provides a convenient
+ * interface for working with the [Raw HTTP API](https://nft.storage/#api-docs)
+ * from a web browser or [Node.js](https://nodejs.org/) and comes bundled with
+ * TS for out-of-the box type inference and better IntelliSense.
+ * 
+ * @example
+ * ```js
+ * import { NFTStorage } from "nft.storage"
+ * const client = new NFTStorage({ token: API_TOKEN })
+ * 
+ * const cid = await client.storeBlob(new Blob(['hello world'])) 
+ * ```
+ * @module
+ */
+
+import * as API from "./lib/interface.js"
 
 /**
- * @implements {API.Service}
+ * @implements API.Service
  */
-export default class NFTStore {
+export class NFTStorage {
   /**
-   * @param {Object} options
-   * @param {string} options.token
-   * @param {URL} [options.endpoint]
+   * Constructs a client bound to the given `options.token` and
+   * `options.endpoint`.
+   * 
+   * @example
+   * ```js
+   * import { NFTStorage } from "nft.storage"
+   * const client = new NFTStorage({ token: API_TOKEN })
+   * 
+   * const cid = await client.storeBlob(new Blob(['hello world'])) 
+   * ```
+   * Optionally you could pass an alternative API endpoint (e.g. for testing)
+   * @example
+   * ```js
+   * import { NFTStorage } from "nft.storage"
+   * const client = new NFTStorage({
+   *   token: API_TOKEN
+   *   endpoint: new URL('http://localhost:8080/')
+   * })
+   * ```
+   *
+   * @param {{token: string, endpoint?:URL}} options
    */
   constructor({ token, endpoint = new URL("https://nft.storage") }) {
-    /** @readonly */
+    /**
+     * Authorization token.
+     *
+     * @readonly
+     */
     this.token = token
-    /** @readonly */
+    /**
+     * Service API endpoint `URL`.
+     * @readonly
+     */
     this.endpoint = endpoint
   }
 
   /**
+   * @hidden
    * @param {string} token
    */
   static auth(token) {
@@ -25,12 +67,13 @@ export default class NFTStore {
   /**
    * @param {API.Service} service
    * @param {Blob} blob
+   * @returns {Promise<API.CIDString>}
    */
   static async storeBlob({ endpoint, token }, blob) {
     const url = new URL("/api/upload", endpoint)
     const request = await fetch(url.toString(), {
       method: "POST",
-      headers: NFTStore.auth(token),
+      headers: NFTStorage.auth(token),
       body: blob
     })
     const result = await request.json()
@@ -44,6 +87,7 @@ export default class NFTStore {
   /**
    * @param {API.Service} service
    * @param {Iterable<File>} files
+   * @returns {Promise<API.CIDString>}
    */
   static async storeDirectory({ endpoint, token }, files) {
     const url = new URL("/api/upload", endpoint)
@@ -54,7 +98,7 @@ export default class NFTStore {
 
     const response = await fetch(url.toString(), {
       method: "POST",
-      headers: NFTStore.auth(token),
+      headers: NFTStorage.auth(token),
       body,
     })
     const result = await response.json()
@@ -75,7 +119,7 @@ export default class NFTStore {
     const url = new URL(`/api/${cid}`, endpoint)
     const response = await fetch(url.toString(), {
       method: "GET",
-      headers: NFTStore.auth(token),
+      headers: NFTStorage.auth(token),
     })   
     const result = await response.json()
     
@@ -101,7 +145,7 @@ export default class NFTStore {
     const url = new URL(`/api/${cid}`, endpoint)
     const response = await fetch(url.toString(), {
       method: "DELETE",
-      headers: NFTStore.auth(token),
+      headers: NFTStorage.auth(token),
     })
     const result = await response.json()
     if (!result.ok) {
@@ -112,34 +156,78 @@ export default class NFTStore {
   // Just a sugar so you don't have to pass around endpoint and token around.
 
   /**
+   * Stores a single file and returns the corresponding Content Identifier (CID).
+   * Takes a [Blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)
+   * or a [File](https://developer.mozilla.org/en-US/docs/Web/API/File). Note
+   * that no file name or file metadata is retained.
+   * 
+   * @example
+   * ```js
+   * const content = new Blob(['hello world'])
+   * const cid = await client.storeBlob(content)
+   * cid //> 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD'
+   * ```
+   *
    * @param {Blob} blob 
    */
   storeBlob(blob) {
-    return NFTStore.storeBlob(this, blob)
+    return NFTStorage.storeBlob(this, blob)
   }
   /**
+   * Stores a directory of files and returns a CID for the directory.
+   * 
+   * @example
+   * ```js
+   * const cid = client.storeDirectory([
+   *   new File(['hello world'], 'content.txt'),
+   *   new File(JSON.stringify({ owner: '@lucky' }, 'metadata.json')
+   * ])
+   * ```
+   * 
+   * Argument can be a [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList)
+   * instance as well, in which case directory structure will be retained.
+   * 
    * @param {Iterable<File>} files
    */
   storeDirectory(files) {
-    return NFTStore.storeDirectory(this, files)
+    return NFTStorage.storeDirectory(this, files)
   }
   /**
+   * Returns current status of the stored content by its CID.
+   * @example
+   * ```js
+   * const status = await client.status('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
+   * 
+   * ```
+   *
    * @param {string} cid
    */
   status(cid) {
-    return NFTStore.status(this, cid)
+    return NFTStorage.status(this, cid)
   }
   /**
+   * Removes stored content by its CID from the service.
+   *
+   * > Please note that even if content is removed from the service other nodes
+   * that have replicated it might still continue providing it.
+   * 
+   * @example
+   * ```js
+   * await client.delete('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
+   * ```
+   *
    * @param {string} cid
    */
   delete(cid) {
-    return NFTStore.delete(this, cid)
+    return NFTStorage.delete(this, cid)
   }
 }
+
+export default NFTStorage
 
 /**
  * Just to verify API compatibility.
  * @type {API.API}
  */
-const api = NFTStore
+const api = NFTStorage
 void api
