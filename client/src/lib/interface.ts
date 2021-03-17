@@ -3,17 +3,22 @@ export interface Service {
   token: string
 }
 
+/**
+ * CID in string representation
+ */
+export type CIDString = string & {}
+
 export interface API {
   /**
    * Stores a single file and returns a corresponding CID.
    */
-  storeBlob(service: Service, content: Blob|File): Promise<string>
+  storeBlob(service: Service, content: Blob|File): Promise<CIDString>
   /**
    * Stores a directory of files and returns a CID. Provided files **MUST**
    * be within a same directory, otherwise error is raised. E.g. `foo/bar.png`,
    * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
    */
-  storeDirectory(service: Service, files: Iterable<File>): Promise<string>
+  storeDirectory(service: Service, files: Iterable<File>): Promise<CIDString>
   /**
    * Returns current status of the stored content by its CID.
    */
@@ -96,7 +101,7 @@ export interface FinalizedDeal {
 export interface Pin {
   // Pinata does not provide this
   // requestid: string
-  cid: string
+  cid: CIDString
   name?: string
   status: PinStatus
   created: Date

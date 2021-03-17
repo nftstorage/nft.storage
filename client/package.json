@@ -2,7 +2,6 @@
   "name": "nft.storage",
   "version": "0.0.0-dev",
   "description": "nft.storage client",
-  "author": "Irakli Gozalishvili <contact@gozala.io>",
   "license": "(Apache-2.0 AND MIT)",
   "type": "module",
   "types": "./dist/src/lib.d.ts",
@@ -40,7 +39,10 @@
     "multihashing-async": "2.1.2",
     "node-fetch": "2.6.1",
     "playwright-test": "2.0.3",
+    "typedoc": "0.20.32",
     "typescript": "4.2.3",
     "zora": "4.0.2"
-  }
+  },
+  "homepage": "https://github.com/ipfs-shipyard/nft.storage/tree/main/client",
+  "bugs": "https://github.com/ipfs-shipyard/nft.storage/issues"
 }

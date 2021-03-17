@@ -4,6 +4,7 @@
   "scripts": {
     "start": "yarn --cwd site start",
     "test": "yarn test:client",
-    "test:client": "yarn --cwd client test"
+    "test:client": "yarn --cwd client test",
+    "build:client:docs": "typedoc client/src --out docs/client"
   }
 }
