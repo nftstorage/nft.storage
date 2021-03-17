@@ -30,6 +30,7 @@ export default function Home () {
         <About />
         <GettingStarted loginUrl={loginUrl} />
         <APIDocs />
+        <FAQ />
       </main>
       <Footer />
     </div>
@@ -177,7 +178,7 @@ function APIDocs () {
 }`
 
   return (
-    <article className='bg-blue'>
+    <article className='bg-nsblue'>
       <div className='mw9 center pa4 pa5-ns'>
         <h1 className='chicagoflf white'>
           <HashLink id='api-docs'>API Documentation</HashLink>
@@ -220,6 +221,22 @@ function APIDocs () {
           <HashLink id='pinning-service-api-endpoints'>Pinning Service API Endpoints</HashLink>
         </h2>
         <p className='lh-copy white'>These are also available. See the <a href='https://ipfs.github.io/pinning-services-api-spec/#tag/pins' className='white'>pinning service API documentation</a> for details.</p>
+      </div>
+    </article>
+  )
+}
+
+function FAQ () {
+  return (
+    <article className='bg-nsforest'>
+      <div className='mw9 center pa4 pa5-ns'>
+        <h1 className='chicagoflf white'>
+          <HashLink id='faq'>FAQ</HashLink>
+        </h1>
+        <h2 className='chicagoflf white'>
+          <HashLink id='how-long-will-data-be-stored-on-nftstorage'>How long will data be stored on nft.storage?</HashLink>
+        </h2>
+        <p className='lh-copy white'>Up to 5GB of data can be stored for FREE on IPFS for as long as this service continues. nft.storage will also use other storage mediums, like Filecoin, to ensure data is persisted longer. If this service is discontinued, 90 days notice will allow users to transition their data to other storage methods. See the <a href='/terms' className='white'>Terms of Service</a> for details.</p>
       </div>
     </article>
   )
