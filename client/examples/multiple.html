@@ -1,0 +1,32 @@
+<!doctype html>
+<form>
+  <label>
+    File(s): <input type="file" multiple />
+  </label>
+  <div>
+    <button type="submit">Store</button>
+  </div>
+</form>
+<pre id="out"></pre>
+<script type="module">
+  import NFTStore from 'https://unpkg.com/nft.storage?module'
+
+  const endpoint = 'https://nft.storage' // the default
+  const token = 'API_KEY' // your API key from https://nft.storage/manage
+
+  function log (msg) {
+    document.getElementById('out').innerHTML += `${JSON.stringify(msg, null, 2)}\n`
+  }
+
+  document.querySelector('form').addEventListener('submit', async e => {
+    e.preventDefault()
+    const fileEl = document.querySelector('input[type="file"]')
+    if (!fileEl.files.length) return log('No files selected')
+    log(`Storing ${fileEl.files.length} files...`)
+    const store = new NFTStore({ endpoint, token })
+    const cid = await store.storeDirectory(fileEl.files)
+    log({ files: Array.from(fileEl.files).map(f => f.name), cid })
+    const status = await store.status(cid)
+    log(status)
+  })
+</script>

@@ -25,7 +25,7 @@ test('client', ({test}) => {
     test('upload blob', async assert => {
       const client = new NFTStorage({ token, endpoint })
       const cid = await client.storeBlob(new Blob(['hello world']))
-      assert.equal(cid.toString(), 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
+      assert.equal(cid, 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
     })
 
     test('can upload twice', async assert => {
@@ -60,13 +60,13 @@ test('client', ({test}) => {
     })
 
     test('found', async assert => {
-      const cid = NFTStorage.CID.parse('QmaCxv35MgHdAD2K9Tn8xrKVZJw7dauYi4V1GmkQRNYbvP')
+      const cid = 'QmaCxv35MgHdAD2K9Tn8xrKVZJw7dauYi4V1GmkQRNYbvP'
       const status = await client.status(cid)
       assert.deepEqual(status.cid, cid)
     })
 
     test('not found', async assert => {
-      const cid = NFTStorage.CID.parse('QmTPFUEcZvqKBYqJM3itqkDiqJaApYzLJ1ht6iBD4d6M28')
+      const cid = 'QmTPFUEcZvqKBYqJM3itqkDiqJaApYzLJ1ht6iBD4d6M28'
       try {
         await client.status(cid)
         assert.fail('Expected to fail')
@@ -79,7 +79,7 @@ test('client', ({test}) => {
   test('delete', ({test}) => {
     test('ok to delete unknown', async assert => {
       const client = new NFTStorage({ token, endpoint })
-      const cid = NFTStorage.CID.parse('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
+      const cid = 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD'
       const result = await client.delete(cid)
       assert.equal(result, undefined)
     })

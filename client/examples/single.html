@@ -1,0 +1,22 @@
+<!doctype html>
+<pre id="out"></pre>
+<script type="module">
+  import NFTStore from 'https://unpkg.com/nft.storage?module'
+
+  const endpoint = 'https://nft.storage' // the default
+  const token = 'API_KEY' // your API key from https://nft.storage/manage
+
+  function log (msg) {
+    document.getElementById('out').innerHTML += `${JSON.stringify(msg, null, 2)}\n`
+  }
+
+  async function main () {
+    const store = new NFTStore({ endpoint, token })
+    const data = 'Hello nft.storage!'
+    const cid = await store.storeBlob(new Blob([data]))
+    log({ data, cid })
+    const status = await store.status(cid)
+    log(status)
+  }
+  main()
+</script>
