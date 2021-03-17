@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import useSWR from 'swr'
-import NFTStore from 'nft.storage'
+import { NFTStorage } from 'nft.storage'
 import { useState } from 'react'
 import Navbar from '../components/navbar.js'
 import Footer from '../components/footer.js'
@@ -73,7 +73,7 @@ export default function NewFile () {
     e.preventDefault()
     const file = e.target.file
     const token = user.tokens['default'] || Object.values(user.tokens)[0]
-    const client = new NFTStore({ token, endpoint: location.origin })
+    const client = new NFTStorage({ token, endpoint: location.origin })
     setUploading(true)
     try {
       await client.storeBlob(file.files[0])

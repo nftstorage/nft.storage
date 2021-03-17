@@ -94,13 +94,13 @@ function About () {
 }
 
 function GettingStarted ({ loginUrl }) {
-  const jsUsage = `import NFTStore from 'nft.storage'
+  const jsUsage = `import { NFTStorage } from 'nft.storage'
 
 const apiKey = 'YOUR_API_KEY'
-const client = new NFTStore({ token: apiKey })
+const client = new NFTStorage({ token: apiKey })
 
-const data = new File()
-const cid = await client.storeBlob(data)`
+const content = new Blob(['hello world'])
+const cid = await client.storeBlob(content)`
 
   return (
     <article className='bg-yellow'>
@@ -131,7 +131,7 @@ const cid = await client.storeBlob(data)`
             <pre className='f6 white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll'>npm install nft.storage</pre>
             <p className='lh-copy'>Use the client in the browser or from Node.js:</p>
             <pre className='f6 white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll'>{jsUsage}</pre>
-            <p className='lh-copy'>View the <a href='#' target='_blank' rel='noopener noreferrer' className='black'>full library reference docs</a>.</p>
+            <p className='lh-copy'>View the <a href='https://ipfs-shipyard.github.io/nft.storage/client/classes/lib.nftstorage.html' target='_blank' rel='noopener noreferrer' className='black'>full library reference docs</a>.</p>
           </Box>
           <Box bgColor='nspeach' borderColor='nspink' wrapperClassName='w-100 w-100-m w-33-ns mh0 mh0-m mh3-ns mb4'>
             <h2 className='chicagoflf f5 fw4'><HashLink id='raw-http-request'>Raw HTTP Request</HashLink></h2>
@@ -156,23 +156,24 @@ const cid = await client.storeBlob(data)`
 
 function APIDocs () {
   const postResp = `{
-  "cid": "bafy..."
+  "ok": true,
+  "value": {
+    "cid": "bafy..."
+  }
 }`
   const getResp = `{
-  "cid": "bafy...",
-  "deal": {
-    "TODO": "???"
-  },
-  "pin": {
-    "name": "art.jpg",
-    "status": "pinned",
-    "name": "PreciousData.pdf",
-    "origins":  [
-      "/ip4/203.0.113.142/tcp/4001/p2p/QmSourcePeerId",
-      "/ip4/203.0.113.114/udp/4001/quic/p2p/QmSourcePeerId"
-    ]
-  },
-  "created": "2021-03-04T14:56:00Z"
+  "ok": true,
+  "value": {
+    "cid": "bafy...",
+    "deals": {
+      "status": "ongoing",
+      "deals": []
+    },
+    "pin": {
+      "status": "pinned"
+    },
+    "created": "2021-03-04T14:56:00Z"
+  }
 }`
 
   return (

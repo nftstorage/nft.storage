@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import useSWR from 'swr'
 import filesize from 'filesize'
-import NFTStore from 'nft.storage'
+import { NFTStorage } from 'nft.storage'
 import Navbar from '../components/navbar.js'
 import Footer from '../components/footer.js'
 import Button from '../components/button.js'
@@ -73,7 +73,7 @@ export default function Files () {
       return
     }
     const token = user.tokens['default'] || Object.values(user.tokens)[0]
-    const client = new NFTStore({ token, endpoint: location.origin })
+    const client = new NFTStorage({ token, endpoint: location.origin })
     await client.delete(e.target.cid.value)
     location = '/files'
   }
