@@ -1,5 +1,4 @@
 import { stores } from '../constants.js'
-import merge from 'merge-options'
 
 /**
  * @typedef {import('../../../client/src/api').Deal} Deal

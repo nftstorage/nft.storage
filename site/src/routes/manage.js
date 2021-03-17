@@ -1,7 +1,6 @@
 import { authorize } from '../utils/auth0.js'
 import { getUser, tokens } from '../models/users.js'
 import { getAsset, hydrateState } from '../utils/utils.js'
-import { list } from '../models/nfts.js'
 
 /**
  * @param {FetchEvent} event
