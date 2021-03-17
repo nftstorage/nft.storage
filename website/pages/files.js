@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import useSWR from 'swr'
 import filesize from 'filesize'
+import NFTStore from 'nft.storage'
 import Navbar from '../components/navbar.js'
 import Footer from '../components/footer.js'
 import Button from '../components/button.js'
@@ -8,10 +9,15 @@ import { getEdgeState } from '../lib/state.js'
 
 export default function Files () {
   const { data } = useSWR('edge_state', getEdgeState)
-  const { user, loginUrl = '#', nfts = [] } = data ?? {}
-  
-  nfts.forEach(n => { n.created = new Date(n.created) })
-  nfts.sort((a, b) => b.created.getTime() - a.created.getTime())
+  let { user, loginUrl = '#', nfts = [] } = data ?? {}
+
+  nfts = nfts
+    .filter(Boolean)
+    .map(n => {
+      n.created = new Date(n.created)
+      return n
+    })
+    .sort((a, b) => b.created.getTime() - a.created.getTime())
 
   return (
     <div className='sans-serif'>
@@ -46,8 +52,8 @@ export default function Files () {
                     {filesize(nft.size || 0)}
                   </td>
                   <td className='pa2'>
-                    <form action='/delete' method='DELETE'>
-                      <input type='hidden' name='id' value='1' />
+                    <form onSubmit={handleDeleteFile}>
+                      <input type='hidden' name='cid' value={nft.cid} />
                       <Button className='bg-nsorange white' type='submit'>Delete</Button>
                     </form>
                   </td>
@@ -60,6 +66,17 @@ export default function Files () {
       <Footer />
     </div>
   )
+
+  async function handleDeleteFile (e) {
+    e.preventDefault()
+    if (!confirm('Are you sure? Deleted files cannot be recovered!')) {
+      return
+    }
+    const token = user.tokens['default'] || Object.values(user.tokens)[0]
+    const client = new NFTStore({ token, endpoint: location.origin })
+    await client.delete(e.target.cid.value)
+    location = '/files'
+  }
 }
 
 function GatewayLink ({ cid }) {
