@@ -31,7 +31,7 @@ export default function Files () {
               {nfts.map(nft => (
                 <tr className='bb b--black'>
                   <td className='pa2 br b--black'>
-                    {nft.cid}
+                    <GatewayLink cid={nft.cid} />
                   </td>
                   <td className='pa2 br b--black mw7'>
                     {nft.size}
@@ -51,4 +51,9 @@ export default function Files () {
       <Footer />
     </div>
   )
+}
+
+function GatewayLink ({ cid }) {
+  const href = cid.startsWith('Qm') ? `https://ipfs.io/ipfs/${cid}` : `https://${cid}.ipfs.dweb.link`
+  return <a href={href} target='_blank' rel='noopener noreferrer' className='black'>{cid}</a>
 }
