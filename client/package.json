@@ -24,14 +24,14 @@
   },
   "scripts": {
     "test": "node test/run.js",
-    "build": "tsc --build"
-  },
-  "dependencies": {
-    "multiformats": "4.5.3",
-    "prettier": "2.2.1",
+    "build": "tsc --build",
     "precommit": "lint-staged"
   },
+  "dependencies": {
+    "multiformats": "4.5.3"
+  },
   "devDependencies": {
+    "prettier": "2.2.1",
     "@types/node-fetch": "2.5.8",
     "ipfs-unixfs-importer": "6.0.1",
     "ipld": "0.29.0",
