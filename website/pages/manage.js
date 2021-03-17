@@ -4,10 +4,13 @@ import Navbar from '../components/navbar.js'
 import Footer from '../components/footer.js'
 import Button from '../components/button.js'
 import { getEdgeState } from '../lib/state.js'
+import configs from '../lib/config.js'
 
 export default function ManageKeys () {
   const { data } = useSWR('edge_state', getEdgeState)
-  const { user, loginUrl = '#', tokens = [] } = data ?? {}
+  const { user, loginUrl = '#' } = data ?? {}
+  const tokens = user ? Object.keys(user.tokens).map(k => ({ name: k, token: user.tokens[k] })) : []
+
   return (
     <div className='sans-serif'>
       <Head>
@@ -19,7 +22,7 @@ export default function ManageKeys () {
         <div>
           <div className='flex mb3 items-center'>
             <h1 className='chicagoflf mv4 flex-auto'>Manage API Keys</h1>
-            <Button href='/new-key.html' className='flex-none'>+ New Key</Button>
+            <Button href='/new-key' className='flex-none'>+ New Key</Button>
           </div>
           {tokens.length ? (
             <table className='bg-white ba b--black w-100 collapse mb4'>
@@ -37,8 +40,8 @@ export default function ManageKeys () {
                     <code style={{ wordWrap: 'break-word' }}>{t.token}</code>
                   </td>
                   <td className='pa2'>
-                    <form action='/delete' method='DELETE'>
-                      <input type='hidden' name='id' value='1' />
+                    <form onSubmit={handleDeleteToken}>
+                      <input type='hidden' name='name' id='name' value={t.name} />
                       <Button className='bg-nsorange white' type='submit'>Delete</Button>
                     </form>
                   </td>
@@ -51,4 +54,21 @@ export default function ManageKeys () {
       <Footer />
     </div>
   )
+}
+
+async function handleDeleteToken (e) {
+  e.preventDefault()
+  if (!confirm('Are you sure? Deleted keys cannot be recovered!')) {
+    return
+  }
+  const name = e.target.name.value
+  const rsp = await fetch(configs.api + '/api/internal/tokens', {
+    method: 'delete',
+    body: JSON.stringify({ name }),
+  })
+  const data = await rsp.json()
+  if (!data.ok) {
+    throw new Error(`deleting token: ${data.error}`)
+  }
+  location = '/manage'
 }

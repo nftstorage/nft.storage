@@ -8,7 +8,9 @@
     "start": "wrangler dev",
     "deploy": "wrangler publish --env production",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write '**/*.{js,css,json,md}'"
+    "format": "prettier --write '**/*.{js,css,json,md}'",
+    "build": "cd ../website && npx next build && npx next export -o ../site/public",
+    "dev": "yarn build && yarn start"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
   "license": "MIT",

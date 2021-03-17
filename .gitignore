@@ -3,3 +3,4 @@ node_modules
 worker
 yarn.lock
 package-lock.json
+site/public
