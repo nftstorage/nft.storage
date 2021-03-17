@@ -53,7 +53,7 @@ function About () {
   )
   return (
     <article className='bg-nsgreen'>
-      <div className='mw9 center pa5'>
+      <div className='mw9 center pa4 pa5-ns'>
         <h1 className='chicagoflf'>
           <HashLink id='about'>About</HashLink>
         </h1>
@@ -104,7 +104,7 @@ const cid = await client.storeBlob(data)`
 
   return (
     <article className='bg-yellow'>
-      <div className='mw9 center pa5'>
+      <div className='mw9 center pa4 pa5-ns'>
         <h1 className='chicagoflf tc mb5'>
           <HashLink id='getting-started'>Getting started</HashLink>
         </h1>
@@ -177,7 +177,7 @@ function APIDocs () {
 
   return (
     <article className='bg-blue'>
-      <div className='mw9 center pa5'>
+      <div className='mw9 center pa4 pa5-ns'>
         <h1 className='chicagoflf white'>
           <HashLink id='api-docs'>API Documentation</HashLink>
         </h1>
