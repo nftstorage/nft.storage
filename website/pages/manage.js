@@ -4,7 +4,6 @@ import Navbar from '../components/navbar.js'
 import Footer from '../components/footer.js'
 import Button from '../components/button.js'
 import { getEdgeState } from '../lib/state.js'
-import configs from '../lib/config.js'
 
 export default function ManageKeys () {
   const { data } = useSWR('edge_state', getEdgeState)
@@ -62,7 +61,7 @@ async function handleDeleteToken (e) {
     return
   }
   const name = e.target.name.value
-  const rsp = await fetch(configs.api + '/api/internal/tokens', {
+  const rsp = await fetch('/api/internal/tokens', {
     method: 'delete',
     body: JSON.stringify({ name }),
   })

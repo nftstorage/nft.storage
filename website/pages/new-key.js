@@ -5,7 +5,6 @@ import Footer from '../components/footer.js'
 import Box from '../components/box.js'
 import Button from '../components/button.js'
 import { getEdgeState } from '../lib/state.js'
-import configs from '../lib/config.js'
 import { useRouter } from 'next/router'
 
 export default function NewKey() {
@@ -13,20 +12,6 @@ export default function NewKey() {
   const { user, loginUrl = '#' } = data ?? {}
   const router = useRouter()
 
-  async function createToken(e) {
-    e.preventDefault()
-    const name = e.target.name.value
-    const rsp = await fetch(configs.api + '/api/internal/tokens', {
-      method: 'post',
-      body: JSON.stringify({ name }),
-    })
-    const data = await rsp.json()
-    if (data.ok) {
-      location = '/manage'
-    } else {
-      console.error(data.error)
-    }
-  }
   return (
     <div className="sans-serif">
       <Head>
@@ -41,7 +26,7 @@ export default function NewKey() {
           wrapperClassName="center mv4 mw6"
         >
           <h1 className="chicagoflf f4 fw4">New API Key</h1>
-          <form onSubmit={createToken}>
+          <form onSubmit={handleCreateToken}>
             <div className="mv3">
               <label htmlFor="name" className="dib mb2">
                 Name
@@ -65,4 +50,18 @@ export default function NewKey() {
       <Footer />
     </div>
   )
+}
+
+async function handleCreateToken (e) {
+  e.preventDefault()
+  const name = e.target.name.value
+  const rsp = await fetch('/api/internal/tokens', {
+    method: 'post',
+    body: JSON.stringify({ name }),
+  })
+  const data = await rsp.json()
+  if (!data.ok) {
+    throw new Error(`creating token: ${data.error}`)
+  }
+  location = '/manage'
 }
