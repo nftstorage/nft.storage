@@ -15,7 +15,7 @@ export default function Footer () {
       </div>
       <div>
         <span className='db db-m dib-ns mv3'>
-          <a href='/terms' className='nspink no-underline underline-hover v-mid'>Terms &amp; Conditions</a>
+          <a href='/terms' className='nspink no-underline underline-hover v-mid'>Terms of Service</a>
         </span>
         <Dot />
         <span className='db db-m dib-ns mv3'>
