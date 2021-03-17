@@ -15,6 +15,7 @@ import { tokensCreate } from './routes/tokens-create.js'
 import { tokensDelete } from './routes/tokens-delete.js'
 import { manage } from './routes/manage.js'
 import { files } from './routes/files.js'
+import { newKey } from './routes/new-key.js'
 
 addEventListener('fetch', (event) => {
   event.respondWith(handleEvent(event))
@@ -42,6 +43,7 @@ async function handleEvent(event) {
   r.get('/logout', logout)
   r.get('/manage', manage)
   r.get('/files', files)
+  r.get('/new-key', newKey)
 
   // Public API
   r.options('/api/.*', cors)

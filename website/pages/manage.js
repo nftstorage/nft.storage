@@ -16,9 +16,9 @@ export default function ManageKeys () {
         <title>Manage API keys</title>
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <Navbar user={user} loginUrl={loginUrl} />
-      <main className='mw9 center bg-nspeach pv3 ph5 min-vh-100'>
-        <div>
+      <Navbar user={user} loginUrl={loginUrl} bgColor='nsgreen' />
+      <main className='bg-nsgreen'>
+        <div className='mw9 center pv3 ph5 min-vh-100'>
           <div className='flex mb3 items-center'>
             <h1 className='chicagoflf mv4 flex-auto'>Manage API Keys</h1>
             <Button href='/new-key' className='flex-none'>+ New Key</Button>
