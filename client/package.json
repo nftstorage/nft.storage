@@ -14,15 +14,13 @@
       "node": "./src/lib.js"
     },
     "./src/platform.js": {
-      "browser": "./src/platform.web.js",
-      "require": "./dist/src/platform.cjs",
-      "node": "./src/platform.js"
+      "browser": "./src/platform.js",
+      "require": "./dist/src/platform.node.cjs",
+      "node": "./src/platform.node.js"
     }
   },
-  "browser": {
-    "./src/platform.js": "./src/platform.web.js"
-  },
   "scripts": {
+    "test": "npm run test:es && npm run test:web && npm run test:cjs",
     "test:web": "node test/test.js playwright-test test/*.spec.js",
     "test:es": "node test/test.js mocha test/*.spec.js --exit",
     "test:cjs": "node test/test.js mocha dist/test/*.spec.cjs --exit",

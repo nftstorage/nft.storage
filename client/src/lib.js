@@ -15,7 +15,7 @@
  */
 
 import * as API from "./lib/interface.js"
-import { fetch, File, Blob, FormData } from "./platform.js"
+import { fetch, File, Blob, FormData } from "nft.storage/src/platform.js"
 
 /**
  * @implements API.Service
