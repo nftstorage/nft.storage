@@ -83,7 +83,7 @@ class NFTStorage {
     if (result.ok) {
       return result.value.cid
     } else {
-      throw new Error(result.error)
+      throw new Error(result.error.message)
     }
   }
   /**
@@ -108,7 +108,7 @@ class NFTStorage {
     if (result.ok) {
       return result.value.cid
     } else {
-      throw new Error(result.error)
+      throw new Error(result.error.message)
     }
   }
 
