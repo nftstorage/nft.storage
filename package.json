@@ -1,6 +1,6 @@
 {
   "private": true,
-  "workspaces": ["site", "client", "example", "website"],
+  "workspaces": ["site", "client", "website"],
   "scripts": {
     "start": "yarn --cwd site start",
     "test": "yarn test:client",

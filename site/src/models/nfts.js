@@ -55,6 +55,7 @@ export const remove = async (key) => stores.nfts.delete(encodeKey(key))
 
 /**
  * @param {any} prefix
+ * @returns {Promise<NFT[]>}
  */
 export async function list(prefix) {
   const nfts = await stores.nfts.list({
@@ -63,6 +64,7 @@ export async function list(prefix) {
   if (nfts.keys.length > 0) {
     return await Promise.all(
       nfts.keys.map((key) => {
+        // @ts-ignore
         return stores.nfts.get(key.name).then((v) => JSON.parse(v))
       })
     )

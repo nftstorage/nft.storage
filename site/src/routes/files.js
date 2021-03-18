@@ -6,7 +6,7 @@ import { list } from '../models/nfts.js'
 /**
  * @param {FetchEvent} event
  */
-export async function files (event) {
+export async function files(event) {
   const result = await authorize(event)
   // Must be logged in to list files
   if (!result.ok) {
@@ -16,7 +16,7 @@ export async function files (event) {
   const [rsp, user, nfts] = await Promise.all([
     getAsset(event),
     getUser(result.value.userInfo.sub),
-    list(result.value.userInfo.sub)
+    list(result.value.userInfo.sub),
   ])
 
   return new HTMLRewriter()

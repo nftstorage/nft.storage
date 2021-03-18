@@ -17,7 +17,5 @@ export async function homepage(event) {
     state = { loginUrl: result.error.redirectUrl }
   }
 
-  return new HTMLRewriter()
-    .on('head', hydrateState(state))
-    .transform(rsp)
+  return new HTMLRewriter().on('head', hydrateState(state)).transform(rsp)
 }

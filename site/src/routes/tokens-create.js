@@ -16,7 +16,7 @@ export const tokensCreate = async (event) => {
   const body = await event.request.json()
 
   await createToken(user.sub, body.name)
-  
+
   return new JSONResponse({
     ok: true,
   })

@@ -106,7 +106,7 @@ export async function tokens(sub) {
 
 /**
  * Create new token
- * 
+ *
  * @param {string} sub
  * @param {string} name
  */
@@ -128,11 +128,11 @@ export async function createToken(sub, name) {
 
 /**
  * Delete new token
- * 
+ *
  * @param {string} sub
  * @param {string} name
  */
- export async function deleteToken(sub, name) {
+export async function deleteToken(sub, name) {
   const user = await getUser(sub)
   const token = user.tokens[name]
 

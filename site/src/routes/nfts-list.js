@@ -12,10 +12,10 @@ export async function list(event) {
     return HTTPError.respond(token.error)
   }
   const user = token.user
-  console.log(token);
+  console.log(token)
 
   return new JSONResponse({
     ok: true,
-    value: await nfts.list(user.sub)
+    value: await nfts.list(user.sub),
   })
 }

@@ -4,7 +4,7 @@ export const stores = {
   csrf: CSRF,
   deals: DEALS,
   users: USERS,
-  nfts: NFTS
+  nfts: NFTS,
 }
 
 export const auth0 = {

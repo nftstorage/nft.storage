@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { stringToArray, mergeArrays, arrayToString } from './utils.js'
 
 /*
