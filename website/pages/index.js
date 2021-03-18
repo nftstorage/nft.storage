@@ -1,30 +1,16 @@
-import Head from 'next/head'
 import useSWR from 'swr'
-import Navbar from '../components/navbar.js'
 import Hero from '../components/hero.js'
-import Footer from '../components/footer.js'
 import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
 import Box from '../components/box.js'
+import Layout from '../pages/layout.js'
 import { getEdgeState } from '../lib/state.js'
 
 export default function Home () {
   const { data } = useSWR('edge_state', getEdgeState)
   const { user, loginUrl = '#' } = data ?? {}
   return (
-    <div className='sans-serif'>
-      <Head>
-        <title>nft.storage free decentralized storage for NFT data on IPFS and Filecoin.</title>
-        <link rel='icon' href='/favicon.ico' />
-        <meta
-          name='description'
-          content='5GB storage of NFT data on IPFS and Filecoin and provided free to NFTHack participants during the hackathon.'
-        />
-        <meta property='og:image' content='' />
-        <meta name='og:title' content='nft.storage' />
-        <meta name='twitter:card' content='summary_large_image' />
-      </Head>
-      <Navbar user={user} loginUrl={loginUrl} />
+    <Layout user={user} loginUrl={loginUrl}>
       <Hero user={user} loginUrl={loginUrl} />
       <main>
         <About />
@@ -32,8 +18,7 @@ export default function Home () {
         <APIDocs />
         <FAQ />
       </main>
-      <Footer />
-    </div>
+    </Layout>
   )
 }
 

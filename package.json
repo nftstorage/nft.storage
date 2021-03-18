@@ -1,10 +1,11 @@
 {
   "private": true,
-  "workspaces": ["site", "client", "example"],
+  "workspaces": ["site", "client", "example", "website"],
   "scripts": {
     "start": "yarn --cwd site start",
     "test": "yarn test:client",
     "test:client": "yarn --cwd client test",
-    "build:client:docs": "yarn --cwd client typedoc"
+    "build:client:docs": "yarn --cwd client typedoc",
+    "build:site": "yarn --cwd website build"
   }
 }
