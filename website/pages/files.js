@@ -1,11 +1,9 @@
-import Head from 'next/head'
 import useSWR from 'swr'
 import filesize from 'filesize'
 import { NFTStorage } from 'nft.storage'
-import Navbar from '../components/navbar.js'
-import Footer from '../components/footer.js'
 import Button from '../components/button.js'
 import { getEdgeState } from '../lib/state.js'
+import Layout from '../components/layout.js'
 
 export default function Files () {
   const { data } = useSWR('edge_state', getEdgeState)
@@ -20,12 +18,7 @@ export default function Files () {
     .sort((a, b) => b.created.getTime() - a.created.getTime())
 
   return (
-    <div className='sans-serif'>
-      <Head>
-        <title>Files</title>
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
-      <Navbar user={user} loginUrl={loginUrl} bgColor='nsyellow' />
+    <Layout user={user} loginUrl={loginUrl} navBgColor='nsyellow' title='Files - NFT Storage'>
       <main className='bg-nsyellow'>
         <div className='mw9 center pv3 ph5 min-vh-100'>
           <div className='flex mb3 items-center'>
@@ -63,8 +56,7 @@ export default function Files () {
           ) : <p className='tc mv5'><span className='f1 dib mb3'>😢</span><br/>No files</p>}
         </div>
       </main>
-      <Footer />
-    </div>
+    </Layout>
   )
 
   async function handleDeleteFile (e) {

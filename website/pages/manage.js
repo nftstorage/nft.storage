@@ -1,8 +1,6 @@
-import Head from 'next/head'
 import useSWR from 'swr'
-import Navbar from '../components/navbar.js'
-import Footer from '../components/footer.js'
 import Button from '../components/button.js'
+import Layout from '../components/layout.js'
 import { getEdgeState } from '../lib/state.js'
 
 export default function ManageKeys () {
@@ -11,12 +9,7 @@ export default function ManageKeys () {
   const tokens = user ? Object.keys(user.tokens).map(k => ({ name: k, token: user.tokens[k] })) : []
 
   return (
-    <div className='sans-serif'>
-      <Head>
-        <title>Manage API keys</title>
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
-      <Navbar user={user} loginUrl={loginUrl} bgColor='nsgreen' />
+    <Layout user={user} loginUrl={loginUrl} navBgColor='nsgreen' title='Manage API Keys - NFT Storage'>
       <main className='bg-nsgreen'>
         <div className='mw9 center pv3 ph5 min-vh-100'>
           <div className='flex mb3 items-center'>
@@ -50,8 +43,7 @@ export default function ManageKeys () {
           ) : <p className='tc mv5'><span className='f1 dib mb3'>😢</span><br/>No API keys</p>}
         </div>
       </main>
-      <Footer />
-    </div>
+    </Layout>
   )
 }
 

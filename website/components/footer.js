@@ -10,7 +10,7 @@ export default function Footer () {
         <Dot />
         <span className='db db-m dib-ns mv3'>
           <span>Powered by <a href='https://pinata.cloud/' className='nspink no-underline underline-hover v-mid'>Pinata</a></span>
-          <img src='/images/logo-pinata.svg' width={20} alt='Pinata logo' className='v-mid' />
+          <img src='/images/logo-pinata.svg' height="600" width="600" style={{ width:"20px", height:"auto"}} alt='Pinata logo' className='v-mid' />
         </span>
       </div>
       <div>

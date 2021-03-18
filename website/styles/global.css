@@ -14,7 +14,8 @@
 
 @font-face {
   font-family: ChicagoFLF;
-  src: url(/fonts/ChicagoFLF.ttf);
+  src: url('/fonts/ChicagoFLF.woff2') format('woff2');
+  font-display: swap;
 }
 .chicagoflf {
   font-family: ChicagoFLF, sans-serif;
