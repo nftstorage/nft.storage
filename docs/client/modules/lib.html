@@ -75,10 +75,10 @@
 					</div>
 					<dl class="tsd-comment-tags">
 						<dt>example</dt>
-						<dd><pre><code class="language-js"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">NFTStorage</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;nft.storage&quot;</span>
+						<dd><pre><code class="language-js"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">NFTStorage</span><span style="color: #000000">, </span><span style="color: #001080">File</span><span style="color: #000000">, </span><span style="color: #001080">Blob</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;nft.storage&quot;</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">client</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">NFTStorage</span><span style="color: #000000">({ </span><span style="color: #001080">token:</span><span style="color: #000000"> </span><span style="color: #0070C1">API_TOKEN</span><span style="color: #000000"> })</span>
 
-<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">cid</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">client</span><span style="color: #000000">.</span><span style="color: #795E26">storeBlob</span><span style="color: #000000">(</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Blob</span><span style="color: #000000">([</span><span style="color: #A31515">&#039;hello world&#039;</span><span style="color: #000000">])) </span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">cid</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">client</span><span style="color: #000000">.</span><span style="color: #795E26">storeBlob</span><span style="color: #000000">(</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Blob</span><span style="color: #000000">([</span><span style="color: #A31515">&#039;hello world&#039;</span><span style="color: #000000">]))</span>
 </code></pre>
 						</dd>
 					</dl>
@@ -91,7 +91,9 @@
 						<section class="tsd-index-section ">
 							<h3>References</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="lib.html#default" class="tsd-kind-icon">default</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="lib.html#blob" class="tsd-kind-icon">Blob</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="lib.html#file" class="tsd-kind-icon">File</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="lib.html#formdata" class="tsd-kind-icon">Form<wbr>Data</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -106,9 +108,19 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>References</h2>
 				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
-					<a name="default" class="tsd-anchor"></a>
-					<h3>default</h3>
-					Renames and exports <a href="../classes/lib.nftstorage.html">NFTStorage</a>
+					<a name="blob" class="tsd-anchor"></a>
+					<h3>Blob</h3>
+					Re-exports <a href="platform.html#blob">Blob</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="file" class="tsd-anchor"></a>
+					<h3>File</h3>
+					Re-exports <a href="platform.html#file">File</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="formdata" class="tsd-anchor"></a>
+					<h3>Form<wbr>Data</h3>
+					Re-exports <a href="platform.html#formdata">FormData</a>
 				</section>
 			</section>
 		</div>
@@ -124,12 +136,24 @@
 					<li class=" tsd-kind-module">
 						<a href="lib_interface.html">lib/interface</a>
 					</li>
+					<li class=" tsd-kind-module">
+						<a href="platform.html">platform</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="platform_web.html">platform.web</a>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="lib.html#default" class="tsd-kind-icon">default</a>
+						<a href="lib.html#blob" class="tsd-kind-icon">Blob</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="lib.html#file" class="tsd-kind-icon">File</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="lib.html#formdata" class="tsd-kind-icon">Form<wbr>Data</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/lib.nftstorage.html" class="tsd-kind-icon">NFTStorage</a>
@@ -144,6 +168,8 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 			</ul>
 			<ul class="tsd-legend">
