@@ -17,9 +17,6 @@
       "browser": "./src/platform.web.js",
       "require": "./dist/src/platform.cjs",
       "node": "./src/platform.js"
-    },
-    "./src/api.js": {
-      "default": "./src/api.js"
     }
   },
   "browser": {
