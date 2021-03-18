@@ -33,7 +33,7 @@ const client = new NFTStorage({ token: API_TOKEN })
 const cid = await client.storeBlob(new Blob(['hello world'])) 
 ```
 
-For more examples please see [API documentation][]
+For more examples please see the [API documentation][].
 
 
 [Raw HTTP API]:https://nft.storage/#api-docs
