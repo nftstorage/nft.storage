@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import Button from '../components/button.js'
-import Layout from '../pages/layout.js'
+import Layout from '../components/layout.js'
 import { getEdgeState } from '../lib/state.js'
 
 export default function ManageKeys () {
@@ -9,7 +9,7 @@ export default function ManageKeys () {
   const tokens = user ? Object.keys(user.tokens).map(k => ({ name: k, token: user.tokens[k] })) : []
 
   return (
-    <Layout user={user} loginUrl={loginUrl}>
+    <Layout user={user} loginUrl={loginUrl} navBgColor='nsgreen' title='Manage API Keys - NFT Storage'>
       <main className='bg-nsgreen'>
         <div className='mw9 center pv3 ph5 min-vh-100'>
           <div className='flex mb3 items-center'>

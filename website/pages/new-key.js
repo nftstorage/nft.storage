@@ -1,22 +1,15 @@
-import Head from 'next/head'
 import useSWR from 'swr'
-import Navbar from '../components/navbar.js'
-import Footer from '../components/footer.js'
 import Box from '../components/box.js'
 import Button from '../components/button.js'
 import { getEdgeState } from '../lib/state.js'
+import Layout from '../components/layout.js'
 
 export default function NewKey () {
   const { data } = useSWR('edge_state', getEdgeState)
   const { user, loginUrl = '#' } = data ?? {}
 
   return (
-    <div className="sans-serif">
-      <Head>
-        <title>New API Key</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Navbar user={user} loginUrl={loginUrl} bgColor='nsgreen' />
+    <Layout user={user} loginUrl={loginUrl} navBgColor='nsgreen' title='New API key - NFT storage'>
       <main className='bg-nsgreen'>
         <div className='mw9 center pv3 ph5 min-vh-100'>
           <Box
@@ -47,8 +40,7 @@ export default function NewKey () {
           </Box>
         </div>
       </main>
-      <Footer />
-    </div>
+    </Layout>
   )
 }
 

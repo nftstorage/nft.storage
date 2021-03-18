@@ -1,11 +1,18 @@
 {
     "name": "NFT Storage",
     "short_name": "NFT Storage",
+    "start_url": "/",
     "icons": [
       { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192" },
-      { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512" }
+      { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512" },
+      {
+        "src": "/maskable_icon_x192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      }
     ],
-    "theme_color": "#000000",
+    "theme_color": "#F5C32C",
     "background_color": "#ffffff",
     "display": "standalone"
   }

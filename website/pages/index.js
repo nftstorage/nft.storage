@@ -3,7 +3,7 @@ import Hero from '../components/hero.js'
 import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
 import Box from '../components/box.js'
-import Layout from '../pages/layout.js'
+import Layout from '../components/layout.js'
 import { getEdgeState } from '../lib/state.js'
 
 export default function Home () {
@@ -50,19 +50,19 @@ function About () {
           <div>
             {storeText}
             <div className='tc mv4'>
-              <img src='images/diagram-store.png' alt='diagram of storage with nft.storage' width='576' />
+              <img src='images/diagram-store.png' alt='diagram of storage with nft.storage' width='1152' height='1650' style={{ maxWidth:"576px", height:"auto", width: "100%"}}/>
             </div>
           </div>
           <div>
             {retrieveText}
             <div className='tc mv4'>
-              <img src='images/diagram-retrieve.png' alt='diagram of retrieval with nft.storage' width='631' />
+              <img src='images/diagram-retrieve.png' alt='diagram of retrieval with nft.storage' width='1262' height='1260' style={{ maxWidth:"631px", height:"auto", width: "100%"}}/>
             </div>
           </div>
         </div>
         <div className='relative dn dn-m db-ns'>
           <div className='tr pl5'>
-            <img src='images/diagram-store-and-retrieve.png' alt='diagram of storage and retrieval with nft.storage' width='1177' />
+            <img src='images/diagram-store-and-retrieve.png' alt='diagram of storage and retrieval with nft.storage' width='2354' height='2312' style={{ width:"1177px", height:"auto", width: "100%"}}/>
           </div>
           <div className='absolute top-0 w-100 h-100 flex'>
             <div className='flex-auto w-50'>
@@ -98,12 +98,12 @@ const cid = await client.storeBlob(content)`
           <li>
             <Step>1</Step>
             <p className='chicagoflf f3 mw6 center'><a href={loginUrl} className='no-underline underline-hover nsnavy'>Register an nft.storage account</a> so that you can create API access keys.</p>
-            <img src='images/icon-arrow-down.svg' alt='arrow down' className='mb3' />
+            <img width="29px" height="66px" src='images/icon-arrow-down.svg' alt='arrow down' className='mb3' />
           </li>
           <li>
             <Step>2</Step>
             <p className='chicagoflf f3 mw6 center'><a href='/manage' className='no-underline underline-hover nsnavy'>Create an API access key</a> and note it down.</p>
-            <img src='images/icon-arrow-down.svg' alt='arrow down' className='mb3' />
+            <img width="29px" height="66px" src='images/icon-arrow-down.svg' alt='arrow down' className='mb3' />
           </li>
           <li>
             <Step>3</Step>
