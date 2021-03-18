@@ -6,47 +6,62 @@
   "type": "module",
   "types": "./dist/src/lib.d.ts",
   "module": "./src/lib.js",
+  "main": "./dist/src/lib.cjs",
   "exports": {
     ".": {
-      "import": "./src/lib.js",
-      "browser": "./src/lib.js"
+      "browser": "./src/lib.js",
+      "require": "./dist/src/lib.cjs",
+      "node": "./src/lib.js"
+    },
+    "./src/platform.js": {
+      "browser": "./src/platform.web.js",
+      "require": "./dist/src/platform.cjs",
+      "node": "./src/platform.js"
     },
     "./src/api.js": {
       "default": "./src/api.js"
     }
   },
-  "typesVersions": {
-    "*": {
-      "src/*": [
-        "dist/src/*"
-      ]
-    }
+  "browser": {
+    "./src/platform.js": "./src/platform.web.js"
   },
   "scripts": {
-    "test": "node test/run.js",
-    "build": "tsc --build",
+    "test:web": "node test/test.js playwright-test test/*.spec.js",
+    "test:es": "node test/test.js mocha test/*.spec.js --exit",
+    "test:cjs": "node test/test.js mocha dist/test/*.spec.cjs --exit",
+    "build": "npm run build:ts && npm run build:cjs",
+    "build:ts": "tsc --build",
+    "build:cjs": "rollup --config rollup.config.js",
     "typedoc": "typedoc --entryPoints src  --out ../docs/client",
+    "prepare": "npm run build",
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "multiformats": "4.5.3"
+    "@web-std/blob": "2.0.1",
+    "@web-std/fetch": "1.0.0",
+    "@web-std/file": "1.0.1",
+    "@web-std/form-data": "2.0.0"
   },
   "devDependencies": {
-    "prettier": "2.2.1",
-    "@types/node-fetch": "2.5.8",
+    "@ssttevee/multipart-parser": "0.1.8",
+    "uvu": "0.5.1",
+    "mocha": "8.3.2",
+    "@types/mocha": "8.2.1",
+    "husky": "4.2.5",
     "ipfs-unixfs-importer": "6.0.1",
     "ipld": "0.29.0",
     "ipld-dag-pb": "0.22.0",
     "ipld-in-memory": "8.0.0",
+    "lint-staged": "10.2.11",
     "multicodec": "3.0.1",
+    "multiformats": "4.5.3",
     "multihashing-async": "2.1.2",
-    "node-fetch": "2.6.1",
-    "playwright-test": "2.0.3",
+    "playwright-test": "2.1.0",
+    "prettier": "2.2.1",
     "typedoc": "0.20.32",
     "typescript": "4.2.3",
-    "zora": "4.0.2",
-    "husky": "4.2.5",
-    "lint-staged": "10.2.11"
+    "rollup": "2.22.1",
+    "rollup-plugin-multi-input": "1.1.1"
   },
   "lint-staged": {
     "*.js": [

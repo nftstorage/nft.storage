@@ -2,14 +2,14 @@ name: Client
 on:
   push:
     branches:
-    - main
+      - main
     paths:
-    - 'client/**'
+      - "client/**"
   pull_request:
     branches:
-    - main
+      - main
     paths:
-    - 'client/**'
+      - "client/**"
 
 jobs:
   check:
@@ -44,12 +44,21 @@ jobs:
       fail-fast: true
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+
+      - name: Setup node
+        uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - run: yarn install
-      - run: yarn --cwd client test
-  
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Test (ES)
+        run: yarn --cwd client test:es
+
+      - name: Test (Web)
+        run: yarn --cwd client test:web
+
   publish:
     name: Publish client
     needs:
@@ -97,7 +106,7 @@ jobs:
 
       - name: Install
         run: yarn install
-      
+
       - name: Generate
         run: yarn build:client:docs
 
@@ -106,4 +115,4 @@ jobs:
         with:
           author_name: documentation-generator
           add: docs/client
-          message: 'chore: generate client docs'
+          message: "chore: generate client docs"

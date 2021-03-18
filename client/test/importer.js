@@ -60,7 +60,7 @@ class Block {
  * 
  * @param {Uint8Array} content 
  */
-export const readFile = async (content) => {
+export const importBlob = async (content) => {
   const results = importer([{ content} ], new Block(), { onlyHash: true })
   for await (const result of results) {
     return result
@@ -68,3 +68,30 @@ export const readFile = async (content) => {
   throw new Error(`Import failed`)
 }
 
+/**
+ * @param {File[]} files
+ */
+export const importDirectory = async (files) => {
+  const entries = files.map(file => ({
+    // @ts-expect-error - webkitRelativePath is not known
+    path: file.webkitRelativePath || file.name,
+    // @ts-expect-error - file.stream() isn't typed as AsyncIterable.
+    content: /** @type {AsyncIterable<Uint8Array>} */ (file.stream())
+  }))
+
+  const results = importer(entries, new Block(), {
+    onlyHash: true,
+    wrapWithDirectory: true
+  })
+
+  let last = null
+  for await (const result of results) {
+    last = result
+  }
+
+  if (last != null) {
+    return last
+  } else {
+    throw new Error(`Import failed`)
+  }
+}

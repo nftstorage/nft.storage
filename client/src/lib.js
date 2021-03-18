@@ -3,33 +3,34 @@
  * interface for working with the [Raw HTTP API](https://nft.storage/#api-docs)
  * from a web browser or [Node.js](https://nodejs.org/) and comes bundled with
  * TS for out-of-the box type inference and better IntelliSense.
- * 
+ *
  * @example
  * ```js
- * import { NFTStorage } from "nft.storage"
+ * import { NFTStorage, File, Blob } from "nft.storage"
  * const client = new NFTStorage({ token: API_TOKEN })
- * 
- * const cid = await client.storeBlob(new Blob(['hello world'])) 
+ *
+ * const cid = await client.storeBlob(new Blob(['hello world']))
  * ```
  * @module
  */
 
 import * as API from "./lib/interface.js"
+import { fetch, File, Blob, FormData } from "./platform.js"
 
 /**
  * @implements API.Service
  */
-export class NFTStorage {
+class NFTStorage {
   /**
    * Constructs a client bound to the given `options.token` and
    * `options.endpoint`.
-   * 
+   *
    * @example
    * ```js
-   * import { NFTStorage } from "nft.storage"
+   * import { NFTStorage, File, Blob } from "nft.storage"
    * const client = new NFTStorage({ token: API_TOKEN })
-   * 
-   * const cid = await client.storeBlob(new Blob(['hello world'])) 
+   *
+   * const cid = await client.storeBlob(new Blob(['hello world']))
    * ```
    * Optionally you could pass an alternative API endpoint (e.g. for testing)
    * @example
@@ -71,10 +72,11 @@ export class NFTStorage {
    */
   static async storeBlob({ endpoint, token }, blob) {
     const url = new URL("/api/upload", endpoint)
+
     const request = await fetch(url.toString(), {
       method: "POST",
       headers: NFTStorage.auth(token),
-      body: blob
+      body: blob,
     })
     const result = await request.json()
 
@@ -120,9 +122,9 @@ export class NFTStorage {
     const response = await fetch(url.toString(), {
       method: "GET",
       headers: NFTStorage.auth(token),
-    })   
+    })
     const result = await response.json()
-    
+
     if (result.ok) {
       return {
         cid: result.value.cid,
@@ -160,7 +162,7 @@ export class NFTStorage {
    * Takes a [Blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)
    * or a [File](https://developer.mozilla.org/en-US/docs/Web/API/File). Note
    * that no file name or file metadata is retained.
-   * 
+   *
    * @example
    * ```js
    * const content = new Blob(['hello world'])
@@ -168,25 +170,26 @@ export class NFTStorage {
    * cid //> 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD'
    * ```
    *
-   * @param {Blob} blob 
+   * @param {Blob} blob
    */
   storeBlob(blob) {
     return NFTStorage.storeBlob(this, blob)
   }
   /**
    * Stores a directory of files and returns a CID for the directory.
-   * 
+   *
    * @example
    * ```js
    * const cid = client.storeDirectory([
-   *   new File(['hello world'], 'content.txt'),
-   *   new File(JSON.stringify({ owner: '@lucky' }, 'metadata.json')
+   *   new File(['hello world'], 'hello.txt'),
+   *   new File([JSON.stringify({'from': 'incognito'}, null, 2)], 'metadata.json')
    * ])
+   * cid //>
    * ```
-   * 
+   *
    * Argument can be a [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList)
    * instance as well, in which case directory structure will be retained.
-   * 
+   *
    * @param {Iterable<File>} files
    */
   storeDirectory(files) {
@@ -197,7 +200,6 @@ export class NFTStorage {
    * @example
    * ```js
    * const status = await client.status('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
-   * 
    * ```
    *
    * @param {string} cid
@@ -210,7 +212,7 @@ export class NFTStorage {
    *
    * > Please note that even if content is removed from the service other nodes
    * that have replicated it might still continue providing it.
-   * 
+   *
    * @example
    * ```js
    * await client.delete('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
@@ -223,7 +225,7 @@ export class NFTStorage {
   }
 }
 
-export default NFTStorage
+export { NFTStorage, File, Blob, FormData }
 
 /**
  * Just to verify API compatibility.
