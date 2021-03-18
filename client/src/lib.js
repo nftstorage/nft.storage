@@ -179,9 +179,10 @@ export class NFTStorage {
    * @example
    * ```js
    * const cid = client.storeDirectory([
-   *   new File(['hello world'], 'content.txt'),
-   *   new File(JSON.stringify({ owner: '@lucky' }, 'metadata.json')
+   *   new File(['hello world'], 'hello.txt'),
+   *   new File([JSON.stringify({'from': 'incognito'}, null, 2)], 'metadata.json')
    * ])
+   * cid //>
    * ```
    * 
    * Argument can be a [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList)
@@ -197,7 +198,6 @@ export class NFTStorage {
    * @example
    * ```js
    * const status = await client.status('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
-   * 
    * ```
    *
    * @param {string} cid

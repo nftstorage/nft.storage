@@ -79,7 +79,10 @@ export const importDirectory = async (files) => {
     content: /** @type {AsyncIterable<Uint8Array>} */ (file.stream())
   }))
 
-  const results = importer(entries, new Block(), { onlyHash: true })
+  const results = importer(entries, new Block(), {
+    onlyHash: true,
+    wrapWithDirectory: true
+  })
 
   let last = null
   for await (const result of results) {
