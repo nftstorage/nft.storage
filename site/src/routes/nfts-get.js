@@ -5,7 +5,7 @@ import { JSONResponse } from '../utils/json-response.js'
 import { get as getDeals } from '../models/deals.js'
 
 /**
- * @typedef {import('../../../client/src/api').Deal} Deal
+ * @typedef {import('../bindings').Deal} Deal
  */
 
 /**
@@ -22,7 +22,7 @@ export const status = async (event, params) => {
 
   const [nft, deals] = await Promise.all([
     getNft({ user, cid: params.cid }),
-    getDeals(params.cid)
+    getDeals(params.cid),
   ])
 
   if (nft == null) {
@@ -33,7 +33,7 @@ export const status = async (event, params) => {
     ok: true,
     value: {
       ...nft,
-      deals: { status: getOverallDealStatus(deals), deals }
+      deals: { status: getOverallDealStatus(deals), deals },
     },
   })
 }
@@ -42,7 +42,7 @@ export const status = async (event, params) => {
  * @param {Deal[]} deals
  * @returns {'ongoing'|'finalized'}
  */
-function getOverallDealStatus (deals) {
+function getOverallDealStatus(deals) {
   if (!deals.length) return 'ongoing'
-  return deals.some(d => d.status !== 'active') ? 'ongoing' : 'finalized'
+  return deals.some((d) => d.status !== 'active') ? 'ongoing' : 'finalized'
 }

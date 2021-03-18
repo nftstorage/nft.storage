@@ -10,7 +10,7 @@ export default function Navbar ({ user, loginUrl, bgColor = 'nsorange' }) {
           </a>
           <a href='/#getting-started' className='f4 black no-underline underline-hover v-mid'>Getting Started</a>
           <span className='mh2 v-mid b black'>•</span>
-          <a href='/#api-docs' className='f4 black no-underline underline-hover v-mid'>API Docs</a>
+          <a href='/api-docs' className='f4 black no-underline underline-hover v-mid'>API Docs</a>
           {user ? (
             <>
               <span className='mh2 v-mid b black'>•</span>

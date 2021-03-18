@@ -16,7 +16,7 @@ export const tokensDelete = async (event) => {
   const body = await event.request.json()
 
   await deleteToken(user.sub, body.name)
-  
+
   return new JSONResponse({
     ok: true,
   })

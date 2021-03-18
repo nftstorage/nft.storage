@@ -5,7 +5,6 @@ import { parseJWT, verifyJWT } from './jwt.js'
 import { getUser, matchToken } from '../models/users.js'
 import { HTTPError } from '../errors.js'
 
-
 /**
  * @typedef {import('../models/users').User} User
  */
@@ -14,7 +13,7 @@ export function hydrateState(state = {}) {
   return {
     /**
      *
-     * @param {HTMLHeadElement} head
+     * @param {any} head
      */
     element: (head) => {
       const jsonState = JSON.stringify(state)

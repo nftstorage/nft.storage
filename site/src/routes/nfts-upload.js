@@ -19,7 +19,7 @@ export async function upload(event) {
   if (!result.ok) {
     return HTTPError.respond(result.error)
   }
-  const {user, tokenName} = result
+  const { user, tokenName } = result
 
   if (contentType.includes('multipart/form-data')) {
     const boundary = contentType.split('boundary=')[1].trim()
@@ -39,7 +39,6 @@ export async function upload(event) {
           cid,
           size,
           status: 'pinned',
-          // @ts-expect-error - TODO: Define encoded types.
           created,
         },
       }
@@ -81,7 +80,6 @@ export async function upload(event) {
           cid,
           size,
           status: 'pinned',
-          // @ts-expect-error - TODO: Define encoded types.
           created,
         },
       }

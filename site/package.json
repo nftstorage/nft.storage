@@ -1,21 +1,28 @@
 {
-  "name": "nft-storega-site",
+  "name": "nft-storage-site",
   "version": "1.0.0",
   "description": "NFT Storage Site",
   "private": true,
   "main": "src/index.js",
   "scripts": {
     "start": "wrangler dev",
-    "deploy": "wrangler publish --env production",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "prettier --write '**/*.{js,css,json,md}'",
     "build": "cd ../website && npx next build && npx next export -o ../site/public",
-    "dev": "yarn build && yarn start"
+    "deploy": "yarn build && wrangler publish --env production",
+    "dev": "yarn build && yarn start",
+    "test": "tsc",
+    "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css}'"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
   "license": "MIT",
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged",
+    "pre-push": "yarn test"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,md,html,css}": "prettier --write"
+  },
   "dependencies": {
-    "@cloudflare/kv-asset-handler": "~0.1.0",
+    "@cloudflare/kv-asset-handler": "~0.1.1",
     "cookie": "^0.4.1",
     "merge-options": "^3.0.4",
     "multiformats": "^4.5.3",
@@ -25,7 +32,9 @@
     "@cloudflare/workers-types": "^2.1.0",
     "@types/auth0-js": "^9.14.2",
     "@types/cookie": "^0.4.0",
-    "prettier": "^2.2.1"
+    "prettier": "^2.2.1",
+    "simple-git-hooks": "^2.0.3",
+    "typescript": "^4.2.3"
   },
   "prettier": {
     "trailingComma": "es5",

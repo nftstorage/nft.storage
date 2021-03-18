@@ -5,7 +5,7 @@ import { getAsset, hydrateState } from '../utils/utils.js'
 /**
  * @param {FetchEvent} event
  */
-export async function newKey (event) {
+export async function newKey(event) {
   const result = await authorize(event)
   // Must be logged in to manage API keys
   if (!result.ok) {

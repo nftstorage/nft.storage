@@ -61,7 +61,9 @@ export async function pinFiles(files, user) {
   for (const file of files) {
     body.append(
       'file',
-      new File([file.data], file.filename || file.name, { type: file.contentType }),
+      new File([file.data], file.filename || file.name, {
+        type: file.contentType,
+      }),
       'base/' + (file.filename || file.name)
     )
   }

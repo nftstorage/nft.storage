@@ -5,7 +5,7 @@ import { getAsset, hydrateState } from '../utils/utils.js'
 /**
  * @param {FetchEvent} event
  */
-export async function newFile (event) {
+export async function newFile(event) {
   const result = await authorize(event)
   // Must be logged in to upload files
   if (!result.ok) {

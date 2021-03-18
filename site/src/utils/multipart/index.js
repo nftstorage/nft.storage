@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Credit to https://github.com/ssttevee/js-multipart-parser
  */

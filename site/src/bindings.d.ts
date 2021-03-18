@@ -1,5 +1,3 @@
-import type { Pin } from '../../client/src/api'
-
 export {};
 
 declare global {
@@ -17,9 +15,23 @@ declare global {
   const PINATA_JWT: string
 }
 
+export interface Pin {
+  /**
+   * Content Identifier for the NFT data.
+   */
+  cid: string
+  name?: string
+  status: PinStatus
+  created: string
+  size: number
+}
+
+
+export type PinStatus = "queued" | "pinning" | "pinned" | "failed"
+
 export type NFT = {
   /**
-   * Content Identifier for the NDT data.
+   * Content Identifier for the NFT data.
    */
   cid: string
   /**
@@ -46,4 +58,57 @@ export type NFT = {
    * Date this NFT was created.
    */
   created: Date
+  /**
+   * Deals
+   */
+  deals?: {
+    /**
+     * Overall deal status
+     */
+    status: "ongoing" | "finalized"
+    deals: Deal[]
+  }
+}
+
+export interface Deal {
+  /**
+   * CID string
+   */
+  batchRootCid: string
+  /**
+   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ. 
+   */
+  lastChanged: string
+  /**
+   * Miner ID
+   */
+  miner: string
+  /**
+   * Filecoin network for this Deal
+   */
+  network: "nerpanet" | "mainnet"
+  /**
+   * Piece CID string
+   */
+  pieceCid: string
+  /**
+   * Deal Status
+   */
+  status: "queued" | "proposing" | "accepted" | "failed" | "active" | "published" | "terminated"
+  /**
+   * Deal Status Description
+   */
+  statusText?: string
+  /**
+   * Deal Activation
+   * 
+   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ. 
+   */
+  dealActivation: string
+  /**
+   * Deal Expiraction
+   * 
+   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ. 
+   */
+  dealExpiration: string
 }
