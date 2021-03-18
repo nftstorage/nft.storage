@@ -1,15 +1,14 @@
-import { test } from "zora"
-import NFTStorage from "../src/lib.js"
+import * as assert from "uvu/assert"
+import { NFTStorage, Blob, File } from "nft.storage"
 
-const { AUTH_TOKEN, SERVICE_ENDPOINT } = process.env
+describe("client", () => {
+  const { AUTH_TOKEN, SERVICE_ENDPOINT } = process.env
+  const token = AUTH_TOKEN || ""
+  const endpoint = new URL(SERVICE_ENDPOINT || "")
 
-const token = AUTH_TOKEN || ''
-const endpoint = new URL(SERVICE_ENDPOINT || '')
-
-test('client', ({test}) => {
-  test("interface", (assert) => {
+  it("interface", () => {
     assert.equal(typeof NFTStorage, "function")
-    const client = new NFTStorage({ token: 'secret' })
+    const client = new NFTStorage({ token: "secret" })
     assert.ok(client instanceof NFTStorage)
     assert.equal(typeof client.storeBlob, "function")
     assert.equal(typeof client.storeDirectory, "function")
@@ -21,103 +20,105 @@ test('client', ({test}) => {
     assert.equal(typeof NFTStorage.status, "function")
     assert.equal(typeof NFTStorage.delete, "function")
   })
-  test("upload", ({ test }) => {
-    test('upload blob', async assert => {
+  describe("upload", () => {
+    it("upload blob", async () => {
       const client = new NFTStorage({ token, endpoint })
-      const cid = await client.storeBlob(new Blob(['hello world']))
-      assert.equal(cid, 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
+      const cid = await client.storeBlob(new Blob(["hello world"]))
+      assert.equal(cid, "Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD")
     })
 
-    test('can upload twice', async assert => {
+    it("can upload twice", async () => {
       const client = new NFTStorage({ token, endpoint })
-      const blob = new Blob(['upload twice'])
+      const blob = new Blob(["upload twice"])
       const cid1 = await client.storeBlob(blob)
       const status1 = await client.status(cid1)
 
       const cid2 = await client.storeBlob(blob)
       const status2 = await client.status(cid2)
 
-      assert.deepEqual(cid1, cid2, 'cids match')
-      assert.deepEqual(status1.created, status2.created, 'dates match')
+      assert.equal(cid1, cid2, "cids match")
+      assert.equal(status1.created, status2.created, "dates match")
     })
   })
 
-test("upload dir", ({ test }) => {
-    test('upload a file', async assert => {
+  describe("upload dir", () => {
+    it("upload a file", async () => {
       const client = new NFTStorage({ token, endpoint })
       const cid = await client.storeDirectory([
-        new File(['hello world'], 'hello.txt')
+        new File(["hello world"], "hello.txt"),
       ])
 
-      assert.equal(cid, 'QmNxvA5bwvPGgMXbmtyhxA1cKFdvQXnsGnZLCGor3AzYxJ')
+      assert.equal(cid, "QmNxvA5bwvPGgMXbmtyhxA1cKFdvQXnsGnZLCGor3AzYxJ")
     })
 
-    test('upload multiple files', async assert => {
+    it("upload multiple files", async () => {
       const client = new NFTStorage({ token, endpoint })
       const cid = await client.storeDirectory([
-        new File(['hello world'], 'hello.txt'),
-        new File([JSON.stringify({'from': 'incognito'}, null, 2)], 'metadata.json')
+        new File(["hello world"], "hello.txt"),
+        new File(
+          [JSON.stringify({ from: "incognito" }, null, 2)],
+          "metadata.json"
+        ),
       ])
 
-      assert.equal(cid, 'QmQAE2tjfwYYmEFFEEnfr12CWikMqgwwtq5gqfyb62bJpw')
+      assert.equal(cid, "QmQAE2tjfwYYmEFFEEnfr12CWikMqgwwtq5gqfyb62bJpw")
     })
   })
 
-  test("status", (t) => {
+  describe("status", () => {
     const client = new NFTStorage({ token, endpoint })
 
-    /** @type {typeof t.test} */
-    const test = (name, unit) => t.test(name, async (assert) => {
-      const preloaded = [
+    /** @type {string[]} */
+    let preloaded
+    beforeEach(async () => {
+      preloaded = [
         // QmaCxv35MgHdAD2K9Tn8xrKVZJw7dauYi4V1GmkQRNYbvP
-        await client.storeBlob(new Blob(['preload status'])),
+        await client.storeBlob(new Blob(["preload status"])),
         // QmTPFUEcZvqKBYqJM3itqkDiqJaApYzLJ1ht6iBD4d6M28
         // await client.storeBlob(new Blob(['missing']))
       ]
+    })
 
-      await unit(assert)
-
+    afterEach(async () => {
       await Promise.all(preloaded.map(cid => client.delete(cid)))
-
     })
 
-    test('found', async assert => {
-      const cid = 'QmaCxv35MgHdAD2K9Tn8xrKVZJw7dauYi4V1GmkQRNYbvP'
+    it("found", async () => {
+      const cid = "QmaCxv35MgHdAD2K9Tn8xrKVZJw7dauYi4V1GmkQRNYbvP"
       const status = await client.status(cid)
-      assert.deepEqual(status.cid, cid)
+      assert.equal(status.cid, cid)
     })
 
-    test('not found', async assert => {
-      const cid = 'QmTPFUEcZvqKBYqJM3itqkDiqJaApYzLJ1ht6iBD4d6M28'
+    it("not found", async () => {
+      const cid = "QmTPFUEcZvqKBYqJM3itqkDiqJaApYzLJ1ht6iBD4d6M28"
       try {
         await client.status(cid)
-        assert.fail('Expected to fail')
+        assert.unreachable("Expected to fail")
       } catch (error) {
         assert.ok(error.message.match(/not found/))
       }
     })
   })
 
-  test('delete', ({test}) => {
-    test('ok to delete unknown', async assert => {
+  describe("delete", () => {
+    it("ok to delete unknown", async () => {
       const client = new NFTStorage({ token, endpoint })
-      const cid = 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD'
+      const cid = "Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD"
       const result = await client.delete(cid)
       assert.equal(result, undefined)
     })
 
-    test('gone after delete', async assert => {
+    it("gone after delete", async () => {
       const client = new NFTStorage({ token, endpoint })
-      const cid = await client.storeBlob(new Blob(['to be deleted']))
+      const cid = await client.storeBlob(new Blob(["to be deleted"]))
       await client.status(cid)
       await client.delete(cid)
       try {
         await client.status(cid)
-        assert.fail('should be gone')
+        assert.unreachable("should be gone")
       } catch (error) {
-        assert.ok(error.message.includes('not found'))
+        assert.ok(error.message.includes("not found"))
       }
     })
   })
 })
-

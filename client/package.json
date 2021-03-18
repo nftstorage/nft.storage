@@ -6,36 +6,47 @@
   "type": "module",
   "types": "./dist/src/lib.d.ts",
   "module": "./src/lib.js",
+  "main": "./dist/src/lib.cjs",
   "exports": {
     ".": {
-      "import": "./src/lib.js",
-      "browser": "./src/lib.js"
+      "browser": "./src/lib.js",
+      "require": "./dist/src/lib.cjs",
+      "node": "./src/lib.js"
+    },
+    "./src/platform.js": {
+      "browser": "./src/platform.web.js",
+      "require": "./dist/src/platform.cjs",
+      "node": "./src/platform.js"
     },
     "./src/api.js": {
       "default": "./src/api.js"
     }
   },
-  "typesVersions": {
-    "*": {
-      "src/*": [
-        "dist/src/*"
-      ]
-    }
+  "browser": {
+    "./src/platform.js": "./src/platform.web.js"
   },
   "scripts": {
-    "test": "node test/run.js",
-    "build": "tsc --build",
+    "test:web": "node test/test.js",
+    "test:es": "mocha -r test/serve.js test/*.spec.js --exit",
+    "test:cjs": "mocha -r test/serve.js dist/test/*.spec.cjs --delay=1000 --exit",
+    "build": "npm run build:ts && npm run build:cjs",
+    "build:ts": "tsc --build",
+    "build:cjs": "rollup --config rollup.config.js",
     "typedoc": "typedoc --entryPoints src  --out ../docs/client",
+    "prepare": "npm run build",
     "precommit": "lint-staged"
   },
   "dependencies": {
-    "@ssttevee/multipart-parser": "0.1.8",
     "@web-std/blob": "2.0.1",
     "@web-std/fetch": "1.0.0",
     "@web-std/file": "1.0.1",
     "@web-std/form-data": "2.0.0"
   },
   "devDependencies": {
+    "@ssttevee/multipart-parser": "0.1.8",
+    "uvu": "0.5.1",
+    "mocha": "8.3.2",
+    "@types/mocha": "8.2.1",
     "husky": "4.2.5",
     "ipfs-unixfs-importer": "6.0.1",
     "ipld": "0.29.0",
@@ -49,8 +60,8 @@
     "prettier": "2.2.1",
     "typedoc": "0.20.32",
     "typescript": "4.2.3",
-    "web-streams-polyfill": "3.0.2",
-    "zora": "4.0.2"
+    "rollup": "2.22.1",
+    "rollup-plugin-multi-input": "1.1.1"
   },
   "lint-staged": {
     "*.js": [
