@@ -1,7 +1,7 @@
 import { spawn } from "child_process"
 import { activate, deactivate, Response, Request } from "./mock-server.js"
 import { CID } from 'multiformats'
-import { readFile } from './importer.js'
+import { importBlob, importDirectory } from './importer.js'
 /**
  * @param {Request} request
  */
@@ -14,6 +14,21 @@ const headers = ({headers}) => ({
   headers.get('Access-Control-Request-Headers') || '',
   'Content-Type': 'application/json;charset=UTF-8'
 })
+
+/**
+ * @param {Request} request 
+ */
+const importUpload = async (request) => {
+  const contentType = request.headers.get('content-type') || ''
+  if (contentType.includes('multipart/form-data')) {
+    const data = await request.formData()
+    const files = /** @type {File[]} */(data.getAll("file"))
+    return await importDirectory(files)
+  } else {
+    const content = await request.arrayBuffer()
+    return await importBlob(new Uint8Array(content))
+  }
+}
 
 
 const main = async () => {
@@ -46,40 +61,26 @@ const main = async () => {
 
     switch (`${request.method} /${api}/${param}`) {
       case 'POST /api/upload': {
-        const contentType = request.headers.get('content-type') || ''
-        if (contentType.includes('multipart/form-data')) {
-          console.log('>>> FORM DATA', request.formData)
-          try {
-            const data = await request.formData()
-            console.log('<<<', data)
-          } catch (error) {
-            console.error(error)
-          }
-          throw new Error('Not Implemented')
-        } else {
-          const content = await request.arrayBuffer()
-          console.log(content)
-
-          const { cid } = await readFile(new Uint8Array(content))
-          const key = `${token}:${cid}`
-          if (!store.get(key)) {
-            const created = new Date()
-            store.set(key, {
+        const { cid } = await importUpload(request)
+        const key = `${token}:${cid}`
+        if (!store.get(key)) {
+          const created = new Date()
+          store.set(key, {
+            cid: cid.toString(),
+            deals: { status: 'ongoing', deals: [] },
+            pin: {
               cid: cid.toString(),
-              deals: { status: 'ongoing', deals: [] },
-              pin: {
-                cid: cid.toString(),
-                status: "pinned",
-                created
-              },
+              status: "pinned",
               created
-            })
-          }
-          const result = { ok: true, value: { cid: cid.toString() }}
-          return new Response(JSON.stringify(result), {
-            headers: headers(request)
+            },
+            created
           })
         }
+        const result = { ok: true, value: { cid: cid.toString() }}
+        
+        return new Response(JSON.stringify(result), {
+          headers: headers(request)
+        })
       }
       case `GET /api/${param}`: {
         const cid = CID.parse(param || '')

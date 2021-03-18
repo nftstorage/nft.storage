@@ -1,112 +1,235 @@
 import http from "http"
-import fetch, { Headers, Request as FetchRequest, Response } from 'node-fetch'
+import fetch, { Headers,
+  Request as FetchRequest,
+  Response as FetchResponse
+} from '@web-std/fetch'
 import { iterateMultipart } from '@ssttevee/multipart-parser'
 import { File, FormData, ReadableStream } from "../src/platform.node.js"
-import Blob from "fetch-blob"
+import { Decoder, Encoder } from "multiformats/codecs/codec"
+import { decode } from "multiformats/hashes/digest"
+import { ReadStream } from "fs"
 
-export { fetch, Headers, Response }
+const encoder = new TextEncoder()
+const decoder = new TextDecoder()
+export { fetch, Headers }
 
+/**
+ * 
+ * @param {AsyncIterator<string|Uint8Array>|Iterator<string|Uint8Array>} source
+ * @returns {ReadableStream<Uint8Array>}
+ */
+const toReadableStream = (source) => new ReadableStream({
+  async pull(controller) {
+    try {
+      while (controller.desiredSize || 0 > 0) {
+        const chunk = await source.next()
+        if (chunk.done) {
+          controller.close()
+        } else {
+          const bytes = typeof chunk.value === 'string'
+            ? encoder.encode(chunk.value)
+            : chunk.value
+          controller.enqueue(bytes)
+        }
+      }
+    } catch (error) {
+      controller.error(error)
+    }
+  },
+  cancel(reason) {
+    if (reason) {
+      if (typeof source.throw === "function") {
+        return void source.throw(reason)
+      }
+    }
+    if (typeof source.return === "function") {
+      source.return()
+    }
+  }
+})
+
+/**
+ * @typedef {{body: ReadableStream<Uint8Array>|null}} Source
+ *
+ * @param {Source} source
+ * @returns {Promise<Uint8Array>}
+ */
+const toBytes = async ({body}) => {
+  if (body == null) {
+    return new Uint8Array(0)
+  }
+  const chunks = []
+  const reader = body.getReader()
+  let byteLength = 0
+  while (true) {
+    const chunk = await reader.read()
+    if (chunk.done) {
+      break
+    } else {
+      byteLength += chunk.value.byteLength
+      chunks.push(chunk.value)
+    }
+  }
+
+  const bytes = new Uint8Array(byteLength)
+  let offset = 0
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset)
+    offset += chunk.byteLength
+  }
+
+  return bytes
+}
+
+/**
+ * 
+ * @param {Source} source 
+ * @returns {Promise<ArrayBuffer>}
+ */
+const toArrayBuffer = async (source) => {
+  const bytes = await toBytes(source)
+  return bytes.buffer
+}
+
+/**
+ * @param {Source} source 
+ */
+const toText = async (source) => {
+  const bytes = await toBytes(source)
+  return decoder.decode(bytes)
+}
+
+
+/**
+ * @param {Source} source 
+ */
+const toBlob = async (source) => {
+  const bytes = await toBytes(source)
+  return new Blob([bytes])
+}
+
+/**
+ * @param {Source} source 
+ */
+const toJSON = async (source) => {
+  const text = await toText(source)
+  return JSON.parse(text)
+}
+
+/**
+ * @param {Request|Response} source 
+ */
+const toFormData = async ({body, headers}) => {
+  const contentType = headers.get('Content-Type') || ''
+  const [type, boundary] = contentType.split(/\s*;\s*boundary=/)
+  if (type === "multipart/form-data" && boundary != null && body != null) {
+    const form = new FormData()
+    const parts = iterateMultipart(body, boundary)
+    for await (const { name, data, filename, contentType } of parts) {
+      if (filename) {
+        form.append(name, new File([data], filename, { type: contentType }))
+      } else {
+        form.append(name, new TextDecoder().decode(data), filename);
+      }
+    }
+    return form
+  } else {
+    throw new TypeError('Could not parse content as FormData.')
+  }
+}
+
+/**
+ * @param {Request|Response} self
+ */
+const bodyOf = (self) => {
+  const stream = self._rawStream()
+
+  const body = stream == null
+    ? null
+    : (stream instanceof Uint8Array || typeof stream === 'string')
+    ? toReadableStream([stream][Symbol.iterator]())
+    // @ts-ignore
+    : toReadableStream(stream[Symbol.asyncIterator]())
+    
+  Object.defineProperty(self, "body", { value: body })
+  return body
+}
 
 export class Request extends FetchRequest {
-  /**
-   * @private
-   */
   _rawStream() {
     return super.body
   }
 
-  async arrayBuffer() {
-    const chunks = []
-    const reader = this.body.getReader()
-    let byteLength = 0
-    while (true) {
-      const chunk = await reader.read()
-      if (chunk.done) {
-        break
-      } else {
-        byteLength += chunk.value.byteLength
-        chunks.push(chunk.value)
-      }
-    }
-
-    const buffer = new ArrayBuffer(byteLength)
-    const bytes = new Uint8Array(buffer)
-    let offset = 0
-    for (const chunk of chunks) {
-      bytes.set(chunk, offset)
-      offset += chunk.byteLength
-    }
-
-    return buffer
-  }
-
-  async blob() {
-    const buffer = await this.arrayBuffer()
-    return new Blob([buffer])
-  }
-
-  async text() {
-    const blob = await this.blob()
-    return await blob.text()
-  }
-
-  async json() {
-    const text = await this.text()
-    return JSON.parse(text)
-  }
-
-
-  // @ts-ignore
+  /**
+   * @type {ReadableStream<Uint8Array>|null}
+   */
+  // @ts-ignore - we want ReadableStream not node stream
   get body() {
-    // console.log('!!!! body', Error().stack)
-    const source = this._rawStream()[Symbol.asyncIterator]()
-    const body = new ReadableStream({
-      async pull(controller) {
-        try {
-          while (controller.desiredSize || 0 > 0) {
-            const chunk = await source.next()
-            // console.log('!!!!!!!!!!!!!!!!!', chunk, Error().stack)
-            if (chunk.done) {
-              controller.close()
-            } else {
-              controller.enqueue(chunk.value)
-            }
-          }
-        } catch (error) {
-          controller.error(error)
-        }
-      },
-      cancel(reason) {
-        if (reason) {
-          if (typeof source.throw === "function") {
-            return void source.throw(reason)
-          }
-        }
-        if (typeof source.return === "function") {
-          source.return()
-        }
-      }
-    })
-    Object.defineProperty(this, "body", { value: body })
-    return body
+    return bodyOf(this)
   }
-  async formData() {
-    const contentType = this.headers.get('Content-Type') || ''
-    const [type, boundary] = contentType.split(/\s*;\s*boundary=/)
-    if (type === "multipart/form-data" && boundary != null) {
-      const form = new FormData()
-      // @ts-ignore
-      const parts = iterateMultipart(this.body, boundary)
-      for await (const { name, data, filename, contentType } of parts) {
-        if (filename) {
-          form.append(name, new File([data], filename, { type: contentType }))
-        } else {
-          form.append(name, new TextDecoder().decode(data), filename);
-        }
-    }
-    } else {
-      throw new TypeError('Could not parse content as FormData.')
-    }
+
+  arrayBuffer() {
+    return toArrayBuffer(this)
+    
+  }
+
+  /**
+   * @returns {Promise<globalThis.Blob>}
+   */
+  // @ts-ignore - we want starndard blob not the node-fetch one
+  blob() {
+    return toBlob(this)
+  }
+
+  text() {
+    return toText(this)
+  }
+
+  json() {
+    return toJSON(this)
+  }
+
+  formData() {
+    return toFormData(this)
+  }
+}
+
+export class Response extends FetchResponse {
+  _rawStream() {
+    return super.body
+  }
+
+  /**
+   * @type {ReadableStream<Uint8Array>|null}
+   */
+  // @ts-ignore - we want ReadableStream not node stream
+  get body() {
+    return bodyOf(this)
+  }
+
+  arrayBuffer() {
+    return toArrayBuffer(this)
+    
+  }
+
+  /**
+   * @returns {Promise<globalThis.Blob>}
+   */
+  // @ts-ignore - we want starndard blob not the node-fetch one
+  blob() {
+    return toBlob(this)
+  }
+
+  text() {
+    return toText(this)
+  }
+
+  json() {
+    return toJSON(this)
+  }
+
+  formData() {
+    return toFormData(this)
   }
 }
 
@@ -137,19 +260,19 @@ class Service {
     try {
       const { host, port } = this.address
       const url = new URL(incoming.url || '/', `http://${host}:${port}`)
-      // @ts-ignore
-      const headers = new Headers({...incoming.headers})
 
-      const request = new Request(url, {
+      const request = new Request(url.href, {
         method: incoming.method,
-        headers,
+        // @ts-ignore
+        headers: new Headers({...incoming.headers}),
         body: toBody(incoming)
       })
 
 
       const response = await this.handler(request)
-      outgoing.writeHead(response.status, [...response.headers.entries()])
-      const body = response.body[Symbol.asyncIterator] ? response.body : [response.body]
+      const headers = Object.fromEntries(response.headers.entries())
+      outgoing.writeHead(response.status, headers)
+      const body = response.body ? response.body : []
       for await (const chunk of body) {
         outgoing.write(chunk)
       }
