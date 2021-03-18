@@ -26,9 +26,9 @@
     "./src/platform.js": "./src/platform.web.js"
   },
   "scripts": {
-    "test:web": "node test/test.js",
-    "test:es": "mocha -r test/serve.js test/*.spec.js --exit",
-    "test:cjs": "mocha -r test/serve.js dist/test/*.spec.cjs --delay=1000 --exit",
+    "test:web": "node test/test.js playwright-test test/*.spec.js",
+    "test:es": "node test/test.js mocha test/*.spec.js --exit",
+    "test:cjs": "node test/test.js mocha dist/test/*.spec.cjs --exit",
     "build": "npm run build:ts && npm run build:cjs",
     "build:ts": "tsc --build",
     "build:cjs": "rollup --config rollup.config.js",
