@@ -15,7 +15,7 @@ export default function Home () {
       <main>
         <About />
         <GettingStarted loginUrl={loginUrl} />
-        <APIDocs />
+        {/* <APIDocs /> */}
         <FAQ />
       </main>
     </Layout>
@@ -142,7 +142,7 @@ console.log(cid)`
             <pre className='f6 lh-copy bg-nspink pa3 br1 ba b--black code overflow-x-scroll'>{curlEx}</pre>
             <p className='lh-copy'>Successful requests will receive a HTTP <code className='f6 bg-nspink ph2 pv1 br1 ba b--black code'>200</code> status and <code className='f6 bg-nspink ph2 pv1 br1 ba b--black code'>application/json</code> response like:</p>
             <pre className='f6 lh-copy bg-nspink pa3 br1 ba b--black code overflow-x-scroll'>{uploadResp}</pre>
-            <p className='lh-copy'>Check the <a href='#api-docs' className='black'>API Docs</a> for information on uploading multiple files and the other available endpoints.</p>
+            <p className='lh-copy'>Check the <a href='/api-docs' className='black'>API Docs</a> for information on uploading multiple files and the other available endpoints.</p>
           </Box>
           <Box bgColor='nspeach' borderColor='nsred' wrapperClassName='w-100 w-100-m w-33-ns mh0 mh0-m mh3-ns mb4'>
             <h2 className='chicagoflf f5 fw4'><HashLink id='configure-as-a-remote-pinning-service'>Configure as a Remote Pinning Service</HashLink></h2>

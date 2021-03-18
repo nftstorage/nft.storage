@@ -1,0 +1,314 @@
+openapi: '3.0.2'
+info:
+  title: NFT Storage API
+  version: '1.0'
+  description: |
+    # API Reference
+  termsOfService: 'terms'
+  contact:
+    name: NFT Storage
+    url: '/'
+  x-logo:
+    url: '/images/logo-nft.storage.svg'
+    altText: NFT Storage logo
+
+servers:
+  - url: https://nft.storage/api
+
+tags:
+  - name: NFTs
+paths:
+  /upload:
+    post:
+      tags:
+        - NFTs
+      summary: Store a file
+      description: |
+        Store a file with nft.storage.
+
+        - Submit a HTTP `POST` request passing the file data in the request body.
+        - To store multiple files in a directory, submit a `multipart/form-data` HTTP `POST` request.
+
+        Use the `Content-Disposition` header for each part to specify a filename.
+
+      requestBody:
+        required: true
+        content:
+          image/png:
+            schema:
+              type: string
+              format: binary
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    default: true
+                  value:
+                    $ref: '#/components/schemas/NFT'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+  /:
+    get:
+      tags:
+        - NFTs
+      summary: List all stored files
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  ok: 
+                    type: boolean
+                  value:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NFT'
+                
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+  /{cid}:
+    get:
+      tags:
+        - NFTs
+      summary: Get information for the stored file CID
+      description: Includes the IPFS pinning state and the Filecoin deal state.
+      parameters:
+        - name: cid
+          in: path
+          description: CID for the NFT
+          required: true
+          schema:
+            $ref: '#/components/schemas/CID'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  ok: 
+                    type: boolean
+                  value:
+                    type: object
+                    $ref: '#/components/schemas/NFT'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+    delete:
+      tags:
+        - NFTs
+      summary: Stop storing the content with the passed CID
+      description: |
+        Stop storing the content with the passed CID on nft.storage.
+        - Unpin the item from the underlying IPFS pinning service.
+        - Cease renewals for expired Filecoin deals involving the CID.  
+
+        ⚠️ This does not remove the content from the network.
+
+        - Does not terminate any established Filecoin deal.
+        - Does not remove the content from other IPFS nodes in the network that already cached or pinned the CID.  
+        
+        Note: the content will remain available if another user has stored the CID with nft.storage.
+      parameters:
+        - name: cid
+          in: path
+          description: CID for the NFT
+          required: true
+          schema:
+            $ref: '#/components/schemas/CID'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  ok: 
+                    type: boolean
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+  
+components:
+  schemas:
+    NFT:
+      type: object
+      properties:
+        cid:
+          $ref: '#/components/schemas/CID'
+        size:
+          type: number
+          default: 132614
+        created:
+          $ref: '#/components/schemas/Date'
+        type:
+          type: string
+          enum:
+            [
+              directory,
+              image/jpeg,
+              application/json,
+              other mime types,
+            ]
+          example: image/jpeg
+          description: MIME type of the upload file or 'directory' when uploading multiple files.
+        scope:
+          type: string
+          default: default
+        pin:
+          $ref: '#/components/schemas/Pin'
+        files:
+          $ref: '#/components/schemas/Files'
+        links:
+          $ref: '#/components/schemas/Links'
+    Links:
+      type: object
+      properties:
+        ipfs:
+          type: string
+          example: ipfs://bafkreidivzimqfqtoqxkrpge6bjyhlvxqs3rhe73owtmdulaxr5do5in7u
+        http:
+          type: string
+          example: http://bafkreidivzimqfqtoqxkrpge6bjyhlvxqs3rhe73owtmdulaxr5do5in7u.ipfs.dweb.link
+        file:
+          type: array
+          items:
+            type: object
+            properties:
+              ipfs:
+                type: string
+                example: ipfs://bafkreidivzimqfqtoqxkrpge6bjyhlvxqs3rhe73owtmdulaxr5do5in7u/image.jpg
+              http:
+                type: string
+                example: http://bafkreidivzimqfqtoqxkrpge6bjyhlvxqs3rhe73owtmdulaxr5do5in7u.ipfs.dweb.link/image.jpg
+    Files:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            example: logo.jpg
+          type:
+            type: string
+            example: image/jpeg
+    Date:
+      type: string
+      format: date-time
+      example: '2021-03-12T17:03:07.787Z'
+      description: 'This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.'
+    CID:
+      type: string
+      example: bafkreidivzimqfqtoqxkrpge6bjyhlvxqs3rhe73owtmdulaxr5do5in7u
+      description: Self-describing content-addressed identifiers for distributed systems. Check [spec](https://github.com/multiformats/cid) for more info.
+    PinStatus:
+      type: string
+      enum:
+        - queued
+        - pinning
+        - pinned
+        - failed
+    Pin:
+      type: object
+      properties:
+        cid:
+          $ref: '#/components/schemas/CID'
+        name:
+          type: string
+          example: pin name
+        status:
+          $ref: '#/components/schemas/PinStatus'
+        created:
+          $ref: '#/components/schemas/Date'
+        size:
+          type: number
+          example: 132614
+
+
+  securitySchemes:
+    Bearer Token:
+      description: |
+        The NFT Storage API uses *Bearer Tokens* to authenticate requests. You can view and manage your tokens in the [NFT Storage Dashboard](https://nft.storage).   
+
+        Your tokens carry many privileges, so be sure to keep them secure! Do not share your *secret tokens* in publicly accessible areas such as GitHub, client-side code, and so forth.   
+
+        **Bearer authentication** (also called token authentication) is an HTTP authentication scheme that involves security tokens called bearer tokens. The name “Bearer authentication” can be understood as “give access to the bearer of this token.” The bearer token is a cryptic string, usually generated by the server in response to a login request. The client must send this token in the Authorization header when making requests to protected resources:
+
+        ```js
+        Authorization: Bearer <token>
+        ```
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    unauthorized:
+      description: Unauthorized
+      content:
+        'application/json':
+          schema:
+            type: object
+            properties:
+              ok:
+                type: boolean
+                default: false
+              error:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    default: HTTP Error
+                  message:
+                    type: string
+                    default: Unauthorized
+    forbidden:
+      description: Forbidden
+      content:
+        'application/json':
+          schema:
+            type: object
+            properties:
+              ok:
+                type: boolean
+                default: false
+              error:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    default: HTTP Error
+                  message:
+                    type: string
+                    enum: [Token is not valid, Session expired]
+
+security:
+  - Bearer Token: []

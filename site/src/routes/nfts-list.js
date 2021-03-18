@@ -14,5 +14,8 @@ export async function list(event) {
   const user = token.user
   console.log(token);
 
-  return new JSONResponse(await nfts.list(user.sub))
+  return new JSONResponse({
+    ok: true,
+    value: await nfts.list(user.sub)
+  })
 }
