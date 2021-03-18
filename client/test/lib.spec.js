@@ -41,6 +41,7 @@ test('client', ({test}) => {
       assert.deepEqual(status1.created, status2.created, 'dates match')
     })
   })
+
   test("status", (t) => {
     const client = new NFTStorage({ token, endpoint })
 

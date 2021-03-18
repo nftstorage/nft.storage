@@ -1,7 +1,114 @@
 import http from "http"
-import fetch, { Headers, Request, Response } from 'node-fetch'
+import fetch, { Headers, Request as FetchRequest, Response } from 'node-fetch'
+import { iterateMultipart } from '@ssttevee/multipart-parser'
+import { File, FormData, ReadableStream } from "../src/platform.node.js"
+import Blob from "fetch-blob"
 
-export { fetch, Headers, Request, Response }
+export { fetch, Headers, Response }
+
+
+export class Request extends FetchRequest {
+  /**
+   * @private
+   */
+  _rawStream() {
+    return super.body
+  }
+
+  async arrayBuffer() {
+    const chunks = []
+    const reader = this.body.getReader()
+    let byteLength = 0
+    while (true) {
+      const chunk = await reader.read()
+      if (chunk.done) {
+        break
+      } else {
+        byteLength += chunk.value.byteLength
+        chunks.push(chunk.value)
+      }
+    }
+
+    const buffer = new ArrayBuffer(byteLength)
+    const bytes = new Uint8Array(buffer)
+    let offset = 0
+    for (const chunk of chunks) {
+      bytes.set(chunk, offset)
+      offset += chunk.byteLength
+    }
+
+    return buffer
+  }
+
+  async blob() {
+    const buffer = await this.arrayBuffer()
+    return new Blob([buffer])
+  }
+
+  async text() {
+    const blob = await this.blob()
+    return await blob.text()
+  }
+
+  async json() {
+    const text = await this.text()
+    return JSON.parse(text)
+  }
+
+
+  // @ts-ignore
+  get body() {
+    // console.log('!!!! body', Error().stack)
+    const source = this._rawStream()[Symbol.asyncIterator]()
+    const body = new ReadableStream({
+      async pull(controller) {
+        try {
+          while (controller.desiredSize || 0 > 0) {
+            const chunk = await source.next()
+            // console.log('!!!!!!!!!!!!!!!!!', chunk, Error().stack)
+            if (chunk.done) {
+              controller.close()
+            } else {
+              controller.enqueue(chunk.value)
+            }
+          }
+        } catch (error) {
+          controller.error(error)
+        }
+      },
+      cancel(reason) {
+        if (reason) {
+          if (typeof source.throw === "function") {
+            return void source.throw(reason)
+          }
+        }
+        if (typeof source.return === "function") {
+          source.return()
+        }
+      }
+    })
+    Object.defineProperty(this, "body", { value: body })
+    return body
+  }
+  async formData() {
+    const contentType = this.headers.get('Content-Type') || ''
+    const [type, boundary] = contentType.split(/\s*;\s*boundary=/)
+    if (type === "multipart/form-data" && boundary != null) {
+      const form = new FormData()
+      // @ts-ignore
+      const parts = iterateMultipart(this.body, boundary)
+      for await (const { name, data, filename, contentType } of parts) {
+        if (filename) {
+          form.append(name, new File([data], filename, { type: contentType }))
+        } else {
+          form.append(name, new TextDecoder().decode(data), filename);
+        }
+    }
+    } else {
+      throw new TypeError('Could not parse content as FormData.')
+    }
+  }
+}
 
 class Service {
   /**

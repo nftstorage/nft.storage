@@ -48,9 +48,18 @@ const main = async () => {
       case 'POST /api/upload': {
         const contentType = request.headers.get('content-type') || ''
         if (contentType.includes('multipart/form-data')) {
+          console.log('>>> FORM DATA', request.formData)
+          try {
+            const data = await request.formData()
+            console.log('<<<', data)
+          } catch (error) {
+            console.error(error)
+          }
           throw new Error('Not Implemented')
         } else {
           const content = await request.arrayBuffer()
+          console.log(content)
+
           const { cid } = await readFile(new Uint8Array(content))
           const key = `${token}:${cid}`
           if (!store.get(key)) {
