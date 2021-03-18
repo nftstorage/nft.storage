@@ -80,13 +80,14 @@ function About () {
 }
 
 function GettingStarted ({ loginUrl }) {
-  const jsEx = `import { NFTStorage } from 'nft.storage'
+  const jsEx = `import { NFTStorage, Blob } from 'nft.storage'
 
 const apiKey = 'YOUR_API_KEY'
 const client = new NFTStorage({ token: apiKey })
 
 const content = new Blob(['hello world'])
-const cid = await client.storeBlob(content)`
+const cid = await client.storeBlob(content)
+console.log(cid)`
 
   const jsDirEx = `const cid = client.storeDirectory([
   new File(['hello world'], 'content.txt'),
