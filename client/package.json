@@ -30,8 +30,7 @@
     "build:ts": "tsc --build",
     "build:cjs": "rollup --config rollup.config.js",
     "typedoc": "typedoc --entryPoints src  --out ../docs/client",
-    "prepare": "npm run build",
-    "precommit": "lint-staged"
+    "prepare": "npm run build"
   },
   "dependencies": {
     "@web-std/blob": "2.0.1",
@@ -44,27 +43,17 @@
     "uvu": "0.5.1",
     "mocha": "8.3.2",
     "@types/mocha": "8.2.1",
-    "husky": "4.2.5",
     "ipfs-unixfs-importer": "6.0.1",
     "ipld": "0.29.0",
     "ipld-dag-pb": "0.22.0",
     "ipld-in-memory": "8.0.0",
-    "lint-staged": "10.2.11",
     "multicodec": "3.0.1",
     "multiformats": "4.5.3",
     "multihashing-async": "2.1.2",
     "playwright-test": "2.1.0",
-    "prettier": "2.2.1",
     "typedoc": "0.20.32",
-    "typescript": "4.2.3",
     "rollup": "2.22.1",
     "rollup-plugin-multi-input": "1.1.1"
-  },
-  "lint-staged": {
-    "*.js": [
-      "prettier --no-semi --write",
-      "git add"
-    ]
   },
   "homepage": "https://github.com/ipfs-shipyard/nft.storage/tree/main/client",
   "bugs": "https://github.com/ipfs-shipyard/nft.storage/issues"
