@@ -16,11 +16,5 @@
     "swagger-ui-react": "^3.45.0",
     "swr": "^0.5.3",
     "tachyons": "^4.12.0"
-  },
-  "prettier": {
-    "trailingComma": "es5",
-    "tabWidth": 2,
-    "semi": false,
-    "singleQuote": true
   }
 }

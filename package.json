@@ -1,11 +1,36 @@
 {
   "private": true,
-  "workspaces": ["site", "client", "website"],
+  "workspaces": [
+    "site",
+    "client",
+    "website"
+  ],
   "scripts": {
     "start": "yarn --cwd site start",
-    "test": "yarn test:client",
+    "test": "yarn test:site",
     "test:client": "yarn --cwd client test",
+    "test:site": "yarn --cwd site test",
     "build:client:docs": "yarn --cwd client typedoc",
-    "build:site": "yarn --cwd website build"
+    "build:site": "yarn --cwd website build",
+    "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css}'"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged",
+    "pre-push": "yarn test"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,md,html,css}": "prettier --write"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true
+  },
+  "devDependencies": {
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1",
+    "simple-git-hooks": "^2.0.3",
+    "typescript": "^4.2.3"
   }
 }

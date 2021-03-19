@@ -46,15 +46,8 @@ export async function upload(event) {
       return new JSONResponse({
         ok: true,
         value: {
-          ...Object.assign(result, { deals: { status: 'ongoing', deals: [] } }),
-          links: {
-            ipfs: `ipfs://${cid}`,
-            http: `https://${cid}.ipfs.dweb.link`,
-            files: parts.map((f) => ({
-              ipfs: `ipfs://${cid}/${f.filename}`,
-              http: `https://${cid}.ipfs.dweb.link/${f.filename}`,
-            })),
-          },
+          ...result,
+          deals: { status: 'ongoing', deals: [] },
         },
       })
     } else {
@@ -88,11 +81,8 @@ export async function upload(event) {
       return new JSONResponse({
         ok: true,
         value: {
-          ...Object.assign(result, { deals: { status: 'ongoing', deals: [] } }),
-          links: {
-            ipfs: `ipfs://${cid}`,
-            http: `https://${cid}.ipfs.dweb.link`,
-          },
+          ...result,
+          deals: { status: 'ongoing', deals: [] },
         },
       })
     } else {

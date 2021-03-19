@@ -167,6 +167,7 @@ components:
         cid:
           $ref: '#/components/schemas/CID'
         size:
+          description: Size in bytes of the NFT data.
           type: number
           default: 132614
         created:
@@ -183,14 +184,26 @@ components:
           example: image/jpeg
           description: MIME type of the upload file or 'directory' when uploading multiple files.
         scope:
+          description: Name of the JWT token used to create this NFT.
           type: string
           default: default
         pin:
           $ref: '#/components/schemas/Pin'
         files:
           $ref: '#/components/schemas/Files'
-        links:
-          $ref: '#/components/schemas/Links'
+        deals:
+          type: object
+          properties:
+            status:
+              description: Overall deal status
+              type: string
+              enum:
+                - ongoing
+                - finalized
+            deals: 
+              type: array
+              items:
+                $ref: '#/components/schemas/Deal'
     Links:
       type: object
       properties:
@@ -212,6 +225,7 @@ components:
                 type: string
                 example: http://bafkreidivzimqfqtoqxkrpge6bjyhlvxqs3rhe73owtmdulaxr5do5in7u.ipfs.dweb.link/image.jpg
     Files:
+      description: Files in the directory (only if this NFT is a directory).
       type: array
       items:
         type: object
@@ -222,6 +236,55 @@ components:
           type:
             type: string
             example: image/jpeg
+    Deal:
+      type: object
+      properties:
+        batchRootCid:
+          type: string
+          example: bafkreidivzimqfqtoqxkrpge6bjyhlvxqs3rhe73owtmdulaxr5do5in7u
+        lastChange:
+          type: string
+          example: '2021-03-18T11:46:50.000Z'
+          description: 'This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.'
+        miner:
+          description: Miner ID
+          type: string
+          example: f05678
+        network:
+          description: Filecoin network for this Deal
+          type: string
+          enum:
+            - nerpanet
+            - mainnet
+        pieceCid:
+          description: Piece CID string
+          type: string
+          example: bafkreidivzimqfqtoqxkrpge6bjyhlvxqs3rhe73owtmdulaxr5do5in7u
+        status:
+          description: Deal Status
+          type: string
+          enum:
+            - queued
+            - proposing
+            - accepted
+            - failed
+            - active
+            - published
+            - terminated
+        statusText:
+          type: string
+          example: miner rejected my data
+          description: Deal Status Description
+        dealActivation:
+          type: string
+          example: '2021-03-18T11:46:50.000Z'
+          description: 'This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.'
+        dealExpiration:
+          type: string
+          example: '2021-03-18T11:46:50.000Z'
+          description: 'This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.'
+      required:
+        - batchRootCid
     Date:
       type: string
       format: date-time
