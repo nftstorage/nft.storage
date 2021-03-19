@@ -1,4 +1,4 @@
-export {};
+export {}
 
 declare global {
   const AUTH0_DOMAIN: string
@@ -26,8 +26,7 @@ export interface Pin {
   size: number
 }
 
-
-export type PinStatus = "queued" | "pinning" | "pinned" | "failed"
+export type PinStatus = 'queued' | 'pinning' | 'pinned' | 'failed'
 
 export type NFT = {
   /**
@@ -37,15 +36,15 @@ export type NFT = {
   /**
    * Size in bytes of the NFT data.
    */
-  size: number,
+  size: number
   /**
    * Type of the data: "directory" or Blob.type.
    */
-  type: string,
+  type: string
   /**
    * Files in the directory (only if this NFT is a directory).
    */
-  files: Array<{ name: string, type: string }>,
+  files: Array<{ name: string; type: string }>
   /**
    * Pinata pin data.
    */
@@ -53,7 +52,7 @@ export type NFT = {
   /**
    * Name of the JWT token used to create this NFT.
    */
-  scope: string,
+  scope: string
   /**
    * Date this NFT was created.
    */
@@ -65,7 +64,7 @@ export type NFT = {
     /**
      * Overall deal status
      */
-    status: "ongoing" | "finalized"
+    status: 'ongoing' | 'finalized'
     deals: Deal[]
   }
 }
@@ -76,39 +75,46 @@ export interface Deal {
    */
   batchRootCid: string
   /**
-   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ. 
+   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
    */
   lastChanged: string
   /**
    * Miner ID
    */
-  miner: string
+  miner?: string
   /**
    * Filecoin network for this Deal
    */
-  network: "nerpanet" | "mainnet"
+  network?: 'nerpanet' | 'mainnet'
   /**
    * Piece CID string
    */
-  pieceCid: string
+  pieceCid?: string
   /**
    * Deal Status
    */
-  status: "queued" | "proposing" | "accepted" | "failed" | "active" | "published" | "terminated"
+  status:
+    | 'queued'
+    | 'proposing'
+    | 'accepted'
+    | 'failed'
+    | 'active'
+    | 'published'
+    | 'terminated'
   /**
    * Deal Status Description
    */
   statusText?: string
   /**
    * Deal Activation
-   * 
-   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ. 
+   *
+   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
    */
-  dealActivation: string
+  dealActivation?: string
   /**
    * Deal Expiraction
-   * 
-   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ. 
+   *
+   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
    */
-  dealExpiration: string
+  dealExpiration?: string
 }
