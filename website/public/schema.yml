@@ -284,7 +284,8 @@ components:
           example: '2021-03-18T11:46:50.000Z'
           description: 'This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.'
       required:
-        - batchRootCid
+        - status
+        - lastChange
     Date:
       type: string
       format: date-time
