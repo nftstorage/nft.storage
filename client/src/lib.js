@@ -14,8 +14,8 @@
  * @module
  */
 
-import * as API from "./lib/interface.js"
-import { fetch, File, Blob, FormData } from "./platform.js"
+import * as API from './lib/interface.js'
+import { fetch, File, Blob, FormData } from './platform.js'
 
 /**
  * @implements API.Service
@@ -44,7 +44,7 @@ class NFTStorage {
    *
    * @param {{token: string, endpoint?:URL}} options
    */
-  constructor({ token, endpoint = new URL("https://nft.storage") }) {
+  constructor({ token, endpoint = new URL('https://nft.storage') }) {
     /**
      * Authorization token.
      *
@@ -71,10 +71,10 @@ class NFTStorage {
    * @returns {Promise<API.CIDString>}
    */
   static async storeBlob({ endpoint, token }, blob) {
-    const url = new URL("/api/upload", endpoint)
+    const url = new URL('/api/upload', endpoint)
 
     const request = await fetch(url.toString(), {
-      method: "POST",
+      method: 'POST',
       headers: NFTStorage.auth(token),
       body: blob,
     })
@@ -92,14 +92,14 @@ class NFTStorage {
    * @returns {Promise<API.CIDString>}
    */
   static async storeDirectory({ endpoint, token }, files) {
-    const url = new URL("/api/upload", endpoint)
+    const url = new URL('/api/upload', endpoint)
     const body = new FormData()
     for (const file of files) {
-      body.append("file", file, file.name)
+      body.append('file', file, file.name)
     }
 
     const response = await fetch(url.toString(), {
-      method: "POST",
+      method: 'POST',
       headers: NFTStorage.auth(token),
       body,
     })
@@ -120,7 +120,7 @@ class NFTStorage {
   static async status({ endpoint, token }, cid) {
     const url = new URL(`/api/${cid}`, endpoint)
     const response = await fetch(url.toString(), {
-      method: "GET",
+      method: 'GET',
       headers: NFTStorage.auth(token),
     })
     const result = await response.json()
@@ -146,7 +146,7 @@ class NFTStorage {
   static async delete({ endpoint, token }, cid) {
     const url = new URL(`/api/${cid}`, endpoint)
     const response = await fetch(url.toString(), {
-      method: "DELETE",
+      method: 'DELETE',
       headers: NFTStorage.auth(token),
     })
     const result = await response.json()

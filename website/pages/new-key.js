@@ -4,14 +4,19 @@ import Button from '../components/button.js'
 import { getEdgeState } from '../lib/state.js'
 import Layout from '../components/layout.js'
 
-export default function NewKey () {
+export default function NewKey() {
   const { data } = useSWR('edge_state', getEdgeState)
   const { user, loginUrl = '#' } = data ?? {}
 
   return (
-    <Layout user={user} loginUrl={loginUrl} navBgColor='nsgreen' title='New API key - NFT storage'>
-      <main className='bg-nsgreen'>
-        <div className='mw9 center pv3 ph5 min-vh-100'>
+    <Layout
+      user={user}
+      loginUrl={loginUrl}
+      navBgColor="nsgreen"
+      title="New API key - NFT storage"
+    >
+      <main className="bg-nsgreen">
+        <div className="mw9 center pv3 ph5 min-vh-100">
           <Box
             bgColor="nsgray"
             borderColor="nspink"
@@ -44,7 +49,7 @@ export default function NewKey () {
   )
 }
 
-async function handleCreateToken (e) {
+async function handleCreateToken(e) {
   e.preventDefault()
   const name = e.target.name.value
   const rsp = await fetch('/api/internal/tokens', {

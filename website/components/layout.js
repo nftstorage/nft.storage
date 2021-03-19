@@ -8,7 +8,7 @@ export default function Layout({
   description = '5GB storage of NFT data on IPFS and Filecoin and provided free to NFTHack participants during the hackathon.',
   user,
   loginUrl,
-  navBgColor = 'nsorange'
+  navBgColor = 'nsorange',
 }) {
   return (
     <div className="sans-serif">
@@ -16,7 +16,7 @@ export default function Layout({
         <title>{title}</title>
         <meta name="description" content={description} />
       </Head>
-      <Navbar user={user} loginUrl={loginUrl} bgColor={navBgColor}/>
+      <Navbar user={user} loginUrl={loginUrl} bgColor={navBgColor} />
       {children}
       <Footer />
     </div>

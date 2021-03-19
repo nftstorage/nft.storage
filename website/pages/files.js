@@ -5,61 +5,76 @@ import Button from '../components/button.js'
 import { getEdgeState } from '../lib/state.js'
 import Layout from '../components/layout.js'
 
-export default function Files () {
+export default function Files() {
   const { data } = useSWR('edge_state', getEdgeState)
   let { user, loginUrl = '#', nfts = [] } = data ?? {}
 
   nfts = nfts
     .filter(Boolean)
-    .map(n => {
+    .map((n) => {
       n.created = new Date(n.created)
       return n
     })
     .sort((a, b) => b.created.getTime() - a.created.getTime())
 
   return (
-    <Layout user={user} loginUrl={loginUrl} navBgColor='nsyellow' title='Files - NFT Storage'>
-      <main className='bg-nsyellow'>
-        <div className='mw9 center pv3 ph5 min-vh-100'>
-          <div className='flex mb3 items-center'>
-            <h1 className='chicagoflf mv4 flex-auto'>Files</h1>
-            <Button href='/new-file' className='flex-none' disabled>+ Upload</Button>
+    <Layout
+      user={user}
+      loginUrl={loginUrl}
+      navBgColor="nsyellow"
+      title="Files - NFT Storage"
+    >
+      <main className="bg-nsyellow">
+        <div className="mw9 center pv3 ph5 min-vh-100">
+          <div className="flex mb3 items-center">
+            <h1 className="chicagoflf mv4 flex-auto">Files</h1>
+            <Button href="/new-file" className="flex-none" disabled>
+              + Upload
+            </Button>
           </div>
           {nfts.length ? (
-            <table className='bg-white ba b--black w-100 collapse mb4'>
-              <tr className='bb b--black'>
-                <th className='pa2 tl bg-nsgray br b--black w-33'>Date</th>
-                <th className='pa2 tl bg-nsgray br b--black w-33'>CID</th>
-                <th className='pa2 tl bg-nsgray br b--black w-33'>Size</th>
-                <th className='pa2 tc bg-nsgray' />
+            <table className="bg-white ba b--black w-100 collapse mb4">
+              <tr className="bb b--black">
+                <th className="pa2 tl bg-nsgray br b--black w-33">Date</th>
+                <th className="pa2 tl bg-nsgray br b--black w-33">CID</th>
+                <th className="pa2 tl bg-nsgray br b--black w-33">Size</th>
+                <th className="pa2 tc bg-nsgray" />
               </tr>
-              {nfts.map(nft => (
-                <tr className='bb b--black'>
-                  <td className='pa2 br b--black'>
+              {nfts.map((nft) => (
+                <tr className="bb b--black">
+                  <td className="pa2 br b--black">
                     {nft.created.toISOString().split('T')[0]}
                   </td>
-                  <td className='pa2 br b--black'>
+                  <td className="pa2 br b--black">
                     <GatewayLink cid={nft.cid} />
                   </td>
-                  <td className='pa2 br b--black mw7'>
+                  <td className="pa2 br b--black mw7">
                     {filesize(nft.size || 0)}
                   </td>
-                  <td className='pa2'>
+                  <td className="pa2">
                     <form onSubmit={handleDeleteFile}>
-                      <input type='hidden' name='cid' value={nft.cid} />
-                      <Button className='bg-nsorange white' type='submit'>Delete</Button>
+                      <input type="hidden" name="cid" value={nft.cid} />
+                      <Button className="bg-nsorange white" type="submit">
+                        Delete
+                      </Button>
                     </form>
                   </td>
                 </tr>
               ))}
             </table>
-          ) : <p className='tc mv5'><span className='f1 dib mb3'>😢</span><br/>No files</p>}
+          ) : (
+            <p className="tc mv5">
+              <span className="f1 dib mb3">😢</span>
+              <br />
+              No files
+            </p>
+          )}
         </div>
       </main>
     </Layout>
   )
 
-  async function handleDeleteFile (e) {
+  async function handleDeleteFile(e) {
     e.preventDefault()
     if (!confirm('Are you sure? Deleted files cannot be recovered!')) {
       return
@@ -71,7 +86,13 @@ export default function Files () {
   }
 }
 
-function GatewayLink ({ cid }) {
-  const href = cid.startsWith('Qm') ? `https://ipfs.io/ipfs/${cid}` : `https://${cid}.ipfs.dweb.link`
-  return <a href={href} target='_blank' rel='noopener noreferrer' className='black'>{cid}</a>
+function GatewayLink({ cid }) {
+  const href = cid.startsWith('Qm')
+    ? `https://ipfs.io/ipfs/${cid}`
+    : `https://${cid}.ipfs.dweb.link`
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="black">
+      {cid}
+    </a>
+  )
 }

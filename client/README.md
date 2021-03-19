@@ -22,31 +22,27 @@ Or yarn
 yarn add nft.storage
 ```
 
-
 ### Usage
 
 First, obtain an API token from https://nft.storage and use it in place of `API_TOKEN` below:
 
 ```js
-import { NFTStorage } from "nft.storage"
-const client = new NFTStorage({ token: API_TOKEN }) 
-const cid = await client.storeBlob(new Blob(['hello world'])) 
+import { NFTStorage } from 'nft.storage'
+const client = new NFTStorage({ token: API_TOKEN })
+const cid = await client.storeBlob(new Blob(['hello world']))
 ```
 
 For more examples please see the [API documentation][].
 
-
-[Raw HTTP API]:https://nft.storage/#api-docs
-[Node.js]:https://nodejs.org/
-[API documentation]:https://ipfs-shipyard.github.io/nft.storage/client/
-
-
+[raw http api]: https://nft.storage/#api-docs
+[node.js]: https://nodejs.org/
+[api documentation]: https://ipfs-shipyard.github.io/nft.storage/client/
 [ci.icon]: https://github.com/ipfs-shipyard/nft.storage/actions/workflows/client.yml/badge.svg
 [version.icon]: https://img.shields.io/npm/v/nft.storage.svg
 [package.url]: https://npmjs.org/package/nft.storage
 [prettier.icon]: https://img.shields.io/badge/styled_with-prettier-ff69b4.svg
 [prettier.url]: https://github.com/prettier/prettier
-[size.icon]:https://badgen.net/bundlephobia/minzip/nft.storage
-[size.url]:https://bundlephobia.com/result?p=nft.storage
-[deps.icon]:https://status.david-dm.org/gh/ipfs-shipyard/nft.storage.svg?path=client
-[deps.url]:https://david-dm.org/ipfs-shipyard/nft.storage?path=client
+[size.icon]: https://badgen.net/bundlephobia/minzip/nft.storage
+[size.url]: https://bundlephobia.com/result?p=nft.storage
+[deps.icon]: https://status.david-dm.org/gh/ipfs-shipyard/nft.storage.svg?path=client
+[deps.url]: https://david-dm.org/ipfs-shipyard/nft.storage?path=client

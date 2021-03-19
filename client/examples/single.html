@@ -1,16 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <pre id="out"></pre>
 <script type="module">
-  import { NFTStorage }  from 'https://cdn.skypack.dev/nft.storage'
+  import { NFTStorage } from 'https://cdn.skypack.dev/nft.storage'
 
   const endpoint = 'https://nft.storage' // the default
   const token = 'API_KEY' // your API key from https://nft.storage/manage
 
-  function log (msg) {
-    document.getElementById('out').innerHTML += `${JSON.stringify(msg, null, 2)}\n`
+  function log(msg) {
+    document.getElementById('out').innerHTML += `${JSON.stringify(
+      msg,
+      null,
+      2
+    )}\n`
   }
 
-  async function main () {
+  async function main() {
     const store = new NFTStorage({ endpoint, token })
     const data = 'Hello nft.storage!'
     const cid = await store.storeBlob(new Blob([data]))

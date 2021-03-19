@@ -1,13 +1,13 @@
-import http from "http"
+import http from 'http'
 import fetch, {
   Headers,
   Request as FetchRequest,
   Response as FetchResponse,
-} from "@web-std/fetch"
-import { iterateMultipart } from "@ssttevee/multipart-parser"
-import { FormData } from "@web-std/form-data"
-import { File } from "@web-std/file"
-import { ReadableStream } from "@web-std/blob"
+} from '@web-std/fetch'
+import { iterateMultipart } from '@ssttevee/multipart-parser'
+import { FormData } from '@web-std/form-data'
+import { File } from '@web-std/file'
+import { ReadableStream } from '@web-std/blob'
 
 const encoder = new TextEncoder()
 const decoder = new TextDecoder()
@@ -18,7 +18,7 @@ export { fetch, Headers }
  * @param {AsyncIterator<string|Uint8Array>|Iterator<string|Uint8Array>} source
  * @returns {ReadableStream<Uint8Array>}
  */
-const toReadableStream = source =>
+const toReadableStream = (source) =>
   new ReadableStream({
     async pull(controller) {
       try {
@@ -28,7 +28,7 @@ const toReadableStream = source =>
             controller.close()
           } else {
             const bytes =
-              typeof chunk.value === "string"
+              typeof chunk.value === 'string'
                 ? encoder.encode(chunk.value)
                 : chunk.value
             controller.enqueue(bytes)
@@ -40,11 +40,11 @@ const toReadableStream = source =>
     },
     cancel(reason) {
       if (reason) {
-        if (typeof source.throw === "function") {
+        if (typeof source.throw === 'function') {
           return void source.throw(reason)
         }
       }
-      if (typeof source.return === "function") {
+      if (typeof source.return === 'function') {
         source.return()
       }
       return
@@ -89,7 +89,7 @@ const toBytes = async ({ body }) => {
  * @param {Source} source
  * @returns {Promise<ArrayBuffer>}
  */
-const toArrayBuffer = async source => {
+const toArrayBuffer = async (source) => {
   const bytes = await toBytes(source)
   return bytes.buffer
 }
@@ -97,7 +97,7 @@ const toArrayBuffer = async source => {
 /**
  * @param {Source} source
  */
-const toText = async source => {
+const toText = async (source) => {
   const bytes = await toBytes(source)
   return decoder.decode(bytes)
 }
@@ -105,7 +105,7 @@ const toText = async source => {
 /**
  * @param {Source} source
  */
-const toBlob = async source => {
+const toBlob = async (source) => {
   const bytes = await toBytes(source)
   return new Blob([bytes])
 }
@@ -113,7 +113,7 @@ const toBlob = async source => {
 /**
  * @param {Source} source
  */
-const toJSON = async source => {
+const toJSON = async (source) => {
   const text = await toText(source)
   return JSON.parse(text)
 }
@@ -122,9 +122,9 @@ const toJSON = async source => {
  * @param {Request|Response} source
  */
 const toFormData = async ({ body, headers }) => {
-  const contentType = headers.get("Content-Type") || ""
+  const contentType = headers.get('Content-Type') || ''
   const [type, boundary] = contentType.split(/\s*;\s*boundary=/)
-  if (type === "multipart/form-data" && boundary != null && body != null) {
+  if (type === 'multipart/form-data' && boundary != null && body != null) {
     const form = new FormData()
     const parts = iterateMultipart(body, boundary)
     for await (const { name, data, filename, contentType } of parts) {
@@ -136,25 +136,25 @@ const toFormData = async ({ body, headers }) => {
     }
     return form
   } else {
-    throw new TypeError("Could not parse content as FormData.")
+    throw new TypeError('Could not parse content as FormData.')
   }
 }
 
 /**
  * @param {Request|Response} self
  */
-const bodyOf = self => {
+const bodyOf = (self) => {
   const stream = self._rawStream()
 
   const body =
     stream == null
       ? null
-      : stream instanceof Uint8Array || typeof stream === "string"
+      : stream instanceof Uint8Array || typeof stream === 'string'
       ? toReadableStream([stream][Symbol.iterator]())
       : // @ts-ignore
         toReadableStream(stream[Symbol.asyncIterator]())
 
-  Object.defineProperty(self, "body", { value: body })
+  Object.defineProperty(self, 'body', { value: body })
   return body
 }
 
@@ -256,7 +256,7 @@ export class Service {
       family,
     } = /** @type {import('net').AddressInfo} */ (this.server.address())
 
-    return { port, host: family === "IPv6" ? `127.0.0.1` : address }
+    return { port, host: family === 'IPv6' ? `127.0.0.1` : address }
   }
   get url() {
     const { host, port } = this.address
@@ -271,7 +271,7 @@ export class Service {
   async onrequest(incoming, outgoing) {
     try {
       const { host, port } = this.address
-      const url = new URL(incoming.url || "/", `http://${host}:${port}`)
+      const url = new URL(incoming.url || '/', `http://${host}:${port}`)
 
       const request = new Request(url.href, {
         method: incoming.method,
@@ -303,10 +303,10 @@ export class Service {
 /**
  * @param {http.IncomingMessage} inn
  */
-const toBody = inn => {
+const toBody = (inn) => {
   switch (inn.method) {
-    case "HEAD":
-    case "GET":
+    case 'HEAD':
+    case 'GET':
       return undefined
     default:
       return inn
@@ -318,9 +318,9 @@ const toBody = inn => {
  * @param {number} [port]
  */
 export const listen = (service, port = 0) =>
-  new Promise(resolve => {
-    service.server.once("listening", () => resolve(service))
-    service.server.addListener("request", service.onrequest)
+  new Promise((resolve) => {
+    service.server.once('listening', () => resolve(service))
+    service.server.addListener('request', service.onrequest)
     service.server.listen(port)
   })
 
@@ -338,6 +338,6 @@ export const activate = async (state, handler) => {
 /**
  * @param {Service<any>} service
  */
-export const deactivate = service => {
+export const deactivate = (service) => {
   service.server.close()
 }

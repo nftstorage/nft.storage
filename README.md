@@ -3,6 +3,7 @@
 Unlimited storage of NFT data on IPFS, backed by Filecoin and provided free to [NFTHack](https://nfthack.ethglobal.co/) participants during the hackathon.
 
 # Table of Contents <!-- omit in toc -->
+
 - [`site` Setup](#site-setup)
   - [Cloudflare Workers CLI](#cloudflare-workers-cli)
   - [Auth0 account](#auth0-account)
@@ -12,31 +13,33 @@ Unlimited storage of NFT data on IPFS, backed by Filecoin and provided free to [
 - [`site` Usage](#site-usage)
   - [Local development](#local-development)
   - [Deploy](#deploy)
-   
 
+## `site` Setup
 
-## `site` Setup 
 ### Cloudflare Workers CLI
+
 ```bash
 yarn global add @cloudflare/wrangler
 wrangler login
-# when using personal accounts you may need to manually change the `account_id` inside `wrangler.toml` 
+# when using personal accounts you may need to manually change the `account_id` inside `wrangler.toml`
 ```
 
 ### Auth0 account
+
 Go to [auth0.com](https://auth0.com) and create an account. Create two "REGULAR WEB APPLICATION" applications one for dev and another for production. In the "settings" of each application you will find the secrets needed to complete the initial setup.
 
 Go to "settings" for your dev application and add the following URLs:
 
-* "Allowed Callback URLs": `http://127.0.0.1:8787/auth`
-* "Allowed Web Origins": `http://127.0.0.1:8787`
+- "Allowed Callback URLs": `http://127.0.0.1:8787/auth`
+- "Allowed Web Origins": `http://127.0.0.1:8787`
 
 Do the same for your production application, with the appropriate URLs.
 
 ### Cloudflare Workers initial setup:
+
 > This only needs to be run once when setting up from scratch.
 
-#### Development Setup   
+#### Development Setup
 
 Open `wrangler.toml` and add an env for yourself (replacing "USER" with your name and "CF_ACCOUNT" with your Cloudflare account):
 
@@ -68,7 +71,8 @@ wrangler kv:namespace create NFTS --preview --env USER
 wrangler kv:namespace create DEALS --preview --env USER
 # same as above
 ```
-Go to `/site/src/constants.js` *uncomment* the first line and run `wrangler publish --env USER`.
+
+Go to `/site/src/constants.js` _uncomment_ the first line and run `wrangler publish --env USER`.
 
 ```bash
 # dev and preview secrets
@@ -78,9 +82,11 @@ wrangler secret put AUTH0_CLIENT_SECRET --env USER # Get from auth0 account
 wrangler secret put SALT --env USER # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env USER # Get from Pinata
 ```
-Go to `/site/src/constants.js` *comment* the first line and run `wrangler publish --env USER`.
+
+Go to `/site/src/constants.js` _comment_ the first line and run `wrangler publish --env USER`.
 
 #### Production Setup `[env.production]`
+
 ```bash
 # production KVs
 wrangler kv:namespace create USERS --env production
@@ -104,6 +110,7 @@ wrangler publish --env production
 ## `site` Usage
 
 ### Local development
+
 ```bash
 cd site
 yarn install
@@ -111,6 +118,7 @@ yarn dev
 ```
 
 ### Deploy
+
 ```bash
 yarn deploy
 ```

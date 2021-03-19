@@ -43,7 +43,7 @@ export default function Hero({ user, loginUrl }) {
             src="images/logo-nft.storage.svg"
             style={{ width: '75vw', maxWidth: '1002px', height: 'auto' }}
             className="mt4 mb2 mb4-ns"
-            alt='NFT Storage logo'
+            alt="NFT Storage logo"
           />
           <hgroup className="chicagoflf white">
             <h1 className="f4 f2-m f1-ns fw4 mv3">Free Storage for NFTs</h1>
@@ -55,7 +55,7 @@ export default function Hero({ user, loginUrl }) {
                 height="64"
                 className="v-mid"
                 style={{ maxWidth: '28px', height: 'auto' }}
-                alt='IPFS logo'
+                alt="IPFS logo"
               />{' '}
               IPFS and{' '}
               <img
@@ -64,7 +64,7 @@ export default function Hero({ user, loginUrl }) {
                 height="60"
                 className="v-mid"
                 style={{ maxWidth: '30px', height: 'auto' }}
-                alt='Filecoin logo'
+                alt="Filecoin logo"
               />{' '}
               Filecoin and provided free to{' '}
               <a href="https://nfthack.ethglobal.co/" className="white">

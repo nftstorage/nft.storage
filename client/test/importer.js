@@ -1,4 +1,3 @@
-
 import { util as DagPB } from 'ipld-dag-pb'
 import multicodec from 'multicodec'
 import Multihash from 'multihashing-async'
@@ -10,7 +9,6 @@ import importer from 'ipfs-unixfs-importer'
 /** @type {(T:typeof IPLD) => IPLD} */
 const inMemory = InMemory
 const { multihash } = Multihash
-
 
 /**
  * @typedef {import('ipfs-unixfs-importer').BlockAPI} BlockAPI
@@ -27,16 +25,16 @@ class Block {
     this.mh = mh
   }
   /**
-   * @param {Uint8Array} bytes 
+   * @param {Uint8Array} bytes
    * @param {{cid:import('ipfs-unixfs-importer').CID}} options
    */
-  async put (bytes, { cid }) {
+  async put(bytes, { cid }) {
     const multihash = this.mh.decode(cid.multihash)
     const node = DagPB.deserialize(bytes)
 
     await this.ipld.put(node, multicodec.DAG_PB, {
       cidVersion: cid.version,
-      hashAlg: multihash.code
+      hashAlg: multihash.code,
     })
 
     return { cid, data: bytes }
@@ -45,7 +43,7 @@ class Block {
    * @param {import('ipfs-unixfs-importer').CID} cid
    * @param {any} options
    */
-  async get (cid, options) {
+  async get(cid, options) {
     const node = await this.ipld.get(cid, options)
 
     if (node instanceof Uint8Array) {
@@ -57,11 +55,11 @@ class Block {
 }
 
 /**
- * 
- * @param {Uint8Array} content 
+ *
+ * @param {Uint8Array} content
  */
 export const importBlob = async (content) => {
-  const results = importer([{ content} ], new Block(), { onlyHash: true })
+  const results = importer([{ content }], new Block(), { onlyHash: true })
   for await (const result of results) {
     return result
   }
@@ -72,16 +70,16 @@ export const importBlob = async (content) => {
  * @param {File[]} files
  */
 export const importDirectory = async (files) => {
-  const entries = files.map(file => ({
+  const entries = files.map((file) => ({
     // @ts-expect-error - webkitRelativePath is not known
     path: file.webkitRelativePath || file.name,
     // @ts-expect-error - file.stream() isn't typed as AsyncIterable.
-    content: /** @type {AsyncIterable<Uint8Array>} */ (file.stream())
+    content: /** @type {AsyncIterable<Uint8Array>} */ (file.stream()),
   }))
 
   const results = importer(entries, new Block(), {
     onlyHash: true,
-    wrapWithDirectory: true
+    wrapWithDirectory: true,
   })
 
   let last = null

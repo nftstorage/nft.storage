@@ -21,7 +21,7 @@ class MyDocument extends Document {
             type="font/woff2"
             crossOrigin="true"
           ></link>
-          <meta name="theme-color" content="#F5C32C"/>
+          <meta name="theme-color" content="#F5C32C" />
         </Head>
         <body>
           <Main />

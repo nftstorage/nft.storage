@@ -1,6 +1,6 @@
-import { activate, deactivate } from "./mock-server.js"
-import { init, handle } from "./service.js"
-import { spawn } from "child_process"
+import { activate, deactivate } from './mock-server.js'
+import { init, handle } from './service.js'
+import { spawn } from 'child_process'
 
 const main = async () => {
   const [, , command, ...args] = process.argv
@@ -11,7 +11,7 @@ const main = async () => {
   console.log(`Mock service running on: ${service.url}`)
 
   const test = spawn(`${command}`, args, {
-    stdio: "inherit",
+    stdio: 'inherit',
     env: {
       ...process.env,
       AUTH_TOKEN,
@@ -19,8 +19,8 @@ const main = async () => {
     },
   })
 
-  const code = await new Promise(resolve =>
-    test.once("exit", code => resolve(code))
+  const code = await new Promise((resolve) =>
+    test.once('exit', (code) => resolve(code))
   )
 
   deactivate(service)

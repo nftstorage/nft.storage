@@ -12,7 +12,7 @@ export interface API {
   /**
    * Stores a single file and returns a corresponding CID.
    */
-  storeBlob(service: Service, content: Blob|File): Promise<CIDString>
+  storeBlob(service: Service, content: Blob | File): Promise<CIDString>
   /**
    * Stores a directory of files and returns a CID. Provided files **MUST**
    * be within a same directory, otherwise error is raised. E.g. `foo/bar.png`,
@@ -33,8 +33,8 @@ export interface API {
 
 export interface StatusResult {
   cid: string
-  size: number,
-  deals: Deals,
+  size: number
+  deals: Deals
   pin: Pin
   created: Date
 }
@@ -63,25 +63,23 @@ export interface FinalizedDeals {
   readonly deals: FinalizedDeals[]
 }
 
-
 export type Deal = QueuedDeal | PendingDeal | PublishedDeal | FinalizedDeal
 
 export interface QueuedDeal {
-  status: "queued"
+  status: 'queued'
   sequence: number
   lastStatusChangeTimestamp: Date
 }
 
 export interface PendingDeal {
-  status: 'proposing' | "rejected" | "accepted" | "errored"
+  status: 'proposing' | 'rejected' | 'accepted' | 'errored'
   sequence: number
   lastStatusChangeTimestamp: Date
   miner: string
 }
 
-
 export interface PublishedDeal {
-  status: "published"
+  status: 'published'
   sequence: number
   lastStatusChangeTimestamp: Date
   miner: string
@@ -89,7 +87,7 @@ export interface PublishedDeal {
 }
 
 export interface FinalizedDeal {
-  status: "active" | "terminated" 
+  status: 'active' | 'terminated'
   sequence: number
   lastStatusChangeTimestamp: Date
   miner: string
@@ -107,5 +105,4 @@ export interface Pin {
   created: Date
 }
 
-
-export type PinStatus = "queued" | "pinning" | "pinned" | "failed"
+export type PinStatus = 'queued' | 'pinning' | 'pinned' | 'failed'
