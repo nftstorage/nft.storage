@@ -18,18 +18,41 @@ export default function TermsOfService() {
           <h1 className="chicagoflf">
             <HashLink id="terms-of-service">Terms of Service</HashLink>
           </h1>
+          <p className="lh-copy">
+            The following terms and conditions govern all use of the{' '}
+            <a className="black" href="https://nft.storage">
+              nft.storage
+            </a>{' '}
+            website (the “Website”) and all content, services and products
+            available at or through the Website. The Website is offered subject
+            to your acceptance without modification of all of the terms and
+            conditions contained herein. As all data uploaded to nft.storage
+            will be stored on IPFS, this website incorporates the{' '}
+            <a className="black" href="https://discuss.ipfs.io/tos">
+              Terms of Service of IPFS.io
+            </a>
+            .
+            <p>
+              If you do not agree to all the terms and conditions of this
+              agreement, then you may not access the Website or use any
+              services.
+            </p>
+          </p>
           <h2 className="chicagoflf">
             <HashLink id="storage-term">Storage Term</HashLink>
           </h2>
           <p className="lh-copy">
-            Data will be stored for FREE on IPFS for as long as we continue to
-            offer free storage for NFT’s.
+            Data will be stored at no cost to the user on IPFS for as long as
+            Protocol Labs, Inc. continues to offer free storage for NFT’s.
+            Protocol Labs, Inc. reserves the right to terminate NFT.storage at
+            its sole discretion.
           </p>
           <p className="lh-copy">
             Data will continue to be persisted ad infinitum <strong>or</strong>{' '}
-            until Protocol Labs decide to conclude the project. 90 days notice
-            will be given before the project is concluded to allow users time
-            enough to make arrangements for storing their data by other means.
+            until Protocol Labs decides to conclude the NFT.storage project.
+            Prior to termination, Protocol Labs will provide 90 days notice to
+            users via email to allow users enough time to make arrangements for
+            storing their data by other means.
           </p>
 
           <h2 className="chicagoflf">
@@ -50,8 +73,8 @@ export default function TermsOfService() {
           </p>
           <p className="lh-copy">
             The <strong>BETA</strong> service is limited to{' '}
-            <strong>100MB</strong> upload limit per request. This may be raised
-            in the future.
+            <strong>100MB</strong> upload limit per request. Protocol Labs may
+            increase this limit at its sole discretion.
           </p>
 
           <h2 className="chicagoflf">
@@ -80,7 +103,11 @@ export default function TermsOfService() {
               nft.storage
             </a>{' '}
             to make the data available in IPFS. Retrieving data over the IPFS
-            network is the only reliable means of accessing nft.storage data.
+            network is the recommended means of accessing{' '}
+            <a className="black" href="https://nft.storage">
+              nft.storage
+            </a>{' '}
+            data.
           </p>
         </div>
       </main>
