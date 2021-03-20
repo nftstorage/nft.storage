@@ -29,7 +29,7 @@ function About() {
         <HashLink id="store">Store</HashLink>
       </h2>
       <p className="lh-copy">
-        Just upload your data and you'll recieve an IPFS hash of the content (a
+        Just upload your data and you'll receive an IPFS hash of the content (a
         CID) that can be used in <strong>on-chain</strong> NFT data as a pointer
         to the content.
       </p>
