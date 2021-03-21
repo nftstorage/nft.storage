@@ -180,7 +180,7 @@ class NFTStorage {
    *
    * @example
    * ```js
-   * const cid = client.storeDirectory([
+   * const cid = await client.storeDirectory([
    *   new File(['hello world'], 'hello.txt'),
    *   new File([JSON.stringify({'from': 'incognito'}, null, 2)], 'metadata.json')
    * ])

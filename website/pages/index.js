@@ -172,7 +172,7 @@ const content = new Blob(['hello world'])
 const cid = await client.storeBlob(content)
 console.log(cid)`
 
-  const jsDirEx = `const cid = client.storeDirectory([
+  const jsDirEx = `const cid = await client.storeDirectory([
   new File(['hello world'], 'content.txt'),
   new File([JSON.stringify({ owner: '@lucky' })], 'metadata.json')
 ])`
