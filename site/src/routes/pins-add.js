@@ -20,13 +20,7 @@ export async function pinsAdd (event) {
   const res = await PinataPSA.pinsAdd(pinData)
 
   if (!res.ok) {
-    let text
-    try {
-      text = await res.error.text()
-      return new JSONResponse(JSON.parse(text))
-    } catch (_) {
-      throw new Error(`pinning ${pinData.cid} status: ${res.error.status} response: ${text}`)
-    }
+    return PinataPSA.parseErrorResponse(res.error)
   }
 
   const pinStatus = res.value
@@ -34,7 +28,7 @@ export async function pinsAdd (event) {
   const nft = {
     cid: pinStatus.pin.cid,
     size: 0,
-    created: new Date(),
+    created: new Date().toISOString(),
     type: 'remote',
     scope: tokenName,
     files: [],
@@ -42,7 +36,7 @@ export async function pinsAdd (event) {
       cid: pinStatus.pin.cid,
       size: 0,
       status: pinStatus.status,
-      created: new Date(pinStatus.created)
+      created: pinStatus.created
     }
   }
   await nfts.set({ user, cid: pinStatus.pin.cid }, nft)

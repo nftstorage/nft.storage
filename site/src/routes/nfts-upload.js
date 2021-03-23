@@ -31,7 +31,7 @@ export async function upload(event) {
       let data = {
         cid,
         size,
-        created: new Date(),
+        created: new Date().toISOString(),
         type: 'directory',
         scope: tokenName,
         files: parts.map((f) => ({ name: f.filename, type: f.contentType })),
@@ -65,7 +65,7 @@ export async function upload(event) {
       let data = {
         cid,
         size: blob.size,
-        created: new Date(),
+        created: new Date().toISOString(),
         type: blob.type,
         scope: tokenName,
         files: [],

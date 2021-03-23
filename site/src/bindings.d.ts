@@ -54,9 +54,9 @@ export type NFT = {
    */
   scope: string
   /**
-   * Date this NFT was created.
+   * Date this NFT was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
    */
-  created: Date
+  created: string
   /**
    * Deals
    */

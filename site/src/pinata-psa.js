@@ -1,4 +1,5 @@
 import { pinata } from './constants.js'
+import { JSONResponse } from './utils/json-response.js'
 
 const endpoint = new URL('https://api.pinata.cloud/psa')
 
@@ -37,4 +38,19 @@ export async function pinsGet (requestid) {
   return response.ok
     ? { ok: true, value: await response.json() }
     : { ok: false, error: response }
+}
+
+/**
+ * Takes a "not ok" response from Pinata and creates a new JSONResponse.
+ * @param {Response} res
+ * @returns {Promise<JSONResponse>}
+ */
+export async function parseErrorResponse (res) {
+  let text
+  try {
+    text = await res.text()
+    return new JSONResponse(JSON.parse(text), { status: res.status })
+  } catch (_) {
+    return new JSONResponse({ error: { reason: 'INVALID_UPSTREAM_RESPONSE', details: `invalid upstream response ${res.status}: ${text}` } }, { status: 500 })
+  }
 }
