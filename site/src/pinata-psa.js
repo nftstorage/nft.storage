@@ -41,7 +41,7 @@ export async function pinsGet (requestid) {
 }
 
 /**
- * @typedef {{
+ * @param {{
  *  cid?: string,
  *  name?: string,
  *  match?: string,
@@ -50,13 +50,11 @@ export async function pinsGet (requestid) {
  *  after?: string,
  *  limit?: string,
  *  meta?: string
- * }} PinsListOptions
- * @typedef {{ count: number, results: Array<PinStatus> }} PinResults
- * @param {PinsListOptions} options 
- * @returns {Promise<{ok: true, value: PinResults}|ErrorResponse>}
+ * }} params
+ * @returns {Promise<{ok: true, value: { count: number, results: Array<PinStatus> }}|ErrorResponse>}
  */
- export async function pinsList (options) {
-  const url = new URL(`/pins?${new URLSearchParams(options)}`, endpoint)
+ export async function pinsList (params) {
+  const url = new URL(`/pins?${new URLSearchParams(params)}`, endpoint)
   const response = await fetch(url.toString(), {
     method: 'GET',
     headers: { authorization: `Bearer ${pinata.jwt}` }
@@ -64,6 +62,34 @@ export async function pinsGet (requestid) {
   return response.ok
     ? { ok: true, value: await response.json() }
     : { ok: false, error: response }
+}
+
+/**
+ * @param {string} requestid
+ * @param {{ cid: string, name?: string, origins?: string[], meta?: any }} params
+ * @returns {Promise<{ok: true, value: PinStatus}|ErrorResponse>}
+ */
+ export async function pinsReplace (requestid, { cid, name, origins, meta }) {
+  const response = await fetch(new URL(`/pins/${encodeURIComponent(requestid)}`, endpoint).toString(), {
+    method: 'POST',
+    headers: { authorization: `Bearer ${pinata.jwt}` },
+    body: JSON.stringify({ cid, name, origins, meta })
+  })
+  return response.ok
+    ? { ok: true, value: await response.json() }
+    : { ok: false, error: response }
+}
+
+/**
+ * @param {string} requestid
+ * @returns {Promise<{ok: true}|ErrorResponse>}
+ */
+ export async function pinsDelete (requestid) {
+  const response = await fetch(new URL(`/pins/${encodeURIComponent(requestid)}`, endpoint).toString(), {
+    method: 'DELETE',
+    headers: { authorization: `Bearer ${pinata.jwt}` }
+  })
+  return response.ok ? { ok: true } : { ok: false, error: response }
 }
 
 /**

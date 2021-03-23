@@ -18,6 +18,9 @@ import { newFile } from './routes/new-file.js'
 import { HTTPError } from './errors.js'
 import { pinsAdd } from './routes/pins-add.js'
 import { pinsGet } from './routes/pins-get.js'
+import { pinsList } from './routes/pins-list.js'
+import { pinsReplace } from './routes/pins-replace.js'
+import { pinsDelete } from './routes/pins-delete.js'
 
 const r = new Router({
   onError(req, err) {

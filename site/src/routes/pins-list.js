@@ -5,7 +5,6 @@ import { JSONResponse } from '../utils/json-response.js'
 
 /**
  * @param {FetchEvent} event
- * @param {Record<string,string>} params
  * @returns {Promise<JSONResponse>}
  */
 export async function pinsList (event) {
@@ -21,7 +20,7 @@ export async function pinsList (event) {
     let meta
     try {
       meta = JSON.parse(options.meta)
-      if (typeof meta !== 'object') {
+      if (meta == null || typeof meta !== 'object') {
         throw new Error('invalid meta')
       }
     } catch (_) {
