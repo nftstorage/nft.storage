@@ -1,7 +1,7 @@
 import { pinata } from './constants.js'
 import { JSONResponse } from './utils/json-response.js'
 
-const endpoint = new URL('https://api.pinata.cloud/psa')
+const endpoint = new URL('https://api.pinata.cloud/psa/')
 
 /**
  * @typedef {'queued'|'pinning'|'pinned'|'failed'} Status
@@ -15,7 +15,7 @@ const endpoint = new URL('https://api.pinata.cloud/psa')
  * @returns {Promise<{ok: true, value: PinStatus}|ErrorResponse>}
  */
 export async function pinsAdd ({ cid, name, origins, meta }) {
-  const response = await fetch(new URL('/pins', endpoint).toString(), {
+  const response = await fetch(new URL('pins', endpoint).toString(), {
     method: 'POST',
     headers: { authorization: `Bearer ${pinata.jwt}` },
     body: JSON.stringify({ cid, name, origins, meta })
@@ -30,7 +30,7 @@ export async function pinsAdd ({ cid, name, origins, meta }) {
  * @returns {Promise<{ok: true, value: PinStatus}|ErrorResponse>}
  */
 export async function pinsGet (requestid) {
-  const url = new URL(`/pins/${encodeURIComponent(requestid)}`, endpoint)
+  const url = new URL(`pins/${encodeURIComponent(requestid)}`, endpoint)
   const response = await fetch(url.toString(), {
     method: 'GET',
     headers: { authorization: `Bearer ${pinata.jwt}` }
@@ -54,7 +54,8 @@ export async function pinsGet (requestid) {
  * @returns {Promise<{ok: true, value: { count: number, results: Array<PinStatus> }}|ErrorResponse>}
  */
  export async function pinsList (params) {
-  const url = new URL(`/pins?${new URLSearchParams(params)}`, endpoint)
+  const url = new URL(`pins?${new URLSearchParams(params)}`, endpoint)
+  console.log(`${url}`)
   const response = await fetch(url.toString(), {
     method: 'GET',
     headers: { authorization: `Bearer ${pinata.jwt}` }
@@ -70,7 +71,7 @@ export async function pinsGet (requestid) {
  * @returns {Promise<{ok: true, value: PinStatus}|ErrorResponse>}
  */
  export async function pinsReplace (requestid, { cid, name, origins, meta }) {
-  const response = await fetch(new URL(`/pins/${encodeURIComponent(requestid)}`, endpoint).toString(), {
+  const response = await fetch(new URL(`pins/${encodeURIComponent(requestid)}`, endpoint).toString(), {
     method: 'POST',
     headers: { authorization: `Bearer ${pinata.jwt}` },
     body: JSON.stringify({ cid, name, origins, meta })
@@ -85,7 +86,7 @@ export async function pinsGet (requestid) {
  * @returns {Promise<{ok: true}|ErrorResponse>}
  */
  export async function pinsDelete (requestid) {
-  const response = await fetch(new URL(`/pins/${encodeURIComponent(requestid)}`, endpoint).toString(), {
+  const response = await fetch(new URL(`pins/${encodeURIComponent(requestid)}`, endpoint).toString(), {
     method: 'DELETE',
     headers: { authorization: `Bearer ${pinata.jwt}` }
   })

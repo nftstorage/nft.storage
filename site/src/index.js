@@ -37,18 +37,18 @@ r.add('get', '/files', files)
 r.add('get', '/new-key', newKey)
 r.add('get', '/new-file', newFile)
 
-// Public API
 r.add('options', '/api/*', cors)
-r.add('post', '/api/upload', upload, [postCors])
-r.add('get', '/api', list, [postCors])
-r.add('get', '/api/:cid', status, [postCors])
-r.add('delete', '/api/:cid', remove, [postCors])
 // Remote Pinning API
 r.add('post', '/api/pins', pinsAdd, [postCors])
 r.add('get', '/api/pins', pinsList, [postCors])
 r.add('get', '/api/pins/:requestid', pinsGet, [postCors])
 r.add('post', '/api/pins/:requestid', pinsReplace, [postCors])
 r.add('delete', '/api/pins/:requestid', pinsDelete, [postCors])
+// Public API
+r.add('post', '/api/upload', upload, [postCors])
+r.add('get', '/api', list, [postCors])
+r.add('get', '/api/:cid', status, [postCors])
+r.add('delete', '/api/:cid', remove, [postCors])
 
 // Private API
 r.add('get', '/api/internal/tokens', tokensList)

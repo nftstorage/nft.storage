@@ -355,7 +355,7 @@ console.log(cid)`
             </p>
             <pre className="f6 lh-copy white bg-nsred pa3 br1 ba b--black code overflow-x-scroll">
               ipfs pin remote service add nftstorage
-              https://nft.storage/api/pins YOUR_API_KEY
+              https://nft.storage/api YOUR_API_KEY
             </pre>
             <p className="lh-copy">
               Use the{' '}
