@@ -2,6 +2,7 @@ import { pinata } from './constants.js'
 import { JSONResponse } from './utils/json-response.js'
 
 const endpoint = new URL('https://api.pinata.cloud/psa/')
+const headers = { authorization: `Bearer ${pinata.jwt}`, 'Content-Type': 'application/json' }
 
 /**
  * @typedef {'queued'|'pinning'|'pinned'|'failed'} Status
@@ -15,14 +16,10 @@ const endpoint = new URL('https://api.pinata.cloud/psa/')
  * @returns {Promise<{ok: true, value: PinStatus}|ErrorResponse>}
  */
 export async function pinsAdd ({ cid, name, origins, meta }) {
-  const response = await fetch(new URL('pins', endpoint).toString(), {
-    method: 'POST',
-    headers: { authorization: `Bearer ${pinata.jwt}` },
-    body: JSON.stringify({ cid, name, origins, meta })
-  })
-  return response.ok
-    ? { ok: true, value: await response.json() }
-    : { ok: false, error: response }
+  const url = new URL('pins', endpoint).toString()
+  const body = JSON.stringify({ cid, name, origins, meta })
+  const res = await fetch(url, { method: 'POST', headers, body })
+  return res.ok ? { ok: true, value: await res.json() } : { ok: false, error: res }
 }
 
 /**
@@ -31,13 +28,8 @@ export async function pinsAdd ({ cid, name, origins, meta }) {
  */
 export async function pinsGet (requestid) {
   const url = new URL(`pins/${encodeURIComponent(requestid)}`, endpoint)
-  const response = await fetch(url.toString(), {
-    method: 'GET',
-    headers: { authorization: `Bearer ${pinata.jwt}` }
-  })
-  return response.ok
-    ? { ok: true, value: await response.json() }
-    : { ok: false, error: response }
+  const res = await fetch(url.toString(), { method: 'GET', headers })
+  return res.ok ? { ok: true, value: await res.json() } : { ok: false, error: res }
 }
 
 /**
@@ -55,14 +47,8 @@ export async function pinsGet (requestid) {
  */
  export async function pinsList (params) {
   const url = new URL(`pins?${new URLSearchParams(params)}`, endpoint)
-  console.log(`${url}`)
-  const response = await fetch(url.toString(), {
-    method: 'GET',
-    headers: { authorization: `Bearer ${pinata.jwt}` }
-  })
-  return response.ok
-    ? { ok: true, value: await response.json() }
-    : { ok: false, error: response }
+  const res = await fetch(url.toString(), { method: 'GET', headers })
+  return res.ok ? { ok: true, value: await res.json() } : { ok: false, error: res }
 }
 
 /**
@@ -71,14 +57,10 @@ export async function pinsGet (requestid) {
  * @returns {Promise<{ok: true, value: PinStatus}|ErrorResponse>}
  */
  export async function pinsReplace (requestid, { cid, name, origins, meta }) {
-  const response = await fetch(new URL(`pins/${encodeURIComponent(requestid)}`, endpoint).toString(), {
-    method: 'POST',
-    headers: { authorization: `Bearer ${pinata.jwt}` },
-    body: JSON.stringify({ cid, name, origins, meta })
-  })
-  return response.ok
-    ? { ok: true, value: await response.json() }
-    : { ok: false, error: response }
+  const url = new URL(`pins/${encodeURIComponent(requestid)}`, endpoint).toString()
+  const body = JSON.stringify({ cid, name, origins, meta })
+  const res = await fetch(url, { method: 'POST', headers, body })
+  return res.ok ? { ok: true, value: await res.json() } : { ok: false, error: res }
 }
 
 /**
@@ -86,11 +68,9 @@ export async function pinsGet (requestid) {
  * @returns {Promise<{ok: true}|ErrorResponse>}
  */
  export async function pinsDelete (requestid) {
-  const response = await fetch(new URL(`pins/${encodeURIComponent(requestid)}`, endpoint).toString(), {
-    method: 'DELETE',
-    headers: { authorization: `Bearer ${pinata.jwt}` }
-  })
-  return response.ok ? { ok: true } : { ok: false, error: response }
+  const url = new URL(`pins/${encodeURIComponent(requestid)}`, endpoint).toString()
+  const res = await fetch(url, { method: 'DELETE', headers })
+  return res.ok ? { ok: true } : { ok: false, error: res }
 }
 
 /**
