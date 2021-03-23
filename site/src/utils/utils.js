@@ -69,6 +69,29 @@ export async function getAsset(event, options = {}) {
 
   // allow headers to be altered
   const response = new Response(page.body, page)
+  const mime = response.headers.get('content-type')
+
+  switch (mime) {
+    case 'text/css; charset=utf-8':
+    case 'application/javascript; charset=utf-8':
+      response.headers.set('Cache-Control', 'public,max-age=31536000,immutable')
+      break
+    case 'font/woff2':
+    case 'image/svg+xml':
+    case 'image/vnd.microsoft.icon':
+    case 'image/png':
+    case 'application/manifest+json':
+      response.headers.set(
+        'Cache-Control',
+        'public,max-age=600,stale-while-revalidate=3600'
+      )
+      break
+    case 'text/html; charset=utf-8':
+      response.headers.set('Cache-Control', 'no-cache')
+      break
+    default:
+      break
+  }
 
   response.headers.set('X-XSS-Protection', '1; mode=block')
   response.headers.set('X-Content-Type-Options', 'nosniff')
