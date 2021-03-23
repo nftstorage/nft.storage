@@ -1,5 +1,5 @@
 import regexparam from 'regexparam'
-import parse from 'regexparam'
+import { HTTPError } from '../errors'
 
 /**
  * @typedef {(event: FetchEvent, params: Record<string,string>) => Promise<Response> | Response} Handler
@@ -168,9 +168,14 @@ class Router {
     const [handler, params] = this.resolve(event.request)
     const url = new URL(event.request.url)
     const isAPI = url.pathname.startsWith('/api')
+    let rsp
 
     if (handler) {
-      const rsp = await handler(event, params)
+      try {
+        rsp = await handler(event, params)
+      } catch (err) {
+        rsp = this.onError(err)
+      }
       if (isAPI) {
         if (origin) {
           rsp.headers.set('Access-Control-Allow-Origin', origin)
@@ -211,6 +216,22 @@ class Router {
     }
 
     return [false, {}]
+  }
+
+  /**
+   * Listen to fetch event
+   *
+   * @param {FetchEvent} event
+   */
+  listen(event) {
+    event.respondWith(this.route(event))
+  }
+
+  /**
+   * @param {Error & { status?: number | undefined; }} err
+   */
+  onError(err) {
+    return HTTPError.respond(err)
   }
 }
 
