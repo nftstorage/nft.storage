@@ -16,11 +16,16 @@ import { files } from './routes/files.js'
 import { newKey } from './routes/new-key.js'
 import { newFile } from './routes/new-file.js'
 import { HTTPError } from './errors.js'
+import { pinsAdd } from './routes/pins-add.js'
+import { pinsGet } from './routes/pins-get.js'
+import { pinsList } from './routes/pins-list.js'
+import { pinsReplace } from './routes/pins-replace.js'
+import { pinsDelete } from './routes/pins-delete.js'
 
 const r = new Router({
   onError(req, err) {
     return HTTPError.respond(err)
-  },
+  }
 })
 
 // Site
@@ -32,8 +37,14 @@ r.add('get', '/files', files)
 r.add('get', '/new-key', newKey)
 r.add('get', '/new-file', newFile)
 
-// Public API
 r.add('options', '/api/*', cors)
+// Remote Pinning API
+r.add('post', '/api/pins', pinsAdd, [postCors])
+r.add('get', '/api/pins', pinsList, [postCors])
+r.add('get', '/api/pins/:requestid', pinsGet, [postCors])
+r.add('post', '/api/pins/:requestid', pinsReplace, [postCors])
+r.add('delete', '/api/pins/:requestid', pinsDelete, [postCors])
+// Public API
 r.add('post', '/api/upload', upload, [postCors])
 r.add('get', '/api', list, [postCors])
 r.add('get', '/api/:cid', status, [postCors])
