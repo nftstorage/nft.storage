@@ -17,8 +17,8 @@ export async function pinsAdd (event) {
   const pinData = await event.request.json()
   pinData.meta = pinData.meta || {}
   pinData.meta.sub = user.sub
-  const res = await PinataPSA.pinsAdd(pinData)
 
+  const res = await PinataPSA.pinsAdd(pinData)
   if (!res.ok) {
     return PinataPSA.parseErrorResponse(res.error)
   }
