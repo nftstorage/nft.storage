@@ -1,5 +1,3 @@
-import { HTTPError } from '../errors.js'
-
 /**
  * @param {FetchEvent} event
  */
@@ -29,8 +27,24 @@ export function cors(event) {
       headers: respHeaders,
     })
   } else {
-    return HTTPError.respond(
-      new HTTPError('non CORS options request not allowed')
-    )
+    return new Response('Non CORS options request not allowed', {
+      status: 405,
+      statusText: 'Method Not Allowed',
+    })
   }
+}
+
+/**
+ * @param {Request} req
+ * @param {Response} rsp
+ */
+export function postCors(req, rsp) {
+  const origin = req.headers.get('origin')
+  if (origin) {
+    rsp.headers.set('Access-Control-Allow-Origin', origin)
+    rsp.headers.set('Vary', 'Origin')
+  } else {
+    rsp.headers.set('Access-Control-Allow-Origin', '*')
+  }
+  return rsp
 }

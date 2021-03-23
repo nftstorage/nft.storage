@@ -3,7 +3,7 @@ import { homepage } from './routes/homepage.js'
 import { auth } from './routes/auth.js'
 import { logout } from './routes/logout.js'
 import { notFound } from './utils/utils.js'
-import { cors } from './routes/cors.js'
+import { cors, postCors } from './routes/cors.js'
 import { upload } from './routes/nfts-upload.js'
 import { status } from './routes/nfts-get.js'
 import { remove } from './routes/nfts-delete.js'
@@ -15,40 +15,34 @@ import { manage } from './routes/manage.js'
 import { files } from './routes/files.js'
 import { newKey } from './routes/new-key.js'
 import { newFile } from './routes/new-file.js'
+import { HTTPError } from './errors.js'
 
-/**
- * Request handler
- *
- * Static (/foo, /foo/bar)
- * Parameter (/:title, /books/:title, /books/:genre/:title)
- * Parameter w/ Suffix (/movies/:title.mp4, /movies/:title.(mp4|mov))
- * Optional Parameters (/:title?, /books/:title?, /books/:genre/:title?)
- * Wildcards (*, /books/*, /books/:genre/*)
- *
- * @see https://github.com/lukeed/regexparam
- */
-const r = new Router()
+const r = new Router({
+  onError(req, err) {
+    return HTTPError.respond(err)
+  },
+})
 
 // Site
-r.get('/', homepage)
-r.get('/auth', auth)
-r.get('/logout', logout)
-r.get('/manage', manage)
-r.get('/files', files)
-r.get('/new-key', newKey)
-r.get('/new-file', newFile)
+r.add('get', '/', homepage)
+r.add('get', '/auth', auth)
+r.add('get', '/logout', logout)
+r.add('get', '/manage', manage)
+r.add('get', '/files', files)
+r.add('get', '/new-key', newKey)
+r.add('get', '/new-file', newFile)
 
 // Public API
-r.options('/api/.*', cors)
-r.post('/api/upload', upload)
-r.get('/api', list)
-r.get('/api/:cid', status)
-r.delete('/api/:cid', remove)
+r.add('options', '/api/*', cors)
+r.add('post', '/api/upload', upload, [postCors])
+r.add('get', '/api', list, [postCors])
+r.add('get', '/api/:cid', status, [postCors])
+r.add('delete', '/api/:cid', remove, [postCors])
 
 // Private API
-r.get('/api/internal/tokens', tokensList)
-r.post('/api/internal/tokens', tokensCreate)
-r.delete('/api/internal/tokens', tokensDelete)
+r.add('get', '/api/internal/tokens', tokensList)
+r.add('post', '/api/internal/tokens', tokensCreate)
+r.add('delete', '/api/internal/tokens', tokensDelete)
 
-r.all(notFound)
+r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))

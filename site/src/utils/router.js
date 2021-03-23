@@ -1,38 +1,16 @@
 import regexparam from 'regexparam'
-import { HTTPError } from '../errors'
 
 /**
  * @typedef {(event: FetchEvent, params: Record<string,string>) => Promise<Response> | Response} Handler
  * @typedef {(req: Request) => boolean | Record<string,string>} Condition
- * @typedef {string} Matcher
+ * @typedef {(req: Request) => Response} BasicHandler
+ * @typedef {(req: Request, err: Error) => Response} ErrorHandler
+ * @typedef {(req: Request, rsp: Response) => Response} ResponseHandler
  */
 
 /**
- * Helper functions that when passed a request will return a
- * boolean indicating if the request uses that HTTP method,
- * header, host or referrer.
+ * Match route params
  *
- * @param {string} method
- */
-function Method(method) {
-  return (/** @type {Request} */ req) =>
-    req.method.toLowerCase() === method.toLowerCase()
-}
-const Connect = Method('connect')
-const Delete = Method('delete')
-const Get = Method('get')
-const Head = Method('head')
-const Options = Method('options')
-const Patch = Method('patch')
-const Post = Method('post')
-const Put = Method('put')
-const Trace = Method('trace')
-
-// const Header = (header, val) => (req) => req.headers.get(header) === val
-// const Host = (host) => Header('host', host.toLowerCase())
-// const Referrer = (host) => Header('referrer', host.toLowerCase())
-
-/**
  * @param {string} path
  * @param {{ keys: string[]; pattern: RegExp;}} result
  */
@@ -50,149 +28,84 @@ function matchParams(path, result) {
   }
   return out
 }
-/**
- * @param {Matcher} regExp
- */
-function Path(regExp) {
-  const parsed = regexparam(regExp)
-  return (/** @type {Request} */ req) => {
-    const url = new URL(req.url)
-    const path = url.pathname
-
-    const match = parsed.pattern.test(path)
-    if (match) {
-      return matchParams(path, parsed)
-    }
-    return false
-  }
-}
 
 /**
  * The Router handles determines which handler is matched given the
  * conditions present for each request.
  */
 class Router {
-  constructor() {
-    /** @type {{ conditions: Condition[]; handler: Handler; }[]} */
+  /**
+   * @param {object} [options]
+   * @param {BasicHandler} [options.onNotFound]
+   * @param {ErrorHandler} [options.onError]
+   */
+  constructor(options) {
+    const defaults = {
+      onNotFound() {
+        return new Response(null, {
+          status: 404,
+          statusText: 'Not Found',
+        })
+      },
+      onError() {
+        return new Response(null, {
+          status: 500,
+          statusText: 'Internal Server Error',
+        })
+      },
+    }
+    this.options = {
+      ...defaults,
+      ...options,
+    }
+    /** @type {{ conditions: Condition[]; handler: Handler; postHandlers: ResponseHandler[] }[]} */
     this.routes = []
   }
 
   /**
-   * @param {Condition[]} conditions
+   * Add route
+   *
+   * @example Route example
+   * ```text
+   * Static (/foo, /foo/bar)
+   * Parameter (/:title, /books/:title, /books/:genre/:title)
+   * Parameter w/ Suffix (/movies/:title.mp4, /movies/:title.(mp4|mov))
+   * Optional Parameters (/:title?, /books/:title?, /books/:genre/:title?)
+   * Wildcards (*, /books/*, /books/:genre/*)
+   * ```
+   * @see https://github.com/lukeed/regexparam
+   *
+   *
+   * @param {string} method
+   * @param {string} route
    * @param {Handler} handler
+   * @param {Array<ResponseHandler> } [postHandlers]
    */
-  handle(conditions, handler) {
-    this.routes.push({
-      conditions,
-      handler,
-    })
-    return this
-  }
-
-  /**
-   * @param {Matcher} url
-   * @param {Handler} handler
-   */
-  connect(url, handler) {
-    return this.handle([Connect, Path(url)], handler)
-  }
-
-  /**
-   * @param {Matcher} url
-   * @param {Handler} handler
-   */
-  delete(url, handler) {
-    return this.handle([Delete, Path(url)], handler)
-  }
-  /**
-   * @param {Matcher} url
-   * @param {Handler} handler
-   */
-  get(url, handler) {
-    return this.handle([Get, Path(url)], handler)
-  }
-  /**
-   * @param {Matcher} url
-   * @param {Handler} handler
-   */
-  head(url, handler) {
-    return this.handle([Head, Path(url)], handler)
-  }
-  /**
-   * @param {Matcher} url
-   * @param {Handler} handler
-   */
-  options(url, handler) {
-    return this.handle([Options, Path(url)], handler)
-  }
-  /**
-   * @param {Matcher} url
-   * @param {Handler} handler
-   */
-  patch(url, handler) {
-    return this.handle([Patch, Path(url)], handler)
-  }
-  /**
-   * @param {Matcher} url
-   * @param {Handler} handler
-   */
-  post(url, handler) {
-    return this.handle([Post, Path(url)], handler)
-  }
-  /**
-   * @param {Matcher} url
-   * @param {Handler} handler
-   */
-  put(url, handler) {
-    return this.handle([Put, Path(url)], handler)
-  }
-  /**
-   * @param {Matcher} url
-   * @param {Handler} handler
-   */
-  trace(url, handler) {
-    return this.handle([Trace, Path(url)], handler)
-  }
-  /**
-   * @param {Handler} handler
-   */
-  all(handler) {
-    return this.handle([], handler)
-  }
-
-  /**
-   * @param {FetchEvent} event
-   */
-  async route(event) {
-    const origin = event.request.headers.get('origin')
-    const [handler, params] = this.resolve(event.request)
-    const url = new URL(event.request.url)
-    const isAPI = url.pathname.startsWith('/api')
-    let rsp
-
-    if (handler) {
-      try {
-        rsp = await handler(event, params)
-      } catch (err) {
-        rsp = this.onError(err)
+  add(method, route, handler, postHandlers = []) {
+    const methodCondition = (/** @type {Request} */ req) => {
+      const m = method.trim().toLowerCase()
+      if (m === 'all') {
+        return true
       }
-      if (isAPI) {
-        if (origin) {
-          rsp.headers.set('Access-Control-Allow-Origin', origin)
-          rsp.headers.set('Vary', 'Origin')
-        } else {
-          rsp.headers.set('Access-Control-Allow-Origin', '*')
-        }
-      }
-      return rsp
+      return req.method.toLowerCase() === m
     }
 
-    return new Response('resource not found', {
-      status: 404,
-      statusText: 'not found',
-      headers: {
-        'content-type': 'text/plain',
-      },
+    const parsed = regexparam(route)
+    const routeCondition = (/** @type {Request} */ req) => {
+      const url = new URL(req.url)
+      const path = url.pathname
+
+      const match = parsed.pattern.test(path)
+      if (match) {
+        return matchParams(path, parsed)
+      }
+      return false
+    }
+
+    this.routes.push({
+      conditions: [methodCondition, routeCondition],
+      handler,
+      postHandlers,
     })
   }
 
@@ -200,22 +113,40 @@ class Router {
    * Resolve returns the matching route for a request that returns
    * true for all conditions (if any).
    * @param {Request} req
-   * @return {[Handler|false, Record<string,string>]}
+   * @return {[Handler|false, Record<string,string>, ResponseHandler[]]}
    */
   resolve(req) {
     for (let i = 0; i < this.routes.length; i++) {
-      const route = this.routes[i]
-      if (route.conditions.length !== 2) {
-        return [route.handler, {}]
-      }
-      const method = route.conditions[0](req)
-      const pattern = route.conditions[1](req)
-      if (method && typeof pattern !== 'boolean') {
-        return [route.handler, pattern]
+      const { conditions, handler, postHandlers } = this.routes[i]
+      const method = conditions[0](req)
+      const routeParams = conditions[1](req)
+      if (method && typeof routeParams !== 'boolean') {
+        return [handler, routeParams, postHandlers]
       }
     }
 
-    return [false, {}]
+    return [false, {}, []]
+  }
+
+  /**
+   * @param {FetchEvent} event
+   */
+  async route(event) {
+    const req = event.request
+    const [handler, params, postHandlers] = this.resolve(req)
+    let rsp
+
+    if (handler) {
+      try {
+        rsp = await handler(event, params)
+      } catch (err) {
+        rsp = this.options.onError(req, err)
+      }
+    } else {
+      rsp = this.options.onNotFound(req)
+    }
+
+    return postHandlers.reduce((r, handler) => handler(req, r), rsp)
   }
 
   /**
@@ -225,13 +156,6 @@ class Router {
    */
   listen(event) {
     event.respondWith(this.route(event))
-  }
-
-  /**
-   * @param {Error & { status?: number | undefined; }} err
-   */
-  onError(err) {
-    return HTTPError.respond(err)
   }
 }
 

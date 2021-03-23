@@ -11,7 +11,6 @@ import { get as getDeals } from '../models/deals.js'
 /**
  * @param {FetchEvent} event
  * @param {Record<string,string>} params
- * @returns {Promise<Response>}
  */
 export const status = async (event, params) => {
   const token = await verifyToken(event)

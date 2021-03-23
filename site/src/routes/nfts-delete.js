@@ -6,7 +6,6 @@ import { JSONResponse } from '../utils/json-response.js'
 /**
  * @param {FetchEvent} event
  * @param {Record<string,string>} params
- * @returns {Promise<Response>}
  */
 export const remove = async (event, params) => {
   const token = await verifyToken(event)
