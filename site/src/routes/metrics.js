@@ -1,7 +1,7 @@
 import { stores } from '../constants.js'
 import { get as getDeals } from '../models/deals.js'
 
-const MAX_AGE_SECS = 10 // max age of a metrics response in seconds
+const MAX_AGE_SECS = 60 * 10 // max age of a metrics response in seconds
 
 /**
  * TODO: basic auth
@@ -95,6 +95,7 @@ async function getNftMetrics () {
       }
       for (const d of nft.deals) {
         const ntwk = d.network || 'unknown'
+        // TODO: @riba will add a "key" to deals that is essentially this - switch to using it
         const key = `${ntwk}/${d.miner}/${d.batchRootCid}`
         if (seenDeals.has(key)) continue
         seenDeals.add(key)
