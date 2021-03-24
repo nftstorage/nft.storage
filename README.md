@@ -6,6 +6,8 @@ Decentralized storage of NFT data on IPFS, backed by Filecoin and provided free 
 
 # Table of Contents <!-- omit in toc -->
 
+- [JS client library](#js-client-library)
+- [HTTP API](#http-api)
 - [`site` Setup](#site-setup)
   - [Cloudflare Workers CLI](#cloudflare-workers-cli)
   - [Auth0 account](#auth0-account)
