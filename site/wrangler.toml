@@ -20,7 +20,7 @@ account_id = "fffa4b4363a7e5250af8357087263b3a"
 workers_dev = true
 route = ""
 zone_id = ""
-vars = { AUTH0_CALLBACK_URL = "https://staging.nft.storage/auth", DEBUG = true }
+vars = { AUTH0_CALLBACK_URL = "https://staging.nft.storage/auth", DEBUG = false }
 kv_namespaces = [
     { binding = "USERS", preview_id = "8964654a0a1d4f7586b59db90ef97594", id = "8964654a0a1d4f7586b59db90ef97594" },
     { binding = "SESSION", preview_id = "7cf078ca01934227abedac1b29cd385c", id = "7cf078ca01934227abedac1b29cd385c" },
