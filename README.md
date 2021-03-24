@@ -1,6 +1,8 @@
-# nft.storage <!-- omit in toc -->
+# [nft.storage](https://nft.storage) <!-- omit in toc -->
 
-Unlimited storage of NFT data on IPFS, backed by Filecoin and provided free to [NFTHack](https://nfthack.ethglobal.co/) participants during the hackathon.
+Decentralized storage of NFT data on IPFS, backed by Filecoin and provided free to [NFTHack](https://nfthack.ethglobal.co/) participants during the hackathon.
+
+<img src="https://raw.githubusercontent.com/ipfs-shipyard/nft.storage/main/screenshot.png" alt="nft.storage screenshot" />
 
 # Table of Contents <!-- omit in toc -->
 
@@ -13,6 +15,14 @@ Unlimited storage of NFT data on IPFS, backed by Filecoin and provided free to [
 - [`site` Usage](#site-usage)
   - [Local development](#local-development)
   - [Deploy](#deploy)
+
+## JS client library
+
+Check out the [JS client library documentation](https://github.com/ipfs-shipyard/nft.storage/tree/main/client).
+
+## HTTP API
+
+[Documentation for the HTTP API](https://nft.storage/api-docs).
 
 ## `site` Setup
 
@@ -122,3 +132,11 @@ yarn dev
 ```bash
 yarn deploy
 ```
+
+## Contributing
+
+Feel free to join in. All welcome. [Open an issue](https://github.com/ipfs-shipyard/nft.storage/issues)!
+
+## License
+
+Dual-licensed under [MIT](https://github.com/ipfs-shipyard/nft.storage/blob/main/LICENSE-MIT) + [Apache 2.0](https://github.com/ipfs-shipyard/nft.storage/blob/main/LICENSE-APACHE)
