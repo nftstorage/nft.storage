@@ -21,6 +21,7 @@ import { pinsGet } from './routes/pins-get.js'
 import { pinsList } from './routes/pins-list.js'
 import { pinsReplace } from './routes/pins-replace.js'
 import { pinsDelete } from './routes/pins-delete.js'
+import { metrics } from './routes/metrics.js'
 
 const r = new Router({
   onError(req, err) {
@@ -36,6 +37,8 @@ r.add('get', '/manage', manage)
 r.add('get', '/files', files)
 r.add('get', '/new-key', newKey)
 r.add('get', '/new-file', newFile)
+// Monitoring
+r.add('get', '/metrics', metrics)
 
 r.add('options', '/api/*', cors)
 // Remote Pinning API

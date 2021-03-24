@@ -106,6 +106,10 @@ export interface Deal {
    */
   statusText?: string
   /**
+   * Identifier for the deal stored on chain.
+   */
+  chainDealID?: number
+  /**
    * Deal Activation
    *
    * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
