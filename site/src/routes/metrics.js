@@ -141,7 +141,7 @@ function exportPromMetrics ({ userMetrics, nftMetrics }) {
     '# HELP nftstorage_nfts_storage_filecoin_total Total number of NFTs stored on Filecoin in active deals.',
     '# TYPE nftstorage_nfts_storage_filecoin_total counter',
     `nftstorage_nfts_storage_filecoin_total ${nftMetrics.storage.filecoin.total}`,
-    '# HELP nftstorage_nfts_storage_filecoin_queued_total Total number of NFTs stored on Filecoin in active deals.',
+    '# HELP nftstorage_nfts_storage_filecoin_queued_total Total number of NFTs queued for the next deal batch.',
     '# TYPE nftstorage_nfts_storage_filecoin_queued_total counter',
     `nftstorage_nfts_storage_filecoin_queued_total ${nftMetrics.storage.filecoin.totalQueued}`,
     ...Object.entries(nftMetrics.storage.filecoin.deals).map(([ntwk, totals]) => [
