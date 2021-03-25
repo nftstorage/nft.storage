@@ -3,6 +3,8 @@ import { get as getDeals } from '../models/deals.js'
 
 const MAX_AGE_SECS = 600 // max age of a metrics response in seconds
 const STALE_WHILE_REVALIDATE_SECS = 3600
+// Note: add a cache busting suffix if you change the code and want to see a
+// change immediately after deploy.
 const CACHE_KEY = '/metrics'
 
 /**
