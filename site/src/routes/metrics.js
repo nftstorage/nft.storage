@@ -3,9 +3,16 @@ import { get as getDeals } from '../models/deals.js'
 
 const MAX_AGE_SECS = 600 // max age of a metrics response in seconds
 const STALE_WHILE_REVALIDATE_SECS = 3600
-// Note: add a cache busting suffix if you change the code and want to see a
-// change immediately after deploy.
-const CACHE_KEY = '/metrics'
+
+/**
+ * Note: add a cache busting suffix if you change the code and want to see a
+ * change immediately after deploy.
+ * @param {string} url 
+ * @returns {string}
+ */
+function getCacheKey (url) {
+  return `${new URL(url).origin}/metrics`
+}
 
 /**
  * TODO: basic auth
@@ -13,15 +20,16 @@ const CACHE_KEY = '/metrics'
  */
 export async function metrics(event) {
   const cache = caches.default
+  const cacheKey = getCacheKey(event.request.url)
 
-  let res = await cache.match(CACHE_KEY)
+  let res = await cache.match(cacheKey)
   if (res) return res
 
   const [userMetrics, nftMetrics] = await Promise.all([getUserMetrics(), getNftMetrics()])
   res = new Response(exportPromMetrics({ userMetrics, nftMetrics }))
   // Cache the response for MAX_AGE_SECS
   res.headers.append('Cache-Control', `public,max-age=${MAX_AGE_SECS},stale-while-revalidate=${STALE_WHILE_REVALIDATE_SECS}`)
-  event.waitUntil(cache.put(CACHE_KEY, res.clone()))
+  event.waitUntil(cache.put(cacheKey, res.clone()))
   return res
 }
 
