@@ -23,12 +23,13 @@
     "./src/platform.js": "./src/platform.web.js"
   },
   "scripts": {
-    "test:web": "node test/test.js playwright-test test/*.spec.js",
-    "test:es": "node test/test.js mocha test/*.spec.js --exit",
+    "test:web": "node test/test.js playwright-test test/*.spec.js --cov && nyc report",
+    "test:es": "node test/test.js hundreds mocha test/*.spec.js --exit",
     "test:cjs": "node test/test.js mocha dist/test/*.spec.cjs --exit",
     "build": "npm run build:ts && npm run build:cjs",
     "build:ts": "tsc --build",
     "build:cjs": "rollup --config rollup.config.js",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && npx codecov",
     "typedoc": "typedoc --entryPoints src  --out ../docs/client",
     "prepare": "npm run build"
   },
@@ -40,20 +41,22 @@
   },
   "devDependencies": {
     "@ssttevee/multipart-parser": "0.1.8",
-    "uvu": "0.5.1",
-    "mocha": "8.3.2",
     "@types/mocha": "8.2.1",
+    "hundreds": "0.0.9",
     "ipfs-unixfs-importer": "6.0.1",
     "ipld": "0.29.0",
     "ipld-dag-pb": "0.22.0",
     "ipld-in-memory": "8.0.0",
+    "mocha": "8.3.2",
     "multicodec": "3.0.1",
     "multiformats": "4.5.3",
     "multihashing-async": "2.1.2",
+    "nyc": "15.1.0",
     "playwright-test": "2.1.0",
-    "typedoc": "0.20.32",
     "rollup": "2.22.1",
-    "rollup-plugin-multi-input": "1.1.1"
+    "rollup-plugin-multi-input": "1.1.1",
+    "typedoc": "0.20.32",
+    "uvu": "0.5.1"
   },
   "homepage": "https://github.com/ipfs-shipyard/nft.storage/tree/main/client",
   "bugs": "https://github.com/ipfs-shipyard/nft.storage/issues"

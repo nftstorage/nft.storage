@@ -5,6 +5,7 @@
 [![styled with prettier][prettier.icon]][prettier.url]
 [![size][size.icon]][size.url]
 [![deps][deps.icon]][deps.url]
+[![codecov][cov.icon]][cov.url]
 
 A client library for the https://nft.storage/ service. It provides a convenient interface for working with the [Raw HTTP API][] from a web browser or [Node.js][] and comes bundled with TS for out-of-the box type inference and better IntelliSense.
 
@@ -46,3 +47,5 @@ For more examples please see the [API documentation][].
 [size.url]: https://bundlephobia.com/result?p=nft.storage
 [deps.icon]: https://status.david-dm.org/gh/ipfs-shipyard/nft.storage.svg?path=client
 [deps.url]: https://david-dm.org/ipfs-shipyard/nft.storage?path=client
+[cov.icon]: https://codecov.io/gh/ipfs-shipyard/nft.storage/branch/main/graph/badge.svg?token=dU5oWrlqHF
+[cov.url]: https://codecov.io/gh/ipfs-shipyard/nft.storage

@@ -4,12 +4,12 @@ on:
     branches:
       - main
     paths:
-      - "client/**"
+      - 'client/**'
   pull_request:
     branches:
       - main
     paths:
-      - "client/**"
+      - 'client/**'
 
 jobs:
   check:
@@ -58,6 +58,14 @@ jobs:
 
       - name: Test (Web)
         run: yarn --cwd client test:web
+
+      - name: Test (CJS)
+        run: |
+          yarn --cwd client build:cjs
+          yarn --cwd client test:cjs
+
+      - name: Coverage
+        run: yarn --cwd client coverage
 
   publish:
     name: Publish client
@@ -115,4 +123,4 @@ jobs:
         with:
           author_name: documentation-generator
           add: docs/client
-          message: "chore: generate client docs"
+          message: 'chore: generate client docs'
