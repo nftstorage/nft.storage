@@ -93,14 +93,6 @@ async function getNftMetrics () {
     const nftMetas = []
     for (const k of nftList.keys) {
       const cid = k.name.split(':')[1]
-      if (!k.metadata || k.metadata.size == null) {
-        const d = await stores.nfts.get(k.name)
-        if (d == null) continue
-        const nft = JSON.parse(d)
-        await stores.nfts.put(k.name, d, { metadata: { pinStatus: nft.pin.status, size: nft.size } })
-        nftMetas.push({ cid, pinStatus: nft.pin.status, size: nft.size, deals: [] })
-        continue
-      }
       // Look up size for pinned data via pinning service API
       // TODO: move this to cron job
       if (k.metadata.pinStatus !== 'pinned') {
