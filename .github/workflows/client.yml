@@ -60,7 +60,9 @@ jobs:
         run: yarn --cwd client test:web
 
       - name: Test (CJS)
-        run: yarn --cwd client test:cjs
+        run: |
+          yarn --cwd client build:cjs
+          yarn --cwd client test:cjs
 
   publish:
     name: Publish client
