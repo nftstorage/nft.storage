@@ -14,6 +14,8 @@
  * @module
  */
 
+import cbor from '@ipld/dag-cbor'
+import { CID } from 'multiformats'
 import * as API from './lib/interface.js'
 import { fetch, File, Blob, FormData } from './platform.js'
 
@@ -114,6 +116,39 @@ class NFTStorage {
 
   /**
    * @param {API.Service} service
+   * @param {any} metadata
+   * @returns {Promise<API.CIDString>}
+   */
+  static async storeMetadata(service, metadata) {
+    /**
+     * @param {any} obj
+     * @returns {Promise<any>}
+     */
+    async function transform (obj) {
+      if (Array.isArray(obj)) {
+        return Promise.all(obj.map(transform))
+      }
+      if (obj instanceof File) {
+        return NFTStorage.storeDirectory(service, [obj])
+      }
+      if (obj instanceof Blob) {
+        return NFTStorage.storeBlob(service, obj)
+      }
+      if (typeof obj === 'object') {
+        const ents = await Promise.all(Object.entries(obj).map(async ([k, v]) => ([k, await transform(v)])))
+        return Object.fromEntries(ents)
+      }
+      return obj
+    }
+    metadata = await transform(metadata)
+    const cid = await NFTStorage.storeBlob(service, new Blob([cbor.encode(metadata)]))
+    console.log(cid)
+    const mh = CID.parse(cid).multihash
+    return CID.createV1(cbor.code, mh).toString()
+  }
+
+  /**
+   * @param {API.Service} service
    * @param {string} cid
    * @returns {Promise<API.StatusResult>}
    */
@@ -174,6 +209,13 @@ class NFTStorage {
    */
   storeBlob(blob) {
     return NFTStorage.storeBlob(this, blob)
+  }
+  /**
+   * Stores a metadata object as an IPLD CBOR encoded DAG.
+   * @param {any} metadata
+   */
+  storeMetadata(metadata) {
+    return NFTStorage.storeMetadata(this, metadata)
   }
   /**
    * Stores a directory of files and returns a CID for the directory.

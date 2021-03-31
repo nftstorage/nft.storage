@@ -34,6 +34,7 @@
     "prepare": "npm run build"
   },
   "dependencies": {
+    "@ipld/dag-cbor": "^4.0.0",
     "@web-std/blob": "2.0.1",
     "@web-std/fetch": "1.0.0",
     "@web-std/file": "1.0.1",
@@ -49,7 +50,7 @@
     "ipld-in-memory": "8.0.0",
     "mocha": "8.3.2",
     "multicodec": "3.0.1",
-    "multiformats": "4.5.3",
+    "multiformats": "^4.5.3",
     "multihashing-async": "2.1.2",
     "nyc": "15.1.0",
     "playwright-test": "2.1.0",
