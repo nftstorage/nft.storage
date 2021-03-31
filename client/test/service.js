@@ -22,6 +22,9 @@ const importUpload = async (request) => {
   if (contentType.includes('multipart/form-data')) {
     const data = await request.formData()
     const files = /** @type {File[]} */ (data.getAll('file'))
+    if (files.length === 0) {
+      throw Error('No files were provided')
+    }
     return await importDirectory(files)
   } else {
     const content = await request.arrayBuffer()
@@ -67,65 +70,77 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
       }
     )
   }
-
-  switch (`${request.method} /${api}/${param}`) {
-    case 'POST /api/upload': {
-      const { cid } = await importUpload(request)
-      const key = `${token}:${cid}`
-      if (!store.get(key)) {
-        const created = new Date()
-        store.set(key, {
-          cid: cid.toString(),
-          deals: { status: 'ongoing', deals: [] },
-          pin: {
+  try {
+    switch (`${request.method} /${api}/${param}`) {
+      case 'POST /api/upload': {
+        const { cid } = await importUpload(request)
+        const key = `${token}:${cid}`
+        if (!store.get(key)) {
+          const created = new Date()
+          store.set(key, {
             cid: cid.toString(),
-            status: 'pinned',
+            deals: { status: 'ongoing', deals: [] },
+            pin: {
+              cid: cid.toString(),
+              status: 'pinned',
+              created,
+            },
             created,
-          },
-          created,
+          })
+        }
+        const result = { ok: true, value: { cid: cid.toString() } }
+
+        return new Response(JSON.stringify(result), {
+          headers: headers(request),
         })
       }
-      const result = { ok: true, value: { cid: cid.toString() } }
+      case `GET /api/${param}`: {
+        const cid = CID.parse(param || '')
+        const value = store.get(`${token}:${cid}`)
+        const [status, result] = value
+          ? [200, { ok: true, value }]
+          : [
+              404,
+              {
+                ok: false,
+                error: { message: `NFT with a CID ${cid} not found` },
+              },
+            ]
 
-      return new Response(JSON.stringify(result), {
-        headers: headers(request),
-      })
-    }
-    case `GET /api/${param}`: {
-      const cid = CID.parse(param || '')
-      const value = store.get(`${token}:${cid}`)
-      const [status, result] = value
-        ? [200, { ok: true, value }]
-        : [
-            404,
-            {
-              ok: false,
-              error: { message: `NFT with a CID ${cid} not found` },
-            },
-          ]
-
-      return new Response(JSON.stringify(result), {
-        status,
-        headers: headers(request),
-      })
-    }
-    case `DELETE /api/${param}`: {
-      const cid = CID.parse(param || '')
-      store.delete(`${token}:${cid}`)
-      return new Response(JSON.stringify({ ok: true }), {
-        headers: headers(request),
-      })
-    }
-    default: {
-      const result = {
-        ok: false,
-        error: { message: `No such API endpoint ${url.pathname}` },
+        return new Response(JSON.stringify(result), {
+          status,
+          headers: headers(request),
+        })
       }
+      case `DELETE /api/${param}`: {
+        const cid = CID.parse(param || '')
+        store.delete(`${token}:${cid}`)
+        return new Response(JSON.stringify({ ok: true }), {
+          headers: headers(request),
+        })
+      }
+      default: {
+        const result = {
+          ok: false,
+          error: { message: `No such API endpoint ${url.pathname}` },
+        }
 
-      return new Response(JSON.stringify(result), {
-        status: 404,
-        headers: headers(request),
-      })
+        return new Response(JSON.stringify(result), {
+          status: 404,
+          headers: headers(request),
+        })
+      }
     }
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        error: { message: error.message },
+      }),
+      {
+        status: 500,
+        headers: headers(request),
+      }
+    )
   }
 }

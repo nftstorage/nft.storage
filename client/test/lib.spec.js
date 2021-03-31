@@ -39,6 +39,19 @@ describe('client', () => {
       assert.equal(cid1, cid2, 'cids match')
       assert.equal(status1.created, status2.created, 'dates match')
     })
+
+    it('errors without token', async () => {
+      const client = new NFTStorage({ token: 'wrong', endpoint })
+      const blob = new Blob(['upload twice'])
+
+      try {
+        await client.storeBlob(blob)
+        assert.unreachable('sholud have failed')
+      } catch (error) {
+        assert.ok(error instanceof Error)
+        assert.match(error, /Unauthorized/)
+      }
+    })
   })
 
   describe('upload dir', () => {
@@ -62,6 +75,17 @@ describe('client', () => {
       ])
 
       assert.equal(cid, 'QmQAE2tjfwYYmEFFEEnfr12CWikMqgwwtq5gqfyb62bJpw')
+    })
+
+    it('upload nothing', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      try {
+        await client.storeDirectory([])
+        assert.unreachable('should fail if no content is provided')
+      } catch (error) {
+        assert.ok(error instanceof Error)
+        assert.match(error, /no files/i)
+      }
     })
   })
 
@@ -118,6 +142,17 @@ describe('client', () => {
         assert.unreachable('should be gone')
       } catch (error) {
         assert.ok(error.message.includes('not found'))
+      }
+    })
+
+    it('invalid cid errors', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      try {
+        await client.delete('foo')
+        assert.unreachable('invalid cid')
+      } catch (error) {
+        assert.ok(error instanceof Error)
+        assert.match(error, /parse non base32/)
       }
     })
   })
