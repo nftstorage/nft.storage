@@ -64,6 +64,9 @@ jobs:
           yarn --cwd client build:cjs
           yarn --cwd client test:cjs
 
+      - name: Coverage
+        run: yarn --cwd client coverage
+
   publish:
     name: Publish client
     needs:
