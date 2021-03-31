@@ -30,7 +30,7 @@ paths:
         - To store multiple files in a directory, submit a `multipart/form-data` HTTP `POST` request.
 
         Use the `Content-Disposition` header for each part to specify a filename.
-
+      operationId: store
       requestBody:
         required: true
         content:
@@ -69,6 +69,7 @@ paths:
       tags:
         - NFT Storage
       summary: List all stored files
+      operationId: list
       responses:
         '200':
           description: OK
@@ -88,6 +89,7 @@ paths:
         - NFT Storage
       summary: Get information for the stored file CID
       description: Includes the IPFS pinning state and the Filecoin deal state.
+      operationId: status
       parameters:
         - name: cid
           in: path
@@ -123,6 +125,7 @@ paths:
         - Does not remove the content from other IPFS nodes in the network that already cached or pinned the CID.  
         
         Note: the content will remain available if another user has stored the CID with nft.storage.
+      operationId: delete
       parameters:
         - name: cid
           in: path
