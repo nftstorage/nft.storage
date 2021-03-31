@@ -39,7 +39,7 @@ export async function pinsAdd (event) {
       created: pinStatus.created
     }
   }
-  await nfts.set({ user, cid: pinStatus.pin.cid }, nft)
+  await nfts.set({ user, cid: pinStatus.pin.cid }, nft, { metadata: { pinStatus: pinStatus.status, size: 0 } })
 
   return new JSONResponse(pinStatus)
 }

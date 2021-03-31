@@ -42,7 +42,7 @@ export async function upload(event) {
           created,
         },
       }
-      const result = await nfts.set({ user, cid }, data)
+      const result = await nfts.set({ user, cid }, data, { metadata: { pinStatus: 'pinned', size } })
       return new JSONResponse({
         ok: true,
         value: {
@@ -76,7 +76,7 @@ export async function upload(event) {
           created,
         },
       }
-      const result = await nfts.set({ user, cid }, data)
+      const result = await nfts.set({ user, cid }, data, { metadata: { pinStatus: 'pinned', size: blob.size } })
 
       return new JSONResponse({
         ok: true,

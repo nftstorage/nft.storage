@@ -22,16 +22,17 @@ export const has = async (key) => {
 /**
  * @param {Key} key
  * @param {NFT} value
+ * @param {any} [options]
  * @returns {Promise<NFT>}
  */
-export const set = async (key, value) => {
+export const set = async (key, value, options) => {
   const savedValue = await get(key)
   if (savedValue === null) {
     await stores.nfts.put(encodeKey(key), JSON.stringify(value))
     return value
   }
   const data = merge(savedValue, value)
-  await stores.nfts.put(encodeKey(key), JSON.stringify(data))
+  await stores.nfts.put(encodeKey(key), JSON.stringify(data), options)
   return data
 }
 

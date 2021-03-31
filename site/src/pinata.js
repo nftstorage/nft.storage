@@ -100,3 +100,25 @@ export async function pinFiles(files, user) {
     return { ok: false, error: response }
   }
 }
+
+/**
+ * @param {string} cid
+ * @returns {Promise<{ ok: true, value?: any } | { ok: false, error: Response }>}
+ */
+export const pinInfo = async cid => {
+  const url = new URL(`/data/pinList?status=pinned&hashContains=${encodeURIComponent(cid)}`, endpoint)
+
+  const response = await fetch(url.toString(), {
+    method: 'GET',
+    headers: {
+      authorization: `Bearer ${pinata.jwt}`,
+    },
+  })
+
+  if (response.ok) {
+    const { rows } = await response.json()
+    return { ok: true, value: rows[0] }
+  } else {
+    return { ok: false, error: response }
+  }
+}

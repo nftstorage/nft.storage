@@ -1,5 +1,5 @@
 import { stores } from '../constants.js'
-import { get as getDeals } from '../models/deals.js'
+import * as Pinata from '../pinata.js'
 
 const MAX_AGE_SECS = 600 // max age of a metrics response in seconds
 const STALE_WHILE_REVALIDATE_SECS = 3600
@@ -11,7 +11,7 @@ const STALE_WHILE_REVALIDATE_SECS = 3600
  * @returns {string}
  */
 function getCacheKey (url) {
-  return `${new URL(url).origin}/metrics`
+  return `${new URL(url).origin}/metrics?v=4`
 }
 
 /**
@@ -87,24 +87,47 @@ async function getNftMetrics () {
   let cursor
   while (!done) {
     // @ts-ignore
-    const nftList = await stores.nfts.list({ cursor, limit: 100 })
+    const nftList = await stores.nfts.list({ cursor, limit: 1000 })
     metrics.total += nftList.keys.length
-    // TODO: store cid & size in metadata so we don't have to query for each.
-    // @ts-ignore
-    const nftDatas = await Promise.all(nftList.keys.map(k => stores.nfts.get(k.name)))
-    // @ts-ignore
-    const nfts = await Promise.all(nftDatas.filter(Boolean).map(async d => {
-      const nft = JSON.parse(d)
-      nft.deals = await getDeals(nft.cid)
-      return nft
-    }))
+    /** @type Array<{ cid: string, pinStatus: string, size: number, deals: any[] }> */
+    const nftMetas = []
+    for (const k of nftList.keys) {
+      const cid = k.name.split(':')[1]
+      if (!k.metadata || k.metadata.size == null) {
+        const d = await stores.nfts.get(k.name)
+        if (d == null) continue
+        const nft = JSON.parse(d)
+        await stores.nfts.put(k.name, d, { metadata: { pinStatus: nft.pin.status, size: nft.size } })
+        nftMetas.push({ cid, pinStatus: nft.pin.status, size: nft.size, deals: [] })
+        continue
+      }
+      // Look up size for pinned data via pinning service API
+      // TODO: move this to cron job
+      if (k.metadata.pinStatus !== 'pinned') {
+        try {
+          const res = await Pinata.pinInfo(cid)
+          if (!res.ok) throw new Error('pinata file info request error')
+          if (!res.value) continue // TODO: stop checking after some time and mark as failed
+          const d = await stores.nfts.get(k.name)
+          if (d == null) continue
+          const nft = JSON.parse(d)
+          nft.size = res.value.size
+          await stores.nfts.put(k.name, JSON.stringify(nft), { metadata: { pinStatus: 'pinned', size: nft.size } })
+          nftMetas.push({ cid, pinStatus: nft.pin.status, size: nft.size, deals: [] })
+        } catch (err) {
+          console.error(`failed to update file size for ${cid}`, err)
+        }
+        continue
+      }
+      nftMetas.push({ cid, deals: [], ...k.metadata })
+    }
 
-    for (const nft of nfts) {
-      metrics.totalBytes += nft.size || 0
-      if (nft.pin.status === 'pinned') {
+    for (const meta of nftMetas) {
+      metrics.totalBytes += meta.size || 0
+      if (meta.pinStatus === 'pinned') {
         metrics.storage.ipfs.total++
       }
-      for (const d of nft.deals) {
+      for (const d of meta.deals) {
         const ntwk = d.network || 'unknown'
         // TODO: @riba will add a "key" to deals that is essentially this - switch to using it
         const key = `${ntwk}/${d.miner}/${d.batchRootCid}`
