@@ -144,7 +144,10 @@ export async function verifyToken(event, mode = 'both') {
       if (typeof tokenName === 'string') {
         return { ok: true, user, tokenName }
       } else {
-        return { ok: false, error: new HTTPError('Session expired', 403) }
+        return {
+          ok: false,
+          error: new HTTPError('Expired or deleted token', 403),
+        }
       }
     } else {
       return { ok: false, error: new HTTPError('Token is not valid', 403) }
