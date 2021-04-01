@@ -40,7 +40,7 @@ describe('client', () => {
       assert.equal(status1.created, status2.created, 'dates match')
     })
 
-    it('errors without token', async () => {
+    it('errors with invalid token', async () => {
       const client = new NFTStorage({ token: 'wrong', endpoint })
       const blob = new Blob(['upload twice'])
 
@@ -50,6 +50,17 @@ describe('client', () => {
       } catch (error) {
         assert.ok(error instanceof Error)
         assert.match(error, /Unauthorized/)
+      }
+    })
+
+    it('errors without token', async () => {
+      // @ts-ignore
+      const client = new NFTStorage({ endpoint })
+      try {
+        await client.storeBlob(new Blob(['blobby']))
+        assert.unreachable('should have thrown')
+      } catch (err) {
+        assert.is(err.message, 'missing token')
       }
     })
   })
@@ -87,6 +98,17 @@ describe('client', () => {
         assert.match(error, /no files/i)
       }
     })
+
+    it('errors without token', async () => {
+      // @ts-ignore
+      const client = new NFTStorage({ endpoint })
+      try {
+        await client.storeDirectory([new File(['file'], 'file.txt')])
+        assert.unreachable('should have thrown')
+      } catch (err) {
+        assert.is(err.message, 'missing token')
+      }
+    })
   })
 
   describe('status', () => {
@@ -122,6 +144,17 @@ describe('client', () => {
         assert.ok(error.message.match(/not found/))
       }
     })
+
+    it('errors without token', async () => {
+      // @ts-ignore
+      const client = new NFTStorage({ endpoint })
+      try {
+        await client.status('QmaCxv35MgHdAD2K9Tn8xrKVZJw7dauYi4V1GmkQRNYbvP')
+        assert.unreachable('should have thrown')
+      } catch (err) {
+        assert.is(err.message, 'missing token')
+      }
+    })
   })
 
   describe('delete', () => {
@@ -153,6 +186,21 @@ describe('client', () => {
       } catch (error) {
         assert.ok(error instanceof Error)
         assert.match(error, /parse non base32/)
+      }
+    })
+
+    it('errors without token', async () => {
+      // @ts-ignore
+      const client = new NFTStorage({ endpoint })
+      try {
+        const cid = await NFTStorage.storeBlob(
+          { token, endpoint },
+          new Blob(['deleteme'])
+        )
+        await client.delete(cid)
+        assert.unreachable('should have thrown')
+      } catch (err) {
+        assert.is(err.message, 'missing token')
       }
     })
   })
