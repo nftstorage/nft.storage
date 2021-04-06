@@ -56,14 +56,15 @@ const importToken = async (request) => {
     const dag = JSON.parse(JSON.stringify(data))
     const metadata = JSON.parse(JSON.stringify(data))
 
-    for (const [path, content] of form.entries()) {
-      if (path !== 'meta') {
+    for (const [name, content] of form.entries()) {
+      if (name !== 'meta') {
         const file = /** @type {File} */ (content)
         const cid = await importAsset(file)
         const href = `ipfs://${cid}/${file.name}`
-        setAt(path.split('.'), dag, cid)
-        setAt(path.split('.'), data, { '@': 'URL', href })
-        setAt(path.split('.'), metadata, href)
+        const path = name.split('.')
+        setIn(dag, path, cid)
+        setIn(data, path, { '@': 'URL', href })
+        setIn(metadata, path, href)
       }
     }
 
@@ -96,16 +97,16 @@ const importToken = async (request) => {
  * @example
  * ```js
  * const obj = { a: { b: { c: 1 }}}
- * setAt('a.b.c', obj, 5)
+ * setIn(obj, ['a', 'b', 'c'], 5)
  * obj.a.b.c //> 5
  * ```
- * 
+ *
  * @template V
- * @param {string[]} path
  * @param {any} object
+ * @param {string[]} path
  * @param {V} value
  */
-const setAt = (path, object, value) => {
+const setIn = (object, path, value) => {
   const n = path.length - 1
   let target = object
   for (let [index, key] of path.entries()) {

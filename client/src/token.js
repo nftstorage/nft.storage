@@ -137,7 +137,6 @@ const isBlob = (value) => value instanceof Blob
  * likey you'll start with `[]`.
  * @returns {API.Encoded<T, [[I, O]]>}
  */
-
 export const mapWith = (input, p, f, state) => {
   const [, output] = mapValueWith(input, p, f, state, [])
   return output
