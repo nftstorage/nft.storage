@@ -91,6 +91,15 @@ const importToken = async (request) => {
 }
 
 /**
+ * Sets a given `value` at the given `path` on a passed `object`.
+ *
+ * @example
+ * ```js
+ * const obj = { a: { b: { c: 1 }}}
+ * setAt('a.b.c', obj, 5)
+ * obj.a.b.c //> 5
+ * ```
+ * 
  * @template V
  * @param {string[]} path
  * @param {any} object

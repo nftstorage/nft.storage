@@ -133,7 +133,7 @@ class NFTStorage {
         'string property `name` identifying the asset is required'
       )
     }
-    if (typeof description != 'string') {
+    if (typeof description !== 'string') {
       throw new TypeError(
         'string property `description` describing asset is required'
       )
@@ -144,7 +144,7 @@ class NFTStorage {
         'proprety `image` must be a Blob or File object with `image/*` mime type'
       )
     }
-    if (typeof decimals !== 'undefined' && typeof decimals != 'number') {
+    if (typeof decimals !== 'undefined' && typeof decimals !== 'number') {
       throw new TypeError('proprety `decimals` must be an integer value')
     }
 

@@ -14,7 +14,7 @@ export interface API {
   /**
    * Stores given token and all the resources (in form of File or a Blob) it
    * references along with a metadata JSON as specificed in (ERC-1155). The
-   * `token.image` must be either `File` or a `Blob` instance, which whill be
+   * `token.image` must be either `File` or a `Blob` instance, which will be
    * stored and corresponding content address URL will be saved in metadata
    * JSON file under `image` field.
    *
@@ -205,7 +205,7 @@ export interface StoreResult<T extends TokenInput> {
   metadata: URL
 
   /**
-   * Actual token data in ERC-1155 format. It is matches data passed as `token`
+   * Actual token data in ERC-1155 format. It matches data passed as `token`
    * argument except Files/Blobs are substituted with corresponding `ipfs://`
    * URLs.
    */
