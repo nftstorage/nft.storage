@@ -63,6 +63,7 @@ class NFTStorage {
    * @param {string} token
    */
   static auth(token) {
+    if (!token) throw new Error('missing token')
     return { Authorization: `Bearer ${token}` }
   }
   /**
