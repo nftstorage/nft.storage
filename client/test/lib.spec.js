@@ -1,5 +1,5 @@
 import * as assert from 'uvu/assert'
-import { NFTStorage, Blob, File } from 'nft.storage'
+import { NFTStorage, Blob, File, CID } from 'nft.storage'
 
 describe('client', () => {
   const { AUTH_TOKEN, SERVICE_ENDPOINT } = process.env
@@ -86,6 +86,173 @@ describe('client', () => {
         assert.ok(error instanceof Error)
         assert.match(error, /no files/i)
       }
+    })
+  })
+
+  describe('store', async () => {
+    it('requires name', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      try {
+        // @ts-expect-error
+        await client.store({})
+        assert.unreachable('sholud have failed')
+      } catch (error) {
+        assert.ok(error instanceof TypeError)
+        assert.match(
+          error,
+          /string property `name` identifying the asset is required/
+        )
+      }
+    })
+
+    it('requires description', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      try {
+        // @ts-expect-error
+        await client.store({ name: 'name' })
+        assert.unreachable('sholud have failed')
+      } catch (error) {
+        assert.ok(error instanceof TypeError)
+        assert.match(
+          error,
+          /string property `description` describing asset is required/
+        )
+      }
+    })
+
+    it('requires image', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      try {
+        // @ts-expect-error
+        await client.store({ name: 'name', description: 'stuff' })
+        assert.unreachable('sholud have failed')
+      } catch (error) {
+        assert.ok(error instanceof TypeError)
+        assert.match(error, /proprety `image` must be a Blob or File/)
+      }
+    })
+
+    it('requires image mime type', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      try {
+        await client.store({
+          name: 'name',
+          description: 'stuff',
+          image: new Blob(['bla bla']),
+        })
+      } catch (error) {
+        assert.ok(error instanceof TypeError)
+        assert.match(error, /Blob or File object with `image\/\*` mime type/)
+      }
+    })
+
+    it('expects decimal to be an int', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      try {
+        await client.store({
+          name: 'name',
+          description: 'stuff',
+          image: new Blob(['pretend image'], { type: 'image/png' }),
+          // @ts-expect-error
+          decimals: 'foo',
+        })
+      } catch (error) {
+        assert.ok(error instanceof TypeError)
+        assert.match(error, /proprety `decimals` must be an integer value/)
+      }
+    })
+
+    it('errors without token', async () => {
+      const client = new NFTStorage({ token: 'wrong', endpoint })
+
+      try {
+        await client.store({
+          name: 'name',
+          description: 'tada',
+          image: new Blob([], { type: 'image/png' }),
+        })
+        assert.unreachable('sholud have failed')
+      } catch (error) {
+        assert.ok(error instanceof Error)
+        assert.match(error, /Unauthorized/)
+      }
+    })
+
+    it('uploads image', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const result = await client.store({
+        name: 'name',
+        description: 'stuff',
+        image: new Blob(['fake image'], { type: 'image/png' }),
+      })
+
+      assert.ok(result.metadata instanceof URL)
+      assert.ok(result.metadata.protocol, 'ipfs:')
+
+      assert.ok(result.ipld instanceof CID)
+
+      assert.equal(result.data.name, 'name')
+      assert.equal(result.data.description, 'stuff')
+      assert.ok(result.data.image instanceof URL)
+      assert.ok(result.data.image.protocol, 'ipfs:')
+
+      assert.equal(result.embed.name, 'name')
+      assert.equal(result.embed.description, 'stuff')
+      assert.ok(result.embed.image instanceof URL)
+      assert.ok(result.embed.image.protocol, 'https:')
+    })
+
+    it('store with properties', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const result = await client.store({
+        name: 'name',
+        description: 'stuff',
+        image: new File(['fake image'], 'cat.png', { type: 'image/png' }),
+        properties: {
+          extra: 'meta',
+          src: [
+            new File(['hello'], 'hello.txt', { type: 'text/plain' }),
+            new Blob(['bye']),
+          ],
+        },
+      })
+
+      assert.ok(result.metadata instanceof URL)
+      assert.ok(result.metadata.protocol, 'ipfs:')
+
+      assert.ok(result.ipld instanceof CID)
+
+      assert.equal(result.data.name, 'name')
+      assert.equal(result.data.description, 'stuff')
+      assert.ok(result.data.image instanceof URL)
+      assert.ok(result.data.image.protocol, 'ipfs:')
+
+      assert.equal(result.data.properties.extra, 'meta')
+      assert.ok(Array.isArray(result.data.properties.src))
+      assert.equal(result.data.properties.src.length, 2)
+
+      const [h, b] = /** @type {[URL, URL]} */ (result.data.properties.src)
+      assert.ok(h instanceof URL)
+      assert.equal(h.protocol, 'ipfs:')
+
+      assert.ok(b instanceof URL)
+      assert.equal(b.protocol, 'ipfs:')
+
+      assert.equal(result.embed.name, 'name')
+      assert.equal(result.embed.description, 'stuff')
+      assert.ok(result.embed.image instanceof URL)
+      assert.ok(result.embed.image.protocol, 'https:')
+
+      assert.equal(result.embed.properties.extra, 'meta')
+      assert.ok(Array.isArray(result.embed.properties.src))
+      assert.equal(result.embed.properties.src.length, 2)
+
+      const [h2, b2] = /** @type {[URL, URL]} */ (result.embed.properties.src)
+      assert.ok(h2 instanceof URL)
+      assert.equal(h2.protocol, 'https:')
+
+      assert.ok(b2 instanceof URL)
+      assert.equal(b2.protocol, 'https:')
     })
   })
 

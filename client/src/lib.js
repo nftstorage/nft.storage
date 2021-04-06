@@ -13,11 +13,13 @@
  * ```
  * @module
  */
-
-import cbor from '@ipld/dag-cbor'
 import { CID } from 'multiformats'
 import * as API from './lib/interface.js'
+import * as Token from './token.js'
 import { fetch, File, Blob, FormData } from './platform.js'
+
+const GATEWAY = new URL('https://gateway.ipfs.io/')
+const ENDPOINT = new URL('https://nft.storage')
 
 /**
  * @implements API.Service
@@ -46,7 +48,7 @@ class NFTStorage {
    *
    * @param {{token: string, endpoint?:URL}} options
    */
-  constructor({ token, endpoint = new URL('https://nft.storage') }) {
+  constructor({ token, endpoint = ENDPOINT }) {
     /**
      * Authorization token.
      *
@@ -115,38 +117,70 @@ class NFTStorage {
   }
 
   /**
+   * @template {API.TokenInput} T
    * @param {API.Service} service
-   * @param {any} metadata
-   * @returns {Promise<API.CIDString>}
+   * @param {T} data
+   * @returns {Promise<API.StoreResult<T>>}
    */
-  static async storeMetadata(service, metadata) {
-    /**
-     * @param {any} obj
-     * @returns {Promise<any>}
-     */
-    async function transform (obj) {
-      if (Array.isArray(obj)) {
-        return Promise.all(obj.map(transform))
-      }
-      if (obj instanceof File) {
-        return NFTStorage.storeDirectory(service, [obj])
-      }
-      if (obj instanceof Blob) {
-        return NFTStorage.storeBlob(service, obj)
-      }
-      if (typeof obj === 'object') {
-        const ents = await Promise.all(Object.entries(obj).map(async ([k, v]) => ([k, await transform(v)])))
-        return Object.fromEntries(ents)
-      }
-      return obj
+  static async store(
+    { endpoint, token },
+    { name, description, image, properties, decimals, localization }
+  ) {
+    const url = new URL(`/api/store`, endpoint)
+    // Just validate that expected field are present
+    if (typeof name !== 'string') {
+      throw new TypeError(
+        'string property `name` identifying the asset is required'
+      )
     }
-    metadata = await transform(metadata)
-    const cid = await NFTStorage.storeBlob(service, new Blob([cbor.encode(metadata)]))
-    console.log(cid)
-    const mh = CID.parse(cid).multihash
-    return CID.createV1(cbor.code, mh).toString()
-  }
+    if (typeof description != 'string') {
+      throw new TypeError(
+        'string property `description` describing asset is required'
+      )
+    }
 
+    if (!(image instanceof Blob) || !image.type.startsWith('image/')) {
+      throw new TypeError(
+        'proprety `image` must be a Blob or File object with `image/*` mime type'
+      )
+    }
+    if (typeof decimals !== 'undefined' && typeof decimals != 'number') {
+      throw new TypeError('proprety `decimals` must be an integer value')
+    }
+
+    const body = new FormData()
+    const data = Token.encode(
+      { name, description, image, properties, decimals, localization },
+      body
+    )
+
+    body.set('meta', JSON.stringify(data))
+
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      headers: NFTStorage.auth(token),
+      body,
+    })
+
+    /** @type {API.StoreResponse<T>} */
+    const result = await response.json()
+
+    if (result.ok === true) {
+      const { value } = result
+      const data = Token.decode(value.data)
+
+      return {
+        ipld: CID.parse(value.ipld),
+        metadata: new URL(value.metadata.href),
+        data,
+        embed: Token.embed(data, {
+          gateway: GATEWAY,
+        }),
+      }
+    } else {
+      throw new Error(result.error.message)
+    }
+  }
   /**
    * @param {API.Service} service
    * @param {string} cid
@@ -211,13 +245,6 @@ class NFTStorage {
     return NFTStorage.storeBlob(this, blob)
   }
   /**
-   * Stores a metadata object as an IPLD CBOR encoded DAG.
-   * @param {any} metadata
-   */
-  storeMetadata(metadata) {
-    return NFTStorage.storeMetadata(this, metadata)
-  }
-  /**
    * Stores a directory of files and returns a CID for the directory.
    *
    * @example
@@ -265,9 +292,18 @@ class NFTStorage {
   delete(cid) {
     return NFTStorage.delete(this, cid)
   }
+
+  /**
+   * @template {API.TokenInput} T
+   * @param {T} token
+   * @returns {Promise<API.StoreResult<T>>}
+   */
+  store(token) {
+    return NFTStorage.store(this, token)
+  }
 }
 
-export { NFTStorage, File, Blob, FormData }
+export { NFTStorage, File, Blob, FormData, CID }
 
 /**
  * Just to verify API compatibility.

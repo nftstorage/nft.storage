@@ -1,6 +1,9 @@
 import { CID } from 'multiformats'
+import { File } from '../src/platform.js'
+import { sha256 } from 'multiformats/hashes/sha2'
 import { importBlob, importDirectory } from './importer.js'
 import { Response, Request } from './mock-server.js'
+import CBOR from '@ipld/dag-cbor'
 /**
  * @param {Request} request
  */
@@ -29,6 +32,79 @@ const importUpload = async (request) => {
   } else {
     const content = await request.arrayBuffer()
     return await importBlob(new Uint8Array(content))
+  }
+}
+
+/**
+ * @param {File} file
+ * @returns {Promise<CID>}
+ */
+const importAsset = async (file) => {
+  const { cid } = await importDirectory([file])
+  return CID.parse(cid.toString())
+}
+
+/**
+ * @param {Request} request
+ */
+const importToken = async (request) => {
+  const contentType = request.headers.get('content-type') || ''
+  if (contentType.includes('multipart/form-data')) {
+    const form = await request.formData()
+
+    const data = JSON.parse(/** @type {string} */ (form.get('meta')))
+    const dag = JSON.parse(JSON.stringify(data))
+    const metadata = JSON.parse(JSON.stringify(data))
+
+    for (const [path, content] of form.entries()) {
+      if (path !== 'meta') {
+        const file = /** @type {File} */ (content)
+        const cid = await importAsset(file)
+        const href = `ipfs://${cid}/${file.name}`
+        setAt(path.split('.'), dag, cid)
+        setAt(path.split('.'), data, { '@': 'URL', href })
+        setAt(path.split('.'), metadata, href)
+      }
+    }
+
+    dag.meta = await importAsset(
+      new File([JSON.stringify(metadata)], 'data.json')
+    )
+
+    const bytes = CBOR.encode(dag)
+    const hash = await sha256.digest(bytes)
+    const cid = CID.create(1, CBOR.code, hash)
+
+    const result = {
+      ok: true,
+      value: {
+        ipld: cid.toString(),
+        metadata: { '@': 'URL', href: `ipfs://${dag.meta}/data.json` },
+        data,
+      },
+    }
+
+    return result
+  } else {
+    throw Error('/api/store expects multipart/form-data')
+  }
+}
+
+/**
+ * @template V
+ * @param {string[]} path
+ * @param {any} object
+ * @param {V} value
+ */
+const setAt = (path, object, value) => {
+  const n = path.length - 1
+  let target = object
+  for (let [index, key] of path.entries()) {
+    if (index === n) {
+      target[key] = value
+    } else {
+      target = target[key]
+    }
   }
 }
 
@@ -72,6 +148,12 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
   }
   try {
     switch (`${request.method} /${api}/${param}`) {
+      case 'POST /api/store': {
+        const result = await importToken(request)
+        return new Response(JSON.stringify(result), {
+          headers: headers(request),
+        })
+      }
       case 'POST /api/upload': {
         const { cid } = await importUpload(request)
         const key = `${token}:${cid}`
