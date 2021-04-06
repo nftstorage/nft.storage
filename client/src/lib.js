@@ -13,7 +13,6 @@
  * ```
  * @module
  */
-import { CID } from 'multiformats'
 import * as API from './lib/interface.js'
 import * as Token from './token.js'
 import { fetch, File, Blob, FormData } from './platform.js'
@@ -171,7 +170,7 @@ class NFTStorage {
       const data = Token.decode(value.data)
 
       return {
-        ipld: CID.parse(value.ipld),
+        ipld: value.ipld,
         metadata: new URL(value.metadata.href),
         data,
         embed: Token.embed(data, {
@@ -304,7 +303,7 @@ class NFTStorage {
   }
 }
 
-export { NFTStorage, File, Blob, FormData, CID }
+export { NFTStorage, File, Blob, FormData }
 
 /**
  * Just to verify API compatibility.

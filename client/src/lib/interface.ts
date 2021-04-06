@@ -197,7 +197,7 @@ export interface StoreResult<T extends TokenInput> {
    * CID for the token that encloses all of the files including metadata.json
    * for the stored token.
    */
-  ipld: CID
+  ipld: CIDString
 
   /**
    * URL like `ipfs://bafy...hash/meta/data.json` for the stored token metadata.

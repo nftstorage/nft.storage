@@ -1,5 +1,6 @@
 import * as assert from 'uvu/assert'
-import { NFTStorage, Blob, File, CID } from 'nft.storage'
+import { NFTStorage, Blob, File } from 'nft.storage'
+import { CID } from 'multiformats'
 
 describe('client', () => {
   const { AUTH_TOKEN, SERVICE_ENDPOINT } = process.env
@@ -189,7 +190,8 @@ describe('client', () => {
       assert.ok(result.metadata instanceof URL)
       assert.ok(result.metadata.protocol, 'ipfs:')
 
-      assert.ok(result.ipld instanceof CID)
+      const cid = CID.parse(result.ipld)
+      assert.equal(cid.version, 1)
 
       assert.equal(result.data.name, 'name')
       assert.equal(result.data.description, 'stuff')
@@ -220,7 +222,8 @@ describe('client', () => {
       assert.ok(result.metadata instanceof URL)
       assert.ok(result.metadata.protocol, 'ipfs:')
 
-      assert.ok(result.ipld instanceof CID)
+      const cid = CID.parse(result.ipld)
+      assert.equal(cid.version, 1)
 
       assert.equal(result.data.name, 'name')
       assert.equal(result.data.description, 'stuff')
