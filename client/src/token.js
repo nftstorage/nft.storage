@@ -1,5 +1,5 @@
 import * as API from './lib/interface.js'
-import { Blob } from './platform.js'
+import { Blob, FormData } from './platform.js'
 
 /**
  * @template T
@@ -43,21 +43,6 @@ const embedURL = (context, url) => [
   new URL(`/ipfs/${url.href.slice('ipfs://'.length)}`, context.gateway),
 ]
 
-// /**
-//  * @template T
-//  * @param {T} value
-//  * @returns {T}
-//  */
-// export const decode = (value) =>
-//   // @ts-ignore
-//   Array.isArray(value)
-//     ? value.map(decode)
-//     : isEncodedURL(value)
-//     ? decodeURL(value)
-//     : isObject(value)
-//     ? decodeObject(value)
-//     : value
-
 /**
  * @param {any} value
  * @returns {value is object}
@@ -72,12 +57,52 @@ const isEncodedURL = (value) =>
   value != null && value['@'] === 'URL' && typeof value.href === 'string'
 
 /**
+ * Takes token input and encodes it into
+ * [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
+ * object where form field values are discovered `Blob` (or `File`) objects in
+ * the given token and field keys are `.` joined paths where they were discoverd
+ * in the token. Additionally encoded `FormData` will also have a field
+ * named `meta` containing JSON serialized token with blobs and file values
+ * `null` set to null (this allows backend to injest all of the files from
+ * `multipart/form-data` request and update provided "meta" data with
+ * corresponding file ipfs:// URLs)
+ *
+ * @example
+ * ```js
+ * const cat = new File([], 'cat.png')
+ * const kitty = new File([], 'kitty.png')
+ * const form = encode({
+ *   name: 'hello'
+ *   image: cat
+ *   properties: {
+ *     extra: {
+ *       image: kitty
+ *     }
+ *   }
+ * })
+ * [...form.entries()] //>
+ * // [
+ * //   ['image', cat],
+ * //   ['properties.extra.image', kitty],
+ * //   ['meta', '{"name":"hello",image:null,"properties":{"extra":{"kitty": null}}}']
+ * // ]
+ * ```
+ *
  * @template {API.TokenInput} T
  * @param {API.Encoded<T, [[Blob, Blob]]>} input
- * @param {FormData} data
- * @returns {API.Encoded<T, [[Blob, void]]>}
+ * @returns {FormData}
  */
-export const encode = (input, data) => mapWith(input, isBlob, encodeBlob, data)
+export const encode = (input) => {
+  const [form, meta] = mapValueWith(
+    input,
+    isBlob,
+    encodeBlob,
+    new FormData(),
+    []
+  )
+  form.set('meta', JSON.stringify(meta))
+  return form
+}
 
 /**
  * @param {FormData} data

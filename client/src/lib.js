@@ -148,13 +148,14 @@ class NFTStorage {
       throw new TypeError('proprety `decimals` must be an integer value')
     }
 
-    const body = new FormData()
-    const data = Token.encode(
-      { name, description, image, properties, decimals, localization },
-      body
-    )
-
-    body.set('meta', JSON.stringify(data))
+    const body = Token.encode({
+      name,
+      description,
+      image,
+      properties,
+      decimals,
+      localization,
+    })
 
     const response = await fetch(url.toString(), {
       method: 'POST',
