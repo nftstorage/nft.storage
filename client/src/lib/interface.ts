@@ -211,6 +211,11 @@ export interface StoreResult<T extends TokenInput> {
    */
   data: Encoded<T, [[Blob, URL]]>
 
+  /**
+   * Token data just like in `data` field except urls corresponding to
+   * Files/Blobs are substituted with IPFS gateway URLs so they can be
+   * embedded in browsers that do not support `ipfs://` protocol.
+   */
   embed: Encoded<T, [[Blob, URL]]>
 }
 
