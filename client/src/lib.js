@@ -17,7 +17,6 @@ import * as API from './lib/interface.js'
 import * as Token from './token.js'
 import { fetch, File, Blob, FormData } from './platform.js'
 
-const GATEWAY = new URL('https://gateway.ipfs.io/')
 const ENDPOINT = new URL('https://nft.storage')
 
 /**
@@ -119,7 +118,7 @@ class NFTStorage {
    * @template {API.TokenInput} T
    * @param {API.Service} service
    * @param {T} data
-   * @returns {Promise<API.StoreResult<T>>}
+   * @returns {Promise<API.Token<T>>}
    */
   static async store(
     { endpoint, token },
@@ -168,16 +167,7 @@ class NFTStorage {
 
     if (result.ok === true) {
       const { value } = result
-      const data = Token.decode(value.data, paths)
-
-      return {
-        ipld: value.ipld,
-        metadata: new URL(value.metadata),
-        data,
-        embed: Token.embed(data, {
-          gateway: GATEWAY,
-        }),
-      }
+      return Token.decode(value, paths)
     } else {
       throw new Error(result.error.message)
     }
@@ -297,13 +287,15 @@ class NFTStorage {
   /**
    * @template {API.TokenInput} T
    * @param {T} token
-   * @returns {Promise<API.StoreResult<T>>}
+   * @returns {Promise<API.Token<T>>}
    */
   store(token) {
     return NFTStorage.store(this, token)
   }
 }
 
+const TokenModel = Token.Token
+export { TokenModel as Token }
 export { NFTStorage, File, Blob, FormData }
 
 /**

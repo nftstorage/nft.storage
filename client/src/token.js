@@ -1,6 +1,49 @@
 import * as API from './lib/interface.js'
 import { Blob, FormData } from './platform.js'
 
+const GATEWAY = new URL('https://dweb.link/')
+
+/**
+ * @template {API.TokenInput} T
+ * @implements {API.Token<T>}
+ */
+export class Token {
+  /**
+   * @param {API.CIDString} ipnft
+   * @param {API.EncodedURL} url
+   * @param {API.Encoded<T, [[Blob, URL]]>} data
+   */
+  constructor(ipnft, url, data) {
+    /** @readonly */
+    this.ipnft = ipnft
+    /** @readonly */
+    this.url = url
+    /** @readonly */
+    this.data = data
+
+    Object.defineProperties(this, {
+      ipnft: { enumerable: true, writable: false },
+      url: { enumerable: true, writable: false },
+      data: { enumerable: false, writable: false },
+    })
+  }
+  /**
+   * @returns {API.Encoded<T, [[Blob, URL]]>}
+   */
+  embed() {
+    return Token.embed(this)
+  }
+
+  /**
+   * @template {API.TokenInput} T
+   * @param {{data: API.Encoded<T, [[Blob, URL]]}} token
+   * @returns {API.Encoded<T, [[Blob, URL]]>}
+   */
+  static embed({ data }) {
+    return embed(data, { gateway: GATEWAY })
+  }
+}
+
 /**
  * @template T
  * @param {API.Encoded<T, [[Blob, URL]]>} input
@@ -12,12 +55,12 @@ export const embed = (input, options) =>
 
 /**
  * @template {API.TokenInput} T
- * @param {API.Encoded<T, [[Blob, API.EncodedURL]]>} value
+ * @param {API.EncodedToken<T>} value
  * @param {Set<string>} paths - Paths were to expcet EncodedURLs
- * @returns {API.Encoded<T, [[Blob, URL]]>}
+ * @returns {Token<T>}
  */
-export const decode = (value, paths) =>
-  mapWith(value, isEncodedURL, decodeURL, paths)
+export const decode = ({ ipnft, url, data }, paths) =>
+  new Token(ipnft, url, mapWith(data, isEncodedURL, decodeURL, paths))
 
 /**
  * @param {any} value

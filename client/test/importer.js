@@ -56,7 +56,7 @@ class Block {
 
 /**
  *
- * @param {Uint8Array} content
+ * @param {Uint8Array|string} content
  */
 export const importBlob = async (content) => {
   const results = importer([{ content }], new Block(), { onlyHash: true })

@@ -1,6 +1,8 @@
 import * as assert from 'uvu/assert'
-import { NFTStorage, Blob, File } from 'nft.storage'
+import { NFTStorage, Blob, File, Token } from 'nft.storage'
 import { CID } from 'multiformats'
+
+const DWEB_LINK = 'dweb.link'
 
 describe('client', () => {
   const { AUTH_TOKEN, SERVICE_ENDPOINT } = process.env
@@ -187,21 +189,22 @@ describe('client', () => {
         image: new Blob(['fake image'], { type: 'image/png' }),
       })
 
-      assert.ok(result.metadata instanceof URL)
-      assert.ok(result.metadata.protocol, 'ipfs:')
+      assert.ok(typeof result.url === 'string')
+      assert.ok(new URL(result.url).protocol, 'ipfs:')
 
-      const cid = CID.parse(result.ipld)
-      assert.equal(cid.version, 1)
+      assert.ok(typeof result.ipnft === 'string')
+      assert.equal(CID.parse(result.ipnft).version, 1)
 
       assert.equal(result.data.name, 'name')
       assert.equal(result.data.description, 'stuff')
       assert.ok(result.data.image instanceof URL)
       assert.ok(result.data.image.protocol, 'ipfs:')
 
-      assert.equal(result.embed.name, 'name')
-      assert.equal(result.embed.description, 'stuff')
-      assert.ok(result.embed.image instanceof URL)
-      assert.ok(result.embed.image.protocol, 'https:')
+      const embed = result.embed()
+      assert.equal(embed.name, 'name')
+      assert.equal(embed.description, 'stuff')
+      assert.ok(embed.image instanceof URL)
+      assert.ok(embed.image.protocol, 'https:')
     })
 
     it('store with properties', async () => {
@@ -222,11 +225,13 @@ describe('client', () => {
         },
       })
 
-      assert.ok(result.metadata instanceof URL)
-      assert.ok(result.metadata.protocol, 'ipfs:')
+      assert.ok(result instanceof Token)
 
-      const cid = CID.parse(result.ipld)
+      const cid = CID.parse(result.ipnft)
       assert.equal(cid.version, 1)
+
+      assert.ok(typeof result.url === 'string')
+      assert.ok(result.url.startsWith('ipfs:'))
 
       assert.equal(result.data.name, 'name')
       assert.equal(result.data.description, 'stuff')
@@ -245,21 +250,26 @@ describe('client', () => {
       assert.ok(b instanceof URL)
       assert.equal(b.protocol, 'ipfs:')
 
-      assert.equal(result.embed.name, 'name')
-      assert.equal(result.embed.description, 'stuff')
-      assert.ok(result.embed.image instanceof URL)
-      assert.ok(result.embed.image.protocol, 'https:')
+      const embed = result.embed()
 
-      assert.equal(result.embed.properties.extra, 'meta')
-      assert.ok(Array.isArray(result.embed.properties.src))
-      assert.equal(result.embed.properties.src.length, 2)
+      assert.equal(embed.name, 'name')
+      assert.equal(embed.description, 'stuff')
+      assert.ok(embed.image instanceof URL)
+      assert.ok(embed.image.protocol, 'https:')
+      assert.ok(embed.image.host, DWEB_LINK)
 
-      const [h2, b2] = /** @type {[URL, URL]} */ (result.embed.properties.src)
+      assert.equal(embed.properties.extra, 'meta')
+      assert.ok(Array.isArray(embed.properties.src))
+      assert.equal(embed.properties.src.length, 2)
+
+      const [h2, b2] = /** @type {[URL, URL]} */ (embed.properties.src)
       assert.ok(h2 instanceof URL)
       assert.equal(h2.protocol, 'https:')
+      assert.equal(h2.host, DWEB_LINK)
 
       assert.ok(b2 instanceof URL)
       assert.equal(b2.protocol, 'https:')
+      assert.equal(b2.host, DWEB_LINK)
     })
   })
 

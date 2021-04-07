@@ -1,5 +1,4 @@
 import { CID } from 'multiformats'
-import { File } from '../src/platform.js'
 import { sha256 } from 'multiformats/hashes/sha2'
 import { importBlob, importDirectory } from './importer.js'
 import { Response, Request } from './mock-server.js'
@@ -66,17 +65,21 @@ const importToken = async (request) => {
       }
     }
 
-    dag.meta = await importAsset(new File([JSON.stringify(data)], 'data.json'))
+    const metadata = await importBlob(JSON.stringify(data))
 
-    const bytes = CBOR.encode(dag)
+    const bytes = CBOR.encode({
+      ...dag,
+      'metadata.json': metadata.cid,
+      type: 'nft',
+    })
     const hash = await sha256.digest(bytes)
-    const cid = CID.create(1, CBOR.code, hash)
+    const ipnft = CID.create(1, CBOR.code, hash)
 
     const result = {
       ok: true,
       value: {
-        ipld: cid.toString(),
-        metadata: `ipfs://${dag.meta}/data.json`,
+        ipnft: ipnft.toString(),
+        url: `ipfs://${ipnft}/metadata.json`,
         data,
       },
     }

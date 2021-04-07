@@ -34,10 +34,7 @@ export interface API {
    * `ipfs://bafy...hash/image/cat.png`. For `Blob` object URL will not have
    * name or mime type instead it will look more like `ipfs://bafy...hash/image/blob`
    */
-  store<T extends TokenInput>(
-    service: Service,
-    token: T
-  ): Promise<StoreResult<T>>
+  store<T extends TokenInput>(service: Service, token: T): Promise<Token<T>>
 
   /**
    * Stores a single file and returns a corresponding CID.
@@ -199,17 +196,17 @@ interface Localization {
   locales: string[]
 }
 
-export interface StoreResult<T extends TokenInput> {
+export interface Token<T extends TokenInput> {
   /**
    * CID for the token that encloses all of the files including metadata.json
    * for the stored token.
    */
-  ipld: CIDString
+  ipnft: CIDString
 
   /**
    * URL like `ipfs://bafy...hash/meta/data.json` for the stored token metadata.
    */
-  metadata: URL
+  url: EncodedURL
 
   /**
    * Actual token data in ERC-1155 format. It matches data passed as `token`
@@ -223,7 +220,7 @@ export interface StoreResult<T extends TokenInput> {
    * Files/Blobs are substituted with IPFS gateway URLs so they can be
    * embedded in browsers that do not support `ipfs://` protocol.
    */
-  embed: Encoded<T, [[Blob, URL]]>
+  embed(): Encoded<T, [[Blob, URL]]>
 }
 
 export type EncodedError = {
@@ -233,13 +230,14 @@ export type EncodedURL = Tagged<string, URL>
 
 export type Result<X, T> = { ok: true; value: T } | { ok: false; error: X }
 
-export type StoreResponse<T> = Result<
+export interface EncodedToken<T extends TokenInput> {
+  ipnft: CIDString
+  url: EncodedURL
+  data: Encoded<T, [[Blob, EncodedURL]]>
+}
+export type StoreResponse<T extends TokenInput> = Result<
   EncodedError,
-  {
-    ipld: CIDString
-    metadata: EncodedURL
-    data: Encoded<T, [[Blob, EncodedURL]]>
-  }
+  EncodedToken<T>
 >
 
 /**
