@@ -206,12 +206,15 @@ describe('client', () => {
 
     it('store with properties', async () => {
       const client = new NFTStorage({ token, endpoint })
+      const trick =
+        'ipfs://bafyreiemweb3jxougg7vaovg7wyiohwqszmgwry5xwitw3heepucg6vyd4'
       const result = await client.store({
         name: 'name',
         description: 'stuff',
         image: new File(['fake image'], 'cat.png', { type: 'image/png' }),
         properties: {
           extra: 'meta',
+          trick,
           src: [
             new File(['hello'], 'hello.txt', { type: 'text/plain' }),
             new Blob(['bye']),
@@ -231,6 +234,7 @@ describe('client', () => {
       assert.ok(result.data.image.protocol, 'ipfs:')
 
       assert.equal(result.data.properties.extra, 'meta')
+      assert.equal(result.data.properties.trick, trick)
       assert.ok(Array.isArray(result.data.properties.src))
       assert.equal(result.data.properties.src.length, 2)
 

@@ -155,6 +155,7 @@ class NFTStorage {
       decimals,
       localization,
     })
+    const paths = new Set(body.keys())
 
     const response = await fetch(url.toString(), {
       method: 'POST',
@@ -167,11 +168,11 @@ class NFTStorage {
 
     if (result.ok === true) {
       const { value } = result
-      const data = Token.decode(value.data)
+      const data = Token.decode(value.data, paths)
 
       return {
         ipld: value.ipld,
-        metadata: new URL(value.metadata.href),
+        metadata: new URL(value.metadata),
         data,
         embed: Token.embed(data, {
           gateway: GATEWAY,

@@ -54,7 +54,6 @@ const importToken = async (request) => {
 
     const data = JSON.parse(/** @type {string} */ (form.get('meta')))
     const dag = JSON.parse(JSON.stringify(data))
-    const metadata = JSON.parse(JSON.stringify(data))
 
     for (const [name, content] of form.entries()) {
       if (name !== 'meta') {
@@ -62,15 +61,12 @@ const importToken = async (request) => {
         const cid = await importAsset(file)
         const href = `ipfs://${cid}/${file.name}`
         const path = name.split('.')
+        setIn(data, path, href)
         setIn(dag, path, cid)
-        setIn(data, path, { '@': 'URL', href })
-        setIn(metadata, path, href)
       }
     }
 
-    dag.meta = await importAsset(
-      new File([JSON.stringify(metadata)], 'data.json')
-    )
+    dag.meta = await importAsset(new File([JSON.stringify(data)], 'data.json'))
 
     const bytes = CBOR.encode(dag)
     const hash = await sha256.digest(bytes)
@@ -80,7 +76,7 @@ const importToken = async (request) => {
       ok: true,
       value: {
         ipld: cid.toString(),
-        metadata: { '@': 'URL', href: `ipfs://${dag.meta}/data.json` },
+        metadata: `ipfs://${dag.meta}/data.json`,
         data,
       },
     }

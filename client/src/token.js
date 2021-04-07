@@ -13,9 +13,11 @@ export const embed = (input, options) =>
 /**
  * @template {API.TokenInput} T
  * @param {API.Encoded<T, [[Blob, API.EncodedURL]]>} value
+ * @param {Set<string>} paths - Paths were to expcet EncodedURLs
  * @returns {API.Encoded<T, [[Blob, URL]]>}
  */
-export const decode = (value) => mapWith(value, isEncodedURL, decodeURL, null)
+export const decode = (value, paths) =>
+  mapWith(value, isEncodedURL, decodeURL, paths)
 
 /**
  * @param {any} value
@@ -29,7 +31,7 @@ const isURL = (value) => value instanceof URL
  * @param {API.EncodedURL} url
  * @returns {[State, URL]}
  */
-const decodeURL = (state, { href }) => [state, new URL(href)]
+const decodeURL = (state, url) => [state, new URL(url)]
 
 /**
  * @typedef {{gateway: URL}} EmbedOption
@@ -51,10 +53,12 @@ const isObject = (value) => typeof value === 'object' && value != null
 
 /**
  * @param {any} value
+ * @param {Set<string>} assetPaths
+ * @param {PropertyKey[]} path
  * @returns {value is API.EncodedURL}
  */
-const isEncodedURL = (value) =>
-  value != null && value['@'] === 'URL' && typeof value.href === 'string'
+const isEncodedURL = (value, assetPaths, path) =>
+  typeof value === 'string' && assetPaths.has(path.join('.'))
 
 /**
  * Takes token input and encodes it into
@@ -129,7 +133,7 @@ const isBlob = (value) => value instanceof Blob
  *
  * @template T, I, X, O, State
  * @param {API.Encoded<T, [[I, X]]>} input - Arbitrary input.
- * @param {(input:any) => input is X} p - Predicate function to determine
+ * @param {(input:any, state:State, path:PropertyKey[]) => input is X} p - Predicate function to determine
  * which values to swap.
  * @param {(state:State, input:X, path:PropertyKey[]) => [State, O]} f - Function
  * that swaps matching values.
@@ -145,7 +149,7 @@ export const mapWith = (input, p, f, state) => {
 /**
  * @template T, I, X, O, State
  * @param {API.Encoded<T, [[I, X]]>} input - Arbitrary input.
- * @param {(input:any) => input is X} p - Predicate function to determine
+ * @param {(input:any, state:State, path:PropertyKey[]) => input is X} p - Predicate function to determine
  * which values to swap.
  * @param {(state:State, input:X, path:PropertyKey[]) => [State, O]} f - Function
  * that swaps matching values.
@@ -155,7 +159,7 @@ export const mapWith = (input, p, f, state) => {
  * @returns {[State, API.Encoded<T, [[I, O]]>]}
  */
 const mapValueWith = (input, p, f, state, path) =>
-  p(input)
+  p(input, state, path)
     ? f(state, input, path)
     : Array.isArray(input)
     ? mapArrayWith(input, p, f, state, path)
@@ -168,7 +172,7 @@ const mapValueWith = (input, p, f, state, path) =>
  *
  * @template State, T, I, X, O
  * @param {API.Encoded<T, [[I, X]]>} input
- * @param {(input:any) => input is X} p
+ * @param {(input:any, state:State, path:PropertyKey[]) => input is X} p
  * @param {(state: State, input:X, path:PropertyKey[]) => [State, O]} f
  * @param {State} init
  * @param {PropertyKey[]} path
@@ -192,7 +196,7 @@ const mapObjectWith = (input, p, f, init, path) => {
  * @template I, X, O, State
  * @template {any[]} T
  * @param {T} input
- * @param {(input:any) => input is X} p
+ * @param {(input:any, state:State, path:PropertyKey[]) => input is X} p
  * @param {(state: State, input:X, path:PropertyKey[]) => [State, O]} f
  * @param {State} init
  * @param {PropertyKey[]} path

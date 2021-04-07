@@ -1,5 +1,12 @@
 import type { CID } from 'multiformats'
 
+export type { CID }
+
+/**
+ * Define nominal type of U based on type of T. Similar to Opaque types in Flow
+ */
+export type Tagged<T, Tag> = T & { tag?: Tag }
+
 export interface Service {
   endpoint: URL
   token: string
@@ -8,7 +15,7 @@ export interface Service {
 /**
  * CID in string representation
  */
-export type CIDString = string & {}
+export type CIDString = Tagged<string, CID>
 
 export interface API {
   /**
@@ -222,10 +229,7 @@ export interface StoreResult<T extends TokenInput> {
 export type EncodedError = {
   message: string
 }
-export type EncodedURL = {
-  '@': 'URL'
-  href: string
-}
+export type EncodedURL = Tagged<string, URL>
 
 export type Result<X, T> = { ok: true; value: T } | { ok: false; error: X }
 
