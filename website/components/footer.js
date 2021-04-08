@@ -3,37 +3,13 @@ export default function Footer() {
     <footer className="bg-black db db-m flex-ns items-center justify-between f7 white pv3 ph5">
       <div>
         <span className="db db-m dib-ns mv3">
-          Made with ❤️ by Protocol Labs
-        </span>
-        <Dot />
-        <span className="db db-m dib-ns mv3">
-          <span>Made for</span>{' '}
+          Made with ❤️ by{' '}
           <a
-            href="https://nfthack.ethglobal.co/"
-            className="nspink no-underline underline-hover v-mid"
+            href="https://protocol.ai/"
+            className="nspink underline-hover no-underline"
           >
-            NFTHack
+            Protocol Labs
           </a>
-        </span>
-        <Dot />
-        <span className="db db-m dib-ns mv3">
-          <span>
-            Powered by{' '}
-            <a
-              href="https://pinata.cloud/"
-              className="nspink no-underline underline-hover v-mid"
-            >
-              Pinata
-            </a>
-          </span>
-          <img
-            src="/images/logo-pinata.svg"
-            height="600"
-            width="600"
-            style={{ width: '20px', height: 'auto' }}
-            alt="Pinata logo"
-            className="v-mid"
-          />
         </span>
       </div>
       <div>
@@ -50,7 +26,7 @@ export default function Footer() {
           Need Help?{' '}
           <a
             href="https://github.com/ipfs-shipyard/nft.storage/issues/new"
-            className="nspink  underline-hover no-underline"
+            className="nspink underline-hover no-underline"
           >
             Open an Issue
           </a>

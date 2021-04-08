@@ -1,6 +1,6 @@
 # [nft.storage](https://nft.storage) <!-- omit in toc -->
 
-Decentralized storage of NFT data on IPFS and Filecoin, provided free to [NFTHack](https://nfthack.ethglobal.co/) participants during the hackathon.
+Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
 
 <a href="https://nft.storage"><img src="https://raw.githubusercontent.com/ipfs-shipyard/nft.storage/main/screenshot.png" alt="nft.storage screenshot" /></a>
 

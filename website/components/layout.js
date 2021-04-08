@@ -4,8 +4,8 @@ import Navbar from './navbar.js'
 
 export default function Layout({
   children,
-  title = 'NFT Storage - Decentralized storage on IPFS and Filecoin.',
-  description = 'NFT Storage is a brand new service in private BETA, built specifically for storing off-chain NFT data.',
+  title = 'NFT Storage - Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.',
+  description = 'NFT Storage is a brand new service, built specifically for storing off-chain NFT data on IPFS and Filecoin.',
   user,
   loginUrl,
   navBgColor = 'nsorange',

@@ -48,7 +48,7 @@ export default function Hero({ user, loginUrl }) {
           <hgroup className="chicagoflf white">
             <h1 className="f4 f2-m f1-ns fw4 mv3">Free Storage for NFTs</h1>
             <h2 className="f5 fw4 mw7 center mv3 lh-copy">
-              5GB storage of NFT data on{' '}
+              Free decentralized storage and bandwidth for NFTs on{' '}
               <img
                 src="images/logo-ipfs-sm.png"
                 width="57"
@@ -66,11 +66,7 @@ export default function Hero({ user, loginUrl }) {
                 style={{ maxWidth: '30px', height: 'auto' }}
                 alt="Filecoin logo"
               />{' '}
-              Filecoin and provided free to{' '}
-              <a href="https://nfthack.ethglobal.co/" className="white">
-                NFTHack
-              </a>{' '}
-              participants during the hackathon.
+              Filecoin.
             </h2>
           </hgroup>
           <div className="mt3 mb4">
