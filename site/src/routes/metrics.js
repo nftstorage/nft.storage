@@ -7,10 +7,10 @@ const STALE_WHILE_REVALIDATE_SECS = 3600
 /**
  * Note: add a cache busting suffix if you change the code and want to see a
  * change immediately after deploy.
- * @param {string} url 
+ * @param {string} url
  * @returns {string}
  */
-function getCacheKey (url) {
+function getCacheKey(url) {
   return `${new URL(url).origin}/metrics?v=4`
 }
 
@@ -25,16 +25,22 @@ export async function metrics(event) {
   let res = await cache.match(cacheKey)
   if (res) return res
 
-  const [userMetrics, nftMetrics] = await Promise.all([getUserMetrics(), getNftMetrics()])
+  const [userMetrics, nftMetrics] = await Promise.all([
+    getUserMetrics(),
+    getNftMetrics(),
+  ])
   res = new Response(exportPromMetrics({ userMetrics, nftMetrics }))
   // Cache the response for MAX_AGE_SECS
-  res.headers.append('Cache-Control', `public,max-age=${MAX_AGE_SECS},stale-while-revalidate=${STALE_WHILE_REVALIDATE_SECS}`)
+  res.headers.append(
+    'Cache-Control',
+    `public,max-age=${MAX_AGE_SECS},stale-while-revalidate=${STALE_WHILE_REVALIDATE_SECS}`
+  )
   event.waitUntil(cache.put(cacheKey, res.clone()))
   return res
 }
 
 // TODO: keep running total?
-async function getUserMetrics () {
+async function getUserMetrics() {
   let total = 0
   let done = false
   let cursor
@@ -49,7 +55,7 @@ async function getUserMetrics () {
 }
 
 class DealTotals {
-  constructor () {
+  constructor() {
     this.proposing = { total: 0 }
     this.accepted = { total: 0 }
     this.failed = { total: 0 }
@@ -60,27 +66,27 @@ class DealTotals {
 }
 
 class NftMetrics {
-  constructor () {
+  constructor() {
     this.total = 0 // Total number of NFTs stored on nft.storage
     this.totalBytes = 0 // Total bytes of all NFTs
     this.storage = {
       ipfs: {
-        total: 0 // Total number of NFTs pinned on IPFS
+        total: 0, // Total number of NFTs pinned on IPFS
       },
       filecoin: {
         total: 0, // Total number of NFTs stored on Filecoin in active deals
         totalQueued: 0, // Total number of NFTs queued for the next deal batch
         deals: {
           mainnet: new DealTotals(),
-          nerpanet: new DealTotals()
-        }
-      }
+          nerpanet: new DealTotals(),
+        },
+      },
     }
   }
 }
 
 // TODO: keep running totals?
-async function getNftMetrics () {
+async function getNftMetrics() {
   const metrics = new NftMetrics()
   const seenDeals = new Set()
   let done = false
@@ -95,7 +101,7 @@ async function getNftMetrics () {
       const cid = k.name.split(':')[1]
       // Look up size for pinned data via pinning service API
       // TODO: move this to cron job
-      if (k.metadata.pinStatus !== 'pinned') {
+      if (k.metadata == null || k.metadata.pinStatus !== 'pinned') {
         try {
           const res = await Pinata.pinInfo(cid)
           if (!res.ok) throw new Error('pinata file info request error')
@@ -104,8 +110,15 @@ async function getNftMetrics () {
           if (d == null) continue
           const nft = JSON.parse(d)
           nft.size = res.value.size
-          await stores.nfts.put(k.name, JSON.stringify(nft), { metadata: { pinStatus: 'pinned', size: nft.size } })
-          nftMetas.push({ cid, pinStatus: nft.pin.status, size: nft.size, deals: [] })
+          await stores.nfts.put(k.name, JSON.stringify(nft), {
+            metadata: { pinStatus: 'pinned', size: nft.size },
+          })
+          nftMetas.push({
+            cid,
+            pinStatus: nft.pin.status,
+            size: nft.size,
+            deals: [],
+          })
         } catch (err) {
           console.error(`failed to update file size for ${cid}`, err)
         }
@@ -129,7 +142,8 @@ async function getNftMetrics () {
           metrics.storage.filecoin.totalQueued++
         } else {
           // @ts-ignore
-          const dealTotals = metrics.storage.filecoin.deals[ntwk] = metrics.storage.filecoin.deals[ntwk] || new DealTotals()
+          const dealTotals = (metrics.storage.filecoin.deals[ntwk] =
+            metrics.storage.filecoin.deals[ntwk] || new DealTotals())
           dealTotals[d.status] = dealTotals[d.status] || { total: 0 }
           dealTotals[d.status].total++
         }
@@ -138,8 +152,9 @@ async function getNftMetrics () {
     cursor = nftList.cursor
     done = nftList.list_complete
   }
-  metrics.storage.filecoin.total = Object.values(metrics.storage.filecoin.deals)
-      .reduce((total, dealTotals) => total + dealTotals.active.total, 0)
+  metrics.storage.filecoin.total = Object.values(
+    metrics.storage.filecoin.deals
+  ).reduce((total, dealTotals) => total + dealTotals.active.total, 0)
   return metrics
 }
 
@@ -149,7 +164,7 @@ async function getNftMetrics () {
  * @param {{ userMetrics: { total: number }, nftMetrics: NftMetrics }} metrics
  * @returns {string}
  */
-function exportPromMetrics ({ userMetrics, nftMetrics }) {
+function exportPromMetrics({ userMetrics, nftMetrics }) {
   return [
     '# HELP nftstorage_users_total Total users registered.',
     '# TYPE nftstorage_users_total counter',
@@ -169,12 +184,15 @@ function exportPromMetrics ({ userMetrics, nftMetrics }) {
     '# HELP nftstorage_nfts_storage_filecoin_queued_total Total number of NFTs queued for the next deal batch.',
     '# TYPE nftstorage_nfts_storage_filecoin_queued_total counter',
     `nftstorage_nfts_storage_filecoin_queued_total ${nftMetrics.storage.filecoin.totalQueued}`,
-    ...Object.entries(nftMetrics.storage.filecoin.deals).map(([ntwk, totals]) => [
-      `# HELP nftstorage_nfts_storage_filecoin_deals_${ntwk}_total Total number of NFTs participating in Filecoin deals for ${ntwk}.`,
-      `# TYPE nftstorage_nfts_storage_filecoin_deals_${ntwk}_total counter`,
-      ...Object.entries(totals).map(([status, { total }]) => (
-        `nftstorage_nfts_storage_filecoin_deals_${ntwk}_total{status="${status}"} ${total}`
-      ))
-    ].join('\n'))
+    ...Object.entries(nftMetrics.storage.filecoin.deals).map(([ntwk, totals]) =>
+      [
+        `# HELP nftstorage_nfts_storage_filecoin_deals_${ntwk}_total Total number of NFTs participating in Filecoin deals for ${ntwk}.`,
+        `# TYPE nftstorage_nfts_storage_filecoin_deals_${ntwk}_total counter`,
+        ...Object.entries(totals).map(
+          ([status, { total }]) =>
+            `nftstorage_nfts_storage_filecoin_deals_${ntwk}_total{status="${status}"} ${total}`
+        ),
+      ].join('\n')
+    ),
   ].join('\n')
 }
