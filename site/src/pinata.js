@@ -5,7 +5,7 @@ const endpoint = new URL('https://api.pinata.cloud')
 /**
  * @typedef {import('./models/users.js').User} User
  * @typedef {{ok: true, value: {IpfsHash:string, PinSize:number, Timestamp:string}}|{ok:false, error:Response}} PinataResponse
- * @typedef {import('./utils/multipart/index.js').FileParts} FileParts
+ * @typedef {import('./utils/multipart/index.js').FilePart} FilePart
  */
 
 /**
@@ -52,7 +52,7 @@ export const pinFile = async (blob, user) => {
 }
 
 /**
- * @param {FileParts} files
+ * @param {FilePart[]} files
  * @param {User} user
  * @returns {Promise<PinataResponse>}
  */
@@ -105,8 +105,11 @@ export async function pinFiles(files, user) {
  * @param {string} cid
  * @returns {Promise<{ ok: true, value?: any } | { ok: false, error: Response }>}
  */
-export const pinInfo = async cid => {
-  const url = new URL(`/data/pinList?status=pinned&hashContains=${encodeURIComponent(cid)}`, endpoint)
+export const pinInfo = async (cid) => {
+  const url = new URL(
+    `/data/pinList?status=pinned&hashContains=${encodeURIComponent(cid)}`,
+    endpoint
+  )
 
   const response = await fetch(url.toString(), {
     method: 'GET',
