@@ -142,8 +142,11 @@ async function getNftMetrics() {
           metrics.storage.filecoin.totalQueued++
         } else {
           // @ts-ignore
-          const dealTotals = (metrics.storage.filecoin.deals[ntwk] =
-            metrics.storage.filecoin.deals[ntwk] || new DealTotals())
+          let dealTotals = metrics.storage.filecoin.deals[ntwk]
+          if (dealTotals == null) {
+            // @ts-ignore
+            dealTotals = metrics.storage.filecoin.deals[ntwk] = new DealTotals()
+          }
           dealTotals[d.status] = dealTotals[d.status] || { total: 0 }
           dealTotals[d.status].total++
         }
