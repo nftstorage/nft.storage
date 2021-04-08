@@ -36,7 +36,7 @@ export class Token {
 
   /**
    * @template {API.TokenInput} T
-   * @param {{data: API.Encoded<T, [[Blob, URL]]}} token
+   * @param {{data: API.Encoded<T, [[Blob, URL]]>}} token
    * @returns {API.Encoded<T, [[Blob, URL]]>}
    */
   static embed({ data }) {
