@@ -168,3 +168,30 @@ export async function verifyToken(event, mode = 'both') {
 
   return { ok: false, error: new HTTPError('Unauthorized', 401) }
 }
+
+/**
+ * Sets a given `value` at the given `path` on a passed `object`.
+ *
+ * @example
+ * ```js
+ * const obj = { a: { b: { c: 1 }}}
+ * setIn(obj, ['a', 'b', 'c'], 5)
+ * obj.a.b.c //> 5
+ * ```
+ *
+ * @template V
+ * @param {any} object
+ * @param {string[]} path
+ * @param {V} value
+ */
+export const setIn = (object, path, value) => {
+  const n = path.length - 1
+  let target = object
+  for (let [index, key] of path.entries()) {
+    if (index === n) {
+      target[key] = value
+    } else {
+      target = target[key]
+    }
+  }
+}

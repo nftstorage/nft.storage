@@ -1,4 +1,4 @@
-// let AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, SALT, PINATA_JWT
+// let AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, SALT, PINATA_JWT, IPFS_HOST
 export const stores = {
   auth: SESSION,
   csrf: CSRF,
@@ -17,6 +17,10 @@ export const auth0 = {
 
 export const pinata = {
   jwt: PINATA_JWT,
+}
+
+export const ipfs = {
+  host: IPFS_HOST,
 }
 
 export const cookieKey = 'AUTH0-AUTH'

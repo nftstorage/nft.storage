@@ -55,7 +55,6 @@ class Block {
 }
 
 /**
- *
  * @param {Uint8Array|string} content
  */
 export const importBlob = async (content) => {
