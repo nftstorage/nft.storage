@@ -1,8 +1,9 @@
 import * as constants from './constants.js'
 import { CID } from 'multiformats'
+import { ndjson } from './utils/ndjson.js'
 import { HTTPError } from './errors.js'
 
-const ENDPOINT = new URL(constants.ipfs.host)
+const ENDPOINT = new URL(`http://${constants.ipfs.host}/`)
 
 /**
  * @param {RequestInit & {
@@ -13,13 +14,23 @@ const ENDPOINT = new URL(constants.ipfs.host)
 const request = async (init) => {
   const params = new URLSearchParams(init.params)
   const url = new URL(`/api/v0/${init.path}?${params}`, ENDPOINT)
+
   const response = await fetch(url.href, {
     method: 'POST',
     ...init,
   })
 
   if (response.ok) {
-    return await response.json()
+    if (!response.body) {
+      return []
+    }
+
+    const result = []
+    for await (const json of ndjson(response.body)) {
+      result.push(json)
+    }
+
+    return result
   } else {
     return HTTPError.throw(response.statusText, response.status)
   }
@@ -32,7 +43,7 @@ export const importBlob = async (content) => {
   const body = new FormData()
   body.set('file', content)
 
-  const { Hash: hash } = await request({
+  const [{ Hash: hash }] = await request({
     path: 'add',
     params: {
       pin: 'true',
@@ -52,7 +63,7 @@ export const importAsset = async (file) => {
   const body = new FormData()
   body.set('file', file)
 
-  const { Hash: hash } = await request({
+  const [_file, { Hash: hash }] = await request({
     path: 'add',
     params: {
       pin: 'true',
@@ -72,47 +83,38 @@ export const importBlock = async (block) => {
   const body = new FormData()
   body.set('file', block)
 
-  const { Key: Hash } = await request({
+  const [{ Key: hash }] = await request({
     path: 'block/put',
     params: {
       pin: 'true',
-      format: 'dag-cbor',
+      format: 'cbor',
       mhtype: 'sha2-256',
     },
     body,
   })
 
-  return CID.parse(Hash).toV1()
+  return CID.parse(hash).toV1()
 }
 
 /**
  * @param {CID} cid
  */
 export const stat = async (cid) => {
-  const {
-    Blocks: blocks,
-    CumulativeSize: cumulativeSize,
-    Hash: hash,
-    Local: local,
-    Size: size,
-    SizeLocal: sizeLocal,
-    Type: type,
-    WithLocality: withLocality,
-  } = await request({
-    path: 'files/stat',
+  const [{ NumBlocks: numBlocks, Size: size }] = await request({
+    path: 'dag/stat',
     params: {
       arg: `/ipfs/${cid}`,
+      progress: 'false',
     },
   })
 
   return {
-    blocks,
-    cumulativeSize,
-    cid: CID.parse(hash).toV1(),
-    local,
     size,
-    sizeLocal,
-    type,
-    withLocality,
+    numBlocks,
   }
 }
+
+export const version = async () =>
+  request({
+    path: 'version',
+  })

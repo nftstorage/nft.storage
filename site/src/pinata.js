@@ -1,4 +1,4 @@
-import { pinata } from './constants.js'
+import { pinata, ipfs } from './constants.js'
 
 const endpoint = new URL('https://api.pinata.cloud')
 
@@ -38,6 +38,48 @@ export const pinFile = async (blob, user) => {
 
   const response = await fetch(url.toString(), {
     body,
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${pinata.jwt}`,
+    },
+  })
+
+  if (response.ok) {
+    return { ok: true, value: await response.json() }
+  } else {
+    return { ok: false, error: response }
+  }
+}
+
+/**
+ * @typedef {{ok: true, value: {ipfsHash:string, id:string, name:string, status:'string'}}|{ok:false, error:Response}} PinResponse
+ *
+ * @see https://pinata.cloud/documentation#PinByHash
+ * @param {import('multiformats').CID} cid
+ * @param {User} user
+ * @returns {Promise<PinataResponse>}
+ */
+export const pinCID = async (cid, user) => {
+  const url = new URL('/pinning/pinByHash', endpoint)
+
+  const response = await fetch(url.toString(), {
+    body: JSON.stringify({
+      hashToPin: `${cid}`,
+      pinataMetadata: {
+        name: `${user.nickname}-${Date.now()}`,
+        keyvalues: {
+          origin: 'https://nft.storage/',
+        },
+      },
+      pinataOptions: {
+        // Hardcoding this isn't great, but seems better than asknig node each
+        // time.
+        hostNodes: [
+          `/dns4/${ipfs.host}/tcp/4001/p2p/12D3KooWF8wxbXQ4DNpFLzg44Gpb6NdsTHkG4Bn1Z7a4tWS6rrdq`,
+          `/dns4/${ipfs.host}/udp/4001/quic/p2p/12D3KooWF8wxbXQ4DNpFLzg44Gpb6NdsTHkG4Bn1Z7a4tWS6rrdq`,
+        ],
+      },
+    }),
     method: 'POST',
     headers: {
       authorization: `Bearer ${pinata.jwt}`,

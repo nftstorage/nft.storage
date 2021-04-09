@@ -3,8 +3,9 @@ import { verifyToken, setIn } from '../utils/utils.js'
 import { toFormData } from '../utils/form-data.js'
 import * as nfts from '../models/nfts.js'
 import { JSONResponse } from '../utils/json-response.js'
-import { importAsset, importBlob, importBlock, stat } from '../ipfs.js'
+import { importAsset, importBlob, importBlock, stat, version } from '../ipfs.js'
 import CBOR from '@ipld/dag-cbor'
+import * as pinata from '../pinata.js'
 
 /**
  * @typedef {import('../bindings').NFT} NFT
@@ -46,7 +47,13 @@ export async function store(event) {
   })
 
   const ipnft = await importBlock(new Blob([bytes]))
-  const { cumulativeSize: size } = await stat(ipnft)
+
+  // Pinata will start looking for the pin but it may fail or take long time
+  // and we won't know. Unless we have separate task that keeps cheking for
+  // status of this.
+  await pinata.pinCID(ipnft, user)
+
+  const { size } = await stat(ipnft)
   const created = new Date().toISOString()
   const cid = ipnft.toString()
 
@@ -80,4 +87,11 @@ export async function store(event) {
   }
 
   return new JSONResponse(result)
+}
+
+/**
+ * @param {FetchEvent} event
+ */
+export async function ipfsVersion(event) {
+  return new JSONResponse(await version())
 }

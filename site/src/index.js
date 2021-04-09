@@ -5,7 +5,7 @@ import { logout } from './routes/logout.js'
 import { notFound } from './utils/utils.js'
 import { cors, postCors } from './routes/cors.js'
 import { upload } from './routes/nfts-upload.js'
-import { store } from './routes/nfts-store.js'
+import { store, ipfsVersion } from './routes/nfts-store.js'
 import { status } from './routes/nfts-get.js'
 import { remove } from './routes/nfts-delete.js'
 import { list } from './routes/nfts-list.js'
@@ -51,6 +51,7 @@ r.add('delete', '/api/pins/:requestid', pinsDelete, [postCors])
 // Public API
 r.add('post', '/api/upload', upload, [postCors])
 r.add('post', '/api/store', store, [postCors])
+r.add('get', '/experimental/ipfs/version', ipfsVersion, [postCors])
 r.add('get', '/api', list, [postCors])
 r.add('get', '/api/:cid', status, [postCors])
 r.add('delete', '/api/:cid', remove, [postCors])
