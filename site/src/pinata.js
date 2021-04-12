@@ -75,8 +75,8 @@ export const pinCID = async (cid, user) => {
         // Hardcoding this isn't great, but seems better than asknig node each
         // time.
         hostNodes: [
-          `/dns4/${ipfs.host}/tcp/4001/p2p/12D3KooWF8wxbXQ4DNpFLzg44Gpb6NdsTHkG4Bn1Z7a4tWS6rrdq`,
-          `/dns4/${ipfs.host}/udp/4001/quic/p2p/12D3KooWF8wxbXQ4DNpFLzg44Gpb6NdsTHkG4Bn1Z7a4tWS6rrdq`,
+          `/dns4/${ipfs.host}/tcp/24001/p2p/12D3KooWF8wxbXQ4DNpFLzg44Gpb6NdsTHkG4Bn1Z7a4tWS6rrdq`,
+          `/dns4/${ipfs.host}/udp/24001/quic/p2p/12D3KooWF8wxbXQ4DNpFLzg44Gpb6NdsTHkG4Bn1Z7a4tWS6rrdq`,
         ],
       },
     }),
