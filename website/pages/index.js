@@ -606,7 +606,7 @@ function FAQ() {
           </HashLink>
         </h2>
         <p className="lh-copy white">
-          Up to 5GB of data can be stored for FREE on IPFS for as long as this
+          Off-chain NFT data can be stored for FREE on IPFS for as long as this
           service continues. nft.storage will also use other storage mediums,
           like Filecoin, to ensure data is persisted longer. If this service is
           discontinued, 90 days notice will allow users to transition their data

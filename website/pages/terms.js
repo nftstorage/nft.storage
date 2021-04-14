@@ -59,19 +59,6 @@ export default function TermsOfService() {
             <HashLink id="data-limits">Data Limits</HashLink>
           </h2>
           <p className="lh-copy">
-            Each user of the service is allowed to store up to{' '}
-            <strong>5GB</strong> of data for free. Please{' '}
-            <a
-              className="black"
-              href="https://github.com/ipfs-shipyard/nft.storage/issues/new"
-            >
-              contact us
-            </a>{' '}
-            if you are likely to need more. Multiple accounts created by the
-            same user/organisation will be liable to termination and data will
-            be removed.
-          </p>
-          <p className="lh-copy">
             The <strong>BETA</strong> service is limited to{' '}
             <strong>100MB</strong> upload limit per request. Protocol Labs may
             increase this limit at its sole discretion.
