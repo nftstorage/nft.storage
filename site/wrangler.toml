@@ -11,7 +11,7 @@ kv_namespaces = [
     { binding = "NFTS", preview_id = "f1c35cd1601c452782db6056b2d35f25", id = "f1c35cd1601c452782db6056b2d35f25" },
     { binding = "DEALS", preview_id = "ce934a65bf6a44a398980a89daf66a70", id = "ce934a65bf6a44a398980a89daf66a70" }
 ]
-vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true }
+vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true, CLUSTER_URL = "http://127.0.0.1:9094" }
 
 [env.staging]
 name = "nft-storage-staging"
@@ -20,7 +20,7 @@ account_id = "fffa4b4363a7e5250af8357087263b3a"
 workers_dev = true
 route = ""
 zone_id = ""
-vars = { AUTH0_CALLBACK_URL = "https://staging.nft.storage/auth", DEBUG = false }
+vars = { AUTH0_CALLBACK_URL = "https://staging.nft.storage/auth", DEBUG = false, CLUSTER_URL = "" }
 kv_namespaces = [
     { binding = "USERS", preview_id = "8964654a0a1d4f7586b59db90ef97594", id = "8964654a0a1d4f7586b59db90ef97594" },
     { binding = "SESSION", preview_id = "7cf078ca01934227abedac1b29cd385c", id = "7cf078ca01934227abedac1b29cd385c" },
@@ -31,7 +31,7 @@ kv_namespaces = [
 
 [env.production]
 name = "nft-storage"
-vars = { AUTH0_CALLBACK_URL = "https://nft.storage/auth", DEBUG = false }
+vars = { AUTH0_CALLBACK_URL = "https://nft.storage/auth", DEBUG = false, CLUSTER_URL = "" }
 kv_namespaces = [
     { binding = "SESSION", id = "2a62b6ec95d744c09c1c4de65e606585", preview_id = "dca209a138af497aa68c1f653230beaf" },
     { binding = "CSRF", id = "a4f7fb397a0941d4ac6657515962e960", preview_id = "afc15a61a0414febafabfc724c904b50" },
@@ -47,7 +47,7 @@ account_id = "4fe12d085474d33bdcfd8e9bed4d8f95"
 workers_dev = true
 route = ""
 zone_id = ""
-vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true }
+vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true, CLUSTER_URL = "https://soft-sloth-84.loca.lt" }
 kv_namespaces = [
     { binding = "USERS", preview_id = "3dfa88660d0d4863a5f6b83781160637", id = "3dfa88660d0d4863a5f6b83781160637" },
     { binding = "SESSION", preview_id = "a100ac642a854dbfa9778069fb52c800", id = "a100ac642a854dbfa9778069fb52c800" },

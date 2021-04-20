@@ -15,6 +15,11 @@ export const auth0 = {
   salt: SALT,
 }
 
+export const cluster = {
+  url: CLUSTER_URL,
+  token: CLUSTER_TOKEN,
+}
+
 export const pinata = {
   jwt: PINATA_JWT,
 }

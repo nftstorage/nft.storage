@@ -13,6 +13,8 @@ declare global {
   const USERS: KVNamespace
   const NFTS: KVNamespace
   const PINATA_JWT: string
+  const CLUSTER_URL: string
+  const CLUSTER_TOKEN: string
 }
 
 export interface Pin {

@@ -63,7 +63,7 @@ account_id = "CF_ACCOUNT"
 workers_dev = true
 route = ""
 zone_id = ""
-vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true }
+vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true, CLUSTER_URL = "http://127.0.0.1:9094" }
 kv_namespaces = []
 ```
 
@@ -93,6 +93,7 @@ wrangler secret put AUTH0_CLIENT_ID --env USER # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_SECRET --env USER # Get from auth0 account
 wrangler secret put SALT --env USER # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env USER # Get from Pinata
+wrangler secret put CLUSTER_TOKEN --env USER # Get from infra
 ```
 
 Go to `/site/src/constants.js` _comment_ the first line and run `wrangler publish --env USER`.
@@ -116,6 +117,7 @@ wrangler secret put AUTH0_CLIENT_ID --env production # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_SECRET --env production # Get from auth0 account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env production # Get from Pinata
+wrangler secret put CLUSTER_TOKEN --env production # Get from infra
 wrangler publish --env production
 ```
 
