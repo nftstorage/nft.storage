@@ -11,12 +11,15 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
 - [`site` Setup](#site-setup)
   - [Cloudflare Workers CLI](#cloudflare-workers-cli)
   - [Auth0 account](#auth0-account)
+  - [IPFS Cluster](#ipfs-cluster)
   - [Cloudflare Workers initial setup:](#cloudflare-workers-initial-setup)
     - [Development Setup](#development-setup)
     - [Production Setup `[env.production]`](#production-setup-envproduction)
 - [`site` Usage](#site-usage)
   - [Local development](#local-development)
   - [Deploy](#deploy)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## JS client library
 
@@ -113,10 +116,6 @@ yarn install
 wrangler kv:namespace create USERS --preview --env USER
 # cli output something like: `{ binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" }`
 # but you need to put `{ binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4", id = "7e441603d1bc4d5a87f6cecb959018e4" }` inside the `kv_namespaces`.
-wrangler kv:namespace create SESSION --preview --env USER
-# same as above
-wrangler kv:namespace create CSRF --preview --env USER
-# same as above
 wrangler kv:namespace create NFTS --preview --env USER
 # same as above
 wrangler kv:namespace create DEALS --preview --env USER
@@ -129,9 +128,7 @@ Go to `/site/src/constants.js` _uncomment_ the first line and run `wrangler publ
 
 ```bash
 # dev and preview secrets
-wrangler secret put AUTH0_DOMAIN --env USER # Get from auth0 account
-wrangler secret put AUTH0_CLIENT_ID --env USER # Get from auth0 account
-wrangler secret put AUTH0_CLIENT_SECRET --env USER # Get from auth0 account
+wrangler secret put _MAGIC_SECRET_KEY --env USER # Get from auth0 account
 wrangler secret put SALT --env USER # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env USER # Get from Pinata
 ```
@@ -144,19 +141,13 @@ Go to `/site/src/constants.js` _comment_ the first line and run `wrangler publis
 # production KVs
 wrangler kv:namespace create USERS --env production
 # Follow the instructions from the cli output
-wrangler kv:namespace create SESSION --env production
-# Follow the instructions from the cli output
-wrangler kv:namespace create CSRF --env production
-# Follow the instructions from the cli output
 wrangler kv:namespace create NFTS --env production
 # Follow the instructions from the cli output
 wrangler kv:namespace create DEALS --env production
 # Follow the instructions from the cli output
 wrangler kv:namespace create METRICS --env production
 # Follow the instructions from the cli output
-wrangler secret put AUTH0_DOMAIN --env production # Get from auth0 account
-wrangler secret put AUTH0_CLIENT_ID --env production # Get from auth0 account
-wrangler secret put AUTH0_CLIENT_SECRET --env production # Get from auth0 account
+wrangler secret put _MAGIC_SECRET_KEY --env production # Get from auth0 account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env production # Get from Pinata
 wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password
