@@ -18,6 +18,7 @@ export const auth0 = {
 export const cluster = {
   url: CLUSTER_URL,
   token: CLUSTER_TOKEN,
+  addrs: Object.freeze(CLUSTER_ADDRS.split(',')),
 }
 
 export const pinata = {

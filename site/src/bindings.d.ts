@@ -15,6 +15,7 @@ declare global {
   const PINATA_JWT: string
   const CLUSTER_URL: string
   const CLUSTER_TOKEN: string
+  const CLUSTER_ADDRS: string
 }
 
 export interface Pin {
@@ -23,6 +24,7 @@ export interface Pin {
    */
   cid: string
   name?: string
+  meta?: Record<string, string>
   status: PinStatus
   created: string
   size: number

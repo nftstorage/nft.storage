@@ -15,7 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@cloudflare/kv-asset-handler": "~0.1.1",
-    "@nftstorage/ipfs-cluster": "^2.0.0",
+    "@nftstorage/ipfs-cluster": "^2.2.0",
     "cookie": "^0.4.1",
     "merge-options": "^3.0.4",
     "multiformats": "^4.5.3",

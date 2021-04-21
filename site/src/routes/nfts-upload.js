@@ -25,12 +25,12 @@ export async function upload(event) {
   if (contentType.includes('multipart/form-data')) {
     const boundary = contentType.split('boundary=')[1].trim()
     const parts = await parseMultipart(event.request.body, boundary)
+    const dir = await cluster.addDirectory(parts)
     event.waitUntil(pinata.pinFiles(parts, user))
-    const dir = await cluster.addDirectory(parts, user)
     const { cid, size } = dir[dir.length - 1]
     const created = new Date()
     /** @type {NFT} */
-    let data = {
+    const nft = {
       cid,
       // @ts-ignore
       size,
@@ -49,9 +49,12 @@ export async function upload(event) {
         created: created.toISOString(),
       },
     }
-    const result = await nfts.set({ user, cid }, data, {
-      metadata: { pinStatus: 'pinned', size },
-    })
+    const metadata = {
+      pinStatus: 'pinned',
+      size,
+      created: created.toISOString(),
+    }
+    const result = await nfts.set({ user, cid }, nft, { metadata })
     return new JSONResponse({
       ok: true,
       value: {
@@ -64,11 +67,11 @@ export async function upload(event) {
     if (blob.size === 0) {
       return HTTPError.respond(new HTTPError('Empty payload', 400))
     }
+    const { cid, size } = await cluster.add(blob)
     event.waitUntil(pinata.pinFile(blob, user))
-    const { cid, size } = await cluster.add(blob, user)
     const created = new Date()
     /** @type {NFT} */
-    const data = {
+    const nft = {
       cid,
       size: blob.size,
       created: new Date().toISOString(),
@@ -83,7 +86,7 @@ export async function upload(event) {
         created: created.toISOString(),
       },
     }
-    const result = await nfts.set({ user, cid }, data, {
+    const result = await nfts.set({ user, cid }, nft, {
       metadata: { pinStatus: 'pinned', size: blob.size },
     })
 

@@ -9,29 +9,32 @@ import * as nfts from '../models/nfts.js'
  * @param {Record<string,string>} params
  * @returns {Promise<Response>}
  */
-export async function pinsDelete (event, params) {
+export async function pinsDelete(event, params) {
   const result = await verifyToken(event)
   if (!result.ok) {
     return HTTPError.respond(result.error)
   }
   const { user } = result
+  let cid = params.requestid
+  let nft = await nfts.get({ user, cid })
 
-  const res0 = await PinataPSA.pinsGet(params.requestid)
-  if (!res0.ok) {
-    return PinataPSA.parseErrorResponse(res0.error)
+  if (!nft) {
+    // maybe this is an old Pinata pin?
+    const res = await PinataPSA.pinsGet(params.requestid)
+    if (res.ok) {
+      cid = res.value.pin.cid
+      nft = await nfts.get({ user, cid })
+    }
   }
 
-  const pinStatus = res0.value
-  if (!pinStatus.pin.meta || pinStatus.pin.meta.sub !== user.sub) {
-    return new JSONResponse({ error: { reason: 'NOT_FOUND', details: 'pin not found' } }, { status: 404 })
+  if (!nft) {
+    return new JSONResponse(
+      { error: { reason: 'NOT_FOUND', details: 'pin not found' } },
+      { status: 404 }
+    )
   }
 
-  const res1 = await PinataPSA.pinsDelete(params.requestid)
-  if (!res1.ok) {
-    return PinataPSA.parseErrorResponse(res1.error)
-  }
-
-  await nfts.remove({ user, cid: pinStatus.pin.cid })
+  await nfts.remove({ user, cid })
 
   return new Response()
 }
