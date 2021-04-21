@@ -9,11 +9,11 @@ import { tokensList } from './routes/tokens-list.js'
 import { tokensCreate } from './routes/tokens-create.js'
 import { tokensDelete } from './routes/tokens-delete.js'
 import { HTTPError } from './errors.js'
-// import { pinsAdd } from './routes/pins-add.js'
-// import { pinsGet } from './routes/pins-get.js'
-// import { pinsList } from './routes/pins-list.js'
-// import { pinsReplace } from './routes/pins-replace.js'
-// import { pinsDelete } from './routes/pins-delete.js'
+import { pinsAdd } from './routes/pins-add.js'
+import { pinsGet } from './routes/pins-get.js'
+import { pinsList } from './routes/pins-list.js'
+import { pinsReplace } from './routes/pins-replace.js'
+import { pinsDelete } from './routes/pins-delete.js'
 import { metrics } from './routes/metrics.js'
 import {
   updateUserMetrics,
@@ -40,11 +40,11 @@ r.add('options', '*', cors)
 r.add('post', '/api/login', login, [postCors])
 
 // Remote Pinning API
-// r.add('post', '/api/pins', pinsAdd, [postCors])
-// r.add('get', '/api/pins', pinsList, [postCors])
-// r.add('get', '/api/pins/:requestid', pinsGet, [postCors])
-// r.add('post', '/api/pins/:requestid', pinsReplace, [postCors])
-// r.add('delete', '/api/pins/:requestid', pinsDelete, [postCors])
+r.add('post', '/api/pins', pinsAdd, [postCors])
+r.add('get', '/api/pins', pinsList, [postCors])
+r.add('get', '/api/pins/:requestid', pinsGet, [postCors])
+r.add('post', '/api/pins/:requestid', pinsReplace, [postCors])
+r.add('delete', '/api/pins/:requestid', pinsDelete, [postCors])
 
 // Public API
 r.add('post', '/api/upload', upload, [postCors])

@@ -1,10 +1,9 @@
-import { HTTPError } from '../errors.js'
-import { verifyToken } from '../utils/utils.js'
 import * as PinataPSA from '../pinata-psa.js'
 import * as pinata from '../pinata.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
 import * as cluster from '../cluster.js'
+import { validate } from '../utils/auth.js'
 
 /**
  * @param {FetchEvent} event
@@ -12,10 +11,7 @@ import * as cluster from '../cluster.js'
  * @returns {Promise<JSONResponse>}
  */
 export async function pinsReplace(event, params) {
-  const result = await verifyToken(event)
-  if (!result.ok) {
-    return HTTPError.respond(result.error)
-  }
+  const result = await validate(event)
   const { user, tokenName } = result
   let existingCID = params.requestid
   let found = await nfts.get({ user, cid: existingCID })

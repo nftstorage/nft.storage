@@ -1,6 +1,5 @@
-import { HTTPError } from '../errors.js'
-import { verifyToken } from '../utils/utils.js'
 import * as cluster from '../cluster.js'
+import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { stores } from '../constants.js'
 
@@ -21,10 +20,7 @@ import { stores } from '../constants.js'
  * @returns {Promise<JSONResponse>}
  */
 export async function pinsList(event) {
-  const result = await verifyToken(event)
-  if (!result.ok) {
-    return HTTPError.respond(result.error)
-  }
+  const result = await validate(event)
   const { user } = result
   const { searchParams } = new URL(event.request.url)
 
