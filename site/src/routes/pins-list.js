@@ -52,8 +52,8 @@ export async function pinsList(event) {
       keys.push(key)
     }
     if (keys.length >= limit) {
-      // @ts-ignore
       keys = keys
+        // @ts-ignore
         .sort((a, b) => b.metadata.createdSort - a.metadata.createdSort)
         .slice(0, limit)
     }
