@@ -1,18 +1,9 @@
-import useSWR from 'swr'
 import HashLink from '../components/hashlink.js'
-import { getEdgeState } from '../lib/state.js'
 import Layout from '../components/layout.js'
 
 export default function TermsOfService() {
-  const { data } = useSWR('edge_state', getEdgeState)
-  const { user, loginUrl = '#' } = data ?? {}
   return (
-    <Layout
-      user={user}
-      loginUrl={loginUrl}
-      navBgColor="nspeach"
-      title="Terms of Service - NFT Storage"
-    >
+    <Layout navBgColor="nspeach" title="Terms of Service - NFT Storage">
       <main className="bg-nspeach">
         <div className="mw9 center pa4 pa5-ns">
           <h1 className="chicagoflf">
@@ -32,11 +23,10 @@ export default function TermsOfService() {
               Terms of Service of IPFS.io
             </a>
             .
-            <p>
-              If you do not agree to all the terms and conditions of this
-              agreement, then you may not access the Website or use any
-              services.
-            </p>
+          </p>
+          <p className="lh-copy">
+            If you do not agree to all the terms and conditions of this
+            agreement, then you may not access the Website or use any services.
           </p>
           <h2 className="chicagoflf">
             <HashLink id="storage-term">Storage Term</HashLink>

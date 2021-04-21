@@ -70,22 +70,8 @@ export default function Hero({ user, loginUrl }) {
             </h2>
           </hgroup>
           <div className="mt3 mb4">
-            {user ? null : (
-              <>
-                <Button
-                  wrapperClassName="mh3 mb3"
-                  className="bg-nslime"
-                  href={loginUrl}
-                >
-                  Register
-                </Button>
-                <Button wrapperClassName="mh3 mb3 dib-m dn-ns" href={loginUrl}>
-                  Login
-                </Button>
-              </>
-            )}
-            <Button wrapperClassName="mh3 mb3" href="#about">
-              Find out more
+            <Button wrapperClassName="mh3 mb3" href="#getting-started">
+              Get Started
             </Button>
           </div>
         </div>

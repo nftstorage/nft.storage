@@ -81,7 +81,8 @@ export async function verifyJWT(token, secret = auth0.salt, alg = 'HS256') {
   var tokenParts = token.split('.')
 
   if (tokenParts.length !== 3) {
-    throw new Error('token must have 3 parts')
+    return false
+    // throw new Error('token must have 3 parts')
   }
 
   var importAlgorithm = algorithms[alg]
@@ -175,7 +176,6 @@ export function decodeJWT(token) {
       throw 'Illegal base64url string!'
   }
 
-  // TODO Use shim or document incomplete browsers
   var result = atob(output)
 
   try {

@@ -4,16 +4,11 @@ import merge from 'merge-options'
 const users = USERS
 
 /**
- * @typedef {{
- *   tokens: Record<string,string>
- *   sub: string
- *   nickname?: string
- *   name?: string
- *   email?: string
- *   picture?: string
- * }} User
+ * @typedef {import('@magic-sdk/admin').MagicUserMetadata} MagicUserMetadata
+ * @typedef {import('../bindings').User} User
+ * @typedef {import('../bindings').UserSafe} UserSafe
  *
- * @expample
+ * @example
  * ```json
  * {
  *   "nickname":"hugomrdias",
@@ -32,34 +27,26 @@ const users = USERS
 
 // https://tools.ietf.org/html/rfc7519#section-4.1
 /**
- * @param {Partial<User> & { sub: string } } newUser
+ * @param {User} newUser
  */
 export async function createOrUpdate(newUser) {
-  const partialData = {
-    sub: newUser.sub,
-    nickname: newUser.nickname,
-    name: newUser.name,
-    email: newUser.email,
-    picture: newUser.picture,
-  }
-
-  const user = await users.get(newUser.sub)
+  const user = await users.get(newUser.issuer)
   if (user === null) {
-    const token = await signJWT({
-      sub: newUser.sub,
-      iss: 'nft-storage',
-      iat: Date.now(),
-      name: 'default',
-    })
+    // const token = await signJWT({
+    //   sub: newUser.sub,
+    //   iss: 'nft-storage',
+    //   iat: Date.now(),
+    //   name: 'default',
+    // })
     const data = {
-      ...partialData,
-      tokens: { default: token },
+      ...newUser,
+      // tokens: { default: token },
     }
-    return await users.put(newUser.sub, JSON.stringify(data))
+    return await users.put(newUser.issuer, JSON.stringify(data))
   }
 
-  const data = merge(JSON.parse(user), partialData)
-  return await users.put(newUser.sub, JSON.stringify(data))
+  const data = merge(JSON.parse(user), newUser)
+  return await users.put(newUser.issuer, JSON.stringify(data))
 }
 
 /**
@@ -72,6 +59,22 @@ export async function getUser(sub) {
     throw new Error('user not found')
   }
   return JSON.parse(user)
+}
+
+/**
+ * @param {User} user
+ * @returns {UserSafe}
+ */
+export function userSafe(user) {
+  return {
+    name: user.name,
+    sub: user.sub,
+    nickname: user.nickname,
+    email: user.email,
+    picture: user.picture,
+    issuer: user.issuer,
+    publicAddress: user.publicAddress,
+  }
 }
 
 /**

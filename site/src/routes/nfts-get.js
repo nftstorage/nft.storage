@@ -1,8 +1,8 @@
 import { HTTPError } from '../errors.js'
-import { verifyToken } from '../utils/utils.js'
 import { get as getNft } from '../models/nfts.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { get as getDeals } from '../models/deals.js'
+import { validate } from '../utils/auth.js'
 
 /**
  * @typedef {import('../bindings').Deal} Deal
@@ -13,11 +13,8 @@ import { get as getDeals } from '../models/deals.js'
  * @param {Record<string,string>} params
  */
 export const status = async (event, params) => {
-  const token = await verifyToken(event)
-  if (!token.ok) {
-    return HTTPError.respond(token.error)
-  }
-  const user = token.user
+  const auth = await validate(event)
+  const user = auth.user
 
   const [nft, deals] = await Promise.all([
     getNft({ user, cid: params.cid }),

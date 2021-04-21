@@ -1,15 +1,16 @@
 import Head from 'next/head'
 import Footer from './footer.js'
 import Navbar from './navbar.js'
+import Loading from '../components/loading'
+import { useUserContext } from '../lib/user.js'
 
 export default function Layout({
   children,
   title = 'NFT Storage - Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.',
   description = 'NFT Storage is a brand new service, built specifically for storing off-chain NFT data on IPFS and Filecoin.',
-  user,
-  loginUrl,
   navBgColor = 'nsorange',
 }) {
+  const [user, setUser, isLoading] = useUserContext()
   return (
     <div className="sans-serif">
       <Head>
@@ -28,9 +29,15 @@ export default function Layout({
         <meta name="twitter:site" content="@protocollabs" />
         <meta name="twitter:creator" content="@protocollabs" />
       </Head>
-      <Navbar user={user} loginUrl={loginUrl} bgColor={navBgColor} />
-      {children}
-      <Footer />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          <Navbar bgColor={navBgColor} />
+          {children}
+          <Footer />
+        </>
+      )}
     </div>
   )
 }

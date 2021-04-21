@@ -1,9 +1,9 @@
 name = "nft-storage-dev"
 type = "webpack"
+webpack_config = "webpack.config.js"
 account_id = "fffa4b4363a7e5250af8357087263b3a"
-workers_dev = true
-route = ""
-zone_id = ""
+zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"
+route = "api-dev.nft.storage/*"
 kv_namespaces = [
     { binding = "SESSION", preview_id = "dca209a138af497aa68c1f653230beaf", id = "dca209a138af497aa68c1f653230beaf" },
     { binding = "CSRF", preview_id = "905bd04b17bf4c739eb2250e56a1b767", id = "905bd04b17bf4c739eb2250e56a1b767" },
@@ -12,7 +12,7 @@ kv_namespaces = [
     { binding = "DEALS", preview_id = "ce934a65bf6a44a398980a89daf66a70", id = "ce934a65bf6a44a398980a89daf66a70" },
     { binding = "METRICS", preview_id = "104469a46696435bb2e7bfa201a36611", id = "104469a46696435bb2e7bfa201a36611" }
 ]
-vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true, CLUSTER_API_URL = "", CLUSTER_IPFS_PROXY_API_URL = "", CLUSTER_ADDRS = "" }
+vars = { ENV = "dev", DEBUG = true, CLUSTER_API_URL = "", CLUSTER_IPFS_PROXY_API_URL = "", CLUSTER_ADDRS = "" }
 
 [triggers]
 crons = ["*/10 * * * *"]
@@ -63,6 +63,6 @@ kv_namespaces = [
     { binding = "METRICS", preview_id = "9f28491818d742a2b1363449fe39d6b7", id = "9f28491818d742a2b1363449fe39d6b7" }
 ]
 
-[site]
-bucket = "./public"
-entry-point = "."
+# [site]
+# bucket = "./public"
+# entry-point = "."

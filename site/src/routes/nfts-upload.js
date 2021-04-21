@@ -1,10 +1,10 @@
 import { HTTPError } from '../errors.js'
-import { verifyToken } from '../utils/utils.js'
 import { parseMultipart } from '../utils/multipart/index.js'
 import * as pinata from '../pinata.js'
 import * as cluster from '../cluster.js'
 import * as nfts from '../models/nfts.js'
 import { JSONResponse } from '../utils/json-response.js'
+import { validate } from '../utils/auth.js'
 
 /**
  * @typedef {import('../bindings').NFT} NFT
@@ -16,11 +16,7 @@ import { JSONResponse } from '../utils/json-response.js'
 export async function upload(event) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
-  const result = await verifyToken(event)
-  if (!result.ok) {
-    return HTTPError.respond(result.error)
-  }
-  const { user, tokenName } = result
+  const { user, tokenName } = await validate(event)
 
   if (contentType.includes('multipart/form-data')) {
     const boundary = contentType.split('boundary=')[1].trim()

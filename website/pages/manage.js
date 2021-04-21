@@ -1,19 +1,43 @@
-import useSWR from 'swr'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import Button from '../components/button.js'
 import Layout from '../components/layout.js'
-import { getEdgeState } from '../lib/state.js'
+import { deleteToken, getTokens } from '../lib/api'
+import { useUserContext } from '../lib/user.js'
+import { useQuery, useQueryClient } from 'react-query'
 
 export default function ManageKeys() {
-  const { data } = useSWR('edge_state', getEdgeState)
-  const { user, loginUrl = '#' } = data ?? {}
-  const tokens = user
-    ? Object.keys(user.tokens).map((k) => ({ name: k, token: user.tokens[k] }))
-    : []
+  const [deleting, setDeleting] = useState(false)
+  const queryClient = useQueryClient()
+  const [user, setUser, isLoading] = useUserContext()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/login')
+    }
+  }, [user, router, isLoading])
+
+  const result = useQuery('get-tokens', getTokens, { enabled: !!user })
+
+  async function handleDeleteToken(e) {
+    e.preventDefault()
+    if (!confirm('Are you sure? Deleted keys cannot be recovered!')) {
+      return
+    }
+    const name = e.target.name.value
+    setDeleting(name)
+    try {
+      await deleteToken(name)
+    } finally {
+      queryClient.invalidateQueries('get-tokens')
+      setDeleting(false)
+    }
+  }
 
   return (
     <Layout
       user={user}
-      loginUrl={loginUrl}
       navBgColor="nsgreen"
       title="Manage API Keys - NFT Storage"
     >
@@ -25,34 +49,48 @@ export default function ManageKeys() {
               + New Key
             </Button>
           </div>
-          {tokens.length ? (
+          {result.data ? (
             <table className="bg-white ba b--black w-100 collapse mb4">
-              <tr className="bb b--black">
-                <th className="pa2 tl bg-nsgray br b--black w-50">Name</th>
-                <th className="pa2 tl bg-nsgray br b--black w-50">Key</th>
-                <th className="pa2 tc bg-nsgray" />
-              </tr>
-              {tokens.map((t) => (
+              <thead>
                 <tr className="bb b--black">
-                  <td className="pa2 br b--black">{t.name}</td>
-                  <td className="pa2 br b--black mw7">
-                    <code style={{ wordWrap: 'break-word' }}>{t.token}</code>
-                  </td>
-                  <td className="pa2">
-                    <form onSubmit={handleDeleteToken}>
-                      <input
-                        type="hidden"
-                        name="name"
-                        id="name"
-                        value={t.name}
-                      />
-                      <Button className="bg-nsorange white" type="submit">
-                        Delete
-                      </Button>
-                    </form>
-                  </td>
+                  <th className="pa2 tl bg-nsgray br b--black w-50">Name</th>
+                  <th className="pa2 tl bg-nsgray br b--black w-50">Key</th>
+                  <th className="pa2 tc bg-nsgray" />
                 </tr>
-              ))}
+              </thead>
+              <tbody>
+                {Object.entries(result.data).map((t, k) => (
+                  <tr className="bb b--black" key={k}>
+                    <td className="pa2 br b--black">{t[0]}</td>
+                    <td className="pa2 br b--black mw7">
+                      <input
+                        disabled
+                        className="w-100 h2"
+                        type="password"
+                        id={`value-${t[0]}`}
+                        value={t[1]}
+                      />
+                    </td>
+                    <td className="pa2">
+                      <form onSubmit={handleDeleteToken}>
+                        <input
+                          type="hidden"
+                          name="name"
+                          id={`token-${t[0]}`}
+                          value={t[0]}
+                        />
+                        <Button
+                          className="bg-nsorange white"
+                          type="submit"
+                          disable={deleting}
+                        >
+                          {deleting === t[0] ? 'Deleting...' : 'Delete'}
+                        </Button>
+                      </form>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           ) : (
             <p className="tc mv5">
@@ -65,21 +103,4 @@ export default function ManageKeys() {
       </main>
     </Layout>
   )
-}
-
-async function handleDeleteToken(e) {
-  e.preventDefault()
-  if (!confirm('Are you sure? Deleted keys cannot be recovered!')) {
-    return
-  }
-  const name = e.target.name.value
-  const rsp = await fetch('/api/internal/tokens', {
-    method: 'delete',
-    body: JSON.stringify({ name }),
-  })
-  const data = await rsp.json()
-  if (!data.ok) {
-    throw new Error(`deleting token: ${data.error}`)
-  }
-  location = '/manage'
 }

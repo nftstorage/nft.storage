@@ -1,3 +1,4 @@
+import Link from 'next/link'
 export default function Footer() {
   return (
     <footer className="bg-black db db-m flex-ns items-center justify-between f7 white pv3 ph5">
@@ -14,12 +15,11 @@ export default function Footer() {
       </div>
       <div>
         <span className="db db-m dib-ns mv3">
-          <a
-            href="/terms"
-            className="nspink no-underline underline-hover v-mid"
-          >
-            Terms of Service
-          </a>
+          <Link href="/terms">
+            <a className="nspink no-underline underline-hover v-mid">
+              Terms of Service
+            </a>
+          </Link>
         </span>
         <Dot />
         <span className="db db-m dib-ns mv3">

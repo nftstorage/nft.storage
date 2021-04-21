@@ -19,6 +19,8 @@ declare global {
   const CLUSTER_IPFS_PROXY_API_URL: string
   const CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN: string
   const CLUSTER_ADDRS: string
+  const _MAGIC_SECRET_KEY: string
+  const ENV: 'dev'
 }
 
 export interface Pin {
@@ -129,3 +131,17 @@ export interface Deal {
    */
   dealExpiration?: string
 }
+
+export interface User {
+  sub: string
+  nickname: string
+  name: string
+  email: string
+  picture: string
+  issuer: string
+  publicAddress: string
+  tokens: Record<string, string>
+  github?: unknown
+}
+
+export type UserSafe = Omit<User, 'tokens' | 'github'>

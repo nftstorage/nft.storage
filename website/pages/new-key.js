@@ -1,20 +1,39 @@
-import useSWR from 'swr'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { useUserContext } from '../lib/user.js'
+import { useQueryClient } from 'react-query'
 import Box from '../components/box.js'
 import Button from '../components/button.js'
-import { getEdgeState } from '../lib/state.js'
 import Layout from '../components/layout.js'
+import { createToken } from '../lib/api.js'
 
 export default function NewKey() {
-  const { data } = useSWR('edge_state', getEdgeState)
-  const { user, loginUrl = '#' } = data ?? {}
+  const router = useRouter()
+  const [user, setUser, isLoading] = useUserContext()
+  const queryClient = useQueryClient()
+  const [creating, setCreating] = useState(false)
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/login')
+    }
+  }, [user, router, isLoading])
+
+  async function handleCreateToken(e) {
+    e.preventDefault()
+    const name = e.target.name.value
+    setCreating(true)
+    try {
+      await createToken(name)
+    } finally {
+      queryClient.invalidateQueries('get-tokens')
+      setCreating(false)
+      router.push('/manage')
+    }
+  }
 
   return (
-    <Layout
-      user={user}
-      loginUrl={loginUrl}
-      navBgColor="nsgreen"
-      title="New API key - NFT storage"
-    >
+    <Layout user={user} navBgColor="nsgreen" title="New API key - NFT storage">
       <main className="bg-nsgreen">
         <div className="mw9 center pv3 ph5 min-vh-100">
           <Box
@@ -37,8 +56,8 @@ export default function NewKey() {
                 />
               </div>
               <div>
-                <Button className="bg-nslime" type="submit">
-                  Create
+                <Button className="bg-nslime" type="submit" disable={creating}>
+                  {creating ? 'Creating...' : 'Create'}
                 </Button>
               </div>
             </form>
@@ -47,18 +66,4 @@ export default function NewKey() {
       </main>
     </Layout>
   )
-}
-
-async function handleCreateToken(e) {
-  e.preventDefault()
-  const name = e.target.name.value
-  const rsp = await fetch('/api/internal/tokens', {
-    method: 'post',
-    body: JSON.stringify({ name }),
-  })
-  const data = await rsp.json()
-  if (!data.ok) {
-    throw new Error(`creating token: ${data.error}`)
-  }
-  location = '/manage'
 }

@@ -1,20 +1,19 @@
-import useSWR from 'swr'
+import { useUserContext } from '../lib/user'
 import Hero from '../components/hero.js'
 import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
 import Box from '../components/box.js'
 import Layout from '../components/layout.js'
-import { getEdgeState } from '../lib/state.js'
+import Link from 'next/link'
 
 export default function Home() {
-  const { data } = useSWR('edge_state', getEdgeState)
-  const { user, loginUrl = '#' } = data ?? {}
+  const [user] = useUserContext()
   return (
-    <Layout user={user} loginUrl={loginUrl}>
-      <Hero user={user} loginUrl={loginUrl} />
+    <Layout user={user}>
+      <Hero user={user} />
       <main>
         <About />
-        <GettingStarted loginUrl={loginUrl} />
+        <GettingStarted />
         {/* <APIDocs /> */}
         <FAQ />
       </main>
@@ -194,12 +193,11 @@ console.log(cid)`
           <li>
             <Step>1</Step>
             <p className="chicagoflf f3 mw6 center">
-              <a
-                href={loginUrl}
-                className="no-underline underline-hover nsnavy"
-              >
-                Register an nft.storage account
-              </a>{' '}
+              <Link href="/login">
+                <a className="no-underline underline-hover nsnavy">
+                  Register an nft.storage account
+                </a>
+              </Link>{' '}
               so that you can create API access keys.
             </p>
             <img
@@ -213,9 +211,11 @@ console.log(cid)`
           <li>
             <Step>2</Step>
             <p className="chicagoflf f3 mw6 center">
-              <a href="/manage" className="no-underline underline-hover nsnavy">
-                Create an API access key
-              </a>{' '}
+              <Link href="/manage">
+                <a className="no-underline underline-hover nsnavy">
+                  Create an API access key
+                </a>
+              </Link>{' '}
               and note it down.
             </p>
             <img
@@ -233,7 +233,10 @@ console.log(cid)`
             </p>
           </li>
         </ol>
-        <div className="db-m flex-ns justify-center center mw9 mw-none-m mw-none-ns mh-3">
+        <div
+          id="docs"
+          className="db-m flex-ns justify-center center mw9 mw-none-m mw-none-ns mh-3"
+        >
           <Box
             bgColor="nspeach"
             borderColor="nsnavy"
