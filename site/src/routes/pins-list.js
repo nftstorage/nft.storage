@@ -2,6 +2,7 @@ import { HTTPError } from '../errors.js'
 import { verifyToken } from '../utils/utils.js'
 import * as cluster from '../cluster.js'
 import { JSONResponse } from '../utils/json-response.js'
+import { stores } from '../constants.js'
 
 /**
  * @typedef {{
@@ -145,6 +146,7 @@ function queryToListOptions(searchParams) {
  */
 function makeFilter(options) {
   return (key) => {
+    const metadata = key.metadata || {}
     if (options.cid) {
       const cid = key.name.split(':')[1]
       if (!options.cid.includes(cid)) {
@@ -152,7 +154,7 @@ function makeFilter(options) {
       }
     }
     if (options.meta) {
-      const meta = key.metadata.meta || {}
+      const meta = metadata.meta || {}
       for (const [k, v] of Object.entries(options.meta)) {
         if (meta[k] !== v) {
           return false
@@ -161,7 +163,7 @@ function makeFilter(options) {
     }
     if (options.name) {
       const match = options.match || 'exact'
-      const name = key.metadata.name || ''
+      const name = metadata.name || ''
       if (match === 'exact') {
         if (options.name !== name) {
           return false
@@ -180,12 +182,12 @@ function makeFilter(options) {
         }
       }
     }
-    if (options.status && !options.status.includes(key.metadata.pinStatus)) {
+    if (options.status && !options.status.includes(metadata.pinStatus)) {
       return false
     }
     if (options.before || options.after) {
-      const created = key.metadata.created
-        ? new Date(key.metadata.created).getTime()
+      const created = metadata.created
+        ? new Date(metadata.created).getTime()
         : 0
       if (options.before && options.before.getTime() < created) {
         return false
