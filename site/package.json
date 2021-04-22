@@ -9,13 +9,16 @@
     "build": "cd ../website && npx next build && npx next export -o ../site/public",
     "deploy": "yarn build && wrangler publish --env production",
     "dev": "yarn build && yarn start",
-    "test": "tsc"
+    "test": "tsc",
+    "lt": "npm run lt:cluster & npm run lt:ipfs-proxy",
+    "lt:cluster": "npx localtunnel --port 9094 --subdomain \"$(whoami)-cluster-api-nft-storage\"",
+    "lt:ipfs-proxy": "npx localtunnel --port 9095 --subdomain \"$(whoami)-ipfs-proxy-api-nft-storage\""
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
   "license": "MIT",
   "dependencies": {
     "@cloudflare/kv-asset-handler": "~0.1.1",
-    "@nftstorage/ipfs-cluster": "^2.2.0",
+    "@nftstorage/ipfs-cluster": "^2.2.1",
     "cookie": "^0.4.1",
     "merge-options": "^3.0.4",
     "multiformats": "^4.5.3",

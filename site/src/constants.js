@@ -16,8 +16,16 @@ export const auth0 = {
 }
 
 export const cluster = {
-  url: CLUSTER_URL,
-  token: CLUSTER_TOKEN,
+  apiUrl: CLUSTER_API_URL,
+  basicAuthToken:
+    typeof CLUSTER_BASIC_AUTH_TOKEN !== 'undefined'
+      ? CLUSTER_BASIC_AUTH_TOKEN
+      : '',
+  ipfsProxyApiUrl: CLUSTER_IPFS_PROXY_API_URL,
+  ipfsProxyBasicAuthToken:
+    typeof CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN !== 'undefined'
+      ? CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN
+      : '',
   addrs: Object.freeze(CLUSTER_ADDRS.split(',')),
 }
 

@@ -1,8 +1,8 @@
 import { Cluster } from '@nftstorage/ipfs-cluster'
 import { cluster } from './constants.js'
 
-const client = new Cluster(cluster.url, {
-  headers: { Authorization: `Basic ${cluster.token}` },
+const client = new Cluster(cluster.apiUrl, {
+  headers: { Authorization: `Basic ${cluster.basicAuthToken}` },
 })
 
 /**
@@ -58,6 +58,27 @@ export async function recover(cid) {
 
 export function delegates() {
   return Array.from(cluster.addrs)
+}
+
+/**
+ * @param {string} cid
+ */
+export async function dagSize(cid) {
+  const url = new URL(
+    `dag/stat?arg=${encodeURIComponent(cid)}&progress=false`,
+    cluster.ipfsProxyApiUrl
+  )
+  const response = await fetch(url.toString(), {
+    headers: { Authorization: `Basic ${cluster.ipfsProxyBasicAuthToken}` },
+  })
+  if (!response.ok) {
+    throw Object.assign(
+      new Error(`${response.status}: ${response.statusText}`),
+      { response }
+    )
+  }
+  const data = await response.json()
+  return parseInt(data.Size)
 }
 
 /**

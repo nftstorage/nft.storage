@@ -13,8 +13,10 @@ declare global {
   const USERS: KVNamespace
   const NFTS: KVNamespace
   const PINATA_JWT: string
-  const CLUSTER_URL: string
-  const CLUSTER_TOKEN: string
+  const CLUSTER_API_URL: string
+  const CLUSTER_BASIC_AUTH_TOKEN: string
+  const CLUSTER_IPFS_PROXY_API_URL: string
+  const CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN: string
   const CLUSTER_ADDRS: string
 }
 
