@@ -65,8 +65,7 @@ export async function pinsAdd(event) {
       size = parseInt(pin.metadata.size)
     }
     // we have this pin already allocated in our cluster, get the status...
-    const { peerMap } = await cluster.status(pin.cid)
-    status = cluster.toPSAStatus(Object.values(peerMap))
+    status = cluster.toPSAStatus(await cluster.status(pin.cid))
     // if this failed to pin, try again
     if (status === 'failed') {
       await cluster.recover(pinData.cid)

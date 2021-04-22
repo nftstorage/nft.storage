@@ -83,10 +83,11 @@ export async function dagSize(cid) {
 
 /**
  * Best effort conversion from cluster status to pinning service API status.
- * @param {import('@nftstorage/ipfs-cluster').PinInfo[]} pinInfos
+ * @param {import('@nftstorage/ipfs-cluster').StatusResponse} status
  * @returns {import('./pinata-psa').Status}
  */
-export function toPSAStatus(pinInfos) {
+export function toPSAStatus(status) {
+  const pinInfos = Object.values(status.peerMap)
   if (pinInfos.some((i) => i.status === 'pinned')) return 'pinned'
   if (pinInfos.some((i) => i.status === 'pinning')) return 'pinning'
   if (pinInfos.some((i) => i.status === 'queued')) return 'queued'
