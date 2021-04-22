@@ -26,7 +26,7 @@ export const cluster = {
     typeof CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN !== 'undefined'
       ? CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN
       : '',
-  addrs: Object.freeze(CLUSTER_ADDRS.split(',')),
+  addrs: Object.freeze(CLUSTER_ADDRS.split(',').filter(Boolean)),
 }
 
 export const pinata = {
