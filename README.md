@@ -51,7 +51,7 @@ Do the same for your production application, with the appropriate URLs.
 
 The nft.storage site talks to IPFS Cluster. You need to run a cluster locally and make it accessible from the internet for development.
 
-Follow the quiskstart guide to get an IPFS Cluster up and running: https://cluster.ipfs.io/documentation/quickstart/
+Follow the quickstart guide to get an IPFS Cluster up and running: https://cluster.ipfs.io/documentation/quickstart/
 
 Install [localtunnel](https://localtunnel.me/) and expose the IPFS Cluster HTTP API and IPFS Proxy API (replacing "USER" with your name):
 
@@ -140,6 +140,8 @@ wrangler secret put AUTH0_CLIENT_ID --env production # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_SECRET --env production # Get from auth0 account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env production # Get from Pinata
+wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password
+wrangler secret put CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password
 wrangler publish --env production
 ```
 
