@@ -32,7 +32,9 @@ export async function updatePinStatuses() {
             `${cid}: pin status ${prevStatus} => ${nft.pin.status}, size ${prevSize} => ${nft.size}`
           )
         } catch (err) {
-          console.error(`${cid}: failed to update pin status and size`, err)
+          console.error(
+            `${cid}: failed to update pin status and size: ${err.stack}`
+          )
         }
       }
     }

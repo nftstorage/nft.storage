@@ -9,7 +9,8 @@ kv_namespaces = [
     { binding = "CSRF", preview_id = "905bd04b17bf4c739eb2250e56a1b767", id = "905bd04b17bf4c739eb2250e56a1b767" },
     { binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4", id = "7e441603d1bc4d5a87f6cecb959018e4" },
     { binding = "NFTS", preview_id = "f1c35cd1601c452782db6056b2d35f25", id = "f1c35cd1601c452782db6056b2d35f25" },
-    { binding = "DEALS", preview_id = "ce934a65bf6a44a398980a89daf66a70", id = "ce934a65bf6a44a398980a89daf66a70" }
+    { binding = "DEALS", preview_id = "ce934a65bf6a44a398980a89daf66a70", id = "ce934a65bf6a44a398980a89daf66a70" },
+    { binding = "METRICS", preview_id = "104469a46696435bb2e7bfa201a36611", id = "104469a46696435bb2e7bfa201a36611" }
 ]
 vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true, CLUSTER_API_URL = "", CLUSTER_IPFS_PROXY_API_URL = "", CLUSTER_ADDRS = "" }
 
@@ -29,7 +30,8 @@ kv_namespaces = [
     { binding = "SESSION", preview_id = "7cf078ca01934227abedac1b29cd385c", id = "7cf078ca01934227abedac1b29cd385c" },
     { binding = "CSRF", preview_id = "67c398acd70744a785995a59a5fcfff7", id = "67c398acd70744a785995a59a5fcfff7" },
     { binding = "NFTS", preview_id = "21763d3a9ce2465b875a49ae57a5a598", id = "21763d3a9ce2465b875a49ae57a5a598" },
-    { binding = "DEALS", preview_id = "ab1ee988b16747149e4dee6b1a07bbd2", id = "ab1ee988b16747149e4dee6b1a07bbd2" }
+    { binding = "DEALS", preview_id = "ab1ee988b16747149e4dee6b1a07bbd2", id = "ab1ee988b16747149e4dee6b1a07bbd2" },
+    { binding = "METRICS", preview_id = "f80cad90abdf4bf98b41518f1e7a6ea1", id = "f80cad90abdf4bf98b41518f1e7a6ea1" }
 ]
 
 [env.production]
@@ -40,7 +42,8 @@ kv_namespaces = [
     { binding = "CSRF", id = "a4f7fb397a0941d4ac6657515962e960", preview_id = "afc15a61a0414febafabfc724c904b50" },
     { binding = "USERS", id = "8a5a55b5d1af49ed8fcfab16e9fa8c41", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" },
     { binding = "NFTS", id = "9610798d5e5845fa94e4392cc1288ddf", preview_id = "f1c35cd1601c452782db6056b2d35f25" },
-    { binding = "DEALS", id = "9d5815757b04446ab8cfbc99e6296842", preview_id = "ce934a65bf6a44a398980a89daf66a70" }
+    { binding = "DEALS", id = "9d5815757b04446ab8cfbc99e6296842", preview_id = "ce934a65bf6a44a398980a89daf66a70" },
+    { binding = "METRICS", id = "12c38488fd6047fd8bb4030a8dacb406", preview_id = "104469a46696435bb2e7bfa201a36611" }
 ]
 
 [env.alanshaw]
@@ -56,7 +59,8 @@ kv_namespaces = [
     { binding = "SESSION", preview_id = "a100ac642a854dbfa9778069fb52c800", id = "a100ac642a854dbfa9778069fb52c800" },
     { binding = "CSRF", preview_id = "82a68f45340e43f1b07768279cde909d", id = "82a68f45340e43f1b07768279cde909d" },
     { binding = "NFTS", preview_id = "c8fd3b56aa284e1395169c681a04fc91", id = "c8fd3b56aa284e1395169c681a04fc91" },
-    { binding = "DEALS", preview_id = "e8bdcf6793554671ba98cfc7eaf4a225", id = "e8bdcf6793554671ba98cfc7eaf4a225" }
+    { binding = "DEALS", preview_id = "e8bdcf6793554671ba98cfc7eaf4a225", id = "e8bdcf6793554671ba98cfc7eaf4a225" },
+    { binding = "METRICS", preview_id = "9f28491818d742a2b1363449fe39d6b7", id = "9f28491818d742a2b1363449fe39d6b7" }
 ]
 
 [site]
