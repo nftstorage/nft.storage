@@ -13,6 +13,9 @@ kv_namespaces = [
 ]
 vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true, CLUSTER_API_URL = "", CLUSTER_IPFS_PROXY_API_URL = "", CLUSTER_ADDRS = "" }
 
+[triggers]
+crons = ["*/10 * * * *"]
+
 [env.staging]
 name = "nft-storage-staging"
 type = "webpack"

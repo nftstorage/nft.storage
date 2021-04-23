@@ -171,3 +171,20 @@ export async function verifyToken(event, mode = 'both') {
 
   return { ok: false, error: new HTTPError('Unauthorized', 401) }
 }
+
+/**
+ * @template T
+ * @param {() => Promise<T | void>} fn
+ * @param {string} label
+ * @returns {Promise<T | void>}
+ */
+export async function timed(fn, label) {
+  console.log(`START: ${label}`)
+  console.time(`END: ${label}`)
+  try {
+    const res = await fn()
+    return res
+  } finally {
+    console.timeEnd(`END: ${label}`)
+  }
+}

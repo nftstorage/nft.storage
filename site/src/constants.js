@@ -5,6 +5,7 @@ export const stores = {
   deals: DEALS,
   users: USERS,
   nfts: NFTS,
+  metrics: METRICS,
 }
 
 export const auth0 = {

@@ -2,7 +2,7 @@ import { Router } from './utils/router.js'
 import { homepage } from './routes/homepage.js'
 import { auth } from './routes/auth.js'
 import { logout } from './routes/logout.js'
-import { notFound } from './utils/utils.js'
+import { notFound, timed } from './utils/utils.js'
 import { cors, postCors } from './routes/cors.js'
 import { upload } from './routes/nfts-upload.js'
 import { status } from './routes/nfts-get.js'
@@ -22,11 +22,17 @@ import { pinsList } from './routes/pins-list.js'
 import { pinsReplace } from './routes/pins-replace.js'
 import { pinsDelete } from './routes/pins-delete.js'
 import { metrics } from './routes/metrics.js'
+import {
+  updateUserMetrics,
+  updateNftMetrics,
+  updateNftDealMetrics,
+} from './jobs/metrics.js'
+import { updatePinStatuses } from './jobs/pins.js'
 
 const r = new Router({
   onError(req, err) {
     return HTTPError.respond(err)
-  }
+  },
 })
 
 // Site
@@ -60,3 +66,19 @@ r.add('delete', '/api/internal/tokens', tokensDelete)
 
 r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))
+
+// Cron jobs
+addEventListener('scheduled', (event) =>
+  event.waitUntil(
+    (async () => {
+      await timed(updateUserMetrics, 'CRON updateUserMetrics')
+      await timed(updateNftMetrics, 'CRON updateNftMetrics')
+    })()
+  )
+)
+addEventListener('scheduled', (event) =>
+  event.waitUntil(timed(updateNftDealMetrics, 'CRON updateNftDealMetrics'))
+)
+addEventListener('scheduled', (event) =>
+  event.waitUntil(timed(updatePinStatuses, 'CRON updatePinStatuses'))
+)
