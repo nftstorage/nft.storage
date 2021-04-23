@@ -121,6 +121,8 @@ wrangler kv:namespace create NFTS --preview --env USER
 # same as above
 wrangler kv:namespace create DEALS --preview --env USER
 # same as above
+wrangler kv:namespace create METRICS --preview --env USER
+# same as above
 ```
 
 Go to `/site/src/constants.js` _uncomment_ the first line and run `wrangler publish --env USER`.
@@ -149,6 +151,8 @@ wrangler kv:namespace create CSRF --env production
 wrangler kv:namespace create NFTS --env production
 # Follow the instructions from the cli output
 wrangler kv:namespace create DEALS --env production
+# Follow the instructions from the cli output
+wrangler kv:namespace create METRICS --env production
 # Follow the instructions from the cli output
 wrangler secret put AUTH0_DOMAIN --env production # Get from auth0 account
 wrangler secret put AUTH0_CLIENT_ID --env production # Get from auth0 account
