@@ -45,14 +45,6 @@ r.add('get', '/new-key', newKey)
 r.add('get', '/new-file', newFile)
 // Monitoring
 r.add('get', '/metrics', metrics)
-// Cron testing
-// r.add('get', '/cron', async event => {
-//   await timed(updateUserMetrics, 'updateUserMetrics')
-//   await timed(updateNftMetrics, 'updateNftMetrics')
-//   await timed(updateNftDealMetrics, 'updateNftDealMetrics')
-//   await timed(updatePinStatuses, 'updatePinStatuses')
-//   return new Response('done')
-// })
 
 r.add('options', '/api/*', cors)
 // Remote Pinning API
