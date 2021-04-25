@@ -7,7 +7,7 @@ export default function Button({
   href,
   type = 'button',
   children,
-  disable = false,
+  disabled = false,
 }) {
   wrapperClassName = `dib bg-nsgray ba b--black grow ${
     wrapperClassName ?? ''
@@ -23,7 +23,7 @@ export default function Button({
       className={className}
       style={btnStyle}
       onClick={onClick}
-      disabled={disable}
+      disabled={disabled}
     >
       {children}
     </button>
