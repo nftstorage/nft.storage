@@ -1,4 +1,4 @@
-import { auth0 } from '../constants'
+import { secrets } from '../constants'
 
 /** @type {Record<string, HmacImportParams>} */
 const algorithms = {
@@ -47,13 +47,6 @@ function utf8ToUint8Array(str) {
 }
 
 /**
- * @param {any} fn
- */
-function isFunction(fn) {
-  return typeof fn === 'function'
-}
-
-/**
  * @param {null} arg
  */
 function isObject(arg) {
@@ -65,7 +58,7 @@ function isObject(arg) {
  * @param {string} secret
  * @param {string} alg
  */
-export async function verifyJWT(token, secret = auth0.salt, alg = 'HS256') {
+export async function verifyJWT(token, secret = secrets.salt, alg = 'HS256') {
   if (!isString(token)) {
     throw new Error('token must be a string')
   }
@@ -82,7 +75,6 @@ export async function verifyJWT(token, secret = auth0.salt, alg = 'HS256') {
 
   if (tokenParts.length !== 3) {
     return false
-    // throw new Error('token must have 3 parts')
   }
 
   var importAlgorithm = algorithms[alg]
@@ -91,7 +83,6 @@ export async function verifyJWT(token, secret = auth0.salt, alg = 'HS256') {
     throw new Error('algorithm not found')
   }
 
-  // TODO Test utf8ToUint8Array function
   const keyData = utf8ToUint8Array(secret)
   const key = await crypto.subtle.importKey(
     'raw',
@@ -116,7 +107,7 @@ export async function verifyJWT(token, secret = auth0.salt, alg = 'HS256') {
  * @param {string} secret
  * @param {string} alg
  */
-export async function signJWT(payload, secret = auth0.salt, alg = 'HS256') {
+export async function signJWT(payload, secret = secrets.salt, alg = 'HS256') {
   if (!isObject(payload)) {
     throw new Error('payload must be an object')
   }

@@ -128,7 +128,7 @@ Go to `/site/src/constants.js` _uncomment_ the first line and run `wrangler publ
 
 ```bash
 # dev and preview secrets
-wrangler secret put _MAGIC_SECRET_KEY --env USER # Get from auth0 account
+wrangler secret put MAGIC_SECRET_KEY --env USER # Get from magic.link account
 wrangler secret put SALT --env USER # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env USER # Get from Pinata
 ```
@@ -147,7 +147,7 @@ wrangler kv:namespace create DEALS --env production
 # Follow the instructions from the cli output
 wrangler kv:namespace create METRICS --env production
 # Follow the instructions from the cli output
-wrangler secret put _MAGIC_SECRET_KEY --env production # Get from auth0 account
+wrangler secret put MAGIC_SECRET_KEY --env production # Get from magic.link account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env production # Get from Pinata
 wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password

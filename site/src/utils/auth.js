@@ -1,6 +1,7 @@
 import { Magic } from '@magic-sdk/admin'
-import { MAGIC_SECRET_KEY } from '../constants.js'
-
+import { secrets } from '../constants.js'
+const { debug } = require('./debug')
+const log = debug('auth')
 import { HTTPError } from '../errors.js'
 import {
   createOrUpdate,
@@ -9,7 +10,7 @@ import {
   userSafe,
 } from '../models/users.js'
 import { parseJWT, verifyJWT } from './jwt.js'
-export const magic = new Magic(MAGIC_SECRET_KEY)
+export const magic = new Magic(secrets.magic)
 
 /**
  * @typedef {import('../models/users').User} User
@@ -22,7 +23,6 @@ export const magic = new Magic(MAGIC_SECRET_KEY)
 export async function validate(event) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
-
   // validate access tokens
   if (await verifyJWT(token)) {
     const decoded = parseJWT(token)
@@ -36,13 +36,14 @@ export async function validate(event) {
   }
 
   // validate magic id tokens
-  magic.token.validate(token)
-  const metadata = await magic.users.getMetadataByToken(token)
-  if (metadata.issuer) {
-    const user = await getUser(metadata.issuer)
+  try {
+    magic.token.validate(token)
+    const [proof, claim] = magic.token.decode(token)
+    const user = await getUser(claim.iss)
     return { user, tokenName: 'session' }
-  } else {
-    throw new HTTPError('Unauthorized', 401)
+  } catch (err) {
+    log(err)
+    throw new HTTPError(err.code, 403)
   }
 }
 
@@ -51,7 +52,7 @@ export async function validate(event) {
  * @param {FetchEvent} event
  * @param {any} data
  */
-export async function verify(event, data) {
+export async function loginOrRegister(event, data) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
 
@@ -62,8 +63,7 @@ export async function verify(event, data) {
       data.type === 'github'
         ? await parseGithub(data.data, metadata)
         : parseMagic(metadata)
-    await createOrUpdate(parsed)
-    const user = await getUser(metadata.issuer)
+    const user = await createOrUpdate(parsed)
     return { user: userSafe(user), tokenName: 'session' }
   } else {
     throw new HTTPError('Unauthorized', 401)
@@ -72,7 +72,8 @@ export async function verify(event, data) {
 
 /**
  *
- * @param {*} data
+ * `data` should be of type `import('@magic-ext/oauth').OAuthRedirectResult` but these types arent made for webworker env.
+ * @param {any} data
  * @param {import('@magic-sdk/admin').MagicUserMetadata} magicMetadata
  * @returns {Promise<User>}
  */
@@ -86,14 +87,14 @@ async function parseGithub(data, magicMetadata) {
   }
   return {
     sub: `github|${data.oauth.userHandle}`,
-    nickname: data.oauth.userInfo.profile.replace('https://github.com/', ''),
-    name: data.oauth.userInfo.name,
-    picture: data.oauth.userInfo.picture,
-    issuer: magicMetadata.issuer ? magicMetadata.issuer : '',
-    email: magicMetadata.email ? magicMetadata.email : '',
-    publicAddress: magicMetadata.publicAddress
-      ? magicMetadata.publicAddress
+    nickname: data.oauth.userInfo.profile
+      ? data.oauth.userInfo.profile.replace('https://github.com/', '')
       : '',
+    name: data.oauth.userInfo.name || '',
+    picture: data.oauth.userInfo.picture || '',
+    issuer: magicMetadata.issuer || '',
+    email: magicMetadata.email || '',
+    publicAddress: magicMetadata.publicAddress || '',
     github: data.oauth,
     tokens,
   }
@@ -107,10 +108,11 @@ function parseMagic({ issuer, email, publicAddress }) {
   if (!issuer || !email || !publicAddress) {
     throw new Error('Invalid metadata')
   }
+  const name = email.split('@')[0]
   return {
     sub: issuer,
-    nickname: email ? email.split('@')[0] : '',
-    name: email ? email.split('@')[0] : '',
+    nickname: name,
+    name: name,
     picture: '',
     email,
     issuer,

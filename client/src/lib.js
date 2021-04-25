@@ -44,7 +44,7 @@ class NFTStorage {
    *
    * @param {{token: string, endpoint?:URL}} options
    */
-  constructor({ token, endpoint = new URL('https://nft.storage') }) {
+  constructor({ token, endpoint = new URL('https://api.nft.storage') }) {
     /**
      * Authorization token.
      *
@@ -72,7 +72,7 @@ class NFTStorage {
    * @returns {Promise<API.CIDString>}
    */
   static async storeBlob({ endpoint, token }, blob) {
-    const url = new URL('/api/upload', endpoint)
+    const url = new URL('/upload', endpoint)
 
     const request = await fetch(url.toString(), {
       method: 'POST',
@@ -93,7 +93,7 @@ class NFTStorage {
    * @returns {Promise<API.CIDString>}
    */
   static async storeDirectory({ endpoint, token }, files) {
-    const url = new URL('/api/upload', endpoint)
+    const url = new URL('/upload', endpoint)
     const body = new FormData()
     for (const file of files) {
       body.append('file', file, file.name)
@@ -119,7 +119,7 @@ class NFTStorage {
    * @returns {Promise<API.StatusResult>}
    */
   static async status({ endpoint, token }, cid) {
-    const url = new URL(`/api/${cid}`, endpoint)
+    const url = new URL(`/${cid}`, endpoint)
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: NFTStorage.auth(token),
@@ -145,7 +145,7 @@ class NFTStorage {
    * @returns {Promise<void>}
    */
   static async delete({ endpoint, token }, cid) {
-    const url = new URL(`/api/${cid}`, endpoint)
+    const url = new URL(`/${cid}`, endpoint)
     const response = await fetch(url.toString(), {
       method: 'DELETE',
       headers: NFTStorage.auth(token),

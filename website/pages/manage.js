@@ -1,25 +1,21 @@
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Button from '../components/button.js'
-import Layout from '../components/layout.js'
 import { deleteToken, getTokens } from '../lib/api'
-import { useUserContext } from '../lib/user.js'
 import { useQuery, useQueryClient } from 'react-query'
 
-export default function ManageKeys() {
+export function getStaticProps() {
+  return {
+    props: {
+      title: 'Manage API Keys - NFT Storage',
+      navBgColor: 'nsgreen',
+      needsUser: true,
+    },
+  }
+}
+export default function ManageKeys({ user }) {
   const [deleting, setDeleting] = useState(false)
   const queryClient = useQueryClient()
-  const [user, setUser, isLoading] = useUserContext()
-  const router = useRouter()
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push('/login')
-    }
-  }, [user, router, isLoading])
-
   const result = useQuery('get-tokens', getTokens, { enabled: !!user })
-
   async function handleDeleteToken(e) {
     e.preventDefault()
     if (!confirm('Are you sure? Deleted keys cannot be recovered!')) {
@@ -36,71 +32,65 @@ export default function ManageKeys() {
   }
 
   return (
-    <Layout
-      user={user}
-      navBgColor="nsgreen"
-      title="Manage API Keys - NFT Storage"
-    >
-      <main className="bg-nsgreen">
-        <div className="mw9 center pv3 ph5 min-vh-100">
-          <div className="flex mb3 items-center">
-            <h1 className="chicagoflf mv4 flex-auto">Manage API Keys</h1>
-            <Button href="/new-key" className="flex-none">
-              + New Key
-            </Button>
-          </div>
-          {result.data ? (
-            <table className="bg-white ba b--black w-100 collapse mb4">
-              <thead>
-                <tr className="bb b--black">
-                  <th className="pa2 tl bg-nsgray br b--black w-50">Name</th>
-                  <th className="pa2 tl bg-nsgray br b--black w-50">Key</th>
-                  <th className="pa2 tc bg-nsgray" />
-                </tr>
-              </thead>
-              <tbody>
-                {Object.entries(result.data).map((t, k) => (
-                  <tr className="bb b--black" key={k}>
-                    <td className="pa2 br b--black">{t[0]}</td>
-                    <td className="pa2 br b--black mw7">
-                      <input
-                        disabled
-                        className="w-100 h2"
-                        type="password"
-                        id={`value-${t[0]}`}
-                        value={t[1]}
-                      />
-                    </td>
-                    <td className="pa2">
-                      <form onSubmit={handleDeleteToken}>
-                        <input
-                          type="hidden"
-                          name="name"
-                          id={`token-${t[0]}`}
-                          value={t[0]}
-                        />
-                        <Button
-                          className="bg-nsorange white"
-                          type="submit"
-                          disable={deleting}
-                        >
-                          {deleting === t[0] ? 'Deleting...' : 'Delete'}
-                        </Button>
-                      </form>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p className="tc mv5">
-              <span className="f1 dib mb3">😢</span>
-              <br />
-              No API keys
-            </p>
-          )}
+    <main className="bg-nsgreen">
+      <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
+        <div className="flex mb3 items-center">
+          <h1 className="chicagoflf mv4 flex-auto">Manage API Keys</h1>
+          <Button href="/new-key" className="flex-none">
+            + New Key
+          </Button>
         </div>
-      </main>
-    </Layout>
+        {result.data ? (
+          <table className="bg-white ba b--black w-100 collapse mb4">
+            <thead>
+              <tr className="bb b--black">
+                <th className="pa2 tl bg-nsgray br b--black w-50">Name</th>
+                <th className="pa2 tl bg-nsgray br b--black w-50">Key</th>
+                <th className="pa2 tc bg-nsgray" />
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(result.data).map((t, k) => (
+                <tr className="bb b--black" key={k}>
+                  <td className="pa2 br b--black">{t[0]}</td>
+                  <td className="pa2 br b--black mw7">
+                    <input
+                      disabled
+                      className="w-100 h2"
+                      type="text"
+                      id={`value-${t[0]}`}
+                      value={t[1]}
+                    />
+                  </td>
+                  <td className="pa2">
+                    <form onSubmit={handleDeleteToken}>
+                      <input
+                        type="hidden"
+                        name="name"
+                        id={`token-${t[0]}`}
+                        value={t[0]}
+                      />
+                      <Button
+                        className="bg-nsorange white"
+                        type="submit"
+                        disable={deleting}
+                      >
+                        {deleting === t[0] ? 'Deleting...' : 'Delete'}
+                      </Button>
+                    </form>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="tc mv5">
+            <span className="f1 dib mb3">😢</span>
+            <br />
+            No API keys
+          </p>
+        )}
+      </div>
+    </main>
   )
 }

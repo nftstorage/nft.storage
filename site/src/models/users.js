@@ -28,25 +28,18 @@ const users = USERS
 // https://tools.ietf.org/html/rfc7519#section-4.1
 /**
  * @param {User} newUser
+ * @return {Promise<User>}
  */
 export async function createOrUpdate(newUser) {
   const user = await users.get(newUser.issuer)
   if (user === null) {
-    // const token = await signJWT({
-    //   sub: newUser.sub,
-    //   iss: 'nft-storage',
-    //   iat: Date.now(),
-    //   name: 'default',
-    // })
-    const data = {
-      ...newUser,
-      // tokens: { default: token },
-    }
-    return await users.put(newUser.issuer, JSON.stringify(data))
+    await users.put(newUser.issuer, JSON.stringify(newUser))
+    return newUser
   }
 
   const data = merge(JSON.parse(user), newUser)
-  return await users.put(newUser.issuer, JSON.stringify(data))
+  await users.put(newUser.issuer, JSON.stringify(data))
+  return data
 }
 
 /**
@@ -62,6 +55,8 @@ export async function getUser(sub) {
 }
 
 /**
+ * Remove critical data from the user object
+ *
  * @param {User} user
  * @returns {UserSafe}
  */

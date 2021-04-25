@@ -20,7 +20,7 @@ export function getMagic() {
   return magic
 }
 
-export async function verify(token, type = 'magic', data = {}) {
+export async function login(token, type = 'magic', data = {}) {
   const res = await fetch(API + '/api/login', {
     method: 'POST',
     headers: {
@@ -43,13 +43,14 @@ export async function verify(token, type = 'magic', data = {}) {
 
 export async function isLoggedIn() {
   const magic = getMagic()
-  const isLoggedIn = await magic.user.isLoggedIn()
+  let isLoggedIn
+  if (magic) {
+    isLoggedIn = await magic.user.isLoggedIn()
+  }
   if (isLoggedIn) {
-    const meta = await magic.user.getMetadata()
-    const idToken = await magic.user.getIdToken()
+    // const meta = await magic.user.getMetadata()
     return {
-      ...meta,
-      idToken,
+      ...{ user: 'user' }, // we dont actually need the user info
     }
   } else {
     return undefined
@@ -61,7 +62,7 @@ export async function loginEmail(email) {
     email: email,
     redirectURI: new URL('/callback', window.location.origin).href,
   })
-  const data = await verify(didToken)
+  const data = await login(didToken)
   return data
 }
 
@@ -73,13 +74,13 @@ export async function loginSocial(provider) {
 }
 export async function redirectMagic() {
   const idToken = await getMagic().auth.loginWithCredential()
-  const data = await verify(idToken)
+  const data = await login(idToken)
   return { ...data, idToken }
 }
 
 export async function redirectSocial() {
-  let result = await getMagic().oauth.getRedirectResult()
-  const data = await verify(result.magic.idToken, 'github', result)
+  const result = await getMagic().oauth.getRedirectResult()
+  const data = await login(result.magic.idToken, 'github', result)
 
   return { ...data, idToken: result.magic.idToken }
 }

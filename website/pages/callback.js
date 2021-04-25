@@ -1,34 +1,46 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { redirectMagic, redirectSocial } from '../lib/magic.js'
-import { useUserContext } from '../lib/user'
-import Loading from '../components/loading'
+
+export function getStaticProps() {
+  return {
+    props: {
+      title: 'NFT Storage',
+      callback: true,
+      redirectTo: '/files',
+    },
+  }
+}
 
 const Callback = () => {
   const router = useRouter()
-  const [user, setUser] = useUserContext()
   useEffect(() => {
-    let provider = router.query.provider
-    provider ? finishSocialLogin() : finishEmailRedirectLogin()
-  }, [router.query])
-
-  const finishSocialLogin = async () => {
-    let data = await redirectSocial()
-    await setUser(data)
-    router.push('/manage')
-  }
-
-  const finishEmailRedirectLogin = async () => {
-    let magicCredential = router.query['magic_credential']
-    if (magicCredential) {
-      const data = await redirectMagic()
-      await setUser(data)
-      router.push('/manage')
+    const finishSocialLogin = async () => {
+      try {
+        await redirectSocial()
+        router.push('/files')
+      } catch (error) {
+        router.push('/')
+      }
     }
-  }
+
+    const finishEmailRedirectLogin = async () => {
+      const magicCredential = router.query.magic_credential
+      if (magicCredential) {
+        try {
+          await redirectMagic()
+          router.push('/files')
+        } catch (error) {
+          router.push('/')
+        }
+      }
+    }
+    const provider = router.query.provider
+    provider ? finishSocialLogin() : finishEmailRedirectLogin()
+  }, [router, router.query])
 
   // TODO handle errors
-  return <Loading />
+  return null
 }
 
 export default Callback

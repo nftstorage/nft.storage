@@ -1,14 +1,8 @@
 export {}
 
 declare global {
-  const AUTH0_DOMAIN: string
-  const AUTH0_CLIENT_ID: string
-  const AUTH0_CLIENT_SECRET: string
-  const AUTH0_CALLBACK_URL: string
   const SALT: string
   const DEBUG: string
-  const SESSION: KVNamespace
-  const CSRF: KVNamespace
   const DEALS: KVNamespace
   const USERS: KVNamespace
   const NFTS: KVNamespace
@@ -19,8 +13,8 @@ declare global {
   const CLUSTER_IPFS_PROXY_API_URL: string
   const CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN: string
   const CLUSTER_ADDRS: string
-  const _MAGIC_SECRET_KEY: string
-  const ENV: 'dev'
+  const MAGIC_SECRET_KEY: string
+  const ENV: 'dev' | 'staging' | 'production'
 }
 
 export interface Pin {

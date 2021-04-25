@@ -1,15 +1,20 @@
-import { useUserContext } from '../lib/user'
 import Hero from '../components/hero.js'
 import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
 import Box from '../components/box.js'
-import Layout from '../components/layout.js'
 import Link from 'next/link'
 
-export default function Home() {
-  const [user] = useUserContext()
+export function getStaticProps() {
+  return {
+    props: {
+      redirectTo: null,
+    },
+  }
+}
+
+export default function Home({ user }) {
   return (
-    <Layout user={user}>
+    <>
       <Hero user={user} />
       <main>
         <About />
@@ -17,7 +22,7 @@ export default function Home() {
         {/* <APIDocs /> */}
         <FAQ />
       </main>
-    </Layout>
+    </>
   )
 }
 
@@ -161,7 +166,7 @@ function About() {
   )
 }
 
-function GettingStarted({ loginUrl }) {
+function GettingStarted() {
   const jsEx = `import { NFTStorage, Blob } from 'nft.storage'
 
 const apiKey = 'YOUR_API_KEY'
@@ -329,9 +334,9 @@ console.log(cid)`
             </pre>
             <p className="lh-copy">
               Check the{' '}
-              <a href="/api-docs" className="black">
-                API Docs
-              </a>{' '}
+              <Link href="/api-docs">
+                <a className="black">API Docs</a>
+              </Link>{' '}
               for information on uploading multiple files and the other
               available endpoints.
             </p>

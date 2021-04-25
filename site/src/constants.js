@@ -6,8 +6,10 @@ export const stores = {
   metrics: METRICS,
 }
 
-export const auth0 = {
+export const secrets = {
   salt: SALT,
+  pinata: PINATA_JWT,
+  magic: MAGIC_SECRET_KEY,
 }
 
 export const cluster = {
@@ -24,9 +26,4 @@ export const cluster = {
   addrs: Object.freeze(CLUSTER_ADDRS.split(',').filter(Boolean)),
 }
 
-export const pinata = {
-  jwt: PINATA_JWT,
-}
-
 export const isDebug = DEBUG === 'true'
-export const MAGIC_SECRET_KEY = _MAGIC_SECRET_KEY

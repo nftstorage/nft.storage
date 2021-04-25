@@ -1,9 +1,9 @@
-import { pinata } from './constants.js'
+import { secrets } from './constants.js'
 import { JSONResponse } from './utils/json-response.js'
 
 const endpoint = new URL('https://api.pinata.cloud/psa/')
 const headers = {
-  authorization: `Bearer ${pinata.jwt}`,
+  authorization: `Bearer ${secrets.pinata}`,
   'Content-Type': 'application/json',
 }
 

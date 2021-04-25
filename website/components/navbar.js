@@ -1,33 +1,33 @@
 import Router from 'next/router'
 import Link from 'next/link'
 import { getMagic } from '../lib/magic.js'
+import { useQueryClient } from 'react-query'
 import Button from './button.js'
-import { useUserContext } from '../lib/user.js'
 
-export default function Navbar({ bgColor = 'nsorange' }) {
-  const [user, setUser] = useUserContext()
-  function logout() {
-    getMagic().user.logout()
-    setUser(undefined)
+export default function Navbar({ bgColor = 'nsorange', user }) {
+  const queryClient = useQueryClient()
+  async function logout() {
+    await getMagic().user.logout()
     Router.push('/')
+    queryClient.invalidateQueries('magic-user')
   }
 
   return (
-    <nav className={` bg-${bgColor}`}>
-      <div className="flex items-center justify-between ph5 pv3 center mw9">
+    <nav className={`bg-${bgColor}`}>
+      <div className="flex items-center justify-between ph3 ph5-ns pv3 center mw9">
+        <Link href="/">
+          <a className="no-underline v-mid">
+            <img
+              src="/images/logo-nft.storage-sm.png"
+              width="160"
+              height="79"
+              className="mr4 v-mid"
+              style={{ maxWidth: '80px', height: 'auto' }}
+              alt="NFT Storage Logo"
+            />
+          </a>
+        </Link>
         <div>
-          <Link href="/">
-            <a className="no-underline v-mid">
-              <img
-                src="/images/logo-nft.storage-sm.png"
-                width="160"
-                height="79"
-                className="mr4 v-mid"
-                style={{ maxWidth: '80px', height: 'auto' }}
-                alt="NFT Storage Logo"
-              />
-            </a>
-          </Link>
           {user ? (
             <>
               <Link href="/files">
@@ -45,10 +45,10 @@ export default function Navbar({ bgColor = 'nsorange' }) {
             </>
           ) : null}
           <Link href="/#docs">
-            <a className="f4 black no-underline underline-hover v-mid">Docs</a>
+            <a className="f4 black no-underline underline-hover v-mid mr3">
+              Docs
+            </a>
           </Link>
-        </div>
-        <div>
           {user ? (
             <Button onClick={logout}>Logout</Button>
           ) : (

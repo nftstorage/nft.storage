@@ -1,19 +1,24 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Router from 'next/router'
-import { useUserContext } from '../lib/user.js'
 import { loginEmail, loginSocial } from '../lib/magic.js'
-import Layout from '../components/layout.js'
 import Button from '../components/button.js'
+import { useQueryClient } from 'react-query'
+
+export function getStaticProps() {
+  return {
+    props: {
+      title: 'Login - NFT Storage',
+      redirectTo: '/files',
+      redirectIfFound: true,
+    },
+  }
+}
 
 export default function Login() {
+  const queryClient = useQueryClient()
   const [errorMsg, setErrorMsg] = useState('')
   const [disabled, setDisabled] = useState(false)
-  const [user, setUser] = useUserContext()
   const [isRedirecting, setIsRedirecting] = useState(false)
-
-  useEffect(() => {
-    user && user.issuer && Router.push('/')
-  }, [user])
 
   async function onSubmit(e) {
     e.preventDefault()
@@ -22,9 +27,9 @@ export default function Login() {
     setDisabled(true)
 
     try {
-      const data = await loginEmail(e.currentTarget.email.value)
-      await setUser(data)
-      Router.push('/manage')
+      await loginEmail(e.currentTarget.email.value)
+      queryClient.invalidateQueries('magic-user')
+      Router.push('/files')
     } catch (error) {
       setDisabled(false)
       console.error('An unexpected error happened occurred:', error)
@@ -32,37 +37,41 @@ export default function Login() {
     }
   }
   return (
-    <Layout>
-      <div>
-        <form onSubmit={onSubmit}>
-          <label>
-            <span>Email</span>
-            <input type="email" name="email" required />
+    <main className="bg-nsorange">
+      <div className="mw9 center pv3 ph5 min-vh-100">
+        <form onSubmit={onSubmit} className="tc">
+          <label className="f5 db mb2">
+            <h2>Log in</h2>
           </label>
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="Enter your email"
+            className="input-reset ba b--black pa2 mb2 w5 center db"
+          />
 
-          <div className="submit">
-            <Button type="submit" disabled={disabled}>
-              Sign Up / Login
-            </Button>
-          </div>
+          <Button type="submit" disabled={disabled} wrapperClassName="w5">
+            Sign Up / Login
+          </Button>
 
           {errorMsg && <p className="error">{errorMsg}</p>}
 
-          <br />
-          <hr />
+          <h4>Or with</h4>
+
           <Button
+            wrapperClassName="w5"
             onClick={() => {
               setIsRedirecting(true)
               loginSocial('github')
             }}
           >
-            Github
+            {isRedirecting ? 'Redirecting...' : 'Github'}
           </Button>
-          {isRedirecting && <div className="redirecting">Redirecting...</div>}
           <br />
           <br />
         </form>
       </div>
-    </Layout>
+    </main>
   )
 }
