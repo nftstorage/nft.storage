@@ -46,7 +46,7 @@ export default function Files({ user }) {
           <>
             <div className="flex mb3 items-center">
               <h1 className="chicagoflf mv4 flex-auto">Files</h1>
-              <Button href="/new-file" className="flex-none" disabled>
+              <Button href="/new-file" className="flex-none">
                 + Upload
               </Button>
             </div>
