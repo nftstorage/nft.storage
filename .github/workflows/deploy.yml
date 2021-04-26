@@ -45,7 +45,7 @@ jobs:
         with:
           type: 'CNAME'
           name: 'testing-dev.nft.storage'
-          content: ${{ github.event.inputs.frontend_cname }}
+          content: '8.8.8.8'
           ttl: 1
           proxied: true
           token: ${{ secrets.CF_API_TOKEN }}
