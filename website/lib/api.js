@@ -85,13 +85,7 @@ export async function getNfts() {
   const body = await res.json()
 
   if (body.ok) {
-    return body.value
-      .filter(Boolean)
-      .map((n) => {
-        n.created = new Date(n.created)
-        return n
-      })
-      .sort((a, b) => b.created.getTime() - a.created.getTime())
+    return body.value.filter(Boolean)
   } else {
     throw new Error(body.error.message)
   }

@@ -3,6 +3,7 @@ export const stores = {
   deals: DEALS,
   users: USERS,
   nfts: NFTS,
+  nftsIndex: NFTS_IDX,
   metrics: METRICS,
 }
 

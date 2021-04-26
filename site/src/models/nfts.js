@@ -6,10 +6,31 @@ import merge from 'merge-options'
  * @typedef {import('../bindings').NFT} NFT
  */
 
+const FAR_FUTURE = new Date('3000-01-01T00:00:00.000Z').getTime()
+const PAD_LEN = FAR_FUTURE.toString().length
+
 /**
  * @param {Key} key
  */
 const encodeKey = ({ user, cid }) => `${user.sub}:${cid}`
+
+/**
+ * @param {{user: import('./users').User, created: Date, cid: string}} key
+ */
+function encodeIndexKey({ user, created, cid }) {
+  const ts = (FAR_FUTURE - created.getTime()).toString().padStart(PAD_LEN, '0')
+  return `${user.sub}:${ts}:${cid}`
+}
+
+/**
+ * @param {string} key
+ * @returns {{ user: { sub: string }, created: Date, cid: string }}
+ */
+function decodeIndexKey(key) {
+  const parts = key.split(':')
+  const created = new Date(FAR_FUTURE - parseInt(parts[1]))
+  return { user: { sub: parts[0] }, created, cid: parts[2] }
+}
 
 /**
  * @param {Key} key
@@ -28,7 +49,13 @@ export const has = async (key) => {
 export const set = async (key, value, options) => {
   const savedValue = await get(key)
   if (savedValue === null) {
-    await stores.nfts.put(encodeKey(key), JSON.stringify(value))
+    const kvKey = encodeKey(key)
+    await stores.nfts.put(kvKey, JSON.stringify(value))
+    await stores.nftsIndex.put(
+      encodeIndexKey({ ...key, created: new Date(value.created) }),
+      '',
+      { metadata: { key: kvKey } }
+    )
     return value
   }
   const data = merge(savedValue, value)
@@ -52,23 +79,59 @@ export const get = async (key) => {
 /**
  * @param {Key} key
  */
-export const remove = async (key) => stores.nfts.delete(encodeKey(key))
+export const remove = async (key) => {
+  const nft = await get(key)
+  if (!nft) return
+  await stores.nfts.delete(encodeKey(key))
+  await stores.nftsIndex.delete(
+    encodeIndexKey({ ...key, created: new Date(nft.created) })
+  )
+}
 
 /**
  * @param {any} prefix
- * @returns {Promise<NFT[]>}
+ * @param {{ limit?: number, lt?: Date }} [options]
+ * @returns {Promise<Array<KVValue<NFT>>>}
  */
-export async function list(prefix) {
-  const nfts = await stores.nfts.list({
-    prefix,
-  })
-  if (nfts.keys.length > 0) {
-    return await Promise.all(
-      nfts.keys.map((key) => {
-        // @ts-ignore
-        return stores.nfts.get(key.name).then((v) => JSON.parse(v))
-      })
-    )
+export async function list(prefix, options) {
+  options = options || {}
+
+  const limit = Math.min(options.limit || 10, 100)
+  if (limit < 1) {
+    throw new Error('invalid limit')
   }
-  return []
+
+  const lt = options.lt || new Date()
+  if (!(lt instanceof Date)) {
+    throw new Error('invalid filter')
+  }
+
+  let done = false
+  let cursor
+  /** @type Promise<KVValue<NFT>>[] */
+  const nfts = []
+
+  while (!done) {
+    // @ts-ignore
+    const nftIdxList = await stores.nftsIndex.list({ prefix, cursor })
+
+    for (const k of nftIdxList.keys) {
+      const { created } = decodeIndexKey(k.name)
+      if (created.getTime() < lt.getTime()) {
+        // @ts-ignore
+        nfts.push(stores.nfts.get(k.metadata.key, 'json'))
+        if (nfts.length >= limit) {
+          break
+        }
+      }
+    }
+
+    if (nfts.length >= limit) {
+      break
+    }
+    cursor = nftIdxList.cursor
+    done = nftIdxList.list_complete
+  }
+
+  return Promise.all(nfts)
 }
