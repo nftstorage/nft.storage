@@ -1,10 +1,12 @@
-import { util as DagPB } from 'ipld-dag-pb'
+import pb from 'ipld-dag-pb'
 import multicodec from 'multicodec'
 import Multihash from 'multihashing-async'
 import IPLD from 'ipld'
 // @ts-ignore
 import InMemory from 'ipld-in-memory'
 import importer from 'ipfs-unixfs-importer'
+
+const DagPB = pb.util
 
 /** @type {(T:typeof IPLD) => IPLD} */
 const inMemory = InMemory

@@ -1,4 +1,4 @@
-import { pinata } from './constants.js'
+import { secrets } from './constants.js'
 
 const endpoint = new URL('https://api.pinata.cloud')
 
@@ -40,7 +40,7 @@ export const pinFile = async (blob, user) => {
     body,
     method: 'POST',
     headers: {
-      authorization: `Bearer ${pinata.jwt}`,
+      authorization: `Bearer ${secrets.pinata}`,
     },
   })
 
@@ -90,7 +90,7 @@ export async function pinFiles(files, user) {
     body,
     method: 'POST',
     headers: {
-      authorization: `Bearer ${pinata.jwt}`,
+      authorization: `Bearer ${secrets.pinata}`,
     },
   })
 
@@ -114,7 +114,7 @@ export const pinInfo = async (cid) => {
   const response = await fetch(url.toString(), {
     method: 'GET',
     headers: {
-      authorization: `Bearer ${pinata.jwt}`,
+      authorization: `Bearer ${secrets.pinata}`,
     },
   })
 
@@ -136,7 +136,7 @@ export async function pinByHash(cid, options) {
 
   const response = await fetch(url.toString(), {
     method: 'POST',
-    headers: { Authorization: `Bearer ${pinata.jwt}` },
+    headers: { Authorization: `Bearer ${secrets.pinata}` },
     body: JSON.stringify({ hashToPin: cid, ...(options || {}) }),
   })
 

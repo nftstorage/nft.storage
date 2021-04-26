@@ -2,18 +2,10 @@ openapi: '3.0.2'
 info:
   title: NFT Storage API
   version: '1.0'
-  description: |
-    # API Reference
-  termsOfService: 'terms'
-  contact:
-    name: NFT Storage
-    url: 'https://nft.storage'
-  x-logo:
-    url: '/images/logo-nft.storage.svg'
-    altText: NFT Storage logo
 
 servers:
-  - url: https://nft.storage/api
+  - url: https://api.nft.storage
+  # - url: http://127.0.0.1:8787
 
 tags:
   - name: NFT Storage
@@ -123,7 +115,7 @@ paths:
 
         - Does not terminate any established Filecoin deal.
         - Does not remove the content from other IPFS nodes in the network that already cached or pinned the CID.  
-        
+
         Note: the content will remain available if another user has stored the CID with nft.storage.
       operationId: delete
       parameters:
@@ -146,7 +138,7 @@ paths:
           $ref: '#/components/responses/forbidden'
         '5XX':
           $ref: '#/components/responses/internalServerError'
-  
+
 components:
   schemas:
     NFT:
@@ -162,13 +154,7 @@ components:
           $ref: '#/components/schemas/Date'
         type:
           type: string
-          enum:
-            [
-              directory,
-              image/jpeg,
-              application/json,
-              other mime types,
-            ]
+          enum: [directory, image/jpeg, application/json, other mime types]
           example: image/jpeg
           description: MIME type of the upload file or 'directory' when uploading multiple files.
         scope:
@@ -188,7 +174,7 @@ components:
               enum:
                 - ongoing
                 - finalized
-            deals: 
+            deals:
               type: array
               items:
                 $ref: '#/components/schemas/Deal'
@@ -316,7 +302,7 @@ components:
     ListResponse:
       type: object
       properties:
-        ok: 
+        ok:
           type: boolean
           default: true
         value:
@@ -326,7 +312,7 @@ components:
     GetResponse:
       type: object
       properties:
-        ok: 
+        ok:
           type: boolean
           default: true
         value:
@@ -335,7 +321,7 @@ components:
     DeleteResponse:
       type: object
       properties:
-        ok: 
+        ok:
           type: boolean
     ErrorResponse:
       type: object

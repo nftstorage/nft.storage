@@ -5,28 +5,26 @@
   "private": true,
   "main": "src/index.js",
   "scripts": {
-    "start": "wrangler dev",
-    "build": "cd ../website && npx next build && npx next export -o ../site/public",
-    "deploy": "yarn build && wrangler publish --env production",
-    "dev": "yarn build && yarn start",
-    "test": "tsc",
     "lt": "npm run lt:cluster & npm run lt:ipfs-proxy",
     "lt:cluster": "npx localtunnel --port 9094 --subdomain \"$(whoami)-cluster-api-nft-storage\"",
-    "lt:ipfs-proxy": "npx localtunnel --port 9095 --subdomain \"$(whoami)-ipfs-proxy-api-nft-storage\""
+    "lt:ipfs-proxy": "npx localtunnel --port 9095 --subdomain \"$(whoami)-ipfs-proxy-api-nft-storage\"",
+    "deploy": "wrangler publish --env production",
+    "dev": "wrangler dev",
+    "test": "tsc"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
   "license": "MIT",
   "dependencies": {
-    "@cloudflare/kv-asset-handler": "~0.1.1",
     "@nftstorage/ipfs-cluster": "^2.2.1",
-    "cookie": "^0.4.1",
+    "@magic-sdk/admin": "^1.3.0",
+    "debug": "^4.3.1",
     "merge-options": "^3.0.4",
     "multiformats": "^4.5.3",
     "regexparam": "^1.3.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^2.1.0",
-    "@types/auth0-js": "^9.14.2",
-    "@types/cookie": "^0.4.0"
+    "@magic-ext/oauth": "^0.7.0",
+    "@types/debug": "^4.1.5"
   }
 }

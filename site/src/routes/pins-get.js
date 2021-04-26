@@ -1,6 +1,5 @@
-import { HTTPError } from '../errors.js'
-import { verifyToken } from '../utils/utils.js'
 import * as PinataPSA from '../pinata-psa.js'
+import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
 import * as cluster from '../cluster.js'
@@ -11,10 +10,7 @@ import * as cluster from '../cluster.js'
  * @returns {Promise<JSONResponse>}
  */
 export async function pinsGet(event, params) {
-  const result = await verifyToken(event)
-  if (!result.ok) {
-    return HTTPError.respond(result.error)
-  }
+  const result = await validate(event)
   const { user } = result
 
   let cid = params.requestid

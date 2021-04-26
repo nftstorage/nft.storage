@@ -8,23 +8,40 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
 
 - [JS client library](#js-client-library)
 - [HTTP API](#http-api)
-- [`site` Setup](#site-setup)
-  - [Cloudflare Workers CLI](#cloudflare-workers-cli)
-  - [Auth0 account](#auth0-account)
-  - [Cloudflare Workers initial setup:](#cloudflare-workers-initial-setup)
-    - [Development Setup](#development-setup)
-    - [Production Setup `[env.production]`](#production-setup-envproduction)
-- [`site` Usage](#site-usage)
-  - [Local development](#local-development)
-  - [Deploy](#deploy)
+- [Development](#development)
+  - [`site` Setup](#site-setup)
+    - [Cloudflare Workers CLI](#cloudflare-workers-cli)
+    - [Magic.link account](#magiclink-account)
+    - [IPFS Cluster](#ipfs-cluster)
+    - [Cloudflare Workers initial setup:](#cloudflare-workers-initial-setup)
+      - [Development Setup](#development-setup)
+      - [Production Setup `[env.production]`](#production-setup-envproduction)
+  - [`site` Usage](#site-usage)
+    - [Local development](#local-development)
+    - [Deploy](#deploy)
+  - [`website` Setup](#website-setup)
+  - [`website` Usage](#website-usage)
+    - [Local development](#local-development-1)
+  - [Contributing](#contributing)
+  - [License](#license)
 
-## JS client library
+# JS client library
 
 Check out the [JS client library documentation](https://github.com/ipfs-shipyard/nft.storage/tree/main/client).
 
-## HTTP API
+# HTTP API
 
-[Documentation for the HTTP API](https://nft.storage/api-docs).
+Check out the [HTTP API documentation](https://nft.storage/api-docs).
+
+# Development
+
+```bash
+# install all dependencies in the mono-repo
+yarn
+
+# setup git hooks
+npx simple-git-hooks
+```
 
 ## `site` Setup
 
@@ -36,16 +53,9 @@ wrangler login
 # when using personal accounts you may need to manually change the `account_id` inside `wrangler.toml`
 ```
 
-### Auth0 account
+### Magic.link account
 
-Go to [auth0.com](https://auth0.com) and create an account. Create two "REGULAR WEB APPLICATION" applications one for dev and another for production. In the "settings" of each application you will find the secrets needed to complete the initial setup.
-
-Go to "settings" for your dev application and add the following URLs:
-
-- "Allowed Callback URLs": `http://127.0.0.1:8787/auth`
-- "Allowed Web Origins": `http://127.0.0.1:8787`
-
-Do the same for your production application, with the appropriate URLs.
+Go to [magic.link](https://magic.link) and create an account. Create two applications one for dev and another for production. In the "settings" of each application you will find the secrets needed to complete the initial setup.
 
 ### IPFS Cluster
 
@@ -100,7 +110,7 @@ account_id = "CF_ACCOUNT"
 workers_dev = true
 route = ""
 zone_id = ""
-vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true, CLUSTER_API_URL = "", CLUSTER_IPFS_PROXY_API_URL = "" }
+vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "", CLUSTER_IPFS_PROXY_API_URL = "" }
 kv_namespaces = []
 ```
 
@@ -113,10 +123,6 @@ yarn install
 wrangler kv:namespace create USERS --preview --env USER
 # cli output something like: `{ binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" }`
 # but you need to put `{ binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4", id = "7e441603d1bc4d5a87f6cecb959018e4" }` inside the `kv_namespaces`.
-wrangler kv:namespace create SESSION --preview --env USER
-# same as above
-wrangler kv:namespace create CSRF --preview --env USER
-# same as above
 wrangler kv:namespace create NFTS --preview --env USER
 # same as above
 wrangler kv:namespace create DEALS --preview --env USER
@@ -129,9 +135,7 @@ Go to `/site/src/constants.js` _uncomment_ the first line and run `wrangler publ
 
 ```bash
 # dev and preview secrets
-wrangler secret put AUTH0_DOMAIN --env USER # Get from auth0 account
-wrangler secret put AUTH0_CLIENT_ID --env USER # Get from auth0 account
-wrangler secret put AUTH0_CLIENT_SECRET --env USER # Get from auth0 account
+wrangler secret put MAGIC_SECRET_KEY --env USER # Get from magic.link account
 wrangler secret put SALT --env USER # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env USER # Get from Pinata
 ```
@@ -144,19 +148,13 @@ Go to `/site/src/constants.js` _comment_ the first line and run `wrangler publis
 # production KVs
 wrangler kv:namespace create USERS --env production
 # Follow the instructions from the cli output
-wrangler kv:namespace create SESSION --env production
-# Follow the instructions from the cli output
-wrangler kv:namespace create CSRF --env production
-# Follow the instructions from the cli output
 wrangler kv:namespace create NFTS --env production
 # Follow the instructions from the cli output
 wrangler kv:namespace create DEALS --env production
 # Follow the instructions from the cli output
 wrangler kv:namespace create METRICS --env production
 # Follow the instructions from the cli output
-wrangler secret put AUTH0_DOMAIN --env production # Get from auth0 account
-wrangler secret put AUTH0_CLIENT_ID --env production # Get from auth0 account
-wrangler secret put AUTH0_CLIENT_SECRET --env production # Get from auth0 account
+wrangler secret put MAGIC_SECRET_KEY --env production # Get from magic.link account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env production # Get from Pinata
 wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password
@@ -176,8 +174,27 @@ yarn dev
 
 ### Deploy
 
+Deployment should be done with github actions but in the case you need to manually test something you can run `yarn deploy` inside the `site` folder.
+
+## `website` Setup
+
+Inside the `website` folder create a file called `.env.local` with the following content.
+
+```ini
+NEXT_PUBLIC_API=http://127.0.0.1:8787
+NEXT_PUBLIC_MAGIC=<magic test mode publishable key>
+```
+
+Production vars should set in Cloudflare Pages settings.
+
+## `website` Usage
+
+### Local development
+
 ```bash
-yarn deploy
+cd site
+yarn install
+yarn dev
 ```
 
 ## Contributing

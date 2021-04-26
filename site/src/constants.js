@@ -1,19 +1,15 @@
-// let AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, SALT, PINATA_JWT
+// let MAGIC_SECRET_KEY, SALT, PINATA_JWT
 export const stores = {
-  auth: SESSION,
-  csrf: CSRF,
   deals: DEALS,
   users: USERS,
   nfts: NFTS,
   metrics: METRICS,
 }
 
-export const auth0 = {
-  domain: AUTH0_DOMAIN,
-  clientId: AUTH0_CLIENT_ID,
-  clientSecret: AUTH0_CLIENT_SECRET,
-  callbackUrl: AUTH0_CALLBACK_URL,
+export const secrets = {
   salt: SALT,
+  pinata: PINATA_JWT,
+  magic: MAGIC_SECRET_KEY,
 }
 
 export const cluster = {
@@ -29,11 +25,5 @@ export const cluster = {
       : '',
   addrs: Object.freeze(CLUSTER_ADDRS.split(',').filter(Boolean)),
 }
-
-export const pinata = {
-  jwt: PINATA_JWT,
-}
-
-export const cookieKey = 'AUTH0-AUTH'
 
 export const isDebug = DEBUG === 'true'
