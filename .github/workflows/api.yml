@@ -4,7 +4,8 @@ on:
     branches:
       - main
 jobs:
-  deploy:
+  deploy-dev:
+    if: github.event_name == 'push' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     name: Deploy
     steps:
@@ -14,3 +15,15 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           workingDirectory: 'site'
+  deploy-staging:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - uses: actions/checkout@master
+      - name: Publish app
+        uses: cloudflare/wrangler-action@1.3.0
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          workingDirectory: 'site'
+          enviroment: 'staging'
