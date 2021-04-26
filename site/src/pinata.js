@@ -136,7 +136,7 @@ export async function pinByHash(cid, options) {
 
   const response = await fetch(url.toString(), {
     method: 'POST',
-    headers: { Authorization: `Bearer ${pinata.jwt}` },
+    headers: { Authorization: `Bearer ${secrets.pinata}` },
     body: JSON.stringify({ hashToPin: cid, ...(options || {}) }),
   })
 
