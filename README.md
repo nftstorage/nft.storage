@@ -8,26 +8,39 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
 
 - [JS client library](#js-client-library)
 - [HTTP API](#http-api)
-- [`site` Setup](#site-setup)
-  - [Cloudflare Workers CLI](#cloudflare-workers-cli)
-  - [Auth0 account](#auth0-account)
-  - [IPFS Cluster](#ipfs-cluster)
-  - [Cloudflare Workers initial setup:](#cloudflare-workers-initial-setup)
-    - [Development Setup](#development-setup)
-    - [Production Setup `[env.production]`](#production-setup-envproduction)
-- [`site` Usage](#site-usage)
-  - [Local development](#local-development)
-  - [Deploy](#deploy)
-- [Contributing](#contributing)
-- [License](#license)
+- [Development](#development)
+  - [`site` Setup](#site-setup)
+    - [Cloudflare Workers CLI](#cloudflare-workers-cli)
+    - [Magic.link account](#magiclink-account)
+    - [IPFS Cluster](#ipfs-cluster)
+    - [Cloudflare Workers initial setup:](#cloudflare-workers-initial-setup)
+      - [Development Setup](#development-setup)
+      - [Production Setup `[env.production]`](#production-setup-envproduction)
+  - [`site` Usage](#site-usage)
+    - [Local development](#local-development)
+    - [Deploy](#deploy)
+  - [`website` Usage](#website-usage)
+    - [Local development](#local-development-1)
+  - [Contributing](#contributing)
+  - [License](#license)
 
-## JS client library
+# JS client library
 
 Check out the [JS client library documentation](https://github.com/ipfs-shipyard/nft.storage/tree/main/client).
 
-## HTTP API
+# HTTP API
 
-[Documentation for the HTTP API](https://nft.storage/api-docs).
+Check out the [HTTP API documentation](https://nft.storage/api-docs).
+
+# Development
+
+```bash
+# install all dependencies in the mono-repo
+yarn
+
+# setup git hooks
+npx simple-git-hooks
+```
 
 ## `site` Setup
 
@@ -39,16 +52,9 @@ wrangler login
 # when using personal accounts you may need to manually change the `account_id` inside `wrangler.toml`
 ```
 
-### Auth0 account
+### Magic.link account
 
-Go to [auth0.com](https://auth0.com) and create an account. Create two "REGULAR WEB APPLICATION" applications one for dev and another for production. In the "settings" of each application you will find the secrets needed to complete the initial setup.
-
-Go to "settings" for your dev application and add the following URLs:
-
-- "Allowed Callback URLs": `http://127.0.0.1:8787/auth`
-- "Allowed Web Origins": `http://127.0.0.1:8787`
-
-Do the same for your production application, with the appropriate URLs.
+Go to [magic.link](https://magic.link) and create an account. Create two applications one for dev and another for production. In the "settings" of each application you will find the secrets needed to complete the initial setup.
 
 ### IPFS Cluster
 
@@ -103,7 +109,7 @@ account_id = "CF_ACCOUNT"
 workers_dev = true
 route = ""
 zone_id = ""
-vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true, CLUSTER_API_URL = "", CLUSTER_IPFS_PROXY_API_URL = "" }
+vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "", CLUSTER_IPFS_PROXY_API_URL = "" }
 kv_namespaces = []
 ```
 
@@ -167,8 +173,16 @@ yarn dev
 
 ### Deploy
 
+Deployment should be done with github actions but in the case you need to manually test something you can run `yarn deploy` inside the `site` folder.
+
+## `website` Usage
+
+### Local development
+
 ```bash
-yarn deploy
+cd site
+yarn install
+yarn dev
 ```
 
 ## Contributing

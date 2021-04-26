@@ -1,0 +1,21 @@
+name: Website
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'website/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'website/**'
+
+jobs:
+  check:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: yarn install
+      - run: yarn test:website

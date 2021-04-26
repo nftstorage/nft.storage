@@ -8,7 +8,7 @@ const crossStyle = {
   backgroundSize: '100% 100%',
 }
 
-export default function Hero({ user, loginUrl }) {
+export default function Hero() {
   return (
     <div className="bg-nsorange">
       <div className="center mw9 ba b--black relative">
