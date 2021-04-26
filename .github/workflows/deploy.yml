@@ -10,9 +10,8 @@ on:
         description: 'Choose a CF Pages Deployment to assign to environment'
         required: false
 jobs:
-  deploy:
+  deploy-api:
     runs-on: ubuntu-latest
-    name: Deploy
     steps:
       - uses: actions/checkout@master
       - name: Publish app
@@ -27,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Publish app
-        uses: ez0n/create-dns-record@v2.1
+        uses: rez0n/create-dns-record@v2.1
         with:
           type: 'CNAME'
           name: 'testing-staging.nft.storage'
@@ -42,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Publish app
-        uses: ez0n/create-dns-record@v2.1
+        uses: rez0n/create-dns-record@v2.1
         with:
           type: 'CNAME'
           name: 'testing-dev.nft.storage'
