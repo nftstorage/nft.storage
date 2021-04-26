@@ -19,6 +19,7 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
   - [`site` Usage](#site-usage)
     - [Local development](#local-development)
     - [Deploy](#deploy)
+  - [`website` Setup](#website-setup)
   - [`website` Usage](#website-usage)
     - [Local development](#local-development-1)
   - [Contributing](#contributing)
@@ -174,6 +175,17 @@ yarn dev
 ### Deploy
 
 Deployment should be done with github actions but in the case you need to manually test something you can run `yarn deploy` inside the `site` folder.
+
+## `website` Setup
+
+Inside the `website` folder create a file called `.env.local` with the following content.
+
+```ini
+NEXT_PUBLIC_API=http://127.0.0.1:8787
+NEXT_PUBLIC_MAGIC=<magic test mode publishable key>
+```
+
+Production vars should set in Cloudflare Pages settings.
 
 ## `website` Usage
 

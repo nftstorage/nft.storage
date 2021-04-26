@@ -1,4 +1,4 @@
-// let _MAGIC_SECRET_KEY, SALT, PINATA_JWT
+// let MAGIC_SECRET_KEY, SALT, PINATA_JWT
 export const stores = {
   deals: DEALS,
   users: USERS,
