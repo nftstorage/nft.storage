@@ -4,7 +4,7 @@ on:
     inputs:
       environment:
         description: 'Choose an environment to deploy to: <staging|production> (empty for dev)'
-        required: true
+        required: false
         default: ''
 jobs:
   deploy:
