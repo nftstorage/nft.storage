@@ -20,6 +20,21 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           workingDirectory: 'site'
           environment: ${{ github.event.inputs.environment }}
+  # deploy-frontend-production:
+  #   if: github.event.inputs.environment == 'production'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@master
+  #     - name: Publish app
+  #       uses: rez0n/create-dns-record@v2.1
+  #       with:
+  #         type: 'CNAME'
+  #         name: 'nft.storage'
+  #         content: ${{ github.event.inputs.frontend_cname }}
+  #         ttl: 1
+  #         proxied: true
+  #         token: ${{ secrets.CF_API_TOKEN }}
+  #         zone: ${{ secrets.CLOUDFLARE_ZONE }}
   deploy-frontend-staging:
     if: github.event.inputs.environment == 'staging'
     runs-on: ubuntu-latest
@@ -29,7 +44,7 @@ jobs:
         uses: rez0n/create-dns-record@v2.1
         with:
           type: 'CNAME'
-          name: 'testing-staging.nft.storage'
+          name: 'staging.nft.storage'
           content: ${{ github.event.inputs.frontend_cname }}
           ttl: 1
           proxied: true
@@ -44,7 +59,7 @@ jobs:
         uses: rez0n/create-dns-record@v2.1
         with:
           type: 'CNAME'
-          name: 'testing-dev.nft.storage'
+          name: 'dev.nft.storage'
           content: ${{ github.event.inputs.frontend_cname }}
           ttl: 1
           proxied: true
