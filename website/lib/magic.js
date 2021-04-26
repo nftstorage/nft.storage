@@ -21,7 +21,7 @@ export function getMagic() {
 }
 
 export async function login(token, type = 'magic', data = {}) {
-  const res = await fetch(API + '/api/login', {
+  const res = await fetch(API + '/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
