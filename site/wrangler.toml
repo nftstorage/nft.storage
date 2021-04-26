@@ -9,14 +9,14 @@ kv_namespaces = [
     { binding = "DEALS", preview_id = "ce934a65bf6a44a398980a89daf66a70", id = "ce934a65bf6a44a398980a89daf66a70" },
     { binding = "METRICS", preview_id = "104469a46696435bb2e7bfa201a36611", id = "104469a46696435bb2e7bfa201a36611" }
 ]
-vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "", CLUSTER_IPFS_PROXY_API_URL = "", CLUSTER_ADDRS = "" }
+vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
 
 [triggers]
 crons = ["*/10 * * * *"]
 
 [env.staging]
 name = "nft-storage-staging"
-vars = { ENV = "staging", DEBUG = false, CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
+vars = { ENV = "staging", DEBUG = '*', CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
 webpack_config = "webpack.config.prod.js"
 kv_namespaces = [
     { binding = "USERS", preview_id = "8964654a0a1d4f7586b59db90ef97594", id = "8964654a0a1d4f7586b59db90ef97594" },
