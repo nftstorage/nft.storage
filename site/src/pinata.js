@@ -105,8 +105,11 @@ export async function pinFiles(files, user) {
  * @param {string} cid
  * @returns {Promise<{ ok: true, value?: any } | { ok: false, error: Response }>}
  */
-export const pinInfo = async cid => {
-  const url = new URL(`/data/pinList?status=pinned&hashContains=${encodeURIComponent(cid)}`, endpoint)
+export const pinInfo = async (cid) => {
+  const url = new URL(
+    `/data/pinList?status=pinned&hashContains=${encodeURIComponent(cid)}`,
+    endpoint
+  )
 
   const response = await fetch(url.toString(), {
     method: 'GET',
@@ -118,6 +121,27 @@ export const pinInfo = async cid => {
   if (response.ok) {
     const { rows } = await response.json()
     return { ok: true, value: rows[0] }
+  } else {
+    return { ok: false, error: response }
+  }
+}
+
+/**
+ * @param {string} cid
+ * @param {{ pinataOptions?: { hostNodes?: string[] }, pinataMetadata?: { name?: string } }} [options]
+ * @returns {Promise<{ ok: true, value: { id: string, ipfsHash: string, status: string, name: string} }|{ ok: false, error: Response }>}
+ */
+export async function pinByHash(cid, options) {
+  const url = new URL('pinning/pinByHash', endpoint)
+
+  const response = await fetch(url.toString(), {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${pinata.jwt}` },
+    body: JSON.stringify({ hashToPin: cid, ...(options || {}) }),
+  })
+
+  if (response.ok) {
+    return { ok: true, value: await response.json() }
   } else {
     return { ok: false, error: response }
   }
