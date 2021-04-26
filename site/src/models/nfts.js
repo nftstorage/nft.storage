@@ -90,19 +90,19 @@ export const remove = async (key) => {
 
 /**
  * @param {any} prefix
- * @param {{ limit?: number, lt?: Date }} [options]
+ * @param {{ limit?: number, before?: Date }} [options]
  * @returns {Promise<Array<KVValue<NFT>>>}
  */
 export async function list(prefix, options) {
   options = options || {}
 
   const limit = Math.min(options.limit || 10, 100)
-  if (limit < 1) {
+  if (isNaN(limit) || limit < 1) {
     throw new Error('invalid limit')
   }
 
-  const lt = options.lt || new Date()
-  if (!(lt instanceof Date)) {
+  const before = options.before || new Date()
+  if (!(before instanceof Date) || isNaN(before.getTime())) {
     throw new Error('invalid filter')
   }
 
@@ -117,7 +117,7 @@ export async function list(prefix, options) {
 
     for (const k of nftIdxList.keys) {
       const { created } = decodeIndexKey(k.name)
-      if (created.getTime() < lt.getTime()) {
+      if (created.getTime() < before.getTime()) {
         // @ts-ignore
         nfts.push(stores.nfts.get(k.metadata.key, 'json'))
         if (nfts.length >= limit) {
