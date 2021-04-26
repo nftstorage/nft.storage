@@ -17,7 +17,7 @@ const encodeKey = ({ user, cid }) => `${user.sub}:${cid}`
 /**
  * @param {{user: import('./users').User, created: Date, cid: string}} key
  */
-function encodeIndexKey({ user, created, cid }) {
+export function encodeIndexKey({ user, created, cid }) {
   const ts = (FAR_FUTURE - created.getTime()).toString().padStart(PAD_LEN, '0')
   return `${user.sub}:${ts}:${cid}`
 }
