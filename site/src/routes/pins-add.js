@@ -74,7 +74,15 @@ export async function pinsAdd(event) {
     pin = await cluster.pin(pinData.cid)
   }
 
-  event.waitUntil(PinataPSA.pinsAdd(pinData))
+  event.waitUntil(
+    (async () => {
+      try {
+        await PinataPSA.pinsAdd(pinData)
+      } catch (err) {
+        console.error(err)
+      }
+    })()
+  )
 
   const created = new Date()
   /** @type import('../bindings').NFT */

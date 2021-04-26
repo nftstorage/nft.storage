@@ -1,6 +1,7 @@
 import { HTTPError } from '../errors.js'
 import { verifyToken } from '../utils/utils.js'
 import * as PinataPSA from '../pinata-psa.js'
+import * as pinata from '../pinata.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
 import * as cluster from '../cluster.js'
@@ -104,7 +105,19 @@ export async function pinsReplace(event, params) {
     pin = await cluster.pin(pinData.cid)
   }
 
-  event.waitUntil(PinataPSA.pinsAdd(pinData))
+  event.waitUntil(
+    (async () => {
+      try {
+        const hostNodes = [...(pinData.origins || []), ...cluster.delegates()]
+        await pinata.pinByHash(pinData.cid, {
+          pinataOptions: { hostNodes },
+          pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
+        })
+      } catch (err) {
+        console.error(err)
+      }
+    })()
+  )
 
   const created = new Date()
   /** @type import('../bindings').NFT */

@@ -26,8 +26,19 @@ export async function upload(event) {
     const boundary = contentType.split('boundary=')[1].trim()
     const parts = await parseMultipart(event.request.body, boundary)
     const dir = await cluster.addDirectory(parts)
-    event.waitUntil(pinata.pinFiles(parts, user))
     const { cid, size } = dir[dir.length - 1]
+    event.waitUntil(
+      (async () => {
+        try {
+          await pinata.pinByHash(cid, {
+            pinataOptions: { hostNodes: cluster.delegates() },
+            pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
+          })
+        } catch (err) {
+          console.error(err)
+        }
+      })()
+    )
     const created = new Date()
     /** @type {NFT} */
     const nft = {
@@ -68,7 +79,18 @@ export async function upload(event) {
       return HTTPError.respond(new HTTPError('Empty payload', 400))
     }
     const { cid, size } = await cluster.add(blob)
-    event.waitUntil(pinata.pinFile(blob, user))
+    event.waitUntil(
+      (async () => {
+        try {
+          await pinata.pinByHash(cid, {
+            pinataOptions: { hostNodes: cluster.delegates() },
+            pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
+          })
+        } catch (err) {
+          console.error(err)
+        }
+      })()
+    )
     const created = new Date()
     /** @type {NFT} */
     const nft = {
