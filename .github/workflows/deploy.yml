@@ -6,6 +6,9 @@ on:
         description: 'Choose an environment to deploy to: <staging|production> (empty for dev)'
         required: false
         default: ''
+      frontend_cname:
+        description: 'Choose a CF Pages Deployment to assign to environment'
+        required: false
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,3 +21,33 @@ jobs:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           workingDirectory: 'site'
           environment: ${{ github.event.inputs.environment }}
+  deploy-frontend-staging:
+    if: github.event.inputs.environment == 'staging'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Publish app
+        uses: ez0n/create-dns-record@v2.1
+        with:
+          type: 'CNAME'
+          name: 'testing-staging.nft.storage'
+          content: ${{ github.event.inputs.frontend_cname }}
+          ttl: 1
+          proxied: true
+          token: ${{ secrets.CF_API_TOKEN }}
+          zone: ${{ secrets.CLOUDFLARE_ZONE }}
+  deploy-frontend-dev:
+    if: github.event.inputs.environment == ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Publish app
+        uses: ez0n/create-dns-record@v2.1
+        with:
+          type: 'CNAME'
+          name: 'testing-dev.nft.storage'
+          content: ${{ github.event.inputs.frontend_cname }}
+          ttl: 1
+          proxied: true
+          token: ${{ secrets.CF_API_TOKEN }}
+          zone: ${{ secrets.CLOUDFLARE_ZONE }}
