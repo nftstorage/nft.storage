@@ -96,31 +96,31 @@ jobs:
   #         SRC_PACKAGE_DIR: client
   #         DEPLOY_DIR: client
 
-  docs:
-    name: Generate documentation
-    needs:
-      - publish
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - uses: actions/checkout@v2
+  # docs:
+  #   name: Generate documentation
+  #   needs:
+  #     - publish
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - name: Cache node_modules
-        id: cache-modules
-        uses: actions/cache@v1
-        with:
-          path: node_modules
-          key: 12.x-${{ runner.OS }}-build-${{ hashFiles('package.json') }}
+  #     - name: Cache node_modules
+  #       id: cache-modules
+  #       uses: actions/cache@v1
+  #       with:
+  #         path: node_modules
+  #         key: 12.x-${{ runner.OS }}-build-${{ hashFiles('package.json') }}
 
-      - name: Install
-        run: yarn install
+  #     - name: Install
+  #       run: yarn install
 
-      - name: Generate
-        run: yarn build:client:docs
+  #     - name: Generate
+  #       run: yarn build:client:docs
 
-      - name: Commit
-        uses: EndBug/add-and-commit@v7
-        with:
-          author_name: documentation-generator
-          add: docs/client
-          message: 'chore: generate client docs'
+  #     - name: Commit
+  #       uses: EndBug/add-and-commit@v7
+  #       with:
+  #         author_name: documentation-generator
+  #         add: docs/client
+  #         message: 'chore: generate client docs'
