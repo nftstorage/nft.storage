@@ -65,5 +65,5 @@ jobs:
           proxied: true
           token: ${{ secrets.CF_API_TOKEN }}
           zone: ${{ secrets.CLOUDFLARE_ZONE }}
-      - run: echo "${{ step.deploy-frontend-dev.outputs.name}}"
-      - run: echo "${{ step.deploy-frontend-dev.outputs.record_id}}"
+      - run: echo "${{ steps.deploy-frontend-dev.outputs.name}}"
+      - run: echo "${{ steps.deploy-frontend-dev.outputs.record_id}}"
