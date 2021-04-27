@@ -13,6 +13,8 @@ export class Cloudflare {
     this.accountId = accountId
     this.apiToken = apiToken
     this.kvNamespacesPath = `accounts/${accountId}/storage/kv/namespaces`
+    // Cloudflare API is rate limited to 1,200 requests / 5 minutes
+    // https://api.cloudflare.com/#getting-started-requests
     const limiter = new RateLimiter(200, 'minute')
     this.fetch = (url, init) =>
       new Promise((resolve, reject) => {
