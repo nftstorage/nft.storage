@@ -1,10 +1,6 @@
 import FormData from 'form-data'
-import dotenv from 'dotenv'
-import PQueue from 'p-queue'
 import { RateLimiter } from 'limiter'
 import fetch from 'node-fetch'
-
-dotenv.config()
 
 const endpoint = new URL('https://api.cloudflare.com/client/v4/')
 
