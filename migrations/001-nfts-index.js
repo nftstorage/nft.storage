@@ -13,6 +13,7 @@ function encodeIndexKey({ user, created, cid }) {
 }
 
 async function main() {
+  const env = process.env.ENV || 'dev'
   const cf = new Cloudflare({
     accountId: process.env.CF_ACCOUNT,
     apiToken: process.env.CF_TOKEN,
@@ -28,7 +29,14 @@ async function main() {
         index: idxTable,
       }
     })
-    .filter((t) => t.table.title.includes('staging'))
+    .filter((t) => {
+      if (env === 'production') {
+        return (
+          !t.table.title.includes('dev') && !t.table.title.includes('staging')
+        )
+      }
+      return t.table.title.includes(env)
+    })
 
   for (const { table, index } of tables) {
     console.log(`🎯 Populating ${index.title} from ${table.title}`)
