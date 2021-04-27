@@ -92,7 +92,7 @@ export async function upload(event) {
     const nft = {
       cid,
       size: blob.size,
-      created: new Date().toISOString(),
+      created: created.toISOString(),
       type: blob.type,
       scope: tokenName,
       files: [],
@@ -105,7 +105,11 @@ export async function upload(event) {
       },
     }
     const result = await nfts.set({ user, cid }, nft, {
-      metadata: { pinStatus: 'pinned', size: blob.size },
+      metadata: {
+        pinStatus: 'pinned',
+        size: blob.size,
+        created: created.toISOString(),
+      },
     })
 
     return new JSONResponse({
