@@ -65,5 +65,6 @@ jobs:
           proxied: true
           token: ${{ secrets.CF_API_TOKEN }}
           zone: ${{ secrets.CLOUDFLARE_ZONE }}
+      - run: echo "::warning::https://dev.nft.storage"
       - run: echo " https://dev.nft.storage ${{ steps.deploy-dev.outputs.name }}"
       - run: echo "yoooo ${{ steps.deploy-dev.outputs.record_id}}"
