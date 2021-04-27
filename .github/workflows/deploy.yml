@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: Publish app
+      - name: deploy-dev
         uses: rez0n/create-dns-record@v2.1
         with:
           type: 'CNAME'
@@ -65,5 +65,5 @@ jobs:
           proxied: true
           token: ${{ secrets.CF_API_TOKEN }}
           zone: ${{ secrets.CLOUDFLARE_ZONE }}
-      - run: echo "${{ steps.publish-app.outputs.name}}"
-      - run: echo "${{ steps.publish-app.outputs.record_id}}"
+      - run: echo " yyoooo ${{ steps.deploy-dev.outputs.name }}"
+      - run: echo "yoooo ${{ steps.deploy-dev.outputs.record_id}}"
