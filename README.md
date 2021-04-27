@@ -125,6 +125,8 @@ wrangler kv:namespace create USERS --preview --env USER
 # but you need to put `{ binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4", id = "7e441603d1bc4d5a87f6cecb959018e4" }` inside the `kv_namespaces`.
 wrangler kv:namespace create NFTS --preview --env USER
 # same as above
+wrangler kv:namespace create NFTS_IDX --preview --env USER
+# same as above
 wrangler kv:namespace create DEALS --preview --env USER
 # same as above
 wrangler kv:namespace create METRICS --preview --env USER
@@ -149,6 +151,8 @@ Go to `/site/src/constants.js` _comment_ the first line and run `wrangler publis
 wrangler kv:namespace create USERS --env production
 # Follow the instructions from the cli output
 wrangler kv:namespace create NFTS --env production
+# Follow the instructions from the cli output
+wrangler kv:namespace create NFTS_IDX --env production
 # Follow the instructions from the cli output
 wrangler kv:namespace create DEALS --env production
 # Follow the instructions from the cli output

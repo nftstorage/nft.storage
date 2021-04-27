@@ -6,6 +6,7 @@ declare global {
   const DEALS: KVNamespace
   const USERS: KVNamespace
   const NFTS: KVNamespace
+  const NFTS_IDX: KVNamespace
   const METRICS: KVNamespace
   const PINATA_JWT: string
   const CLUSTER_API_URL: string

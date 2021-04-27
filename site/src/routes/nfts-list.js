@@ -8,9 +8,21 @@ import { validate } from '../utils/auth.js'
  */
 export async function list(event) {
   const auth = await validate(event)
+  const options = {}
+  const { searchParams } = new URL(event.request.url)
+
+  const limit = searchParams.get('limit')
+  if (limit) {
+    options.limit = parseInt(limit)
+  }
+
+  const before = searchParams.get('before')
+  if (before) {
+    options.before = new Date(before)
+  }
 
   return new JSONResponse({
     ok: true,
-    value: await nfts.list(auth.user.sub),
+    value: await nfts.list(auth.user.sub, options),
   })
 }

@@ -62,6 +62,9 @@ paths:
         - NFT Storage
       summary: List all stored files
       operationId: list
+      parameters:
+        - $ref: '#/components/parameters/before'
+        - $ref: '#/components/parameters/limit'
       responses:
         '200':
           description: OK
@@ -401,6 +404,26 @@ components:
         'application/json':
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-
+  parameters:
+    before:
+      description: Return results created before provided timestamp
+      name: before
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time  # RFC 3339, section 5.6
+      example: "2020-07-27T17:32:28Z"
+    limit:
+      description: Max records to return
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
+        default: 10
 security:
   - bearerAuth: []

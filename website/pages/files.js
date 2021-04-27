@@ -69,7 +69,7 @@ export default function Files({ user }) {
                     {nfts.map((nft, i) => (
                       <tr className="bb b--black" key={`nft-${i}`}>
                         <td className="pa2 br b--black">
-                          {nft.created.toISOString().split('T')[0]}
+                          {nft.created.split('T')[0]}
                         </td>
                         <td className="pa2 br b--black">
                           <GatewayLink cid={nft.cid} />
