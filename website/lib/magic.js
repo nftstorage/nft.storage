@@ -1,7 +1,8 @@
 import { Magic } from 'magic-sdk'
 import { OAuthExtension } from '@magic-ext/oauth'
+import constants from './constants'
 
-const API = process.env.NEXT_PUBLIC_API
+const API = constants.API
 /** @type {import('magic-sdk').Magic} */
 let magic = null
 
@@ -13,7 +14,7 @@ export function getMagic() {
   if (magic) {
     return magic
   }
-  magic = new Magic(process.env.NEXT_PUBLIC_MAGIC, {
+  magic = new Magic(constants.MAGIC_TOKEN, {
     extensions: [new OAuthExtension()],
   })
 

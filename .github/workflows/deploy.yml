@@ -3,11 +3,11 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Choose an environment to deploy to: <staging|production> (empty for dev)'
+        description: 'Choose an environment to deploy API to: <staging|production> (empty for dev)'
         required: false
         default: ''
       frontend_cname:
-        description: 'Choose a CF Pages Deployment to assign to environment'
+        description: 'Choose a Cloudflare Pages build to point the above environment to, ie: "2f7ade61.nft-storage.pages.dev". This will point <dev|staging>.nft.storage or nft.storage to 2f7ade61.nft-storage.pages.dev'
         required: false
 jobs:
   deploy-api:
@@ -65,3 +65,5 @@ jobs:
           proxied: true
           token: ${{ secrets.CF_API_TOKEN }}
           zone: ${{ secrets.CLOUDFLARE_ZONE }}
+      - run: echo "${{ step.deploy-frontend-dev.outputs.name}}"
+      - run: echo "${{ step.deploy-frontend-dev.outputs.record_id}}"

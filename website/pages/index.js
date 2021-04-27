@@ -29,7 +29,7 @@ function About() {
   const storeText = (
     <>
       <h2 className="chicagoflf">
-        <HashLink id="store">Store 11111111111111</HashLink>
+        <HashLink id="store">Store</HashLink>
       </h2>
       <p className="lh-copy">
         Just upload your data and you&#39;ll receive an IPFS hash of the content

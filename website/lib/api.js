@@ -1,6 +1,7 @@
 import { getMagic } from './magic'
+import constants from './constants'
 
-export const API = process.env.NEXT_PUBLIC_API
+export const API = constants.API
 
 const LIFESPAN = 900
 let token
