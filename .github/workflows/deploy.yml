@@ -59,6 +59,7 @@ jobs:
           proxied: true
           token: ${{ secrets.CF_API_TOKEN }}
           zone: ${{ secrets.CLOUDFLARE_ZONE }}
+      - run: echo "::warning::https://staging.nft.storage"
   deploy-frontend-dev:
     if: github.event.inputs.environment == ''
     runs-on: ubuntu-latest
