@@ -2,7 +2,6 @@ let API = process.env.NEXT_PUBLIC_API
 let MAGIC_TOKEN = process.env.NEXT_PUBLIC_MAGIC
 
 if (globalThis.window) {
-  console.log('🚀 ~ file: constants.js ~ line 6 ~ location.host', location.host)
   switch (location.host) {
     case 'staging.nft.storage':
       API = 'https://api-staging.nft.storage'
