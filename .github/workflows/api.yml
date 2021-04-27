@@ -12,7 +12,7 @@ jobs:
     if: github.event_name == 'push' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "event ${{ github.event_name }}, ref ${{ github.ref }}"
+      - run: echo "event  ss ${{ github.event_name }}, ref ${{ github.ref }}"
       - uses: actions/checkout@master
       - name: Publish app
         uses: cloudflare/wrangler-action@1.3.0
