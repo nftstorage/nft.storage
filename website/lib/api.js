@@ -73,8 +73,10 @@ export async function createToken(name) {
   }
 }
 
-export async function getNfts() {
-  const res = await fetch(API + '/', {
+export async function getNfts({ queryKey }) {
+  const [, { before, limit }] = queryKey
+  const params = new URLSearchParams({ before, limit })
+  const res = await fetch(`${API}/?${params}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

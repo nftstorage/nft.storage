@@ -31,6 +31,8 @@ export default function ManageKeys({ user }) {
     }
   }
 
+  const keys = Object.entries(result.data || {})
+
   return (
     <main className="bg-nsgreen">
       <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
@@ -40,7 +42,7 @@ export default function ManageKeys({ user }) {
             + New Key
           </Button>
         </div>
-        {result.data ? (
+        {keys.length ? (
           <table className="bg-white ba b--black w-100 collapse mb4">
             <thead>
               <tr className="bb b--black">
@@ -50,7 +52,7 @@ export default function ManageKeys({ user }) {
               </tr>
             </thead>
             <tbody>
-              {Object.entries(result.data).map((t, k) => (
+              {keys.map((t, k) => (
                 <tr className="bb b--black" key={k}>
                   <td className="pa2 br b--black">{t[0]}</td>
                   <td className="pa2 br b--black mw7">
@@ -73,7 +75,7 @@ export default function ManageKeys({ user }) {
                       <Button
                         className="bg-nsorange white"
                         type="submit"
-                        disable={deleting}
+                        disabled={deleting}
                       >
                         {deleting === t[0] ? 'Deleting...' : 'Delete'}
                       </Button>

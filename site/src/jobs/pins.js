@@ -8,7 +8,7 @@ export async function updatePinStatuses() {
     // @ts-ignore
     const nftList = await stores.nfts.list({ cursor, limit: 1000 })
     for (const k of nftList.keys) {
-      const cid = k.name.split(':')[1]
+      const cid = k.name.split(':').pop()
       // Look up size for pinned data via pinning service API
       if (k.metadata == null || !isPinnedOrFailed(k.metadata.pinStatus)) {
         try {

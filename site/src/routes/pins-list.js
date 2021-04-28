@@ -60,7 +60,8 @@ export async function pinsList(event) {
 
   /** @type import('../pinata-psa').PinStatus[] */
   const results = keys.map((k) => {
-    const cid = k.name.split(':')[1]
+    const cid = k.name.split(':').pop()
+    if (!cid) throw new Error('invalid NFT key')
     return {
       requestid: cid,
       status: k.metadata.pinStatus,
@@ -144,7 +145,8 @@ function makeFilter(options) {
   return (key) => {
     const metadata = key.metadata || {}
     if (options.cid) {
-      const cid = key.name.split(':')[1]
+      const cid = key.name.split(':').pop()
+      if (!cid) throw new Error('invalid NFT key')
       if (!options.cid.includes(cid)) {
         return false
       }
