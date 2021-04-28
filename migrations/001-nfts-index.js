@@ -40,13 +40,17 @@ async function main() {
 
   for (const { table, index } of tables) {
     console.log(`🎯 Populating ${index.title} from ${table.title}`)
+    let total = 0
     for await (const keys of cf.fetchKVKeys(table.id)) {
+      const bulkWrites = { table: [], index: [] }
       await Promise.all(
         keys.map(async (k) => {
           const [sub, cid] = k.name.split(':')
           let { metadata } = k
           if (!metadata) {
+            console.log(`📖 reading ${k.name} to fix missing metadata`)
             const value = await cf.readKV(table.id, k.name)
+            console.log(`📗 read ${k.name}`)
             metadata = {
               pinStatus: value.pin.status,
               size: value.size,
@@ -57,25 +61,47 @@ async function main() {
             if (metadata.pinStatus === 'pinned' && !metadata.size) {
               metadata.pinStatus = 'pinning'
             }
-            console.log(`🧸 adding missing metadata for ${k.name}`)
-            await cf.writeKV(table.id, k.name, value, metadata)
+            bulkWrites.table.push({ key: k.name, value, metadata })
           }
           let { created } = metadata
           if (!created) {
+            console.log(
+              `📖 reading ${k.name} to fix missing created date in metadata`
+            )
             const value = await cf.readKV(table.id, k.name)
+            console.log(`📗 read ${k.name}`)
             created = value.created
-            console.log(`🔧 fixing created date for ${k.name}`)
-            await writeKV(table.id, k.name, value, { ...k.metadata, created })
+            bulkWrites.table.push({
+              key: k.name,
+              value,
+              metadata: { ...metadata, created },
+            })
           }
           const indexKey = encodeIndexKey({
             user: { sub },
             created: new Date(created),
             cid,
           })
-          console.log(`🗂 writing index entry: ${indexKey}`)
-          await cf.writeKV(index.id, indexKey, '', { key: k.name })
+          bulkWrites.index.push({
+            key: indexKey,
+            value: '',
+            metadata: { key: k.name },
+          })
         })
       )
+      if (bulkWrites.table.length) {
+        console.log(`🧸 fixing metadata for ${bulkWrites.table.length} NFTs`)
+        await cf.writeMultiKV(table.id, bulkWrites.table)
+      }
+      if (bulkWrites.index.length) {
+        console.log(
+          `🗂 writing index entries for NFTs ${total} -> ${
+            total + bulkWrites.index.length
+          }`
+        )
+        await cf.writeMultiKV(index.id, bulkWrites.index)
+      }
+      total += bulkWrites.index.length
     }
   }
 }

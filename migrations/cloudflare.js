@@ -1,6 +1,8 @@
 import FormData from 'form-data'
 import { RateLimiter } from 'limiter'
 import fetch from 'node-fetch'
+import AbortController from 'abort-controller'
+import retry from 'p-retry'
 
 const endpoint = new URL('https://api.cloudflare.com/client/v4/')
 
@@ -8,19 +10,38 @@ export class Cloudflare {
   constructor({ accountId, apiToken }) {
     this.accountId = accountId
     this.apiToken = apiToken
-    this.kvNamespacesPath = `accounts/${accountId}/storage/kv/namespaces`
+    this.kvNsPath = `accounts/${accountId}/storage/kv/namespaces`
     // Cloudflare API is rate limited to 1,200 requests / 5 minutes
     // https://api.cloudflare.com/#getting-started-requests
     const limiter = new RateLimiter(200, 'minute')
-    this.fetch = (url, init) =>
+    this.fetchJSON = (url, init) =>
       new Promise((resolve, reject) => {
         limiter.removeTokens(1, async (err) => {
           if (err) return reject(err)
           try {
-            init = init || {}
-            init.headers = init.headers || {}
-            init.headers.Authorization = `Bearer ${apiToken}`
-            const res = await fetch(url, init)
+            const res = await retry(
+              async () => {
+                const controller = new AbortController()
+                const abortID = setTimeout(() => controller.abort(), 60000)
+                init = init || {}
+                init.headers = init.headers || {}
+                init.headers.Authorization = `Bearer ${apiToken}`
+                init.signal = controller.signal
+                const res = await fetch(url, init)
+                if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`)
+                const data = await res.json()
+                clearTimeout(abortID)
+                return data
+              },
+              {
+                onFailedAttempt: (err) => {
+                  console.log(
+                    `💥 fetch ${url} attempt ${err.attemptNumber} failed: ${err.retriesLeft} retries left.`
+                  )
+                },
+                retries: 5,
+              }
+            )
             resolve(res)
           } catch (err) {
             reject(err)
@@ -34,12 +55,10 @@ export class Cloudflare {
     const namespaces = []
     while (true) {
       const url = new URL(
-        `${this.kvNamespacesPath}?page=${page}&per_page=100`,
+        `${this.kvNsPath}?page=${page}&per_page=100`,
         endpoint
       )
-      const res = await this.fetch(url.toString())
-      if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`)
-      const { result_info, result } = await res.json()
+      const { result_info, result } = await this.fetchJSON(url.toString())
       namespaces.push(...result)
       if (result_info.page === result_info.total_pages) {
         break
@@ -53,12 +72,10 @@ export class Cloudflare {
     let cursor = ''
     while (true) {
       const url = new URL(
-        `${this.kvNamespacesPath}/${nsId}/keys?cursor=${cursor}&limit=1000`,
+        `${this.kvNsPath}/${nsId}/keys?cursor=${cursor}&limit=1000`,
         endpoint
       )
-      const res = await this.fetch(url.toString())
-      if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`)
-      const { result_info, result } = await res.json()
+      const { result_info, result } = await this.fetchJSON(url.toString())
       yield result
       cursor = result_info.cursor
       if (!cursor) {
@@ -69,7 +86,7 @@ export class Cloudflare {
 
   async writeKV(nsId, key, value, metadata) {
     const url = new URL(
-      `${this.kvNamespacesPath}/${nsId}/values/${encodeURIComponent(key)}`,
+      `${this.kvNsPath}/${nsId}/values/${encodeURIComponent(key)}`,
       endpoint
     )
     const body = new FormData()
@@ -77,18 +94,24 @@ export class Cloudflare {
     if (metadata) {
       body.append('metadata', JSON.stringify(metadata))
     }
-    const res = await this.fetch(url.toString(), { method: 'PUT', body })
-    if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`)
-    await res.json()
+    await this.fetchJSON(url.toString(), { method: 'PUT', body })
+  }
+
+  async writeMultiKV(nsId, kvs) {
+    const url = new URL(`${this.kvNsPath}/${nsId}/bulk`, endpoint)
+    kvs = kvs.map((kv) => ({ ...kv, value: JSON.stringify(kv.value) }))
+    return this.fetchJSON(url.toString(), {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(kvs),
+    })
   }
 
   async readKV(nsId, key) {
     const url = new URL(
-      `${this.kvNamespacesPath}/${nsId}/values/${encodeURIComponent(key)}`,
+      `${this.kvNsPath}/${nsId}/values/${encodeURIComponent(key)}`,
       endpoint
     )
-    const res = await this.fetch(url.toString())
-    if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`)
-    return res.json()
+    return this.fetchJSON(url.toString())
   }
 }
