@@ -6,13 +6,11 @@
     "website"
   ],
   "scripts": {
-    "start": "yarn --cwd site start",
     "test": "yarn test:site && yarn test:website",
     "test:client": "yarn --cwd client test",
     "test:site": "yarn --cwd site test",
     "test:website": "yarn --cwd website test",
     "build:client:docs": "yarn --cwd client typedoc",
-    "build:site": "yarn --cwd website build",
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css}' --ignore-path .gitignore"
   },
   "simple-git-hooks": {
