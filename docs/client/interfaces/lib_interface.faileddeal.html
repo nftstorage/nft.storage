@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>PublishedDeal | nft.storage</title>
+    <title>FailedDeal | nft.storage</title>
     <meta name="description" content="Documentation for nft.storage" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="../assets/css/main.css" />
@@ -78,10 +78,10 @@
               <a href="../modules/lib_interface.html">lib/interface</a>
             </li>
             <li>
-              <a href="lib_interface.publisheddeal.html">PublishedDeal</a>
+              <a href="lib_interface.faileddeal.html">FailedDeal</a>
             </li>
           </ul>
-          <h1>Interface PublishedDeal</h1>
+          <h1>Interface FailedDeal</h1>
         </div>
       </div>
     </header>
@@ -100,7 +100,7 @@
                 >
                 <ul class="tsd-hierarchy">
                   <li>
-                    <span class="target">PublishedDeal</span>
+                    <span class="target">FailedDeal</span>
                   </li>
                 </ul>
               </li>
@@ -117,23 +117,16 @@
                       class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
                     >
                       <a
-                        href="lib_interface.publisheddeal.html#batchrootcid"
+                        href="lib_interface.faileddeal.html#batchrootcid"
                         class="tsd-kind-icon"
                         >batch<wbr />Root<wbr />Cid</a
-                      >
-                    </li>
-                    <li class="tsd-kind-property tsd-parent-kind-interface">
-                      <a
-                        href="lib_interface.publisheddeal.html#chaindealid"
-                        class="tsd-kind-icon"
-                        >chain<wbr />DealID</a
                       >
                     </li>
                     <li
                       class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
                     >
                       <a
-                        href="lib_interface.publisheddeal.html#lastchanged"
+                        href="lib_interface.faileddeal.html#lastchanged"
                         class="tsd-kind-icon"
                         >last<wbr />Changed</a
                       >
@@ -142,7 +135,7 @@
                       class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
                     >
                       <a
-                        href="lib_interface.publisheddeal.html#miner"
+                        href="lib_interface.faileddeal.html#miner"
                         class="tsd-kind-icon"
                         >miner</a
                       >
@@ -151,7 +144,7 @@
                       class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
                     >
                       <a
-                        href="lib_interface.publisheddeal.html#network"
+                        href="lib_interface.faileddeal.html#network"
                         class="tsd-kind-icon"
                         >network</a
                       >
@@ -160,16 +153,23 @@
                       class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
                     >
                       <a
-                        href="lib_interface.publisheddeal.html#piececid"
+                        href="lib_interface.faileddeal.html#piececid"
                         class="tsd-kind-icon"
                         >piece<wbr />Cid</a
                       >
                     </li>
                     <li class="tsd-kind-property tsd-parent-kind-interface">
                       <a
-                        href="lib_interface.publisheddeal.html#status"
+                        href="lib_interface.faileddeal.html#status"
                         class="tsd-kind-icon"
                         >status</a
+                      >
+                    </li>
+                    <li class="tsd-kind-property tsd-parent-kind-interface">
+                      <a
+                        href="lib_interface.faileddeal.html#statustext"
+                        class="tsd-kind-icon"
+                        >status<wbr />Text</a
                       >
                     </li>
                   </ul>
@@ -216,32 +216,6 @@
               <div class="tsd-comment tsd-typography">
                 <div class="lead">
                   <p>CID string</p>
-                </div>
-              </div>
-            </section>
-            <section
-              class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface"
-            >
-              <a name="chaindealid" class="tsd-anchor"></a>
-              <h3>chain<wbr />DealID</h3>
-              <div class="tsd-signature tsd-kind-icon">
-                chain<wbr />DealID<span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">number</span>
-              </div>
-              <aside class="tsd-sources">
-                <ul>
-                  <li>
-                    Defined in
-                    <a
-                      href="https://github.com/ipfs-shipyard/nft.storage/blob/8193cb5/client/src/lib/interface.ts#L95"
-                      >client/src/lib/interface.ts:95</a
-                    >
-                  </li>
-                </ul>
-              </aside>
-              <div class="tsd-comment tsd-typography">
-                <div class="lead">
-                  <p>Identifier for the deal stored on chain.</p>
                 </div>
               </div>
             </section>
@@ -388,19 +362,45 @@
               <h3>status</h3>
               <div class="tsd-signature tsd-kind-icon">
                 status<span class="tsd-signature-symbol">:</span>
-                <span class="tsd-signature-type">&quot;published&quot;</span>
+                <span class="tsd-signature-type">&quot;failed&quot;</span>
               </div>
               <aside class="tsd-sources">
                 <ul>
                   <li>
                     Defined in
                     <a
-                      href="https://github.com/ipfs-shipyard/nft.storage/blob/8193cb5/client/src/lib/interface.ts#L91"
-                      >client/src/lib/interface.ts:91</a
+                      href="https://github.com/ipfs-shipyard/nft.storage/blob/8193cb5/client/src/lib/interface.ts#L83"
+                      >client/src/lib/interface.ts:83</a
                     >
                   </li>
                 </ul>
               </aside>
+            </section>
+            <section
+              class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface"
+            >
+              <a name="statustext" class="tsd-anchor"></a>
+              <h3>status<wbr />Text</h3>
+              <div class="tsd-signature tsd-kind-icon">
+                status<wbr />Text<span class="tsd-signature-symbol">:</span>
+                <span class="tsd-signature-type">string</span>
+              </div>
+              <aside class="tsd-sources">
+                <ul>
+                  <li>
+                    Defined in
+                    <a
+                      href="https://github.com/ipfs-shipyard/nft.storage/blob/8193cb5/client/src/lib/interface.ts#L87"
+                      >client/src/lib/interface.ts:87</a
+                    >
+                  </li>
+                </ul>
+              </aside>
+              <div class="tsd-comment tsd-typography">
+                <div class="lead">
+                  <p>Reason deal failed.</p>
+                </div>
+              </div>
             </section>
           </section>
         </div>
@@ -434,11 +434,76 @@
                   >Deal<wbr />Info</a
                 >
               </li>
-              <li class="tsd-kind-interface tsd-parent-kind-module">
+            </ul>
+            <ul class="current">
+              <li class="current tsd-kind-interface tsd-parent-kind-module">
                 <a href="lib_interface.faileddeal.html" class="tsd-kind-icon"
                   >Failed<wbr />Deal</a
                 >
+                <ul>
+                  <li
+                    class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
+                  >
+                    <a
+                      href="lib_interface.faileddeal.html#batchrootcid"
+                      class="tsd-kind-icon"
+                      >batch<wbr />Root<wbr />Cid</a
+                    >
+                  </li>
+                  <li
+                    class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
+                  >
+                    <a
+                      href="lib_interface.faileddeal.html#lastchanged"
+                      class="tsd-kind-icon"
+                      >last<wbr />Changed</a
+                    >
+                  </li>
+                  <li
+                    class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
+                  >
+                    <a
+                      href="lib_interface.faileddeal.html#miner"
+                      class="tsd-kind-icon"
+                      >miner</a
+                    >
+                  </li>
+                  <li
+                    class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
+                  >
+                    <a
+                      href="lib_interface.faileddeal.html#network"
+                      class="tsd-kind-icon"
+                      >network</a
+                    >
+                  </li>
+                  <li
+                    class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
+                  >
+                    <a
+                      href="lib_interface.faileddeal.html#piececid"
+                      class="tsd-kind-icon"
+                      >piece<wbr />Cid</a
+                    >
+                  </li>
+                  <li class="tsd-kind-property tsd-parent-kind-interface">
+                    <a
+                      href="lib_interface.faileddeal.html#status"
+                      class="tsd-kind-icon"
+                      >status</a
+                    >
+                  </li>
+                  <li class="tsd-kind-property tsd-parent-kind-interface">
+                    <a
+                      href="lib_interface.faileddeal.html#statustext"
+                      class="tsd-kind-icon"
+                      >status<wbr />Text</a
+                    >
+                  </li>
+                </ul>
               </li>
+            </ul>
+            <ul class="after-current">
               <li class="tsd-kind-interface tsd-parent-kind-module">
                 <a href="lib_interface.finalizeddeal.html" class="tsd-kind-icon"
                   >Finalized<wbr />Deal</a
@@ -452,76 +517,11 @@
               <li class="tsd-kind-interface tsd-parent-kind-module">
                 <a href="lib_interface.pin.html" class="tsd-kind-icon">Pin</a>
               </li>
-            </ul>
-            <ul class="current">
-              <li class="current tsd-kind-interface tsd-parent-kind-module">
+              <li class="tsd-kind-interface tsd-parent-kind-module">
                 <a href="lib_interface.publisheddeal.html" class="tsd-kind-icon"
                   >Published<wbr />Deal</a
                 >
-                <ul>
-                  <li
-                    class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
-                  >
-                    <a
-                      href="lib_interface.publisheddeal.html#batchrootcid"
-                      class="tsd-kind-icon"
-                      >batch<wbr />Root<wbr />Cid</a
-                    >
-                  </li>
-                  <li class="tsd-kind-property tsd-parent-kind-interface">
-                    <a
-                      href="lib_interface.publisheddeal.html#chaindealid"
-                      class="tsd-kind-icon"
-                      >chain<wbr />DealID</a
-                    >
-                  </li>
-                  <li
-                    class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
-                  >
-                    <a
-                      href="lib_interface.publisheddeal.html#lastchanged"
-                      class="tsd-kind-icon"
-                      >last<wbr />Changed</a
-                    >
-                  </li>
-                  <li
-                    class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
-                  >
-                    <a
-                      href="lib_interface.publisheddeal.html#miner"
-                      class="tsd-kind-icon"
-                      >miner</a
-                    >
-                  </li>
-                  <li
-                    class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
-                  >
-                    <a
-                      href="lib_interface.publisheddeal.html#network"
-                      class="tsd-kind-icon"
-                      >network</a
-                    >
-                  </li>
-                  <li
-                    class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"
-                  >
-                    <a
-                      href="lib_interface.publisheddeal.html#piececid"
-                      class="tsd-kind-icon"
-                      >piece<wbr />Cid</a
-                    >
-                  </li>
-                  <li class="tsd-kind-property tsd-parent-kind-interface">
-                    <a
-                      href="lib_interface.publisheddeal.html#status"
-                      class="tsd-kind-icon"
-                      >status</a
-                    >
-                  </li>
-                </ul>
               </li>
-            </ul>
-            <ul class="after-current">
               <li class="tsd-kind-interface tsd-parent-kind-module">
                 <a href="lib_interface.queueddeal.html" class="tsd-kind-icon"
                   >Queued<wbr />Deal</a
