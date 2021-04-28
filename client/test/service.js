@@ -34,11 +34,16 @@ const importUpload = async (request) => {
 
 /**
  * @typedef {{AUTH_TOKEN:string, store: Map<string, any>}} State
+ * @param {string} [token]
+ * @param {Map<string, any>} [store]
  * @returns {State}
  */
-export const init = (token = Math.random().toString(32).slice(2)) => ({
+export const init = (
+  token = Math.random().toString(32).slice(2),
+  store = new Map()
+) => ({
   AUTH_TOKEN: token,
-  store: new Map(),
+  store,
 })
 
 /**
@@ -79,7 +84,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           const created = new Date()
           store.set(key, {
             cid: cid.toString(),
-            deals: { status: 'ongoing', deals: [] },
+            deals: [],
             pin: {
               cid: cid.toString(),
               status: 'pinned',

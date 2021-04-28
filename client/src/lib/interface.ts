@@ -47,10 +47,7 @@ export type Deal =
   | FinalizedDeal
 
 export interface DealInfo {
-  /**
-   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
-   */
-  lastChanged: string
+  lastChanged: Date
   /**
    * Miner ID
    */
@@ -75,7 +72,7 @@ export interface QueuedDeal {
   /**
    * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
    */
-  lastChanged: string
+  lastChanged: Date
 }
 
 export interface PendingDeal extends DealInfo {
@@ -107,16 +104,12 @@ export interface FinalizedDeal extends DealInfo {
 
   /**
    * Deal Activation
-   *
-   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
    */
-  dealActivation: string
+  dealActivation: Date
   /**
    * Deal Expiraction
-   *
-   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
    */
-  dealExpiration: string
+  dealExpiration: Date
 }
 
 export interface Pin {

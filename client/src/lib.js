@@ -129,7 +129,7 @@ class NFTStorage {
     if (result.ok) {
       return {
         cid: result.value.cid,
-        deals: result.value.deals,
+        deals: decodeDeals(result.value.deals),
         size: result.value.size,
         pin: result.value.pin,
         created: new Date(result.value.created),
@@ -225,6 +225,26 @@ class NFTStorage {
     return NFTStorage.delete(this, cid)
   }
 }
+
+/**
+ * @param {API.Deal[]} deals
+ * @returns {API.Deal[]}
+ */
+const decodeDeals = (deals) =>
+  deals.map((deal) => {
+    const { dealActivation, dealExpiration, lastChanged } = {
+      dealExpiration: null,
+      dealActivation: null,
+      ...deal,
+    }
+
+    return {
+      ...deal,
+      lastChanged: new Date(lastChanged),
+      ...(dealActivation && { dealActivation: new Date(dealActivation) }),
+      ...(dealExpiration && { dealExpiration: new Date(dealExpiration) }),
+    }
+  })
 
 export { NFTStorage, File, Blob, FormData }
 
