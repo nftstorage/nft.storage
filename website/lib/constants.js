@@ -5,11 +5,11 @@ if (globalThis.window) {
   switch (location.host) {
     case 'staging.nft.storage':
       API = 'https://api-staging.nft.storage'
-      MAGIC_TOKEN = 'pk_test_847FFF9DF7A3CC15'
+      MAGIC_TOKEN = 'pk_live_9363234DECD6F093'
       break
     case 'dev.nft.storage':
       API = 'https://api-dev.nft.storage'
-      MAGIC_TOKEN = 'pk_test_847FFF9DF7A3CC15'
+      MAGIC_TOKEN = 'pk_test_731A6A694987E83A'
       break
     case 'nft.storage':
       API = 'https://api.nft.storage'
