@@ -1,5 +1,7 @@
 export {}
 
+import { Deal } from 'nft.storage/src/lib/interface'
+
 declare global {
   const SALT: string
   const DEBUG: string
@@ -73,59 +75,7 @@ export type NFT = {
   }
 }
 
-export interface Deal {
-  /**
-   * CID string
-   */
-  batchRootCid: string
-  /**
-   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
-   */
-  lastChanged: string
-  /**
-   * Miner ID
-   */
-  miner?: string
-  /**
-   * Filecoin network for this Deal
-   */
-  network?: 'nerpanet' | 'mainnet'
-  /**
-   * Piece CID string
-   */
-  pieceCid?: string
-  /**
-   * Deal Status
-   */
-  status:
-    | 'queued'
-    | 'proposing'
-    | 'accepted'
-    | 'failed'
-    | 'active'
-    | 'published'
-    | 'terminated'
-  /**
-   * Deal Status Description
-   */
-  statusText?: string
-  /**
-   * Identifier for the deal stored on chain.
-   */
-  chainDealID?: number
-  /**
-   * Deal Activation
-   *
-   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
-   */
-  dealActivation?: string
-  /**
-   * Deal Expiraction
-   *
-   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
-   */
-  dealExpiration?: string
-}
+export type { Deal }
 
 export interface User {
   sub: string

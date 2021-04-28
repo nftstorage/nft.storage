@@ -155,6 +155,57 @@ describe('client', () => {
         assert.is(err.message, 'missing token')
       }
     })
+
+    it('decodes dates in deals', async () => {
+      const cid = 'bafyreigdcnuc6w7stviim6a5m7uwqdw6p3z5zrqr22xt3num3ozra4ciqi'
+      const pieceCid =
+        'bagayreigdcnuc6w7stviim6a5m7uwqdw6p3z5zrqr22xt3num3ozra4ciqi'
+      const status = await client.status(cid)
+      assert.equal(status.cid, cid)
+      assert.ok(status.created instanceof Date)
+      assert.equal(status.deals, [
+        {
+          lastChanged: new Date('2021-03-18T11:46:50.000Z'),
+          status: 'queued',
+        },
+        {
+          batchRootCid: cid,
+          lastChanged: new Date('2021-03-18T11:46:50.000Z'),
+          miner: 't01234',
+          network: 'nerpanet',
+          pieceCid,
+          status: 'proposing',
+        },
+        {
+          batchRootCid: cid,
+          lastChanged: new Date('2021-03-18T11:46:50.000Z'),
+          miner: 'f05678',
+          network: 'mainnet',
+          pieceCid,
+          status: 'accepted',
+        },
+        {
+          batchRootCid: cid,
+          lastChanged: new Date('2021-03-18T11:46:50.000Z'),
+          miner: 'f09999',
+          network: 'mainnet',
+          pieceCid,
+          status: 'failed',
+          statusText: 'miner rejected my stuffz',
+        },
+        {
+          batchRootCid: cid,
+          chainDealID: 24526235,
+          dealActivation: new Date('2021-03-18T11:46:50.000Z'),
+          dealExpiration: new Date('2021-03-18T11:46:50.000Z'),
+          lastChanged: new Date('2021-03-18T11:46:50.000Z'),
+          miner: 'f34523',
+          network: 'mainnet',
+          pieceCid,
+          status: 'active',
+        },
+      ])
+    })
   })
 
   describe('delete', () => {
