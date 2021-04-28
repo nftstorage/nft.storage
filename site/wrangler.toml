@@ -1,7 +1,6 @@
 name = "nft-storage-dev"
 account_id = "fffa4b4363a7e5250af8357087263b3a"
-zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"
-route = "api-dev.nft.storage/*"
+workers_dev = true
 type = "webpack"
 webpack_config = "webpack.config.js"
 kv_namespaces = [

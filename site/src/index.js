@@ -22,6 +22,7 @@ import {
 } from './jobs/metrics.js'
 import { updatePinStatuses } from './jobs/pins.js'
 import { login } from './routes/login.js'
+import { JSONResponse } from './utils/json-response.js'
 const { debug } = require('./utils/debug')
 const log = debug('router')
 
@@ -40,6 +41,18 @@ r.add('options', '*', cors)
 
 // Auth
 r.add('post', '/login', login, [postCors])
+
+// Version
+r.add('get', '/version', () => {
+  return new JSONResponse({
+    // @ts-ignore
+    version: VERSION,
+    // @ts-ignore
+    commit: COMMITHASH,
+    // @ts-ignore
+    branch: BRANCH,
+  })
+})
 
 // Remote Pinning API
 r.add('post', '/pins', pinsAdd, [postCors])
