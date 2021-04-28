@@ -79,13 +79,8 @@ export async function updateNftDealMetrics() {
     const dealList = await stores.deals.list({ cursor, limit: 1000 })
     for (const k of dealList.keys) {
       /** @type {DealsSummary} */
-      let summary = k.metadata
-      // TODO: remove when ALL deals have summary in metadata
-      if (summary == null) {
-        const d = await deals.get(k.name)
-        if (!d.length) continue
-        summary = getDealsSummary(d)
-      }
+      const summary = k.metadata
+      if (summary == null) continue
       const status = getEffectiveStatus(summary)
       totals[status]++
     }
@@ -106,27 +101,6 @@ export async function updateNftDealMetrics() {
 }
 
 /**
- * @param {import('../bindings.js').Deal[]} deals
- * @returns {DealsSummary}
- */
-function getDealsSummary(deals) {
-  const summary = {
-    queued: 0,
-    proposing: 0,
-    accepted: 0,
-    failed: 0,
-    published: 0,
-    active: 0,
-    terminated: 0,
-  }
-  deals.forEach((d) => {
-    summary[d.status]++
-  })
-  return summary
-}
-
-/**
- *
  * @param {DealsSummary} summary
  * @returns {import('../bindings.js').Deal['status'] | 'unknown'}
  */
