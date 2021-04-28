@@ -21,10 +21,10 @@ export default function Files({ user }) {
   const [befores, setBefores] = useState([new Date().toISOString()])
   const queryClient = useQueryClient()
   const queryParams = { before: befores[0], limit }
-  const { status, data: nfts } = useQuery(['get-nfts', queryParams], getNfts, {
+  const { status, data } = useQuery(['get-nfts', queryParams], getNfts, {
     enabled: !!user,
-    initialData: [],
   })
+  const nfts = data || []
 
   async function handleDeleteFile(e) {
     e.preventDefault()
@@ -114,9 +114,10 @@ export default function Files({ user }) {
                       ))}
                     </tbody>
                   </table>
-                  <div className="center mv3">
+                  <div className="tc mv3">
                     <Button
                       className="black"
+                      wrapperClassName="mh2"
                       disabled={befores.length === 1}
                       onClick={handlePrevClick}
                     >
@@ -124,7 +125,8 @@ export default function Files({ user }) {
                     </Button>
                     <Button
                       className="black"
-                      disabled={nfts.length === 0}
+                      wrapperClassName="mh2"
+                      disabled={nfts.length < limit}
                       onClick={handleNextClick}
                     >
                       Next →

@@ -28,8 +28,11 @@ export function encodeIndexKey({ user, created, cid }) {
  */
 function decodeIndexKey(key) {
   const parts = key.split(':')
-  const created = new Date(FAR_FUTURE - parseInt(parts[1]))
-  return { user: { sub: parts[0] }, created, cid: parts[2] }
+  const cid = parts.pop()
+  const ts = parts.pop()
+  if (!cid || !ts) throw new Error('invalid index key')
+  const created = new Date(FAR_FUTURE - parseInt(ts))
+  return { user: { sub: parts.join(':') }, created, cid }
 }
 
 /**
@@ -112,6 +115,7 @@ export async function list(prefix, options) {
   const nfts = []
 
   while (!done) {
+    console.log('list prefix: ' + prefix)
     // @ts-ignore
     const nftIdxList = await stores.nftsIndex.list({ prefix, cursor })
 
