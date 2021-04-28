@@ -38,7 +38,7 @@ jobs:
         uses: rez0n/create-dns-record@v2.1
         with:
           type: 'CNAME'
-          name: 'nft.storage'
+          name: '@'
           content: ${{ github.event.inputs.frontend_cname }}
           ttl: 1
           proxied: true
