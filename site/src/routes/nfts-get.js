@@ -25,20 +25,5 @@ export const status = async (event, params) => {
     return HTTPError.respond(new HTTPError('not found', 404))
   }
 
-  return new JSONResponse({
-    ok: true,
-    value: {
-      ...nft,
-      deals: { status: getOverallDealStatus(deals), deals },
-    },
-  })
-}
-
-/**
- * @param {Deal[]} deals
- * @returns {'ongoing'|'finalized'}
- */
-function getOverallDealStatus(deals) {
-  if (!deals.length) return 'ongoing'
-  return deals.some((d) => d.status !== 'active') ? 'ongoing' : 'finalized'
+  return new JSONResponse({ ok: true, value: { ...nft, deals } })
 }
