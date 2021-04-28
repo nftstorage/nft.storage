@@ -72,21 +72,21 @@ export async function updateNftDealMetrics() {
     terminated: 0,
     unknown: 0,
   }
-  let done = false
-  let cursor
-  while (!done) {
-    // @ts-ignore
-    const dealList = await stores.deals.list({ cursor, limit: 1000 })
-    for (const k of dealList.keys) {
-      /** @type {DealsSummary} */
-      const summary = k.metadata
-      if (summary == null) continue
-      const status = getEffectiveStatus(summary)
-      totals[status]++
-    }
-    cursor = dealList.cursor
-    done = dealList.list_complete
-  }
+  // let done = false
+  // let cursor
+  // while (!done) {
+  //   // @ts-ignore
+  //   const dealList = await stores.deals.list({ cursor, limit: 1000 })
+  //   for (const k of dealList.keys) {
+  //     /** @type {DealsSummary} */
+  //     const summary = k.metadata
+  //     if (summary == null) continue
+  //     const status = getEffectiveStatus(summary)
+  //     totals[status]++
+  //   }
+  //   cursor = dealList.cursor
+  //   done = dealList.list_complete
+  // }
   await Promise.all([
     // Total number of NFTs stored on Filecoin in active deals
     metrics.set('nfts:deals:active:total', totals.active),
