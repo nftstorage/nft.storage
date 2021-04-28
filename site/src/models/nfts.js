@@ -115,7 +115,6 @@ export async function list(prefix, options) {
   const nfts = []
 
   while (!done) {
-    console.log('list prefix: ' + prefix)
     // @ts-ignore
     const nftIdxList = await stores.nftsIndex.list({ prefix, cursor })
 
