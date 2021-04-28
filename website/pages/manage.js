@@ -73,7 +73,7 @@ export default function ManageKeys({ user }) {
                       <Button
                         className="bg-nsorange white"
                         type="submit"
-                        disable={deleting}
+                        disabled={deleting}
                       >
                         {deleting === t[0] ? 'Deleting...' : 'Delete'}
                       </Button>
