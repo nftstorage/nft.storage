@@ -13,7 +13,7 @@ cli
   .option('--content', 'Record content ie. "subdomain.domain.com')
   .option('--type', 'Record type', 'CNAME')
   .option('--ttl', 'Record TTL', 1)
-  .option('--proxied', 'Record should proxied ?', true)
+  .option('--proxied', 'Record should be proxied ?', true)
   .action(async (opts) => {
     const cf = new CF({ token: opts.token })
     try {

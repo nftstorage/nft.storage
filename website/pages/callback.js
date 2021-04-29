@@ -26,6 +26,7 @@ const Callback = () => {
         await redirectSocial()
         router.push('/files')
       } catch (err) {
+        console.error(err)
         queryClient.invalidateQueries('magic-user')
         router.push('/')
       }
@@ -35,6 +36,7 @@ const Callback = () => {
         await redirectMagic()
         router.push('/files')
       } catch (err) {
+        console.error(err)
         queryClient.invalidateQueries('magic-user')
         router.push('/')
       }

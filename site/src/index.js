@@ -78,7 +78,7 @@ r.add('get', '/:cid', status, [postCors])
 r.add('post', '/upload', upload, [postCors])
 r.add('delete', '/:cid', remove, [postCors])
 
-// // Private API
+// Private API
 r.add('get', '/internal/tokens', tokensList, [postCors])
 r.add('post', '/internal/tokens', tokensCreate, [postCors])
 r.add('delete', '/internal/tokens', tokensDelete, [postCors])
