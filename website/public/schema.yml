@@ -229,7 +229,7 @@ components:
           type: string
           example: bafkreidivzimqfqtoqxkrpge6bjyhlvxqs3rhe73owtmdulaxr5do5in7u
         status:
-          description: Deal Status
+          description: Deal status
           type: string
           enum:
             - queued
@@ -242,7 +242,11 @@ components:
         statusText:
           type: string
           example: miner rejected my data
-          description: Deal Status Description
+          description: Deal status description.
+        chainDealID:
+          type: number
+          example: 138
+          description: Identifier for the deal stored on chain.
         dealActivation:
           type: string
           example: '2021-03-18T11:46:50.000Z'
