@@ -4,18 +4,27 @@ import Step from '../components/step.js'
 import Box from '../components/box.js'
 import Link from 'next/link'
 
+/**
+ * Static Props
+ *
+ * @returns {{ props: import('../components/types.js').LayoutProps}}
+ */
 export function getStaticProps() {
   return {
     props: {
-      redirectTo: null,
+      needsUser: false,
     },
   }
 }
 
-export default function Home({ user }) {
+/**
+ * Home Component
+ *
+ */
+export default function Home() {
   return (
     <>
-      <Hero user={user} />
+      <Hero />
       <main>
         <About />
         <GettingStarted />

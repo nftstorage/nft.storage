@@ -20,6 +20,9 @@ export default function Login() {
   const [disabled, setDisabled] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
 
+  /**
+   * @param {import('react').ChangeEvent<HTMLFormElement>} e
+   */
   async function onSubmit(e) {
     e.preventDefault()
 

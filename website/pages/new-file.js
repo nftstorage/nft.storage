@@ -11,6 +11,7 @@ export function getStaticProps() {
     props: {
       title: 'New NFT - NFT Storage',
       navBgColor: 'nsyellow',
+      redirectTo: '/',
       needsUser: true,
     },
   }
@@ -21,20 +22,26 @@ export default function NewFile() {
   const queryClient = useQueryClient()
   const [uploading, setUploading] = useState(false)
 
+  /**
+   * @param {import('react').ChangeEvent<HTMLFormElement>} e
+   */
   async function handleUploadSubmit(e) {
     e.preventDefault()
-    const file = e.target.file
-    const client = new NFTStorage({
-      token: await getToken(),
-      endpoint: API,
-    })
-    setUploading(true)
-    try {
-      await client.storeBlob(file.files[0])
-    } finally {
-      queryClient.invalidateQueries('get-nfts')
-      setUploading(false)
-      router.push('/files')
+    const data = new FormData(e.target)
+    const file = data.get('file')
+    if (file && file instanceof File) {
+      const client = new NFTStorage({
+        token: await getToken(),
+        endpoint: new URL(API),
+      })
+      setUploading(true)
+      try {
+        await client.storeBlob(file)
+      } finally {
+        queryClient.invalidateQueries('get-nfts')
+        setUploading(false)
+        router.push('/files')
+      }
     }
   }
 

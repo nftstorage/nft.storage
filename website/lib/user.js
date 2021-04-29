@@ -4,19 +4,17 @@ import { useQuery } from 'react-query'
 import { useRouter } from 'next/router'
 
 /**
+ * User Hook
  *
- * @param {options} options
- * @param {string} options.redirectTo
- * @param {boolean} options.redirectIfFound
+ * @param {Object} options
+ * @param {string} [options.redirectTo]
+ * @param {boolean} [options.redirectIfFound]
+ * @param {boolean} [options.enabled]
  * @returns
  */
 export function useUser({ redirectTo, redirectIfFound, enabled } = {}) {
   const router = useRouter()
-  const { status, data, error, isFetching } = useQuery(
-    'magic-user',
-    isLoggedIn,
-    { enabled }
-  )
+  const { status, data, error, isFetching } = useQuery('magic-user', isLoggedIn)
   const user = data
   const hasUser = Boolean(user)
 
