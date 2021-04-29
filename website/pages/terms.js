@@ -1,12 +1,18 @@
 import HashLink from '../components/hashlink.js'
+/**
+ *
+ * @returns {{ props: import('../components/types.js').LayoutProps}}
+ */
 export function getStaticProps() {
   return {
     props: {
       title: 'Terms of Service - NFT Storage',
       navBgColor: 'nspeach',
+      needsUser: false,
     },
   }
 }
+
 export default function TermsOfService() {
   return (
     <main className="bg-nspeach">

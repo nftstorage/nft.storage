@@ -1,3 +1,10 @@
+/**
+ * HashLink Component
+ *
+ * @param {Object} props
+ * @param {string} props.id
+ * @param {any} props.children
+ */
 export default function HashLink({ id, children }) {
   return (
     <a

@@ -1,0 +1,14 @@
+{
+  "name": "nft-storage-tools",
+  "version": "1.0.0",
+  "description": "NFT Storage Tools",
+  "private": true,
+  "main": "src/index.js",
+  "scripts": {},
+  "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
+  "license": "MIT",
+  "dependencies": {
+    "cloudflare": "^2.7.0",
+    "sade": "^1.7.4"
+  }
+}

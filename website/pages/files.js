@@ -5,39 +5,64 @@ import { NFTStorage } from 'nft.storage'
 import Button from '../components/button.js'
 import Loading from '../components/loading'
 import { getNfts, getToken, API } from '../lib/api.js'
+import { When } from 'react-if'
 
+/**
+ * Static Props
+ *
+ * @returns {{ props: import('../components/types.js').LayoutProps}}
+ */
 export function getStaticProps() {
   return {
     props: {
       title: 'Files - NFT Storage',
       navBgColor: 'nsyellow',
+      redirectTo: '/',
       needsUser: true,
     },
   }
 }
+
+/**
+ * Files Page
+ *
+ * @param {import('../components/types.js').LayoutChildrenProps} props
+ * @returns
+ */
 export default function Files({ user }) {
-  const [deleting, setDeleting] = useState(false)
+  const [deleting, setDeleting] = useState('')
   const [limit] = useState(25)
   const [befores, setBefores] = useState([new Date().toISOString()])
   const queryClient = useQueryClient()
   const queryParams = { before: befores[0], limit }
-  const { status, data } = useQuery(['get-nfts', queryParams], getNfts, {
+  const { status, data } = useQuery('get-nfts', () => getNfts(queryParams), {
     enabled: !!user,
   })
+  /** @type {any[]} */
   const nfts = data || []
 
+  /**
+   * @param {import('react').ChangeEvent<HTMLFormElement>} e
+   */
   async function handleDeleteFile(e) {
     e.preventDefault()
-    if (!confirm('Are you sure? Deleted files cannot be recovered!')) {
-      return
-    }
-    setDeleting(e.target.cid.value)
-    try {
-      const client = new NFTStorage({ token: await getToken(), endpoint: API })
-      await client.delete(e.target.cid.value)
-    } finally {
-      queryClient.invalidateQueries('get-nfts')
-      setDeleting(false)
+    const data = new FormData(e.target)
+    const cid = data.get('cid')
+    if (cid && typeof cid === 'string') {
+      if (!confirm('Are you sure? Deleted files cannot be recovered!')) {
+        return
+      }
+      setDeleting(cid)
+      try {
+        const client = new NFTStorage({
+          token: await getToken(),
+          endpoint: new URL(API),
+        })
+        await client.delete(cid)
+      } finally {
+        queryClient.invalidateQueries('get-nfts')
+        setDeleting('')
+      }
     }
   }
 
@@ -56,9 +81,10 @@ export default function Files({ user }) {
   return (
     <main className="bg-nsyellow">
       <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
-        {status === 'loading' ? (
+        <When condition={status === 'loading'}>
           <Loading />
-        ) : (
+        </When>
+        <When condition={status !== 'loading'}>
           <>
             <div className="flex mb3 items-center">
               <h1 className="chicagoflf mv4 flex-auto">Files</h1>
@@ -67,7 +93,14 @@ export default function Files({ user }) {
               </Button>
             </div>
             <div className="table-responsive">
-              {!hasZeroNfts ? (
+              <When condition={hasZeroNfts}>
+                <p className="tc mv5">
+                  <span className="f1 dib mb3">😢</span>
+                  <br />
+                  No files
+                </p>
+              </When>
+              <When condition={!hasZeroNfts}>
                 <>
                   <table className="bg-white ba b--black w-100 collapse">
                     <thead>
@@ -85,7 +118,10 @@ export default function Files({ user }) {
                       </tr>
                     </thead>
                     <tbody>
-                      {nfts.map((nft, i) => (
+                      {nfts.map((
+                        /** @type {any} */ nft,
+                        /** @type {number} */ i
+                      ) => (
                         <tr className="bb b--black" key={`nft-${i}`}>
                           <td className="pa2 br b--black">
                             {nft.created.split('T')[0]}
@@ -102,7 +138,7 @@ export default function Files({ user }) {
                               <Button
                                 className="bg-nsorange white"
                                 type="submit"
-                                disabled={deleting}
+                                disabled={Boolean(deleting)}
                               >
                                 {deleting === nft.cid
                                   ? 'Deleting...'
@@ -133,21 +169,20 @@ export default function Files({ user }) {
                     </Button>
                   </div>
                 </>
-              ) : (
-                <p className="tc mv5">
-                  <span className="f1 dib mb3">😢</span>
-                  <br />
-                  No files
-                </p>
-              )}
+              </When>
             </div>
           </>
-        )}
+        </When>
       </div>
     </main>
   )
 }
 
+/**
+ * Gateway Link Component
+ *
+ * @param {{cid: string}} props
+ */
 function GatewayLink({ cid }) {
   const href = cid.startsWith('Qm')
     ? `https://ipfs.io/ipfs/${cid}`

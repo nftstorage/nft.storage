@@ -5,12 +5,18 @@ import Box from '../components/box.js'
 import Button from '../components/button.js'
 import { createToken } from '../lib/api.js'
 
+/**
+ * Static Props
+ *
+ * @returns {{ props: import('../components/types.js').LayoutProps}}
+ */
 export function getStaticProps() {
   return {
     props: {
       title: 'New API Key - NFT Storage',
       navBgColor: 'nsgreen',
       needsUser: true,
+      redirectTo: '/',
     },
   }
 }
@@ -20,16 +26,22 @@ export default function NewKey() {
   const queryClient = useQueryClient()
   const [creating, setCreating] = useState(false)
 
+  /**
+   * @param {import('react').ChangeEvent<HTMLFormElement>} e
+   */
   async function handleCreateToken(e) {
     e.preventDefault()
-    const name = e.target.name.value
-    setCreating(true)
-    try {
-      await createToken(name)
-    } finally {
-      queryClient.invalidateQueries('get-tokens')
-      setCreating(false)
-      router.push('/manage')
+    const data = new FormData(e.target)
+    const name = data.get('name')
+    if (name && typeof name === 'string') {
+      setCreating(true)
+      try {
+        await createToken(name)
+      } finally {
+        queryClient.invalidateQueries('get-tokens')
+        setCreating(false)
+        router.push('/manage')
+      }
     }
   }
 

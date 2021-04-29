@@ -1,3 +1,4 @@
+// @ts-ignore
 import SwaggerUI from 'swagger-ui-react'
 import 'swagger-ui-react/swagger-ui.css'
 import { getToken } from '../lib/api'
@@ -9,6 +10,7 @@ const requestHandler = async (req) => {
   let token
   try {
     token = await getToken()
+    // @ts-ignore
     req.headers.Authorization = 'Bearer ' + token
   } catch (error) {}
   return req

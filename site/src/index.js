@@ -55,6 +55,12 @@ r.add('get', '/version', () => {
 })
 
 // Remote Pinning API
+r.add('get', '/api/pins', pinsList, [postCors])
+r.add('get', '/api/pins/:requestid', pinsGet, [postCors])
+r.add('post', '/api/pins', pinsAdd, [postCors])
+r.add('post', '/api/pins/:requestid', pinsReplace, [postCors])
+r.add('delete', '/api/pins/:requestid', pinsDelete, [postCors])
+
 r.add('post', '/pins', pinsAdd, [postCors])
 r.add('get', '/pins', pinsList, [postCors])
 r.add('get', '/pins/:requestid', pinsGet, [postCors])
@@ -62,9 +68,14 @@ r.add('post', '/pins/:requestid', pinsReplace, [postCors])
 r.add('delete', '/pins/:requestid', pinsDelete, [postCors])
 
 // Public API
-r.add('post', '/upload', upload, [postCors])
+r.add('get', '/api', list, [postCors])
+r.add('get', '/api/:cid', status, [postCors])
+r.add('post', '/api/upload', upload, [postCors])
+r.add('delete', '/api/:cid', remove, [postCors])
+
 r.add('get', '', list, [postCors])
 r.add('get', '/:cid', status, [postCors])
+r.add('post', '/upload', upload, [postCors])
 r.add('delete', '/:cid', remove, [postCors])
 
 // Private API

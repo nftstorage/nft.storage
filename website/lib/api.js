@@ -4,6 +4,7 @@ import constants from './constants'
 export const API = constants.API
 
 const LIFESPAN = 900
+/** @type {string | undefined} */
 let token
 let created = Date.now() / 1000
 
@@ -35,6 +36,11 @@ export async function getTokens() {
   }
 }
 
+/**
+ * Delete Token
+ *
+ * @param {string} name
+ */
 export async function deleteToken(name) {
   const res = await fetch(API + '/internal/tokens', {
     method: 'DELETE',
@@ -54,6 +60,11 @@ export async function deleteToken(name) {
   }
 }
 
+/**
+ * Create Token
+ *
+ * @param {string} name
+ */
 export async function createToken(name) {
   const res = await fetch(API + '/internal/tokens', {
     method: 'POST',
@@ -73,9 +84,14 @@ export async function createToken(name) {
   }
 }
 
-export async function getNfts({ queryKey }) {
-  const [, { before, limit }] = queryKey
-  const params = new URLSearchParams({ before, limit })
+/**
+ * Get NFTs
+ *
+ * @param {{limit: number, before: string }} query
+ * @returns
+ */
+export async function getNfts({ limit, before }) {
+  const params = new URLSearchParams({ before, limit: String(limit) })
   const res = await fetch(`${API}/?${params}`, {
     method: 'GET',
     headers: {
