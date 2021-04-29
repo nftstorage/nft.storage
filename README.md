@@ -6,7 +6,7 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
 
 # Table of Contents <!-- omit in toc -->
 
-- [JS client library](#js-client-library)
+- [Client Libraries](#client-libraries)
 - [HTTP API](#http-api)
 - [Development](#development)
   - [`site` Setup](#site-setup)
@@ -25,9 +25,17 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
   - [Contributing](#contributing)
   - [License](#license)
 
-# JS client library
+# Client libraries
 
-Check out the [JS client library documentation](https://github.com/ipfs-shipyard/nft.storage/tree/main/client).
+The JS client library is the official and supported client to nft.storage. Other libraries listed have been generated from the [OpenAPI schema](https://nft.storage/schema.yml) and are experimental, unsupported and may not work at all!
+
+- [JavaScript](https://github.com/ipfs-shipyard/nft.storage/tree/main/client)
+- [Go](https://github.com/nftstorage/go-client) (Generated from OpenAPI schema)
+- [Java](https://github.com/nftstorage/java-client) (Generated from OpenAPI schema)
+- [PHP](https://github.com/nftstorage/php-client) (Generated from OpenAPI schema)
+- [Python](https://github.com/nftstorage/python-client) (Generated from OpenAPI schema)
+- [Ruby](https://github.com/nftstorage/ruby-client) (Generated from OpenAPI schema)
+- [Rust](https://github.com/nftstorage/rust-client) (Generated from OpenAPI schema)
 
 # HTTP API
 
