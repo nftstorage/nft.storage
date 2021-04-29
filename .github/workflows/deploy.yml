@@ -66,7 +66,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: deploy-dev
       - run: yarn
       - run: ./tools/dns --name dev.nft.storage --token secrets.CF_API_TOKEN --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
       - run: echo "::warning::https://dev.nft.storage"
