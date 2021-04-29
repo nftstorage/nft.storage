@@ -397,7 +397,7 @@ function FAQ() {
           NFT.Storage fills the gap for NFT developers <strong>today</strong>
           who are looking for easy APIs and best practices for storing their NFT
           data securely and resiliently. In the long-term, NFT.Storage will
-          hopefully decentralize itself out of existence, upgrading today's
+          hopefully decentralize itself out of existence, upgrading today&apos;s
           implementation into the provably permanent storage solutions of
           tomorrow.
         </p>
