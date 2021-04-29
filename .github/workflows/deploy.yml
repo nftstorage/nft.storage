@@ -67,13 +67,6 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: deploy-dev
-        uses: rez0n/actions-coudflare-dns@v2.1
-        with:
-          type: 'CNAME'
-          name: 'dev.nft.storage'
-          content: ${{ github.event.inputs.frontend_cname }}
-          ttl: 1
-          proxied: true
-          token: ${{ secrets.CF_API_TOKEN }}
-          zone: ${{ secrets.CLOUDFLARE_ZONE }}
+      - run: yarn
+      - run: ./tools/dns --name dev.nft.storage --token secrets.CF_API_TOKEN --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
       - run: echo "::warning::https://dev.nft.storage"

@@ -3,7 +3,8 @@
   "workspaces": [
     "site",
     "client",
-    "website"
+    "website",
+    "tools"
   ],
   "scripts": {
     "test": "yarn test:site && yarn test:website",
