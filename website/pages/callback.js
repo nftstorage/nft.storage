@@ -24,20 +24,22 @@ const Callback = () => {
     const finishSocialLogin = async () => {
       try {
         await redirectSocial()
+        await queryClient.invalidateQueries('magic-user')
         router.push('/files')
       } catch (err) {
         console.error(err)
-        queryClient.invalidateQueries('magic-user')
+        await queryClient.invalidateQueries('magic-user')
         router.push('/')
       }
     }
     const finishEmailRedirectLogin = async () => {
       try {
         await redirectMagic()
+        await queryClient.invalidateQueries('magic-user')
         router.push('/files')
       } catch (err) {
         console.error(err)
-        queryClient.invalidateQueries('magic-user')
+        await queryClient.invalidateQueries('magic-user')
         router.push('/')
       }
     }
