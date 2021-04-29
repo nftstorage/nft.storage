@@ -26,7 +26,6 @@
     "@cloudflare/workers-types": "^2.1.0",
     "@magic-ext/oauth": "^0.7.0",
     "@types/debug": "^4.1.5",
-    "@types/react": "^17.0.4",
     "git-revision-webpack-plugin": "^3.0.6",
     "webpack": "^4.0.0"
   }
