@@ -389,16 +389,25 @@ function FAQ() {
           <HashLink id="faq">FAQ</HashLink>
         </h1>
         <h2 className="chicagoflf white">
+          <HashLink id="what-is-the-long-term-vision-for-nftstorage">
+            What is the long-term vision for NFT.Storage?
+          </HashLink>
+        </h2>
+        <p className="lh-copy white">
+          NFT.Storage fills the gap for NFT developers <strong>today</strong>
+          who are looking for easy APIs and best practices for storing their NFT
+          data securely and resiliently. In the long-term, NFT.Storage will
+          hopefully decentralize itself out of existence, upgrading today's
+          implementation into the provably permanent storage solutions of
+          tomorrow.
+        </p>
+        <h2 className="chicagoflf white">
           <HashLink id="how-long-will-data-be-stored-on-nftstorage">
             How long will data be stored on nft.storage?
           </HashLink>
         </h2>
         <p className="lh-copy white">
-          Off-chain NFT data can be stored for FREE on IPFS for as long as this
-          service continues. nft.storage will also use other storage mediums,
-          like Filecoin, to ensure data is persisted longer. If this service is
-          discontinued, 90 days notice will allow users to transition their data
-          to other storage methods. See the{' '}
+          Data will be available in IPFS indefinitely. See the{' '}
           <a href="/terms" className="white">
             Terms of Service
           </a>{' '}
