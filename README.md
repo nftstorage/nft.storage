@@ -25,7 +25,7 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
   - [Contributing](#contributing)
   - [License](#license)
 
-# Client libraries
+# Client Libraries
 
 The JS client library is the official and supported client to nft.storage. Other libraries listed have been generated from the [OpenAPI schema](https://nft.storage/schema.yml) and are experimental, unsupported and may not work at all!
 
