@@ -8,10 +8,6 @@ import { getNfts, getToken, API } from '../lib/api.js'
 import { When } from 'react-if'
 
 /**
- * @typedef {import('../../site/src/bindings').NFT} NFT
- */
-
-/**
  * Static Props
  *
  * @returns {{ props: import('../components/types.js').LayoutProps}}
@@ -42,7 +38,7 @@ export default function Files({ user }) {
   const { status, data } = useQuery('get-nfts', () => getNfts(queryParams), {
     enabled: !!user,
   })
-  /** @type {NFT[]} */
+  /** @type {any[]} */
   const nfts = data || []
 
   /**
@@ -123,7 +119,7 @@ export default function Files({ user }) {
                     </thead>
                     <tbody>
                       {nfts.map((
-                        /** @type {NFT} */ nft,
+                        /** @type {any} */ nft,
                         /** @type {number} */ i
                       ) => (
                         <tr className="bb b--black" key={`nft-${i}`}>
