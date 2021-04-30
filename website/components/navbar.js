@@ -15,8 +15,8 @@ export default function Navbar({ bgColor = 'nsorange', user }) {
   const queryClient = useQueryClient()
   async function logout() {
     await getMagic().user.logout()
+    await queryClient.invalidateQueries('magic-user')
     Router.push('/')
-    queryClient.invalidateQueries('magic-user')
   }
 
   return (

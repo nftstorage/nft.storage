@@ -38,7 +38,7 @@ export default function NewKey() {
       try {
         await createToken(name)
       } finally {
-        queryClient.invalidateQueries('get-tokens')
+        await queryClient.invalidateQueries('get-tokens')
         setCreating(false)
         router.push('/manage')
       }

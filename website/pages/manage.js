@@ -48,7 +48,7 @@ export default function ManageKeys({ user }) {
       try {
         await deleteToken(name)
       } finally {
-        queryClient.invalidateQueries('get-tokens')
+        await queryClient.invalidateQueries('get-tokens')
         setDeleting('')
       }
     }

@@ -31,7 +31,7 @@ export default function Login() {
 
     try {
       await loginEmail(e.currentTarget.email.value)
-      queryClient.invalidateQueries('magic-user')
+      await queryClient.invalidateQueries('magic-user')
       Router.push('/files')
     } catch (error) {
       setDisabled(false)

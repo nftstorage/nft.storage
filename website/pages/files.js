@@ -60,7 +60,7 @@ export default function Files({ user }) {
         })
         await client.delete(cid)
       } finally {
-        queryClient.invalidateQueries('get-nfts')
+        await queryClient.invalidateQueries('get-nfts')
         setDeleting('')
       }
     }
