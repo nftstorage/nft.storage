@@ -109,6 +109,7 @@ export async function redirectSocial() {
     const data = await login(result.magic.idToken, 'github', result)
     return { ...data, idToken: result.magic.idToken }
   } catch (err) {
+    console.log('🚀 ~ file: magic.js ~ line 112 ~ redirectSocial ~ err', err)
     await getMagic().user.logout()
     throw err
   }
