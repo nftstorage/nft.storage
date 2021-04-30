@@ -81,10 +81,12 @@ async function parseGithub(data, magicMetadata) {
   const sub = `github|${data.oauth.userHandle}`
   /** @type {Record<string, string>} */
   let tokens = {}
-  const oldUser = await getUser(sub)
-  if (oldUser) {
+
+  try {
+    const oldUser = await getUser(sub)
     tokens = oldUser.tokens
-  }
+  } catch {}
+
   return {
     sub: `github|${data.oauth.userHandle}`,
     nickname: data.oauth.userInfo.profile
