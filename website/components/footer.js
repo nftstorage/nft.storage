@@ -19,6 +19,7 @@ export default function Footer() {
             href="https://status.nft.storage/"
             className="nspink no-underline underline-hover v-mid"
             target="_blank"
+            rel="noreferrer"
           >
             Status
           </a>
