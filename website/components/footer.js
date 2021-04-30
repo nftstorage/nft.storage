@@ -15,6 +15,16 @@ export default function Footer() {
       </div>
       <div>
         <span className="db db-m dib-ns mv3">
+          <a
+            href="https://status.nft.storage/"
+            className="nspink no-underline underline-hover v-mid"
+            target="_blank"
+          >
+            Status
+          </a>
+        </span>
+        <Dot />
+        <span className="db db-m dib-ns mv3">
           <Link href="/terms">
             <a className="nspink no-underline underline-hover v-mid">
               Terms of Service
