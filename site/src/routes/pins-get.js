@@ -2,6 +2,7 @@ import * as PinataPSA from '../pinata-psa.js'
 import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
+import * as pins from '../models/pins.js'
 import * as cluster from '../cluster.js'
 
 /**
@@ -27,6 +28,14 @@ export async function pinsGet(event, params) {
 
   if (!nft) {
     return new JSONResponse(
+      { error: { reason: 'NOT_FOUND', details: 'NFT not found' } },
+      { status: 404 }
+    )
+  }
+
+  const pin = await pins.get(cid)
+  if (!nft) {
+    return new JSONResponse(
       { error: { reason: 'NOT_FOUND', details: 'pin not found' } },
       { status: 404 }
     )
@@ -35,9 +44,9 @@ export async function pinsGet(event, params) {
   /** @type import('../pinata-psa').PinStatus */
   const pinStatus = {
     requestid: nft.cid,
-    status: nft.pin.status,
+    status: pin.status,
     created: nft.created,
-    pin: { cid: nft.cid, name: nft.pin.name, meta: nft.pin.meta },
+    pin: { cid: nft.cid, ...(nft.pin || {}) },
     delegates: cluster.delegates(),
   }
 

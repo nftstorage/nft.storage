@@ -27,11 +27,14 @@ export class Cloudflare {
                 init.headers = init.headers || {}
                 init.headers.Authorization = `Bearer ${apiToken}`
                 init.signal = controller.signal
-                const res = await fetch(url, init)
-                if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`)
-                const data = await res.json()
-                clearTimeout(abortID)
-                return data
+                try {
+                  const res = await fetch(url, init)
+                  if (!res.ok)
+                    throw new Error(`${res.status}: ${res.statusText}`)
+                  return await res.json()
+                } finally {
+                  clearTimeout(abortID)
+                }
               },
               {
                 onFailedAttempt: (err) => {

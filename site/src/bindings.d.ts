@@ -11,6 +11,8 @@ declare global {
   const NFTS: KVNamespace
   const NFTS_IDX: KVNamespace
   const METRICS: KVNamespace
+  const PINS: KVNamespace
+  const FOLLOWUPS: KVNamespace
   const PINATA_JWT: string
   const CLUSTER_API_URL: string
   const CLUSTER_BASIC_AUTH_TOKEN: string
@@ -45,10 +47,6 @@ export type NFT = {
    */
   cid: string
   /**
-   * Size in bytes of the NFT data.
-   */
-  size: number
-  /**
    * Type of the data: "directory" or Blob.type.
    */
   type: string
@@ -57,9 +55,9 @@ export type NFT = {
    */
   files: Array<{ name: string; type: string }>
   /**
-   * Pinata pin data.
+   * Pinata pin name and meta.
    */
-  pin: Pin
+  pin?: { name?: string; meta?: Record<string, string> }
   /**
    * Name of the JWT token used to create this NFT.
    */
@@ -68,16 +66,6 @@ export type NFT = {
    * Date this NFT was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
    */
   created: string
-  /**
-   * Deals
-   */
-  deals?: {
-    /**
-     * Overall deal status
-     */
-    status: 'ongoing' | 'finalized'
-    deals: Deal[]
-  }
 }
 
 export type { Deal }

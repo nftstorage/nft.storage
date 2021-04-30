@@ -54,5 +54,6 @@ kv_namespaces = [
     { binding = "NFTS", preview_id = "c8fd3b56aa284e1395169c681a04fc91", id = "c8fd3b56aa284e1395169c681a04fc91" },
     { binding = "NFTS_IDX", preview_id = "59c33b953d40498a91f7b4ba5a747c24", id = "59c33b953d40498a91f7b4ba5a747c24" },
     { binding = "DEALS", preview_id = "e8bdcf6793554671ba98cfc7eaf4a225", id = "e8bdcf6793554671ba98cfc7eaf4a225" },
-    { binding = "METRICS", preview_id = "9f28491818d742a2b1363449fe39d6b7", id = "9f28491818d742a2b1363449fe39d6b7" }
+    { binding = "METRICS", preview_id = "9f28491818d742a2b1363449fe39d6b7", id = "9f28491818d742a2b1363449fe39d6b7" },
+    { binding = "PINS", preview_id = "21a950c30fe64f4c97f4257c8f4b45ae", id = "21a950c30fe64f4c97f4257c8f4b45ae" },
 ]

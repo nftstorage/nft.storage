@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
 import { Cloudflare } from './cloudflare.js'
+import { findNs } from './utils.js'
 
 dotenv.config()
 
@@ -20,90 +21,38 @@ async function main() {
   })
   console.log(`🐶 fetching KV namespaces`)
   const namespaces = await cf.fetchKVNamespaces()
-  const indexTables = namespaces.filter((ns) => ns.title.includes('NFTS_IDX'))
-  const tables = indexTables
-    .map((idxTable) => {
-      const title = idxTable.title.replace('NFTS_IDX', 'NFTS')
-      return {
-        table: namespaces.find((t) => t.title === title),
-        index: idxTable,
-      }
-    })
-    .filter((t) => {
-      if (env === 'production') {
-        return (
-          !t.table.title.includes('dev') && !t.table.title.includes('staging')
-        )
-      }
-      return t.table.title.includes(env)
-    })
+  const table = findNs(namespaces, env, 'NFTS')
+  const index = findNs(namespaces, env, 'NFTS_IDX')
 
-  for (const { table, index } of tables) {
-    console.log(`🎯 Populating ${index.title} from ${table.title}`)
-    let total = 0
-    for await (const keys of cf.fetchKVKeys(table.id)) {
-      const bulkWrites = { table: [], index: [] }
-      await Promise.all(
-        keys.map(async (k) => {
-          const [sub, cid] = k.name.split(':')
-          let { metadata } = k
-          if (!metadata) {
-            console.log(`📖 reading ${k.name} to fix missing metadata`)
-            const value = await cf.readKV(table.id, k.name)
-            console.log(`📗 read ${k.name}`)
-            metadata = {
-              pinStatus: value.pin.status,
-              size: value.size,
-              created: value.created,
-            }
-            // if pinned and no size, then set to pinning in meta so cron will
-            // pick it up and update status and size.
-            if (metadata.pinStatus === 'pinned' && !metadata.size) {
-              metadata.pinStatus = 'pinning'
-            }
-            bulkWrites.table.push({ key: k.name, value, metadata })
-          }
-          let { created } = metadata
-          if (!created) {
-            console.log(
-              `📖 reading ${k.name} to fix missing created date in metadata`
-            )
-            const value = await cf.readKV(table.id, k.name)
-            console.log(`📗 read ${k.name}`)
-            created = value.created
-            bulkWrites.table.push({
-              key: k.name,
-              value,
-              metadata: { ...metadata, created },
-            })
-          }
-          const indexKey = encodeIndexKey({
-            user: { sub },
-            created: new Date(created),
-            cid,
-          })
-          bulkWrites.index.push({
-            key: indexKey,
-            value: '',
-            metadata: { key: k.name },
-          })
+  console.log(`🎯 Populating ${index.title} from ${table.title}`)
+  let total = 0
+  for await (const keys of cf.fetchKVKeys(table.id)) {
+    const bulkWrites = []
+    await Promise.all(
+      keys.filter(Boolean).map(async (k) => {
+        const parts = k.name.split(':')
+        const cid = parts.pop()
+        const sub = parts.join(':')
+        const indexKey = encodeIndexKey({
+          user: { sub },
+          created: new Date(k.metadata.created),
+          cid,
         })
-      )
-      if (bulkWrites.table.length) {
-        console.log(`🧸 fixing metadata for ${bulkWrites.table.length} NFTs`)
-        await cf.writeMultiKV(table.id, bulkWrites.table)
-      }
-      if (bulkWrites.index.length) {
-        console.log(
-          `🗂 writing index entries for NFTs ${total} -> ${
-            total + bulkWrites.index.length
-          }`
-        )
-        await cf.writeMultiKV(index.id, bulkWrites.index)
-      }
-      total += bulkWrites.index.length
+        bulkWrites.push({
+          key: indexKey,
+          value: '',
+          metadata: { key: k.name },
+        })
+      })
+    )
+    if (bulkWrites.length) {
+      console.log(`🗂 writing index entries for ${bulkWrites.length} NFTs`)
+      await cf.writeMultiKV(index.id, bulkWrites)
     }
+    total += keys.length
+    console.log(`🦄 processed ${total} NFTs`)
   }
+  console.log('✅ done')
 }
 
 main().catch(console.error)
