@@ -4,6 +4,15 @@ import Navbar from './navbar.js'
 import Loading from '../components/loading'
 import { useUser } from '../lib/user'
 
+/**
+ * @typedef {import('react').ReactChildren} Children
+ * @typedef {(props: import('./types.js').LayoutChildrenProps) => Children} ChildrenFn
+ */
+/**
+ *
+ * @param {import('./types.js').LayoutProps & {children: ChildrenFn}} props
+ * @returns
+ */
 export default function Layout({
   callback,
   needsUser,
@@ -17,8 +26,10 @@ export default function Layout({
   const { user, status } = useUser({
     redirectTo,
     redirectIfFound,
-    enabled: !callback,
+    enabled: needsUser,
   })
+  const shouldWaitForUser = needsUser && status === 'loading'
+
   return (
     <div className="sans-serif">
       <Head>
@@ -37,7 +48,7 @@ export default function Layout({
         <meta name="twitter:site" content="@protocollabs" />
         <meta name="twitter:creator" content="@protocollabs" />
       </Head>
-      {status === 'loading' || (needsUser && !user) ? (
+      {shouldWaitForUser ? (
         <Loading />
       ) : callback ? (
         <>

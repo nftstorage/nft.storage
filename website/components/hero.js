@@ -87,6 +87,15 @@ const greenBoxStyle = {
   paddingLeft: 'min(3.88vw, 54px)',
 }
 
+/**
+ * Green Box
+ *
+ * @param {Object} props
+ * @param {string} [props.className]
+ * @param {any} [props.style]
+ * @param {any} props.children
+ * @returns
+ */
 function GreenBox({ className, style, children }) {
   style = style ? { ...greenBoxStyle, ...style } : greenBoxStyle
   className = className ?? 'ba b--black'

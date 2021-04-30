@@ -7,6 +7,11 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 60 * 1000 } },
 })
 
+/**
+ * App Component
+ *
+ * @param {any} props
+ */
 export default function App({ Component, pageProps }) {
   return (
     <QueryClientProvider client={queryClient}>

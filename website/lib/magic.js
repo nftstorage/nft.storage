@@ -3,14 +3,10 @@ import { OAuthExtension } from '@magic-ext/oauth'
 import constants from './constants'
 
 const API = constants.API
-/** @type {import('magic-sdk').Magic} */
+/** @type {import('magic-sdk').Magic | null} */
 let magic = null
 
 export function getMagic() {
-  if (typeof document === 'undefined') {
-    return undefined // static export
-  }
-
   if (magic) {
     return magic
   }
@@ -21,6 +17,11 @@ export function getMagic() {
   return magic
 }
 
+/**
+ * Login request
+ *
+ * @param {string} [token]
+ */
 export async function login(token, type = 'magic', data = {}) {
   const res = await fetch(API + '/login', {
     method: 'POST',
@@ -58,30 +59,61 @@ export async function isLoggedIn() {
   }
 }
 
+/**
+ * Login with email
+ *
+ * @param {string} email
+ */
 export async function loginEmail(email) {
-  const didToken = await magic.auth.loginWithMagicLink({
+  const didToken = await getMagic().auth.loginWithMagicLink({
     email: email,
     redirectURI: new URL('/callback', window.location.origin).href,
   })
-  const data = await login(didToken)
-  return data
+
+  if (didToken) {
+    const data = await login(didToken)
+    return data
+  }
+
+  throw new Error('Login failed.')
 }
 
+/**
+ * Login with social
+ *
+ * @param {string} provider
+ */
 export async function loginSocial(provider) {
+  // @ts-ignore - TODO fix Magic extension types
   await getMagic().oauth.loginWithRedirect({
     provider,
     redirectURI: new URL('/callback', window.location.origin).href,
   })
 }
+
 export async function redirectMagic() {
   const idToken = await getMagic().auth.loginWithCredential()
-  const data = await login(idToken)
-  return { ...data, idToken }
+  if (idToken) {
+    try {
+      const data = await login(idToken)
+      return { ...data, idToken }
+    } catch (err) {
+      await getMagic().user.logout()
+      throw err
+    }
+  }
+
+  throw new Error('Login failed.')
 }
 
 export async function redirectSocial() {
+  // @ts-ignore - TODO fix Magic extension types
   const result = await getMagic().oauth.getRedirectResult()
-  const data = await login(result.magic.idToken, 'github', result)
-
-  return { ...data, idToken: result.magic.idToken }
+  try {
+    const data = await login(result.magic.idToken, 'github', result)
+    return { ...data, idToken: result.magic.idToken }
+  } catch (err) {
+    await getMagic().user.logout()
+    throw err
+  }
 }

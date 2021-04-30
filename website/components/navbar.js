@@ -4,6 +4,13 @@ import { getMagic } from '../lib/magic.js'
 import { useQueryClient } from 'react-query'
 import Button from './button.js'
 
+/**
+ * Navbar Component
+ *
+ * @param {Object} props
+ * @param {string} [props.bgColor]
+ * @param {any} [props.user]
+ */
 export default function Navbar({ bgColor = 'nsorange', user }) {
   const queryClient = useQueryClient()
   async function logout() {
