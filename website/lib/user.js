@@ -19,7 +19,9 @@ export function useUser({ redirectTo, redirectIfFound, enabled } = {}) {
   const hasUser = Boolean(user)
 
   useEffect(() => {
-    if (!redirectTo || status === 'loading' || !enabled) return
+    if (!redirectTo || status === 'loading') {
+      return
+    }
     if (
       // If redirectTo is set, redirect if the user was not found.
       (redirectTo && !redirectIfFound && !hasUser) ||
