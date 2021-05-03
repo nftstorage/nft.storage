@@ -23,12 +23,13 @@ import {
 import { updatePinStatuses } from './jobs/pins.js'
 import { login } from './routes/login.js'
 import { JSONResponse } from './utils/json-response.js'
-const { debug } = require('./utils/debug')
+const { debug, getSentrySchedule } = require('./utils/debug')
 const log = debug('router')
 
 const r = new Router({
-  onError(req, err) {
+  onError(req, err, { sentry }) {
     log(err)
+    sentry.captureException(err)
     return HTTPError.respond(err)
   },
 })
@@ -43,7 +44,7 @@ r.add('options', '*', cors)
 r.add('post', '/login', login, [postCors])
 
 // Version
-r.add('get', '/version', () => {
+r.add('get', '/version', (event, param, sentry) => {
   return new JSONResponse({
     // @ts-ignore
     version: VERSION,
@@ -90,14 +91,21 @@ addEventListener('fetch', r.listen.bind(r))
 addEventListener('scheduled', (event) =>
   event.waitUntil(
     (async () => {
-      await timed(updateUserMetrics, 'CRON updateUserMetrics')
-      await timed(updateNftMetrics, 'CRON updateNftMetrics')
+      const sentry = getSentrySchedule(event)
+      await timed(updateUserMetrics, 'CRON updateUserMetrics', { sentry })
+      await timed(updateNftMetrics, 'CRON updateNftMetrics', { sentry })
     })()
   )
 )
-addEventListener('scheduled', (event) =>
-  event.waitUntil(timed(updateNftDealMetrics, 'CRON updateNftDealMetrics'))
-)
-addEventListener('scheduled', (event) =>
-  event.waitUntil(timed(updatePinStatuses, 'CRON updatePinStatuses'))
-)
+addEventListener('scheduled', (event) => {
+  const sentry = getSentrySchedule(event)
+  event.waitUntil(
+    timed(updateNftDealMetrics, 'CRON updateNftDealMetrics', { sentry })
+  )
+})
+addEventListener('scheduled', (event) => {
+  const sentry = getSentrySchedule(event)
+  event.waitUntil(
+    timed(updatePinStatuses, 'CRON updatePinStatuses', { sentry })
+  )
+})

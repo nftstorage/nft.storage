@@ -8,17 +8,20 @@ export async function notFound(event) {
 
 /**
  * @template T
- * @param {() => Promise<T | void>} fn
+ * @param {(ctx : import("../bindings").RouteContext) => Promise<T | void>} fn
  * @param {string} label
+ * @param {import("../bindings").RouteContext} ctx
  * @returns {Promise<T | void>}
  */
-export async function timed(fn, label) {
-  console.log(`START: ${label}`)
-  console.time(`END: ${label}`)
+export async function timed(fn, label, ctx) {
+  const { sentry } = ctx
+  sentry.addBreadcrumb({
+    message: label,
+  })
   try {
-    const res = await fn()
+    const res = await fn(ctx)
     return res
-  } finally {
-    console.timeEnd(`END: ${label}`)
+  } catch (err) {
+    sentry.captureException(err)
   }
 }

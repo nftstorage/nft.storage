@@ -7,11 +7,10 @@ import { deleteToken } from './../models/users'
  * @returns {Promise<Response>}
  */
 export const tokensDelete = async (event) => {
-  const auth = await validate(event)
-  const user = auth.user
+  const { user } = await validate(event)
   const body = await event.request.json()
 
-  await deleteToken(user.sub, body.name)
+  await deleteToken(user.issuer, body.name)
 
   return new JSONResponse({
     ok: true,
