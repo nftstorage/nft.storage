@@ -1,0 +1,55 @@
+name: Manual Deploy
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Choose an environment to deploy API to: <staging|production> (empty for dev)'
+        required: false
+        default: ''
+      frontend_cname:
+        description: 'Choose a Cloudflare Pages build to point the above environment to, ie: "2f7ade61.nft-storage.pages.dev". This will point <dev|staging>.nft.storage or nft.storage to 2f7ade61.nft-storage.pages.dev'
+        required: false
+jobs:
+  deploy-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Publish app
+        uses: cloudflare/wrangler-action@1.3.0
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          workingDirectory: 'site'
+          environment: ${{ github.event.inputs.environment }}
+      - name: annotation dev
+        if: github.event.inputs.environment == ''
+        run: echo "::warning::https://api-dev.nft.storage"
+      - name: annotation staging
+        if: github.event.inputs.environment == 'staging'
+        run: echo "::warning::https://api-staging.nft.storage"
+      - name: annotation production
+        if: github.event.inputs.environment == 'production'
+        run: echo "::warning::https://api.nft.storage"
+  deploy-frontend-production:
+    if: github.event.inputs.environment == 'production'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - run: yarn
+      - run: ./tools/dns.js --name nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
+      - run: echo "::warning::https://nft.storage"
+  deploy-frontend-staging:
+    if: github.event.inputs.environment == 'staging'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - run: yarn
+      - run: ./tools/dns.js --name staging.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
+      - run: echo "::warning::https://staging.nft.storage"
+  deploy-frontend-dev:
+    if: github.event.inputs.environment == ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - run: yarn
+      - run: ./tools/dns.js --name dev.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
+      - run: echo "::warning::https://dev.nft.storage"

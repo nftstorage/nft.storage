@@ -1,43 +1,44 @@
 name = "nft-storage-dev"
-type = "webpack"
 account_id = "fffa4b4363a7e5250af8357087263b3a"
 workers_dev = true
-route = ""
-zone_id = ""
+type = "webpack"
+webpack_config = "webpack.config.js"
 kv_namespaces = [
-    { binding = "SESSION", preview_id = "dca209a138af497aa68c1f653230beaf", id = "dca209a138af497aa68c1f653230beaf" },
-    { binding = "CSRF", preview_id = "905bd04b17bf4c739eb2250e56a1b767", id = "905bd04b17bf4c739eb2250e56a1b767" },
     { binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4", id = "7e441603d1bc4d5a87f6cecb959018e4" },
     { binding = "NFTS", preview_id = "f1c35cd1601c452782db6056b2d35f25", id = "f1c35cd1601c452782db6056b2d35f25" },
-    { binding = "DEALS", preview_id = "ce934a65bf6a44a398980a89daf66a70", id = "ce934a65bf6a44a398980a89daf66a70" }
+    { binding = "NFTS_IDX", preview_id = "82122c8f826c4ffd90608007c8c0c8ad", id = "82122c8f826c4ffd90608007c8c0c8ad" },
+    { binding = "DEALS", preview_id = "ce934a65bf6a44a398980a89daf66a70", id = "ce934a65bf6a44a398980a89daf66a70" },
+    { binding = "METRICS", preview_id = "104469a46696435bb2e7bfa201a36611", id = "104469a46696435bb2e7bfa201a36611" }
 ]
-vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true }
+vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
+
+[triggers]
+crons = ["*/10 * * * *"]
 
 [env.staging]
 name = "nft-storage-staging"
-type = "webpack"
-account_id = "fffa4b4363a7e5250af8357087263b3a"
-workers_dev = true
-route = ""
-zone_id = ""
-vars = { AUTH0_CALLBACK_URL = "https://staging.nft.storage/auth", DEBUG = false }
+route = "api-staging.nft.storage/*"
+webpack_config = "webpack.config.prod.js"
+vars = { ENV = "staging", DEBUG = '*', CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
 kv_namespaces = [
     { binding = "USERS", preview_id = "8964654a0a1d4f7586b59db90ef97594", id = "8964654a0a1d4f7586b59db90ef97594" },
-    { binding = "SESSION", preview_id = "7cf078ca01934227abedac1b29cd385c", id = "7cf078ca01934227abedac1b29cd385c" },
-    { binding = "CSRF", preview_id = "67c398acd70744a785995a59a5fcfff7", id = "67c398acd70744a785995a59a5fcfff7" },
     { binding = "NFTS", preview_id = "21763d3a9ce2465b875a49ae57a5a598", id = "21763d3a9ce2465b875a49ae57a5a598" },
-    { binding = "DEALS", preview_id = "ab1ee988b16747149e4dee6b1a07bbd2", id = "ab1ee988b16747149e4dee6b1a07bbd2" }
+    { binding = "NFTS_IDX", preview_id = "4d25963cfab14d998d6e08d7ad336f83", id = "4d25963cfab14d998d6e08d7ad336f83" },
+    { binding = "DEALS", preview_id = "ab1ee988b16747149e4dee6b1a07bbd2", id = "ab1ee988b16747149e4dee6b1a07bbd2" },
+    { binding = "METRICS", preview_id = "f80cad90abdf4bf98b41518f1e7a6ea1", id = "f80cad90abdf4bf98b41518f1e7a6ea1" }
 ]
 
 [env.production]
 name = "nft-storage"
-vars = { AUTH0_CALLBACK_URL = "https://nft.storage/auth", DEBUG = false }
+route = "api.nft.storage/*"
+webpack_config = "webpack.config.prod.js"
+vars = { ENV = "production", DEBUG = '', CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
 kv_namespaces = [
-    { binding = "SESSION", id = "2a62b6ec95d744c09c1c4de65e606585", preview_id = "dca209a138af497aa68c1f653230beaf" },
-    { binding = "CSRF", id = "a4f7fb397a0941d4ac6657515962e960", preview_id = "afc15a61a0414febafabfc724c904b50" },
     { binding = "USERS", id = "8a5a55b5d1af49ed8fcfab16e9fa8c41", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" },
     { binding = "NFTS", id = "9610798d5e5845fa94e4392cc1288ddf", preview_id = "f1c35cd1601c452782db6056b2d35f25" },
-    { binding = "DEALS", id = "9d5815757b04446ab8cfbc99e6296842", preview_id = "ce934a65bf6a44a398980a89daf66a70" }
+    { binding = "NFTS_IDX", id = "289648236dd74a8e96e5ee4f6581bff9", preview_id = "82122c8f826c4ffd90608007c8c0c8ad" },
+    { binding = "DEALS", id = "9d5815757b04446ab8cfbc99e6296842", preview_id = "ce934a65bf6a44a398980a89daf66a70" },
+    { binding = "METRICS", id = "12c38488fd6047fd8bb4030a8dacb406", preview_id = "104469a46696435bb2e7bfa201a36611" }
 ]
 
 [env.alanshaw]
@@ -47,15 +48,11 @@ account_id = "4fe12d085474d33bdcfd8e9bed4d8f95"
 workers_dev = true
 route = ""
 zone_id = ""
-vars = { AUTH0_CALLBACK_URL = "http://127.0.0.1:8787/auth", DEBUG = true }
+vars = { ENV= "dev", DEBUG = "*", CLUSTER_API_URL = "https://alan-cluster-api-nft-storage.loca.lt", CLUSTER_IPFS_PROXY_API_URL = "https://alan-ipfs-proxy-api-nft-storage.loca.lt/api/v0/", CLUSTER_ADDRS = "" }
 kv_namespaces = [
     { binding = "USERS", preview_id = "3dfa88660d0d4863a5f6b83781160637", id = "3dfa88660d0d4863a5f6b83781160637" },
-    { binding = "SESSION", preview_id = "a100ac642a854dbfa9778069fb52c800", id = "a100ac642a854dbfa9778069fb52c800" },
-    { binding = "CSRF", preview_id = "82a68f45340e43f1b07768279cde909d", id = "82a68f45340e43f1b07768279cde909d" },
     { binding = "NFTS", preview_id = "c8fd3b56aa284e1395169c681a04fc91", id = "c8fd3b56aa284e1395169c681a04fc91" },
-    { binding = "DEALS", preview_id = "e8bdcf6793554671ba98cfc7eaf4a225", id = "e8bdcf6793554671ba98cfc7eaf4a225" }
+    { binding = "NFTS_IDX", preview_id = "59c33b953d40498a91f7b4ba5a747c24", id = "59c33b953d40498a91f7b4ba5a747c24" },
+    { binding = "DEALS", preview_id = "e8bdcf6793554671ba98cfc7eaf4a225", id = "e8bdcf6793554671ba98cfc7eaf4a225" },
+    { binding = "METRICS", preview_id = "9f28491818d742a2b1363449fe39d6b7", id = "9f28491818d742a2b1363449fe39d6b7" }
 ]
-
-[site]
-bucket = "./public"
-entry-point = "."

@@ -1,91 +1,188 @@
-import useSWR from 'swr'
+import { useState } from 'react'
+import { useQuery, useQueryClient } from 'react-query'
 import filesize from 'filesize'
 import { NFTStorage } from 'nft.storage'
 import Button from '../components/button.js'
-import { getEdgeState } from '../lib/state.js'
-import Layout from '../components/layout.js'
+import Loading from '../components/loading'
+import { getNfts, getToken, API } from '../lib/api.js'
+import { When } from 'react-if'
 
-export default function Files() {
-  const { data } = useSWR('edge_state', getEdgeState)
-  let { user, loginUrl = '#', nfts = [] } = data ?? {}
-
-  nfts = nfts
-    .filter(Boolean)
-    .map((n) => {
-      n.created = new Date(n.created)
-      return n
-    })
-    .sort((a, b) => b.created.getTime() - a.created.getTime())
-
-  return (
-    <Layout
-      user={user}
-      loginUrl={loginUrl}
-      navBgColor="nsyellow"
-      title="Files - NFT Storage"
-    >
-      <main className="bg-nsyellow">
-        <div className="mw9 center pv3 ph5 min-vh-100">
-          <div className="flex mb3 items-center">
-            <h1 className="chicagoflf mv4 flex-auto">Files</h1>
-            <Button href="/new-file" className="flex-none" disabled>
-              + Upload
-            </Button>
-          </div>
-          {nfts.length ? (
-            <table className="bg-white ba b--black w-100 collapse mb4">
-              <tr className="bb b--black">
-                <th className="pa2 tl bg-nsgray br b--black w-33">Date</th>
-                <th className="pa2 tl bg-nsgray br b--black w-33">CID</th>
-                <th className="pa2 tl bg-nsgray br b--black w-33">Size</th>
-                <th className="pa2 tc bg-nsgray" />
-              </tr>
-              {nfts.map((nft) => (
-                <tr className="bb b--black">
-                  <td className="pa2 br b--black">
-                    {nft.created.toISOString().split('T')[0]}
-                  </td>
-                  <td className="pa2 br b--black">
-                    <GatewayLink cid={nft.cid} />
-                  </td>
-                  <td className="pa2 br b--black mw7">
-                    {filesize(nft.size || 0)}
-                  </td>
-                  <td className="pa2">
-                    <form onSubmit={handleDeleteFile}>
-                      <input type="hidden" name="cid" value={nft.cid} />
-                      <Button className="bg-nsorange white" type="submit">
-                        Delete
-                      </Button>
-                    </form>
-                  </td>
-                </tr>
-              ))}
-            </table>
-          ) : (
-            <p className="tc mv5">
-              <span className="f1 dib mb3">😢</span>
-              <br />
-              No files
-            </p>
-          )}
-        </div>
-      </main>
-    </Layout>
-  )
-
-  async function handleDeleteFile(e) {
-    e.preventDefault()
-    if (!confirm('Are you sure? Deleted files cannot be recovered!')) {
-      return
-    }
-    const token = user.tokens['default'] || Object.values(user.tokens)[0]
-    const client = new NFTStorage({ token, endpoint: location.origin })
-    await client.delete(e.target.cid.value)
-    location = '/files'
+/**
+ * Static Props
+ *
+ * @returns {{ props: import('../components/types.js').LayoutProps}}
+ */
+export function getStaticProps() {
+  return {
+    props: {
+      title: 'Files - NFT Storage',
+      navBgColor: 'nsyellow',
+      redirectTo: '/',
+      needsUser: true,
+    },
   }
 }
 
+/**
+ * Files Page
+ *
+ * @param {import('../components/types.js').LayoutChildrenProps} props
+ * @returns
+ */
+export default function Files({ user }) {
+  const [deleting, setDeleting] = useState('')
+  const [limit] = useState(25)
+  const [befores, setBefores] = useState([new Date().toISOString()])
+  const queryClient = useQueryClient()
+  const queryParams = { before: befores[0], limit }
+  const { status, data } = useQuery('get-nfts', () => getNfts(queryParams), {
+    enabled: !!user,
+  })
+  /** @type {any[]} */
+  const nfts = data || []
+
+  /**
+   * @param {import('react').ChangeEvent<HTMLFormElement>} e
+   */
+  async function handleDeleteFile(e) {
+    e.preventDefault()
+    const data = new FormData(e.target)
+    const cid = data.get('cid')
+    if (cid && typeof cid === 'string') {
+      if (!confirm('Are you sure? Deleted files cannot be recovered!')) {
+        return
+      }
+      setDeleting(cid)
+      try {
+        const client = new NFTStorage({
+          token: await getToken(),
+          endpoint: new URL(API),
+        })
+        await client.delete(cid)
+      } finally {
+        await queryClient.invalidateQueries('get-nfts')
+        setDeleting('')
+      }
+    }
+  }
+
+  function handlePrevClick() {
+    if (befores.length === 1) return
+    setBefores(befores.slice(1))
+  }
+
+  function handleNextClick() {
+    if (nfts.length === 0) return
+    setBefores([nfts[nfts.length - 1].created, ...befores])
+  }
+
+  const hasZeroNfts = nfts.length === 0 && befores.length === 1
+
+  return (
+    <main className="bg-nsyellow">
+      <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
+        <When condition={status === 'loading'}>
+          <Loading />
+        </When>
+        <When condition={status !== 'loading'}>
+          <>
+            <div className="flex mb3 items-center">
+              <h1 className="chicagoflf mv4 flex-auto">Files</h1>
+              <Button href="/new-file" className="flex-none">
+                + Upload
+              </Button>
+            </div>
+            <div className="table-responsive">
+              <When condition={hasZeroNfts}>
+                <p className="tc mv5">
+                  <span className="f1 dib mb3">😢</span>
+                  <br />
+                  No files
+                </p>
+              </When>
+              <When condition={!hasZeroNfts}>
+                <>
+                  <table className="bg-white ba b--black w-100 collapse">
+                    <thead>
+                      <tr className="bb b--black">
+                        <th className="pa2 tl bg-nsgray br b--black w-33">
+                          Date
+                        </th>
+                        <th className="pa2 tl bg-nsgray br b--black w-33">
+                          CID
+                        </th>
+                        <th className="pa2 tl bg-nsgray br b--black w-33">
+                          Size
+                        </th>
+                        <th className="pa2 tc bg-nsgray" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {nfts.map((
+                        /** @type {any} */ nft,
+                        /** @type {number} */ i
+                      ) => (
+                        <tr className="bb b--black" key={`nft-${i}`}>
+                          <td className="pa2 br b--black">
+                            {nft.created.split('T')[0]}
+                          </td>
+                          <td className="pa2 br b--black">
+                            <GatewayLink cid={nft.cid} />
+                          </td>
+                          <td className="pa2 br b--black mw7">
+                            {filesize(nft.size || 0)}
+                          </td>
+                          <td className="pa2">
+                            <form onSubmit={handleDeleteFile}>
+                              <input type="hidden" name="cid" value={nft.cid} />
+                              <Button
+                                className="bg-nsorange white"
+                                type="submit"
+                                disabled={Boolean(deleting)}
+                              >
+                                {deleting === nft.cid
+                                  ? 'Deleting...'
+                                  : 'Delete'}
+                              </Button>
+                            </form>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="tc mv3">
+                    <Button
+                      className="black"
+                      wrapperClassName="mh2"
+                      disabled={befores.length === 1}
+                      onClick={handlePrevClick}
+                    >
+                      ← Previous
+                    </Button>
+                    <Button
+                      className="black"
+                      wrapperClassName="mh2"
+                      disabled={nfts.length < limit}
+                      onClick={handleNextClick}
+                    >
+                      Next →
+                    </Button>
+                  </div>
+                </>
+              </When>
+            </div>
+          </>
+        </When>
+      </div>
+    </main>
+  )
+}
+
+/**
+ * Gateway Link Component
+ *
+ * @param {{cid: string}} props
+ */
 function GatewayLink({ cid }) {
   const href = cid.startsWith('Qm')
     ? `https://ipfs.io/ipfs/${cid}`

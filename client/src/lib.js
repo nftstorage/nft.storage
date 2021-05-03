@@ -17,8 +17,6 @@ import * as API from './lib/interface.js'
 import * as Token from './token.js'
 import { fetch, File, Blob, FormData } from './platform.js'
 
-const ENDPOINT = new URL('https://nft.storage')
-
 /**
  * @implements API.Service
  */
@@ -46,7 +44,7 @@ class NFTStorage {
    *
    * @param {{token: string, endpoint?:URL}} options
    */
-  constructor({ token, endpoint = ENDPOINT }) {
+  constructor({ token, endpoint = new URL('https://api.nft.storage') }) {
     /**
      * Authorization token.
      *
@@ -65,6 +63,7 @@ class NFTStorage {
    * @param {string} token
    */
   static auth(token) {
+    if (!token) throw new Error('missing token')
     return { Authorization: `Bearer ${token}` }
   }
   /**
@@ -73,7 +72,7 @@ class NFTStorage {
    * @returns {Promise<API.CIDString>}
    */
   static async storeBlob({ endpoint, token }, blob) {
-    const url = new URL('/api/upload', endpoint)
+    const url = new URL('/upload', endpoint)
 
     const request = await fetch(url.toString(), {
       method: 'POST',
@@ -94,7 +93,7 @@ class NFTStorage {
    * @returns {Promise<API.CIDString>}
    */
   static async storeDirectory({ endpoint, token }, files) {
-    const url = new URL('/api/upload', endpoint)
+    const url = new URL('/upload', endpoint)
     const body = new FormData()
     for (const file of files) {
       body.append('file', file, file.name)
@@ -124,7 +123,7 @@ class NFTStorage {
     { endpoint, token },
     { name, description, image, properties, decimals, localization }
   ) {
-    const url = new URL(`/api/store`, endpoint)
+    const url = new URL(`/store`, endpoint)
     // Just validate that expected field are present
     if (typeof name !== 'string') {
       throw new TypeError(
@@ -178,7 +177,7 @@ class NFTStorage {
    * @returns {Promise<API.StatusResult>}
    */
   static async status({ endpoint, token }, cid) {
-    const url = new URL(`/api/${cid}`, endpoint)
+    const url = new URL(`/${cid}`, endpoint)
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: NFTStorage.auth(token),
@@ -188,7 +187,7 @@ class NFTStorage {
     if (result.ok) {
       return {
         cid: result.value.cid,
-        deals: result.value.deals,
+        deals: decodeDeals(result.value.deals),
         size: result.value.size,
         pin: result.value.pin,
         created: new Date(result.value.created),
@@ -204,7 +203,7 @@ class NFTStorage {
    * @returns {Promise<void>}
    */
   static async delete({ endpoint, token }, cid) {
-    const url = new URL(`/api/${cid}`, endpoint)
+    const url = new URL(`/${cid}`, endpoint)
     const response = await fetch(url.toString(), {
       method: 'DELETE',
       headers: NFTStorage.auth(token),
@@ -293,6 +292,26 @@ class NFTStorage {
     return NFTStorage.store(this, token)
   }
 }
+
+/**
+ * @param {API.Deal[]} deals
+ * @returns {API.Deal[]}
+ */
+const decodeDeals = (deals) =>
+  deals.map((deal) => {
+    const { dealActivation, dealExpiration, lastChanged } = {
+      dealExpiration: null,
+      dealActivation: null,
+      ...deal,
+    }
+
+    return {
+      ...deal,
+      lastChanged: new Date(lastChanged),
+      ...(dealActivation && { dealActivation: new Date(dealActivation) }),
+      ...(dealExpiration && { dealExpiration: new Date(dealExpiration) }),
+    }
+  })
 
 const TokenModel = Token.Token
 export { TokenModel as Token }

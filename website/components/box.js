@@ -1,3 +1,19 @@
+import clsx from 'clsx'
+
+/**
+ * @typedef {Object} BoxProps
+ * @prop {string} [bgColor]
+ * @prop {string} [borderColor]
+ * @prop {string} [wrapperClassName]
+ * @prop {string} [className]
+ * @prop {any} children
+ */
+
+/**
+ *
+ * @param {BoxProps} props
+ * @returns
+ */
 export default function Box({
   bgColor = 'white',
   borderColor = 'nsgray',
@@ -5,15 +21,23 @@ export default function Box({
   className,
   children,
 }) {
-  wrapperClassName = `bg-${borderColor} ba b--black ${
-    wrapperClassName ?? ''
-  }`.trim()
-  className = `relative w-100 h-100 pa3 bg-${bgColor} ba b--black ${
-    className ?? ''
-  }`.trim()
   return (
-    <div className={wrapperClassName}>
-      <div className={className} style={{ top: 10, right: 8 }}>
+    <div
+      className={clsx(`bg-${borderColor}`, 'ba', 'b--black', wrapperClassName)}
+    >
+      <div
+        className={clsx(
+          'relative',
+          'w-100',
+          'h-100',
+          'pa3',
+          `bg-${bgColor}`,
+          'ba',
+          'b--black',
+          className
+        )}
+        style={{ top: 10, right: 8 }}
+      >
         {children}
       </div>
     </div>

@@ -1,28 +1,34 @@
-// let AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, SALT, PINATA_JWT, IPFS_HOST
+// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, IPFS_HOST
 export const stores = {
-  auth: SESSION,
-  csrf: CSRF,
   deals: DEALS,
   users: USERS,
   nfts: NFTS,
+  nftsIndex: NFTS_IDX,
+  metrics: METRICS,
 }
 
-export const auth0 = {
-  domain: AUTH0_DOMAIN,
-  clientId: AUTH0_CLIENT_ID,
-  clientSecret: AUTH0_CLIENT_SECRET,
-  callbackUrl: AUTH0_CALLBACK_URL,
+export const secrets = {
   salt: SALT,
-}
-
-export const pinata = {
-  jwt: PINATA_JWT,
+  pinata: PINATA_JWT,
+  magic: MAGIC_SECRET_KEY,
 }
 
 export const ipfs = {
   host: IPFS_HOST,
 }
 
-export const cookieKey = 'AUTH0-AUTH'
+export const cluster = {
+  apiUrl: CLUSTER_API_URL,
+  basicAuthToken:
+    typeof CLUSTER_BASIC_AUTH_TOKEN !== 'undefined'
+      ? CLUSTER_BASIC_AUTH_TOKEN
+      : '',
+  ipfsProxyApiUrl: CLUSTER_IPFS_PROXY_API_URL,
+  ipfsProxyBasicAuthToken:
+    typeof CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN !== 'undefined'
+      ? CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN
+      : '',
+  addrs: Object.freeze(CLUSTER_ADDRS.split(',').filter(Boolean)),
+}
 
 export const isDebug = DEBUG === 'true'

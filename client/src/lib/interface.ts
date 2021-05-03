@@ -61,65 +61,81 @@ export interface API {
 export interface StatusResult {
   cid: string
   size: number
-  deals: Deals
+  deals: Deal[]
   pin: Pin
   created: Date
 }
 
-export type Deals = OngoingDeals | FinalizedDeals
+export type Deal =
+  | QueuedDeal
+  | PendingDeal
+  | FailedDeal
+  | PublishedDeal
+  | FinalizedDeal
 
-/**
- * In flight deals, once they are finilized transitions to `FinilizedDeals`
- * state.
- */
-export interface OngoingDeals {
-  readonly status: 'ongoing'
+export interface DealInfo {
+  lastChanged: Date
   /**
-   * Array of ongoing deals. During this state `deals` array may change over
-   * time.
+   * Miner ID
    */
-  deals: Deals[]
-}
+  miner: string
 
-/**
- * Finilized deals. In this state all the deals are finilized and are not going
- * to change.
- */
-export interface FinalizedDeals {
-  readonly status: 'finalized'
-  readonly deals: FinalizedDeals[]
+  /**
+   * Filecoin network for this Deal
+   */
+  network?: 'nerpanet' | 'mainnet'
+  /**
+   * Piece CID string
+   */
+  pieceCid: CIDString
+  /**
+   * CID string
+   */
+  batchRootCid: CIDString
 }
-
-export type Deal = QueuedDeal | PendingDeal | PublishedDeal | FinalizedDeal
 
 export interface QueuedDeal {
   status: 'queued'
-  sequence: number
-  lastStatusChangeTimestamp: Date
+  /**
+   * Timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
+   */
+  lastChanged: Date
 }
 
-export interface PendingDeal {
-  status: 'proposing' | 'rejected' | 'accepted' | 'errored'
-  sequence: number
-  lastStatusChangeTimestamp: Date
-  miner: string
+export interface PendingDeal extends DealInfo {
+  status: 'proposing' | 'accepted'
 }
 
-export interface PublishedDeal {
+export interface FailedDeal extends DealInfo {
+  status: 'failed'
+  /**
+   * Reason deal failed.
+   */
+  statusText: string
+}
+
+export interface PublishedDeal extends DealInfo {
   status: 'published'
-  sequence: number
-  lastStatusChangeTimestamp: Date
-  miner: string
-  chainDealId: number
+  /**
+   * Identifier for the deal stored on chain.
+   */
+  chainDealID: number
 }
 
-export interface FinalizedDeal {
+export interface FinalizedDeal extends DealInfo {
   status: 'active' | 'terminated'
-  sequence: number
-  lastStatusChangeTimestamp: Date
-  miner: string
-  chainDealId: number
+  /**
+   * Identifier for the deal stored on chain.
+   */
+  chainDealID: number
+
+  /**
+   * Deal Activation
+   */
   dealActivation: Date
+  /**
+   * Deal Expiraction
+   */
   dealExpiration: Date
 }
 

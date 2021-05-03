@@ -4,7 +4,7 @@
     "allowJs": true,
     "checkJs": true,
     "target": "esnext",
-    "lib": ["esnext", "webworker"],
+    "lib": ["ESNext", "WebWorker"],
     "strict": true,
     "moduleResolution": "node",
     "sourceMap": true,

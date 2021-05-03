@@ -1,40 +1,199 @@
-import { HTTPError } from '../errors.js'
-import { verifyToken } from '../utils/utils.js'
-import * as PinataPSA from '../pinata-psa.js'
+import * as cluster from '../cluster.js'
+import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
+import { stores } from '../constants.js'
+
+/**
+ * @typedef {{
+ *   name?: string,
+ *   meta?: Record<string, string>,
+ *   pinStatus: import('../pinata-psa').Status,
+ *   size: number,
+ *   created: string
+ *   createdSort?: number
+ * }} NFTMetadata
+ * @typedef {{ name: string, metadata: NFTMetadata }} Key
+ */
 
 /**
  * @param {FetchEvent} event
  * @returns {Promise<JSONResponse>}
  */
-export async function pinsList (event) {
-  const result = await verifyToken(event)
-  if (!result.ok) {
-    return HTTPError.respond(result.error)
-  }
+export async function pinsList(event) {
+  const result = await validate(event)
   const { user } = result
   const { searchParams } = new URL(event.request.url)
 
-  const options = Object.fromEntries(searchParams.entries())
-  if (options.meta) {
-    let meta
-    try {
-      meta = JSON.parse(options.meta)
-      if (meta == null || typeof meta !== 'object') {
-        throw new Error('invalid meta')
-      }
-    } catch (_) {
-      meta = {}
+  let count = 0
+  /** @type {Key[]} */
+  let keys = []
+  const options = queryToListOptions(searchParams)
+  const limit = options.limit || 10
+  const filter = makeFilter(options)
+
+  let done = false
+  let cursor
+  while (!done) {
+    // @ts-ignore
+    const nftList = await stores.nfts.list({
+      prefix: user.sub,
+      cursor,
+      limit: 1000,
+    })
+    for (const key of nftList.keys) {
+      if (!filter(key)) continue
+      count++
+      key.metadata.createdSort = key.metadata.created
+        ? new Date(key.metadata.created).getTime()
+        : 0
+      keys.push(key)
     }
-    options.meta = JSON.stringify({ ...meta, sub: user.sub })
-  } else {
-    options.meta = JSON.stringify({ sub: user.sub })
+    if (keys.length >= limit) {
+      keys = keys
+        // @ts-ignore
+        .sort((a, b) => b.metadata.createdSort - a.metadata.createdSort)
+        .slice(0, limit)
+    }
+    cursor = nftList.cursor
+    done = nftList.list_complete
   }
 
-  const res = await PinataPSA.pinsList(options)
-  if (!res.ok) {
-    return PinataPSA.parseErrorResponse(res.error)
+  /** @type import('../pinata-psa').PinStatus[] */
+  const results = keys.map((k) => {
+    const cid = k.name.split(':').pop()
+    if (!cid) throw new Error('invalid NFT key')
+    return {
+      requestid: cid,
+      status: k.metadata.pinStatus,
+      created: k.metadata.created || new Date(0).toISOString(),
+      delegates: cluster.delegates(),
+      pin: { cid, name: k.metadata.name, meta: k.metadata.meta },
+    }
+  })
+
+  return new JSONResponse({ count, results })
+}
+
+/**
+ * @param {URLSearchParams} searchParams
+ * @returns {import('../pinata-psa').ListOptions}
+ */
+function queryToListOptions(searchParams) {
+  const queryObj = Object.fromEntries(searchParams.entries())
+  const cid = queryObj.cid ? queryObj.cid.split(',') : undefined
+  let meta
+  if (queryObj.meta) {
+    meta = JSON.parse(queryObj.meta)
+    if (meta == null || typeof meta !== 'object' || Array.isArray(meta)) {
+      throw new Error('invalid meta')
+    }
+  }
+  const name = queryObj.name
+  /** @type import('../pinata-psa.js').ListOptions['match'] */
+  let match
+  if (queryObj.match) {
+    if (
+      queryObj.match === 'exact' ||
+      queryObj.match === 'iexact' ||
+      queryObj.match === 'partial' ||
+      queryObj.match === 'ipartial'
+    ) {
+      match = queryObj.match
+    } else {
+      throw new Error('invalid match value')
+    }
+  }
+  /** @type import('../pinata-psa.js').Status[] | undefined */
+  let status
+  if (queryObj.status) {
+    status = []
+    for (const s of queryObj.status.split(',')) {
+      if (
+        s !== 'queued' &&
+        s !== 'pinning' &&
+        s !== 'pinned' &&
+        s !== 'failed'
+      ) {
+        throw new Error('invalid status value')
+      }
+      status.push(s)
+    }
+  }
+  const before = queryObj.before ? new Date(queryObj.before) : undefined
+  const after = queryObj.before ? new Date(queryObj.after) : undefined
+
+  let limit
+  if (queryObj.limit) {
+    const parsedLimit = parseInt(queryObj.limit)
+    if (isNaN(parsedLimit)) {
+      throw new Error('invalid limit')
+    }
+    if (parsedLimit < 1 || parsedLimit > 1000) {
+      throw new RangeError('limit out of bounds')
+    }
+    limit = parsedLimit
   }
 
-  return new JSONResponse(res.value)
+  return { cid, meta, name, match, status, before, after, limit }
+}
+
+/**
+ * @param {import('../pinata-psa.js').ListOptions} options
+ * @returns {(key: Key) => boolean}
+ */
+function makeFilter(options) {
+  return (key) => {
+    const metadata = key.metadata || {}
+    if (options.cid) {
+      const cid = key.name.split(':').pop()
+      if (!cid) throw new Error('invalid NFT key')
+      if (!options.cid.includes(cid)) {
+        return false
+      }
+    }
+    if (options.meta) {
+      const meta = metadata.meta || {}
+      for (const [k, v] of Object.entries(options.meta)) {
+        if (meta[k] !== v) {
+          return false
+        }
+      }
+    }
+    if (options.name) {
+      const match = options.match || 'exact'
+      const name = metadata.name || ''
+      if (match === 'exact') {
+        if (options.name !== name) {
+          return false
+        }
+      } else if (match === 'iexact') {
+        if (options.name.toLowerCase() !== name.toLowerCase()) {
+          return false
+        }
+      } else if (match === 'partial') {
+        if (!name.includes(options.name)) {
+          return false
+        }
+      } else if (match === 'ipartial') {
+        if (!name.toLowerCase().includes(options.name.toLowerCase())) {
+          return false
+        }
+      }
+    }
+    if (options.status && !options.status.includes(metadata.pinStatus)) {
+      return false
+    }
+    if (options.before || options.after) {
+      const created = metadata.created
+        ? new Date(metadata.created).getTime()
+        : 0
+      if (options.before && options.before.getTime() < created) {
+        return false
+      }
+      if (options.after && options.after.getTime() > created) {
+        return false
+      }
+    }
+    return true
+  }
 }

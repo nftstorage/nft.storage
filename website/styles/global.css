@@ -66,3 +66,15 @@
 .bg-nsyellow {
   background-color: var(--nsyellow);
 }
+
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}

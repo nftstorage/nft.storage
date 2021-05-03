@@ -1,6 +1,5 @@
-import { HTTPError } from '../errors.js'
-import { verifyToken } from '../utils/utils.js'
 import * as nfts from '../models/nfts.js'
+import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 
 /**
@@ -8,11 +7,8 @@ import { JSONResponse } from '../utils/json-response.js'
  * @param {Record<string,string>} params
  */
 export const remove = async (event, params) => {
-  const token = await verifyToken(event)
-  if (!token.ok) {
-    return HTTPError.respond(token.error)
-  }
-  const user = token.user
+  const auth = await validate(event)
+  const user = auth.user
 
   await nfts.remove({ user, cid: params.cid })
   // TODO: We need to unpin from pinata as well, however we need to make

@@ -1,6 +1,5 @@
-import { HTTPError } from '../errors'
+import { validate } from '../utils/auth'
 import { JSONResponse } from '../utils/json-response'
-import { verifyToken } from '../utils/utils'
 import { tokens } from './../models/users'
 
 /**
@@ -8,10 +7,7 @@ import { tokens } from './../models/users'
  * @returns {Promise<Response>}
  */
 export const tokensList = async (event) => {
-  const auth = await verifyToken(event, 'session')
-  if (!auth.ok) {
-    return HTTPError.respond(auth.error)
-  }
+  const auth = await validate(event)
   const user = auth.user
 
   return new JSONResponse({

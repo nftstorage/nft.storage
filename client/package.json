@@ -1,6 +1,6 @@
 {
   "name": "nft.storage",
-  "version": "0.0.0-dev",
+  "version": "1.0.0",
   "description": "nft.storage client",
   "license": "(Apache-2.0 AND MIT)",
   "type": "module",
@@ -41,11 +41,11 @@
   },
   "devDependencies": {
     "@ssttevee/multipart-parser": "0.1.8",
-    "@types/mocha": "8.2.1",
+    "@types/mocha": "8.2.2",
     "hundreds": "0.0.9",
     "ipfs-unixfs-importer": "6.0.1",
     "ipld": "0.29.0",
-    "ipld-dag-pb": "0.22.0",
+    "ipld-dag-pb": "0.22.2",
     "ipld-in-memory": "8.0.0",
     "mocha": "8.3.2",
     "multicodec": "3.0.1",
@@ -56,7 +56,7 @@
     "playwright-test": "2.1.0",
     "rollup": "2.22.1",
     "rollup-plugin-multi-input": "1.1.1",
-    "typedoc": "0.20.32",
+    "typedoc": "0.20.36",
     "uvu": "0.5.1"
   },
   "homepage": "https://github.com/ipfs-shipyard/nft.storage/tree/main/client",

@@ -1,4 +1,4 @@
-import { pinata, ipfs } from './constants.js'
+import { secrets, ipfs } from './constants.js'
 
 const endpoint = new URL('https://api.pinata.cloud')
 
@@ -40,7 +40,7 @@ export const pinFile = async (blob, user) => {
     body,
     method: 'POST',
     headers: {
-      authorization: `Bearer ${pinata.jwt}`,
+      authorization: `Bearer ${secrets.pinata}`,
     },
   })
 
@@ -82,7 +82,7 @@ export const pinCID = async (cid, user) => {
     }),
     method: 'POST',
     headers: {
-      authorization: `Bearer ${pinata.jwt}`,
+      authorization: `Bearer ${secrets.pinata}`,
     },
   })
 
@@ -132,7 +132,7 @@ export async function pinFiles(files, user) {
     body,
     method: 'POST',
     headers: {
-      authorization: `Bearer ${pinata.jwt}`,
+      authorization: `Bearer ${secrets.pinata}`,
     },
   })
 
@@ -156,13 +156,34 @@ export const pinInfo = async (cid) => {
   const response = await fetch(url.toString(), {
     method: 'GET',
     headers: {
-      authorization: `Bearer ${pinata.jwt}`,
+      authorization: `Bearer ${secrets.pinata}`,
     },
   })
 
   if (response.ok) {
     const { rows } = await response.json()
     return { ok: true, value: rows[0] }
+  } else {
+    return { ok: false, error: response }
+  }
+}
+
+/**
+ * @param {string} cid
+ * @param {{ pinataOptions?: { hostNodes?: string[] }, pinataMetadata?: { name?: string } }} [options]
+ * @returns {Promise<{ ok: true, value: { id: string, ipfsHash: string, status: string, name: string} }|{ ok: false, error: Response }>}
+ */
+export async function pinByHash(cid, options) {
+  const url = new URL('pinning/pinByHash', endpoint)
+
+  const response = await fetch(url.toString(), {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${secrets.pinata}` },
+    body: JSON.stringify({ hashToPin: cid, ...(options || {}) }),
+  })
+
+  if (response.ok) {
+    return { ok: true, value: await response.json() }
   } else {
     return { ok: false, error: response }
   }

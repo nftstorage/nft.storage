@@ -86,7 +86,7 @@ const importToken = async (request) => {
 
     return result
   } else {
-    throw Error('/api/store expects multipart/form-data')
+    throw Error('/store expects multipart/form-data')
   }
 }
 
@@ -119,11 +119,16 @@ const setIn = (object, path, value) => {
 
 /**
  * @typedef {{AUTH_TOKEN:string, store: Map<string, any>}} State
+ * @param {string} [token]
+ * @param {Map<string, any>} [store]
  * @returns {State}
  */
-export const init = (token = Math.random().toString(32).slice(2)) => ({
+export const init = (
+  token = Math.random().toString(32).slice(2),
+  store = new Map()
+) => ({
   AUTH_TOKEN: token,
-  store: new Map(),
+  store,
 })
 
 /**
@@ -133,7 +138,7 @@ export const init = (token = Math.random().toString(32).slice(2)) => ({
 export const handle = async (request, { store, AUTH_TOKEN }) => {
   const url = new URL(request.url)
 
-  const [_, api, param] = url.pathname.split('/')
+  const [_, param] = url.pathname.split('/')
   const auth = request.headers.get('authorization')
   const [, token] = (auth && auth.match(/Bearer (.+)/)) || []
 
@@ -156,21 +161,21 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
     )
   }
   try {
-    switch (`${request.method} /${api}/${param}`) {
-      case 'POST /api/store': {
+    switch (`${request.method} /${param}`) {
+      case 'POST /store': {
         const result = await importToken(request)
         return new Response(JSON.stringify(result), {
           headers: headers(request),
         })
       }
-      case 'POST /api/upload': {
+      case 'POST /upload': {
         const { cid } = await importUpload(request)
         const key = `${token}:${cid}`
         if (!store.get(key)) {
           const created = new Date()
           store.set(key, {
             cid: cid.toString(),
-            deals: { status: 'ongoing', deals: [] },
+            deals: [],
             pin: {
               cid: cid.toString(),
               status: 'pinned',
@@ -185,7 +190,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           headers: headers(request),
         })
       }
-      case `GET /api/${param}`: {
+      case `GET /${param}`: {
         const cid = CID.parse(param || '')
         const value = store.get(`${token}:${cid}`)
         const [status, result] = value
@@ -203,7 +208,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           headers: headers(request),
         })
       }
-      case `DELETE /api/${param}`: {
+      case `DELETE /${param}`: {
         const cid = CID.parse(param || '')
         store.delete(`${token}:${cid}`)
         return new Response(JSON.stringify({ ok: true }), {

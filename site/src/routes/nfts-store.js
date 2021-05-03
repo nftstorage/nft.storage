@@ -1,5 +1,6 @@
 import { HTTPError } from '../errors.js'
-import { verifyToken, setIn } from '../utils/utils.js'
+import { validate } from '../utils/auth.js'
+import { setIn } from '../utils/utils.js'
 import { toFormData } from '../utils/form-data.js'
 import * as nfts from '../models/nfts.js'
 import { JSONResponse } from '../utils/json-response.js'
@@ -15,12 +16,7 @@ import * as pinata from '../pinata.js'
  * @param {FetchEvent} event
  */
 export async function store(event) {
-  const auth = await verifyToken(event)
-  if (!auth.ok) {
-    return HTTPError.respond(auth.error)
-  }
-  const { user, tokenName } = auth
-
+  const { user, tokenName } = await validate(event)
   const form = await toFormData(event.request)
 
   const data = JSON.parse(/** @type {string} */ (form.get('meta')))

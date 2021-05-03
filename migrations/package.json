@@ -1,0 +1,17 @@
+{
+  "name": "nft.storage-migrations",
+  "version": "0.0.0",
+  "private": "true",
+  "description": "KV migrations for nft.storage",
+  "main": "index.js",
+  "type": "module",
+  "author": "Alan Shaw",
+  "dependencies": {
+    "abort-controller": "^3.0.0",
+    "dotenv": "^8.2.0",
+    "form-data": "^4.0.0",
+    "limiter": "^1.1.5",
+    "node-fetch": "^2.6.1",
+    "p-retry": "^4.5.0"
+  }
+}

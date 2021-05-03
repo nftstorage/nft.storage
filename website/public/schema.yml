@@ -2,18 +2,10 @@ openapi: '3.0.2'
 info:
   title: NFT Storage API
   version: '1.0'
-  description: |
-    # API Reference
-  termsOfService: 'terms'
-  contact:
-    name: NFT Storage
-    url: 'https://nft.storage'
-  x-logo:
-    url: '/images/logo-nft.storage.svg'
-    altText: NFT Storage logo
 
 servers:
-  - url: https://nft.storage/api
+  - url: https://api.nft.storage
+  # - url: http://127.0.0.1:8787
 
 tags:
   - name: NFT Storage
@@ -70,6 +62,9 @@ paths:
         - NFT Storage
       summary: List all stored files
       operationId: list
+      parameters:
+        - $ref: '#/components/parameters/before'
+        - $ref: '#/components/parameters/limit'
       responses:
         '200':
           description: OK
@@ -123,7 +118,7 @@ paths:
 
         - Does not terminate any established Filecoin deal.
         - Does not remove the content from other IPFS nodes in the network that already cached or pinned the CID.  
-        
+
         Note: the content will remain available if another user has stored the CID with nft.storage.
       operationId: delete
       parameters:
@@ -146,7 +141,7 @@ paths:
           $ref: '#/components/responses/forbidden'
         '5XX':
           $ref: '#/components/responses/internalServerError'
-  
+
 components:
   schemas:
     NFT:
@@ -162,13 +157,7 @@ components:
           $ref: '#/components/schemas/Date'
         type:
           type: string
-          enum:
-            [
-              directory,
-              image/jpeg,
-              application/json,
-              other mime types,
-            ]
+          enum: [directory, image/jpeg, application/json, other mime types]
           example: image/jpeg
           description: MIME type of the upload file or 'directory' when uploading multiple files.
         scope:
@@ -180,18 +169,9 @@ components:
         files:
           $ref: '#/components/schemas/Files'
         deals:
-          type: object
-          properties:
-            status:
-              description: Overall deal status
-              type: string
-              enum:
-                - ongoing
-                - finalized
-            deals: 
-              type: array
-              items:
-                $ref: '#/components/schemas/Deal'
+          type: array
+          items:
+            $ref: '#/components/schemas/Deal'
     Links:
       type: object
       properties:
@@ -249,7 +229,7 @@ components:
           type: string
           example: bafkreidivzimqfqtoqxkrpge6bjyhlvxqs3rhe73owtmdulaxr5do5in7u
         status:
-          description: Deal Status
+          description: Deal status
           type: string
           enum:
             - queued
@@ -262,7 +242,11 @@ components:
         statusText:
           type: string
           example: miner rejected my data
-          description: Deal Status Description
+          description: Deal status description.
+        chainDealID:
+          type: number
+          example: 138
+          description: Identifier for the deal stored on chain.
         dealActivation:
           type: string
           example: '2021-03-18T11:46:50.000Z'
@@ -316,7 +300,7 @@ components:
     ListResponse:
       type: object
       properties:
-        ok: 
+        ok:
           type: boolean
           default: true
         value:
@@ -326,7 +310,7 @@ components:
     GetResponse:
       type: object
       properties:
-        ok: 
+        ok:
           type: boolean
           default: true
         value:
@@ -335,7 +319,7 @@ components:
     DeleteResponse:
       type: object
       properties:
-        ok: 
+        ok:
           type: boolean
     ErrorResponse:
       type: object
@@ -415,6 +399,26 @@ components:
         'application/json':
           schema:
             $ref: '#/components/schemas/ErrorResponse'
-
+  parameters:
+    before:
+      description: Return results created before provided timestamp
+      name: before
+      in: query
+      required: false
+      schema:
+        type: string
+        format: date-time  # RFC 3339, section 5.6
+      example: "2020-07-27T17:32:28Z"
+    limit:
+      description: Max records to return
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
+        default: 10
 security:
   - bearerAuth: []

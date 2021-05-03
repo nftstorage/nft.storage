@@ -8,7 +8,7 @@ const crossStyle = {
   backgroundSize: '100% 100%',
 }
 
-export default function Hero({ user, loginUrl }) {
+export default function Hero() {
   return (
     <div className="bg-nsorange">
       <div className="center mw9 ba b--black relative">
@@ -48,7 +48,7 @@ export default function Hero({ user, loginUrl }) {
           <hgroup className="chicagoflf white">
             <h1 className="f4 f2-m f1-ns fw4 mv3">Free Storage for NFTs</h1>
             <h2 className="f5 fw4 mw7 center mv3 lh-copy">
-              5GB storage of NFT data on{' '}
+              Free decentralized storage and bandwidth for NFTs on{' '}
               <img
                 src="images/logo-ipfs-sm.png"
                 width="57"
@@ -66,30 +66,12 @@ export default function Hero({ user, loginUrl }) {
                 style={{ maxWidth: '30px', height: 'auto' }}
                 alt="Filecoin logo"
               />{' '}
-              Filecoin and provided free to{' '}
-              <a href="https://nfthack.ethglobal.co/" className="white">
-                NFTHack
-              </a>{' '}
-              participants during the hackathon.
+              Filecoin.
             </h2>
           </hgroup>
           <div className="mt3 mb4">
-            {user ? null : (
-              <>
-                <Button
-                  wrapperClassName="mh3 mb3"
-                  className="bg-nslime"
-                  href={loginUrl}
-                >
-                  Register
-                </Button>
-                <Button wrapperClassName="mh3 mb3 dib-m dn-ns" href={loginUrl}>
-                  Login
-                </Button>
-              </>
-            )}
-            <Button wrapperClassName="mh3 mb3" href="#about">
-              Find out more
+            <Button wrapperClassName="mh3 mb3" href="#getting-started">
+              Get Started
             </Button>
           </div>
         </div>
@@ -105,6 +87,15 @@ const greenBoxStyle = {
   paddingLeft: 'min(3.88vw, 54px)',
 }
 
+/**
+ * Green Box
+ *
+ * @param {Object} props
+ * @param {string} [props.className]
+ * @param {any} [props.style]
+ * @param {any} props.children
+ * @returns
+ */
 function GreenBox({ className, style, children }) {
   style = style ? { ...greenBoxStyle, ...style } : greenBoxStyle
   className = className ?? 'ba b--black'
