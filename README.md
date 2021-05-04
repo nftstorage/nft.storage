@@ -60,7 +60,7 @@ Inside the `site` folder create a file called `.env.local` with the following co
 
 ```ini
 SENTRY_TOKEN=<sentry user auth token>
-SENTRY_UPLOAD=false # toogle for sentry source/sourcemaps upload
+SENTRY_UPLOAD=false # toggle for sentry source/sourcemaps upload (capture will still work)
 ```
 
 Production vars should set in Github Actions secrets.
