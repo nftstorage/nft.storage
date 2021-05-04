@@ -17,7 +17,6 @@ export default function Navbar({ bgColor = 'nsorange', user }) {
     await getMagic().user.logout()
     await queryClient.invalidateQueries('magic-user')
     Router.push('/')
-    throw new Error('Sentry Frontend Error')
   }
 
   return (
