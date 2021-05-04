@@ -3,6 +3,8 @@ require('dotenv').config({
   path: path.resolve(process.cwd(), '.env.local'),
 })
 const webpack = require('webpack')
+const SentryWebpackPlugin = require('@sentry/webpack-plugin')
+
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const gitRevisionPlugin = new GitRevisionPlugin()
 module.exports = {
