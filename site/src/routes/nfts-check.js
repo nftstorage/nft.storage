@@ -22,7 +22,7 @@ export const check = async (event, params) => {
     ;[status, deals] = await Promise.all([cluster.status(cid), getDeals(cid)])
   } catch (err) {
     if (err.response && err.response.status === 404) {
-      return HTTPError.respond(new HTTPError('not found', 404))
+     throw new HTTPError('not found', 404)
     }
     throw err
   }
