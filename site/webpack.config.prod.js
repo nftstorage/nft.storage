@@ -10,6 +10,7 @@ const gitRevisionPlugin = new GitRevisionPlugin()
 module.exports = {
   target: 'webworker',
   mode: 'production',
+  devtool: 'source-map',
   resolve: {
     alias: {
       'node-fetch': path.resolve(__dirname, 'fetch.js'),
