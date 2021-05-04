@@ -23,13 +23,14 @@ module.exports = {
       COMMITHASH: JSON.stringify(gitRevisionPlugin.commithash()),
       BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
     }),
-    new SentryWebpackPlugin({
-      release: gitRevisionPlugin.version(),
-      include: './dist',
-      urlPrefix: '/',
-      org: 'protocol-labs-it',
-      project: 'api',
-      authToken: process.env.SENTRY_TOKEN,
-    }),
-  ],
+    process.env.SENTRY_UPLOAD === 'true' &&
+      new SentryWebpackPlugin({
+        release: gitRevisionPlugin.version(),
+        include: './dist',
+        urlPrefix: '/',
+        org: 'protocol-labs-it',
+        project: 'api',
+        authToken: process.env.SENTRY_TOKEN,
+      }),
+  ].filter(Boolean),
 }
