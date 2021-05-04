@@ -1,10 +1,13 @@
 import regexparam from 'regexparam'
+import { getSentry } from './debug'
 
 /**
- * @typedef {(event: FetchEvent, params: Record<string,string>) => Promise<Response> | Response} Handler
+ * @typedef {import('../bindings').RouteContext} RouteContext
+ * @typedef {import('toucan-js').default} Sentry
+ * @typedef {(event: FetchEvent, params: Record<string,string>, ctx: RouteContext) => Promise<Response> | Response} Handler
  * @typedef {(req: Request) => boolean | Record<string,string>} Condition
  * @typedef {(req: Request) => Response} BasicHandler
- * @typedef {(req: Request, err: Error) => Response} ErrorHandler
+ * @typedef {(req: Request, err: Error, ctx: RouteContext) => Response} ErrorHandler
  * @typedef {(req: Request, rsp: Response) => Response} ResponseHandler
  */
 
@@ -132,15 +135,16 @@ class Router {
    * @param {FetchEvent} event
    */
   async route(event) {
+    this.sentry = getSentry(event)
     const req = event.request
     const [handler, params, postHandlers] = this.resolve(req)
     let rsp
 
     if (handler) {
       try {
-        rsp = await handler(event, params)
+        rsp = await handler(event, params, { sentry: this.sentry })
       } catch (err) {
-        rsp = this.options.onError(req, err)
+        rsp = this.options.onError(req, err, { sentry: this.sentry })
       }
     } else {
       rsp = this.options.onNotFound(req)

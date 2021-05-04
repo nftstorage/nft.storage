@@ -12,6 +12,6 @@ export const tokensList = async (event) => {
 
   return new JSONResponse({
     ok: true,
-    value: await tokens(user.sub),
+    value: await tokens(user.issuer),
   })
 }

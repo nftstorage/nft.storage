@@ -10,6 +10,7 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "noEmit": true,
+    "resolveJsonModule": true,
     "types": ["@cloudflare/workers-types"]
   },
   "include": [

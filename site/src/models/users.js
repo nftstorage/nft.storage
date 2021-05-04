@@ -8,25 +8,11 @@ const users = USERS
  * @typedef {import('../bindings').User} User
  * @typedef {import('../bindings').UserSafe} UserSafe
  *
- * @example
- * ```json
- * {
- *   "nickname":"hugomrdias",
- *   "name":"Hugo Dias",
- *   "picture":"https://avatars.githubusercontent.com/u/314190?v=4",
- *   "updated_at":"2021-03-09T20:47:39.307Z",
- *   "email":"hugomrdias@gmail.com",
- *   "email_verified":true,"iss":"https://hugomrdias.eu.auth0.com/",
- *   "sub":"github|314190",
- *   "aud":"HPc0iTCaRYxOSQv5mW9i4Qguzw7mxhLP",
- *   "iat":1615322859,
- *   "exp":1615358859
- * }
- * ```
  */
 
-// https://tools.ietf.org/html/rfc7519#section-4.1
 /**
+ * New User
+ *
  * @param {User} newUser
  * @return {Promise<User>}
  */
@@ -43,11 +29,13 @@ export async function createOrUpdate(newUser) {
 }
 
 /**
- * @param {string} sub
+ * Get User
+ *
+ * @param {string} issuer
  * @returns {Promise<User>}
  */
-export async function getUser(sub) {
-  const user = await users.get(sub)
+export async function getUser(issuer) {
+  const user = await users.get(issuer)
   if (user === null) {
     throw new Error('user not found')
   }
@@ -62,18 +50,19 @@ export async function getUser(sub) {
  */
 export function userSafe(user) {
   return {
-    name: user.name,
     sub: user.sub,
+    issuer: user.issuer,
+    publicAddress: user.publicAddress,
+    name: user.name,
     nickname: user.nickname,
     email: user.email,
     picture: user.picture,
-    issuer: user.issuer,
-    publicAddress: user.publicAddress,
   }
 }
 
 /**
  * Match a token and returns the token name
+ *
  * @param {User} user
  * @param {string} token
  */
@@ -91,13 +80,13 @@ export function matchToken(user, token) {
 /**
  * List user tokens
  *
- * @param {string} sub
+ * @param {string} issuer
  * @returns {Promise<User>}
  */
-export async function tokens(sub) {
-  const user = await users.get(sub)
+export async function tokens(issuer) {
+  const user = await users.get(issuer)
   if (user === null) {
-    throw new Error('user not found')
+    throw new Error('user not found to list tokens')
   }
   return JSON.parse(user).tokens
 }
@@ -105,37 +94,40 @@ export async function tokens(sub) {
 /**
  * Create new token
  *
- * @param {string} sub
+ * https://tools.ietf.org/html/rfc7519#section-4.1
+ *
+ * @param {string} issuer
  * @param {string} name
  */
-export async function createToken(sub, name) {
-  const user = await getUser(sub)
+export async function createToken(issuer, name) {
+  const user = await getUser(issuer)
   const token = user.tokens[name]
 
   if (token) {
     throw new Error(`A token with name "${name}" already exists.`)
   }
+
   user.tokens[name] = await signJWT({
-    sub: sub,
+    sub: issuer,
     iss: 'nft-storage',
     iat: Date.now(),
     name: name,
   })
-  return await users.put(sub, JSON.stringify(user))
+  return await users.put(issuer, JSON.stringify(user))
 }
 
 /**
  * Delete new token
  *
- * @param {string} sub
+ * @param {string} issuer
  * @param {string} name
  */
-export async function deleteToken(sub, name) {
-  const user = await getUser(sub)
+export async function deleteToken(issuer, name) {
+  const user = await getUser(issuer)
   const token = user.tokens[name]
 
   if (token) {
     delete user.tokens[name]
   }
-  return await users.put(sub, JSON.stringify(user))
+  return await users.put(issuer, JSON.stringify(user))
 }
