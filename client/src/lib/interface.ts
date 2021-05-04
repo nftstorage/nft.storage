@@ -24,7 +24,7 @@ export interface API {
    */
   storeDirectory(service: Service, files: Iterable<File>): Promise<CIDString>
   /**
-   * Returns current status of the stored content by its CID. Note the CID must
+   * Returns current status of the stored NFT by its CID. Note the NFT must
    * have previously been stored by this account.
    */
   status(service: Service, cid: string): Promise<StatusResult>
@@ -35,7 +35,7 @@ export interface API {
    */
   delete(service: Service, cid: string): Promise<void>
   /**
-   * Public (unauthenticated) status check for the passed CID.
+   * Check if a CID of an NFT is being stored by nft.storage.
    */
   check(service: PublicService, cid: string): Promise<CheckResult>
 }

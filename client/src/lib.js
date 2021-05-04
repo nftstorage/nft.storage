@@ -218,7 +218,7 @@ class NFTStorage {
     return NFTStorage.storeDirectory(this, files)
   }
   /**
-   * Returns current status of the stored content by its CID. Note the CID must
+   * Returns current status of the stored NFT by its CID. Note the NFT must
    * have previously been stored by this account.
    *
    * @example
@@ -248,7 +248,7 @@ class NFTStorage {
     return NFTStorage.delete(this, cid)
   }
   /**
-   * Returns public status of any stored content on nft.storage by its CID.
+   * Check if a CID of an NFT is being stored by nft.storage.
    *
    * @example
    * ```js
