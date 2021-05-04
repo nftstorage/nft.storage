@@ -53,7 +53,7 @@ export const set = async (key, value, options) => {
   const savedValue = await get(key)
   if (savedValue === null) {
     const kvKey = encodeKey(key)
-    await stores.nfts.put(kvKey, JSON.stringify(value))
+    await stores.nfts.put(kvKey, JSON.stringify(value), options)
     await stores.nftsIndex.put(
       encodeIndexKey({ ...key, created: new Date(value.created) }),
       '',
