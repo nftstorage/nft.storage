@@ -140,6 +140,27 @@ class NFTStorage {
   }
 
   /**
+   * @param {API.PublicService} service
+   * @param {string} cid
+   * @returns {Promise<API.CheckResult>}
+   */
+  static async check({ endpoint }, cid) {
+    const url = new URL(`/check/${cid}`, endpoint)
+    const response = await fetch(url.toString())
+    const result = await response.json()
+
+    if (result.ok) {
+      return {
+        cid: result.value.cid,
+        deals: decodeDeals(result.value.deals),
+        pin: result.value.pin,
+      }
+    } else {
+      throw new Error(result.error.message)
+    }
+  }
+
+  /**
    * @param {API.Service} service
    * @param {string} cid
    * @returns {Promise<void>}
@@ -197,7 +218,9 @@ class NFTStorage {
     return NFTStorage.storeDirectory(this, files)
   }
   /**
-   * Returns current status of the stored content by its CID.
+   * Returns current status of the stored content by its CID. Note the CID must
+   * have previously been stored by this account.
+   *
    * @example
    * ```js
    * const status = await client.status('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
@@ -223,6 +246,19 @@ class NFTStorage {
    */
   delete(cid) {
     return NFTStorage.delete(this, cid)
+  }
+  /**
+   * Returns public status of any stored content on nft.storage by its CID.
+   *
+   * @example
+   * ```js
+   * const status = await client.check('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
+   * ```
+   *
+   * @param {string} cid
+   */
+  check(cid) {
+    return NFTStorage.check(this, cid)
   }
 }
 

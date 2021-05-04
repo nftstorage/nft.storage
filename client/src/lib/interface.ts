@@ -3,6 +3,10 @@ export interface Service {
   token: string
 }
 
+export interface PublicService {
+  endpoint: URL
+}
+
 /**
  * CID in string representation
  */
@@ -20,7 +24,8 @@ export interface API {
    */
   storeDirectory(service: Service, files: Iterable<File>): Promise<CIDString>
   /**
-   * Returns current status of the stored content by its CID.
+   * Returns current status of the stored content by its CID. Note the CID must
+   * have previously been stored by this account.
    */
   status(service: Service, cid: string): Promise<StatusResult>
   /**
@@ -29,6 +34,16 @@ export interface API {
    * replicated it might still continue providing it.
    */
   delete(service: Service, cid: string): Promise<void>
+  /**
+   * Public (unauthenticated) status check for the passed CID.
+   */
+  check(service: PublicService, cid: string): Promise<CheckResult>
+}
+
+export interface CheckResult {
+  cid: string
+  pin: { status: PinStatus }
+  deals: Deal[]
 }
 
 export interface StatusResult {
