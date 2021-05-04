@@ -248,7 +248,8 @@ class NFTStorage {
     return NFTStorage.delete(this, cid)
   }
   /**
-   * Check if a CID of an NFT is being stored by nft.storage.
+   * Check if a CID of an NFT is being stored by nft.storage. Throws if the NFT
+   * was not found.
    *
    * @example
    * ```js
