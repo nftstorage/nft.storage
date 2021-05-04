@@ -20,7 +20,7 @@ module.exports = {
       BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
     }),
     new SentryWebpackPlugin({
-      release: `${pkg.name}-${pkg.version}`,
+      release: gitRevisionPlugin.version(),
       include: './dist',
       urlPrefix: '/',
       org: 'protocol-labs-it',

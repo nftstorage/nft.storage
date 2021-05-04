@@ -21,7 +21,7 @@ const sentryOptions = {
   rewriteFrames: {
     root: '/',
   },
-  release: `${pkg.name}-${pkg.version}`,
+  release: VERSION,
   pkg,
 }
 

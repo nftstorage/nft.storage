@@ -4,7 +4,6 @@ require('dotenv').config({
 })
 const webpack = require('webpack')
 const SentryWebpackPlugin = require('@sentry/webpack-plugin')
-const pkg = require('./package.json')
 
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const gitRevisionPlugin = new GitRevisionPlugin()
@@ -25,7 +24,7 @@ module.exports = {
       BRANCH: JSON.stringify(gitRevisionPlugin.branch()),
     }),
     new SentryWebpackPlugin({
-      release: `${pkg.name}-${pkg.version}`,
+      release: gitRevisionPlugin.version(),
       include: './dist',
       urlPrefix: '/',
       org: 'protocol-labs-it',

@@ -46,11 +46,8 @@ r.add('post', '/login', login, [postCors])
 // Version
 r.add('get', '/version', (event, param, sentry) => {
   return new JSONResponse({
-    // @ts-ignore
     version: VERSION,
-    // @ts-ignore
     commit: COMMITHASH,
-    // @ts-ignore
     branch: BRANCH,
   })
 })

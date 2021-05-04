@@ -20,6 +20,9 @@ declare global {
   const MAGIC_SECRET_KEY: string
   const ENV: 'dev' | 'staging' | 'production'
   const SENTRY_DSN: string
+  const BRANCH: string
+  const VERSION: string
+  const COMMITHASH: string
 }
 
 export interface Pin {
