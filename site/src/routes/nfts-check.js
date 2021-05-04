@@ -29,6 +29,6 @@ export const check = async (event, params) => {
 
   return new JSONResponse({
     ok: true,
-    value: { pin: { status: cluster.toPSAStatus(status) }, deals },
+    value: { cid, pin: { status: cluster.toPSAStatus(status) }, deals },
   })
 }
