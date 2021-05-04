@@ -14,10 +14,10 @@ import Button from './button.js'
 export default function Navbar({ bgColor = 'nsorange', user }) {
   const queryClient = useQueryClient()
   async function logout() {
-    throw new Error('Sentry Frontend Error')
     await getMagic().user.logout()
     await queryClient.invalidateQueries('magic-user')
     Router.push('/')
+    throw new Error('Sentry Frontend Error')
   }
 
   return (
