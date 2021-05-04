@@ -351,6 +351,8 @@ components:
         value:
           type: object
           properties:
+            cid:
+              $ref: '#/components/schemas/CID'
             pin:
               type: object
               properties:
