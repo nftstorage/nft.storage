@@ -1,4 +1,4 @@
-import * as PinataPSA from '../pinata-psa.js'
+import * as pinata from '../pinata.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
 import * as pins from '../models/pins.js'
@@ -43,22 +43,28 @@ export async function pinsAdd(event) {
   }
 
   const created = new Date().toISOString()
-  const pin = await pins.get(pinData.cid)
+  let pin = await pins.get(pinData.cid)
   if (pin) {
     // if this failed to pin, try again
     if (pin.status === 'failed') {
       await cluster.recover(pinData.cid)
-      pin.status = 'queued'
+      pin = { ...pin, status: 'queued' }
+      await pins.set(pinData.cid, pin)
     }
   } else {
     await cluster.pin(pinData.cid)
-    await pins.set(pinData.cid, { status: 'queued', size: 0, created })
+    pin = { status: 'queued', size: 0, created }
+    await pins.set(pinData.cid, pin)
   }
 
   event.waitUntil(
     (async () => {
       try {
-        await PinataPSA.pinsAdd(pinData)
+        const hostNodes = [...(pinData.origins || []), ...cluster.delegates()]
+        await pinata.pinByHash(pinData.cid, {
+          pinataOptions: { hostNodes },
+          pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
+        })
       } catch (err) {
         console.error(err)
       }
@@ -79,8 +85,8 @@ export async function pinsAdd(event) {
   /** @type import('../pinata-psa').PinStatus */
   const pinStatus = {
     requestid: pinData.cid,
-    status: 'queued',
-    created,
+    status: pin.status,
+    created: pin.created,
     pin: { cid: pinData.cid, name, meta },
     delegates: cluster.delegates(),
   }

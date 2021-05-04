@@ -2,6 +2,7 @@ import * as PinataPSA from '../pinata-psa.js'
 import * as pinata from '../pinata.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
+import * as pins from '../models/pins.js'
 import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth.js'
 
@@ -72,33 +73,19 @@ export async function pinsReplace(event, params) {
     )
   }
 
-  /** @type import('@nftstorage/ipfs-cluster').PinResponse | undefined */
-  let pin
-  /** @type import('../pinata-psa').Status */
-  let status = 'pinning'
-  let size = 0
-  try {
-    pin = await cluster.allocation(pinData.cid)
-  } catch (err) {
-    // if 404 we can continue, we have not pinned this CID
-    if (!err.response || err.response.status !== 404) {
-      throw err
-    }
-  }
-
+  const created = new Date().toISOString()
+  let pin = await pins.get(pinData.cid)
   if (pin) {
-    // if we cached the size then use it
-    if (pin.metadata && pin.metadata.size) {
-      size = parseInt(pin.metadata.size)
-    }
-    // we have this pin already allocated in our cluster, get the status...
-    status = cluster.toPSAStatus(await cluster.status(pin.cid))
     // if this failed to pin, try again
-    if (status === 'failed') {
+    if (pin.status === 'failed') {
       await cluster.recover(pinData.cid)
+      pin = { ...pin, status: 'queued' }
+      await pins.set(pinData.cid, pin)
     }
   } else {
-    pin = await cluster.pin(pinData.cid)
+    await cluster.pin(pinData.cid)
+    pin = { status: 'queued', size: 0, created }
+    await pins.set(pinData.cid, pin)
   }
 
   event.waitUntil(
@@ -115,42 +102,26 @@ export async function pinsReplace(event, params) {
     })()
   )
 
-  const created = new Date()
   /** @type import('../bindings').NFT */
   const nft = {
-    cid: pin.cid,
-    size,
-    created: created.toISOString(),
+    cid: pinData.cid,
+    created,
     type: 'remote',
     scope: tokenName,
     files: [],
-    pin: {
-      cid: pin.cid,
-      name,
-      meta,
-      size,
-      status,
-      created: created.toISOString(),
-    },
-  }
-  const metadata = {
-    name,
-    meta,
-    pinStatus: status,
-    size,
-    created: created.toISOString(),
+    pin: { name, meta },
   }
   await Promise.all([
-    nfts.set({ user, cid: pin.cid }, nft, { metadata }),
+    nfts.set({ user, cid: pinData.cid }, nft),
     nfts.remove({ user, cid: existingCID }),
   ])
 
   /** @type import('../pinata-psa').PinStatus */
   const pinStatus = {
-    requestid: pin.cid,
-    status,
-    created: created.toISOString(),
-    pin: { cid: pin.cid, name, meta },
+    requestid: pinData.cid,
+    status: pin.status,
+    created: pin.created,
+    pin: { cid: pinData.cid, name, meta },
     delegates: cluster.delegates(),
   }
   return new JSONResponse(pinStatus)
