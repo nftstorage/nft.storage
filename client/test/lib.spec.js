@@ -9,6 +9,8 @@ describe('client', () => {
   const token = AUTH_TOKEN || ''
   const endpoint = new URL(SERVICE_ENDPOINT || '')
 
+  console.log(token)
+
   it('interface', () => {
     assert.equal(typeof NFTStorage, 'function')
     const client = new NFTStorage({ token: 'secret' })
@@ -114,7 +116,7 @@ describe('client', () => {
     })
   })
 
-  describe('store', async () => {
+  describe.only('store', async () => {
     it('requires name', async () => {
       const client = new NFTStorage({ token, endpoint })
       try {
@@ -187,7 +189,7 @@ describe('client', () => {
       }
     })
 
-    it('errors without token', async () => {
+    it.skip('errors without token', async () => {
       const client = new NFTStorage({ token: 'wrong', endpoint })
 
       try {
@@ -217,6 +219,8 @@ describe('client', () => {
       assert.ok(typeof result.ipnft === 'string')
       assert.equal(CID.parse(result.ipnft).version, 1)
 
+      console.log(result)
+
       assert.equal(result.data.name, 'name')
       assert.equal(result.data.description, 'stuff')
       assert.ok(result.data.image instanceof URL)
@@ -227,7 +231,7 @@ describe('client', () => {
       assert.equal(embed.description, 'stuff')
       assert.ok(embed.image instanceof URL)
       assert.ok(embed.image.protocol, 'https:')
-    })
+    }).timeout(5000)
 
     it('store with properties', async () => {
       const client = new NFTStorage({ token, endpoint })
@@ -248,6 +252,7 @@ describe('client', () => {
       })
 
       assert.ok(result instanceof Token)
+      console.log(result)
 
       const cid = CID.parse(result.ipnft)
       assert.equal(cid.version, 1)
@@ -292,7 +297,7 @@ describe('client', () => {
       assert.ok(b2 instanceof URL)
       assert.equal(b2.protocol, 'https:')
       assert.equal(b2.host, DWEB_LINK)
-    })
+    }).timeout(9000)
   })
 
   describe('status', () => {
