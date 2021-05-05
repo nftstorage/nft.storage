@@ -116,7 +116,7 @@ describe('client', () => {
     })
   })
 
-  describe.only('store', async () => {
+  describe('store', async () => {
     it('requires name', async () => {
       const client = new NFTStorage({ token, endpoint })
       try {
@@ -189,7 +189,7 @@ describe('client', () => {
       }
     })
 
-    it.skip('errors without token', async () => {
+    it('errors without token', async () => {
       const client = new NFTStorage({ token: 'wrong', endpoint })
 
       try {
@@ -231,7 +231,7 @@ describe('client', () => {
       assert.equal(embed.description, 'stuff')
       assert.ok(embed.image instanceof URL)
       assert.ok(embed.image.protocol, 'https:')
-    }).timeout(5000)
+    })
 
     it('store with properties', async () => {
       const client = new NFTStorage({ token, endpoint })
@@ -252,7 +252,6 @@ describe('client', () => {
       })
 
       assert.ok(result instanceof Token)
-      console.log(result)
 
       const cid = CID.parse(result.ipnft)
       assert.equal(cid.version, 1)
@@ -297,7 +296,7 @@ describe('client', () => {
       assert.ok(b2 instanceof URL)
       assert.equal(b2.protocol, 'https:')
       assert.equal(b2.host, DWEB_LINK)
-    }).timeout(9000)
+    })
   })
 
   describe('status', () => {
