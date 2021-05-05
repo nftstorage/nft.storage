@@ -2,6 +2,7 @@ import { Router } from './utils/router.js'
 import { notFound, timed } from './utils/utils.js'
 import { HTTPError } from './errors.js'
 import { cors, postCors } from './routes/cors.js'
+import { check } from './routes/nfts-check.js'
 import { upload } from './routes/nfts-upload.js'
 import { status } from './routes/nfts-get.js'
 import { remove } from './routes/nfts-delete.js'
@@ -67,11 +68,13 @@ r.add('delete', '/pins/:requestid', pinsDelete, [postCors])
 
 // Public API
 r.add('get', '/api', list, [postCors])
+r.add('get', '/api/check/:cid', check, [postCors])
 r.add('get', '/api/:cid', status, [postCors])
 r.add('post', '/api/upload', upload, [postCors])
 r.add('delete', '/api/:cid', remove, [postCors])
 
 r.add('get', '', list, [postCors])
+r.add('get', '/check/:cid', check, [postCors])
 r.add('get', '/:cid', status, [postCors])
 r.add('post', '/upload', upload, [postCors])
 r.add('delete', '/:cid', remove, [postCors])

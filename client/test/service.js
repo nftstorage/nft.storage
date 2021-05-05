@@ -53,7 +53,7 @@ export const init = (
 export const handle = async (request, { store, AUTH_TOKEN }) => {
   const url = new URL(request.url)
 
-  const [_, param] = url.pathname.split('/')
+  const [_, ...pathParts] = url.pathname.split('/')
   const auth = request.headers.get('authorization')
   const [, token] = (auth && auth.match(/Bearer (.+)/)) || []
 
@@ -62,22 +62,17 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
     return new Response('', { headers: headers(request) })
   }
 
-  // If not authorized 401
-  if (token !== AUTH_TOKEN) {
-    return new Response(
-      JSON.stringify({
-        ok: false,
-        error: { message: 'Unauthorized' },
-      }),
-      {
-        status: 401,
-        headers: headers(request),
-      }
-    )
+  const authorize = () => {
+    // If not authorized 401
+    if (token !== AUTH_TOKEN) {
+      throw Object.assign(new Error('Unauthorized'), { status: 401 })
+    }
   }
+
   try {
-    switch (`${request.method} /${param}`) {
+    switch (`${request.method} /${pathParts.join('/')}`) {
       case 'POST /upload': {
+        authorize()
         const { cid } = await importUpload(request)
         const key = `${token}:${cid}`
         if (!store.get(key)) {
@@ -99,8 +94,29 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           headers: headers(request),
         })
       }
-      case `GET /${param}`: {
-        const cid = CID.parse(param || '')
+      case `GET /check/${pathParts[1]}`: {
+        const cid = CID.parse(pathParts[1] || '')
+        const value = store.get(`${AUTH_TOKEN}:${cid}`)
+        if (!value) {
+          throw Object.assign(new Error(`not found: ${cid}`), { status: 404 })
+        }
+        return new Response(
+          JSON.stringify({
+            ok: true,
+            value: {
+              cid: cid.toString(),
+              pin: { status: value.pin.status },
+              deals: value.deals,
+            },
+          }),
+          {
+            headers: headers(request),
+          }
+        )
+      }
+      case `GET /${pathParts[0]}`: {
+        authorize()
+        const cid = CID.parse(pathParts[0] || '')
         const value = store.get(`${token}:${cid}`)
         const [status, result] = value
           ? [200, { ok: true, value }]
@@ -117,8 +133,9 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           headers: headers(request),
         })
       }
-      case `DELETE /${param}`: {
-        const cid = CID.parse(param || '')
+      case `DELETE /${pathParts[0]}`: {
+        authorize()
+        const cid = CID.parse(pathParts[0] || '')
         store.delete(`${token}:${cid}`)
         return new Response(JSON.stringify({ ok: true }), {
           headers: headers(request),
@@ -143,7 +160,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
         error: { message: error.message },
       }),
       {
-        status: 500,
+        status: error.status || 500,
         headers: headers(request),
       }
     )

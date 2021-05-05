@@ -141,6 +141,32 @@ paths:
           $ref: '#/components/responses/forbidden'
         '5XX':
           $ref: '#/components/responses/internalServerError'
+  /check/{cid}:
+    get:
+      tags:
+        - NFT Storage
+      summary: Check if a CID of an NFT is being stored by nft.storage.
+      description: Includes the IPFS pinning state and the Filecoin deal state.
+      operationId: check
+      security: []
+      parameters:
+        - name: cid
+          in: path
+          description: CID for the NFT
+          required: true
+          schema:
+            $ref: '#/components/schemas/CID'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CheckResponse'
+        '404':
+          $ref: '#/components/responses/notFound'
+        '5XX':
+          $ref: '#/components/responses/internalServerError'
 
 components:
   schemas:
@@ -316,6 +342,26 @@ components:
         value:
           type: object
           $ref: '#/components/schemas/NFT'
+    CheckResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          default: true
+        value:
+          type: object
+          properties:
+            cid:
+              $ref: '#/components/schemas/CID'
+            pin:
+              type: object
+              properties:
+                status:
+                  $ref: '#/components/schemas/PinStatus'
+            deals:
+              type: array
+              items:
+                $ref: '#/components/schemas/Deal'
     DeleteResponse:
       type: object
       properties:
@@ -393,6 +439,12 @@ components:
         'application/json':
           schema:
             $ref: '#/components/schemas/ForbiddenErrorResponse'
+    notFound:
+      description: Not Found
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     internalServerError:
       description: Internal Server Error
       content:
