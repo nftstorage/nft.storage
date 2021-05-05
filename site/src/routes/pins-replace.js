@@ -112,7 +112,7 @@ export async function pinsReplace(event, params) {
     pin: { name, meta },
   }
   await Promise.all([
-    nfts.set({ user, cid: pinData.cid }, nft),
+    nfts.set({ user, cid: pinData.cid }, nft, pin),
     nfts.remove({ user, cid: existingCID }),
   ])
 
