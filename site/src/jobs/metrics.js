@@ -1,7 +1,7 @@
 import { stores } from '../constants.js'
 import * as metrics from '../models/metrics.js'
-import * as deals from '../models/deals.js'
 import * as pins from '../models/pins.js'
+import * as nftsIndex from '../models/nfts-index.js'
 
 /**
  * @typedef {{
@@ -35,21 +35,12 @@ export async function updateNftMetrics() {
   let total = 0
   let totalBytes = 0
   let totalPins = 0
-  let done = false
-  let cursor
-  while (!done) {
-    // @ts-ignore
-    const nftList = await stores.nfts.list({ cursor, limit: 1000 })
-    total += nftList.keys.length
-    for (const k of nftList.keys) {
-      if (!k.metadata) continue
-      totalBytes += k.metadata.size || 0
-      if (k.metadata.pinStatus === 'pinned') {
-        totalPins++
-      }
+  for await (const [, data] of nftsIndex.entries()) {
+    total++
+    totalBytes += data.size
+    if (data.pinStatus === 'pinned') {
+      totalPins++
     }
-    cursor = nftList.cursor
-    done = nftList.list_complete
   }
   await Promise.all([
     // Total number of NFTs stored on nft.storage
