@@ -1,4 +1,4 @@
-// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, IPFS_HOST
+// let MAGIC_SECRET_KEY, SALT, PINATA_JWT
 export const stores = {
   deals: DEALS,
   users: USERS,
@@ -12,10 +12,6 @@ export const secrets = {
   pinata: PINATA_JWT,
   magic: MAGIC_SECRET_KEY,
   sentry: SENTRY_DSN,
-}
-
-export const ipfs = {
-  host: IPFS_HOST,
 }
 
 export const cluster = {
