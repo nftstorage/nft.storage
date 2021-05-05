@@ -2,7 +2,7 @@ import { CID } from 'multiformats'
 import { sha256 } from 'multiformats/hashes/sha2'
 import { importBlob, importDirectory } from './importer.js'
 import { Response, Request } from './mock-server.js'
-import CBOR from '@ipld/dag-cbor'
+import * as CBOR from '@ipld/dag-cbor'
 /**
  * @param {Request} request
  */
