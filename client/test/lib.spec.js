@@ -9,8 +9,6 @@ describe('client', () => {
   const token = AUTH_TOKEN || ''
   const endpoint = new URL(SERVICE_ENDPOINT || '')
 
-  console.log(token)
-
   it('interface', () => {
     assert.equal(typeof NFTStorage, 'function')
     const client = new NFTStorage({ token: 'secret' })
@@ -218,8 +216,6 @@ describe('client', () => {
 
       assert.ok(typeof result.ipnft === 'string')
       assert.equal(CID.parse(result.ipnft).version, 1)
-
-      console.log(result)
 
       assert.equal(result.data.name, 'name')
       assert.equal(result.data.description, 'stuff')

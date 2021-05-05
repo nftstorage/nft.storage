@@ -12,7 +12,6 @@ declare global {
   const NFTS_IDX: KVNamespace
   const METRICS: KVNamespace
   const PINATA_JWT: string
-  const IPFS_HOST: string
   const CLUSTER_API_URL: string
   const CLUSTER_BASIC_AUTH_TOKEN: string
   const CLUSTER_IPFS_PROXY_API_URL: string
