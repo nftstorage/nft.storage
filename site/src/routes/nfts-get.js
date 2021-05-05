@@ -33,6 +33,11 @@ export const status = async (event, params) => {
 
   return new JSONResponse({
     ok: true,
-    value: { ...nft, size: pin.size, pin, deals },
+    value: {
+      ...nft,
+      size: pin.size,
+      pin: { ...(nft.pin || {}), ...pin },
+      deals,
+    },
   })
 }
