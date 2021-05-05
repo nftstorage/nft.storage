@@ -2,6 +2,7 @@ import { Router } from './utils/router.js'
 import { notFound, timed } from './utils/utils.js'
 import { HTTPError } from './errors.js'
 import { cors, postCors } from './routes/cors.js'
+import { check } from './routes/nfts-check.js'
 import { upload } from './routes/nfts-upload.js'
 import { store, ipfsVersion } from './routes/nfts-store.js'
 import { status } from './routes/nfts-get.js'
@@ -24,12 +25,13 @@ import {
 import { updatePinStatuses } from './jobs/pins.js'
 import { login } from './routes/login.js'
 import { JSONResponse } from './utils/json-response.js'
-const { debug } = require('./utils/debug')
+const { debug, getSentrySchedule } = require('./utils/debug')
 const log = debug('router')
 
 const r = new Router({
-  onError(req, err) {
+  onError(req, err, { sentry }) {
     log(err)
+    sentry.captureException(err)
     return HTTPError.respond(err)
   },
 })
@@ -44,13 +46,10 @@ r.add('options', '*', cors)
 r.add('post', '/login', login, [postCors])
 
 // Version
-r.add('get', '/version', () => {
+r.add('get', '/version', (event, param, sentry) => {
   return new JSONResponse({
-    // @ts-ignore
     version: VERSION,
-    // @ts-ignore
     commit: COMMITHASH,
-    // @ts-ignore
     branch: BRANCH,
   })
 })
@@ -70,11 +69,13 @@ r.add('delete', '/pins/:requestid', pinsDelete, [postCors])
 
 // Public API
 r.add('get', '/api', list, [postCors])
+r.add('get', '/api/check/:cid', check, [postCors])
 r.add('get', '/api/:cid', status, [postCors])
 r.add('post', '/api/upload', upload, [postCors])
 r.add('delete', '/api/:cid', remove, [postCors])
 
 r.add('get', '', list, [postCors])
+r.add('get', '/check/:cid', check, [postCors])
 r.add('get', '/:cid', status, [postCors])
 r.add('post', '/upload', upload, [postCors])
 r.add('post', '/store', store, [postCors])
@@ -92,14 +93,21 @@ addEventListener('fetch', r.listen.bind(r))
 addEventListener('scheduled', (event) =>
   event.waitUntil(
     (async () => {
-      await timed(updateUserMetrics, 'CRON updateUserMetrics')
-      await timed(updateNftMetrics, 'CRON updateNftMetrics')
+      const sentry = getSentrySchedule(event)
+      await timed(updateUserMetrics, 'CRON updateUserMetrics', { sentry })
+      await timed(updateNftMetrics, 'CRON updateNftMetrics', { sentry })
     })()
   )
 )
-addEventListener('scheduled', (event) =>
-  event.waitUntil(timed(updateNftDealMetrics, 'CRON updateNftDealMetrics'))
-)
-addEventListener('scheduled', (event) =>
-  event.waitUntil(timed(updatePinStatuses, 'CRON updatePinStatuses'))
-)
+addEventListener('scheduled', (event) => {
+  const sentry = getSentrySchedule(event)
+  event.waitUntil(
+    timed(updateNftDealMetrics, 'CRON updateNftDealMetrics', { sentry })
+  )
+})
+addEventListener('scheduled', (event) => {
+  const sentry = getSentrySchedule(event)
+  event.waitUntil(
+    timed(updatePinStatuses, 'CRON updatePinStatuses', { sentry })
+  )
+})

@@ -439,4 +439,39 @@ describe('client', () => {
       }
     })
   })
+
+  describe('check', () => {
+    const client = new NFTStorage({ token, endpoint })
+
+    /** @type {string[]} */
+    let preloaded
+    beforeEach(async () => {
+      preloaded = [
+        // QmVRC63ZHwHQBC4pkqbiQjPjdHVKueafTpwmkNHhnVfwLQ
+        await client.storeBlob(new Blob(['preload check'])),
+        // QmTPFUEcZvqKBYqJM3itqkDiqJaApYzLJ1ht6iBD4d6M28
+        // await client.storeBlob(new Blob(['missing']))
+      ]
+    })
+
+    afterEach(async () => {
+      await Promise.all(preloaded.map((cid) => client.delete(cid)))
+    })
+
+    it('found', async () => {
+      const cid = 'QmVRC63ZHwHQBC4pkqbiQjPjdHVKueafTpwmkNHhnVfwLQ'
+      const status = await client.check(cid)
+      assert.equal(status.cid, cid)
+    })
+
+    it('not found', async () => {
+      const cid = 'QmTPFUEcZvqKBYqJM3itqkDiqJaApYzLJ1ht6iBD4d6M28'
+      try {
+        await client.check(cid)
+        assert.unreachable('Expected to fail')
+      } catch (error) {
+        assert.ok(error.message.match(/not found/))
+      }
+    })
+  })
 })

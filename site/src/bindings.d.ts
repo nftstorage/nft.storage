@@ -1,6 +1,7 @@
 export {}
 
 import { Deal } from 'nft.storage/src/lib/interface'
+import Toucan from 'toucan-js'
 
 declare global {
   const SALT: string
@@ -19,6 +20,10 @@ declare global {
   const CLUSTER_ADDRS: string
   const MAGIC_SECRET_KEY: string
   const ENV: 'dev' | 'staging' | 'production'
+  const SENTRY_DSN: string
+  const BRANCH: string
+  const VERSION: string
+  const COMMITHASH: string
 }
 
 export interface Pin {
@@ -91,3 +96,7 @@ export interface User {
 }
 
 export type UserSafe = Omit<User, 'tokens' | 'github'>
+
+export interface RouteContext {
+  sentry: Toucan
+}

@@ -10,6 +10,7 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
 - [HTTP API](#http-api)
 - [Development](#development)
   - [`site` Setup](#site-setup)
+    - [Local env vars](#local-env-vars)
     - [Cloudflare Workers CLI](#cloudflare-workers-cli)
     - [Magic.link account](#magiclink-account)
     - [IPFS Cluster](#ipfs-cluster)
@@ -52,6 +53,17 @@ npx simple-git-hooks
 ```
 
 ## `site` Setup
+
+### Local env vars
+
+Inside the `site` folder create a file called `.env.local` with the following content.
+
+```ini
+SENTRY_TOKEN=<sentry user auth token>
+SENTRY_UPLOAD=false # toggle for sentry source/sourcemaps upload (capture will still work)
+```
+
+Production vars should set in Github Actions secrets.
 
 ### Cloudflare Workers CLI
 
@@ -148,6 +160,7 @@ Go to `/site/src/constants.js` _uncomment_ the first line and run `wrangler publ
 wrangler secret put MAGIC_SECRET_KEY --env USER # Get from magic.link account
 wrangler secret put SALT --env USER # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env USER # Get from Pinata
+wrangler secret put SENTRY_DSN --env USER # Get from Sentry
 ```
 
 Go to `/site/src/constants.js` _comment_ the first line and run `wrangler publish --env USER`.
@@ -193,8 +206,14 @@ Deployment should be done with github actions but in the case you need to manual
 Inside the `website` folder create a file called `.env.local` with the following content.
 
 ```ini
+NEXT_PUBLIC_ENV=dev
 NEXT_PUBLIC_API=http://127.0.0.1:8787
 NEXT_PUBLIC_MAGIC=<magic test mode publishable key>
+NEXT_PUBLIC_SENTRY_DSN=<sentry dsn>
+SENTRY_URL=https://sentry.io/
+SENTRY_ORG=<sentry org name>
+SENTRY_PROJECT=<sentry project name>
+SENTRY_AUTH_TOKEN=<sentry auth token>
 ```
 
 Production vars should set in Cloudflare Pages settings.

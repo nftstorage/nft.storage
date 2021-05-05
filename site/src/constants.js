@@ -11,6 +11,7 @@ export const secrets = {
   salt: SALT,
   pinata: PINATA_JWT,
   magic: MAGIC_SECRET_KEY,
+  sentry: SENTRY_DSN,
 }
 
 export const ipfs = {

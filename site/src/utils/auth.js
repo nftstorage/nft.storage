@@ -22,6 +22,9 @@ export const magic = new Magic(secrets.magic)
  */
 export async function validate(event) {
   const auth = event.request.headers.get('Authorization') || ''
+  if (!auth) {
+    throw new HTTPError('Missing auth token', 401)
+  }
   const token = magic.utils.parseAuthorizationHeader(auth)
   // validate access tokens
   if (await verifyJWT(token)) {
