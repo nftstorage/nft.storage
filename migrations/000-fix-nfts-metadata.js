@@ -1,3 +1,8 @@
+/**
+ * This migration ensures all the records in the NFTS table have appropriate
+ * metadata set.
+ */
+
 import dotenv from 'dotenv'
 import { Cloudflare } from './cloudflare.js'
 import { findNs } from './utils.js'

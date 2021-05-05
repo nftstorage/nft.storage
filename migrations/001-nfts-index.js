@@ -1,3 +1,11 @@
+/**
+ * This migration populates the NFTS_IDX table by reading all the records in
+ * the NFTS table.
+ *
+ * The NFTS_IDX table is an indexing table, with keys ordered by user.sub and
+ * then by created date (DESC).
+ */
+
 import dotenv from 'dotenv'
 import { Cloudflare } from './cloudflare.js'
 import { findNs } from './utils.js'

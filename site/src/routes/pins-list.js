@@ -1,19 +1,7 @@
 import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
-import { stores } from '../constants.js'
-
-/**
- * @typedef {{
- *   name?: string,
- *   meta?: Record<string, string>,
- *   pinStatus: import('../pinata-psa').Status,
- *   size: number,
- *   created: string
- *   createdSort?: number
- * }} NFTMetadata
- * @typedef {{ name: string, metadata: NFTMetadata }} Key
- */
+import * as nftsIndex from '../models/nfts-index.js'
 
 /**
  * @param {FetchEvent} event
@@ -25,51 +13,26 @@ export async function pinsList(event) {
   const { searchParams } = new URL(event.request.url)
 
   let count = 0
-  /** @type {Key[]} */
-  let keys = []
+  /** @type import('../pinata-psa').PinStatus[] */
+  const results = []
   const options = queryToListOptions(searchParams)
   const limit = options.limit || 10
   const filter = makeFilter(options)
 
-  let done = false
-  let cursor
-  while (!done) {
-    // @ts-ignore
-    const nftList = await stores.nfts.list({
-      prefix: user.sub,
-      cursor,
-      limit: 1000,
-    })
-    for (const key of nftList.keys) {
-      if (!filter(key)) continue
-      count++
-      key.metadata.createdSort = key.metadata.created
-        ? new Date(key.metadata.created).getTime()
-        : 0
-      keys.push(key)
-    }
-    if (keys.length >= limit) {
-      keys = keys
-        // @ts-ignore
-        .sort((a, b) => b.metadata.createdSort - a.metadata.createdSort)
-        .slice(0, limit)
-    }
-    cursor = nftList.cursor
-    done = nftList.list_complete
-  }
-
-  /** @type import('../pinata-psa').PinStatus[] */
-  const results = keys.map((k) => {
-    const cid = k.name.split(':').pop()
-    if (!cid) throw new Error('invalid NFT key')
-    return {
-      requestid: cid,
-      status: k.metadata.pinStatus,
-      created: k.metadata.created || new Date(0).toISOString(),
+  for await (const [key, data] of nftsIndex.entries(user.sub)) {
+    if (!filter(key, data)) continue
+    count++
+    results.push({
+      requestid: key.cid,
+      status: data.pinStatus || 'queued',
+      created: key.created || new Date(0).toISOString(),
       delegates: cluster.delegates(),
-      pin: { cid, name: k.metadata.name, meta: k.metadata.meta },
+      pin: { cid: key.cid, name: data.name, meta: data.meta },
+    })
+    if (results.length >= limit) {
+      break
     }
-  })
+  }
 
   return new JSONResponse({ count, results })
 }
@@ -139,20 +102,17 @@ function queryToListOptions(searchParams) {
 
 /**
  * @param {import('../pinata-psa.js').ListOptions} options
- * @returns {(key: Key) => boolean}
+ * @returns {(key: import('../models/nfts-index.js').Key, data: import('../models/nfts-index.js').IndexData) => boolean}
  */
 function makeFilter(options) {
-  return (key) => {
-    const metadata = key.metadata || {}
+  return (key, data) => {
     if (options.cid) {
-      const cid = key.name.split(':').pop()
-      if (!cid) throw new Error('invalid NFT key')
-      if (!options.cid.includes(cid)) {
+      if (!options.cid.includes(key.cid)) {
         return false
       }
     }
     if (options.meta) {
-      const meta = metadata.meta || {}
+      const meta = data.meta || {}
       for (const [k, v] of Object.entries(options.meta)) {
         if (meta[k] !== v) {
           return false
@@ -161,7 +121,7 @@ function makeFilter(options) {
     }
     if (options.name) {
       const match = options.match || 'exact'
-      const name = metadata.name || ''
+      const name = data.name || ''
       if (match === 'exact') {
         if (options.name !== name) {
           return false
@@ -180,13 +140,14 @@ function makeFilter(options) {
         }
       }
     }
-    if (options.status && !options.status.includes(metadata.pinStatus)) {
+    if (
+      options.status &&
+      (data.pinStatus == null || !options.status.includes(data.pinStatus))
+    ) {
       return false
     }
     if (options.before || options.after) {
-      const created = metadata.created
-        ? new Date(metadata.created).getTime()
-        : 0
+      const created = new Date(key.created).getTime()
       if (options.before && options.before.getTime() < created) {
         return false
       }

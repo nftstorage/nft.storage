@@ -2,7 +2,13 @@ import * as cluster from '../cluster.js'
 import * as pins from '../models/pins.js'
 import * as followups from '../models/followups.js'
 
-export async function updatePinStatuses() {
+/**
+ * Updates pin status and size in the PINS table by consuming records in the
+ * FOLLOWUPS table and retrieving updated status from cluster.
+ *
+ * @param {import('../bindings.js').RouteContext} ctx
+ */
+export async function updatePinStatuses({ sentry }) {
   for await (const [cid, pin] of followups.entries()) {
     try {
       const pinStatus = cluster.toPSAStatus(await cluster.status(cid))
@@ -21,9 +27,8 @@ export async function updatePinStatuses() {
         `${cid}: status ${prevPin.status} => ${pin.status}, size ${prevPin.size} => ${pin.size}`
       )
     } catch (err) {
-      console.error(
-        `${cid}: failed to update pin status and size: ${err.stack}`
-      )
+      console.error(`${cid}: failed to update pin status and size`, err)
+      sentry.captureException(err)
     }
   }
 }

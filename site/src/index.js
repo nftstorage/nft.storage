@@ -26,6 +26,7 @@ import {
 import { updatePinStatuses } from './jobs/pins.js'
 import { login } from './routes/login.js'
 import { JSONResponse } from './utils/json-response.js'
+import { updateNftsIndexMeta } from './jobs/nfts-index.js'
 const { debug, getSentrySchedule } = require('./utils/debug')
 const log = debug('router')
 
@@ -99,9 +100,7 @@ addEventListener('scheduled', (event) => {
 })
 addEventListener('scheduled', (event) => {
   const sentry = getSentrySchedule(event)
-  event.waitUntil(
-    timed(updateNftMetrics, 'CRON updateNftMetrics', { sentry })
-  )
+  event.waitUntil(timed(updateNftMetrics, 'CRON updateNftMetrics', { sentry }))
 })
 addEventListener('scheduled', (event) => {
   const sentry = getSentrySchedule(event)
@@ -117,7 +116,11 @@ addEventListener('scheduled', (event) => {
 })
 addEventListener('scheduled', (event) => {
   const sentry = getSentrySchedule(event)
+  event.waitUntil(timed(updatePinMetrics, 'CRON updatePinMetrics', { sentry }))
+})
+addEventListener('scheduled', (event) => {
+  const sentry = getSentrySchedule(event)
   event.waitUntil(
-    timed(updatePinMetrics, 'CRON updatePinMetrics', { sentry })
+    timed(updateNftsIndexMeta, 'CRON updateNftsIndexMeta', { sentry })
   )
 })

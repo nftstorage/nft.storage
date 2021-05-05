@@ -1,39 +1,16 @@
 import { stores } from '../constants.js'
 import merge from 'merge-options'
+import * as nftsIndex from './nfts-index.js'
 
 /**
  * @typedef {{user: import('./users').User, cid: string}} Key
  * @typedef {import('../bindings').NFT} NFT
  */
 
-const FAR_FUTURE = new Date('3000-01-01T00:00:00.000Z').getTime()
-const PAD_LEN = FAR_FUTURE.toString().length
-
 /**
  * @param {Key} key
  */
 const encodeKey = ({ user, cid }) => `${user.sub}:${cid}`
-
-/**
- * @param {{user: import('./users').User, created: Date, cid: string}} key
- */
-export function encodeIndexKey({ user, created, cid }) {
-  const ts = (FAR_FUTURE - created.getTime()).toString().padStart(PAD_LEN, '0')
-  return `${user.sub}:${ts}:${cid}`
-}
-
-/**
- * @param {string} key
- * @returns {{ user: { sub: string }, created: Date, cid: string }}
- */
-function decodeIndexKey(key) {
-  const parts = key.split(':')
-  const cid = parts.pop()
-  const ts = parts.pop()
-  if (!cid || !ts) throw new Error('invalid index key')
-  const created = new Date(FAR_FUTURE - parseInt(ts))
-  return { user: { sub: parts.join(':') }, created, cid }
-}
 
 /**
  * @param {Key} key
@@ -54,11 +31,7 @@ export const set = async (key, value, options) => {
   if (savedValue === null) {
     const kvKey = encodeKey(key)
     await stores.nfts.put(kvKey, JSON.stringify(value), options)
-    await stores.nftsIndex.put(
-      encodeIndexKey({ ...key, created: new Date(value.created) }),
-      '',
-      { metadata: { key: kvKey } }
-    )
+    await nftsIndex.set({ ...key, created: value.created }, { key: kvKey })
     return value
   }
   const data = merge(savedValue, value)
@@ -86,9 +59,7 @@ export const remove = async (key) => {
   const nft = await get(key)
   if (!nft) return
   await stores.nfts.delete(encodeKey(key))
-  await stores.nftsIndex.delete(
-    encodeIndexKey({ ...key, created: new Date(nft.created) })
-  )
+  await nftsIndex.remove({ ...key, created: nft.created })
 }
 
 /**
@@ -109,31 +80,16 @@ export async function list(prefix, options) {
     throw new Error('invalid filter')
   }
 
-  let done = false
-  let cursor
   /** @type Promise<KVValue<NFT>>[] */
   const nfts = []
-
-  while (!done) {
-    // @ts-ignore
-    const nftIdxList = await stores.nftsIndex.list({ prefix, cursor })
-
-    for (const k of nftIdxList.keys) {
-      const { created } = decodeIndexKey(k.name)
-      if (created.getTime() < before.getTime()) {
-        // @ts-ignore
-        nfts.push(stores.nfts.get(k.metadata.key, 'json'))
-        if (nfts.length >= limit) {
-          break
-        }
+  for await (const [key, data] of nftsIndex.entries(prefix)) {
+    if (new Date(key.created).getTime() < before.getTime()) {
+      // @ts-ignore
+      nfts.push(stores.nfts.get(data.key, 'json'))
+      if (nfts.length >= limit) {
+        break
       }
     }
-
-    if (nfts.length >= limit) {
-      break
-    }
-    cursor = nftIdxList.cursor
-    done = nftIdxList.list_complete
   }
 
   return Promise.all(nfts)
