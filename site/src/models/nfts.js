@@ -1,5 +1,4 @@
 import { stores } from '../constants.js'
-import merge from 'merge-options'
 import * as nftsIndex from './nfts-index.js'
 
 /**
@@ -22,21 +21,23 @@ export const has = async (key) => {
 
 /**
  * @param {Key} key
- * @param {NFT} value
- * @param {any} [options]
+ * @param {NFT} nft
+ * @param {import('./pins.js').Pin} pin
  * @returns {Promise<NFT>}
  */
-export const set = async (key, value, options) => {
-  const savedValue = await get(key)
-  if (savedValue === null) {
-    const kvKey = encodeKey(key)
-    await stores.nfts.put(kvKey, JSON.stringify(value), options)
-    await nftsIndex.set({ ...key, created: value.created }, { key: kvKey })
-    return value
-  }
-  const data = merge(savedValue, value)
-  await stores.nfts.put(encodeKey(key), JSON.stringify(data), options)
-  return data
+export const set = async (key, nft, pin) => {
+  const kvKey = encodeKey(key)
+  await stores.nfts.put(kvKey, JSON.stringify(nft))
+  await nftsIndex.set(
+    { ...key, created: nft.created },
+    {
+      key: kvKey,
+      ...(nft.pin || {}), // name/meta
+      pinStatus: pin.status,
+      size: pin.size,
+    }
+  )
+  return nft
 }
 
 /**
@@ -65,7 +66,7 @@ export const remove = async (key) => {
 /**
  * @param {any} prefix
  * @param {{ limit?: number, before?: Date }} [options]
- * @returns {Promise<Array<KVValue<NFT>>>}
+ * @returns {Promise<Array<import('../bindings').NFTResponse|null>>}
  */
 export async function list(prefix, options) {
   options = options || {}
@@ -80,17 +81,37 @@ export async function list(prefix, options) {
     throw new Error('invalid filter')
   }
 
-  /** @type Promise<KVValue<NFT>>[] */
-  const nfts = []
+  /** @type {Array<{ nftPromise: Promise<NFT|null>, indexData: import('./nfts-index.js').IndexData }>} */
+  const items = []
   for await (const [key, data] of nftsIndex.entries(prefix)) {
     if (new Date(key.created).getTime() < before.getTime()) {
-      // @ts-ignore
-      nfts.push(stores.nfts.get(data.key, 'json'))
-      if (nfts.length >= limit) {
+      items.push({
+        nftPromise: stores.nfts.get(data.key, 'json'),
+        indexData: data,
+      })
+      if (items.length >= limit) {
         break
       }
     }
   }
 
-  return Promise.all(nfts)
+  return Promise.all(
+    items.map(async ({ nftPromise, indexData }) => {
+      const nft = await nftPromise
+      return nft
+        ? {
+            ...nft,
+            size: indexData.size,
+            pin: {
+              cid: nft.cid,
+              ...(nft.pin || {}),
+              status: indexData.pinStatus,
+              size: indexData.size,
+              created: nft.created,
+            },
+            deals: [], // FIXME: how to get deals data?
+          }
+        : null
+    })
+  )
 }

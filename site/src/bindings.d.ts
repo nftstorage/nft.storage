@@ -68,6 +68,12 @@ export type NFT = {
   created: string
 }
 
+export type NFTResponse = NFT & {
+  size: number
+  pin: Pin
+  deals: Deal[]
+}
+
 export type { Deal }
 
 export interface User {

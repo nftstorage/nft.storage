@@ -80,7 +80,7 @@ export async function pinsAdd(event) {
     files: [],
     pin: { name, meta },
   }
-  await nfts.set({ user, cid: pinData.cid }, nft)
+  await nfts.set({ user, cid: pinData.cid }, nft, pin)
 
   /** @type import('../pinata-psa').PinStatus */
   const pinStatus = {

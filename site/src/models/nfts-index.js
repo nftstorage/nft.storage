@@ -3,8 +3,8 @@ import { stores } from '../constants.js'
 /**
  * @typedef {{
  *   key: string
- *   pinStatus?: import('../bindings').PinStatus
- *   size?: number
+ *   pinStatus: import('../bindings').PinStatus
+ *   size: number
  *   name?: string
  *   meta?: Record<string, string>
  * }} IndexData

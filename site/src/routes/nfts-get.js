@@ -31,13 +31,13 @@ export const status = async (event, params) => {
     return HTTPError.respond(new HTTPError('pin not found', 404))
   }
 
-  return new JSONResponse({
-    ok: true,
-    value: {
-      ...nft,
-      size: pin.size,
-      pin: { ...(nft.pin || {}), ...pin },
-      deals,
-    },
-  })
+  /** @type {import('../bindings').NFTResponse} */
+  const res = {
+    ...nft,
+    size: pin.size,
+    pin: { cid: nft.cid, ...(nft.pin || {}), ...pin },
+    deals,
+  }
+
+  return new JSONResponse({ ok: true, value: res })
 }
