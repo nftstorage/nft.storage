@@ -140,10 +140,7 @@ function makeFilter(options) {
         }
       }
     }
-    if (
-      options.status &&
-      (data.pinStatus == null || !options.status.includes(data.pinStatus))
-    ) {
+    if (options.status && !options.status.includes(data.pinStatus)) {
       return false
     }
     if (options.before || options.after) {
