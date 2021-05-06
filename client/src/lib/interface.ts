@@ -23,20 +23,22 @@ export type CIDString = Tagged<string, CID>
 
 export interface API {
   /**
-   * Stores given token and all the resources (in form of File or a Blob) it
-   * references along with a metadata JSON as specificed in (ERC-1155). The
-   * `token.image` must be either `File` or a `Blob` instance, which will be
-   * stored and corresponding content address URL will be saved in metadata
-   * JSON file under `image` field.
+   * Stores the given token and all resources it references (in the form of a
+   * File or a Blob) along with a metadata JSON as specificed in ERC-1155. The
+   * `token.image` must be either a `File` or a `Blob` instance, which will be
+   * stored and the corresponding content address URL will be saved in the
+   * metadata JSON file under `image` field.
    *
-   * If `token.properties` contain properties with `File` or `Blob` values those
-   * also get stored and their URLs will be saved in metadata json in their
-   * place.
+   * If `token.properties` contains properties with `File` or `Blob` values,
+   * those also get stored and their URLs will be saved in the metadata JSON
+   * file in their place.
    *
-   * Note: URLs for `File` object will retain the name e.g. in case of
-   * `new File([bytes], 'cat.png', { type: 'image/png' })` it will look like
-   * `ipfs://bafy...hash/image/cat.png`. For `Blob` object URL will not have
-   * name or mime type instead it will look more like `ipfs://bafy...hash/image/blob`
+   * Note: URLs for `File` objects will retain file names e.g. in case of
+   * `new File([bytes], 'cat.png', { type: 'image/png' })` will be transformed
+   * into a URL that looks like `ipfs://bafy...hash/image/cat.png`. For `Blob`
+   * objects, the URL will not have a file name name or mime type, instead it 
+   * will be transformed into a URL that looks like
+   * `ipfs://bafy...hash/image/blob`.
    */
   store<T extends TokenInput>(service: Service, token: T): Promise<Token<T>>
 
@@ -179,13 +181,13 @@ export interface TokenInput {
    */
   description: string
   /**
-   * An `File` with mime type image/* representing the asset this
-   * token represents. Consider making any images at a width between `320` and
+   * A `File` with mime type `image/*` representing the asset this
+   * token represents. Consider creating images with width between `320` and
    * `1080` pixels and aspect ratio between `1.91:1` and `4:5` inclusive.
    *
-   * If `File` object is used, URL in the metadata will include a filename
-   * e.g. `ipfs://bafy...hash/cat.png`. If `Blob` is used URL in the metadata
-   * will not include filename or extension e.g. `ipfs://bafy...img/`
+   * If a `File` object is used, the URL in the metadata will include a filename
+   * e.g. `ipfs://bafy...hash/cat.png`. If a `Blob` is used, the URL in the
+   * metadata will not include filename or extension e.g. `ipfs://bafy...img/`
    */
   image: Blob | File
 
@@ -197,10 +199,10 @@ export interface TokenInput {
   decimals?: number
 
   /**
-   * Arbitrary properties. Values may be strings, numbers, nested object or
-   * arrays of values. It is possible to provide a `File` or a `Blob` instance
-   * as property value, in which case it is stored on IPFS and metadata will
-   * contain URL to it in form of `ipfs://bafy...hash/name.png` or
+   * Arbitrary properties. Values may be strings, numbers, nested objects or
+   * arrays of values. It is possible to provide `File` or `Blob` instances
+   * as property values, which will be stored on IPFS, and metadata will
+   * contain URLs to them in form of `ipfs://bafy...hash/name.png` or
    * `ipfs://bafy...file/` respectively.
    */
   properties?: Object

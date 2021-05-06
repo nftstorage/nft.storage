@@ -120,7 +120,7 @@ describe('client', () => {
       try {
         // @ts-expect-error
         await client.store({})
-        assert.unreachable('sholud have failed')
+        assert.unreachable('should have failed')
       } catch (error) {
         assert.ok(error instanceof TypeError)
         assert.match(
