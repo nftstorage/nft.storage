@@ -308,6 +308,8 @@ components:
         name:
           type: string
           example: pin name
+        meta:
+          type: object
         status:
           $ref: '#/components/schemas/PinStatus'
         created:
@@ -354,10 +356,7 @@ components:
             cid:
               $ref: '#/components/schemas/CID'
             pin:
-              type: object
-              properties:
-                status:
-                  $ref: '#/components/schemas/PinStatus'
+              $ref: '#/components/schemas/Pin'
             deals:
               type: array
               items:

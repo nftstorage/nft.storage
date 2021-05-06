@@ -1,11 +1,7 @@
 import { JSONResponse } from '../utils/json-response.js'
 import { get as getDeals } from '../models/deals.js'
-import * as cluster from '../cluster.js'
+import * as pins from '../models/pins.js'
 import { HTTPError } from '../errors.js'
-
-/**
- * @typedef {import('../bindings').Deal} Deal
- */
 
 /**
  * @param {FetchEvent} event
@@ -13,22 +9,9 @@ import { HTTPError } from '../errors.js'
  */
 export const check = async (event, params) => {
   const { cid } = params
-
-  /** @type {import('@nftstorage/ipfs-cluster').StatusResponse} */
-  let status
-  /** @type {Deal[]} */
-  let deals
-  try {
-    ;[status, deals] = await Promise.all([cluster.status(cid), getDeals(cid)])
-  } catch (err) {
-    if (err.response && err.response.status === 404) {
-      throw new HTTPError('not found', 404)
-    }
-    throw err
+  const [pin, deals] = await Promise.all([pins.get(cid), getDeals(cid)])
+  if (!pin) {
+    throw new HTTPError('NFT not found', 404)
   }
-
-  return new JSONResponse({
-    ok: true,
-    value: { cid, pin: { status: cluster.toPSAStatus(status) }, deals },
-  })
+  return new JSONResponse({ ok: true, value: { cid, pin, deals } })
 }
