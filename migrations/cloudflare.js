@@ -29,9 +29,11 @@ export class Cloudflare {
                 init.signal = controller.signal
                 try {
                   const res = await fetch(url, init)
-                  if (!res.ok)
+                  if (!res.ok) {
                     throw new Error(`${res.status}: ${res.statusText}`)
-                  return await res.json()
+                  }
+                  const text = await res.text()
+                  return text === '' ? null : JSON.parse(text)
                 } finally {
                   clearTimeout(abortID)
                 }
