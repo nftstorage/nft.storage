@@ -39,11 +39,7 @@ export class Cloudflare {
                 }
               },
               {
-                onFailedAttempt: (err) => {
-                  console.log(
-                    `💥 fetch ${url} attempt ${err.attemptNumber} failed: ${err.retriesLeft} retries left.`
-                  )
-                },
+                onFailedAttempt: (err) => console.warn(`💥 fetch ${url}`, err),
                 retries: 5,
               }
             )
@@ -118,5 +114,16 @@ export class Cloudflare {
       endpoint
     )
     return this.fetchJSON(url.toString())
+  }
+
+  async readKVMeta(nsId, key) {
+    const url = new URL(
+      `${this.kvNsPath}/${nsId}/keys?limit=10&prefix=${encodeURIComponent(
+        key
+      )}`,
+      endpoint
+    )
+    const { result } = await this.fetchJSON(url.toString())
+    return result.length ? result[0].metadata : null
   }
 }
