@@ -3,6 +3,7 @@ import { sha256 } from 'multiformats/hashes/sha2'
 import { importBlob, importDirectory } from './importer.js'
 import { Response, Request } from './mock-server.js'
 import * as CBOR from '@ipld/dag-cbor'
+import setIn from 'just-safe-set'
 /**
  * @param {Request} request
  */
@@ -87,33 +88,6 @@ const importToken = async (request) => {
     return result
   } else {
     throw Error('/store expects multipart/form-data')
-  }
-}
-
-/**
- * Sets a given `value` at the given `path` on a passed `object`.
- *
- * @example
- * ```js
- * const obj = { a: { b: { c: 1 }}}
- * setIn(obj, ['a', 'b', 'c'], 5)
- * obj.a.b.c //> 5
- * ```
- *
- * @template V
- * @param {any} object
- * @param {string[]} path
- * @param {V} value
- */
-const setIn = (object, path, value) => {
-  const n = path.length - 1
-  let target = object
-  for (let [index, key] of path.entries()) {
-    if (index === n) {
-      target[key] = value
-    } else {
-      target = target[key]
-    }
   }
 }
 

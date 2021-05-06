@@ -58,7 +58,8 @@
     "rollup": "2.22.1",
     "rollup-plugin-multi-input": "1.1.1",
     "typedoc": "0.20.36",
-    "uvu": "0.5.1"
+    "uvu": "0.5.1",
+    "just-safe-set": "^2.2.1"
   },
   "homepage": "https://github.com/ipfs-shipyard/nft.storage/tree/main/client",
   "bugs": "https://github.com/ipfs-shipyard/nft.storage/issues"

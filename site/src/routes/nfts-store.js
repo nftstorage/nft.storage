@@ -1,5 +1,5 @@
 import { validate } from '../utils/auth.js'
-import { setIn } from '../utils/utils.js'
+import setIn from 'just-safe-set'
 import { toFormData } from '../utils/form-data.js'
 import * as nfts from '../models/nfts.js'
 import { JSONResponse } from '../utils/json-response.js'
