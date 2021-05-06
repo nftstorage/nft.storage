@@ -1,6 +1,6 @@
 import { stores } from '../constants.js'
 
-/** @typedef {{ status: import('../bindings.js').PinStatus, size: number, created: string }} Pin */
+/** @typedef {{ cid: string, status: import('../bindings.js').PinStatus, size: number, created: string }} Pin */
 
 /**
  * @param {string} cid CID of the pin

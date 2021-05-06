@@ -63,19 +63,14 @@ export async function upload(event) {
 
   let pin = await pins.get(nft.cid)
   if (!pin || pin.status !== 'pinned') {
-    pin = { status: 'pinned', size: nftSize, created }
+    pin = { cid: nft.cid, status: 'pinned', size: nftSize, created }
     await pins.set(nft.cid, pin)
   }
 
   await nfts.set({ user, cid: nft.cid }, nft, pin)
 
   /** @type {import('../bindings').NFTResponse} */
-  const res = {
-    ...nft,
-    size: pin.size,
-    pin: { cid: nft.cid, ...pin },
-    deals: [],
-  }
+  const res = { ...nft, size: pin.size, pin, deals: [] }
 
   event.waitUntil(
     (async () => {

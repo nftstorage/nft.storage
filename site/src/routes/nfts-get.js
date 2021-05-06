@@ -35,7 +35,7 @@ export const status = async (event, params) => {
   const res = {
     ...nft,
     size: pin.size,
-    pin: { cid: nft.cid, ...(nft.pin || {}), ...pin },
+    pin: { ...(nft.pin || {}), ...pin },
     deals,
   }
 

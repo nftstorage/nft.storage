@@ -36,6 +36,7 @@ async function main() {
           key: cid,
           value: '',
           metadata: {
+            cid,
             status: k.metadata.pinStatus,
             size: k.metadata.size,
             created: k.metadata.created,
@@ -46,6 +47,7 @@ async function main() {
         key: cid,
         value: '',
         metadata: {
+          cid,
           status: k.metadata.pinStatus,
           size: k.metadata.size,
           created: k.metadata.created,

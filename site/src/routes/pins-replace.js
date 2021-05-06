@@ -84,7 +84,7 @@ export async function pinsReplace(event, params) {
     }
   } else {
     await cluster.pin(pinData.cid)
-    pin = { status: 'queued', size: 0, created }
+    pin = { cid: pinData.cid, status: 'queued', size: 0, created }
     await pins.set(pinData.cid, pin)
   }
 
@@ -118,10 +118,10 @@ export async function pinsReplace(event, params) {
 
   /** @type import('../pinata-psa').PinStatus */
   const pinStatus = {
-    requestid: pinData.cid,
+    requestid: pin.cid,
     status: pin.status,
     created: pin.created,
-    pin: { cid: pinData.cid, name, meta },
+    pin: { cid: pin.cid, name, meta },
     delegates: cluster.delegates(),
   }
   return new JSONResponse(pinStatus)
