@@ -132,11 +132,14 @@ export const pinInfo = async (cid) => {
  * @returns {Promise<{ ok: true, value: { id: string, ipfsHash: string, status: string, name: string} }|{ ok: false, error: Response }>}
  */
 export async function pinByHash(cid, options) {
-  const url = new URL('pinning/pinByHash', endpoint)
+  const url = new URL('/pinning/pinByHash', endpoint)
 
   const response = await fetch(url.toString(), {
     method: 'POST',
-    headers: { Authorization: `Bearer ${secrets.pinata}` },
+    headers: {
+      Authorization: `Bearer ${secrets.pinata}`,
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ hashToPin: cid, ...(options || {}) }),
   })
 
