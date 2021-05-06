@@ -4,7 +4,7 @@ import { getSentry } from './debug'
 /**
  * @typedef {import('../bindings').RouteContext} RouteContext
  * @typedef {import('toucan-js').default} Sentry
- * @typedef {(event: FetchEvent, params: Record<string,string>, ctx: RouteContext) => Promise<Response> | Response} Handler
+ * @typedef {(event: FetchEvent, ctx: RouteContext) => Promise<Response> | Response} Handler
  * @typedef {(req: Request) => boolean | Record<string,string>} Condition
  * @typedef {(req: Request) => Response} BasicHandler
  * @typedef {(req: Request, err: Error, ctx: RouteContext) => Response} ErrorHandler
@@ -115,6 +115,7 @@ class Router {
   /**
    * Resolve returns the matching route for a request that returns
    * true for all conditions (if any).
+   *
    * @param {Request} req
    * @return {[Handler|false, Record<string,string>, ResponseHandler[]]}
    */
@@ -142,9 +143,9 @@ class Router {
 
     if (handler) {
       try {
-        rsp = await handler(event, params, { sentry: this.sentry })
+        rsp = await handler(event, { sentry: this.sentry, params })
       } catch (err) {
-        rsp = this.options.onError(req, err, { sentry: this.sentry })
+        rsp = this.options.onError(req, err, { sentry: this.sentry, params })
       }
     } else {
       rsp = this.options.onNotFound(req)

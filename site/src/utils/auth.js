@@ -1,8 +1,6 @@
 import { Magic } from '@magic-sdk/admin'
 import { secrets } from '../constants.js'
-const { debug } = require('./debug')
-const log = debug('auth')
-import { HTTPError } from '../errors.js'
+import { HTTPError, ErrorUserNotFound, ErrorTokenNotFound } from '../errors.js'
 import {
   createOrUpdate,
   getUser,
@@ -17,36 +15,41 @@ export const magic = new Magic(secrets.magic)
  */
 
 /**
+ * Validate auth
  *
  * @param {FetchEvent} event
+ * @param {import('./router.js').RouteContext} ctx
  */
-export async function validate(event) {
+export async function validate(event, { sentry }) {
   const auth = event.request.headers.get('Authorization') || ''
-  if (!auth) {
-    throw new HTTPError('Missing auth token', 401)
-  }
   const token = magic.utils.parseAuthorizationHeader(auth)
+
   // validate access tokens
   if (await verifyJWT(token)) {
     const decoded = parseJWT(token)
     const user = await getUser(decoded.sub)
-    const tokenName = matchToken(user, token)
-    if (typeof tokenName === 'string') {
-      return { user, tokenName }
+    if (user) {
+      const tokenName = matchToken(user, token)
+      if (typeof tokenName === 'string') {
+        sentry.setUser(userSafe(user))
+        return { user, tokenName }
+      } else {
+        throw new ErrorTokenNotFound()
+      }
     } else {
-      throw new HTTPError('Token is not valid', 403)
+      throw new ErrorUserNotFound()
     }
   }
 
   // validate magic id tokens
-  try {
-    magic.token.validate(token)
-    const [proof, claim] = magic.token.decode(token)
-    const user = await getUser(claim.iss)
+  magic.token.validate(token)
+  const [proof, claim] = magic.token.decode(token)
+  const user = await getUser(claim.iss)
+  if (user) {
+    sentry.setUser(userSafe(user))
     return { user, tokenName: 'session' }
-  } catch (err) {
-    log(err)
-    throw new HTTPError(err.code, 403)
+  } else {
+    throw new ErrorUserNotFound()
   }
 }
 
@@ -69,7 +72,9 @@ export async function loginOrRegister(event, data) {
     const user = await createOrUpdate(parsed)
     return { user: userSafe(user), tokenName: 'session' }
   } else {
-    throw new HTTPError('Unauthorized', 401)
+    throw new HTTPError(
+      'Login or register failed. Issuer could not be fetched.'
+    )
   }
 }
 
@@ -85,10 +90,10 @@ async function parseGithub(data, magicMetadata) {
   /** @type {Record<string, string>} */
   let tokens = {}
 
-  try {
-    const oldUser = await getUser(sub)
+  const oldUser = await getUser(sub)
+  if (oldUser) {
     tokens = oldUser.tokens
-  } catch {}
+  }
 
   return {
     sub: `github|${data.oauth.userHandle}`,
@@ -111,7 +116,9 @@ async function parseGithub(data, magicMetadata) {
  */
 function parseMagic({ issuer, email, publicAddress }) {
   if (!issuer || !email || !publicAddress) {
-    throw new Error('Invalid metadata')
+    throw new HTTPError(
+      'Login or register failed. Metadata could not be fetched.'
+    )
   }
   const name = email.split('@')[0]
   return {

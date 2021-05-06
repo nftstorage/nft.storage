@@ -3,14 +3,10 @@ import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
 import { validate } from '../utils/auth.js'
 
-/**
- * @param {FetchEvent} event
- * @param {Record<string,string>} params
- * @returns {Promise<Response>}
- */
-export async function pinsDelete(event, params) {
-  const result = await validate(event)
-  const { user } = result
+/** @type {import('../utils/router.js').Handler} */
+export async function pinsDelete(event, ctx) {
+  const { params } = ctx
+  const { user } = await validate(event, ctx)
   let cid = params.requestid
   let nft = await nfts.get({ user, cid })
 

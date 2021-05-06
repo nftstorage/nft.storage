@@ -1,13 +1,10 @@
-import { HTTPError } from '../errors.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
 import { validate } from '../utils/auth.js'
 
-/**
- * @param {FetchEvent} event
- */
-export async function list(event) {
-  const auth = await validate(event)
+/** @type {import('../utils/router.js').Handler} */
+export async function list(event, ctx) {
+  const auth = await validate(event, ctx)
   const options = {}
   const { searchParams } = new URL(event.request.url)
 

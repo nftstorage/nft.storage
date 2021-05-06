@@ -3,13 +3,9 @@ import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nftsIndex from '../models/nfts-index.js'
 
-/**
- * @param {FetchEvent} event
- * @returns {Promise<JSONResponse>}
- */
-export async function pinsList(event) {
-  const result = await validate(event)
-  const { user } = result
+/** @type {import('../utils/router.js').Handler} */
+export async function pinsList(event, ctx) {
+  const { user } = await validate(event, ctx)
   const { searchParams } = new URL(event.request.url)
 
   let count = 0

@@ -33,8 +33,7 @@ const log = debug('router')
 const r = new Router({
   onError(req, err, { sentry }) {
     log(err)
-    sentry.captureException(err)
-    return HTTPError.respond(err)
+    return HTTPError.respond(err, { sentry })
   },
 })
 
@@ -48,7 +47,7 @@ r.add('options', '*', cors)
 r.add('post', '/login', login, [postCors])
 
 // Version
-r.add('get', '/version', (event, param, sentry) => {
+r.add('get', '/version', (event) => {
   return new JSONResponse({
     version: VERSION,
     commit: COMMITHASH,

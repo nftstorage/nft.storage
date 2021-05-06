@@ -5,14 +5,10 @@ import * as nfts from '../models/nfts.js'
 import * as pins from '../models/pins.js'
 import * as cluster from '../cluster.js'
 
-/**
- * @param {FetchEvent} event
- * @param {Record<string,string>} params
- * @returns {Promise<JSONResponse>}
- */
-export async function pinsGet(event, params) {
-  const result = await validate(event)
-  const { user } = result
+/** @type {import('../utils/router.js').Handler} */
+export async function pinsGet(event, ctx) {
+  const { params } = ctx
+  const { user } = await validate(event, ctx)
 
   let cid = params.requestid
   let nft = await nfts.get({ user, cid })

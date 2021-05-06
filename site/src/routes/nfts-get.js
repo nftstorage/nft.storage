@@ -9,13 +9,10 @@ import { validate } from '../utils/auth.js'
  * @typedef {import('../bindings').Deal} Deal
  */
 
-/**
- * @param {FetchEvent} event
- * @param {Record<string,string>} params
- */
-export const status = async (event, params) => {
-  const auth = await validate(event)
-  const user = auth.user
+/** @type {import('../utils/router.js').Handler} */
+export const status = async (event, ctx) => {
+  const { params } = ctx
+  const { user } = await validate(event, ctx)
 
   const [nft, pin, deals] = await Promise.all([
     getNft({ user, cid: params.cid }),
@@ -24,11 +21,11 @@ export const status = async (event, params) => {
   ])
 
   if (nft == null) {
-    return HTTPError.respond(new HTTPError('NFT not found', 404))
+    throw new HTTPError('NFT not found', 404)
   }
 
   if (pin == null) {
-    return HTTPError.respond(new HTTPError('pin not found', 404))
+    throw new HTTPError('Pin not found', 404)
   }
 
   /** @type {import('../bindings').NFTResponse} */

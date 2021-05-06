@@ -5,15 +5,14 @@ import * as nfts from '../models/nfts.js'
 import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth.js'
 import { obtainPin } from './pins-add.js'
+import { debug } from '../utils/debug.js'
 
-/**
- * @param {FetchEvent} event
- * @param {Record<string,string>} params
- * @returns {Promise<JSONResponse>}
- */
-export async function pinsReplace(event, params) {
-  const result = await validate(event)
-  const { user, tokenName } = result
+const log = debug('pin-replace')
+
+/** @type {import('../utils/router.js').Handler} */
+export async function pinsReplace(event, ctx) {
+  const { params } = ctx
+  const { user, tokenName } = await validate(event, ctx)
   let existingCID = params.requestid
   let found = await nfts.get({ user, cid: existingCID })
 
@@ -84,7 +83,8 @@ export async function pinsReplace(event, params) {
           pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
         })
       } catch (err) {
-        console.error(err)
+        log(err)
+        ctx.sentry.captureException(err)
       }
     })()
   )
