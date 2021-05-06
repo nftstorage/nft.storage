@@ -6,8 +6,8 @@
  *     node show-table.js DEALS --only-meta
  */
 import dotenv from 'dotenv'
-import { Cloudflare } from './cloudflare.js'
-import { findNs } from './utils.js'
+import { Cloudflare } from '../cloudflare.js'
+import { findNs } from '../utils.js'
 
 dotenv.config()
 

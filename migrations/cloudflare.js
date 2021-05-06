@@ -98,7 +98,7 @@ export class Cloudflare {
     await this.fetchJSON(url.toString(), { method: 'PUT', body })
   }
 
-  async writeMultiKV(nsId, kvs) {
+  async writeKVMulti(nsId, kvs) {
     const url = new URL(`${this.kvNsPath}/${nsId}/bulk`, endpoint)
     kvs = kvs.map((kv) => ({ ...kv, value: JSON.stringify(kv.value) }))
     return this.fetchJSON(url.toString(), {
@@ -125,5 +125,14 @@ export class Cloudflare {
     )
     const { result } = await this.fetchJSON(url.toString())
     return result.length ? result[0].metadata : null
+  }
+
+  async deleteKVMulti(nsId, keys) {
+    const url = new URL(`${this.kvNsPath}/${nsId}/bulk`, endpoint)
+    return this.fetchJSON(url.toString(), {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(keys),
+    })
   }
 }

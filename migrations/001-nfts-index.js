@@ -55,7 +55,7 @@ async function main() {
     )
     if (bulkWrites.length) {
       console.log(`🗂 writing index entries for ${bulkWrites.length} NFTs`)
-      await cf.writeMultiKV(index.id, bulkWrites)
+      await cf.writeKVMulti(index.id, bulkWrites)
     }
     total += keys.length
     console.log(`🦄 processed ${total} NFTs`)

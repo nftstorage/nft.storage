@@ -54,13 +54,13 @@ async function main() {
     })
     if (bulkWrites.pins.length) {
       console.log(`🗂 writing pin values for ${bulkWrites.pins.length} NFTs`)
-      await cf.writeMultiKV(pinsTable.id, bulkWrites.pins)
+      await cf.writeKVMulti(pinsTable.id, bulkWrites.pins)
     }
     if (bulkWrites.followups.length) {
       console.log(
         `🔁 writing followup values for ${bulkWrites.followups.length} pins`
       )
-      await cf.writeMultiKV(followupsTable.id, bulkWrites.followups)
+      await cf.writeKVMulti(followupsTable.id, bulkWrites.followups)
     }
     total += keys.length
     console.log(`🦄 processed ${total} NFTs`)
