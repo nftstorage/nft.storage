@@ -39,7 +39,7 @@ export async function addDirectory(files) {
 
 /**
  * Adds given file, wrapped in a diretory, to the cluster and
- * returns CID of the diretory back.
+ * returns CID of the directory back.
  *
  * @param {File} file
  * @returns {Promise<CID>}
