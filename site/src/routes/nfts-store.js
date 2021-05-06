@@ -30,7 +30,7 @@ export async function store(event) {
   for (const [name, content] of form.entries()) {
     if (name !== 'meta') {
       const file = /** @type {File} */ (content)
-      const cid = await cluster.importAsset(file)
+      const cid = CID.parse(await cluster.importAsset(file))
       const href = `ipfs://${cid}/${file.name}`
       const path = name.split('.')
       setIn(data, path, href)

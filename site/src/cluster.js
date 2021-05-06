@@ -1,6 +1,5 @@
 import { Cluster } from '@nftstorage/ipfs-cluster'
 import { cluster } from './constants.js'
-import { CID } from 'multiformats'
 
 const client = new Cluster(cluster.apiUrl, {
   headers: { Authorization: `Basic ${cluster.basicAuthToken}` },
@@ -42,7 +41,7 @@ export async function addDirectory(files) {
  * returns CID of the directory back.
  *
  * @param {File} file
- * @returns {Promise<CID>}
+ * @returns {Promise<import('nft.storage/src/lib/interface').CIDString>}
  */
 export const importAsset = async (file) => {
   const result = await client.addDirectory([file])
@@ -52,7 +51,7 @@ export const importAsset = async (file) => {
     )
   }
   const [, dir] = result
-  return CID.parse(dir.cid)
+  return dir.cid
 }
 /**
  * @param {string} cid
