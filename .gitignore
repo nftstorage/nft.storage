@@ -35,3 +35,4 @@ yarn.lock
 package-lock.json
 site/public
 .cluster
+*.http

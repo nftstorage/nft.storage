@@ -6,18 +6,19 @@ import * as nfts from '../models/nfts.js'
 import * as pins from '../models/pins.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth.js'
+import { debug } from '../utils/debug.js'
+
+const log = debug('nfts-upload')
 
 /**
  * @typedef {import('../bindings').NFT} NFT
  */
 
-/**
- * @param {FetchEvent} event
- */
-export async function upload(event) {
+/** @type {import('../utils/router.js').Handler} */
+export async function upload(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
-  const { user, tokenName } = await validate(event)
+  const { user, tokenName } = await validate(event, ctx)
 
   /** @type {NFT} */
   let nft
@@ -78,7 +79,8 @@ export async function upload(event) {
           pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
         })
       } catch (err) {
-        console.error(err)
+        log(err)
+        ctx.sentry.captureException(err)
       }
     })()
   )

@@ -8,9 +8,9 @@ export async function notFound(event) {
 
 /**
  * @template T
- * @param {(ctx : import("../bindings").RouteContext) => Promise<T | void>} fn
+ * @param {(ctx : import("../bindings").CronContext) => Promise<T | void>} fn
  * @param {string} label
- * @param {import("../bindings").RouteContext} ctx
+ * @param {import("../bindings").CronContext} ctx
  * @returns {Promise<T | void>}
  */
 export async function timed(fn, label, ctx) {

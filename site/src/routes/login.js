@@ -1,10 +1,7 @@
 import { JSONResponse } from '../utils/json-response'
 import { loginOrRegister } from './../utils/auth'
 
-/**
- *
- * @param {FetchEvent} event
- */
+/** @type {import('../utils/router').Handler} */
 export async function login(event) {
   const data = await event.request.json()
   const auth = await loginOrRegister(event, data)

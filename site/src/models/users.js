@@ -1,5 +1,6 @@
 import { signJWT } from '../utils/jwt.js'
 import merge from 'merge-options'
+import { ErrorUserNotFound, HTTPError } from '../errors.js'
 
 const users = USERS
 
@@ -32,12 +33,12 @@ export async function createOrUpdate(newUser) {
  * Get User
  *
  * @param {string} issuer
- * @returns {Promise<User>}
+ * @returns {Promise<User|null>}
  */
 export async function getUser(issuer) {
   const user = await users.get(issuer)
   if (user === null) {
-    throw new Error('user not found')
+    return null
   }
   return JSON.parse(user)
 }
@@ -101,10 +102,14 @@ export async function tokens(issuer) {
  */
 export async function createToken(issuer, name) {
   const user = await getUser(issuer)
+  if (!user) {
+    throw new ErrorUserNotFound()
+  }
+
   const token = user.tokens[name]
 
   if (token) {
-    throw new Error(`A token with name "${name}" already exists.`)
+    throw new HTTPError(`A token with name "${name}" already exists.`, 400)
   }
 
   user.tokens[name] = await signJWT({
@@ -124,6 +129,9 @@ export async function createToken(issuer, name) {
  */
 export async function deleteToken(issuer, name) {
   const user = await getUser(issuer)
+  if (!user) {
+    throw new ErrorUserNotFound()
+  }
   const token = user.tokens[name]
 
   if (token) {

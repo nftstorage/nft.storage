@@ -6,7 +6,7 @@ import * as nftsIndex from '../models/nfts-index.js'
  * Adds and updates NFT metadata in the NFTS_IDX table. The metadata extracted
  * is used by the Pinning Services API pins listing.
  *
- * @param {import('../bindings.js').RouteContext} ctx
+ * @param {import('../bindings.js').CronContext} ctx
  */
 export async function updateNftsIndexMeta({ sentry }) {
   for await (const [key, data] of nftsIndex.entries()) {

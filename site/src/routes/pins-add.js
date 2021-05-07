@@ -4,14 +4,13 @@ import * as nfts from '../models/nfts.js'
 import * as pins from '../models/pins.js'
 import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth.js'
+import { debug } from '../utils/debug.js'
 
-/**
- * @param {FetchEvent} event
- * @returns {Promise<JSONResponse>}
- */
-export async function pinsAdd(event) {
-  const result = await validate(event)
-  const { user, tokenName } = result
+const log = debug('pins-add')
+
+/** @type {import('../utils/router.js').Handler} */
+export async function pinsAdd(event, ctx) {
+  const { user, tokenName } = await validate(event, ctx)
   const pinData = await event.request.json()
 
   if (typeof pinData.cid !== 'string') {
@@ -53,7 +52,8 @@ export async function pinsAdd(event) {
           pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
         })
       } catch (err) {
-        console.error(err)
+        log(err)
+        ctx.sentry.captureException(err)
       }
     })()
   )

@@ -92,4 +92,9 @@ export type UserSafe = Omit<User, 'tokens' | 'github'>
 
 export interface RouteContext {
   sentry: Toucan
+  params: Record<string, string>
+}
+
+export interface CronContext {
+  sentry: Toucan
 }
