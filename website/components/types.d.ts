@@ -11,5 +11,9 @@ export interface LayoutProps {
 }
 
 export interface LayoutChildrenProps {
-  user?: { user: string }
+  user?: {
+    issuer: string | null
+    publicAddress: string | null
+    email: string | null
+  }
 }
