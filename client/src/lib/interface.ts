@@ -1,3 +1,12 @@
+import type { CID } from 'multiformats'
+
+export type { CID }
+
+/**
+ * Define nominal type of U based on type of T. Similar to Opaque types in Flow
+ */
+export type Tagged<T, Tag> = T & { tag?: Tag }
+
 export interface Service {
   endpoint: URL
   token: string
@@ -10,9 +19,29 @@ export interface PublicService {
 /**
  * CID in string representation
  */
-export type CIDString = string & {}
+export type CIDString = Tagged<string, CID>
 
 export interface API {
+  /**
+   * Stores the given token and all resources it references (in the form of a
+   * File or a Blob) along with a metadata JSON as specificed in ERC-1155. The
+   * `token.image` must be either a `File` or a `Blob` instance, which will be
+   * stored and the corresponding content address URL will be saved in the
+   * metadata JSON file under `image` field.
+   *
+   * If `token.properties` contains properties with `File` or `Blob` values,
+   * those also get stored and their URLs will be saved in the metadata JSON
+   * file in their place.
+   *
+   * Note: URLs for `File` objects will retain file names e.g. in case of
+   * `new File([bytes], 'cat.png', { type: 'image/png' })` will be transformed
+   * into a URL that looks like `ipfs://bafy...hash/image/cat.png`. For `Blob`
+   * objects, the URL will not have a file name name or mime type, instead it 
+   * will be transformed into a URL that looks like
+   * `ipfs://bafy...hash/image/blob`.
+   */
+  store<T extends TokenInput>(service: Service, token: T): Promise<Token<T>>
+
   /**
    * Stores a single file and returns a corresponding CID.
    */
@@ -137,3 +166,149 @@ export interface Pin {
 }
 
 export type PinStatus = 'queued' | 'pinning' | 'pinned' | 'failed'
+
+/**
+ * This is an input used to construct the Token metadata as per EIP-1155
+ * @see https://eips.ethereum.org/EIPS/eip-1155#metadata
+ */
+export interface TokenInput {
+  /**
+   * Identifies the asset to which this token represents
+   */
+  name: string
+  /**
+   * Describes the asset to which this token represents
+   */
+  description: string
+  /**
+   * A `File` with mime type `image/*` representing the asset this
+   * token represents. Consider creating images with width between `320` and
+   * `1080` pixels and aspect ratio between `1.91:1` and `4:5` inclusive.
+   *
+   * If a `File` object is used, the URL in the metadata will include a filename
+   * e.g. `ipfs://bafy...hash/cat.png`. If a `Blob` is used, the URL in the
+   * metadata will not include filename or extension e.g. `ipfs://bafy...img/`
+   */
+  image: Blob | File
+
+  /**
+   * The number of decimal places that the token amount should display - e.g.
+   * `18`, means to divide the token amount by `1000000000000000000` to get its
+   * user representation.
+   */
+  decimals?: number
+
+  /**
+   * Arbitrary properties. Values may be strings, numbers, nested objects or
+   * arrays of values. It is possible to provide `File` or `Blob` instances
+   * as property values, which will be stored on IPFS, and metadata will
+   * contain URLs to them in form of `ipfs://bafy...hash/name.png` or
+   * `ipfs://bafy...file/` respectively.
+   */
+  properties?: Object
+
+  localization?: Localization
+}
+
+interface Localization {
+  /**
+   * The URI pattern to fetch localized data from. This URI should contain the
+   * substring `{locale}` which will be replaced with the appropriate locale
+   * value before sending the request.
+   */
+  uri: string
+  /**
+   * The locale of the default data within the base JSON
+   */
+  default: string
+  /**
+   * The list of locales for which data is available. These locales should
+   * conform to those defined in the Unicode Common Locale Data Repository
+   * (http://cldr.unicode.org/).
+   */
+  locales: string[]
+}
+
+export interface Token<T extends TokenInput> {
+  /**
+   * CID for the token that encloses all of the files including metadata.json
+   * for the stored token.
+   */
+  ipnft: CIDString
+
+  /**
+   * URL like `ipfs://bafy...hash/meta/data.json` for the stored token metadata.
+   */
+  url: EncodedURL
+
+  /**
+   * Actual token data in ERC-1155 format. It matches data passed as `token`
+   * argument except Files/Blobs are substituted with corresponding `ipfs://`
+   * URLs.
+   */
+  data: Encoded<T, [[Blob, URL]]>
+
+  /**
+   * Token data just like in `data` field except urls corresponding to
+   * Files/Blobs are substituted with IPFS gateway URLs so they can be
+   * embedded in browsers that do not support `ipfs://` protocol.
+   */
+  embed(): Encoded<T, [[Blob, URL]]>
+}
+
+export type EncodedError = {
+  message: string
+}
+export type EncodedURL = Tagged<string, URL>
+
+export type Result<X, T> = { ok: true; value: T } | { ok: false; error: X }
+
+export interface EncodedToken<T extends TokenInput> {
+  ipnft: CIDString
+  url: EncodedURL
+  data: Encoded<T, [[Blob, EncodedURL]]>
+}
+export type StoreResponse<T extends TokenInput> = Result<
+  EncodedError,
+  EncodedToken<T>
+>
+
+/**
+ * Represents `T` encoded with a given `Format`.
+ * @example
+ * ```ts
+ * type Format = [
+ *    [URL, { type: 'URL', href: string }]
+ *    [CID, { type: 'CID', cid: string }]
+ *    [Blob, { type: 'Blob', href: string }]
+ * ]
+ *
+ * type Response<T> = Encoded<T, Format>
+ * ```
+ */
+export type Encoded<T, Format extends Pattern<any, any>[]> = MatchRecord<
+  T,
+  Rule<Format[number]>
+>
+
+/**
+ * Format consists of multiple encoding defines what input type `I` maps to what output type `O`. It
+ * can be represented via function type or a [I, O] tuple.
+ */
+type Pattern<I, O> = ((input: I) => O) | [I, O]
+
+export type MatchRecord<T, R extends Rule<any>> = {
+  [K in keyof T]: MatchRule<T[K], R> extends never // R extends {I: T[K], O: infer O} ? O : MatchRecord<T[K], R> //Match<T[K], R>
+    ? MatchRecord<T[K], R>
+    : MatchRule<T[K], R>
+}
+
+type MatchRule<T, R extends Rule<any>> = R extends (input: T) => infer O
+  ? O
+  : never
+
+type Rule<Format extends Pattern<any, any>> = Format extends [infer I, infer O]
+  ? (input: I) => O
+  : Format extends (input: infer I) => infer O
+  ? (input: I) => O
+  : never

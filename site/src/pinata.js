@@ -5,7 +5,7 @@ const endpoint = new URL('https://api.pinata.cloud')
 /**
  * @typedef {import('./models/users.js').User} User
  * @typedef {{ok: true, value: {IpfsHash:string, PinSize:number, Timestamp:string}}|{ok:false, error:Response}} PinataResponse
- * @typedef {import('./utils/multipart/index.js').FileParts} FileParts
+ * @typedef {import('./utils/multipart/index.js').FilePart} FilePart
  */
 
 /**
@@ -52,7 +52,7 @@ export const pinFile = async (blob, user) => {
 }
 
 /**
- * @param {FileParts} files
+ * @param {FilePart[]} files
  * @param {User} user
  * @returns {Promise<PinataResponse>}
  */
@@ -132,11 +132,14 @@ export const pinInfo = async (cid) => {
  * @returns {Promise<{ ok: true, value: { id: string, ipfsHash: string, status: string, name: string} }|{ ok: false, error: Response }>}
  */
 export async function pinByHash(cid, options) {
-  const url = new URL('pinning/pinByHash', endpoint)
+  const url = new URL('/pinning/pinByHash', endpoint)
 
   const response = await fetch(url.toString(), {
     method: 'POST',
-    headers: { Authorization: `Bearer ${secrets.pinata}` },
+    headers: {
+      Authorization: `Bearer ${secrets.pinata}`,
+      'Content-Type': 'application/json',
+    },
     body: JSON.stringify({ hashToPin: cid, ...(options || {}) }),
   })
 

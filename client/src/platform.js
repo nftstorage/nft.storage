@@ -1,7 +1,7 @@
 import fetch, { Request, Response, Headers } from '@web-std/fetch'
 import { FormData } from '@web-std/form-data'
-import { Blob, ReadableStream } from '@web-std/blob'
-import { File } from '@web-std/file'
+import { ReadableStream } from '@web-std/blob'
+import { File, Blob } from '@web-std/file'
 
 export {
   fetch,

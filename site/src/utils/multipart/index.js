@@ -231,6 +231,13 @@ export async function* streamMultipart(body, boundary) {
     }
   }
 }
+
+/**
+ *
+ * @param {ReadableStream<Uint8Array>} body
+ * @param {string} boundary
+ * @returns {AsyncIterable<FilePart>}
+ */
 export async function* iterateMultipart(body, boundary) {
   for await (const part of streamMultipart(body, boundary)) {
     const chunks = []
@@ -245,19 +252,5 @@ export async function* iterateMultipart(body, boundary) {
 }
 
 /**
- *
- * @param {ReadableStream<Uint8Array> | null} body
- * @param {string} boundary
- * @returns {Promise<FileParts>}
- */
-export async function parseMultipart(body, boundary) {
-  const parts = []
-  for await (const part of iterateMultipart(body, boundary)) {
-    parts.push(part)
-  }
-  return parts
-}
-
-/**
- * @typedef {{name: string, filename: string, contentType: string, data: Uint8Array}[]} FileParts
+ * @typedef {{name: string, filename?: string, contentType?: string, data: Uint8Array}} FilePart
  */

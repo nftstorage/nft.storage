@@ -1,6 +1,9 @@
 import { CID } from 'multiformats'
+import { sha256 } from 'multiformats/hashes/sha2'
 import { importBlob, importDirectory } from './importer.js'
 import { Response, Request } from './mock-server.js'
+import * as CBOR from '@ipld/dag-cbor'
+import setIn from 'just-safe-set'
 /**
  * @param {Request} request
  */
@@ -29,6 +32,62 @@ const importUpload = async (request) => {
   } else {
     const content = await request.arrayBuffer()
     return await importBlob(new Uint8Array(content))
+  }
+}
+
+/**
+ * @param {File} file
+ * @returns {Promise<CID>}
+ */
+const importAsset = async (file) => {
+  const { cid } = await importDirectory([file])
+  return CID.parse(cid.toString())
+}
+
+/**
+ * @param {Request} request
+ */
+const importToken = async (request) => {
+  const contentType = request.headers.get('content-type') || ''
+  if (contentType.includes('multipart/form-data')) {
+    const form = await request.formData()
+
+    const data = JSON.parse(/** @type {string} */ (form.get('meta')))
+    const dag = JSON.parse(JSON.stringify(data))
+
+    for (const [name, content] of form.entries()) {
+      if (name !== 'meta') {
+        const file = /** @type {File} */ (content)
+        const cid = await importAsset(file)
+        const href = `ipfs://${cid}/${file.name}`
+        const path = name.split('.')
+        setIn(data, path, href)
+        setIn(dag, path, cid)
+      }
+    }
+
+    const metadata = await importBlob(JSON.stringify(data))
+
+    const bytes = CBOR.encode({
+      ...dag,
+      'metadata.json': metadata.cid,
+      type: 'nft',
+    })
+    const hash = await sha256.digest(bytes)
+    const ipnft = CID.create(1, CBOR.code, hash)
+
+    const result = {
+      ok: true,
+      value: {
+        ipnft: ipnft.toString(),
+        url: `ipfs://${ipnft}/metadata.json`,
+        data,
+      },
+    }
+
+    return result
+  } else {
+    throw Error('/store expects multipart/form-data')
   }
 }
 
@@ -90,6 +149,13 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
         }
         const result = { ok: true, value: { cid: cid.toString() } }
 
+        return new Response(JSON.stringify(result), {
+          headers: headers(request),
+        })
+      }
+      case 'POST /store': {
+        authorize()
+        const result = await importToken(request)
         return new Response(JSON.stringify(result), {
           headers: headers(request),
         })

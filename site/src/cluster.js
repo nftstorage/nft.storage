@@ -13,21 +13,46 @@ const client = new Cluster(cluster.apiUrl, {
  * @param {Blob} data
  */
 export async function add(data) {
-  return client.add(data, { metadata: { size: data.size.toString() } })
+  const { cid, size } = await client.add(data, {
+    metadata: { size: data.size.toString() },
+  })
+  return {
+    cid,
+    size: Number(size),
+  }
 }
 
 /**
- * @param {import('./utils/multipart/index.js').FileParts} fileParts
+ * @param {File[]} files
  */
-export async function addDirectory(fileParts) {
-  const files = fileParts.map(
-    (fp) =>
-      new File([fp.data], fp.filename || fp.name, { type: fp.contentType })
-  )
+export async function addDirectory(files) {
   const size = files.reduce((total, f) => total + f.size, 0)
-  return client.addDirectory(files, { metadata: { size: size.toString() } })
+  const results = await client.addDirectory(files, {
+    metadata: { size: size.toString() },
+  })
+  return results.map((result) => ({
+    cid: result.cid,
+    size: Number(result.size),
+  }))
 }
 
+/**
+ * Adds given file, wrapped in a diretory, to the cluster and
+ * returns CID of the directory back.
+ *
+ * @param {File} file
+ * @returns {Promise<import('nft.storage/src/lib/interface').CIDString>}
+ */
+export const importAsset = async (file) => {
+  const result = await client.addDirectory([file])
+  if (result.length !== 2) {
+    throw new Error(
+      `Expected response with two entries, but got ${result.length} instead`
+    )
+  }
+  const [, dir] = result
+  return dir.cid
+}
 /**
  * @param {string} cid
  */

@@ -1,5 +1,5 @@
 import { HTTPError } from '../errors.js'
-import { parseMultipart } from '../utils/multipart/index.js'
+import { toFormData } from '../utils/form-data.js'
 import * as pinata from '../pinata.js'
 import * as cluster from '../cluster.js'
 import * as nfts from '../models/nfts.js'
@@ -19,9 +19,12 @@ export async function upload(event) {
   const { user, tokenName } = await validate(event)
 
   if (contentType.includes('multipart/form-data')) {
-    const boundary = contentType.split('boundary=')[1].trim()
-    const parts = await parseMultipart(event.request.body, boundary)
-    const dir = await cluster.addDirectory(parts)
+    const form = await toFormData(event.request)
+    // Our API schema requires that all file parts be named `file` and
+    // encoded as binary, which is why we can expect that each part here is
+    // a file (and not a stirng).
+    const files = /** @type {File[]} */ (form.getAll('file'))
+    const dir = await cluster.addDirectory(files)
     const { cid, size } = dir[dir.length - 1]
     event.waitUntil(
       (async () => {
@@ -39,18 +42,16 @@ export async function upload(event) {
     /** @type {NFT} */
     const nft = {
       cid,
-      // @ts-ignore
-      size,
+      size: size,
       created: created.toISOString(),
       type: 'directory',
       scope: tokenName,
-      files: parts.map((f) => ({
-        name: f.filename || f.name,
-        type: f.contentType,
+      files: files.map((f) => ({
+        name: f.name,
+        type: f.type,
       })),
       pin: {
         cid,
-        // @ts-ignore
         size,
         status: 'pinned',
         created: created.toISOString(),

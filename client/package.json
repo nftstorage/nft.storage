@@ -50,14 +50,16 @@
     "ipld-in-memory": "8.0.0",
     "mocha": "8.3.2",
     "multicodec": "3.0.1",
-    "multiformats": "4.5.3",
+    "multiformats": "^7.0.0",
+    "@ipld/dag-cbor": "^5.0.0",
     "multihashing-async": "2.1.2",
     "nyc": "15.1.0",
     "playwright-test": "2.1.0",
     "rollup": "2.22.1",
     "rollup-plugin-multi-input": "1.1.1",
     "typedoc": "0.20.36",
-    "uvu": "0.5.1"
+    "uvu": "0.5.1",
+    "just-safe-set": "^2.2.1"
   },
   "homepage": "https://github.com/ipfs-shipyard/nft.storage/tree/main/client",
   "bugs": "https://github.com/ipfs-shipyard/nft.storage/issues"
