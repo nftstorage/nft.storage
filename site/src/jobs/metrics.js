@@ -1,6 +1,7 @@
 import { stores } from '../constants.js'
 import * as metrics from '../models/metrics.js'
-import * as deals from '../models/deals.js'
+import * as pins from '../models/pins.js'
+import * as nftsIndex from '../models/nfts-index.js'
 
 /**
  * @typedef {{
@@ -34,21 +35,12 @@ export async function updateNftMetrics() {
   let total = 0
   let totalBytes = 0
   let totalPins = 0
-  let done = false
-  let cursor
-  while (!done) {
-    // @ts-ignore
-    const nftList = await stores.nfts.list({ cursor, limit: 1000 })
-    total += nftList.keys.length
-    for (const k of nftList.keys) {
-      if (!k.metadata) continue
-      totalBytes += k.metadata.size || 0
-      if (k.metadata.pinStatus === 'pinned') {
-        totalPins++
-      }
+  for await (const [, data] of nftsIndex.entries()) {
+    total++
+    totalBytes += data.size
+    if (data.pinStatus === 'pinned') {
+      totalPins++
     }
-    cursor = nftList.cursor
-    done = nftList.list_complete
   }
   await Promise.all([
     // Total number of NFTs stored on nft.storage
@@ -57,6 +49,28 @@ export async function updateNftMetrics() {
     metrics.set('nfts:totalBytes', totalBytes),
     // Total number of NFTs pinned on IPFS
     metrics.set('nfts:pins:total', totalPins),
+  ])
+}
+
+export async function updatePinMetrics() {
+  let total = 0
+  let totalBytes = 0
+  let statusTotals = { queued: 0, failed: 0, pinning: 0, pinned: 0 }
+  for await (const [, pin] of pins.entries()) {
+    total++
+    totalBytes += pin.size
+    statusTotals[pin.status]++
+  }
+  await Promise.all([
+    // Total number of pins added to nft.storage
+    metrics.set('pins:total', total),
+    // Total bytes of all pins
+    metrics.set('pins:totalBytes', totalBytes),
+    // Total pins by status
+    metrics.set('pins:status:queued:total', statusTotals.queued),
+    metrics.set('pins:status:failed:total', statusTotals.failed),
+    metrics.set('pins:status:pinning:total', statusTotals.pinning),
+    metrics.set('pins:status:pinned:total', statusTotals.pinned),
   ])
 }
 

@@ -1,9 +1,6 @@
 /**
- * This migration populates the NFTS_IDX table by reading all the records in
- * the NFTS table.
- *
- * The NFTS_IDX table is an indexing table, with keys ordered by user.sub and
- * then by created date (DESC).
+ * This is an optional migration that can be used to re-index data in NFTS_IDX
+ * based on data in NFTS and PINS.
  */
 
 import dotenv from 'dotenv'
@@ -31,8 +28,11 @@ async function main() {
   const namespaces = await cf.fetchKVNamespaces()
   const table = findNs(namespaces, env, 'NFTS')
   const index = findNs(namespaces, env, 'NFTS_IDX')
+  const pins = findNs(namespaces, env, 'PINS')
 
-  console.log(`🎯 Populating ${index.title} from ${table.title}`)
+  console.log(
+    `🎯 Populating ${index.title} from ${table.title} and ${pins.title}`
+  )
   let total = 0
   for await (const keys of cf.fetchKVKeys(table.id)) {
     const bulkWrites = []
@@ -41,15 +41,28 @@ async function main() {
         const parts = k.name.split(':')
         const cid = parts.pop()
         const sub = parts.join(':')
+        console.log(`📖 reading NFT and pin for ${k.name}`)
+        const [nft, pin] = await Promise.all([
+          cf.readKV(table.id, k.name),
+          cf.readKVMeta(pins.id, cid),
+        ])
+        if (!nft) throw new Error(`missing NFT ${k.name}`)
+        if (!pin) throw new Error(`missing pin ${cid}`)
         const indexKey = encodeIndexKey({
           user: { sub },
-          created: new Date(k.metadata.created),
+          created: new Date(nft.created),
           cid,
         })
         bulkWrites.push({
           key: indexKey,
           value: '',
-          metadata: { key: k.name },
+          metadata: {
+            key: k.name,
+            pinStatus: pin.status,
+            size: pin.size,
+            name: pin.name,
+            meta: pin.meta,
+          },
         })
       })
     )

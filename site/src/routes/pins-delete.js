@@ -25,7 +25,7 @@ export async function pinsDelete(event, params) {
 
   if (!nft) {
     return new JSONResponse(
-      { error: { reason: 'NOT_FOUND', details: 'pin not found' } },
+      { error: { reason: 'NOT_FOUND', details: 'NFT not found' } },
       { status: 404 }
     )
   }

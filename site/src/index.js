@@ -21,10 +21,12 @@ import {
   updateUserMetrics,
   updateNftMetrics,
   updateNftDealMetrics,
+  updatePinMetrics,
 } from './jobs/metrics.js'
 import { updatePinStatuses } from './jobs/pins.js'
 import { login } from './routes/login.js'
 import { JSONResponse } from './utils/json-response.js'
+import { updateNftsIndexMeta } from './jobs/nfts-index.js'
 const { debug, getSentrySchedule } = require('./utils/debug')
 const log = debug('router')
 
@@ -90,15 +92,16 @@ r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))
 
 // Cron jobs
-addEventListener('scheduled', (event) =>
+addEventListener('scheduled', (event) => {
+  const sentry = getSentrySchedule(event)
   event.waitUntil(
-    (async () => {
-      const sentry = getSentrySchedule(event)
-      await timed(updateUserMetrics, 'CRON updateUserMetrics', { sentry })
-      await timed(updateNftMetrics, 'CRON updateNftMetrics', { sentry })
-    })()
+    timed(updateUserMetrics, 'CRON updateUserMetrics', { sentry })
   )
-)
+})
+addEventListener('scheduled', (event) => {
+  const sentry = getSentrySchedule(event)
+  event.waitUntil(timed(updateNftMetrics, 'CRON updateNftMetrics', { sentry }))
+})
 addEventListener('scheduled', (event) => {
   const sentry = getSentrySchedule(event)
   event.waitUntil(
@@ -109,5 +112,15 @@ addEventListener('scheduled', (event) => {
   const sentry = getSentrySchedule(event)
   event.waitUntil(
     timed(updatePinStatuses, 'CRON updatePinStatuses', { sentry })
+  )
+})
+addEventListener('scheduled', (event) => {
+  const sentry = getSentrySchedule(event)
+  event.waitUntil(timed(updatePinMetrics, 'CRON updatePinMetrics', { sentry }))
+})
+addEventListener('scheduled', (event) => {
+  const sentry = getSentrySchedule(event)
+  event.waitUntil(
+    timed(updateNftsIndexMeta, 'CRON updateNftsIndexMeta', { sentry })
   )
 })

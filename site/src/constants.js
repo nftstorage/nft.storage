@@ -5,6 +5,8 @@ export const stores = {
   nfts: NFTS,
   nftsIndex: NFTS_IDX,
   metrics: METRICS,
+  pins: PINS,
+  followups: FOLLOWUPS,
 }
 
 export const secrets = {

@@ -27,18 +27,19 @@ export class Cloudflare {
                 init.headers = init.headers || {}
                 init.headers.Authorization = `Bearer ${apiToken}`
                 init.signal = controller.signal
-                const res = await fetch(url, init)
-                if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`)
-                const data = await res.json()
-                clearTimeout(abortID)
-                return data
+                try {
+                  const res = await fetch(url, init)
+                  if (!res.ok) {
+                    throw new Error(`${res.status}: ${res.statusText}`)
+                  }
+                  const text = await res.text()
+                  return text === '' ? null : JSON.parse(text)
+                } finally {
+                  clearTimeout(abortID)
+                }
               },
               {
-                onFailedAttempt: (err) => {
-                  console.log(
-                    `💥 fetch ${url} attempt ${err.attemptNumber} failed: ${err.retriesLeft} retries left.`
-                  )
-                },
+                onFailedAttempt: (err) => console.warn(`💥 fetch ${url}`, err),
                 retries: 5,
               }
             )
@@ -97,7 +98,7 @@ export class Cloudflare {
     await this.fetchJSON(url.toString(), { method: 'PUT', body })
   }
 
-  async writeMultiKV(nsId, kvs) {
+  async writeKVMulti(nsId, kvs) {
     const url = new URL(`${this.kvNsPath}/${nsId}/bulk`, endpoint)
     kvs = kvs.map((kv) => ({ ...kv, value: JSON.stringify(kv.value) }))
     return this.fetchJSON(url.toString(), {
@@ -113,5 +114,25 @@ export class Cloudflare {
       endpoint
     )
     return this.fetchJSON(url.toString())
+  }
+
+  async readKVMeta(nsId, key) {
+    const url = new URL(
+      `${this.kvNsPath}/${nsId}/keys?limit=10&prefix=${encodeURIComponent(
+        key
+      )}`,
+      endpoint
+    )
+    const { result } = await this.fetchJSON(url.toString())
+    return result.length ? result[0].metadata : null
+  }
+
+  async deleteKVMulti(nsId, keys) {
+    const url = new URL(`${this.kvNsPath}/${nsId}/bulk`, endpoint)
+    return this.fetchJSON(url.toString(), {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(keys),
+    })
   }
 }

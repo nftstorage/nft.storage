@@ -1,39 +1,15 @@
 import { stores } from '../constants.js'
-import merge from 'merge-options'
+import * as nftsIndex from './nfts-index.js'
 
 /**
  * @typedef {{user: import('./users').User, cid: string}} Key
  * @typedef {import('../bindings').NFT} NFT
  */
 
-const FAR_FUTURE = new Date('3000-01-01T00:00:00.000Z').getTime()
-const PAD_LEN = FAR_FUTURE.toString().length
-
 /**
  * @param {Key} key
  */
 const encodeKey = ({ user, cid }) => `${user.sub}:${cid}`
-
-/**
- * @param {{user: import('./users').User, created: Date, cid: string}} key
- */
-export function encodeIndexKey({ user, created, cid }) {
-  const ts = (FAR_FUTURE - created.getTime()).toString().padStart(PAD_LEN, '0')
-  return `${user.sub}:${ts}:${cid}`
-}
-
-/**
- * @param {string} key
- * @returns {{ user: { sub: string }, created: Date, cid: string }}
- */
-function decodeIndexKey(key) {
-  const parts = key.split(':')
-  const cid = parts.pop()
-  const ts = parts.pop()
-  if (!cid || !ts) throw new Error('invalid index key')
-  const created = new Date(FAR_FUTURE - parseInt(ts))
-  return { user: { sub: parts.join(':') }, created, cid }
-}
 
 /**
  * @param {Key} key
@@ -45,25 +21,23 @@ export const has = async (key) => {
 
 /**
  * @param {Key} key
- * @param {NFT} value
- * @param {any} [options]
+ * @param {NFT} nft
+ * @param {import('./pins.js').Pin} pin
  * @returns {Promise<NFT>}
  */
-export const set = async (key, value, options) => {
-  const savedValue = await get(key)
-  if (savedValue === null) {
-    const kvKey = encodeKey(key)
-    await stores.nfts.put(kvKey, JSON.stringify(value), options)
-    await stores.nftsIndex.put(
-      encodeIndexKey({ ...key, created: new Date(value.created) }),
-      '',
-      { metadata: { key: kvKey } }
-    )
-    return value
-  }
-  const data = merge(savedValue, value)
-  await stores.nfts.put(encodeKey(key), JSON.stringify(data), options)
-  return data
+export const set = async (key, nft, pin) => {
+  const kvKey = encodeKey(key)
+  await stores.nfts.put(kvKey, JSON.stringify(nft))
+  await nftsIndex.set(
+    { ...key, created: nft.created },
+    {
+      key: kvKey,
+      ...(nft.pin || {}), // name/meta
+      pinStatus: pin.status,
+      size: pin.size,
+    }
+  )
+  return nft
 }
 
 /**
@@ -86,15 +60,13 @@ export const remove = async (key) => {
   const nft = await get(key)
   if (!nft) return
   await stores.nfts.delete(encodeKey(key))
-  await stores.nftsIndex.delete(
-    encodeIndexKey({ ...key, created: new Date(nft.created) })
-  )
+  await nftsIndex.remove({ ...key, created: nft.created })
 }
 
 /**
  * @param {any} prefix
  * @param {{ limit?: number, before?: Date }} [options]
- * @returns {Promise<Array<KVValue<NFT>>>}
+ * @returns {Promise<Array<import('../bindings').NFTResponse|null>>}
  */
 export async function list(prefix, options) {
   options = options || {}
@@ -109,32 +81,37 @@ export async function list(prefix, options) {
     throw new Error('invalid filter')
   }
 
-  let done = false
-  let cursor
-  /** @type Promise<KVValue<NFT>>[] */
-  const nfts = []
-
-  while (!done) {
-    // @ts-ignore
-    const nftIdxList = await stores.nftsIndex.list({ prefix, cursor })
-
-    for (const k of nftIdxList.keys) {
-      const { created } = decodeIndexKey(k.name)
-      if (created.getTime() < before.getTime()) {
-        // @ts-ignore
-        nfts.push(stores.nfts.get(k.metadata.key, 'json'))
-        if (nfts.length >= limit) {
-          break
-        }
+  /** @type {Array<{ nftPromise: Promise<NFT|null>, indexData: import('./nfts-index.js').IndexData }>} */
+  const items = []
+  for await (const [key, data] of nftsIndex.entries(prefix)) {
+    if (new Date(key.created).getTime() < before.getTime()) {
+      items.push({
+        nftPromise: stores.nfts.get(data.key, 'json'),
+        indexData: data,
+      })
+      if (items.length >= limit) {
+        break
       }
     }
-
-    if (nfts.length >= limit) {
-      break
-    }
-    cursor = nftIdxList.cursor
-    done = nftIdxList.list_complete
   }
 
-  return Promise.all(nfts)
+  return Promise.all(
+    items.map(async ({ nftPromise, indexData }) => {
+      const nft = await nftPromise
+      return nft
+        ? {
+            ...nft,
+            size: indexData.size,
+            pin: {
+              cid: nft.cid,
+              ...(nft.pin || {}),
+              status: indexData.pinStatus,
+              size: indexData.size,
+              created: nft.created,
+            },
+            deals: [], // FIXME: how to get deals data?
+          }
+        : null
+    })
+  )
 }

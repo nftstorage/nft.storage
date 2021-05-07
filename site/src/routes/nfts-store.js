@@ -2,6 +2,7 @@ import { validate } from '../utils/auth.js'
 import setIn from 'just-safe-set'
 import { toFormData } from '../utils/form-data.js'
 import * as nfts from '../models/nfts.js'
+import * as pins from '../models/pins.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as CBOR from '@ipld/dag-cbor'
 import * as pinata from '../pinata.js'
@@ -68,22 +69,19 @@ export async function store(event) {
   /** @type {NFT} */
   const nft = {
     cid,
-    size,
     created,
     type: 'nft',
     scope: tokenName,
     files,
-    pin: {
-      cid,
-      size,
-      status: 'pinned',
-      created,
-    },
   }
 
-  await nfts.set({ user, cid }, nft, {
-    metadata: { pinStatus: 'pinned', size },
-  })
+  let pin = await pins.get(cid)
+  if (!pin || pin.status !== 'pinned') {
+    pin = { cid, status: 'pinned', size, created }
+    await pins.set(cid, pin)
+  }
+
+  await nfts.set({ user, cid }, nft, pin)
 
   const result = {
     ok: true,
