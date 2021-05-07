@@ -11,16 +11,17 @@ import { CID } from 'multiformats'
 import { sha256 } from 'multiformats/hashes/sha2'
 import * as Block from 'multiformats/block'
 import * as CAR from '../utils/car.js'
+import { debug } from '../utils/debug.js'
+
+const log = debug('nft-store')
 
 /**
  * @typedef {import('../bindings').NFT} NFT
  */
 
-/**
- * @param {FetchEvent} event
- */
-export async function store(event) {
-  const { user, tokenName } = await validate(event)
+/** @type {import('../utils/router.js').Handler} */
+export async function store(event, ctx) {
+  const { user, tokenName } = await validate(event, ctx)
   const form = await toFormData(event.request)
 
   const data = JSON.parse(/** @type {string} */ (form.get('meta')))
@@ -61,7 +62,10 @@ export async function store(event) {
         pinataOptions: { hostNodes: cluster.delegates() },
         pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
       })
-      .catch((error) => console.error(error))
+      .catch((err) => {
+        log(err)
+        ctx.sentry.captureException(err)
+      })
   )
 
   const created = new Date().toISOString()

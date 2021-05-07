@@ -6,7 +6,7 @@ import * as followups from '../models/followups.js'
  * Updates pin status and size in the PINS table by consuming records in the
  * FOLLOWUPS table and retrieving updated status from cluster.
  *
- * @param {import('../bindings.js').RouteContext} ctx
+ * @param {import('../bindings.js').CronContext} ctx
  */
 export async function updatePinStatuses({ sentry }) {
   for await (const [cid, pin] of followups.entries()) {
