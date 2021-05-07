@@ -10,6 +10,7 @@ import clsx from 'clsx'
  * @prop {import('react').ButtonHTMLAttributes<HTMLButtonElement>["type"]} [type]
  * @prop {import('react').ReactChildren | string} children
  * @prop {boolean} [disabled]
+ * @prop {string} [id]
  */
 
 /**
@@ -18,6 +19,7 @@ import clsx from 'clsx'
  * @returns
  */
 export default function Button({
+  id,
   wrapperClassName,
   className,
   onClick,
@@ -56,6 +58,7 @@ export default function Button({
       style={btnStyle}
       onClick={onClick}
       disabled={disabled}
+      id={id}
     >
       {children}
     </button>

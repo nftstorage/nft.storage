@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { isLoggedIn } from './magic.js'
 import { useQuery } from 'react-query'
 import { useRouter } from 'next/router'
+import * as Sentry from '@sentry/nextjs'
 
 /**
  * User Hook
@@ -17,6 +18,10 @@ export function useUser({ redirectTo, redirectIfFound, enabled } = {}) {
   const { status, data, error, isFetching } = useQuery('magic-user', isLoggedIn)
   const user = data
   const hasUser = Boolean(user)
+  if (user) {
+    // @ts-ignore
+    Sentry.setUser(user)
+  }
 
   useEffect(() => {
     if (!redirectTo || status === 'loading') {

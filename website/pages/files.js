@@ -88,7 +88,7 @@ export default function Files({ user }) {
           <>
             <div className="flex mb3 items-center">
               <h1 className="chicagoflf mv4 flex-auto">Files</h1>
-              <Button href="/new-file" className="flex-none">
+              <Button href="/new-file" className="flex-none" id="upload">
                 + Upload
               </Button>
             </div>
@@ -139,6 +139,7 @@ export default function Files({ user }) {
                                 className="bg-nsorange white"
                                 type="submit"
                                 disabled={Boolean(deleting)}
+                                id="delete-nft"
                               >
                                 {deleting === nft.cid
                                   ? 'Deleting...'
@@ -156,6 +157,7 @@ export default function Files({ user }) {
                       wrapperClassName="mh2"
                       disabled={befores.length === 1}
                       onClick={handlePrevClick}
+                      id="files-previous"
                     >
                       ← Previous
                     </Button>
@@ -164,6 +166,7 @@ export default function Files({ user }) {
                       wrapperClassName="mh2"
                       disabled={nfts.length < limit}
                       onClick={handleNextClick}
+                      id="files-next"
                     >
                       Next →
                     </Button>

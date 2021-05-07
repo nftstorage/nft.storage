@@ -46,9 +46,9 @@ export async function login(token, type = 'magic', data = {}) {
 export async function isLoggedIn() {
   const isLoggedIn = await getMagic().user.isLoggedIn()
   if (isLoggedIn) {
-    // const meta = await magic.user.getMetadata()
+    const meta = await getMagic().user.getMetadata()
     return {
-      ...{ user: 'user' }, // we dont actually need the user info
+      ...meta, // we dont actually need the user info
     }
   } else {
     return undefined

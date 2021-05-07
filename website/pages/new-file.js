@@ -68,7 +68,12 @@ export default function NewFile() {
               />
             </div>
             <div className="mv3">
-              <Button className="bg-nslime" type="submit" disabled={uploading}>
+              <Button
+                className="bg-nslime"
+                type="submit"
+                disabled={uploading}
+                id="upload-file"
+              >
                 {uploading ? 'Uploading...' : 'Upload'}
               </Button>
             </div>
