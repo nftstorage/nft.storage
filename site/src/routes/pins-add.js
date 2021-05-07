@@ -42,20 +42,7 @@ export async function pinsAdd(event) {
     )
   }
 
-  const created = new Date().toISOString()
-  let pin = await pins.get(pinData.cid)
-  if (pin) {
-    // if this failed to pin, try again
-    if (pin.status === 'failed') {
-      await cluster.recover(pinData.cid)
-      pin = { ...pin, status: 'queued' }
-      await pins.set(pinData.cid, pin)
-    }
-  } else {
-    await cluster.pin(pinData.cid)
-    pin = { cid: pinData.cid, status: 'queued', size: 0, created }
-    await pins.set(pinData.cid, pin)
-  }
+  const pin = await obtainPin(pinData.cid)
 
   event.waitUntil(
     (async () => {
@@ -74,7 +61,7 @@ export async function pinsAdd(event) {
   /** @type import('../bindings').NFT */
   const nft = {
     cid: pinData.cid,
-    created,
+    created: new Date().toISOString(),
     type: 'remote',
     scope: tokenName,
     files: [],
@@ -91,4 +78,43 @@ export async function pinsAdd(event) {
     delegates: cluster.delegates(),
   }
   return new JSONResponse(pinStatus)
+}
+
+/**
+ * @param {string} cid
+ * @returns {Promise<import('../models/pins.js').Pin>}
+ */
+export const obtainPin = async (cid) => {
+  const pin = await pins.get(cid)
+  return pin == null
+    ? createPin(cid)
+    : // if pin is failed, retry
+    pin.status === 'failed'
+    ? retryPin(pin)
+    : pin
+}
+
+/**
+ * @param {import('../models/pins.js').Pin} failed
+ * @returns {Promise<import('../models/pins.js').Pin>}
+ */
+const retryPin = async (failed) => {
+  await cluster.recover(failed.cid)
+  /** @type {import('../models/pins.js').Pin} */
+  const pin = { ...failed, status: 'queued' }
+  await pins.set(failed.cid, pin)
+  return pin
+}
+
+/**
+ * @param {string} cid
+ * @returns {Promise<import('../models/pins.js').Pin>}
+ */
+const createPin = async (cid) => {
+  const created = new Date().toISOString()
+  /** @type {import('../models/pins.js').Pin} */
+  const pin = { cid, status: 'queued', size: 0, created }
+  await cluster.pin(cid)
+  await pins.set(cid, pin)
+  return pin
 }

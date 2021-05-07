@@ -2,9 +2,9 @@ import * as PinataPSA from '../pinata-psa.js'
 import * as pinata from '../pinata.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
-import * as pins from '../models/pins.js'
 import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth.js'
+import { obtainPin } from './pins-add.js'
 
 /**
  * @param {FetchEvent} event
@@ -73,20 +73,7 @@ export async function pinsReplace(event, params) {
     )
   }
 
-  const created = new Date().toISOString()
-  let pin = await pins.get(pinData.cid)
-  if (pin) {
-    // if this failed to pin, try again
-    if (pin.status === 'failed') {
-      await cluster.recover(pinData.cid)
-      pin = { ...pin, status: 'queued' }
-      await pins.set(pinData.cid, pin)
-    }
-  } else {
-    await cluster.pin(pinData.cid)
-    pin = { cid: pinData.cid, status: 'queued', size: 0, created }
-    await pins.set(pinData.cid, pin)
-  }
+  const pin = await obtainPin(pinData.cid)
 
   event.waitUntil(
     (async () => {
@@ -105,7 +92,7 @@ export async function pinsReplace(event, params) {
   /** @type import('../bindings').NFT */
   const nft = {
     cid: pinData.cid,
-    created,
+    created: new Date().toISOString(),
     type: 'remote',
     scope: tokenName,
     files: [],

@@ -13,6 +13,7 @@ export const get = async (cid) => {
 }
 
 /**
+ * Note: pin data is stored in KV metadata to allow quick iteration.
  * @param {string} cid CID of the pin
  * @param {Pin} pin
  * @returns {Promise<void>}
