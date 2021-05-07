@@ -42,7 +42,6 @@ export async function upload(event) {
         type: f.type,
       })),
     }
-    // @ts-ignore
     nftSize = size
   } else {
     const blob = await event.request.blob()
@@ -57,7 +56,6 @@ export async function upload(event) {
       scope: tokenName,
       files: [],
     }
-    // @ts-ignore
     nftSize = size
   }
 
