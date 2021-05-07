@@ -77,7 +77,7 @@ export class HTTPError extends Error {
         } else {
           // Custom HTTPError
           error = {
-            code: 'HTTP_ERROR',
+            code: err.code || 'HTTP_ERROR',
             message: err.message,
           }
         }
