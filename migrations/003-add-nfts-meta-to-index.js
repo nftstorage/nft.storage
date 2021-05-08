@@ -41,7 +41,11 @@ async function main() {
       if (!meta) {
         return console.warn(`❗️ missing metadata for ${key}`)
       }
-      bulkWrites.push({ key, value: '', metadata: { ...k.metadata, ...meta } })
+      bulkWrites.push({
+        key: k.name,
+        value: '',
+        metadata: { ...k.metadata, ...meta },
+      })
     })
     if (bulkWrites.length) {
       console.log(`🗂 updating index metadata for ${bulkWrites.length} NFTs`)
