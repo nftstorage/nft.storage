@@ -92,32 +92,50 @@ addEventListener('fetch', r.listen.bind(r))
 
 // Cron jobs
 addEventListener('scheduled', (event) => {
+  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
+  // @ts-ignore
+  if (event.cron !== '*/10 * * * *') return
   const sentry = getSentrySchedule(event)
   event.waitUntil(
     timed(updateUserMetrics, 'CRON updateUserMetrics', { sentry })
   )
 })
 addEventListener('scheduled', (event) => {
+  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
+  // @ts-ignore
+  if (event.cron !== '*/10 * * * *') return
   const sentry = getSentrySchedule(event)
   event.waitUntil(timed(updateNftMetrics, 'CRON updateNftMetrics', { sentry }))
 })
 addEventListener('scheduled', (event) => {
+  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
+  // @ts-ignore
+  if (event.cron !== '*/10 * * * *') return
   const sentry = getSentrySchedule(event)
   event.waitUntil(
     timed(updateNftDealMetrics, 'CRON updateNftDealMetrics', { sentry })
   )
 })
 addEventListener('scheduled', (event) => {
+  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
+  // @ts-ignore
+  if (event.cron !== '*/10 * * * *') return
   const sentry = getSentrySchedule(event)
   event.waitUntil(timed(updatePinMetrics, 'CRON updatePinMetrics', { sentry }))
 })
 addEventListener('scheduled', (event) => {
+  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
+  // @ts-ignore
+  if (event.cron !== '*/5 * * * *') return
   const sentry = getSentrySchedule(event)
   event.waitUntil(
     timed(updatePinStatuses, 'CRON updatePinStatuses', { sentry })
   )
 })
 addEventListener('scheduled', (event) => {
+  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
+  // @ts-ignore
+  if (event.cron !== '*/15 * * * *') return
   const sentry = getSentrySchedule(event)
   event.waitUntil(
     timed(updateNftsIndexMeta, 'CRON updateNftsIndexMeta', { sentry })
