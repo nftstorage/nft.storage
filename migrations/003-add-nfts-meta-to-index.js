@@ -45,7 +45,7 @@ async function main() {
     })
     if (bulkWrites.length) {
       console.log(`🗂 updating index metadata for ${bulkWrites.length} NFTs`)
-      await cf.writeMultiKV(nftsIdxTable.id, bulkWrites)
+      await cf.writeKVMulti(nftsIdxTable.id, bulkWrites)
     }
     total += keys.length
     console.log(`🦄 processed ${total} NFTs`)
