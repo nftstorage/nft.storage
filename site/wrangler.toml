@@ -28,8 +28,8 @@ kv_namespaces = [
     { binding = "NFTS_IDX", preview_id = "4d25963cfab14d998d6e08d7ad336f83", id = "4d25963cfab14d998d6e08d7ad336f83" },
     { binding = "DEALS", preview_id = "ab1ee988b16747149e4dee6b1a07bbd2", id = "ab1ee988b16747149e4dee6b1a07bbd2" },
     { binding = "METRICS", preview_id = "f80cad90abdf4bf98b41518f1e7a6ea1", id = "f80cad90abdf4bf98b41518f1e7a6ea1" },
-    { binding = "PINS", preview_id = "39151b1207114d4d8bbd0b556079c76c", id = "ccee8222a526468a9101ec8d09ea1158" },
-    { binding = "FOLLOWUPS", preview_id = "e01b79aecb3e4d7db9473030e0714a23", id = "19ccf11bc39a43439d4de3e101c2a114" }
+    { binding = "PINS", preview_id = "39151b1207114d4d8bbd0b556079c76c", id = "39151b1207114d4d8bbd0b556079c76c" },
+    { binding = "FOLLOWUPS", preview_id = "e01b79aecb3e4d7db9473030e0714a23", id = "e01b79aecb3e4d7db9473030e0714a23" }
 ]
 
 [env.production]
