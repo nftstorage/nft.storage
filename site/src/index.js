@@ -109,13 +109,13 @@ addEventListener('scheduled', (event) => {
 })
 addEventListener('scheduled', (event) => {
   const sentry = getSentrySchedule(event)
-  event.waitUntil(
-    timed(updatePinStatuses, 'CRON updatePinStatuses', { sentry })
-  )
+  event.waitUntil(timed(updatePinMetrics, 'CRON updatePinMetrics', { sentry }))
 })
 addEventListener('scheduled', (event) => {
   const sentry = getSentrySchedule(event)
-  event.waitUntil(timed(updatePinMetrics, 'CRON updatePinMetrics', { sentry }))
+  event.waitUntil(
+    timed(updatePinStatuses, 'CRON updatePinStatuses', { sentry })
+  )
 })
 addEventListener('scheduled', (event) => {
   const sentry = getSentrySchedule(event)
