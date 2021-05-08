@@ -31,7 +31,7 @@ async function main() {
       const cid = k.name.split(':').pop()
       if (seen.has(cid)) return
       seen.add(cid)
-      if (!isPinnedOrFailed(k.metadata.pinStatus) || !k.metadata.size) {
+      if (!isPinnedOrFailed(k.metadata.pinStatus)) {
         bulkWrites.followups.push({
           key: cid,
           value: '',
@@ -39,6 +39,17 @@ async function main() {
             cid,
             status: k.metadata.pinStatus,
             size: k.metadata.size,
+            created: k.metadata.created,
+          },
+        })
+      } else if (k.metadata.pinStatus === 'pinned' && !k.metadata.size) {
+        bulkWrites.followups.push({
+          key: cid,
+          value: '',
+          metadata: {
+            cid,
+            status: 'pinning', // set to "pinning" so cron will find new status
+            size: 0,
             created: k.metadata.created,
           },
         })
