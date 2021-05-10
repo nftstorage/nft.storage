@@ -94,7 +94,6 @@ export async function dagSize(cid) {
     cluster.ipfsProxyApiUrl
   )
   const response = await fetch(url.toString(), {
-    method: 'POST',
     headers: { Authorization: `Basic ${cluster.ipfsProxyBasicAuthToken}` },
   })
   if (!response.ok) {

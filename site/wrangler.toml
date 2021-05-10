@@ -12,7 +12,7 @@ kv_namespaces = [
     { binding = "PINS", preview_id = "ccee8222a526468a9101ec8d09ea1158", id = "ccee8222a526468a9101ec8d09ea1158" },
     { binding = "FOLLOWUPS", preview_id = "19ccf11bc39a43439d4de3e101c2a114", id = "19ccf11bc39a43439d4de3e101c2a114" }
 ]
-vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
+vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/v0/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
 
 [triggers]
 crons = ["*/5 * * * *", "*/10 * * * *", "*/15 * * * *"]
@@ -21,7 +21,7 @@ crons = ["*/5 * * * *", "*/10 * * * *", "*/15 * * * *"]
 name = "nft-storage-staging"
 route = "api-staging.nft.storage/*"
 webpack_config = "webpack.config.prod.js"
-vars = { ENV = "staging", DEBUG = '*', CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
+vars = { ENV = "staging", DEBUG = '*', CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/v0/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
 kv_namespaces = [
     { binding = "USERS", preview_id = "8964654a0a1d4f7586b59db90ef97594", id = "8964654a0a1d4f7586b59db90ef97594" },
     { binding = "NFTS", preview_id = "21763d3a9ce2465b875a49ae57a5a598", id = "21763d3a9ce2465b875a49ae57a5a598" },
@@ -36,7 +36,7 @@ kv_namespaces = [
 name = "nft-storage"
 route = "api.nft.storage/*"
 webpack_config = "webpack.config.prod.js"
-vars = { ENV = "production", DEBUG = '', CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
+vars = { ENV = "production", DEBUG = '', CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/v0/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
 kv_namespaces = [
     { binding = "USERS", id = "8a5a55b5d1af49ed8fcfab16e9fa8c41", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" },
     { binding = "NFTS", id = "9610798d5e5845fa94e4392cc1288ddf", preview_id = "f1c35cd1601c452782db6056b2d35f25" },
