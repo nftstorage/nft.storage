@@ -82,7 +82,7 @@ export function matchToken(user, token) {
  * List user tokens
  *
  * @param {string} issuer
- * @returns {Promise<User>}
+ * @returns {Promise<Record<string, string>>}
  */
 export async function tokens(issuer) {
   const user = await users.get(issuer)

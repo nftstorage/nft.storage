@@ -1,12 +1,12 @@
 import assert from 'assert'
 import '../src/index.js'
-import { TestFetchEvent } from './scripts/events.js'
+import { TestFetchEvent } from './helpers/events.js'
+import { clearStores } from './helpers/stores.js'
 import { set as setPin } from '../src/models/pins.js'
-import { clearStores } from './scripts/helpers.js'
 
 const cid = 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD'
 
-describe('/check/{cid}', () => {
+describe('/check/:cid', () => {
   beforeEach(clearStores)
 
   it('should retrieve pin and deal information for CID', async () => {

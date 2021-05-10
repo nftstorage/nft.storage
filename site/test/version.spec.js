@@ -1,6 +1,6 @@
 import assert from 'assert'
 import '../src/index.js'
-import { TestFetchEvent } from './scripts/events.js'
+import { TestFetchEvent } from './helpers/events.js'
 
 describe('/version', () => {
   it('should get version information', async () => {
