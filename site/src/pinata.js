@@ -1,6 +1,4 @@
-import { secrets } from './constants.js'
-
-const endpoint = new URL('https://api.pinata.cloud')
+import { pinata, secrets } from './constants.js'
 
 /**
  * @typedef {import('./models/users.js').User} User
@@ -34,7 +32,7 @@ export const pinFile = async (blob, user) => {
       },
     })
   )
-  const url = new URL('/pinning/pinFileToIPFS', endpoint)
+  const url = new URL('/pinning/pinFileToIPFS', pinata.apiUrl)
 
   const response = await fetch(url.toString(), {
     body,
@@ -84,7 +82,7 @@ export async function pinFiles(files, user) {
       },
     })
   )
-  const url = new URL('/pinning/pinFileToIPFS', endpoint)
+  const url = new URL('/pinning/pinFileToIPFS', pinata.apiUrl)
 
   const response = await fetch(url.toString(), {
     body,
@@ -108,7 +106,7 @@ export async function pinFiles(files, user) {
 export const pinInfo = async (cid) => {
   const url = new URL(
     `/data/pinList?status=pinned&hashContains=${encodeURIComponent(cid)}`,
-    endpoint
+    pinata.apiUrl
   )
 
   const response = await fetch(url.toString(), {
@@ -132,7 +130,7 @@ export const pinInfo = async (cid) => {
  * @returns {Promise<{ ok: true, value: { id: string, ipfsHash: string, status: string, name: string} }|{ ok: false, error: Response }>}
  */
 export async function pinByHash(cid, options) {
-  const url = new URL('/pinning/pinByHash', endpoint)
+  const url = new URL('/pinning/pinByHash', pinata.apiUrl)
 
   const response = await fetch(url.toString(), {
     method: 'POST',

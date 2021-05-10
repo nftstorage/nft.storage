@@ -30,4 +30,15 @@ export const cluster = {
   addrs: Object.freeze(CLUSTER_ADDRS.split(',').filter(Boolean)),
 }
 
+export const pinata = {
+  apiUrl:
+    typeof PINATA_API_URL !== 'undefined'
+      ? PINATA_API_URL
+      : 'https://api.pinata.cloud',
+  psaApiUrl:
+    typeof PINATA_PSA_API_URL !== 'undefined'
+      ? PINATA_PSA_API_URL
+      : 'https://api.pinata.cloud/psa/',
+}
+
 export const isDebug = DEBUG === 'true'
