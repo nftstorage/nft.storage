@@ -23,9 +23,9 @@ export async function updateNftsIndexMeta({ sentry }) {
         continue
       }
       /** @type import('../bindings.js').NFT | null */
-      const nft = await stores.nfts.get(key.cid, 'json')
+      const nft = await stores.nfts.get(data.key, 'json')
       if (!nft) {
-        throw new Error(`missing nft for ${key.cid}`)
+        throw new Error(`missing nft for ${data.key}`)
       }
       await nftsIndex.set(key, {
         ...data, // key (in NFTS)
