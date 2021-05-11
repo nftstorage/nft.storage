@@ -25,7 +25,7 @@ async function exportPromMetrics() {
     `nftstorage_nfts_total ${await getOr0('nfts:total')}`,
 
     '# HELP nftstorage_nfts_bytes_total Total bytes of all NFTs.',
-    '# TYPE nftstorage_nftstorage_nfts_bytes_total counter',
+    '# TYPE nftstorage_nfts_bytes_total counter',
     `nftstorage_nfts_bytes_total ${await getOr0('nfts:totalBytes')}`,
 
     '# HELP nftstorage_nfts_storage_ipfs_total Total number of NFTs pinned on IPFS.',
