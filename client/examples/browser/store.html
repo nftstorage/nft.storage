@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<form>
+  <label> Name: <input type="text" /> </label>
+  <label> Image: <input type="file" /> </label>
+  <div>
+    <button type="submit">Store</button>
+  </div>
+</form>
+<pre id="out"></pre>
+<script type="module">
+  import { NFTStorage } from 'https://cdn.skypack.dev/nft.storage'
+
+  const endpoint = 'https://api.nft.storage' // the default
+  const token = 'API_KEY' // your API key from https://nft.storage/manage
+
+  function log(msg) {
+    msg = JSON.stringify(msg, null, 2)
+    document.getElementById('out').innerHTML += `${msg}\n`
+  }
+
+  document.querySelector('form').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const nameEl = document.querySelector('input[type="text"]')
+    if (!nameEl.value) return log('Missing name')
+    const fileEl = document.querySelector('input[type="file"]')
+    if (!fileEl.files.length) return log('No files selected')
+    const storage = new NFTStorage({ endpoint, token })
+    try {
+      const metadata = await storage.store({
+        name: nameEl.value,
+        description:
+          'Using the nft.storage metadata API to create ERC-1155 compatible metadata.',
+        image: fileEl.files[0],
+      })
+      log('IPFS URL for the metadata:', metadata.url)
+      log('metadata.json contents:\n', metadata.data)
+      log('metadata.json contents with IPFS gateway URLs:\n', metadata.embed())
+    } catch (err) {
+      console.error(err)
+      log(err.message)
+    }
+  })
+</script>

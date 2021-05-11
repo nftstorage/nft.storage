@@ -2,8 +2,9 @@
 
 Here are two examples for using the nft.storage client from Node.js.
 
-* `single.js` - uploads a single file using `storeBlob`
-* `multiple.js` - uploads a multiple files using `storeDirectory`
+- `store.js` - creates ERC-1155 compatible metadata
+- `storeBlob.js` - uploads a single file using `storeBlob`
+- `storeDirectory.js` - uploads a multiple files using `storeDirectory`
 
 ## Setup
 
@@ -15,12 +16,14 @@ npm install
 
 Register an account at https://nft.storage and create a new API key.
 
-Open `single.js` and `multiple.js` and replace `API_KEY` in the code with your key.
+Open `store.js`/`storeBlob.js`/`storeDirectory.js` and replace `API_KEY` in the code with your key.
 
 ## Running
 
 ```sh
-node single.js
+node store.js
 # or
-node multiple.js
+node storeBlob.js
+# or
+node storeDirectory.js
 ```
