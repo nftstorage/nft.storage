@@ -250,11 +250,9 @@ export class Service {
     this.onrequest = this.onrequest.bind(this)
   }
   get address() {
-    const {
-      port,
-      address,
-      family,
-    } = /** @type {import('net').AddressInfo} */ (this.server.address())
+    const { port, address, family } = /** @type {import('net').AddressInfo} */ (
+      this.server.address()
+    )
 
     return { port, host: family === 'IPv6' ? `127.0.0.1` : address }
   }

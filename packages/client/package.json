@@ -23,11 +23,11 @@
     "./src/platform.js": "./src/platform.web.js"
   },
   "scripts": {
-    "test": "npm run test:web",
+    "test": "run-p test:*",
     "test:web": "node test/test.js playwright-test test/*.spec.js --cov && nyc report",
     "test:es": "node test/test.js hundreds mocha test/*.spec.js --exit",
-    "test:cjs": "node test/test.js mocha dist/test/*.spec.cjs --exit",
-    "build": "npm run build:ts && npm run build:cjs",
+    "test:cjs": "npm run build:cjs && node test/test.js mocha dist/test/*.spec.cjs --exit",
+    "build": "run-p build:*",
     "build:ts": "tsc --build",
     "build:cjs": "rollup --config rollup.config.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && npx codecov",
@@ -41,6 +41,7 @@
     "@web-std/form-data": "2.0.0"
   },
   "devDependencies": {
+    "@ipld/dag-cbor": "^5.0.0",
     "@ssttevee/multipart-parser": "0.1.8",
     "@types/mocha": "8.2.2",
     "hundreds": "0.0.9",
@@ -48,18 +49,18 @@
     "ipld": "0.29.0",
     "ipld-dag-pb": "0.22.2",
     "ipld-in-memory": "8.0.0",
+    "just-safe-set": "^2.2.1",
     "mocha": "8.3.2",
     "multicodec": "3.0.1",
     "multiformats": "^7.0.0",
-    "@ipld/dag-cbor": "^5.0.0",
     "multihashing-async": "2.1.2",
+    "npm-run-all": "^4.1.5",
     "nyc": "15.1.0",
     "playwright-test": "^4.1.0",
     "rollup": "2.22.1",
     "rollup-plugin-multi-input": "1.1.1",
     "typedoc": "0.20.36",
-    "uvu": "0.5.1",
-    "just-safe-set": "^2.2.1"
+    "uvu": "0.5.1"
   },
   "homepage": "https://github.com/ipfs-shipyard/nft.storage/tree/main/client",
   "bugs": "https://github.com/ipfs-shipyard/nft.storage/issues"

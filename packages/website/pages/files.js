@@ -124,37 +124,40 @@ export default function Files({ user }) {
                       </tr>
                     </thead>
                     <tbody>
-                      {nfts.map((
-                        /** @type {any} */ nft,
-                        /** @type {number} */ i
-                      ) => (
-                        <tr className="bb b--black" key={`nft-${i}`}>
-                          <td className="pa2 br b--black">
-                            {nft.created.split('T')[0]}
-                          </td>
-                          <td className="pa2 br b--black">
-                            <GatewayLink cid={nft.cid} />
-                          </td>
-                          <td className="pa2 br b--black mw7">
-                            {filesize(nft.size || 0)}
-                          </td>
-                          <td className="pa2">
-                            <form onSubmit={handleDeleteFile}>
-                              <input type="hidden" name="cid" value={nft.cid} />
-                              <Button
-                                className="bg-nsorange white"
-                                type="submit"
-                                disabled={Boolean(deleting)}
-                                id="delete-nft"
-                              >
-                                {deleting === nft.cid
-                                  ? 'Deleting...'
-                                  : 'Delete'}
-                              </Button>
-                            </form>
-                          </td>
-                        </tr>
-                      ))}
+                      {nfts.map(
+                        (/** @type {any} */ nft, /** @type {number} */ i) => (
+                          <tr className="bb b--black" key={`nft-${i}`}>
+                            <td className="pa2 br b--black">
+                              {nft.created.split('T')[0]}
+                            </td>
+                            <td className="pa2 br b--black">
+                              <GatewayLink cid={nft.cid} />
+                            </td>
+                            <td className="pa2 br b--black mw7">
+                              {filesize(nft.size || 0)}
+                            </td>
+                            <td className="pa2">
+                              <form onSubmit={handleDeleteFile}>
+                                <input
+                                  type="hidden"
+                                  name="cid"
+                                  value={nft.cid}
+                                />
+                                <Button
+                                  className="bg-nsorange white"
+                                  type="submit"
+                                  disabled={Boolean(deleting)}
+                                  id="delete-nft"
+                                >
+                                  {deleting === nft.cid
+                                    ? 'Deleting...'
+                                    : 'Delete'}
+                                </Button>
+                              </form>
+                            </td>
+                          </tr>
+                        )
+                      )}
                     </tbody>
                   </table>
                   <div className="tc mv3">

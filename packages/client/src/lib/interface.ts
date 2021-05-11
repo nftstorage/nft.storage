@@ -36,7 +36,7 @@ export interface API {
    * Note: URLs for `File` objects will retain file names e.g. in case of
    * `new File([bytes], 'cat.png', { type: 'image/png' })` will be transformed
    * into a URL that looks like `ipfs://bafy...hash/image/cat.png`. For `Blob`
-   * objects, the URL will not have a file name name or mime type, instead it 
+   * objects, the URL will not have a file name name or mime type, instead it
    * will be transformed into a URL that looks like
    * `ipfs://bafy...hash/image/blob`.
    */

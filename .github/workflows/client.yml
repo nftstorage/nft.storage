@@ -4,27 +4,19 @@ on:
     branches:
       - main
     paths:
-      - 'client/**'
+      - 'packages/client/**'
   pull_request:
     branches:
       - main
     paths:
-      - 'client/**'
+      - 'packages/client/**'
 
 jobs:
   check:
     name: Typecheck client
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [15.x]
     steps:
       - uses: actions/checkout@v1
-
-      - name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
         run: yarn install
@@ -40,7 +32,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [15]
+        node: [14, 16]
       fail-fast: true
     steps:
       - uses: actions/checkout@v2
@@ -54,18 +46,16 @@ jobs:
         run: yarn install
 
       - name: Test (ES)
-        run: yarn --cwd client test:es
+        run: yarn --cwd packages/client test:es
 
       - name: Test (Web)
-        run: yarn --cwd client test:web
+        run: yarn --cwd packages/client test:web
 
       - name: Test (CJS)
-        run: |
-          yarn --cwd client build:cjs
-          yarn --cwd client test:cjs
+        run: yarn --cwd packages/client test:cjs
 
       - name: Coverage
-        run: yarn --cwd client coverage
+        run: yarn --cwd packages/client coverage
 
   # publish:
   #   name: Publish client
