@@ -1,12 +1,14 @@
+import mergeOptions from 'merge-options'
 import * as PinataPSA from '../pinata-psa.js'
 import * as pinata from '../pinata.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
 import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth.js'
-import { obtainPin } from './pins-add.js'
+import { obtainNft, obtainPin } from './pins-add.js'
 import { debug } from '../utils/debug.js'
 
+const merge = mergeOptions.bind({ ignoreUndefined: true })
 const log = debug('pin-replace')
 
 /** @type {import('../utils/router.js').Handler} */
@@ -90,25 +92,15 @@ export async function pinsReplace(event, ctx) {
   )
 
   /** @type import('../bindings').NFT */
-  const nft = {
-    cid: pinData.cid,
-    created: new Date().toISOString(),
-    type: 'remote',
-    scope: tokenName,
-    files: [],
-    pin: { name, meta },
-  }
-  await Promise.all([
-    nfts.set({ user, cid: pinData.cid }, nft, pin),
-    nfts.remove({ user, cid: existingCID }),
-  ])
+  const nft = await obtainNft(user, tokenName, pin, { name, meta })
+  await nfts.remove({ user, cid: existingCID })
 
   /** @type import('../pinata-psa').PinStatus */
   const pinStatus = {
     requestid: pin.cid,
     status: pin.status,
     created: pin.created,
-    pin: { cid: pin.cid, name, meta },
+    pin: { cid: pin.cid, ...(nft.pin || {}) },
     delegates: cluster.delegates(),
   }
   return new JSONResponse(pinStatus)

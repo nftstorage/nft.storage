@@ -1,3 +1,4 @@
+import mergeOptions from 'merge-options'
 import * as pinata from '../pinata.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
@@ -6,6 +7,7 @@ import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth.js'
 import { debug } from '../utils/debug.js'
 
+const merge = mergeOptions.bind({ ignoreUndefined: true })
 const log = debug('pins-add')
 
 /** @type {import('../utils/router.js').Handler} */
@@ -58,23 +60,14 @@ export async function pinsAdd(event, ctx) {
     })()
   )
 
-  /** @type import('../bindings').NFT */
-  const nft = {
-    cid: pinData.cid,
-    created: new Date().toISOString(),
-    type: 'remote',
-    scope: tokenName,
-    files: [],
-    pin: { name, meta },
-  }
-  await nfts.set({ user, cid: pinData.cid }, nft, pin)
+  const nft = await obtainNft(user, tokenName, pin, { name, meta })
 
   /** @type import('../pinata-psa').PinStatus */
   const pinStatus = {
     requestid: pin.cid,
     status: pin.status,
     created: pin.created,
-    pin: { cid: pin.cid, name, meta },
+    pin: { cid: pin.cid, ...(nft.pin || {}) },
     delegates: cluster.delegates(),
   }
   return new JSONResponse(pinStatus)
@@ -117,4 +110,52 @@ const createPin = async (cid) => {
   await cluster.pin(cid)
   await pins.set(cid, pin)
   return pin
+}
+
+/**
+ * @param {import('../bindings').User} user
+ * @param {string} tokenName
+ * @param {import('../models/pins.js').Pin} pin
+ * @param {import('../bindings').NFT['pin']} nftPin
+ * @returns {Promise<import('../bindings').NFT>}
+ */
+export const obtainNft = async (user, tokenName, pin, nftPin) => {
+  const nft = await nfts.get({ user, cid: pin.cid })
+  return nft == null
+    ? createNft(user, tokenName, pin, nftPin)
+    : updateNft(user, nft, pin, nftPin)
+}
+
+/**
+ * @param {import('../bindings').User} user
+ * @param {string} tokenName
+ * @param {import('../models/pins.js').Pin} pin
+ * @param {import('../bindings').NFT['pin']} nftPin
+ * @returns {Promise<import('../bindings').NFT>}
+ */
+const createNft = async (user, tokenName, pin, nftPin) => {
+  /** @type import('../bindings').NFT */
+  const nft = {
+    cid: pin.cid,
+    created: new Date().toISOString(),
+    type: 'remote',
+    scope: tokenName,
+    files: [],
+    pin: nftPin,
+  }
+  await nfts.set({ user, cid: pin.cid }, nft, pin)
+  return nft
+}
+
+/**
+ * @param {import('../bindings').User} user
+ * @param {import('../bindings').NFT} nft
+ * @param {import('../models/pins.js').Pin} pin
+ * @param {import('../bindings').NFT['pin']} nftPin
+ * @returns {Promise<import('../bindings').NFT>}
+ */
+const updateNft = async (user, nft, pin, nftPin) => {
+  nft.pin = merge(nft.pin, nftPin)
+  await nfts.set({ user, cid: nft.cid }, nft, pin)
+  return nft
 }
