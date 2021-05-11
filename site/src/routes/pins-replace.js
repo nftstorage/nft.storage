@@ -91,7 +91,6 @@ export async function pinsReplace(event, ctx) {
     })()
   )
 
-  /** @type import('../bindings').NFT */
   const nft = await obtainNft(user, tokenName, pin, { name, meta })
   await nfts.remove({ user, cid: existingCID })
 
