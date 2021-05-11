@@ -52,8 +52,7 @@ export async function store(event, ctx) {
     hasher: sha256,
   })
   const car = await CAR.encode([block.cid], [block])
-  const { cid } = await cluster.add(car)
-  const size = await cluster.dagSize(cid)
+  const { cid, bytes } = await cluster.add(car)
 
   // We do want worker to wait for this, but we do not want to
   // block response waiting on this.
@@ -82,7 +81,7 @@ export async function store(event, ctx) {
 
   let pin = await pins.get(cid)
   if (!pin || pin.status !== 'pinned') {
-    pin = { cid, status: 'pinned', size, created }
+    pin = { cid, status: 'pinned', size: bytes, created }
     await pins.set(cid, pin)
   }
 
