@@ -31,7 +31,7 @@ export default function Button({
     'bg-nsgray',
     'ba',
     'b-black',
-    'grow',
+    { grow: !disabled, 'o-50': disabled },
     wrapperClassName
   )
   const wrapperStyle = { minWidth: '8rem' }
@@ -49,7 +49,7 @@ export default function Button({
         'ph3',
         'chicagoflf',
         'f5',
-        'pointer',
+        { pointer: !disabled },
         'bg-white',
         className
       )}

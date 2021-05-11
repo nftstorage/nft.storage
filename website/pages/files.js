@@ -35,9 +35,15 @@ export default function Files({ user }) {
   const [befores, setBefores] = useState([new Date().toISOString()])
   const queryClient = useQueryClient()
   const queryParams = { before: befores[0], limit }
-  const { status, data } = useQuery('get-nfts', () => getNfts(queryParams), {
-    enabled: !!user,
-  })
+  /** @type {[string, { before: string, limit: number }]} */
+  const queryKey = ['get-nfts', queryParams]
+  const { status, data } = useQuery(
+    queryKey,
+    (ctx) => getNfts(ctx.queryKey[1]),
+    {
+      enabled: !!user,
+    }
+  )
   /** @type {any[]} */
   const nfts = data || []
 
