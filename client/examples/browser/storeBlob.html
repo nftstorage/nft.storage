@@ -7,11 +7,8 @@
   const token = 'API_KEY' // your API key from https://nft.storage/manage
 
   function log(msg) {
-    document.getElementById('out').innerHTML += `${JSON.stringify(
-      msg,
-      null,
-      2
-    )}\n`
+    msg = JSON.stringify(msg, null, 2)
+    document.getElementById('out').innerHTML += `${msg}\n`
   }
 
   async function main() {
