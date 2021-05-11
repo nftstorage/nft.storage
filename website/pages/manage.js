@@ -66,7 +66,7 @@ export default function ManageKeys({ user }) {
           <Else>
             <div className="flex mb3 items-center">
               <h1 className="chicagoflf mv4 flex-auto">API Keys</h1>
-              <Button href="/new-key" className="flex-none">
+              <Button href="/new-key" className="flex-none" id="new-key">
                 + New Key
               </Button>
             </div>
@@ -104,6 +104,7 @@ export default function ManageKeys({ user }) {
                             className="bg-nsorange white"
                             type="submit"
                             disabled={Boolean(deleting)}
+                            id="delete-key"
                           >
                             {deleting === t[0] ? 'Deleting...' : 'Delete'}
                           </Button>

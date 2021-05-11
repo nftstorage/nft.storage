@@ -68,7 +68,12 @@ export default function NewKey() {
               />
             </div>
             <div>
-              <Button className="bg-nslime" type="submit" disabled={creating}>
+              <Button
+                className="bg-nslime"
+                type="submit"
+                disabled={creating}
+                id="create-new-key"
+              >
                 {creating ? 'Creating...' : 'Create'}
               </Button>
             </div>
