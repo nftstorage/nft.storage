@@ -126,7 +126,7 @@ addEventListener('scheduled', (event) => {
 addEventListener('scheduled', (event) => {
   // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
   // @ts-ignore
-  if (event.cron !== '*/5 * * * *') return
+  if (event.cron !== '* * * * *') return
   const sentry = getSentrySchedule(event)
   event.waitUntil(
     timed(updatePinStatuses, 'CRON updatePinStatuses', { sentry })
