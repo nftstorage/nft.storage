@@ -13,12 +13,13 @@ const client = new Cluster(cluster.apiUrl, {
  * @param {Blob} data
  */
 export async function add(data) {
-  const { cid, size } = await client.add(data, {
+  const { cid, size, bytes } = await client.add(data, {
     metadata: { size: data.size.toString() },
   })
   return {
     cid,
     size: Number(size),
+    bytes: Number(bytes),
   }
 }
 
