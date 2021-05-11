@@ -66,6 +66,18 @@ export async function upload(event, ctx) {
     await pins.set(nft.cid, pin)
   }
 
+  const existingNft = await nfts.get({ user, cid: nft.cid })
+  if (existingNft) {
+    /** @type {import('../bindings').NFTResponse} */
+    const res = {
+      ...existingNft,
+      size: pin.size,
+      pin: { ...(existingNft.pin || {}), ...pin },
+      deals: [],
+    }
+    return new JSONResponse({ ok: true, value: res })
+  }
+
   await nfts.set({ user, cid: nft.cid }, nft, pin)
 
   /** @type {import('../bindings').NFTResponse} */
