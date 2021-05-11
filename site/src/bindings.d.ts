@@ -13,6 +13,8 @@ declare global {
   const METRICS: KVNamespace
   const PINS: KVNamespace
   const FOLLOWUPS: KVNamespace
+  const PINATA_API_URL: string
+  const PINATA_PSA_API_URL: string
   const PINATA_JWT: string
   const CLUSTER_API_URL: string
   const CLUSTER_BASIC_AUTH_TOKEN: string

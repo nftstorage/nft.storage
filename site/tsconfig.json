@@ -15,12 +15,13 @@
     "skipLibCheck": true,
     "noEmit": true,
     "resolveJsonModule": true,
-    "types": ["@cloudflare/workers-types"]
+    "types": ["@cloudflare/workers-types", "mocha"]
   },
   "include": [
     "src",
     "src/bindings.d.ts",
-    "node_modules/@cloudflare/workers-types/index.d.ts"
+    "node_modules/@cloudflare/workers-types/index.d.ts",
+    "test"
   ],
   "exclude": ["node_modules/", "dist/", "src/utils/multipart/**/*.js"]
 }
