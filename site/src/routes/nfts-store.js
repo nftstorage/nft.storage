@@ -52,7 +52,8 @@ export async function store(event, ctx) {
     hasher: sha256,
   })
   const car = await CAR.encode([block.cid], [block])
-  const { cid, size } = await cluster.add(car)
+  const { cid } = await cluster.add(car)
+  const size = await cluster.dagSize(cid)
 
   // We do want worker to wait for this, but we do not want to
   // block response waiting on this.
