@@ -74,6 +74,10 @@ class NFTStorage {
   static async storeBlob({ endpoint, token }, blob) {
     const url = new URL('/upload', endpoint)
 
+    if (blob.size === 0) {
+      throw new Error('Content size is 0, make sure to provide some content')
+    }
+
     const request = await fetch(url.toString(), {
       method: 'POST',
       headers: NFTStorage.auth(token),
@@ -95,8 +99,16 @@ class NFTStorage {
   static async storeDirectory({ endpoint, token }, files) {
     const url = new URL('/upload', endpoint)
     const body = new FormData()
+    let size = 0
     for (const file of files) {
       body.append('file', file, file.name)
+      size += file.size
+    }
+
+    if (size === 0) {
+      throw new Error(
+        'Total size of files should exceed 0, make sure to provide some content'
+      )
     }
 
     const response = await fetch(url.toString(), {
