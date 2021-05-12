@@ -46,6 +46,7 @@ async function main() {
           cf.readKV(table.id, k.name),
           cf.readKVMeta(pins.id, cid),
         ])
+        console.log(`📗 read ${k.name}`)
         if (!nft) throw new Error(`missing NFT ${k.name}`)
         if (!pin) throw new Error(`missing pin ${cid}`)
         const indexKey = encodeIndexKey({
@@ -60,8 +61,8 @@ async function main() {
             key: k.name,
             pinStatus: pin.status,
             size: pin.size,
-            name: pin.name,
-            meta: pin.meta,
+            name: nft.pin ? nft.pin.name : undefined,
+            meta: nft.pin ? nft.pin.meta : undefined,
           },
         })
       })
