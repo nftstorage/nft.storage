@@ -5,8 +5,8 @@ import os
 # video = requests.get("https://storage.opensea.io/files/6430657c7e96bc93c140ba9554f07342.mp4")
 
 files = [
-  ('b', ('image', open('dog.jpg', 'rb'), 'image/jpeg')),
-  ('a', ('animation', open('broken.mp4', 'rb'), 'video/mp4'))
+  ('file', ('image', open('dog.jpg', 'rb'), 'image/jpeg')),
+  ('file', ('animation', open('broken.mp4', 'rb'), 'video/mp4'))
 ]
 api_key = os.getenv('API_KEY')
 url=os.getenv('API_HOST') or "https://api.nft.storage/upload"
