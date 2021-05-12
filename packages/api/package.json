@@ -1,7 +1,7 @@
 {
-  "name": "nft-storage-site",
+  "name": "api",
   "version": "1.0.0",
-  "description": "NFT Storage Site",
+  "description": "NFT Storage API",
   "private": true,
   "main": "src/index.js",
   "scripts": {

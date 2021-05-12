@@ -20,7 +20,7 @@ jobs:
           SENTRY_TOKEN: ${{ secrets.SENTRY_TOKEN}}
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          workingDirectory: 'site'
+          workingDirectory: 'packages/api'
           environment: ${{ github.event.inputs.environment }}
       - name: annotation dev
         if: github.event.inputs.environment == ''
@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - run: yarn
-      - run: ./packages/tools/dns.js --name nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
+      - run: ./packages/tools/cli.js dns --name nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
       - run: echo "::warning::https://nft.storage"
   deploy-frontend-staging:
     if: github.event.inputs.environment == 'staging'
@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - run: yarn
-      - run: ./packages/tools/dns.js --name staging.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
+      - run: ./packages/tools/cli.js dns --name staging.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
       - run: echo "::warning::https://staging.nft.storage"
   deploy-frontend-dev:
     if: github.event.inputs.environment == ''
@@ -53,5 +53,5 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - run: yarn
-      - run: ./packages/tools/dns.js --name dev.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
+      - run: ./packages/tools/cli.js dns --name dev.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
       - run: echo "::warning::https://dev.nft.storage"
