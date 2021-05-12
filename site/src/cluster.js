@@ -1,5 +1,6 @@
 import { Cluster } from '@nftstorage/ipfs-cluster'
 import { cluster } from './constants.js'
+import { HTTPError } from './errors.js'
 
 const client = new Cluster(cluster.apiUrl, {
   headers: { Authorization: `Basic ${cluster.basicAuthToken}` },
@@ -28,6 +29,12 @@ export async function add(data) {
  */
 export async function addDirectory(files) {
   const size = files.reduce((total, f) => total + f.size, 0)
+  if (size === 0) {
+    throw new HTTPError(
+      `Content added contains ${size} bytes. Please make sure that files are encoded correctly`
+    )
+  }
+
   const results = await client.addDirectory(files, {
     metadata: { size: size.toString() },
   })
