@@ -24,7 +24,7 @@ jobs:
       - name: Typecheck
         uses: gozala/typescript-error-reporter-action@v1.0.8
         with:
-          project: client/tsconfig.json
+          project: packages/client/tsconfig.json
 
   test:
     name: Test
