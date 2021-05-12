@@ -189,7 +189,7 @@ class NFTStorage {
         cid: result.value.cid,
         deals: decodeDeals(result.value.deals),
         size: result.value.size,
-        pin: result.value.pin,
+        pin: decodePin(result.value.pin),
         created: new Date(result.value.created),
       }
     } else {
@@ -348,6 +348,12 @@ const decodeDeals = (deals) =>
       ...(dealExpiration && { dealExpiration: new Date(dealExpiration) }),
     }
   })
+
+/**
+ * @param {API.Pin} pin
+ * @returns {API.Pin}
+ */
+const decodePin = (pin) => ({ ...pin, created: new Date(pin.created) })
 
 const TokenModel = Token.Token
 export { TokenModel as Token }
