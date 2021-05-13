@@ -66,6 +66,16 @@ describe('client', () => {
         assert.is(err.message, 'missing token')
       }
     })
+
+    it('errors without content', async () => {
+      const client = new NFTStorage({ endpoint, token })
+      try {
+        await client.storeBlob(new Blob([]))
+        assert.unreachable('should have thrown')
+      } catch (err) {
+        assert.match(err.message, /provide some content/)
+      }
+    })
   })
 
   describe('upload dir', () => {
@@ -98,10 +108,20 @@ describe('client', () => {
         assert.unreachable('should fail if no content is provided')
       } catch (error) {
         assert.ok(error instanceof Error)
-        assert.match(error, /no files/i)
+        assert.match(error, /provide some content/i)
       }
     })
 
+    it('upload empty files', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      try {
+        await client.storeDirectory([new File([], 'empty.txt')])
+        assert.unreachable('should fail if no content is provided')
+      } catch (error) {
+        assert.ok(error instanceof Error)
+        assert.match(error, /provide some content/i)
+      }
+    })
     it('errors without token', async () => {
       // @ts-ignore
       const client = new NFTStorage({ endpoint })
@@ -110,6 +130,18 @@ describe('client', () => {
         assert.unreachable('should have thrown')
       } catch (err) {
         assert.is(err.message, 'missing token')
+      }
+    })
+
+    it('errors with invalid token', async () => {
+      const client = new NFTStorage({ token: 'wrong', endpoint })
+
+      try {
+        await client.storeDirectory([new File(['wrong token'], 'foo.txt')])
+        assert.unreachable('sholud have failed')
+      } catch (error) {
+        assert.ok(error instanceof Error)
+        assert.match(error, /Unauthorized/)
       }
     })
   })
