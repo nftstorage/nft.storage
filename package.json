@@ -4,7 +4,7 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "run-p test:*",
+    "test": "run-s test:*",
     "test:client": "yarn --cwd packages/client test",
     "test:api": "yarn --cwd packages/api test",
     "test:website": "yarn --cwd packages/website test",
