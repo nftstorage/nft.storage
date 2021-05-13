@@ -92,7 +92,7 @@ cli
           })
         } else {
           throw new Error(
-            `URL is invalid "${url}" should end with  nft-storage.pages.dev`
+            `URL is invalid "${url}" should end with nft-storage.pages.dev`
           )
         }
       } else {
