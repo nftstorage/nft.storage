@@ -1,13 +1,13 @@
 import assert from 'assert'
 import '../src/index.js'
-import { TestFetchEvent } from './scripts/events.js'
+
+const endpoint = `${location.href}api/`
 
 describe('/version', () => {
   it('should get version information', async () => {
-    const request = new Request('http://localhost/version')
-    const event = new TestFetchEvent('fetch', { request })
-    globalThis.dispatchEvent(event)
-    const res = await event.respondWithPromise
+    console.log(new URL('version', endpoint).toString())
+    const res = await fetch(new URL('version', endpoint).toString())
+    console.log(res.status, res.statusText, await res.text())
     assert(res)
     assert(res.ok)
     const { version, commit, branch } = await res.json()
