@@ -12,7 +12,7 @@
     "dev": "wrangler dev",
     "test": "npm run test:ts && npm run test:e2e",
     "test:ts": "tsc",
-    "test:e2e": "playwright-test \"test/version.spec.js\" --sw src/index.js"
+    "test:e2e": "playwright-test \"test/**/*.spec.js\" --sw src/index.js"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
   "license": "MIT",
@@ -36,7 +36,7 @@
     "@types/debug": "^4.1.5",
     "@types/mocha": "^8.2.2",
     "buffer": "^6.0.3",
-    "cf-workers-memkv": "^1.0.2",
+    "cf-workers-idbkv": "^0.1.1",
     "dotenv": "^8.2.0",
     "git-revision-webpack-plugin": "^3.0.6",
     "playwright-test": "^4.1.0",

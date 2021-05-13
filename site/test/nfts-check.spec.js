@@ -1,9 +1,8 @@
 import assert from 'assert'
-import '../src/index.js'
-import { TestFetchEvent } from './scripts/events.js'
-import { set as setPin } from '../src/models/pins.js'
+import stores from './scripts/stores.js'
 import { clearStores } from './scripts/helpers.js'
 
+const endpoint = 'http://testing.com'
 const cid = 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD'
 
 describe('/check/{cid}', () => {
@@ -17,16 +16,13 @@ describe('/check/{cid}', () => {
       size: 1234,
       created: new Date().toISOString(),
     }
-    await setPin(cid, pin)
+    await stores.pins.put(cid, '', { metadata: pin })
 
     /** @type {import('../src/bindings').Deal[]} */
     const deals = [{ status: 'queued', lastChanged: new Date() }]
-    await DEALS.put(cid, JSON.stringify(deals))
+    await stores.deals.put(cid, JSON.stringify(deals))
 
-    const request = new Request(`http://localhost/check/${cid}`)
-    const event = new TestFetchEvent('fetch', { request })
-    globalThis.dispatchEvent(event)
-    const res = await event.respondWithPromise
+    const res = await fetch(new URL(`check/${cid}`, endpoint).toString())
     assert(res)
     assert(res.ok)
     const { ok, value } = await res.json()
@@ -36,10 +32,7 @@ describe('/check/{cid}', () => {
   })
 
   it('should error if CID is not found', async () => {
-    const request = new Request(`http://localhost/check/${cid}`)
-    const event = new TestFetchEvent('fetch', { request })
-    globalThis.dispatchEvent(event)
-    const res = await event.respondWithPromise
+    const res = await fetch(new URL(`check/${cid}`, endpoint).toString())
     assert(res)
     assert.strictEqual(res.status, 404)
     const { ok, error } = await res.json()
