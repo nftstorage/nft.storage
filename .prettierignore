@@ -1,0 +1,8 @@
+node_modules
+coverage
+out
+build
+dist
+worker
+site/public
+docs

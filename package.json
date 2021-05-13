@@ -13,7 +13,7 @@
     "test:website": "yarn --cwd website test",
     "build:client:docs": "yarn --cwd client typedoc",
     "build:website": "yarn --cwd website build",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css}' --ignore-path .gitignore"
+    "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css}'"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",

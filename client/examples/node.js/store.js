@@ -15,7 +15,7 @@ async function main() {
     }),
     properties: {
       custom:
-        'Any custom data can appear in properies, files are automatically uploaded.',
+        'Any custom data can appear in properties, files are automatically uploaded.',
       file: new File([await fs.promises.readFile('README.md')], 'README.md', {
         type: 'text/plain',
       }),

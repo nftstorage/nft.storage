@@ -320,6 +320,41 @@ class NFTStorage {
     return NFTStorage.check(this, cid)
   }
   /**
+   * Stores the given token and all resources it references (in the form of a
+   * File or a Blob) along with a metadata JSON as specificed in
+   * [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155#metadata). The
+   * `token.image` must be either a `File` or a `Blob` instance, which will be
+   * stored and the corresponding content address URL will be saved in the
+   * metadata JSON file under `image` field.
+   *
+   * If `token.properties` contains properties with `File` or `Blob` values,
+   * those also get stored and their URLs will be saved in the metadata JSON
+   * file in their place.
+   *
+   * Note: URLs for `File` objects will retain file names e.g. in case of
+   * `new File([bytes], 'cat.png', { type: 'image/png' })` will be transformed
+   * into a URL that looks like `ipfs://bafy...hash/image/cat.png`. For `Blob`
+   * objects, the URL will not have a file name name or mime type, instead it
+   * will be transformed into a URL that looks like
+   * `ipfs://bafy...hash/image/blob`.
+   *
+   * @example
+   * ```js
+   * const metadata = await client.store({
+   *   name: 'nft.storage store test',
+   *   description: 'Test ERC-1155 compatible metadata.',
+   *   image: new File(['<DATA>'], 'pinpie.jpg', { type: 'image/jpg' }),
+   *   properties: {
+   *     custom: 'Custom data can appear here, files are auto uploaded.',
+   *     file: new File(['<DATA>'], 'README.md', { type: 'text/plain' }),
+   *   }
+   * })
+   *
+   * console.log('IPFS URL for the metadata:', metadata.url)
+   * console.log('metadata.json contents:\n', metadata.data)
+   * console.log('metadata.json with IPFS gateway URLs:\n', metadata.embed())
+   * ```
+   *
    * @template {API.TokenInput} T
    * @param {T} token
    * @returns {Promise<API.Token<T>>}

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>PendingDeal | nft.storage</title>
+	<title>EncodedToken | nft.storage</title>
 	<meta name="description" content="Documentation for nft.storage">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -58,26 +58,29 @@
 					<a href="../modules/lib_interface.html">lib/interface</a>
 				</li>
 				<li>
-					<a href="lib_interface.pendingdeal.html">PendingDeal</a>
+					<a href="lib_interface.encodedtoken.html">EncodedToken</a>
 				</li>
 			</ul>
-			<h1>Interface PendingDeal</h1>
+			<h1>Interface EncodedToken&lt;T&gt;</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-type-parameters">
+				<h3>Type parameters</h3>
+				<ul class="tsd-type-parameters">
+					<li>
+						<h4>T<span class="tsd-signature-symbol">: </span><a href="lib_interface.tokeninput.html" class="tsd-signature-type" data-tsd-kind="Interface">TokenInput</a></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="lib_interface.dealinfo.html" class="tsd-signature-type" data-tsd-kind="Interface">DealInfo</a>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">PendingDeal</span>
-							</li>
-						</ul>
+						<span class="target">EncodedToken</span>
 					</li>
 				</ul>
 			</section>
@@ -88,12 +91,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="lib_interface.pendingdeal.html#batchrootcid" class="tsd-kind-icon">batch<wbr>Root<wbr>Cid</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="lib_interface.pendingdeal.html#lastchanged" class="tsd-kind-icon">last<wbr>Changed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="lib_interface.pendingdeal.html#miner" class="tsd-kind-icon">miner</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="lib_interface.pendingdeal.html#network" class="tsd-kind-icon">network</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="lib_interface.pendingdeal.html#piececid" class="tsd-kind-icon">piece<wbr>Cid</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lib_interface.pendingdeal.html#status" class="tsd-kind-icon">status</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lib_interface.encodedtoken.html#data" class="tsd-kind-icon">data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lib_interface.encodedtoken.html#ipnft" class="tsd-kind-icon">ipnft</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="lib_interface.encodedtoken.html#url" class="tsd-kind-icon">url</a></li>
 							</ul>
 						</section>
 					</div>
@@ -101,88 +101,33 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="batchrootcid" class="tsd-anchor"></a>
-					<h3>batch<wbr>Root<wbr>Cid</h3>
-					<div class="tsd-signature tsd-kind-icon">batch<wbr>Root<wbr>Cid<span class="tsd-signature-symbol">:</span> <a href="../modules/lib_interface.html#cidstring" class="tsd-signature-type" data-tsd-kind="Type alias">CIDString</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="data" class="tsd-anchor"></a>
+					<h3>data</h3>
+					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <a href="../modules/lib_interface.html#matchrecord" class="tsd-signature-type" data-tsd-kind="Type alias">MatchRecord</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Blob</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><a href="../modules/lib_interface.html#encodedurl" class="tsd-signature-type" data-tsd-kind="Type alias">EncodedURL</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="lib_interface.dealinfo.html">DealInfo</a>.<a href="lib_interface.dealinfo.html#batchrootcid">batchRootCid</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/053af29/client/src/lib/interface.ts#L111">client/src/lib/interface.ts:111</a></li>
+							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/053af29/client/src/lib/interface.ts#L269">client/src/lib/interface.ts:269</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>CID string</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="lastchanged" class="tsd-anchor"></a>
-					<h3>last<wbr>Changed</h3>
-					<div class="tsd-signature tsd-kind-icon">last<wbr>Changed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="lib_interface.dealinfo.html">DealInfo</a>.<a href="lib_interface.dealinfo.html#lastchanged">lastChanged</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/053af29/client/src/lib/interface.ts#L94">client/src/lib/interface.ts:94</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="miner" class="tsd-anchor"></a>
-					<h3>miner</h3>
-					<div class="tsd-signature tsd-kind-icon">miner<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="lib_interface.dealinfo.html">DealInfo</a>.<a href="lib_interface.dealinfo.html#miner">miner</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/053af29/client/src/lib/interface.ts#L98">client/src/lib/interface.ts:98</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Miner ID</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="network" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> network</h3>
-					<div class="tsd-signature tsd-kind-icon">network<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;nerpanet&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;mainnet&quot;</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="lib_interface.dealinfo.html">DealInfo</a>.<a href="lib_interface.dealinfo.html#network">network</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/053af29/client/src/lib/interface.ts#L103">client/src/lib/interface.ts:103</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Filecoin network for this Deal</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="piececid" class="tsd-anchor"></a>
-					<h3>piece<wbr>Cid</h3>
-					<div class="tsd-signature tsd-kind-icon">piece<wbr>Cid<span class="tsd-signature-symbol">:</span> <a href="../modules/lib_interface.html#cidstring" class="tsd-signature-type" data-tsd-kind="Type alias">CIDString</a></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="lib_interface.dealinfo.html">DealInfo</a>.<a href="lib_interface.dealinfo.html#piececid">pieceCid</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/053af29/client/src/lib/interface.ts#L107">client/src/lib/interface.ts:107</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Piece CID string</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="status" class="tsd-anchor"></a>
-					<h3>status</h3>
-					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;proposing&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;accepted&quot;</span></div>
+					<a name="ipnft" class="tsd-anchor"></a>
+					<h3>ipnft</h3>
+					<div class="tsd-signature tsd-kind-icon">ipnft<span class="tsd-signature-symbol">:</span> <a href="../modules/lib_interface.html#cidstring" class="tsd-signature-type" data-tsd-kind="Type alias">CIDString</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/053af29/client/src/lib/interface.ts#L123">client/src/lib/interface.ts:123</a></li>
+							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/053af29/client/src/lib/interface.ts#L267">client/src/lib/interface.ts:267</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="url" class="tsd-anchor"></a>
+					<h3>url</h3>
+					<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <a href="../modules/lib_interface.html#encodedurl" class="tsd-signature-type" data-tsd-kind="Type alias">EncodedURL</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/053af29/client/src/lib/interface.ts#L268">client/src/lib/interface.ts:268</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -225,42 +170,33 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="lib_interface.dealinfo.html" class="tsd-kind-icon">Deal<wbr>Info</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
 						<a href="lib_interface.encodedtoken.html" class="tsd-kind-icon">Encoded<wbr>Token</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="lib_interface.encodedtoken.html#data" class="tsd-kind-icon">data</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="lib_interface.encodedtoken.html#ipnft" class="tsd-kind-icon">ipnft</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="lib_interface.encodedtoken.html#url" class="tsd-kind-icon">url</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="lib_interface.faileddeal.html" class="tsd-kind-icon">Failed<wbr>Deal</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="lib_interface.finalizeddeal.html" class="tsd-kind-icon">Finalized<wbr>Deal</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-module">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="lib_interface.pendingdeal.html" class="tsd-kind-icon">Pending<wbr>Deal</a>
-						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="lib_interface.pendingdeal.html#batchrootcid" class="tsd-kind-icon">batch<wbr>Root<wbr>Cid</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="lib_interface.pendingdeal.html#lastchanged" class="tsd-kind-icon">last<wbr>Changed</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="lib_interface.pendingdeal.html#miner" class="tsd-kind-icon">miner</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="lib_interface.pendingdeal.html#network" class="tsd-kind-icon">network</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="lib_interface.pendingdeal.html#piececid" class="tsd-kind-icon">piece<wbr>Cid</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="lib_interface.pendingdeal.html#status" class="tsd-kind-icon">status</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="lib_interface.pin.html" class="tsd-kind-icon">Pin</a>
 					</li>
