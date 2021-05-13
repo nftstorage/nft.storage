@@ -11,7 +11,7 @@
     "build": "run-s build:*",
     "build:client:docs": "yarn --cwd packages/client typedoc",
     "build:website": "yarn --cwd packages/website build",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css}' --ignore-path .gitignore",
+    "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css}'",
     "clean": "rimraf node_modules yarn.lock packages/*/{yarn.lock,package-lock.json,.next,out,coverage,.nyc_output,worker,dist,node_modules}"
   },
   "simple-git-hooks": {
