@@ -58,7 +58,7 @@ cli
 cli
   .command(
     'deploy-website',
-    'Update dns record with latest Cloudflare Pages production deployment.'
+    'Update DNS record with latest Cloudflare Pages production deployment.'
   )
   .option('--token', 'Cloudflare Token')
   .option('--zone', 'Cloudflare Zone')
