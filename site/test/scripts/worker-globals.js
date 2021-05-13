@@ -9,6 +9,7 @@ export const NFTS_IDX = new MemKV()
 export const METRICS = new MemKV()
 export const PINS = new MemKV()
 export const FOLLOWUPS = new MemKV()
+export const PINATA_QUEUE = new MemKV()
 export const PINATA_JWT = 'test'
 export const CLUSTER_API_URL = 'http://localhost:9094'
 export const CLUSTER_BASIC_AUTH_TOKEN = 'test'
