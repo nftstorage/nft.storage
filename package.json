@@ -8,6 +8,7 @@
     "test:client": "yarn --cwd packages/client test",
     "test:api": "yarn --cwd packages/api test",
     "test:website": "yarn --cwd packages/website test",
+    "build": "run-s build:*",
     "build:client:docs": "yarn --cwd packages/client typedoc",
     "build:website": "yarn --cwd packages/website build",
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css}' --ignore-path .gitignore",
