@@ -54,7 +54,7 @@
     "@ipld/dag-cbor": "^5.0.0",
     "multihashing-async": "2.1.2",
     "nyc": "15.1.0",
-    "playwright-test": "2.1.0",
+    "playwright-test": "github:hugomrdias/playwright-test#feat/sw",
     "rollup": "2.22.1",
     "rollup-plugin-multi-input": "1.1.1",
     "typedoc": "0.20.36",
