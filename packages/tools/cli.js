@@ -79,7 +79,7 @@ cli
       const conclusion = data.check_runs[0].conclusion
       if (conclusion === 'success') {
         const url = [...getUrls(data.check_runs[0].output.summary)][0]
-        if (url.endsWith('nft-storage.pages.dev')) {
+        if (url && url.endsWith('nft-storage.pages.dev')) {
           console.log(url)
           await upsertRecord({
             token: opts.token,
