@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: yarn
-      - run: yarn test
+      - run: yarn test:api
   deploy-dev:
     name: Deploy Dev
     if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
@@ -27,7 +27,7 @@ jobs:
           SENTRY_TOKEN: ${{ secrets.SENTRY_TOKEN}}
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          workingDirectory: 'site'
+          workingDirectory: 'packages/api'
   deploy-staging:
     name: Deploy Staging
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -41,5 +41,5 @@ jobs:
           SENTRY_TOKEN: ${{ secrets.SENTRY_TOKEN}}
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          workingDirectory: 'site'
+          workingDirectory: 'packages/api'
           environment: 'staging'

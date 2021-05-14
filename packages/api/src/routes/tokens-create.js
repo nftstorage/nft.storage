@@ -1,13 +1,15 @@
 import { validate } from '../utils/auth'
 import { JSONResponse } from '../utils/json-response'
-import { tokens } from './../models/users'
+import { createToken } from '../models/users'
 
 /** @type {import('../utils/router.js').Handler} */
-export const tokensList = async (event, ctx) => {
+export const tokensCreate = async (event, ctx) => {
   const { user } = await validate(event, ctx)
+  const body = await event.request.json()
+
+  await createToken(user.issuer, body.name)
 
   return new JSONResponse({
     ok: true,
-    value: await tokens(user.issuer),
   })
 }

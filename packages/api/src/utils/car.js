@@ -18,7 +18,9 @@ export const encode = async (roots, blocks) => {
     parts.push(part)
   }
 
-  return /** @type {Blob & {type: 'application/car'}} */ (new Blob(parts, {
-    type: 'application/car',
-  }))
+  return /** @type {Blob & {type: 'application/car'}} */ (
+    new Blob(parts, {
+      type: 'application/car',
+    })
+  )
 }

@@ -23,6 +23,9 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
   - [`website` Setup](#website-setup)
   - [`website` Usage](#website-usage)
     - [Local development](#local-development-1)
+  - [Release](#release)
+    - [What's a Release PR?](#whats-a-release-pr)
+    - [How should I write my commits?](#how-should-i-write-my-commits)
   - [Contributing](#contributing)
   - [License](#license)
 
@@ -30,7 +33,7 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
 
 The JS client library is the official and supported client to nft.storage. Other libraries listed have been generated from the [OpenAPI schema](https://nft.storage/schema.yml) and are experimental, unsupported and may not work at all!
 
-- [JavaScript](https://github.com/ipfs-shipyard/nft.storage/tree/main/client)
+- [JavaScript](https://github.com/ipfs-shipyard/nft.storage/tree/main/packages/client)
 - [Go](https://github.com/nftstorage/go-client) (Generated from OpenAPI schema)
 - [Java](https://github.com/nftstorage/java-client) (Generated from OpenAPI schema)
 - [PHP](https://github.com/nftstorage/php-client) (Generated from OpenAPI schema)
@@ -235,6 +238,37 @@ cd site
 yarn install
 yarn dev
 ```
+
+## Release
+
+[Release Please](https://github.com/googleapis/release-please) automates CHANGELOG generation, the creation of GitHub releases,
+and version bumps for our packages. Release Please does so by parsing your
+git history, looking for [Conventional Commit messages](https://www.conventionalcommits.org/),
+and creating release PRs.
+
+### What's a Release PR?
+
+Rather than continuously releasing what's landed to our default branch,
+release-please maintains Release PRs:
+
+These Release PRs are kept up-to-date as additional work is merged. When we're
+ready to tag a release, we simply merge the release PR.
+
+When the release PR is merged the release job is triggered to create a new tag, a new github release and run other package specific jobs.
+
+Release PRs are created individually for each packages in the mono repo.
+
+### How should I write my commits?
+
+Release Please assumes you are using [Conventional Commit messages](https://www.conventionalcommits.org/).
+
+The most important prefixes you should have in mind are:
+
+- `fix:` which represents bug fixes, and correlates to a [SemVer](https://semver.org/)
+  patch.
+- `feat:` which represents a new feature, and correlates to a SemVer minor.
+- `feat!:`, or `fix!:`, `refactor!:`, etc., which represent a breaking change
+  (indicated by the `!`) and will result in a SemVer major.
 
 ## Contributing
 

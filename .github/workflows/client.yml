@@ -4,27 +4,19 @@ on:
     branches:
       - main
     paths:
-      - 'client/**'
+      - 'packages/client/**'
   pull_request:
     branches:
       - main
     paths:
-      - 'client/**'
+      - 'packages/client/**'
 
 jobs:
   check:
     name: Typecheck client
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [15.x]
     steps:
-      - uses: actions/checkout@v1
-
-      - name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v2
 
       - name: Install dependencies
         run: yarn install
@@ -32,7 +24,7 @@ jobs:
       - name: Typecheck
         uses: gozala/typescript-error-reporter-action@v1.0.8
         with:
-          project: client/tsconfig.json
+          project: packages/client/tsconfig.json
 
   test:
     name: Test
@@ -40,7 +32,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [15]
+        node: [14, 16]
       fail-fast: true
     steps:
       - uses: actions/checkout@v2
@@ -54,73 +46,13 @@ jobs:
         run: yarn install
 
       - name: Test (ES)
-        run: yarn --cwd client test:es
+        run: yarn --cwd packages/client test:es
 
       - name: Test (Web)
-        run: yarn --cwd client test:web
+        run: yarn --cwd packages/client test:web
 
       - name: Test (CJS)
-        run: |
-          yarn --cwd client build:cjs
-          yarn --cwd client test:cjs
+        run: yarn --cwd packages/client test:cjs
 
       - name: Coverage
-        run: yarn --cwd client coverage
-
-  # publish:
-  #   name: Publish client
-  #   needs:
-  #     - check
-  #     - test
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Cache node_modules
-  #       id: cache-modules
-  #       uses: actions/cache@v1
-  #       with:
-  #         path: node_modules
-  #         key: 12.x-${{ runner.OS }}-build-${{ hashFiles('package.json') }}
-  #     - name: Install
-  #       if: steps.cache-modules.outputs.cache-hit != 'true'
-  #       run: yarn install
-  #     - name: Build client
-  #       run: yarn --cwd client build
-
-  #     - name: Publish client
-  #       uses: mikeal/merge-release@master
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-  #         SRC_PACKAGE_DIR: client
-  #         DEPLOY_DIR: client
-
-  # docs:
-  #   name: Generate documentation
-  #   needs:
-  #     - publish
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-  #   steps:
-  #     - uses: actions/checkout@v2
-
-  #     - name: Cache node_modules
-  #       id: cache-modules
-  #       uses: actions/cache@v1
-  #       with:
-  #         path: node_modules
-  #         key: 12.x-${{ runner.OS }}-build-${{ hashFiles('package.json') }}
-
-  #     - name: Install
-  #       run: yarn install
-
-  #     - name: Generate
-  #       run: yarn build:client:docs
-
-  #     - name: Commit
-  #       uses: EndBug/add-and-commit@v7
-  #       with:
-  #         author_name: documentation-generator
-  #         add: docs/client
-  #         message: 'chore: generate client docs'
+        run: yarn --cwd packages/client coverage

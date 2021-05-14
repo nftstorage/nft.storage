@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Footer from './footer.js'
 import Navbar from './navbar.js'
-import Loading from '../components/loading'
+import Loading from './loading'
 import { useUser } from '../lib/user'
 
 /**

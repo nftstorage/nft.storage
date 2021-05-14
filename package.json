@@ -1,19 +1,18 @@
 {
   "private": true,
   "workspaces": [
-    "site",
-    "client",
-    "website",
-    "tools"
+    "packages/*"
   ],
   "scripts": {
-    "test": "yarn test:site && yarn test:website",
-    "test:client": "yarn --cwd client test",
-    "test:site": "yarn --cwd site test",
-    "test:website": "yarn --cwd website test",
-    "build:client:docs": "yarn --cwd client typedoc",
-    "build:website": "yarn --cwd website build",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css}'"
+    "test": "run-s test:*",
+    "test:client": "yarn --cwd packages/client test",
+    "test:api": "yarn --cwd packages/api test",
+    "test:website": "yarn --cwd packages/website test",
+    "build": "run-s build:*",
+    "build:client:docs": "yarn --cwd packages/client typedoc",
+    "build:website": "yarn --cwd packages/website build",
+    "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css}'",
+    "clean": "rimraf node_modules yarn.lock packages/*/{yarn.lock,package-lock.json,.next,out,coverage,.nyc_output,worker,dist,node_modules}"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",
@@ -30,7 +29,9 @@
   },
   "devDependencies": {
     "lint-staged": "^10.5.4",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
     "simple-git-hooks": "^2.3.1",
     "typescript": "^4.2.4"
   }
