@@ -241,7 +241,7 @@ yarn dev
 
 ## Release
 
-Release Please automates CHANGELOG generation, the creation of GitHub releases,
+[Release Please](https://github.com/googleapis/release-please) automates CHANGELOG generation, the creation of GitHub releases,
 and version bumps for our packages. Release Please does so by parsing your
 git history, looking for [Conventional Commit messages](https://www.conventionalcommits.org/),
 and creating release PRs.
