@@ -78,7 +78,6 @@ cli
         const { data: commitData } = await gh.repos.listCommits({
           owner: 'ipfs-shipyard',
           repo: 'nft.storage',
-          path: 'packages/website',
         })
         // the latest commit will be the current release commit, so we use the one before, that has changes to the website
         const ref = commitData[1].sha
@@ -93,6 +92,11 @@ cli
           status: 'completed',
         })
         console.log('Check run:', data)
+        if (data.check_runs[0] === undefined) {
+          throw new Error(
+            `Could not find a Cloudflare page deploy for ref ${ref}`
+          )
+        }
         const conclusion = data.check_runs[0].conclusion
         if (conclusion === 'success') {
           const url = [...getUrls(data.check_runs[0].output.summary)][0]
