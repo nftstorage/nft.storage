@@ -1,7 +1,7 @@
 {
   "name": "website",
   "version": "1.0.1",
-  "description": "nft.storage website",
+  "description": "nft.storage website.",
   "private": true,
   "scripts": {
     "dev": "next dev",
