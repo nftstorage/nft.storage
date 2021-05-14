@@ -1,7 +1,7 @@
 import assert from 'assert'
 import { VERSION, COMMITHASH, BRANCH } from './scripts/worker-globals.js'
 
-const endpoint = 'http://testing.com'
+const endpoint = 'http://testing.nft.storage'
 
 describe('/version', () => {
   it('should get version information', async () => {
