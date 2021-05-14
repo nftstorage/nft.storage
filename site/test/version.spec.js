@@ -1,13 +1,11 @@
 import assert from 'assert'
-import '../src/index.js'
-import { TestFetchEvent } from './scripts/events.js'
+import { VERSION, COMMITHASH, BRANCH } from './scripts/worker-globals.js'
+
+const endpoint = 'http://testing.nft.storage'
 
 describe('/version', () => {
   it('should get version information', async () => {
-    const request = new Request('http://localhost/version')
-    const event = new TestFetchEvent('fetch', { request })
-    globalThis.dispatchEvent(event)
-    const res = await event.respondWithPromise
+    const res = await fetch(new URL('version', endpoint).toString())
     assert(res)
     assert(res.ok)
     const { version, commit, branch } = await res.json()

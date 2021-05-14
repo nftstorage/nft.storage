@@ -1,14 +1,14 @@
-import { MemKV } from 'cf-workers-memkv'
+import stores from './stores.js'
 
 export const SALT = Math.random().toString()
 export const DEBUG = 'true'
-export const DEALS = new MemKV()
-export const USERS = new MemKV()
-export const NFTS = new MemKV()
-export const NFTS_IDX = new MemKV()
-export const METRICS = new MemKV()
-export const PINS = new MemKV()
-export const FOLLOWUPS = new MemKV()
+export const DEALS = stores.deals
+export const USERS = stores.users
+export const NFTS = stores.nfts
+export const NFTS_IDX = stores.nftsIndex
+export const METRICS = stores.metrics
+export const PINS = stores.pins
+export const FOLLOWUPS = stores.followups
 export const PINATA_JWT = 'test'
 export const CLUSTER_API_URL = 'http://localhost:9094'
 export const CLUSTER_BASIC_AUTH_TOKEN = 'test'
