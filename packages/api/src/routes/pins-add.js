@@ -45,20 +45,20 @@ export async function pinsAdd(event, ctx) {
 
   const pin = await obtainPin(pinData.cid)
 
-  // event.waitUntil(
-  //   (async () => {
-  //     try {
-  //       const hostNodes = [...(pinData.origins || []), ...cluster.delegates()]
-  //       await pinata.pinByHash(pinData.cid, {
-  //         pinataOptions: { hostNodes },
-  //         pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
-  //       })
-  //     } catch (err) {
-  //       log(err)
-  //       ctx.sentry.captureException(err)
-  //     }
-  //   })()
-  // )
+  event.waitUntil(
+    (async () => {
+      try {
+        const hostNodes = [...(pinData.origins || []), ...cluster.delegates()]
+        await pinata.pinByHash(pinData.cid, {
+          pinataOptions: { hostNodes },
+          pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
+        })
+      } catch (err) {
+        log(err)
+        ctx.sentry.captureException(err)
+      }
+    })()
+  )
 
   const nft = await obtainNft(user, tokenName, pin, { name, meta })
 
