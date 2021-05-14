@@ -75,10 +75,20 @@ cli
     async (/** @type {import('./types').DeployWebsiteOptions} */ opts) => {
       try {
         const gh = new Octokit()
+        const { data: commitData } = await gh.repos.listCommits({
+          owner: 'ipfs-shipyard',
+          repo: 'nft.storage',
+          path: 'packages/website',
+        })
+        // the latest commit will be the current release commit, so we use the one before, that has changes to the website
+        const ref = commitData[1].sha
+
+        console.log(`Using commit ${ref} to deploy the website.`)
+
         const { data } = await gh.checks.listForRef({
           owner: 'ipfs-shipyard',
           repo: 'nft.storage',
-          ref: 'main',
+          ref,
           check_name: 'Cloudflare Pages',
           status: 'completed',
         })
@@ -87,7 +97,9 @@ cli
         if (conclusion === 'success') {
           const url = [...getUrls(data.check_runs[0].output.summary)][0]
           if (url && url.endsWith('nft-storage.pages.dev')) {
-            console.log(url)
+            console.log(
+              `DNS Record will be update to ${url.replace('https://', '')}.`
+            )
             await upsertRecord({
               token: opts.token,
               zone: opts.zone,
