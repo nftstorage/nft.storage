@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.3.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v1.3.0...nft.storage-v1.3.1) (2021-05-14)
+
+
+### Bug Fixes
+
+* **client:** fix publish ([052fee0](https://www.github.com/ipfs-shipyard/nft.storage/commit/052fee0661256c05378470a2276bb46e99ccbe2d))
+
 ## 1.3.0 (2021-05-14)
 
 
