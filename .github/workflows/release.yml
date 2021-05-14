@@ -78,13 +78,18 @@ jobs:
           command: github-release
       - uses: actions/checkout@v2
         if: ${{ steps.tag-release.outputs.release_created }}
+      - uses: actions/setup-node@v2
+        if: ${{ steps.tag-release.outputs.release_created }}
+        with:
+          node-version: '14'
+          registry-url: 'https://registry.npmjs.org'
       - name: Install
         if: ${{ steps.tag-release.outputs.release_created }}
         run: yarn
       - name: Client - NPM Publish
         if: ${{ steps.tag-release.outputs.release_created && matrix.package == 'client' }}
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
         run: |
           cd packages/${{ matrix.package }}
           npm publish --access=public
