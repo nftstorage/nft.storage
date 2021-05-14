@@ -52,7 +52,12 @@ cli
   .option('--ttl', 'Record TTL', 1)
   .option('--proxied', 'Record should be proxied ?', true)
   .action(async (/** @type {import('./types').UpsertRecordOptions} */ opts) => {
-    await upsertRecord(opts)
+    try {
+      await upsertRecord(opts)
+    } catch (err) {
+      console.error(err)
+      process.exit(1)
+    }
   })
 
 cli
@@ -68,40 +73,46 @@ cli
   .option('--proxied', 'Record should be proxied ?', true)
   .action(
     async (/** @type {import('./types').DeployWebsiteOptions} */ opts) => {
-      const gh = new Octokit()
-      const { data } = await gh.checks.listForRef({
-        owner: 'ipfs-shipyard',
-        repo: 'nft.storage',
-        ref: 'main',
-        check_name: 'Cloudflare Pages',
-        status: 'completed',
-      })
-      const conclusion = data.check_runs[0].conclusion
-      if (conclusion === 'success') {
-        const url = [...getUrls(data.check_runs[0].output.summary)][0]
-        if (url && url.endsWith('nft-storage.pages.dev')) {
-          console.log(url)
-          await upsertRecord({
-            token: opts.token,
-            zone: opts.zone,
-            name: opts.name,
-            type: opts.type,
-            ttl: opts.ttl,
-            proxied: opts.proxied,
-            content: url.replace('https://', ''),
-          })
+      try {
+        const gh = new Octokit()
+        const { data } = await gh.checks.listForRef({
+          owner: 'ipfs-shipyard',
+          repo: 'nft.storage',
+          ref: 'main',
+          check_name: 'Cloudflare Pages',
+          status: 'completed',
+        })
+        console.log('Check run:', data)
+        const conclusion = data.check_runs[0].conclusion
+        if (conclusion === 'success') {
+          const url = [...getUrls(data.check_runs[0].output.summary)][0]
+          if (url && url.endsWith('nft-storage.pages.dev')) {
+            console.log(url)
+            await upsertRecord({
+              token: opts.token,
+              zone: opts.zone,
+              name: opts.name,
+              type: opts.type,
+              ttl: opts.ttl,
+              proxied: opts.proxied,
+              content: url.replace('https://', ''),
+            })
+          } else {
+            throw new Error(
+              `URL is invalid "${url}" should end with nft-storage.pages.dev`
+            )
+          }
         } else {
-          throw new Error(
-            `URL is invalid "${url}" should end with nft-storage.pages.dev`
-          )
-        }
-      } else {
-        throw new Error(`Latest Cloudflare production deployment failed, check the links below:
+          throw new Error(`Latest Cloudflare production deployment failed, check the links below:
 
 ${data.check_runs[0].html_url}
 ${data.check_runs[0].details_url}
 
 `)
+        }
+      } catch (err) {
+        console.error(err)
+        process.exit(1)
       }
     }
   )
