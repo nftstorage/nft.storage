@@ -77,7 +77,7 @@ export async function updatePinMetrics() {
 
 export async function updateFollowupMetrics() {
   let total = 0
-  for await (const [, pin] of pins.entries()) {
+  for await (const _ of followups.entries()) {
     total++
   }
   await metrics.set('followups:total', total)
