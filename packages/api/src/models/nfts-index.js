@@ -17,7 +17,7 @@ const PAD_LEN = FAR_FUTURE.toString().length
 /**
  * @param {Key} key
  */
-function encodeIndexKey({ user, created, cid }) {
+export function encodeIndexKey({ user, created, cid }) {
   const createdTime = new Date(created).getTime()
   const ts = (FAR_FUTURE - createdTime).toString().padStart(PAD_LEN, '0')
   return `${user.sub}:${ts}:${cid}`
@@ -27,7 +27,7 @@ function encodeIndexKey({ user, created, cid }) {
  * @param {string} key
  * @returns {Key}
  */
-function decodeIndexKey(key) {
+export function decodeIndexKey(key) {
   const parts = key.split(':')
   const cid = parts.pop()
   const ts = parts.pop()
