@@ -1,9 +1,9 @@
 import { HTTPError } from '../errors.js'
 import { toFormData } from '../utils/form-data.js'
-import * as pinata from '../pinata.js'
 import * as cluster from '../cluster.js'
 import * as nfts from '../models/nfts.js'
 import * as pins from '../models/pins.js'
+import * as pinataQueue from '../models/pinata-queue.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth.js'
 import { debug } from '../utils/debug.js'
@@ -78,24 +78,12 @@ export async function upload(event, ctx) {
     return new JSONResponse({ ok: true, value: res })
   }
 
-  await nfts.set({ user, cid: nft.cid }, nft, pin)
+  await Promise.all([
+    nfts.set({ user, cid: nft.cid }, nft, pin),
+    pinataQueue.push({ cid: nft.cid, origins: cluster.delegates() }),
+  ])
 
   /** @type {import('../bindings').NFTResponse} */
   const res = { ...nft, size: pin.size, pin, deals: [] }
-
-  event.waitUntil(
-    (async () => {
-      try {
-        await pinata.pinByHash(nft.cid, {
-          pinataOptions: { hostNodes: cluster.delegates() },
-          pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
-        })
-      } catch (err) {
-        log(err)
-        ctx.sentry.captureException(err)
-      }
-    })()
-  )
-
   return new JSONResponse({ ok: true, value: res })
 }

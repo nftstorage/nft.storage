@@ -1,8 +1,8 @@
 import mergeOptions from 'merge-options'
 import * as PinataPSA from '../pinata-psa.js'
-import * as pinata from '../pinata.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
+import * as pinataQueue from '../models/pinata-queue.js'
 import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth.js'
 import { obtainNft, obtainPin } from './pins-add.js'
@@ -75,24 +75,13 @@ export async function pinsReplace(event, ctx) {
   }
 
   const pin = await obtainPin(pinData.cid)
-
-  event.waitUntil(
-    (async () => {
-      try {
-        const hostNodes = [...(pinData.origins || []), ...cluster.delegates()]
-        await pinata.pinByHash(pinData.cid, {
-          pinataOptions: { hostNodes },
-          pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
-        })
-      } catch (err) {
-        log(err)
-        ctx.sentry.captureException(err)
-      }
-    })()
-  )
-
   const nft = await obtainNft(user, tokenName, pin, { name, meta })
   await nfts.remove({ user, cid: existingCID })
+
+  await pinataQueue.push({
+    cid: pinData.cid,
+    origins: [...(pinData.origins || []), ...cluster.delegates()],
+  })
 
   /** @type import('../pinata-psa').PinStatus */
   const pinStatus = {
