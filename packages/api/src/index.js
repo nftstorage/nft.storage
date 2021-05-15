@@ -22,6 +22,7 @@ import {
   updateNftMetrics,
   updateNftDealMetrics,
   updatePinMetrics,
+  updateFollowupMetrics,
 } from './jobs/metrics.js'
 import { updatePinStatuses } from './jobs/pins.js'
 import { login } from './routes/login.js'
@@ -122,6 +123,15 @@ addEventListener('scheduled', (event) => {
   if (event.cron !== '*/10 * * * *') return
   const sentry = getSentrySchedule(event)
   event.waitUntil(timed(updatePinMetrics, 'CRON updatePinMetrics', { sentry }))
+})
+addEventListener('scheduled', (event) => {
+  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
+  // @ts-ignore
+  if (event.cron !== '*/10 * * * *') return
+  const sentry = getSentrySchedule(event)
+  event.waitUntil(
+    timed(updateFollowupMetrics, 'CRON updateFollowupMetrics', { sentry })
+  )
 })
 addEventListener('scheduled', (event) => {
   // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released

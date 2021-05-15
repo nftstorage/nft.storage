@@ -75,5 +75,9 @@ async function exportPromMetrics() {
     `nftstorage_pins_status_failed_total ${await getOr0(
       'pins:status:failed:total'
     )}`,
+
+    '# HELP nftstorage_followups_total Total number of pins that are being followed until pinned or failed.',
+    '# TYPE nftstorage_followups_total counter',
+    `nftstorage_followups_total ${await getOr0('followups:total')}`,
   ].join('\n')
 }

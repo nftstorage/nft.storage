@@ -1,6 +1,7 @@
 import { stores } from '../constants.js'
 import * as metrics from '../models/metrics.js'
 import * as pins from '../models/pins.js'
+import * as followups from '../models/followups.js'
 import * as nftsIndex from '../models/nfts-index.js'
 
 /**
@@ -72,6 +73,14 @@ export async function updatePinMetrics() {
     metrics.set('pins:status:pinning:total', statusTotals.pinning),
     metrics.set('pins:status:pinned:total', statusTotals.pinned),
   ])
+}
+
+export async function updateFollowupMetrics() {
+  let total = 0
+  for await (const [, pin] of pins.entries()) {
+    total++
+  }
+  await metrics.set('followups:total', total)
 }
 
 // TODO: keep running totals?
