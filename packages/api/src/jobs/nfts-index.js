@@ -34,7 +34,7 @@ export async function updateNftsIndexMeta({ sentry }) {
         size: pin.size,
       })
     } catch (err) {
-      console.error(err)
+      err.message = `updating NFTS_IDX meta for ${key}: ${err.message}`
       sentry.captureException(err)
     }
   }

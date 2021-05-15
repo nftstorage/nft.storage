@@ -27,7 +27,7 @@ export async function updatePinStatuses({ sentry }) {
         `${cid}: status ${prevPin.status} => ${pin.status}, size ${prevPin.size} => ${pin.size}`
       )
     } catch (err) {
-      console.error(`${cid}: failed to update pin status and size`, err)
+      err.message = `updating PINS status for ${cid}: ${err.message}`
       sentry.captureException(err)
     }
   }
