@@ -17,13 +17,6 @@ import { pinsList } from './routes/pins-list.js'
 import { pinsReplace } from './routes/pins-replace.js'
 import { pinsDelete } from './routes/pins-delete.js'
 import { metrics } from './routes/metrics.js'
-import {
-  updateUserMetrics,
-  updateNftMetrics,
-  updateNftDealMetrics,
-  updatePinMetrics,
-  updateFollowupMetrics,
-} from './jobs/metrics.js'
 import { updatePinStatuses } from './jobs/pins.js'
 import { login } from './routes/login.js'
 import { JSONResponse } from './utils/json-response.js'
@@ -92,47 +85,6 @@ r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))
 
 // Cron jobs
-addEventListener('scheduled', (event) => {
-  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
-  // @ts-ignore
-  if (event.cron !== '*/10 * * * *') return
-  const sentry = getSentrySchedule(event)
-  event.waitUntil(
-    timed(updateUserMetrics, 'CRON updateUserMetrics', { sentry })
-  )
-})
-addEventListener('scheduled', (event) => {
-  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
-  // @ts-ignore
-  if (event.cron !== '*/10 * * * *') return
-  const sentry = getSentrySchedule(event)
-  event.waitUntil(timed(updateNftMetrics, 'CRON updateNftMetrics', { sentry }))
-})
-addEventListener('scheduled', (event) => {
-  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
-  // @ts-ignore
-  if (event.cron !== '*/10 * * * *') return
-  const sentry = getSentrySchedule(event)
-  event.waitUntil(
-    timed(updateNftDealMetrics, 'CRON updateNftDealMetrics', { sentry })
-  )
-})
-addEventListener('scheduled', (event) => {
-  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
-  // @ts-ignore
-  if (event.cron !== '*/10 * * * *') return
-  const sentry = getSentrySchedule(event)
-  event.waitUntil(timed(updatePinMetrics, 'CRON updatePinMetrics', { sentry }))
-})
-addEventListener('scheduled', (event) => {
-  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
-  // @ts-ignore
-  if (event.cron !== '*/10 * * * *') return
-  const sentry = getSentrySchedule(event)
-  event.waitUntil(
-    timed(updateFollowupMetrics, 'CRON updateFollowupMetrics', { sentry })
-  )
-})
 addEventListener('scheduled', (event) => {
   // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
   // @ts-ignore
