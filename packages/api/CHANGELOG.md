@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v1.1.0...api-v1.1.1) (2021-05-18)
+
+
+### Reverts
+
+* collection of followup metrics ([#133](https://www.github.com/ipfs-shipyard/nft.storage/issues/133)) ([b144224](https://www.github.com/ipfs-shipyard/nft.storage/commit/b144224ace1e67ba415206a6a3d9fcb071fbf878))
+
 ## [1.1.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v1.0.0...api-v1.1.0) (2021-05-17)
 
 
