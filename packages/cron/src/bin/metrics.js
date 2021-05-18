@@ -15,7 +15,6 @@ async function main() {
     metrics.updateUserMetrics({ cf, env }),
     metrics.updateNftMetrics({ cf, env }),
     metrics.updatePinMetrics({ cf, env }),
-    metrics.updateFollowupMetrics({ cf, env }),
     metrics.updateDealMetrics({ cf, env }),
   ])
 }

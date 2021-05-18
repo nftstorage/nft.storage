@@ -113,25 +113,6 @@ export async function updatePinMetrics({ cf, env }) {
 /**
  * @param {import('../types').Config} config
  */
-export async function updateFollowupMetrics({ cf, env }) {
-  const log = debug('metrics:updateFollowupMetrics')
-  const namespaces = await cf.fetchKVNamespaces()
-  const followupsNs = findNs(namespaces, env, 'FOLLOWUPS')
-  const merticsNs = findNs(namespaces, env, 'METRICS')
-  log(`🎯 Updating ${merticsNs.title} from ${followupsNs.title}`)
-  let total = 0
-  for await (const keys of cf.fetchKVKeys(followupsNs.id)) {
-    log(`📥 Processing ${total} -> ${total + keys.length}`)
-    total += keys.length
-  }
-  log(`${total} followups:total`)
-  await cf.writeKV(merticsNs.id, 'followups:total', total)
-  log('done')
-}
-
-/**
- * @param {import('../types').Config} config
- */
 export async function updateDealMetrics({ cf, env }) {
   const log = debug('metrics:updateDealMetrics')
   const namespaces = await cf.fetchKVNamespaces()
