@@ -8,6 +8,7 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
 
 - [Client Libraries](#client-libraries)
 - [HTTP API](#http-api)
+- [Developer Tools](#developer-tools)
 - [Development](#development)
   - [`site` Setup](#site-setup)
     - [Local env vars](#local-env-vars)
@@ -44,6 +45,12 @@ The JS client library is the official and supported client to nft.storage. Other
 # HTTP API
 
 Check out the [HTTP API documentation](https://nft.storage/api-docs).
+
+# Developer Tools
+
+We've created some scripts to help developers with bulk imports, status checks, file listings and more:
+
+https://github.com/nftstorage/nft.storage-tools
 
 # Development
 
