@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.0.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v1.1.0...api-v2.0.0) (2021-05-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* update cluster client for consistent hashes with IPFS
+
+### Bug Fixes
+
+* update cluster client for consistent hashes with IPFS ([5bc3c67](https://www.github.com/ipfs-shipyard/nft.storage/commit/5bc3c67b5310b54fd4fbc81bd313cccf21a68166))
+
+
+### Reverts
+
+* collection of followup metrics ([#133](https://www.github.com/ipfs-shipyard/nft.storage/issues/133)) ([b144224](https://www.github.com/ipfs-shipyard/nft.storage/commit/b144224ace1e67ba415206a6a3d9fcb071fbf878))
+
 ## [1.1.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v1.0.0...api-v1.1.0) (2021-05-17)
 
 
