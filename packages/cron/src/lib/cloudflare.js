@@ -133,7 +133,6 @@ export class Cloudflare {
     kvs = kvs.map((kv) => ({
       ...kv,
       value: JSON.stringify(kv.value),
-      metadata: kv.metadata ? JSON.stringify(kv.metadata) : undefined,
     }))
     return this.fetchJSON(url.toString(), {
       method: 'PUT',
