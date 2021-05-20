@@ -48,7 +48,7 @@ export async function updateNftMetrics({ cf, env }) {
     log(`📥 Processing ${total} -> ${total + keys.length}`)
     keys.forEach((k) => {
       total++
-      totalBytes += k.metadata.size
+      totalBytes += k.metadata.size || 0
       if (k.metadata.pinStatus === 'pinned') {
         totalPins++
       }
@@ -84,7 +84,7 @@ export async function updatePinMetrics({ cf, env }) {
     log(`📥 Processing ${total} -> ${total + keys.length}`)
     keys.forEach((k) => {
       total++
-      totalBytes += k.metadata.size
+      totalBytes += k.metadata.size || 0
       /** @type import('nft.storage/src/lib/interface').PinStatus */
       const status = k.metadata.status
       statusTotals[status]++
