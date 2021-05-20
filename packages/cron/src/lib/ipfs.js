@@ -38,7 +38,11 @@ export class IPFS {
         )
       }
       const data = await response.json()
-      return parseInt(data.Size)
+      const size = parseInt(data.Size)
+      if (isNaN(size)) {
+        throw new Error(`invalid DAG size for ${cid}: ${data.Size}`)
+      }
+      return size
     } finally {
       clearTimeout(abortID)
     }
