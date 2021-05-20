@@ -2,7 +2,7 @@ name: Cron Metrics
 
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '0 * * * *'
 
 jobs:
   update:
