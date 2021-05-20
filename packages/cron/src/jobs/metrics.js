@@ -92,10 +92,10 @@ export async function updatePinMetrics({ cf, env }) {
   }
   log(`${total} pins:total`)
   log(`${totalBytes} pins:totalBytes`)
-  log(`${statusTotals.queued} nfts:status:queued:total`)
-  log(`${statusTotals.failed} nfts:status:failed:total`)
-  log(`${statusTotals.pinning} nfts:status:pinning:total`)
-  log(`${statusTotals.pinned} nfts:status:pinned:total`)
+  log(`${statusTotals.queued} pins:status:queued:total`)
+  log(`${statusTotals.failed} pins:status:failed:total`)
+  log(`${statusTotals.pinning} pins:status:pinning:total`)
+  log(`${statusTotals.pinned} pins:status:pinned:total`)
   await cf.writeKVMulti(merticsNs.id, [
     // Total number of pins added to nft.storage
     { key: 'pins:total', value: total },
