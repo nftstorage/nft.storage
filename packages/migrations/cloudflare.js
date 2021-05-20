@@ -69,11 +69,17 @@ export class Cloudflare {
     return namespaces
   }
 
-  async *fetchKVKeys(nsId) {
+  /**
+   * @param {string} nsId KV namespace ID
+   * @param {{ prefix?: string }} [options]
+   * @returns {AsyncGenerator<Key[]>}
+   */
+  async *fetchKVKeys(nsId, options = {}) {
+    const prefix = options.prefix || ''
     let cursor = ''
     while (true) {
       const url = new URL(
-        `${this.kvNsPath}/${nsId}/keys?cursor=${cursor}&limit=1000`,
+        `${this.kvNsPath}/${nsId}/keys?cursor=${cursor}&limit=1000&prefix=${prefix}`,
         endpoint
       )
       const { result_info, result } = await this.fetchJSON(url.toString())
