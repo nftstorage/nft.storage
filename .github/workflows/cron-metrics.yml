@@ -28,4 +28,4 @@ jobs:
           ENV: ${{ matrix.env }}
           CF_ACCOUNT: ${{ secrets.CF_ACCOUNT }}
           CF_TOKEN: ${{ secrets.CF_TOKEN }}
-        run: yarn --cwd packages/cron start
+        run: yarn --cwd packages/cron start:metrics

@@ -32,4 +32,4 @@ jobs:
           CLUSTER_API_URL: ${{ secrets.CLUSTER_API_URL }}
           CLUSTER_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER_BASIC_AUTH_TOKEN }}
           CLUSTER_IPFS_PROXY_API_URL: ${{ secrets.CLUSTER_IPFS_PROXY_API_URL }}
-        run: yarn --cwd packages/cron start
+        run: yarn --cwd packages/cron start:pins
