@@ -58,6 +58,7 @@ export class Cloudflare {
       {
         onFailedAttempt: (err) => console.warn(`💥 fetch ${url}`, err),
         retries: 5,
+        minTimeout: 60000,
       }
     )
     return res
