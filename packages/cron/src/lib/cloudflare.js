@@ -1,13 +1,13 @@
 import FormData from 'form-data'
 import { RateLimiter } from 'limiter'
 import fetch from 'node-fetch'
-import AbortController from 'abort-controller'
 import retry from 'p-retry'
 import { URL } from 'url'
 
 /**
  * @typedef {{ id: string, title: string }} Namespace
  * @typedef {{ name: string, metadata: any }} Key
+ * @typedef {{ key: string, value: any, metadata?: any }} BulkWritePair
  */
 
 const endpoint = new URL('https://api.cloudflare.com/client/v4/')
@@ -43,6 +43,7 @@ export class Cloudflare {
         init = init || {}
         init.headers = init.headers || {}
         init.headers.Authorization = `Bearer ${this.apiToken}`
+        // @ts-ignore
         init.signal = controller.signal
         try {
           const res = await fetch(url, init)
@@ -126,12 +127,15 @@ export class Cloudflare {
 
   /**
    * @param {string} nsId KV namespace ID
-   * @param {Array<{ key: string, value: any }>} kvs
+   * @param {Array<BulkWritePair>} kvs
    * @returns {Promise<{ success: boolean, errors: Array<{ code: number, message; string }>, messages: any[] }>}
    */
   async writeKVMulti(nsId, kvs) {
     const url = new URL(`${this.kvNsPath}/${nsId}/bulk`, endpoint)
-    kvs = kvs.map((kv) => ({ ...kv, value: JSON.stringify(kv.value) }))
+    kvs = kvs.map((kv) => ({
+      ...kv,
+      value: JSON.stringify(kv.value),
+    }))
     return this.fetchJSON(url.toString(), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -164,5 +168,18 @@ export class Cloudflare {
     )
     const { result } = await this.fetchJSON(url.toString())
     return result.length ? result[0].metadata : null
+  }
+
+  /**
+   * @param {string} nsId KV namespace ID
+   * @param {string[]} keys
+   */
+  async deleteKVMulti(nsId, keys) {
+    const url = new URL(`${this.kvNsPath}/${nsId}/bulk`, endpoint)
+    return this.fetchJSON(url.toString(), {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(keys),
+    })
   }
 }

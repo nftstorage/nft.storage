@@ -17,7 +17,6 @@ import { pinsList } from './routes/pins-list.js'
 import { pinsReplace } from './routes/pins-replace.js'
 import { pinsDelete } from './routes/pins-delete.js'
 import { metrics } from './routes/metrics.js'
-import { updatePinStatuses } from './jobs/pins.js'
 import { login } from './routes/login.js'
 import { JSONResponse } from './utils/json-response.js'
 import { updateNftsIndexMeta } from './jobs/nfts-index.js'
@@ -85,15 +84,6 @@ r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))
 
 // Cron jobs
-addEventListener('scheduled', (event) => {
-  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
-  // @ts-ignore
-  if (event.cron !== '* * * * *') return
-  const sentry = getSentrySchedule(event)
-  event.waitUntil(
-    timed(updatePinStatuses, 'CRON updatePinStatuses', { sentry })
-  )
-})
 addEventListener('scheduled', (event) => {
   // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
   // @ts-ignore

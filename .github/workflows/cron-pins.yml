@@ -1,4 +1,4 @@
-name: Cron Metrics
+name: Cron Pins
 
 on:
   schedule:
@@ -6,11 +6,12 @@ on:
 
 jobs:
   update:
-    name: Update metrics
+    name: Update pin statuses and size
     runs-on: ubuntu-latest
     strategy:
       matrix:
         env: ['staging', 'production']
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
 
@@ -28,4 +29,7 @@ jobs:
           ENV: ${{ matrix.env }}
           CF_ACCOUNT: ${{ secrets.CF_ACCOUNT }}
           CF_TOKEN: ${{ secrets.CF_TOKEN }}
-        run: yarn --cwd packages/cron start:metrics
+          CLUSTER_API_URL: ${{ secrets.CLUSTER_API_URL }}
+          CLUSTER_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER_BASIC_AUTH_TOKEN }}
+          CLUSTER_IPFS_PROXY_API_URL: ${{ secrets.CLUSTER_IPFS_PROXY_API_URL }}
+        run: yarn --cwd packages/cron start:pins

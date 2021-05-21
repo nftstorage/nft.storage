@@ -6,15 +6,18 @@
   "main": "src/index.js",
   "type": "module",
   "bin": {
-    "nftstorage-metrics": "src/bin/metrics.js"
+    "nftstorage-metrics": "src/bin/metrics.js",
+    "nftstorage-pins": "src/bin/pins.js"
   },
   "scripts": {
-    "start": "node src/bin/metrics.js"
+    "start": "run-s start:*",
+    "start:metrics": "node src/bin/metrics.js",
+    "start:pins": "node src/bin/pins.js"
   },
   "author": "Alan Shaw",
   "license": "(Apache-2.0 AND MIT)",
   "dependencies": {
-    "abort-controller": "^3.0.0",
+    "@nftstorage/ipfs-cluster": "^3.0.0",
     "debug": "^4.3.1",
     "dotenv": "^9.0.2",
     "form-data": "^4.0.0",
@@ -24,6 +27,7 @@
     "p-retry": "^4.5.0"
   },
   "devDependencies": {
-    "@types/node-fetch": "^2.5.10"
+    "@types/node-fetch": "^2.5.10",
+    "npm-run-all": "^4.1.5"
   }
 }
