@@ -54,7 +54,7 @@ export async function updatePinStatuses({ cf, env, cluster, ipfs }) {
             bulkWrites.followups.push({ key: cid, value: '', metadata: pin })
           }
 
-          console.log(
+          log(
             `${cid}: status ${prevPin.status} => ${pin.status}, size ${prevPin.size} => ${pin.size}`
           )
         } catch (err) {
@@ -65,15 +65,15 @@ export async function updatePinStatuses({ cf, env, cluster, ipfs }) {
     )
 
     if (bulkWrites.pins.length) {
-      console.log(`🗂 updating statuses for ${bulkWrites.pins.length} pins`)
+      log(`🗂 updating statuses for ${bulkWrites.pins.length} pins`)
       await cf.writeKVMulti(pinsNs.id, bulkWrites.pins)
     }
     if (bulkDeletes.followups.length) {
-      console.log(`🗑 removing ${bulkDeletes.followups.length} followups`)
+      log(`🗑 removing ${bulkDeletes.followups.length} followups`)
       await cf.deleteKVMulti(followupsNs.id, bulkDeletes.followups)
     }
     if (bulkWrites.followups.length) {
-      console.log(`🗂 updating ${bulkWrites.pins.length} followups`)
+      log(`🗂 updating ${bulkWrites.pins.length} followups`)
       await cf.writeKVMulti(followupsNs.id, bulkWrites.followups)
     }
 
