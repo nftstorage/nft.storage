@@ -1,5 +1,6 @@
 import { URL } from 'url'
-import fetch from 'node-fetch'
+import { RateLimiter } from 'limiter'
+import { fetchJSON } from './fetch.js'
 
 const endpoint = 'https://api.pinata.cloud'
 
@@ -9,6 +10,7 @@ export class Pinata {
    */
   constructor({ apiToken }) {
     this.apiToken = apiToken
+    this.limiter = new RateLimiter({ tokensPerInterval: 2, interval: 'second' })
   }
 
   /**
@@ -18,8 +20,7 @@ export class Pinata {
    */
   async pinByHash(cid, options) {
     const url = new URL('/pinning/pinByHash', endpoint)
-
-    const res = await fetch(url.toString(), {
+    return fetchJSON(this.limiter, url.toString(), {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.apiToken}`,
@@ -27,15 +28,22 @@ export class Pinata {
       },
       body: JSON.stringify({ hashToPin: cid, ...(options || {}) }),
     })
+  }
 
-    const text = await res.text()
-    if (!res.ok) {
-      throw Object.assign(
-        new Error(`${res.status} ${res.statusText}: ${text}`),
-        { response: res }
-      )
-    }
+  /**
+   * @param {string} cid
+   * @returns {Promise<boolean>}
+   */
+  async isPinned(cid) {
+    const url = new URL(
+      `/data/pinList?status=pinned&hashContains=${encodeURIComponent(cid)}`,
+      endpoint
+    )
+    const { count, rows } = await fetchJSON(this.limiter, url.toString(), {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${this.apiToken}` },
+    })
 
-    return JSON.parse(text)
+    return Boolean(count)
   }
 }

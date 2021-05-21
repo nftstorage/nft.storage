@@ -1,8 +1,7 @@
 import FormData from 'form-data'
 import { RateLimiter } from 'limiter'
-import fetch from 'node-fetch'
-import retry from 'p-retry'
 import { URL } from 'url'
+import { fetchJSON } from './fetch.js'
 
 /**
  * @typedef {{ id: string, title: string }} Namespace
@@ -29,43 +28,6 @@ export class Cloudflare {
   }
 
   /**
-   * @private
-   * @param {string} url
-   * @param {import('node-fetch').RequestInit} [init]
-   * @returns {Promise<any>}
-   */
-  async fetchJSON(url, init) {
-    await this.limiter.removeTokens(1)
-    const res = await retry(
-      async () => {
-        const controller = new AbortController()
-        const abortID = setTimeout(() => controller.abort(), 60000)
-        init = init || {}
-        init.headers = init.headers || {}
-        init.headers.Authorization = `Bearer ${this.apiToken}`
-        // @ts-ignore
-        init.signal = controller.signal
-        try {
-          const res = await fetch(url, init)
-          const text = await res.text()
-          if (!res.ok) {
-            throw new Error(`${res.status} ${res.statusText}: ${text}`)
-          }
-          return text === '' ? null : JSON.parse(text)
-        } finally {
-          clearTimeout(abortID)
-        }
-      },
-      {
-        onFailedAttempt: (err) => console.warn(`💥 fetch ${url}`, err),
-        retries: 5,
-        minTimeout: 60000,
-      }
-    )
-    return res
-  }
-
-  /**
    * @returns {Promise<Namespace[]>}
    */
   async fetchKVNamespaces() {
@@ -76,7 +38,13 @@ export class Cloudflare {
         `${this.kvNsPath}?page=${page}&per_page=100`,
         endpoint
       )
-      const { result_info, result } = await this.fetchJSON(url.toString())
+      const { result_info, result } = await fetchJSON(
+        this.limiter,
+        url.toString(),
+        {
+          headers: { Authorization: `Bearer ${this.apiToken}` },
+        }
+      )
       namespaces.push(...result)
       if (result_info.page === result_info.total_pages) {
         break
@@ -99,7 +67,13 @@ export class Cloudflare {
         `${this.kvNsPath}/${nsId}/keys?cursor=${cursor}&limit=1000&prefix=${prefix}`,
         endpoint
       )
-      const { result_info, result } = await this.fetchJSON(url.toString())
+      const { result_info, result } = await fetchJSON(
+        this.limiter,
+        url.toString(),
+        {
+          headers: { Authorization: `Bearer ${this.apiToken}` },
+        }
+      )
       yield result
       cursor = result_info.cursor
       if (!cursor) {
@@ -122,7 +96,11 @@ export class Cloudflare {
     const body = new FormData()
     body.append('value', JSON.stringify(value))
     body.append('metadata', JSON.stringify(metadata || {}))
-    await this.fetchJSON(url.toString(), { method: 'PUT', body })
+    await fetchJSON(this.limiter, url.toString(), {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${this.apiToken}` },
+      body,
+    })
   }
 
   /**
@@ -136,9 +114,12 @@ export class Cloudflare {
       ...kv,
       value: JSON.stringify(kv.value),
     }))
-    return this.fetchJSON(url.toString(), {
+    return fetchJSON(this.limiter, url.toString(), {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        Authorization: `Bearer ${this.apiToken}`,
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(kvs),
     })
   }
@@ -152,7 +133,9 @@ export class Cloudflare {
       `${this.kvNsPath}/${nsId}/values/${encodeURIComponent(key)}`,
       endpoint
     )
-    return this.fetchJSON(url.toString())
+    return fetchJSON(this.limiter, url.toString(), {
+      headers: { Authorization: `Bearer ${this.apiToken}` },
+    })
   }
 
   /**
@@ -166,7 +149,9 @@ export class Cloudflare {
       )}`,
       endpoint
     )
-    const { result } = await this.fetchJSON(url.toString())
+    const { result } = await fetchJSON(this.limiter, url.toString(), {
+      headers: { Authorization: `Bearer ${this.apiToken}` },
+    })
     return result.length ? result[0].metadata : null
   }
 
@@ -176,9 +161,12 @@ export class Cloudflare {
    */
   async deleteKVMulti(nsId, keys) {
     const url = new URL(`${this.kvNsPath}/${nsId}/bulk`, endpoint)
-    return this.fetchJSON(url.toString(), {
+    return fetchJSON(this.limiter, url.toString(), {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${this.apiToken}`,
+      },
       body: JSON.stringify(keys),
     })
   }
