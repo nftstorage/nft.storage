@@ -29,21 +29,4 @@ export class Pinata {
       body: JSON.stringify({ hashToPin: cid, ...(options || {}) }),
     })
   }
-
-  /**
-   * @param {string} cid
-   * @returns {Promise<boolean>}
-   */
-  async isPinned(cid) {
-    const url = new URL(
-      `/data/pinList?status=pinned&hashContains=${encodeURIComponent(cid)}`,
-      endpoint
-    )
-    const { count, rows } = await fetchJSON(this.limiter, url.toString(), {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${this.apiToken}` },
-    })
-
-    return Boolean(count)
-  }
 }
