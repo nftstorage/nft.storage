@@ -325,6 +325,44 @@ describe('client', () => {
       assert.equal(b2.protocol, 'https:')
       assert.equal(b2.host, DWEB_LINK)
     })
+
+    it('store with OpenSea extensions', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const result = await client.store({
+        name: 'name',
+        description: 'stuff',
+        image: new File(['fake image'], 'cat.png', { type: 'image/png' }),
+        animation_url: new File(['fake vid'], 'vid.mp4', { type: 'video/mp4' }),
+        background_color: 'ffffff',
+        youtube_url: 'https://youtu.be/dQw4w9WgXcQ',
+        attributes: [
+          { trait_type: 'Aqua Power', display_type: 'boost_number' },
+        ],
+      })
+
+      assert.ok(result instanceof Token)
+
+      const cid = CID.parse(result.ipnft)
+      assert.equal(cid.version, 1)
+
+      assert.ok(typeof result.url === 'string')
+      assert.ok(result.url.startsWith('ipfs:'))
+
+      assert.equal(result.data.name, 'name')
+      assert.equal(result.data.description, 'stuff')
+      assert.equal(result.data.background_color, 'ffffff')
+      assert.equal(result.data.youtube_url, 'https://youtu.be/dQw4w9WgXcQ')
+      assert.equal(result.data.attributes, [
+        {
+          trait_type: 'Aqua Power',
+          display_type: 'boost_number',
+        },
+      ])
+      assert.ok(result.data.image instanceof URL)
+      assert.ok(result.data.image.protocol, 'ipfs:')
+      assert.ok(result.data.animation_url instanceof URL)
+      assert.ok(result.data.animation_url.protocol, 'ipfs:')
+    })
   })
 
   describe('status', () => {

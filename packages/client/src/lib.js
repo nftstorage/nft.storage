@@ -128,43 +128,14 @@ class NFTStorage {
   /**
    * @template {API.TokenInput} T
    * @param {API.Service} service
-   * @param {T} data
+   * @param {T} metadata
    * @returns {Promise<API.Token<T>>}
    */
-  static async store(
-    { endpoint, token },
-    { name, description, image, properties, decimals, localization }
-  ) {
+  static async store({ endpoint, token }, metadata) {
+    validateERC1155(metadata)
+
     const url = new URL(`/store`, endpoint)
-    // Just validate that expected field are present
-    if (typeof name !== 'string') {
-      throw new TypeError(
-        'string property `name` identifying the asset is required'
-      )
-    }
-    if (typeof description !== 'string') {
-      throw new TypeError(
-        'string property `description` describing asset is required'
-      )
-    }
-
-    if (!(image instanceof Blob) || !image.type.startsWith('image/')) {
-      throw new TypeError(
-        'proprety `image` must be a Blob or File object with `image/*` mime type'
-      )
-    }
-    if (typeof decimals !== 'undefined' && typeof decimals !== 'number') {
-      throw new TypeError('proprety `decimals` must be an integer value')
-    }
-
-    const body = Token.encode({
-      name,
-      description,
-      image,
-      properties,
-      decimals,
-      localization,
-    })
+    const body = Token.encode(metadata)
     const paths = new Set(body.keys())
 
     const response = await fetch(url.toString(), {
@@ -373,6 +344,31 @@ class NFTStorage {
    */
   store(token) {
     return NFTStorage.store(this, token)
+  }
+}
+
+/**
+ * @param {API.TokenInput} metadata
+ */
+const validateERC1155 = ({ name, description, image, decimals }) => {
+  // Just validate that expected fields are present
+  if (typeof name !== 'string') {
+    throw new TypeError(
+      'string property `name` identifying the asset is required'
+    )
+  }
+  if (typeof description !== 'string') {
+    throw new TypeError(
+      'string property `description` describing asset is required'
+    )
+  }
+  if (!(image instanceof Blob) || !image.type.startsWith('image/')) {
+    throw new TypeError(
+      'proprety `image` must be a Blob or File object with `image/*` mime type'
+    )
+  }
+  if (typeof decimals !== 'undefined' && typeof decimals !== 'number') {
+    throw new TypeError('proprety `decimals` must be an integer value')
   }
 }
 
