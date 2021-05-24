@@ -28,16 +28,30 @@ yarn add nft.storage
 First, obtain an API token from https://nft.storage and use it in place of `API_TOKEN` below:
 
 ```js
-import { NFTStorage } from 'nft.storage'
+import { NFTStorage, File } from 'nft.storage'
 const client = new NFTStorage({ token: API_TOKEN })
-const cid = await client.storeBlob(new Blob(['hello world']))
+
+const metadata = await client.store({
+  name: 'Pinpie',
+  description: 'Pin is not delicious beef!',
+  image: new File(
+    [
+      /* data */
+    ],
+    'pinpie.jpg',
+    { type: 'image/jpg' }
+  ),
+})
+console.log(metadata.url)
+// ipfs://bafyreib4pff766vhpbxbhjbqqnsh5emeznvujayjj4z2iu533cprgbz23m/metadata.json
 ```
 
-For more examples please see the [API documentation][].
+For more examples please see the [API documentation][] or the [examples directory]().
 
 [raw http api]: https://nft.storage/#api-docs
 [node.js]: https://nodejs.org/
 [api documentation]: https://ipfs-shipyard.github.io/nft.storage/client/
+[examples directory]: https://github.com/ipfs-shipyard/nft.storage/tree/main/packages/client/examples
 [ci.icon]: https://github.com/ipfs-shipyard/nft.storage/actions/workflows/client.yml/badge.svg
 [version.icon]: https://img.shields.io/npm/v/nft.storage.svg
 [package.url]: https://npmjs.org/package/nft.storage
