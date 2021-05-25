@@ -2,49 +2,70 @@ import debug from 'debug'
 import { findNs } from '../lib/utils.js'
 
 const log = debug('pinata:pinToPinata')
+const MAX_ATTEMPTS = 100
 
 /**
  * Sends pin requests to Pinata.
  *
  * @param {import('../types').Config & {
  *   pinata: import('../lib/pinata').Pinata
- *   hostNodes: string[]
  * }} config
  */
-export async function pinToPinata({ cf, env, pinata, hostNodes }) {
+export async function pinToPinata({ cf, env, pinata }) {
   const namespaces = await cf.fetchKVNamespaces()
-  const pinsNs = findNs(namespaces, env, 'PINS')
-  log(`🎯 Syncing ${pinsNs.title} to Pinata`)
+  const pinataQueueNs = findNs(namespaces, env, 'PINATA_QUEUE')
+  log(`🎯 Sending pins from ${pinataQueueNs.title} to Pinata`)
 
   let total = 0
-  for await (const keys of cf.fetchKVKeys(pinsNs.id)) {
+  for await (const keys of cf.fetchKVKeys(pinataQueueNs.id)) {
     log(`📥 Processing ${total} -> ${total + keys.length}`)
 
     /** @type {import('../lib/cloudflare.js').BulkWritePair[]} */
     const bulkWrites = []
+    /** @type {string[]} */
+    const bulkDeletes = []
     let i = 0
-
     await Promise.all(
       keys.map(async (k) => {
-        const { name: cid, metadata: pin } = k
+        const cid = k.name
+        const metadata = k.metadata || {}
+        /** @type number[] */
+        const attempts = metadata.attempts || []
+        /** @type string[] */
+        const origins = metadata.origins || []
 
-        // if not pinned by us or already pinned on Pinata
-        if (pin.status !== 'pinned' || pin.pinataStatus === 'pinned') {
-          return
+        try {
+          const pinataOptions = origins.length ? { hostNodes: origins } : {}
+          await pinata.pinByHash(cid, { pinataOptions })
+          log(`📌 ${cid} submitted to Pinata! ${++i}/${keys.length}`)
+          bulkDeletes.push(cid)
+        } catch (err) {
+          attempts.push(Date.now())
+          const retries = MAX_ATTEMPTS - attempts.length
+          log(
+            `💥 ${cid} failed to pin to Pinata: ${retries} attempts left`,
+            err
+          )
+          if (retries) {
+            bulkWrites.push({
+              key: cid,
+              value: '',
+              metadata: { ...metadata, attempts },
+            })
+          } else {
+            bulkDeletes.push(cid)
+          }
         }
-
-        // submit to Pinata
-        await pinata.pinByHash(cid, { pinataOptions: { hostNodes } })
-        log(`📌 ${cid} submitted to Pinata! ${++i}/${keys.length}`)
-
-        const metadata = { ...pin, pinataStatus: 'pinned' }
-        bulkWrites.push({ key: cid, value: '', metadata })
       })
     )
 
+    if (bulkDeletes.length) {
+      log(`🗑 removing ${bulkDeletes.length} completed items from the queue`)
+      await cf.deleteKVMulti(pinataQueueNs.id, bulkDeletes)
+    }
     if (bulkWrites.length) {
-      log(`🗂 updating pinata status for ${bulkWrites.length} pins`)
-      await cf.writeKVMulti(pinsNs.id, bulkWrites)
+      log(`🗂 updating ${bulkWrites.length} failed items in the queue`)
+      await cf.writeKVMulti(pinataQueueNs.id, bulkWrites)
     }
 
     total += keys.length

@@ -165,6 +165,8 @@ wrangler kv:namespace create PINS --preview --env USER
 # same as above
 wrangler kv:namespace create FOLLOWUPS --preview --env USER
 # same as above
+wrangler kv:namespace create PINATA_QUEUE --preview --env USER
+# same as above
 ```
 
 Go to `/site/src/constants.js` _uncomment_ the first line and run `wrangler publish --env USER`.
@@ -196,6 +198,8 @@ wrangler kv:namespace create METRICS --env production
 wrangler kv:namespace create PINS --env production
 # Follow the instructions from the cli output
 wrangler kv:namespace create FOLLOWUPS --env production
+# Follow the instructions from the cli output
+wrangler kv:namespace create PINATA_QUEUE --env production
 # Follow the instructions from the cli output
 wrangler secret put MAGIC_SECRET_KEY --env production # Get from magic.link account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`

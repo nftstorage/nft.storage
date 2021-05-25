@@ -8,4 +8,5 @@ export default {
   metrics: new IDBKV('METRICS'),
   pins: new IDBKV('PINS'),
   followups: new IDBKV('FOLLOWUPS'),
+  pinataQueue: new IDBKV('PINATA_QUEUE'),
 }
