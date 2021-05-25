@@ -85,7 +85,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Install
         if: ${{ steps.tag-release.outputs.release_created }}
-        run: yarn
+        uses: bahmutov/npm-install@v1
       - name: Client - NPM Publish
         if: ${{ steps.tag-release.outputs.release_created && matrix.package == 'client' }}
         env:

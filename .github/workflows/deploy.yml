@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - run: yarn
+      - uses: bahmutov/npm-install@v1
       - run: ./packages/tools/cli.js dns --name nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
       - run: echo "::warning::https://nft.storage"
   deploy-frontend-staging:
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - run: yarn
+      - uses: bahmutov/npm-install@v1
       - run: ./packages/tools/cli.js dns --name staging.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
       - run: echo "::warning::https://staging.nft.storage"
   deploy-frontend-dev:
@@ -52,6 +52,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - run: yarn
+      - uses: bahmutov/npm-install@v1
       - run: ./packages/tools/cli.js dns --name dev.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
       - run: echo "::warning::https://dev.nft.storage"

@@ -12,7 +12,7 @@ jobs:
     name: Test
     steps:
       - uses: actions/checkout@v2
-      - run: yarn
+      - uses: bahmutov/npm-install@v1
       - run: yarn test:api
   deploy-dev:
     name: Deploy Dev

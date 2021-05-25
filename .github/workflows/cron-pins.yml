@@ -21,7 +21,7 @@ jobs:
           node-version: 15
 
       - name: Install dependencies
-        run: yarn install
+        uses: bahmutov/npm-install@v1
 
       - name: Run job
         env:
