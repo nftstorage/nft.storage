@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { If, Then, Else, When } from 'react-if'
 import Button from '../components/button.js'
 import { deleteToken, getTokens } from '../lib/api'
@@ -27,10 +27,16 @@ export function getStaticProps() {
  */
 export default function ManageKeys({ user }) {
   const [deleting, setDeleting] = useState('')
+  const [copied, setCopied] = useState('')
   const queryClient = useQueryClient()
   const { status, data } = useQuery('get-tokens', getTokens, {
     enabled: !!user,
   })
+  useEffect(() => {
+    if (!copied) return
+    const timer = setTimeout(() => setCopied(''), 5000)
+    return () => clearTimeout(timer)
+  }, [copied])
   /**
    * @param {import('react').ChangeEvent<HTMLFormElement>} e
    */
@@ -52,6 +58,17 @@ export default function ManageKeys({ user }) {
         setDeleting('')
       }
     }
+  }
+
+  /**
+   * @param {import('react').ChangeEvent<HTMLFormElement>} e
+   */
+  async function handleCopyToken(e) {
+    e.preventDefault()
+    const key = e.target.dataset.value
+    if (!key) throw new Error('missing key value')
+    await navigator.clipboard.writeText(key)
+    setCopied(key)
   }
 
   const keys = Object.entries(data || {})
@@ -76,7 +93,7 @@ export default function ManageKeys({ user }) {
                   <tr className="bb b--black">
                     <th className="pa2 tl bg-nsgray br b--black w-50">Name</th>
                     <th className="pa2 tl bg-nsgray br b--black w-50">Key</th>
-                    <th className="pa2 tc bg-nsgray" />
+                    <th colSpan={2} className="pa2 tc bg-nsgray" />
                   </tr>
                 </thead>
                 <tbody>
@@ -91,6 +108,17 @@ export default function ManageKeys({ user }) {
                           id={`value-${t[0]}`}
                           value={t[1]}
                         />
+                      </td>
+                      <td className="pa2">
+                        <form data-value={t[1]} onSubmit={handleCopyToken}>
+                          <Button
+                            className="bg-white black"
+                            type="submit"
+                            id="copy-key"
+                          >
+                            {copied === t[1] ? 'Copied!' : 'Copy'}
+                          </Button>
+                        </form>
                       </td>
                       <td className="pa2">
                         <form onSubmit={handleDeleteToken}>
