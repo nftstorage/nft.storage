@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v1.3.1...nft.storage-v1.4.0) (2021-05-26)
+
+
+### Features
+
+* allow extensions to ERC-1155 metadata ([#146](https://www.github.com/ipfs-shipyard/nft.storage/issues/146)) ([f45cf9f](https://www.github.com/ipfs-shipyard/nft.storage/commit/f45cf9f32a1143853c533a1a016b8f9443c666dd))
+
 ### [1.3.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v1.3.0...nft.storage-v1.3.1) (2021-05-14)
 
 
