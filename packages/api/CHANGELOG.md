@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.0.0...api-v2.1.0) (2021-05-26)
+
+
+### Features
+
+* cron job to ensure our pins are sent to Pinata ([#145](https://www.github.com/ipfs-shipyard/nft.storage/issues/145)) ([d071ca4](https://www.github.com/ipfs-shipyard/nft.storage/commit/d071ca4bb0921f9a663f8024a0e0e8a0fc7de0dd))
+
 ## [2.0.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v1.1.0...api-v2.0.0) (2021-05-18)
 
 
