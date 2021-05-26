@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.0.3...website-v1.1.0) (2021-05-26)
+
+
+### Features
+
+* add API key copy button ([#147](https://www.github.com/ipfs-shipyard/nft.storage/issues/147)) ([db23839](https://www.github.com/ipfs-shipyard/nft.storage/commit/db238391f94b22f8b1978651bd397629919aa033))
+
 ### [1.0.3](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.0.2...website-v1.0.3) (2021-05-14)
 
 
