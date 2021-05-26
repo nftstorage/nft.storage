@@ -3,9 +3,9 @@ import setIn from 'just-safe-set'
 import { toFormData } from '../utils/form-data.js'
 import * as nfts from '../models/nfts.js'
 import * as pins from '../models/pins.js'
+import * as pinataQueue from '../models/pinata-queue.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as CBOR from '@ipld/dag-cbor'
-import * as pinata from '../pinata.js'
 import * as cluster from '../cluster.js'
 import { CID } from 'multiformats'
 import { sha256 } from 'multiformats/hashes/sha2'
@@ -56,17 +56,7 @@ export async function store(event, ctx) {
 
   // We do want worker to wait for this, but we do not want to
   // block response waiting on this.
-  event.waitUntil(
-    pinata
-      .pinByHash(cid, {
-        pinataOptions: { hostNodes: cluster.delegates() },
-        pinataMetadata: { name: `${user.nickname}-${Date.now()}` },
-      })
-      .catch((err) => {
-        log(err)
-        ctx.sentry.captureException(err)
-      })
-  )
+  event.waitUntil(pinataQueue.add(cid, { origins: cluster.delegates() }))
 
   const created = new Date().toISOString()
 

@@ -7,6 +7,7 @@ export const stores = {
   metrics: METRICS,
   pins: PINS,
   followups: FOLLOWUPS,
+  pinataQueue: PINATA_QUEUE,
 }
 
 export const secrets = {

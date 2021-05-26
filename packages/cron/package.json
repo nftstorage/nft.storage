@@ -7,12 +7,14 @@
   "type": "module",
   "bin": {
     "nftstorage-metrics": "src/bin/metrics.js",
-    "nftstorage-pins": "src/bin/pins.js"
+    "nftstorage-pins": "src/bin/pins.js",
+    "nftstorage-pinata": "src/bin/pinata.js"
   },
   "scripts": {
     "start": "run-s start:*",
     "start:metrics": "node src/bin/metrics.js",
-    "start:pins": "node src/bin/pins.js"
+    "start:pins": "node src/bin/pins.js",
+    "start:pinata": "node src/bin/pinata.js"
   },
   "author": "Alan Shaw",
   "license": "(Apache-2.0 AND MIT)",

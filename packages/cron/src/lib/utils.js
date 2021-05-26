@@ -1,6 +1,7 @@
 import { Cluster } from '@nftstorage/ipfs-cluster'
 import { Cloudflare } from '../lib/cloudflare.js'
 import { IPFS } from './ipfs.js'
+import { Pinata } from './pinata.js'
 
 /**
  * @param {import('./cloudflare').Namespace[]} namespaces
@@ -54,4 +55,14 @@ export function getClusterIPFSProxy(env) {
   return new IPFS(ipfsApiUrl, {
     headers: { Authorization: `Basic ${basicAuthToken}` },
   })
+}
+
+/**
+ * Create a new IPFS client instance from the passed environment variables.
+ * @param {Record<string, string|undefined>} env
+ */
+export function getPinata(env) {
+  const apiToken = env.PINATA_JWT
+  if (!apiToken) throw new Error('missing Pinata API token')
+  return new Pinata({ apiToken })
 }

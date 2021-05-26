@@ -10,7 +10,8 @@ kv_namespaces = [
     { binding = "DEALS", preview_id = "ce934a65bf6a44a398980a89daf66a70", id = "ce934a65bf6a44a398980a89daf66a70" },
     { binding = "METRICS", preview_id = "104469a46696435bb2e7bfa201a36611", id = "104469a46696435bb2e7bfa201a36611" },
     { binding = "PINS", preview_id = "ccee8222a526468a9101ec8d09ea1158", id = "ccee8222a526468a9101ec8d09ea1158" },
-    { binding = "FOLLOWUPS", preview_id = "19ccf11bc39a43439d4de3e101c2a114", id = "19ccf11bc39a43439d4de3e101c2a114" }
+    { binding = "FOLLOWUPS", preview_id = "19ccf11bc39a43439d4de3e101c2a114", id = "19ccf11bc39a43439d4de3e101c2a114" },
+    { binding = "PINATA_QUEUE", preview_id = "74f119d8eeab46c2a5e9136b420d7609", id = "74f119d8eeab46c2a5e9136b420d7609" }
 ]
 vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/v0/", CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ" }
 
@@ -29,7 +30,8 @@ kv_namespaces = [
     { binding = "DEALS", preview_id = "ab1ee988b16747149e4dee6b1a07bbd2", id = "ab1ee988b16747149e4dee6b1a07bbd2" },
     { binding = "METRICS", preview_id = "f80cad90abdf4bf98b41518f1e7a6ea1", id = "f80cad90abdf4bf98b41518f1e7a6ea1" },
     { binding = "PINS", preview_id = "39151b1207114d4d8bbd0b556079c76c", id = "39151b1207114d4d8bbd0b556079c76c" },
-    { binding = "FOLLOWUPS", preview_id = "e01b79aecb3e4d7db9473030e0714a23", id = "e01b79aecb3e4d7db9473030e0714a23" }
+    { binding = "FOLLOWUPS", preview_id = "e01b79aecb3e4d7db9473030e0714a23", id = "e01b79aecb3e4d7db9473030e0714a23" },
+    { binding = "PINATA_QUEUE", preview_id = "3a21250daa794144b0fdd010d8bf5f8f", id = "3a21250daa794144b0fdd010d8bf5f8f" }
 ]
 
 [env.production]
@@ -44,7 +46,8 @@ kv_namespaces = [
     { binding = "DEALS", id = "9d5815757b04446ab8cfbc99e6296842", preview_id = "ce934a65bf6a44a398980a89daf66a70" },
     { binding = "METRICS", id = "12c38488fd6047fd8bb4030a8dacb406", preview_id = "104469a46696435bb2e7bfa201a36611" },
     { binding = "PINS", id = "fd42ed10e9ce4b27aa77ca7b862dd2d8", preview_id = "ccee8222a526468a9101ec8d09ea1158" },
-    { binding = "FOLLOWUPS", id = "e6f35158a06646478f382847f2c40942", preview_id = "19ccf11bc39a43439d4de3e101c2a114" }
+    { binding = "FOLLOWUPS", id = "e6f35158a06646478f382847f2c40942", preview_id = "19ccf11bc39a43439d4de3e101c2a114" },
+    { binding = "PINATA_QUEUE", id = "45bd367a6ee647e5aebf67860f92a5ee", preview_id = "74f119d8eeab46c2a5e9136b420d7609" }
 ]
 
 [env.alanshaw]
@@ -62,5 +65,6 @@ kv_namespaces = [
     { binding = "DEALS", preview_id = "e8bdcf6793554671ba98cfc7eaf4a225", id = "e8bdcf6793554671ba98cfc7eaf4a225" },
     { binding = "METRICS", preview_id = "9f28491818d742a2b1363449fe39d6b7", id = "9f28491818d742a2b1363449fe39d6b7" },
     { binding = "PINS", preview_id = "21a950c30fe64f4c97f4257c8f4b45ae", id = "21a950c30fe64f4c97f4257c8f4b45ae" },
-    { binding = "FOLLOWUPS", preview_id = "50c7fad96e6f403aaf9527e12adf42b7", id = "50c7fad96e6f403aaf9527e12adf42b7" }
+    { binding = "FOLLOWUPS", preview_id = "50c7fad96e6f403aaf9527e12adf42b7", id = "50c7fad96e6f403aaf9527e12adf42b7" },
+    { binding = "PINATA_QUEUE", preview_id = "d5b0b953a6df45419aa5c00f15a02221", id = "d5b0b953a6df45419aa5c00f15a02221" }
 ]
