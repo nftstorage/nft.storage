@@ -175,19 +175,18 @@ function About() {
 }
 
 function GettingStarted() {
-  const jsEx = `import { NFTStorage, Blob } from 'nft.storage'
+  const jsEx = `import { NFTStorage, File } from 'nft.storage'
 
 const apiKey = 'YOUR_API_KEY'
 const client = new NFTStorage({ token: apiKey })
 
-const content = new Blob(['hello world'])
-const cid = await client.storeBlob(content)
-console.log(cid)`
-
-  const jsDirEx = `const cid = await client.storeDirectory([
-  new File(['hello world'], 'content.txt'),
-  new File([JSON.stringify({ owner: '@lucky' })], 'metadata.json')
-])`
+const metadata = await client.store({
+  name: 'Pinpie',
+  description: 'Pin is not delicious beef!',
+  image: new File([/* data */], 'pinpie.jpg', { type: 'image/jpg' })
+})
+console.log(metadata.url)
+// ipfs://bafyreib4pff766vhpbxbhjbqqnsh5emeznvujayjj4z2iu533cprgbz23m/metadata.json`
 
   const curlEx = `curl -X POST --data-binary @art.jpg -H 'Authorization: Bearer YOUR_API_KEY' https://api.nft.storage/upload`
 
@@ -276,10 +275,6 @@ console.log(cid)`
             <p className="lh-copy">Use the client in Node.js or the browser:</p>
             <pre className="f6 lh-copy white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll">
               {jsEx}
-            </pre>
-            <p className="lh-copy">The client can also store directories:</p>
-            <pre className="f6 lh-copy white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll">
-              {jsDirEx}
             </pre>
             <p className="lh-copy">
               View the{' '}
