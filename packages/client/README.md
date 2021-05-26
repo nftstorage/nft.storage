@@ -59,7 +59,7 @@ For more examples please see the [API documentation][] or the [examples director
 [prettier.url]: https://github.com/prettier/prettier
 [size.icon]: https://badgen.net/bundlephobia/minzip/nft.storage
 [size.url]: https://bundlephobia.com/result?p=nft.storage
-[deps.icon]: https://status.david-dm.org/gh/ipfs-shipyard/nft.storage.svg?path=client
-[deps.url]: https://david-dm.org/ipfs-shipyard/nft.storage?path=client
+[deps.icon]: https://status.david-dm.org/gh/ipfs-shipyard/nft.storage.svg?path=packages/client
+[deps.url]: https://david-dm.org/ipfs-shipyard/nft.storage?path=packages/client
 [cov.icon]: https://codecov.io/gh/ipfs-shipyard/nft.storage/branch/main/graph/badge.svg?token=dU5oWrlqHF
 [cov.url]: https://codecov.io/gh/ipfs-shipyard/nft.storage
