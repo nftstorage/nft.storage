@@ -1,5 +1,5 @@
 import * as assert from 'uvu/assert'
-import { toEmbedURL } from '../src/embed.js'
+import { toEmbedURL } from 'nft.storage'
 
 describe('toEmbedURL', () => {
   it('converts ipfs:// URL to a gateway URL', () => {
