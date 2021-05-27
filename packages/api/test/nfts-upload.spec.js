@@ -38,6 +38,8 @@ describe('/upload', () => {
     )
 
     const file = new Blob(['hello world!'])
+    // expected CID for the above data
+    const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
     const res = await fetch(new URL(`upload`, endpoint).toString(), {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
@@ -47,9 +49,14 @@ describe('/upload', () => {
     assert(res.ok)
     const { ok, value } = await res.json()
     assert(ok)
-    assert.strictEqual(
-      value.cid,
-      'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
-    )
+    assert.strictEqual(value.cid, cid)
+
+    const nftData = await stores.nfts.get(`${issuer}:${cid}`)
+    assert(nftData)
+
+    const pinData = await stores.pins.getWithMetadata(cid)
+    assert(pinData.metadata)
+    // @ts-ignore
+    assert.strictEqual(pinData.metadata.status, 'pinned')
   })
 })
