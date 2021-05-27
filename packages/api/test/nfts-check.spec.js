@@ -1,8 +1,8 @@
 import assert from 'assert'
 import stores from './scripts/stores.js'
 import { clearStores } from './scripts/helpers.js'
+import { endpoint } from './scripts/constants.js'
 
-const endpoint = 'http://testing.nft.storage'
 const cid = 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD'
 
 describe('/check/{cid}', () => {

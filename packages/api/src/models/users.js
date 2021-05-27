@@ -1,6 +1,7 @@
 import { signJWT } from '../utils/jwt.js'
 import merge from 'merge-options'
 import { ErrorUserNotFound, HTTPError } from '../errors.js'
+import { secrets } from '../constants.js'
 
 const users = USERS
 
@@ -82,7 +83,7 @@ export function matchToken(user, token) {
  * List user tokens
  *
  * @param {string} issuer
- * @returns {Promise<User>}
+ * @returns {Promise<Record<string, string>>}
  */
 export async function tokens(issuer) {
   const user = await users.get(issuer)
@@ -112,12 +113,15 @@ export async function createToken(issuer, name) {
     throw new HTTPError(`A token with name "${name}" already exists.`, 400)
   }
 
-  user.tokens[name] = await signJWT({
-    sub: issuer,
-    iss: 'nft-storage',
-    iat: Date.now(),
-    name: name,
-  })
+  user.tokens[name] = await signJWT(
+    {
+      sub: issuer,
+      iss: 'nft-storage',
+      iat: Date.now(),
+      name: name,
+    },
+    secrets.salt
+  )
   return await users.put(issuer, JSON.stringify(user))
 }
 
