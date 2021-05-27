@@ -1,7 +1,6 @@
 import * as API from './lib/interface.js'
 import { Blob, FormData } from './platform.js'
-
-const GATEWAY = new URL('https://dweb.link/')
+import { toEmbedURL, GATEWAY } from './embed.js'
 
 /**
  * @template {API.TokenInput} T
@@ -47,7 +46,7 @@ export class Token {
 /**
  * @template T
  * @param {API.Encoded<T, [[Blob, URL]]>} input
- * @param {EmbedOption} options
+ * @param {import('./embed.js').EmbedURLOptions} options
  * @returns {API.Encoded<T, [[Blob, URL]]>}
  */
 export const embed = (input, options) =>
@@ -77,16 +76,11 @@ const isURL = (value) => value instanceof URL
 const decodeURL = (state, url) => [state, new URL(url)]
 
 /**
- * @typedef {{gateway: URL}} EmbedOption
- *
- * @param {EmbedOption} context
+ * @param {import('./embed.js').EmbedURLOptions} context
  * @param {URL} url
- * @returns {[EmbedOption, URL]}
+ * @returns {[import('./embed.js').EmbedURLOptions, URL]}
  */
-const embedURL = (context, url) => [
-  context,
-  new URL(`/ipfs/${url.href.slice('ipfs://'.length)}`, context.gateway),
-]
+const embedURL = (context, url) => [context, toEmbedURL(url, context)]
 
 /**
  * @param {any} value
