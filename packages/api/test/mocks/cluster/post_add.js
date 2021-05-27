@@ -1,6 +1,11 @@
+// @ts-ignore
 const Hash = require('ipfs-only-hash')
 
-// https://github.com/sinedied/smoke#javascript-mocks
+/**
+ * https://github.com/sinedied/smoke#javascript-mocks
+ * @typedef {{ buffer: Buffer, originalname: string }} MultrFile
+ * @param {{ query: Record<string, string>, files: MultrFile[] }} request
+ */
 module.exports = async ({ query, files }) => {
   const result = {
     cid: {
