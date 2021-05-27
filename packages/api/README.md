@@ -13,7 +13,7 @@ SENTRY_TOKEN=<sentry user auth token>
 SENTRY_UPLOAD=false # toggle for sentry source/sourcemaps upload (capture will still work)
 ```
 
-Production vars should set in Github Actions secrets.
+Production vars should be set in Github Actions secrets.
 
 ### Cloudflare Workers CLI
 
