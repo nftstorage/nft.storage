@@ -20,9 +20,9 @@ Production vars should be set in Github Actions secrets.
 ### Cloudflare Workers CLI
 
 ```bash
+# when using personal accounts you may need to manually change the `account_id` inside `wrangler.toml`
 yarn global add @cloudflare/wrangler
 wrangler login
-# when using personal accounts you may need to manually change the `account_id` inside `wrangler.toml`
 ```
 
 ### Magic.link account
