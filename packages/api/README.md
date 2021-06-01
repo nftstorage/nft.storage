@@ -42,7 +42,7 @@ CLUSTER_IPFSPROXY_NODEMULTIADDRESS: /dns4/ipfs0/tcp/5001
 CLUSTER_IPFSPROXY_LISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9095
 ```
 
-...to the `custer0` _environment_ and add:
+...to the `cluster0` _environment_ and add:
 
 ```yaml
 - '127.0.0.1:9095:9095'
