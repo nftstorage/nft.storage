@@ -16,7 +16,7 @@
 import * as API from './lib/interface.js'
 import * as Token from './token.js'
 import { fetch, File, Blob, FormData } from './platform.js'
-import { toEmbedURL } from './embed.js'
+import { toGatewayURL } from './gateway.js'
 
 /**
  * @implements API.Service
@@ -401,7 +401,7 @@ const decodePin = (pin) => ({ ...pin, created: new Date(pin.created) })
 
 const TokenModel = Token.Token
 export { TokenModel as Token }
-export { NFTStorage, File, Blob, FormData, toEmbedURL }
+export { NFTStorage, File, Blob, FormData, toGatewayURL }
 
 /**
  * Just to verify API compatibility.

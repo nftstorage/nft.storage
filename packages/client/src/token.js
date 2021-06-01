@@ -1,6 +1,8 @@
 import * as API from './lib/interface.js'
 import { Blob, FormData } from './platform.js'
-import { toEmbedURL, GATEWAY } from './embed.js'
+import { toGatewayURL, GATEWAY } from './gateway.js'
+
+/** @typedef {import('./gateway.js').GatewayURLOptions} EmbedOptions */
 
 /**
  * @template {API.TokenInput} T
@@ -46,7 +48,7 @@ export class Token {
 /**
  * @template T
  * @param {API.Encoded<T, [[Blob, URL]]>} input
- * @param {import('./embed.js').EmbedURLOptions} options
+ * @param {EmbedOptions} options
  * @returns {API.Encoded<T, [[Blob, URL]]>}
  */
 export const embed = (input, options) =>
@@ -76,11 +78,11 @@ const isURL = (value) => value instanceof URL
 const decodeURL = (state, url) => [state, new URL(url)]
 
 /**
- * @param {import('./embed.js').EmbedURLOptions} context
+ * @param {EmbedOptions} context
  * @param {URL} url
- * @returns {[import('./embed.js').EmbedURLOptions, URL]}
+ * @returns {[EmbedOptions, URL]}
  */
-const embedURL = (context, url) => [context, toEmbedURL(url, context)]
+const embedURL = (context, url) => [context, toGatewayURL(url, context)]
 
 /**
  * @param {any} value
