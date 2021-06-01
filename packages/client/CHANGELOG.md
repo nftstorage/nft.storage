@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v1.4.0...nft.storage-v2.0.0) (2021-06-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* add ipfs URL to gateway URL converter (#161)
+
+### Features
+
+* add ipfs URL to gateway URL converter ([#161](https://www.github.com/ipfs-shipyard/nft.storage/issues/161)) ([f115cd8](https://www.github.com/ipfs-shipyard/nft.storage/commit/f115cd8964bc565fc1a3313fc8d2fb3a392dd0ac))
+
 ## [1.4.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v1.3.1...nft.storage-v1.4.0) (2021-05-26)
 
 
