@@ -8,6 +8,8 @@ The nft.storage public API.
 
 Inside the `/packages/api` folder create a file called `.env.local` with the following content.
 
+Note: tokens can be created here https://sentry.io/settings/account/api/auth-tokens/ and need the following scopes `event:admin` `event:read` `member:read` `org:read` `project:read` `project:releases` `team:read`.
+
 ```ini
 SENTRY_TOKEN=<sentry user auth token>
 SENTRY_UPLOAD=false # toggle for sentry source/sourcemaps upload (capture will still work)
