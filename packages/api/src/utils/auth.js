@@ -25,7 +25,7 @@ export async function validate(event, { sentry }) {
   const token = magic.utils.parseAuthorizationHeader(auth)
 
   // validate access tokens
-  if (await verifyJWT(token)) {
+  if (await verifyJWT(token, secrets.salt)) {
     const decoded = parseJWT(token)
     const user = await getUser(decoded.sub)
     if (user) {

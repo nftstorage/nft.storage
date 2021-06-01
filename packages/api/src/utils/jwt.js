@@ -1,5 +1,3 @@
-import { secrets } from '../constants'
-
 /** @type {Record<string, HmacImportParams>} */
 const algorithms = {
   HS256: {
@@ -58,7 +56,7 @@ function isObject(arg) {
  * @param {string} secret
  * @param {string} alg
  */
-export async function verifyJWT(token, secret = secrets.salt, alg = 'HS256') {
+export async function verifyJWT(token, secret, alg = 'HS256') {
   if (!isString(token)) {
     throw new Error('token must be a string')
   }
@@ -107,7 +105,7 @@ export async function verifyJWT(token, secret = secrets.salt, alg = 'HS256') {
  * @param {string} secret
  * @param {string} alg
  */
-export async function signJWT(payload, secret = secrets.salt, alg = 'HS256') {
+export async function signJWT(payload, secret, alg = 'HS256') {
   if (!isObject(payload)) {
     throw new Error('payload must be an object')
   }

@@ -1,6 +1,6 @@
 import stores from './stores.js'
 
-export const SALT = Math.random().toString()
+export const SALT = 'supersecret'
 export const DEBUG = 'true'
 export const DEALS = stores.deals
 export const USERS = stores.users
