@@ -973,44 +973,37 @@
   resolved "https://registry.yarnpkg.com/@ungap/promise-all-settled/-/promise-all-settled-1.1.2.tgz#aa58042711d6e3275dd37dc597e5d31e8c290a44"
   integrity sha512-sL/cEvJWAnClXw0wHk85/2L0G6Sj8UB0Ctc1TEMbKSsmpRosqhwj9gWgFRZSrBr2f9tiXISwNhCPmlfqUqyb9Q==
 
-"@web-std/blob@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@web-std/blob/-/blob-2.0.0.tgz#603af17bd5996590daba6b65795acb5206571728"
-  integrity sha512-i4JdX5sli14KQra9wYo2a/wap5SICp4c20EdGTzPDxUbXLPrPIsH5IplUizKeBXNRAtxKDenp+kCNukVs3FyNA==
+"@web-std/blob@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@web-std/blob/-/blob-2.1.0.tgz#9a7c8b94b96fffc526cb720d9a4a87d05ace3fc1"
+  integrity sha512-XarzlypyLoaSZTdh+y/uBwGwayHXp++Q0CcgppfMxpm3VnbcJseMuXMZQK9OFDTiGpasoVwICgBL/8Rc6/B1fw==
   dependencies:
-    web-encoding "1.1.0"
-    web-streams-polyfill "2.1.1"
+    web-encoding "1.1.5"
+    web-streams-polyfill "3.0.3"
 
-"@web-std/blob@2.0.1":
+"@web-std/fetch@^2.0.1":
   version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@web-std/blob/-/blob-2.0.1.tgz#ecf95e0a9696cc95721a8659b9bd67ea705ef97f"
-  integrity sha512-eyRgoKhJQ6BYEpMeO4hJNKKwpcS1NYqJy5Mw69mgmjUDsu8bCKn7L5JUTXL+T3z3QpgISOJsboX2UchRyTxd/A==
+  resolved "https://registry.yarnpkg.com/@web-std/fetch/-/fetch-2.0.1.tgz#433f9d9ac46e79c6f0257d9dcc4e242bbc956e9b"
+  integrity sha512-aCstfrPOHrAvU65a24Dxjy1LU7RMXOe54GuwA978ln6Fy1K9QPs3ORR71ikaQXX06cXfgu3NDQelhMYlTRrWrA==
   dependencies:
-    web-encoding "1.1.0"
-    web-streams-polyfill "2.1.1"
-
-"@web-std/fetch@1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@web-std/fetch/-/fetch-1.0.0.tgz#c3346d6d4ec4cf8563365ca3d6ec5f052ac0f06e"
-  integrity sha512-ghp1XUrJf1Ue4hSMC5In6b1osL+iYmyqIFNS4c/3sIsBjX3j6doWG1hXCEQYk88OwXLbSzAIc6q0mBnIbkUVjg==
-  dependencies:
+    "@web-std/blob" "^2.1.0"
     data-uri-to-buffer "^3.0.1"
-    fetch-blob "^2.1.1"
+    web-streams-polyfill "^3.0.2"
 
-"@web-std/file@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@web-std/file/-/file-1.0.1.tgz#75db92071574e893ad66bdc1d282db97a6dfb89d"
-  integrity sha512-XAgUci2QDWb+HLtZnujP4kBmW4aYGYHAVimN4hn6tK0tMKsZi3e1teguy/e2ZXdimvrXMq8Dt9UPHUdRcY28iQ==
+"@web-std/file@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@web-std/file/-/file-1.1.0.tgz#2876cc30d6990f4b4583889fed0113a331c63112"
+  integrity sha512-VyKHE0eN713xBoRe7wrUjamct1KoALrkxCPEHiAusdBvOw7bSu4nmP+1i7b8L0cBUDawUEQyT7+7kPIykUla6A==
   dependencies:
-    "@web-std/blob" "2.0.0"
+    "@web-std/blob" "^2.1.0"
 
-"@web-std/form-data@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@web-std/form-data/-/form-data-2.0.0.tgz#15553cc573aff0e030ef9dfb5bd4128ed74bf7a7"
-  integrity sha512-zgLBe6QZUhl3Mk0jKJ9vWLdv9sykq7lVRHazQyJw4fZOVYltJ4WdJsxC+Jd2br+qkWJTppNORzyMK/0ayy4AOw==
+"@web-std/form-data@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@web-std/form-data/-/form-data-2.1.0.tgz#28d6fef83eeed2b059343ff52c5593184258d8d1"
+  integrity sha512-gKVx2I/mu0KK6s4DDACfpUQTIGCim6ShvOXMUONnzB3VoR7qTX2oh5YJjXiDKoR92ZbBZYxAhKO+jfxbMFQpvw==
   dependencies:
-    web-encoding "1.1.0"
-    web-streams-polyfill "2.1.1"
+    web-encoding "1.1.5"
+    web-streams-polyfill "3.0.3"
 
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
@@ -3715,11 +3708,6 @@ fd-slicer@~1.1.0:
   integrity sha1-JcfInLH5B3+IkbvmHY85Dq4lbx4=
   dependencies:
     pend "~1.2.0"
-
-fetch-blob@^2.1.1:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/fetch-blob/-/fetch-blob-2.1.2.tgz#a7805db1361bd44c1ef62bb57fb5fe8ea173ef3c"
-  integrity sha512-YKqtUDwqLyfyMnmbw8XD6Q8j9i/HggKtPEI+pZ1+8bvheBu78biSmNaXWusx1TauGqtUUGx/cBb1mKdq2rLYow==
 
 figgy-pudding@^3.5.1:
   version "3.5.2"
@@ -9485,6 +9473,18 @@ util@^0.11.0:
   dependencies:
     inherits "2.0.3"
 
+util@^0.12.3:
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/util/-/util-0.12.4.tgz#66121a31420df8f01ca0c464be15dfa1d1850253"
+  integrity sha512-bxZ9qtSlGUWSOy9Qa9Xgk11kSslpuZwaxCg4sNIDj6FLucDab2JxnHwyNTCpHMtK1MjoQiWQ6DiUMZYbSrO+Sw==
+  dependencies:
+    inherits "^2.0.3"
+    is-arguments "^1.0.4"
+    is-generator-function "^1.0.7"
+    is-typed-array "^1.1.3"
+    safe-buffer "^5.1.2"
+    which-typed-array "^1.1.2"
+
 utils-merge@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
@@ -9600,17 +9600,19 @@ wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-web-encoding@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/web-encoding/-/web-encoding-1.1.0.tgz#b8ed50f0e23ba239542ba11ebe885b75a0b95bea"
-  integrity sha512-KzYonGdJnZB3qvhK8hKca5qXk/wp+hgwGNTY1TnqtF2CzDzpN8szOC3ejhX9+wbhCq3vQs/TjM8BykS1kor0lQ==
+web-encoding@1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/web-encoding/-/web-encoding-1.1.5.tgz#fc810cf7667364a6335c939913f5051d3e0c4864"
+  integrity sha512-HYLeVCdJ0+lBYV2FvNZmv3HJ2Nt0QYXqZojk3d9FJOLkwnuhzM9tmamh8d7HPM8QqjKH8DeHkFTx+CFlWpZZDA==
+  dependencies:
+    util "^0.12.3"
   optionalDependencies:
     "@zxing/text-encoding" "0.9.0"
 
-web-streams-polyfill@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/web-streams-polyfill/-/web-streams-polyfill-2.1.1.tgz#2c82b6193849ccb9efaa267772c28260ef68d6d2"
-  integrity sha512-dlNpL2aab3g8CKfGz6rl8FNmGaRWLLn2g/DtSc9IjB30mEdE6XxzPfPSig5BwGSzI+oLxHyETrQGKjrVVhbLCg==
+web-streams-polyfill@3.0.3, web-streams-polyfill@^3.0.2:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/web-streams-polyfill/-/web-streams-polyfill-3.0.3.tgz#f49e487eedeca47a207c1aee41ee5578f884b42f"
+  integrity sha512-d2H/t0eqRNM4w2WvmTdoeIvzAUSpK7JmATB8Nr2lb7nQ9BTIJVjbQ/TRFVEh2gUH1HwclPdoPtfMoFfetXaZnA==
 
 webidl-conversions@^4.0.2:
   version "4.0.2"
