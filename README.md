@@ -78,15 +78,13 @@ and creating release PRs.
 
 ### What's a Release PR?
 
-Rather than continuously releasing what's landed to our default branch,
-release-please maintains Release PRs:
+Rather than continuously releasing what's landed to our default branch, release-please maintains Release PRs:
 
-These Release PRs are kept up-to-date as additional work is merged. When we're
-ready to tag a release, we simply merge the release PR.
+These Release PRs are kept up-to-date as additional work is merged. When we're ready to tag a release, we simply merge the release PR.
 
-When the release PR is merged the release job is triggered to create a new tag, a new github release and run other package specific jobs.
+When the release PR is merged the release job is triggered to create a new tag, a new github release and run other package specific jobs. Only merge ONE release PR at a time and wait for CI to finish before merging another.
 
-Release PRs are created individually for each packages in the mono repo.
+Release PRs are created individually for each package in the mono repo.
 
 ### How should I write my commits?
 
