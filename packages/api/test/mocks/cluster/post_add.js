@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-ignore not typed
 const Hash = require('ipfs-only-hash')
 
 /**
