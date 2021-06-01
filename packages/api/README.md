@@ -82,7 +82,7 @@ account_id = "CF_ACCOUNT"
 workers_dev = true
 route = ""
 zone_id = ""
-vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "", CLUSTER_IPFS_PROXY_API_URL = "" }
+vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "", CLUSTER_IPFS_PROXY_API_URL = "", CLUSTER_ADDRS = "" }
 kv_namespaces = []
 ```
 
