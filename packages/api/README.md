@@ -88,6 +88,16 @@ kv_namespaces = []
 
 Additionally, fill in the `CLUSTER_API_URL` and `CLUSTER_IPFS_PROXY_API_URL` with the localtunnel URLs you obtained when setting up the IPFS Cluster.
 
+e.g.
+
+```js
+CLUSTER_API_URL = 'https://USER-cluster-api-nft-storage.loca.lt'
+CLUSTER_IPFS_PROXY_API_URL =
+  'https://USER-ipfs-proxy-api-nft-storage.loca.lt/api/v0/'
+```
+
+Now run the following to install dependencies and create KV namespaces on Cloudflare:
+
 ```bash
 cd packages/api
 yarn install
