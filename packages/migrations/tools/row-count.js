@@ -27,11 +27,6 @@ async function main() {
   let i = 0
   for await (const keys of cf.fetchKVKeys(table.id, { prefix })) {
     i += keys.length
-    keys.forEach((k) => {
-      if (!k.name.startsWith(`${prefix}:bafk`)) {
-        console.log(k.name)
-      }
-    })
     console.log(`${i} total`)
   }
 }
