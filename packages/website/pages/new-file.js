@@ -29,8 +29,7 @@ export default function NewFile() {
     e.preventDefault()
     const data = new FormData(e.target)
     const file = data.get('file')
-    const isCar = data.get('is-car') === 'on' ? true : false
-    console.log({ isCar })
+    const isCar = data.get('is-car') === 'on'
     if (file && file instanceof File) {
       const client = new NFTStorage({
         token: await getToken(),

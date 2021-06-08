@@ -56,6 +56,7 @@ export async function upload(event, ctx) {
       // force the content type on the blob without duplicating content
       blob = blob.slice(0, blob.size, 'application/car')
     }
+    // cluster returns `bytes` rather than `size` when upload is a CAR.
     const { cid, size, bytes } = await cluster.add(blob)
     nft = {
       cid,
