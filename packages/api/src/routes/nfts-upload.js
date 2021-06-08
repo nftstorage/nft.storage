@@ -45,11 +45,18 @@ export async function upload(event, ctx) {
     }
     nftSize = size
   } else {
-    const blob = await event.request.blob()
+    let blob = await event.request.blob()
     if (blob.size === 0) {
       throw new HTTPError('Empty payload', 400)
     }
-    const { cid, size } = await cluster.add(blob)
+    if (
+      contentType.includes('application/car') &&
+      blob.type !== 'application/car'
+    ) {
+      // force the content type on the blob without duplicating content
+      blob = blob.slice(0, blob.size, 'application/car')
+    }
+    const { cid, size, bytes } = await cluster.add(blob)
     nft = {
       cid,
       created,
@@ -57,7 +64,7 @@ export async function upload(event, ctx) {
       scope: tokenName,
       files: [],
     }
-    nftSize = size
+    nftSize = size || bytes
   }
 
   let pin = await pins.get(nft.cid)

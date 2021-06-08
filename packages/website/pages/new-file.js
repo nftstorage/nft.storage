@@ -29,6 +29,8 @@ export default function NewFile() {
     e.preventDefault()
     const data = new FormData(e.target)
     const file = data.get('file')
+    const isCar = data.get('is-car') === 'on' ? true : false
+    console.log({ isCar })
     if (file && file instanceof File) {
       const client = new NFTStorage({
         token: await getToken(),
@@ -36,7 +38,7 @@ export default function NewFile() {
       })
       setUploading(true)
       try {
-        await client.storeBlob(file)
+        await client.storeBlob(file, isCar)
       } finally {
         await queryClient.invalidateQueries('get-nfts')
         setUploading(false)
@@ -67,6 +69,34 @@ export default function NewFile() {
                 required
               />
             </div>
+            <label>
+              <input id="is-car" name="is-car" type="checkbox" />
+              <span class="ml2">is CAR?</span>
+            </label>
+            <details class="db mt3 mb4">
+              <summary class="i">Tell me more, what is CAR?</summary>
+              <p class="pl3 mt2 lh-copy">
+                A CAR or Content Addressed Archive allows you to pre-compute the
+                root CID for your assets. When uploaded as a CAR, nft.storge
+                will store your asset with the same root CID as defined in the
+                CAR header. You can pack your assets into a CAR with{' '}
+                <a
+                  class="black"
+                  href="https://github.com/vasco-santos/ipfs-car"
+                  target="_blank"
+                >
+                  <code>ipfs-car</code>
+                </a>{' '}
+                or via{' '}
+                <a
+                  class="black"
+                  href="https://car.on.fleek.co/"
+                  target="_blank"
+                >
+                  https://car.on.fleek.co
+                </a>
+              </p>
+            </details>
             <div className="mv3">
               <Button
                 className="bg-nslime"

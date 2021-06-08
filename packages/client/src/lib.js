@@ -70,18 +70,24 @@ class NFTStorage {
   /**
    * @param {API.Service} service
    * @param {Blob} blob
+   * @param {boolean} [isCar=false]
    * @returns {Promise<API.CIDString>}
    */
-  static async storeBlob({ endpoint, token }, blob) {
+  static async storeBlob({ endpoint, token }, blob, isCar = false) {
     const url = new URL('/upload', endpoint)
 
     if (blob.size === 0) {
       throw new Error('Content size is 0, make sure to provide some content')
     }
 
+    const headers = NFTStorage.auth(token)
+    if (isCar) {
+      headers['Content-Type'] = 'application/car'
+    }
+
     const request = await fetch(url.toString(), {
       method: 'POST',
-      headers: NFTStorage.auth(token),
+      headers,
       body: blob,
     })
     const result = await request.json()
@@ -235,9 +241,10 @@ class NFTStorage {
    * ```
    *
    * @param {Blob} blob
+   * @param {boolean} isCar
    */
-  storeBlob(blob) {
-    return NFTStorage.storeBlob(this, blob)
+  storeBlob(blob, isCar = false) {
+    return NFTStorage.storeBlob(this, blob, isCar)
   }
   /**
    * Stores a directory of files and returns a CID for the directory.

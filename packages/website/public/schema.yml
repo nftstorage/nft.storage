@@ -30,6 +30,10 @@ paths:
             schema:
               type: string
               format: binary
+          application/car:
+            schema:
+              type: string
+              format: binary
           application/octet-stream:
             schema:
               type: string
@@ -50,6 +54,8 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/UploadResponse'
+        '400':
+          $ref: '#/components/responses/badRequest' 
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':
