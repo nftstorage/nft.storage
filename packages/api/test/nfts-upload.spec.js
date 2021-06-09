@@ -64,8 +64,8 @@ describe('/upload', () => {
 
     const pinData = await stores.pins.getWithMetadata(cid)
     assert(pinData.metadata, 'pin metadata was stored')
-    // @ts-ignore
     assert.strictEqual(
+      // @ts-ignore
       pinData.metadata.status,
       'pinned',
       'pin status is "pinned"'
@@ -103,8 +103,8 @@ describe('/upload', () => {
     // Size: 12, NumBlocks: 1
     // @ts-ignore
     assert.strictEqual(pinData.metadata.size, 12, 'pin size correct')
-    // @ts-ignore
     assert.strictEqual(
+      // @ts-ignore
       pinData.metadata.status,
       'pinned',
       'pin status is "pinned"'
