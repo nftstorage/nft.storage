@@ -5,6 +5,7 @@ import IPLD from 'ipld'
 // @ts-ignore
 import InMemory from 'ipld-in-memory'
 import importer from 'ipfs-unixfs-importer'
+import { CarCIDIterator } from '@ipld/car'
 
 const DagPB = pb.util
 
@@ -65,6 +66,12 @@ export const importBlob = async (content) => {
     return result
   }
   throw new Error(`Import failed`)
+}
+
+export const importCar = async (content) => {
+  const car = await CarCIDIterator.fromBytes(content)
+  const [cid] = await car.getRoots()
+  return { cid }
 }
 
 /**
