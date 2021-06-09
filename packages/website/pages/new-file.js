@@ -70,27 +70,29 @@ export default function NewFile() {
             </div>
             <label>
               <input id="is-car" name="is-car" type="checkbox" />
-              <span class="ml2">is CAR?</span>
+              <span className="ml2">is CAR?</span>
             </label>
-            <details class="db mt3 mb4">
-              <summary class="i">Tell me more, what is CAR?</summary>
-              <p class="pl3 mt2 lh-copy">
+            <details className="db mt3 mb4">
+              <summary className="i">Tell me more, what is CAR?</summary>
+              <p className="pl3 mt2 lh-copy">
                 A CAR or Content Addressed Archive allows you to pre-compute the
                 root CID for your assets. When uploaded as a CAR, nft.storge
                 will store your asset with the same root CID as defined in the
                 CAR header. You can pack your assets into a CAR with{' '}
                 <a
-                  class="black"
+                  className="black"
                   href="https://github.com/vasco-santos/ipfs-car"
                   target="_blank"
+                  rel="noreferrer"
                 >
                   <code>ipfs-car</code>
                 </a>{' '}
                 or via{' '}
                 <a
-                  class="black"
+                  className="black"
                   href="https://car.on.fleek.co/"
                   target="_blank"
+                  rel="noreferrer"
                 >
                   https://car.on.fleek.co
                 </a>
