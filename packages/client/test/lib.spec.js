@@ -34,7 +34,7 @@ describe('client', () => {
     it('upload CAR', async () => {
       const client = new NFTStorage({ token, endpoint })
       const { root, out } = await pack({
-        input: new TextEncoder().encode('hello world'),
+        input: [new TextEncoder().encode('hello world')],
       })
       const expectedCid = root.toString()
       const carParts = []

@@ -80,9 +80,11 @@ class NFTStorage {
       throw new Error('Content size is 0, make sure to provide some content')
     }
 
-    const headers = NFTStorage.auth(token)
+    let headers = NFTStorage.auth(token)
     if (isCar) {
-      headers['Content-Type'] = 'application/car'
+      headers = Object.assign(headers, {
+        'Content-Type': 'application/car',
+      })
     }
 
     const request = await fetch(url.toString(), {

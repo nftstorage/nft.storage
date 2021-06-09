@@ -68,9 +68,15 @@ export const importBlob = async (content) => {
   throw new Error(`Import failed`)
 }
 
+/**
+ * @param {Uint8Array} content
+ */
 export const importCar = async (content) => {
   const car = await CarCIDIterator.fromBytes(content)
   const [cid] = await car.getRoots()
+  if (!cid) {
+    throw new Error(`Import failed`)
+  }
   return { cid }
 }
 
