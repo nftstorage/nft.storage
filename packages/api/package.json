@@ -4,6 +4,7 @@
   "description": "NFT Storage API",
   "private": true,
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "lt": "npm run lt:cluster & npm run lt:ipfs-proxy",
     "lt:cluster": "npx localtunnel --port 9094 --subdomain \"$(whoami)-cluster-api-nft-storage\"",

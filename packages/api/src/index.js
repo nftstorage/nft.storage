@@ -82,14 +82,3 @@ r.add('delete', '/internal/tokens', tokensDelete, [postCors])
 
 r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))
-
-// Cron jobs
-addEventListener('scheduled', (event) => {
-  // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
-  // @ts-ignore
-  if (event.cron !== '*/15 * * * *') return
-  const sentry = getSentrySchedule(event)
-  event.waitUntil(
-    timed(updateNftsIndexMeta, 'CRON updateNftsIndexMeta', { sentry })
-  )
-})

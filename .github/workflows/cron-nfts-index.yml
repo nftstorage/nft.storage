@@ -1,12 +1,12 @@
-name: Cron Pinata Sync
+name: Cron NFTs Index
 
 on:
   schedule:
-    - cron: '0 */12 * * *'
+    - cron: '*/15 * * * *'
 
 jobs:
   update:
-    name: Sync with Pinata
+    name: Update NFTs Index
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -20,7 +20,7 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: yarn install
+        uses: bahmutov/npm-install@v1
 
       - name: Run job
         env:
@@ -28,5 +28,4 @@ jobs:
           ENV: ${{ matrix.env }}
           CF_ACCOUNT: ${{ secrets.CF_ACCOUNT }}
           CF_TOKEN: ${{ secrets.CF_TOKEN }}
-          PINATA_JWT: ${{ secrets.PINATA_JWT }}
-        run: yarn --cwd packages/cron start:pinata
+        run: yarn --cwd packages/cron start:metrics
