@@ -19,8 +19,8 @@ import { pinsDelete } from './routes/pins-delete.js'
 import { metrics } from './routes/metrics.js'
 import { login } from './routes/login.js'
 import { JSONResponse } from './utils/json-response.js'
-import { updateNftsIndexMeta } from './jobs/nfts-index.js'
-const { debug, getSentrySchedule } = require('./utils/debug')
+
+const { debug } = require('./utils/debug')
 const log = debug('router')
 
 const r = new Router({
