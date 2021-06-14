@@ -2,7 +2,7 @@ name: Cron NFTs Index
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '0 */3 * * *'
 
 jobs:
   update:
