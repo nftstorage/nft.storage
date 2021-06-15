@@ -1,0 +1,15 @@
+{
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^2.3.7"
+  },
+  "dependencies": {
+    "ipfs-car": "^0.2.4",
+    "nft.storage": "../../../"
+  }
+}
