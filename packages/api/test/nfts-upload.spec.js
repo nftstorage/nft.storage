@@ -79,7 +79,7 @@ describe('/upload', () => {
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
     assert.strictEqual(root.toString(), cid, 'car file has correct root')
-    const res = await fetch(new URL(`upload`, endpoint).toString(), {
+    const res = await fetch(new URL('upload', endpoint).toString(), {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,

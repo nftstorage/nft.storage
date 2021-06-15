@@ -4,7 +4,7 @@ A demo using ipfs-car in the browser to create a CAR file and pre-calculate the 
 
 ## Getting started
 
-```console.
+```console
 npm install
 npm run dev
 
@@ -13,4 +13,4 @@ yarn
 yarn dev
 ```
 
-Then visit `http://localhost:3000?key=<your nft.upload API KEY here>`
+Then visit `http://localhost:3000?key=<your nft.storage API KEY here>`
