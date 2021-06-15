@@ -1,7 +1,6 @@
 import fs from 'fs'
-import { pack } from 'ipfs-car/pack'
+import { packToBlob } from 'ipfs-car/pack/blob'
 import { NFTStorage } from '../../src/lib.js'
-import { Blob } from '../../src/platform.js'
 
 const endpoint = 'https://api.nft.storage' // the default
 const token = 'API_KEY' // your API key from https://nft.storage/manage
@@ -10,18 +9,12 @@ async function main() {
   const storage = new NFTStorage({ endpoint, token })
 
   // locally chunk'n'hash the file to get the CID and pack the blocks in to a CAR
-  const { root, out } = await pack({
+  const { root, car } = await packToBlob({
     input: fs.createReadStream('pinpie.jpg'),
   })
 
   const expectedCid = root.toString()
   console.log({ expectedCid })
-
-  const carParts = []
-  for await (const part of out) {
-    carParts.push(part)
-  }
-  const car = new Blob(carParts, { type: 'application/car' })
 
   // send the CAR to nft.storage, setting isCar to true
   const cid = await storage.storeCar(car)

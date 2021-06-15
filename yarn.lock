@@ -1054,6 +1054,14 @@
     web-encoding "1.1.5"
     web-streams-polyfill "3.0.3"
 
+"@web-std/blob@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@web-std/blob/-/blob-2.1.1.tgz#1580283ec6d1a190dbf5fcecdff6d5eec9ceadcb"
+  integrity sha512-/DfoOOV3gBqliOZ6ltAJpSuD4Q23X5UB6/zNzd0aHz04Mb4tAWJPF1PC/2TtU1miBTEnHhIsPpQYAZgaI50T8g==
+  dependencies:
+    web-encoding "1.1.5"
+    web-streams-polyfill "3.0.3"
+
 "@web-std/fetch@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@web-std/fetch/-/fetch-1.0.0.tgz#c3346d6d4ec4cf8563365ca3d6ec5f052ac0f06e"
@@ -4761,13 +4769,14 @@ ipfs-block-service@^0.19.0:
     err-code "^3.0.1"
     it-map "^1.0.5"
 
-ipfs-car@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/ipfs-car/-/ipfs-car-0.2.3.tgz#7b8a69dc751916471a08f10cee841a13e5beaa10"
-  integrity sha512-7ibSuaNwyFk1BL6waojWctxKJruxyw9wC1zbWKn+nHlbtAxFOhDRIuFdpRmKCp/npxKLRYeBKzOeAcl9TyuzmA==
+ipfs-car@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/ipfs-car/-/ipfs-car-0.2.4.tgz#6b31d7a96e38aae3225629a2cfa1a60224065b1e"
+  integrity sha512-g3ogtNX1er+gAxUvtYy/k5qvfpTLln9JmZMqlTIgIJuvoq8F9YZy/Qv7RWp7Z51JHxV9QK1Mr03JtAg/wu3p8g==
   dependencies:
     "@ipld/car" "^2.1.0"
     "@types/sinon" "^10.0.2"
+    "@web-std/blob" "^2.1.1"
     bl "^5.0.0"
     ipfs-core-types "^0.5.0"
     ipfs-core-utils "^0.8.0"
