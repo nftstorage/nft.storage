@@ -45,7 +45,7 @@ export async function upload(event, ctx) {
     }
     nftSize = size
   } else {
-    let blob = await event.request.blob()
+    const blob = await event.request.blob()
     if (blob.size === 0) {
       throw new HTTPError('Empty payload', 400)
     }

@@ -28,7 +28,7 @@
     console.log({ expectedCid })
 
     // send the CAR to nft.storage, the returned CID will match the one we created above.
-    const cid = await store.storeBlob(car, true)
+    const cid = await store.storeCar(car)
 
     // verify the service is storing the CID we expect
     const cidsMatch = expectedCid === cid

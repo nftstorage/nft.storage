@@ -24,8 +24,7 @@ async function main() {
   const car = new Blob(carParts, { type: 'application/car' })
 
   // send the CAR to nft.storage, setting isCar to true
-  const isCar = true
-  const cid = await storage.storeBlob(car, isCar)
+  const cid = await storage.storeCar(car)
 
   // verify the service stored the CID we expected
   const cidsMatch = expectedCid === cid
