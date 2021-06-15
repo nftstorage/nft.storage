@@ -21,6 +21,16 @@ export default function NewFile() {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [uploading, setUploading] = useState(false)
+  const [isCar, setIsCar] = useState(false)
+
+  function checkCar(e) {
+    const file = e.target.files[0]
+    if (file && file.name.endsWith('.car')) {
+      setIsCar(true)
+    } else {
+      setIsCar(false)
+    }
+  }
 
   /**
    * @param {import('react').ChangeEvent<HTMLFormElement>} e
@@ -29,7 +39,6 @@ export default function NewFile() {
     e.preventDefault()
     const data = new FormData(e.target)
     const file = data.get('file')
-    const isCar = data.get('is-car') === 'on'
     if (file && file instanceof File) {
       const client = new NFTStorage({
         token: await getToken(),
@@ -37,7 +46,11 @@ export default function NewFile() {
       })
       setUploading(true)
       try {
-        await client.storeBlob(file, isCar)
+        if (isCar) {
+          await client.storeCar(file)
+        } else {
+          await client.storeBlob(file)
+        }
       } finally {
         await queryClient.invalidateQueries('get-nfts')
         setUploading(false)
@@ -66,19 +79,27 @@ export default function NewFile() {
                 type="file"
                 className="db ba b--black w5 pa2"
                 required
+                onChange={checkCar}
               />
             </div>
             <label>
-              <input id="is-car" name="is-car" type="checkbox" />
+              <input
+                id="is-car"
+                name="is-car"
+                type="checkbox"
+                checked={isCar}
+                readOnly
+              />
               <span className="ml2">is CAR?</span>
             </label>
             <details className="db mt3 mb4">
-              <summary className="i">Tell me more, what is CAR?</summary>
-              <p className="pl3 mt2 lh-copy">
-                A CAR or Content Addressed Archive allows you to pre-compute the
-                root CID for your assets. When uploaded as a CAR, nft.storge
-                will store your asset with the same root CID as defined in the
-                CAR header. You can pack your assets into a CAR with{' '}
+              <summary className="i">
+                CAR files supported! What is a CAR?
+              </summary>
+              <p className="pl3 mt3 lh-copy">
+                A CAR is a "Content Addressed Archive" that allows you to
+                pre-compute the root CID for your assets. You can pack your
+                assets into a CAR with the{' '}
                 <a
                   className="black"
                   href="https://github.com/vasco-santos/ipfs-car"
@@ -87,15 +108,21 @@ export default function NewFile() {
                 >
                   <code>ipfs-car</code>
                 </a>{' '}
-                or via{' '}
+                cli or via{' '}
                 <a
                   className="black"
-                  href="https://car.on.fleek.co/"
+                  href="https://car.ipfs.io"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  https://car.on.fleek.co
+                  https://car.ipfs.io
                 </a>
+                .
+              </p>
+              <p className="pl3 mt2 lh-copy">
+                Give your CAR filename the <code>.car</code> extention, and when
+                it's uploaded to nft.storge your asset will be stored with the
+                exact same root CID as defined in the CAR file.
               </p>
             </details>
             <div className="mv3">

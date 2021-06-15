@@ -70,26 +70,18 @@ class NFTStorage {
   /**
    * @param {API.Service} service
    * @param {Blob} blob
-   * @param {boolean} [isCar=false]
    * @returns {Promise<API.CIDString>}
    */
-  static async storeBlob({ endpoint, token }, blob, isCar = false) {
+  static async storeBlob({ endpoint, token }, blob) {
     const url = new URL('/upload', endpoint)
 
     if (blob.size === 0) {
       throw new Error('Content size is 0, make sure to provide some content')
     }
 
-    let headers = NFTStorage.auth(token)
-    if (isCar) {
-      headers = Object.assign(headers, {
-        'Content-Type': 'application/car',
-      })
-    }
-
     const request = await fetch(url.toString(), {
       method: 'POST',
-      headers,
+      headers: NFTStorage.auth(token),
       body: blob,
     })
     const result = await request.json()
@@ -99,6 +91,18 @@ class NFTStorage {
     } else {
       throw new Error(result.error.message)
     }
+  }
+  /**
+   * @param {API.Service} service
+   * @param {Blob} blob
+   * @returns {Promise<API.CIDString>}
+   */
+  static async storeCar({ endpoint, token }, blob) {
+    const car =
+      blob.type !== 'application/car'
+        ? blob.slice(0, blob.size, 'application/car') // TODO: test this in safari.
+        : blob
+    return NFTStorage.storeBlob({ endpoint, token }, car)
   }
   /**
    * @param {API.Service} service
@@ -243,10 +247,32 @@ class NFTStorage {
    * ```
    *
    * @param {Blob} blob
-   * @param {boolean} isCar
    */
-  storeBlob(blob, isCar = false) {
-    return NFTStorage.storeBlob(this, blob, isCar)
+  storeBlob(blob) {
+    return NFTStorage.storeBlob(this, blob)
+  }
+  /**
+   * Stores files encoded as a single [Content Addressed Archive
+   * (CAR)](https://github.com/ipld/specs/blob/master/block-layer/content-addressable-archives.md).
+   *
+   * Takes a [Blob](https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob)
+   * or a [File](https://developer.mozilla.org/en-US/docs/Web/API/File).
+   *
+   * Returns the corresponding Content Identifier (CID).
+   *
+   * @example
+   * ```js
+   * import { packToBlob } from 'ipfs-car'
+   * const data = 'Hello world'
+   * const {root, car} = packToBlob({ input: [new TextEncoder().encode(data)] })
+   * const expectedCid = root.toString()
+   * const cid = await client.storeCar(car)
+   * console.assert(cid === expectedCid)
+   * ```
+   * @param {Blob} blob
+   */
+  storeCar(blob) {
+    return NFTStorage.storeCar(this, blob)
   }
   /**
    * Stores a directory of files and returns a CID for the directory.

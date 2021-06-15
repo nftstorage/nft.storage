@@ -3,7 +3,9 @@ import * as Raw from 'multiformats/codecs/raw'
 import { sha256 } from 'multiformats/hashes/sha2'
 import * as CAR from '../../src/utils/car.js'
 
-// @ts-ignore
+/**
+ * @param {string} str Data to encode into CAR file.
+ */
 export async function createCar(str) {
   const value = new TextEncoder().encode(str)
   const block = await Block.encode({

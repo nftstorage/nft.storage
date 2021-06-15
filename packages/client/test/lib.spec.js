@@ -31,21 +31,6 @@ describe('client', () => {
       assert.equal(cid, 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
     })
 
-    it('upload CAR', async () => {
-      const client = new NFTStorage({ token, endpoint })
-      const { root, out } = await pack({
-        input: [new TextEncoder().encode('hello world')],
-      })
-      const expectedCid = root.toString()
-      const carParts = []
-      for await (const part of out) {
-        carParts.push(part)
-      }
-      const car = new Blob(carParts, { type: 'application/car' })
-      const cid = await client.storeBlob(car, true)
-      assert.equal(cid, expectedCid)
-    })
-
     it('can upload twice', async () => {
       const client = new NFTStorage({ token, endpoint })
       const blob = new Blob(['upload twice'])
@@ -91,6 +76,38 @@ describe('client', () => {
       } catch (err) {
         assert.match(err.message, /provide some content/)
       }
+    })
+  })
+
+  describe('upload car', () => {
+    it('upload CAR', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const { root, out } = await pack({
+        input: [new TextEncoder().encode('hello world')],
+      })
+      const expectedCid = root.toString()
+      const carParts = []
+      for await (const part of out) {
+        carParts.push(part)
+      }
+      const car = new Blob(carParts, { type: 'application/car' })
+      const cid = await client.storeCar(car)
+      assert.equal(cid, expectedCid)
+    })
+
+    it('upload CAR with no blob.type', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const { root, out } = await pack({
+        input: [new TextEncoder().encode('hello world')],
+      })
+      const expectedCid = root.toString()
+      const carParts = []
+      for await (const part of out) {
+        carParts.push(part)
+      }
+      const car = new Blob(carParts)
+      const cid = await client.storeCar(car)
+      assert.equal(cid, expectedCid)
     })
   })
 
