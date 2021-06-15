@@ -24,6 +24,8 @@ export async function updateMeta({ cf, env }) {
 
     /** @type {import('../lib/cloudflare.js').BulkWritePair[]} */
     const bulkWrites = []
+    /** @type {string[]} */
+    const bulkDeletes = []
 
     for (const { name, metadata } of keys) {
       try {
@@ -39,8 +41,9 @@ export async function updateMeta({ cf, env }) {
         if (pin.status === metadata.pinStatus) {
           continue
         }
-        const nft = await cf.readKVMeta(nftsNs.id, metadata.key)
+        const nft = await cf.readKV(nftsNs.id, metadata.key)
         if (!nft) {
+          bulkDeletes.push(name)
           throw new Error(`missing nft for ${metadata.key}`)
         }
         bulkWrites.push({
@@ -65,6 +68,11 @@ export async function updateMeta({ cf, env }) {
     if (bulkWrites.length) {
       log(`🗂 updating meta for ${bulkWrites.length} indexed NFTs`)
       await cf.writeKVMulti(nftsIdxNs.id, bulkWrites)
+    }
+
+    if (bulkDeletes.length) {
+      log(`🗑 removing ${bulkDeletes.length} orphan index entries`)
+      await cf.deleteKVMulti(nftsIdxNs.id, bulkDeletes)
     }
 
     total += keys.length

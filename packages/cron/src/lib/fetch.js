@@ -27,6 +27,9 @@ export async function fetchJSON(limiter, url, init) {
         const res = await fetch(url, init)
         const text = await res.text()
         if (!res.ok) {
+          if (res.status === 404) {
+            return null
+          }
           throw Object.assign(
             new Error(`${res.status} ${res.statusText}: ${text}`),
             { response: res }
