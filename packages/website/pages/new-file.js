@@ -23,8 +23,11 @@ export default function NewFile() {
   const [uploading, setUploading] = useState(false)
   const [isCar, setIsCar] = useState(false)
 
+  /**
+   * @param {import('react').ChangeEvent<HTMLInputElement>} e
+   */
   function checkCar(e) {
-    const file = e.target.files[0]
+    const file = e.target.files && e.target.files[0]
     if (file && file.name.endsWith('.car')) {
       setIsCar(true)
     } else {
@@ -97,7 +100,7 @@ export default function NewFile() {
                 CAR files supported! What is a CAR?
               </summary>
               <p className="pl3 mt3 lh-copy">
-                A CAR is a "Content Addressed Archive" that allows you to
+                A CAR is a Content Addressed Archive that allows you to
                 pre-compute the root CID for your assets. You can pack your
                 assets into a CAR with the{' '}
                 <a
@@ -121,8 +124,8 @@ export default function NewFile() {
               </p>
               <p className="pl3 mt2 lh-copy">
                 Give your CAR filename the <code>.car</code> extention, and when
-                it's uploaded to nft.storge your asset will be stored with the
-                exact same root CID as defined in the CAR file.
+                it&apos;s uploaded to nft.storge your asset will be stored with
+                the exact same root CID as defined in the CAR file.
               </p>
             </details>
             <div className="mv3">
