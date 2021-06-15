@@ -1,6 +1,7 @@
 import * as assert from 'uvu/assert'
 import { NFTStorage, Blob, File, Token } from 'nft.storage'
 import { CID } from 'multiformats'
+import { pack } from 'ipfs-car/pack'
 
 const DWEB_LINK = 'dweb.link'
 
@@ -78,6 +79,38 @@ describe('client', () => {
     })
   })
 
+  describe('upload car', () => {
+    it('upload CAR', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const { root, out } = await pack({
+        input: [new TextEncoder().encode('hello world')],
+      })
+      const expectedCid = root.toString()
+      const carParts = []
+      for await (const part of out) {
+        carParts.push(part)
+      }
+      const car = new Blob(carParts, { type: 'application/car' })
+      const cid = await client.storeCar(car)
+      assert.equal(cid, expectedCid)
+    })
+
+    it('upload CAR with no blob.type', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const { root, out } = await pack({
+        input: [new TextEncoder().encode('hello world')],
+      })
+      const expectedCid = root.toString()
+      const carParts = []
+      for await (const part of out) {
+        carParts.push(part)
+      }
+      const car = new Blob(carParts)
+      const cid = await client.storeCar(car)
+      assert.equal(cid, expectedCid)
+    })
+  })
+
   describe('upload dir', () => {
     it('upload a file', async () => {
       const client = new NFTStorage({ token, endpoint })
@@ -99,6 +132,17 @@ describe('client', () => {
       ])
 
       assert.equal(cid, 'QmQAE2tjfwYYmEFFEEnfr12CWikMqgwwtq5gqfyb62bJpw')
+    })
+
+    it('upload empty files', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      try {
+        await client.storeDirectory([new File([], 'empty.txt')])
+        assert.unreachable('should fail if no content is provided')
+      } catch (error) {
+        assert.ok(error instanceof Error)
+        assert.match(error, /provide some content/i)
+      }
     })
 
     it('upload nothing', async () => {

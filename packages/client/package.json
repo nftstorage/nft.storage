@@ -45,6 +45,7 @@
     "@ssttevee/multipart-parser": "0.1.8",
     "@types/mocha": "8.2.2",
     "hundreds": "0.0.9",
+    "ipfs-car": "^0.2.4",
     "ipfs-unixfs-importer": "6.0.1",
     "ipld": "0.29.0",
     "ipld-dag-pb": "0.22.2",

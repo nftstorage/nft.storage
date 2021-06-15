@@ -49,15 +49,20 @@ export async function upload(event, ctx) {
     if (blob.size === 0) {
       throw new HTTPError('Empty payload', 400)
     }
-    const { cid, size } = await cluster.add(blob)
+    // Ensure car blob.type is set; it is used by the cluster client to set the foramt=car flag on the /add call.
+    const content = contentType.includes('application/car')
+      ? blob.slice(0, blob.size, 'application/car')
+      : blob
+    // cluster returns `bytes` rather than `size` when upload is a CAR.
+    const { cid, size, bytes } = await cluster.add(content)
     nft = {
       cid,
       created,
-      type: blob.type,
+      type: content.type,
       scope: tokenName,
       files: [],
     }
-    nftSize = size
+    nftSize = size || bytes
   }
 
   let pin = await pins.get(nft.cid)

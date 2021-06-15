@@ -17,16 +17,23 @@ paths:
       summary: Store a file
       description: |
         Store a file with nft.storage.
+        You can upload either a single file or multiple files in a directory
 
-        - Submit a HTTP `POST` request passing the file data in the request body.
-        - To store multiple files in a directory, submit a `multipart/form-data` HTTP `POST` request.
+        Send the POST request with one of:
+        - a single file as a single Blob/File Object as the body
+        - multiple files as FormData with `Content-Disposition` headers for each part to specify filenames and the request header `Content-Type: multipart/form-data`.
 
-        Use the `Content-Disposition` header for each part to specify a filename.
+        You can also upload a Content Addressed Archive (CAR) file, by setting the request body as a single CAR Blob/File object and providing the request header `Content-Type: application/car`
+        Providing a CAR file allows you to pre-compute the root CID for 1 or more files, ensures that the nft.storage will store and provide your assets with the same CID.
       operationId: store
       requestBody:
         required: true
         content:
           image/png:
+            schema:
+              type: string
+              format: binary
+          application/car:
             schema:
               type: string
               format: binary
@@ -50,6 +57,8 @@ paths:
             'application/json':
               schema:
                 $ref: '#/components/schemas/UploadResponse'
+        '400':
+          $ref: '#/components/responses/badRequest' 
         '401':
           $ref: '#/components/responses/unauthorized'
         '403':

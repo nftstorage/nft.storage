@@ -1,10 +1,17 @@
 # nft.storage browser examples
 
-Here are two examples for using the nft.storage client from the browser.
+Examples using the nft.storage client from the browser.
 
 - `store.html` - creates ERC-1155 compatible metadata
 - `storeBlob.html` - uploads a single file using `storeBlob`
 - `storeDirectory.html` - uploads a multiple files using `storeDirectory`
+
+These demos use https://skypack.dev to bundle the deps up.
+
+**Note**
+
+At time of writing skypack's bundle of `ipfs-car` is incorrect, so a CAR upload demo is provided in /car that
+the CAR upload demo converts it's deps to local ESM modules with [`vite`](https://vitejs.dev/), in the /car folder.
 
 ## Setup
 

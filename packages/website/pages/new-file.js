@@ -21,6 +21,19 @@ export default function NewFile() {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [uploading, setUploading] = useState(false)
+  const [isCar, setIsCar] = useState(false)
+
+  /**
+   * @param {import('react').ChangeEvent<HTMLInputElement>} e
+   */
+  function checkCar(e) {
+    const file = e.target.files && e.target.files[0]
+    if (file && file.name.endsWith('.car')) {
+      setIsCar(true)
+    } else {
+      setIsCar(false)
+    }
+  }
 
   /**
    * @param {import('react').ChangeEvent<HTMLFormElement>} e
@@ -36,7 +49,11 @@ export default function NewFile() {
       })
       setUploading(true)
       try {
-        await client.storeBlob(file)
+        if (isCar) {
+          await client.storeCar(file)
+        } else {
+          await client.storeBlob(file)
+        }
       } finally {
         await queryClient.invalidateQueries('get-nfts')
         setUploading(false)
@@ -65,8 +82,52 @@ export default function NewFile() {
                 type="file"
                 className="db ba b--black w5 pa2"
                 required
+                onChange={checkCar}
               />
             </div>
+            <label>
+              <input
+                id="is-car"
+                name="is-car"
+                type="checkbox"
+                checked={isCar}
+                readOnly
+              />
+              <span className="ml2">is CAR?</span>
+            </label>
+            <details className="db mt3 mb4">
+              <summary className="i">
+                CAR files supported! What is a CAR?
+              </summary>
+              <p className="pl3 mt3 lh-copy">
+                A CAR is a Content Addressed Archive that allows you to
+                pre-compute the root CID for your assets. You can pack your
+                assets into a CAR with the{' '}
+                <a
+                  className="black"
+                  href="https://github.com/vasco-santos/ipfs-car"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <code>ipfs-car</code>
+                </a>{' '}
+                cli or via{' '}
+                <a
+                  className="black"
+                  href="https://car.ipfs.io"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  https://car.ipfs.io
+                </a>
+                .
+              </p>
+              <p className="pl3 mt2 lh-copy">
+                Give your CAR filename the <code>.car</code> extention, and when
+                it&apos;s uploaded to nft.storge your asset will be stored with
+                the exact same root CID as defined in the CAR file.
+              </p>
+            </details>
             <div className="mv3">
               <Button
                 className="bg-nslime"
