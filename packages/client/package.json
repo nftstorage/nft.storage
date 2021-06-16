@@ -38,7 +38,8 @@
     "@web-std/blob": "^2.1.0",
     "@web-std/fetch": "^2.0.1",
     "@web-std/file": "^1.1.0",
-    "@web-std/form-data": "^2.1.0"
+    "@web-std/form-data": "^2.1.0",
+    "carbites": "alanshaw/carbites#chore/add-cjs"
   },
   "devDependencies": {
     "@ipld/dag-cbor": "^5.0.0",

@@ -13,6 +13,10 @@
  * ```
  * @module
  */
+import { pack } from 'ipfs-car/pack'
+import { CID } from 'multiformats'
+import { CarSplitter } from 'carbites'
+
 import * as API from './lib/interface.js'
 import * as Token from './token.js'
 import { fetch, File, Blob, FormData } from './platform.js'

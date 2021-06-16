@@ -8,7 +8,7 @@ const { CarReader } = require('@ipld/car')
 module.exports = async ({ query, files }) => {
   const car = await CarReader.fromBytes(files[0].buffer)
   const roots = await car.getRoots()
-  // @ts-ignore
+  // @ts-ignore Block might be undefined
   const { cid, bytes } = await car.get(roots[0])
   const result = {
     cid: {

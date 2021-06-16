@@ -12,10 +12,12 @@ const client = new Cluster(cluster.apiUrl, {
 
 /**
  * @param {Blob} data
+ * @param {import('@nftstorage/ipfs-cluster').PinOptions} [options]
  */
-export async function add(data) {
+export async function add(data, options = {}) {
   const { cid, size, bytes } = await client.add(data, {
     metadata: { size: data.size.toString() },
+    ...options,
   })
   return {
     cid,
@@ -30,7 +32,9 @@ export async function add(data) {
 export async function addDirectory(files) {
   const size = files.reduce((total, f) => total + f.size, 0)
   if (size === 0) {
-    throw new HTTPError('Content added contains 0 bytes. Please make sure that files are encoded correctly')
+    throw new HTTPError(
+      'Content added contains 0 bytes. Please make sure that files are encoded correctly'
+    )
   }
 
   const results = await client.addDirectory(files, {
@@ -110,6 +114,33 @@ export async function dagSize(cid) {
   }
   const data = await response.json()
   return parseInt(data.Size)
+}
+
+// TODO: Remove
+/**
+ * @param {Blob} data
+ */
+export async function dagImport(data) {
+  const url = new URL(`dag/import?&pin-roots=false`, cluster.ipfsProxyApiUrl)
+
+  const body = new FormData()
+  body.append('file', data)
+
+  const response = await fetch(url.toString(), {
+    method: 'POST',
+    headers: { Authorization: `Basic ${cluster.ipfsProxyBasicAuthToken}` },
+    body,
+  })
+
+  if (!response.ok) {
+    throw Object.assign(
+      new Error(`${response.status}: ${response.statusText}`),
+      { response }
+    )
+  }
+
+  const rData = await response.json()
+  return rData.Root.Cid['/']
 }
 
 /**

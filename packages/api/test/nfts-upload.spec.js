@@ -1,10 +1,11 @@
 import assert from 'assert'
+import all from 'it-all'
 import { clearStores } from './scripts/helpers.js'
 import stores from './scripts/stores.js'
 import { endpoint } from './scripts/constants.js'
 import { signJWT } from '../src/utils/jwt.js'
 import { SALT } from './scripts/worker-globals.js'
-import { createCar } from './scripts/car.js'
+import { createCar, createCarSplitter } from './scripts/car.js'
 
 /**
  * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
@@ -109,5 +110,67 @@ describe('/upload', () => {
       'pinned',
       'pin status is "pinned"'
     )
+  })
+
+  it('should upload partial CAR files and be able to pin', async () => {
+    let root
+    const { token, issuer } = await createTestUser()
+    const splitter = await createCarSplitter()
+
+    // TODO: We can make this in parallel
+    for await (const car of splitter.cars()) {
+      const chunks = await all(car)
+
+      // Upload partial chunk
+      const res = await fetch(
+        new URL('upload/car/chunk', endpoint).toString(),
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/car',
+          },
+          body: new Blob(chunks, {
+            type: 'application/car',
+          }),
+        }
+      )
+
+      assert(res, 'Server responded')
+      assert(res.ok, 'Server response ok')
+      const { ok, value } = await res.json()
+      assert(ok, 'Server response payload has `ok` property')
+
+      if (!root) {
+        // We will have the root on the received car
+        root = value.cid
+      }
+    }
+
+    // Pin NFT
+    const pinRes = await fetch(new URL('pins', endpoint).toString(), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cid: root,
+      }),
+    })
+
+    assert(pinRes, 'Server responded')
+    assert(pinRes.ok, 'Server response ok')
+
+    const pinData = await pinRes.json()
+
+    assert.strictEqual(
+      pinData.requestid,
+      root,
+      'Server responded with expected CID'
+    )
+
+    const nftData = await stores.nfts.get(`${issuer}:${root}`)
+    assert(nftData, 'nft data was stored')
   })
 })
