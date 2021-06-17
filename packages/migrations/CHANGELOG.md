@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.0.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/migrations-v1.0.0...migrations-v1.0.1) (2021-06-17)
+
+
+### Bug Fixes
+
+* remove test code ([91fa46c](https://www.github.com/ipfs-shipyard/nft.storage/commit/91fa46c761a8677924bf7e238d3534624c37bcc7))
+
 ## 1.0.0 (2021-05-26)
 
 
