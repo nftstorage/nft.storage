@@ -13,7 +13,7 @@ jobs:
   deploy-api:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - name: Publish app
         uses: cloudflare/wrangler-action@1.3.0
         env:
@@ -35,7 +35,10 @@ jobs:
     if: github.event.inputs.environment == 'production'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
       - uses: bahmutov/npm-install@v1
       - run: ./packages/tools/cli.js dns --name nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
       - run: echo "::warning::https://nft.storage"
@@ -43,7 +46,10 @@ jobs:
     if: github.event.inputs.environment == 'staging'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
       - uses: bahmutov/npm-install@v1
       - run: ./packages/tools/cli.js dns --name staging.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
       - run: echo "::warning::https://staging.nft.storage"
@@ -51,7 +57,10 @@ jobs:
     if: github.event.inputs.environment == ''
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
       - uses: bahmutov/npm-install@v1
       - run: ./packages/tools/cli.js dns --name dev.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CLOUDFLARE_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
       - run: echo "::warning::https://dev.nft.storage"
