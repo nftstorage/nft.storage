@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.1.0...website-v1.2.0) (2021-06-17)
+
+
+### Features
+
+* support CAR file uploads ([#178](https://www.github.com/ipfs-shipyard/nft.storage/issues/178)) ([c7e5130](https://www.github.com/ipfs-shipyard/nft.storage/commit/c7e5130022ac1d0db13269582bdfa5e60d41bdea))
+
 ## [1.1.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.0.3...website-v1.1.0) (2021-05-26)
 
 
