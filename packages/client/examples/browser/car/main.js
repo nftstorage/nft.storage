@@ -1,7 +1,7 @@
 import { NFTStorage } from 'nft.storage'
 import { packToBlob } from 'ipfs-car/pack/blob'
 
-const endpoint = 'http://api.nft.storage' // the default
+const endpoint = 'https://api.nft.storage' // the default
 const token =
   new URLSearchParams(window.location.search).get('key') || 'API_KEY' // your API key from https://nft.storage/manage
 
