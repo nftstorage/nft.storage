@@ -5,7 +5,6 @@ info:
 
 servers:
   - url: https://api.nft.storage
-  # - url: http://127.0.0.1:8787
 
 tags:
   - name: NFT Storage
@@ -455,6 +454,12 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     internalServerError:
       description: Internal Server Error
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    badRequest:
+      description: Bad Request
       content:
         'application/json':
           schema:

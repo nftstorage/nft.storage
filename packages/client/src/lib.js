@@ -260,11 +260,14 @@ class NFTStorage {
    *
    * Returns the corresponding Content Identifier (CID).
    *
+   * See the [`ipfs-car` docs](https://www.npmjs.com/package/ipfs-car) for more
+   * details on packing a CAR file.
+   *
    * @example
    * ```js
    * import { packToBlob } from 'ipfs-car'
    * const data = 'Hello world'
-   * const {root, car} = packToBlob({ input: [new TextEncoder().encode(data)] })
+   * const { root, car } = await packToBlob({ input: [new TextEncoder().encode(data)] })
    * const expectedCid = root.toString()
    * const cid = await client.storeCar(car)
    * console.assert(cid === expectedCid)
