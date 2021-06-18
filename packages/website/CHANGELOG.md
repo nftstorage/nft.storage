@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.2.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.2.0...website-v1.2.1) (2021-06-18)
+
+
+### Bug Fixes
+
+* misc docs issues ([#190](https://www.github.com/ipfs-shipyard/nft.storage/issues/190)) ([04e9840](https://www.github.com/ipfs-shipyard/nft.storage/commit/04e9840e35903a6738b0e947c150047ce521f912))
+
 ## [1.2.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.1.0...website-v1.2.0) (2021-06-17)
 
 
