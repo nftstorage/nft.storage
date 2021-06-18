@@ -136,7 +136,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L24">packages/client/src/lib.js:24</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L24">packages/client/src/lib.js:24</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -211,7 +211,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L338">packages/client/src/lib.js:338</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L341">packages/client/src/lib.js:341</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -248,7 +248,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L324">packages/client/src/lib.js:324</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L327">packages/client/src/lib.js:327</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -288,7 +288,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L308">packages/client/src/lib.js:308</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L311">packages/client/src/lib.js:311</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -325,7 +325,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L381">packages/client/src/lib.js:381</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L384">packages/client/src/lib.js:384</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -391,7 +391,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L251">packages/client/src/lib.js:251</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L251">packages/client/src/lib.js:251</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -432,7 +432,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L274">packages/client/src/lib.js:274</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L277">packages/client/src/lib.js:277</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -443,11 +443,13 @@
 								<p>Takes a <a href="https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob">Blob</a>
 								or a <a href="https://developer.mozilla.org/en-US/docs/Web/API/File">File</a>.</p>
 								<p>Returns the corresponding Content Identifier (CID).</p>
+								<p>See the <a href="https://www.npmjs.com/package/ipfs-car"><code>ipfs-car</code> docs</a> for more
+								details on packing a CAR file.</p>
 								<dl class="tsd-comment-tags">
 									<dt>example</dt>
 									<dd><pre><code class="language-js"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">packToBlob</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;ipfs-car&#039;</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">data</span><span style="color: #000000"> = </span><span style="color: #A31515">&#039;Hello world&#039;</span>
-<span style="color: #0000FF">const</span><span style="color: #000000"> {</span><span style="color: #0070C1">root</span><span style="color: #000000">, </span><span style="color: #0070C1">car</span><span style="color: #000000">} = </span><span style="color: #795E26">packToBlob</span><span style="color: #000000">({ </span><span style="color: #001080">input:</span><span style="color: #000000"> [</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">TextEncoder</span><span style="color: #000000">().</span><span style="color: #795E26">encode</span><span style="color: #000000">(</span><span style="color: #001080">data</span><span style="color: #000000">)] })</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> { </span><span style="color: #0070C1">root</span><span style="color: #000000">, </span><span style="color: #0070C1">car</span><span style="color: #000000"> } = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #795E26">packToBlob</span><span style="color: #000000">({ </span><span style="color: #001080">input:</span><span style="color: #000000"> [</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">TextEncoder</span><span style="color: #000000">().</span><span style="color: #795E26">encode</span><span style="color: #000000">(</span><span style="color: #001080">data</span><span style="color: #000000">)] })</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">expectedCid</span><span style="color: #000000"> = </span><span style="color: #001080">root</span><span style="color: #000000">.</span><span style="color: #795E26">toString</span><span style="color: #000000">()</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">cid</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">client</span><span style="color: #000000">.</span><span style="color: #795E26">storeCar</span><span style="color: #000000">(</span><span style="color: #001080">car</span><span style="color: #000000">)</span>
 <span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">assert</span><span style="color: #000000">(</span><span style="color: #001080">cid</span><span style="color: #000000"> === </span><span style="color: #001080">expectedCid</span><span style="color: #000000">)</span>
@@ -477,7 +479,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L294">packages/client/src/lib.js:294</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L297">packages/client/src/lib.js:297</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -519,7 +521,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L201">packages/client/src/lib.js:201</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L201">packages/client/src/lib.js:201</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -545,7 +547,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L222">packages/client/src/lib.js:222</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L222">packages/client/src/lib.js:222</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -571,7 +573,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L175">packages/client/src/lib.js:175</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L175">packages/client/src/lib.js:175</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -597,7 +599,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L147">packages/client/src/lib.js:147</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L147">packages/client/src/lib.js:147</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -629,7 +631,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L75">packages/client/src/lib.js:75</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L75">packages/client/src/lib.js:75</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -655,7 +657,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L100">packages/client/src/lib.js:100</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L100">packages/client/src/lib.js:100</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -681,7 +683,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cbd27df/packages/client/src/lib.js#L112">packages/client/src/lib.js:112</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/e49b684/packages/client/src/lib.js#L112">packages/client/src/lib.js:112</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
