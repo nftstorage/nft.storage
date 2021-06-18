@@ -1,5 +1,14 @@
 # Changelog
 
+### [2.1.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v2.1.0...nft.storage-v2.1.1) (2021-06-18)
+
+
+### Bug Fixes
+
+* car upload example ([#197](https://www.github.com/ipfs-shipyard/nft.storage/issues/197)) ([c6b1a68](https://www.github.com/ipfs-shipyard/nft.storage/commit/c6b1a68e643390464b3b46a2707a6430c3ce4f74))
+* **client:** npm lifecycle build command ([#194](https://www.github.com/ipfs-shipyard/nft.storage/issues/194)) ([41138df](https://www.github.com/ipfs-shipyard/nft.storage/commit/41138dfe5fe7308eb2b1dd4f9acd82de3a11f63d))
+* misc docs issues ([#190](https://www.github.com/ipfs-shipyard/nft.storage/issues/190)) ([04e9840](https://www.github.com/ipfs-shipyard/nft.storage/commit/04e9840e35903a6738b0e947c150047ce521f912))
+
 ## [2.1.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v2.0.0...nft.storage-v2.1.0) (2021-06-15)
 
 
