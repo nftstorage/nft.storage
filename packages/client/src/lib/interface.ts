@@ -145,7 +145,10 @@ export interface FinalizedDeal extends DealInfo {
    * Identifier for the deal stored on chain.
    */
   chainDealID: number
-
+  /**
+   * Selector for extracting stored data from the batch root.
+   */
+  datamodelSelector: string
   /**
    * Deal Activation
    */
