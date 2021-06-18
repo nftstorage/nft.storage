@@ -18,8 +18,8 @@
 import toIterable from 'stream-to-it'
 // @ts-ignore module with no types
 import { parallelMap } from 'streaming-iterables'
+import pRetry from 'p-retry'
 
-import all from 'it-all'
 import { CarReader } from '@ipld/car'
 import { TreewalkCarSplitter } from 'carbites/treewalk'
 
@@ -27,6 +27,10 @@ import * as API from './lib/interface.js'
 import * as Token from './token.js'
 import { fetch, File, Blob, FormData } from './platform.js'
 import { toGatewayURL } from './gateway.js'
+
+const MAX_STORE_RETRIES = 3
+const MAX_CONCURRENT_UPLOADS = 3
+const MAX_CHUNK_SIZE = 960 * 960 * 100 // chunk to ~96MB CARs
 
 /**
  * @implements API.Service
@@ -108,36 +112,41 @@ class NFTStorage {
    * @returns {Promise<API.CIDString | undefined>}
    */
   static async storeCar({ endpoint, token }, carReader) {
-    // See if this is a blob
-    if (carReader instanceof Blob) {
-      const blob = carReader
-      carReader = await CarReader.fromIterable(toIterable(blob.stream()))
-    }
-
-    // const roots = await carReader.getRoots()
-    // TODO: Should we throw if multiple roots?
-
-    const targetSize = 960 * 960 * 100 // chunk to ~96MB CARs
+    const targetSize = MAX_CHUNK_SIZE
     // const targetSize = 960 * 960 * 4
-    const splitter = new TreewalkCarSplitter(carReader, targetSize)
+    const splitter =
+      carReader instanceof Blob
+        ? await TreewalkCarSplitter.fromBlob(carReader, targetSize)
+        : new TreewalkCarSplitter(carReader, targetSize)
 
     const upload = parallelMap(
-      3,
+      MAX_CONCURRENT_UPLOADS,
       async (/** @type {AsyncIterable<Uint8Array>} */ car) => {
-        const carParts = await all(car)
+        const carParts = []
+        for await (const part of car) {
+          carParts.push(part)
+        }
         const carFile = new Blob(carParts, {
           type: 'application/car',
         })
         console.log('store blob')
-        const res = await NFTStorage.storeBlob({ endpoint, token }, carFile)
+        const res = await pRetry(
+          () => NFTStorage.storeBlob({ endpoint, token }, carFile),
+          { retries: MAX_STORE_RETRIES }
+        )
+        // const res = await NFTStorage.storeBlob({ endpoint, token }, carFile)
         console.log('stored blob')
         return res
       }
     )
 
-    const res = await all(upload(splitter.cars()))
-
-    return res && res[0]
+    let root
+    for await (const res of upload(splitter.cars())) {
+      if (!root) {
+        root = res
+      }
+    }
+    return root
   }
   /**
    * @param {API.Service} service
