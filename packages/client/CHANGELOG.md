@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v2.1.1...nft.storage-v2.2.0) (2021-06-19)
+
+
+### Features
+
+* deal data selector ([#198](https://www.github.com/ipfs-shipyard/nft.storage/issues/198)) ([7261c53](https://www.github.com/ipfs-shipyard/nft.storage/commit/7261c5350aff3f1ff991a8ff5c22d67722da6c5f)), closes [#192](https://www.github.com/ipfs-shipyard/nft.storage/issues/192)
+
 ### [2.1.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v2.1.0...nft.storage-v2.1.1) (2021-06-18)
 
 
