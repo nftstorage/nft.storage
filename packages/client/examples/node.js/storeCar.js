@@ -1,6 +1,6 @@
 import fs from 'fs'
 import { pack } from 'ipfs-car/pack'
-import { CarReader } from '@ipld/car'
+import { CarIndexedReader } from '@ipld/car'
 import { NFTStorage } from '../../src/lib.js'
 
 const endpoint = 'https://api.nft.storage' // the default
@@ -17,7 +17,7 @@ async function main() {
   console.log({ expectedCid })
 
   // Create the car reader
-  const carReader = await CarReader.fromIterable(out)
+  const carReader = await CarIndexedReader.fromIterable(out)
 
   // send the CAR to nft.storage, the returned CID will match the one we created above.
   const cid = await storage.storeCar(carReader)

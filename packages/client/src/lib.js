@@ -15,8 +15,6 @@
  */
 
 // @ts-ignore module with no types
-import toIterable from 'stream-to-it'
-// @ts-ignore module with no types
 import { parallelMap } from 'streaming-iterables'
 import pRetry from 'p-retry'
 
@@ -108,20 +106,16 @@ class NFTStorage {
   }
   /**
    * @param {API.Service} service
-   * @param {Blob|CarReader} carReader
-   * @param {{onStoredChunk?: (cid: API.CIDString) => void}} [options]
-   * @returns {Promise<API.CIDString | undefined>}
+   * @param {Blob|CarReader} car
+   * @param {{onStoredChunk?: (size: number) => void}} [options]
+   * @returns {Promise<API.CIDString>}
    */
-  static async storeCar(
-    { endpoint, token },
-    carReader,
-    { onStoredChunk } = {}
-  ) {
+  static async storeCar({ endpoint, token }, car, { onStoredChunk } = {}) {
     const targetSize = MAX_CHUNK_SIZE
     const splitter =
-      carReader instanceof Blob
-        ? await TreewalkCarSplitter.fromBlob(carReader, targetSize)
-        : new TreewalkCarSplitter(carReader, targetSize)
+      car instanceof Blob
+        ? await TreewalkCarSplitter.fromBlob(car, targetSize)
+        : new TreewalkCarSplitter(car, targetSize)
 
     const upload = parallelMap(
       MAX_CONCURRENT_UPLOADS,
@@ -137,18 +131,16 @@ class NFTStorage {
           () => NFTStorage.storeBlob({ endpoint, token }, carFile),
           { retries: MAX_STORE_RETRIES }
         )
-        onStoredChunk && onStoredChunk(res)
+        onStoredChunk && onStoredChunk(carFile.size)
         return res
       }
     )
 
-    // Keep the first cid
     let root
-    for await (const res of upload(splitter.cars())) {
-      if (!root) {
-        root = res
-      }
+    for await (const cid of upload(splitter.cars())) {
+      root = cid
     }
+    // @ts-ignore there will always be a root, or carbites will fail
     return root
   }
   /**
@@ -332,11 +324,11 @@ class NFTStorage {
    * const cid = await client.storeCar(car)
    * console.assert(cid === expectedCid)
    * ```
-   * @param {Blob|CarReader} carReader
-   * @param {{onStoredChunk?: (cid: API.CIDString) => void}} [options]
+   * @param {Blob|CarReader} car
+   * @param {{onStoredChunk?: (size: number) => void}} [options]
    */
-  storeCar(carReader, options) {
-    return NFTStorage.storeCar(this, carReader, options)
+  storeCar(car, options) {
+    return NFTStorage.storeCar(this, car, options)
   }
   /**
    * Stores a directory of files and returns a CID for the directory.
