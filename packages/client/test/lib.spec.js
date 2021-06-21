@@ -1,7 +1,12 @@
+import { CarReader } from '@ipld/car'
 import * as assert from 'uvu/assert'
 import { NFTStorage, Blob, File, Token } from 'nft.storage'
 import { CID } from 'multiformats'
 import { pack } from 'ipfs-car/pack'
+import { CarWriter } from '@ipld/car'
+import * as dagCbor from '@ipld/dag-cbor'
+import { garbage } from 'ipld-garbage'
+import { sha256 } from 'multiformats/hashes/sha2'
 
 const DWEB_LINK = 'dweb.link'
 
@@ -80,7 +85,7 @@ describe('client', () => {
   })
 
   describe('upload car', () => {
-    it('upload CAR', async () => {
+    it('upload CAR with a blob', async () => {
       const client = new NFTStorage({ token, endpoint })
       const { root, out } = await pack({
         input: [new TextEncoder().encode('hello world')],
@@ -95,7 +100,7 @@ describe('client', () => {
       assert.equal(cid, expectedCid)
     })
 
-    it('upload CAR with no blob.type', async () => {
+    it('upload CAR with a blob lacking blob.type', async () => {
       const client = new NFTStorage({ token, endpoint })
       const { root, out } = await pack({
         input: [new TextEncoder().encode('hello world')],
@@ -107,6 +112,42 @@ describe('client', () => {
       }
       const car = new Blob(carParts)
       const cid = await client.storeCar(car)
+      assert.equal(cid, expectedCid)
+    })
+
+    it('upload CAR with a CarReader', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const { root, out } = await pack({
+        input: [new TextEncoder().encode('hello world')],
+      })
+      const expectedCid = root.toString()
+
+      const carReader = await CarReader.fromIterable(out)
+
+      const cid = await client.storeCar(carReader)
+      assert.equal(cid, expectedCid)
+    })
+
+    it('upload large CAR with a CarReader', async function () {
+      this.timeout(130e3)
+      let uploadedChunks = 0
+
+      const client = new NFTStorage({ token, endpoint })
+
+      const targetSize = 1024 * 1024 * 120 // ~120MB CARs
+      const carReader = await CarReader.fromIterable(
+        await randomCar(targetSize)
+      )
+
+      const roots = await carReader.getRoots()
+      const expectedCid = roots[0]?.toString()
+
+      const cid = await client.storeCar(carReader, {
+        onStoredChunk: () => {
+          uploadedChunks++
+        },
+      })
+      assert.equal(uploadedChunks, 2)
       assert.equal(cid, expectedCid)
     })
   })
@@ -589,3 +630,32 @@ describe('client', () => {
     })
   })
 })
+
+/**
+ * @param {number} targetSize
+ * @returns {Promise<AsyncIterable<Uint8Array>>}
+ */
+async function randomCar(targetSize) {
+  const blocks = []
+  let size = 0
+  const seen = new Set()
+  while (size < targetSize) {
+    const bytes = dagCbor.encode(
+      garbage(targetSize / 6, { weights: { CID: 0 } })
+    )
+    const hash = await sha256.digest(bytes)
+    const cid = CID.create(1, dagCbor.code, hash)
+    if (seen.has(cid.toString())) continue
+    seen.add(cid.toString())
+    blocks.push({ cid, bytes })
+    size += bytes.length
+  }
+  const rootBytes = dagCbor.encode(blocks.map((b) => b.cid))
+  const rootHash = await sha256.digest(rootBytes)
+  const rootCid = CID.create(1, dagCbor.code, rootHash)
+  const { writer, out } = CarWriter.create([rootCid])
+  writer.put({ cid: rootCid, bytes: rootBytes })
+  blocks.forEach((b) => writer.put(b))
+  writer.close()
+  return out
+}

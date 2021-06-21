@@ -1,5 +1,6 @@
 import fs from 'fs'
-import { packToBlob } from 'ipfs-car/pack/blob'
+import { packToFs } from 'ipfs-car/pack/fs'
+import { CarIndexedReader } from '@ipld/car'
 import { NFTStorage } from '../../src/lib.js'
 
 const endpoint = 'https://api.nft.storage' // the default
@@ -9,15 +10,22 @@ async function main() {
   const storage = new NFTStorage({ endpoint, token })
 
   // locally chunk'n'hash the file to get the CID and pack the blocks in to a CAR
-  const { root, car } = await packToBlob({
-    input: fs.createReadStream('pinpie.jpg'),
+  const { root } = await packToFs({
+    input: `${process.cwd()}/pinpie.jpg`,
+    output: `${process.cwd()}/output.car`,
   })
-
   const expectedCid = root.toString()
   console.log({ expectedCid })
 
-  // send the CAR to nft.storage, setting isCar to true
-  const cid = await storage.storeCar(car)
+  // Create the car reader
+  const carReader = await CarIndexedReader.fromFile(
+    `${process.cwd()}/output.car`
+  )
+
+  console.log('go')
+
+  // send the CAR to nft.storage, the returned CID will match the one we created above.
+  const cid = await storage.storeCar(carReader)
 
   // verify the service stored the CID we expected
   const cidsMatch = expectedCid === cid
@@ -26,5 +34,8 @@ async function main() {
   // check that the CID is pinned
   const status = await storage.status(cid)
   console.log(status)
+
+  // Delete car file created
+  await fs.promises.rm(`${process.cwd()}/output.car`)
 }
 main()

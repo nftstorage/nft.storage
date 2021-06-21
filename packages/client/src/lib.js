@@ -13,10 +13,22 @@
  * ```
  * @module
  */
+
+// @ts-ignore module with no types
+import { parallelMap } from 'streaming-iterables'
+import pRetry from 'p-retry'
+
+import { CarReader } from '@ipld/car'
+import { TreewalkCarSplitter } from 'carbites'
+
 import * as API from './lib/interface.js'
 import * as Token from './token.js'
 import { fetch, File, Blob, FormData } from './platform.js'
 import { toGatewayURL } from './gateway.js'
+
+const MAX_STORE_RETRIES = 5
+const MAX_CONCURRENT_UPLOADS = 3
+const MAX_CHUNK_SIZE = 1024 * 1024 * 99 // chunk to ~99MB CARs
 
 /**
  * @implements API.Service
@@ -94,15 +106,42 @@ class NFTStorage {
   }
   /**
    * @param {API.Service} service
-   * @param {Blob} blob
+   * @param {Blob|CarReader} car
+   * @param {{onStoredChunk?: (size: number) => void}} [options]
    * @returns {Promise<API.CIDString>}
    */
-  static async storeCar({ endpoint, token }, blob) {
-    const car =
-      blob.type !== 'application/car'
-        ? blob.slice(0, blob.size, 'application/car') // TODO: test this in safari.
-        : blob
-    return NFTStorage.storeBlob({ endpoint, token }, car)
+  static async storeCar({ endpoint, token }, car, { onStoredChunk } = {}) {
+    const targetSize = MAX_CHUNK_SIZE
+    const splitter =
+      car instanceof Blob
+        ? await TreewalkCarSplitter.fromBlob(car, targetSize)
+        : new TreewalkCarSplitter(car, targetSize)
+
+    const upload = parallelMap(
+      MAX_CONCURRENT_UPLOADS,
+      async (/** @type {AsyncIterable<Uint8Array>} */ car) => {
+        const carParts = []
+        for await (const part of car) {
+          carParts.push(part)
+        }
+        const carFile = new Blob(carParts, {
+          type: 'application/car',
+        })
+        const res = await pRetry(
+          () => NFTStorage.storeBlob({ endpoint, token }, carFile),
+          { retries: MAX_STORE_RETRIES }
+        )
+        onStoredChunk && onStoredChunk(carFile.size)
+        return res
+      }
+    )
+
+    let root
+    for await (const cid of upload(splitter.cars())) {
+      root = cid
+    }
+    // @ts-ignore there will always be a root, or carbites will fail
+    return root
   }
   /**
    * @param {API.Service} service
@@ -265,17 +304,31 @@ class NFTStorage {
    *
    * @example
    * ```js
-   * import { packToBlob } from 'ipfs-car'
+   * import { pack } from 'ipfs-car/pack'
+   * import { CarReader } from '@ipld/car'
+   * const { out, root } = await pack({
+   *  input: fs.createReadStream('pinpie.pdf')
+   * })
+   * const expectedCid = root.toString()
+   * const carReader = await CarReader.fromIterable(out)
+   * const cid = await storage.storeCar(carReader)
+   * console.assert(cid === expectedCid)
+   * ```
+   *
+   * @example
+   * ```
+   * import { packToBlob } from 'ipfs-car/pack/blob'
    * const data = 'Hello world'
    * const { root, car } = await packToBlob({ input: [new TextEncoder().encode(data)] })
    * const expectedCid = root.toString()
    * const cid = await client.storeCar(car)
    * console.assert(cid === expectedCid)
    * ```
-   * @param {Blob} blob
+   * @param {Blob|CarReader} car
+   * @param {{onStoredChunk?: (size: number) => void}} [options]
    */
-  storeCar(blob) {
-    return NFTStorage.storeCar(this, blob)
+  storeCar(car, options) {
+    return NFTStorage.storeCar(this, car, options)
   }
   /**
    * Stores a directory of files and returns a CID for the directory.
