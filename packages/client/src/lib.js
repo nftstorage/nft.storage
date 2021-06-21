@@ -142,6 +142,7 @@ class NFTStorage {
       }
     )
 
+    // Keep the first cid
     let root
     for await (const res of upload(splitter.cars())) {
       if (!root) {
@@ -311,7 +312,7 @@ class NFTStorage {
    *
    * @example
    * ```js
-   * import { packToBlob } from 'ipfs-car/pack'
+   * import { pack } from 'ipfs-car/pack'
    * import { CarReader } from '@ipld/car'
    * const { out, root } = await pack({
    *  input: fs.createReadStream('pinpie.pdf')
