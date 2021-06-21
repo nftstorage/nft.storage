@@ -35,7 +35,6 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@ipld/car": "^3.0.3",
     "@web-std/blob": "^2.1.0",
     "@web-std/fetch": "^2.0.1",
     "@web-std/file": "^1.1.0",
@@ -45,6 +44,7 @@
     "streaming-iterables": "^6.0.0"
   },
   "devDependencies": {
+    "@ipld/car": "^3.0.3",
     "@ipld/dag-cbor": "^6.0.4",
     "@ssttevee/multipart-parser": "0.1.8",
     "@types/mocha": "8.2.2",

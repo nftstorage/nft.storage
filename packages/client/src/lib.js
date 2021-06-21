@@ -26,7 +26,7 @@ import * as Token from './token.js'
 import { fetch, File, Blob, FormData } from './platform.js'
 import { toGatewayURL } from './gateway.js'
 
-const MAX_STORE_RETRIES = 3
+const MAX_STORE_RETRIES = 5
 const MAX_CONCURRENT_UPLOADS = 3
 const MAX_CHUNK_SIZE = 1024 * 1024 * 99 // chunk to ~99MB CARs
 
