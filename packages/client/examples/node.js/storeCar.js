@@ -9,7 +9,7 @@ const token = 'API_KEY' // your API key from https://nft.storage/manage
 async function main() {
   const storage = new NFTStorage({ endpoint, token })
 
-  // locally chunk'n'hash the data to get the CID and pack the blocks in to a CAR
+  // locally chunk'n'hash the file to get the CID and pack the blocks in to a CAR
   const { root, out } = await pack({
     input: fs.createReadStream('pinpie.jpg'),
   })

@@ -129,11 +129,11 @@ describe('client', () => {
     })
 
     it('upload large CAR with a CarReader', async function () {
-      this.timeout(80e3)
+      this.timeout(120e3)
 
       const client = new NFTStorage({ token, endpoint })
 
-      const targetSize = 1024 * 1024 * 120 // ~120MB CARs
+      const targetSize = 1024 * 1024 * 110 // ~110MB CARs
       const carReader = await CarReader.fromIterable(
         await randomCar(targetSize)
       )
@@ -647,11 +647,8 @@ async function randomCar(targetSize) {
   const rootBytes = dagCbor.encode(blocks.map((b) => b.cid))
   const rootHash = await sha256.digest(rootBytes)
   const rootCid = CID.create(1, dagCbor.code, rootHash)
-  // @ts-ignore versions of multiformats...
   const { writer, out } = CarWriter.create([rootCid])
-  // @ts-ignore versions of multiformats...
   writer.put({ cid: rootCid, bytes: rootBytes })
-  // @ts-ignore versions of multiformats...
   blocks.forEach((b) => writer.put(b))
   writer.close()
   return out

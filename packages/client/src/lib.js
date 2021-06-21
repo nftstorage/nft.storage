@@ -128,13 +128,10 @@ class NFTStorage {
         const carFile = new Blob(carParts, {
           type: 'application/car',
         })
-        console.log('go store', carFile.size)
-        const res = await pRetry(
+        return await pRetry(
           () => NFTStorage.storeBlob({ endpoint, token }, carFile),
           { retries: MAX_STORE_RETRIES }
         )
-        console.log('stored')
-        return res
       }
     )
 
