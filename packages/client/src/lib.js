@@ -21,7 +21,7 @@ import { parallelMap } from 'streaming-iterables'
 import pRetry from 'p-retry'
 
 import { CarReader } from '@ipld/car'
-import { TreewalkCarSplitter } from 'carbites/treewalk'
+import { TreewalkCarSplitter } from 'carbites'
 
 import * as API from './lib/interface.js'
 import * as Token from './token.js'
@@ -30,7 +30,7 @@ import { toGatewayURL } from './gateway.js'
 
 const MAX_STORE_RETRIES = 3
 const MAX_CONCURRENT_UPLOADS = 3
-const MAX_CHUNK_SIZE = 960 * 960 * 100 // chunk to ~96MB CARs
+const MAX_CHUNK_SIZE = 1024 * 1024 * 80 // chunk to ~80MB CARs
 
 /**
  * @implements API.Service
@@ -113,7 +113,6 @@ class NFTStorage {
    */
   static async storeCar({ endpoint, token }, carReader) {
     const targetSize = MAX_CHUNK_SIZE
-    // const targetSize = 960 * 960 * 4
     const splitter =
       carReader instanceof Blob
         ? await TreewalkCarSplitter.fromBlob(carReader, targetSize)
@@ -129,13 +128,12 @@ class NFTStorage {
         const carFile = new Blob(carParts, {
           type: 'application/car',
         })
-        console.log('store blob')
+        console.log('go store', carFile.size)
         const res = await pRetry(
           () => NFTStorage.storeBlob({ endpoint, token }, carFile),
           { retries: MAX_STORE_RETRIES }
         )
-        // const res = await NFTStorage.storeBlob({ endpoint, token }, carFile)
-        console.log('stored blob')
+        console.log('stored')
         return res
       }
     )

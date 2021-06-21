@@ -129,18 +129,11 @@ describe('client', () => {
     })
 
     it('upload large CAR with a CarReader', async function () {
-      this.timeout(150e3)
-      try {
-        if (window) {
-          // Skip browser
-          // Too slow on fetch with playwright
-          return
-        }
-      } catch (err) {}
+      this.timeout(80e3)
 
       const client = new NFTStorage({ token, endpoint })
 
-      const targetSize = 1024 * 1024 * 140 * 1 // ~140MB CARs
+      const targetSize = 1024 * 1024 * 120 // ~120MB CARs
       const carReader = await CarReader.fromIterable(
         await randomCar(targetSize)
       )
@@ -633,14 +626,6 @@ describe('client', () => {
 })
 
 /**
- * @param {number} min
- * @param {number} max
- */
-function randomInt(min, max) {
-  return Math.random() * (max - min) + min
-}
-
-/**
  * @param {number} targetSize
  * @returns {Promise<AsyncIterable<Uint8Array>>}
  */
@@ -650,7 +635,7 @@ async function randomCar(targetSize) {
   const seen = new Set()
   while (size < targetSize) {
     const bytes = dagCbor.encode(
-      garbage(randomInt(1, targetSize), { weights: { CID: 0 } })
+      garbage(targetSize / 6, { weights: { CID: 0 } })
     )
     const hash = await sha256.digest(bytes)
     const cid = CID.create(1, dagCbor.code, hash)
