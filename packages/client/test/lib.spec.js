@@ -129,11 +129,12 @@ describe('client', () => {
     })
 
     it('upload large CAR with a CarReader', async function () {
-      this.timeout(120e3)
+      this.timeout(130e3)
+      let uploadedChunks = 0
 
       const client = new NFTStorage({ token, endpoint })
 
-      const targetSize = 1024 * 1024 * 110 // ~110MB CARs
+      const targetSize = 1024 * 1024 * 120 // ~120MB CARs
       const carReader = await CarReader.fromIterable(
         await randomCar(targetSize)
       )
@@ -141,7 +142,12 @@ describe('client', () => {
       const roots = await carReader.getRoots()
       const expectedCid = roots[0]?.toString()
 
-      const cid = await client.storeCar(carReader)
+      const cid = await client.storeCar(carReader, {
+        onStoredChunk: () => {
+          uploadedChunks++
+        },
+      })
+      assert.equal(uploadedChunks, 2)
       assert.equal(cid, expectedCid)
     })
   })

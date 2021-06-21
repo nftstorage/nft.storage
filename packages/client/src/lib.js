@@ -30,7 +30,7 @@ import { toGatewayURL } from './gateway.js'
 
 const MAX_STORE_RETRIES = 3
 const MAX_CONCURRENT_UPLOADS = 3
-const MAX_CHUNK_SIZE = 1024 * 1024 * 80 // chunk to ~80MB CARs
+const MAX_CHUNK_SIZE = 1024 * 1024 * 99 // chunk to ~99MB CARs
 
 /**
  * @implements API.Service
@@ -109,9 +109,14 @@ class NFTStorage {
   /**
    * @param {API.Service} service
    * @param {Blob|CarReader} carReader
+   * @param {{onStoredChunk?: (cid: API.CIDString) => void}} [options]
    * @returns {Promise<API.CIDString | undefined>}
    */
-  static async storeCar({ endpoint, token }, carReader) {
+  static async storeCar(
+    { endpoint, token },
+    carReader,
+    { onStoredChunk } = {}
+  ) {
     const targetSize = MAX_CHUNK_SIZE
     const splitter =
       carReader instanceof Blob
@@ -128,10 +133,12 @@ class NFTStorage {
         const carFile = new Blob(carParts, {
           type: 'application/car',
         })
-        return await pRetry(
+        const res = await pRetry(
           () => NFTStorage.storeBlob({ endpoint, token }, carFile),
           { retries: MAX_STORE_RETRIES }
         )
+        onStoredChunk && onStoredChunk(res)
+        return res
       }
     )
 
@@ -304,17 +311,31 @@ class NFTStorage {
    *
    * @example
    * ```js
-   * import { packToBlob } from 'ipfs-car'
+   * import { packToBlob } from 'ipfs-car/pack'
+   * import { CarReader } from '@ipld/car'
+   * const { out, root } = await pack({
+   *  input: fs.createReadStream('pinpie.pdf')
+   * })
+   * const expectedCid = root.toString()
+   * const carReader = await CarReader.fromIterable(out)
+   * const cid = await storage.storeCar(carReader)
+   * console.assert(cid === expectedCid)
+   * ```
+   *
+   * @example
+   * ```
+   * import { packToBlob } from 'ipfs-car/pack/blob'
    * const data = 'Hello world'
    * const { root, car } = await packToBlob({ input: [new TextEncoder().encode(data)] })
    * const expectedCid = root.toString()
    * const cid = await client.storeCar(car)
    * console.assert(cid === expectedCid)
    * ```
-   * @param {Blob|CarReader} blob
+   * @param {Blob|CarReader} carReader
+   * @param {{onStoredChunk?: (cid: API.CIDString) => void}} [options]
    */
-  storeCar(blob) {
-    return NFTStorage.storeCar(this, blob)
+  storeCar(carReader, options) {
+    return NFTStorage.storeCar(this, carReader, options)
   }
   /**
    * Stores a directory of files and returns a CID for the directory.
