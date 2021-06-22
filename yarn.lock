@@ -452,11 +452,6 @@
   resolved "https://registry.yarnpkg.com/@next/react-refresh-utils/-/react-refresh-utils-10.2.3.tgz#2f3e42fe6680798f276e3621345c2886b231348b"
   integrity sha512-qtBF56vPC6d6a8p7LYd0iRjW89fhY80kAIzmj+VonvIGjK/nymBjcFUhbKiMFqlhsarCksnhwX+Zmn95Dw9qvA==
 
-"@nftstorage/ipfs-cluster@^3.0.0":
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/@nftstorage/ipfs-cluster/-/ipfs-cluster-3.0.1.tgz#74e8d5809a12b1fcfe627c65b12845c09f9d0da2"
-  integrity sha512-/AxtGKJAoi/b8Bp37ZXJRP1eTUarGcvLMtsJm3NI/31jN3hrxvMl+/RUkYdBEcrctd51p0Qs2MDrEqa5ymZWQQ==
-
 "@nftstorage/ipfs-cluster@^3.1.1":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@nftstorage/ipfs-cluster/-/ipfs-cluster-3.1.1.tgz#075019a8a78e833dc85abc69115f4a0425e5e8bf"

@@ -48,8 +48,5 @@
     "readable-stream": "^3.6.0",
     "smoke": "^3.1.1",
     "webpack": "^4.0.0"
-  },
-  "resolutions": {
-    "url-regex-safe": "^2.0.2"
   }
 }
