@@ -1,5 +1,15 @@
 # Changelog
 
+### [2.2.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.2.0...api-v2.2.1) (2021-06-22)
+
+
+### Bug Fixes
+
+* chunking issues ([#203](https://www.github.com/ipfs-shipyard/nft.storage/issues/203)) ([d990a20](https://www.github.com/ipfs-shipyard/nft.storage/commit/d990a207fd99aa74bde56a5d6b79e5027cf42287))
+* cluster status text for queued pin ([f0f9553](https://www.github.com/ipfs-shipyard/nft.storage/commit/f0f955305e9d65b6993f04a18b30673e5f8bc5e6))
+* initial pin status ([1a4d292](https://www.github.com/ipfs-shipyard/nft.storage/commit/1a4d29236bb4f76ec7689e4b9b6ba7f02072d8cd))
+* test expectations for new initial pin status ([ddaf11f](https://www.github.com/ipfs-shipyard/nft.storage/commit/ddaf11fd440324a0da8cc0eca80203e10cd233ed))
+
 ## [2.2.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.1.0...api-v2.2.0) (2021-06-17)
 
 
