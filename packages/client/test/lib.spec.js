@@ -147,7 +147,7 @@ describe('client', () => {
           uploadedChunks++
         },
       })
-      assert.equal(uploadedChunks, 2)
+      assert.ok(uploadedChunks >= 12)
       assert.equal(cid, expectedCid)
     })
   })
@@ -631,6 +631,14 @@ describe('client', () => {
   })
 })
 
+const MAX_BLOCK_SIZE = 1024 * 1024 * 4
+
+function randomBlockSize() {
+  const max = MAX_BLOCK_SIZE
+  const min = max / 2
+  return Math.random() * (max - min) + min
+}
+
 /**
  * @param {number} targetSize
  * @returns {Promise<AsyncIterable<Uint8Array>>}
@@ -641,7 +649,7 @@ async function randomCar(targetSize) {
   const seen = new Set()
   while (size < targetSize) {
     const bytes = dagCbor.encode(
-      garbage(targetSize / 6, { weights: { CID: 0 } })
+      garbage(randomBlockSize(), { weights: { CID: 0 } })
     )
     const hash = await sha256.digest(bytes)
     const cid = CID.create(1, dagCbor.code, hash)

@@ -9,6 +9,7 @@ import { validate } from '../utils/auth.js'
 import { debug } from '../utils/debug.js'
 
 const log = debug('nfts-upload')
+const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
 
 /**
  * @typedef {import('../bindings').NFT} NFT
@@ -49,12 +50,16 @@ export async function upload(event, ctx) {
     if (blob.size === 0) {
       throw new HTTPError('Empty payload', 400)
     }
+    const isCar = contentType.includes('application/car')
     // Ensure car blob.type is set; it is used by the cluster client to set the foramt=car flag on the /add call.
-    const content = contentType.includes('application/car')
-      ? blob.slice(0, blob.size, 'application/car')
-      : blob
+    const content = isCar ? blob.slice(0, blob.size, 'application/car') : blob
     // cluster returns `bytes` rather than `size` when upload is a CAR.
-    const { cid, size, bytes } = await cluster.add(content)
+    const { cid, size, bytes } = await cluster.add(content, {
+      // When >2.5MB, use local add, because waiting for blocks to be sent to
+      // other cluster nodes can take a long time. Replication to other nodes
+      // will be done async by bitswap instead.
+      local: blob.size > LOCAL_ADD_THRESHOLD,
+    })
     nft = {
       cid,
       created,
@@ -66,8 +71,9 @@ export async function upload(event, ctx) {
   }
 
   let pin = await pins.get(nft.cid)
-  if (!pin || pin.status !== 'pinned') {
-    pin = { cid: nft.cid, status: 'pinned', size: nftSize, created }
+  if (!pin) {
+    const status = cluster.toPSAStatus(await cluster.status(nft.cid))
+    pin = { cid: nft.cid, status, size: nftSize, created }
     await pins.set(nft.cid, pin)
   }
 

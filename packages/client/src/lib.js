@@ -15,7 +15,7 @@
  */
 
 // @ts-ignore module with no types
-import { parallelMap } from 'streaming-iterables'
+import { transform } from 'streaming-iterables'
 import pRetry from 'p-retry'
 
 import { CarReader } from '@ipld/car'
@@ -28,7 +28,7 @@ import { toGatewayURL } from './gateway.js'
 
 const MAX_STORE_RETRIES = 5
 const MAX_CONCURRENT_UPLOADS = 3
-const MAX_CHUNK_SIZE = 1024 * 1024 * 99 // chunk to ~99MB CARs
+const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
 
 /**
  * @implements API.Service
@@ -117,7 +117,7 @@ class NFTStorage {
         ? await TreewalkCarSplitter.fromBlob(car, targetSize)
         : new TreewalkCarSplitter(car, targetSize)
 
-    const upload = parallelMap(
+    const upload = transform(
       MAX_CONCURRENT_UPLOADS,
       async (/** @type {AsyncIterable<Uint8Array>} */ car) => {
         const carParts = []
