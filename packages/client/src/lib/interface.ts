@@ -47,6 +47,10 @@ export interface API {
    */
   storeBlob(service: Service, content: Blob | File): Promise<CIDString>
   /**
+   * Stores CAR file and returns a corresponding CID.
+   */
+  storeCar(service: Service, content: Blob | File): Promise<CIDString>
+  /**
    * Stores a directory of files and returns a CID. Provided files **MUST**
    * be within a same directory, otherwise error is raised. E.g. `foo/bar.png`,
    * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
