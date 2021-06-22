@@ -67,8 +67,8 @@ describe('/upload', () => {
     assert.strictEqual(
       // @ts-ignore
       pinData.metadata.status,
-      'pinned',
-      'pin status is "pinned"'
+      'queued',
+      'pin status is "queued"'
     )
   })
 
@@ -106,8 +106,8 @@ describe('/upload', () => {
     assert.strictEqual(
       // @ts-ignore
       pinData.metadata.status,
-      'pinned',
-      'pin status is "pinned"'
+      'queued',
+      'pin status is "queued"'
     )
   })
 })
