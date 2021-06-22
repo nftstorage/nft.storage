@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.0.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v2.1.1...nft.storage-v3.0.0) (2021-06-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* car chunking client (#199)
+
+### Features
+
+* car chunking client ([#199](https://www.github.com/ipfs-shipyard/nft.storage/issues/199)) ([fdfa8e9](https://www.github.com/ipfs-shipyard/nft.storage/commit/fdfa8e9cddcf144b5b643f005e28ed652bf44ca9)), closes [#173](https://www.github.com/ipfs-shipyard/nft.storage/issues/173)
+* deal data selector ([#198](https://www.github.com/ipfs-shipyard/nft.storage/issues/198)) ([7261c53](https://www.github.com/ipfs-shipyard/nft.storage/commit/7261c5350aff3f1ff991a8ff5c22d67722da6c5f)), closes [#192](https://www.github.com/ipfs-shipyard/nft.storage/issues/192)
+
+
+### Bug Fixes
+
+* chunking issues ([#203](https://www.github.com/ipfs-shipyard/nft.storage/issues/203)) ([d990a20](https://www.github.com/ipfs-shipyard/nft.storage/commit/d990a207fd99aa74bde56a5d6b79e5027cf42287))
+
 ### [2.1.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v2.1.0...nft.storage-v2.1.1) (2021-06-18)
 
 
