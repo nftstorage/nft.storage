@@ -72,8 +72,7 @@ export async function upload(event, ctx) {
 
   let pin = await pins.get(nft.cid)
   if (!pin) {
-    const status = cluster.toPSAStatus(await cluster.status(nft.cid))
-    pin = { cid: nft.cid, status, size: nftSize, created }
+    pin = { cid: nft.cid, status: 'queued', size: nftSize, created }
     await pins.set(nft.cid, pin)
   }
 
