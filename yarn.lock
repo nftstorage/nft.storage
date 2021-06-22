@@ -452,10 +452,10 @@
   resolved "https://registry.yarnpkg.com/@next/react-refresh-utils/-/react-refresh-utils-10.2.3.tgz#2f3e42fe6680798f276e3621345c2886b231348b"
   integrity sha512-qtBF56vPC6d6a8p7LYd0iRjW89fhY80kAIzmj+VonvIGjK/nymBjcFUhbKiMFqlhsarCksnhwX+Zmn95Dw9qvA==
 
-"@nftstorage/ipfs-cluster@^3.1.1":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@nftstorage/ipfs-cluster/-/ipfs-cluster-3.1.1.tgz#075019a8a78e833dc85abc69115f4a0425e5e8bf"
-  integrity sha512-xlfP08xM0wiQEkACpa+hTwwd49maqLjvG7xvxLmV2QIwsBssPwKBZ4rQ0wkJ7Zq3yuWosQUUSksH9rmHK99nOQ==
+"@nftstorage/ipfs-cluster@^3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@nftstorage/ipfs-cluster/-/ipfs-cluster-3.1.2.tgz#9e1784c909d9e31694e551c90b387cc1400ce593"
+  integrity sha512-+4HQUS8CTs8sQffBmiwbTp0EwlTBFd8fXLHws7Hv73ETJS4hZySR+RDbaaw1uy3gt+4xyn33AOqsqEOJhK0GEQ==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
