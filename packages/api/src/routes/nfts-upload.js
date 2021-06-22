@@ -67,8 +67,7 @@ export async function upload(event, ctx) {
       scope: tokenName,
       files: [],
     }
-    // Size for CAR files is not reliable as they can be partials.
-    nftSize = isCar ? 0 : size || bytes
+    nftSize = size || bytes
   }
 
   let pin = await pins.get(nft.cid)
