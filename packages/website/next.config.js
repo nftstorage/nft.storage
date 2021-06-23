@@ -3,9 +3,7 @@ const { withSentryConfig } = require('@sentry/nextjs')
 const nextConfig = {
   trailingSlash: true,
   reactStrictMode: true,
-  future: {
-    webpack5: true,
-  },
+  webpack5: true,
 }
 const SentryWebpackPluginOptions = {
   // Additional config options for the Sentry Webpack plugin. Keep in mind that
