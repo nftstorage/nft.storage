@@ -419,7 +419,7 @@ function FAQ() {
         </p>
         <h2 className="chicagoflf white">
           <HashLink id="how-long-will-data-be-stored-on-nftstorage">
-            How can I learn more about NFT best practices?
+            Where can I learn more about NFT best practices?
           </HashLink>
         </h2>
         <p className="lh-copy white">
