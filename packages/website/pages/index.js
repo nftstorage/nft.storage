@@ -417,6 +417,19 @@ function FAQ() {
           </a>{' '}
           for details.
         </p>
+        <h2 className="chicagoflf white">
+          <HashLink id="how-long-will-data-be-stored-on-nftstorage">
+            How can I learn more about NFT best practices?
+          </HashLink>
+        </h2>
+        <p className="lh-copy white">
+          Visit{' '}
+          <a href="https://nftschool.dev" className="white">
+            NFT School
+          </a>{' '}
+          for information on NFT best practices as well as a variety of 
+          helpful tutorials and how-to guides for NFT developers.
+        </p>
       </div>
     </article>
   )
