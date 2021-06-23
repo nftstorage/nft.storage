@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.2.1...website-v1.3.0) (2021-06-23)
+
+
+### Features
+
+* add link to NFT School in FAQ ([#209](https://www.github.com/ipfs-shipyard/nft.storage/issues/209)) ([30d2bc6](https://www.github.com/ipfs-shipyard/nft.storage/commit/30d2bc667df23faf0ebb631568f58b197ec65c1c))
+
 ### [1.2.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.2.0...website-v1.2.1) (2021-06-18)
 
 
