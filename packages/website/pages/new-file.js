@@ -23,11 +23,7 @@ export default function NewFile() {
   const queryClient = useQueryClient()
   const [uploading, setUploading] = useState(false)
   const [isCar, setIsCar] = useState(false)
-  const [totalBytesSent, setTotalBytesSent] = useState(0)
-  const [totalSize, setTotalSize] = useState(0)
-  const percentComplete = Math.round(
-    totalSize ? (totalBytesSent / totalSize) * 100 : 0
-  )
+  const [percentComplete, setPercentComplete] = useState(0)
 
   /**
    * @param {import('react').ChangeEvent<HTMLInputElement>} e
@@ -62,9 +58,12 @@ export default function NewFile() {
         } else {
           ;({ car } = await packToBlob({ input: [file] }))
         }
-        setTotalSize(car.size)
+        let totalBytesSent = 0
         await client.storeCar(car, {
-          onStoredChunk: (size) => setTotalBytesSent(totalBytesSent + size),
+          onStoredChunk: (size) => {
+            totalBytesSent += size
+            setPercentComplete(Math.round((totalBytesSent / car.size) * 100))
+          },
         })
       } catch (err) {
         console.error(err)
