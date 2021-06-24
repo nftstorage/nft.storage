@@ -25,6 +25,10 @@ export default function NewFile() {
   const [uploading, setUploading] = useState(false)
   const [isCar, setIsCar] = useState(false)
   const [totalBytesSent, setTotalBytesSent] = useState(0)
+  const [totalSize, setTotalSize] = useState(0)
+  const percentComplete = Math.round(
+    totalSize ? (totalBytesSent / totalSize) * 100 : 0
+  )
 
   /**
    * @param {import('react').ChangeEvent<HTMLInputElement>} e
@@ -59,6 +63,7 @@ export default function NewFile() {
         } else {
           ;({ car } = await packToBlob({ input: [file] }))
         }
+        setTotalSize(car.size)
         await client.storeCar(car, {
           onStoredChunk: (size) => setTotalBytesSent(totalBytesSent + size),
         })
@@ -147,7 +152,7 @@ export default function NewFile() {
               >
                 {uploading
                   ? `Uploading...${
-                      totalBytesSent ? `(${filesize(totalBytesSent)})` : ''
+                      percentComplete ? `(${percentComplete}%)` : ''
                     }`
                   : 'Upload'}
               </Button>
