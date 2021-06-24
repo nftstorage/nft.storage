@@ -1,6 +1,8 @@
 import type { CID } from 'multiformats'
-
 export type { CID }
+
+import type { CarReader } from '@ipld/car'
+export type { CarReader }
 
 /**
  * Define nominal type of U based on type of T. Similar to Opaque types in Flow
@@ -46,6 +48,14 @@ export interface API {
    * Stores a single file and returns a corresponding CID.
    */
   storeBlob(service: Service, content: Blob | File): Promise<CIDString>
+  /**
+   * Stores CAR file and returns a corresponding CID.
+   */
+  storeCar(
+    service: Service,
+    content: Blob | CarReader,
+    options?: { onStoredChunk?: (size: number) => void }
+  ): Promise<CIDString>
   /**
    * Stores a directory of files and returns a CID. Provided files **MUST**
    * be within a same directory, otherwise error is raised. E.g. `foo/bar.png`,
