@@ -1,5 +1,13 @@
 # Changelog
 
+### [3.0.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v3.0.0...nft.storage-v3.0.1) (2021-06-24)
+
+
+### Bug Fixes
+
+* add storeCar to client interface.ts ([#205](https://www.github.com/ipfs-shipyard/nft.storage/issues/205)) ([43c0bd3](https://www.github.com/ipfs-shipyard/nft.storage/commit/43c0bd3b888f28978e5ab3ab147393b2c3d24234))
+* the CarReader type is a collection of interfaces ([#214](https://www.github.com/ipfs-shipyard/nft.storage/issues/214)) ([09fd8cb](https://www.github.com/ipfs-shipyard/nft.storage/commit/09fd8cbb49dfb893fd480cc1f94b79afdc2fb769))
+
 ## [3.0.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v2.1.1...nft.storage-v3.0.0) (2021-06-22)
 
 
