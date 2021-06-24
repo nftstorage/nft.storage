@@ -4,7 +4,6 @@ import { NFTStorage } from 'nft.storage'
 import { packToBlob } from 'ipfs-car/pack/blob'
 import { useQueryClient } from 'react-query'
 import { useState } from 'react'
-import filesize from 'filesize'
 import Box from '../components/box.js'
 import Button from '../components/button.js'
 
