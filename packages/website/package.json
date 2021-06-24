@@ -15,7 +15,7 @@
     "filesize": "^6.1.0",
     "ipfs-car": "^0.3.3",
     "magic-sdk": "^4.2.1",
-    "next": "^11.0.1",
+    "next": "^10.2.3",
     "nft.storage": "^3.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -81,8 +81,5 @@
     "node_modules",
     ".next",
     "out"
-  ],
-  "resolutions": {
-    "url-regex-safe": "^2.0.2"
-  }
+  ]
 }
