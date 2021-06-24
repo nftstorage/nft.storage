@@ -1,6 +1,8 @@
 import type { CID } from 'multiformats'
-
 export type { CID }
+
+import type { CarReader } from '@ipld/car'
+export type { CarReader }
 
 /**
  * Define nominal type of U based on type of T. Similar to Opaque types in Flow
@@ -51,7 +53,7 @@ export interface API {
    */
   storeCar(
     service: Service,
-    content: Blob | File,
+    content: Blob | CarReader,
     options?: { onStoredChunk?: (size: number) => void }
   ): Promise<CIDString>
   /**
