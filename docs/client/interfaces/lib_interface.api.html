@@ -88,6 +88,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="lib_interface.api.html#status" class="tsd-kind-icon">status</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter"><a href="lib_interface.api.html#store" class="tsd-kind-icon">store</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="lib_interface.api.html#storeblob" class="tsd-kind-icon">store<wbr>Blob</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="lib_interface.api.html#storecar" class="tsd-kind-icon">store<wbr>Car</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="lib_interface.api.html#storedirectory" class="tsd-kind-icon">store<wbr>Directory</a></li>
 							</ul>
 						</section>
@@ -106,7 +107,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/d9c2c71/packages/client/src/lib/interface.ts#L69">packages/client/src/lib/interface.ts:69</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cf674f9/packages/client/src/lib/interface.ts#L80">packages/client/src/lib/interface.ts:80</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -137,7 +138,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/d9c2c71/packages/client/src/lib/interface.ts#L65">packages/client/src/lib/interface.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cf674f9/packages/client/src/lib/interface.ts#L76">packages/client/src/lib/interface.ts:76</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -170,7 +171,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/d9c2c71/packages/client/src/lib/interface.ts#L59">packages/client/src/lib/interface.ts:59</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cf674f9/packages/client/src/lib/interface.ts#L70">packages/client/src/lib/interface.ts:70</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -202,7 +203,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/d9c2c71/packages/client/src/lib/interface.ts#L43">packages/client/src/lib/interface.ts:43</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cf674f9/packages/client/src/lib/interface.ts#L46">packages/client/src/lib/interface.ts:46</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -252,7 +253,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/d9c2c71/packages/client/src/lib/interface.ts#L48">packages/client/src/lib/interface.ts:48</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cf674f9/packages/client/src/lib/interface.ts#L51">packages/client/src/lib/interface.ts:51</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -274,6 +275,63 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="storecar" class="tsd-anchor"></a>
+					<h3>store<wbr>Car</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">store<wbr>Car<span class="tsd-signature-symbol">(</span>service<span class="tsd-signature-symbol">: </span><a href="lib_interface.service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a>, content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Blob</span><span class="tsd-signature-symbol"> | </span><a href="../modules/lib_interface.html#carreader" class="tsd-signature-type" data-tsd-kind="Type alias">CarReader</a>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>onStoredChunk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">(</span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/lib_interface.html#cidstring" class="tsd-signature-type" data-tsd-kind="Type alias">CIDString</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cf674f9/packages/client/src/lib/interface.ts#L55">packages/client/src/lib/interface.ts:55</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Stores CAR file and returns a corresponding CID.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>service: <a href="lib_interface.service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a></h5>
+								</li>
+								<li>
+									<h5>content: <span class="tsd-signature-type">Blob</span><span class="tsd-signature-symbol"> | </span><a href="../modules/lib_interface.html#carreader" class="tsd-signature-type" data-tsd-kind="Type alias">CarReader</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-symbol">{ </span>onStoredChunk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">(</span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> on<wbr>Stored<wbr>Chunk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">(</span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
+											<ul class="tsd-parameters">
+												<li class="tsd-parameter-signature">
+													<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-literal">
+														<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+													</ul>
+													<ul class="tsd-descriptions">
+														<li class="tsd-description">
+															<h4 class="tsd-parameters-title">Parameters</h4>
+															<ul class="tsd-parameters">
+																<li>
+																	<h5>size: <span class="tsd-signature-type">number</span></h5>
+																</li>
+															</ul>
+															<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+														</li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/lib_interface.html#cidstring" class="tsd-signature-type" data-tsd-kind="Type alias">CIDString</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
 					<a name="storedirectory" class="tsd-anchor"></a>
 					<h3>store<wbr>Directory</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
@@ -283,7 +341,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/d9c2c71/packages/client/src/lib/interface.ts#L54">packages/client/src/lib/interface.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/cf674f9/packages/client/src/lib/interface.ts#L65">packages/client/src/lib/interface.ts:65</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -360,6 +418,9 @@
 								<a href="lib_interface.api.html#storeblob" class="tsd-kind-icon">store<wbr>Blob</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="lib_interface.api.html#storecar" class="tsd-kind-icon">store<wbr>Car</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
 								<a href="lib_interface.api.html#storedirectory" class="tsd-kind-icon">store<wbr>Directory</a>
 							</li>
 						</ul>
@@ -410,6 +471,9 @@
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="../modules/lib_interface.html#cidstring" class="tsd-kind-icon">CIDString</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/lib_interface.html#carreader" class="tsd-kind-icon">Car<wbr>Reader</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="../modules/lib_interface.html#deal" class="tsd-kind-icon">Deal</a>
