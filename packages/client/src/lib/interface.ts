@@ -49,7 +49,11 @@ export interface API {
   /**
    * Stores CAR file and returns a corresponding CID.
    */
-  storeCar(service: Service, content: Blob | File): Promise<CIDString>
+  storeCar(
+    service: Service,
+    content: Blob | File,
+    options?: { onStoredChunk?: (size: number) => void }
+  ): Promise<CIDString>
   /**
    * Stores a directory of files and returns a CID. Provided files **MUST**
    * be within a same directory, otherwise error is raised. E.g. `foo/bar.png`,
