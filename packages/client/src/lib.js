@@ -17,10 +17,7 @@
 // @ts-ignore module with no types
 import { transform } from 'streaming-iterables'
 import pRetry from 'p-retry'
-
-import { CarReader } from '@ipld/car'
-import { TreewalkCarSplitter } from 'carbites'
-
+import { TreewalkCarSplitter } from 'carbites/treewalk'
 import * as API from './lib/interface.js'
 import * as Token from './token.js'
 import { fetch, File, Blob, FormData } from './platform.js'
@@ -106,7 +103,7 @@ class NFTStorage {
   }
   /**
    * @param {API.Service} service
-   * @param {Blob|CarReader} car
+   * @param {Blob|API.CarReader} car
    * @param {{onStoredChunk?: (size: number) => void}} [options]
    * @returns {Promise<API.CIDString>}
    */
@@ -324,7 +321,7 @@ class NFTStorage {
    * const cid = await client.storeCar(car)
    * console.assert(cid === expectedCid)
    * ```
-   * @param {Blob|CarReader} car
+   * @param {Blob|API.CarReader} car
    * @param {{onStoredChunk?: (size: number) => void}} [options]
    */
   storeCar(car, options) {
