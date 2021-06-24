@@ -1,6 +1,7 @@
 import { getToken, API } from '../lib/api'
 import { useRouter } from 'next/router'
 import { NFTStorage } from 'nft.storage'
+import { packToBlob } from 'ipfs-car/pack/blob'
 import { useQueryClient } from 'react-query'
 import { useState } from 'react'
 import Box from '../components/box.js'
@@ -22,6 +23,11 @@ export default function NewFile() {
   const queryClient = useQueryClient()
   const [uploading, setUploading] = useState(false)
   const [isCar, setIsCar] = useState(false)
+  const [totalBytesSent, setTotalBytesSent] = useState(0)
+  const [totalSize, setTotalSize] = useState(0)
+  const percentComplete = Math.round(
+    totalSize ? (totalBytesSent / totalSize) * 100 : 0
+  )
 
   /**
    * @param {import('react').ChangeEvent<HTMLInputElement>} e
@@ -49,11 +55,19 @@ export default function NewFile() {
       })
       setUploading(true)
       try {
+        /** @type File|Blob */
+        let car
         if (isCar) {
-          await client.storeCar(file)
+          car = file
         } else {
-          await client.storeBlob(file)
+          ;({ car } = await packToBlob({ input: [file] }))
         }
+        setTotalSize(car.size)
+        await client.storeCar(car, {
+          onStoredChunk: (size) => setTotalBytesSent(totalBytesSent + size),
+        })
+      } catch (err) {
+        console.error(err)
       } finally {
         await queryClient.invalidateQueries('get-nfts')
         setUploading(false)
@@ -96,7 +110,7 @@ export default function NewFile() {
               <span className="ml2">is CAR?</span>
             </label>
             <details className="db mt3 mb4">
-              <summary className="i">
+              <summary className="i pointer">
                 CAR files supported! What is a CAR?
               </summary>
               <p className="pl3 mt3 lh-copy">
@@ -135,11 +149,14 @@ export default function NewFile() {
                 disabled={uploading}
                 id="upload-file"
               >
-                {uploading ? 'Uploading...' : 'Upload'}
+                {uploading
+                  ? `Uploading...${
+                      percentComplete ? `(${percentComplete}%)` : ''
+                    }`
+                  : 'Upload'}
               </Button>
             </div>
             <div>
-              <p className="lh-copy f7">100MB upload limit per file.</p>
               <p className="lh-copy f7">
                 You can also upload files using the{' '}
                 <a href="/#js-client" className="black">
