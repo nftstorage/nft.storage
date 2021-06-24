@@ -146,7 +146,9 @@ export default function NewFile() {
                 id="upload-file"
               >
                 {uploading
-                  ? `Uploading...(${filesize(totalBytesSent)})`
+                  ? `Uploading...${
+                      totalBytesSent ? `(${filesize(totalBytesSent)})` : ''
+                    }`
                   : 'Upload'}
               </Button>
             </div>
