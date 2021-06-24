@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.3.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.3.0...website-v1.3.1) (2021-06-24)
+
+
+### Bug Fixes
+
+* progress percentage ([4717e3c](https://www.github.com/ipfs-shipyard/nft.storage/commit/4717e3c52f438a5aa1e93677a2d05d2b5d2f82a1))
+* remove 100mb limit from uploader ([#208](https://www.github.com/ipfs-shipyard/nft.storage/issues/208)) ([e8b5a90](https://www.github.com/ipfs-shipyard/nft.storage/commit/e8b5a90ccca14ad30a229afaee1d6b40fff5ecdf))
+
 ## [1.3.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.2.1...website-v1.3.0) (2021-06-23)
 
 
