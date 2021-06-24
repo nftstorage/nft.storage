@@ -1,7 +1,8 @@
 import type { CID } from 'multiformats'
 export type { CID }
 
-import type { CarReader } from '@ipld/car'
+import type { RootsReader, BlockReader } from '@ipld/car/api'
+type CarReader = RootsReader & BlockReader
 export type { CarReader }
 
 /**

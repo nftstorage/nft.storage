@@ -39,7 +39,7 @@
     "@web-std/fetch": "^2.0.1",
     "@web-std/file": "^1.1.0",
     "@web-std/form-data": "^2.1.0",
-    "carbites": "^1.0.3",
+    "carbites": "^1.0.6",
     "p-retry": "^4.5.0",
     "streaming-iterables": "^6.0.0"
   },
