@@ -43,7 +43,7 @@ export async function updatePinStatuses({ cf, env, cluster, ipfs }) {
           pin.status = pinStatus
           // for successful pin we can update the size
           if (pinStatus === 'pinned') {
-            pin.size = await ipfs.dagSize(cid, { timeout: 30 * 60000 })
+            pin.size = await ipfs.dagSize(cid, { timeout: 45 * 60000 })
           }
 
           bulkWrites.pins.push({ key: cid, value: '', metadata: pin })
