@@ -407,15 +407,26 @@ function FAQ() {
         </p>
         <h2 className="chicagoflf white">
           <HashLink id="how-long-will-data-be-stored-on-nftstorage">
-            How long will data be stored on nft.storage?
+            How long will data be stored on NFT.storage?
           </HashLink>
         </h2>
         <p className="lh-copy white">
-          Data will be available in IPFS indefinitely. See the{' '}
+          Data will be available in IPFS indefinitely as well as stored in 
+          long-term, redundant Filecoin storage deals with the global community of miners. See the{' '}
           <a href="/terms" className="white">
             Terms of Service
           </a>{' '}
           for details.
+        </p>
+        <h2 className="chicagoflf white">
+          <HashLink id="how-long-will-data-be-stored-on-nftstorage">
+            Are there any size restrictions for stored NFTs?
+          </HashLink>
+        </h2>
+        <p className="lh-copy white">
+          NFT.storage can store NFTs up to <strong>32GB </strong>
+          in size! (There was previously a 100MB limit due to 
+          Cloudflare workers that has since been removed!🎉)
         </p>
         <h2 className="chicagoflf white">
           <HashLink id="where-can-i-learn-more-about-nft-best-practices">
