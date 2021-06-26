@@ -419,7 +419,7 @@ function FAQ() {
           for details.
         </p>
         <h2 className="chicagoflf white">
-          <HashLink id="how-long-will-data-be-stored-on-nftstorage">
+          <HashLink id="are-there-any-size-restrictions-for-stored-nfts">
             Are there any size restrictions for stored NFTs?
           </HashLink>
         </h2>
