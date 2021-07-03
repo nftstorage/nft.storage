@@ -29,10 +29,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: yarn install
-
-      - name: Build
-        run: npm run build --if-present
+        run: yarn --cwd packages/niftysave install
 
       - name: Typecheck
         uses: gozala/typescript-error-reporter-action@v1.0.8
@@ -40,4 +37,4 @@ jobs:
           project: packages/niftysave/tsconfig.json
 
       - name: Test
-        run: npm test --if-present
+        run: yarn --cwd packages/niftysave test

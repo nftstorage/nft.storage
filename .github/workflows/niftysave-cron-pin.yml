@@ -25,4 +25,4 @@ jobs:
           BATCH_SIZE: 100
           TIME_BUDGET: 1620
           IPFS_CLUSTER_KEY: ${{ secrets.IPFS_CLUSTER_KEY }}
-        run: yarn --cwd packages/niftysave  import-asset
+        run: yarn --cwd packages/niftysave import-asset
