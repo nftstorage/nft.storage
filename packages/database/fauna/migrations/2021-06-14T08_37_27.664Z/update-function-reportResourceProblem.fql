@@ -1,0 +1,54 @@
+Update(Function('reportResourceProblem'), {
+  body: Query(
+    Lambda(
+      ['input'],
+      Let(
+        [
+          {
+            id: Select('resourceID', Var('input')),
+          },
+        ],
+        Update(Ref(Collection('Resource'), Var('id')), {
+          data: {
+            status: Select('status', Var('input')),
+            problem: Select('problem', Var('input')),
+          },
+        })
+      )
+    )
+  ),
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:07.965343Z'),
+      meta: {
+        location: 'Mutation',
+        field: {
+          name: 'reportResourceProblem',
+          directives: [
+            {
+              name: 'resolver',
+              args: {
+                name: 'reportResourceProblem',
+                paginated: false,
+              },
+            },
+          ],
+          type: {
+            NotNull: {
+              Named: 'Resource',
+            },
+          },
+          arguments: [
+            {
+              name: 'input',
+              type: {
+                Named: 'ResourceProblemInput',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  role: null,
+})

@@ -1,0 +1,8 @@
+CreateIndex({
+  name: 'block_tokens_by_block',
+  source: Collection('block_tokens'),
+  terms: [{ field: ['data', 'blockID'] }],
+  values: [{ field: ['data', 'tokenID'] }],
+  serialized: true,
+  data: { gql: { ts: Time('2021-06-10T19:21:08.202639Z') } },
+})

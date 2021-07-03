@@ -1,0 +1,110 @@
+CreateCollection({
+  name: 'Resource',
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:07.965343Z'),
+      meta: {
+        name: 'Resource',
+        fields: [
+          {
+            name: 'referrers',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'metadata_image',
+                },
+              },
+            ],
+            type: {
+              List: {
+                NotNull: {
+                  Named: 'Metadata',
+                },
+              },
+            },
+          },
+          {
+            name: 'status',
+            directives: [
+              {
+                name: 'index',
+                args: {},
+              },
+            ],
+            type: {
+              NotNull: {
+                Named: 'ResourceStatus',
+              },
+            },
+          },
+          {
+            name: 'uri',
+            directives: [
+              {
+                name: 'unique',
+                args: {
+                  index: 'unique_Resource_uri',
+                },
+              },
+              {
+                name: 'index',
+                args: {},
+              },
+            ],
+            description: 'URI with which resource was identified.',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'ipfsURL',
+            directives: [
+              {
+                name: 'index',
+                args: {},
+              },
+            ],
+            description: 'ipfs:// url if `uri` was referring to gateway URL.',
+            type: {
+              Named: 'String',
+            },
+          },
+          {
+            name: 'cid',
+            directives: [
+              {
+                name: 'index',
+                args: {},
+              },
+            ],
+            description:
+              'CID that corresponds to this resource, set once resourec is pinned.',
+            type: {
+              Named: 'String',
+            },
+          },
+          {
+            name: 'problem',
+            description:
+              'Problem description if there was problem in pinning a resource.',
+            type: {
+              Named: 'String',
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'Resource',
+            },
+          },
+        ],
+      },
+    },
+  },
+  history_days: 30,
+})

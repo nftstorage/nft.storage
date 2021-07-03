@@ -1,0 +1,349 @@
+type Block {
+  """
+  The hash of the block
+  """
+  hash: ID! @unique
+
+  """
+  The block number
+  """
+  number: Long! @unique
+
+  tokens: [Token!] @relation
+}
+
+type Token {
+  id: String! @unique
+
+  tokenID: String!
+  mintTime: String!
+  """
+  Present when ERC721Metadata interface is implemented.
+  """
+  tokenAsset: TokenAsset
+
+  contract: TokenContract! @relation
+  owner: Owner! @relation
+  blocks: [Block!] @relation
+
+  imported: [ERC721ImportResult!] @relation
+}
+
+type TokenAsset {
+  """
+  Multiple tokens may have use a same `tokenURI`. This relation allows tracking
+  which tokens refer to the same `tokenURI`.
+  Token this metadata belogs to.
+  """
+  referrers: [Token!] @relation(name: "tokenAsset_referrers")
+
+  tokenURI: String! @unique
+
+  """
+  When `tokenURI` points to may point to JSON file that conforms to the ERC721
+  Metadata JSON Schema it fetched parsed and stored as related Metadata
+  document.
+  """
+  metadata: Metadata @relation
+
+  """
+  CID of an IPLD node that encapsulates token metadata and all it's assets.
+  Present when it was passibly to succesfully pin the token.
+  """
+  ipnft: String
+
+  """
+  Problem description if failed to get the metadata.
+  """
+  problem: String
+}
+
+type Metadata {
+  source: TokenAsset! @relation @unique
+  cid: String!
+
+  """
+  Identifies the asset this token represents
+  """
+  name: String!
+  """
+  Describes the asset this token represents
+  """
+  description: String!
+  """
+  A file representing the asset this token represents
+  """
+  image: Resource!
+
+  # """
+  # Additional assets that token linked to
+  # """
+  assets: [Resource!] @relation
+}
+
+enum ResourceStatus {
+  """
+  Has not been processed yet
+  """
+  Idle
+  """
+  Pin request started. This usually implies that we found a CID in the
+  tokenURI (because it was a gateway URL) so we started a pin but do not
+  know if it was possible to fetch content.
+  """
+  PinQueued
+  """
+  Was pinned succesfully
+  """
+  Pinned
+
+  # All kinds of error states
+
+  """
+  tokenURI is either malformed or the protocol is not supported.
+  """
+  FailedURIParse
+  """
+  Was unable to fetch the content.
+  """
+  FailedFetch
+  """
+  Pin request failed, can happen when pinned by CID but correspoding content
+  is not on the network.
+  """
+  PinFailure
+}
+
+type Resource {
+  referrers: [Metadata!] @relation
+  status: ResourceStatus! @index
+
+  """
+  URI with which resource was identified.
+  """
+  uri: String! @unique @index
+
+  """
+  ipfs:// url if `uri` was referring to gateway URL.
+  """
+  ipfsURL: String @index
+
+  """
+  CID that corresponds to this resource, set once resourec is pinned.
+  """
+  cid: String @index
+
+  """
+  Problem description if there was problem in pinning a resource.
+  """
+  problem: String
+}
+
+type Owner {
+  id: ID! @unique
+}
+
+type TokenContract {
+  id: ID! @unique
+  """
+  A descriptive name for a collection of NFTs in this contract
+  """
+  name: String
+  """
+  An abbreviated name for NFTs in this contract
+  """
+  symbol: String
+
+  supportsEIP721Metadata: Boolean!
+
+  tokens: [Token!] @relation
+}
+
+input ERC721MetadataQuery {
+  name: String
+  symbol: String
+  tokenURI: String
+  ipnft: String
+}
+
+input MetadaQuery {
+  name: String
+  description: String
+  image: ResourceQuery
+}
+
+input ResourceQuery {
+  uri: String
+  cid: String
+}
+
+type Cursor {
+  id: String!
+}
+
+type ERC721ImportResult {
+  """
+  Cursor from which import started.
+  """
+  id: String!
+  """
+  New cursor after this import.
+  """
+  nextID: String!
+  """
+  Tokens that were imported.
+  """
+  tokens: [Token!]! @relation
+}
+
+input ERC721ImportInput {
+  """
+  Cursor from which import started. If current cursor changed import will be
+  rejected.
+  """
+  id: String!
+  """
+  Tokens to be imported.
+  """
+  tokens: [ERC721ImportTokenInput!]!
+}
+
+input ERC721ImportTokenInput {
+  id: ID!
+  tokenID: String!
+  tokenURI: String!
+  mintTime: String!
+
+  blockHash: String!
+  blockNumber: String!
+
+  contract: ERC721ImportTokenContractInput!
+  owner: ERC721ImportTokenOwnerInput!
+}
+
+input ERC721ImportTokenContractInput {
+  id: ID!
+  name: String
+  symbol: String
+  supportsEIP721Metadata: Boolean!
+}
+
+input ERC721ImportTokenOwnerInput {
+  id: ID!
+}
+
+enum TokenAssetStatus {
+  Queued
+  Failed
+  Succeeded
+}
+
+input FindTokenAssetsInput {
+  status: TokenAssetStatus
+}
+
+input FindResourceInput {
+  status: ResourceStatus
+}
+
+type Query {
+  cursor: Cursor! @resolver
+  tokens(tokenID: String, mintTime: String): [Token]!
+  allTokens: [Token!]
+  owner(id: ID): Owner
+  block(hash: ID, number: Long): Block
+  constract(id: ID): TokenContract
+
+  allImports: [ERC721ImportResult!] @relation
+  """
+  Provides tokens with the
+  """
+  findTokenAssets(where: FindTokenAssetsInput): [TokenAsset!]!
+    @resolver(paginated: true)
+    @relation
+
+  findResources(where: FindResourceInput): [Resource!]!
+    @resolver(paginated: true)
+    @relation
+}
+
+input TokenAssetProblemInput {
+  """
+  ID of the TokenAsset
+  """
+  tokenAssetID: ID!
+  """
+  Problem description
+  """
+  problem: String!
+}
+
+input TokenMetadataImportInput {
+  tokenAssetID: ID!
+  metadata: MetadataInput
+}
+
+input MetadataInput {
+  """
+  CID for the metadata content.
+  """
+  cid: String!
+
+  """
+  Identifies the asset this token represents
+  """
+  name: String!
+  """
+  Describes the asset this token represents
+  """
+  description: String!
+  """
+  A file representing the asset this token represents
+  """
+  image: ResourceInput!
+
+  # """
+  # Additional assets that token linked to
+  # """
+  assets: [ResourceInput!]!
+}
+
+input ResourceInput {
+  uri: String!
+  ipfsURL: String
+}
+
+input ResourceProblemInput {
+  resourceID: ID!
+  status: ResourceStatus!
+  problem: String!
+}
+
+input ResorcePinInput {
+  resourceID: ID!
+  status: ResourceStatus!
+  ipfsURL: String!
+  cid: String!
+}
+
+type Mutation {
+  importERC721(input: ERC721ImportInput!): ERC721ImportResult! @resolver
+
+  """
+  Reports problem with a TokenAsset e.g. it was impossible to parse URI
+  or was unable to fetch content from URI, or content was not a JSON.
+
+  Call is rejected if status isn't Queued.
+  """
+  reportTokenAssetProblem(input: TokenAssetProblemInput): TokenAsset! @resolver
+
+  """
+  Imports Token Metadata. Will be rejected if corresponding asset status isn't
+  Queued. Otherwise updates corresponding TokenAsset transitioning it to
+  Succeeded state.
+  """
+  importTokenMetadata(input: TokenMetadataImportInput): Metadata! @resolver
+
+  reportResourceProblem(input: ResourceProblemInput): Resource! @resolver
+  updateResourcePin(input: ResorcePinInput): Resource! @resolver
+}

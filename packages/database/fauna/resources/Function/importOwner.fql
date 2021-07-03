@@ -1,0 +1,15 @@
+// Helper function adds or updates token owner to the DB.
+CreateFunction({
+  name: 'importOwner',
+  body: Query(
+    Lambda(
+      ['data'],
+      Call('createOrUpdate', {
+        index: Index('unique_Owner_id'),
+        key: 'id',
+        collection: Collection('Owner'),
+        data: Var('data'),
+      })
+    )
+  ),
+})

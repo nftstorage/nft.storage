@@ -1,0 +1,23 @@
+CreateFunction({
+  name: 'tokenAssetStatus',
+  body: Query(
+    Lambda(
+      'doc',
+      Let(
+        [
+          {
+            problem: Select(['data', 'problem'], Var('doc'), null),
+          },
+          {
+            metadata: Select(['data', 'metadata'], Var('doc'), null),
+          },
+        ],
+        If(
+          Not(IsNull(Var('problem'))),
+          'Failed',
+          If(Not(IsNull(Var('metadata'))), 'Succeeded', 'Queued')
+        )
+      )
+    )
+  ),
+})

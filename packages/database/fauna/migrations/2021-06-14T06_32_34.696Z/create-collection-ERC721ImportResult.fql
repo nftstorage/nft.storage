@@ -1,0 +1,61 @@
+CreateCollection({
+  name: 'ERC721ImportResult',
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:07.965343Z'),
+      meta: {
+        name: 'ERC721ImportResult',
+        fields: [
+          {
+            name: 'id',
+            description: 'Cursor from which import started.',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'nextID',
+            description: 'New cursor after this import.',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'tokens',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'eRC721ImportResult_tokens',
+                },
+              },
+            ],
+            description: 'Tokens that were imported.',
+            type: {
+              NotNull: {
+                List: {
+                  NotNull: {
+                    Named: 'Token',
+                  },
+                },
+              },
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'ERC721ImportResult',
+            },
+          },
+        ],
+      },
+    },
+  },
+  history_days: 30,
+})

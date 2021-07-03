@@ -1,0 +1,63 @@
+// Helper function that adds or updates Token to the DB. Update could happen
+// when token is transferred from one owner to the other.
+CreateFunction({
+  name: 'importERC721Token',
+  body: Query(
+    Lambda(
+      ['token'],
+      Let(
+        {
+          uri: Select('tokenURI', Var('token')),
+          // subgraph provides `tokenURI: ""` when metadata extension is not
+          // supported. Here we just turn that back to `null` so it's eaiser
+          // to query.
+          tokenURI: If(Equals(0, Length(Var('uri'))), null, Var('uri')),
+
+          tokenAsset: If(
+            IsNull(Var('tokenURI')),
+            null,
+            Call('importTokenAsset', {
+              tokenURI: Var('tokenURI'),
+            })
+          ),
+
+          block: Call('importBlock', {
+            hash: Select('blockHash', Var('token')),
+            number: Select('blockNumber', Var('token')),
+          }),
+
+          contract: Call(
+            'importTokenContract',
+            Select('contract', Var('token'))
+          ),
+          owner: Call('importOwner', Select('owner', Var('token'))),
+
+          token: Call('createOrUpdate', {
+            key: 'id',
+            index: Index('unique_Token_id'),
+            collection: Collection('Token'),
+            data: {
+              id: Select('id', Var('token')),
+              tokenID: Select('tokenID', Var('token')),
+              mintTime: Select('mintTime', Var('token')),
+
+              tokenAsset: Select('ref', Var('tokenAsset')),
+
+              contract: Select('ref', Var('contract')),
+              owner: Select('ref', Var('owner')),
+            },
+          }),
+        },
+        Do(
+          Create(Collection('block_tokens'), {
+            data: {
+              tokenID: Select('ref', Var('token')),
+              blockID: Select('ref', Var('block')),
+            },
+          }),
+          Var('token')
+        )
+      )
+    )
+  ),
+})

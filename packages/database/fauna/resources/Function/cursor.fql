@@ -1,0 +1,25 @@
+// Implement `cursor` resolver function. Which can be called from graphql via
+// `query { cursor: { id } }`
+CreateFunction({
+  name: 'cursor',
+  body: Query(
+    Lambda(
+      [],
+      Let(
+        {
+          match: Documents(Collection('Cursor')),
+        },
+        If(
+          // We either do not yet have cursor document or we have just one.
+          // If we have 0 than we create a new document with id: "", otherwise
+          // We just get the first match as we will only have one.
+          IsEmpty(Var('match')),
+          Create(Collection('Cursor'), {
+            data: { id: '' },
+          }),
+          Get(Var('match'))
+        )
+      )
+    )
+  ),
+})

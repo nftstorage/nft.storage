@@ -1,0 +1,53 @@
+name: Database
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/database/**'
+      - '.github/workflows/database.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'packages/database/**'
+      - '.github/workflows/database.yml'
+
+jobs:
+  check:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: yarn --cwd packages/database install
+
+      - name: Typecheck
+        uses: gozala/typescript-error-reporter-action@v1.0.8
+        with:
+          project: packages/database/tsconfig.json
+  migrate:
+    name: migrate
+    needs:
+      - check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install
+        run: yarn --cwd packages/database install
+
+      - name: Apply migration
+        run: yarn --cwd packages/database apply-migrations
+        env:
+          FAUNA_KEY: ${{ secrets.FAUNA_KEY }}

@@ -1,0 +1,4 @@
+CreateCollection({
+  name: 'log',
+  history_days: 30,
+})

@@ -1,0 +1,20 @@
+CreateFunction({
+  name: 'setCursor',
+  body: Query(
+    Lambda(
+      ['value'],
+      Let(
+        [
+          {
+            match: Documents(Collection('Cursor')),
+          },
+        ],
+        If(
+          IsEmpty(Var('match')),
+          Create(Collection('Cursor'), Var('value')),
+          Update(Select('ref', Get(Var('match'))), Var('value'))
+        )
+      )
+    )
+  ),
+})

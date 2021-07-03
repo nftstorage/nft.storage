@@ -1,0 +1,15 @@
+// Helper function add or updates Token Contract info to the DB.
+CreateFunction({
+  name: 'importTokenContract',
+  body: Query(
+    Lambda(
+      ['data'],
+      Call('createOrUpdate', {
+        key: 'id',
+        index: Index('unique_TokenContract_id'),
+        collection: Collection('TokenContract'),
+        data: Var('data'),
+      })
+    )
+  ),
+})

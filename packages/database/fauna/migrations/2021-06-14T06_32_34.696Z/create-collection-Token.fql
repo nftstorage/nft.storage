@@ -1,0 +1,138 @@
+CreateCollection({
+  name: 'Token',
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:07.965343Z'),
+      meta: {
+        name: 'Token',
+        fields: [
+          {
+            name: 'id',
+            directives: [
+              {
+                name: 'unique',
+                args: {
+                  index: 'unique_Token_id',
+                },
+              },
+            ],
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'tokenID',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'mintTime',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'tokenAsset',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'token_tokenAsset',
+                },
+              },
+            ],
+            description:
+              'Present when ERC721Metadata interface is implemented.',
+            type: {
+              Named: 'TokenAsset',
+            },
+          },
+          {
+            name: 'contract',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'token_contract',
+                },
+              },
+            ],
+            type: {
+              NotNull: {
+                Named: 'TokenContract',
+              },
+            },
+          },
+          {
+            name: 'owner',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'token_owner',
+                },
+              },
+            ],
+            type: {
+              NotNull: {
+                Named: 'Owner',
+              },
+            },
+          },
+          {
+            name: 'blocks',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'block_tokens',
+                },
+              },
+            ],
+            type: {
+              List: {
+                NotNull: {
+                  Named: 'Block',
+                },
+              },
+            },
+          },
+          {
+            name: 'imported',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'eRC721ImportResult_tokens',
+                },
+              },
+            ],
+            type: {
+              List: {
+                NotNull: {
+                  Named: 'ERC721ImportResult',
+                },
+              },
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'Token',
+            },
+          },
+        ],
+      },
+    },
+  },
+  history_days: 30,
+})

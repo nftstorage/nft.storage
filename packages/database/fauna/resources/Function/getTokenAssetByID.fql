@@ -1,0 +1,4 @@
+CreateFunction({
+  name: 'getTokenAssetByID',
+  body: Query(Lambda(['id'], Get(Ref(Collection('TokenAsset'), Var('id'))))),
+})

@@ -1,0 +1,77 @@
+CreateFunction({
+  name: 'importTokenMetadata',
+  body: Query(
+    Lambda(
+      ['input'],
+      Let(
+        [
+          {
+            tokenAsset: Call(
+              'getTokenAssetByID',
+              Select('tokenAssetID', Var('input'))
+            ),
+          },
+          {
+            status: Call('tokenAssetStatus', Var('tokenAsset')),
+          },
+          {
+            metadata: If(
+              Equals(Var('status'), 'Succeeded'),
+              Abort('Aborting, because TokenAsset already has a metadata'),
+              Create(Collection('Metadata'), {
+                data: {
+                  source: Select('ref', Var('tokenAsset')),
+                  name: Select(['metadata', 'name'], Var('input')),
+                  description: Select(
+                    ['metadata', 'description'],
+                    Var('input')
+                  ),
+                  image: Select(
+                    'ref',
+                    Call(
+                      'importResource',
+                      Select(['metadata', 'image'], Var('input'))
+                    )
+                  ),
+                },
+              })
+            ),
+          },
+          {
+            assets: Select(['metadata', 'assets'], Var('input')),
+          },
+          {
+            resources: If(IsNull(Var('assets')), [], Var('assets')),
+          },
+        ],
+        Do(
+          Foreach(
+            Var('resources'),
+            Lambda(
+              ['resourceInput'],
+              Let(
+                [
+                  {
+                    resource: Call('importResource', Var('resourceInput')),
+                  },
+                ],
+                Create(Collection('metadata_assets'), {
+                  data: {
+                    metadataID: Select('ref', Var('metadata')),
+                    resourceID: Select('ref', Var('resource')),
+                  },
+                })
+              )
+            )
+          ),
+          Update(Select('ref', Var('tokenAsset')), {
+            data: {
+              metadata: Select('ref', Var('metadata')),
+            },
+          }),
+          Var('metadata')
+        )
+      )
+    )
+  ),
+})

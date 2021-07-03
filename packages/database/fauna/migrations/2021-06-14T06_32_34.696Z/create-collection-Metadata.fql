@@ -1,0 +1,105 @@
+CreateCollection({
+  name: 'Metadata',
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:07.965343Z'),
+      meta: {
+        name: 'Metadata',
+        fields: [
+          {
+            name: 'source',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'metadata_source',
+                },
+              },
+              {
+                name: 'unique',
+                args: {
+                  index: 'unique_Metadata_source',
+                },
+              },
+            ],
+            type: {
+              NotNull: {
+                Named: 'TokenAsset',
+              },
+            },
+          },
+          {
+            name: 'cid',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'name',
+            description: 'Identifies the asset this token represents',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'description',
+            description: 'Describes the asset this token represents',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'image',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'metadata_image',
+                },
+              },
+            ],
+            description: 'A file representing the asset this token represents',
+            type: {
+              NotNull: {
+                Named: 'Resource',
+              },
+            },
+          },
+          {
+            name: 'assets',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'metadata_assets',
+                },
+              },
+            ],
+            type: {
+              List: {
+                NotNull: {
+                  Named: 'Resource',
+                },
+              },
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'Metadata',
+            },
+          },
+        ],
+      },
+    },
+  },
+  history_days: 30,
+})

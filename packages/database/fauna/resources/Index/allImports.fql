@@ -1,0 +1,18 @@
+CreateIndex({
+  name: 'allImports',
+  source: Collection('ERC721ImportResult'),
+  serialized: true,
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:08.202639Z'),
+      meta: {
+        name: 'allImports',
+        directives: [
+          { name: 'relation', args: {} },
+          { name: 'index', args: { name: 'allImports' } },
+        ],
+        type: { List: { NotNull: { Named: 'ERC721ImportResult' } } },
+      },
+    },
+  },
+})

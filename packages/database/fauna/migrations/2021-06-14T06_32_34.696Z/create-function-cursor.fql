@@ -1,0 +1,24 @@
+CreateFunction({
+  name: 'cursor',
+  body: Query(
+    Lambda(
+      [],
+      Let(
+        [
+          {
+            match: Documents(Collection('Cursor')),
+          },
+        ],
+        If(
+          IsEmpty(Var('match')),
+          Create(Collection('Cursor'), {
+            data: {
+              id: '',
+            },
+          }),
+          Get(Var('match'))
+        )
+      )
+    )
+  ),
+})

@@ -1,0 +1,17 @@
+CreateFunction({
+  name: 'paginationOptions',
+  body: Query(
+    Lambda(
+      ['size', 'after', 'before'],
+      If(
+        Equals(Var('before'), null),
+        If(
+          Equals(Var('after'), null),
+          { size: Var('size') },
+          { size: Var('size'), after: Var('after') }
+        ),
+        { size: Var('size'), before: Var('before') }
+      )
+    )
+  ),
+})
