@@ -1,0 +1,38 @@
+CreateFunction({
+  name: 'paginate',
+  body: Query(
+    Lambda(
+      ['input', 'options'],
+      Let(
+        [
+          {
+            size: Select('size', Var('options')),
+          },
+          {
+            after: Select('after', Var('options'), null),
+          },
+          {
+            before: Select('before', Var('options'), null),
+          },
+        ],
+        If(
+          Equals(Var('before'), null),
+          If(
+            Equals(Var('after'), null),
+            Paginate(Var('input'), {
+              size: Var('size'),
+            }),
+            Paginate(Var('input'), {
+              size: Var('size'),
+              after: Var('after'),
+            })
+          ),
+          Paginate(Var('input'), {
+            size: Var('size'),
+            before: Var('before'),
+          })
+        )
+      )
+    )
+  ),
+})

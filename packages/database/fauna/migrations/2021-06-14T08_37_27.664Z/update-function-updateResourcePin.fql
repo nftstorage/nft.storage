@@ -1,0 +1,55 @@
+Update(Function('updateResourcePin'), {
+  body: Query(
+    Lambda(
+      ['input'],
+      Let(
+        [
+          {
+            id: Select('resourceID', Var('input')),
+          },
+        ],
+        Update(Ref(Collection('Resource'), Var('id')), {
+          data: {
+            status: Select('status', Var('input')),
+            ipfsURL: Select('ipfsURL', Var('input')),
+            cid: Select('cid', Var('input')),
+          },
+        })
+      )
+    )
+  ),
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:07.965343Z'),
+      meta: {
+        location: 'Mutation',
+        field: {
+          name: 'updateResourcePin',
+          directives: [
+            {
+              name: 'resolver',
+              args: {
+                name: 'updateResourcePin',
+                paginated: false,
+              },
+            },
+          ],
+          type: {
+            NotNull: {
+              Named: 'Resource',
+            },
+          },
+          arguments: [
+            {
+              name: 'input',
+              type: {
+                Named: 'ResorcePinInput',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  role: null,
+})

@@ -1,0 +1,17 @@
+CreateFunction({
+  name: 'importBlock',
+  body: Query(
+    Lambda(
+      ['data'],
+      Call('createOrUpdate', {
+        key: 'number',
+        index: Index('unique_Block_number'),
+        collection: Collection('Block'),
+        data: {
+          hash: Select('hash', Var('data')),
+          number: ToInteger(Select('number', Var('data'))),
+        },
+      })
+    )
+  ),
+})

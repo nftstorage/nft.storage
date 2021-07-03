@@ -1,0 +1,14 @@
+CreateFunction({
+  name: 'importTokenAsset',
+  body: Query(
+    Lambda(
+      ['data'],
+      Call('createOrUpdate', {
+        key: 'tokenURI',
+        index: Index('unique_TokenAsset_tokenURI'),
+        collection: Collection('TokenAsset'),
+        data: Var('data'),
+      })
+    )
+  ),
+})

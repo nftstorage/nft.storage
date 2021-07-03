@@ -1,0 +1,15 @@
+CreateIndex({
+  name: 'tokenContract_tokens_by_tokenContract',
+  source: Collection('Token'),
+  terms: [
+    {
+      field: ['data', 'contract'],
+    },
+  ],
+  serialized: true,
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:08.202639Z'),
+    },
+  },
+})

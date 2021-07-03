@@ -1,0 +1,74 @@
+CreateCollection({
+  name: 'Block',
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:07.965343Z'),
+      meta: {
+        name: 'Block',
+        fields: [
+          {
+            name: 'hash',
+            directives: [
+              {
+                name: 'unique',
+                args: {
+                  index: 'unique_Block_hash',
+                },
+              },
+            ],
+            description: 'The hash of the block',
+            type: {
+              NotNull: {
+                Named: 'ID',
+              },
+            },
+          },
+          {
+            name: 'number',
+            directives: [
+              {
+                name: 'unique',
+                args: {
+                  index: 'unique_Block_number',
+                },
+              },
+            ],
+            description: 'The block number',
+            type: {
+              NotNull: {
+                Named: 'Long',
+              },
+            },
+          },
+          {
+            name: 'tokens',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'block_tokens',
+                },
+              },
+            ],
+            type: {
+              List: {
+                NotNull: {
+                  Named: 'Token',
+                },
+              },
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'Block',
+            },
+          },
+        ],
+      },
+    },
+  },
+  history_days: 30,
+})

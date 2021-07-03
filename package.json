@@ -1,8 +1,7 @@
 {
   "private": true,
   "workspaces": [
-    "packages/*",
-    "database"
+    "packages/*"
   ],
   "scripts": {
     "test": "run-s test:*",
@@ -14,9 +13,9 @@
     "build:website": "yarn --cwd packages/website build",
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css}'",
     "clean": "rimraf node_modules yarn.lock packages/*/{yarn.lock,package-lock.json,.next,out,coverage,.nyc_output,worker,dist,node_modules}",
-    "setup-database": "yarn --cwd database setup",
-    "create-migration": "yarn --cwd database create-migration",
-    "apply-migrations": "yarn --cwd database apply-migrations"
+    "setup-database": "yarn --cwd packages/database setup",
+    "create-migration": "yarn --cwd packages/database create-migration",
+    "apply-migrations": "yarn --cwd packages/database apply-migrations"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",

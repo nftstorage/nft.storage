@@ -1,0 +1,44 @@
+CreateFunction({
+  name: 'updateResourcePin',
+  body: Query(
+    Lambda(
+      '_',
+      Abort(
+        'Function updateResourcePin was not implemented yet. Please access your database and provide an implementation for the updateResourcePin function.'
+      )
+    )
+  ),
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:07.965343Z'),
+      meta: {
+        location: 'Mutation',
+        field: {
+          name: 'updateResourcePin',
+          directives: [
+            {
+              name: 'resolver',
+              args: {
+                name: 'updateResourcePin',
+                paginated: false,
+              },
+            },
+          ],
+          type: {
+            NotNull: {
+              Named: 'Resource',
+            },
+          },
+          arguments: [
+            {
+              name: 'input',
+              type: {
+                Named: 'ResorcePinInput',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+})

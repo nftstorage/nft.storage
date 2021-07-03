@@ -1,0 +1,35 @@
+CreateFunction({
+  name: 'createOrUpdate',
+  body: Query(
+    Lambda(
+      ['input'],
+      Let(
+        [
+          {
+            index: Select('index', Var('input')),
+          },
+          {
+            collection: Select('collection', Var('input')),
+          },
+          {
+            key: Select('key', Var('input')),
+          },
+          {
+            data: Select('data', Var('input')),
+          },
+          {
+            search: Select(Var('key'), Var('data')),
+          },
+          {
+            match: Match(Var('index'), Var('search')),
+          },
+        ],
+        If(
+          IsEmpty(Var('match')),
+          Create(Var('collection'), Var('input')),
+          Update(Select('ref', Get(Var('match'))), Var('input'))
+        )
+      )
+    )
+  ),
+})

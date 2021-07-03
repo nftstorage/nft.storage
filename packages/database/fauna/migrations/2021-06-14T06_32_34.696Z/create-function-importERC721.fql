@@ -1,0 +1,85 @@
+CreateFunction({
+  name: 'importERC721',
+  body: Query(
+    Lambda(
+      ['input'],
+      If(
+        Not(
+          Equals(
+            Select(['data', 'id'], Call('cursor', [])),
+            Select('id', Var('input'))
+          )
+        ),
+        Abort(
+          Format(
+            "Import is rejected because input.id: '%s' missmatches current cursor: {id: '%s'}",
+            [
+              Select(['data', 'id'], Call('cursor', [])),
+              Select('id', Var('input')),
+            ]
+          )
+        ),
+        Let(
+          [
+            {
+              id: Select('id', Var('input')),
+            },
+            {
+              tokens: Select('tokens', Var('input')),
+            },
+            {
+              import: Create(Collection('ERC721ImportResult'), {
+                data: {
+                  id: Var('id'),
+                  nextID: null,
+                },
+              }),
+            },
+            {
+              result: Reduce(
+                Lambda(
+                  ['state', 'input'],
+                  Let(
+                    [
+                      {
+                        token: Call('importERC721Token', Var('input')),
+                      },
+                      {
+                        link: Create(Collection('eRC721ImportResult_tokens'), {
+                          data: {
+                            tokenID: Select('ref', Var('token')),
+                            eRC721ImportResultID: Select('ref', Var('import')),
+                          },
+                        }),
+                      },
+                    ],
+                    {
+                      id: Var('id'),
+                      nextID: Select(['data', 'id'], Var('token')),
+                    }
+                  )
+                ),
+                {
+                  id: Var('id'),
+                  nextID: Var('id'),
+                  tokens: [],
+                },
+                Var('tokens')
+              ),
+            },
+          ],
+          Do(
+            Call('setCursor', {
+              data: {
+                id: Select('nextID', Var('result')),
+              },
+            }),
+            Update(Select('ref', Var('import')), {
+              data: Var('result'),
+            })
+          )
+        )
+      )
+    )
+  ),
+})

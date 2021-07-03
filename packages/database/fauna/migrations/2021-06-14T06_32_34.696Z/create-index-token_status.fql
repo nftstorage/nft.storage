@@ -1,0 +1,33 @@
+CreateIndex({
+  name: 'token_status',
+  source: {
+    collection: Collection('TokenAsset'),
+    fields: {
+      status: Query(
+        Lambda(
+          'doc',
+          Let(
+            [
+              {
+                problem: Select(['data', 'problem'], Var('doc'), null),
+              },
+              {
+                metadata: Select(['data', 'metadata'], Var('doc'), null),
+              },
+            ],
+            If(
+              Not(IsNull(Var('problem'))),
+              'failed',
+              If(Not(IsNull(Var('metadata'))), 'succeeded', 'queued')
+            )
+          )
+        )
+      ),
+    },
+  },
+  terms: [
+    {
+      binding: 'status',
+    },
+  ],
+})

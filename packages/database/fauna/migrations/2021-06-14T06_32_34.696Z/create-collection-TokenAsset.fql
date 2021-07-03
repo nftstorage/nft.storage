@@ -1,0 +1,89 @@
+CreateCollection({
+  name: 'TokenAsset',
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:07.965343Z'),
+      meta: {
+        name: 'TokenAsset',
+        fields: [
+          {
+            name: 'referrers',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'tokenAsset_referrers',
+                },
+              },
+            ],
+            description:
+              'Multiple tokens may have use a same `tokenURI`. This relation allows tracking\nwhich tokens refer to the same `tokenURI`.\nToken this metadata belogs to.',
+            type: {
+              List: {
+                NotNull: {
+                  Named: 'Token',
+                },
+              },
+            },
+          },
+          {
+            name: 'tokenURI',
+            directives: [
+              {
+                name: 'unique',
+                args: {
+                  index: 'unique_TokenAsset_tokenURI',
+                },
+              },
+            ],
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'metadata',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'metadata_source',
+                },
+              },
+            ],
+            description:
+              'When `tokenURI` points to may point to JSON file that conforms to the ERC721\nMetadata JSON Schema it fetched parsed and stored as related Metadata\ndocument.',
+            type: {
+              Named: 'Metadata',
+            },
+          },
+          {
+            name: 'ipnft',
+            description:
+              "CID of an IPLD node that encapsulates token metadata and all it's assets.\nPresent when it was passibly to succesfully pin the token.",
+            type: {
+              Named: 'String',
+            },
+          },
+          {
+            name: 'problem',
+            description: 'Problem description if failed to get the metadata.',
+            type: {
+              Named: 'String',
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'TokenAsset',
+            },
+          },
+        ],
+      },
+    },
+  },
+  history_days: 30,
+})

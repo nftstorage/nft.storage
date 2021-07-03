@@ -1,0 +1,46 @@
+CreateIndex({
+  name: 'block',
+  source: Collection('Block'),
+  terms: [
+    {
+      field: ['data', 'hash'],
+    },
+    {
+      field: ['data', 'number'],
+    },
+  ],
+  serialized: true,
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:08.202639Z'),
+      meta: {
+        name: 'block',
+        directives: [
+          {
+            name: 'index',
+            args: {
+              name: 'block',
+            },
+          },
+        ],
+        type: {
+          Named: 'Block',
+        },
+        arguments: [
+          {
+            name: 'hash',
+            type: {
+              Named: 'ID',
+            },
+          },
+          {
+            name: 'number',
+            type: {
+              Named: 'Long',
+            },
+          },
+        ],
+      },
+    },
+  },
+})

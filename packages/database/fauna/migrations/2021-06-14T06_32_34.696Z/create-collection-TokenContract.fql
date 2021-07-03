@@ -1,0 +1,79 @@
+CreateCollection({
+  name: 'TokenContract',
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:07.965343Z'),
+      meta: {
+        name: 'TokenContract',
+        fields: [
+          {
+            name: 'id',
+            directives: [
+              {
+                name: 'unique',
+                args: {
+                  index: 'unique_TokenContract_id',
+                },
+              },
+            ],
+            type: {
+              NotNull: {
+                Named: 'ID',
+              },
+            },
+          },
+          {
+            name: 'name',
+            description:
+              'A descriptive name for a collection of NFTs in this contract',
+            type: {
+              Named: 'String',
+            },
+          },
+          {
+            name: 'symbol',
+            description: 'An abbreviated name for NFTs in this contract',
+            type: {
+              Named: 'String',
+            },
+          },
+          {
+            name: 'supportsEIP721Metadata',
+            type: {
+              NotNull: {
+                Named: 'Boolean',
+              },
+            },
+          },
+          {
+            name: 'tokens',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'tokenContract_tokens',
+                },
+              },
+            ],
+            type: {
+              List: {
+                NotNull: {
+                  Named: 'Token',
+                },
+              },
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'TokenContract',
+            },
+          },
+        ],
+      },
+    },
+  },
+  history_days: 30,
+})
