@@ -1,0 +1,667 @@
+directive @entity on OBJECT
+
+directive @derivedFrom(field: String) on FIELD_DEFINITION
+
+directive @subgraphId(id: String) on OBJECT
+
+type _Block_ {
+  """
+  The hash of the block
+  """
+  hash: Bytes
+
+  """
+  The block number
+  """
+  number: Int!
+}
+
+"""
+The type for the top-level _meta field
+"""
+type _Meta_ {
+  """
+  Information about a specific subgraph block. The hash of the block
+  will be null if the _meta field has a block constraint that asks for
+  a block number. It will be filled if the _meta field has no block constraint
+  and therefore asks for the latest  block
+  """
+  block: _Block_!
+
+  """
+  The deployment ID
+  """
+  deployment: String!
+
+  """
+  If `true`, the subgraph encountered indexing errors at some past block
+  """
+  hasIndexingErrors: Boolean!
+}
+
+enum _SubgraphErrorPolicy_ {
+  """
+  Data will be returned even if the subgraph has indexing errors
+  """
+  allow
+
+  """
+  If the subgraph has indexing errors, data will be omitted. The default.
+  """
+  deny
+}
+
+type All {
+  id: ID!
+  numTokenContracts: BigInt!
+  numTokens: BigInt!
+  numOwners: BigInt!
+}
+
+input All_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  numTokenContracts: BigInt
+  numTokenContracts_not: BigInt
+  numTokenContracts_gt: BigInt
+  numTokenContracts_lt: BigInt
+  numTokenContracts_gte: BigInt
+  numTokenContracts_lte: BigInt
+  numTokenContracts_in: [BigInt!]
+  numTokenContracts_not_in: [BigInt!]
+  numTokens: BigInt
+  numTokens_not: BigInt
+  numTokens_gt: BigInt
+  numTokens_lt: BigInt
+  numTokens_gte: BigInt
+  numTokens_lte: BigInt
+  numTokens_in: [BigInt!]
+  numTokens_not_in: [BigInt!]
+  numOwners: BigInt
+  numOwners_not: BigInt
+  numOwners_gt: BigInt
+  numOwners_lt: BigInt
+  numOwners_gte: BigInt
+  numOwners_lte: BigInt
+  numOwners_in: [BigInt!]
+  numOwners_not_in: [BigInt!]
+}
+
+enum All_orderBy {
+  id
+  numTokenContracts
+  numTokens
+  numOwners
+}
+
+scalar BigDecimal
+
+scalar BigInt
+
+input Block_height {
+  hash: Bytes
+  number: Int
+}
+
+scalar Bytes
+
+enum OrderDirection {
+  asc
+  desc
+}
+
+type Owner {
+  id: ID!
+  tokens(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Token_orderBy
+    orderDirection: OrderDirection
+    where: Token_filter
+  ): [Token!]!
+  numTokens: BigInt!
+}
+
+input Owner_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  numTokens: BigInt
+  numTokens_not: BigInt
+  numTokens_gt: BigInt
+  numTokens_lt: BigInt
+  numTokens_gte: BigInt
+  numTokens_lte: BigInt
+  numTokens_in: [BigInt!]
+  numTokens_not_in: [BigInt!]
+}
+
+enum Owner_orderBy {
+  id
+  tokens
+  numTokens
+}
+
+type OwnerPerTokenContract {
+  id: ID!
+  owner: Owner!
+  contract: TokenContract!
+  numTokens: BigInt!
+}
+
+input OwnerPerTokenContract_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_not_contains: String
+  owner_starts_with: String
+  owner_not_starts_with: String
+  owner_ends_with: String
+  owner_not_ends_with: String
+  contract: String
+  contract_not: String
+  contract_gt: String
+  contract_lt: String
+  contract_gte: String
+  contract_lte: String
+  contract_in: [String!]
+  contract_not_in: [String!]
+  contract_contains: String
+  contract_not_contains: String
+  contract_starts_with: String
+  contract_not_starts_with: String
+  contract_ends_with: String
+  contract_not_ends_with: String
+  numTokens: BigInt
+  numTokens_not: BigInt
+  numTokens_gt: BigInt
+  numTokens_lt: BigInt
+  numTokens_gte: BigInt
+  numTokens_lte: BigInt
+  numTokens_in: [BigInt!]
+  numTokens_not_in: [BigInt!]
+}
+
+enum OwnerPerTokenContract_orderBy {
+  id
+  owner
+  contract
+  numTokens
+}
+
+type Query {
+  all(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): All
+  alls(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: All_orderBy
+    orderDirection: OrderDirection
+    where: All_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [All!]!
+  token(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): Token
+  tokens(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Token_orderBy
+    orderDirection: OrderDirection
+    where: Token_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [Token!]!
+  tokenContract(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): TokenContract
+  tokenContracts(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: TokenContract_orderBy
+    orderDirection: OrderDirection
+    where: TokenContract_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [TokenContract!]!
+  owner(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): Owner
+  owners(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Owner_orderBy
+    orderDirection: OrderDirection
+    where: Owner_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [Owner!]!
+  ownerPerTokenContract(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): OwnerPerTokenContract
+  ownerPerTokenContracts(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: OwnerPerTokenContract_orderBy
+    orderDirection: OrderDirection
+    where: OwnerPerTokenContract_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [OwnerPerTokenContract!]!
+
+  """
+  Access to subgraph metadata
+  """
+  _meta(block: Block_height): _Meta_
+}
+
+type Subscription {
+  all(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): All
+  alls(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: All_orderBy
+    orderDirection: OrderDirection
+    where: All_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [All!]!
+  token(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): Token
+  tokens(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Token_orderBy
+    orderDirection: OrderDirection
+    where: Token_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [Token!]!
+  tokenContract(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): TokenContract
+  tokenContracts(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: TokenContract_orderBy
+    orderDirection: OrderDirection
+    where: TokenContract_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [TokenContract!]!
+  owner(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): Owner
+  owners(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Owner_orderBy
+    orderDirection: OrderDirection
+    where: Owner_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [Owner!]!
+  ownerPerTokenContract(
+    id: ID!
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): OwnerPerTokenContract
+  ownerPerTokenContracts(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: OwnerPerTokenContract_orderBy
+    orderDirection: OrderDirection
+    where: OwnerPerTokenContract_filter
+
+    """
+    The block at which the query should be executed. Can either be an `{ number:
+    Int }` containing the block number or a `{ hash: Bytes }` value containing a
+    block hash. Defaults to the latest block when omitted.
+    """
+    block: Block_height
+  ): [OwnerPerTokenContract!]!
+
+  """
+  Access to subgraph metadata
+  """
+  _meta(block: Block_height): _Meta_
+}
+
+type Token {
+  id: ID!
+  contract: TokenContract!
+  tokenID: BigInt!
+  owner: Owner!
+  mintTime: BigInt!
+  tokenURI: String!
+  blockNumber: BigInt!
+  blockHash: Bytes!
+}
+
+input Token_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  contract: String
+  contract_not: String
+  contract_gt: String
+  contract_lt: String
+  contract_gte: String
+  contract_lte: String
+  contract_in: [String!]
+  contract_not_in: [String!]
+  contract_contains: String
+  contract_not_contains: String
+  contract_starts_with: String
+  contract_not_starts_with: String
+  contract_ends_with: String
+  contract_not_ends_with: String
+  tokenID: BigInt
+  tokenID_not: BigInt
+  tokenID_gt: BigInt
+  tokenID_lt: BigInt
+  tokenID_gte: BigInt
+  tokenID_lte: BigInt
+  tokenID_in: [BigInt!]
+  tokenID_not_in: [BigInt!]
+  owner: String
+  owner_not: String
+  owner_gt: String
+  owner_lt: String
+  owner_gte: String
+  owner_lte: String
+  owner_in: [String!]
+  owner_not_in: [String!]
+  owner_contains: String
+  owner_not_contains: String
+  owner_starts_with: String
+  owner_not_starts_with: String
+  owner_ends_with: String
+  owner_not_ends_with: String
+  mintTime: BigInt
+  mintTime_not: BigInt
+  mintTime_gt: BigInt
+  mintTime_lt: BigInt
+  mintTime_gte: BigInt
+  mintTime_lte: BigInt
+  mintTime_in: [BigInt!]
+  mintTime_not_in: [BigInt!]
+  tokenURI: String
+  tokenURI_not: String
+  tokenURI_gt: String
+  tokenURI_lt: String
+  tokenURI_gte: String
+  tokenURI_lte: String
+  tokenURI_in: [String!]
+  tokenURI_not_in: [String!]
+  tokenURI_contains: String
+  tokenURI_not_contains: String
+  tokenURI_starts_with: String
+  tokenURI_not_starts_with: String
+  tokenURI_ends_with: String
+  tokenURI_not_ends_with: String
+  blockNumber: BigInt
+  blockNumber_not: BigInt
+  blockNumber_gt: BigInt
+  blockNumber_lt: BigInt
+  blockNumber_gte: BigInt
+  blockNumber_lte: BigInt
+  blockNumber_in: [BigInt!]
+  blockNumber_not_in: [BigInt!]
+  blockHash: Bytes
+  blockHash_not: Bytes
+  blockHash_in: [Bytes!]
+  blockHash_not_in: [Bytes!]
+  blockHash_contains: Bytes
+  blockHash_not_contains: Bytes
+}
+
+enum Token_orderBy {
+  id
+  contract
+  tokenID
+  owner
+  mintTime
+  tokenURI
+  blockNumber
+  blockHash
+}
+
+type TokenContract {
+  id: ID!
+  name: String
+  symbol: String
+  doAllAddressesOwnTheirIdByDefault: Boolean!
+  supportsEIP721Metadata: Boolean!
+  tokens(
+    skip: Int = 0
+    first: Int = 100
+    orderBy: Token_orderBy
+    orderDirection: OrderDirection
+    where: Token_filter
+  ): [Token!]!
+  numTokens: BigInt!
+  numOwners: BigInt!
+}
+
+input TokenContract_filter {
+  id: ID
+  id_not: ID
+  id_gt: ID
+  id_lt: ID
+  id_gte: ID
+  id_lte: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  name: String
+  name_not: String
+  name_gt: String
+  name_lt: String
+  name_gte: String
+  name_lte: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  symbol: String
+  symbol_not: String
+  symbol_gt: String
+  symbol_lt: String
+  symbol_gte: String
+  symbol_lte: String
+  symbol_in: [String!]
+  symbol_not_in: [String!]
+  symbol_contains: String
+  symbol_not_contains: String
+  symbol_starts_with: String
+  symbol_not_starts_with: String
+  symbol_ends_with: String
+  symbol_not_ends_with: String
+  doAllAddressesOwnTheirIdByDefault: Boolean
+  doAllAddressesOwnTheirIdByDefault_not: Boolean
+  doAllAddressesOwnTheirIdByDefault_in: [Boolean!]
+  doAllAddressesOwnTheirIdByDefault_not_in: [Boolean!]
+  supportsEIP721Metadata: Boolean
+  supportsEIP721Metadata_not: Boolean
+  supportsEIP721Metadata_in: [Boolean!]
+  supportsEIP721Metadata_not_in: [Boolean!]
+  numTokens: BigInt
+  numTokens_not: BigInt
+  numTokens_gt: BigInt
+  numTokens_lt: BigInt
+  numTokens_gte: BigInt
+  numTokens_lte: BigInt
+  numTokens_in: [BigInt!]
+  numTokens_not_in: [BigInt!]
+  numOwners: BigInt
+  numOwners_not: BigInt
+  numOwners_gt: BigInt
+  numOwners_lt: BigInt
+  numOwners_gte: BigInt
+  numOwners_lte: BigInt
+  numOwners_in: [BigInt!]
+  numOwners_not_in: [BigInt!]
+}
+
+enum TokenContract_orderBy {
+  id
+  name
+  symbol
+  doAllAddressesOwnTheirIdByDefault
+  supportsEIP721Metadata
+  tokens
+  numTokens
+  numOwners
+}

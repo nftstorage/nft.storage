@@ -1,0 +1,62 @@
+{
+  "name": "niftysave",
+  "version": "0.0.0",
+  "description": "Job that scans chain for ERC-721 tokens",
+  "main": "./src/main.js",
+  "type": "module",
+  "scripts": {
+    "type-check": "tsc --build",
+    "test": "mocha test/*.spec.js",
+    "repl": "node --experimental-repl-await -i -e 'import(`./.repl.js`)'",
+    "import-tokens": "node ./src/main.js import-tokens",
+    "import-metadata": "node ./src/main.js import-metadata",
+    "import-asset": "node ./src/main.js import-asset",
+    "generate": "yarn generate:erc721-source && yarn generate:db-source",
+    "generate:erc721-source": "generate-graphql-client --post --endpoint https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph --output ./gen/erc721 && cp template/* gen/erc721 && tsc ./gen/erc721/schema.ts --moduleResolution node --target esnext --esModuleInterop",
+    "generate:db-source": "generate-graphql-client --fetcher .fetcher.cjs --output ./gen/db && cp template/* gen/db && tsc ./gen/db/schema.ts --moduleResolution node --target esnext --esModuleInterop"
+  },
+  "license": "(Apache-2.0 AND MIT)",
+  "devDependencies": {
+    "@types/assert": "^1.5.4",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "15.12.5",
+    "@types/yargs": "^17.0.0",
+    "assert": "^2.0.0",
+    "c8": "^7.7.1",
+    "graphql-tag-pluck": "0.8.7",
+    "husky": "6.0.0",
+    "lint-staged": "11.0.0",
+    "mocha": "^8.3.2",
+    "prettier": "2.3.2",
+    "typescript": "^4.3.4",
+    "yargs": "^17.0.1"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "dependencies": {
+    "@nftstorage/ipfs-cluster": "^3.0.1",
+    "@web-std/fetch": "^2.0.1",
+    "@web-std/file": "^1.1.0",
+    "@web-std/form-data": "^2.1.0",
+    "dotenv": "^10.0.0",
+    "faunadb": "^4.3.0",
+    "graphql-typed-client": "1.7.4",
+    "multiformats": "^9.0.1",
+    "nft.storage": "^1.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nftstorage/niftysave.git"
+  },
+  "keywords": [
+    "niftysave"
+  ],
+  "bugs": {
+    "url": "https://github.com/nftstorage/niftysave/issues"
+  },
+  "homepage": "https://github.com/nftstorage/niftysave#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}

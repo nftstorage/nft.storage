@@ -1,0 +1,1631 @@
+directive @embedded on OBJECT
+
+directive @collection(name: String!) on OBJECT
+
+directive @index(name: String!) on FIELD_DEFINITION
+
+directive @resolver(
+  name: String
+  paginated: Boolean! = false
+) on FIELD_DEFINITION
+
+directive @relation(name: String) on FIELD_DEFINITION
+
+directive @unique(index: String) on FIELD_DEFINITION
+
+type Block {
+  """
+  The block number
+  """
+  number: Long!
+
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  The hash of the block
+  """
+  hash: ID!
+  tokens(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): TokenPage!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+"""
+'Block' input values
+"""
+input BlockInput {
+  """
+  The hash of the block
+  """
+  hash: ID!
+
+  """
+  The block number
+  """
+  number: Long!
+  tokens: BlockTokensRelation
+}
+
+"""
+The pagination object for elements of type 'Block'.
+"""
+type BlockPage {
+  """
+  The elements of type 'Block' in this page.
+  """
+  data: [Block]!
+
+  """
+  A cursor for elements coming after the current page.
+  """
+  after: String
+
+  """
+  A cursor for elements coming before the current page.
+  """
+  before: String
+}
+
+"""
+Allow manipulating the relationship between the types 'Block' and 'Token'.
+"""
+input BlockTokensRelation {
+  """
+  Create one or more documents of type 'Token' and associate them with the current document.
+  """
+  create: [TokenInput]
+
+  """
+  Connect one or more documents of type 'Token' with the current document using their IDs.
+  """
+  connect: [ID]
+
+  """
+  Disconnect the given documents of type 'Token' from the current document using their IDs.
+  """
+  disconnect: [ID]
+}
+
+type Cursor {
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+  id: String!
+}
+
+"""
+'Cursor' input values
+"""
+input CursorInput {
+  id: String!
+}
+
+scalar Date
+
+input ERC721ImportInput {
+  """
+  Cursor from which import started. If current cursor changed import will be
+  rejected.
+  """
+  id: String!
+
+  """
+  Tokens to be imported.
+  """
+  tokens: [ERC721ImportTokenInput!]!
+}
+
+type ERC721ImportResult {
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  New cursor after this import.
+  """
+  nextID: String!
+
+  """
+  Cursor from which import started.
+  """
+  id: String!
+
+  """
+  Tokens that were imported.
+  """
+  tokens(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): TokenPage!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+"""
+'ERC721ImportResult' input values
+"""
+input ERC721ImportResultInput {
+  """
+  Cursor from which import started.
+  """
+  id: String!
+
+  """
+  New cursor after this import.
+  """
+  nextID: String!
+
+  """
+  Tokens that were imported.
+  """
+  tokens: ERC721ImportResultTokensRelation
+}
+
+"""
+The pagination object for elements of type 'ERC721ImportResult'.
+"""
+type ERC721ImportResultPage {
+  """
+  The elements of type 'ERC721ImportResult' in this page.
+  """
+  data: [ERC721ImportResult]!
+
+  """
+  A cursor for elements coming after the current page.
+  """
+  after: String
+
+  """
+  A cursor for elements coming before the current page.
+  """
+  before: String
+}
+
+"""
+Allow manipulating the relationship between the types 'ERC721ImportResult' and 'Token'.
+"""
+input ERC721ImportResultTokensRelation {
+  """
+  Create one or more documents of type 'Token' and associate them with the current document.
+  """
+  create: [TokenInput]
+
+  """
+  Connect one or more documents of type 'Token' with the current document using their IDs.
+  """
+  connect: [ID]
+
+  """
+  Disconnect the given documents of type 'Token' from the current document using their IDs.
+  """
+  disconnect: [ID]
+}
+
+input ERC721ImportTokenContractInput {
+  id: ID!
+  name: String
+  symbol: String
+  supportsEIP721Metadata: Boolean!
+}
+
+input ERC721ImportTokenInput {
+  id: ID!
+  tokenID: String!
+  tokenURI: String!
+  mintTime: String!
+  blockHash: String!
+  blockNumber: String!
+  contract: ERC721ImportTokenContractInput!
+  owner: ERC721ImportTokenOwnerInput!
+}
+
+input ERC721ImportTokenOwnerInput {
+  id: ID!
+}
+
+input ERC721MetadataQuery {
+  name: String
+  symbol: String
+  tokenURI: String
+  ipnft: String
+}
+
+input FindResourceInput {
+  status: ResourceStatus
+}
+
+input FindTokenAssetsInput {
+  status: TokenAssetStatus
+}
+
+"""
+The `Long` scalar type represents non-fractional signed whole numeric values.
+Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+input MetadaQuery {
+  name: String
+  description: String
+  image: ResourceQuery
+}
+
+type Metadata {
+  """
+  Identifies the asset this token represents
+  """
+  name: String!
+  source: TokenAsset!
+  assets(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): ResourcePage!
+
+  """
+  A file representing the asset this token represents
+  """
+  image: Resource!
+
+  """
+  Describes the asset this token represents
+  """
+  description: String!
+
+  """
+  The document's ID.
+  """
+  _id: ID!
+  cid: String!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+"""
+Allow manipulating the relationship between the types 'Metadata' and 'Resource'.
+"""
+input MetadataAssetsRelation {
+  """
+  Create one or more documents of type 'Resource' and associate them with the current document.
+  """
+  create: [ResourceInput]
+
+  """
+  Connect one or more documents of type 'Resource' with the current document using their IDs.
+  """
+  connect: [ID]
+
+  """
+  Disconnect the given documents of type 'Resource' from the current document using their IDs.
+  """
+  disconnect: [ID]
+}
+
+"""
+Allow manipulating the relationship between the types 'Metadata' and 'Resource' using the field 'Metadata.image'.
+"""
+input MetadataImageRelation {
+  """
+  Create a document of type 'Resource' and associate it with the current document.
+  """
+  create: ResourceInput
+
+  """
+  Connect a document of type 'Resource' with the current document using its ID.
+  """
+  connect: ID
+}
+
+input MetadataInput {
+  """
+  CID for the metadata content.
+  """
+  cid: String!
+
+  """
+  Identifies the asset this token represents
+  """
+  name: String!
+
+  """
+  Describes the asset this token represents
+  """
+  description: String!
+
+  """
+  A file representing the asset this token represents
+  """
+  image: ResourceInput!
+  assets: [ResourceInput!]!
+}
+
+"""
+The pagination object for elements of type 'Metadata'.
+"""
+type MetadataPage {
+  """
+  The elements of type 'Metadata' in this page.
+  """
+  data: [Metadata]!
+
+  """
+  A cursor for elements coming after the current page.
+  """
+  after: String
+
+  """
+  A cursor for elements coming before the current page.
+  """
+  before: String
+}
+
+"""
+Allow manipulating the relationship between the types 'Metadata' and 'TokenAsset' using the field 'Metadata.source'.
+"""
+input MetadataSourceRelation {
+  """
+  Create a document of type 'TokenAsset' and associate it with the current document.
+  """
+  create: TokenAssetInput
+
+  """
+  Connect a document of type 'TokenAsset' with the current document using its ID.
+  """
+  connect: ID
+
+  """
+  If true, disconnects this document from 'TokenAsset'
+  """
+  disconnect: Boolean
+}
+
+type Mutation {
+  """
+  Delete an existing document in the collection of 'Owner'
+  """
+  deleteOwner(
+    """
+    The 'Owner' document's ID
+    """
+    id: ID!
+  ): Owner
+
+  """
+  Delete an existing document in the collection of 'TokenAsset'
+  """
+  deleteTokenAsset(
+    """
+    The 'TokenAsset' document's ID
+    """
+    id: ID!
+  ): TokenAsset
+
+  """
+  Create a new document in the collection of 'Metadata'
+  """
+  createMetadata(
+    """
+    'Metadata' input values
+    """
+    data: MetadataInput!
+  ): Metadata!
+
+  """
+  Delete an existing document in the collection of 'Token'
+  """
+  deleteToken(
+    """
+    The 'Token' document's ID
+    """
+    id: ID!
+  ): Token
+
+  """
+  Update an existing document in the collection of 'Task'
+  """
+  updateTask(
+    """
+    The 'Task' document's ID
+    """
+    id: ID!
+
+    """
+    'Task' input values
+    """
+    data: TaskInput!
+  ): Task
+
+  """
+  Create a new document in the collection of 'Block'
+  """
+  createBlock(
+    """
+    'Block' input values
+    """
+    data: BlockInput!
+  ): Block!
+
+  """
+  Imports Token Metadata. Will be rejected if corresponding asset status isn't
+  Queued. Otherwise updates corresponding TokenAsset transitioning it to
+  Succeeded state.
+  """
+  importTokenMetadata(input: TokenMetadataImportInput): Metadata!
+
+  """
+  Delete an existing document in the collection of 'ERC721ImportResult'
+  """
+  deleteERC721ImportResult(
+    """
+    The 'ERC721ImportResult' document's ID
+    """
+    id: ID!
+  ): ERC721ImportResult
+
+  """
+  Update an existing document in the collection of 'Metadata'
+  """
+  updateMetadata(
+    """
+    The 'Metadata' document's ID
+    """
+    id: ID!
+
+    """
+    'Metadata' input values
+    """
+    data: MetadataInput!
+  ): Metadata
+
+  """
+  Create a new document in the collection of 'TokenContract'
+  """
+  createTokenContract(
+    """
+    'TokenContract' input values
+    """
+    data: TokenContractInput!
+  ): TokenContract!
+
+  """
+  Create a new document in the collection of 'Resource'
+  """
+  createResource(
+    """
+    'Resource' input values
+    """
+    data: ResourceInput!
+  ): Resource!
+
+  """
+  Update an existing document in the collection of 'Cursor'
+  """
+  updateCursor(
+    """
+    The 'Cursor' document's ID
+    """
+    id: ID!
+
+    """
+    'Cursor' input values
+    """
+    data: CursorInput!
+  ): Cursor
+
+  """
+  Create a new document in the collection of 'Token'
+  """
+  createToken(
+    """
+    'Token' input values
+    """
+    data: TokenInput!
+  ): Token!
+
+  """
+  Delete an existing document in the collection of 'Cursor'
+  """
+  deleteCursor(
+    """
+    The 'Cursor' document's ID
+    """
+    id: ID!
+  ): Cursor
+  reportResourceProblem(input: ResourceProblemInput): Resource!
+  importERC721(input: ERC721ImportInput!): ERC721ImportResult!
+
+  """
+  Update an existing document in the collection of 'TokenContract'
+  """
+  updateTokenContract(
+    """
+    The 'TokenContract' document's ID
+    """
+    id: ID!
+
+    """
+    'TokenContract' input values
+    """
+    data: TokenContractInput!
+  ): TokenContract
+
+  """
+  Delete an existing document in the collection of 'Resource'
+  """
+  deleteResource(
+    """
+    The 'Resource' document's ID
+    """
+    id: ID!
+  ): Resource
+
+  """
+  Update an existing document in the collection of 'Owner'
+  """
+  updateOwner(
+    """
+    The 'Owner' document's ID
+    """
+    id: ID!
+
+    """
+    'Owner' input values
+    """
+    data: OwnerInput!
+  ): Owner
+
+  """
+  Update an existing document in the collection of 'TokenAsset'
+  """
+  updateTokenAsset(
+    """
+    The 'TokenAsset' document's ID
+    """
+    id: ID!
+
+    """
+    'TokenAsset' input values
+    """
+    data: TokenAssetInput!
+  ): TokenAsset
+
+  """
+  Delete an existing document in the collection of 'Block'
+  """
+  deleteBlock(
+    """
+    The 'Block' document's ID
+    """
+    id: ID!
+  ): Block
+
+  """
+  Create a new document in the collection of 'TokenAsset'
+  """
+  createTokenAsset(
+    """
+    'TokenAsset' input values
+    """
+    data: TokenAssetInput!
+  ): TokenAsset!
+
+  """
+  Create a new document in the collection of 'Cursor'
+  """
+  createCursor(
+    """
+    'Cursor' input values
+    """
+    data: CursorInput!
+  ): Cursor!
+
+  """
+  Create a new document in the collection of 'Task'
+  """
+  createTask(
+    """
+    'Task' input values
+    """
+    data: TaskInput!
+  ): Task!
+
+  """
+  Update an existing document in the collection of 'Token'
+  """
+  updateToken(
+    """
+    The 'Token' document's ID
+    """
+    id: ID!
+
+    """
+    'Token' input values
+    """
+    data: TokenInput!
+  ): Token
+
+  """
+  Delete an existing document in the collection of 'Task'
+  """
+  deleteTask(
+    """
+    The 'Task' document's ID
+    """
+    id: ID!
+  ): Task
+
+  """
+  Create a new document in the collection of 'ERC721ImportResult'
+  """
+  createERC721ImportResult(
+    """
+    'ERC721ImportResult' input values
+    """
+    data: ERC721ImportResultInput!
+  ): ERC721ImportResult!
+
+  """
+  Delete an existing document in the collection of 'TokenContract'
+  """
+  deleteTokenContract(
+    """
+    The 'TokenContract' document's ID
+    """
+    id: ID!
+  ): TokenContract
+
+  """
+  Create a new document in the collection of 'Owner'
+  """
+  createOwner(
+    """
+    'Owner' input values
+    """
+    data: OwnerInput!
+  ): Owner!
+
+  """
+  Update an existing document in the collection of 'Resource'
+  """
+  updateResource(
+    """
+    The 'Resource' document's ID
+    """
+    id: ID!
+
+    """
+    'Resource' input values
+    """
+    data: ResourceInput!
+  ): Resource
+  updateResourcePin(input: ResorcePinInput): Resource!
+
+  """
+  Delete an existing document in the collection of 'Metadata'
+  """
+  deleteMetadata(
+    """
+    The 'Metadata' document's ID
+    """
+    id: ID!
+  ): Metadata
+
+  """
+  Update an existing document in the collection of 'Block'
+  """
+  updateBlock(
+    """
+    The 'Block' document's ID
+    """
+    id: ID!
+
+    """
+    'Block' input values
+    """
+    data: BlockInput!
+  ): Block
+
+  """
+  Reports problem with a TokenAsset e.g. it was impossible to parse URI
+  or was unable to fetch content from URI, or content was not a JSON.
+
+  Call is rejected if status isn't Queued.
+  """
+  reportTokenAssetProblem(input: TokenAssetProblemInput): TokenAsset!
+
+  """
+  Update an existing document in the collection of 'ERC721ImportResult'
+  """
+  updateERC721ImportResult(
+    """
+    The 'ERC721ImportResult' document's ID
+    """
+    id: ID!
+
+    """
+    'ERC721ImportResult' input values
+    """
+    data: ERC721ImportResultInput!
+  ): ERC721ImportResult
+}
+
+type Owner {
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+  id: ID!
+}
+
+"""
+'Owner' input values
+"""
+input OwnerInput {
+  id: ID!
+}
+
+type Query {
+  """
+  Find a document from the collection of 'Block' by its id.
+  """
+  findBlockByID(
+    """
+    The 'Block' document's ID
+    """
+    id: ID!
+  ): Block
+
+  """
+  Find a document from the collection of 'TokenContract' by its id.
+  """
+  findTokenContractByID(
+    """
+    The 'TokenContract' document's ID
+    """
+    id: ID!
+  ): TokenContract
+  constract(id: ID): TokenContract
+
+  """
+  Provides tokens with the
+  """
+  findTokenAssets(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+    where: FindTokenAssetsInput
+  ): QueryFindTokenAssetsPage!
+
+  """
+  Find a document from the collection of 'Resource' by its id.
+  """
+  findResourceByID(
+    """
+    The 'Resource' document's ID
+    """
+    id: ID!
+  ): Resource
+
+  """
+  Find a document from the collection of 'Token' by its id.
+  """
+  findTokenByID(
+    """
+    The 'Token' document's ID
+    """
+    id: ID!
+  ): Token
+  allImports(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): ERC721ImportResultPage!
+
+  """
+  Find a document from the collection of 'Owner' by its id.
+  """
+  findOwnerByID(
+    """
+    The 'Owner' document's ID
+    """
+    id: ID!
+  ): Owner
+
+  """
+  Find a document from the collection of 'ERC721ImportResult' by its id.
+  """
+  findERC721ImportResultByID(
+    """
+    The 'ERC721ImportResult' document's ID
+    """
+    id: ID!
+  ): ERC721ImportResult
+  cursor: Cursor!
+
+  """
+  Find a document from the collection of 'Metadata' by its id.
+  """
+  findMetadataByID(
+    """
+    The 'Metadata' document's ID
+    """
+    id: ID!
+  ): Metadata
+
+  """
+  Find a document from the collection of 'Task' by its id.
+  """
+  findTaskByID(
+    """
+    The 'Task' document's ID
+    """
+    id: ID!
+  ): Task
+  block(hash: ID, number: Long): Block
+
+  """
+  Find a document from the collection of 'Cursor' by its id.
+  """
+  findCursorByID(
+    """
+    The 'Cursor' document's ID
+    """
+    id: ID!
+  ): Cursor
+  findResources(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+    where: FindResourceInput
+  ): QueryFindResourcesPage!
+
+  """
+  Find a document from the collection of 'TokenAsset' by its id.
+  """
+  findTokenAssetByID(
+    """
+    The 'TokenAsset' document's ID
+    """
+    id: ID!
+  ): TokenAsset
+  tokens(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+    tokenID: String
+    mintTime: String
+  ): TokenPage!
+  owner(id: ID): Owner
+  allTokens(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): TokenPage!
+}
+
+"""
+The pagination object for elements of type 'Resource'.
+"""
+type QueryFindResourcesPage {
+  """
+  The elements of type 'Resource' in this page.
+  """
+  data: [Resource]!
+
+  """
+  A cursor for elements coming after the current page.
+  """
+  after: String
+
+  """
+  A cursor for elements coming before the current page.
+  """
+  before: String
+}
+
+"""
+The pagination object for elements of type 'TokenAsset'.
+"""
+type QueryFindTokenAssetsPage {
+  """
+  The elements of type 'TokenAsset' in this page.
+  """
+  data: [TokenAsset]!
+
+  """
+  A cursor for elements coming after the current page.
+  """
+  after: String
+
+  """
+  A cursor for elements coming before the current page.
+  """
+  before: String
+}
+
+input ResorcePinInput {
+  resourceID: ID!
+  status: ResourceStatus!
+  ipfsURL: String!
+  cid: String!
+}
+
+type Resource {
+  """
+  Problem description if there was problem in pinning a resource.
+  """
+  problem: String
+
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  URI with which resource was identified.
+  """
+  uri: String!
+
+  """
+  CID that corresponds to this resource, set once resourec is pinned.
+  """
+  cid: String
+
+  """
+  ipfs:// url if `uri` was referring to gateway URL.
+  """
+  ipfsURL: String
+  status: ResourceStatus!
+  referrers(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): MetadataPage!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+input ResourceInput {
+  uri: String!
+  ipfsURL: String
+}
+
+"""
+The pagination object for elements of type 'Resource'.
+"""
+type ResourcePage {
+  """
+  The elements of type 'Resource' in this page.
+  """
+  data: [Resource]!
+
+  """
+  A cursor for elements coming after the current page.
+  """
+  after: String
+
+  """
+  A cursor for elements coming before the current page.
+  """
+  before: String
+}
+
+input ResourceProblemInput {
+  resourceID: ID!
+  status: ResourceStatus!
+  problem: String!
+}
+
+input ResourceQuery {
+  uri: String
+  cid: String
+}
+
+"""
+Allow manipulating the relationship between the types 'Resource' and 'Metadata'.
+"""
+input ResourceReferrersRelation {
+  """
+  Create one or more documents of type 'Metadata' and associate them with the current document.
+  """
+  create: [MetadataInput]
+
+  """
+  Connect one or more documents of type 'Metadata' with the current document using their IDs.
+  """
+  connect: [ID]
+
+  """
+  Disconnect the given documents of type 'Metadata' from the current document using their IDs.
+  """
+  disconnect: [ID]
+}
+
+enum ResourceStatus {
+  """
+  Has not been processed yet
+  """
+  Idle
+
+  """
+  Pin request started. This usually implies that we found a CID in the
+  tokenURI (because it was a gateway URL) so we started a pin but do not
+  know if it was possible to fetch content.
+  """
+  PinQueued
+
+  """
+  Was pinned succesfully
+  """
+  Pinned
+
+  """
+  tokenURI is either malformed or the protocol is not supported.
+  """
+  FailedURIParse
+
+  """
+  Was unable to fetch the content.
+  """
+  FailedFetch
+
+  """
+  Pin request failed, can happen when pinned by CID but correspoding content
+  is not on the network.
+  """
+  PinFailure
+}
+
+"""
+Describen an operation that may fail, like an HTTP
+request or a JSON parse.
+
+Fauna does not support union types so we get by using a
+single struct represeting union:
+type Task =
+  | { status: 'idle', attempt: int }
+  | { status: 'queued' attempt: int }
+  | { status: 'pending', start: Time, attempt: int }
+  | { status: 'failed', end: Time, error: String, attempt: int }
+  | { status: 'done', end: Time, attempt: int }
+"""
+type Task {
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  Error message in cas task failed
+  """
+  error: String
+
+  """
+  Status of the task
+  """
+  status: String!
+
+  """
+  Time at which task failed
+  """
+  end: Time
+
+  """
+  An attempt number. Usuallly 1, but could be greater
+  on retries
+  """
+  attempt: Int!
+
+  """
+  Time at which task started
+  """
+  start: Time
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+"""
+'Task' input values
+"""
+input TaskInput {
+  """
+  Status of the task
+  """
+  status: String!
+
+  """
+  An attempt number. Usuallly 1, but could be greater
+  on retries
+  """
+  attempt: Int!
+
+  """
+  Time at which task started
+  """
+  start: Time
+
+  """
+  Time at which task failed
+  """
+  end: Time
+
+  """
+  Error message in cas task failed
+  """
+  error: String
+}
+
+scalar Time
+
+type Token {
+  blocks(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): BlockPage!
+
+  """
+  The document's ID.
+  """
+  _id: ID!
+  mintTime: String!
+  id: String!
+  imported(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): ERC721ImportResultPage!
+  tokenID: String!
+  owner: Owner!
+
+  """
+  Present when ERC721Metadata interface is implemented.
+  """
+  tokenAsset: TokenAsset
+  contract: TokenContract!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+type TokenAsset {
+  """
+  Problem description if failed to get the metadata.
+  """
+  problem: String
+
+  """
+  The document's ID.
+  """
+  _id: ID!
+  tokenURI: String!
+
+  """
+  When `tokenURI` points to may point to JSON file that conforms to the ERC721
+  Metadata JSON Schema it fetched parsed and stored as related Metadata
+  document.
+  """
+  metadata: Metadata
+
+  """
+  CID of an IPLD node that encapsulates token metadata and all it's assets.
+  Present when it was passibly to succesfully pin the token.
+  """
+  ipnft: String
+
+  """
+  Multiple tokens may have use a same `tokenURI`. This relation allows tracking
+  which tokens refer to the same `tokenURI`.
+  Token this metadata belogs to.
+  """
+  referrers(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): TokenPage!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+"""
+'TokenAsset' input values
+"""
+input TokenAssetInput {
+  """
+  Multiple tokens may have use a same `tokenURI`. This relation allows tracking
+  which tokens refer to the same `tokenURI`.
+  Token this metadata belogs to.
+  """
+  referrers: TokenAssetReferrersRelation
+  tokenURI: String!
+
+  """
+  When `tokenURI` points to may point to JSON file that conforms to the ERC721
+  Metadata JSON Schema it fetched parsed and stored as related Metadata
+  document.
+  """
+  metadata: TokenAssetMetadataRelation
+
+  """
+  CID of an IPLD node that encapsulates token metadata and all it's assets.
+  Present when it was passibly to succesfully pin the token.
+  """
+  ipnft: String
+
+  """
+  Problem description if failed to get the metadata.
+  """
+  problem: String
+}
+
+"""
+Allow manipulating the relationship between the types 'TokenAsset' and 'Metadata' using the field 'TokenAsset.metadata'.
+"""
+input TokenAssetMetadataRelation {
+  """
+  Create a document of type 'Metadata' and associate it with the current document.
+  """
+  create: MetadataInput
+
+  """
+  Connect a document of type 'Metadata' with the current document using its ID.
+  """
+  connect: ID
+}
+
+input TokenAssetProblemInput {
+  """
+  ID of the TokenAsset
+  """
+  tokenAssetID: ID!
+
+  """
+  Problem description
+  """
+  problem: String!
+}
+
+"""
+Allow manipulating the relationship between the types 'TokenAsset' and 'Token'.
+"""
+input TokenAssetReferrersRelation {
+  """
+  Create one or more documents of type 'Token' and associate them with the current document.
+  """
+  create: [TokenInput]
+
+  """
+  Connect one or more documents of type 'Token' with the current document using their IDs.
+  """
+  connect: [ID]
+
+  """
+  Disconnect the given documents of type 'Token' from the current document using their IDs.
+  """
+  disconnect: [ID]
+}
+
+enum TokenAssetStatus {
+  Queued
+  Failed
+  Succeeded
+}
+
+"""
+Allow manipulating the relationship between the types 'Token' and 'Block'.
+"""
+input TokenBlocksRelation {
+  """
+  Create one or more documents of type 'Block' and associate them with the current document.
+  """
+  create: [BlockInput]
+
+  """
+  Connect one or more documents of type 'Block' with the current document using their IDs.
+  """
+  connect: [ID]
+
+  """
+  Disconnect the given documents of type 'Block' from the current document using their IDs.
+  """
+  disconnect: [ID]
+}
+
+type TokenContract {
+  """
+  A descriptive name for a collection of NFTs in this contract
+  """
+  name: String
+
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  An abbreviated name for NFTs in this contract
+  """
+  symbol: String
+  id: ID!
+  supportsEIP721Metadata: Boolean!
+  tokens(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): TokenPage!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+"""
+'TokenContract' input values
+"""
+input TokenContractInput {
+  id: ID!
+
+  """
+  A descriptive name for a collection of NFTs in this contract
+  """
+  name: String
+
+  """
+  An abbreviated name for NFTs in this contract
+  """
+  symbol: String
+  supportsEIP721Metadata: Boolean!
+  tokens: TokenContractTokensRelation
+}
+
+"""
+Allow manipulating the relationship between the types 'Token' and 'TokenContract' using the field 'Token.contract'.
+"""
+input TokenContractRelation {
+  """
+  Create a document of type 'TokenContract' and associate it with the current document.
+  """
+  create: TokenContractInput
+
+  """
+  Connect a document of type 'TokenContract' with the current document using its ID.
+  """
+  connect: ID
+}
+
+"""
+Allow manipulating the relationship between the types 'TokenContract' and 'Token'.
+"""
+input TokenContractTokensRelation {
+  """
+  Create one or more documents of type 'Token' and associate them with the current document.
+  """
+  create: [TokenInput]
+
+  """
+  Connect one or more documents of type 'Token' with the current document using their IDs.
+  """
+  connect: [ID]
+
+  """
+  Disconnect the given documents of type 'Token' from the current document using their IDs.
+  """
+  disconnect: [ID]
+}
+
+"""
+Allow manipulating the relationship between the types 'Token' and 'ERC721ImportResult'.
+"""
+input TokenImportedRelation {
+  """
+  Create one or more documents of type 'ERC721ImportResult' and associate them with the current document.
+  """
+  create: [ERC721ImportResultInput]
+
+  """
+  Connect one or more documents of type 'ERC721ImportResult' with the current document using their IDs.
+  """
+  connect: [ID]
+
+  """
+  Disconnect the given documents of type 'ERC721ImportResult' from the current document using their IDs.
+  """
+  disconnect: [ID]
+}
+
+"""
+'Token' input values
+"""
+input TokenInput {
+  id: String!
+  tokenID: String!
+  mintTime: String!
+
+  """
+  Present when ERC721Metadata interface is implemented.
+  """
+  tokenAsset: TokenTokenAssetRelation
+  contract: TokenContractRelation
+  owner: TokenOwnerRelation
+  blocks: TokenBlocksRelation
+  imported: TokenImportedRelation
+}
+
+input TokenMetadataImportInput {
+  tokenAssetID: ID!
+  metadata: MetadataInput
+}
+
+"""
+Allow manipulating the relationship between the types 'Token' and 'Owner' using the field 'Token.owner'.
+"""
+input TokenOwnerRelation {
+  """
+  Create a document of type 'Owner' and associate it with the current document.
+  """
+  create: OwnerInput
+
+  """
+  Connect a document of type 'Owner' with the current document using its ID.
+  """
+  connect: ID
+}
+
+"""
+The pagination object for elements of type 'Token'.
+"""
+type TokenPage {
+  """
+  The elements of type 'Token' in this page.
+  """
+  data: [Token]!
+
+  """
+  A cursor for elements coming after the current page.
+  """
+  after: String
+
+  """
+  A cursor for elements coming before the current page.
+  """
+  before: String
+}
+
+"""
+Allow manipulating the relationship between the types 'Token' and 'TokenAsset' using the field 'Token.tokenAsset'.
+"""
+input TokenTokenAssetRelation {
+  """
+  Create a document of type 'TokenAsset' and associate it with the current document.
+  """
+  create: TokenAssetInput
+
+  """
+  Connect a document of type 'TokenAsset' with the current document using its ID.
+  """
+  connect: ID
+
+  """
+  If true, disconnects this document from 'TokenAsset'
+  """
+  disconnect: Boolean
+}
