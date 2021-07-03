@@ -1,7 +1,8 @@
 {
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "database"
   ],
   "scripts": {
     "test": "run-s test:*",
@@ -12,20 +13,33 @@
     "build:client:docs": "yarn --cwd packages/client typedoc",
     "build:website": "yarn --cwd packages/website build",
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css}'",
-    "clean": "rimraf node_modules yarn.lock packages/*/{yarn.lock,package-lock.json,.next,out,coverage,.nyc_output,worker,dist,node_modules}"
+    "clean": "rimraf node_modules yarn.lock packages/*/{yarn.lock,package-lock.json,.next,out,coverage,.nyc_output,worker,dist,node_modules}",
+    "setup-database": "yarn --cwd database setup",
+    "create-migration": "yarn --cwd database create-migration",
+    "apply-migrations": "yarn --cwd database apply-migrations"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged",
     "pre-push": "yarn test"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx,md,html,css}": "prettier --write"
+    "*.{js,jsx,ts,tsx,md,html,css,fql,graphql}": "prettier --write"
   },
   "prettier": {
     "trailingComma": "es5",
     "tabWidth": 2,
     "semi": false,
-    "singleQuote": true
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": [
+          "*.fql"
+        ],
+        "options": {
+          "parser": "babel"
+        }
+      }
+    ]
   },
   "devDependencies": {
     "lint-staged": "^10.5.4",
