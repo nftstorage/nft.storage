@@ -6,3 +6,4 @@ dist
 worker
 site/public
 docs
+database/fauna/migrations

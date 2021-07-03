@@ -1,0 +1,20 @@
+CreateIndex({
+  name: 'tokens',
+  source: Collection('Token'),
+  terms: [{ field: ['data', 'tokenID'] }, { field: ['data', 'mintTime'] }],
+  serialized: true,
+  data: {
+    gql: {
+      ts: Time('2021-06-10T19:21:08.202639Z'),
+      meta: {
+        name: 'tokens',
+        directives: [{ name: 'index', args: { name: 'tokens' } }],
+        type: { NotNull: { List: { Named: 'Token' } } },
+        arguments: [
+          { name: 'tokenID', type: { Named: 'String' } },
+          { name: 'mintTime', type: { Named: 'String' } },
+        ],
+      },
+    },
+  },
+})

@@ -1,0 +1,5 @@
+CreateIndex({
+  name: 'resource_status',
+  source: Collection('Resource'),
+  terms: [{ field: ['data', 'status'] }],
+})

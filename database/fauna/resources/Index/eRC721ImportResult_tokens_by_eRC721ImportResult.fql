@@ -1,0 +1,8 @@
+CreateIndex({
+  name: 'eRC721ImportResult_tokens_by_eRC721ImportResult',
+  source: Collection('eRC721ImportResult_tokens'),
+  terms: [{ field: ['data', 'eRC721ImportResultID'] }],
+  values: [{ field: ['data', 'tokenID'] }],
+  serialized: true,
+  data: { gql: { ts: Time('2021-06-10T19:21:08.202639Z') } },
+})

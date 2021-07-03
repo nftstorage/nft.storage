@@ -1,0 +1,18 @@
+CreateFunction({
+  name: 'importResource',
+  body: Query(
+    Lambda(
+      ['input'],
+      Call('createOrUpdate', {
+        key: 'uri',
+        index: Index('unique_Resource_uri'),
+        collection: Collection('Resource'),
+        data: {
+          uri: Select('uri', Var('input')),
+          ipfsURL: Select('ipfsURL', Var('input'), null),
+          status: 'Idle',
+        },
+      })
+    )
+  ),
+})
