@@ -1,0 +1,27 @@
+name: Cron Ingest ERC721
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+
+jobs:
+  erc-7212:
+    name: Scrape ERC-721
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: yarn --cwd packages/niftysave install
+
+      - name: Run job
+        env:
+          FAUNA_KEY: ${{ secrets.FAUNA_KEY }}
+          BATCH_SIZE: 100
+          TIME_BUDGET: 1620
+        run: yarn --cwd packages/niftysave import-tokens

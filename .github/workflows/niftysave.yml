@@ -1,0 +1,40 @@
+name: Niftysave
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/niftysave/**'
+      - '.github/workflows/niftysave.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'packages/niftysave/**'
+      - '.github/workflows/niftysave.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: yarn --cwd packages/niftysave install
+
+      - name: Typecheck
+        uses: gozala/typescript-error-reporter-action@v1.0.8
+        with:
+          project: packages/niftysave/tsconfig.json
+
+      - name: Test
+        run: yarn --cwd packages/niftysave test

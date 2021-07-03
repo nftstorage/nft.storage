@@ -1,0 +1,28 @@
+name: Cron Pin ERC-721 Token Assets
+
+# on:
+#   schedule:
+#     - cron: "*/30 * * * *"
+
+jobs:
+  erc-721:
+    name: Pin ERC-721 Assets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: yarn --cwd packages/niftysave install
+
+      - name: Run job
+        env:
+          FAUNA_KEY: ${{ secrets.FAUNA_KEY }}
+          BATCH_SIZE: 100
+          TIME_BUDGET: 1620
+          IPFS_CLUSTER_KEY: ${{ secrets.IPFS_CLUSTER_KEY }}
+        run: yarn --cwd packages/niftysave import-asset
