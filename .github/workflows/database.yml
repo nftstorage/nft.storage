@@ -48,6 +48,6 @@ jobs:
         run: yarn --cwd packages/database install
 
       - name: Apply migration
-        run: yarn --cwd apply-migrations
+        run: yarn --cwd packages/database apply-migrations
         env:
           FAUNA_KEY: ${{ secrets.FAUNA_KEY }}
