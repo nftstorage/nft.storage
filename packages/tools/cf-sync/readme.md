@@ -9,7 +9,7 @@ NFT_STORAGE_TOKEN=<nft.storage token>
 CLUSTER_TOKEN=<ipfs cluster token>
 ```
 
-Put the LevelDB folder inside this folder and run the cli
+Put the LevelDB folder inside this folder with the name `nft-meta` and run the cli
 
 ```bash
 node cli.js
