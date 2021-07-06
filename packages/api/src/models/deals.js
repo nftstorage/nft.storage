@@ -12,5 +12,5 @@ export const get = async (cid) => {
   const data = await stores.deals.get(cid)
   if (data == null) return []
   const deals = JSON.parse(data)
-  return deals || []
+  return Array.isArray(deals) ? deals : []
 }
