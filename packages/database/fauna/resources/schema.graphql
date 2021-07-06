@@ -254,6 +254,84 @@ type PinLocation {
   region: String
 }
 
+enum PinStatus {
+  Undefined
+  ClusterError
+  PinError
+  UnpinError
+  Pinned
+  Pinning
+  Unpinned
+  Remote
+  PinQueued
+  UnpinQueued
+  Sharded
+}
+
+"""
+Filecoin deal for a pin.
+"""
+type Deal {
+  """
+  CIDs in this deal.
+  """
+  contents: [Content!]! @relation @index
+  """
+  ID of miner this deal was made with.
+  """
+  miner: String
+  """
+  Filecoin network deal is made on.
+  """
+  network: String
+  """
+  Piece CID.
+  """
+  pieceCid: String
+  """
+  CID of the root of the batch data.
+  """
+  batchRootCid: String
+  """
+  Identifier for the deal stored on chain.
+  """
+  chainDealId: Int @unique
+  """
+  Selector for extracting stored data from the batch root.
+  """
+  dataModelSelector: String
+  """
+  Time when deal will be active.
+  """
+  activation: Time
+  """
+  Time when deal has expired and will renew.
+  """
+  renewal: Time
+  """
+  Current deal status.
+  """
+  status: DealStatus!
+  """
+  Human readable reason for the current status.
+  """
+  statusReason: String
+  """
+  Last time this deal was updated.
+  """
+  updated: Time!
+}
+
+enum DealStatus {
+  Queued
+  Proposing
+  Accepted
+  Failed
+  Published
+  Active
+  Terminated
+}
+
 type Owner {
   id: ID! @unique
 }
@@ -592,128 +670,6 @@ type IPNFT {
   tokenAsset: TokenAsset! @relation
 
   created: Time!
-}
-
-"""
-Filecoin deal for a pin.
-"""
-type Deal {
-  """
-  CIDs in this deal.
-  """
-  contents: [Content!]! @relation @index
-  """
-  ID of miner this deal was made with.
-  """
-  miner: String
-  """
-  Filecoin network deal is made on.
-  """
-  network: String
-  """
-  Piece CID.
-  """
-  pieceCid: String
-  """
-  CID of the root of the batch data.
-  """
-  batchRootCid: String
-  """
-  Identifier for the deal stored on chain.
-  """
-  chainDealId: Int @unique
-  """
-  Selector for extracting stored data from the batch root.
-  """
-  dataModelSelector: String
-  """
-  Time when deal will be active.
-  """
-  activation: Time
-  """
-  Time when deal has expired and will renew.
-  """
-  renewal: Time
-  """
-  Current deal status.
-  """
-  status: DealStatus!
-  """
-  Human readable reason for the current status.
-  """
-  statusReason: String
-  """
-  Last time this deal was updated.
-  """
-  updated: Time!
-}
-
-enum DealStatus {
-  Queued
-  Proposing
-  Accepted
-  Failed
-  Published
-  Active
-  Terminated
-}
-
-"""
-Information for piece of content pinned in IPFS.
-"""
-type Pin {
-  """
-  The content being pinned.
-  """
-  content: Content! @relation
-  """
-  Identifier for the service that is pinning this pin.
-  """
-  location: PinLocation! @relation
-  """
-  Pinning status at this location.
-  """
-  status: PinStatus!
-  """
-  Last time the status was updated.
-  """
-  updated: Time!
-}
-
-"""
-Location of a pin.
-"""
-type PinLocation {
-  """
-  Known pins at this location.
-  """
-  pins: [Pin]! @relation
-  """
-  Libp2p peer ID of the node pinning this pin.
-  """
-  peerId: String! @unique
-  """
-  Name of the peer pinning this pin.
-  """
-  peerName: String
-  """
-  Geographic region this node resides in.
-  """
-  region: String
-}
-
-enum PinStatus {
-  Undefined
-  ClusterError
-  PinError
-  UnpinError
-  Pinned
-  Pinning
-  Unpinned
-  Remote
-  PinQueued
-  UnpinQueued
-  Sharded
 }
 
 input UserInput {
