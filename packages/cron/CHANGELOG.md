@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.0.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/cron-v1.1.0...cron-v2.0.0) (2021-07-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* add ipfs URL to gateway URL converter (#161)
+
+### Features
+
+* add ipfs URL to gateway URL converter ([#161](https://www.github.com/ipfs-shipyard/nft.storage/issues/161)) ([f115cd8](https://www.github.com/ipfs-shipyard/nft.storage/commit/f115cd8964bc565fc1a3313fc8d2fb3a392dd0ac))
+
+
+### Bug Fixes
+
+* chunking issues ([#203](https://www.github.com/ipfs-shipyard/nft.storage/issues/203)) ([d990a20](https://www.github.com/ipfs-shipyard/nft.storage/commit/d990a207fd99aa74bde56a5d6b79e5027cf42287))
+* cluster status text for queued pin ([f0f9553](https://www.github.com/ipfs-shipyard/nft.storage/commit/f0f955305e9d65b6993f04a18b30673e5f8bc5e6))
+* increase DAG size request timeout ([d833ab6](https://www.github.com/ipfs-shipyard/nft.storage/commit/d833ab631b865e9406b6434769d934f8c1bde946))
+
 ## [1.1.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/cron-v1.0.1...cron-v1.1.0) (2021-05-26)
 
 
