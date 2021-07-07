@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/tools-v1.0.2...tools-v1.1.0) (2021-07-07)
+
+
+### Features
+
+* cf sync pipeline ([#201](https://www.github.com/ipfs-shipyard/nft.storage/issues/201)) ([50a3b3f](https://www.github.com/ipfs-shipyard/nft.storage/commit/50a3b3f09ddb93cf10d4fb0cd3ccbd202156889a))
+
 ### [1.0.2](https://www.github.com/ipfs-shipyard/nft.storage/compare/tools-v1.0.1...tools-v1.0.2) (2021-05-14)
 
 
