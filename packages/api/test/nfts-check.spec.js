@@ -22,7 +22,7 @@ describe('/check/{cid}', () => {
     const deals = [{ status: 'queued', lastChanged: new Date() }]
     await stores.deals.put(cid, JSON.stringify(deals))
 
-    const res = await fetch(new URL(`check/${cid}`, endpoint).toString())
+    const res = await fetch(`check/${cid}`)
     assert(res)
     assert(res.ok)
     const { ok, value } = await res.json()
@@ -32,7 +32,7 @@ describe('/check/{cid}', () => {
   })
 
   it('should error if CID is not found', async () => {
-    const res = await fetch(new URL(`check/${cid}`, endpoint).toString())
+    const res = await fetch(`check/${cid}`)
     assert(res)
     assert.strictEqual(res.status, 404)
     const { ok, error } = await res.json()
