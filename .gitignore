@@ -37,3 +37,4 @@ site/public
 .cluster
 *.http
 .faunarc
+.local
