@@ -73,9 +73,9 @@ export const generateMigrtation = async (config, schema) =>
  * Applies migrations from fauna/migrations directory to the data base.s
  *
  * @param {Config} config
- * @returns
  */
-export const applyMigrations = async (config) => withConfig(config, tasks.apply)
+export const applyMigrations = async (config) =>
+  withConfig(config, () => tasks.apply('all'))
 
 /**
  * @param {Config} config
