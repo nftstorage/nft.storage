@@ -10787,10 +10787,10 @@ stylis@3.5.4:
   resolved "https://registry.yarnpkg.com/stylis/-/stylis-3.5.4.tgz#f665f25f5e299cf3d64654ab949a57c768b73fbe"
   integrity sha512-8/3pSmthWM7lsPBKv7NXkzn2Uc9W7NotcwGNpJaa3k7WMM1XDCA4MgT5k/8BIexd5ydZdboXtU90XH9Ec4Bv/Q==
 
-subprogram@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/subprogram/-/subprogram-1.1.0.tgz#33c4e6d9dcd3b5b12d9c687cbb1903c3648c2d61"
-  integrity sha512-96Ycsy/MfoPo8ayy48EhHf2quRzbLCIIeBF9i0kMHFptvz2hOEcRJFRzhaJZbnczgnlMO0yM1/YZiPeZOPsO8w==
+subprogram@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/subprogram/-/subprogram-1.2.0.tgz#ec1ae4930df0d9cedd57407a53ed1a3d79739663"
+  integrity sha512-c5XpPKNQd8IsUpkOKLqYyXZY3XZ3LmQXIZmUxUtWDgkl+8F7zcXXQhyGVoSvsG5ThePPGgJarvvfSpnWzXOY3A==
   dependencies:
     "@web-std/file-url" "^1.0.1"
     dotenv "^10.0.0"
