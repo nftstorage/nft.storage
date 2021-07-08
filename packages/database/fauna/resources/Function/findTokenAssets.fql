@@ -1,7 +1,7 @@
 // Implements GraphQL resolver which allows to query token assets by their
 // status, it has a following type signature:
 // (
-//    where:{status: 'Queued'|'Failed'|'Succeeded'},
+//    where:{status: 'Queued'|'URIParseFailed'|'ContentFetchFailed'|'ContentParseFailed'|'Linked'},
 //    size: number
 //    after?: string
 //    before?: string
@@ -14,7 +14,7 @@ CreateFunction({
       Let(
         {
           status: Select('status', Var('where')),
-          match: Match(Index('token_status'), LowerCase(Var('status'))),
+          match: Match(Index('tokenAsset_by_status'), Var('status')),
           refs: Call('paginate', Var('match'), {
             size: Var('size'),
             after: Var('after'),

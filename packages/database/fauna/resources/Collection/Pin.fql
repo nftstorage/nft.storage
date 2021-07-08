@@ -1,0 +1,49 @@
+CreateCollection({
+  name: 'Pin',
+  data: {
+    gql: {
+      meta: {
+        name: 'Pin',
+        description: 'Information for piece of content pinned in IPFS.',
+        fields: [
+          {
+            name: 'content',
+            directives: [{ name: 'relation', args: { name: 'pin_content' } }],
+            description: 'The content being pinned.',
+            type: { NotNull: { Named: 'Content' } },
+          },
+          {
+            name: 'location',
+            directives: [{ name: 'relation', args: { name: 'pin_location' } }],
+            description: 'Reference to a pin location that is pinning it.',
+            type: { NotNull: { Named: 'PinLocation' } },
+          },
+          {
+            name: 'status',
+            directives: [{ name: 'index', args: {} }],
+            description: 'Pinning status at this location.',
+            type: { NotNull: { Named: 'PinStatus' } },
+          },
+          {
+            name: 'statusText',
+            description:
+              'Human readable description of the pin status. Present only when status needs\nellaboration e.g. when pin is failed or when pin is queued but actual status\ncould not be obtained from the node.',
+            type: { Named: 'String' },
+          },
+          {
+            name: 'updated',
+            description: 'Last time pin status was updated.',
+            type: { NotNull: { Named: 'Time' } },
+          },
+          {
+            name: 'created',
+            description: 'Time when pin was created.',
+            type: { NotNull: { Named: 'Time' } },
+          },
+        ],
+        directives: [{ name: 'collection', args: { name: 'Pin' } }],
+      },
+    },
+  },
+  history_days: 30,
+})

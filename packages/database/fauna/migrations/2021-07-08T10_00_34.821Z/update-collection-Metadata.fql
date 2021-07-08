@@ -1,0 +1,115 @@
+Update(Collection('Metadata'), {
+  data: {
+    gql: {
+      meta: {
+        name: 'Metadata',
+        fields: [
+          {
+            name: 'source',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'metadata_source',
+                },
+              },
+              {
+                name: 'unique',
+                args: {
+                  index: 'unique_Metadata_source',
+                },
+              },
+            ],
+            type: {
+              NotNull: {
+                Named: 'TokenAsset',
+              },
+            },
+          },
+          {
+            name: 'content',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'metadata_content',
+                },
+              },
+            ],
+            description: 'Content corresponding to the metadata.',
+            type: {
+              NotNull: {
+                Named: 'Content',
+              },
+            },
+          },
+          {
+            name: 'name',
+            description: 'Identifies the asset this token represents',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'description',
+            description: 'Describes the asset this token represents',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'image',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'metadata_image',
+                },
+              },
+            ],
+            description: 'A file representing the asset this token represents',
+            type: {
+              NotNull: {
+                Named: 'Resource',
+              },
+            },
+          },
+          {
+            name: 'assets',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'metadata_assets',
+                },
+              },
+            ],
+            description: 'Additional assets that token linked to',
+            type: {
+              List: {
+                NotNull: {
+                  Named: 'Resource',
+                },
+              },
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'Metadata',
+            },
+          },
+        ],
+      },
+    },
+  },
+  history_days: 30,
+  ttl_days: null,
+  permissions: null,
+})

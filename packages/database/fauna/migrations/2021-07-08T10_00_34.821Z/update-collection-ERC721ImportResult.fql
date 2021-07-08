@@ -1,0 +1,61 @@
+Update(Collection('ERC721ImportResult'), {
+  data: {
+    gql: {
+      meta: {
+        name: 'ERC721ImportResult',
+        fields: [
+          {
+            name: 'id',
+            description: 'Cursor from which import started.',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'nextID',
+            description: 'New cursor after this import.',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'tokens',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'eRC721ImportResult_tokens',
+                },
+              },
+            ],
+            description: 'Tokens that were imported.',
+            type: {
+              NotNull: {
+                List: {
+                  NotNull: {
+                    Named: 'Token',
+                  },
+                },
+              },
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'ERC721ImportResult',
+            },
+          },
+        ],
+      },
+    },
+  },
+  history_days: 30,
+  ttl_days: null,
+  permissions: null,
+})

@@ -12,6 +12,7 @@ export interface Query {
   findResourceByID: Resource | null
   /** Find a document from the collection of 'Token' by its id. */
   findTokenByID: Token | null
+  findContentByCID: Content | null
   allImports: ERC721ImportResultPage
   /** Find a document from the collection of 'Owner' by its id. */
   findOwnerByID: Owner | null
@@ -20,9 +21,11 @@ export interface Query {
   cursor: Cursor
   /** Find a document from the collection of 'Metadata' by its id. */
   findMetadataByID: Metadata | null
-  /** Find a document from the collection of 'Task' by its id. */
-  findTaskByID: Task | null
+  /** Find a document from the collection of 'PinLocation' by its id. */
+  findPinLocationByID: PinLocation | null
   block: Block | null
+  /** Find a document from the collection of 'Content' by its id. */
+  findContentByID: Content | null
   /** Find a document from the collection of 'Cursor' by its id. */
   findCursorByID: Cursor | null
   findResources: QueryFindResourcesPage
@@ -30,6 +33,9 @@ export interface Query {
   findTokenAssetByID: TokenAsset | null
   tokens: TokenPage
   owner: Owner | null
+  findResourceByURI: Resource | null
+  /** Find a document from the collection of 'Pin' by its id. */
+  findPinByID: Pin | null
   allTokens: TokenPage
   __typename: 'Query'
 }
@@ -132,38 +138,74 @@ export interface Owner {
   __typename: 'Owner'
 }
 
+/**
+ * TokenAsset represents contents of the tokenURI which may not have been found /
+ * pinned yet. It may have been added by the chain scraper, when token with this
+ * `tokenURI` was discovered. Alternatively it could have been created by an
+ * upload to nft.storage, in which case it may not have any refferers but it would
+ * have uploads.
+ */
 export interface TokenAsset {
-  /** Problem description if failed to get the metadata. */
-  problem: String | null
   /** The document's ID. */
   _id: ID
-  tokenURI: String
   /**
-   * When `tokenURI` points to may point to JSON file that conforms to the ERC721
-   * Metadata JSON Schema it fetched parsed and stored as related Metadata
-   * document.
+   * Human readable description of the status. Usually this ellaborates a reason
+   * why token analyzer has failed providing with an error message and stack trace.
+   */
+  statusText: String | null
+  /** URI that was discovered either in the eth chain. */
+  tokenURI: String
+  /** Time when resource record was last updated. */
+  updated: Time
+  /**
+   * Represents `ipfs://` URL for this content. Sometimes this is derived when
+   * resource uri is parsed. E.g. if discovered resource uri was
+   * https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+   * to be ipfs://Qm...Hash/file/path.
+   *
+   * If `uri` can not be inferred as an ipfs URL this field will be omitted.
+   */
+  ipfsURL: String | null
+  /** Status of the token asset */
+  status: TokenAssetStatus
+  /**
+   * When `tokenURI` points to JSON file that conforms to the ERC721 Metadata JSON
+   * Schema it is fetched parsed and stored as related Metadata document.
    */
   metadata: Metadata | null
   /**
-   * CID of an IPLD node that encapsulates token metadata and all it's assets.
-   * Present when it was passibly to succesfully pin the token.
-   */
-  ipnft: String | null
-  /**
-   * Multiple tokens may have use a same `tokenURI`. This relation allows tracking
-   * which tokens refer to the same `tokenURI`.
-   * Token this metadata belogs to.
+   * Tokens that have this `tokenURI`. This relation allows us to identify all
+   * tokens that have a same `tokenURI`.
    */
   referrers: TokenPage
+  created: Time
   /** The document's timestamp. */
   _ts: Long
   __typename: 'TokenAsset'
+}
+
+export type Time = any
+
+export enum TokenAssetStatus {
+  /** Token asset was queued (for the analyzer to process). */
+  Queued = 'Queued',
+  /** tokenURI is either malformed or the protocol is not supported. */
+  URIParseFailed = 'URIParseFailed',
+  /** Was unable to fetch the content. */
+  ContentFetchFailed = 'ContentFetchFailed',
+  /** Parsing ERC721 metadata failed. */
+  ContentParseFailed = 'ContentParseFailed',
+  /** Failed to create a metadata pin request. */
+  PinRequestFailed = 'PinRequestFailed',
+  /** Metadata was parsed and all the resources were linked. */
+  Linked = 'Linked',
 }
 
 export interface Metadata {
   /** Identifies the asset this token represents */
   name: String
   source: TokenAsset
+  /** Additional assets that token linked to */
   assets: ResourcePage
   /** A file representing the asset this token represents */
   image: Resource
@@ -171,7 +213,8 @@ export interface Metadata {
   description: String
   /** The document's ID. */
   _id: ID
-  cid: String
+  /** Content corresponding to the metadata. */
+  content: Content
   /** The document's timestamp. */
   _ts: Long
   __typename: 'Metadata'
@@ -188,44 +231,170 @@ export interface ResourcePage {
   __typename: 'ResourcePage'
 }
 
+/**
+ * Represents a resource that non-fungible token metadata referenced via URI. In
+ * most cases when created will have `uri` discovered on chain with a status
+ * `Queued`. Followup jobs will then attempt to locate and pin it's content
+ * updating it's state.
+ */
 export interface Resource {
-  /** Problem description if there was problem in pinning a resource. */
-  problem: String | null
   /** The document's ID. */
   _id: ID
-  /** URI with which resource was identified. */
+  /**
+   * URI this resource corresponds to. Resources are created for all the URIs
+   * that NFT token metadata references.
+   */
   uri: String
-  /** CID that corresponds to this resource, set once resourec is pinned. */
-  cid: String | null
-  /** ipfs:// url if `uri` was referring to gateway URL. */
+  /**
+   * Human readable description of the status. Would contain error message & stack
+   * trace when resource has failed status. Likely omitted when resource is queued
+   * or succefully linked.
+   */
+  statusText: String | null
+  /** Time when resource record was last updated. */
+  updated: Time
+  /**
+   * Represents `ipfs://` URL for this content. Sometimes this is derived when
+   * resource uri is parsed. E.g. if discovered resource uri was
+   * https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+   * to be ipfs://Qm...Hash/file/path.
+   *
+   * If `uri` can not be inferred as an ipfs URL this field will be omitted.
+   */
   ipfsURL: String | null
+  /**
+   * Describes current status of the resource. When resource is discovered during
+   * chain scrape record is created with Queued state. Cron job later comes along
+   * and processes queued resources fetching / pinning them.
+   */
   status: ResourceStatus
+  /**
+   * Content referrerced by this resource. When `ipfsURL` is derived content
+   * archiving job will simply pin content by that URL and update resource linking
+   * resource to it. If however `ipfsURL` could not be derived archiving job will
+   * attempt to fetch the content from `uri` and pin it again linkking resource
+   * to it.
+   *
+   * Content field is only going to be present when resource has a `ContentLinked`
+   * status. From that point on resource is no longer going to be updated.
+   */
+  content: Content
+  /**
+   * Backlinks to each non-fungible token metadata that referenced resource with
+   * this `uri`.
+   */
   referrers: MetadataPage
+  /** Time when resource was created. */
+  created: Time
   /** The document's timestamp. */
   _ts: Long
   __typename: 'Resource'
 }
 
 export enum ResourceStatus {
-  /** Has not been processed yet */
-  Idle = 'Idle',
-  /**
-   * Pin request started. This usually implies that we found a CID in the
-   * tokenURI (because it was a gateway URL) so we started a pin but do not
-   * know if it was possible to fetch content.
-   */
-  PinQueued = 'PinQueued',
-  /** Was pinned succesfully */
-  Pinned = 'Pinned',
-  /** tokenURI is either malformed or the protocol is not supported. */
-  FailedURIParse = 'FailedURIParse',
+  /** Resource was queued to be processed. */
+  Queued = 'Queued',
+  /** URI is either malformed or the protocol is not supported. */
+  URIParseFailed = 'URIParseFailed',
   /** Was unable to fetch the content. */
-  FailedFetch = 'FailedFetch',
+  ContentFetchFailed = 'ContentFetchFailed',
+  /** Failed to complete a pin request. */
+  PinRequestFailed = 'PinRequestFailed',
+  /** Corresponding content was linked. */
+  ContentLinked = 'ContentLinked',
+}
+
+/**
+ * Content correspnoding to a resource(s) that were referreced by non-fungible
+ * token metadata. It is identified and unique by it's cid. Content may represent
+ * a file, directory or arbitrary Dag in IPFS network.
+ */
+export interface Content {
+  /** The document's ID. */
+  _id: ID
+  /** Root CID for this content. */
+  cid: String
   /**
-   * Pin request failed, can happen when pinned by CID but correspoding content
-   * is not on the network.
+   * Size of the DAG in bytes. Set if known on upload or for partials is set when
+   * content is fully pinned in at least one location.
    */
-  PinFailure = 'PinFailure',
+  dagSize: Int | null
+  /** IPFS nodes pinning this content. */
+  pins: PinPage
+  /**
+   * Backlikns to al lthe resources that resolve to this content. Note that
+   * different resource URIs may resolve to the same CID.
+   */
+  resources: ResourcePage
+  /** Creation date. */
+  created: Time
+  /** The document's timestamp. */
+  _ts: Long
+  __typename: 'Content'
+}
+
+/** The pagination object for elements of type 'Pin'. */
+export interface PinPage {
+  /** The elements of type 'Pin' in this page. */
+  data: (Pin | null)[]
+  /** A cursor for elements coming after the current page. */
+  after: String | null
+  /** A cursor for elements coming before the current page. */
+  before: String | null
+  __typename: 'PinPage'
+}
+
+/** Information for piece of content pinned in IPFS. */
+export interface Pin {
+  /** Reference to a pin location that is pinning it. */
+  location: PinLocation
+  /** The document's ID. */
+  _id: ID
+  /**
+   * Human readable description of the pin status. Present only when status needs
+   * ellaboration e.g. when pin is failed or when pin is queued but actual status
+   * could not be obtained from the node.
+   */
+  statusText: String | null
+  /** Last time pin status was updated. */
+  updated: Time
+  /** Pinning status at this location. */
+  status: PinStatus
+  /** The content being pinned. */
+  content: Content
+  /** Time when pin was created. */
+  created: Time
+  /** The document's timestamp. */
+  _ts: Long
+  __typename: 'Pin'
+}
+
+/** Location of a pin. */
+export interface PinLocation {
+  /** The document's ID. */
+  _id: ID
+  /** Libp2p peer ID of the node pinning this pin. */
+  peerId: String
+  /** Name of the peer pinning this pin. */
+  peerName: String | null
+  /** Known pins at this location. */
+  pins: PinPage
+  /** Geographic region this node resides in. */
+  region: String | null
+  /** The document's timestamp. */
+  _ts: Long
+  __typename: 'PinLocation'
+}
+
+export enum PinStatus {
+  /** An error occurred pinning. */
+  PinFailed = 'PinFailed',
+  /** Node has pinned the content. */
+  Pinned = 'Pinned',
+  /** Node is currently pinning the content. */
+  Pinning = 'Pinning',
+  /** The item has been queued for pinning. */
+  PinQueued = 'PinQueued',
 }
 
 /** The pagination object for elements of type 'Metadata'. */
@@ -257,12 +426,6 @@ export interface TokenContract {
 /** The `Boolean` scalar type represents `true` or `false`. */
 export type Boolean = boolean
 
-export enum TokenAssetStatus {
-  Queued = 'Queued',
-  Failed = 'Failed',
-  Succeeded = 'Succeeded',
-}
-
 /** The pagination object for elements of type 'TokenAsset'. */
 export interface QueryFindTokenAssetsPage {
   /** The elements of type 'TokenAsset' in this page. */
@@ -283,42 +446,6 @@ export interface Cursor {
   __typename: 'Cursor'
 }
 
-/**
- * Describen an operation that may fail, like an HTTP
- * request or a JSON parse.
- *
- * Fauna does not support union types so we get by using a
- * single struct represeting union:
- * type Task =
- *   | { status: 'idle', attempt: int }
- *   | { status: 'queued' attempt: int }
- *   | { status: 'pending', start: Time, attempt: int }
- *   | { status: 'failed', end: Time, error: String, attempt: int }
- *   | { status: 'done', end: Time, attempt: int }
- */
-export interface Task {
-  /** The document's ID. */
-  _id: ID
-  /** Error message in cas task failed */
-  error: String | null
-  /** Status of the task */
-  status: String
-  /** Time at which task failed */
-  end: Time | null
-  /**
-   * An attempt number. Usuallly 1, but could be greater
-   * on retries
-   */
-  attempt: Int
-  /** Time at which task started */
-  start: Time | null
-  /** The document's timestamp. */
-  _ts: Long
-  __typename: 'Task'
-}
-
-export type Time = any
-
 /** The pagination object for elements of type 'Resource'. */
 export interface QueryFindResourcesPage {
   /** The elements of type 'Resource' in this page. */
@@ -333,78 +460,75 @@ export interface QueryFindResourcesPage {
 export interface Mutation {
   /** Delete an existing document in the collection of 'Owner' */
   deleteOwner: Owner | null
+  /** Create a new document in the collection of 'Pin' */
+  createPin: Pin
   /** Delete an existing document in the collection of 'TokenAsset' */
   deleteTokenAsset: TokenAsset | null
+  /** Update an existing document in the collection of 'Pin' */
+  updatePin: Pin | null
   /** Create a new document in the collection of 'Metadata' */
   createMetadata: Metadata
   /** Delete an existing document in the collection of 'Token' */
   deleteToken: Token | null
-  /** Update an existing document in the collection of 'Task' */
-  updateTask: Task | null
   /** Create a new document in the collection of 'Block' */
   createBlock: Block
-  /**
-   * Imports Token Metadata. Will be rejected if corresponding asset status isn't
-   * Queued. Otherwise updates corresponding TokenAsset transitioning it to
-   * Succeeded state.
-   */
-  importTokenMetadata: Metadata
   /** Delete an existing document in the collection of 'ERC721ImportResult' */
   deleteERC721ImportResult: ERC721ImportResult | null
   /** Update an existing document in the collection of 'Metadata' */
   updateMetadata: Metadata | null
   /** Create a new document in the collection of 'TokenContract' */
   createTokenContract: TokenContract
+  /** Create a new document in the collection of 'PinLocation' */
+  createPinLocation: PinLocation
   /** Create a new document in the collection of 'Resource' */
   createResource: Resource
   /** Update an existing document in the collection of 'Cursor' */
   updateCursor: Cursor | null
+  /** Delete an existing document in the collection of 'PinLocation' */
+  deletePinLocation: PinLocation | null
   /** Create a new document in the collection of 'Token' */
   createToken: Token
   /** Delete an existing document in the collection of 'Cursor' */
   deleteCursor: Cursor | null
-  reportResourceProblem: Resource
   importERC721: ERC721ImportResult
+  updateResources: Resource[]
   /** Update an existing document in the collection of 'TokenContract' */
   updateTokenContract: TokenContract | null
   /** Delete an existing document in the collection of 'Resource' */
   deleteResource: Resource | null
+  /** Update an existing document in the collection of 'PinLocation' */
+  updatePinLocation: PinLocation | null
   /** Update an existing document in the collection of 'Owner' */
   updateOwner: Owner | null
-  /** Update an existing document in the collection of 'TokenAsset' */
-  updateTokenAsset: TokenAsset | null
+  updateTokenAsset: TokenAsset
   /** Delete an existing document in the collection of 'Block' */
   deleteBlock: Block | null
   /** Create a new document in the collection of 'TokenAsset' */
   createTokenAsset: TokenAsset
+  /** Delete an existing document in the collection of 'Pin' */
+  deletePin: Pin | null
   /** Create a new document in the collection of 'Cursor' */
   createCursor: Cursor
-  /** Create a new document in the collection of 'Task' */
-  createTask: Task
   /** Update an existing document in the collection of 'Token' */
   updateToken: Token | null
-  /** Delete an existing document in the collection of 'Task' */
-  deleteTask: Task | null
+  /** Create a new document in the collection of 'Content' */
+  createContent: Content
   /** Create a new document in the collection of 'ERC721ImportResult' */
   createERC721ImportResult: ERC721ImportResult
   /** Delete an existing document in the collection of 'TokenContract' */
   deleteTokenContract: TokenContract | null
   /** Create a new document in the collection of 'Owner' */
   createOwner: Owner
-  /** Update an existing document in the collection of 'Resource' */
-  updateResource: Resource | null
-  updateResourcePin: Resource
+  /** Update an existing document in the collection of 'Content' */
+  updateContent: Content | null
+  updateTokenAssets: TokenAsset[]
+  updateResource: Resource
   /** Delete an existing document in the collection of 'Metadata' */
   deleteMetadata: Metadata | null
   /** Update an existing document in the collection of 'Block' */
   updateBlock: Block | null
-  /**
-   * Reports problem with a TokenAsset e.g. it was impossible to parse URI
-   * or was unable to fetch content from URI, or content was not a JSON.
-   *
-   * Call is rejected if status isn't Queued.
-   */
-  reportTokenAssetProblem: TokenAsset
+  /** Delete an existing document in the collection of 'Content' */
+  deleteContent: Content | null
   /** Update an existing document in the collection of 'ERC721ImportResult' */
   updateERC721ImportResult: ERC721ImportResult | null
   __typename: 'Mutation'
@@ -459,6 +583,7 @@ export interface QueryRequest {
     },
     TokenRequest
   ]
+  findContentByCID?: [{ cid?: ID | null }, ContentRequest] | ContentRequest
   allImports?:
     | [
         {
@@ -495,17 +620,25 @@ export interface QueryRequest {
     },
     MetadataRequest
   ]
-  /** Find a document from the collection of 'Task' by its id. */
-  findTaskByID?: [
+  /** Find a document from the collection of 'PinLocation' by its id. */
+  findPinLocationByID?: [
     {
-      /** The 'Task' document's ID */
+      /** The 'PinLocation' document's ID */
       id: ID
     },
-    TaskRequest
+    PinLocationRequest
   ]
   block?:
     | [{ hash?: ID | null; number?: Long | null }, BlockRequest]
     | BlockRequest
+  /** Find a document from the collection of 'Content' by its id. */
+  findContentByID?: [
+    {
+      /** The 'Content' document's ID */
+      id: ID
+    },
+    ContentRequest
+  ]
   /** Find a document from the collection of 'Cursor' by its id. */
   findCursorByID?: [
     {
@@ -548,6 +681,17 @@ export interface QueryRequest {
       ]
     | TokenPageRequest
   owner?: [{ id?: ID | null }, OwnerRequest] | OwnerRequest
+  findResourceByURI?:
+    | [{ uri?: String | null }, ResourceRequest]
+    | ResourceRequest
+  /** Find a document from the collection of 'Pin' by its id. */
+  findPinByID?: [
+    {
+      /** The 'Pin' document's ID */
+      id: ID
+    },
+    PinRequest
+  ]
   allTokens?:
     | [
         {
@@ -696,27 +840,44 @@ export interface OwnerRequest {
   __scalar?: boolean | number
 }
 
+/**
+ * TokenAsset represents contents of the tokenURI which may not have been found /
+ * pinned yet. It may have been added by the chain scraper, when token with this
+ * `tokenURI` was discovered. Alternatively it could have been created by an
+ * upload to nft.storage, in which case it may not have any refferers but it would
+ * have uploads.
+ */
 export interface TokenAssetRequest {
-  /** Problem description if failed to get the metadata. */
-  problem?: boolean | number
   /** The document's ID. */
   _id?: boolean | number
-  tokenURI?: boolean | number
   /**
-   * When `tokenURI` points to may point to JSON file that conforms to the ERC721
-   * Metadata JSON Schema it fetched parsed and stored as related Metadata
-   * document.
+   * Human readable description of the status. Usually this ellaborates a reason
+   * why token analyzer has failed providing with an error message and stack trace.
+   */
+  statusText?: boolean | number
+  /** URI that was discovered either in the eth chain. */
+  tokenURI?: boolean | number
+  /** Time when resource record was last updated. */
+  updated?: boolean | number
+  /**
+   * Represents `ipfs://` URL for this content. Sometimes this is derived when
+   * resource uri is parsed. E.g. if discovered resource uri was
+   * https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+   * to be ipfs://Qm...Hash/file/path.
+   *
+   * If `uri` can not be inferred as an ipfs URL this field will be omitted.
+   */
+  ipfsURL?: boolean | number
+  /** Status of the token asset */
+  status?: boolean | number
+  /**
+   * When `tokenURI` points to JSON file that conforms to the ERC721 Metadata JSON
+   * Schema it is fetched parsed and stored as related Metadata document.
    */
   metadata?: MetadataRequest
   /**
-   * CID of an IPLD node that encapsulates token metadata and all it's assets.
-   * Present when it was passibly to succesfully pin the token.
-   */
-  ipnft?: boolean | number
-  /**
-   * Multiple tokens may have use a same `tokenURI`. This relation allows tracking
-   * which tokens refer to the same `tokenURI`.
-   * Token this metadata belogs to.
+   * Tokens that have this `tokenURI`. This relation allows us to identify all
+   * tokens that have a same `tokenURI`.
    */
   referrers?:
     | [
@@ -729,6 +890,7 @@ export interface TokenAssetRequest {
         TokenPageRequest
       ]
     | TokenPageRequest
+  created?: boolean | number
   /** The document's timestamp. */
   _ts?: boolean | number
   __typename?: boolean | number
@@ -739,6 +901,7 @@ export interface MetadataRequest {
   /** Identifies the asset this token represents */
   name?: boolean | number
   source?: TokenAssetRequest
+  /** Additional assets that token linked to */
   assets?:
     | [
         {
@@ -756,7 +919,8 @@ export interface MetadataRequest {
   description?: boolean | number
   /** The document's ID. */
   _id?: boolean | number
-  cid?: boolean | number
+  /** Content corresponding to the metadata. */
+  content?: ContentRequest
   /** The document's timestamp. */
   _ts?: boolean | number
   __typename?: boolean | number
@@ -775,18 +939,58 @@ export interface ResourcePageRequest {
   __scalar?: boolean | number
 }
 
+/**
+ * Represents a resource that non-fungible token metadata referenced via URI. In
+ * most cases when created will have `uri` discovered on chain with a status
+ * `Queued`. Followup jobs will then attempt to locate and pin it's content
+ * updating it's state.
+ */
 export interface ResourceRequest {
-  /** Problem description if there was problem in pinning a resource. */
-  problem?: boolean | number
   /** The document's ID. */
   _id?: boolean | number
-  /** URI with which resource was identified. */
+  /**
+   * URI this resource corresponds to. Resources are created for all the URIs
+   * that NFT token metadata references.
+   */
   uri?: boolean | number
-  /** CID that corresponds to this resource, set once resourec is pinned. */
-  cid?: boolean | number
-  /** ipfs:// url if `uri` was referring to gateway URL. */
+  /**
+   * Human readable description of the status. Would contain error message & stack
+   * trace when resource has failed status. Likely omitted when resource is queued
+   * or succefully linked.
+   */
+  statusText?: boolean | number
+  /** Time when resource record was last updated. */
+  updated?: boolean | number
+  /**
+   * Represents `ipfs://` URL for this content. Sometimes this is derived when
+   * resource uri is parsed. E.g. if discovered resource uri was
+   * https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+   * to be ipfs://Qm...Hash/file/path.
+   *
+   * If `uri` can not be inferred as an ipfs URL this field will be omitted.
+   */
   ipfsURL?: boolean | number
+  /**
+   * Describes current status of the resource. When resource is discovered during
+   * chain scrape record is created with Queued state. Cron job later comes along
+   * and processes queued resources fetching / pinning them.
+   */
   status?: boolean | number
+  /**
+   * Content referrerced by this resource. When `ipfsURL` is derived content
+   * archiving job will simply pin content by that URL and update resource linking
+   * resource to it. If however `ipfsURL` could not be derived archiving job will
+   * attempt to fetch the content from `uri` and pin it again linkking resource
+   * to it.
+   *
+   * Content field is only going to be present when resource has a `ContentLinked`
+   * status. From that point on resource is no longer going to be updated.
+   */
+  content?: ContentRequest
+  /**
+   * Backlinks to each non-fungible token metadata that referenced resource with
+   * this `uri`.
+   */
   referrers?:
     | [
         {
@@ -798,6 +1002,124 @@ export interface ResourceRequest {
         MetadataPageRequest
       ]
     | MetadataPageRequest
+  /** Time when resource was created. */
+  created?: boolean | number
+  /** The document's timestamp. */
+  _ts?: boolean | number
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+/**
+ * Content correspnoding to a resource(s) that were referreced by non-fungible
+ * token metadata. It is identified and unique by it's cid. Content may represent
+ * a file, directory or arbitrary Dag in IPFS network.
+ */
+export interface ContentRequest {
+  /** The document's ID. */
+  _id?: boolean | number
+  /** Root CID for this content. */
+  cid?: boolean | number
+  /**
+   * Size of the DAG in bytes. Set if known on upload or for partials is set when
+   * content is fully pinned in at least one location.
+   */
+  dagSize?: boolean | number
+  /** IPFS nodes pinning this content. */
+  pins?:
+    | [
+        {
+          /** The number of items to return per page. */
+          _size?: Int | null
+          /** The pagination cursor. */
+          _cursor?: String | null
+        },
+        PinPageRequest
+      ]
+    | PinPageRequest
+  /**
+   * Backlikns to al lthe resources that resolve to this content. Note that
+   * different resource URIs may resolve to the same CID.
+   */
+  resources?:
+    | [
+        {
+          /** The number of items to return per page. */
+          _size?: Int | null
+          /** The pagination cursor. */
+          _cursor?: String | null
+        },
+        ResourcePageRequest
+      ]
+    | ResourcePageRequest
+  /** Creation date. */
+  created?: boolean | number
+  /** The document's timestamp. */
+  _ts?: boolean | number
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+/** The pagination object for elements of type 'Pin'. */
+export interface PinPageRequest {
+  /** The elements of type 'Pin' in this page. */
+  data?: PinRequest
+  /** A cursor for elements coming after the current page. */
+  after?: boolean | number
+  /** A cursor for elements coming before the current page. */
+  before?: boolean | number
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+/** Information for piece of content pinned in IPFS. */
+export interface PinRequest {
+  /** Reference to a pin location that is pinning it. */
+  location?: PinLocationRequest
+  /** The document's ID. */
+  _id?: boolean | number
+  /**
+   * Human readable description of the pin status. Present only when status needs
+   * ellaboration e.g. when pin is failed or when pin is queued but actual status
+   * could not be obtained from the node.
+   */
+  statusText?: boolean | number
+  /** Last time pin status was updated. */
+  updated?: boolean | number
+  /** Pinning status at this location. */
+  status?: boolean | number
+  /** The content being pinned. */
+  content?: ContentRequest
+  /** Time when pin was created. */
+  created?: boolean | number
+  /** The document's timestamp. */
+  _ts?: boolean | number
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+/** Location of a pin. */
+export interface PinLocationRequest {
+  /** The document's ID. */
+  _id?: boolean | number
+  /** Libp2p peer ID of the node pinning this pin. */
+  peerId?: boolean | number
+  /** Name of the peer pinning this pin. */
+  peerName?: boolean | number
+  /** Known pins at this location. */
+  pins?:
+    | [
+        {
+          /** The number of items to return per page. */
+          _size?: Int | null
+          /** The pagination cursor. */
+          _cursor?: String | null
+        },
+        PinPageRequest
+      ]
+    | PinPageRequest
+  /** Geographic region this node resides in. */
+  region?: boolean | number
   /** The document's timestamp. */
   _ts?: boolean | number
   __typename?: boolean | number
@@ -868,41 +1190,6 @@ export interface CursorRequest {
   __scalar?: boolean | number
 }
 
-/**
- * Describen an operation that may fail, like an HTTP
- * request or a JSON parse.
- *
- * Fauna does not support union types so we get by using a
- * single struct represeting union:
- * type Task =
- *   | { status: 'idle', attempt: int }
- *   | { status: 'queued' attempt: int }
- *   | { status: 'pending', start: Time, attempt: int }
- *   | { status: 'failed', end: Time, error: String, attempt: int }
- *   | { status: 'done', end: Time, attempt: int }
- */
-export interface TaskRequest {
-  /** The document's ID. */
-  _id?: boolean | number
-  /** Error message in cas task failed */
-  error?: boolean | number
-  /** Status of the task */
-  status?: boolean | number
-  /** Time at which task failed */
-  end?: boolean | number
-  /**
-   * An attempt number. Usuallly 1, but could be greater
-   * on retries
-   */
-  attempt?: boolean | number
-  /** Time at which task started */
-  start?: boolean | number
-  /** The document's timestamp. */
-  _ts?: boolean | number
-  __typename?: boolean | number
-  __scalar?: boolean | number
-}
-
 export interface FindResourceInput {
   status?: ResourceStatus | null
 }
@@ -928,6 +1215,14 @@ export interface MutationRequest {
     },
     OwnerRequest
   ]
+  /** Create a new document in the collection of 'Pin' */
+  createPin?: [
+    {
+      /** 'Pin' input values */
+      data: PinInput
+    },
+    PinRequest
+  ]
   /** Delete an existing document in the collection of 'TokenAsset' */
   deleteTokenAsset?: [
     {
@@ -935,6 +1230,16 @@ export interface MutationRequest {
       id: ID
     },
     TokenAssetRequest
+  ]
+  /** Update an existing document in the collection of 'Pin' */
+  updatePin?: [
+    {
+      /** The 'Pin' document's ID */
+      id: ID
+      /** 'Pin' input values */
+      data: PinInput
+    },
+    PinRequest
   ]
   /** Create a new document in the collection of 'Metadata' */
   createMetadata?: [
@@ -952,16 +1257,6 @@ export interface MutationRequest {
     },
     TokenRequest
   ]
-  /** Update an existing document in the collection of 'Task' */
-  updateTask?: [
-    {
-      /** The 'Task' document's ID */
-      id: ID
-      /** 'Task' input values */
-      data: TaskInput
-    },
-    TaskRequest
-  ]
   /** Create a new document in the collection of 'Block' */
   createBlock?: [
     {
@@ -970,14 +1265,6 @@ export interface MutationRequest {
     },
     BlockRequest
   ]
-  /**
-   * Imports Token Metadata. Will be rejected if corresponding asset status isn't
-   * Queued. Otherwise updates corresponding TokenAsset transitioning it to
-   * Succeeded state.
-   */
-  importTokenMetadata?:
-    | [{ input?: TokenMetadataImportInput | null }, MetadataRequest]
-    | MetadataRequest
   /** Delete an existing document in the collection of 'ERC721ImportResult' */
   deleteERC721ImportResult?: [
     {
@@ -1004,6 +1291,14 @@ export interface MutationRequest {
     },
     TokenContractRequest
   ]
+  /** Create a new document in the collection of 'PinLocation' */
+  createPinLocation?: [
+    {
+      /** 'PinLocation' input values */
+      data: PinLocationInput
+    },
+    PinLocationRequest
+  ]
   /** Create a new document in the collection of 'Resource' */
   createResource?: [
     {
@@ -1022,6 +1317,14 @@ export interface MutationRequest {
     },
     CursorRequest
   ]
+  /** Delete an existing document in the collection of 'PinLocation' */
+  deletePinLocation?: [
+    {
+      /** The 'PinLocation' document's ID */
+      id: ID
+    },
+    PinLocationRequest
+  ]
   /** Create a new document in the collection of 'Token' */
   createToken?: [
     {
@@ -1038,10 +1341,10 @@ export interface MutationRequest {
     },
     CursorRequest
   ]
-  reportResourceProblem?:
-    | [{ input?: ResourceProblemInput | null }, ResourceRequest]
-    | ResourceRequest
   importERC721?: [{ input: ERC721ImportInput }, ERC721ImportResultRequest]
+  updateResources?:
+    | [{ input?: UpdateResourcesInput | null }, ResourceRequest]
+    | ResourceRequest
   /** Update an existing document in the collection of 'TokenContract' */
   updateTokenContract?: [
     {
@@ -1060,6 +1363,16 @@ export interface MutationRequest {
     },
     ResourceRequest
   ]
+  /** Update an existing document in the collection of 'PinLocation' */
+  updatePinLocation?: [
+    {
+      /** The 'PinLocation' document's ID */
+      id: ID
+      /** 'PinLocation' input values */
+      data: PinLocationInput
+    },
+    PinLocationRequest
+  ]
   /** Update an existing document in the collection of 'Owner' */
   updateOwner?: [
     {
@@ -1070,16 +1383,7 @@ export interface MutationRequest {
     },
     OwnerRequest
   ]
-  /** Update an existing document in the collection of 'TokenAsset' */
-  updateTokenAsset?: [
-    {
-      /** The 'TokenAsset' document's ID */
-      id: ID
-      /** 'TokenAsset' input values */
-      data: TokenAssetInput
-    },
-    TokenAssetRequest
-  ]
+  updateTokenAsset?: [{ input: TokenAssetUpdate }, TokenAssetRequest]
   /** Delete an existing document in the collection of 'Block' */
   deleteBlock?: [
     {
@@ -1096,6 +1400,14 @@ export interface MutationRequest {
     },
     TokenAssetRequest
   ]
+  /** Delete an existing document in the collection of 'Pin' */
+  deletePin?: [
+    {
+      /** The 'Pin' document's ID */
+      id: ID
+    },
+    PinRequest
+  ]
   /** Create a new document in the collection of 'Cursor' */
   createCursor?: [
     {
@@ -1103,14 +1415,6 @@ export interface MutationRequest {
       data: CursorInput
     },
     CursorRequest
-  ]
-  /** Create a new document in the collection of 'Task' */
-  createTask?: [
-    {
-      /** 'Task' input values */
-      data: TaskInput
-    },
-    TaskRequest
   ]
   /** Update an existing document in the collection of 'Token' */
   updateToken?: [
@@ -1122,13 +1426,13 @@ export interface MutationRequest {
     },
     TokenRequest
   ]
-  /** Delete an existing document in the collection of 'Task' */
-  deleteTask?: [
+  /** Create a new document in the collection of 'Content' */
+  createContent?: [
     {
-      /** The 'Task' document's ID */
-      id: ID
+      /** 'Content' input values */
+      data: ContentInput
     },
-    TaskRequest
+    ContentRequest
   ]
   /** Create a new document in the collection of 'ERC721ImportResult' */
   createERC721ImportResult?: [
@@ -1154,18 +1458,19 @@ export interface MutationRequest {
     },
     OwnerRequest
   ]
-  /** Update an existing document in the collection of 'Resource' */
-  updateResource?: [
+  /** Update an existing document in the collection of 'Content' */
+  updateContent?: [
     {
-      /** The 'Resource' document's ID */
+      /** The 'Content' document's ID */
       id: ID
-      /** 'Resource' input values */
-      data: ResourceInput
+      /** 'Content' input values */
+      data: ContentInput
     },
-    ResourceRequest
+    ContentRequest
   ]
-  updateResourcePin?:
-    | [{ input?: ResorcePinInput | null }, ResourceRequest]
+  updateTokenAssets?: [{ input: UpdateTokenAssetsInput }, TokenAssetRequest]
+  updateResource?:
+    | [{ input?: ResourceUpdate | null }, ResourceRequest]
     | ResourceRequest
   /** Delete an existing document in the collection of 'Metadata' */
   deleteMetadata?: [
@@ -1185,15 +1490,14 @@ export interface MutationRequest {
     },
     BlockRequest
   ]
-  /**
-   * Reports problem with a TokenAsset e.g. it was impossible to parse URI
-   * or was unable to fetch content from URI, or content was not a JSON.
-   *
-   * Call is rejected if status isn't Queued.
-   */
-  reportTokenAssetProblem?:
-    | [{ input?: TokenAssetProblemInput | null }, TokenAssetRequest]
-    | TokenAssetRequest
+  /** Delete an existing document in the collection of 'Content' */
+  deleteContent?: [
+    {
+      /** The 'Content' document's ID */
+      id: ID
+    },
+    ContentRequest
+  ]
   /** Update an existing document in the collection of 'ERC721ImportResult' */
   updateERC721ImportResult?: [
     {
@@ -1208,6 +1512,109 @@ export interface MutationRequest {
   __scalar?: boolean | number
 }
 
+/** 'Pin' input values */
+export interface PinInput {
+  /** The content being pinned. */
+  content?: PinContentRelation | null
+  /** Reference to a pin location that is pinning it. */
+  location?: PinLocationRelation | null
+  /** Pinning status at this location. */
+  status: PinStatus
+  /**
+   * Human readable description of the pin status. Present only when status needs
+   * ellaboration e.g. when pin is failed or when pin is queued but actual status
+   * could not be obtained from the node.
+   */
+  statusText?: String | null
+  /** Last time pin status was updated. */
+  updated: Time
+  /** Time when pin was created. */
+  created: Time
+}
+
+/** Allow manipulating the relationship between the types 'Pin' and 'Content' using the field 'Pin.content'. */
+export interface PinContentRelation {
+  /** Create a document of type 'Content' and associate it with the current document. */
+  create?: ContentInput | null
+  /** Connect a document of type 'Content' with the current document using its ID. */
+  connect?: ID | null
+}
+
+/** 'Content' input values */
+export interface ContentInput {
+  /** Root CID for this content. */
+  cid: String
+  /**
+   * Backlikns to al lthe resources that resolve to this content. Note that
+   * different resource URIs may resolve to the same CID.
+   */
+  resources?: ContentResourcesRelation | null
+  /** IPFS nodes pinning this content. */
+  pins?: ContentPinsRelation | null
+  /**
+   * Size of the DAG in bytes. Set if known on upload or for partials is set when
+   * content is fully pinned in at least one location.
+   */
+  dagSize?: Int | null
+  /** Creation date. */
+  created: Time
+}
+
+/** Allow manipulating the relationship between the types 'Content' and 'Resource'. */
+export interface ContentResourcesRelation {
+  /** Create one or more documents of type 'Resource' and associate them with the current document. */
+  create?: (ResourceInput | null)[] | null
+  /** Connect one or more documents of type 'Resource' with the current document using their IDs. */
+  connect?: (ID | null)[] | null
+  /** Disconnect the given documents of type 'Resource' from the current document using their IDs. */
+  disconnect?: (ID | null)[] | null
+}
+
+export interface ResourceInput {
+  uri: String
+  ipfsURL?: String | null
+}
+
+/** Allow manipulating the relationship between the types 'Content' and 'Pin'. */
+export interface ContentPinsRelation {
+  /** Create one or more documents of type 'Pin' and associate them with the current document. */
+  create?: (PinInput | null)[] | null
+  /** Connect one or more documents of type 'Pin' with the current document using their IDs. */
+  connect?: (ID | null)[] | null
+  /** Disconnect the given documents of type 'Pin' from the current document using their IDs. */
+  disconnect?: (ID | null)[] | null
+}
+
+/** Allow manipulating the relationship between the types 'Pin' and 'PinLocation' using the field 'Pin.location'. */
+export interface PinLocationRelation {
+  /** Create a document of type 'PinLocation' and associate it with the current document. */
+  create?: PinLocationInput | null
+  /** Connect a document of type 'PinLocation' with the current document using its ID. */
+  connect?: ID | null
+}
+
+/** 'PinLocation' input values */
+export interface PinLocationInput {
+  /** Known pins at this location. */
+  pins?: PinLocationPinsRelation | null
+  /** Libp2p peer ID of the node pinning this pin. */
+  peerId: String
+  /** Name of the peer pinning this pin. */
+  peerName?: String | null
+  /** Geographic region this node resides in. */
+  region?: String | null
+}
+
+/** Allow manipulating the relationship between the types 'PinLocation' and 'Pin'. */
+export interface PinLocationPinsRelation {
+  /** Create one or more documents of type 'Pin' and associate them with the current document. */
+  create?: (PinInput | null)[] | null
+  /** Connect one or more documents of type 'Pin' with the current document using their IDs. */
+  connect?: (ID | null)[] | null
+  /** Disconnect the given documents of type 'Pin' from the current document using their IDs. */
+  disconnect?: (ID | null)[] | null
+}
+
 export interface MetadataInput {
   /** CID for the metadata content. */
   cid: String
@@ -1218,28 +1625,6 @@ export interface MetadataInput {
   /** A file representing the asset this token represents */
   image: ResourceInput
   assets: ResourceInput[]
-}
-
-export interface ResourceInput {
-  uri: String
-  ipfsURL?: String | null
-}
-
-/** 'Task' input values */
-export interface TaskInput {
-  /** Status of the task */
-  status: String
-  /**
-   * An attempt number. Usuallly 1, but could be greater
-   * on retries
-   */
-  attempt: Int
-  /** Time at which task started */
-  start?: Time | null
-  /** Time at which task failed */
-  end?: Time | null
-  /** Error message in cas task failed */
-  error?: String | null
 }
 
 /** 'Block' input values */
@@ -1287,25 +1672,36 @@ export interface TokenTokenAssetRelation {
 /** 'TokenAsset' input values */
 export interface TokenAssetInput {
   /**
-   * Multiple tokens may have use a same `tokenURI`. This relation allows tracking
-   * which tokens refer to the same `tokenURI`.
-   * Token this metadata belogs to.
+   * Tokens that have this `tokenURI`. This relation allows us to identify all
+   * tokens that have a same `tokenURI`.
    */
   referrers?: TokenAssetReferrersRelation | null
+  /** URI that was discovered either in the eth chain. */
   tokenURI: String
   /**
-   * When `tokenURI` points to may point to JSON file that conforms to the ERC721
-   * Metadata JSON Schema it fetched parsed and stored as related Metadata
-   * document.
+   * Represents `ipfs://` URL for this content. Sometimes this is derived when
+   * resource uri is parsed. E.g. if discovered resource uri was
+   * https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+   * to be ipfs://Qm...Hash/file/path.
+   *
+   * If `uri` can not be inferred as an ipfs URL this field will be omitted.
+   */
+  ipfsURL?: String | null
+  /**
+   * When `tokenURI` points to JSON file that conforms to the ERC721 Metadata JSON
+   * Schema it is fetched parsed and stored as related Metadata document.
    */
   metadata?: TokenAssetMetadataRelation | null
+  created: Time
+  /** Time when resource record was last updated. */
+  updated: Time
+  /** Status of the token asset */
+  status: TokenAssetStatus
   /**
-   * CID of an IPLD node that encapsulates token metadata and all it's assets.
-   * Present when it was passibly to succesfully pin the token.
+   * Human readable description of the status. Usually this ellaborates a reason
+   * why token analyzer has failed providing with an error message and stack trace.
    */
-  ipnft?: String | null
-  /** Problem description if failed to get the metadata. */
-  problem?: String | null
+  statusText?: String | null
 }
 
 /** Allow manipulating the relationship between the types 'TokenAsset' and 'Token'. */
@@ -1408,20 +1804,9 @@ export interface ERC721ImportResultTokensRelation {
   disconnect?: (ID | null)[] | null
 }
 
-export interface TokenMetadataImportInput {
-  tokenAssetID: ID
-  metadata?: MetadataInput | null
-}
-
 /** 'Cursor' input values */
 export interface CursorInput {
   id: String
-}
-
-export interface ResourceProblemInput {
-  resourceID: ID
-  status: ResourceStatus
-  problem: String
 }
 
 export interface ERC721ImportInput {
@@ -1456,18 +1841,46 @@ export interface ERC721ImportTokenOwnerInput {
   id: ID
 }
 
-export interface ResorcePinInput {
-  resourceID: ID
-  status: ResourceStatus
-  ipfsURL: String
-  cid: String
+export interface UpdateResourcesInput {
+  updates: ResourceUpdate[]
 }
 
-export interface TokenAssetProblemInput {
-  /** ID of the TokenAsset */
-  tokenAssetID: ID
-  /** Problem description */
-  problem: String
+/** Represents update of the individual resource. */
+export interface ResourceUpdate {
+  id: ID
+  /**
+   * New status for the resource. Update will only apply when status moves forward
+   * Queued -> URIParseFailed -> ContentFetchFailed -> PinRequestFailed -> ContentLinked
+   *
+   * Skipping state is fine, however attempt to change status from e.g.
+   * ContentLinked to URIParseFailed is simply ignored.
+   */
+  status: ResourceStatus
+  /** Status description. */
+  statusText: String
+  /**
+   * If IPFS URL was inferred from the uri this will be set. When passed status
+   * field should either be ContentFetchFailed or ContentLinked.
+   */
+  ipfsURL?: String | null
+  /** If provided status should be `ContentLinked`. */
+  cid?: String | null
+}
+
+export interface TokenAssetUpdate {
+  id: ID
+  /**
+   * If IPFS URL was inferred from the uri this will be set. When passed status
+   * field should either be ContentFetchFailed or ContentLinked.
+   */
+  ipfsURL?: String | null
+  status: TokenAssetStatus
+  statusText: String
+  metadata?: MetadataInput | null
+}
+
+export interface UpdateTokenAssetsInput {
+  updates: TokenAssetUpdate[]
 }
 
 export interface ERC721MetadataQuery {
@@ -1498,6 +1911,14 @@ export interface MetadataAssetsRelation {
   disconnect?: (ID | null)[] | null
 }
 
+/** Allow manipulating the relationship between the types 'Metadata' and 'Content' using the field 'Metadata.content'. */
+export interface MetadataContentRelation {
+  /** Create a document of type 'Content' and associate it with the current document. */
+  create?: ContentInput | null
+  /** Connect a document of type 'Content' with the current document using its ID. */
+  connect?: ID | null
+}
+
 /** Allow manipulating the relationship between the types 'Metadata' and 'Resource' using the field 'Metadata.image'. */
 export interface MetadataImageRelation {
   /** Create a document of type 'Resource' and associate it with the current document. */
@@ -1514,6 +1935,14 @@ export interface MetadataSourceRelation {
   connect?: ID | null
   /** If true, disconnects this document from 'TokenAsset' */
   disconnect?: Boolean | null
+}
+
+/** Allow manipulating the relationship between the types 'Resource' and 'Content' using the field 'Resource.content'. */
+export interface ResourceContentRelation {
+  /** Create a document of type 'Content' and associate it with the current document. */
+  create?: ContentInput | null
+  /** Connect a document of type 'Content' with the current document using its ID. */
+  connect?: ID | null
 }
 
 /** Allow manipulating the relationship between the types 'Resource' and 'Metadata'. */
@@ -1606,6 +2035,32 @@ export const isResource = (obj: { __typename: String }): obj is Resource => {
   return Resource_possibleTypes.includes(obj.__typename)
 }
 
+const Content_possibleTypes = ['Content']
+export const isContent = (obj: { __typename: String }): obj is Content => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Content_possibleTypes.includes(obj.__typename)
+}
+
+const PinPage_possibleTypes = ['PinPage']
+export const isPinPage = (obj: { __typename: String }): obj is PinPage => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return PinPage_possibleTypes.includes(obj.__typename)
+}
+
+const Pin_possibleTypes = ['Pin']
+export const isPin = (obj: { __typename: String }): obj is Pin => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Pin_possibleTypes.includes(obj.__typename)
+}
+
+const PinLocation_possibleTypes = ['PinLocation']
+export const isPinLocation = (obj: {
+  __typename: String
+}): obj is PinLocation => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return PinLocation_possibleTypes.includes(obj.__typename)
+}
+
 const MetadataPage_possibleTypes = ['MetadataPage']
 export const isMetadataPage = (obj: {
   __typename: String
@@ -1634,12 +2089,6 @@ const Cursor_possibleTypes = ['Cursor']
 export const isCursor = (obj: { __typename: String }): obj is Cursor => {
   if (!obj.__typename) throw new Error('__typename is missing')
   return Cursor_possibleTypes.includes(obj.__typename)
-}
-
-const Task_possibleTypes = ['Task']
-export const isTask = (obj: { __typename: String }): obj is Task => {
-  if (!obj.__typename) throw new Error('__typename is missing')
-  return Task_possibleTypes.includes(obj.__typename)
 }
 
 const QueryFindResourcesPage_possibleTypes = ['QueryFindResourcesPage']
@@ -1728,6 +2177,18 @@ export interface QueryPromiseChain {
       defaultValue?: Token | null
     ) => Promise<Token | null>
   }
+  findContentByCID: ((args?: { cid?: ID | null }) => ContentPromiseChain & {
+    execute: (
+      request: ContentRequest,
+      defaultValue?: Content | null
+    ) => Promise<Content | null>
+  }) &
+    (ContentPromiseChain & {
+      execute: (
+        request: ContentRequest,
+        defaultValue?: Content | null
+      ) => Promise<Content | null>
+    })
   allImports: ((args?: {
     /** The number of items to return per page. */
     _size?: Int | null
@@ -1778,15 +2239,15 @@ export interface QueryPromiseChain {
       defaultValue?: Metadata | null
     ) => Promise<Metadata | null>
   }
-  /** Find a document from the collection of 'Task' by its id. */
-  findTaskByID: (args: {
-    /** The 'Task' document's ID */
+  /** Find a document from the collection of 'PinLocation' by its id. */
+  findPinLocationByID: (args: {
+    /** The 'PinLocation' document's ID */
     id: ID
-  }) => TaskPromiseChain & {
+  }) => PinLocationPromiseChain & {
     execute: (
-      request: TaskRequest,
-      defaultValue?: Task | null
-    ) => Promise<Task | null>
+      request: PinLocationRequest,
+      defaultValue?: PinLocation | null
+    ) => Promise<PinLocation | null>
   }
   block: ((args?: {
     hash?: ID | null
@@ -1803,6 +2264,16 @@ export interface QueryPromiseChain {
         defaultValue?: Block | null
       ) => Promise<Block | null>
     })
+  /** Find a document from the collection of 'Content' by its id. */
+  findContentByID: (args: {
+    /** The 'Content' document's ID */
+    id: ID
+  }) => ContentPromiseChain & {
+    execute: (
+      request: ContentRequest,
+      defaultValue?: Content | null
+    ) => Promise<Content | null>
+  }
   /** Find a document from the collection of 'Cursor' by its id. */
   findCursorByID: (args: {
     /** The 'Cursor' document's ID */
@@ -1874,6 +2345,30 @@ export interface QueryPromiseChain {
         defaultValue?: Owner | null
       ) => Promise<Owner | null>
     })
+  findResourceByURI: ((args?: {
+    uri?: String | null
+  }) => ResourcePromiseChain & {
+    execute: (
+      request: ResourceRequest,
+      defaultValue?: Resource | null
+    ) => Promise<Resource | null>
+  }) &
+    (ResourcePromiseChain & {
+      execute: (
+        request: ResourceRequest,
+        defaultValue?: Resource | null
+      ) => Promise<Resource | null>
+    })
+  /** Find a document from the collection of 'Pin' by its id. */
+  findPinByID: (args: {
+    /** The 'Pin' document's ID */
+    id: ID
+  }) => PinPromiseChain & {
+    execute: (
+      request: PinRequest,
+      defaultValue?: Pin | null
+    ) => Promise<Pin | null>
+  }
   allTokens: ((args?: {
     /** The number of items to return per page. */
     _size?: Int | null
@@ -1965,6 +2460,18 @@ export interface QueryObservableChain {
       defaultValue?: Token | null
     ) => Observable<Token | null>
   }
+  findContentByCID: ((args?: { cid?: ID | null }) => ContentObservableChain & {
+    execute: (
+      request: ContentRequest,
+      defaultValue?: Content | null
+    ) => Observable<Content | null>
+  }) &
+    (ContentObservableChain & {
+      execute: (
+        request: ContentRequest,
+        defaultValue?: Content | null
+      ) => Observable<Content | null>
+    })
   allImports: ((args?: {
     /** The number of items to return per page. */
     _size?: Int | null
@@ -2018,15 +2525,15 @@ export interface QueryObservableChain {
       defaultValue?: Metadata | null
     ) => Observable<Metadata | null>
   }
-  /** Find a document from the collection of 'Task' by its id. */
-  findTaskByID: (args: {
-    /** The 'Task' document's ID */
+  /** Find a document from the collection of 'PinLocation' by its id. */
+  findPinLocationByID: (args: {
+    /** The 'PinLocation' document's ID */
     id: ID
-  }) => TaskObservableChain & {
+  }) => PinLocationObservableChain & {
     execute: (
-      request: TaskRequest,
-      defaultValue?: Task | null
-    ) => Observable<Task | null>
+      request: PinLocationRequest,
+      defaultValue?: PinLocation | null
+    ) => Observable<PinLocation | null>
   }
   block: ((args?: {
     hash?: ID | null
@@ -2043,6 +2550,16 @@ export interface QueryObservableChain {
         defaultValue?: Block | null
       ) => Observable<Block | null>
     })
+  /** Find a document from the collection of 'Content' by its id. */
+  findContentByID: (args: {
+    /** The 'Content' document's ID */
+    id: ID
+  }) => ContentObservableChain & {
+    execute: (
+      request: ContentRequest,
+      defaultValue?: Content | null
+    ) => Observable<Content | null>
+  }
   /** Find a document from the collection of 'Cursor' by its id. */
   findCursorByID: (args: {
     /** The 'Cursor' document's ID */
@@ -2112,6 +2629,30 @@ export interface QueryObservableChain {
         defaultValue?: Owner | null
       ) => Observable<Owner | null>
     })
+  findResourceByURI: ((args?: {
+    uri?: String | null
+  }) => ResourceObservableChain & {
+    execute: (
+      request: ResourceRequest,
+      defaultValue?: Resource | null
+    ) => Observable<Resource | null>
+  }) &
+    (ResourceObservableChain & {
+      execute: (
+        request: ResourceRequest,
+        defaultValue?: Resource | null
+      ) => Observable<Resource | null>
+    })
+  /** Find a document from the collection of 'Pin' by its id. */
+  findPinByID: (args: {
+    /** The 'Pin' document's ID */
+    id: ID
+  }) => PinObservableChain & {
+    execute: (
+      request: PinRequest,
+      defaultValue?: Pin | null
+    ) => Observable<Pin | null>
+  }
   allTokens: ((args?: {
     /** The number of items to return per page. */
     _size?: Int | null
@@ -2640,28 +3181,63 @@ export interface OwnerObservableChain {
   }
 }
 
+/**
+ * TokenAsset represents contents of the tokenURI which may not have been found /
+ * pinned yet. It may have been added by the chain scraper, when token with this
+ * `tokenURI` was discovered. Alternatively it could have been created by an
+ * upload to nft.storage, in which case it may not have any refferers but it would
+ * have uploads.
+ */
 export interface TokenAssetPromiseChain {
-  /** Problem description if failed to get the metadata. */
-  problem: {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Promise<ID>
+  }
+  /**
+   * Human readable description of the status. Usually this ellaborates a reason
+   * why token analyzer has failed providing with an error message and stack trace.
+   */
+  statusText: {
     execute: (
       request?: boolean | number,
       defaultValue?: String | null
     ) => Promise<String | null>
   }
-  /** The document's ID. */
-  _id: {
-    execute: (request?: boolean | number, defaultValue?: ID) => Promise<ID>
-  }
+  /** URI that was discovered either in the eth chain. */
   tokenURI: {
     execute: (
       request?: boolean | number,
       defaultValue?: String
     ) => Promise<String>
   }
+  /** Time when resource record was last updated. */
+  updated: {
+    execute: (request?: boolean | number, defaultValue?: Time) => Promise<Time>
+  }
   /**
-   * When `tokenURI` points to may point to JSON file that conforms to the ERC721
-   * Metadata JSON Schema it fetched parsed and stored as related Metadata
-   * document.
+   * Represents `ipfs://` URL for this content. Sometimes this is derived when
+   * resource uri is parsed. E.g. if discovered resource uri was
+   * https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+   * to be ipfs://Qm...Hash/file/path.
+   *
+   * If `uri` can not be inferred as an ipfs URL this field will be omitted.
+   */
+  ipfsURL: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+  /** Status of the token asset */
+  status: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: TokenAssetStatus
+    ) => Promise<TokenAssetStatus>
+  }
+  /**
+   * When `tokenURI` points to JSON file that conforms to the ERC721 Metadata JSON
+   * Schema it is fetched parsed and stored as related Metadata document.
    */
   metadata: MetadataPromiseChain & {
     execute: (
@@ -2670,19 +3246,8 @@ export interface TokenAssetPromiseChain {
     ) => Promise<Metadata | null>
   }
   /**
-   * CID of an IPLD node that encapsulates token metadata and all it's assets.
-   * Present when it was passibly to succesfully pin the token.
-   */
-  ipnft: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: String | null
-    ) => Promise<String | null>
-  }
-  /**
-   * Multiple tokens may have use a same `tokenURI`. This relation allows tracking
-   * which tokens refer to the same `tokenURI`.
-   * Token this metadata belogs to.
+   * Tokens that have this `tokenURI`. This relation allows us to identify all
+   * tokens that have a same `tokenURI`.
    */
   referrers: ((args?: {
     /** The number of items to return per page. */
@@ -2701,34 +3266,75 @@ export interface TokenAssetPromiseChain {
         defaultValue?: TokenPage
       ) => Promise<TokenPage>
     })
+  created: {
+    execute: (request?: boolean | number, defaultValue?: Time) => Promise<Time>
+  }
   /** The document's timestamp. */
   _ts: {
     execute: (request?: boolean | number, defaultValue?: Long) => Promise<Long>
   }
 }
 
+/**
+ * TokenAsset represents contents of the tokenURI which may not have been found /
+ * pinned yet. It may have been added by the chain scraper, when token with this
+ * `tokenURI` was discovered. Alternatively it could have been created by an
+ * upload to nft.storage, in which case it may not have any refferers but it would
+ * have uploads.
+ */
 export interface TokenAssetObservableChain {
-  /** Problem description if failed to get the metadata. */
-  problem: {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Observable<ID>
+  }
+  /**
+   * Human readable description of the status. Usually this ellaborates a reason
+   * why token analyzer has failed providing with an error message and stack trace.
+   */
+  statusText: {
     execute: (
       request?: boolean | number,
       defaultValue?: String | null
     ) => Observable<String | null>
   }
-  /** The document's ID. */
-  _id: {
-    execute: (request?: boolean | number, defaultValue?: ID) => Observable<ID>
-  }
+  /** URI that was discovered either in the eth chain. */
   tokenURI: {
     execute: (
       request?: boolean | number,
       defaultValue?: String
     ) => Observable<String>
   }
+  /** Time when resource record was last updated. */
+  updated: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Time
+    ) => Observable<Time>
+  }
   /**
-   * When `tokenURI` points to may point to JSON file that conforms to the ERC721
-   * Metadata JSON Schema it fetched parsed and stored as related Metadata
-   * document.
+   * Represents `ipfs://` URL for this content. Sometimes this is derived when
+   * resource uri is parsed. E.g. if discovered resource uri was
+   * https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+   * to be ipfs://Qm...Hash/file/path.
+   *
+   * If `uri` can not be inferred as an ipfs URL this field will be omitted.
+   */
+  ipfsURL: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
+  /** Status of the token asset */
+  status: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: TokenAssetStatus
+    ) => Observable<TokenAssetStatus>
+  }
+  /**
+   * When `tokenURI` points to JSON file that conforms to the ERC721 Metadata JSON
+   * Schema it is fetched parsed and stored as related Metadata document.
    */
   metadata: MetadataObservableChain & {
     execute: (
@@ -2737,19 +3343,8 @@ export interface TokenAssetObservableChain {
     ) => Observable<Metadata | null>
   }
   /**
-   * CID of an IPLD node that encapsulates token metadata and all it's assets.
-   * Present when it was passibly to succesfully pin the token.
-   */
-  ipnft: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: String | null
-    ) => Observable<String | null>
-  }
-  /**
-   * Multiple tokens may have use a same `tokenURI`. This relation allows tracking
-   * which tokens refer to the same `tokenURI`.
-   * Token this metadata belogs to.
+   * Tokens that have this `tokenURI`. This relation allows us to identify all
+   * tokens that have a same `tokenURI`.
    */
   referrers: ((args?: {
     /** The number of items to return per page. */
@@ -2768,6 +3363,12 @@ export interface TokenAssetObservableChain {
         defaultValue?: TokenPage
       ) => Observable<TokenPage>
     })
+  created: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Time
+    ) => Observable<Time>
+  }
   /** The document's timestamp. */
   _ts: {
     execute: (
@@ -2791,6 +3392,7 @@ export interface MetadataPromiseChain {
       defaultValue?: TokenAsset
     ) => Promise<TokenAsset>
   }
+  /** Additional assets that token linked to */
   assets: ((args?: {
     /** The number of items to return per page. */
     _size?: Int | null
@@ -2826,11 +3428,12 @@ export interface MetadataPromiseChain {
   _id: {
     execute: (request?: boolean | number, defaultValue?: ID) => Promise<ID>
   }
-  cid: {
+  /** Content corresponding to the metadata. */
+  content: ContentPromiseChain & {
     execute: (
-      request?: boolean | number,
-      defaultValue?: String
-    ) => Promise<String>
+      request: ContentRequest,
+      defaultValue?: Content
+    ) => Promise<Content>
   }
   /** The document's timestamp. */
   _ts: {
@@ -2852,6 +3455,7 @@ export interface MetadataObservableChain {
       defaultValue?: TokenAsset
     ) => Observable<TokenAsset>
   }
+  /** Additional assets that token linked to */
   assets: ((args?: {
     /** The number of items to return per page. */
     _size?: Int | null
@@ -2887,11 +3491,12 @@ export interface MetadataObservableChain {
   _id: {
     execute: (request?: boolean | number, defaultValue?: ID) => Observable<ID>
   }
-  cid: {
+  /** Content corresponding to the metadata. */
+  content: ContentObservableChain & {
     execute: (
-      request?: boolean | number,
-      defaultValue?: String
-    ) => Observable<String>
+      request: ContentRequest,
+      defaultValue?: Content
+    ) => Observable<Content>
   }
   /** The document's timestamp. */
   _ts: {
@@ -2952,45 +3557,87 @@ export interface ResourcePageObservableChain {
   }
 }
 
+/**
+ * Represents a resource that non-fungible token metadata referenced via URI. In
+ * most cases when created will have `uri` discovered on chain with a status
+ * `Queued`. Followup jobs will then attempt to locate and pin it's content
+ * updating it's state.
+ */
 export interface ResourcePromiseChain {
-  /** Problem description if there was problem in pinning a resource. */
-  problem: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: String | null
-    ) => Promise<String | null>
-  }
   /** The document's ID. */
   _id: {
     execute: (request?: boolean | number, defaultValue?: ID) => Promise<ID>
   }
-  /** URI with which resource was identified. */
+  /**
+   * URI this resource corresponds to. Resources are created for all the URIs
+   * that NFT token metadata references.
+   */
   uri: {
     execute: (
       request?: boolean | number,
       defaultValue?: String
     ) => Promise<String>
   }
-  /** CID that corresponds to this resource, set once resourec is pinned. */
-  cid: {
+  /**
+   * Human readable description of the status. Would contain error message & stack
+   * trace when resource has failed status. Likely omitted when resource is queued
+   * or succefully linked.
+   */
+  statusText: {
     execute: (
       request?: boolean | number,
       defaultValue?: String | null
     ) => Promise<String | null>
   }
-  /** ipfs:// url if `uri` was referring to gateway URL. */
+  /** Time when resource record was last updated. */
+  updated: {
+    execute: (request?: boolean | number, defaultValue?: Time) => Promise<Time>
+  }
+  /**
+   * Represents `ipfs://` URL for this content. Sometimes this is derived when
+   * resource uri is parsed. E.g. if discovered resource uri was
+   * https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+   * to be ipfs://Qm...Hash/file/path.
+   *
+   * If `uri` can not be inferred as an ipfs URL this field will be omitted.
+   */
   ipfsURL: {
     execute: (
       request?: boolean | number,
       defaultValue?: String | null
     ) => Promise<String | null>
   }
+  /**
+   * Describes current status of the resource. When resource is discovered during
+   * chain scrape record is created with Queued state. Cron job later comes along
+   * and processes queued resources fetching / pinning them.
+   */
   status: {
     execute: (
       request?: boolean | number,
       defaultValue?: ResourceStatus
     ) => Promise<ResourceStatus>
   }
+  /**
+   * Content referrerced by this resource. When `ipfsURL` is derived content
+   * archiving job will simply pin content by that URL and update resource linking
+   * resource to it. If however `ipfsURL` could not be derived archiving job will
+   * attempt to fetch the content from `uri` and pin it again linkking resource
+   * to it.
+   *
+   * Content field is only going to be present when resource has a `ContentLinked`
+   * status. From that point on resource is no longer going to be updated.
+   */
+  content: ContentPromiseChain & {
+    execute: (
+      request: ContentRequest,
+      defaultValue?: Content
+    ) => Promise<Content>
+  }
+  /**
+   * Backlinks to each non-fungible token metadata that referenced resource with
+   * this `uri`.
+   */
   referrers: ((args?: {
     /** The number of items to return per page. */
     _size?: Int | null
@@ -3008,51 +3655,100 @@ export interface ResourcePromiseChain {
         defaultValue?: MetadataPage
       ) => Promise<MetadataPage>
     })
+  /** Time when resource was created. */
+  created: {
+    execute: (request?: boolean | number, defaultValue?: Time) => Promise<Time>
+  }
   /** The document's timestamp. */
   _ts: {
     execute: (request?: boolean | number, defaultValue?: Long) => Promise<Long>
   }
 }
 
+/**
+ * Represents a resource that non-fungible token metadata referenced via URI. In
+ * most cases when created will have `uri` discovered on chain with a status
+ * `Queued`. Followup jobs will then attempt to locate and pin it's content
+ * updating it's state.
+ */
 export interface ResourceObservableChain {
-  /** Problem description if there was problem in pinning a resource. */
-  problem: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: String | null
-    ) => Observable<String | null>
-  }
   /** The document's ID. */
   _id: {
     execute: (request?: boolean | number, defaultValue?: ID) => Observable<ID>
   }
-  /** URI with which resource was identified. */
+  /**
+   * URI this resource corresponds to. Resources are created for all the URIs
+   * that NFT token metadata references.
+   */
   uri: {
     execute: (
       request?: boolean | number,
       defaultValue?: String
     ) => Observable<String>
   }
-  /** CID that corresponds to this resource, set once resourec is pinned. */
-  cid: {
+  /**
+   * Human readable description of the status. Would contain error message & stack
+   * trace when resource has failed status. Likely omitted when resource is queued
+   * or succefully linked.
+   */
+  statusText: {
     execute: (
       request?: boolean | number,
       defaultValue?: String | null
     ) => Observable<String | null>
   }
-  /** ipfs:// url if `uri` was referring to gateway URL. */
+  /** Time when resource record was last updated. */
+  updated: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Time
+    ) => Observable<Time>
+  }
+  /**
+   * Represents `ipfs://` URL for this content. Sometimes this is derived when
+   * resource uri is parsed. E.g. if discovered resource uri was
+   * https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+   * to be ipfs://Qm...Hash/file/path.
+   *
+   * If `uri` can not be inferred as an ipfs URL this field will be omitted.
+   */
   ipfsURL: {
     execute: (
       request?: boolean | number,
       defaultValue?: String | null
     ) => Observable<String | null>
   }
+  /**
+   * Describes current status of the resource. When resource is discovered during
+   * chain scrape record is created with Queued state. Cron job later comes along
+   * and processes queued resources fetching / pinning them.
+   */
   status: {
     execute: (
       request?: boolean | number,
       defaultValue?: ResourceStatus
     ) => Observable<ResourceStatus>
   }
+  /**
+   * Content referrerced by this resource. When `ipfsURL` is derived content
+   * archiving job will simply pin content by that URL and update resource linking
+   * resource to it. If however `ipfsURL` could not be derived archiving job will
+   * attempt to fetch the content from `uri` and pin it again linkking resource
+   * to it.
+   *
+   * Content field is only going to be present when resource has a `ContentLinked`
+   * status. From that point on resource is no longer going to be updated.
+   */
+  content: ContentObservableChain & {
+    execute: (
+      request: ContentRequest,
+      defaultValue?: Content
+    ) => Observable<Content>
+  }
+  /**
+   * Backlinks to each non-fungible token metadata that referenced resource with
+   * this `uri`.
+   */
   referrers: ((args?: {
     /** The number of items to return per page. */
     _size?: Int | null
@@ -3070,6 +3766,439 @@ export interface ResourceObservableChain {
         defaultValue?: MetadataPage
       ) => Observable<MetadataPage>
     })
+  /** Time when resource was created. */
+  created: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Time
+    ) => Observable<Time>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Long
+    ) => Observable<Long>
+  }
+}
+
+/**
+ * Content correspnoding to a resource(s) that were referreced by non-fungible
+ * token metadata. It is identified and unique by it's cid. Content may represent
+ * a file, directory or arbitrary Dag in IPFS network.
+ */
+export interface ContentPromiseChain {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Promise<ID>
+  }
+  /** Root CID for this content. */
+  cid: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String
+    ) => Promise<String>
+  }
+  /**
+   * Size of the DAG in bytes. Set if known on upload or for partials is set when
+   * content is fully pinned in at least one location.
+   */
+  dagSize: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Int | null
+    ) => Promise<Int | null>
+  }
+  /** IPFS nodes pinning this content. */
+  pins: ((args?: {
+    /** The number of items to return per page. */
+    _size?: Int | null
+    /** The pagination cursor. */
+    _cursor?: String | null
+  }) => PinPagePromiseChain & {
+    execute: (
+      request: PinPageRequest,
+      defaultValue?: PinPage
+    ) => Promise<PinPage>
+  }) &
+    (PinPagePromiseChain & {
+      execute: (
+        request: PinPageRequest,
+        defaultValue?: PinPage
+      ) => Promise<PinPage>
+    })
+  /**
+   * Backlikns to al lthe resources that resolve to this content. Note that
+   * different resource URIs may resolve to the same CID.
+   */
+  resources: ((args?: {
+    /** The number of items to return per page. */
+    _size?: Int | null
+    /** The pagination cursor. */
+    _cursor?: String | null
+  }) => ResourcePagePromiseChain & {
+    execute: (
+      request: ResourcePageRequest,
+      defaultValue?: ResourcePage
+    ) => Promise<ResourcePage>
+  }) &
+    (ResourcePagePromiseChain & {
+      execute: (
+        request: ResourcePageRequest,
+        defaultValue?: ResourcePage
+      ) => Promise<ResourcePage>
+    })
+  /** Creation date. */
+  created: {
+    execute: (request?: boolean | number, defaultValue?: Time) => Promise<Time>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (request?: boolean | number, defaultValue?: Long) => Promise<Long>
+  }
+}
+
+/**
+ * Content correspnoding to a resource(s) that were referreced by non-fungible
+ * token metadata. It is identified and unique by it's cid. Content may represent
+ * a file, directory or arbitrary Dag in IPFS network.
+ */
+export interface ContentObservableChain {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Observable<ID>
+  }
+  /** Root CID for this content. */
+  cid: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String
+    ) => Observable<String>
+  }
+  /**
+   * Size of the DAG in bytes. Set if known on upload or for partials is set when
+   * content is fully pinned in at least one location.
+   */
+  dagSize: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Int | null
+    ) => Observable<Int | null>
+  }
+  /** IPFS nodes pinning this content. */
+  pins: ((args?: {
+    /** The number of items to return per page. */
+    _size?: Int | null
+    /** The pagination cursor. */
+    _cursor?: String | null
+  }) => PinPageObservableChain & {
+    execute: (
+      request: PinPageRequest,
+      defaultValue?: PinPage
+    ) => Observable<PinPage>
+  }) &
+    (PinPageObservableChain & {
+      execute: (
+        request: PinPageRequest,
+        defaultValue?: PinPage
+      ) => Observable<PinPage>
+    })
+  /**
+   * Backlikns to al lthe resources that resolve to this content. Note that
+   * different resource URIs may resolve to the same CID.
+   */
+  resources: ((args?: {
+    /** The number of items to return per page. */
+    _size?: Int | null
+    /** The pagination cursor. */
+    _cursor?: String | null
+  }) => ResourcePageObservableChain & {
+    execute: (
+      request: ResourcePageRequest,
+      defaultValue?: ResourcePage
+    ) => Observable<ResourcePage>
+  }) &
+    (ResourcePageObservableChain & {
+      execute: (
+        request: ResourcePageRequest,
+        defaultValue?: ResourcePage
+      ) => Observable<ResourcePage>
+    })
+  /** Creation date. */
+  created: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Time
+    ) => Observable<Time>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Long
+    ) => Observable<Long>
+  }
+}
+
+/** The pagination object for elements of type 'Pin'. */
+export interface PinPagePromiseChain {
+  /** The elements of type 'Pin' in this page. */
+  data: {
+    execute: (
+      request: PinRequest,
+      defaultValue?: (Pin | null)[]
+    ) => Promise<(Pin | null)[]>
+  }
+  /** A cursor for elements coming after the current page. */
+  after: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+  /** A cursor for elements coming before the current page. */
+  before: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+}
+
+/** The pagination object for elements of type 'Pin'. */
+export interface PinPageObservableChain {
+  /** The elements of type 'Pin' in this page. */
+  data: {
+    execute: (
+      request: PinRequest,
+      defaultValue?: (Pin | null)[]
+    ) => Observable<(Pin | null)[]>
+  }
+  /** A cursor for elements coming after the current page. */
+  after: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
+  /** A cursor for elements coming before the current page. */
+  before: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
+}
+
+/** Information for piece of content pinned in IPFS. */
+export interface PinPromiseChain {
+  /** Reference to a pin location that is pinning it. */
+  location: PinLocationPromiseChain & {
+    execute: (
+      request: PinLocationRequest,
+      defaultValue?: PinLocation
+    ) => Promise<PinLocation>
+  }
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Promise<ID>
+  }
+  /**
+   * Human readable description of the pin status. Present only when status needs
+   * ellaboration e.g. when pin is failed or when pin is queued but actual status
+   * could not be obtained from the node.
+   */
+  statusText: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+  /** Last time pin status was updated. */
+  updated: {
+    execute: (request?: boolean | number, defaultValue?: Time) => Promise<Time>
+  }
+  /** Pinning status at this location. */
+  status: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: PinStatus
+    ) => Promise<PinStatus>
+  }
+  /** The content being pinned. */
+  content: ContentPromiseChain & {
+    execute: (
+      request: ContentRequest,
+      defaultValue?: Content
+    ) => Promise<Content>
+  }
+  /** Time when pin was created. */
+  created: {
+    execute: (request?: boolean | number, defaultValue?: Time) => Promise<Time>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (request?: boolean | number, defaultValue?: Long) => Promise<Long>
+  }
+}
+
+/** Information for piece of content pinned in IPFS. */
+export interface PinObservableChain {
+  /** Reference to a pin location that is pinning it. */
+  location: PinLocationObservableChain & {
+    execute: (
+      request: PinLocationRequest,
+      defaultValue?: PinLocation
+    ) => Observable<PinLocation>
+  }
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Observable<ID>
+  }
+  /**
+   * Human readable description of the pin status. Present only when status needs
+   * ellaboration e.g. when pin is failed or when pin is queued but actual status
+   * could not be obtained from the node.
+   */
+  statusText: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
+  /** Last time pin status was updated. */
+  updated: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Time
+    ) => Observable<Time>
+  }
+  /** Pinning status at this location. */
+  status: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: PinStatus
+    ) => Observable<PinStatus>
+  }
+  /** The content being pinned. */
+  content: ContentObservableChain & {
+    execute: (
+      request: ContentRequest,
+      defaultValue?: Content
+    ) => Observable<Content>
+  }
+  /** Time when pin was created. */
+  created: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Time
+    ) => Observable<Time>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Long
+    ) => Observable<Long>
+  }
+}
+
+/** Location of a pin. */
+export interface PinLocationPromiseChain {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Promise<ID>
+  }
+  /** Libp2p peer ID of the node pinning this pin. */
+  peerId: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String
+    ) => Promise<String>
+  }
+  /** Name of the peer pinning this pin. */
+  peerName: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+  /** Known pins at this location. */
+  pins: ((args?: {
+    /** The number of items to return per page. */
+    _size?: Int | null
+    /** The pagination cursor. */
+    _cursor?: String | null
+  }) => PinPagePromiseChain & {
+    execute: (
+      request: PinPageRequest,
+      defaultValue?: PinPage
+    ) => Promise<PinPage>
+  }) &
+    (PinPagePromiseChain & {
+      execute: (
+        request: PinPageRequest,
+        defaultValue?: PinPage
+      ) => Promise<PinPage>
+    })
+  /** Geographic region this node resides in. */
+  region: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (request?: boolean | number, defaultValue?: Long) => Promise<Long>
+  }
+}
+
+/** Location of a pin. */
+export interface PinLocationObservableChain {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Observable<ID>
+  }
+  /** Libp2p peer ID of the node pinning this pin. */
+  peerId: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String
+    ) => Observable<String>
+  }
+  /** Name of the peer pinning this pin. */
+  peerName: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
+  /** Known pins at this location. */
+  pins: ((args?: {
+    /** The number of items to return per page. */
+    _size?: Int | null
+    /** The pagination cursor. */
+    _cursor?: String | null
+  }) => PinPageObservableChain & {
+    execute: (
+      request: PinPageRequest,
+      defaultValue?: PinPage
+    ) => Observable<PinPage>
+  }) &
+    (PinPageObservableChain & {
+      execute: (
+        request: PinPageRequest,
+        defaultValue?: PinPage
+      ) => Observable<PinPage>
+    })
+  /** Geographic region this node resides in. */
+  region: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
   /** The document's timestamp. */
   _ts: {
     execute: (
@@ -3321,127 +4450,6 @@ export interface CursorObservableChain {
   }
 }
 
-/**
- * Describen an operation that may fail, like an HTTP
- * request or a JSON parse.
- *
- * Fauna does not support union types so we get by using a
- * single struct represeting union:
- * type Task =
- *   | { status: 'idle', attempt: int }
- *   | { status: 'queued' attempt: int }
- *   | { status: 'pending', start: Time, attempt: int }
- *   | { status: 'failed', end: Time, error: String, attempt: int }
- *   | { status: 'done', end: Time, attempt: int }
- */
-export interface TaskPromiseChain {
-  /** The document's ID. */
-  _id: {
-    execute: (request?: boolean | number, defaultValue?: ID) => Promise<ID>
-  }
-  /** Error message in cas task failed */
-  error: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: String | null
-    ) => Promise<String | null>
-  }
-  /** Status of the task */
-  status: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: String
-    ) => Promise<String>
-  }
-  /** Time at which task failed */
-  end: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: Time | null
-    ) => Promise<Time | null>
-  }
-  /**
-   * An attempt number. Usuallly 1, but could be greater
-   * on retries
-   */
-  attempt: {
-    execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int>
-  }
-  /** Time at which task started */
-  start: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: Time | null
-    ) => Promise<Time | null>
-  }
-  /** The document's timestamp. */
-  _ts: {
-    execute: (request?: boolean | number, defaultValue?: Long) => Promise<Long>
-  }
-}
-
-/**
- * Describen an operation that may fail, like an HTTP
- * request or a JSON parse.
- *
- * Fauna does not support union types so we get by using a
- * single struct represeting union:
- * type Task =
- *   | { status: 'idle', attempt: int }
- *   | { status: 'queued' attempt: int }
- *   | { status: 'pending', start: Time, attempt: int }
- *   | { status: 'failed', end: Time, error: String, attempt: int }
- *   | { status: 'done', end: Time, attempt: int }
- */
-export interface TaskObservableChain {
-  /** The document's ID. */
-  _id: {
-    execute: (request?: boolean | number, defaultValue?: ID) => Observable<ID>
-  }
-  /** Error message in cas task failed */
-  error: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: String | null
-    ) => Observable<String | null>
-  }
-  /** Status of the task */
-  status: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: String
-    ) => Observable<String>
-  }
-  /** Time at which task failed */
-  end: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: Time | null
-    ) => Observable<Time | null>
-  }
-  /**
-   * An attempt number. Usuallly 1, but could be greater
-   * on retries
-   */
-  attempt: {
-    execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int>
-  }
-  /** Time at which task started */
-  start: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: Time | null
-    ) => Observable<Time | null>
-  }
-  /** The document's timestamp. */
-  _ts: {
-    execute: (
-      request?: boolean | number,
-      defaultValue?: Long
-    ) => Observable<Long>
-  }
-}
-
 /** The pagination object for elements of type 'Resource'. */
 export interface QueryFindResourcesPagePromiseChain {
   /** The elements of type 'Resource' in this page. */
@@ -3503,6 +4511,13 @@ export interface MutationPromiseChain {
       defaultValue?: Owner | null
     ) => Promise<Owner | null>
   }
+  /** Create a new document in the collection of 'Pin' */
+  createPin: (args: {
+    /** 'Pin' input values */
+    data: PinInput
+  }) => PinPromiseChain & {
+    execute: (request: PinRequest, defaultValue?: Pin) => Promise<Pin>
+  }
   /** Delete an existing document in the collection of 'TokenAsset' */
   deleteTokenAsset: (args: {
     /** The 'TokenAsset' document's ID */
@@ -3512,6 +4527,18 @@ export interface MutationPromiseChain {
       request: TokenAssetRequest,
       defaultValue?: TokenAsset | null
     ) => Promise<TokenAsset | null>
+  }
+  /** Update an existing document in the collection of 'Pin' */
+  updatePin: (args: {
+    /** The 'Pin' document's ID */
+    id: ID
+    /** 'Pin' input values */
+    data: PinInput
+  }) => PinPromiseChain & {
+    execute: (
+      request: PinRequest,
+      defaultValue?: Pin | null
+    ) => Promise<Pin | null>
   }
   /** Create a new document in the collection of 'Metadata' */
   createMetadata: (args: {
@@ -3533,18 +4560,6 @@ export interface MutationPromiseChain {
       defaultValue?: Token | null
     ) => Promise<Token | null>
   }
-  /** Update an existing document in the collection of 'Task' */
-  updateTask: (args: {
-    /** The 'Task' document's ID */
-    id: ID
-    /** 'Task' input values */
-    data: TaskInput
-  }) => TaskPromiseChain & {
-    execute: (
-      request: TaskRequest,
-      defaultValue?: Task | null
-    ) => Promise<Task | null>
-  }
   /** Create a new document in the collection of 'Block' */
   createBlock: (args: {
     /** 'Block' input values */
@@ -3552,25 +4567,6 @@ export interface MutationPromiseChain {
   }) => BlockPromiseChain & {
     execute: (request: BlockRequest, defaultValue?: Block) => Promise<Block>
   }
-  /**
-   * Imports Token Metadata. Will be rejected if corresponding asset status isn't
-   * Queued. Otherwise updates corresponding TokenAsset transitioning it to
-   * Succeeded state.
-   */
-  importTokenMetadata: ((args?: {
-    input?: TokenMetadataImportInput | null
-  }) => MetadataPromiseChain & {
-    execute: (
-      request: MetadataRequest,
-      defaultValue?: Metadata
-    ) => Promise<Metadata>
-  }) &
-    (MetadataPromiseChain & {
-      execute: (
-        request: MetadataRequest,
-        defaultValue?: Metadata
-      ) => Promise<Metadata>
-    })
   /** Delete an existing document in the collection of 'ERC721ImportResult' */
   deleteERC721ImportResult: (args: {
     /** The 'ERC721ImportResult' document's ID */
@@ -3603,6 +4599,16 @@ export interface MutationPromiseChain {
       defaultValue?: TokenContract
     ) => Promise<TokenContract>
   }
+  /** Create a new document in the collection of 'PinLocation' */
+  createPinLocation: (args: {
+    /** 'PinLocation' input values */
+    data: PinLocationInput
+  }) => PinLocationPromiseChain & {
+    execute: (
+      request: PinLocationRequest,
+      defaultValue?: PinLocation
+    ) => Promise<PinLocation>
+  }
   /** Create a new document in the collection of 'Resource' */
   createResource: (args: {
     /** 'Resource' input values */
@@ -3625,6 +4631,16 @@ export interface MutationPromiseChain {
       defaultValue?: Cursor | null
     ) => Promise<Cursor | null>
   }
+  /** Delete an existing document in the collection of 'PinLocation' */
+  deletePinLocation: (args: {
+    /** The 'PinLocation' document's ID */
+    id: ID
+  }) => PinLocationPromiseChain & {
+    execute: (
+      request: PinLocationRequest,
+      defaultValue?: PinLocation | null
+    ) => Promise<PinLocation | null>
+  }
   /** Create a new document in the collection of 'Token' */
   createToken: (args: {
     /** 'Token' input values */
@@ -3642,20 +4658,6 @@ export interface MutationPromiseChain {
       defaultValue?: Cursor | null
     ) => Promise<Cursor | null>
   }
-  reportResourceProblem: ((args?: {
-    input?: ResourceProblemInput | null
-  }) => ResourcePromiseChain & {
-    execute: (
-      request: ResourceRequest,
-      defaultValue?: Resource
-    ) => Promise<Resource>
-  }) &
-    (ResourcePromiseChain & {
-      execute: (
-        request: ResourceRequest,
-        defaultValue?: Resource
-      ) => Promise<Resource>
-    })
   importERC721: (args: {
     input: ERC721ImportInput
   }) => ERC721ImportResultPromiseChain & {
@@ -3663,6 +4665,17 @@ export interface MutationPromiseChain {
       request: ERC721ImportResultRequest,
       defaultValue?: ERC721ImportResult
     ) => Promise<ERC721ImportResult>
+  }
+  updateResources: ((args?: { input?: UpdateResourcesInput | null }) => {
+    execute: (
+      request: ResourceRequest,
+      defaultValue?: Resource[]
+    ) => Promise<Resource[]>
+  }) & {
+    execute: (
+      request: ResourceRequest,
+      defaultValue?: Resource[]
+    ) => Promise<Resource[]>
   }
   /** Update an existing document in the collection of 'TokenContract' */
   updateTokenContract: (args: {
@@ -3686,6 +4699,18 @@ export interface MutationPromiseChain {
       defaultValue?: Resource | null
     ) => Promise<Resource | null>
   }
+  /** Update an existing document in the collection of 'PinLocation' */
+  updatePinLocation: (args: {
+    /** The 'PinLocation' document's ID */
+    id: ID
+    /** 'PinLocation' input values */
+    data: PinLocationInput
+  }) => PinLocationPromiseChain & {
+    execute: (
+      request: PinLocationRequest,
+      defaultValue?: PinLocation | null
+    ) => Promise<PinLocation | null>
+  }
   /** Update an existing document in the collection of 'Owner' */
   updateOwner: (args: {
     /** The 'Owner' document's ID */
@@ -3698,17 +4723,13 @@ export interface MutationPromiseChain {
       defaultValue?: Owner | null
     ) => Promise<Owner | null>
   }
-  /** Update an existing document in the collection of 'TokenAsset' */
   updateTokenAsset: (args: {
-    /** The 'TokenAsset' document's ID */
-    id: ID
-    /** 'TokenAsset' input values */
-    data: TokenAssetInput
+    input: TokenAssetUpdate
   }) => TokenAssetPromiseChain & {
     execute: (
       request: TokenAssetRequest,
-      defaultValue?: TokenAsset | null
-    ) => Promise<TokenAsset | null>
+      defaultValue?: TokenAsset
+    ) => Promise<TokenAsset>
   }
   /** Delete an existing document in the collection of 'Block' */
   deleteBlock: (args: {
@@ -3730,19 +4751,22 @@ export interface MutationPromiseChain {
       defaultValue?: TokenAsset
     ) => Promise<TokenAsset>
   }
+  /** Delete an existing document in the collection of 'Pin' */
+  deletePin: (args: {
+    /** The 'Pin' document's ID */
+    id: ID
+  }) => PinPromiseChain & {
+    execute: (
+      request: PinRequest,
+      defaultValue?: Pin | null
+    ) => Promise<Pin | null>
+  }
   /** Create a new document in the collection of 'Cursor' */
   createCursor: (args: {
     /** 'Cursor' input values */
     data: CursorInput
   }) => CursorPromiseChain & {
     execute: (request: CursorRequest, defaultValue?: Cursor) => Promise<Cursor>
-  }
-  /** Create a new document in the collection of 'Task' */
-  createTask: (args: {
-    /** 'Task' input values */
-    data: TaskInput
-  }) => TaskPromiseChain & {
-    execute: (request: TaskRequest, defaultValue?: Task) => Promise<Task>
   }
   /** Update an existing document in the collection of 'Token' */
   updateToken: (args: {
@@ -3756,15 +4780,15 @@ export interface MutationPromiseChain {
       defaultValue?: Token | null
     ) => Promise<Token | null>
   }
-  /** Delete an existing document in the collection of 'Task' */
-  deleteTask: (args: {
-    /** The 'Task' document's ID */
-    id: ID
-  }) => TaskPromiseChain & {
+  /** Create a new document in the collection of 'Content' */
+  createContent: (args: {
+    /** 'Content' input values */
+    data: ContentInput
+  }) => ContentPromiseChain & {
     execute: (
-      request: TaskRequest,
-      defaultValue?: Task | null
-    ) => Promise<Task | null>
+      request: ContentRequest,
+      defaultValue?: Content
+    ) => Promise<Content>
   }
   /** Create a new document in the collection of 'ERC721ImportResult' */
   createERC721ImportResult: (args: {
@@ -3793,20 +4817,26 @@ export interface MutationPromiseChain {
   }) => OwnerPromiseChain & {
     execute: (request: OwnerRequest, defaultValue?: Owner) => Promise<Owner>
   }
-  /** Update an existing document in the collection of 'Resource' */
-  updateResource: (args: {
-    /** The 'Resource' document's ID */
+  /** Update an existing document in the collection of 'Content' */
+  updateContent: (args: {
+    /** The 'Content' document's ID */
     id: ID
-    /** 'Resource' input values */
-    data: ResourceInput
-  }) => ResourcePromiseChain & {
+    /** 'Content' input values */
+    data: ContentInput
+  }) => ContentPromiseChain & {
     execute: (
-      request: ResourceRequest,
-      defaultValue?: Resource | null
-    ) => Promise<Resource | null>
+      request: ContentRequest,
+      defaultValue?: Content | null
+    ) => Promise<Content | null>
   }
-  updateResourcePin: ((args?: {
-    input?: ResorcePinInput | null
+  updateTokenAssets: (args: { input: UpdateTokenAssetsInput }) => {
+    execute: (
+      request: TokenAssetRequest,
+      defaultValue?: TokenAsset[]
+    ) => Promise<TokenAsset[]>
+  }
+  updateResource: ((args?: {
+    input?: ResourceUpdate | null
   }) => ResourcePromiseChain & {
     execute: (
       request: ResourceRequest,
@@ -3841,26 +4871,16 @@ export interface MutationPromiseChain {
       defaultValue?: Block | null
     ) => Promise<Block | null>
   }
-  /**
-   * Reports problem with a TokenAsset e.g. it was impossible to parse URI
-   * or was unable to fetch content from URI, or content was not a JSON.
-   *
-   * Call is rejected if status isn't Queued.
-   */
-  reportTokenAssetProblem: ((args?: {
-    input?: TokenAssetProblemInput | null
-  }) => TokenAssetPromiseChain & {
+  /** Delete an existing document in the collection of 'Content' */
+  deleteContent: (args: {
+    /** The 'Content' document's ID */
+    id: ID
+  }) => ContentPromiseChain & {
     execute: (
-      request: TokenAssetRequest,
-      defaultValue?: TokenAsset
-    ) => Promise<TokenAsset>
-  }) &
-    (TokenAssetPromiseChain & {
-      execute: (
-        request: TokenAssetRequest,
-        defaultValue?: TokenAsset
-      ) => Promise<TokenAsset>
-    })
+      request: ContentRequest,
+      defaultValue?: Content | null
+    ) => Promise<Content | null>
+  }
   /** Update an existing document in the collection of 'ERC721ImportResult' */
   updateERC721ImportResult: (args: {
     /** The 'ERC721ImportResult' document's ID */
@@ -3886,6 +4906,13 @@ export interface MutationObservableChain {
       defaultValue?: Owner | null
     ) => Observable<Owner | null>
   }
+  /** Create a new document in the collection of 'Pin' */
+  createPin: (args: {
+    /** 'Pin' input values */
+    data: PinInput
+  }) => PinObservableChain & {
+    execute: (request: PinRequest, defaultValue?: Pin) => Observable<Pin>
+  }
   /** Delete an existing document in the collection of 'TokenAsset' */
   deleteTokenAsset: (args: {
     /** The 'TokenAsset' document's ID */
@@ -3895,6 +4922,18 @@ export interface MutationObservableChain {
       request: TokenAssetRequest,
       defaultValue?: TokenAsset | null
     ) => Observable<TokenAsset | null>
+  }
+  /** Update an existing document in the collection of 'Pin' */
+  updatePin: (args: {
+    /** The 'Pin' document's ID */
+    id: ID
+    /** 'Pin' input values */
+    data: PinInput
+  }) => PinObservableChain & {
+    execute: (
+      request: PinRequest,
+      defaultValue?: Pin | null
+    ) => Observable<Pin | null>
   }
   /** Create a new document in the collection of 'Metadata' */
   createMetadata: (args: {
@@ -3916,18 +4955,6 @@ export interface MutationObservableChain {
       defaultValue?: Token | null
     ) => Observable<Token | null>
   }
-  /** Update an existing document in the collection of 'Task' */
-  updateTask: (args: {
-    /** The 'Task' document's ID */
-    id: ID
-    /** 'Task' input values */
-    data: TaskInput
-  }) => TaskObservableChain & {
-    execute: (
-      request: TaskRequest,
-      defaultValue?: Task | null
-    ) => Observable<Task | null>
-  }
   /** Create a new document in the collection of 'Block' */
   createBlock: (args: {
     /** 'Block' input values */
@@ -3935,25 +4962,6 @@ export interface MutationObservableChain {
   }) => BlockObservableChain & {
     execute: (request: BlockRequest, defaultValue?: Block) => Observable<Block>
   }
-  /**
-   * Imports Token Metadata. Will be rejected if corresponding asset status isn't
-   * Queued. Otherwise updates corresponding TokenAsset transitioning it to
-   * Succeeded state.
-   */
-  importTokenMetadata: ((args?: {
-    input?: TokenMetadataImportInput | null
-  }) => MetadataObservableChain & {
-    execute: (
-      request: MetadataRequest,
-      defaultValue?: Metadata
-    ) => Observable<Metadata>
-  }) &
-    (MetadataObservableChain & {
-      execute: (
-        request: MetadataRequest,
-        defaultValue?: Metadata
-      ) => Observable<Metadata>
-    })
   /** Delete an existing document in the collection of 'ERC721ImportResult' */
   deleteERC721ImportResult: (args: {
     /** The 'ERC721ImportResult' document's ID */
@@ -3986,6 +4994,16 @@ export interface MutationObservableChain {
       defaultValue?: TokenContract
     ) => Observable<TokenContract>
   }
+  /** Create a new document in the collection of 'PinLocation' */
+  createPinLocation: (args: {
+    /** 'PinLocation' input values */
+    data: PinLocationInput
+  }) => PinLocationObservableChain & {
+    execute: (
+      request: PinLocationRequest,
+      defaultValue?: PinLocation
+    ) => Observable<PinLocation>
+  }
   /** Create a new document in the collection of 'Resource' */
   createResource: (args: {
     /** 'Resource' input values */
@@ -4008,6 +5026,16 @@ export interface MutationObservableChain {
       defaultValue?: Cursor | null
     ) => Observable<Cursor | null>
   }
+  /** Delete an existing document in the collection of 'PinLocation' */
+  deletePinLocation: (args: {
+    /** The 'PinLocation' document's ID */
+    id: ID
+  }) => PinLocationObservableChain & {
+    execute: (
+      request: PinLocationRequest,
+      defaultValue?: PinLocation | null
+    ) => Observable<PinLocation | null>
+  }
   /** Create a new document in the collection of 'Token' */
   createToken: (args: {
     /** 'Token' input values */
@@ -4025,20 +5053,6 @@ export interface MutationObservableChain {
       defaultValue?: Cursor | null
     ) => Observable<Cursor | null>
   }
-  reportResourceProblem: ((args?: {
-    input?: ResourceProblemInput | null
-  }) => ResourceObservableChain & {
-    execute: (
-      request: ResourceRequest,
-      defaultValue?: Resource
-    ) => Observable<Resource>
-  }) &
-    (ResourceObservableChain & {
-      execute: (
-        request: ResourceRequest,
-        defaultValue?: Resource
-      ) => Observable<Resource>
-    })
   importERC721: (args: {
     input: ERC721ImportInput
   }) => ERC721ImportResultObservableChain & {
@@ -4046,6 +5060,17 @@ export interface MutationObservableChain {
       request: ERC721ImportResultRequest,
       defaultValue?: ERC721ImportResult
     ) => Observable<ERC721ImportResult>
+  }
+  updateResources: ((args?: { input?: UpdateResourcesInput | null }) => {
+    execute: (
+      request: ResourceRequest,
+      defaultValue?: Resource[]
+    ) => Observable<Resource[]>
+  }) & {
+    execute: (
+      request: ResourceRequest,
+      defaultValue?: Resource[]
+    ) => Observable<Resource[]>
   }
   /** Update an existing document in the collection of 'TokenContract' */
   updateTokenContract: (args: {
@@ -4069,6 +5094,18 @@ export interface MutationObservableChain {
       defaultValue?: Resource | null
     ) => Observable<Resource | null>
   }
+  /** Update an existing document in the collection of 'PinLocation' */
+  updatePinLocation: (args: {
+    /** The 'PinLocation' document's ID */
+    id: ID
+    /** 'PinLocation' input values */
+    data: PinLocationInput
+  }) => PinLocationObservableChain & {
+    execute: (
+      request: PinLocationRequest,
+      defaultValue?: PinLocation | null
+    ) => Observable<PinLocation | null>
+  }
   /** Update an existing document in the collection of 'Owner' */
   updateOwner: (args: {
     /** The 'Owner' document's ID */
@@ -4081,17 +5118,13 @@ export interface MutationObservableChain {
       defaultValue?: Owner | null
     ) => Observable<Owner | null>
   }
-  /** Update an existing document in the collection of 'TokenAsset' */
   updateTokenAsset: (args: {
-    /** The 'TokenAsset' document's ID */
-    id: ID
-    /** 'TokenAsset' input values */
-    data: TokenAssetInput
+    input: TokenAssetUpdate
   }) => TokenAssetObservableChain & {
     execute: (
       request: TokenAssetRequest,
-      defaultValue?: TokenAsset | null
-    ) => Observable<TokenAsset | null>
+      defaultValue?: TokenAsset
+    ) => Observable<TokenAsset>
   }
   /** Delete an existing document in the collection of 'Block' */
   deleteBlock: (args: {
@@ -4113,6 +5146,16 @@ export interface MutationObservableChain {
       defaultValue?: TokenAsset
     ) => Observable<TokenAsset>
   }
+  /** Delete an existing document in the collection of 'Pin' */
+  deletePin: (args: {
+    /** The 'Pin' document's ID */
+    id: ID
+  }) => PinObservableChain & {
+    execute: (
+      request: PinRequest,
+      defaultValue?: Pin | null
+    ) => Observable<Pin | null>
+  }
   /** Create a new document in the collection of 'Cursor' */
   createCursor: (args: {
     /** 'Cursor' input values */
@@ -4122,13 +5165,6 @@ export interface MutationObservableChain {
       request: CursorRequest,
       defaultValue?: Cursor
     ) => Observable<Cursor>
-  }
-  /** Create a new document in the collection of 'Task' */
-  createTask: (args: {
-    /** 'Task' input values */
-    data: TaskInput
-  }) => TaskObservableChain & {
-    execute: (request: TaskRequest, defaultValue?: Task) => Observable<Task>
   }
   /** Update an existing document in the collection of 'Token' */
   updateToken: (args: {
@@ -4142,15 +5178,15 @@ export interface MutationObservableChain {
       defaultValue?: Token | null
     ) => Observable<Token | null>
   }
-  /** Delete an existing document in the collection of 'Task' */
-  deleteTask: (args: {
-    /** The 'Task' document's ID */
-    id: ID
-  }) => TaskObservableChain & {
+  /** Create a new document in the collection of 'Content' */
+  createContent: (args: {
+    /** 'Content' input values */
+    data: ContentInput
+  }) => ContentObservableChain & {
     execute: (
-      request: TaskRequest,
-      defaultValue?: Task | null
-    ) => Observable<Task | null>
+      request: ContentRequest,
+      defaultValue?: Content
+    ) => Observable<Content>
   }
   /** Create a new document in the collection of 'ERC721ImportResult' */
   createERC721ImportResult: (args: {
@@ -4179,20 +5215,26 @@ export interface MutationObservableChain {
   }) => OwnerObservableChain & {
     execute: (request: OwnerRequest, defaultValue?: Owner) => Observable<Owner>
   }
-  /** Update an existing document in the collection of 'Resource' */
-  updateResource: (args: {
-    /** The 'Resource' document's ID */
+  /** Update an existing document in the collection of 'Content' */
+  updateContent: (args: {
+    /** The 'Content' document's ID */
     id: ID
-    /** 'Resource' input values */
-    data: ResourceInput
-  }) => ResourceObservableChain & {
+    /** 'Content' input values */
+    data: ContentInput
+  }) => ContentObservableChain & {
     execute: (
-      request: ResourceRequest,
-      defaultValue?: Resource | null
-    ) => Observable<Resource | null>
+      request: ContentRequest,
+      defaultValue?: Content | null
+    ) => Observable<Content | null>
   }
-  updateResourcePin: ((args?: {
-    input?: ResorcePinInput | null
+  updateTokenAssets: (args: { input: UpdateTokenAssetsInput }) => {
+    execute: (
+      request: TokenAssetRequest,
+      defaultValue?: TokenAsset[]
+    ) => Observable<TokenAsset[]>
+  }
+  updateResource: ((args?: {
+    input?: ResourceUpdate | null
   }) => ResourceObservableChain & {
     execute: (
       request: ResourceRequest,
@@ -4227,26 +5269,16 @@ export interface MutationObservableChain {
       defaultValue?: Block | null
     ) => Observable<Block | null>
   }
-  /**
-   * Reports problem with a TokenAsset e.g. it was impossible to parse URI
-   * or was unable to fetch content from URI, or content was not a JSON.
-   *
-   * Call is rejected if status isn't Queued.
-   */
-  reportTokenAssetProblem: ((args?: {
-    input?: TokenAssetProblemInput | null
-  }) => TokenAssetObservableChain & {
+  /** Delete an existing document in the collection of 'Content' */
+  deleteContent: (args: {
+    /** The 'Content' document's ID */
+    id: ID
+  }) => ContentObservableChain & {
     execute: (
-      request: TokenAssetRequest,
-      defaultValue?: TokenAsset
-    ) => Observable<TokenAsset>
-  }) &
-    (TokenAssetObservableChain & {
-      execute: (
-        request: TokenAssetRequest,
-        defaultValue?: TokenAsset
-      ) => Observable<TokenAsset>
-    })
+      request: ContentRequest,
+      defaultValue?: Content | null
+    ) => Observable<Content | null>
+  }
   /** Update an existing document in the collection of 'ERC721ImportResult' */
   updateERC721ImportResult: (args: {
     /** The 'ERC721ImportResult' document's ID */

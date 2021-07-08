@@ -1,0 +1,144 @@
+Update(Collection('Resource'), {
+  data: {
+    gql: {
+      meta: {
+        name: 'Resource',
+        fields: [
+          {
+            name: 'referrers',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'metadata_image',
+                },
+              },
+            ],
+            description:
+              'Backlinks to each non-fungible token metadata that referenced resource with\nthis `uri`.',
+            type: {
+              List: {
+                NotNull: {
+                  Named: 'Metadata',
+                },
+              },
+            },
+          },
+          {
+            name: 'status',
+            directives: [
+              {
+                name: 'index',
+                args: {},
+              },
+            ],
+            description:
+              'Describes current status of the resource. When resource is discovered during\nchain scrape record is created with Queued state. Cron job later comes along\nand processes queued resources fetching / pinning them.',
+            type: {
+              NotNull: {
+                Named: 'ResourceStatus',
+              },
+            },
+          },
+          {
+            name: 'statusText',
+            description:
+              'Human readable description of the status. Would contain error message & stack\ntrace when resource has failed status. Likely omitted when resource is queued\nor succefully linked.',
+            type: {
+              Named: 'String',
+            },
+          },
+          {
+            name: 'created',
+            description: 'Time when resource was created.',
+            type: {
+              NotNull: {
+                Named: 'Time',
+              },
+            },
+          },
+          {
+            name: 'updated',
+            description: 'Time when resource record was last updated.',
+            type: {
+              NotNull: {
+                Named: 'Time',
+              },
+            },
+          },
+          {
+            name: 'uri',
+            directives: [
+              {
+                name: 'unique',
+                args: {
+                  index: 'unique_Resource_uri',
+                },
+              },
+              {
+                name: 'index',
+                args: {},
+              },
+            ],
+            description:
+              'URI this resource corresponds to. Resources are created for all the URIs\nthat NFT token metadata references.',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'ipfsURL',
+            directives: [
+              {
+                name: 'index',
+                args: {},
+              },
+            ],
+            description:
+              "Represents `ipfs://` URL for this content. Sometimes this is derived when\nresource uri is parsed. E.g. if discovered resource uri was\nhttps://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived\nto be ipfs://Qm...Hash/file/path.\n\nIf `uri` can not be inferred as an ipfs URL this field will be omitted.",
+            type: {
+              Named: 'String',
+            },
+          },
+          {
+            name: 'content',
+            directives: [
+              {
+                name: 'index',
+                args: {},
+              },
+              {
+                name: 'relation',
+                args: {
+                  name: 'resource_content',
+                },
+              },
+            ],
+            description:
+              'Content referrerced by this resource. When `ipfsURL` is derived content\narchiving job will simply pin content by that URL and update resource linking\nresource to it. If however `ipfsURL` could not be derived archiving job will\nattempt to fetch the content from `uri` and pin it again linkking resource\nto it.\n\nContent field is only going to be present when resource has a `ContentLinked`\nstatus. From that point on resource is no longer going to be updated.',
+            type: {
+              NotNull: {
+                Named: 'Content',
+              },
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'Resource',
+            },
+          },
+        ],
+        description:
+          "Represents a resource that non-fungible token metadata referenced via URI. In\nmost cases when created will have `uri` discovered on chain with a status\n`Queued`. Followup jobs will then attempt to locate and pin it's content\nupdating it's state.",
+      },
+    },
+  },
+  history_days: 30,
+  ttl_days: null,
+  permissions: null,
+})

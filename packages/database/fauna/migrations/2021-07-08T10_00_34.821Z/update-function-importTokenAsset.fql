@@ -1,0 +1,20 @@
+Update(Function('importTokenAsset'), {
+  body: Query(
+    Lambda(
+      ['data'],
+      Call('createOrUpdate', {
+        key: 'tokenURI',
+        index: Index('unique_TokenAsset_tokenURI'),
+        collection: Collection('TokenAsset'),
+        data: {
+          tokenURI: Select('tokenURI', Var('data')),
+          created: Select('created', Var('data'), Now()),
+          updated: Select('updated', Var('data'), Now()),
+          status: Select('status', Var('data'), 'Queued'),
+        },
+      })
+    )
+  ),
+  data: null,
+  role: null,
+})

@@ -73,9 +73,9 @@ export const generateMigrtation = async (config, schema) =>
  * Applies migrations from fauna/migrations directory to the data base.s
  *
  * @param {Config} config
- * @returns
  */
-export const applyMigrations = async (config) => withConfig(config, tasks.apply)
+export const applyMigrations = async (config) =>
+  withConfig(config, () => tasks.apply('all'))
 
 /**
  * @param {Config} config
@@ -190,6 +190,7 @@ export const writeResource = async (url, exp) =>
     prettier.format(Fauna.Expr.toString(exp), {
       parser: 'babel',
       semi: false,
+      singleQuote: true,
     })
   )
 
@@ -296,7 +297,7 @@ const createFunction = ({ name, body, data, role }) =>
   Fauna.CreateFunction({
     name,
     body,
-    ...(data && { data }),
+    ...withoutGQLTimestamp(data),
     ...(role && { role }),
   })
 
@@ -322,7 +323,7 @@ const createCollection = ({
 }) =>
   Fauna.CreateCollection({
     name,
-    ...(data !== undefined && { data }),
+    ...withoutGQLTimestamp(data),
     ...(history_days !== undefined && { history_days }),
     ...(ttl_days !== undefined && { ttl_days }),
     ...(permissions !== undefined && { permissions }),
@@ -350,5 +351,20 @@ const createIndex = ({
     ...(unique && { unique }),
     ...(serialized && { serialized }),
     ...(permissions && { permissions }),
-    ...(data && { data }),
+    ...withoutGQLTimestamp(data),
   })
+
+/**
+ * @template {Fauna.fauna.Expr & {gql?:{ts?:any}}} T
+ * @param {undefined|T} data
+ * @returns {undefined|{data:T}}
+ */
+const withoutGQLTimestamp = (data) => {
+  if (data == null) {
+    return undefined
+  }
+  if (data.gql) {
+    delete data.gql.ts
+  }
+  return { data }
+}

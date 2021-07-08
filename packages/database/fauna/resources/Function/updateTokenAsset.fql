@@ -1,0 +1,37 @@
+/**
+ * Updates TokenAsset document. Either by linking it with a metadata or
+ * by setting error status. Returns TokenAsset document.
+ */
+CreateFunction({
+  name: 'updateTokenAsset',
+  body: Query(
+    Lambda(
+      ['input'],
+      If(
+        Equals(Select('status', Var('input')), 'Linked'),
+        Call('linkTokenAsset', Var('input')),
+        Call('reportTokenAssetFailure', Var('input'))
+      )
+    )
+  ),
+  data: {
+    gql: {
+      meta: {
+        location: 'Mutation',
+        field: {
+          name: 'updateTokenAsset',
+          directives: [
+            {
+              name: 'resolver',
+              args: { name: 'updateTokenAsset', paginated: false },
+            },
+          ],
+          type: { NotNull: { Named: 'TokenAsset' } },
+          arguments: [
+            { name: 'input', type: { NotNull: { Named: 'TokenAssetUpdate' } } },
+          ],
+        },
+      },
+    },
+  },
+})

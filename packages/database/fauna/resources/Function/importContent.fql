@@ -1,0 +1,31 @@
+/**
+ * Creates a `Content` document for the given `cid` unless one already
+ * exists and returns a document back. New Content documents will have
+ * `status: Queued` and will be updated by a cron job.
+ *
+ * @param {{cid:string}} input
+ */
+CreateFunction({
+  name: 'importContent',
+  body: Query(
+    Lambda(
+      ['input'],
+      Let(
+        {
+          cid: Select('cid', Var('input')),
+          match: Match(Index('unique_Content_cid'), Var('cid')),
+        },
+        If(
+          IsEmpty(Var('match')),
+          Create(Collection('Content'), {
+            data: {
+              cid: Var('cid'),
+              created: Now(),
+            },
+          }),
+          Get(Var('match'))
+        )
+      )
+    )
+  ),
+})

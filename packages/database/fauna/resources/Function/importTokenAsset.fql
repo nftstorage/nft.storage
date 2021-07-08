@@ -1,4 +1,11 @@
-// Helper function adds or updates Token Asset info to the DB.
+/**
+ * Helper function creates or updates a `TokenAsset` document with a matching
+ * `tokenURI`. Returns `TokenAsset` document.
+ *
+ * @param {Object} data
+ * @param {string} data.tokenURI - Token URI
+ * @param {TokenAssetStatus} [data.status='Queued']
+ */
 CreateFunction({
   name: 'importTokenAsset',
   body: Query(
@@ -8,7 +15,12 @@ CreateFunction({
         key: 'tokenURI',
         index: Index('unique_TokenAsset_tokenURI'),
         collection: Collection('TokenAsset'),
-        data: Var('data'),
+        data: {
+          tokenURI: Select('tokenURI', Var('data')),
+          created: Select('created', Var('data'), Now()),
+          updated: Select('updated', Var('data'), Now()),
+          status: Select('status', Var('data'), 'Queued'),
+        },
       })
     )
   ),

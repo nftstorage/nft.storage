@@ -1,0 +1,32 @@
+Update(Function('importResource'), {
+  body: Query(
+    Lambda(
+      ['input'],
+      Let(
+        [
+          {
+            uri: Select('uri', Var('input')),
+          },
+          {
+            match: Match(Index('unique_Resource_uri'), Var('uri')),
+          },
+        ],
+        If(
+          IsEmpty(Var('match')),
+          Create(Collection('Resource'), {
+            data: {
+              uri: Var('uri'),
+              ipfsURL: Select('ipfsURL', Var('input'), null),
+              status: 'Queued',
+              created: Now(),
+              updated: Now(),
+            },
+          }),
+          Get(Var('match'))
+        )
+      )
+    )
+  ),
+  data: null,
+  role: null,
+})

@@ -1,8 +1,8 @@
 name: Cron Analyze ERC-721 Tokens
 
-# on:
-#   schedule:
-#     - cron: "*/30 * * * *"
+on:
+  schedule:
+    - cron: '*/30 * * * *'
 
 jobs:
   erc-721:

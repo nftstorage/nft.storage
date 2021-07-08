@@ -2,7 +2,6 @@ CreateCollection({
   name: 'Metadata',
   data: {
     gql: {
-      ts: Time('2021-06-10T19:21:07.965343Z'),
       meta: {
         name: 'Metadata',
         fields: [
@@ -14,7 +13,14 @@ CreateCollection({
             ],
             type: { NotNull: { Named: 'TokenAsset' } },
           },
-          { name: 'cid', type: { NotNull: { Named: 'String' } } },
+          {
+            name: 'content',
+            directives: [
+              { name: 'relation', args: { name: 'metadata_content' } },
+            ],
+            description: 'Content corresponding to the metadata.',
+            type: { NotNull: { Named: 'Content' } },
+          },
           {
             name: 'name',
             description: 'Identifies the asset this token represents',
@@ -38,6 +44,7 @@ CreateCollection({
             directives: [
               { name: 'relation', args: { name: 'metadata_assets' } },
             ],
+            description: 'Additional assets that token linked to',
             type: { List: { NotNull: { Named: 'Resource' } } },
           },
         ],

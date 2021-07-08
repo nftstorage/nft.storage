@@ -2,7 +2,6 @@ CreateCollection({
   name: 'TokenAsset',
   data: {
     gql: {
-      ts: Time('2021-06-10T19:21:07.965343Z'),
       meta: {
         name: 'TokenAsset',
         fields: [
@@ -12,7 +11,7 @@ CreateCollection({
               { name: 'relation', args: { name: 'tokenAsset_referrers' } },
             ],
             description:
-              'Multiple tokens may have use a same `tokenURI`. This relation allows tracking\nwhich tokens refer to the same `tokenURI`.\nToken this metadata belogs to.',
+              'Tokens that have this `tokenURI`. This relation allows us to identify all\ntokens that have a same `tokenURI`.',
             type: { List: { NotNull: { Named: 'Token' } } },
           },
           {
@@ -20,7 +19,15 @@ CreateCollection({
             directives: [
               { name: 'unique', args: { index: 'unique_TokenAsset_tokenURI' } },
             ],
+            description: 'URI that was discovered either in the eth chain.',
             type: { NotNull: { Named: 'String' } },
+          },
+          {
+            name: 'ipfsURL',
+            directives: [{ name: 'index', args: {} }],
+            description:
+              "Represents `ipfs://` URL for this content. Sometimes this is derived when\nresource uri is parsed. E.g. if discovered resource uri was\nhttps://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived\nto be ipfs://Qm...Hash/file/path.\n\nIf `uri` can not be inferred as an ipfs URL this field will be omitted.",
+            type: { Named: 'String' },
           },
           {
             name: 'metadata',
@@ -28,22 +35,31 @@ CreateCollection({
               { name: 'relation', args: { name: 'metadata_source' } },
             ],
             description:
-              'When `tokenURI` points to may point to JSON file that conforms to the ERC721\nMetadata JSON Schema it fetched parsed and stored as related Metadata\ndocument.',
+              'When `tokenURI` points to JSON file that conforms to the ERC721 Metadata JSON\nSchema it is fetched parsed and stored as related Metadata document.',
             type: { Named: 'Metadata' },
           },
+          { name: 'created', type: { NotNull: { Named: 'Time' } } },
           {
-            name: 'ipnft',
-            description:
-              "CID of an IPLD node that encapsulates token metadata and all it's assets.\nPresent when it was passibly to succesfully pin the token.",
-            type: { Named: 'String' },
+            name: 'updated',
+            description: 'Time when resource record was last updated.',
+            type: { NotNull: { Named: 'Time' } },
           },
           {
-            name: 'problem',
-            description: 'Problem description if failed to get the metadata.',
+            name: 'status',
+            directives: [{ name: 'index', args: {} }],
+            description: 'Status of the token asset',
+            type: { NotNull: { Named: 'TokenAssetStatus' } },
+          },
+          {
+            name: 'statusText',
+            description:
+              'Human readable description of the status. Usually this ellaborates a reason\nwhy token analyzer has failed providing with an error message and stack trace.',
             type: { Named: 'String' },
           },
         ],
         directives: [{ name: 'collection', args: { name: 'TokenAsset' } }],
+        description:
+          'TokenAsset represents contents of the tokenURI which may not have been found /\npinned yet. It may have been added by the chain scraper, when token with this\n`tokenURI` was discovered. Alternatively it could have been created by an\nupload to nft.storage, in which case it may not have any refferers but it would\nhave uploads.',
       },
     },
   },

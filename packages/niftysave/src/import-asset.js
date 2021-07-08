@@ -5,7 +5,6 @@ import * as Schema from '../gen/db/schema.js'
 import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
 import { fetchWebResource } from './net.js'
-import { CID } from 'multiformats'
 
 /**
  * @param {Object} options
@@ -21,8 +20,8 @@ export const spawn = async ({ budget, batchSize }) => {
       return console.log('🏁 Finish, no more queued task were found')
     } else {
       console.log(`🤹 Spawn ${resources.length} tasks to process each resource`)
-      const results = resources.map(processTokenResource)
-      await Promise.all(results)
+      const updates = await Promise.all(resources.map(archive))
+      await updateResources(updates)
       console.log(`✨ Processed batch of ${resources.length} assets`)
     }
   }
@@ -42,7 +41,7 @@ const fetchTokenResources = async ({ batchSize }) => {
     findResources: [
       {
         where: {
-          status: Schema.ResourceStatus.Idle,
+          status: Schema.ResourceStatus.Queued,
         },
         _size: batchSize,
       },
@@ -64,69 +63,17 @@ const fetchTokenResources = async ({ batchSize }) => {
 }
 
 /**
- * @typedef {{id:string, problem: string, status:Schema.ResourceStatus}} Problem
- * @param {Resource} resource
- */
-const processTokenResource = async (resource) => {
-  console.log(`🔬 (${resource._id}) Parsing resource uri`)
-
-  const urlResult = Result.fromTry(() => new URL(resource.uri))
-  if (!urlResult.ok) {
-    return await abort(
-      resource._id,
-      Schema.ResourceStatus.FailedURIParse,
-      urlResult.error
-    )
-  }
-  const url = urlResult.value
-
-  const ipfsURL = IPFSURL.asIPFSURL(url)
-  return ipfsURL
-    ? await processIPFSResource({ ...resource, ipfsURL })
-    : await processWebResource({ ...resource, url })
-}
-
-/**
- * @param {{_id: string, uri: string, ipfsURL: IPFSURL.IPFSURL}} resource
- */
-const processIPFSResource = async ({ ipfsURL, uri, _id }) => {
-  console.log(`📌 (${_id}) Pin a resource ${ipfsURL}`)
-  const pin = await Result.fromPromise(
-    Cluster.pin(ipfsURL, {
-      assetID: _id,
-      sourceURL: uri,
-    })
-  )
-
-  if (!pin.ok) {
-    return await abort(_id, Schema.ResourceStatus.PinFailure, pin.error)
-  }
-  const { cid } = pin.value
-
-  console.log(`📝 (${_id}) Update resource in the db`)
-  return await updateResourcePin(_id, {
-    ipfsURL,
-    status: Schema.ResourceStatus.Pinned,
-    cid,
-  })
-}
-
-/**
  *
- * @param {string} id
- * @param {{status: Schema.ResourceStatus, ipfsURL: URL, cid: string}} options
+ * @param {Schema.ResourceUpdate[]} updates
  */
 
-const updateResourcePin = async (id, { status, ipfsURL, cid }) => {
-  console.log(`📝 (${id}) Update resource in the db`)
+const updateResources = async (updates) => {
+  console.log(`📝 Update resources in the db`)
   const result = await mutate(db, {
-    updateResourcePin: [
+    updateResources: [
       {
         input: {
-          resourceID: id,
-          status,
-          cid,
-          ipfsURL: ipfsURL.href,
+          updates,
         },
       },
       {
@@ -136,82 +83,116 @@ const updateResourcePin = async (id, { status, ipfsURL, cid }) => {
   })
 
   if (result.ok) {
-    console.log(`✅ (${id}) Resource is updated`)
-    return result.value.updateResourcePin
+    console.log(`✅ Resource were updated`)
+    return result.value.updateResources?.map((r) => r._id) || []
   } else {
     console.error(
-      `💣 (${id}) Attempt to update resource failed with ${result.error}, letting it crash`
+      `💣 Attempt to update resource failed with ${result.error}, letting it crash`
     )
     throw result.error
   }
 }
 
 /**
- *
- * @param {string} id
- * @param {Schema.ResourceStatus} status
- * @param {Error} error
+ * @typedef {{id:string, problem: string, status:Schema.ResourceStatus}} Problem
+ * @param {Resource} resource
+ * @returns {Promise<Schema.ResourceUpdate>}
  */
-const abort = async (id, status, error) => {
-  console.error(
-    `🚨 (${id}) Task failed, report ${status} with a message ${error}`
+const archive = async (resource) => {
+  const { _id: id } = resource
+  console.log(`🔬 (${id}) Parsing resource uri`)
+
+  const urlResult = Result.fromTry(() => new URL(resource.uri))
+  if (!urlResult.ok) {
+    return {
+      id,
+      status: Schema.ResourceStatus.URIParseFailed,
+      statusText: String(urlResult.error),
+    }
+  }
+  const url = urlResult.value
+
+  const ipfsURL = IPFSURL.asIPFSURL(url)
+  return ipfsURL
+    ? await archiveIPFSResource({ ...resource, id, ipfsURL })
+    : await archiveWebResource({ ...resource, id, url })
+}
+
+/**
+ * @param {{id: string, uri: string, ipfsURL: IPFSURL.IPFSURL}} resource
+ * @returns {Promise<Schema.ResourceUpdate>}
+ */
+const archiveIPFSResource = async ({ ipfsURL, uri, id }) => {
+  console.log(`📌 (${id}) Pin a resource ${ipfsURL}`)
+  const pin = await Result.fromPromise(
+    Cluster.pin(ipfsURL, {
+      assetID: id,
+      sourceURL: uri,
+    })
   )
-  const result = await mutate(db, {
-    reportResourceProblem: [
-      {
-        input: {
-          resourceID: id,
-          status,
-          problem: `${error.message} ${error.stack}`,
-        },
-      },
-      {
-        _id: 1,
-      },
-    ],
-  })
-  if (!result.ok) {
-    console.error(
-      `💣 (${id}) Attempt to report an error failed with ${result.error}, letting it crash`
-    )
-    throw result.error
-  }
 
-  return result.value.reportResourceProblem._id
+  if (!pin.ok) {
+    return {
+      id,
+      ipfsURL: ipfsURL.href,
+      status: Schema.ResourceStatus.PinRequestFailed,
+      statusText: String(pin.error),
+    }
+  }
+  const { cid } = pin.value
+
+  console.log(`📝 (${id}) Update resource in the db`)
+  return {
+    id,
+    ipfsURL: ipfsURL.href,
+    status: Schema.ResourceStatus.ContentLinked,
+    statusText: 'ContentLinked',
+    cid,
+  }
 }
 
 /**
- * @param {Resource & {url: URL}} resource
+ * @param {Resource & {id: string, url: URL}} resource
+ * @returns {Promise<Schema.ResourceUpdate>}
  */
-const processWebResource = async ({ _id, url }) => {
+const archiveWebResource = async ({ id, url }) => {
   const from = url.protocol === 'data:' ? 'data: url' : url.href
-  console.log(`📡 (${_id}) Fetching content from ${from}`)
+  console.log(`📡 (${id}) Fetching content from ${from}`)
   const fetch = await Result.fromPromise(fetchWebResource(url))
   if (!fetch.ok) {
-    return await abort(_id, Schema.ResourceStatus.FailedFetch, fetch.error)
+    return {
+      id,
+      status: Schema.ResourceStatus.ContentFetchFailed,
+      statusText: String(fetch.error),
+    }
   }
   const content = fetch.value
 
   console.log(
-    `📌 (${_id}) Pin fetched content Blob<{type:"${content.type}", size:${content.size}>`
+    `📌 (${id}) Pin fetched content Blob<{type:"${content.type}", size:${content.size}>`
   )
 
   const pin = await Result.fromPromise(
     Cluster.add(content, {
-      id: _id,
+      id,
       sourceURL: url.protocol === 'data:' ? 'data:...' : url.href,
     })
   )
 
   if (!pin.ok) {
-    return await abort(_id, Schema.ResourceStatus.PinFailure, pin.error)
+    return {
+      id,
+      status: Schema.ResourceStatus.PinRequestFailed,
+      statusText: String(pin.error),
+    }
   }
 
   const { cid } = pin.value
 
-  return await updateResourcePin(_id, {
-    status: Schema.ResourceStatus.Pinned,
+  return {
+    id,
+    status: Schema.ResourceStatus.ContentLinked,
+    statusText: 'ContentLinked',
     cid,
-    ipfsURL: IPFSURL.create(CID.parse(cid)),
-  })
+  }
 }
