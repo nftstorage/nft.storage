@@ -1,8 +1,8 @@
 name: Cron Pin ERC-721 Token Assets
 
-# on:
-#   schedule:
-#     - cron: "*/30 * * * *"
+on:
+  schedule:
+    - cron: '*/30 * * * *'
 
 jobs:
   erc-721:
