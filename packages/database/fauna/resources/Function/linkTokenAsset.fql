@@ -1,0 +1,91 @@
+/**
+ * Links token metadata with a token asset.
+ *
+ * @param {Object} input
+ * @param {ID} input.id - TokenAsset id
+ * @param {string} input.ipfsURL - ipfs:// url
+ * @param {Object} input.metadata - Token metadata to link with
+ * @param {string} input.metadata.name - As per ERC-721 metadata spec
+ * @param {string} input.metadata.description - As per ERC-721 metadata spec
+ * @param {string} [input.metadata.cid] - CID for the metadata if one exists.
+ * @param {{uri:string, ipfsURL?:string}} input.metadata.image - Image resource
+ * @param {{uri:string, ipfsURL?:string}[]} assets - All the other linked assets
+ */
+CreateFunction({
+  name: 'linkTokenAsset',
+  body: Query(
+    Lambda(
+      ['input'],
+      Let(
+        {
+          // Finds a token by an id.
+          tokenAsset: Call('getTokenAssetByID', Select('id', Var('input'))),
+          // Finds or creates resource for the image
+          image: Call(
+            'importResource',
+            Select(['metadata', 'image'], Var('input'))
+          ),
+          // Finds or creates a content with the metadata source
+          content: Call('importContent', {
+            cid: Select(['metadata', 'cid'], Var('input')),
+          }),
+          // Create a metadata record. No need to check if metadata exists
+          // already, because it is unique by a `source` field so if on exists
+          // operation will abort.
+          metadata: Create(Collection('Metadata'), {
+            data: {
+              source: Select('ref', Var('tokenAsset')),
+              content: Select('ref', Var('content')),
+              image: Select('ref', Var('image')),
+              name: Select(['metadata', 'name'], Var('input')),
+              description: Select(['metadata', 'description'], Var('input')),
+            },
+          }),
+        },
+        // Now that we have a metadata record we want to create and/or link it
+        // with resources corresponding to it's assets.
+        Do(
+          Foreach(
+            Select(['metadata', 'assets'], Var('input'), []),
+            Lambda(
+              ['resourceInput'],
+              Let(
+                {
+                  // Import a resource. We may already have it, because
+                  resource: Call('importResource', Var('resourceInput')),
+                },
+                Create(Collection('metadata_assets'), {
+                  data: {
+                    metadataID: Select('ref', Var('metadata')),
+                    resourceID: Select('ref', Var('resource')),
+                  },
+                })
+              )
+            )
+          ),
+          // Link image with a metadata
+          Create(Collection('metadata_assets'), {
+            data: {
+              metadataID: Select('ref', Var('metadata')),
+              resourceID: Select('ref', Var('image')),
+            },
+          }),
+          // And finally link tokenAsset with a metadata.
+          Update(Select('ref', Var('tokenAsset')), {
+            data: {
+              status: 'Linked',
+              statusText: Select('statusText', Var('input'), 'linked'),
+              ipfsURL: Select(
+                'ipfsURL',
+                Var('input'),
+                Select(['data', 'ipfsURL'], Var('tokenAsset'), null)
+              ),
+              metadata: Select('ref', Var('metadata')),
+              updated: Now(),
+            },
+          })
+        )
+      )
+    )
+  ),
+})

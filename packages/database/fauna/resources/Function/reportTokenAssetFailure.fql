@@ -1,0 +1,44 @@
+/**
+ * Updates `TokenAsset` status unless it is already linked, in that case it is
+ * a noop. Return corresponding TokenAsset document.
+ *
+ * @param {Object} input
+ * @param {ID} input.id - TokenAsset document id.
+ * @param {string|null} [input.ipfsURL] - ipfs:// url if it was derived.
+ * @param {TokenAssetStatus} input.status - Status to set.
+ * @param {string} [input.statusText] - Human readable explanation of the status.
+ */
+CreateFunction({
+  name: 'reportTokenAssetFailure',
+  body: Query(
+    Lambda(
+      ['input'],
+      Let(
+        {
+          tokenAsset: Call('getTokenAssetByID', Select('id', Var('input'))),
+          metadata: Select(['data', 'metadata'], Var('tokenAsset'), null),
+        },
+        If(
+          IsNull(Var('metadata')),
+          Update(Select('ref', Var('tokenAsset')), {
+            data: {
+              status: Select('status', Var('input')),
+              statusText: Select(
+                'statusText',
+                Var('input'),
+                Select('status', Var('input'))
+              ),
+              ipfsURL: Select(
+                'ipfsURL',
+                Var('input'),
+                Select(['data', 'ipfsURL'], Var('tokenAsset'), null)
+              ),
+              updated: Now(),
+            },
+          }),
+          Var('tokenAsset')
+        )
+      )
+    )
+  ),
+})

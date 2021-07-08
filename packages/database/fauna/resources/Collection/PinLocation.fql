@@ -1,0 +1,41 @@
+CreateCollection({
+  name: 'PinLocation',
+  data: {
+    gql: {
+      meta: {
+        name: 'PinLocation',
+        description: 'Location of a pin.',
+        fields: [
+          {
+            name: 'pins',
+            directives: [
+              { name: 'relation', args: { name: 'pinLocation_pins' } },
+            ],
+            description: 'Known pins at this location.',
+            type: { NotNull: { List: { Named: 'Pin' } } },
+          },
+          {
+            name: 'peerId',
+            directives: [
+              { name: 'unique', args: { index: 'unique_PinLocation_peerId' } },
+            ],
+            description: 'Libp2p peer ID of the node pinning this pin.',
+            type: { NotNull: { Named: 'String' } },
+          },
+          {
+            name: 'peerName',
+            description: 'Name of the peer pinning this pin.',
+            type: { Named: 'String' },
+          },
+          {
+            name: 'region',
+            description: 'Geographic region this node resides in.',
+            type: { Named: 'String' },
+          },
+        ],
+        directives: [{ name: 'collection', args: { name: 'PinLocation' } }],
+      },
+    },
+  },
+  history_days: 30,
+})

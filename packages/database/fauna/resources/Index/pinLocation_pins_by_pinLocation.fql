@@ -1,0 +1,7 @@
+CreateIndex({
+  name: 'pinLocation_pins_by_pinLocation',
+  source: Collection('Pin'),
+  terms: [{ field: ['data', 'location'] }],
+  serialized: true,
+  data: { gql: { ts: Time('2021-07-07T05:49:02.581895Z') } },
+})

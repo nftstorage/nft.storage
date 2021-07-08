@@ -1,0 +1,50 @@
+CreateCollection({
+  name: 'Content',
+  data: {
+    gql: {
+      meta: {
+        name: 'Content',
+        description:
+          "Content correspnoding to a resource(s) that were referreced by non-fungible\ntoken metadata. It is identified and unique by it's cid. Content may represent\na file, directory or arbitrary Dag in IPFS network.",
+        fields: [
+          {
+            name: 'cid',
+            directives: [
+              { name: 'unique', args: { index: 'unique_Content_cid' } },
+            ],
+            description: 'Root CID for this content.',
+            type: { NotNull: { Named: 'String' } },
+          },
+          {
+            name: 'resources',
+            directives: [
+              { name: 'relation', args: { name: 'content_resources' } },
+            ],
+            description:
+              'Backlikns to al lthe resources that resolve to this content. Note that\ndifferent resource URIs may resolve to the same CID.',
+            type: { List: { NotNull: { Named: 'Resource' } } },
+          },
+          {
+            name: 'pins',
+            directives: [{ name: 'relation', args: { name: 'content_pins' } }],
+            description: 'IPFS nodes pinning this content.',
+            type: { NotNull: { List: { Named: 'Pin' } } },
+          },
+          {
+            name: 'dagSize',
+            description:
+              'Size of the DAG in bytes. Set if known on upload or for partials is set when\ncontent is fully pinned in at least one location.',
+            type: { Named: 'Int' },
+          },
+          {
+            name: 'created',
+            description: 'Creation date.',
+            type: { NotNull: { Named: 'Time' } },
+          },
+        ],
+        directives: [{ name: 'collection', args: { name: 'Content' } }],
+      },
+    },
+  },
+  history_days: 30,
+})
