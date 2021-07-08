@@ -1,8 +1,9 @@
 name: Cron Analyze ERC-721 Tokens
 
-on:
-  schedule:
-    - cron: '*/30 * * * *'
+# Disable because cluster is unreachable
+# on:
+#   schedule:
+#     - cron: '*/30 * * * *'
 
 jobs:
   erc-721:
