@@ -160,15 +160,7 @@ class Router {
    * @param {FetchEvent} event
    */
   listen(event) {
-    // when testing just respond to the fake testing domain
-    if (process.env.PW_TEST) {
-      const url = new URL(event.request.url)
-      if (url.hostname === 'testing.nft.storage') {
-        event.respondWith(this.route(event))
-      }
-    } else {
-      event.respondWith(this.route(event))
-    }
+    event.respondWith(this.route(event))
   }
 }
 

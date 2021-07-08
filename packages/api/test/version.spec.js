@@ -4,7 +4,7 @@ import { endpoint } from './scripts/constants.js'
 
 describe('/version', () => {
   it('should get version information', async () => {
-    const res = await fetch(new URL('version', endpoint).toString())
+    const res = await fetch('/version')
     assert(res)
     assert(res.ok)
     const { version, commit, branch } = await res.json()
