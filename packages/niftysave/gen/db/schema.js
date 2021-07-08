@@ -1,31 +1,42 @@
-export var ResourceStatus
-;(function (ResourceStatus) {
-  /** Has not been processed yet */
-  ResourceStatus['Idle'] = 'Idle'
-  /**
-   * Pin request started. This usually implies that we found a CID in the
-   * tokenURI (because it was a gateway URL) so we started a pin but do not
-   * know if it was possible to fetch content.
-   */
-  ResourceStatus['PinQueued'] = 'PinQueued'
-  /** Was pinned succesfully */
-  ResourceStatus['Pinned'] = 'Pinned'
-  /** tokenURI is either malformed or the protocol is not supported. */
-  ResourceStatus['FailedURIParse'] = 'FailedURIParse'
-  /** Was unable to fetch the content. */
-  ResourceStatus['FailedFetch'] = 'FailedFetch'
-  /**
-   * Pin request failed, can happen when pinned by CID but correspoding content
-   * is not on the network.
-   */
-  ResourceStatus['PinFailure'] = 'PinFailure'
-})(ResourceStatus || (ResourceStatus = {}))
 export var TokenAssetStatus
 ;(function (TokenAssetStatus) {
+  /** Token asset was queued (for the analyzer to process). */
   TokenAssetStatus['Queued'] = 'Queued'
-  TokenAssetStatus['Failed'] = 'Failed'
-  TokenAssetStatus['Succeeded'] = 'Succeeded'
+  /** tokenURI is either malformed or the protocol is not supported. */
+  TokenAssetStatus['URIParseFailed'] = 'URIParseFailed'
+  /** Was unable to fetch the content. */
+  TokenAssetStatus['ContentFetchFailed'] = 'ContentFetchFailed'
+  /** Parsing ERC721 metadata failed. */
+  TokenAssetStatus['ContentParseFailed'] = 'ContentParseFailed'
+  /** Failed to create a metadata pin request. */
+  TokenAssetStatus['PinRequestFailed'] = 'PinRequestFailed'
+  /** Metadata was parsed and all the resources were linked. */
+  TokenAssetStatus['Linked'] = 'Linked'
 })(TokenAssetStatus || (TokenAssetStatus = {}))
+export var ResourceStatus
+;(function (ResourceStatus) {
+  /** Resource was queued to be processed. */
+  ResourceStatus['Queued'] = 'Queued'
+  /** URI is either malformed or the protocol is not supported. */
+  ResourceStatus['URIParseFailed'] = 'URIParseFailed'
+  /** Was unable to fetch the content. */
+  ResourceStatus['ContentFetchFailed'] = 'ContentFetchFailed'
+  /** Failed to complete a pin request. */
+  ResourceStatus['PinRequestFailed'] = 'PinRequestFailed'
+  /** Corresponding content was linked. */
+  ResourceStatus['ContentLinked'] = 'ContentLinked'
+})(ResourceStatus || (ResourceStatus = {}))
+export var PinStatus
+;(function (PinStatus) {
+  /** An error occurred pinning. */
+  PinStatus['PinFailed'] = 'PinFailed'
+  /** Node has pinned the content. */
+  PinStatus['Pinned'] = 'Pinned'
+  /** Node is currently pinning the content. */
+  PinStatus['Pinning'] = 'Pinning'
+  /** The item has been queued for pinning. */
+  PinStatus['PinQueued'] = 'PinQueued'
+})(PinStatus || (PinStatus = {}))
 const Query_possibleTypes = ['Query']
 export const isQuery = (obj) => {
   if (!obj.__typename) throw new Error('__typename is missing')
@@ -86,6 +97,26 @@ export const isResource = (obj) => {
   if (!obj.__typename) throw new Error('__typename is missing')
   return Resource_possibleTypes.includes(obj.__typename)
 }
+const Content_possibleTypes = ['Content']
+export const isContent = (obj) => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Content_possibleTypes.includes(obj.__typename)
+}
+const PinPage_possibleTypes = ['PinPage']
+export const isPinPage = (obj) => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return PinPage_possibleTypes.includes(obj.__typename)
+}
+const Pin_possibleTypes = ['Pin']
+export const isPin = (obj) => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Pin_possibleTypes.includes(obj.__typename)
+}
+const PinLocation_possibleTypes = ['PinLocation']
+export const isPinLocation = (obj) => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return PinLocation_possibleTypes.includes(obj.__typename)
+}
 const MetadataPage_possibleTypes = ['MetadataPage']
 export const isMetadataPage = (obj) => {
   if (!obj.__typename) throw new Error('__typename is missing')
@@ -105,11 +136,6 @@ const Cursor_possibleTypes = ['Cursor']
 export const isCursor = (obj) => {
   if (!obj.__typename) throw new Error('__typename is missing')
   return Cursor_possibleTypes.includes(obj.__typename)
-}
-const Task_possibleTypes = ['Task']
-export const isTask = (obj) => {
-  if (!obj.__typename) throw new Error('__typename is missing')
-  return Task_possibleTypes.includes(obj.__typename)
 }
 const QueryFindResourcesPage_possibleTypes = ['QueryFindResourcesPage']
 export const isQueryFindResourcesPage = (obj) => {
