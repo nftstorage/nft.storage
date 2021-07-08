@@ -190,6 +190,7 @@ export const writeResource = async (url, exp) =>
     prettier.format(Fauna.Expr.toString(exp), {
       parser: 'babel',
       semi: false,
+      singleQuote: true,
     })
   )
 
