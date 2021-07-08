@@ -1,0 +1,10 @@
+CreateIndex({
+  name: 'tokenAsset_by_status',
+  source: Collection('TokenAsset'),
+  terms: [
+    {
+      field: ['data', 'status'],
+    },
+  ],
+  serialized: true,
+})

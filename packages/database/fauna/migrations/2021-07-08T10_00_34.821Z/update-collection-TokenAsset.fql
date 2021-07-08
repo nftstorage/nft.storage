@@ -1,0 +1,131 @@
+Update(Collection('TokenAsset'), {
+  data: {
+    gql: {
+      meta: {
+        name: 'TokenAsset',
+        fields: [
+          {
+            name: 'referrers',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'tokenAsset_referrers',
+                },
+              },
+            ],
+            description:
+              'Tokens that have this `tokenURI`. This relation allows us to identify all\ntokens that have a same `tokenURI`.',
+            type: {
+              List: {
+                NotNull: {
+                  Named: 'Token',
+                },
+              },
+            },
+          },
+          {
+            name: 'tokenURI',
+            directives: [
+              {
+                name: 'unique',
+                args: {
+                  index: 'unique_TokenAsset_tokenURI',
+                },
+              },
+            ],
+            description: 'URI that was discovered either in the eth chain.',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'ipfsURL',
+            directives: [
+              {
+                name: 'index',
+                args: {},
+              },
+            ],
+            description:
+              "Represents `ipfs://` URL for this content. Sometimes this is derived when\nresource uri is parsed. E.g. if discovered resource uri was\nhttps://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived\nto be ipfs://Qm...Hash/file/path.\n\nIf `uri` can not be inferred as an ipfs URL this field will be omitted.",
+            type: {
+              Named: 'String',
+            },
+          },
+          {
+            name: 'metadata',
+            directives: [
+              {
+                name: 'relation',
+                args: {
+                  name: 'metadata_source',
+                },
+              },
+            ],
+            description:
+              'When `tokenURI` points to JSON file that conforms to the ERC721 Metadata JSON\nSchema it is fetched parsed and stored as related Metadata document.',
+            type: {
+              Named: 'Metadata',
+            },
+          },
+          {
+            name: 'created',
+            type: {
+              NotNull: {
+                Named: 'Time',
+              },
+            },
+          },
+          {
+            name: 'updated',
+            description: 'Time when resource record was last updated.',
+            type: {
+              NotNull: {
+                Named: 'Time',
+              },
+            },
+          },
+          {
+            name: 'status',
+            directives: [
+              {
+                name: 'index',
+                args: {},
+              },
+            ],
+            description: 'Status of the token asset',
+            type: {
+              NotNull: {
+                Named: 'TokenAssetStatus',
+              },
+            },
+          },
+          {
+            name: 'statusText',
+            description:
+              'Human readable description of the status. Usually this ellaborates a reason\nwhy token analyzer has failed providing with an error message and stack trace.',
+            type: {
+              Named: 'String',
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'TokenAsset',
+            },
+          },
+        ],
+        description:
+          'TokenAsset represents contents of the tokenURI which may not have been found /\npinned yet. It may have been added by the chain scraper, when token with this\n`tokenURI` was discovered. Alternatively it could have been created by an\nupload to nft.storage, in which case it may not have any refferers but it would\nhave uploads.',
+      },
+    },
+  },
+  history_days: 30,
+  ttl_days: null,
+  permissions: null,
+})

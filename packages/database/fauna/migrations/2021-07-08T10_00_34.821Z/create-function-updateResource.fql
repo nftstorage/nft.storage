@@ -1,0 +1,82 @@
+CreateFunction({
+  name: 'updateResource',
+  body: Query(
+    Lambda(
+      ['input'],
+      Let(
+        [
+          {
+            id: Select('id', Var('input')),
+          },
+          {
+            ref: Ref(Collection('Resource'), Var('id')),
+          },
+          {
+            cid: Select('cid', Var('input'), null),
+          },
+          {
+            content: If(
+              IsNull(Var('cid')),
+              null,
+              Select(
+                'ref',
+                Call('importContent', {
+                  cid: Var('cid'),
+                })
+              )
+            ),
+          },
+        ],
+        If(
+          Equals(Select(['data', 'status'], Get(Var('ref'))), 'ContentLinked'),
+          Var('ref'),
+          Update(Var('ref'), {
+            data: {
+              status: Select('status', Var('input')),
+              statusText: Select('statusText', Var('input')),
+              ipfsURL: Select(
+                'ipfsURL',
+                Var('input'),
+                Select(['data', 'ipfsURL'], Get(Var('ref')), null)
+              ),
+              content: Var('content'),
+              updated: Now(),
+            },
+          })
+        )
+      )
+    )
+  ),
+  data: {
+    gql: {
+      meta: {
+        location: 'Mutation',
+        field: {
+          name: 'updateResource',
+          directives: [
+            {
+              name: 'resolver',
+              args: {
+                name: 'updateResource',
+                paginated: false,
+              },
+            },
+          ],
+          type: {
+            NotNull: {
+              Named: 'Resource',
+            },
+          },
+          arguments: [
+            {
+              name: 'input',
+              type: {
+                Named: 'ResourceUpdate',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+})

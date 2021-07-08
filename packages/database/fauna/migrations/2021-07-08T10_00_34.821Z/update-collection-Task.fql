@@ -1,0 +1,64 @@
+Update(Collection('Task'), {
+  data: {
+    gql: {
+      meta: {
+        name: 'Task',
+        description:
+          "Describen an operation that may fail, like an HTTP\nrequest or a JSON parse.\n\nFauna does not support union types so we get by using a\nsingle struct represeting union:\ntype Task =\n  | { status: 'idle', attempt: int }\n  | { status: 'queued' attempt: int }\n  | { status: 'pending', start: Time, attempt: int }\n  | { status: 'failed', end: Time, error: String, attempt: int }\n  | { status: 'done', end: Time, attempt: int }",
+        fields: [
+          {
+            name: 'status',
+            description: 'Status of the task',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+          {
+            name: 'attempt',
+            description:
+              'An attempt number. Usuallly 1, but could be greater\non retries',
+            type: {
+              NotNull: {
+                Named: 'Int',
+              },
+            },
+          },
+          {
+            name: 'start',
+            description: 'Time at which task started',
+            type: {
+              Named: 'Time',
+            },
+          },
+          {
+            name: 'end',
+            description: 'Time at which task failed',
+            type: {
+              Named: 'Time',
+            },
+          },
+          {
+            name: 'error',
+            description: 'Error message in cas task failed',
+            type: {
+              Named: 'String',
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'Task',
+            },
+          },
+        ],
+      },
+    },
+  },
+  history_days: 30,
+  ttl_days: null,
+  permissions: null,
+})

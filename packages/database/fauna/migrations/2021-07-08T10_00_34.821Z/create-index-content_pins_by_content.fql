@@ -1,0 +1,15 @@
+CreateIndex({
+  name: 'content_pins_by_content',
+  source: Collection('Pin'),
+  terms: [
+    {
+      field: ['data', 'content'],
+    },
+  ],
+  serialized: true,
+  data: {
+    gql: {
+      ts: Time('2021-07-07T05:49:02.581895Z'),
+    },
+  },
+})

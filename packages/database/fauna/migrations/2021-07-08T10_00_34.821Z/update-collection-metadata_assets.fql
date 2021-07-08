@@ -1,0 +1,8 @@
+Update(Collection('metadata_assets'), {
+  data: {
+    gql: {},
+  },
+  history_days: 30,
+  ttl_days: null,
+  permissions: null,
+})

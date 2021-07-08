@@ -1,0 +1,47 @@
+CreateFunction({
+  name: 'updateResources',
+  body: Query(
+    Lambda(
+      ['input'],
+      Map(
+        Select('updates', Var('input')),
+        Lambda(['update'], Call('updateResource', Var('update')))
+      )
+    )
+  ),
+  data: {
+    gql: {
+      ts: Time('2021-07-07T05:49:01.521688Z'),
+      meta: {
+        location: 'Mutation',
+        field: {
+          name: 'updateResources',
+          directives: [
+            {
+              name: 'resolver',
+              args: {
+                name: 'updateResources',
+                paginated: false,
+              },
+            },
+          ],
+          type: {
+            List: {
+              NotNull: {
+                Named: 'Resource',
+              },
+            },
+          },
+          arguments: [
+            {
+              name: 'input',
+              type: {
+                Named: 'UpdateResourcesInput',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+})

@@ -1,0 +1,16 @@
+CreateIndex({
+  name: 'unique_PinLocation_peerId',
+  source: Collection('PinLocation'),
+  terms: [
+    {
+      field: ['data', 'peerId'],
+    },
+  ],
+  unique: true,
+  serialized: true,
+  data: {
+    gql: {
+      ts: Time('2021-07-07T05:49:02.581895Z'),
+    },
+  },
+})

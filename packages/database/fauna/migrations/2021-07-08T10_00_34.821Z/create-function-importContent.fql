@@ -1,0 +1,28 @@
+CreateFunction({
+  name: 'importContent',
+  body: Query(
+    Lambda(
+      ['input'],
+      Let(
+        [
+          {
+            cid: Select('cid', Var('input')),
+          },
+          {
+            match: Match(Index('unique_Content_cid'), Var('cid')),
+          },
+        ],
+        If(
+          IsEmpty(Var('match')),
+          Create(Collection('Content'), {
+            data: {
+              cid: Var('cid'),
+              created: Now(),
+            },
+          }),
+          Get(Var('match'))
+        )
+      )
+    )
+  ),
+})

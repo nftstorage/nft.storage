@@ -1,0 +1,38 @@
+Update(Collection('Owner'), {
+  data: {
+    gql: {
+      meta: {
+        name: 'Owner',
+        fields: [
+          {
+            name: 'id',
+            directives: [
+              {
+                name: 'unique',
+                args: {
+                  index: 'unique_Owner_id',
+                },
+              },
+            ],
+            type: {
+              NotNull: {
+                Named: 'ID',
+              },
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'Owner',
+            },
+          },
+        ],
+      },
+    },
+  },
+  history_days: 30,
+  ttl_days: null,
+  permissions: null,
+})
