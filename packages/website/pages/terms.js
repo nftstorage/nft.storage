@@ -60,9 +60,9 @@ export default function TermsOfService() {
           <HashLink id="data-limits">Data Limits</HashLink>
         </h2>
         <p className="lh-copy">
-          The <strong>BETA</strong> service is limited to <strong>100MB</strong>{' '}
-          upload limit per request. Protocol Labs may increase this limit at its
-          sole discretion.
+          The <strong>BETA</strong> service accepts arbitrary upload sizes.
+          Currently, the service has no data upload limit. Protocol Labs may amend
+          this term limit at its sole discretion.
         </p>
 
         <h2 className="chicagoflf">
