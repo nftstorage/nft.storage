@@ -1,5 +1,5 @@
-let API = /** @type {string} **/ process.env.NEXT_PUBLIC_API
-let MAGIC_TOKEN = /** @type {string} **/ process.env.NEXT_PUBLIC_MAGIC
+let API = /** @type {string} **/ process.env.NEXT_PUBLIC_API || ''
+let MAGIC_TOKEN = /** @type {string} **/ process.env.NEXT_PUBLIC_MAGIC || ''
 
 if (globalThis.window) {
   switch (location.host) {
