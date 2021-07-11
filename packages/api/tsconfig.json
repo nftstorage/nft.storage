@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist",
+    "module": "ES2020",
     "allowJs": true,
     "checkJs": true,
     "target": "esnext",
@@ -18,6 +19,7 @@
     "types": ["@cloudflare/workers-types", "mocha"]
   },
   "include": [
+    "pw-test.config.cjs",
     "src",
     "src/bindings.d.ts",
     "node_modules/@cloudflare/workers-types/index.d.ts",

@@ -1,5 +1,5 @@
 import regexparam from 'regexparam'
-import { getSentry } from './debug'
+import { getSentry } from './debug.js'
 
 /**
  * @typedef {import('../bindings').RouteContext} RouteContext

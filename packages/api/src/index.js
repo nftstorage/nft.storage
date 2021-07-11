@@ -20,7 +20,7 @@ import { metrics } from './routes/metrics.js'
 import { login } from './routes/login.js'
 import { JSONResponse } from './utils/json-response.js'
 import { updateNftsIndexMeta } from './jobs/nfts-index.js'
-const { debug, getSentrySchedule } = require('./utils/debug')
+import { debug, getSentrySchedule } from './utils/debug.js'
 const log = debug('router')
 
 const r = new Router({
@@ -40,7 +40,7 @@ r.add('options', '*', cors)
 r.add('post', '/login', login, [postCors])
 
 // Version
-r.add('get', '/version', (event) => {
+r.add('get', '/version', event => {
   return new JSONResponse({
     version: VERSION,
     commit: COMMITHASH,
@@ -84,7 +84,7 @@ r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))
 
 // Cron jobs
-addEventListener('scheduled', (event) => {
+addEventListener('scheduled', event => {
   // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
   // @ts-ignore
   if (event.cron !== '*/15 * * * *') return

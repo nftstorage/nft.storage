@@ -1,7 +1,7 @@
 import stores from './stores.js'
 
 export const SALT = 'supersecret'
-export const DEBUG = 'true'
+export const DEBUG = '*'
 export const DEALS = stores.deals
 export const USERS = stores.users
 export const NFTS = stores.nfts
