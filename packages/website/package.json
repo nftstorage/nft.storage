@@ -10,12 +10,12 @@
     "test": "eslint './**/*.js' && tsc --build"
   },
   "dependencies": {
-    "@magic-ext/oauth": "^0.7.0",
+    "@magic-ext/oauth": "^0.8.0",
     "clsx": "^1.1.1",
     "filesize": "^6.1.0",
-    "ipfs-car": "^0.3.3",
+    "ipfs-car": "^0.4.3",
     "magic-sdk": "^4.2.1",
-    "next": "^10.2.3",
+    "next": "^11.0.1",
     "nft.storage": "^3.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -32,7 +32,7 @@
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-promise": "^5.1.0",
     "eslint-plugin-react": "^7.23.2",
     "eslint-plugin-react-hooks": "^4.2.0",
     "typescript": "^4.2.4"

@@ -16,7 +16,7 @@
   "license": "(Apache-2.0 AND MIT)",
   "devDependencies": {
     "@fauna-labs/fauna-schema-migrate": "^2.1.2",
-    "@types/node": "16.0.0",
+    "@types/node": "16.3.1",
     "@types/yargs": "^17.0.0",
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
