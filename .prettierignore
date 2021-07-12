@@ -6,4 +6,5 @@ dist
 worker
 site/public
 docs
-database/fauna/migrations
+packages/database/fauna/migrations
+CHANGELOG.md

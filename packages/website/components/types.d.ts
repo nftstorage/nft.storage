@@ -1,5 +1,3 @@
-import type { ReactChildren } from 'react'
-
 export interface LayoutProps {
   callback?: boolean
   needsUser: boolean
