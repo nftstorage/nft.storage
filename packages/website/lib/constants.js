@@ -20,6 +20,7 @@ if (globalThis.window) {
   }
 }
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   API: API,
   MAGIC_TOKEN: MAGIC_TOKEN,
