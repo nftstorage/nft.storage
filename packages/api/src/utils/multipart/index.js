@@ -3,13 +3,18 @@
  * Credit to https://github.com/ssttevee/js-multipart-parser
  */
 
-import { ReadableStreamSearch, StreamSearch, MATCH } from './search'
-import { arraysEqual, stringToArray, arrayToString, mergeArrays } from './utils'
+import { ReadableStreamSearch, StreamSearch, MATCH } from './search.js'
+import {
+  arraysEqual,
+  stringToArray,
+  arrayToString,
+  mergeArrays,
+} from './utils.js'
 const mergeArrays2 = Function.prototype.apply.bind(mergeArrays, undefined)
 const dash = stringToArray('--')
 const CRLF = stringToArray('\r\n')
 function parseContentDisposition(header) {
-  const parts = header.split(';').map((part) => part.trim())
+  const parts = header.split(';').map(part => part.trim())
   if (parts.shift() !== 'form-data') {
     throw new Error(
       'malformed content-disposition header: missing "form-data" in `' +
@@ -63,7 +68,10 @@ function parsePartHeaders(lines) {
     if (colon === -1) {
       throw new Error('malformed multipart-form header: missing colon')
     }
-    const header = line.slice(0, colon).trim().toLowerCase()
+    const header = line
+      .slice(0, colon)
+      .trim()
+      .toLowerCase()
     const value = line.slice(colon + 1).trim()
     switch (header) {
       case 'content-disposition':
@@ -123,13 +131,13 @@ async function readHeaderLines(it, needle) {
         tokens.push(crlfSearch.end())
         return [
           headerLines
-            .filter((chunks) => chunks.length)
+            .filter(chunks => chunks.length)
             .map(mergeArrays2)
             .map(arrayToString),
           mergeArrays(
             ...tokens
               .slice(i + 1)
-              .map((token) => (token === MATCH ? CRLF : token))
+              .map(token => (token === MATCH ? CRLF : token))
           ),
         ]
       }

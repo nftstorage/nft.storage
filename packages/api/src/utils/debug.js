@@ -1,7 +1,7 @@
 import Toucan from 'toucan-js'
-import { secrets } from '../constants'
-const pkg = require('../../package.json')
-const _debug = require('debug')
+import { secrets } from '../constants.js'
+import pkg from '../../package.json'
+import _debug from 'debug'
 
 _debug.enable(DEBUG)
 

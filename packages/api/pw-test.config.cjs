@@ -1,5 +1,6 @@
 const path = require('path')
 
+/** @type {import('esbuild').Plugin} */
 const nodeBuiltinsPlugin = {
   name: 'node builtins',
   setup(build) {
@@ -9,6 +10,7 @@ const nodeBuiltinsPlugin = {
   },
 }
 
+/** @type {import('playwright-test').RunnerOptions} */
 module.exports = {
   buildConfig: {
     inject: [path.join(__dirname, './test/scripts/node-globals.js')],

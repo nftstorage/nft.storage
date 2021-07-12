@@ -1,5 +1,5 @@
-import regexparam from 'regexparam'
-import { getSentry } from './debug'
+import { parse } from 'regexparam'
+import { getSentry } from './debug.js'
 
 /**
  * @typedef {import('../bindings').RouteContext} RouteContext
@@ -93,7 +93,7 @@ class Router {
       return req.method.toLowerCase() === m
     }
 
-    const parsed = regexparam(route)
+    const parsed = parse(route)
     const routeCondition = (/** @type {Request} */ req) => {
       const url = new URL(req.url)
       const path = url.pathname

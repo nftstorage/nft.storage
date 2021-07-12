@@ -3,7 +3,6 @@ import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
 import Box from '../components/box.js'
 import Link from 'next/link'
-
 /**
  * Static Props
  *
@@ -411,11 +410,12 @@ function FAQ() {
           </HashLink>
         </h2>
         <p className="lh-copy white">
-          Data will be available in IPFS indefinitely as well as stored in 
-          long-term, redundant Filecoin storage deals with the global community of miners. See the{' '}
-          <a href="/terms" className="white">
-            Terms of Service
-          </a>{' '}
+          Data will be available in IPFS indefinitely as well as stored in
+          long-term, redundant Filecoin storage deals with the global community
+          of miners. See the{' '}
+          <Link href="/terms">
+            <a className="white">Terms of Service</a>
+          </Link>{' '}
           for details.
         </p>
         <h2 className="chicagoflf white">
@@ -425,9 +425,9 @@ function FAQ() {
         </h2>
         <p className="lh-copy white">
           NFT.storage can store NFTs up to <strong>32GB </strong>
-          in size! (There was previously a 100MB limit due to 
-          Cloudflare workers but NFT.storage now supports chunked
-          uploads, allowing files bigger than 100MB to be uploaded! 🎉)
+          in size! (There was previously a 100MB limit due to Cloudflare workers
+          but NFT.storage now supports chunked uploads, allowing files bigger
+          than 100MB to be uploaded! 🎉)
         </p>
         <h2 className="chicagoflf white">
           <HashLink id="where-can-i-learn-more-about-nft-best-practices">
@@ -439,8 +439,8 @@ function FAQ() {
           <a href="https://nftschool.dev" className="white">
             NFT School
           </a>{' '}
-          for information on NFT best practices as well as a variety of 
-          helpful tutorials and how-to guides for NFT developers.
+          for information on NFT best practices as well as a variety of helpful
+          tutorials and how-to guides for NFT developers.
         </p>
       </div>
     </article>

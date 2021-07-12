@@ -10,28 +10,13 @@
     "create-migration": "node ./src/create-migration.js",
     "update-schema": "node ./src/update-schema.js",
     "repl": "node --experimental-repl-await -i -e 'import(`./.repl.js`)'",
-    "type-check": "tsc --build",
-    "precommit": "lint-staged"
+    "type-check": "tsc --build"
   },
   "license": "(Apache-2.0 AND MIT)",
   "devDependencies": {
     "@fauna-labs/fauna-schema-migrate": "^2.1.2",
-    "@types/node": "16.0.0",
-    "@types/yargs": "^17.0.0",
-    "husky": "^6.0.0",
-    "lint-staged": "^11.0.0",
-    "prettier": "2.3.2",
-    "typescript": "^4.3.4"
-  },
-  "lint-staged": {
-    "*.js": [
-      "prettier --no-semi --write",
-      "git add"
-    ],
-    "*.fql": [
-      "prettier --write --ignore-unknown",
-      "git add"
-    ]
+    "@types/node": "16.3.1",
+    "@types/yargs": "^17.0.0"
   },
   "dependencies": {
     "@nftstorage/ipfs-cluster": "^3.0.1",

@@ -40,9 +40,9 @@ export default function Hero() {
           <img
             height="470"
             width="1002"
-            src="images/logo-nft.storage.svg"
             style={{ width: '75vw', maxWidth: '1002px', height: 'auto' }}
             className="mt4 mb2 mb4-ns"
+            src="images/logo-nft.storage.svg"
             alt="NFT Storage logo"
           />
           <hgroup className="chicagoflf white">

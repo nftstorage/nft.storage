@@ -6,6 +6,7 @@ import { useQueryClient } from 'react-query'
 import { useState } from 'react'
 import Box from '../components/box.js'
 import Button from '../components/button.js'
+import Link from 'next/link'
 
 export function getStaticProps() {
   return {
@@ -158,20 +159,17 @@ export default function NewFile() {
             <div>
               <p className="lh-copy f7">
                 You can also upload files using the{' '}
-                <a href="/#js-client" className="black">
-                  JS Client Library
-                </a>
+                <Link href="/#js-client-library">
+                  <a className="black">JS Client Library</a>
+                </Link>
                 ,{' '}
-                <a href="/#raw-http-request" className="black">
-                  Raw HTTP Requests
-                </a>{' '}
+                <Link href="/#raw-http-request">
+                  <a className="black">Raw HTTP Requests</a>
+                </Link>{' '}
                 or via the{' '}
-                <a
-                  href="/#configure-as-a-remote-pinning-service"
-                  className="black"
-                >
-                  Remote Pinning Service API
-                </a>
+                <Link href="/#configure-as-a-remote-pinning-service">
+                  <a className="black">Remote Pinning Service API</a>
+                </Link>
                 .
               </p>
             </div>

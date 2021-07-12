@@ -1,5 +1,5 @@
-import { JSONResponse } from '../utils/json-response'
-import { loginOrRegister } from '../utils/auth'
+import { JSONResponse } from '../utils/json-response.js'
+import { loginOrRegister } from '../utils/auth.js'
 
 /** @type {import('../utils/router').Handler} */
 export async function login(event) {
