@@ -24,7 +24,6 @@ export default function Navbar({ bgColor = 'nsorange', user }) {
       <div className="flex items-center justify-between ph3 ph5-ns pv3 center mw9">
         <Link href="/">
           <a className="no-underline v-mid">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/logo-nft.storage-sm.png"
               width="160"

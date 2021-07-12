@@ -69,7 +69,8 @@
           ]
         }
       ],
-      "react/display-name": "warn"
+      "react/display-name": "warn",
+      "@next/next/no-img-element": "off"
     }
   },
   "eslintIgnore": [

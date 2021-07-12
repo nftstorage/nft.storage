@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import Button from './button.js'
 
 const crossStyle = {
@@ -35,20 +34,21 @@ export default function Hero() {
           </GreenBox>
         </GreenBox>
         <div
-          className="relative relative-m absolute-ns top-0 w-100 ph4 pt4 tc"
+          className="relative relative-m absolute-ns top-0 w-100 ph3 tc"
           style={{ height: '100%' }}
         >
-          <Image
+          <img
             height="470"
             width="1002"
-            src="/images/logo-nft.storage.svg"
+            style={{ width: '75vw', maxWidth: '1002px', height: 'auto' }}
+            className="mt4 mb2 mb4-ns"
+            src="images/logo-nft.storage.svg"
             alt="NFT Storage logo"
           />
           <hgroup className="chicagoflf white">
             <h1 className="f4 f2-m f1-ns fw4 mv3">Free Storage for NFTs</h1>
             <h2 className="f5 fw4 mw7 center mv3 lh-copy">
               Free decentralized storage and bandwidth for NFTs on{' '}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="images/logo-ipfs-sm.png"
                 width="57"
@@ -58,7 +58,6 @@ export default function Hero() {
                 alt="IPFS logo"
               />{' '}
               IPFS and{' '}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="images/logo-filecoin-sm.png"
                 width="61"
