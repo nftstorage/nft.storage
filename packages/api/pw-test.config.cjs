@@ -13,12 +13,12 @@ const nodeBuiltinsPlugin = {
 /** @type {import('playwright-test').RunnerOptions} */
 module.exports = {
   buildConfig: {
-    inject: [path.join(__dirname, './test/scripts/node-globals.js')],
+    inject: [path.join(__dirname, './scripts/node-globals.js')],
     plugins: [nodeBuiltinsPlugin],
   },
   buildSWConfig: {
     inject: [
-      path.join(__dirname, './test/scripts/node-globals.js'),
+      path.join(__dirname, './scripts/node-globals.js'),
       path.join(__dirname, './test/scripts/worker-globals.js'),
     ],
     plugins: [nodeBuiltinsPlugin],

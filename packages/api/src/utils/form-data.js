@@ -1,4 +1,4 @@
-import { iterateMultipart } from './multipart/index.js'
+import { iterateMultipart } from '@ssttevee/multipart-parser'
 
 /**
  * @param {Request|Response} source

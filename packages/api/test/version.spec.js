@@ -1,6 +1,5 @@
 import assert from 'assert'
 import { VERSION, COMMITHASH, BRANCH } from './scripts/worker-globals.js'
-import { endpoint } from './scripts/constants.js'
 
 describe('/version', () => {
   it('should get version information', async () => {

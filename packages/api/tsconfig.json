@@ -23,7 +23,8 @@
     "src",
     "src/bindings.d.ts",
     "node_modules/@cloudflare/workers-types/index.d.ts",
-    "test"
+    "test",
+    "scripts"
   ],
   "exclude": ["node_modules/", "dist/", "src/utils/multipart/**/*.js"]
 }

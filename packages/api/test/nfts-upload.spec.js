@@ -1,7 +1,6 @@
 import assert from 'assert'
 import { clearStores } from './scripts/helpers.js'
 import stores from './scripts/stores.js'
-import { endpoint } from './scripts/constants.js'
 import { signJWT } from '../src/utils/jwt.js'
 import { SALT } from './scripts/worker-globals.js'
 import { createCar } from './scripts/car.js'
@@ -70,6 +69,87 @@ describe('/upload', () => {
       'queued',
       'pin status is "queued"'
     )
+  })
+
+  it('should upload a multiple blobs', async () => {
+    const { token, issuer } = await createTestUser()
+    const body = new FormData()
+
+    const file1 = new Blob(['hello world! 1'])
+    const file2 = new Blob(['hello world! 2'])
+    body.append('file', file1, 'name1')
+    body.append('file', file2, 'name2')
+    // expected CID for the above data
+    const cid = 'bafkreidsnixyep54glvcz2ocszbokylqalkio2eintcio5tix2vrbmaatu'
+    const res = await fetch('/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body,
+    })
+    assert(res, 'Server responded')
+    assert(res.ok, 'Server response ok')
+    const { ok, value } = await res.json()
+    assert.deepStrictEqual(value.files, [
+      { name: 'name1', type: 'application/octet-stream' },
+      { name: 'name2', type: 'application/octet-stream' },
+    ])
+    assert.ok(value.type === 'directory', 'should be directory')
+    assert.ok(value.size === file1.size, 'should have correct size')
+    assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
+  })
+
+  it('should upload a multiple blobs without name', async () => {
+    const { token, issuer } = await createTestUser()
+    const body = new FormData()
+
+    const file1 = new Blob(['hello world! 1'])
+    const file2 = new Blob(['hello world! 2'])
+    body.append('file', file1)
+    body.append('file', file2)
+    // expected CID for the above data
+    const cid = 'bafkreidsnixyep54glvcz2ocszbokylqalkio2eintcio5tix2vrbmaatu'
+    const res = await fetch('/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body,
+    })
+    assert(res, 'Server responded')
+    assert(res.ok, 'Server response ok')
+    const { ok, value } = await res.json()
+    assert.deepStrictEqual(value.files, [
+      { name: 'blob', type: 'application/octet-stream' },
+      { name: 'blob', type: 'application/octet-stream' },
+    ])
+    assert.ok(value.type === 'directory', 'should be directory')
+    assert.ok(value.size === file1.size, 'should have correct size')
+    assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
+  })
+
+  it('should upload a multiple files without name', async () => {
+    const { token, issuer } = await createTestUser()
+    const body = new FormData()
+
+    const file1 = new Blob(['hello world! 1'])
+    const file2 = new Blob(['hello world! 2'])
+    body.append('file', new File([file1], 'name1.png'))
+    body.append('file', new File([file2], 'name1.png'))
+    // expected CID for the above data
+    const cid = 'bafkreidsnixyep54glvcz2ocszbokylqalkio2eintcio5tix2vrbmaatu'
+    const res = await fetch('/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body,
+    })
+    assert(res, 'Server responded')
+    assert(res.ok, 'Server response ok')
+    const { ok, value } = await res.json()
+    assert.deepStrictEqual(value.files, [
+      { name: 'name1.png', type: 'application/octet-stream' },
+      { name: 'name1.png', type: 'application/octet-stream' },
+    ])
+    assert.ok(value.type === 'directory', 'should be directory')
+    assert.ok(value.size === file1.size, 'should have correct size')
+    assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
   })
 
   it('should upload a single CAR file', async () => {
