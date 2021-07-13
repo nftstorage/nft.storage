@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/tools-v1.1.0...tools-v1.2.0) (2021-07-13)
+
+
+### Features
+
+* improvements to the setup ([#246](https://www.github.com/ipfs-shipyard/nft.storage/issues/246)) ([6a2501f](https://www.github.com/ipfs-shipyard/nft.storage/commit/6a2501f5c340af87c1571886961920280afec249))
+* update pw-test so its easier to run sw tests ([#240](https://www.github.com/ipfs-shipyard/nft.storage/issues/240)) ([5737ffc](https://www.github.com/ipfs-shipyard/nft.storage/commit/5737ffcb0323e20b31fdabdd305da075b92a9047))
+
 ## [1.1.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/tools-v1.0.2...tools-v1.1.0) (2021-07-07)
 
 
