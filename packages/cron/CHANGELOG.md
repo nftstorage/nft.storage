@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/cron-v2.0.0...cron-v2.1.0) (2021-07-13)
+
+
+### Features
+
+* improvements to the setup ([#246](https://www.github.com/ipfs-shipyard/nft.storage/issues/246)) ([6a2501f](https://www.github.com/ipfs-shipyard/nft.storage/commit/6a2501f5c340af87c1571886961920280afec249))
+
 ## [2.0.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/cron-v1.1.0...cron-v2.0.0) (2021-07-06)
 
 
