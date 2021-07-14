@@ -1,0 +1,12 @@
+CreateFunction({
+  name: 'updateTokenAssets',
+  body: Query(
+    Lambda(
+      ['input'],
+      Map(
+        Select('updates', Var('input')),
+        Lambda(['update'], Call('updateTokenAsset', Var('update')))
+      )
+    )
+  ),
+})

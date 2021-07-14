@@ -12,5 +12,5 @@
     "noEmit": true,
     "resolveJsonModule": true
   },
-  "include": ["*.js", "*.d.ts"]
+  "include": ["cf-sync", "*.js", "*.d.ts"]
 }

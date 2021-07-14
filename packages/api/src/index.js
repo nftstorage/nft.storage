@@ -20,7 +20,7 @@ import { metrics } from './routes/metrics.js'
 import { login } from './routes/login.js'
 import { JSONResponse } from './utils/json-response.js'
 import { updateNftsIndexMeta } from './jobs/nfts-index.js'
-const { debug, getSentrySchedule } = require('./utils/debug')
+import { debug, getSentrySchedule } from './utils/debug.js'
 const log = debug('router')
 
 const r = new Router({

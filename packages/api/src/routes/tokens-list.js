@@ -1,6 +1,6 @@
-import { validate } from '../utils/auth'
-import { JSONResponse } from '../utils/json-response'
-import { tokens } from '../models/users'
+import { validate } from '../utils/auth.js'
+import { JSONResponse } from '../utils/json-response.js'
+import { tokens } from '../models/users.js'
 
 /** @type {import('../utils/router.js').Handler} */
 export const tokensList = async (event, ctx) => {

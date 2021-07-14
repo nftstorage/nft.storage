@@ -1,0 +1,6 @@
+CreateFunction({
+  name: 'findResourceByURI',
+  body: Query(
+    Lambda(['uri'], Get(Match(Index('unique_Resource_uri'), Var('uri'))))
+  ),
+})

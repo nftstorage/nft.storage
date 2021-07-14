@@ -1,8 +1,9 @@
 name: Cron Pin ERC-721 Token Assets
 
+# Disabled because cluster is unreachable
 # on:
 #   schedule:
-#     - cron: "*/30 * * * *"
+#     - cron: '*/30 * * * *'
 
 jobs:
   erc-721:

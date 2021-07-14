@@ -1,0 +1,30 @@
+Update(Function('findTokenAssets'), {
+  body: Query(
+    Lambda(
+      ['where', 'size', 'after', 'before'],
+      Let(
+        [
+          {
+            status: Select('status', Var('where')),
+          },
+          {
+            match: Match(Index('tokenAsset_by_status'), Var('status')),
+          },
+          {
+            refs: Call('paginate', [
+              Var('match'),
+              {
+                size: Var('size'),
+                after: Var('after'),
+                before: Var('before'),
+              },
+            ]),
+          },
+        ],
+        Map(Var('refs'), Lambda('ref', Get(Var('ref'))))
+      )
+    )
+  ),
+  data: null,
+  role: null,
+})

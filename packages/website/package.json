@@ -7,15 +7,16 @@
     "dev": "next dev",
     "build": "next build && next export",
     "start": "next start",
-    "test": "eslint './**/*.js' && tsc --build"
+    "test": "eslint './**/*.js' && tsc --build",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@magic-ext/oauth": "^0.7.0",
+    "@magic-ext/oauth": "^0.8.0",
+    "bytes": "^3.1.0",
     "clsx": "^1.1.1",
     "filesize": "^6.1.0",
-    "ipfs-car": "^0.3.3",
+    "ipfs-car": "^0.4.3",
     "magic-sdk": "^4.2.1",
-    "next": "^10.2.3",
     "nft.storage": "^3.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
@@ -26,22 +27,23 @@
   },
   "devDependencies": {
     "@sentry/nextjs": "^6.3.5",
+    "@types/bytes": "^3.1.1",
     "@types/react": "^17.0.4",
-    "eslint": "^7.24.0",
+    "eslint": "7.30.0",
+    "eslint-config-next": "11.0.1",
     "eslint-config-prettier": "^8.2.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.23.2",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "typescript": "^4.2.4"
+    "eslint-plugin-promise": "^5.1.0",
+    "next": "^11.0.1",
+    "typescript": "4.3.5"
   },
   "eslintConfig": {
     "extends": [
       "standard",
-      "plugin:react/recommended",
-      "plugin:react-hooks/recommended",
+      "next",
+      "next/core-web-vitals",
       "prettier"
     ],
     "env": {
@@ -50,7 +52,6 @@
       "node": true
     },
     "rules": {
-      "react/prop-types": "off",
       "no-unused-vars": [
         "error",
         {
@@ -59,9 +60,8 @@
           "varsIgnorePattern": "_"
         }
       ],
-      "react/react-in-jsx-scope": "off",
       "react/jsx-filename-extension": [
-        1,
+        "warn",
         {
           "extensions": [
             ".js",
@@ -69,12 +69,8 @@
           ]
         }
       ],
-      "react/display-name": 1
-    },
-    "settings": {
-      "react": {
-        "version": "detect"
-      }
+      "react/display-name": "warn",
+      "@next/next/no-img-element": "off"
     }
   },
   "eslintIgnore": [

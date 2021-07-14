@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.2.2](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.2.1...api-v2.2.2) (2021-07-06)
+
+
+### Bug Fixes
+
+* null deals ([#235](https://www.github.com/ipfs-shipyard/nft.storage/issues/235)) ([aad1259](https://www.github.com/ipfs-shipyard/nft.storage/commit/aad125902fe4f8e6b5144ed52e60be3988f24e1a))
+
 ### [2.2.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.2.0...api-v2.2.1) (2021-06-22)
 
 

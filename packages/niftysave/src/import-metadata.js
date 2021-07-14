@@ -6,6 +6,8 @@ import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
 import { fetchResource } from './net.js'
 
+const { TokenAssetStatus } = db.schema
+
 /**
  * @param {Object} options
  * @param {number} options.budget - Time budget
@@ -20,8 +22,8 @@ export const spawn = async ({ budget, batchSize }) => {
       return console.log('🏁 Finish, no more queued task were found')
     } else {
       console.log(`🤹 Spawn ${assets.length} tasks to process fetched assets`)
-      const results = assets.map(processTokenAsset)
-      await Promise.all(results)
+      const updates = await Promise.all(assets.map(analyze))
+      await updateTokenAssets(updates)
       console.log(`✨ Processed batch of ${assets.length} assets`)
     }
   }
@@ -62,115 +64,103 @@ const fetchTokenURIs = async ({ batchSize }) => {
 }
 
 /**
- * @param {Schema.TokenMetadataImportInput} input
- */
-const importTokenMetadata = async (input) => {
-  const result = await mutate(db, {
-    importTokenMetadata: [
-      { input },
-      {
-        _id: 1,
-      },
-    ],
-  })
-
-  return Result.value(result).importTokenMetadata._id
-}
-/**
  * @param {TokenAsset} asset
+ * @returns {Promise<Schema.TokenAssetUpdate>}
  */
-const processTokenAsset = async (asset) => {
-  const { _id, tokenURI } = asset
-  console.log(`🔬 (${_id}) Parsing tokenURI`)
+const analyze = async (asset) => {
+  const { _id: id, tokenURI } = asset
+  console.log(`🔬 (${id}) Parsing tokenURI`)
   const urlResult = Result.fromTry(() => new URL(tokenURI))
   if (!urlResult.ok) {
     console.error(
-      `🚨 (${_id}) Parsing URL failed ${urlResult.error}, report problem`
+      `🚨 (${id}) Parsing URL failed ${urlResult.error}, report problem`
     )
-    return await reportTokenAssetProblem(
-      asset,
-      `Failed to parse tokenURI: ${urlResult.error}`
-    )
+
+    return {
+      id,
+      status: TokenAssetStatus.URIParseFailed,
+      statusText: `${urlResult.error}`,
+    }
   }
   const url = urlResult.value
   const ipfsURL = IPFSURL.asIPFSURL(url)
+  const ipfsURLString = ipfsURL && ipfsURL.href
 
-  console.log(`📡 (${_id}) Fetching content`)
+  console.log(`📡 (${id}) Fetching content`)
   const fetchResult = await Result.fromPromise(fetchResource(ipfsURL || url))
 
   if (!fetchResult.ok) {
     console.error(
-      `🚨 (${_id}) Fetch failed ${fetchResult.error}, report problem`
+      `🚨 (${id}) Fetch failed ${fetchResult.error}, report problem`
     )
-    return await reportTokenAssetProblem(
-      asset,
-      `Failed to fetch: ${fetchResult.error}`
-    )
+
+    return {
+      id,
+      ipfsURL: ipfsURLString,
+      status: TokenAssetStatus.ContentFetchFailed,
+      statusText: `${fetchResult.error}`,
+    }
   }
 
-  console.log(`📑 (${_id}) Reading fetched content`)
+  console.log(`📑 (${id}) Reading fetched content`)
   const readResult = await Result.fromPromise(fetchResult.value.text())
 
   if (!readResult.ok) {
-    console.error(`🚨 (${_id}) Read failed ${readResult.error}, report problem`)
-    return await reportTokenAssetProblem(
-      asset,
-      `Failed to read: ${readResult.error}`
-    )
+    console.error(`🚨 (${id}) Read failed ${readResult.error}, report problem`)
+    return {
+      id,
+      ipfsURL: ipfsURLString,
+      status: TokenAssetStatus.ContentFetchFailed,
+      statusText: `${readResult.error}`,
+    }
   }
   const content = readResult.value
 
-  console.log(`🧾 (${_id}) Parsing ERC721 metadata`)
+  console.log(`🧾 (${id}) Parsing ERC721 metadata`)
   const parseResult = await Result.fromPromise(parseERC721Metadata(content))
 
   if (!parseResult.ok) {
     console.error(
-      `🚨 (${_id}) Parse failed ${parseResult.error}, report problem`
+      `🚨 (${id}) Parse failed ${parseResult.error}, report problem`
     )
-    return await reportTokenAssetProblem(
-      asset,
-      `Failed to parse as json: ${parseResult.error}`
-    )
+
+    return {
+      id,
+      ipfsURL: ipfsURLString,
+      status: TokenAssetStatus.ContentParseFailed,
+      statusText: `${parseResult.error}`,
+    }
   }
   const metadata = parseResult.value
 
-  console.log(
-    `📍 (${_id}) Pin metadata in IPFS ${ipfsURL || fetchResult.value}`
-  )
+  console.log(`📍 (${id}) Pin metadata in IPFS ${ipfsURL || fetchResult.value}`)
 
   const pinResult = await pin(ipfsURL || fetchResult.value, {
-    assetID: _id,
+    assetID: id,
     // if it is a data uri just omit it.
     ...(url.protocol !== 'data:' && { sourceURL: tokenURI }),
   })
 
   if (!pinResult.ok) {
     console.error(
-      `🚨 (${_id}) Failed to pin ${pinResult.error}, report problem\n ${pinResult.error.stack}`
+      `🚨 (${id}) Failed to pin ${pinResult.error}, report problem\n ${pinResult.error.stack}`
     )
-    return await reportTokenAssetProblem(asset, 'failed to pin')
+    return {
+      id,
+      status: TokenAssetStatus.PinRequestFailed,
+      statusText: `${pinResult.error}`,
+    }
   }
   const { cid } = pinResult.value
-  console.log(`📌 (${_id}) Pinned matadata ${cid}`)
-  metadata.cid = cid
+  console.log(`📌 (${id}) Pinned matadata ${cid}`)
 
-  console.log(`📝 (${_id}) Recording metadata into db`)
-  const result = await Result.fromPromise(
-    importTokenMetadata({
-      tokenAssetID: _id,
-      metadata,
-    })
-  )
-
-  if (!result.ok) {
-    console.error(
-      `💣 (${_id}) Failed to store metadata ${result.error}`,
-      result.error
-    )
-    return await reportTokenAssetProblem(asset, 'failed to add metadata')
+  console.log(`📝 (${id}) Link token asset metadata & resources`)
+  return {
+    id,
+    status: TokenAssetStatus.Linked,
+    statusText: 'Linked',
+    metadata: { ...metadata, cid },
   }
-
-  return result.value
 }
 
 /**
@@ -257,18 +247,14 @@ const iterate = function* (data, path = []) {
 }
 
 /**
- *
- * @param {TokenAsset} asset
- * @param {string} problem
+ * @param {Schema.TokenAssetUpdate[]} updates
+ * @returns {Promise<string[]>}
  */
-const reportTokenAssetProblem = async (asset, problem) => {
+const updateTokenAssets = async (updates) => {
   const result = await mutate(db, {
-    reportTokenAssetProblem: [
+    updateTokenAssets: [
       {
-        input: {
-          tokenAssetID: asset._id,
-          problem,
-        },
+        input: { updates },
       },
       {
         _id: 1,
@@ -276,7 +262,7 @@ const reportTokenAssetProblem = async (asset, problem) => {
     ],
   })
 
-  return Result.value(result).reportTokenAssetProblem._id
+  return Result.value(result).updateTokenAssets?.map((token) => token._id) || []
 }
 
 /**

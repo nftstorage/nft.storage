@@ -103,6 +103,7 @@ const importTokens = async (db, input) => {
 
 /**
  * @param {{scanSize:number, cursor:string}} settings
+ * @returns {Promise<import('../gen/erc721/schema').Token[]>}
  */
 const fetchTokens = async ({ cursor, scanSize }) => {
   const result = await query(erc721, {

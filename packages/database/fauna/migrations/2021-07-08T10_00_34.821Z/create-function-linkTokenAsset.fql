@@ -1,0 +1,77 @@
+CreateFunction({
+  name: 'linkTokenAsset',
+  body: Query(
+    Lambda(
+      ['input'],
+      Let(
+        [
+          {
+            tokenAsset: Call('getTokenAssetByID', Select('id', Var('input'))),
+          },
+          {
+            image: Call(
+              'importResource',
+              Select(['metadata', 'image'], Var('input'))
+            ),
+          },
+          {
+            content: Call('importContent', {
+              cid: Select(['metadata', 'cid'], Var('input')),
+            }),
+          },
+          {
+            metadata: Create(Collection('Metadata'), {
+              data: {
+                source: Select('ref', Var('tokenAsset')),
+                content: Select('ref', Var('content')),
+                image: Select('ref', Var('image')),
+                name: Select(['metadata', 'name'], Var('input')),
+                description: Select(['metadata', 'description'], Var('input')),
+              },
+            }),
+          },
+        ],
+        Do(
+          Foreach(
+            Select(['metadata', 'assets'], Var('input'), []),
+            Lambda(
+              ['resourceInput'],
+              Let(
+                [
+                  {
+                    resource: Call('importResource', Var('resourceInput')),
+                  },
+                ],
+                Create(Collection('metadata_assets'), {
+                  data: {
+                    metadataID: Select('ref', Var('metadata')),
+                    resourceID: Select('ref', Var('resource')),
+                  },
+                })
+              )
+            )
+          ),
+          Create(Collection('metadata_assets'), {
+            data: {
+              metadataID: Select('ref', Var('metadata')),
+              resourceID: Select('ref', Var('image')),
+            },
+          }),
+          Update(Select('ref', Var('tokenAsset')), {
+            data: {
+              status: 'Linked',
+              statusText: Select('statusText', Var('input'), 'linked'),
+              ipfsURL: Select(
+                'ipfsURL',
+                Var('input'),
+                Select(['data', 'ipfsURL'], Var('tokenAsset'), null)
+              ),
+              metadata: Select('ref', Var('metadata')),
+              updated: Now(),
+            },
+          })
+        )
+      )
+    )
+  ),
+})

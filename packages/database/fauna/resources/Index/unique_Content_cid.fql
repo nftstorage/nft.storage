@@ -1,0 +1,11 @@
+/**
+ * Index to make enable content lookup by a cid.
+ */
+CreateIndex({
+  name: 'unique_Content_cid',
+  source: Collection('Content'),
+  terms: [{ field: ['data', 'cid'] }],
+  unique: true,
+  serialized: true,
+  data: { gql: { ts: Time('2021-07-07T05:49:02.581895Z') } },
+})

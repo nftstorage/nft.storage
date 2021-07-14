@@ -3,8 +3,13 @@
  * Credit to https://github.com/ssttevee/js-multipart-parser
  */
 
-import { ReadableStreamSearch, StreamSearch, MATCH } from './search'
-import { arraysEqual, stringToArray, arrayToString, mergeArrays } from './utils'
+import { ReadableStreamSearch, StreamSearch, MATCH } from './search.js'
+import {
+  arraysEqual,
+  stringToArray,
+  arrayToString,
+  mergeArrays,
+} from './utils.js'
 const mergeArrays2 = Function.prototype.apply.bind(mergeArrays, undefined)
 const dash = stringToArray('--')
 const CRLF = stringToArray('\r\n')

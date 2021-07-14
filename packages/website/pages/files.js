@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from 'react-query'
-import filesize from 'filesize'
+import bytes from 'bytes'
 import { NFTStorage } from 'nft.storage'
 import Button from '../components/button.js'
 import Loading from '../components/loading'
@@ -134,7 +134,7 @@ export default function Files({ user }) {
                               <GatewayLink cid={nft.cid} />
                             </td>
                             <td className="pa2 br b--black mw7">
-                              {filesize(nft.size || 0)}
+                              {bytes(nft.size || 0)}
                             </td>
                             <td className="pa2">
                               <form onSubmit={handleDeleteFile}>

@@ -1,0 +1,30 @@
+Update(Collection('Cursor'), {
+  data: {
+    gql: {
+      meta: {
+        name: 'Cursor',
+        fields: [
+          {
+            name: 'id',
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
+          },
+        ],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'Cursor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  history_days: 30,
+  ttl_days: null,
+  permissions: null,
+})

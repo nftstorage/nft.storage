@@ -1,0 +1,6 @@
+CreateFunction({
+  name: 'findContentByCID',
+  body: Query(
+    Lambda(['cid'], Get(Match(Index('unique_Content_cid'), Var('cid'))))
+  ),
+})

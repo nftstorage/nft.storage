@@ -1,47 +1,42 @@
 CreateFunction({
-  name: 'reportResourceProblem',
+  name: 'updateTokenAsset',
   body: Query(
     Lambda(
       ['input'],
-      Let(
-        {
-          id: Select('resourceID', Var('input')),
-        },
-        Update(Ref(Collection('Resource'), Var('id')), {
-          data: {
-            status: Select('status', Var('input')),
-            problem: Select('problem', Var('input')),
-          },
-        })
+      If(
+        Equals(Select('status', Var('input')), 'Linked'),
+        Call('linkTokenAsset', Var('input')),
+        Call('reportTokenAssetFailure', Var('input'))
       )
     )
   ),
   data: {
     gql: {
-      ts: Time('2021-06-10T19:21:07.965343Z'),
       meta: {
         location: 'Mutation',
         field: {
-          name: 'reportResourceProblem',
+          name: 'updateTokenAsset',
           directives: [
             {
               name: 'resolver',
               args: {
-                name: 'reportResourceProblem',
+                name: 'updateTokenAsset',
                 paginated: false,
               },
             },
           ],
           type: {
             NotNull: {
-              Named: 'Resource',
+              Named: 'TokenAsset',
             },
           },
           arguments: [
             {
               name: 'input',
               type: {
-                Named: 'ResourceProblemInput',
+                NotNull: {
+                  Named: 'TokenAssetUpdate',
+                },
               },
             },
           ],

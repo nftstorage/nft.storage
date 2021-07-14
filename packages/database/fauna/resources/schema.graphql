@@ -56,21 +56,71 @@ type TokenAsset {
   tokenURI: String! @unique
 
   """
+  Represents `ipfs://` URL for this content. Sometimes this is derived when
+  resource uri is parsed. E.g. if discovered resource uri was
+  https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+  to be ipfs://Qm...Hash/file/path.
+
+  If `uri` can not be inferred as an ipfs URL this field will be omitted.
+  """
+  ipfsURL: String @index
+
+  """
   When `tokenURI` points to JSON file that conforms to the ERC721 Metadata JSON
   Schema it is fetched parsed and stored as related Metadata document.
   """
   metadata: Metadata @relation
 
-  """
-  Problem description if failed to get the metadata.
-  """
-  problem: String
-
   # Note: Can not make this required field as we already have ton of records
   # that do not contain this field
-  created: Time
+  created: Time!
 
-  updated: Time
+  """
+  Time when resource record was last updated.
+  """
+  updated: Time!
+
+  """
+  Status of the token asset
+  """
+  status: TokenAssetStatus! @index
+  """
+  Human readable description of the status. Usually this ellaborates a reason
+  why token analyzer has failed providing with an error message and stack trace.
+  """
+  statusText: String
+}
+
+enum TokenAssetStatus {
+  """
+  Token asset was queued (for the analyzer to process).
+  """
+  Queued
+
+  """
+  tokenURI is either malformed or the protocol is not supported.
+  """
+  URIParseFailed
+
+  """
+  Was unable to fetch the content.
+  """
+  ContentFetchFailed
+
+  """
+  Parsing ERC721 metadata failed.
+  """
+  ContentParseFailed
+
+  """
+  Failed to create a metadata pin request.
+  """
+  PinRequestFailed
+
+  """
+  Metadata was parsed and all the resources were linked.
+  """
+  Linked
 }
 
 type Metadata {
@@ -119,47 +169,99 @@ enum ResourceStatus {
   ContentFetchFailed
 
   """
+  Failed to complete a pin request.
+  """
+  PinRequestFailed
+
+  """
   Corresponding content was linked.
   """
   ContentLinked
 }
 
+"""
+Represents a resource that non-fungible token metadata referenced via URI. In
+most cases when created will have `uri` discovered on chain with a status
+`Queued`. Followup jobs will then attempt to locate and pin it's content
+updating it's state.
+"""
 type Resource {
+  """
+  Backlinks to each non-fungible token metadata that referenced resource with
+  this `uri`.
+  """
   referrers: [Metadata!] @relation
-  directoryUploads: [DirectoryUpload!] @relation
 
+  """
+  Describes current status of the resource. When resource is discovered during
+  chain scrape record is created with Queued state. Cron job later comes along
+  and processes queued resources fetching / pinning them.
+  """
   status: ResourceStatus! @index
+
+  """
+  Human readable description of the status. Would contain error message & stack
+  trace when resource has failed status. Likely omitted when resource is queued
+  or succefully linked.
+  """
+  statusText: String
+
+  """
+  Time when resource was created.
+  """
   created: Time!
+
+  """
+  Time when resource record was last updated.
+  """
   updated: Time!
 
   """
-  URI with which resource was identified.
+  URI this resource corresponds to. Resources are created for all the URIs
+  that NFT token metadata references.
   """
   uri: String! @unique @index
 
   """
-  ipfs:// url if `uri` was referring to gateway URL.
+  Represents `ipfs://` URL for this content. Sometimes this is derived when
+  resource uri is parsed. E.g. if discovered resource uri was
+  https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+  to be ipfs://Qm...Hash/file/path.
+
+  If `uri` can not be inferred as an ipfs URL this field will be omitted.
   """
   ipfsURL: String @index
 
+  """
+  Content referrerced by this resource. When `ipfsURL` is derived content
+  archiving job will simply pin content by that URL and update resource linking
+  resource to it. If however `ipfsURL` could not be derived archiving job will
+  attempt to fetch the content from `uri` and pin it again linkking resource
+  to it.
+
+  Content field is only going to be present when resource has a `ContentLinked`
+  status. From that point on resource is no longer going to be updated.
+  """
   content: Content! @index
-
-  contentType: String
-
-  """
-  Problem description if there was problem in pinning a resource.
-  """
-  problem: String
 }
 
 """
-Details of the root of a file/directory stored on web3.storage.
+Content correspnoding to a resource(s) that were referreced by non-fungible
+token metadata. It is identified and unique by it's cid. Content may represent
+a file, directory or arbitrary Dag in IPFS network.
 """
 type Content {
   """
-  Backlinks to all the resources that link to this content.
+  Root CID for this content.
+  """
+  cid: String! @unique
+
+  """
+  Backlikns to al lthe resources that resolve to this content. Note that
+  different resource URIs may resolve to the same CID.
   """
   resources: [Resource!] @relation
+
   """
   Backlinks to blob uploads that have provided this content.
   """
@@ -181,19 +283,9 @@ type Content {
   ipnfts: [IPNFT!] @relation
 
   """
-  Root CID for this content.
-  """
-  cid: String! @unique
-
-  """
   IPFS nodes pinning this content.
   """
   pins: [Pin]! @relation
-
-  """
-  Filecoin deals referencing this content.
-  """
-  deals: [Deal!]! @relation
 
   """
   Size of the DAG in bytes. Set if known on upload or for partials is set when
@@ -216,17 +308,27 @@ type Pin {
   """
   content: Content! @relation
   """
-  Identifier for the service that is pinning this pin.
+  Reference to a pin location that is pinning it.
   """
   location: PinLocation! @relation
   """
   Pinning status at this location.
   """
-  status: PinStatus!
+  status: PinStatus! @index
   """
-  Last time the status was updated.
+  Human readable description of the pin status. Present only when status needs
+  ellaboration e.g. when pin is failed or when pin is queued but actual status
+  could not be obtained from the node.
+  """
+  statusText: String
+  """
+  Last time pin status was updated.
   """
   updated: Time!
+  """
+  Time when pin was created.
+  """
+  created: Time!
 }
 
 """
@@ -254,18 +356,27 @@ type PinLocation {
   region: String
 }
 
+# Based on the ipfs cluster pin status enum
+# https://github.com/ipfs/ipfs-cluster/blob/8454cd6383170d17a95180a8d137fcaa2a63bbba/api/types.go#L52-L80
+# but is stipped down to only relevant variants as per thread
+# https://github.com/web3-storage/web3.storage/issues/31
 enum PinStatus {
-  Undefined
-  ClusterError
-  PinError
-  UnpinError
+  """
+  An error occurred pinning.
+  """
+  PinFailed
+  """
+  Node has pinned the content.
+  """
   Pinned
+  """
+  Node is currently pinning the content.
+  """
   Pinning
-  Unpinned
-  Remote
+  """
+  The item has been queued for pinning.
+  """
   PinQueued
-  UnpinQueued
-  Sharded
 }
 
 """
@@ -425,12 +536,6 @@ input ERC721ImportTokenOwnerInput {
   id: ID!
 }
 
-enum TokenAssetStatus {
-  Queued
-  Failed
-  Succeeded
-}
-
 input FindTokenAssetsInput {
   status: TokenAssetStatus
 }
@@ -447,7 +552,11 @@ type Query {
   block(hash: ID, number: Long): Block
   constract(id: ID): TokenContract
 
+  findContentByCID(cid: ID): Content @resolver @relation
+  findResourceByURI(uri: String): Resource @resolver @relation
+
   allImports: [ERC721ImportResult!] @relation
+
   """
   Provides tokens with the
   """
@@ -458,22 +567,6 @@ type Query {
   findResources(where: FindResourceInput): [Resource!]!
     @resolver(paginated: true)
     @relation
-}
-
-input TokenAssetProblemInput {
-  """
-  ID of the TokenAsset
-  """
-  tokenAssetID: ID!
-  """
-  Problem description
-  """
-  problem: String!
-}
-
-input TokenMetadataImportInput {
-  tokenAssetID: ID!
-  metadata: MetadataInput
 }
 
 input MetadataInput {
@@ -506,39 +599,69 @@ input ResourceInput {
   ipfsURL: String
 }
 
-input ResourceProblemInput {
-  resourceID: ID!
-  status: ResourceStatus!
-  problem: String!
+input UpdateTokenAssetsInput {
+  updates: [TokenAssetUpdate!]!
 }
 
-input ResorcePinInput {
-  resourceID: ID!
+input TokenAssetUpdate {
+  id: ID!
+  """
+  If IPFS URL was inferred from the uri this will be set. When passed status
+  field should either be ContentFetchFailed or ContentLinked.
+  """
+  ipfsURL: String
+
+  status: TokenAssetStatus!
+  statusText: String!
+  metadata: MetadataInput
+}
+
+input UpdateResourcesInput {
+  updates: [ResourceUpdate!]!
+}
+
+"""
+Represents update of the individual resource.
+"""
+input ResourceUpdate {
+  id: ID!
+  """
+  New status for the resource. Update will only apply when status moves forward
+  Queued -> URIParseFailed -> ContentFetchFailed -> PinRequestFailed -> ContentLinked
+
+  Skipping state is fine, however attempt to change status from e.g.
+  ContentLinked to URIParseFailed is simply ignored.
+  """
   status: ResourceStatus!
-  ipfsURL: String!
-  cid: String!
+
+  """
+  Status description.
+  """
+  statusText: String!
+
+  """
+  If IPFS URL was inferred from the uri this will be set. When passed status
+  field should either be ContentFetchFailed or ContentLinked.
+  """
+  ipfsURL: String
+
+  """
+  If provided status should be `ContentLinked`.
+  """
+  cid: String
 }
 
 type Mutation {
   importERC721(input: ERC721ImportInput!): ERC721ImportResult! @resolver
 
-  """
-  Reports problem with a TokenAsset e.g. it was impossible to parse URI
-  or was unable to fetch content from URI, or content was not a JSON.
+  updateTokenAssets(input: UpdateTokenAssetsInput!): [TokenAsset!]! @resolver
+  updateTokenAsset(input: TokenAssetUpdate!): TokenAsset! @resolver
 
-  Call is rejected if status isn't Queued.
-  """
-  reportTokenAssetProblem(input: TokenAssetProblemInput): TokenAsset! @resolver
+  updateTokenAssets(input: UpdateTokenAssetsInput!): [TokenAsset!]! @resolver
+  updateTokenAsset(input: TokenAssetUpdate!): TokenAsset! @resolver
 
-  """
-  Imports Token Metadata. Will be rejected if corresponding asset status isn't
-  Queued. Otherwise updates corresponding TokenAsset transitioning it to
-  Succeeded state.
-  """
-  importTokenMetadata(input: TokenMetadataImportInput): Metadata! @resolver
-
-  reportResourceProblem(input: ResourceProblemInput): Resource! @resolver
-  updateResourcePin(input: ResorcePinInput): Resource! @resolver
+  updateResources(input: UpdateResourcesInput): [Resource!]! @resolver
+  updateResource(input: ResourceUpdate): Resource! @resolver
 
   importBlob(input: ImportBlobInput): Upload! @resolver
   importDirectory(input: ImportDirectoryInput): Upload! @resolver
@@ -584,7 +707,7 @@ type DirectoryUpload {
   """
   Files that this directory encloses.
   """
-  files: [Resourc!] @relation
+  files: [Resource!] @relation
 
   """
   Creation date.
@@ -806,4 +929,128 @@ type UserKey {
   Deletion date.
   """
   deleted: Time
+}
+
+type BlobUpload {
+  """
+  User authentication token that was used to upload this content.
+  """
+  userKey: UserKey! @relation
+
+  """
+  Uploaded content.
+  """
+  content: Content! @relation
+
+  """
+  Creation date.
+  """
+  created: Time!
+
+  """
+  Deletion date.
+  """
+  deleted: Time
+}
+
+type DirectoryUpload {
+  """
+  User authentication token that was used to upload this content.
+  """
+  userKey: UserKey! @relation
+
+  """
+  Content correspnoding to the directory wrapping all the files.
+  """
+  content: Content! @relation
+
+  """
+  Files that this directory encloses.
+  """
+  files: [Resourc!] @relation
+
+  """
+  Creation date.
+  """
+  created: Time!
+
+  """
+  Deletion date.
+  """
+  deleted: Time
+}
+
+type CarUpload {
+  """
+  User authentication token that was used to upload this content.
+  """
+  userKey: UserKey! @relation
+
+  """
+  Creation date.
+  """
+  created: Time!
+
+  """
+  Deletion date.
+  """
+  deleted: Time
+
+  """
+  User provided name for this upload.
+  """
+  name: String
+
+  """
+  The root of the uploaded content.
+  """
+  content: Content! @relation
+}
+
+type RemotePinningServiceUpload {
+  """
+  User authentication token that was used to upload this content.
+  """
+  userKey: UserKey! @relation
+
+  """
+  Creation date.
+  """
+  created: Time!
+
+  """
+  Deletion date.
+  """
+  deleted: Time
+
+  """
+  The root of the uploaded content.
+  """
+  content: Content!
+}
+
+type TokenUpload {
+  """
+  User authentication token that was used to upload this content.
+  """
+  userKey: UserKey! @relation
+
+  """
+  Creation date.
+  """
+  created: Time!
+
+  """
+  Deletion date.
+  """
+  deleted: Time
+
+  ipnft: IPNFT! @relation
+}
+
+type IPNFT {
+  content: Content! @relation @unique
+  tokenAsset: TokenAsset! @relation
+
+  created: Time!
 }

@@ -10,5 +10,7 @@ import { stores } from '../constants.js'
  */
 export const get = async (cid) => {
   const data = await stores.deals.get(cid)
-  return data == null ? [] : JSON.parse(data)
+  if (data == null) return []
+  const deals = JSON.parse(data)
+  return Array.isArray(deals) ? deals : []
 }

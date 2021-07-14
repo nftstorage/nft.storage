@@ -102,6 +102,142 @@ input BlockTokensRelation {
   disconnect: [ID]
 }
 
+"""
+Content correspnoding to a resource(s) that were referreced by non-fungible
+token metadata. It is identified and unique by it's cid. Content may represent
+a file, directory or arbitrary Dag in IPFS network.
+"""
+type Content {
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  Root CID for this content.
+  """
+  cid: String!
+
+  """
+  Size of the DAG in bytes. Set if known on upload or for partials is set when
+  content is fully pinned in at least one location.
+  """
+  dagSize: Int
+
+  """
+  IPFS nodes pinning this content.
+  """
+  pins(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): PinPage!
+
+  """
+  Backlikns to al lthe resources that resolve to this content. Note that
+  different resource URIs may resolve to the same CID.
+  """
+  resources(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): ResourcePage!
+
+  """
+  Creation date.
+  """
+  created: Time!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+"""
+'Content' input values
+"""
+input ContentInput {
+  """
+  Root CID for this content.
+  """
+  cid: String!
+
+  """
+  Backlikns to al lthe resources that resolve to this content. Note that
+  different resource URIs may resolve to the same CID.
+  """
+  resources: ContentResourcesRelation
+
+  """
+  IPFS nodes pinning this content.
+  """
+  pins: ContentPinsRelation
+
+  """
+  Size of the DAG in bytes. Set if known on upload or for partials is set when
+  content is fully pinned in at least one location.
+  """
+  dagSize: Int
+
+  """
+  Creation date.
+  """
+  created: Time!
+}
+
+"""
+Allow manipulating the relationship between the types 'Content' and 'Pin'.
+"""
+input ContentPinsRelation {
+  """
+  Create one or more documents of type 'Pin' and associate them with the current document.
+  """
+  create: [PinInput]
+
+  """
+  Connect one or more documents of type 'Pin' with the current document using their IDs.
+  """
+  connect: [ID]
+
+  """
+  Disconnect the given documents of type 'Pin' from the current document using their IDs.
+  """
+  disconnect: [ID]
+}
+
+"""
+Allow manipulating the relationship between the types 'Content' and 'Resource'.
+"""
+input ContentResourcesRelation {
+  """
+  Create one or more documents of type 'Resource' and associate them with the current document.
+  """
+  create: [ResourceInput]
+
+  """
+  Connect one or more documents of type 'Resource' with the current document using their IDs.
+  """
+  connect: [ID]
+
+  """
+  Disconnect the given documents of type 'Resource' from the current document using their IDs.
+  """
+  disconnect: [ID]
+}
+
 type Cursor {
   """
   The document's ID.
@@ -289,6 +425,10 @@ type Metadata {
   """
   name: String!
   source: TokenAsset!
+
+  """
+  Additional assets that token linked to
+  """
   assets(
     """
     The number of items to return per page.
@@ -315,7 +455,11 @@ type Metadata {
   The document's ID.
   """
   _id: ID!
-  cid: String!
+
+  """
+  Content corresponding to the metadata.
+  """
+  content: Content!
 
   """
   The document's timestamp.
@@ -341,6 +485,21 @@ input MetadataAssetsRelation {
   Disconnect the given documents of type 'Resource' from the current document using their IDs.
   """
   disconnect: [ID]
+}
+
+"""
+Allow manipulating the relationship between the types 'Metadata' and 'Content' using the field 'Metadata.content'.
+"""
+input MetadataContentRelation {
+  """
+  Create a document of type 'Content' and associate it with the current document.
+  """
+  create: ContentInput
+
+  """
+  Connect a document of type 'Content' with the current document using its ID.
+  """
+  connect: ID
 }
 
 """
@@ -433,6 +592,16 @@ type Mutation {
   ): Owner
 
   """
+  Create a new document in the collection of 'Pin'
+  """
+  createPin(
+    """
+    'Pin' input values
+    """
+    data: PinInput!
+  ): Pin!
+
+  """
   Delete an existing document in the collection of 'TokenAsset'
   """
   deleteTokenAsset(
@@ -441,6 +610,21 @@ type Mutation {
     """
     id: ID!
   ): TokenAsset
+
+  """
+  Update an existing document in the collection of 'Pin'
+  """
+  updatePin(
+    """
+    The 'Pin' document's ID
+    """
+    id: ID!
+
+    """
+    'Pin' input values
+    """
+    data: PinInput!
+  ): Pin
 
   """
   Create a new document in the collection of 'Metadata'
@@ -463,21 +647,6 @@ type Mutation {
   ): Token
 
   """
-  Update an existing document in the collection of 'Task'
-  """
-  updateTask(
-    """
-    The 'Task' document's ID
-    """
-    id: ID!
-
-    """
-    'Task' input values
-    """
-    data: TaskInput!
-  ): Task
-
-  """
   Create a new document in the collection of 'Block'
   """
   createBlock(
@@ -486,13 +655,6 @@ type Mutation {
     """
     data: BlockInput!
   ): Block!
-
-  """
-  Imports Token Metadata. Will be rejected if corresponding asset status isn't
-  Queued. Otherwise updates corresponding TokenAsset transitioning it to
-  Succeeded state.
-  """
-  importTokenMetadata(input: TokenMetadataImportInput): Metadata!
 
   """
   Delete an existing document in the collection of 'ERC721ImportResult'
@@ -530,6 +692,16 @@ type Mutation {
   ): TokenContract!
 
   """
+  Create a new document in the collection of 'PinLocation'
+  """
+  createPinLocation(
+    """
+    'PinLocation' input values
+    """
+    data: PinLocationInput!
+  ): PinLocation!
+
+  """
   Create a new document in the collection of 'Resource'
   """
   createResource(
@@ -555,6 +727,16 @@ type Mutation {
   ): Cursor
 
   """
+  Delete an existing document in the collection of 'PinLocation'
+  """
+  deletePinLocation(
+    """
+    The 'PinLocation' document's ID
+    """
+    id: ID!
+  ): PinLocation
+
+  """
   Create a new document in the collection of 'Token'
   """
   createToken(
@@ -573,8 +755,8 @@ type Mutation {
     """
     id: ID!
   ): Cursor
-  reportResourceProblem(input: ResourceProblemInput): Resource!
   importERC721(input: ERC721ImportInput!): ERC721ImportResult!
+  updateResources(input: UpdateResourcesInput): [Resource!]!
 
   """
   Update an existing document in the collection of 'TokenContract'
@@ -602,6 +784,21 @@ type Mutation {
   ): Resource
 
   """
+  Update an existing document in the collection of 'PinLocation'
+  """
+  updatePinLocation(
+    """
+    The 'PinLocation' document's ID
+    """
+    id: ID!
+
+    """
+    'PinLocation' input values
+    """
+    data: PinLocationInput!
+  ): PinLocation
+
+  """
   Update an existing document in the collection of 'Owner'
   """
   updateOwner(
@@ -615,21 +812,7 @@ type Mutation {
     """
     data: OwnerInput!
   ): Owner
-
-  """
-  Update an existing document in the collection of 'TokenAsset'
-  """
-  updateTokenAsset(
-    """
-    The 'TokenAsset' document's ID
-    """
-    id: ID!
-
-    """
-    'TokenAsset' input values
-    """
-    data: TokenAssetInput!
-  ): TokenAsset
+  updateTokenAsset(input: TokenAssetUpdate!): TokenAsset!
 
   """
   Delete an existing document in the collection of 'Block'
@@ -652,6 +835,16 @@ type Mutation {
   ): TokenAsset!
 
   """
+  Delete an existing document in the collection of 'Pin'
+  """
+  deletePin(
+    """
+    The 'Pin' document's ID
+    """
+    id: ID!
+  ): Pin
+
+  """
   Create a new document in the collection of 'Cursor'
   """
   createCursor(
@@ -660,16 +853,6 @@ type Mutation {
     """
     data: CursorInput!
   ): Cursor!
-
-  """
-  Create a new document in the collection of 'Task'
-  """
-  createTask(
-    """
-    'Task' input values
-    """
-    data: TaskInput!
-  ): Task!
 
   """
   Update an existing document in the collection of 'Token'
@@ -687,14 +870,14 @@ type Mutation {
   ): Token
 
   """
-  Delete an existing document in the collection of 'Task'
+  Create a new document in the collection of 'Content'
   """
-  deleteTask(
+  createContent(
     """
-    The 'Task' document's ID
+    'Content' input values
     """
-    id: ID!
-  ): Task
+    data: ContentInput!
+  ): Content!
 
   """
   Create a new document in the collection of 'ERC721ImportResult'
@@ -727,20 +910,21 @@ type Mutation {
   ): Owner!
 
   """
-  Update an existing document in the collection of 'Resource'
+  Update an existing document in the collection of 'Content'
   """
-  updateResource(
+  updateContent(
     """
-    The 'Resource' document's ID
+    The 'Content' document's ID
     """
     id: ID!
 
     """
-    'Resource' input values
+    'Content' input values
     """
-    data: ResourceInput!
-  ): Resource
-  updateResourcePin(input: ResorcePinInput): Resource!
+    data: ContentInput!
+  ): Content
+  updateTokenAssets(input: UpdateTokenAssetsInput!): [TokenAsset!]!
+  updateResource(input: ResourceUpdate): Resource!
 
   """
   Delete an existing document in the collection of 'Metadata'
@@ -768,12 +952,14 @@ type Mutation {
   ): Block
 
   """
-  Reports problem with a TokenAsset e.g. it was impossible to parse URI
-  or was unable to fetch content from URI, or content was not a JSON.
-
-  Call is rejected if status isn't Queued.
+  Delete an existing document in the collection of 'Content'
   """
-  reportTokenAssetProblem(input: TokenAssetProblemInput): TokenAsset!
+  deleteContent(
+    """
+    The 'Content' document's ID
+    """
+    id: ID!
+  ): Content
 
   """
   Update an existing document in the collection of 'ERC721ImportResult'
@@ -809,6 +995,252 @@ type Owner {
 """
 input OwnerInput {
   id: ID!
+}
+
+"""
+Information for piece of content pinned in IPFS.
+"""
+type Pin {
+  """
+  Reference to a pin location that is pinning it.
+  """
+  location: PinLocation!
+
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  Human readable description of the pin status. Present only when status needs
+  ellaboration e.g. when pin is failed or when pin is queued but actual status
+  could not be obtained from the node.
+  """
+  statusText: String
+
+  """
+  Last time pin status was updated.
+  """
+  updated: Time!
+
+  """
+  Pinning status at this location.
+  """
+  status: PinStatus!
+
+  """
+  The content being pinned.
+  """
+  content: Content!
+
+  """
+  Time when pin was created.
+  """
+  created: Time!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+"""
+Allow manipulating the relationship between the types 'Pin' and 'Content' using the field 'Pin.content'.
+"""
+input PinContentRelation {
+  """
+  Create a document of type 'Content' and associate it with the current document.
+  """
+  create: ContentInput
+
+  """
+  Connect a document of type 'Content' with the current document using its ID.
+  """
+  connect: ID
+}
+
+"""
+'Pin' input values
+"""
+input PinInput {
+  """
+  The content being pinned.
+  """
+  content: PinContentRelation
+
+  """
+  Reference to a pin location that is pinning it.
+  """
+  location: PinLocationRelation
+
+  """
+  Pinning status at this location.
+  """
+  status: PinStatus!
+
+  """
+  Human readable description of the pin status. Present only when status needs
+  ellaboration e.g. when pin is failed or when pin is queued but actual status
+  could not be obtained from the node.
+  """
+  statusText: String
+
+  """
+  Last time pin status was updated.
+  """
+  updated: Time!
+
+  """
+  Time when pin was created.
+  """
+  created: Time!
+}
+
+"""
+Location of a pin.
+"""
+type PinLocation {
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  Libp2p peer ID of the node pinning this pin.
+  """
+  peerId: String!
+
+  """
+  Name of the peer pinning this pin.
+  """
+  peerName: String
+
+  """
+  Known pins at this location.
+  """
+  pins(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): PinPage!
+
+  """
+  Geographic region this node resides in.
+  """
+  region: String
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+"""
+'PinLocation' input values
+"""
+input PinLocationInput {
+  """
+  Known pins at this location.
+  """
+  pins: PinLocationPinsRelation
+
+  """
+  Libp2p peer ID of the node pinning this pin.
+  """
+  peerId: String!
+
+  """
+  Name of the peer pinning this pin.
+  """
+  peerName: String
+
+  """
+  Geographic region this node resides in.
+  """
+  region: String
+}
+
+"""
+Allow manipulating the relationship between the types 'PinLocation' and 'Pin'.
+"""
+input PinLocationPinsRelation {
+  """
+  Create one or more documents of type 'Pin' and associate them with the current document.
+  """
+  create: [PinInput]
+
+  """
+  Connect one or more documents of type 'Pin' with the current document using their IDs.
+  """
+  connect: [ID]
+
+  """
+  Disconnect the given documents of type 'Pin' from the current document using their IDs.
+  """
+  disconnect: [ID]
+}
+
+"""
+Allow manipulating the relationship between the types 'Pin' and 'PinLocation' using the field 'Pin.location'.
+"""
+input PinLocationRelation {
+  """
+  Create a document of type 'PinLocation' and associate it with the current document.
+  """
+  create: PinLocationInput
+
+  """
+  Connect a document of type 'PinLocation' with the current document using its ID.
+  """
+  connect: ID
+}
+
+"""
+The pagination object for elements of type 'Pin'.
+"""
+type PinPage {
+  """
+  The elements of type 'Pin' in this page.
+  """
+  data: [Pin]!
+
+  """
+  A cursor for elements coming after the current page.
+  """
+  after: String
+
+  """
+  A cursor for elements coming before the current page.
+  """
+  before: String
+}
+
+enum PinStatus {
+  """
+  An error occurred pinning.
+  """
+  PinFailed
+
+  """
+  Node has pinned the content.
+  """
+  Pinned
+
+  """
+  Node is currently pinning the content.
+  """
+  Pinning
+
+  """
+  The item has been queued for pinning.
+  """
+  PinQueued
 }
 
 type Query {
@@ -868,6 +1300,7 @@ type Query {
     """
     id: ID!
   ): Token
+  findContentByCID(cid: ID): Content
   allImports(
     """
     The number of items to return per page.
@@ -912,15 +1345,25 @@ type Query {
   ): Metadata
 
   """
-  Find a document from the collection of 'Task' by its id.
+  Find a document from the collection of 'PinLocation' by its id.
   """
-  findTaskByID(
+  findPinLocationByID(
     """
-    The 'Task' document's ID
+    The 'PinLocation' document's ID
     """
     id: ID!
-  ): Task
+  ): PinLocation
   block(hash: ID, number: Long): Block
+
+  """
+  Find a document from the collection of 'Content' by its id.
+  """
+  findContentByID(
+    """
+    The 'Content' document's ID
+    """
+    id: ID!
+  ): Content
 
   """
   Find a document from the collection of 'Cursor' by its id.
@@ -967,6 +1410,17 @@ type Query {
     mintTime: String
   ): TokenPage!
   owner(id: ID): Owner
+  findResourceByURI(uri: String): Resource
+
+  """
+  Find a document from the collection of 'Pin' by its id.
+  """
+  findPinByID(
+    """
+    The 'Pin' document's ID
+    """
+    id: ID!
+  ): Pin
   allTokens(
     """
     The number of items to return per page.
@@ -1020,39 +1474,69 @@ type QueryFindTokenAssetsPage {
   before: String
 }
 
-input ResorcePinInput {
-  resourceID: ID!
-  status: ResourceStatus!
-  ipfsURL: String!
-  cid: String!
-}
-
+"""
+Represents a resource that non-fungible token metadata referenced via URI. In
+most cases when created will have `uri` discovered on chain with a status
+`Queued`. Followup jobs will then attempt to locate and pin it's content
+updating it's state.
+"""
 type Resource {
-  """
-  Problem description if there was problem in pinning a resource.
-  """
-  problem: String
-
   """
   The document's ID.
   """
   _id: ID!
 
   """
-  URI with which resource was identified.
+  URI this resource corresponds to. Resources are created for all the URIs
+  that NFT token metadata references.
   """
   uri: String!
 
   """
-  CID that corresponds to this resource, set once resourec is pinned.
+  Human readable description of the status. Would contain error message & stack
+  trace when resource has failed status. Likely omitted when resource is queued
+  or succefully linked.
   """
-  cid: String
+  statusText: String
 
   """
-  ipfs:// url if `uri` was referring to gateway URL.
+  Time when resource record was last updated.
+  """
+  updated: Time!
+
+  """
+  Represents `ipfs://` URL for this content. Sometimes this is derived when
+  resource uri is parsed. E.g. if discovered resource uri was
+  https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+  to be ipfs://Qm...Hash/file/path.
+
+  If `uri` can not be inferred as an ipfs URL this field will be omitted.
   """
   ipfsURL: String
+
+  """
+  Describes current status of the resource. When resource is discovered during
+  chain scrape record is created with Queued state. Cron job later comes along
+  and processes queued resources fetching / pinning them.
+  """
   status: ResourceStatus!
+
+  """
+  Content referrerced by this resource. When `ipfsURL` is derived content
+  archiving job will simply pin content by that URL and update resource linking
+  resource to it. If however `ipfsURL` could not be derived archiving job will
+  attempt to fetch the content from `uri` and pin it again linkking resource
+  to it.
+
+  Content field is only going to be present when resource has a `ContentLinked`
+  status. From that point on resource is no longer going to be updated.
+  """
+  content: Content!
+
+  """
+  Backlinks to each non-fungible token metadata that referenced resource with
+  this `uri`.
+  """
   referrers(
     """
     The number of items to return per page.
@@ -1066,9 +1550,29 @@ type Resource {
   ): MetadataPage!
 
   """
+  Time when resource was created.
+  """
+  created: Time!
+
+  """
   The document's timestamp.
   """
   _ts: Long!
+}
+
+"""
+Allow manipulating the relationship between the types 'Resource' and 'Content' using the field 'Resource.content'.
+"""
+input ResourceContentRelation {
+  """
+  Create a document of type 'Content' and associate it with the current document.
+  """
+  create: ContentInput
+
+  """
+  Connect a document of type 'Content' with the current document using its ID.
+  """
+  connect: ID
 }
 
 input ResourceInput {
@@ -1094,12 +1598,6 @@ type ResourcePage {
   A cursor for elements coming before the current page.
   """
   before: String
-}
-
-input ResourceProblemInput {
-  resourceID: ID!
-  status: ResourceStatus!
-  problem: String!
 }
 
 input ResourceQuery {
@@ -1129,119 +1627,61 @@ input ResourceReferrersRelation {
 
 enum ResourceStatus {
   """
-  Has not been processed yet
+  Resource was queued to be processed.
   """
-  Idle
+  Queued
 
   """
-  Pin request started. This usually implies that we found a CID in the
-  tokenURI (because it was a gateway URL) so we started a pin but do not
-  know if it was possible to fetch content.
+  URI is either malformed or the protocol is not supported.
   """
-  PinQueued
-
-  """
-  Was pinned succesfully
-  """
-  Pinned
-
-  """
-  tokenURI is either malformed or the protocol is not supported.
-  """
-  FailedURIParse
+  URIParseFailed
 
   """
   Was unable to fetch the content.
   """
-  FailedFetch
+  ContentFetchFailed
 
   """
-  Pin request failed, can happen when pinned by CID but correspoding content
-  is not on the network.
+  Failed to complete a pin request.
   """
-  PinFailure
+  PinRequestFailed
+
+  """
+  Corresponding content was linked.
+  """
+  ContentLinked
 }
 
 """
-Describen an operation that may fail, like an HTTP
-request or a JSON parse.
-
-Fauna does not support union types so we get by using a
-single struct represeting union:
-type Task =
-  | { status: 'idle', attempt: int }
-  | { status: 'queued' attempt: int }
-  | { status: 'pending', start: Time, attempt: int }
-  | { status: 'failed', end: Time, error: String, attempt: int }
-  | { status: 'done', end: Time, attempt: int }
+Represents update of the individual resource.
 """
-type Task {
-  """
-  The document's ID.
-  """
-  _id: ID!
+input ResourceUpdate {
+  id: ID!
 
   """
-  Error message in cas task failed
+  New status for the resource. Update will only apply when status moves forward
+  Queued -> URIParseFailed -> ContentFetchFailed -> PinRequestFailed -> ContentLinked
+
+  Skipping state is fine, however attempt to change status from e.g.
+  ContentLinked to URIParseFailed is simply ignored.
   """
-  error: String
+  status: ResourceStatus!
 
   """
-  Status of the task
+  Status description.
   """
-  status: String!
+  statusText: String!
 
   """
-  Time at which task failed
+  If IPFS URL was inferred from the uri this will be set. When passed status
+  field should either be ContentFetchFailed or ContentLinked.
   """
-  end: Time
+  ipfsURL: String
 
   """
-  An attempt number. Usuallly 1, but could be greater
-  on retries
+  If provided status should be `ContentLinked`.
   """
-  attempt: Int!
-
-  """
-  Time at which task started
-  """
-  start: Time
-
-  """
-  The document's timestamp.
-  """
-  _ts: Long!
-}
-
-"""
-'Task' input values
-"""
-input TaskInput {
-  """
-  Status of the task
-  """
-  status: String!
-
-  """
-  An attempt number. Usuallly 1, but could be greater
-  on retries
-  """
-  attempt: Int!
-
-  """
-  Time at which task started
-  """
-  start: Time
-
-  """
-  Time at which task failed
-  """
-  end: Time
-
-  """
-  Error message in cas task failed
-  """
-  error: String
+  cid: String
 }
 
 scalar Time
@@ -1291,35 +1731,59 @@ type Token {
   _ts: Long!
 }
 
+"""
+TokenAsset represents contents of the tokenURI which may not have been found /
+pinned yet. It may have been added by the chain scraper, when token with this
+`tokenURI` was discovered. Alternatively it could have been created by an
+upload to nft.storage, in which case it may not have any refferers but it would
+have uploads.
+"""
 type TokenAsset {
-  """
-  Problem description if failed to get the metadata.
-  """
-  problem: String
-
   """
   The document's ID.
   """
   _id: ID!
+
+  """
+  Human readable description of the status. Usually this ellaborates a reason
+  why token analyzer has failed providing with an error message and stack trace.
+  """
+  statusText: String
+
+  """
+  URI that was discovered either in the eth chain.
+  """
   tokenURI: String!
 
   """
-  When `tokenURI` points to may point to JSON file that conforms to the ERC721
-  Metadata JSON Schema it fetched parsed and stored as related Metadata
-  document.
+  Time when resource record was last updated.
+  """
+  updated: Time!
+
+  """
+  Represents `ipfs://` URL for this content. Sometimes this is derived when
+  resource uri is parsed. E.g. if discovered resource uri was
+  https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+  to be ipfs://Qm...Hash/file/path.
+
+  If `uri` can not be inferred as an ipfs URL this field will be omitted.
+  """
+  ipfsURL: String
+
+  """
+  Status of the token asset
+  """
+  status: TokenAssetStatus!
+
+  """
+  When `tokenURI` points to JSON file that conforms to the ERC721 Metadata JSON
+  Schema it is fetched parsed and stored as related Metadata document.
   """
   metadata: Metadata
 
   """
-  CID of an IPLD node that encapsulates token metadata and all it's assets.
-  Present when it was passibly to succesfully pin the token.
-  """
-  ipnft: String
-
-  """
-  Multiple tokens may have use a same `tokenURI`. This relation allows tracking
-  which tokens refer to the same `tokenURI`.
-  Token this metadata belogs to.
+  Tokens that have this `tokenURI`. This relation allows us to identify all
+  tokens that have a same `tokenURI`.
   """
   referrers(
     """
@@ -1332,6 +1796,7 @@ type TokenAsset {
     """
     _cursor: String
   ): TokenPage!
+  created: Time!
 
   """
   The document's timestamp.
@@ -1344,30 +1809,48 @@ type TokenAsset {
 """
 input TokenAssetInput {
   """
-  Multiple tokens may have use a same `tokenURI`. This relation allows tracking
-  which tokens refer to the same `tokenURI`.
-  Token this metadata belogs to.
+  Tokens that have this `tokenURI`. This relation allows us to identify all
+  tokens that have a same `tokenURI`.
   """
   referrers: TokenAssetReferrersRelation
+
+  """
+  URI that was discovered either in the eth chain.
+  """
   tokenURI: String!
 
   """
-  When `tokenURI` points to may point to JSON file that conforms to the ERC721
-  Metadata JSON Schema it fetched parsed and stored as related Metadata
-  document.
+  Represents `ipfs://` URL for this content. Sometimes this is derived when
+  resource uri is parsed. E.g. if discovered resource uri was
+  https://ipfs.io/ipfs/Qm...Hash/file/path it's ipfsURL will be derived
+  to be ipfs://Qm...Hash/file/path.
+
+  If `uri` can not be inferred as an ipfs URL this field will be omitted.
+  """
+  ipfsURL: String
+
+  """
+  When `tokenURI` points to JSON file that conforms to the ERC721 Metadata JSON
+  Schema it is fetched parsed and stored as related Metadata document.
   """
   metadata: TokenAssetMetadataRelation
+  created: Time!
 
   """
-  CID of an IPLD node that encapsulates token metadata and all it's assets.
-  Present when it was passibly to succesfully pin the token.
+  Time when resource record was last updated.
   """
-  ipnft: String
+  updated: Time!
 
   """
-  Problem description if failed to get the metadata.
+  Status of the token asset
   """
-  problem: String
+  status: TokenAssetStatus!
+
+  """
+  Human readable description of the status. Usually this ellaborates a reason
+  why token analyzer has failed providing with an error message and stack trace.
+  """
+  statusText: String
 }
 
 """
@@ -1383,18 +1866,6 @@ input TokenAssetMetadataRelation {
   Connect a document of type 'Metadata' with the current document using its ID.
   """
   connect: ID
-}
-
-input TokenAssetProblemInput {
-  """
-  ID of the TokenAsset
-  """
-  tokenAssetID: ID!
-
-  """
-  Problem description
-  """
-  problem: String!
 }
 
 """
@@ -1418,9 +1889,48 @@ input TokenAssetReferrersRelation {
 }
 
 enum TokenAssetStatus {
+  """
+  Token asset was queued (for the analyzer to process).
+  """
   Queued
-  Failed
-  Succeeded
+
+  """
+  tokenURI is either malformed or the protocol is not supported.
+  """
+  URIParseFailed
+
+  """
+  Was unable to fetch the content.
+  """
+  ContentFetchFailed
+
+  """
+  Parsing ERC721 metadata failed.
+  """
+  ContentParseFailed
+
+  """
+  Failed to create a metadata pin request.
+  """
+  PinRequestFailed
+
+  """
+  Metadata was parsed and all the resources were linked.
+  """
+  Linked
+}
+
+input TokenAssetUpdate {
+  id: ID!
+
+  """
+  If IPFS URL was inferred from the uri this will be set. When passed status
+  field should either be ContentFetchFailed or ContentLinked.
+  """
+  ipfsURL: String
+  status: TokenAssetStatus!
+  statusText: String!
+  metadata: MetadataInput
 }
 
 """
@@ -1570,11 +2080,6 @@ input TokenInput {
   imported: TokenImportedRelation
 }
 
-input TokenMetadataImportInput {
-  tokenAssetID: ID!
-  metadata: MetadataInput
-}
-
 """
 Allow manipulating the relationship between the types 'Token' and 'Owner' using the field 'Token.owner'.
 """
@@ -1628,4 +2133,12 @@ input TokenTokenAssetRelation {
   If true, disconnects this document from 'TokenAsset'
   """
   disconnect: Boolean
+}
+
+input UpdateResourcesInput {
+  updates: [ResourceUpdate!]!
+}
+
+input UpdateTokenAssetsInput {
+  updates: [TokenAssetUpdate!]!
 }

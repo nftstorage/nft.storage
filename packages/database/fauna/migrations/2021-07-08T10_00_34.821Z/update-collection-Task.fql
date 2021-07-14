@@ -1,8 +1,6 @@
-CreateCollection({
-  name: 'Task',
+Update(Collection('Task'), {
   data: {
     gql: {
-      ts: Time('2021-05-26T05:42:11.742756Z'),
       meta: {
         name: 'Task',
         description:
@@ -11,33 +9,56 @@ CreateCollection({
           {
             name: 'status',
             description: 'Status of the task',
-            type: { NotNull: { Named: 'String' } },
+            type: {
+              NotNull: {
+                Named: 'String',
+              },
+            },
           },
           {
             name: 'attempt',
             description:
               'An attempt number. Usuallly 1, but could be greater\non retries',
-            type: { NotNull: { Named: 'Int' } },
+            type: {
+              NotNull: {
+                Named: 'Int',
+              },
+            },
           },
           {
             name: 'start',
             description: 'Time at which task started',
-            type: { Named: 'Time' },
+            type: {
+              Named: 'Time',
+            },
           },
           {
             name: 'end',
             description: 'Time at which task failed',
-            type: { Named: 'Time' },
+            type: {
+              Named: 'Time',
+            },
           },
           {
             name: 'error',
             description: 'Error message in cas task failed',
-            type: { Named: 'String' },
+            type: {
+              Named: 'String',
+            },
           },
         ],
-        directives: [{ name: 'collection', args: { name: 'Task' } }],
+        directives: [
+          {
+            name: 'collection',
+            args: {
+              name: 'Task',
+            },
+          },
+        ],
       },
     },
   },
   history_days: 30,
+  ttl_days: null,
+  permissions: null,
 })

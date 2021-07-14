@@ -1,6 +1,6 @@
-import { validate } from '../utils/auth'
-import { JSONResponse } from '../utils/json-response'
-import { deleteToken } from '../models/users'
+import { validate } from '../utils/auth.js'
+import { JSONResponse } from '../utils/json-response.js'
+import { deleteToken } from '../models/users.js'
 
 /** @type {import('../utils/router.js').Handler} */
 export const tokensDelete = async (event, ctx) => {

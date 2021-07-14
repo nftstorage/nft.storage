@@ -9,7 +9,7 @@ dotenv.config()
 
 Object.assign(globalThis, { File, Blob, FormData, fetch })
 
-const cluster = new Cluster('https://nft.storage.ipfscluster.io/api/', {
+const cluster = new Cluster('https://nft2.storage.ipfscluster.io/api/', {
   headers: { Authorization: `Basic ${process.env['IPFS_CLUSTER_KEY']}` },
 })
 

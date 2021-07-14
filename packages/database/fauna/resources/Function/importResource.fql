@@ -1,18 +1,36 @@
+/**
+ * Creates a resource for the given `uri` unless one already exists. Returns
+ * a Resource document back. New resources will have a status queued and will
+ * be processed by a cron job.
+ *
+ * @param {Object} input
+ * @param {string} input.uri - URI of the resource
+ * @param {string} input.ipfsURL - ipfs:// url if it was possible to derive it.
+ */
 CreateFunction({
   name: 'importResource',
   body: Query(
     Lambda(
       ['input'],
-      Call('createOrUpdate', {
-        key: 'uri',
-        index: Index('unique_Resource_uri'),
-        collection: Collection('Resource'),
-        data: {
+      Let(
+        {
           uri: Select('uri', Var('input')),
-          ipfsURL: Select('ipfsURL', Var('input'), null),
-          status: 'Idle',
+          match: Match(Index('unique_Resource_uri'), Var('uri')),
         },
-      })
+        If(
+          IsEmpty(Var('match')),
+          Create(Collection('Resource'), {
+            data: {
+              uri: Var('uri'),
+              ipfsURL: Select('ipfsURL', Var('input'), null),
+              status: 'Queued',
+              created: Now(),
+              updated: Now(),
+            },
+          }),
+          Get(Var('match'))
+        )
+      )
     )
   ),
 })

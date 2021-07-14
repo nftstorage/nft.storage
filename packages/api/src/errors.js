@@ -1,6 +1,6 @@
 import Toucan from 'toucan-js'
 import { ErrorCode as MagicErrors } from '@magic-sdk/admin'
-import { JSONResponse } from './utils/json-response'
+import { JSONResponse } from './utils/json-response.js'
 
 export class HTTPError extends Error {
   /**
