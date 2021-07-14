@@ -10,7 +10,8 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "noEmit": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
-  "include": ["cf-sync", "*.js", "*.d.ts"]
+  "include": ["cf-sync", "*.js", "*.d.ts", "utils"]
 }
