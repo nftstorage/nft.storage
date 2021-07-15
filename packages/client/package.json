@@ -40,13 +40,13 @@
     "@web-std/file": "^1.1.0",
     "@web-std/form-data": "^2.1.0",
     "carbites": "^1.0.6",
-    "p-retry": "^4.5.0",
+    "p-retry": "^4.6.1",
     "streaming-iterables": "^6.0.0"
   },
   "devDependencies": {
     "@ipld/car": "^3.0.3",
     "@ipld/dag-cbor": "^6.0.4",
-    "@ssttevee/multipart-parser": "0.1.8",
+    "@ssttevee/multipart-parser": "0.1.9",
     "@types/mocha": "8.2.3",
     "hundreds": "0.0.9",
     "ipfs-car": "^0.4.3",

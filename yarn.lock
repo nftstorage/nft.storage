@@ -791,15 +791,7 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-4.0.1.tgz#d26729db850fa327b7cacc5522252194404226f5"
   integrity sha512-Qm9hBEBu18wt1PO2flE7LPb30BHMQt1eQgbV76YntdNk73XZGpn3izvGTYxbGgzXKgbCjiia0uxTd3aTNQrY/g==
 
-"@ssttevee/multipart-parser@0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@ssttevee/multipart-parser/-/multipart-parser-0.1.8.tgz#a4f9ad39d31758b3803f39c7049c987b11e1c0f7"
-  integrity sha512-65s9m0zFVfUuDih2dT3/2OJy1jk0sOCWAKH+vIv97yEYPtJSskvhXA1VmWsUJhZvMjEKK/zI6GAQGwzoyhDx5A==
-  dependencies:
-    "@ssttevee/streamsearch" "~0.3.0"
-    "@ssttevee/u8-utils" "~0.1.5"
-
-"@ssttevee/multipart-parser@^0.1.9":
+"@ssttevee/multipart-parser@0.1.9", "@ssttevee/multipart-parser@^0.1.9":
   version "0.1.9"
   resolved "https://registry.yarnpkg.com/@ssttevee/multipart-parser/-/multipart-parser-0.1.9.tgz#972a8bffe7204aa3f519f53bc06adee3498df15b"
   integrity sha512-4GmChu029N2VHdi3SEQMlqTctNRisGoE4HOLAsL7p6nrlWHQ63dqVZ2IsnI0HGizzt2/0MLFNlaF7EFBsuXK2g==
@@ -7481,6 +7473,14 @@ p-retry@^4.5.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/p-retry/-/p-retry-4.6.0.tgz#9de15ae696278cffe86fce2d8f73b7f894f8bc9e"
   integrity sha512-SAHbQEwg3X5DRNaLmWjT+DlGc93ba5i+aP3QLfVNDncQEQO4xjbYW4N/lcVTSuP0aJietGfx2t94dJLzfBMpXw==
+  dependencies:
+    "@types/retry" "^0.12.0"
+    retry "^0.13.1"
+
+p-retry@^4.6.1:
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/p-retry/-/p-retry-4.6.1.tgz#8fcddd5cdf7a67a0911a9cf2ef0e5df7f602316c"
+  integrity sha512-e2xXGNhZOZ0lfgR9kL34iGlU8N/KO0xZnQxVEwdeOvpqNDQfdnxIYizvWtK8RglUa3bGqI8g0R/BdfzLMxRkiA==
   dependencies:
     "@types/retry" "^0.12.0"
     retry "^0.13.1"
