@@ -3,7 +3,7 @@ name: Cron Analyze ERC-721 Tokens
 on:
   schedule:
     - cron: '*/30 * * * *'
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   erc-721:

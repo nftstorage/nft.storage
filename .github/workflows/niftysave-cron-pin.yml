@@ -3,7 +3,7 @@ name: Cron Pin ERC-721 Token Assets
 on:
   schedule:
     - cron: '*/30 * * * *'
-  workflow_dispatch
+  workflow_dispatch:
 
 jobs:
   erc-721:
