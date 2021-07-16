@@ -3,6 +3,7 @@ name: Cron Ingest ERC721
 on:
   schedule:
     - cron: '*/30 * * * *'
+  workflow_dispatch
 
 jobs:
   erc-7212:

@@ -3,6 +3,7 @@ name: Cron Pin ERC-721 Token Assets
 on:
   schedule:
     - cron: '*/30 * * * *'
+  workflow_dispatch
 
 jobs:
   erc-721:
@@ -24,5 +25,6 @@ jobs:
           FAUNA_KEY: ${{ secrets.FAUNA_KEY }}
           BATCH_SIZE: 100
           TIME_BUDGET: 1620
-          IPFS_CLUSTER_KEY: ${{ secrets.IPFS_CLUSTER_KEY }}
+          NIFTYSAVE_CLUSTER_KEY: ${{ secrets.NIFTYSAVE_CLUSTER_KEY }}
+          NIFTYSAVE_IPFS_API_KEY: ${{ secrets.NIFTYSAVE_IPFS_API_KEY }}
         run: yarn --cwd packages/niftysave import-asset

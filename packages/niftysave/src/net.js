@@ -1,13 +1,4 @@
-import * as IPFSURL from './ipfs-url.js'
 import fetch from '@web-std/fetch'
-
-/**
- * @param {URL} url
- * @returns {Promise<Blob>}
- */
-
-export const fetchResource = (url) =>
-  IPFSURL.isIPFSURL(url) ? fetchIPFSResource(url) : fetchWebResource(url)
 
 /**
  * @param {URL} resourceURL
@@ -25,8 +16,3 @@ export const fetchWebResource = async (resourceURL) => {
     )
   }
 }
-
-/**
- * @param {IPFSURL.IPFSURL} url
- */
-export const fetchIPFSResource = (url) => fetchWebResource(IPFSURL.embed(url))

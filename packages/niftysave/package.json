@@ -8,9 +8,9 @@
     "type-check": "tsc --build",
     "test": "mocha test/*.spec.js",
     "repl": "node --experimental-repl-await -i -e 'import(`./.repl.js`)'",
-    "import-tokens": "node ./src/main.js import-tokens",
-    "import-metadata": "node ./src/main.js import-metadata",
-    "import-asset": "node ./src/main.js import-asset",
+    "import-tokens": "node ./src/import-tokens.js",
+    "import-metadata": "node ./src/import-metadata.js",
+    "import-asset": "node ./src/import-asset.js",
     "generate": "yarn generate:erc721-source && yarn generate:db-source",
     "generate:erc721-source": "generate-graphql-client --post --endpoint https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph --output ./gen/erc721 && cp template/* gen/erc721 && tsc ./gen/erc721/schema.ts --moduleResolution node --target esnext --esModuleInterop",
     "generate:db-source": "generate-graphql-client --fetcher .fetcher.cjs --output ./gen/db && cp template/* gen/db && tsc ./gen/db/schema.ts --moduleResolution node --target esnext --esModuleInterop"
@@ -36,7 +36,8 @@
     "faunadb": "^4.3.0",
     "graphql-typed-client": "1.7.4",
     "multiformats": "^9.0.1",
-    "nft.storage": "^1.4.0"
+    "nft.storage": "^1.4.0",
+    "subprogram": "^1.2.0"
   },
   "repository": {
     "type": "git",
