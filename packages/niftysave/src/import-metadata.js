@@ -1,29 +1,35 @@
-import { db } from './sources.js'
 import { mutate, query } from './graphql.js'
 import * as Result from './result.js'
 import * as Schema from '../gen/db/schema.js'
 import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
-import { fetchResource } from './net.js'
+import * as IPFS from './ipfs.js'
+import { fetchWebResource } from './net.js'
+import { configure } from './config.js'
+import { script } from 'subprogram'
 
-const { TokenAssetStatus } = db.schema
+const { TokenAssetStatus } = Schema
+
+export const main = async () => await spawn(configure())
 
 /**
- * @param {Object} options
- * @param {number} options.budget - Time budget
- * @param {number} options.batchSize - Number of tokens in each import
+ * @param {import('./config').Config} config
  */
-export const spawn = async ({ budget, batchSize }) => {
-  const deadline = Date.now() + budget
+export const spawn = async (config) => {
+  const deadline = Date.now() + config.budget
   while (deadline - Date.now() > 0) {
     console.log('🔍 Fetching token assets that were queued')
-    const assets = await fetchTokenURIs({ batchSize })
+    const assets = await fetchTokenURIs(config)
     if (assets.length === 0) {
       return console.log('🏁 Finish, no more queued task were found')
     } else {
       console.log(`🤹 Spawn ${assets.length} tasks to process fetched assets`)
-      const updates = await Promise.all(assets.map(analyze))
-      await updateTokenAssets(updates)
+      const updates = await Promise.all(
+        assets.map((asset) => analyze(config, asset))
+      )
+
+      console.log('💾 Update token assets')
+      await updateTokenAssets(config, updates)
       console.log(`✨ Processed batch of ${assets.length} assets`)
     }
   }
@@ -33,12 +39,15 @@ export const spawn = async ({ budget, batchSize }) => {
 /**
  * @typedef {{ tokenURI:string, _id:string }} TokenAsset
  *
+ * Returns batch of queued tokens.
+ *
  * @param {Object} options
  * @param {number} options.batchSize
+ * @param {import('./config').DBConfig} options.db
  * @returns {Promise<TokenAsset[]>}
  */
 
-const fetchTokenURIs = async ({ batchSize }) => {
+const fetchTokenURIs = async ({ db, batchSize }) => {
   const result = await query(db, {
     findTokenAssets: [
       {
@@ -64,11 +73,11 @@ const fetchTokenURIs = async ({ batchSize }) => {
 }
 
 /**
- * @param {TokenAsset} asset
+ * @param {import('./config').Config} config
+ * @param {TokenAsset} _asset
  * @returns {Promise<Schema.TokenAssetUpdate>}
  */
-const analyze = async (asset) => {
-  const { _id: id, tokenURI } = asset
+const analyze = async (config, { _id: id, tokenURI }) => {
   console.log(`🔬 (${id}) Parsing tokenURI`)
   const urlResult = Result.fromTry(() => new URL(tokenURI))
   if (!urlResult.ok) {
@@ -84,82 +93,66 @@ const analyze = async (asset) => {
   }
   const url = urlResult.value
   const ipfsURL = IPFSURL.asIPFSURL(url)
-  const ipfsURLString = ipfsURL && ipfsURL.href
+  const asset = ipfsURL ? { id, ipfsURL: ipfsURL.href } : { id }
 
-  console.log(`📡 (${id}) Fetching content`)
-  const fetchResult = await Result.fromPromise(fetchResource(ipfsURL || url))
+  const blob = ipfsURL
+    ? await Result.fromPromise(IPFS.cat(config.ipfs, ipfsURL))
+    : await Result.fromPromise(fetchWebResource(url))
+  const content = blob.ok ? await Result.fromPromise(blob.value.text()) : blob
 
-  if (!fetchResult.ok) {
-    console.error(
-      `🚨 (${id}) Fetch failed ${fetchResult.error}, report problem`
-    )
+  if (!content.ok) {
+    console.error(`🚨 (${id}) Fetch failed ${content.error}`)
 
     return {
-      id,
-      ipfsURL: ipfsURLString,
+      ...asset,
       status: TokenAssetStatus.ContentFetchFailed,
-      statusText: `${fetchResult.error}`,
+      statusText: `${content.error}`,
     }
   }
 
-  console.log(`📑 (${id}) Reading fetched content`)
-  const readResult = await Result.fromPromise(fetchResult.value.text())
-
-  if (!readResult.ok) {
-    console.error(`🚨 (${id}) Read failed ${readResult.error}, report problem`)
-    return {
-      id,
-      ipfsURL: ipfsURLString,
-      status: TokenAssetStatus.ContentFetchFailed,
-      statusText: `${readResult.error}`,
-    }
-  }
-  const content = readResult.value
-
-  console.log(`🧾 (${id}) Parsing ERC721 metadata`)
-  const parseResult = await Result.fromPromise(parseERC721Metadata(content))
-
-  if (!parseResult.ok) {
-    console.error(
-      `🚨 (${id}) Parse failed ${parseResult.error}, report problem`
-    )
+  const metadata = await Result.fromPromise(parseERC721Metadata(content.value))
+  if (!metadata.ok) {
+    console.error(`🚨 (${id}) Parse failed ${metadata.error}`)
 
     return {
-      id,
-      ipfsURL: ipfsURLString,
+      ...asset,
       status: TokenAssetStatus.ContentParseFailed,
-      statusText: `${parseResult.error}`,
+      statusText: metadata.error,
     }
   }
-  const metadata = parseResult.value
 
-  console.log(`📍 (${id}) Pin metadata in IPFS ${ipfsURL || fetchResult.value}`)
+  const pin = ipfsURL
+    ? await Result.fromPromise(
+        Cluster.pin(config.cluster, ipfsURL, {
+          assetID: id,
+          sourceURL: tokenURI,
+        })
+      )
+    : await Result.fromPromise(
+        Cluster.add(config.cluster, new Blob([content.value]), {
+          assetID: id,
+          // if it is a data uri just omit it.
+          ...(url.protocol !== 'data:' && { sourceURL: url.href }),
+        })
+      )
 
-  const pinResult = await pin(ipfsURL || fetchResult.value, {
-    assetID: id,
-    // if it is a data uri just omit it.
-    ...(url.protocol !== 'data:' && { sourceURL: tokenURI }),
-  })
-
-  if (!pinResult.ok) {
-    console.error(
-      `🚨 (${id}) Failed to pin ${pinResult.error}, report problem\n ${pinResult.error.stack}`
-    )
+  if (!pin.ok) {
+    console.error(`🚨 (${id}) Failed to pin ${pin.error}`)
     return {
-      id,
+      ...asset,
       status: TokenAssetStatus.PinRequestFailed,
-      statusText: `${pinResult.error}`,
+      statusText: `${pin.error}`,
     }
   }
-  const { cid } = pinResult.value
-  console.log(`📌 (${id}) Pinned matadata ${cid}`)
+  const { cid } = pin.value
+  console.log(`📌 (${id}) Pinned metadata ${cid}`)
 
-  console.log(`📝 (${id}) Link token asset metadata & resources`)
+  console.log(`📝 (${id}) Link token asset to metadata & resources`)
   return {
-    id,
+    ...asset,
     status: TokenAssetStatus.Linked,
     statusText: 'Linked',
-    metadata: { ...metadata, cid },
+    metadata: { ...metadata.value, cid },
   }
 }
 
@@ -247,10 +240,12 @@ const iterate = function* (data, path = []) {
 }
 
 /**
+ * @param {Object} config
+ * @param {import('./config').DBConfig} config.db
  * @param {Schema.TokenAssetUpdate[]} updates
  * @returns {Promise<string[]>}
  */
-const updateTokenAssets = async (updates) => {
+const updateTokenAssets = async ({ db }, updates) => {
   const result = await mutate(db, {
     updateTokenAssets: [
       {
@@ -265,15 +260,4 @@ const updateTokenAssets = async (updates) => {
   return Result.value(result).updateTokenAssets?.map((token) => token._id) || []
 }
 
-/**
- * @param {IPFSURL.IPFSURL | Blob} source
- * @param {Record<string, string>} metadata
- */
-const pin = (source, metadata) => {
-  if (source instanceof URL) {
-    console.log('')
-    return Result.fromPromise(Cluster.pin(source, metadata))
-  } else {
-    return Result.fromPromise(Cluster.add(source))
-  }
-}
+script({ ...import.meta, main })

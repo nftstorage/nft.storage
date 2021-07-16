@@ -1,27 +1,34 @@
-import { db } from './sources.js'
 import { mutate, query } from './graphql.js'
 import * as Result from './result.js'
 import * as Schema from '../gen/db/schema.js'
 import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
 import { fetchWebResource } from './net.js'
+import { configure } from './config.js'
+import { script } from 'subprogram'
+
+export const main = () => spawn(configure())
 
 /**
- * @param {Object} options
- * @param {number} options.budget - Time budget
- * @param {number} options.batchSize - Number of tokens in each import
+ * @param {Object} config
+ * @param {number} config.budget - Time budget
+ * @param {number} config.batchSize - Number of tokens in each import
+ * @param {import('./cluster').Config} config.cluster
+ * @param {import('./config').DBConfig} config.db
  */
-export const spawn = async ({ budget, batchSize }) => {
-  const deadline = Date.now() + budget
+export const spawn = async (config) => {
+  const deadline = Date.now() + config.budget
   while (deadline - Date.now() > 0) {
     console.log('🔍 Fetching resources linked referrenced by tokens')
-    const resources = await fetchTokenResources({ batchSize })
+    const resources = await fetchTokenResources(config)
     if (resources.length === 0) {
       return console.log('🏁 Finish, no more queued task were found')
     } else {
       console.log(`🤹 Spawn ${resources.length} tasks to process each resource`)
-      const updates = await Promise.all(resources.map(archive))
-      await updateResources(updates)
+      const updates = await Promise.all(
+        resources.map((resource) => archive(config, resource))
+      )
+      await updateResources(config, updates)
       console.log(`✨ Processed batch of ${resources.length} assets`)
     }
   }
@@ -33,10 +40,11 @@ export const spawn = async ({ budget, batchSize }) => {
  *
  * @param {Object} options
  * @param {number} options.batchSize
+ * @param {import('./config').DBConfig} options.db
  * @returns {Promise<Resource[]>}
  */
 
-const fetchTokenResources = async ({ batchSize }) => {
+const fetchTokenResources = async ({ db, batchSize }) => {
   const result = await query(db, {
     findResources: [
       {
@@ -63,13 +71,14 @@ const fetchTokenResources = async ({ batchSize }) => {
 }
 
 /**
- *
+ * @param {Object} config
+ * @param {import('./config').DBConfig} config.db
  * @param {Schema.ResourceUpdate[]} updates
  */
 
-const updateResources = async (updates) => {
+const updateResources = async (config, updates) => {
   console.log(`📝 Update resources in the db`)
-  const result = await mutate(db, {
+  const result = await mutate(config.db, {
     updateResources: [
       {
         input: {
@@ -95,10 +104,13 @@ const updateResources = async (updates) => {
 
 /**
  * @typedef {{id:string, problem: string, status:Schema.ResourceStatus}} Problem
+ *
+ * @param {Object} config
+ * @param {import('./cluster').Config} config.cluster
  * @param {Resource} resource
  * @returns {Promise<Schema.ResourceUpdate>}
  */
-const archive = async (resource) => {
+const archive = async (config, resource) => {
   const { _id: id } = resource
   console.log(`🔬 (${id}) Parsing resource uri`)
 
@@ -114,18 +126,19 @@ const archive = async (resource) => {
 
   const ipfsURL = IPFSURL.asIPFSURL(url)
   return ipfsURL
-    ? await archiveIPFSResource({ ...resource, id, ipfsURL })
-    : await archiveWebResource({ ...resource, id, url })
+    ? await archiveIPFSResource(config, { ...resource, id, ipfsURL })
+    : await archiveWebResource(config, { ...resource, id, url })
 }
 
 /**
+ * @param {{cluster: import('./cluster').Config}} config
  * @param {{id: string, uri: string, ipfsURL: IPFSURL.IPFSURL}} resource
  * @returns {Promise<Schema.ResourceUpdate>}
  */
-const archiveIPFSResource = async ({ ipfsURL, uri, id }) => {
+const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
   console.log(`📌 (${id}) Pin a resource ${ipfsURL}`)
   const pin = await Result.fromPromise(
-    Cluster.pin(ipfsURL, {
+    Cluster.pin(config.cluster, ipfsURL, {
       assetID: id,
       sourceURL: uri,
     })
@@ -152,10 +165,11 @@ const archiveIPFSResource = async ({ ipfsURL, uri, id }) => {
 }
 
 /**
+ * @param {{cluster: import('./cluster').Config}} config
  * @param {Resource & {id: string, url: URL}} resource
  * @returns {Promise<Schema.ResourceUpdate>}
  */
-const archiveWebResource = async ({ id, url }) => {
+const archiveWebResource = async (config, { id, url }) => {
   const from = url.protocol === 'data:' ? 'data: url' : url.href
   console.log(`📡 (${id}) Fetching content from ${from}`)
   const fetch = await Result.fromPromise(fetchWebResource(url))
@@ -173,7 +187,7 @@ const archiveWebResource = async ({ id, url }) => {
   )
 
   const pin = await Result.fromPromise(
-    Cluster.add(content, {
+    Cluster.add(config.cluster, content, {
       id,
       sourceURL: url.protocol === 'data:' ? 'data:...' : url.href,
     })
@@ -196,3 +210,5 @@ const archiveWebResource = async ({ id, url }) => {
     cid,
   }
 }
+
+script({ ...import.meta, main })

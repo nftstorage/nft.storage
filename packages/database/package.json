@@ -5,7 +5,7 @@
   "description": "nft.storage database",
   "type": "module",
   "scripts": {
-    "setup": "node node ./src/apply-migrations.js",
+    "setup": "node ./src/apply-migrations.js",
     "apply-migrations": "node ./src/apply-migrations.js",
     "create-migration": "node ./src/create-migration.js",
     "update-schema": "node ./src/update-schema.js",

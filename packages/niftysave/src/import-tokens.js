@@ -1,24 +1,28 @@
-import { db, erc721 } from './sources.js'
 import { mutate, query } from './graphql.js'
 import * as Result from './result.js'
+import { configure } from './config.js'
+import { script } from 'subprogram'
+export const main = async () => await spawn(configure())
 
 /**
- * @param {Object} options
- * @param {number} options.budget - Time budget
- * @param {number} options.batchSize - Number of tokens in each import
+ * @param {Object} config
+ * @param {number} config.budget - Time budget
+ * @param {number} config.batchSize - Number of tokens in each import
+ * @param {import('./config').DBConfig} config.db
+ * @param {import('./config').ERC721Config} config.erc721
  */
-export const spawn = async ({ budget, batchSize }) => {
-  const deadline = Date.now() + budget
+export const spawn = async (config) => {
+  const deadline = Date.now() + config.budget
   console.log('Obtain current cursor')
-  const cursor = await readCursor()
+  const cursor = await readCursor(config)
   let { id } = cursor
   while (deadline - Date.now() > 0) {
-    const result = await importBatch({
+    const result = await importBatch(config, {
       id,
-      batchSize,
+      batchSize: config.batchSize,
     })
 
-    if (result.found < batchSize) {
+    if (result.found < config.batchSize) {
       console.log('🏁 Finish scanning, not enough tokens were found')
       return
     } else {
@@ -29,19 +33,22 @@ export const spawn = async ({ budget, batchSize }) => {
 }
 
 /**
+ * @param {Object} config
+ * @param {import('./config').ERC721Config} config.erc721
+ * @param {import('./config').DBConfig} config.db
  * @param {Object} options
  * @param {string} options.id
  * @param {number} options.batchSize
  */
-export const importBatch = async ({ id, batchSize }) => {
+export const importBatch = async (config, { id, batchSize }) => {
   console.log(`⛓ Fetch ERC721 tokens from ${id}`)
-  const tokens = await fetchTokens({
+  const tokens = await fetchTokens(config, {
     cursor: id,
     scanSize: batchSize,
   })
   console.log(`💾 Import ${tokens.length} tokens`)
 
-  const result = await importTokens(db, {
+  const result = await importTokens(config, {
     id,
     tokens,
   })
@@ -57,7 +64,11 @@ export const importBatch = async ({ id, batchSize }) => {
   }
 }
 
-const readCursor = async () => {
+/**
+ * @param {Object} config
+ * @param {import('./config').DBConfig} config.db
+ */
+const readCursor = async ({ db }) => {
   const result = await query(db, {
     cursor: {
       _id: 1,
@@ -70,12 +81,13 @@ const readCursor = async () => {
 
 /**
  *
- * @param {typeof db} db
+ * @param {Object} config
+ * @param {import('./config').DBConfig} config.db
  * @param {Object} input
  * @param {string} input.id
  * @param {import('../gen/erc721/schema').Token[]} input.tokens
  */
-const importTokens = async (db, input) => {
+const importTokens = async ({ db }, input) => {
   const result = await mutate(db, {
     importERC721: [
       {
@@ -102,10 +114,12 @@ const importTokens = async (db, input) => {
 }
 
 /**
+ * @param {Object} config
+ * @param {import('./config').ERC721Config} config.erc721
  * @param {{scanSize:number, cursor:string}} settings
  * @returns {Promise<import('../gen/erc721/schema').Token[]>}
  */
-const fetchTokens = async ({ cursor, scanSize }) => {
+const fetchTokens = async ({ erc721 }, { cursor, scanSize }) => {
   const result = await query(erc721, {
     tokens: [
       {
@@ -137,3 +151,5 @@ const fetchTokens = async ({ cursor, scanSize }) => {
 
   return Result.value(result).tokens
 }
+
+script({ ...import.meta, main })
