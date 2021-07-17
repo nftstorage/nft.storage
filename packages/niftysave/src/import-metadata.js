@@ -92,8 +92,14 @@ const analyze = async (config, { _id: id, tokenURI }) => {
     }
   }
   const url = urlResult.value
+  console.log(`🧬 (${id}) Parsed URL ${printURL(url)}`)
   const ipfsURL = IPFSURL.asIPFSURL(url)
   const asset = ipfsURL ? { id, ipfsURL: ipfsURL.href } : { id }
+  ipfsURL && console.log(`🚀 (${id}) Derived IPFS URL ${ipfsURL}`)
+
+  console.log(
+    `🌐 (${id} Fetching token metadata from ${printURL(ipfsURL || url)}`
+  )
 
   const blob = ipfsURL
     ? await Result.fromPromise(IPFS.cat(config.ipfs, ipfsURL))
@@ -110,6 +116,8 @@ const analyze = async (config, { _id: id, tokenURI }) => {
     }
   }
 
+  console.log(`🔬 (${id}) Parsing token metadata`)
+
   const metadata = await Result.fromPromise(parseERC721Metadata(content.value))
   if (!metadata.ok) {
     console.error(`🚨 (${id}) Parse failed ${metadata.error}`)
@@ -120,6 +128,8 @@ const analyze = async (config, { _id: id, tokenURI }) => {
       statusText: metadata.error,
     }
   }
+
+  console.log(`📌 (${id}) Pinning token metadata ${ipfsURL || 'by uploading'}`)
 
   const pin = ipfsURL
     ? await Result.fromPromise(
@@ -145,9 +155,8 @@ const analyze = async (config, { _id: id, tokenURI }) => {
     }
   }
   const { cid } = pin.value
-  console.log(`📌 (${id}) Pinned metadata ${cid}`)
 
-  console.log(`📝 (${id}) Link token asset to metadata & resources`)
+  console.log(`📝 (${id}) Link token to metadata ${cid}`)
   return {
     ...asset,
     status: TokenAssetStatus.Linked,
@@ -155,6 +164,12 @@ const analyze = async (config, { _id: id, tokenURI }) => {
     metadata: { ...metadata.value, cid },
   }
 }
+
+/**
+ * @param {URL} url
+ */
+const printURL = (url) =>
+  url.protocol === 'data:' ? `${url.href.slice(0, 12)}...}` : url.href
 
 /**
  * @param {string} content
