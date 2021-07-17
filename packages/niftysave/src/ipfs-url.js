@@ -24,14 +24,22 @@ export const asIPFSURL = (url) => {
 /**
  * @param {URL} url
  */
-const maybeFromGatewayURL = (url) =>
-  maybeFromGatewayDoman(url) || maybeFromGatewayPath(url)
+const maybeFromGatewayURL = (url) => {
+  const data = parseGateWayURL(url)
+  return data ? create(data.cid, data) : null
+}
 
 /**
  * @param {URL} url
- * @returns {IPFSURL|null}
+ * @returns {{cid:CID, pathname:string, search:string, hash:string} | null}
  */
-const maybeFromGatewayPath = (url) => {
+export const parseGateWayURL = (url) =>
+  parseGatewayDomain(url) || parseGatewayPath(url)
+
+/**
+ * @param {URL} url
+ */
+const parseGatewayPath = (url) => {
   if (url.pathname.startsWith('/ipfs/')) {
     const { search, hash, pathname: path } = url
     const ipfsPath = path.slice('/ipfs/'.length)
@@ -43,7 +51,7 @@ const maybeFromGatewayPath = (url) => {
             tryParseCID(ipfsPath.slice(0, slashOffset)),
             ipfsPath.slice(slashOffset),
           ]
-    return cid ? create(cid, { pathname, search, hash }) : null
+    return cid ? { cid, pathname, search, hash } : null
   } else {
     return null
   }
@@ -52,10 +60,10 @@ const maybeFromGatewayPath = (url) => {
 /**
  * @param {URL} url
  */
-const maybeFromGatewayDoman = ({ hostname, pathname, search, hash }) => {
+const parseGatewayDomain = ({ hostname, pathname, search, hash }) => {
   const [cidString, ipfsString] = hostname.split('.')
   const cid = ipfsString === 'ipfs' ? tryParseCID(String(cidString)) : null
-  return cid ? create(cid, { pathname, search, hash }) : null
+  return cid ? { cid, pathname, search, hash } : null
 }
 
 /**
@@ -124,4 +132,10 @@ export const cid = (url) => CID.parse(url.hostname)
 /**
  * @param {IPFSURL} url
  */
-export const formatIPFSPath = (url) => `/ipfs/${cid(url)}${url.pathname}`
+export const formatIPFSPath = (url) => `/ipfs/${cid(url).toV1()}${url.pathname}`
+
+/**
+ * @param {IPFSURL} url
+ */
+export const formatIPFSPathWithCIDv0 = (url) =>
+  `/ipfs/${cid(url).toV0()}${url.pathname}`
