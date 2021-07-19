@@ -1,0 +1,6 @@
+mutation createOrUpdateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    issuer
+    email
+  }
+}
