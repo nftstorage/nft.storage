@@ -1,0 +1,17 @@
+overwrite: true
+schema:
+  - https://graphql.fauna.com/graphql:
+      headers:
+        Authorization: 'Bearer ${FGU_SECRET}'
+documents: './**/*.gql'
+generates:
+  ./dist/sdk.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-graphql-request'
+    config:
+      enumsAsTypes: true
+      skipTypename: true
+      flattenGeneratedTypes: true
+      # omitOperationSuffix: true

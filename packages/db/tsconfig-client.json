@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "allowJs": true,
+    "checkJs": true,
+    "target": "esnext",
+    "lib": ["ESNext", "DOM"],
+    "strict": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "noEmit": false,
+    "declaration": true,
+    "jsx": "preserve",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
+  "include": ["dist/*.ts"],
+  "exclude": ["node_modules/", ".next/"]
+}

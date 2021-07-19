@@ -1,0 +1,22 @@
+type User {
+  name: String!
+  picture: String
+  email: String!
+  issuer: String! @unique
+  github: String
+  publicAddress: String!
+  created: Time!
+}
+
+input CreateUserInput {
+  email: String!
+  issuer: String!
+  publicAddress: String!
+  name: String!
+  picture: String
+  github: String
+}
+
+type Mutation {
+  createUser(input: CreateUserInput): User! @resolver
+}

@@ -1,0 +1,22 @@
+input CreateUploadInput {
+  userIssuer: String!
+  type: UploadType!
+  cid: String!
+  dagSize: Int!
+}
+
+type Upload {
+  user: User!
+  type: UploadType!
+  content: Content! @relation
+  created: Time!
+  deleted: Time
+}
+
+enum UploadType {
+  Blob
+}
+
+type Mutation {
+  createUpload(input: CreateUploadInput): Upload! @resolver
+}

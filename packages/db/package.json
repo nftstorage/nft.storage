@@ -1,0 +1,38 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "private": true,
+  "description": "nft.storage database",
+  "type": "module",
+  "scripts": {
+    "build": "graphql-codegen -r dotenv/config && tsc -p tsconfig-client.json",
+    "fauna": "node scripts/build-schema.js && fgu && yarn build"
+  },
+  "license": "(Apache-2.0 AND MIT)",
+  "devDependencies": {
+    "@fauna-labs/fauna-schema-migrate": "^2.1.2",
+    "@graphql-codegen/cli": "^1.21.7",
+    "@graphql-codegen/introspection": "^1.18.2",
+    "@graphql-codegen/typescript-graphql-request": "^3.2.5",
+    "@graphql-codegen/typescript-operations": "^1.18.4",
+    "@types/node": "16.3.1",
+    "dotenv-cli": "^4.0.0"
+  },
+  "dependencies": {
+    "@graphql-tools/load-files": "^6.3.2",
+    "@graphql-tools/merge": "^6.2.14",
+    "@web-std/fetch": "^2.0.1",
+    "dotenv": "^10.0.0",
+    "fauna-gql-upload": "^2.3.0",
+    "faunadb": "^4.3.0",
+    "graphql": "^15.5.1",
+    "graphql-request": "^3.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ipfs-shipyard/nft.storage.git",
+    "directory": "database"
+  },
+  "homepage": "https://github.com/ipfs-shipyard/nft.storage/tree/main/db",
+  "bugs": "https://github.com/ipfs-shipyard/nft.storage/issues"
+}
