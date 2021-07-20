@@ -128,7 +128,7 @@ const analyze = async (config, { _id: id, tokenURI }) => {
     return {
       ...asset,
       status: TokenAssetStatus.ContentParseFailed,
-      statusText: metadata.error,
+      statusText: `${metadata.error}`,
     }
   }
 
