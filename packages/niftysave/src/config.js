@@ -8,6 +8,7 @@ import ERC721 from '../gen/erc721/index.js'
  * @typedef {Object} Config
  * @property {number} budget
  * @property {number} batchSize
+ * @property {number} fetchTimeout
  * @property {import('./cluster').Config} cluster
  * @property {import('./ipfs').Config} ipfs
  * @property {DBConfig} db
@@ -21,6 +22,7 @@ export const configure = () => {
   return {
     batchSize: Number(process.env['BATCH_SIZE'] || 50),
     budget: Number(process.env['TIME_BUDGET'] || 30) * 1000,
+    fetchTimeout: Number(process.env['FETCH_TIMEOUT'] || 30 * 100),
 
     cluster: {
       url: new URL('https://nft2.storage.ipfscluster.io/api/'),

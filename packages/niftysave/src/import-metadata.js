@@ -3,8 +3,7 @@ import * as Result from './result.js'
 import * as Schema from '../gen/db/schema.js'
 import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
-import * as IPFS from './ipfs.js'
-import { fetchWebResource } from './net.js'
+import { fetchResource, timeout } from './net.js'
 import { configure } from './config.js'
 import { script } from 'subprogram'
 
@@ -98,12 +97,16 @@ const analyze = async (config, { _id: id, tokenURI }) => {
   ipfsURL && console.log(`🚀 (${id}) Derived IPFS URL ${ipfsURL}`)
 
   console.log(
-    `🌐 (${id} Fetching token metadata from ${printURL(ipfsURL || url)}`
+    `🌐 (${id}) Fetching token metadata from ${printURL(ipfsURL || url)}`
   )
 
-  const blob = ipfsURL
-    ? await Result.fromPromise(IPFS.cat(config.ipfs, ipfsURL))
-    : await Result.fromPromise(fetchWebResource(url))
+  const blob = await Result.fromPromise(
+    fetchResource(
+      config,
+      { url, ipfsURL },
+      { signal: timeout(config.fetchTimeout) }
+    )
+  )
   const content = blob.ok ? await Result.fromPromise(blob.value.text()) : blob
 
   if (!content.ok) {

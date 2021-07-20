@@ -72,6 +72,22 @@ describe('IPFSURL', () => {
         'https://ipfs.io/ipfs/QmYjtig7VJQ6XsnUjqqJvj7QaMcCAwtrgNdahSiFofrE7o?a=1&a=2',
         'ipfs://bafybeie2reiz2q6rbcuwpy2etyztjnceolu4rdi7rp3th2lsky4r5ckeey/?a=1&a=2',
       ],
+      [
+        'ipfs://ipfs/QmQXMtiuCkgDE5cENeE7QELwi2FVGVY6AUpczBRZ6kbV6W',
+        'ipfs://bafybeibaow7w2o5jswvg36xrkewj6bd7kw4g54vhlzjy5fkrycgum5ouj4/',
+      ],
+      [
+        'ipfs://ipfs/QmQXMtiuCkgDE5cENeE7QELwi2FVGVY6AUpczBRZ6kbV6W',
+        'ipfs://bafybeibaow7w2o5jswvg36xrkewj6bd7kw4g54vhlzjy5fkrycgum5ouj4/',
+      ],
+      [
+        'ipfs://ipfs//QmQXMtiuCkgDE5cENeE7QELwi2FVGVY6AUpczBRZ6kbV6W',
+        'ipfs://bafybeibaow7w2o5jswvg36xrkewj6bd7kw4g54vhlzjy5fkrycgum5ouj4/',
+      ],
+      [
+        'ipfs://ipfs/ipfs/ipfs/QmQXMtiuCkgDE5cENeE7QELwi2FVGVY6AUpczBRZ6kbV6W',
+        'ipfs://bafybeibaow7w2o5jswvg36xrkewj6bd7kw4g54vhlzjy5fkrycgum5ouj4/',
+      ],
     ]
 
     for (const [source, expect] of input) {
@@ -82,7 +98,7 @@ describe('IPFSURL', () => {
     }
   })
 
-  describe.only('parseGateWayURL', () => {
+  describe('decode', () => {
     /** @type {Array<[string, {cid:CID, pathname:string, hash:string, search: string}|null]>} */
     const input = [
       [
@@ -223,11 +239,38 @@ describe('IPFSURL', () => {
           search: '?a=1&a=2',
         },
       ],
+      [
+        'ipfs://ipfs/QmQXMtiuCkgDE5cENeE7QELwi2FVGVY6AUpczBRZ6kbV6W',
+        {
+          cid: CID.parse('QmQXMtiuCkgDE5cENeE7QELwi2FVGVY6AUpczBRZ6kbV6W'),
+          pathname: '/',
+          hash: '',
+          search: '',
+        },
+      ],
+      [
+        'ipfs://ipfs//QmQXMtiuCkgDE5cENeE7QELwi2FVGVY6AUpczBRZ6kbV6W',
+        {
+          cid: CID.parse('QmQXMtiuCkgDE5cENeE7QELwi2FVGVY6AUpczBRZ6kbV6W'),
+          pathname: '/',
+          hash: '',
+          search: '',
+        },
+      ],
+      [
+        'ipfs://ipfs/ipfs/ipfs/QmQXMtiuCkgDE5cENeE7QELwi2FVGVY6AUpczBRZ6kbV6W',
+        {
+          cid: CID.parse('QmQXMtiuCkgDE5cENeE7QELwi2FVGVY6AUpczBRZ6kbV6W'),
+          pathname: '/',
+          hash: '',
+          search: '',
+        },
+      ],
     ]
 
     for (const [source, expect] of input) {
       it(`${source} -> ${expect}`, () => {
-        const actual = IPFSURL.parseGateWayURL(new URL(source))
+        const actual = IPFSURL.decode(new URL(source))
         assert.deepStrictEqual(actual, expect)
       })
     }
