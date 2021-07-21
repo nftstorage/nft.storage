@@ -137,8 +137,10 @@ const analyze = async (config, { _id: id, tokenURI }) => {
   const pin = ipfsURL
     ? await Result.fromPromise(
         Cluster.pin(config.cluster, ipfsURL, {
-          assetID: id,
-          sourceURL: tokenURI,
+          metadata: {
+            assetID: id,
+            sourceURL: tokenURI,
+          },
         })
       )
     : await Result.fromPromise(
