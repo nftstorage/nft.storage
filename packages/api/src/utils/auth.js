@@ -87,6 +87,7 @@ export async function loginOrRegister(event, data) {
         publicAddress: parsed.publicAddress,
         sub: parsed.sub,
         picture: parsed.picture,
+        // @ts-ignore
         github: parsed.github ? parsed.github.userInfo.profile : null,
       },
     })
