@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@web-std/blob": "^2.1.0",
-    "@web-std/fetch": "^2.0.1",
+    "@web-std/fetch": "^2.0.3",
     "@web-std/file": "^1.1.0",
     "@web-std/form-data": "^2.1.0",
     "carbites": "^1.0.6",
