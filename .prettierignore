@@ -8,3 +8,4 @@ site/public
 docs
 packages/database/fauna/migrations
 CHANGELOG.md
+.next

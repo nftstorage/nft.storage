@@ -8,7 +8,10 @@ import {
   userSafe,
 } from '../models/users.js'
 import { parseJWT, verifyJWT } from './jwt.js'
+import { buildSdk, login } from './fauna'
 export const magic = new Magic(secrets.magic)
+
+const fauna = buildSdk()
 
 /**
  * @typedef {import('../models/users').User} User
@@ -32,7 +35,10 @@ export async function validate(event, { sentry }) {
       const tokenName = matchToken(user, token)
       if (typeof tokenName === 'string') {
         sentry.setUser(userSafe(user))
-        return { user, tokenName }
+
+        // TODO review this!!
+        const { sdk, loginOutput } = await login(user.issuer)
+        return { user, tokenName, fauna: sdk, login: loginOutput }
       } else {
         throw new ErrorTokenNotFound()
       }
@@ -47,7 +53,8 @@ export async function validate(event, { sentry }) {
   const user = await getUser(claim.iss)
   if (user) {
     sentry.setUser(userSafe(user))
-    return { user, tokenName: 'session' }
+    const { sdk, loginOutput } = await login(user.issuer)
+    return { user, tokenName: 'session', fauna: sdk, login: loginOutput }
   } else {
     throw new ErrorUserNotFound()
   }
@@ -62,6 +69,8 @@ export async function loginOrRegister(event, data) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
 
+  const tokenData = magic.token.decode(token)
+  console.log(JSON.stringify(tokenData, null, 2))
   magic.token.validate(token)
   const metadata = await magic.users.getMetadataByToken(token)
   if (metadata.issuer) {
@@ -69,6 +78,18 @@ export async function loginOrRegister(event, data) {
       data.type === 'github'
         ? await parseGithub(data.data, metadata)
         : parseMagic(metadata)
+
+    await fauna.createOrUpdateUser({
+      input: {
+        email: parsed.email,
+        issuer: parsed.issuer,
+        name: parsed.name,
+        publicAddress: parsed.publicAddress,
+        sub: parsed.sub,
+        picture: parsed.picture,
+        github: parsed.github ? parsed.github.userInfo.profile : null,
+      },
+    })
     const user = await createOrUpdate(parsed)
     return { user: userSafe(user), tokenName: 'session' }
   } else {

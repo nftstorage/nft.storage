@@ -23,6 +23,7 @@ declare global {
   const CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN: string
   const CLUSTER_ADDRS: string
   const MAGIC_SECRET_KEY: string
+  const FAUNA_KEY: string
   const ENV: 'dev' | 'staging' | 'production'
   const SENTRY_DSN: string
   const BRANCH: string

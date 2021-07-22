@@ -18,6 +18,10 @@ export async function getToken() {
   return token
 }
 
+/**
+ *
+ * @returns {Promise<Array<{name: string, secret: string}>>}
+ */
 export async function getTokens() {
   const res = await fetch(API + '/internal/tokens', {
     method: 'GET',

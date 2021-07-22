@@ -3,9 +3,9 @@ schema:
   - https://graphql.fauna.com/graphql:
       headers:
         Authorization: 'Bearer ${FGU_SECRET}'
-documents: './**/*.gql'
+documents: './schema/*.gql'
 generates:
-  ./dist/sdk.ts:
+  ./gen/sdk.ts:
     plugins:
       - 'typescript'
       - 'typescript-operations'
@@ -15,3 +15,6 @@ generates:
       skipTypename: true
       flattenGeneratedTypes: true
       # omitOperationSuffix: true
+hooks:
+  beforeDone:
+    - tsc

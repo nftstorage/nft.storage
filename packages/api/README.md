@@ -129,6 +129,7 @@ wrangler secret put MAGIC_SECRET_KEY --env USER # Get from magic.link account
 wrangler secret put SALT --env USER # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env USER # Get from Pinata
 wrangler secret put SENTRY_DSN --env USER # Get from Sentry
+wrangler secret put FAUNA_KEY --env USER # Get from Fauna
 ```
 
 Go to `/packages/api/src/constants.js` _comment_ the first line and run `wrangler publish --env USER`.
@@ -154,6 +155,7 @@ wrangler kv:namespace create FOLLOWUPS --env production
 wrangler kv:namespace create PINATA_QUEUE --env production
 # Follow the instructions from the cli output
 wrangler secret put MAGIC_SECRET_KEY --env production # Get from magic.link account
+wrangler secret put FAUNA_KEY --env production # Get from magic.link account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env production # Get from Pinata
 wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password

@@ -29,7 +29,10 @@ export default {
         },
         If(
           IsEmpty(Var('match')),
-          Create('User', { data: Merge(Var('data'), { created: Now() }) }),
+          Create('User', {
+            credentials: { password: Select('issuer', Var('data')) },
+            data: Merge(Var('data'), { created: Now() }),
+          }),
           Update(Select('ref', Get(Var('match'))), { data: Var('data') })
         )
       )

@@ -1,12 +1,5 @@
-input CreateUploadInput {
-  userIssuer: String!
-  type: UploadType!
-  cid: String!
-  dagSize: Int!
-}
-
 type Upload {
-  user: User!
+  user: User! @relation
   type: UploadType!
   content: Content! @relation
   created: Time!
@@ -14,9 +7,28 @@ type Upload {
 }
 
 enum UploadType {
-  Blob
+  BLOB
+}
+
+input CreateUploadInput {
+  type: UploadType!
+  cid: String!
+  dagSize: Int!
 }
 
 type Mutation {
   createUpload(input: CreateUploadInput): Upload! @resolver
+}
+
+mutation createUpload($input: CreateUploadInput!) {
+  createUpload(input: $input) {
+    _id
+    type
+    user {
+      issuer
+    }
+    content {
+      cid
+    }
+  }
 }

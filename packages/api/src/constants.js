@@ -1,4 +1,4 @@
-// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN
+// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN, FAUNA_KEY
 export const stores = {
   deals: DEALS,
   users: USERS,
@@ -15,6 +15,7 @@ export const secrets = {
   pinata: PINATA_JWT,
   magic: MAGIC_SECRET_KEY,
   sentry: SENTRY_DSN,
+  fauna: FAUNA_KEY,
 }
 
 export const cluster = {

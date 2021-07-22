@@ -18,5 +18,5 @@
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["*.js"]
+  "include": ["*.js", "./gen/sdk.ts"]
 }
