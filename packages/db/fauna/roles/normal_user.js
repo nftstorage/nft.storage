@@ -1,4 +1,16 @@
-import { Collection, Function, Index } from 'faunadb'
+import {
+  Collection,
+  CurrentIdentity,
+  Equals,
+  Function,
+  Get,
+  Index,
+  Lambda,
+  Let,
+  Var,
+  Query,
+  Select,
+} from 'faunadb'
 export default {
   name: 'normal_user',
   membership: [{ resource: Collection('User') }],
@@ -40,9 +52,20 @@ export default {
       resource: Collection('UserKey'),
       actions: {
         read: true,
-        write: true,
+        write: false,
         create: true,
-        delete: false,
+        delete: Query(
+          Lambda(
+            'ref',
+            Let(
+              {
+                userKey: Get(Var('ref')),
+                userRef: Select(['data', 'user'], Var('userKey')),
+              },
+              Equals(Var('userRef'), CurrentIdentity())
+            )
+          )
+        ),
       },
     },
     {

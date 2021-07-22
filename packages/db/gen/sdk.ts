@@ -1555,11 +1555,19 @@ export type CreateUploadMutation = {
   }
 }
 
-export type CreateKeyMutationVariables = Exact<{
+export type CreateUserKeyMutationVariables = Exact<{
   input: UserKeyInput
 }>
 
-export type CreateKeyMutation = { createUserKey: Pick<UserKey, '_id'> }
+export type CreateUserKeyMutation = { createUserKey: Pick<UserKey, '_id'> }
+
+export type DeleteUserKeyMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type DeleteUserKeyMutation = {
+  deleteUserKey?: Maybe<Pick<UserKey, '_id'>>
+}
 
 export type CreateOrUpdateUserMutationVariables = Exact<{
   input: CreateUserInput
@@ -1587,7 +1595,7 @@ export type GetUserQuery = {
   findUserByID?: Maybe<
     Pick<User, 'issuer' | 'sub'> & {
       keys: Pick<UserKeyPage, 'after' | 'before'> & {
-        data: Array<Maybe<Pick<UserKey, 'secret' | 'name'>>>
+        data: Array<Maybe<Pick<UserKey, '_id' | 'secret' | 'name'>>>
       }
     }
   >
@@ -1607,9 +1615,16 @@ export const CreateUploadDocument = gql`
     }
   }
 `
-export const CreateKeyDocument = gql`
-  mutation createKey($input: UserKeyInput!) {
+export const CreateUserKeyDocument = gql`
+  mutation createUserKey($input: UserKeyInput!) {
     createUserKey(data: $input) {
+      _id
+    }
+  }
+`
+export const DeleteUserKeyDocument = gql`
+  mutation deleteUserKey($id: ID!) {
+    deleteUserKey(id: $id) {
       _id
     }
   }
@@ -1640,6 +1655,7 @@ export const GetUserDocument = gql`
       sub
       keys(_size: $size, _cursor: $cursor) {
         data {
+          _id
           secret
           name
         }
@@ -1676,17 +1692,32 @@ export function getSdk(
         'createUpload'
       )
     },
-    createKey(
-      variables: CreateKeyMutationVariables,
+    createUserKey(
+      variables: CreateUserKeyMutationVariables,
       requestHeaders?: Dom.RequestInit['headers']
-    ): Promise<CreateKeyMutation> {
+    ): Promise<CreateUserKeyMutation> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<CreateKeyMutation>(CreateKeyDocument, variables, {
-            ...requestHeaders,
-            ...wrappedRequestHeaders,
-          }),
-        'createKey'
+          client.request<CreateUserKeyMutation>(
+            CreateUserKeyDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'createUserKey'
+      )
+    },
+    deleteUserKey(
+      variables: DeleteUserKeyMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<DeleteUserKeyMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeleteUserKeyMutation>(
+            DeleteUserKeyDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'deleteUserKey'
       )
     },
     createOrUpdateUser(

@@ -63,6 +63,7 @@ query getUser($id: ID!, $size: Int = 10, $cursor: String) {
     sub
     keys(_size: $size, _cursor: $cursor) {
       data {
+        _id
         secret
         name
       }

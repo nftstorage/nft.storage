@@ -6,8 +6,14 @@ type UserKey {
   deleted: Time
 }
 
-mutation createKey($input: UserKeyInput!) {
+mutation createUserKey($input: UserKeyInput!) {
   createUserKey(data: $input) {
+    _id
+  }
+}
+
+mutation deleteUserKey($id: ID!) {
+  deleteUserKey(id: $id) {
     _id
   }
 }

@@ -19,7 +19,7 @@ export const tokensCreate = async (event, ctx) => {
       },
       secrets.salt
     )
-    await fauna.createKey({
+    await fauna.createUserKey({
       input: {
         name: body.name,
         secret: token,

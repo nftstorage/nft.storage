@@ -20,7 +20,7 @@ export async function getToken() {
 
 /**
  *
- * @returns {Promise<Array<{name: string, secret: string}>>}
+ * @returns {Promise<Array<{_id: string, name: string, secret: string}>>}
  */
 export async function getTokens() {
   const res = await fetch(API + '/internal/tokens', {
@@ -43,16 +43,16 @@ export async function getTokens() {
 /**
  * Delete Token
  *
- * @param {string} name
+ * @param {string} id
  */
-export async function deleteToken(name) {
+export async function deleteToken(id) {
   const res = await fetch(API + '/internal/tokens', {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + (await getToken()),
     },
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({ id }),
   })
 
   const body = await res.json()
