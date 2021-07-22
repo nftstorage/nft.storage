@@ -1,16 +1,22 @@
 type User {
+  issuer: String! @unique
+  """
+  We need this to dedupe old github login from new magic.link
+  """
+  sub: String! @unique
   name: String!
   picture: String
   email: String!
-  issuer: String! @unique
   github: String
   publicAddress: String!
   created: Time!
+  keys: [UserKey!]! @relation
 }
 
 input CreateUserInput {
-  email: String!
+  sub: String!
   issuer: String!
+  email: String!
   publicAddress: String!
   name: String!
   picture: String
@@ -19,4 +25,49 @@ input CreateUserInput {
 
 type Mutation {
   createUser(input: CreateUserInput): User! @resolver
+}
+
+mutation createOrUpdateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    issuer
+    email
+  }
+}
+
+type LoginOutput @embedded {
+  secret: String!
+  sub: String!
+  issuer: String!
+  email: String!
+  ref: String!
+}
+
+type Query {
+  "Login with sub or issuer"
+  login(id: String!): LoginOutput! @resolver
+}
+
+query login($id: String!) {
+  login(id: $id) {
+    secret
+    sub
+    issuer
+    email
+    ref
+  }
+}
+
+query getUser($id: ID!, $size: Int = 10, $cursor: String) {
+  findUserByID(id: $id) {
+    issuer
+    sub
+    keys(_size: $size, _cursor: $cursor) {
+      data {
+        secret
+        name
+      }
+      after
+      before
+    }
+  }
 }

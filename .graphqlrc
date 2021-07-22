@@ -1,15 +1,8 @@
 projects:
-  # test:
-  #   schema: 'packages/db/schema/**/*.{gql}'
-  #   # documents:
-  #   #   - 'packages/db/schema/**/*.{gql}'
-  #   extensions:
-  #     languageService:
-  #       useSchemaFileDefinitions: true
   app:
     schema:
       - https://graphql.fauna.com/graphql:
           headers:
             Authorization: Bearer ${FGU_SECRET}
     documents:
-      - 'packages/db/mutations/**/*.{gql}'
+      - 'packages/db/**/*.{gql}'

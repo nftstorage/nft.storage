@@ -1,9 +1,0 @@
-mutation createUpload($input: CreateUploadInput!) {
-  createUpload(input: $input) {
-    _id
-    type
-    content {
-      cid
-    }
-  }
-}

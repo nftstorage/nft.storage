@@ -1,0 +1,13 @@
+type UserKey {
+  name: String!
+  secret: String! @unique
+  user: User! @relation
+  created: Time!
+  deleted: Time
+}
+
+mutation createKey($input: UserKeyInput!) {
+  createUserKey(data: $input) {
+    _id
+  }
+}

@@ -29,9 +29,12 @@ export default function ManageKeys({ user }) {
   const [deleting, setDeleting] = useState('')
   const [copied, setCopied] = useState('')
   const queryClient = useQueryClient()
-  const { status, data } = useQuery('get-tokens', getTokens, {
+  let { status, data } = useQuery('get-tokens', getTokens, {
     enabled: !!user,
   })
+
+  data = data || []
+
   useEffect(() => {
     if (!copied) return
     const timer = setTimeout(() => setCopied(''), 5000)
@@ -71,8 +74,6 @@ export default function ManageKeys({ user }) {
     setCopied(key)
   }
 
-  const keys = Object.entries(data || {})
-
   return (
     <main className="bg-nsgreen">
       <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
@@ -87,7 +88,7 @@ export default function ManageKeys({ user }) {
                 + New Key
               </Button>
             </div>
-            <When condition={keys.length > 0}>
+            <When condition={data.length > 0}>
               <table className="bg-white ba b--black w-100 collapse mb4">
                 <thead>
                   <tr className="bb b--black">
@@ -97,26 +98,26 @@ export default function ManageKeys({ user }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {keys.map((t, k) => (
+                  {data.map((t, k) => (
                     <tr className="bb b--black" key={k}>
-                      <td className="pa2 br b--black">{t[0]}</td>
+                      <td className="pa2 br b--black">{t.name}</td>
                       <td className="pa2 br b--black mw7">
                         <input
                           disabled
                           className="w-100 h2"
                           type="text"
-                          id={`value-${t[0]}`}
-                          value={t[1]}
+                          id={`value-${t.name}`}
+                          value={t.secret}
                         />
                       </td>
                       <td className="pa2">
-                        <form data-value={t[1]} onSubmit={handleCopyToken}>
+                        <form data-value={t.secret} onSubmit={handleCopyToken}>
                           <Button
                             className="bg-white black"
                             type="submit"
                             id="copy-key"
                           >
-                            {copied === t[1] ? 'Copied!' : 'Copy'}
+                            {copied === t.secret ? 'Copied!' : 'Copy'}
                           </Button>
                         </form>
                       </td>
@@ -125,8 +126,8 @@ export default function ManageKeys({ user }) {
                           <input
                             type="hidden"
                             name="name"
-                            id={`token-${t[0]}`}
-                            value={t[0]}
+                            id={`token-${t.name}`}
+                            value={t.name}
                           />
                           <Button
                             className="bg-nsorange white"
@@ -134,7 +135,7 @@ export default function ManageKeys({ user }) {
                             disabled={Boolean(deleting)}
                             id="delete-key"
                           >
-                            {deleting === t[0] ? 'Deleting...' : 'Delete'}
+                            {deleting === t.name ? 'Deleting...' : 'Delete'}
                           </Button>
                         </form>
                       </td>
@@ -143,7 +144,7 @@ export default function ManageKeys({ user }) {
                 </tbody>
               </table>
             </When>
-            <When condition={keys.length === 0}>
+            <When condition={data.length === 0}>
               <p className="tc mv5">
                 <span className="f1 dib mb3">😢</span>
                 <br />

@@ -1,12 +1,14 @@
 {
-  "name": "db",
+  "name": "@nftstorage/db",
   "version": "1.0.0",
   "private": true,
   "description": "nft.storage database",
   "type": "module",
+  "main": "index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "graphql-codegen -r dotenv/config && tsc -p tsconfig-client.json",
-    "fauna": "node scripts/build-schema.js && fgu && yarn build"
+    "prepare": "graphql-codegen -r dotenv/config",
+    "fauna": "node scripts/build-schema.js && fgu && yarn prepare"
   },
   "license": "(Apache-2.0 AND MIT)",
   "devDependencies": {
@@ -26,7 +28,8 @@
     "fauna-gql-upload": "^2.3.0",
     "faunadb": "^4.3.0",
     "graphql": "^15.5.1",
-    "graphql-request": "^3.4.0"
+    "graphql-request": "^3.4.0",
+    "typescript": "^4.3.5"
   },
   "repository": {
     "type": "git",

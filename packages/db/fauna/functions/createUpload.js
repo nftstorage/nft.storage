@@ -1,4 +1,13 @@
-import { Lambda, Let, Query, Select, Var, Create, Now } from 'faunadb'
+import {
+  Lambda,
+  Let,
+  Query,
+  Select,
+  Var,
+  Create,
+  Now,
+  CurrentIdentity,
+} from 'faunadb'
 import { findOrCreate } from '../utils/common'
 
 export default {
@@ -23,6 +32,7 @@ export default {
         },
         Create('Upload', {
           data: {
+            user: CurrentIdentity(),
             type: Select('type', Var('data')),
             created: Now(),
             content: Var('content'),

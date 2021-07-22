@@ -17,6 +17,8 @@ type Query {
   findResources(where: FindResourceInput): [Resource!]!
     @resolver(paginated: true)
     @relation
+  "Login with sub or issuer"
+  login(id: String!): LoginOutput! @resolver
 }
 
 type Mutation {
@@ -508,13 +510,8 @@ input ResourceUpdate {
   cid: String
 }
 
-input CreateUploadInput {
-  type: UploadType!
-  cid: String!
-  dagSize: Int!
-}
-
 type Upload {
+  user: User! @relation
   type: UploadType!
   content: Content! @relation
   created: Time!
@@ -522,24 +519,52 @@ type Upload {
 }
 
 enum UploadType {
-  Blob
+  BLOB
+}
+
+input CreateUploadInput {
+  type: UploadType!
+  cid: String!
+  dagSize: Int!
+}
+
+type UserKey {
+  name: String!
+  secret: String! @unique
+  user: User! @relation
+  created: Time!
+  deleted: Time
 }
 
 type User {
+  issuer: String! @unique
+  """
+  We need this to dedupe old github login from new magic.link
+  """
+  sub: String! @unique
   name: String!
   picture: String
   email: String!
-  issuer: String! @unique
   github: String
   publicAddress: String!
   created: Time!
+  keys: [UserKey!]! @relation
 }
 
 input CreateUserInput {
-  email: String!
+  sub: String!
   issuer: String!
+  email: String!
   publicAddress: String!
   name: String!
   picture: String
   github: String
+}
+
+type LoginOutput @embedded {
+  secret: String!
+  sub: String!
+  issuer: String!
+  email: String!
+  ref: String!
 }
