@@ -65,12 +65,29 @@ export const add = async (config, data, metadata) => {
  * @template {Record<string, string>} T
  * @param {Config} config
  * @param {IPFSURL.IPFSURL} url
- * @param {T} [metadata]
+ * @param {Object} [options]
+ * @param {T} [options.metadata]
+ * @param {boolean} [options.v0]
  */
-export const pin = async (config, url, metadata) =>
-  service(config).pin(IPFSURL.formatIPFSPath(url), {
+export const pin = async (config, url, { metadata, v0 = false } = {}) => {
+  const path = v0
+    ? IPFSURL.formatIPFSPathWithCIDv0(url)
+    : IPFSURL.formatIPFSPath(url)
+
+  return await service(config).pin(removeTrailingSlash(path), {
     metadata: {
       user: '@nftstorage/niftysave',
       ...metadata,
     },
   })
+}
+
+/**
+ * Removes trailing `/` from the path to avoid redirect issues
+ * @see https://github.com/ipfs/ipfs-cluster/issues/1415
+ * @param {string} path
+ */
+const removeTrailingSlash = (path) => {
+  const offset = path.length - 1
+  return path.charAt(offset) === '/' ? path.slice(0, offset) : path
+}

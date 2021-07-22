@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@nftstorage/ipfs-cluster": "^3.0.1",
-    "@web-std/fetch": "^2.0.1",
+    "@web-std/fetch": "^2.0.3",
     "@web-std/file": "^1.1.0",
     "@web-std/form-data": "^2.1.0",
     "dotenv": "^10.0.0",
@@ -37,7 +37,8 @@
     "graphql-typed-client": "1.7.4",
     "multiformats": "^9.0.1",
     "nft.storage": "^1.4.0",
-    "subprogram": "^1.2.0"
+    "subprogram": "^1.2.0",
+    "abort-controller": "^3.0.0"
   },
   "repository": {
     "type": "git",

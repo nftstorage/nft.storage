@@ -139,8 +139,10 @@ const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
   console.log(`📌 (${id}) Pin a resource ${ipfsURL}`)
   const pin = await Result.fromPromise(
     Cluster.pin(config.cluster, ipfsURL, {
-      assetID: id,
-      sourceURL: uri,
+      metadata: {
+        assetID: id,
+        sourceURL: uri,
+      },
     })
   )
 
