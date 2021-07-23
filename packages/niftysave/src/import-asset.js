@@ -28,6 +28,7 @@ export const spawn = async (config) => {
       const updates = await Promise.all(
         resources.map((resource) => archive(config, resource))
       )
+      console.log(`💾 Update ${updates.length} records in database`)
       await updateResources(config, updates)
       console.log(`✨ Processed batch of ${resources.length} assets`)
     }
@@ -77,7 +78,6 @@ const fetchTokenResources = async ({ db, batchSize }) => {
  */
 
 const updateResources = async (config, updates) => {
-  console.log(`📝 Update resources in the db`)
   const result = await mutate(config.db, {
     updateResources: [
       {
@@ -92,7 +92,6 @@ const updateResources = async (config, updates) => {
   })
 
   if (result.ok) {
-    console.log(`✅ Resource were updated`)
     return result.value.updateResources?.map((r) => r._id) || []
   } else {
     console.error(
@@ -116,6 +115,7 @@ const archive = async (config, resource) => {
 
   const urlResult = Result.fromTry(() => new URL(resource.uri))
   if (!urlResult.ok) {
+    console.error(`🚨 (${id}) Failed to parse uri ${urlResult.error}`)
     return {
       id,
       status: Schema.ResourceStatus.URIParseFailed,
@@ -147,6 +147,7 @@ const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
   )
 
   if (!pin.ok) {
+    console.error(`🚨 (${id}) Failed to pin ${pin.error}`)
     return {
       id,
       ipfsURL: ipfsURL.href,
@@ -156,7 +157,7 @@ const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
   }
   const { cid } = pin.value
 
-  console.log(`📝 (${id}) Update resource in the db`)
+  console.log(`📝 (${id}) Link resource with content ${cid}`)
   return {
     id,
     ipfsURL: ipfsURL.href,
