@@ -5,6 +5,7 @@ import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
 import { fetchResource, timeout } from './net.js'
 import { configure } from './config.js'
+import { printURL } from './util.js'
 import { script } from 'subprogram'
 
 const { TokenAssetStatus } = Schema
@@ -169,12 +170,6 @@ const analyze = async (config, { _id: id, tokenURI }) => {
     metadata: { ...metadata.value, cid },
   }
 }
-
-/**
- * @param {URL} url
- */
-const printURL = (url) =>
-  url.protocol === 'data:' ? `${url.href.slice(0, 12)}...}` : url.href
 
 /**
  * @param {string} content

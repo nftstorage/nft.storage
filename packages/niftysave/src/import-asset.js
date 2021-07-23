@@ -5,6 +5,7 @@ import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
 import { fetchWebResource, timeout } from './net.js'
 import { configure } from './config.js'
+import { printURL } from './util.js'
 import { script } from 'subprogram'
 
 export const main = () => spawn(configure())
@@ -123,8 +124,11 @@ const archive = async (config, resource) => {
     }
   }
   const url = urlResult.value
+  console.log(`🧬 (${id}) Parsed URL ${printURL(url)}`)
 
   const ipfsURL = IPFSURL.asIPFSURL(url)
+  ipfsURL && console.log(`🚀 (${id}) Derived IPFS URL ${ipfsURL}`)
+
   return ipfsURL
     ? await archiveIPFSResource(config, { ...resource, id, ipfsURL })
     : await archiveWebResource(config, { ...resource, id, url })
@@ -136,7 +140,7 @@ const archive = async (config, resource) => {
  * @returns {Promise<Schema.ResourceUpdate>}
  */
 const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
-  console.log(`📌 (${id}) Pin a resource ${ipfsURL}`)
+  console.log(`📌 (${id}) Pin an IPFS resource ${ipfsURL}`)
   const pin = await Result.fromPromise(
     Cluster.pin(config.cluster, ipfsURL, {
       metadata: {
@@ -175,15 +179,17 @@ const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
  * @returns {Promise<Schema.ResourceUpdate>}
  */
 const archiveWebResource = async (config, { id, url }) => {
-  const from = url.protocol === 'data:' ? 'data: url' : url.href
-  console.log(`📡 (${id}) Fetching content from ${from}`)
+  console.log(`📡 (${id}) Fetching content from ${printURL(url)}`)
   const fetch = await Result.fromPromise(
     fetchWebResource(url, {
       signal: timeout(config.fetchTimeout),
     })
   )
   if (!fetch.ok) {
-    console.error(`🚨 (${id}) Failed to fetch ${from} ${fetch.error}`)
+    console.error(
+      `🚨 (${id}) Failed to fetch from ${printURL(url)} ${fetch.error}`
+    )
+
     return {
       id,
       status: Schema.ResourceStatus.ContentFetchFailed,
@@ -193,7 +199,7 @@ const archiveWebResource = async (config, { id, url }) => {
   const content = fetch.value
 
   console.log(
-    `📌 (${id}) Pin fetched content Blob<{type:"${content.type}", size:${content.size}>`
+    `📌 (${id}) Pin fetched content by uploading ${content.size} bytes`
   )
 
   const pin = await Result.fromPromise(
