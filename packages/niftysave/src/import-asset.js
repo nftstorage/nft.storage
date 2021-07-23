@@ -3,7 +3,7 @@ import * as Result from './result.js'
 import * as Schema from '../gen/db/schema.js'
 import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
-import { fetchWebResource } from './net.js'
+import { fetchWebResource, timeout } from './net.js'
 import { configure } from './config.js'
 import { script } from 'subprogram'
 
@@ -15,6 +15,7 @@ export const main = () => spawn(configure())
  * @param {number} config.batchSize - Number of tokens in each import
  * @param {import('./cluster').Config} config.cluster
  * @param {import('./config').DBConfig} config.db
+ * @param {number} config.fetchTimeout
  */
 export const spawn = async (config) => {
   const deadline = Date.now() + config.budget
@@ -102,10 +103,9 @@ const updateResources = async (config, updates) => {
 }
 
 /**
- * @typedef {{id:string, problem: string, status:Schema.ResourceStatus}} Problem
- *
  * @param {Object} config
  * @param {import('./cluster').Config} config.cluster
+ * @param {number} config.fetchTimeout
  * @param {Resource} resource
  * @returns {Promise<Schema.ResourceUpdate>}
  */
@@ -168,14 +168,20 @@ const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
 }
 
 /**
- * @param {{cluster: import('./cluster').Config}} config
+ * @param {Object} config
+ * @param {import('./cluster').Config} config.cluster
+ * @param {number} config.fetchTimeout
  * @param {Resource & {id: string, url: URL}} resource
  * @returns {Promise<Schema.ResourceUpdate>}
  */
 const archiveWebResource = async (config, { id, url }) => {
   const from = url.protocol === 'data:' ? 'data: url' : url.href
   console.log(`📡 (${id}) Fetching content from ${from}`)
-  const fetch = await Result.fromPromise(fetchWebResource(url))
+  const fetch = await Result.fromPromise(
+    fetchWebResource(url, {
+      signal: timeout(config.fetchTimeout),
+    })
+  )
   if (!fetch.ok) {
     console.error(`🚨 (${id}) Failed to fetch ${from} ${fetch.error}`)
     return {
