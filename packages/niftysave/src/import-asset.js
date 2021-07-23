@@ -177,6 +177,7 @@ const archiveWebResource = async (config, { id, url }) => {
   console.log(`📡 (${id}) Fetching content from ${from}`)
   const fetch = await Result.fromPromise(fetchWebResource(url))
   if (!fetch.ok) {
+    console.error(`🚨 (${id}) Failed to fetch ${from} ${fetch.error}`)
     return {
       id,
       status: Schema.ResourceStatus.ContentFetchFailed,
@@ -197,6 +198,7 @@ const archiveWebResource = async (config, { id, url }) => {
   )
 
   if (!pin.ok) {
+    console.error(`🚨 (${id}) Failed to pin ${pin.error}`)
     return {
       id,
       status: Schema.ResourceStatus.PinRequestFailed,
@@ -205,6 +207,8 @@ const archiveWebResource = async (config, { id, url }) => {
   }
 
   const { cid } = pin.value
+
+  console.log(`📝 (${id}) Link resource with content ${cid}`)
 
   return {
     id,
