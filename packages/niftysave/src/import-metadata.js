@@ -138,6 +138,7 @@ const analyze = async (config, { _id: id, tokenURI }) => {
   const pin = ipfsURL
     ? await Result.fromPromise(
         Cluster.pin(config.cluster, ipfsURL, {
+          signal: timeout(config.fetchTimeout),
           metadata: {
             assetID: id,
             sourceURL: tokenURI,
@@ -146,9 +147,12 @@ const analyze = async (config, { _id: id, tokenURI }) => {
       )
     : await Result.fromPromise(
         Cluster.add(config.cluster, new Blob([content.value]), {
-          assetID: id,
-          // if it is a data uri just omit it.
-          ...(url.protocol !== 'data:' && { sourceURL: url.href }),
+          signal: timeout(config.fetchTimeout),
+          metadata: {
+            assetID: id,
+            // if it is a data uri just omit it.
+            ...(url.protocol !== 'data:' && { sourceURL: url.href }),
+          },
         })
       )
 

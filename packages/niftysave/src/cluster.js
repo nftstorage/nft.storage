@@ -40,10 +40,13 @@ const service = (config) => {
  * @template {Record<string, string>} T
  * @param {Config} config
  * @param {Blob} data
- * @param {T} [metadata]
+ * @param {Object} [options]
+ * @param {T} [options.metadata]
+ * @param {AbortSignal} [options.signal]
  */
-export const add = async (config, data, metadata) => {
+export const add = async (config, data, { metadata, signal }) => {
   const { cid, size, bytes } = await service(config).add(data, {
+    signal,
     metadata: {
       size: data.size.toString(),
       user: '@nftstorage/niftysave',
@@ -68,13 +71,19 @@ export const add = async (config, data, metadata) => {
  * @param {Object} [options]
  * @param {T} [options.metadata]
  * @param {boolean} [options.v0]
+ * @param {AbortSignal} [options.signal]
  */
-export const pin = async (config, url, { metadata, v0 = false } = {}) => {
+export const pin = async (
+  config,
+  url,
+  { metadata, v0 = false, signal } = {}
+) => {
   const path = v0
     ? IPFSURL.formatIPFSPathWithCIDv0(url)
     : IPFSURL.formatIPFSPath(url)
 
   return await service(config).pin(removeTrailingSlash(path), {
+    signal,
     metadata: {
       user: '@nftstorage/niftysave',
       ...metadata,

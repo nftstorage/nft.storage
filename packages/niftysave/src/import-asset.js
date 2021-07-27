@@ -135,7 +135,9 @@ const archive = async (config, resource) => {
 }
 
 /**
- * @param {{cluster: import('./cluster').Config}} config
+ * @param {Object} config
+ * @param {import('./cluster').Config} config.cluster
+ * @param {number} config.fetchTimeout
  * @param {{id: string, uri: string, ipfsURL: IPFSURL.IPFSURL}} resource
  * @returns {Promise<Schema.ResourceUpdate>}
  */
@@ -143,6 +145,7 @@ const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
   console.log(`📌 (${id}) Pin an IPFS resource ${ipfsURL}`)
   const pin = await Result.fromPromise(
     Cluster.pin(config.cluster, ipfsURL, {
+      signal: timeout(config.fetchTimeout),
       metadata: {
         assetID: id,
         sourceURL: uri,
@@ -204,8 +207,11 @@ const archiveWebResource = async (config, { id, url }) => {
 
   const pin = await Result.fromPromise(
     Cluster.add(config.cluster, content, {
-      id,
-      sourceURL: url.protocol === 'data:' ? 'data:...' : url.href,
+      signal: timeout(config.fetchTimeout),
+      metadata: {
+        id,
+        sourceURL: url.protocol === 'data:' ? 'data:...' : url.href,
+      },
     })
   )
 
