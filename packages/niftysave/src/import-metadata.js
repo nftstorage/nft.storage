@@ -5,6 +5,7 @@ import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
 import { fetchResource, timeout } from './net.js'
 import { configure } from './config.js'
+import { printURL } from './util.js'
 import { script } from 'subprogram'
 
 const { TokenAssetStatus } = Schema
@@ -137,6 +138,7 @@ const analyze = async (config, { _id: id, tokenURI }) => {
   const pin = ipfsURL
     ? await Result.fromPromise(
         Cluster.pin(config.cluster, ipfsURL, {
+          signal: timeout(config.fetchTimeout),
           metadata: {
             assetID: id,
             sourceURL: tokenURI,
@@ -145,9 +147,12 @@ const analyze = async (config, { _id: id, tokenURI }) => {
       )
     : await Result.fromPromise(
         Cluster.add(config.cluster, new Blob([content.value]), {
-          assetID: id,
-          // if it is a data uri just omit it.
-          ...(url.protocol !== 'data:' && { sourceURL: url.href }),
+          signal: timeout(config.fetchTimeout),
+          metadata: {
+            assetID: id,
+            // if it is a data uri just omit it.
+            ...(url.protocol !== 'data:' && { sourceURL: url.href }),
+          },
         })
       )
 
@@ -169,12 +174,6 @@ const analyze = async (config, { _id: id, tokenURI }) => {
     metadata: { ...metadata.value, cid },
   }
 }
-
-/**
- * @param {URL} url
- */
-const printURL = (url) =>
-  url.protocol === 'data:' ? `${url.href.slice(0, 12)}...}` : url.href
 
 /**
  * @param {string} content

@@ -1,16 +1,21 @@
 import fauna from 'faunadb'
-import dotenv from 'dotenv'
 import fs from 'fs'
 import { CID } from 'multiformats'
+import * as Cluster from './src/cluster.js'
+import { configure } from './src/config.js'
+import * as IPFSURL from './src/ipfs-url.js'
+import { timeout } from './src/net.js'
 
-dotenv.config()
-const config = { secret: process.env['FAUNA_KEY'] || '' }
-const client = new fauna.Client(config)
+const config = configure()
+const client = new fauna.Client({ secret: process.env['FAUNA_KEY'] || '' })
 
 Object.assign(globalThis, {
   fauna,
+  Cluster,
   config,
   client,
   CID,
   fs,
+  IPFSURL,
+  timeout,
 })

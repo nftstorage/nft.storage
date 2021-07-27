@@ -25,6 +25,7 @@ jobs:
           FAUNA_KEY: ${{ secrets.FAUNA_KEY }}
           BATCH_SIZE: 100
           TIME_BUDGET: 1620
+          FETCH_TIMEOUT: 10000
           NIFTYSAVE_CLUSTER_KEY: ${{ secrets.NIFTYSAVE_CLUSTER_KEY }}
           NIFTYSAVE_IPFS_API_KEY: ${{ secrets.NIFTYSAVE_IPFS_API_KEY }}
         run: yarn --cwd packages/niftysave import-asset

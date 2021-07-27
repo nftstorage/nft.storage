@@ -3,8 +3,9 @@ import * as Result from './result.js'
 import * as Schema from '../gen/db/schema.js'
 import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
-import { fetchWebResource } from './net.js'
+import { fetchWebResource, timeout } from './net.js'
 import { configure } from './config.js'
+import { printURL } from './util.js'
 import { script } from 'subprogram'
 
 export const main = () => spawn(configure())
@@ -15,6 +16,7 @@ export const main = () => spawn(configure())
  * @param {number} config.batchSize - Number of tokens in each import
  * @param {import('./cluster').Config} config.cluster
  * @param {import('./config').DBConfig} config.db
+ * @param {number} config.fetchTimeout
  */
 export const spawn = async (config) => {
   const deadline = Date.now() + config.budget
@@ -28,6 +30,7 @@ export const spawn = async (config) => {
       const updates = await Promise.all(
         resources.map((resource) => archive(config, resource))
       )
+      console.log(`💾 Update ${updates.length} records in database`)
       await updateResources(config, updates)
       console.log(`✨ Processed batch of ${resources.length} assets`)
     }
@@ -77,7 +80,6 @@ const fetchTokenResources = async ({ db, batchSize }) => {
  */
 
 const updateResources = async (config, updates) => {
-  console.log(`📝 Update resources in the db`)
   const result = await mutate(config.db, {
     updateResources: [
       {
@@ -92,7 +94,6 @@ const updateResources = async (config, updates) => {
   })
 
   if (result.ok) {
-    console.log(`✅ Resource were updated`)
     return result.value.updateResources?.map((r) => r._id) || []
   } else {
     console.error(
@@ -103,10 +104,9 @@ const updateResources = async (config, updates) => {
 }
 
 /**
- * @typedef {{id:string, problem: string, status:Schema.ResourceStatus}} Problem
- *
  * @param {Object} config
  * @param {import('./cluster').Config} config.cluster
+ * @param {number} config.fetchTimeout
  * @param {Resource} resource
  * @returns {Promise<Schema.ResourceUpdate>}
  */
@@ -116,6 +116,7 @@ const archive = async (config, resource) => {
 
   const urlResult = Result.fromTry(() => new URL(resource.uri))
   if (!urlResult.ok) {
+    console.error(`🚨 (${id}) Failed to parse uri ${urlResult.error}`)
     return {
       id,
       status: Schema.ResourceStatus.URIParseFailed,
@@ -123,22 +124,28 @@ const archive = async (config, resource) => {
     }
   }
   const url = urlResult.value
+  console.log(`🧬 (${id}) Parsed URL ${printURL(url)}`)
 
   const ipfsURL = IPFSURL.asIPFSURL(url)
+  ipfsURL && console.log(`🚀 (${id}) Derived IPFS URL ${ipfsURL}`)
+
   return ipfsURL
     ? await archiveIPFSResource(config, { ...resource, id, ipfsURL })
     : await archiveWebResource(config, { ...resource, id, url })
 }
 
 /**
- * @param {{cluster: import('./cluster').Config}} config
+ * @param {Object} config
+ * @param {import('./cluster').Config} config.cluster
+ * @param {number} config.fetchTimeout
  * @param {{id: string, uri: string, ipfsURL: IPFSURL.IPFSURL}} resource
  * @returns {Promise<Schema.ResourceUpdate>}
  */
 const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
-  console.log(`📌 (${id}) Pin a resource ${ipfsURL}`)
+  console.log(`📌 (${id}) Pin an IPFS resource ${ipfsURL}`)
   const pin = await Result.fromPromise(
     Cluster.pin(config.cluster, ipfsURL, {
+      signal: timeout(config.fetchTimeout),
       metadata: {
         assetID: id,
         sourceURL: uri,
@@ -147,6 +154,7 @@ const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
   )
 
   if (!pin.ok) {
+    console.error(`🚨 (${id}) Failed to pin ${pin.error}`)
     return {
       id,
       ipfsURL: ipfsURL.href,
@@ -156,7 +164,7 @@ const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
   }
   const { cid } = pin.value
 
-  console.log(`📝 (${id}) Update resource in the db`)
+  console.log(`📝 (${id}) Link resource with content ${cid}`)
   return {
     id,
     ipfsURL: ipfsURL.href,
@@ -167,15 +175,24 @@ const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
 }
 
 /**
- * @param {{cluster: import('./cluster').Config}} config
+ * @param {Object} config
+ * @param {import('./cluster').Config} config.cluster
+ * @param {number} config.fetchTimeout
  * @param {Resource & {id: string, url: URL}} resource
  * @returns {Promise<Schema.ResourceUpdate>}
  */
 const archiveWebResource = async (config, { id, url }) => {
-  const from = url.protocol === 'data:' ? 'data: url' : url.href
-  console.log(`📡 (${id}) Fetching content from ${from}`)
-  const fetch = await Result.fromPromise(fetchWebResource(url))
+  console.log(`📡 (${id}) Fetching content from ${printURL(url)}`)
+  const fetch = await Result.fromPromise(
+    fetchWebResource(url, {
+      signal: timeout(config.fetchTimeout),
+    })
+  )
   if (!fetch.ok) {
+    console.error(
+      `🚨 (${id}) Failed to fetch from ${printURL(url)} ${fetch.error}`
+    )
+
     return {
       id,
       status: Schema.ResourceStatus.ContentFetchFailed,
@@ -185,17 +202,21 @@ const archiveWebResource = async (config, { id, url }) => {
   const content = fetch.value
 
   console.log(
-    `📌 (${id}) Pin fetched content Blob<{type:"${content.type}", size:${content.size}>`
+    `📌 (${id}) Pin fetched content by uploading ${content.size} bytes`
   )
 
   const pin = await Result.fromPromise(
     Cluster.add(config.cluster, content, {
-      id,
-      sourceURL: url.protocol === 'data:' ? 'data:...' : url.href,
+      signal: timeout(config.fetchTimeout),
+      metadata: {
+        id,
+        sourceURL: url.protocol === 'data:' ? 'data:...' : url.href,
+      },
     })
   )
 
   if (!pin.ok) {
+    console.error(`🚨 (${id}) Failed to pin ${pin.error}`)
     return {
       id,
       status: Schema.ResourceStatus.PinRequestFailed,
@@ -204,6 +225,8 @@ const archiveWebResource = async (config, { id, url }) => {
   }
 
   const { cid } = pin.value
+
+  console.log(`📝 (${id}) Link resource with content ${cid}`)
 
   return {
     id,
