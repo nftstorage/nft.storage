@@ -19,7 +19,7 @@
     "@types/yargs": "^17.0.0"
   },
   "dependencies": {
-    "@nftstorage/ipfs-cluster": "^3.0.1",
+    "@nftstorage/ipfs-cluster": "^3.3.0",
     "@web-std/fetch": "^2.0.3",
     "dotenv": "^10.0.0",
     "faunadb": "^4.3.0",

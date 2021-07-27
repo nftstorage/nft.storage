@@ -28,7 +28,7 @@
     "yargs": "^17.0.1"
   },
   "dependencies": {
-    "@nftstorage/ipfs-cluster": "git://github.com/nftstorage/ipfs-cluster#feat/abort-signal",
+    "@nftstorage/ipfs-cluster": "^3.3.0",
     "@web-std/fetch": "^2.0.3",
     "@web-std/file": "^1.1.0",
     "@web-std/form-data": "^2.1.0",
