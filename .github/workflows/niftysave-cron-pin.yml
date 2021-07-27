@@ -23,7 +23,7 @@ jobs:
       - name: Run job
         env:
           FAUNA_KEY: ${{ secrets.FAUNA_KEY }}
-          BATCH_SIZE: 1
+          BATCH_SIZE: 100
           TIME_BUDGET: 1620
           FETCH_TIMEOUT: 10000
           NIFTYSAVE_CLUSTER_KEY: ${{ secrets.NIFTYSAVE_CLUSTER_KEY }}
