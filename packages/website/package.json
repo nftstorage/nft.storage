@@ -22,7 +22,7 @@
     "react-dom": "17.0.2",
     "react-if": "^4.0.1",
     "react-query": "^3.13.9",
-    "swagger-ui-react": "^3.51.1",
+    "swagger-ui-react": "^3.45.0",
     "isomorphic-form-data": "^2.0.0",
     "tachyons": "^4.12.0"
   },
