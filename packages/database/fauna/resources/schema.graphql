@@ -122,7 +122,7 @@ type Metadata {
   """
   Content corresponding to the metadata.
   """
-  content: Content! @relation
+  content: Content! @relation @index(name: "metadata_by_content")
 
   """
   Identifies the asset this token represents
@@ -470,6 +470,12 @@ type Query {
   Provides tokens with the
   """
   findTokenAssets(where: FindTokenAssetsInput): [TokenAsset!]!
+    @resolver(paginated: true)
+    @relation
+  findTokenAssetsByCID(cid: ID): [TokenAsset]!
+    @resolver(paginated: true)
+    @relation
+  findTokenAssetsByURI(uri: String): [TokenAsset]!
     @resolver(paginated: true)
     @relation
 
