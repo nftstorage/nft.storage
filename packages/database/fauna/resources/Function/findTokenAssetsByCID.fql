@@ -1,10 +1,55 @@
+/**
+ * Finds token assets by tokenURI, which always will be a single token asset as
+ * they are unique by a tokenURI.
+ *
+ * @param {string} uri - A `tokenURI` of the token.
+ * @param {number} size - The maximum number of results to return in a single
+ * `Page`.
+ * @param {ID} [after] - Return the next `Page` of results after this cursor
+ * (inclusive).
+ * @param {ID} [before] - Return the previous `Page` of results before this
+ * cursor (exclusive).
+ * @returns {Page<TokenAsset>}
+ */
 CreateFunction({
   name: 'findTokenAssetsByCID',
   body: Query(
     Lambda(
-      '_',
-      Abort(
-        'Function findTokenAssetsByCID was not implemented yet. Please access your database and provide an implementation for the findTokenAssetsByCID function.'
+      ['cid', 'size', 'after', 'before'],
+      Let(
+        {
+          // Get a content by a CID.
+          content: Get(Match(Index('unique_Content_cid'), Var('cid'))),
+          // If content was not found there is no match, otherwise match all the
+          // `Metadata` documents that link to found countent.
+          matches: If(
+            IsNull(Var('content')),
+            [],
+            Match(Index('metadata_by_content'), Select('ref', Var('content')))
+          ),
+          // Paginate matches as per query.
+          refs: Call('paginate', Var('matches'), {
+            size: Var('size'),
+            after: Var('after'),
+            before: Var('before'),
+          }),
+        },
+        Map(
+          Var('refs'),
+          Lambda(
+            'ref',
+            Let(
+              {
+                // Get a document corresponding to this metadata ref
+                metadata: Get(Var('ref')),
+                // Get a referece to the TokenAsset that links to this metadata.
+                source: Select(['data', 'source'], Var('metadata')),
+              },
+              // get a document associated with this reference.
+              Get(Var('source'))
+            )
+          )
+        )
       )
     )
   ),
