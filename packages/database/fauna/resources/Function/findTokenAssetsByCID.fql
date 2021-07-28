@@ -1,0 +1,30 @@
+CreateFunction({
+  name: 'findTokenAssetsByCID',
+  body: Query(
+    Lambda(
+      '_',
+      Abort(
+        'Function findTokenAssetsByCID was not implemented yet. Please access your database and provide an implementation for the findTokenAssetsByCID function.'
+      )
+    )
+  ),
+  data: {
+    gql: {
+      meta: {
+        location: 'Query',
+        field: {
+          name: 'findTokenAssetsByCID',
+          directives: [
+            {
+              name: 'resolver',
+              args: { name: 'findTokenAssetsByCID', paginated: true },
+            },
+            { name: 'relation', args: {} },
+          ],
+          type: { NotNull: { List: { Named: 'TokenAsset' } } },
+          arguments: [{ name: 'cid', type: { Named: 'ID' } }],
+        },
+      },
+    },
+  },
+})

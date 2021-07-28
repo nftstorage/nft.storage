@@ -17,6 +17,7 @@ CreateCollection({
             name: 'content',
             directives: [
               { name: 'relation', args: { name: 'metadata_content' } },
+              { name: 'index', args: { name: 'metadata_by_content' } },
             ],
             description: 'Content corresponding to the metadata.',
             type: { NotNull: { Named: 'Content' } },
