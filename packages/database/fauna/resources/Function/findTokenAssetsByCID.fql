@@ -19,21 +19,32 @@ CreateFunction({
       Let(
         {
           // Get a content by a CID.
-          content: Get(Match(Index('unique_Content_cid'), Var('cid'))),
+          contentMatch: Match(Index('unique_Content_cid'), Var('cid')),
+          content: If(
+            IsEmpty(Var('contentMatch')),
+            null,
+            Get(Var('contentMatch'))
+          ),
           // If content was not found there is no match, otherwise match all the
           // `Metadata` documents that link to found countent.
           matches: If(
             IsNull(Var('content')),
-            [],
+            null,
             Match(Index('metadata_by_content'), Select('ref', Var('content')))
           ),
-          // Paginate matches as per query.
-          refs: Call('paginate', Var('matches'), {
-            size: Var('size'),
-            after: Var('after'),
-            before: Var('before'),
-          }),
+          // If there are matches apply pagination otherwise use an empty array.
+          refs: If(
+            IsNull(Var('matches')),
+            [],
+            Call('paginate', Var('matches'), {
+              size: Var('size'),
+              after: Var('after'),
+              before: Var('before'),
+            })
+          ),
         },
+        // Map all matched `Metadata` refs to their source `TokenAsset`
+        // documents.
         Map(
           Var('refs'),
           Lambda(
