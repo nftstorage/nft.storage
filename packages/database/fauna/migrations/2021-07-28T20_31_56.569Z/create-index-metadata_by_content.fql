@@ -1,0 +1,8 @@
+CreateIndex({
+  "name": "metadata_by_content",
+  "source": Collection("Metadata"),
+  "terms": [{
+    "field": ["data", "content"]
+  }],
+  "serialized": true
+})
