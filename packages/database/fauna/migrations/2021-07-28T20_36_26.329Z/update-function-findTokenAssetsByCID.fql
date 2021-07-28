@@ -1,0 +1,51 @@
+Update(Function("findTokenAssetsByCID"), {
+  "body": Query(Lambda(["cid", "size", "after", "before"], Let([{
+    "content": Get(Match(Index("unique_Content_cid"), Var("cid")))
+  }, {
+    "matches": If(IsNull(Var("content")), [], Match(Index("metadata_by_content"), Select("ref", Var("content"))))
+  }, {
+    "refs": Call("paginate", [Var("matches"), {
+      "size": Var("size"),
+      "after": Var("after"),
+      "before": Var("before")
+    }])
+  }], Map(Var("refs"), Lambda("ref", Let([{
+    "metadata": Get(Var("ref"))
+  }, {
+    "source": Select(["data", "source"], Var("metadata"))
+  }], Get(Var("source")))))))),
+  "data": {
+    "gql": {
+      "meta": {
+        "location": "Query",
+        "field": {
+          "name": "findTokenAssetsByCID",
+          "directives": [{
+            "name": "resolver",
+            "args": {
+              "name": "findTokenAssetsByCID",
+              "paginated": true
+            }
+          }, {
+            "name": "relation",
+            "args": {}
+          }],
+          "type": {
+            "NotNull": {
+              "List": {
+                "Named": "TokenAsset"
+              }
+            }
+          },
+          "arguments": [{
+            "name": "cid",
+            "type": {
+              "Named": "ID"
+            }
+          }]
+        }
+      }
+    }
+  },
+  "role": null
+})

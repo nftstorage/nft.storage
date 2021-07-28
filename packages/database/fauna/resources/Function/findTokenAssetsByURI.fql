@@ -1,0 +1,51 @@
+/**
+ * Finds token assets by tokenURI, which always will be a single token asset as
+ * they are unique by a tokenURI.
+ *
+ * @param {string} uri - A `tokenURI` of the token.
+ * @param {number} size - The maximum number of results to return in a single
+ * `Page`.
+ * @param {ID} [after] - Return the next `Page` of results after this cursor
+ * (inclusive).
+ * @param {ID} [before] - Return the previous `Page` of results before this
+ * cursor (exclusive).
+ * @returns {Page<TokenAsset>}
+ */
+CreateFunction({
+  name: 'findTokenAssetsByURI',
+  body: Query(
+    Lambda(
+      ['uri', 'size', 'after', 'before'],
+      Let(
+        {
+          match: Match(Index('unique_TokenAsset_tokenURI'), Var('uri')),
+          refs: Call('paginate', Var('match'), {
+            size: Var('size'),
+            after: Var('after'),
+            before: Var('before'),
+          }),
+        },
+        Map(Var('refs'), Lambda('ref', Get(Var('ref'))))
+      )
+    )
+  ),
+  data: {
+    gql: {
+      meta: {
+        location: 'Query',
+        field: {
+          name: 'findTokenAssetsByURI',
+          directives: [
+            {
+              name: 'resolver',
+              args: { name: 'findTokenAssetsByURI', paginated: true },
+            },
+            { name: 'relation', args: {} },
+          ],
+          type: { NotNull: { List: { Named: 'TokenAsset' } } },
+          arguments: [{ name: 'uri', type: { Named: 'String' } }],
+        },
+      },
+    },
+  },
+})
