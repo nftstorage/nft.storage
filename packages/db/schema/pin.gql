@@ -1,0 +1,56 @@
+type Pin {
+  content: Content! @relation
+  locations: [PinLocation!] @relation
+  status: PinStatus!
+  statusText: String
+  updated: Time
+  created: Time!
+  service: PinService!
+}
+
+type PinLocation {
+  pins: [Pin!] @relation
+  peerId: String! @unique
+  peerName: String
+  region: String
+}
+
+enum PinService {
+  IPFS_CLUSTER
+  PINATA
+}
+enum PinStatus {
+  unknown
+  queued
+  pinning
+  pinned
+  failed
+}
+
+type Query {
+  findPinLocationByPeerId(peerId: String!): PinLocation
+}
+
+input UpdatePinLocationInput {
+  peerId: String!
+  peerName: String
+  region: String
+}
+
+input UpdatePinInput {
+  status: PinStatus
+  statusText: String
+  updated: Time!
+  service: PinService
+  locations: [UpdatePinLocationInput]
+}
+
+type Mutation {
+  updatePin(id: ID!, data: UpdatePinInput): Pin @resolver
+}
+
+mutation updatePin($id: ID!, $data: UpdatePinInput!) {
+  updatePin(id: $id, data: $data) {
+    _id
+  }
+}

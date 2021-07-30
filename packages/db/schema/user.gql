@@ -36,6 +36,7 @@ mutation createOrUpdateUser($input: CreateUserInput!) {
 
 type LoginOutput @embedded {
   secret: String!
+  user: User!
   sub: String!
   issuer: String!
   email: String!
@@ -50,10 +51,18 @@ type Query {
 query login($id: String!) {
   login(id: $id) {
     secret
-    sub
-    issuer
-    email
-    ref
+    user {
+      _id
+      issuer
+      sub
+      keys {
+        data {
+          _id
+          name
+          secret
+        }
+      }
+    }
   }
 }
 

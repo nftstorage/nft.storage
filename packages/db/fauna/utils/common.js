@@ -11,7 +11,7 @@ import { If, Index, Let, Match, Select, Var, Get, IsEmpty } from 'faunadb'
 export function findOrCreate(index, searchTerm, fn) {
   return Let(
     {
-      match: Match(Index(index), Var(searchTerm)),
+      match: Match(Index(index), searchTerm),
     },
     If(
       IsEmpty(Var('match')),

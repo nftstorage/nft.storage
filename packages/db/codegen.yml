@@ -13,8 +13,10 @@ generates:
     config:
       enumsAsTypes: true
       skipTypename: true
-      flattenGeneratedTypes: true
-      # omitOperationSuffix: true
-hooks:
-  beforeDone:
-    - tsc
+      preResolveTypes: true
+      # avoidOptionals: true
+      maybeValue: T | undefined
+      # flattenGeneratedTypes: true
+# hooks:
+#   beforeDone:
+#     - tsc

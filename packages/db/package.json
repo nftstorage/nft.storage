@@ -4,10 +4,10 @@
   "private": true,
   "description": "nft.storage database",
   "type": "module",
-  "main": "index.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prepare": "graphql-codegen -r dotenv/config",
+    "prepare": "graphql-codegen -r dotenv/config && tsc",
     "fauna": "node scripts/build-schema.js && fgu && yarn prepare"
   },
   "license": "(Apache-2.0 AND MIT)",
