@@ -29,6 +29,7 @@ export default {
         },
         {
           secret: Select('secret', Var('login')),
+          user: Var('userRef'),
           sub: Select('sub', Var('user')),
           issuer: Select('issuer', Var('user')),
           email: Select('email', Var('user')),

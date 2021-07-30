@@ -4,16 +4,38 @@ type Upload {
   content: Content! @relation
   created: Time!
   deleted: Time
+  key: UserKey @relation
+  files: [UploadFiles]
+}
+
+type UploadFiles @embedded {
+  name: String
+  type: String
 }
 
 enum UploadType {
   BLOB
+  MULTIPART
+  CAR
 }
 
+input CreateUploadFiles {
+  name: String
+  type: String
+}
+
+input CreatePin {
+  status: PinStatus!
+  statusText: String
+  service: PinService!
+}
 input CreateUploadInput {
   type: UploadType!
   cid: String!
   dagSize: Int!
+  files: [CreateUploadFiles]
+  key: ID
+  pins: [CreatePin]!
 }
 
 type Mutation {
@@ -24,11 +46,26 @@ mutation createUpload($input: CreateUploadInput!) {
   createUpload(input: $input) {
     _id
     type
+    created
+    key {
+      name
+    }
+    files {
+      name
+      type
+    }
     user {
       issuer
     }
     content {
       cid
+      dagSize
+      pins {
+        data {
+          _id
+          status
+        }
+      }
     }
   }
 }

@@ -33,40 +33,6 @@ type Mutation {
   updateResource(input: ResourceUpdate): Resource! @resolver
 }
 
-"""
-Content corresponding to a resource(s) that were referreced by non-fungible
-token metadata. It is identified and unique by it's cid. Content may represent
-a file, directory or arbitrary Dag in IPFS network.
-"""
-type Content {
-  """
-  Root CID for this content.
-  """
-  cid: String! @unique
-
-  """
-  Backlinks to all the resources that resolve to this content. Note that
-  different resource URIs may resolve to the same CID.
-  """
-  resources: [Resource!] @relation
-
-  """
-  IPFS nodes pinning this content.
-  """
-  pins: [Pin]! @relation
-
-  """
-  Size of the DAG in bytes. Set if known on upload or for partials is set when
-  content is fully pinned in at least one location.
-  """
-  dagSize: Int
-
-  """
-  Creation date.
-  """
-  created: Time!
-}
-
 type Block {
   """
   The hash of the block
@@ -305,86 +271,6 @@ type Resource {
   status. From that point on resource is no longer going to be updated.
   """
   content: Content!
-}
-
-"""
-Information for piece of content pinned in IPFS.
-"""
-type Pin {
-  """
-  The content being pinned.
-  """
-  content: Content! @relation
-  """
-  Reference to a pin location that is pinning it.
-  """
-  location: PinLocation! @relation
-  """
-  Pinning status at this location.
-  """
-  status: PinStatus!
-  """
-  Human readable description of the pin status. Present only when status needs
-  ellaboration e.g. when pin is failed or when pin is queued but actual status
-  could not be obtained from the node.
-  """
-  statusText: String
-  """
-  Last time pin status was updated.
-  """
-  updated: Time!
-  """
-  Time when pin was created.
-  """
-  created: Time!
-}
-
-"""
-Location of a pin.
-"""
-type PinLocation {
-  """
-  Known pins at this location.
-  """
-  pins: [Pin]! @relation
-
-  """
-  Libp2p peer ID of the node pinning this pin.
-  """
-  peerId: String! @unique
-
-  """
-  Name of the peer pinning this pin.
-  """
-  peerName: String
-
-  """
-  Geographic region this node resides in.
-  """
-  region: String
-}
-
-# Based on the ipfs cluster pin status enum
-# https://github.com/ipfs/ipfs-cluster/blob/8454cd6383170d17a95180a8d137fcaa2a63bbba/api/types.go#L52-L80
-# but is stipped down to only relevant variants as per thread
-# https://github.com/web3-storage/web3.storage/issues/31
-enum PinStatus {
-  """
-  An error occurred pinning.
-  """
-  PinFailed
-  """
-  Node has pinned the content.
-  """
-  Pinned
-  """
-  Node is currently pinning the content.
-  """
-  Pinning
-  """
-  The item has been queued for pinning.
-  """
-  PinQueued
 }
 
 type Owner {
