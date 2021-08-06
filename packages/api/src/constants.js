@@ -29,6 +29,13 @@ export const cluster = {
       ? CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN
       : '',
   addrs: Object.freeze(CLUSTER_ADDRS.split(',').filter(Boolean)),
+  /**
+   * When >2.5MB, use local add, because waiting for blocks to be sent to
+   * other cluster nodes can take a long time. Replication to other nodes
+   * will be done async by bitswap instead.
+   */
+  localAddThreshold: 0, // temporarily set to 0 until cluster node connectivity is restored.
+  // localAddThreshold: 1024 * 1024 * 2.5,
 }
 
 export const pinata = {

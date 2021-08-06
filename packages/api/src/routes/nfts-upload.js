@@ -7,9 +7,10 @@ import * as pinataQueue from '../models/pinata-queue.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth.js'
 import { debug } from '../utils/debug.js'
+import * as constants from '../constants.js'
 
 const log = debug('nfts-upload')
-const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
+const LOCAL_ADD_THRESHOLD = constants.cluster.localAddThreshold
 
 /**
  * @typedef {import('../bindings').NFT} NFT
@@ -32,7 +33,10 @@ export async function upload(event, ctx) {
     // encoded as binary, which is why we can expect that each part here is
     // a file (and not a stirng).
     const files = /** @type {File[]} */ (form.getAll('file'))
-    const dir = await cluster.addDirectory(files)
+    const dirSize = files.reduce((total, f) => total + f.size, 0)
+    const dir = await cluster.addDirectory(files, {
+      local: dirSize > LOCAL_ADD_THRESHOLD,
+    })
     const { cid, size } = dir[dir.length - 1]
     nft = {
       cid,

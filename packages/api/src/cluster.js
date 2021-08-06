@@ -29,7 +29,7 @@ export async function add(data, options = {}) {
 /**
  * @param {File[]} files
  */
-export async function addDirectory(files) {
+export async function addDirectory(files, options = {}) {
   const size = files.reduce((total, f) => total + f.size, 0)
   if (size === 0) {
     throw new HTTPError(
@@ -39,6 +39,7 @@ export async function addDirectory(files) {
 
   const results = await client.addDirectory(files, {
     metadata: { size: size.toString() },
+    ...options,
   })
   return results.map((result) => ({
     cid: result.cid,
@@ -53,8 +54,8 @@ export async function addDirectory(files) {
  * @param {File} file
  * @returns {Promise<import('nft.storage/src/lib/interface').CIDString>}
  */
-export const importAsset = async (file) => {
-  const result = await client.addDirectory([file])
+export const importAsset = async (file, options = {}) => {
+  const result = await client.addDirectory([file], options)
   if (result.length !== 2) {
     throw new Error(
       `Expected response with two entries, but got ${result.length} instead`
