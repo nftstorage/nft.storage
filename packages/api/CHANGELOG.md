@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.3.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.2.2...api-v2.3.0) (2021-08-06)
+
+
+### Features
+
+* esbuild to build api and new tests ([#252](https://www.github.com/ipfs-shipyard/nft.storage/issues/252)) ([3cafc29](https://www.github.com/ipfs-shipyard/nft.storage/commit/3cafc29c0932b36421424827eca04323c26b22f9))
+* improvements to the setup ([#246](https://www.github.com/ipfs-shipyard/nft.storage/issues/246)) ([6a2501f](https://www.github.com/ipfs-shipyard/nft.storage/commit/6a2501f5c340af87c1571886961920280afec249))
+* update pw-test so its easier to run sw tests ([#240](https://www.github.com/ipfs-shipyard/nft.storage/issues/240)) ([5737ffc](https://www.github.com/ipfs-shipyard/nft.storage/commit/5737ffcb0323e20b31fdabdd305da075b92a9047))
+
+
+### Bug Fixes
+
+* niftysave pin job failures by adopting request timeouts ([#267](https://www.github.com/ipfs-shipyard/nft.storage/issues/267)) ([0bac638](https://www.github.com/ipfs-shipyard/nft.storage/commit/0bac6385ef0417a7a3453172bf3a3ed9e664f9e6))
+* temporarily locally add all uploads ([#286](https://www.github.com/ipfs-shipyard/nft.storage/issues/286)) ([f0443a5](https://www.github.com/ipfs-shipyard/nft.storage/commit/f0443a5b9baa0d6921be7ad8544ec4fd2c1e5218))
+
 ### [2.2.2](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.2.1...api-v2.2.2) (2021-07-06)
 
 
