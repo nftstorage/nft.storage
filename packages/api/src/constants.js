@@ -34,8 +34,7 @@ export const cluster = {
    * other cluster nodes can take a long time. Replication to other nodes
    * will be done async by bitswap instead.
    */
-  localAddThreshold: 0, // temporarily set to 0 until cluster node connectivity is restored.
-  // localAddThreshold: 1024 * 1024 * 2.5,
+  localAddThreshold: 1024 * 1024 * 2.5,
 }
 
 export const pinata = {
