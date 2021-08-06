@@ -12,6 +12,7 @@ import { sha256 } from 'multiformats/hashes/sha2'
 import * as Block from 'multiformats/block'
 import * as CAR from '../utils/car.js'
 import { debug } from '../utils/debug.js'
+import * as constants from '../constants.js'
 
 const log = debug('nft-store')
 
@@ -32,7 +33,11 @@ export async function store(event, ctx) {
   for (const [name, content] of form.entries()) {
     if (name !== 'meta') {
       const file = /** @type {File} */ (content)
-      const cid = CID.parse(await cluster.importAsset(file))
+      const cid = CID.parse(
+        await cluster.importAsset(file, {
+          local: file.size > constants.cluster.localAddThreshold,
+        })
+      )
       const href = `ipfs://${cid}/${file.name}`
       const path = name.split('.')
       setIn(data, path, href)
@@ -41,7 +46,10 @@ export async function store(event, ctx) {
     }
   }
 
-  const metadata = await cluster.add(new Blob([JSON.stringify(data)]))
+  const blob = new Blob([JSON.stringify(data)])
+  const metadata = await cluster.add(blob, {
+    local: blob.size > constants.cluster.localAddThreshold,
+  })
   const block = await Block.encode({
     value: {
       ...dag,
@@ -52,7 +60,9 @@ export async function store(event, ctx) {
     hasher: sha256,
   })
   const car = await CAR.encode([block.cid], [block])
-  const { cid, bytes } = await cluster.add(car)
+  const { cid, bytes } = await cluster.add(car, {
+    local: car.size > constants.cluster.localAddThreshold,
+  })
 
   // We do want worker to wait for this, but we do not want to
   // block response waiting on this.
