@@ -31,7 +31,7 @@
     "build:ts": "tsc --build",
     "build:cjs": "rollup --config rollup.config.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && npx codecov",
-    "typedoc": "typedoc --entryPoints src  --out ../../docs/client",
+    "typedoc": "typedoc src/lib.js  --out ../../docs/client",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
@@ -65,7 +65,7 @@
     "playwright-test": "^7.0.0",
     "rollup": "2.50.1",
     "rollup-plugin-multi-input": "1.3.1",
-    "typedoc": "0.20.36",
+    "typedoc": "0.21.4",
     "uvu": "0.5.1"
   },
   "homepage": "https://github.com/ipfs-shipyard/nft.storage/tree/main/packages/client",
