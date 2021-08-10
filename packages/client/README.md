@@ -46,7 +46,7 @@ console.log(metadata.url)
 // ipfs://bafyreib4pff766vhpbxbhjbqqnsh5emeznvujayjj4z2iu533cprgbz23m/metadata.json
 ```
 
-For more examples please see the [API documentation][] or the [examples directory]().
+For more examples please see the [API documentation](https://ipfs-shipyard.github.io/nft.storage/client/) or the [examples directory](examples).
 
 [raw http api]: https://nft.storage/#api-docs
 [node.js]: https://nodejs.org/
