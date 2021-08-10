@@ -116,7 +116,7 @@ class NFTStorage {
 
     const upload = transform(
       MAX_CONCURRENT_UPLOADS,
-      async (/** @type {AsyncIterable<Uint8Array>} */ car) => {
+      async function (/** @type {AsyncIterable<Uint8Array>} */ car) {
         const carParts = []
         for await (const part of car) {
           carParts.push(part)
