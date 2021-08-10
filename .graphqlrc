@@ -3,6 +3,6 @@ projects:
     schema:
       - https://graphql.fauna.com/graphql:
           headers:
-            Authorization: Bearer ${FGU_SECRET}
+            Authorization: Bearer ${FAUNA_TOKEN}
     documents:
       - 'packages/db/**/*.{gql}'
