@@ -1,64 +1,21 @@
-const got = require('got').default
-const PQueue = require('p-queue').default
-const { get } = require('./cf')
-const Ajv = require('ajv').default
+import Ajv from 'ajv'
+import ajvFormats from 'ajv-formats'
+import PQueue from 'p-queue'
 
 /**
- * @typedef {import('./cli').Context} Context
+ * @typedef {import('./cli2').Context} Context
  * @typedef {import('listr').ListrTaskWrapper} Task
  * @typedef {import('./schema').LocalNFT} LocalNFT
  */
 
 /**
- * Sync data from the main KV
- *
  * @param {Context} ctx
  * @param {Task} task
  */
-async function syncNFTsData(ctx, task) {
-  let countTotal = 0
-  let countMissingData = 0
-  const { store, kvNFT } = ctx
-  const queue = new PQueue({
-    concurrency: 10,
-    interval: 300000,
-    intervalCap: 1180,
-  })
-
-  queue.on('active', () => {
-    task.output = `Queue: ${queue.size}. Total: ${countTotal} New: ${countMissingData}`
-  })
-
-  for await (const item of store.iterator()) {
-    countTotal++
-    if (!item.value.data || !item.value.data.cid) {
-      countMissingData++
-      const run = async () => {
-        try {
-          const data = await get(kvNFT, item.key)
-          await store.put(item.key, { data })
-        } catch (err) {
-          // console.log(item.key)
-          // console.log(err.message)
-        }
-      }
-      queue.add(() => run())
-    }
-  }
-
-  await queue.onIdle()
-  task.title += ` -> Total: ${countTotal} New: ${countMissingData}`
-}
-
-/**
- * Use check endpoint to sync pin status, deals and size
- *
- * @param {Context} ctx
- * @param {Task} task
- */
-async function syncCheck(ctx, task) {
-  let countTotal = 0
-  let countMissingData = 0
+export async function checkStatus(ctx, task) {
+  let count = 0
+  let missing = 0
+  const errors = []
   const queue = new PQueue({
     concurrency: 20,
     interval: 1000,
@@ -66,50 +23,41 @@ async function syncCheck(ctx, task) {
   })
 
   queue.on('active', () => {
-    task.output = `Queue: ${queue.size} nfts remaining. Total: ${countTotal} New: ${countMissingData}`
+    task.output = `Queue: ${queue.size}. count: ${count} new: ${missing} errors: ${errors.length}`
   })
 
-  for await (const item of ctx.store.iterator()) {
-    countTotal++
-    const { store } = ctx
-    const parts = item.key.split(':')
-    const cid = parts[parts.length - 1]
-    const value = item.value
-
-    if (
-      value.pinStatus === undefined ||
-      value.deals === undefined ||
-      value.size === undefined
-    ) {
-      countMissingData++
+  for await (const { key, value } of ctx.nftStore.iterator()) {
+    count++
+    const cid = parseCID(key)
+    if (!value.checked && value.pinStatus !== 'pinned') {
+      missing++
       const run = async () => {
         try {
-          const { ok, value } = await got(
-            `https://api.nft.storage/check/${cid}`,
-            {
-              headers: {
-                Authorization: `bearer ${ctx.nftStorageToken}`,
-              },
-            }
-          ).json()
-          if (ok) {
-            await store.put(item.key, {
-              pinStatus: value.pin.status,
-              size: value.pin.size,
-              deals: value.deals,
+          const status = await ctx.cluster.status(cid)
+          if (status.status === 'pinned') {
+            const size = await ctx.cluster.size(cid)
+            await ctx.nftStore.put(key, {
+              size,
+              pinStatus: status.status,
+              checked: true,
+            })
+          } else {
+            await ctx.nftStore.put(key, {
+              size: 0,
+              pinStatus: status.status,
+              checked: true,
             })
           }
         } catch (err) {
-          console.log(cid)
-          console.log(err.message)
+          // console.log(err)
+          errors.push(err)
         }
       }
       queue.add(() => run())
     }
   }
-
   await queue.onIdle()
-  task.title += ` -> Total: ${countTotal} New: ${countMissingData}`
+  task.title += ` count: ${count} new: ${missing} errors: ${errors.length}`
 }
 
 /**
@@ -118,30 +66,24 @@ async function syncCheck(ctx, task) {
  * @param {Context} ctx
  * @param {Task} task
  */
-async function validateLocal(ctx, task) {
+export async function validateLocal(ctx, task) {
   let count = 0
   const validate = validation()
 
-  for await (const item of ctx.store.iterator()) {
+  for await (const item of ctx.nftStore.iterator()) {
     count++
-    task.output = `Queue: ${count}`
-
-    await checkCluster(item, ctx)
+    task.output = `Queue: ${count} - ${item.value.data.cid}`
 
     const valid = validate(item.value)
 
-    if (!valid && !isBad) {
-      // get everything we need
-      const status = await ctx.cluster.status(item.value.data.cid)
-      const size = await ctx.cluster.size(item.value.data.cid)
-
+    if (!valid) {
       // Fix no scope
       if (
         validate.errors?.some(
           (err) => err.message === "must have required property 'scope'"
         )
       ) {
-        await ctx.store.put(item.key, { data: { scope: 'nft-storage' } })
+        // await ctx.nftStore.put(item.key, { data: { scope: 'nft-storage' } })
       }
 
       // Fix no deals
@@ -150,7 +92,7 @@ async function validateLocal(ctx, task) {
           (err) => err.message === "must have required property 'deals'"
         )
       ) {
-        await ctx.store.put(item.key, { deals: [] })
+        await ctx.nftStore.put(item.key, { deals: [] })
       }
 
       if (
@@ -158,7 +100,7 @@ async function validateLocal(ctx, task) {
           (err) => err.message === "must have required property 'pinStatus'"
         )
       ) {
-        await ctx.store.put(item.key, { pinStatus: status.status })
+        // await ctx.nftStore.put(item.key, { pinStatus: status.status })
       }
 
       if (
@@ -166,7 +108,7 @@ async function validateLocal(ctx, task) {
           (err) => err.message === "must have required property 'size'"
         )
       ) {
-        await ctx.store.put(item.key, { size })
+        // await ctx.nftStore.put(item.key, { size })
       }
 
       // Fix uploads with empty files objects
@@ -198,51 +140,16 @@ async function validateLocal(ctx, task) {
       //   await ctx.store.put(item.key, { data })
       // }
 
-      const fixed = await ctx.store.get(item.key)
+      const fixed = await ctx.nftStore.get(item.key)
       const fixedValid = validate(fixed)
       if (!fixedValid) {
         console.log(JSON.stringify(fixed, null, 2))
 
-        console.log(validate.errors, size, status)
+        console.log(validate.errors)
         throw new Error('Still invalid')
       }
     }
   }
-}
-
-/**
- * Check cluster for pin status and size
- *
- * @param {{key: string;value: any;}} item
- * @param {Context} ctx
- */
-async function checkCluster(item, ctx) {
-  const cid = parseCID(item.key)
-
-  if (!item.value.checked && !isBad(cid) && item.value.pinStatus !== 'pinned') {
-    const status = await ctx.cluster.status(cid)
-    if (status.status === 'pinned') {
-      const size = await ctx.cluster.size(item.value.data.cid)
-      await ctx.store.put(item.key, {
-        size,
-        pinStatus: status.status,
-        checked: true,
-      })
-    } else {
-      await ctx.store.put(item.key, {
-        size: 0,
-        pinStatus: status.status,
-        checked: true,
-      })
-    }
-  }
-}
-
-module.exports = {
-  syncNFTsData,
-  syncCheck,
-  checkCluster,
-  validateLocal,
 }
 
 /**
@@ -256,29 +163,11 @@ function parseCID(name) {
 }
 
 /**
- * Bad nfts
- *
- * @param {string} cid
- */
-function isBad(cid) {
-  return [
-    'QmaGVcmqcwBrHPkR7CWeWhf7jesyCSKSYf5sspHj4YXgpe',
-    'Qmdvh1Xa8spstyGroksPx7A7NzUpdYtEJsjy9x4kyTM385',
-    'QmZcTTdKhZHapWrx1LMmif6hkd28k4UUrBbaYzmT8Erfkg',
-    'QmdXgCzsGwkGEJUs5UdUmsjRK3jBHcmSm1fR8HjHaYMw2L',
-    'QmRt7gh2qxFyMLZjUtK1D6eN2pdtMPeiPitNZY4ckAhMGd',
-    'QmXpR4Ai49CeUhc2WwfvpMkeTe1jEaZFkLv1YaLdBzaY6J',
-    'QmVq2q1WBMHBBbQR37BKbiw9wkJThYYzHgLucAikyGYsTf',
-    'Qmazo7s2m39dZUySaeBHeVr23WhoKJvHh5gnvwbg8xRAw9',
-  ].includes(cid)
-}
-
-/**
  * Validation for the LevelDB records
  */
 function validation() {
   const ajv = new Ajv()
-  require('ajv-formats').default(ajv)
+  ajvFormats(ajv)
 
   /** @type {import('ajv').JSONSchemaType<import('./schema').LocalNFT>} */
   const schema = {

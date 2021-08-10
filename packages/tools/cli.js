@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const sade = require('sade')
-const Cloudflare = require('./utils/cloudflare')
-const { itFind: find } = require('./utils/common')
+import sade from 'sade'
+import Cloudflare from './utils/cloudflare.js'
+import { itFind as find } from './utils/common.js'
 
 const cli = sade('nft-cli')
 

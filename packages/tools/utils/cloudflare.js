@@ -1,4 +1,4 @@
-const got = require('got').default
+import got from 'got'
 
 /** @type {import('got').PaginationOptions<any, unknown>["pagination"]} */
 const pagination = {
@@ -22,6 +22,28 @@ const pagination = {
     return {
       searchParams: {
         page: page + 1,
+      },
+    }
+  },
+}
+
+/** @type {import('got').PaginationOptions<any, unknown>["pagination"]} */
+const paginationKV = {
+  transform: (rsp) => {
+    // @ts-ignore
+    const data = JSON.parse(rsp.body)
+    return data.result
+  },
+  paginate: (rsp) => {
+    // @ts-ignore
+    const { cursor } = JSON.parse(rsp.body).result_info
+    if (!cursor) {
+      return false
+    }
+
+    return {
+      searchParams: {
+        cursor,
       },
     }
   },
@@ -60,6 +82,7 @@ class Cloudflare {
       .get(`zones/${zone}/dns_records`, { searchParams: params })
       .json()
   }
+
   /**
    * @param {string} zone
    * @param {Partial<import('./types').ListDNSOptions>} params
@@ -147,6 +170,29 @@ class Cloudflare {
       { pagination, searchParams: paginationParams }
     )
   }
+
+  /**
+   * Paginate KVs
+   * @param {{accountId: string, kvId: string}} param0
+   * @returns
+   */
+  kvPaginate({ accountId, kvId }) {
+    return this.client.paginate(
+      `accounts/${accountId}/storage/kv/namespaces/${kvId}/keys`,
+      { pagination: paginationKV }
+    )
+  }
+
+  /**
+   * Get KV value
+   * @param {{accountId: string, kvId: string, key: string}} param0
+   * @returns
+   */
+  kvValue({ accountId, kvId, key }) {
+    return this.client
+      .get(`accounts/${accountId}/storage/kv/namespaces/${kvId}/values/${key}`)
+      .json()
+  }
 }
 
-module.exports = Cloudflare
+export default Cloudflare

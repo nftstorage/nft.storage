@@ -1,5 +1,5 @@
-const level = require('level')
-const merge = require('merge-options')
+import level from 'level'
+import merge from 'merge-options'
 
 class Store {
   /**
@@ -32,6 +32,13 @@ class Store {
 
   /**
    * @param {string} key
+   */
+  del(key) {
+    return this.store.del(key)
+  }
+
+  /**
+   * @param {string} key
    * @param {string} prop
    */
   async hasProp(key, prop) {
@@ -53,12 +60,12 @@ class Store {
   }
 
   /**
-   *
-   * @returns {AsyncIterable<{key: string, value: any}>}
+   * @returns {AsyncIterable<{key: string;value: any;}>}
+   * @param {import('abstract-leveldown').AbstractIteratorOptions<any>} [options]
    */
-  iterator() {
+  iterator(options) {
     // @ts-ignore
-    return this.store.createReadStream()
+    return this.store.createReadStream(options)
   }
 
   close() {
@@ -66,4 +73,4 @@ class Store {
   }
 }
 
-module.exports = Store
+export default Store

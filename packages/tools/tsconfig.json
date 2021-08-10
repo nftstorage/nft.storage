@@ -3,6 +3,7 @@
     "outDir": "./dist",
     "allowJs": true,
     "checkJs": true,
+    "module": "ESNext",
     "target": "esnext",
     "lib": ["ESNext"],
     "strict": true,
@@ -13,5 +14,5 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "include": ["cf-sync", "*.js", "*.d.ts", "utils"]
+  "include": ["crons", "cf-sync", "*.js", "*.d.ts", "utils"]
 }
