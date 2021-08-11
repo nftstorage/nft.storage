@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.3.1...website-v1.4.0) (2021-08-11)
+
+
+### Features
+
+* improvements to the setup ([#246](https://www.github.com/ipfs-shipyard/nft.storage/issues/246)) ([6a2501f](https://www.github.com/ipfs-shipyard/nft.storage/commit/6a2501f5c340af87c1571886961920280afec249))
+
+
+### Bug Fixes
+
+* cf page build error ([#274](https://www.github.com/ipfs-shipyard/nft.storage/issues/274)) ([68ee8ca](https://www.github.com/ipfs-shipyard/nft.storage/commit/68ee8ca0adf217a7ba5a0ea2db1ca0019c344569))
+* **website:** update client docs url ([d8152da](https://www.github.com/ipfs-shipyard/nft.storage/commit/d8152daaa4de94064689e8b93160e6c118316e47))
+
 ### [1.3.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.3.0...website-v1.3.1) (2021-06-24)
 
 
