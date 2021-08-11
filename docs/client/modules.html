@@ -57,22 +57,158 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>A client library for the <a href="https://nft.storage/">https://nft.storage/</a> service. It provides a convenient
+							interface for working with the <a href="https://nft.storage/#api-docs">Raw HTTP API</a>
+							from a web browser or <a href="https://nodejs.org/">Node.js</a> and comes bundled with
+						TS for out-of-the box type inference and better IntelliSense.</p>
+					</div>
+					<dl class="tsd-comment-tags">
+						<dt>example</dt>
+						<dd><pre><code class="language-js"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">NFTStorage</span><span style="color: #000000">, </span><span style="color: #001080">File</span><span style="color: #000000">, </span><span style="color: #001080">Blob</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;nft.storage&quot;</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">client</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">NFTStorage</span><span style="color: #000000">({ </span><span style="color: #001080">token:</span><span style="color: #000000"> </span><span style="color: #0070C1">API_TOKEN</span><span style="color: #000000"> })</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">cid</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">client</span><span style="color: #000000">.</span><span style="color: #795E26">storeBlob</span><span style="color: #000000">(</span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Blob</span><span style="color: #000000">([</span><span style="color: #A31515">&#039;hello world&#039;</span><span style="color: #000000">]))</span>
+</code></pre>
+						</dd>
+					</dl>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Modules</h3>
+							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-module"><a href="modules/gateway.html" class="tsd-kind-icon">gateway</a></li>
-								<li class="tsd-kind-module"><a href="modules/lib.html" class="tsd-kind-icon">lib</a></li>
-								<li class="tsd-kind-module"><a href="modules/lib_interface.html" class="tsd-kind-icon">lib/interface</a></li>
-								<li class="tsd-kind-module"><a href="modules/platform.html" class="tsd-kind-icon">platform</a></li>
-								<li class="tsd-kind-module"><a href="modules/platform_web.html" class="tsd-kind-icon">platform.web</a></li>
-								<li class="tsd-kind-module"><a href="modules/token.html" class="tsd-kind-icon">token</a></li>
+								<li class="tsd-kind-class"><a href="classes/NFTStorage.html" class="tsd-kind-icon">NFTStorage</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable"><a href="modules.html#Blob" class="tsd-kind-icon">Blob</a></li>
+								<li class="tsd-kind-variable"><a href="modules.html#File" class="tsd-kind-icon">File</a></li>
+								<li class="tsd-kind-variable"><a href="modules.html#FormData" class="tsd-kind-icon">Form<wbr>Data</a></li>
+								<li class="tsd-kind-variable"><a href="modules.html#Token" class="tsd-kind-icon">Token</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function"><a href="modules.html#toGatewayURL" class="tsd-kind-icon">to<wbr>GatewayURL</a></li>
 							</ul>
 						</section>
 					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable">
+					<a name="Blob" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Blob</h3>
+					<div class="tsd-signature tsd-kind-icon">Blob<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>prototype<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Blob</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/59f730c/packages/client/src/platform.ts#L6">packages/client/src/platform.ts:6</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>prototype<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Blob</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable">
+					<a name="File" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> File</h3>
+					<div class="tsd-signature tsd-kind-icon">File<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>prototype<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">File</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/59f730c/packages/client/src/platform.ts#L7">packages/client/src/platform.ts:7</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>prototype<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">File</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable">
+					<a name="FormData" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Form<wbr>Data</h3>
+					<div class="tsd-signature tsd-kind-icon">Form<wbr>Data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>prototype<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FormData</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/59f730c/packages/client/src/platform.ts#L2">packages/client/src/platform.ts:2</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>prototype<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FormData</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable">
+					<a name="Token" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Token</h3>
+					<div class="tsd-signature tsd-kind-icon">Token<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">Token</span><span class="tsd-signature-symbol"> = ...</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/59f730c/packages/client/src/lib.js#L490">packages/client/src/lib.js:490</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="toGatewayURL" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> to<wbr>GatewayURL</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">to<wbr>GatewayURL<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">URL</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GatewayURLOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">URL</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/59f730c/packages/client/src/gateway.js#L17">packages/client/src/gateway.js:17</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Convert an IPFS URL (starting ipfs://) to a gateway URL (starting https://)
+										that can be used in a webpage. If the passed URL is not an IPFS URL it is
+									returned as a new URL object with no further changes.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>url: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">URL</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>An IPFS URL e.g. ipfs://bafy.../path</p>
+									</div>
+								</li>
+								<li>
+									<h5>options: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">GatewayURLOptions</span><span class="tsd-signature-symbol"> = {}</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">URL</span></h4>
+							<p>An IPFS gateway URL e.g. <a href="https://dweb.link/ipfs/bafy.../path">https://dweb.link/ipfs/bafy.../path</a></p>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -80,30 +216,30 @@
 			<nav class="tsd-navigation primary">
 				<ul>
 					<li class="current ">
-						<a href="modules.html">Modules</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/gateway.html">gateway</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/lib.html">lib</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/lib_interface.html">lib/interface</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/platform.html">platform</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/platform_web.html">platform.web</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/token.html">token</a>
+						<a href="modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-class">
+						<a href="classes/NFTStorage.html" class="tsd-kind-icon">NFTStorage</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#Blob" class="tsd-kind-icon">Blob</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#File" class="tsd-kind-icon">File</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#FormData" class="tsd-kind-icon">Form<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="modules.html#Token" class="tsd-kind-icon">Token</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="modules.html#toGatewayURL" class="tsd-kind-icon">to<wbr>GatewayURL</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -114,19 +250,12 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
-				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>
