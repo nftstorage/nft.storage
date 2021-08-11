@@ -508,6 +508,11 @@
   resolved "https://registry.yarnpkg.com/@nftstorage/ipfs-cluster/-/ipfs-cluster-3.3.0.tgz#30ab20fc9cec8a1b38e4cf44506acb27359e7efa"
   integrity sha512-lwyOH22xy8zgMrU7IDJfcEpPAhUe4u3qFqblLmtDHi3xYyH1GJGap/oVCUsxZaZVkhnWBaQeIOd9xND3PL+wug==
 
+"@nftstorage/ipfs-cluster@^3.3.1":
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@nftstorage/ipfs-cluster/-/ipfs-cluster-3.3.1.tgz#1f2551228873ef1cc13e8195188f81b7971b6bd2"
+  integrity sha512-TzV+ceoFbDMX2ov6AcwCmR7RVt+KEa8p+kDeUoszQNN9pcm6nVDypbBRTxREj8XBiXzJlMoevcI+60ck3RjRHA==
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
