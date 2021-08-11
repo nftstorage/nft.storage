@@ -1,0 +1,540 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>API | nft.storage</title>
+	<meta name="description" content="Documentation for nft.storage">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">nft.storage</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">nft.storage</a>
+				</li>
+				<li>
+					<a href="../modules/lib_interface.html">lib/interface</a>
+				</li>
+				<li>
+					<a href="lib_interface.API.html">API</a>
+				</li>
+			</ul>
+			<h1>Interface API</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">API</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="lib_interface.API.html#check" class="tsd-kind-icon">check</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="lib_interface.API.html#delete" class="tsd-kind-icon">delete</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="lib_interface.API.html#status" class="tsd-kind-icon">status</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter"><a href="lib_interface.API.html#store" class="tsd-kind-icon">store</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="lib_interface.API.html#storeBlob" class="tsd-kind-icon">store<wbr>Blob</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="lib_interface.API.html#storeCar" class="tsd-kind-icon">store<wbr>Car</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="lib_interface.API.html#storeDirectory" class="tsd-kind-icon">store<wbr>Directory</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="check" class="tsd-anchor"></a>
+					<h3>check</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">check<span class="tsd-signature-symbol">(</span>service<span class="tsd-signature-symbol">: </span><a href="lib_interface.PublicService.html" class="tsd-signature-type" data-tsd-kind="Interface">PublicService</a>, cid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="lib_interface.CheckResult.html" class="tsd-signature-type" data-tsd-kind="Interface">CheckResult</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/1dd1bd4/packages/client/src/lib/interface.ts#L80">packages/client/src/lib/interface.ts:80</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Check if a CID of an NFT is being stored by nft.storage.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>service: <a href="lib_interface.PublicService.html" class="tsd-signature-type" data-tsd-kind="Interface">PublicService</a></h5>
+								</li>
+								<li>
+									<h5>cid: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="lib_interface.CheckResult.html" class="tsd-signature-type" data-tsd-kind="Interface">CheckResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="delete" class="tsd-anchor"></a>
+					<h3>delete</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">delete<span class="tsd-signature-symbol">(</span>service<span class="tsd-signature-symbol">: </span><a href="lib_interface.Service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a>, cid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/1dd1bd4/packages/client/src/lib/interface.ts#L76">packages/client/src/lib/interface.ts:76</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Removes stored content by its CID from the service. Please note that
+										even if content is removed from the service other nodes that have
+									replicated it might still continue providing it.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>service: <a href="lib_interface.Service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a></h5>
+								</li>
+								<li>
+									<h5>cid: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="status" class="tsd-anchor"></a>
+					<h3>status</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">(</span>service<span class="tsd-signature-symbol">: </span><a href="lib_interface.Service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a>, cid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="lib_interface.StatusResult.html" class="tsd-signature-type" data-tsd-kind="Interface">StatusResult</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/1dd1bd4/packages/client/src/lib/interface.ts#L70">packages/client/src/lib/interface.ts:70</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns current status of the stored NFT by its CID. Note the NFT must
+									have previously been stored by this account.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>service: <a href="lib_interface.Service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a></h5>
+								</li>
+								<li>
+									<h5>cid: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="lib_interface.StatusResult.html" class="tsd-signature-type" data-tsd-kind="Interface">StatusResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter">
+					<a name="store" class="tsd-anchor"></a>
+					<h3>store</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">store&lt;T&gt;<span class="tsd-signature-symbol">(</span>service<span class="tsd-signature-symbol">: </span><a href="lib_interface.Service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a>, token<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="lib_interface.Token.html" class="tsd-signature-type" data-tsd-kind="Interface">Token</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/1dd1bd4/packages/client/src/lib/interface.ts#L46">packages/client/src/lib/interface.ts:46</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Stores the given token and all resources it references (in the form of a
+										File or a Blob) along with a metadata JSON as specificed in ERC-1155. The
+										<code>token.image</code> must be either a <code>File</code> or a <code>Blob</code> instance, which will be
+										stored and the corresponding content address URL will be saved in the
+									metadata JSON file under <code>image</code> field.</p>
+								</div>
+								<p>If <code>token.properties</code> contains properties with <code>File</code> or <code>Blob</code> values,
+									those also get stored and their URLs will be saved in the metadata JSON
+								file in their place.</p>
+								<p>Note: URLs for <code>File</code> objects will retain file names e.g. in case of
+									<code>new File([bytes], &#39;cat.png&#39;, { type: &#39;image/png&#39; })</code> will be transformed
+									into a URL that looks like <code>ipfs://bafy...hash/image/cat.png</code>. For <code>Blob</code>
+									objects, the URL will not have a file name name or mime type, instead it
+									will be transformed into a URL that looks like
+								<code>ipfs://bafy...hash/image/blob</code>.</p>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T<span class="tsd-signature-symbol">: </span><a href="lib_interface.TokenInput.html" class="tsd-signature-type" data-tsd-kind="Interface">TokenInput</a></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>service: <a href="lib_interface.Service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a></h5>
+								</li>
+								<li>
+									<h5>token: <span class="tsd-signature-type">T</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="lib_interface.Token.html" class="tsd-signature-type" data-tsd-kind="Interface">Token</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="storeBlob" class="tsd-anchor"></a>
+					<h3>store<wbr>Blob</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">store<wbr>Blob<span class="tsd-signature-symbol">(</span>service<span class="tsd-signature-symbol">: </span><a href="lib_interface.Service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a>, content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Blob</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">File</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/lib_interface.html#CIDString" class="tsd-signature-type" data-tsd-kind="Type alias">CIDString</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/1dd1bd4/packages/client/src/lib/interface.ts#L51">packages/client/src/lib/interface.ts:51</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Stores a single file and returns a corresponding CID.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>service: <a href="lib_interface.Service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a></h5>
+								</li>
+								<li>
+									<h5>content: <span class="tsd-signature-type">Blob</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">File</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/lib_interface.html#CIDString" class="tsd-signature-type" data-tsd-kind="Type alias">CIDString</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="storeCar" class="tsd-anchor"></a>
+					<h3>store<wbr>Car</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">store<wbr>Car<span class="tsd-signature-symbol">(</span>service<span class="tsd-signature-symbol">: </span><a href="lib_interface.Service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a>, content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Blob</span><span class="tsd-signature-symbol"> | </span><a href="../modules/lib_interface.html#CarReader" class="tsd-signature-type" data-tsd-kind="Type alias">CarReader</a>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-symbol">{ </span>onStoredChunk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/lib_interface.html#CIDString" class="tsd-signature-type" data-tsd-kind="Type alias">CIDString</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/1dd1bd4/packages/client/src/lib/interface.ts#L55">packages/client/src/lib/interface.ts:55</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Stores CAR file and returns a corresponding CID.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>service: <a href="lib_interface.Service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a></h5>
+								</li>
+								<li>
+									<h5>content: <span class="tsd-signature-type">Blob</span><span class="tsd-signature-symbol"> | </span><a href="../modules/lib_interface.html#CarReader" class="tsd-signature-type" data-tsd-kind="Type alias">CarReader</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-symbol">{ </span>onStoredChunk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>on<wbr>Stored<wbr>Chunk<span class="tsd-signature-symbol">: </span>function</h5>
+											<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon">on<wbr>Stored<wbr>Chunk<span class="tsd-signature-symbol">(</span>size<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<aside class="tsd-sources">
+														<ul>
+															<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/1dd1bd4/packages/client/src/lib/interface.ts#L58">packages/client/src/lib/interface.ts:58</a></li>
+														</ul>
+													</aside>
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>size: <span class="tsd-signature-type">number</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/lib_interface.html#CIDString" class="tsd-signature-type" data-tsd-kind="Type alias">CIDString</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="storeDirectory" class="tsd-anchor"></a>
+					<h3>store<wbr>Directory</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">store<wbr>Directory<span class="tsd-signature-symbol">(</span>service<span class="tsd-signature-symbol">: </span><a href="lib_interface.Service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a>, files<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">File</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/lib_interface.html#CIDString" class="tsd-signature-type" data-tsd-kind="Type alias">CIDString</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ipfs-shipyard/nft.storage/blob/1dd1bd4/packages/client/src/lib/interface.ts#L65">packages/client/src/lib/interface.ts:65</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Stores a directory of files and returns a CID. Provided files <strong>MUST</strong>
+										be within a same directory, otherwise error is raised. E.g. <code>foo/bar.png</code>,
+									<code>foo/bla/baz.json</code> is ok but <code>foo/bar.png</code>, <code>bla/baz.json</code> is not.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>service: <a href="lib_interface.Service.html" class="tsd-signature-type" data-tsd-kind="Interface">Service</a></h5>
+								</li>
+								<li>
+									<h5>files: <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">File</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/lib_interface.html#CIDString" class="tsd-signature-type" data-tsd-kind="Type alias">CIDString</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Modules</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/gateway.html">gateway</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/lib.html">lib</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/lib_interface.html">lib/interface</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/platform.html">platform</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/platform_web.html">platform.web</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/token.html">token</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-module tsd-is-external">
+						<a href="../classes/lib_interface.CID.html" class="tsd-kind-icon">CID</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.API.html" class="tsd-kind-icon">API</a>
+						<ul>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="lib_interface.API.html#check" class="tsd-kind-icon">check</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="lib_interface.API.html#delete" class="tsd-kind-icon">delete</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="lib_interface.API.html#status" class="tsd-kind-icon">status</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-has-type-parameter">
+								<a href="lib_interface.API.html#store" class="tsd-kind-icon">store</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="lib_interface.API.html#storeBlob" class="tsd-kind-icon">store<wbr>Blob</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="lib_interface.API.html#storeCar" class="tsd-kind-icon">store<wbr>Car</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="lib_interface.API.html#storeDirectory" class="tsd-kind-icon">store<wbr>Directory</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.CheckResult.html" class="tsd-kind-icon">Check<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.DealInfo.html" class="tsd-kind-icon">Deal<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="lib_interface.EncodedToken.html" class="tsd-kind-icon">Encoded<wbr>Token</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.FailedDeal.html" class="tsd-kind-icon">Failed<wbr>Deal</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.FinalizedDeal.html" class="tsd-kind-icon">Finalized<wbr>Deal</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.PendingDeal.html" class="tsd-kind-icon">Pending<wbr>Deal</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.Pin.html" class="tsd-kind-icon">Pin</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.PublicService.html" class="tsd-kind-icon">Public<wbr>Service</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.PublishedDeal.html" class="tsd-kind-icon">Published<wbr>Deal</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.QueuedDeal.html" class="tsd-kind-icon">Queued<wbr>Deal</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.Service.html" class="tsd-kind-icon">Service</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.StatusResult.html" class="tsd-kind-icon">Status<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="lib_interface.Token.html" class="tsd-kind-icon">Token</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="lib_interface.TokenInput.html" class="tsd-kind-icon">Token<wbr>Input</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/lib_interface.html#CIDString" class="tsd-kind-icon">CIDString</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/lib_interface.html#CarReader" class="tsd-kind-icon">Car<wbr>Reader</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/lib_interface.html#Deal" class="tsd-kind-icon">Deal</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../modules/lib_interface.html#Encoded" class="tsd-kind-icon">Encoded</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/lib_interface.html#EncodedError" class="tsd-kind-icon">Encoded<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/lib_interface.html#EncodedURL" class="tsd-kind-icon">EncodedURL</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../modules/lib_interface.html#MatchRecord" class="tsd-kind-icon">Match<wbr>Record</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/lib_interface.html#PinStatus" class="tsd-kind-icon">Pin<wbr>Status</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../modules/lib_interface.html#Result" class="tsd-kind-icon">Result</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../modules/lib_interface.html#StoreResponse" class="tsd-kind-icon">Store<wbr>Response</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-has-type-parameter">
+						<a href="../modules/lib_interface.html#Tagged" class="tsd-kind-icon">Tagged</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
