@@ -7,6 +7,10 @@
   "types": "./dist/src/lib.d.ts",
   "module": "./src/lib.js",
   "main": "./dist/src/lib.cjs",
+  "files": [
+    "src",
+    "dist/src"
+  ],
   "exports": {
     ".": {
       "browser": "./src/lib.js",
