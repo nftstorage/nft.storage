@@ -278,7 +278,7 @@ console.log(metadata.url)
             <p className="lh-copy">
               View the{' '}
               <a
-                href="https://ipfs-shipyard.github.io/nft.storage/client/classes/lib.nftstorage.html"
+                href="https://ipfs-shipyard.github.io/nft.storage/client/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="black"
