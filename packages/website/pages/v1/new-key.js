@@ -8,7 +8,7 @@ import { createToken } from '../../lib/api-v1.js'
 /**
  * Static Props
  *
- * @returns {{ props: import('../components/types.js').LayoutProps}}
+ * @returns {{ props: import('../../components/types.js').LayoutProps}}
  */
 export function getStaticProps() {
   return {

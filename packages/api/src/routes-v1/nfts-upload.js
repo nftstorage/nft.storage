@@ -62,13 +62,14 @@ export async function uploadV1(event, ctx) {
       files: createUpload.files || [],
       scope: createUpload.key ? createUpload.key.name : 'session',
       type: 'directory',
-      size: size,
+      size,
       pin: {
         cid: createUpload.content.cid,
         created: createUpload.created,
-        size: createUpload.content.dagSize,
+        size,
         status: 'queued',
       },
+      deals: [],
     }
   } else {
     const blob = await event.request.blob()
@@ -87,10 +88,12 @@ export async function uploadV1(event, ctx) {
       local: blob.size > LOCAL_ADD_THRESHOLD,
     })
 
+    const dagSize = size || bytes
+
     const { createUpload } = await fauna.createUpload({
       input: {
         cid,
-        dagSize: size || bytes,
+        dagSize,
         type: isCar ? 'CAR' : 'BLOB',
         key: key?._id,
         pins: [
@@ -113,13 +116,14 @@ export async function uploadV1(event, ctx) {
       type: content.type,
       scope: createUpload.key ? createUpload.key.name : 'session',
       files: [],
-      size: createUpload.content.dagSize,
+      size: dagSize,
       pin: {
         cid: createUpload.content.cid,
         created: createUpload.created,
-        size: createUpload.content.dagSize,
+        size: dagSize,
         status: 'queued',
       },
+      deals: [],
     }
   }
 

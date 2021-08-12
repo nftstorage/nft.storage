@@ -12,7 +12,6 @@
   },
   "license": "(Apache-2.0 AND MIT)",
   "devDependencies": {
-    "@fauna-labs/fauna-schema-migrate": "^2.1.2",
     "@graphql-codegen/cli": "^1.21.7",
     "@graphql-codegen/introspection": "^1.18.2",
     "@graphql-codegen/typescript-graphql-request": "^3.2.5",
