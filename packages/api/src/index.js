@@ -21,6 +21,12 @@ import { login } from './routes/login.js'
 import { JSONResponse } from './utils/json-response.js'
 import { updateNftsIndexMeta } from './jobs/nfts-index.js'
 import { debug, getSentrySchedule } from './utils/debug.js'
+import { getNFT } from './routes/get-nft.js'
+import { tokensDeleteV1 } from './routes-v1/tokens-delete.js'
+import { tokensCreateV1 } from './routes-v1/tokens-create.js'
+import { tokensListV1 } from './routes-v1/tokens-list.js'
+import { loginV1 } from './routes-v1/login.js'
+import { uploadV1 } from './routes-v1/nfts-upload.js'
 const log = debug('router')
 
 const r = new Router({
@@ -79,6 +85,16 @@ r.add('delete', '/:cid', remove, [postCors])
 r.add('get', '/internal/tokens', tokensList, [postCors])
 r.add('post', '/internal/tokens', tokensCreate, [postCors])
 r.add('delete', '/internal/tokens', tokensDelete, [postCors])
+r.add('get', '/internal/list2', getNFT, [postCors])
+
+// V1 routes
+r.add('post', '/v1/login', loginV1, [postCors])
+
+r.add('post', '/v1/upload', uploadV1, [postCors])
+
+r.add('get', '/v1/internal/tokens', tokensListV1, [postCors])
+r.add('post', '/v1/internal/tokens', tokensCreateV1, [postCors])
+r.add('delete', '/v1/internal/tokens', tokensDeleteV1, [postCors])
 
 r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))

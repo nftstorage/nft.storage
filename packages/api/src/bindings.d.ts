@@ -57,7 +57,7 @@ export type NFT = {
   /**
    * Files in the directory (only if this NFT is a directory).
    */
-  files: Array<{ name: string; type: string }>
+  files: Array<{ name?: string; type?: string } | undefined>
   /**
    * Pinata pin name and meta.
    */

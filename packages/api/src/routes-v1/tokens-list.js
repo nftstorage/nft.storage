@@ -1,13 +1,12 @@
-import { validate } from '../utils/auth.js'
+import { validate } from '../utils/auth-v1.js'
 import { JSONResponse } from '../utils/json-response.js'
-import { tokens } from '../models/users.js'
 
 /** @type {import('../utils/router.js').Handler} */
-export const tokensList = async (event, ctx) => {
+export const tokensListV1 = async (event, ctx) => {
   const { user } = await validate(event, ctx)
 
   return new JSONResponse({
     ok: true,
-    value: await tokens(user.issuer),
+    value: user.keys.data,
   })
 }

@@ -18,6 +18,18 @@ kv_namespaces = [
     { binding = "PINATA_QUEUE", preview_id = "74f119d8eeab46c2a5e9136b420d7609", id = "74f119d8eeab46c2a5e9136b420d7609" }
 ]
 
+# Production kvs
+# kv_namespaces = [
+#     { binding = "USERS", id = "8a5a55b5d1af49ed8fcfab16e9fa8c41", preview_id = "8a5a55b5d1af49ed8fcfab16e9fa8c41" },
+#     { binding = "NFTS", id = "9610798d5e5845fa94e4392cc1288ddf", preview_id = "9610798d5e5845fa94e4392cc1288ddf" },
+#     { binding = "NFTS_IDX", id = "289648236dd74a8e96e5ee4f6581bff9", preview_id = "289648236dd74a8e96e5ee4f6581bff9" },
+#     { binding = "DEALS", id = "9d5815757b04446ab8cfbc99e6296842", preview_id = "9d5815757b04446ab8cfbc99e6296842" },
+#     { binding = "METRICS", id = "12c38488fd6047fd8bb4030a8dacb406", preview_id = "12c38488fd6047fd8bb4030a8dacb406" },
+#     { binding = "PINS", id = "fd42ed10e9ce4b27aa77ca7b862dd2d8", preview_id = "fd42ed10e9ce4b27aa77ca7b862dd2d8" },
+#     { binding = "FOLLOWUPS", id = "e6f35158a06646478f382847f2c40942", preview_id = "e6f35158a06646478f382847f2c40942" },
+#     { binding = "PINATA_QUEUE", id = "45bd367a6ee647e5aebf67860f92a5ee", preview_id = "45bd367a6ee647e5aebf67860f92a5ee" }
+# ]
+
 [vars]
 ENV = "dev"
 DEBUG = "*"
