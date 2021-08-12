@@ -1,14 +1,12 @@
 import { Magic } from '@magic-sdk/admin'
 import { secrets } from '../constants.js'
 import { HTTPError, ErrorUserNotFound, ErrorTokenNotFound } from '../errors.js'
-import {
-  createOrUpdate,
-  getUser,
-  matchToken,
-  userSafe,
-} from '../models/users.js'
+import { createOrUpdate, getUser, userSafe } from '../models/users.js'
 import { parseJWT, verifyJWT } from './jwt.js'
+import { buildSdk, login } from './fauna'
 export const magic = new Magic(secrets.magic)
+
+const fauna = buildSdk()
 
 /**
  * @typedef {import('../models/users').User} User
@@ -24,31 +22,37 @@ export async function validate(event, { sentry }) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
 
-  // validate access tokens
-  if (await verifyJWT(token, secrets.salt)) {
-    const decoded = parseJWT(token)
-    const user = await getUser(decoded.sub)
-    if (user) {
-      const tokenName = matchToken(user, token)
-      if (typeof tokenName === 'string') {
-        sentry.setUser(userSafe(user))
-        return { user, tokenName }
+  try {
+    // validate access tokens
+    if (await verifyJWT(token, secrets.salt)) {
+      const decoded = parseJWT(token)
+      const { sdk, loginOutput } = await login(decoded.sub)
+      const keys = loginOutput.user.keys.data || []
+      const key = keys.find((k) => k?.secret === token)
+
+      if (key) {
+        return {
+          user: loginOutput.user,
+          key,
+          fauna: sdk,
+        }
       } else {
         throw new ErrorTokenNotFound()
       }
     } else {
-      throw new ErrorUserNotFound()
-    }
-  }
+      // validate magic.link tokens
+      magic.token.validate(token)
+      const [proof, claim] = magic.token.decode(token)
+      const { sdk, loginOutput } = await login(claim.iss)
 
-  // validate magic id tokens
-  magic.token.validate(token)
-  const [proof, claim] = magic.token.decode(token)
-  const user = await getUser(claim.iss)
-  if (user) {
-    sentry.setUser(userSafe(user))
-    return { user, tokenName: 'session' }
-  } else {
+      return {
+        user: loginOutput.user,
+        fauna: sdk,
+      }
+    }
+  } catch (err) {
+    console.error(err)
+    sentry.captureException(err)
     throw new ErrorUserNotFound()
   }
 }
@@ -69,6 +73,19 @@ export async function loginOrRegister(event, data) {
       data.type === 'github'
         ? await parseGithub(data.data, metadata)
         : parseMagic(metadata)
+
+    await fauna.createOrUpdateUser({
+      input: {
+        email: parsed.email,
+        issuer: parsed.issuer,
+        name: parsed.name,
+        publicAddress: parsed.publicAddress,
+        sub: parsed.sub,
+        picture: parsed.picture,
+        // @ts-ignore
+        github: parsed.github ? parsed.github.userInfo.profile : null,
+      },
+    })
     const user = await createOrUpdate(parsed)
     return { user: userSafe(user), tokenName: 'session' }
   } else {

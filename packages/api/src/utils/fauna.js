@@ -1,9 +1,14 @@
 import { GraphQLClient, getSdk } from '@nftstorage/db'
-import { secrets } from '../constants'
+import { secrets } from '../constants.js'
 
+const FAUNA_URL = 'https://graphql.fauna.com/graphql'
 const FAUNA_KEY = secrets.fauna
+
+/**
+ * Build admin fauna sdk
+ */
 export function buildSdk() {
-  const client = new GraphQLClient('https://graphql.fauna.com/graphql', {
+  const client = new GraphQLClient(FAUNA_URL, {
     fetch: globalThis.fetch,
     headers: {
       Authorization: `Bearer ${FAUNA_KEY}`,
@@ -23,7 +28,7 @@ export async function login(id) {
   const { login: loginOutput } = await sdk.login({
     id,
   })
-  const authClient = new GraphQLClient('https://graphql.fauna.com/graphql', {
+  const authClient = new GraphQLClient(FAUNA_URL, {
     fetch: globalThis.fetch,
     headers: {
       Authorization: `Bearer ${loginOutput.secret}`,
