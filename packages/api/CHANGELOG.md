@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.3.2](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.3.1...api-v2.3.2) (2021-08-15)
+
+
+### Bug Fixes
+
+* temporarily set local=true for all uploads ([f637c86](https://www.github.com/ipfs-shipyard/nft.storage/commit/f637c86a569d1fc81a481574550e71bc02fae9ac))
+
 ### [2.3.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.3.0...api-v2.3.1) (2021-08-11)
 
 
