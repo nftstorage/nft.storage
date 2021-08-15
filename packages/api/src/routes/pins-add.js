@@ -1,4 +1,5 @@
 import mergeOptions from 'merge-options'
+import { CID } from 'multiformats'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
 import * as pins from '../models/pins.js'
@@ -15,7 +16,9 @@ export async function pinsAdd(event, ctx) {
   const { user, tokenName } = await validate(event, ctx)
   const pinData = await event.request.json()
 
-  if (typeof pinData.cid !== 'string') {
+  try {
+    CID.parse(pinData.cid)
+  } catch {
     return new JSONResponse(
       { error: { reason: 'INVALID_PIN_DATA', details: 'invalid CID' } },
       { status: 400 }
