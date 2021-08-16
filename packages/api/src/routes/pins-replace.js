@@ -1,4 +1,5 @@
 import mergeOptions from 'merge-options'
+import { CID } from 'multiformats'
 import * as PinataPSA from '../pinata-psa.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
@@ -35,7 +36,9 @@ export async function pinsReplace(event, ctx) {
   }
 
   const pinData = await event.request.json()
-  if (typeof pinData.cid !== 'string') {
+  try {
+    CID.parse(pinData.cid)
+  } catch {
     return new JSONResponse(
       { error: { reason: 'INVALID_PIN_DATA', details: 'invalid CID' } },
       { status: 400 }
