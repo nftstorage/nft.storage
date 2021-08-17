@@ -10,8 +10,8 @@ import {
   Ref,
   Collection,
   Foreach,
-  Do,
   Get,
+  Map,
 } from 'faunadb'
 import { findOrCreate } from '../utils/common'
 
@@ -58,18 +58,27 @@ const uploadRef = findOrCreate(
 )
 
 export default {
-  name: 'createUpload',
+  name: 'createUploadCustom',
   body: Query(
     Lambda(
-      ['data'],
-      Let(
-        {
-          cid: Select('cid', Var('data')),
-          contentRef,
-          pins: Foreach(Select('pins', Var('data')), Lambda(['pin'], pinRef)),
-          uploadRef,
-        },
-        Get(Var('uploadRef'))
+      'uploads',
+      Map(
+        Var('uploads'),
+        Lambda(
+          ['data'],
+          Let(
+            {
+              cid: Select('cid', Var('data')),
+              contentRef,
+              pins: Foreach(
+                Select('pins', Var('data')),
+                Lambda(['pin'], pinRef)
+              ),
+              uploadRef,
+            },
+            Get(Var('uploadRef'))
+          )
+        )
       )
     )
   ),

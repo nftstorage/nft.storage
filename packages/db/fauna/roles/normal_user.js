@@ -16,7 +16,7 @@ export default {
   membership: [{ resource: Collection('User') }],
   privileges: [
     {
-      resource: Function('createUpload'),
+      resource: Function('createUploadCustom'),
       actions: {
         call: true,
       },

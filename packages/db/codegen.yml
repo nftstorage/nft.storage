@@ -13,7 +13,7 @@ generates:
     config:
       enumsAsTypes: true
       skipTypename: true
-      preResolveTypes: true
+      # preResolveTypes: true
       # avoidOptionals: true
       maybeValue: T | undefined
       # flattenGeneratedTypes: true

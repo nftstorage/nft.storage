@@ -141,6 +141,7 @@ export type Mutation = {
   createContent: Content
   /** Update an existing document in the collection of 'Content' */
   updateContent?: Maybe<Content>
+  createUploadCustom: Array<Upload>
   /** Create a new document in the collection of 'UserKey' */
   createUserKey: UserKey
   /** Delete an existing document in the collection of 'UserKey' */
@@ -195,7 +196,7 @@ export type MutationUpdatePinLocationArgs = {
 }
 
 export type MutationCreateUploadArgs = {
-  input?: Maybe<CreateUploadInput>
+  input: Array<CreateUploadInput>
 }
 
 export type MutationDeletePinArgs = {
@@ -213,6 +214,10 @@ export type MutationCreateContentArgs = {
 export type MutationUpdateContentArgs = {
   id: Scalars['ID']
   data: ContentInput
+}
+
+export type MutationCreateUploadCustomArgs = {
+  input: Array<CreateUploadInput>
 }
 
 export type MutationCreateUserKeyArgs = {
@@ -563,29 +568,24 @@ export type UpdateContentMutationVariables = Exact<{
   data: ContentInput
 }>
 
-export type UpdateContentMutation = { updateContent?: Maybe<{ _id: string }> }
+export type UpdateContentMutation = {
+  updateContent?: Maybe<Pick<Content, '_id'>>
+}
 
 export type FindContentByCidQueryVariables = Exact<{
   cid: Scalars['String']
 }>
 
 export type FindContentByCidQuery = {
-  findContentByCid?: Maybe<{
-    _id: string
-    cid: string
-    created: any
-    dagSize?: Maybe<number>
-    pins: {
-      data: Array<
-        Maybe<{
-          status: PinStatus
-          service: PinService
-          created: any
-          updated?: Maybe<any>
-        }>
-      >
+  findContentByCid?: Maybe<
+    Pick<Content, '_id' | 'cid' | 'created' | 'dagSize'> & {
+      pins: {
+        data: Array<
+          Maybe<Pick<Pin, 'status' | 'service' | 'created' | 'updated'>>
+        >
+      }
     }
-  }>
+  >
 }
 
 export type GetContentbyIdQueryVariables = Exact<{
@@ -593,21 +593,19 @@ export type GetContentbyIdQueryVariables = Exact<{
 }>
 
 export type GetContentbyIdQuery = {
-  findContentByID?: Maybe<{
-    _id: string
-    cid: string
-    dagSize?: Maybe<number>
-    pins: {
-      data: Array<
-        Maybe<{
-          service: PinService
-          status: PinStatus
-          statusText?: Maybe<string>
-          locations: { data: Array<Maybe<{ peerId: string }>> }
-        }>
-      >
+  findContentByID?: Maybe<
+    Pick<Content, '_id' | 'cid' | 'dagSize'> & {
+      pins: {
+        data: Array<
+          Maybe<
+            Pick<Pin, 'service' | 'status' | 'statusText'> & {
+              locations: { data: Array<Maybe<Pick<PinLocation, 'peerId'>>> }
+            }
+          >
+        >
+      }
     }
-  }>
+  >
 }
 
 export type UpdatePinMutationVariables = Exact<{
@@ -615,80 +613,69 @@ export type UpdatePinMutationVariables = Exact<{
   data: UpdatePinInput
 }>
 
-export type UpdatePinMutation = { updatePin?: Maybe<{ _id: string }> }
+export type UpdatePinMutation = { updatePin?: Maybe<Pick<Pin, '_id'>> }
 
 export type FindUploadByCidQueryVariables = Exact<{
   cid: Scalars['String']
 }>
 
 export type FindUploadByCidQuery = {
-  findUploadByCid: {
-    _id: string
-    type: UploadType
-    cid: string
-    created: any
-    files?: Maybe<Array<Maybe<{ name?: Maybe<string>; type?: Maybe<string> }>>>
-    key?: Maybe<{ name: string }>
-    content: {
-      dagSize?: Maybe<number>
+  findUploadByCid: Pick<Upload, '_id' | 'type' | 'cid' | 'created'> & {
+    files?: Maybe<Array<Maybe<Pick<UploadFiles, 'name' | 'type'>>>>
+    key?: Maybe<Pick<UserKey, 'name'>>
+    content: Pick<Content, 'dagSize'> & {
       pins: {
         data: Array<
-          Maybe<{
-            status: PinStatus
-            service: PinService
-            updated?: Maybe<any>
-            created: any
-          }>
+          Maybe<Pick<Pin, 'status' | 'service' | 'updated' | 'created'>>
         >
       }
     }
   }
 }
 
-export type CreateUploadMutationVariables = Exact<{
-  input: CreateUploadInput
+export type CreateUploadCustomMutationVariables = Exact<{
+  input: Array<CreateUploadInput> | CreateUploadInput
 }>
 
-export type CreateUploadMutation = {
-  createUpload: {
-    _id: string
-    type: UploadType
-    created: any
-    key?: Maybe<{ name: string }>
-    files?: Maybe<Array<Maybe<{ name?: Maybe<string>; type?: Maybe<string> }>>>
-    user: { issuer: string }
-    content: {
-      cid: string
-      dagSize?: Maybe<number>
-      pins: { data: Array<Maybe<{ _id: string; status: PinStatus }>> }
+export type CreateUploadCustomMutation = {
+  createUploadCustom: Array<
+    Pick<Upload, '_id' | 'type' | 'cid' | 'created'> & {
+      key?: Maybe<Pick<UserKey, 'name'>>
+      files?: Maybe<Array<Maybe<Pick<UploadFiles, 'name' | 'type'>>>>
+      user: Pick<User, 'issuer'>
+      content: Pick<Content, 'cid' | 'dagSize'> & {
+        pins: { data: Array<Maybe<Pick<Pin, '_id' | 'status'>>> }
+      }
     }
-  }
+  >
 }
 
 export type DeleteUploadMutationVariables = Exact<{
   id: Scalars['ID']
 }>
 
-export type DeleteUploadMutation = { deleteUpload?: Maybe<{ _id: string }> }
+export type DeleteUploadMutation = { deleteUpload?: Maybe<Pick<Upload, '_id'>> }
 
 export type CreateUserKeyMutationVariables = Exact<{
   input: UserKeyInput
 }>
 
-export type CreateUserKeyMutation = { createUserKey: { _id: string } }
+export type CreateUserKeyMutation = { createUserKey: Pick<UserKey, '_id'> }
 
 export type DeleteUserKeyMutationVariables = Exact<{
   id: Scalars['ID']
 }>
 
-export type DeleteUserKeyMutation = { deleteUserKey?: Maybe<{ _id: string }> }
+export type DeleteUserKeyMutation = {
+  deleteUserKey?: Maybe<Pick<UserKey, '_id'>>
+}
 
 export type CreateOrUpdateUserMutationVariables = Exact<{
   input: CreateUserInput
 }>
 
 export type CreateOrUpdateUserMutation = {
-  createUser: { issuer: string; email: string }
+  createUser: Pick<User, 'issuer' | 'email'>
 }
 
 export type LoginQueryVariables = Exact<{
@@ -696,15 +683,9 @@ export type LoginQueryVariables = Exact<{
 }>
 
 export type LoginQuery = {
-  login: {
-    secret: string
-    user: {
-      _id: string
-      issuer: string
-      sub: string
-      keys: {
-        data: Array<Maybe<{ _id: string; name: string; secret: string }>>
-      }
+  login: Pick<LoginOutput, 'secret'> & {
+    user: Pick<User, '_id' | 'issuer' | 'sub'> & {
+      keys: { data: Array<Maybe<Pick<UserKey, '_id' | 'name' | 'secret'>>> }
     }
   }
 }
@@ -716,15 +697,13 @@ export type GetUserQueryVariables = Exact<{
 }>
 
 export type GetUserQuery = {
-  findUserByID?: Maybe<{
-    issuer: string
-    sub: string
-    keys: {
-      after?: Maybe<string>
-      before?: Maybe<string>
-      data: Array<Maybe<{ _id: string; secret: string; name: string }>>
+  findUserByID?: Maybe<
+    Pick<User, 'issuer' | 'sub'> & {
+      keys: Pick<UserKeyPage, 'after' | 'before'> & {
+        data: Array<Maybe<Pick<UserKey, '_id' | 'secret' | 'name'>>>
+      }
     }
-  }>
+  >
 }
 
 export const UpdateContentDocument = gql`
@@ -810,11 +789,12 @@ export const FindUploadByCidDocument = gql`
     }
   }
 `
-export const CreateUploadDocument = gql`
-  mutation createUpload($input: CreateUploadInput!) {
-    createUpload(input: $input) {
+export const CreateUploadCustomDocument = gql`
+  mutation createUploadCustom($input: [CreateUploadInput!]!) {
+    createUploadCustom(input: $input) {
       _id
       type
+      cid
       created
       key {
         name
@@ -986,18 +966,18 @@ export function getSdk(
         'findUploadByCid'
       )
     },
-    createUpload(
-      variables: CreateUploadMutationVariables,
+    createUploadCustom(
+      variables: CreateUploadCustomMutationVariables,
       requestHeaders?: Dom.RequestInit['headers']
-    ): Promise<CreateUploadMutation> {
+    ): Promise<CreateUploadCustomMutation> {
       return withWrapper(
         (wrappedRequestHeaders) =>
-          client.request<CreateUploadMutation>(
-            CreateUploadDocument,
+          client.request<CreateUploadCustomMutation>(
+            CreateUploadCustomDocument,
             variables,
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
-        'createUpload'
+        'createUploadCustom'
       )
     },
     deleteUpload(

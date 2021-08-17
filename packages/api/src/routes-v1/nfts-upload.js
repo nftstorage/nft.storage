@@ -32,40 +32,44 @@ export async function uploadV1(event, ctx) {
     const dir = await cluster.addDirectory(files)
     const { cid, size } = dir[dir.length - 1]
 
-    const { createUpload } = await fauna.createUpload({
-      input: {
-        cid,
-        dagSize: size,
-        type: 'MULTIPART',
-        files: files.map((f) => ({
-          name: f.name,
-          type: f.type,
-        })),
-        key: key?._id,
-        pins: [
-          {
-            status: 'unknown',
-            statusText: '',
-            service: 'IPFS_CLUSTER',
-          },
-          {
-            status: 'unknown',
-            statusText: '',
-            service: 'PINATA',
-          },
-        ],
-      },
+    const { createUploadCustom } = await fauna.createUploadCustom({
+      input: [
+        {
+          cid,
+          dagSize: size,
+          type: 'MULTIPART',
+          files: files.map((f) => ({
+            name: f.name,
+            type: f.type,
+          })),
+          key: key?._id,
+          pins: [
+            {
+              status: 'unknown',
+              statusText: '',
+              service: 'IPFS_CLUSTER',
+            },
+            {
+              status: 'unknown',
+              statusText: '',
+              service: 'PINATA',
+            },
+          ],
+        },
+      ],
     })
     nft = {
-      cid: createUpload.content.cid,
-      created: createUpload.created,
-      files: createUpload.files || [],
-      scope: createUpload.key ? createUpload.key.name : 'session',
+      cid: createUploadCustom[0].cid,
+      created: createUploadCustom[0].created,
+      files: createUploadCustom[0].files || [],
+      scope: createUploadCustom[0].key
+        ? createUploadCustom[0].key.name
+        : 'session',
       type: 'directory',
       size,
       pin: {
-        cid: createUpload.content.cid,
-        created: createUpload.created,
+        cid: createUploadCustom[0].content.cid,
+        created: createUploadCustom[0].created,
         size,
         status: 'queued',
       },
@@ -90,36 +94,40 @@ export async function uploadV1(event, ctx) {
 
     const dagSize = size || bytes
 
-    const { createUpload } = await fauna.createUpload({
-      input: {
-        cid,
-        dagSize,
-        type: isCar ? 'CAR' : 'BLOB',
-        key: key?._id,
-        pins: [
-          {
-            status: 'unknown',
-            statusText: '',
-            service: 'IPFS_CLUSTER',
-          },
-          {
-            status: 'unknown',
-            statusText: '',
-            service: 'PINATA',
-          },
-        ],
-      },
+    const { createUploadCustom } = await fauna.createUploadCustom({
+      input: [
+        {
+          cid,
+          dagSize,
+          type: isCar ? 'CAR' : 'BLOB',
+          key: key?._id,
+          pins: [
+            {
+              status: 'unknown',
+              statusText: '',
+              service: 'IPFS_CLUSTER',
+            },
+            {
+              status: 'unknown',
+              statusText: '',
+              service: 'PINATA',
+            },
+          ],
+        },
+      ],
     })
     nft = {
-      cid: createUpload.content.cid,
-      created: createUpload.created,
+      cid: createUploadCustom[0].cid,
+      created: createUploadCustom[0].created,
       type: content.type,
-      scope: createUpload.key ? createUpload.key.name : 'session',
+      scope: createUploadCustom[0].key
+        ? createUploadCustom[0].key.name
+        : 'session',
       files: [],
       size: dagSize,
       pin: {
-        cid: createUpload.content.cid,
-        created: createUpload.created,
+        cid: createUploadCustom[0].content.cid,
+        created: createUploadCustom[0].created,
         size: dagSize,
         status: 'queued',
       },
