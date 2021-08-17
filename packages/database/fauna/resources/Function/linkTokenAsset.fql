@@ -41,6 +41,9 @@ CreateFunction({
               description: Select(['metadata', 'description'], Var('input')),
             },
           }),
+
+          // find analyze task corresponding to this token asset.
+          task: Call('findScheduledAnalyzeByTokenAsset', Var('tokenAsset')),
         },
         // Now that we have a metadata record we want to create and/or link it
         // with resources corresponding to it's assets.
@@ -70,7 +73,7 @@ CreateFunction({
               resourceID: Select('ref', Var('image')),
             },
           }),
-          // And finally link tokenAsset with a metadata.
+          // Link tokenAsset with a metadata.
           Update(Select('ref', Var('tokenAsset')), {
             data: {
               status: 'Linked',
@@ -83,7 +86,20 @@ CreateFunction({
               metadata: Select('ref', Var('metadata')),
               updated: Now(),
             },
-          })
+          }),
+          // Delete corresponding analyze task
+          If(IsNull(Var('task')), null, Delete(Select('ref', Var('task')))),
+
+          // Create corresponding analyzed record
+          Create(Collection('Analyzed'), {
+            data: {
+              tokenAsset: Select('ref', Var('tokenAsset')),
+              attempt: Select(['data', 'attempt'], 'task', 1),
+            },
+          }),
+
+          // Return token asset
+          Var('tokenAsset')
         )
       )
     )

@@ -1,10 +1,25 @@
+/**
+ * Implements GraphQL resolver which allows to query for scheduled analyze tasks
+ *
+ * @param {int} size
+ * @param {ID} [after]
+ * @param {ID} [before]
+ * @returns {Page<ScheduledAnalyze>}
+ */
 CreateFunction({
   name: 'scheduledAnalyses',
   body: Query(
     Lambda(
-      '_',
-      Abort(
-        'Function scheduledAnalyses was not implemented yet. Please access your database and provide an implementation for the scheduledAnalyses function.'
+      ['size', 'after', 'before'],
+      Let(
+        {
+          refs: Call('paginate', Collection('ScheduledAnalyze'), {
+            size: Var('size'),
+            after: Var('after'),
+            before: Var('before'),
+          }),
+        },
+        Map(Var('refs'), Lambda('ref', Get(Var('ref'))))
       )
     )
   ),
