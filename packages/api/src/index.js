@@ -27,6 +27,9 @@ import { tokensCreateV1 } from './routes-v1/tokens-create.js'
 import { tokensListV1 } from './routes-v1/tokens-list.js'
 import { loginV1 } from './routes-v1/login.js'
 import { uploadV1 } from './routes-v1/nfts-upload.js'
+import { statusV1 } from './routes-v1/nfts-get.js'
+import { checkV1 } from './routes-v1/nfts-check.js'
+import { nftDeleteV1 } from './routes-v1/nfts-delete.js'
 const log = debug('router')
 
 const r = new Router({
@@ -91,6 +94,10 @@ r.add('get', '/internal/list2', getNFT, [postCors])
 r.add('post', '/v1/login', loginV1, [postCors])
 
 r.add('post', '/v1/upload', uploadV1, [postCors])
+r.add('get', '/v1/:cid', statusV1, [postCors])
+r.add('delete', '/v1/:cid', nftDeleteV1, [postCors])
+
+r.add('get', '/v1/check/:cid', checkV1, [postCors])
 
 r.add('get', '/v1/internal/tokens', tokensListV1, [postCors])
 r.add('post', '/v1/internal/tokens', tokensCreateV1, [postCors])

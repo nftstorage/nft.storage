@@ -19,6 +19,8 @@ enum PinService {
   IPFS_CLUSTER
   PINATA
 }
+
+# TODO change unknown to processing
 enum PinStatus {
   unknown
   queued

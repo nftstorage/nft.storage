@@ -43,7 +43,7 @@ export interface Pin {
   size: number
 }
 
-export type PinStatus = 'queued' | 'pinning' | 'pinned' | 'failed'
+export type PinStatus = 'queued' | 'pinning' | 'pinned' | 'failed' | 'unknown'
 
 export type NFT = {
   /**

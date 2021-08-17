@@ -22,34 +22,17 @@ export type Scalars = {
   Time: any
 }
 
-/**
- * Content corresponding to a resource(s) that were referreced by non-fungible
- * token metadata. It is identified and unique by it's cid. Content may represent
- * a file, directory or arbitrary Dag in IPFS network.
- */
 export type Content = {
   /** The document's ID. */
   _id: Scalars['ID']
-  /** Root CID for this content. */
   cid: Scalars['String']
-  /**
-   * Size of the DAG in bytes. Set if known on upload or for partials is set when
-   * content is fully pinned in at least one location.
-   */
   dagSize?: Maybe<Scalars['Int']>
-  /** IPFS nodes pinning this content. */
   pins: PinPage
-  /** Creation date. */
   created: Scalars['Time']
   /** The document's timestamp. */
   _ts: Scalars['Long']
 }
 
-/**
- * Content corresponding to a resource(s) that were referreced by non-fungible
- * token metadata. It is identified and unique by it's cid. Content may represent
- * a file, directory or arbitrary Dag in IPFS network.
- */
 export type ContentPinsArgs = {
   _size?: Maybe<Scalars['Int']>
   _cursor?: Maybe<Scalars['String']>
@@ -57,16 +40,9 @@ export type ContentPinsArgs = {
 
 /** 'Content' input values */
 export type ContentInput = {
-  /** Root CID for this content. */
   cid: Scalars['String']
-  /** IPFS nodes pinning this content. */
   pins?: Maybe<ContentPinsRelation>
-  /**
-   * Size of the DAG in bytes. Set if known on upload or for partials is set when
-   * content is fully pinned in at least one location.
-   */
   dagSize?: Maybe<Scalars['Int']>
-  /** Creation date. */
   created: Scalars['Time']
 }
 
@@ -78,12 +54,6 @@ export type ContentPinsRelation = {
   connect?: Maybe<Array<Maybe<Scalars['ID']>>>
   /** Disconnect the given documents of type 'Pin' from the current document using their IDs. */
   disconnect?: Maybe<Array<Maybe<Scalars['ID']>>>
-}
-
-export type CreateLocationsInput = {
-  peerId: Scalars['String']
-  peerName?: Maybe<Scalars['String']>
-  region?: Maybe<Scalars['String']>
 }
 
 export type CreatePin = {
@@ -364,6 +334,7 @@ export type PinService = 'IPFS_CLUSTER' | 'PINATA'
 export type PinStatus = 'unknown' | 'queued' | 'pinning' | 'pinned' | 'failed'
 
 export type Query = {
+  findUploadByCid: Upload
   findPinLocationByPeerId?: Maybe<PinLocation>
   /** Find a document from the collection of 'Upload' by its id. */
   findUploadByID?: Maybe<Upload>
@@ -379,6 +350,11 @@ export type Query = {
   login: LoginOutput
   /** Find a document from the collection of 'Pin' by its id. */
   findPinByID?: Maybe<Pin>
+  findContentByCid?: Maybe<Content>
+}
+
+export type QueryFindUploadByCidArgs = {
+  cid: Scalars['String']
 }
 
 export type QueryFindPinLocationByPeerIdArgs = {
@@ -413,6 +389,10 @@ export type QueryFindPinByIdArgs = {
   id: Scalars['ID']
 }
 
+export type QueryFindContentByCidArgs = {
+  cid: Scalars['String']
+}
+
 export type UpdatePinInput = {
   status?: Maybe<PinStatus>
   statusText?: Maybe<Scalars['String']>
@@ -432,6 +412,7 @@ export type Upload = {
   _id: Scalars['ID']
   files?: Maybe<Array<Maybe<UploadFiles>>>
   key?: Maybe<UserKey>
+  cid: Scalars['String']
   content: Content
   type: UploadType
   user: User
@@ -464,6 +445,7 @@ export type UploadFilesInput = {
 export type UploadInput = {
   user?: Maybe<UploadUserRelation>
   type: UploadType
+  cid: Scalars['String']
   content?: Maybe<UploadContentRelation>
   created: Scalars['Time']
   deleted?: Maybe<Scalars['Time']>
@@ -583,6 +565,29 @@ export type UpdateContentMutationVariables = Exact<{
 
 export type UpdateContentMutation = { updateContent?: Maybe<{ _id: string }> }
 
+export type FindContentByCidQueryVariables = Exact<{
+  cid: Scalars['String']
+}>
+
+export type FindContentByCidQuery = {
+  findContentByCid?: Maybe<{
+    _id: string
+    cid: string
+    created: any
+    dagSize?: Maybe<number>
+    pins: {
+      data: Array<
+        Maybe<{
+          status: PinStatus
+          service: PinService
+          created: any
+          updated?: Maybe<any>
+        }>
+      >
+    }
+  }>
+}
+
 export type GetContentbyIdQueryVariables = Exact<{
   id: Scalars['ID']
 }>
@@ -612,6 +617,34 @@ export type UpdatePinMutationVariables = Exact<{
 
 export type UpdatePinMutation = { updatePin?: Maybe<{ _id: string }> }
 
+export type FindUploadByCidQueryVariables = Exact<{
+  cid: Scalars['String']
+}>
+
+export type FindUploadByCidQuery = {
+  findUploadByCid: {
+    _id: string
+    type: UploadType
+    cid: string
+    created: any
+    files?: Maybe<Array<Maybe<{ name?: Maybe<string>; type?: Maybe<string> }>>>
+    key?: Maybe<{ name: string }>
+    content: {
+      dagSize?: Maybe<number>
+      pins: {
+        data: Array<
+          Maybe<{
+            status: PinStatus
+            service: PinService
+            updated?: Maybe<any>
+            created: any
+          }>
+        >
+      }
+    }
+  }
+}
+
 export type CreateUploadMutationVariables = Exact<{
   input: CreateUploadInput
 }>
@@ -631,6 +664,12 @@ export type CreateUploadMutation = {
     }
   }
 }
+
+export type DeleteUploadMutationVariables = Exact<{
+  id: Scalars['ID']
+}>
+
+export type DeleteUploadMutation = { deleteUpload?: Maybe<{ _id: string }> }
 
 export type CreateUserKeyMutationVariables = Exact<{
   input: UserKeyInput
@@ -695,6 +734,25 @@ export const UpdateContentDocument = gql`
     }
   }
 `
+export const FindContentByCidDocument = gql`
+  query findContentByCid($cid: String!) {
+    findContentByCid(cid: $cid) {
+      _id
+      cid
+      created
+      dagSize
+      created
+      pins {
+        data {
+          status
+          service
+          created
+          updated
+        }
+      }
+    }
+  }
+`
 export const GetContentbyIdDocument = gql`
   query getContentbyID($id: ID!) {
     findContentByID(id: $id) {
@@ -720,6 +778,35 @@ export const UpdatePinDocument = gql`
   mutation updatePin($id: ID!, $data: UpdatePinInput!) {
     updatePin(id: $id, data: $data) {
       _id
+    }
+  }
+`
+export const FindUploadByCidDocument = gql`
+  query findUploadByCid($cid: String!) {
+    findUploadByCid(cid: $cid) {
+      _id
+      type
+      files {
+        name
+        type
+      }
+      cid
+      type
+      created
+      key {
+        name
+      }
+      content {
+        dagSize
+        pins {
+          data {
+            status
+            service
+            updated
+            created
+          }
+        }
+      }
     }
   }
 `
@@ -749,6 +836,13 @@ export const CreateUploadDocument = gql`
           }
         }
       }
+    }
+  }
+`
+export const DeleteUploadDocument = gql`
+  mutation deleteUpload($id: ID!) {
+    deleteUpload(id: $id) {
+      _id
     }
   }
 `
@@ -837,6 +931,20 @@ export function getSdk(
         'updateContent'
       )
     },
+    findContentByCid(
+      variables: FindContentByCidQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<FindContentByCidQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<FindContentByCidQuery>(
+            FindContentByCidDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'findContentByCid'
+      )
+    },
     getContentbyID(
       variables: GetContentbyIdQueryVariables,
       requestHeaders?: Dom.RequestInit['headers']
@@ -864,6 +972,20 @@ export function getSdk(
         'updatePin'
       )
     },
+    findUploadByCid(
+      variables: FindUploadByCidQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<FindUploadByCidQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<FindUploadByCidQuery>(
+            FindUploadByCidDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'findUploadByCid'
+      )
+    },
     createUpload(
       variables: CreateUploadMutationVariables,
       requestHeaders?: Dom.RequestInit['headers']
@@ -876,6 +998,20 @@ export function getSdk(
             { ...requestHeaders, ...wrappedRequestHeaders }
           ),
         'createUpload'
+      )
+    },
+    deleteUpload(
+      variables: DeleteUploadMutationVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<DeleteUploadMutation> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<DeleteUploadMutation>(
+            DeleteUploadDocument,
+            variables,
+            { ...requestHeaders, ...wrappedRequestHeaders }
+          ),
+        'deleteUpload'
       )
     },
     createUserKey(

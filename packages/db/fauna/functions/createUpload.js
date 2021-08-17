@@ -11,10 +11,11 @@ import {
   Collection,
   Foreach,
   Do,
+  Get,
 } from 'faunadb'
 import { findOrCreate } from '../utils/common'
 
-const createPinRef = findOrCreate(
+const pinRef = findOrCreate(
   'unique_Pin_content_service',
   [Var('contentRef'), Select('service', Var('pin'))],
   Create('Pin', {
@@ -28,6 +29,34 @@ const createPinRef = findOrCreate(
   })
 )
 
+const contentRef = findOrCreate(
+  'unique_Content_cid',
+  Var('cid'),
+  Create('Content', {
+    data: {
+      cid: Var('cid'),
+      dagSize: Select('dagSize', Var('data')),
+      created: Now(),
+    },
+  })
+)
+
+const uploadRef = findOrCreate(
+  'unique_Upload_user_cid',
+  [CurrentIdentity(), Var('cid')],
+  Create('Upload', {
+    data: {
+      user: CurrentIdentity(),
+      type: Select('type', Var('data')),
+      created: Now(),
+      cid: Var('cid'),
+      content: Var('contentRef'),
+      files: Select('files', Var('data'), []),
+      key: Ref(Collection('UserKey'), Select('key', Var('data'))),
+    },
+  })
+)
+
 export default {
   name: 'createUpload',
   body: Query(
@@ -36,32 +65,11 @@ export default {
       Let(
         {
           cid: Select('cid', Var('data')),
-          contentRef: findOrCreate(
-            'unique_Content_cid',
-            Var('cid'),
-            Create('Content', {
-              data: {
-                cid: Var('cid'),
-                dagSize: Select('dagSize', Var('data')),
-                created: Now(),
-              },
-            })
-          ),
-          pins: Foreach(
-            Select('pins', Var('data')),
-            Lambda(['pin'], createPinRef)
-          ),
+          contentRef,
+          pins: Foreach(Select('pins', Var('data')), Lambda(['pin'], pinRef)),
+          uploadRef,
         },
-        Create('Upload', {
-          data: {
-            user: CurrentIdentity(),
-            type: Select('type', Var('data')),
-            created: Now(),
-            content: Var('contentRef'),
-            files: Select('files', Var('data'), []),
-            key: Ref(Collection('UserKey'), Select('key', Var('data'))),
-          },
-        })
+        Get(Var('uploadRef'))
       )
     )
   ),

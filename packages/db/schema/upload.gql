@@ -1,6 +1,7 @@
 type Upload {
   user: User! @relation
   type: UploadType!
+  cid: String!
   content: Content! @relation
   created: Time!
   deleted: Time
@@ -38,6 +39,38 @@ input CreateUploadInput {
   pins: [CreatePin]!
 }
 
+type Query {
+  findUploadByCid(cid: String!): Upload! @resolver
+}
+
+query findUploadByCid($cid: String!) {
+  findUploadByCid(cid: $cid) {
+    _id
+    type
+    files {
+      name
+      type
+    }
+    cid
+    type
+    created
+    key {
+      name
+    }
+    content {
+      dagSize
+      pins {
+        data {
+          status
+          service
+          updated
+          created
+        }
+      }
+    }
+  }
+}
+
 type Mutation {
   createUpload(input: CreateUploadInput): Upload! @resolver
 }
@@ -67,5 +100,11 @@ mutation createUpload($input: CreateUploadInput!) {
         }
       }
     }
+  }
+}
+
+mutation deleteUpload($id: ID!) {
+  deleteUpload(id: $id) {
+    _id
   }
 }
