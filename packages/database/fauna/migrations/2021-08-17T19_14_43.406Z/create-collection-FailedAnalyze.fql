@@ -1,0 +1,60 @@
+CreateCollection({
+  "name": "FailedAnalyze",
+  "data": {
+    "gql": {
+      "meta": {
+        "name": "FailedAnalyze",
+        "description": "Represents a failed analyze task. Cron job will create one if analyze task\nhas failed.",
+        "fields": [{
+          "name": "tokenAsset",
+          "directives": [{
+            "name": "unique",
+            "args": {
+              "index": "unique_FailedAnalyze_tokenAsset"
+            }
+          }, {
+            "name": "relation",
+            "args": {
+              "name": "failedAnalyze_tokenAsset"
+            }
+          }],
+          "description": "Ref to token asset that needs to be analyzed.",
+          "type": {
+            "NotNull": {
+              "Named": "TokenAsset"
+            }
+          }
+        }, {
+          "name": "attempt",
+          "description": "Which attempt is it.",
+          "type": {
+            "NotNull": {
+              "Named": "Int"
+            }
+          }
+        }, {
+          "name": "status",
+          "type": {
+            "NotNull": {
+              "Named": "TokenAssetStatus"
+            }
+          }
+        }, {
+          "name": "statusText",
+          "type": {
+            "NotNull": {
+              "Named": "String"
+            }
+          }
+        }],
+        "directives": [{
+          "name": "collection",
+          "args": {
+            "name": "FailedAnalyze"
+          }
+        }]
+      }
+    }
+  },
+  "history_days": 30
+})
