@@ -72,13 +72,14 @@ query findUploadByCid($cid: String!) {
 }
 
 type Mutation {
-  createUpload(input: CreateUploadInput): Upload! @resolver
+  createUploadCustom(input: [CreateUploadInput!]!): [Upload!]! @resolver
 }
 
-mutation createUpload($input: CreateUploadInput!) {
-  createUpload(input: $input) {
+mutation createUploadCustom($input: [CreateUploadInput!]!) {
+  createUploadCustom(input: $input) {
     _id
     type
+    cid
     created
     key {
       name

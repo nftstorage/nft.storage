@@ -59,7 +59,7 @@ input UpdatePinInput {
 
 type Mutation {
   updatePin(id: ID!, data: UpdatePinInput): Pin @resolver
-  createUpload(input: CreateUploadInput): Upload! @resolver
+  createUploadCustom(input: [CreateUploadInput!]!): [Upload!]! @resolver
   createUser(input: CreateUserInput): User! @resolver
 }
 
