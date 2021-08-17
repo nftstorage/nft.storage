@@ -1,0 +1,29 @@
+Update(Function("reportTokenAssetFailure"), {
+  "body": Query(Lambda(["input"], Let([{
+    "status": Select("status", Var("input"))
+  }, {
+    "statusText": Select("statusText", Var("input"), Var("status"))
+  }, {
+    "tokenAsset": Call("getTokenAssetByID", Select("id", Var("input")))
+  }, {
+    "metadata": Select(["data", "metadata"], Var("tokenAsset"), null)
+  }, {
+    "task": Call("findScheduledAnalyzeByTokenAsset", Var("tokenAsset"))
+  }], If(IsNull(Var("metadata")), Update(Select("ref", Var("tokenAsset")), {
+    "data": {
+      "status": Var("status"),
+      "statusText": Var("statusText"),
+      "ipfsURL": Select("ipfsURL", Var("input"), Select(["data", "ipfsURL"], Var("tokenAsset"), null)),
+      "updated": Now()
+    }
+  }), Do(If(IsNull(Var("task")), null, Delete(Select("ref", Var("task")))), Create(Collection("FailedAnalyze"), {
+    "data": {
+      "tokenAsset": Select("ref", Var("tokenAsset")),
+      "attempt": Select(["data", "attempt"], "task", 1),
+      "status": Var("status"),
+      "statusText": Var("statusText")
+    }
+  }), Var("tokenAsset")))))),
+  "data": null,
+  "role": null
+})
