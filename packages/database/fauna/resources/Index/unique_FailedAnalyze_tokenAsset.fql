@@ -1,0 +1,8 @@
+CreateIndex({
+  name: 'unique_FailedAnalyze_tokenAsset',
+  source: Collection('FailedAnalyze'),
+  terms: [{ field: ['data', 'tokenAsset'] }],
+  unique: true,
+  serialized: true,
+  data: { gql: {} },
+})

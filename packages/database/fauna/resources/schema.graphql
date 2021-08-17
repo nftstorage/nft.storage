@@ -76,12 +76,56 @@ type TokenAsset {
   """
   Status of the token asset
   """
-  status: TokenAssetStatus! @index
+  status: TokenAssetStatus!
   """
   Human readable description of the status. Usually this ellaborates a reason
   why token analyzer has failed providing with an error message and stack trace.
   """
   statusText: String
+}
+
+"""
+Represents a scheduled analyze task. Cron job will pull from collection,
+perform a task and then remove it.
+"""
+type ScheduledAnalyze {
+  """
+  Ref to token asset that needs to be analyzed.
+  """
+  tokenAsset: TokenAsset! @unique
+  """
+  Which attempt is it.
+  """
+  attempt: Int!
+}
+
+"""
+Represents a failed analyze task. Cron job will create one if analyze task
+has failed.
+"""
+type FailedAnalyze {
+  """
+  Ref to token asset that needs to be analyzed.
+  """
+  tokenAsset: TokenAsset! @unique
+  """
+  Which attempt is it.
+  """
+  attempt: Int!
+  status: TokenAssetStatus!
+  statusText: String!
+}
+
+"""
+Represents succesfully completed analyze task. Cron job will create on when
+token is succesfully analyzed.
+"""
+type Analyzed {
+  tokenAsset: TokenAsset! @unique
+  """
+  Which attempt is it.
+  """
+  attempt: Int!
 }
 
 enum TokenAssetStatus {
@@ -466,6 +510,10 @@ type Query {
 
   allImports: [ERC721ImportResult!] @relation
 
+  """
+  Returns page of scheduled analyze tasks
+  """
+  scheduledAnalyses: [ScheduledAnalyze!]! @resolver(paginated: true) @relation
   """
   Provides tokens with the
   """
