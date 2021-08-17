@@ -34,5 +34,6 @@ export async function login(id) {
       Authorization: `Bearer ${loginOutput.secret}`,
     },
   })
+
   return { sdk: getSdk(authClient), loginOutput }
 }

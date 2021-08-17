@@ -22,6 +22,12 @@ export default {
       },
     },
     {
+      resource: Function('findUploadByCid'),
+      actions: {
+        call: true,
+      },
+    },
+    {
       resource: Function('updatePin'),
       actions: {
         call: true,
@@ -30,10 +36,20 @@ export default {
     {
       resource: Collection('Upload'),
       actions: {
-        read: true,
+        read: Query(
+          Lambda(
+            'ref',
+            Equals(CurrentIdentity(), Select(['data', 'user'], Get(Var('ref'))))
+          )
+        ),
         write: true,
         create: true,
-        delete: false,
+        delete: Query(
+          Lambda(
+            'ref',
+            Equals(CurrentIdentity(), Select(['data', 'user'], Get(Var('ref'))))
+          )
+        ),
       },
     },
     {
@@ -157,6 +173,24 @@ export default {
     },
     {
       resource: Index('unique_PinLocation_peerId'),
+      actions: {
+        read: true,
+      },
+    },
+    {
+      resource: Index('unique_Upload_user_cid'),
+      actions: {
+        read: true,
+      },
+    },
+    {
+      resource: Index('findUploadByCid'),
+      actions: {
+        read: true,
+      },
+    },
+    {
+      resource: Index('findContentByCid'),
       actions: {
         read: true,
       },

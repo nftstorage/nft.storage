@@ -35,6 +35,7 @@ export async function validate(event, { sentry }) {
           user: loginOutput.user,
           key,
           fauna: sdk,
+          loginOutput,
         }
       } else {
         throw new ErrorTokenNotFound()

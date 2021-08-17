@@ -16,18 +16,18 @@ dotenv.config({
 
 const tasks = new Listr(
   [
-    {
-      title: 'Sync users',
-      task: syncUsers,
-    },
-    {
-      title: 'Sync users data',
-      task: syncUsersData,
-    },
-    {
-      title: 'Sync nfts',
-      task: syncNFTs,
-    },
+    // {
+    //   title: 'Sync users',
+    //   task: syncUsers,
+    // },
+    // {
+    //   title: 'Sync users data',
+    //   task: syncUsersData,
+    // },
+    // {
+    //   title: 'Sync nfts',
+    //   task: syncNFTs,
+    // },
     {
       title: 'Sync nfts data',
       task: () => {

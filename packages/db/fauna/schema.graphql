@@ -1,26 +1,16 @@
-"""
-Content corresponding to a resource(s) that were referreced by non-fungible
-token metadata. It is identified and unique by it's cid. Content may represent
-a file, directory or arbitrary Dag in IPFS network.
-"""
 type Content {
-  """
-  Root CID for this content.
-  """
   cid: String! @unique
-  """
-  IPFS nodes pinning this content.
-  """
   pins: [Pin]! @relation
-  """
-  Size of the DAG in bytes. Set if known on upload or for partials is set when
-  content is fully pinned in at least one location.
-  """
   dagSize: Int
-  """
-  Creation date.
-  """
   created: Time!
+}
+
+type Query {
+  findContentByCid(cid: String!): Content
+  findPinLocationByPeerId(peerId: String!): PinLocation
+  findUploadByCid(cid: String!): Upload! @resolver
+  "Login with sub or issuer"
+  login(id: String!): LoginOutput! @resolver
 }
 
 type Pin {
@@ -53,12 +43,6 @@ enum PinStatus {
   failed
 }
 
-type Query {
-  findPinLocationByPeerId(peerId: String!): PinLocation
-  "Login with sub or issuer"
-  login(id: String!): LoginOutput! @resolver
-}
-
 input UpdatePinLocationInput {
   peerId: String!
   peerName: String
@@ -82,6 +66,7 @@ type Mutation {
 type Upload {
   user: User! @relation
   type: UploadType!
+  cid: String!
   content: Content! @relation
   created: Time!
   deleted: Time

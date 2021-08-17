@@ -1,34 +1,35 @@
-"""
-Content corresponding to a resource(s) that were referreced by non-fungible
-token metadata. It is identified and unique by it's cid. Content may represent
-a file, directory or arbitrary Dag in IPFS network.
-"""
 type Content {
-  """
-  Root CID for this content.
-  """
   cid: String! @unique
-
-  """
-  IPFS nodes pinning this content.
-  """
   pins: [Pin]! @relation
-
-  """
-  Size of the DAG in bytes. Set if known on upload or for partials is set when
-  content is fully pinned in at least one location.
-  """
   dagSize: Int
-
-  """
-  Creation date.
-  """
   created: Time!
 }
 
 mutation updateContent($id: ID!, $data: ContentInput!) {
   updateContent(id: $id, data: $data) {
     _id
+  }
+}
+
+type Query {
+  findContentByCid(cid: String!): Content
+}
+
+query findContentByCid($cid: String!) {
+  findContentByCid(cid: $cid) {
+    _id
+    cid
+    created
+    dagSize
+    created
+    pins {
+      data {
+        status
+        service
+        created
+        updated
+      }
+    }
   }
 }
 query getContentbyID($id: ID!) {
