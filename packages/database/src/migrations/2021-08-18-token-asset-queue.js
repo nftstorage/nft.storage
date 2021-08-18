@@ -4,12 +4,9 @@ import fauna from 'faunadb'
 
 const {
   Client,
-  Function,
-  Delete,
   Create,
   Collection,
   Get,
-  Call,
   Var,
   Documents,
   Lambda,
@@ -23,28 +20,31 @@ export const main = async () => await run(await readConfig())
 
 /**
  *
- * @param {migration.Config} config
+ * @param {{secret:string, cursor?:string, size:number}} config
  */
 export const run = async (config) => {
   console.log(`🚧 Performing migration`)
 
   const client = new Client({ secret: config.secret })
   const cursor = config.cursor
-    ? Ref(Collection('TokenAsset', options.cursor))
+    ? Ref(Collection('TokenAsset', config.cursor))
     : null
   const state = { cursor, linked: 0, failed: 0, queued: 0 }
 
   while (true) {
     // Fetch page of TokenAsset from the db.
-    const { after, data } = await client.query(
-      Map(
-        Paginate(Documents(Collection('TokenAsset'))),
-        Lambda(['ref'], Get(Var('ref')))
-      ),
-      {
-        size: config.size,
-        after: state.cursor,
-      }
+    const { after, data } = /** @type {{after:fauna.Expr|null, data:any[]}} */ (
+      await client.query(
+        Map(
+          Paginate(Documents(Collection('TokenAsset'))),
+          Lambda(['ref'], Get(Var('ref')))
+        ),
+        {
+          // @ts-ignore - options isn't documented
+          size: config.size,
+          after: state.cursor,
+        }
+      )
     )
 
     // Create a document that corresponds to it's status
@@ -52,7 +52,7 @@ export const run = async (config) => {
     for (const tokenAsset of data) {
       switch (tokenAsset.status) {
         case 'Linked':
-          stats.linked += 1
+          state.linked += 1
           expressions.push(
             Create(Collection('Analyzed'), {
               data: {
@@ -63,7 +63,7 @@ export const run = async (config) => {
           )
           break
         case 'Queued':
-          stats.queued += 1
+          state.queued += 1
           expressions.push(
             Create(Collection('ScheduledAnalyze'), {
               data: {
@@ -80,11 +80,11 @@ export const run = async (config) => {
                 tokenAsset: tokenAsset.ref,
                 attempt: 1,
                 status: tokenAsset.status,
-                statusText: statusText.statusText,
+                statusText: tokenAsset.statusText,
               },
             })
           )
-          stats.failed += 1
+          state.failed += 1
           break
       }
     }
