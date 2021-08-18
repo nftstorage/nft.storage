@@ -9,21 +9,21 @@ Update(Function("reportTokenAssetFailure"), {
     "metadata": Select(["data", "metadata"], Var("tokenAsset"), null)
   }, {
     "task": Call("findScheduledAnalyzeByTokenAsset", Var("tokenAsset"))
-  }], If(IsNull(Var("metadata")), Update(Select("ref", Var("tokenAsset")), {
+  }], Do(If(IsNull(Var("metadata")), Update(Select("ref", Var("tokenAsset")), {
     "data": {
       "status": Var("status"),
       "statusText": Var("statusText"),
       "ipfsURL": Select("ipfsURL", Var("input"), Select(["data", "ipfsURL"], Var("tokenAsset"), null)),
       "updated": Now()
     }
-  }), Do(If(IsNull(Var("task")), null, Delete(Select("ref", Var("task")))), Create(Collection("FailedAnalyze"), {
+  }), null), If(IsNull(Var("task")), null, Delete(Select("ref", Var("task")))), Create(Collection("FailedAnalyze"), {
     "data": {
       "tokenAsset": Select("ref", Var("tokenAsset")),
       "attempt": Select(["data", "attempt"], "task", 1),
       "status": Var("status"),
       "statusText": Var("statusText")
     }
-  }), Var("tokenAsset")))))),
+  }), Var("tokenAsset"))))),
   "data": null,
   "role": null
 })
