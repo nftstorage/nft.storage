@@ -93,7 +93,6 @@ export const run = async (config) => {
       break
     } else {
       await client.query(Do(expressions))
-      console.log(data.map((item) => item.ref))
       state.cursor = after
       console.log('⏭ Moving to next page', state)
     }
