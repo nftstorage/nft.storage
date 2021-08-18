@@ -28,7 +28,7 @@ export const run = async (config) => {
   const client = new Client({ secret: config.secret })
   const cursor = config.cursor
     ? Ref(Collection('TokenAsset', config.cursor))
-    : null
+    : undefined
   const state = { cursor, linked: 0, failed: 0, queued: 0 }
 
   while (true) {
@@ -36,14 +36,12 @@ export const run = async (config) => {
     const { after, data } = /** @type {{after:fauna.Expr|null, data:any[]}} */ (
       await client.query(
         Map(
-          Paginate(Documents(Collection('TokenAsset'))),
+          Paginate(Documents(Collection('TokenAsset')), {
+            size: config.size,
+            after: state.cursor,
+          }),
           Lambda(['ref'], Get(Var('ref')))
-        ),
-        {
-          // @ts-ignore - options isn't documented
-          size: config.size,
-          after: state.cursor,
-        }
+        )
       )
     )
 
@@ -90,11 +88,12 @@ export const run = async (config) => {
     }
 
     // If there was nothing we're done
-    if (expressions.length === 0) {
+    if (expressions.length === 0 || after === null) {
       console.log('🏁 Migration is complete', state)
       break
     } else {
       await client.query(Do(expressions))
+      console.log(data.map((item) => item.ref))
       state.cursor = after
       console.log('⏭ Moving to next page', state)
     }
