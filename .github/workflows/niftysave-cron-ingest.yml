@@ -1,4 +1,4 @@
-name: Cron Ingest ERC721
+name: Cron Ingest ERC721 Tokens
 
 on:
   schedule:

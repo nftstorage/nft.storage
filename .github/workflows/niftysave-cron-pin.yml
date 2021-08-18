@@ -1,4 +1,4 @@
-name: Cron Pin ERC-721 Token Assets
+name: Cron Pin ERC-721 Token links
 
 on:
   schedule:
