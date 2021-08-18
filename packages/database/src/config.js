@@ -3,7 +3,6 @@ import yargs from 'yargs'
 
 /**
  * @typedef {import('./migration').Config} Config
- * @returns {Promise<Config>} config
  */
 export default async () => {
   dotenv.config()
@@ -14,6 +13,15 @@ export default async () => {
         default: process.env['FAUNA_KEY'],
         description: 'Fauna DB access token',
         demandOption: true,
+      },
+      size: {
+        type: 'number',
+        default: parseInt(process.env['BATCH_SIZE'] || '100'),
+        description: 'Number of items to process at once',
+      },
+      cursor: {
+        default: process.env['CURSOR'],
+        description: 'Cursor to use in the db',
       },
     })
     .parse()
