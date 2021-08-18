@@ -318,6 +318,42 @@ export const fakeLastMigration = async (settings) =>
   })
 
 /**
+ * @param {Config} settings
+ */
+export const resetLastMigration = async (settings) =>
+  withConfig(settings, async () => {
+    const revisions = await files.retrieveAllMigrations()
+    const last = String(revisions.sort().pop())
+    const client = await clientGenerator.getClient()
+    const name = await config.getMigrationCollection()
+    await client.query(
+      Fauna.fauna.Reduce(
+        Fauna.fauna.Lambda(
+          ['_', 'ref'],
+          Fauna.fauna.If(
+            Fauna.fauna.Equals(
+              Fauna.fauna.Select(
+                ['data', 'migration'],
+                Fauna.fauna.Get(Fauna.fauna.Var('ref')),
+                ''
+              ),
+              last
+            ),
+            Fauna.fauna.Delete(Fauna.fauna.Var('ref')),
+            0
+          )
+        ),
+        0,
+        Fauna.fauna.Documents(Fauna.fauna.Collection(name))
+      )
+    )
+
+    const url = await getLastMigrationURL()
+    if (url) {
+      fs.promises.rm(url, { recursive: true })
+    }
+  })
+/**
  * @param {Fauna.CreateFunctionParam} input
  */
 const createFunction = ({ name, body, data, role }) =>
