@@ -185,7 +185,7 @@ const parseERC721Metadata = async (content) => {
     throw new Error('name field is missing')
   }
   if (typeof description !== 'string') {
-    throw new Error('descript field is missing')
+    throw new Error('description field is missing')
   }
   if (typeof image !== 'string') {
     throw new Error('image field is missing')
