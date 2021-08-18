@@ -21,18 +21,6 @@ CreateFunction({
             })
           ),
 
-          // If new token was imported create a scheduled analyze task for it.
-          task: If(
-            IsNull(Var('tokenAsset')),
-            null,
-            Create(Collection('ScheduledAnalyze'), {
-              data: {
-                tokenAsset: Select('ref', Var('tokenAsset')),
-                attempt: 1,
-              },
-            })
-          ),
-
           block: Call('importBlock', {
             hash: Select('blockHash', Var('token')),
             number: Select('blockNumber', Var('token')),
