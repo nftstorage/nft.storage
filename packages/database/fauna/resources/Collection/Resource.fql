@@ -4,8 +4,6 @@ CreateCollection({
     gql: {
       meta: {
         name: 'Resource',
-        description:
-          "Represents a resource that non-fungible token metadata referenced via URI. In\nmost cases when created will have `uri` discovered on chain with a status\n`Queued`. Followup jobs will then attempt to locate and pin it's content\nupdating it's state.",
         fields: [
           {
             name: 'referrers',
@@ -68,6 +66,8 @@ CreateCollection({
           },
         ],
         directives: [{ name: 'collection', args: { name: 'Resource' } }],
+        description:
+          "Represents a resource that non-fungible token metadata referenced via URI. In\nmost cases when created will have `uri` discovered on chain with a status\n`Queued`. Followup jobs will then attempt to locate and pin it's content\nupdating it's state.",
       },
     },
   },

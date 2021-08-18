@@ -4,8 +4,6 @@ CreateCollection({
     gql: {
       meta: {
         name: 'TokenAsset',
-        description:
-          'TokenAsset represents contents of the tokenURI which may not have been found /\npinned yet. It may have been added by the chain scraper, when token with this\n`tokenURI` was discovered. Alternatively it could have been created by an\nupload to nft.storage, in which case it may not have any refferers but it would\nhave uploads.',
         fields: [
           {
             name: 'referrers',
@@ -48,7 +46,6 @@ CreateCollection({
           },
           {
             name: 'status',
-            directives: [{ name: 'index', args: {} }],
             description: 'Status of the token asset',
             type: { NotNull: { Named: 'TokenAssetStatus' } },
           },
@@ -60,6 +57,8 @@ CreateCollection({
           },
         ],
         directives: [{ name: 'collection', args: { name: 'TokenAsset' } }],
+        description:
+          'TokenAsset represents contents of the tokenURI which may not have been found /\npinned yet. It may have been added by the chain scraper, when token with this\n`tokenURI` was discovered. Alternatively it could have been created by an\nupload to nft.storage, in which case it may not have any refferers but it would\nhave uploads.',
       },
     },
   },

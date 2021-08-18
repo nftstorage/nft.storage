@@ -1,0 +1,34 @@
+CreateFunction({
+  "name": "scheduledAnalyses",
+  "body": Query(Lambda("_", Abort("Function scheduledAnalyses was not implemented yet. Please access your database and provide an implementation for the scheduledAnalyses function."))),
+  "data": {
+    "gql": {
+      "meta": {
+        "location": "Query",
+        "field": {
+          "name": "scheduledAnalyses",
+          "directives": [{
+            "name": "resolver",
+            "args": {
+              "name": "scheduledAnalyses",
+              "paginated": true
+            }
+          }, {
+            "name": "relation",
+            "args": {}
+          }],
+          "description": "Returns page of scheduled analyze tasks",
+          "type": {
+            "NotNull": {
+              "List": {
+                "NotNull": {
+                  "Named": "ScheduledAnalyze"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+})

@@ -1,5 +1,17 @@
-// Helper function that adds or updates Token to the DB. Update could happen
-// when token is transferred from one owner to the other.
+/**
+ * Helper function that adds or updates Token to the DB. Update could happen
+ * when token is transferred from one owner to the other.
+ *
+ * @param {Object} token
+ * @param {ID} token.id
+ * @param {string} token.tokenID
+ * @param {string} token.tokenURI
+ * @param {string} token.mintTime
+ * @param {string} token.blockHash
+ * @param {string} token.blockNumber
+ * @param {ERC721ImportTokenContractInput} token.contract
+ * @param {ERC721ImportTokenOwnerInput} token.owner
+ */
 CreateFunction({
   name: 'importERC721Token',
   body: Query(
@@ -49,12 +61,31 @@ CreateFunction({
           }),
         },
         Do(
-          Create(Collection('block_tokens'), {
-            data: {
-              tokenID: Select('ref', Var('token')),
-              blockID: Select('ref', Var('block')),
-            },
-          }),
+          // If there this token is not associated with this block create
+          // an association. Otherwise do nothing.
+          If(
+            Or(
+              IsEmpty(
+                Match(
+                  Index('block_tokens_by_token'),
+                  Select('ref', Var('token'))
+                )
+              ),
+              IsEmpty(
+                Match(
+                  Index('block_tokens_by_block'),
+                  Select('ref', Var('block'))
+                )
+              )
+            ),
+            Create(Collection('block_tokens'), {
+              data: {
+                tokenID: Select('ref', Var('token')),
+                blockID: Select('ref', Var('block')),
+              },
+            }),
+            null
+          ),
           Var('token')
         )
       )

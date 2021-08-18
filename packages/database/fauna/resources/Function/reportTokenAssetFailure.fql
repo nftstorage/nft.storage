@@ -15,27 +15,46 @@ CreateFunction({
       ['input'],
       Let(
         {
+          status: Select('status', Var('input')),
+          statusText: Select('statusText', Var('input'), Var('status')),
           tokenAsset: Call('getTokenAssetByID', Select('id', Var('input'))),
           metadata: Select(['data', 'metadata'], Var('tokenAsset'), null),
+          // find analyze task corresponding to this token asset.
+          task: Call('findScheduledAnalyzeByTokenAsset', Var('tokenAsset')),
         },
-        If(
-          IsNull(Var('metadata')),
-          Update(Select('ref', Var('tokenAsset')), {
+        Do(
+          // Only update if document has no metedata (otherwise it was already
+          // analyzed succesfully)
+          If(
+            IsNull(Var('metadata')),
+            Update(Select('ref', Var('tokenAsset')), {
+              data: {
+                status: Var('status'),
+                statusText: Var('statusText'),
+                ipfsURL: Select(
+                  'ipfsURL',
+                  Var('input'),
+                  Select(['data', 'ipfsURL'], Var('tokenAsset'), null)
+                ),
+                updated: Now(),
+              },
+            }),
+            null
+          ),
+          // Delete corresponding analyze task
+          If(IsNull(Var('task')), null, Delete(Select('ref', Var('task')))),
+
+          // Create corresponding failed record
+          Create(Collection('FailedAnalyze'), {
             data: {
-              status: Select('status', Var('input')),
-              statusText: Select(
-                'statusText',
-                Var('input'),
-                Select('status', Var('input'))
-              ),
-              ipfsURL: Select(
-                'ipfsURL',
-                Var('input'),
-                Select(['data', 'ipfsURL'], Var('tokenAsset'), null)
-              ),
-              updated: Now(),
+              tokenAsset: Select('ref', Var('tokenAsset')),
+              attempt: Select(['data', 'attempt'], 'task', 1),
+              status: Var('status'),
+              statusText: Var('statusText'),
             },
           }),
+
+          // Finally return token asset back
           Var('tokenAsset')
         )
       )

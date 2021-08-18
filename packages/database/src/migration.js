@@ -7,6 +7,8 @@ import taskApply from '@fauna-labs/fauna-schema-migrate/dist/tasks/apply.js'
 import * as files from '@fauna-labs/fauna-schema-migrate/dist/util/files.js'
 import { config } from '@fauna-labs/fauna-schema-migrate/dist/util/config.js'
 import { evalFQLCode as readFQL } from '@fauna-labs/fauna-schema-migrate/dist/fql/eval.js'
+import { planMigrations } from '@fauna-labs/fauna-schema-migrate/dist/migrations/plan.js'
+import { generateMigrations } from '@fauna-labs/fauna-schema-migrate/dist/migrations/generate-migration.js'
 import prettier from 'prettier'
 import * as Fauna from './fauna.js'
 
@@ -33,6 +35,13 @@ const withConfig = (config, fn) => {
   process.env['FAUNA_ADMIN_KEY'] = config.secret
   return fn()
 }
+
+/**
+ * @returns
+ */
+export const diff = async () => await generateMigrations(await planMigrations())
+
+export { planMigrations }
 
 /**
  * Returns list of schema migrations that have not been applied yet.
@@ -290,6 +299,60 @@ const importFrom = (
     }
   })
 
+/**
+ * @param {Config} settings
+ */
+export const fakeLastMigration = async (settings) =>
+  withConfig(settings, async () => {
+    const revisions = await files.retrieveAllMigrations()
+    const last = revisions.sort().pop()
+    const client = await clientGenerator.getClient()
+    const name = await config.getMigrationCollection()
+    await client.query(
+      Fauna.fauna.Create(Fauna.fauna.Collection(name), {
+        data: {
+          migration: last,
+        },
+      })
+    )
+  })
+
+/**
+ * @param {Config} settings
+ */
+export const resetLastMigration = async (settings) =>
+  withConfig(settings, async () => {
+    const revisions = await files.retrieveAllMigrations()
+    const last = String(revisions.sort().pop())
+    const client = await clientGenerator.getClient()
+    const name = await config.getMigrationCollection()
+    await client.query(
+      Fauna.fauna.Reduce(
+        Fauna.fauna.Lambda(
+          ['_', 'ref'],
+          Fauna.fauna.If(
+            Fauna.fauna.Equals(
+              Fauna.fauna.Select(
+                ['data', 'migration'],
+                Fauna.fauna.Get(Fauna.fauna.Var('ref')),
+                ''
+              ),
+              last
+            ),
+            Fauna.fauna.Delete(Fauna.fauna.Var('ref')),
+            0
+          )
+        ),
+        0,
+        Fauna.fauna.Documents(Fauna.fauna.Collection(name))
+      )
+    )
+
+    const url = await getLastMigrationURL()
+    if (url) {
+      fs.promises.rm(url, { recursive: true })
+    }
+  })
 /**
  * @param {Fauna.CreateFunctionParam} input
  */

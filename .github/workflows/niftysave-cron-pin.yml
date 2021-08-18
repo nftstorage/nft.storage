@@ -1,4 +1,4 @@
-name: Cron Pin ERC-721 Token Assets
+name: Cron Pin ERC-721 Token links
 
 on:
   schedule:
@@ -28,4 +28,4 @@ jobs:
           FETCH_TIMEOUT: 10000
           NIFTYSAVE_CLUSTER_KEY: ${{ secrets.NIFTYSAVE_CLUSTER_KEY }}
           NIFTYSAVE_IPFS_API_KEY: ${{ secrets.NIFTYSAVE_IPFS_API_KEY }}
-        run: yarn --cwd packages/niftysave import-asset
+        run: yarn --cwd packages/niftysave pin

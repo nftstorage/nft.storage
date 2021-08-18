@@ -1,0 +1,12 @@
+CreateIndex({
+  "name": "unique_ScheduledAnalyze_tokenAsset",
+  "source": Collection("ScheduledAnalyze"),
+  "terms": [{
+    "field": ["data", "tokenAsset"]
+  }],
+  "unique": true,
+  "serialized": true,
+  "data": {
+    "gql": {}
+  }
+})

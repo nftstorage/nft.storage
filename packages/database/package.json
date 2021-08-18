@@ -7,6 +7,8 @@
   "scripts": {
     "setup": "node ./src/apply-migrations.js",
     "apply-migrations": "node ./src/apply-migrations.js",
+    "fake-last-migration": "node ./src/fake-migration.js",
+    "reset-last-migration": "node ./src/reset-migration.js",
     "create-migration": "node ./src/create-migration.js",
     "update-schema": "node ./src/update-schema.js",
     "repl": "node --experimental-repl-await -i -e 'import(`./.repl.js`)'",
