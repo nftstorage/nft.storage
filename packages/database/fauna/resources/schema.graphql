@@ -64,8 +64,6 @@ type TokenAsset {
   """
   metadata: Metadata @relation
 
-  # Note: Can not make this required field as we already have ton of records
-  # that do not contain this field
   created: Time!
 
   """
@@ -126,6 +124,33 @@ type Analyzed {
   Which attempt is it.
   """
   attempt: Int!
+}
+
+type Metric {
+  """
+  Unique key identifying the metric.
+  """
+  key: String! @unique
+
+  """
+  Current value for the metric, see updated property for last calculation date.
+  """
+  value: Long!
+
+  """
+  Arbitrary metadata serialized as JSON string.
+  """
+  metadata: String
+
+  """
+  Last time this metric was updated.
+  """
+  updated: Time!
+
+  """
+  Cursor into the dataset this metric is calculating.
+  """
+  cursor: ID
 }
 
 enum TokenAssetStatus {
@@ -504,6 +529,7 @@ type Query {
   owner(id: ID): Owner
   block(hash: ID, number: Long): Block
   constract(id: ID): TokenContract
+  findMetricByKey(key: String!): Metric @resolver
 
   findContentByCID(cid: ID): Content @resolver @relation
   findResourceByURI(uri: String): Resource @resolver @relation
