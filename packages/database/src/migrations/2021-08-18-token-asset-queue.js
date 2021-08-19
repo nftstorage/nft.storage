@@ -17,6 +17,7 @@ const {
 } = fauna
 
 export const main = async () => await run(await readConfig())
+const MIGRATION_TIME = '2021-08-19T16:23:16.984862Z'
 
 /**
  *
@@ -33,7 +34,7 @@ export const run = async (config) => {
 
   while (true) {
     // Fetch page of TokenAsset from the db.
-    const { after, data } = /** @type {{after:fauna.Expr|null, data:any[]}} */ (
+    let { after, data } = /** @type {{after:fauna.Expr|null, data:any[]}} */ (
       await client.query(
         Map(
           Paginate(Documents(Collection('TokenAsset')), {
@@ -48,6 +49,13 @@ export const run = async (config) => {
     // Create a document that corresponds to it's status
     const expressions = []
     for (const tokenAsset of data) {
+      // If reached a document that was create after migration has started
+      // we're done with a migration. Set `after` to null to stop the job.
+      if (tokenAsset.data.created.value > MIGRATION_TIME) {
+        after = null
+        break
+      }
+
       switch (tokenAsset.status) {
         case 'Linked':
           state.linked += 1
@@ -83,7 +91,6 @@ export const run = async (config) => {
               },
             })
           )
-          state.failed += 1
           break
       }
     }
