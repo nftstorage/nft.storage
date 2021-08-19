@@ -30,6 +30,7 @@ import { uploadV1 } from './routes-v1/nfts-upload.js'
 import { statusV1 } from './routes-v1/nfts-get.js'
 import { checkV1 } from './routes-v1/nfts-check.js'
 import { nftDeleteV1 } from './routes-v1/nfts-delete.js'
+import { nftListV1 } from './routes-v1/nfts-list.js'
 const log = debug('router')
 
 const r = new Router({
@@ -70,6 +71,20 @@ r.add('get', '/pins/:requestid', pinsGet, [postCors])
 r.add('post', '/pins/:requestid', pinsReplace, [postCors])
 r.add('delete', '/pins/:requestid', pinsDelete, [postCors])
 
+// V1 routes
+r.add('post', '/v1/login', loginV1, [postCors])
+
+r.add('get', '/v1', nftListV1, [postCors])
+r.add('get', '/v1/:cid', statusV1, [postCors])
+r.add('post', '/v1/upload', uploadV1, [postCors])
+r.add('delete', '/v1/:cid', nftDeleteV1, [postCors])
+
+r.add('get', '/v1/check/:cid', checkV1, [postCors])
+
+r.add('get', '/v1/internal/tokens', tokensListV1, [postCors])
+r.add('post', '/v1/internal/tokens', tokensCreateV1, [postCors])
+r.add('delete', '/v1/internal/tokens', tokensDeleteV1, [postCors])
+
 // Public API
 r.add('get', '/api', list, [postCors])
 r.add('get', '/api/check/:cid', check, [postCors])
@@ -89,19 +104,6 @@ r.add('get', '/internal/tokens', tokensList, [postCors])
 r.add('post', '/internal/tokens', tokensCreate, [postCors])
 r.add('delete', '/internal/tokens', tokensDelete, [postCors])
 r.add('get', '/internal/list2', getNFT, [postCors])
-
-// V1 routes
-r.add('post', '/v1/login', loginV1, [postCors])
-
-r.add('post', '/v1/upload', uploadV1, [postCors])
-r.add('get', '/v1/:cid', statusV1, [postCors])
-r.add('delete', '/v1/:cid', nftDeleteV1, [postCors])
-
-r.add('get', '/v1/check/:cid', checkV1, [postCors])
-
-r.add('get', '/v1/internal/tokens', tokensListV1, [postCors])
-r.add('post', '/v1/internal/tokens', tokensCreateV1, [postCors])
-r.add('delete', '/v1/internal/tokens', tokensDeleteV1, [postCors])
 
 r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))

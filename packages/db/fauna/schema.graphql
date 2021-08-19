@@ -9,6 +9,7 @@ type Query {
   findContentByCid(cid: String!): Content
   findPinLocationByPeerId(peerId: String!): PinLocation
   findUploadByCid(cid: String!): Upload! @resolver
+  listUploads(size: Int!, before: String!): [Upload!]! @resolver
   "Login with sub or issuer"
   login(id: String!): LoginOutput! @resolver
 }

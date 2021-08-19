@@ -343,6 +343,7 @@ export type Query = {
   findPinLocationByPeerId?: Maybe<PinLocation>
   /** Find a document from the collection of 'Upload' by its id. */
   findUploadByID?: Maybe<Upload>
+  listUploads: Array<Upload>
   /** Find a document from the collection of 'User' by its id. */
   findUserByID?: Maybe<User>
   /** Find a document from the collection of 'PinLocation' by its id. */
@@ -368,6 +369,11 @@ export type QueryFindPinLocationByPeerIdArgs = {
 
 export type QueryFindUploadByIdArgs = {
   id: Scalars['ID']
+}
+
+export type QueryListUploadsArgs = {
+  size: Scalars['Int']
+  before: Scalars['String']
 }
 
 export type QueryFindUserByIdArgs = {
@@ -615,23 +621,33 @@ export type UpdatePinMutationVariables = Exact<{
 
 export type UpdatePinMutation = { updatePin?: Maybe<Pick<Pin, '_id'>> }
 
+export type UploadPartsFragment = Pick<
+  Upload,
+  '_id' | 'type' | 'cid' | 'created'
+> & {
+  files?: Maybe<Array<Maybe<Pick<UploadFiles, 'name' | 'type'>>>>
+  key?: Maybe<Pick<UserKey, 'name'>>
+  content: Pick<Content, 'dagSize'> & {
+    pins: {
+      data: Array<
+        Maybe<Pick<Pin, 'status' | 'service' | 'updated' | 'created'>>
+      >
+    }
+  }
+}
+
+export type ListUploadsQueryVariables = Exact<{
+  size: Scalars['Int']
+  before: Scalars['String']
+}>
+
+export type ListUploadsQuery = { listUploads: Array<UploadPartsFragment> }
+
 export type FindUploadByCidQueryVariables = Exact<{
   cid: Scalars['String']
 }>
 
-export type FindUploadByCidQuery = {
-  findUploadByCid: Pick<Upload, '_id' | 'type' | 'cid' | 'created'> & {
-    files?: Maybe<Array<Maybe<Pick<UploadFiles, 'name' | 'type'>>>>
-    key?: Maybe<Pick<UserKey, 'name'>>
-    content: Pick<Content, 'dagSize'> & {
-      pins: {
-        data: Array<
-          Maybe<Pick<Pin, 'status' | 'service' | 'updated' | 'created'>>
-        >
-      }
-    }
-  }
-}
+export type FindUploadByCidQuery = { findUploadByCid: UploadPartsFragment }
 
 export type CreateUploadCustomMutationVariables = Exact<{
   input: Array<CreateUploadInput> | CreateUploadInput
@@ -706,6 +722,33 @@ export type GetUserQuery = {
   >
 }
 
+export const UploadPartsFragmentDoc = gql`
+  fragment UploadParts on Upload {
+    _id
+    type
+    files {
+      name
+      type
+    }
+    cid
+    type
+    created
+    key {
+      name
+    }
+    content {
+      dagSize
+      pins {
+        data {
+          status
+          service
+          updated
+          created
+        }
+      }
+    }
+  }
+`
 export const UpdateContentDocument = gql`
   mutation updateContent($id: ID!, $data: ContentInput!) {
     updateContent(id: $id, data: $data) {
@@ -760,34 +803,21 @@ export const UpdatePinDocument = gql`
     }
   }
 `
+export const ListUploadsDocument = gql`
+  query listUploads($size: Int!, $before: String!) {
+    listUploads(size: $size, before: $before) {
+      ...UploadParts
+    }
+  }
+  ${UploadPartsFragmentDoc}
+`
 export const FindUploadByCidDocument = gql`
   query findUploadByCid($cid: String!) {
     findUploadByCid(cid: $cid) {
-      _id
-      type
-      files {
-        name
-        type
-      }
-      cid
-      type
-      created
-      key {
-        name
-      }
-      content {
-        dagSize
-        pins {
-          data {
-            status
-            service
-            updated
-            created
-          }
-        }
-      }
+      ...UploadParts
     }
   }
+  ${UploadPartsFragmentDoc}
 `
 export const CreateUploadCustomDocument = gql`
   mutation createUploadCustom($input: [CreateUploadInput!]!) {
@@ -950,6 +980,19 @@ export function getSdk(
             ...wrappedRequestHeaders,
           }),
         'updatePin'
+      )
+    },
+    listUploads(
+      variables: ListUploadsQueryVariables,
+      requestHeaders?: Dom.RequestInit['headers']
+    ): Promise<ListUploadsQuery> {
+      return withWrapper(
+        (wrappedRequestHeaders) =>
+          client.request<ListUploadsQuery>(ListUploadsDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        'listUploads'
       )
     },
     findUploadByCid(

@@ -41,33 +41,44 @@ input CreateUploadInput {
 
 type Query {
   findUploadByCid(cid: String!): Upload! @resolver
+  listUploads(size: Int!, before: String!): [Upload!]! @resolver
+}
+
+fragment UploadParts on Upload {
+  _id
+  type
+  files {
+    name
+    type
+  }
+  cid
+  type
+  created
+  key {
+    name
+  }
+  content {
+    dagSize
+    pins {
+      data {
+        status
+        service
+        updated
+        created
+      }
+    }
+  }
+}
+
+query listUploads($size: Int!, $before: String!) {
+  listUploads(size: $size, before: $before) {
+    ...UploadParts
+  }
 }
 
 query findUploadByCid($cid: String!) {
   findUploadByCid(cid: $cid) {
-    _id
-    type
-    files {
-      name
-      type
-    }
-    cid
-    type
-    created
-    key {
-      name
-    }
-    content {
-      dagSize
-      pins {
-        data {
-          status
-          service
-          updated
-          created
-        }
-      }
-    }
+    ...UploadParts
   }
 }
 

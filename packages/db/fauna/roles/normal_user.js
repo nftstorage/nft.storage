@@ -22,6 +22,12 @@ export default {
       },
     },
     {
+      resource: Function('listUploads'),
+      actions: {
+        call: true,
+      },
+    },
+    {
       resource: Function('findUploadByCid'),
       actions: {
         call: true,
@@ -191,6 +197,12 @@ export default {
     },
     {
       resource: Index('findContentByCid'),
+      actions: {
+        read: true,
+      },
+    },
+    {
+      resource: Index('uploads_user_order_created_desc'),
       actions: {
         read: true,
       },
