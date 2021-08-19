@@ -72,13 +72,14 @@ export const run = async (config) => {
           )
           break
         default:
+          state.failed += 1
           expressions.push(
             Create(Collection('FailedAnalyze'), {
               data: {
                 tokenAsset: tokenAsset.ref,
                 attempt: 1,
-                status: tokenAsset.status,
-                statusText: tokenAsset.statusText,
+                status: tokenAsset.data.status,
+                statusText: tokenAsset.data.statusText,
               },
             })
           )
