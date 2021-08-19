@@ -1,4 +1,4 @@
-name: Migrate TokenAsset status to a task queue
+name: migration (TokenAsset status in task queue)
 
 on:
   workflow_dispatch:
