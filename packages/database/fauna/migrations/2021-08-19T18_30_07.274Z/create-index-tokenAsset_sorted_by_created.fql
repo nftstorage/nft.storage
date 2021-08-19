@@ -1,0 +1,9 @@
+CreateIndex({
+  "name": "tokenAsset_sorted_by_created",
+  "source": Collection("TokenAsset"),
+  "values": [{
+    "field": ["data", "created"]
+  }, {
+    "field": "ref"
+  }]
+})
