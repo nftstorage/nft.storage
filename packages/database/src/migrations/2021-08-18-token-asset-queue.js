@@ -28,7 +28,7 @@ export const run = async (config) => {
 
   const client = new Client({ secret: config.secret })
   const cursor = config.cursor
-    ? Ref(Collection('TokenAsset', config.cursor))
+    ? Ref(Collection('TokenAsset'), config.cursor)
     : undefined
   const state = { cursor, linked: 0, failed: 0, queued: 0 }
 
