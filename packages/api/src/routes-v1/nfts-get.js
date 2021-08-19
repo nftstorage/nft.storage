@@ -9,14 +9,8 @@ import { validate } from '../utils/auth-v1.js'
 /** @type {import('../utils/router.js').Handler} */
 export const statusV1 = async (event, ctx) => {
   const { params } = ctx
-  const { fauna, loginOutput } = await validate(event, ctx)
-  console.log(
-    '🚀 ~ file: nfts-get.js ~ line 13 ~ statusV1 ~ loginOutput',
-    loginOutput?.secret,
-    loginOutput?.user._id
-  )
+  const { fauna } = await validate(event, ctx)
   const { findUploadByCid } = await fauna.findUploadByCid({ cid: params.cid })
-  console.log(findUploadByCid._id)
 
   if (findUploadByCid) {
     /** @type {import('../bindings').NFTResponse} */
@@ -24,7 +18,7 @@ export const statusV1 = async (event, ctx) => {
       cid: findUploadByCid.cid,
       created: findUploadByCid.created,
       files: findUploadByCid.files || [],
-      scope: findUploadByCid.key?.name || '',
+      scope: findUploadByCid.key?.name || 'session',
       size: findUploadByCid.content.dagSize || 0,
       type: findUploadByCid.type,
       deals: [],

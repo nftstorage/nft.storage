@@ -12,6 +12,8 @@ import {
   Foreach,
   Get,
   Map,
+  If,
+  IsNull,
 } from 'faunadb'
 import { findOrCreate } from '../utils/common'
 
@@ -52,7 +54,7 @@ const uploadRef = findOrCreate(
       cid: Var('cid'),
       content: Var('contentRef'),
       files: Select('files', Var('data'), []),
-      key: Ref(Collection('UserKey'), Select('key', Var('data'))),
+      key: Var('key'),
     },
   })
 )
@@ -68,6 +70,11 @@ export default {
           ['data'],
           Let(
             {
+              key: If(
+                IsNull(Select('key', Var('data'), null)),
+                null,
+                Ref(Collection('UserKey'), Select('key', Var('data')))
+              ),
               cid: Select('cid', Var('data')),
               contentRef,
               pins: Foreach(

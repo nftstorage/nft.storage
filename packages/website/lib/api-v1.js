@@ -96,7 +96,7 @@ export async function createToken(name) {
  */
 export async function getNfts({ limit, before }) {
   const params = new URLSearchParams({ before, limit: String(limit) })
-  const res = await fetch(`${API}/?${params}`, {
+  const res = await fetch(`${API}/v1?${params}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

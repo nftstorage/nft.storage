@@ -51,9 +51,13 @@ class NFTStorage {
    * })
    * ```
    *
-   * @param {{token: string, endpoint?:URL}} options
+   * @param {{token: string, endpoint?:URL, version?: string}} options
    */
-  constructor({ token, endpoint = new URL('https://api.nft.storage') }) {
+  constructor({
+    token,
+    endpoint = new URL('https://api.nft.storage'),
+    version = '',
+  }) {
     /**
      * Authorization token.
      *
@@ -65,6 +69,8 @@ class NFTStorage {
      * @readonly
      */
     this.endpoint = endpoint
+
+    this.version = version
   }
 
   /**
@@ -80,8 +86,8 @@ class NFTStorage {
    * @param {Blob} blob
    * @returns {Promise<API.CIDString>}
    */
-  static async storeBlob({ endpoint, token }, blob) {
-    const url = new URL('/upload', endpoint)
+  static async storeBlob({ endpoint, token, version }, blob) {
+    const url = new URL(`${version}/upload`, endpoint)
 
     if (blob.size === 0) {
       throw new Error('Content size is 0, make sure to provide some content')
@@ -106,7 +112,11 @@ class NFTStorage {
    * @param {{onStoredChunk?: (size: number) => void}} [options]
    * @returns {Promise<API.CIDString>}
    */
-  static async storeCar({ endpoint, token }, car, { onStoredChunk } = {}) {
+  static async storeCar(
+    { endpoint, token, version },
+    car,
+    { onStoredChunk } = {}
+  ) {
     const targetSize = MAX_CHUNK_SIZE
     const splitter =
       car instanceof Blob
@@ -124,7 +134,7 @@ class NFTStorage {
           type: 'application/car',
         })
         const res = await pRetry(
-          () => NFTStorage.storeBlob({ endpoint, token }, carFile),
+          () => NFTStorage.storeBlob({ endpoint, token, version }, carFile),
           { retries: MAX_STORE_RETRIES }
         )
         onStoredChunk && onStoredChunk(carFile.size)
@@ -144,8 +154,8 @@ class NFTStorage {
    * @param {Iterable<File>} files
    * @returns {Promise<API.CIDString>}
    */
-  static async storeDirectory({ endpoint, token }, files) {
-    const url = new URL('/upload', endpoint)
+  static async storeDirectory({ endpoint, token, version }, files) {
+    const url = new URL(`${version}/upload`, endpoint)
     const body = new FormData()
     let size = 0
     for (const file of files) {
@@ -179,10 +189,10 @@ class NFTStorage {
    * @param {T} metadata
    * @returns {Promise<API.Token<T>>}
    */
-  static async store({ endpoint, token }, metadata) {
+  static async store({ endpoint, token, version }, metadata) {
     validateERC1155(metadata)
 
-    const url = new URL(`/store`, endpoint)
+    const url = new URL(`${version}/store`, endpoint)
     const body = Token.encode(metadata)
     const paths = new Set(body.keys())
 
@@ -207,8 +217,8 @@ class NFTStorage {
    * @param {string} cid
    * @returns {Promise<API.StatusResult>}
    */
-  static async status({ endpoint, token }, cid) {
-    const url = new URL(`/${cid}`, endpoint)
+  static async status({ endpoint, token, version }, cid) {
+    const url = new URL(`${version}/${cid}`, endpoint)
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: NFTStorage.auth(token),
@@ -233,8 +243,8 @@ class NFTStorage {
    * @param {string} cid
    * @returns {Promise<API.CheckResult>}
    */
-  static async check({ endpoint }, cid) {
-    const url = new URL(`/check/${cid}`, endpoint)
+  static async check({ endpoint, version }, cid) {
+    const url = new URL(`${version}/check/${cid}`, endpoint)
     const response = await fetch(url.toString())
     const result = await response.json()
 
@@ -254,8 +264,8 @@ class NFTStorage {
    * @param {string} cid
    * @returns {Promise<void>}
    */
-  static async delete({ endpoint, token }, cid) {
-    const url = new URL(`/${cid}`, endpoint)
+  static async delete({ endpoint, token, version }, cid) {
+    const url = new URL(`${version}/${cid}`, endpoint)
     const response = await fetch(url.toString(), {
       method: 'DELETE',
       headers: NFTStorage.auth(token),
