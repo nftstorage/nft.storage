@@ -20,7 +20,7 @@ export const main = async () => await run(await readConfig())
 
 /**
  *
- * @param {{secret:string, cursor?:string, size:number}} config
+ * @param {{secret:string, cursor?:string, size:number, dryrun: boolean}} config
  */
 export const run = async (config) => {
   console.log(`🚧 Performing migration`)
@@ -93,7 +93,9 @@ export const run = async (config) => {
       console.log('🏁 Migration is complete', state)
       break
     } else {
-      await client.query(Do(expressions))
+      if (!config.dryrun) {
+        await client.query(Do(expressions))
+      }
       state.cursor = after
       console.log('⏭ Moving to next page', state)
     }

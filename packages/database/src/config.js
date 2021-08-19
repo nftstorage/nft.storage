@@ -23,6 +23,11 @@ export default async () => {
         default: process.env['CURSOR'],
         description: 'Cursor to use in the db',
       },
+      dryrun: {
+        type: 'boolean',
+        default: false,
+        description: 'Will not write updates unless enabled',
+      },
     })
     .parse()
 
