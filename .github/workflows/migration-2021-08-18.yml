@@ -1,6 +1,8 @@
 name: migration (TokenAsset status in task queue)
 
 on:
+  schedule:
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 jobs:

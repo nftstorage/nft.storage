@@ -14,14 +14,14 @@ export default async () => {
         description: 'Fauna DB access token',
         demandOption: true,
       },
-      size: {
+      batchSize: {
         type: 'number',
         default: parseInt(process.env['BATCH_SIZE'] || '100'),
         description: 'Number of items to process at once',
       },
-      cursor: {
-        default: process.env['CURSOR'],
-        description: 'Cursor to use in the db',
+      budget: {
+        type: 'number',
+        default: Number(process.env['TIME_BUDGET'] || 30) * 1000,
       },
       dryrun: {
         type: 'boolean',
