@@ -23,31 +23,36 @@ const MIGRATION_TIME = '2021-08-19T16:23:16.984862Z'
 const KEY = 'status-to-queue-migration-2021-08-18'
 
 /**
- *
- * @param {{secret:string, cursor?:string, size:number, dryrun: boolean}} config
+ * @typedef {{
+ *   secret:string,
+ *   batchSize:number,
+ *   budget: number,
+ *   dryrun: boolean
+ * }} Config
+ * @param {Config} config
  */
 export const run = async (config) => {
   console.log(`🚧 Performing migration`)
+
+  const deadline = Date.now() + config.budget
 
   const client = new Client({ secret: config.secret })
 
   const state = await init(client)
 
-  while (state.data.cursor !== -1) {
+  while (state.data.cursor !== -1 && deadline - Date.now() > 0) {
     // Fetch page of TokenAsset from the db.
     let { after, data } = /** @type {{after:fauna.Expr|null, data:any[]}} */ (
       await client.query(
         Map(
           Paginate(Documents(Collection('TokenAsset')), {
-            size: config.size,
+            size: config.batchSize,
             after: state.data.cursor,
           }),
           Lambda(['ref'], Get(Var('ref')))
         )
       )
     )
-
-    console.log('<<', { after, data: data.length })
 
     // Create a document that corresponds to it's status
     const expressions = []
@@ -138,7 +143,11 @@ export const run = async (config) => {
     }
   }
 
-  console.log('🏁 Migration is complete', state.data.metadata)
+  if (state.data.cursor === -1) {
+    console.log('🏁 Migration is complete', state.data.metadata)
+  } else {
+    console.log('⌛️ Finish migration, time is up')
+  }
 }
 
 /**
