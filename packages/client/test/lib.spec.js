@@ -275,16 +275,36 @@ describe('client', () => {
     })
 
     it('requires image mime type', async () => {
-      const client = new NFTStorage({ token, endpoint })
+      const warn = console.warn
       try {
-        await client.store({
+        let warnings = ['']
+        console.warn = (msg) => {
+          warnings.push(msg)
+        }
+
+        const client = new NFTStorage({ token, endpoint })
+        const result = await client.store({
           name: 'name',
           description: 'stuff',
           image: new Blob(['bla bla']),
         })
-      } catch (error) {
-        assert.ok(error instanceof TypeError)
-        assert.match(error, /Blob or File object with `image\/\*` mime type/)
+
+        assert.ok(typeof result.url === 'string')
+        assert.ok(new URL(result.url).protocol, 'ipfs:')
+
+        assert.ok(typeof result.ipnft === 'string')
+        assert.equal(CID.parse(result.ipnft).version, 1)
+
+        assert.equal(result.data.name, 'name')
+        assert.equal(result.data.description, 'stuff')
+        assert.ok(result.data.image instanceof URL)
+        assert.ok(result.data.image.protocol, 'ipfs:')
+
+        assert.ok(
+          warnings.join('\n').includes("'image' must have 'image/*' mime type")
+        )
+      } finally {
+        console.warn = warn
       }
     })
 
