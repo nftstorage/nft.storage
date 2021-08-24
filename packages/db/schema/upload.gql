@@ -18,6 +18,7 @@ enum UploadType {
   BLOB
   MULTIPART
   CAR
+  NFT
 }
 
 input CreateUploadFiles {
@@ -30,6 +31,7 @@ input CreatePin {
   statusText: String
   service: PinService!
 }
+
 input CreateUploadInput {
   type: UploadType!
   cid: String!

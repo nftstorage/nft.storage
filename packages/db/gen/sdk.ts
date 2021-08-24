@@ -132,6 +132,7 @@ export type Mutation = {
   deletePinLocation?: Maybe<PinLocation>
   /** Update an existing document in the collection of 'PinLocation' */
   updatePinLocation?: Maybe<PinLocation>
+  /** Create a new document in the collection of 'Upload' */
   createUpload: Upload
   /** Delete an existing document in the collection of 'Pin' */
   deletePin?: Maybe<Pin>
@@ -196,7 +197,7 @@ export type MutationUpdatePinLocationArgs = {
 }
 
 export type MutationCreateUploadArgs = {
-  input: Array<CreateUploadInput>
+  data: UploadInput
 }
 
 export type MutationDeletePinArgs = {
@@ -474,7 +475,7 @@ export type UploadKeyRelation = {
   disconnect?: Maybe<Scalars['Boolean']>
 }
 
-export type UploadType = 'BLOB' | 'MULTIPART' | 'CAR'
+export type UploadType = 'BLOB' | 'MULTIPART' | 'CAR' | 'NFT'
 
 /** Allow manipulating the relationship between the types 'Upload' and 'User' using the field 'Upload.user'. */
 export type UploadUserRelation = {
@@ -691,7 +692,7 @@ export type CreateOrUpdateUserMutationVariables = Exact<{
 }>
 
 export type CreateOrUpdateUserMutation = {
-  createUser: Pick<User, 'issuer' | 'email'>
+  createUser: Pick<User, '_id' | 'issuer' | 'email'>
 }
 
 export type LoginQueryVariables = Exact<{
@@ -873,6 +874,7 @@ export const DeleteUserKeyDocument = gql`
 export const CreateOrUpdateUserDocument = gql`
   mutation createOrUpdateUser($input: CreateUserInput!) {
     createUser(input: $input) {
+      _id
       issuer
       email
     }

@@ -24,6 +24,7 @@ declare global {
   const CLUSTER_ADDRS: string
   const MAGIC_SECRET_KEY: string
   const FAUNA_KEY: string
+  const FAUNA_URL: string
   const ENV: 'dev' | 'staging' | 'production'
   const SENTRY_DSN: string
   const BRANCH: string

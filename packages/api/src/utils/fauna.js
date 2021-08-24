@@ -1,7 +1,7 @@
 import { GraphQLClient, getSdk } from '@nftstorage/db'
-import { secrets } from '../constants.js'
+import { secrets, fauna } from '../constants.js'
 
-const FAUNA_URL = 'https://graphql.fauna.com/graphql'
+const FAUNA_URL = fauna.url
 const FAUNA_KEY = secrets.fauna
 
 /**

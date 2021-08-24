@@ -84,6 +84,7 @@ enum UploadType {
   BLOB
   MULTIPART
   CAR
+  NFT
 }
 
 input CreateUploadFiles {
