@@ -1,43 +1,13 @@
-# Pinata backup
+# Local Fauna
 
-```
- Map(
-  Paginate(
-   Distinct(Difference(
-        Match(Index("all_pins-content")),
-        Match(Index("pin_by_org_values_content"), 'pinata')
-    ))
-  ),
-  Lambda("x", Var("x"))
-)
+```shell
+docker pull fauna/faunadb:latest
+docker run --name faunadb -p 8443:8443 -p 8084:8084 -v /var/lib/faunadb fauna/faunadb
+docker start faunadb
+docker stop faunadb
 
-{
-  name: "all_pins-content",
-  unique: false,
-  serialized: true,
-  source: "Pin",
-  values: [
-    {
-      field: ["data", "content"]
-    }
-  ]
-}
-
-{
-  name: "pin_by_org_values_content",
-  unique: false,
-  serialized: true,
-  source: "Pin",
-  terms: [
-    {
-      field: ["data", "org"]
-    }
-  ],
-  values: [
-    {
-      field: ["data", "content"]
-    }
-  ]
-}
+fauna add-endpoint http://localhost:8443/ --alias local --key secret
+fauna create-database nft-storage --endpoint=local
+fauna create-key nft-storage --endpoint=local
 
 ```

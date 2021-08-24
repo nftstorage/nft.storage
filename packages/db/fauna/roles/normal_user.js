@@ -190,12 +190,6 @@ export default {
       },
     },
     {
-      resource: Index('findUploadByCid'),
-      actions: {
-        read: true,
-      },
-    },
-    {
       resource: Index('findContentByCid'),
       actions: {
         read: true,

@@ -50,4 +50,8 @@ export const pinata = {
       : 'https://api.pinata.cloud/psa/',
 }
 
+export const fauna = {
+  url: FAUNA_URL,
+}
+
 export const isDebug = DEBUG === 'true'

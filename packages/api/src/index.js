@@ -31,6 +31,8 @@ import { statusV1 } from './routes-v1/nfts-get.js'
 import { checkV1 } from './routes-v1/nfts-check.js'
 import { nftDeleteV1 } from './routes-v1/nfts-delete.js'
 import { nftListV1 } from './routes-v1/nfts-list.js'
+import { nftStoreV1 } from './routes-v1/nfts-store.js'
+
 const log = debug('router')
 
 const r = new Router({
@@ -77,6 +79,7 @@ r.add('post', '/v1/login', loginV1, [postCors])
 r.add('get', '/v1', nftListV1, [postCors])
 r.add('get', '/v1/:cid', statusV1, [postCors])
 r.add('post', '/v1/upload', uploadV1, [postCors])
+r.add('post', '/v1/store', nftStoreV1, [postCors])
 r.add('delete', '/v1/:cid', nftDeleteV1, [postCors])
 
 r.add('get', '/v1/check/:cid', checkV1, [postCors])

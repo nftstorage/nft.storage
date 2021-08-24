@@ -29,6 +29,7 @@ type Mutation {
 
 mutation createOrUpdateUser($input: CreateUserInput!) {
   createUser(input: $input) {
+    _id
     issuer
     email
   }
