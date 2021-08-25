@@ -4,6 +4,7 @@ import { importCar, importBlob, importDirectory } from './importer.js'
 import { Response, Request } from './mock-server.js'
 import * as CBOR from '@ipld/dag-cbor'
 import setIn from 'just-safe-set'
+
 /**
  * @param {Request} request
  */
@@ -69,7 +70,9 @@ const importToken = async (request) => {
       }
     }
 
-    const metadata = await importBlob(JSON.stringify(data))
+    const metadata = await importBlob(
+      new TextEncoder().encode(JSON.stringify(data))
+    )
 
     const bytes = CBOR.encode({
       ...dag,
