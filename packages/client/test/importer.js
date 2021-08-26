@@ -61,7 +61,11 @@ class Block {
  * @param {Uint8Array|string} content
  */
 export const importBlob = async (content) => {
-  const results = importer([{ content }], new Block(), { onlyHash: true })
+  const results = importer([{ content }], new Block(), {
+    onlyHash: true,
+    cidVersion: 1,
+    rawLeaves: true,
+  })
   for await (const result of results) {
     return result
   }
@@ -94,6 +98,8 @@ export const importDirectory = async (files) => {
   const results = importer(entries, new Block(), {
     onlyHash: true,
     wrapWithDirectory: true,
+    rawLeaves: true,
+    cidVersion: 1,
   })
 
   let last = null

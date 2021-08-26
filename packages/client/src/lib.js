@@ -279,7 +279,7 @@ class NFTStorage {
    * ```js
    * const content = new Blob(['hello world'])
    * const cid = await client.storeBlob(content)
-   * cid //> 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD'
+   * cid //> 'zdj7Wn9FQAURCP6MbwcWuzi7u65kAsXCdjNTkhbJcoaXBusq9'
    * ```
    *
    * @param {Blob} blob
@@ -353,7 +353,7 @@ class NFTStorage {
    *
    * @example
    * ```js
-   * const status = await client.status('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
+   * const status = await client.status('zdj7Wn9FQAURCP6MbwcWuzi7u65kAsXCdjNTkhbJcoaXBusq9')
    * ```
    *
    * @param {string} cid
@@ -369,7 +369,7 @@ class NFTStorage {
    *
    * @example
    * ```js
-   * await client.delete('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
+   * await client.delete('zdj7Wn9FQAURCP6MbwcWuzi7u65kAsXCdjNTkhbJcoaXBusq9')
    * ```
    *
    * @param {string} cid
@@ -383,7 +383,7 @@ class NFTStorage {
    *
    * @example
    * ```js
-   * const status = await client.check('Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
+   * const status = await client.check('zdj7Wn9FQAURCP6MbwcWuzi7u65kAsXCdjNTkhbJcoaXBusq9')
    * ```
    *
    * @param {string} cid
