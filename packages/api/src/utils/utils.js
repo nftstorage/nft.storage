@@ -1,8 +1,8 @@
 /**
  * Try to serve static assets or the 404 page
- * @param {FetchEvent} event
+ * @param {FetchEvent} _event
  */
-export async function notFound(event) {
+export async function notFound(_event) {
   return new Response('404 not found', { status: 404 })
 }
 
