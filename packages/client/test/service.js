@@ -76,7 +76,7 @@ const importToken = async (request) => {
 
     const bytes = CBOR.encode({
       ...dag,
-      'metadata.json': CID.parse(metadata.cid.toString()),
+      'metadata.json': metadata.cid,
       type: 'nft',
     })
     const hash = await sha256.digest(bytes)
