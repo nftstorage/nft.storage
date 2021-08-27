@@ -452,7 +452,7 @@ const validateERC1155 = ({ name, description, image, decimals }) => {
     )
   }
   if (!(image instanceof Blob)) {
-    throw new TypeError('proprety `image` must be a Blob or File object')
+    throw new TypeError('property `image` must be a Blob or File object')
   } else if (!image.type.startsWith('image/')) {
     console.warn(`According to ERC721 Metadata JSON Schema 'image' must have 'image/*' mime type.
 
