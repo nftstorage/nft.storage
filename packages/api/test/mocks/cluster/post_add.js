@@ -1,5 +1,36 @@
 // @ts-ignore not typed
-const Hash = require('ipfs-only-hash')
+const { importer } = require('ipfs-unixfs-importer')
+const block = {
+  get: async (/** @type {any} */ cid) => {
+    throw new Error(`unexpected block API get for ${cid}`)
+  },
+  put: async () => {},
+}
+/**
+ * @param {MultrFile[]} content
+ * @param {import('ipfs-unixfs-importer').UserImporterOptions} options
+ */
+async function add(content, options) {
+  const opts = { ...options }
+  const source = content.map((c) => ({
+    content: c.buffer,
+    path: c.originalname,
+  }))
+
+  const out = []
+  // @ts-ignore
+  for await (const unixfs of importer(source, block, opts)) {
+    out.push({
+      name: unixfs.path,
+      cid: {
+        '/': unixfs.cid.toString(),
+      },
+      size: unixfs.size,
+    })
+  }
+
+  return out
+}
 
 /**
  * https://github.com/sinedied/smoke#javascript-mocks
@@ -7,16 +38,20 @@ const Hash = require('ipfs-only-hash')
  * @param {{ query: Record<string, string>, files: MultrFile[] }} request
  */
 module.exports = async ({ query, files }) => {
-  const result = {
-    cid: {
-      '/': await Hash.of(files[0].buffer, { cidVersion: 1, rawLeaves: true }),
-    },
-    name: files[0].originalname,
-    size: files[0].buffer.length,
-  }
-  return {
-    statusCode: 200,
-    headers: { 'Content-Type': 'application/json' },
-    body: query['stream-channels'] === 'false' ? [result] : result,
+  const body = await add(files, {
+    cidVersion: 1,
+    rawLeaves: true,
+    onlyHash: true,
+    wrapWithDirectory: query['wrap-with-directory'] === 'true',
+  })
+
+  try {
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body,
+    }
+  } catch (err) {
+    console.log(err)
   }
 }

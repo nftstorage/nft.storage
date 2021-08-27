@@ -2,8 +2,12 @@ import { CID } from 'multiformats'
 import { CarWriter } from '@ipld/car'
 
 /**
+ * @typedef {import('multiformats/block').Block<unknown>} Block
+ */
+
+/**
  * @param {CID[]} roots
- * @param {AsyncIterable<import('@ipld/car/api').Block>|Iterable<import('@ipld/car/api').Block>} blocks
+ * @param {AsyncIterable<Block>|Iterable<Block>} blocks
  * @returns {Promise<Blob & { type: 'application/car' }>}
  */
 export const encode = async (roots, blocks) => {

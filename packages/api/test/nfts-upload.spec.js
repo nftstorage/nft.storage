@@ -79,8 +79,6 @@ describe('/upload', () => {
     const file2 = new Blob(['hello world! 2'])
     body.append('file', file1, 'name1')
     body.append('file', file2, 'name2')
-    // expected CID for the above data
-    const cid = 'bafkreidsnixyep54glvcz2ocszbokylqalkio2eintcio5tix2vrbmaatu'
     const res = await fetch('/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
@@ -94,8 +92,12 @@ describe('/upload', () => {
       { name: 'name2', type: 'application/octet-stream' },
     ])
     assert.ok(value.type === 'directory', 'should be directory')
-    assert.ok(value.size === file1.size, 'should have correct size')
-    assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
+    assert.equal(value.size, 130, 'should have correct size')
+    assert.strictEqual(
+      value.cid,
+      'bafybeifrkxqq5bbn4fkykfyggoltlb7vn3moyhr3pldzx3me6yiukcfsem',
+      'Server responded with expected CID'
+    )
   })
 
   it('should upload a multiple blobs without name', async () => {
@@ -106,8 +108,6 @@ describe('/upload', () => {
     const file2 = new Blob(['hello world! 2'])
     body.append('file', file1)
     body.append('file', file2)
-    // expected CID for the above data
-    const cid = 'bafkreidsnixyep54glvcz2ocszbokylqalkio2eintcio5tix2vrbmaatu'
     const res = await fetch('/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
@@ -121,8 +121,12 @@ describe('/upload', () => {
       { name: 'blob', type: 'application/octet-stream' },
     ])
     assert.ok(value.type === 'directory', 'should be directory')
-    assert.ok(value.size === file1.size, 'should have correct size')
-    assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
+    assert.equal(value.size, 66, 'should have correct size')
+    assert.strictEqual(
+      value.cid,
+      'bafybeiaowg4ssqzemwgdlisgphib54clq62arief7ssabov5r3pbfh7vje',
+      'Server responded with expected CID'
+    )
   })
 
   it('should upload a multiple files without name', async () => {
@@ -133,8 +137,6 @@ describe('/upload', () => {
     const file2 = new Blob(['hello world! 2'])
     body.append('file', new File([file1], 'name1.png'))
     body.append('file', new File([file2], 'name1.png'))
-    // expected CID for the above data
-    const cid = 'bafkreidsnixyep54glvcz2ocszbokylqalkio2eintcio5tix2vrbmaatu'
     const res = await fetch('/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
@@ -148,8 +150,12 @@ describe('/upload', () => {
       { name: 'name1.png', type: 'application/octet-stream' },
     ])
     assert.ok(value.type === 'directory', 'should be directory')
-    assert.ok(value.size === file1.size, 'should have correct size')
-    assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
+    assert.equal(value.size, 71, 'should have correct size')
+    assert.strictEqual(
+      value.cid,
+      'bafybeibl5yizqtzdnhflscdmzjy7t6undnn7zhvhryhbfknneu364w62pe',
+      'Server responded with expected CID'
+    )
   })
 
   it('should upload a single CAR file', async () => {

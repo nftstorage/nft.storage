@@ -26,5 +26,5 @@
     "test",
     "scripts"
   ],
-  "exclude": ["node_modules/", "dist/", "src/utils/multipart/**/*.js"]
+  "exclude": ["node_modules/", "dist/"]
 }
