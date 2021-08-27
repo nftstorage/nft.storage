@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.4.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.3.1...api-v2.4.0) (2021-08-27)
+
+
+### Features
+
+* remove custom multipart parser ([#336](https://www.github.com/ipfs-shipyard/nft.storage/issues/336)) ([029e71a](https://www.github.com/ipfs-shipyard/nft.storage/commit/029e71aefc1b152a080ffb5739e4f7c2565a1e57))
+
+
+### Bug Fixes
+
+* **api:** validate CID input for pins add and replace ([#314](https://www.github.com/ipfs-shipyard/nft.storage/issues/314)) ([dd5baca](https://www.github.com/ipfs-shipyard/nft.storage/commit/dd5bacac8207c715b097e7b1bc0555742c6b8488))
+* bad dag creation by store api ([#343](https://www.github.com/ipfs-shipyard/nft.storage/issues/343)) ([307e6cd](https://www.github.com/ipfs-shipyard/nft.storage/commit/307e6cd07e4b3587a404ea8fa367721f574d4e32))
+* temporarily set local=true for all uploads ([f637c86](https://www.github.com/ipfs-shipyard/nft.storage/commit/f637c86a569d1fc81a481574550e71bc02fae9ac))
+
 ### [2.3.2](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.3.1...api-v2.3.2) (2021-08-15)
 
 
