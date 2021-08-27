@@ -151,8 +151,7 @@ const bodyOf = (self) => {
       ? null
       : stream instanceof Uint8Array || typeof stream === 'string'
       ? toReadableStream([stream][Symbol.iterator]())
-      : // @ts-ignore
-        toReadableStream(stream[Symbol.asyncIterator]())
+      : toReadableStream(stream[Symbol.asyncIterator]())
 
   Object.defineProperty(self, 'body', { value: body })
   return body
@@ -178,7 +177,6 @@ export class Request extends FetchRequest {
   /**
    * @returns {Promise<globalThis.Blob>}
    */
-  // @ts-ignore - we want starndard blob not the node-fetch one
   blob() {
     return toBlob(this)
   }
@@ -216,7 +214,6 @@ export class Response extends FetchResponse {
   /**
    * @returns {Promise<globalThis.Blob>}
    */
-  // @ts-ignore - we want starndard blob not the node-fetch one
   blob() {
     return toBlob(this)
   }
@@ -273,7 +270,7 @@ export class Service {
 
       const request = new Request(url.href, {
         method: incoming.method,
-        // @ts-ignore
+        // @ts-ignore - headers don't have right type
         headers: new Headers({ ...incoming.headers }),
         body: toBody(incoming),
       })
@@ -282,7 +279,7 @@ export class Service {
       const headers = Object.fromEntries(response.headers.entries())
       outgoing.writeHead(response.status, headers)
       const body = response.body ? response.body : []
-      // @ts-ignore
+      // @ts-expect-error - ReadableStream has no async iteration API yet.
       for await (const chunk of body) {
         outgoing.write(chunk)
       }

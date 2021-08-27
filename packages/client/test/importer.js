@@ -17,7 +17,7 @@ const { multihash } = Multihash
  * @typedef {import('ipfs-unixfs-importer').Blockstore} BlockAPI
  * @implements {BlockAPI}
  */
-// @ts-ignore
+// @ts-expect-error - must implement has, delete, putMany, getMany, ... methods.
 class Block {
   /**
    * @param {Object} [options]
@@ -55,7 +55,7 @@ class Block {
    * @param {any} options
    */
   async get(cid, options) {
-    // @ts-ignore
+    // @ts-expect-error - CID is incompatible
     const node = await this.ipld.get(cid, options)
     if (node instanceof Uint8Array) {
       return node
@@ -69,7 +69,7 @@ class Block {
  * @param {Uint8Array} content
  */
 export const importBlob = async (content) => {
-  // @ts-ignore
+  // @ts-expect-error - 'Block' instance is not a valid 'Blockstore'
   const results = importer([{ content }], new Block(), {
     onlyHash: true,
     cidVersion: 1,
@@ -104,7 +104,7 @@ export const importDirectory = async (files) => {
     content: /** @type {AsyncIterable<Uint8Array>} */ (file.stream()),
   }))
 
-  // @ts-ignore
+  // @ts-expect-error - 'Block' instance is not a valid 'Blockstore'
   const results = importer(entries, new Block(), {
     onlyHash: true,
     wrapWithDirectory: true,

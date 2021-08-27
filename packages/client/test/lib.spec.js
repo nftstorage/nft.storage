@@ -67,7 +67,7 @@ describe('client', () => {
     })
 
     it('errors without token', async () => {
-      // @ts-ignore
+      // @ts-expect-error - token option is expected
       const client = new NFTStorage({ endpoint })
       try {
         await client.storeBlob(new Blob(['blobby']))
@@ -218,7 +218,7 @@ describe('client', () => {
       }
     })
     it('errors without token', async () => {
-      // @ts-ignore
+      // @ts-expect-error - expects token option
       const client = new NFTStorage({ endpoint })
       try {
         await client.storeDirectory([new File(['file'], 'file.txt')])
@@ -502,7 +502,7 @@ describe('client', () => {
     })
 
     it('errors without token', async () => {
-      // @ts-ignore
+      // @ts-expect-error - token option is expected
       const client = new NFTStorage({ endpoint })
       try {
         await client.status(
@@ -599,7 +599,7 @@ describe('client', () => {
     })
 
     it('errors without token', async () => {
-      // @ts-ignore
+      // @ts-expect-error - expects token option
       const client = new NFTStorage({ endpoint })
       try {
         const cid = await NFTStorage.storeBlob(

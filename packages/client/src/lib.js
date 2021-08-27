@@ -14,7 +14,6 @@
  * @module
  */
 
-// @ts-ignore module with no types
 import { transform } from 'streaming-iterables'
 import pRetry from 'p-retry'
 import { TreewalkCarSplitter } from 'carbites/treewalk'
@@ -137,8 +136,8 @@ class NFTStorage {
     for await (const cid of upload(splitter.cars())) {
       root = cid
     }
-    // @ts-ignore there will always be a root, or carbites will fail
-    return root
+
+    return /** @type {API.CIDString} */ (root)
   }
   /**
    * @param {API.Service} service
