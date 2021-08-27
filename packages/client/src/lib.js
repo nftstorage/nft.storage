@@ -462,7 +462,7 @@ For more context please see ERC-721 specification https://eips.ethereum.org/EIPS
   }
 
   if (typeof decimals !== 'undefined' && typeof decimals !== 'number') {
-    throw new TypeError('proprety `decimals` must be an integer value')
+    throw new TypeError('property `decimals` must be an integer value')
   }
 }
 

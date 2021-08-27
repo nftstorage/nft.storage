@@ -270,7 +270,7 @@ describe('client', () => {
         assert.unreachable('sholud have failed')
       } catch (error) {
         assert.ok(error instanceof TypeError)
-        assert.match(error, /proprety `image` must be a Blob or File/)
+        assert.match(error, /property `image` must be a Blob or File/)
       }
     })
 
@@ -320,7 +320,7 @@ describe('client', () => {
         })
       } catch (error) {
         assert.ok(error instanceof TypeError)
-        assert.match(error, /proprety `decimals` must be an integer value/)
+        assert.match(error, /property `decimals` must be an integer value/)
       }
     })
 
