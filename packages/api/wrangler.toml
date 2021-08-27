@@ -117,3 +117,23 @@ kv_namespaces = [
     { binding = "FOLLOWUPS", preview_id = "50c7fad96e6f403aaf9527e12adf42b7", id = "50c7fad96e6f403aaf9527e12adf42b7" },
     { binding = "PINATA_QUEUE", preview_id = "d5b0b953a6df45419aa5c00f15a02221", id = "d5b0b953a6df45419aa5c00f15a02221" }
 ]
+
+[env.gozala]
+type = "webpack"
+name="nft-storage-gozala"
+account_id="fffa4b4363a7e5250af8357087263b3a"
+workers_dev = true
+usage_model="bundled"
+route = ""
+zone_id = ""
+vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "", CLUSTER_ADDRS = "" }
+kv_namespaces = [
+    { binding = "USERS", preview_id = "1146fee7831747b4ae89e929c2b6f38a", id = "1146fee7831747b4ae89e929c2b6f38a" },
+    { binding = "NFTS", preview_id = "c385d94d0a9d4e9ebb32d7f2f40c30cb", id = "c385d94d0a9d4e9ebb32d7f2f40c30cb" },
+    { binding = "NFTS_IDX", preview_id = "c79875c960264135a56142fe9cb7173b", id = "c79875c960264135a56142fe9cb7173b" },
+    { binding = "DEALS", preview_id = "3bb8f28d78d34e128fe7158744de0b1d", id = "3bb8f28d78d34e128fe7158744de0b1d" },
+    { binding = "METRICS", preview_id = "75582d2965a746e89b925d1e2c50d810", id = "75582d2965a746e89b925d1e2c50d810" },
+    { binding = "PINS", preview_id = "088514a6c5124eb9a71de0146243bafa", id = "088514a6c5124eb9a71de0146243bafa" },
+    { binding = "FOLLOWUPS", preview_id = "d1ba66882ae240f0814d843a67ee8db3", id = "d1ba66882ae240f0814d843a67ee8db3" },
+    { binding = "PINATA_QUEUE", preview_id = "6c2cd05b986c4a998675484e3a253cf1", id = "6c2cd05b986c4a998675484e3a253cf1" }
+]

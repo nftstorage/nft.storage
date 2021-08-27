@@ -1,5 +1,5 @@
 import { validate } from '../utils/auth.js'
-import setIn from 'just-safe-set'
+import { setIn } from '../utils/utils.js'
 import * as nfts from '../models/nfts.js'
 import * as pins from '../models/pins.js'
 import * as pinataQueue from '../models/pinata-queue.js'
@@ -24,8 +24,9 @@ export async function store(event, ctx) {
   const { user, tokenName } = await validate(event, ctx)
   const form = await event.request.formData()
 
-  const data = JSON.parse(/** @type {string} */ (form.get('meta')))
-  const dag = JSON.parse(JSON.stringify(data))
+  const meta = /** @type {string} */ (form.get('meta'))
+  const data = JSON.parse(meta)
+  const dag = JSON.parse(meta)
 
   const files = []
 

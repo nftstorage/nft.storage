@@ -30,7 +30,7 @@
     "test": "run-s test:*",
     "test:web": "node test/test.js playwright-test test/*.spec.js --cov && nyc report",
     "test:es": "node test/test.js hundreds mocha test/*.spec.js --exit",
-    "test:cjs": "npm run build:cjs && node test/test.js mocha dist/test/*.spec.cjs --exit",
+    "test:cjs": "npm run build:cjs && node test/test.js mocha dist/**/*.spec.cjs --exit",
     "build": "run-s build:*",
     "build:ts": "tsc --build",
     "build:cjs": "rollup --config rollup.config.js",

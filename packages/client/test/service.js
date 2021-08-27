@@ -3,8 +3,8 @@ import { sha256 } from 'multiformats/hashes/sha2'
 import { importCar, importBlob, importDirectory } from './importer.js'
 import { Response, Request } from './mock-server.js'
 import * as CBOR from '@ipld/dag-cbor'
-import setIn from 'just-safe-set'
-
+// @ts-ignore - not tracked by TS
+import { setIn } from '../../api/src/utils/utils.js'
 /**
  * @param {Request} request
  */

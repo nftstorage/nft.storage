@@ -33,7 +33,11 @@ describe('client', () => {
     it('upload blob', async () => {
       const client = new NFTStorage({ token, endpoint })
       const cid = await client.storeBlob(new Blob(['hello world']))
-      assert.equal(cid, 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD')
+      console.log(cid.toString())
+      assert.equal(
+        cid,
+        'bafkreifzjut3te2nhyekklss27nh3k72ysco7y32koao5eei66wof36n5e'
+      )
     })
 
     it('can upload twice', async () => {
@@ -63,7 +67,7 @@ describe('client', () => {
     })
 
     it('errors without token', async () => {
-      // @ts-ignore
+      // @ts-expect-error - token option is expected
       const client = new NFTStorage({ endpoint })
       try {
         await client.storeBlob(new Blob(['blobby']))
@@ -159,7 +163,10 @@ describe('client', () => {
         new File(['hello world'], 'hello.txt'),
       ])
 
-      assert.equal(cid, 'QmNxvA5bwvPGgMXbmtyhxA1cKFdvQXnsGnZLCGor3AzYxJ')
+      assert.equal(
+        cid,
+        'bafybeic6svhkwl3y2wvkj33weshyjjs5cbvgijh7yo3kjasyglrdwe2l74'
+      )
     })
 
     it('upload multiple files', async () => {
@@ -172,7 +179,10 @@ describe('client', () => {
         ),
       ])
 
-      assert.equal(cid, 'QmQAE2tjfwYYmEFFEEnfr12CWikMqgwwtq5gqfyb62bJpw')
+      assert.equal(
+        cid,
+        'bafybeigkms36pnnjsa7t2mq2g4mx77s4no2hilirs4wqx3eebbffy2ay3a'
+      )
     })
 
     it('upload empty files', async () => {
@@ -208,7 +218,7 @@ describe('client', () => {
       }
     })
     it('errors without token', async () => {
-      // @ts-ignore
+      // @ts-expect-error - expects token option
       const client = new NFTStorage({ endpoint })
       try {
         await client.storeDirectory([new File(['file'], 'file.txt')])
@@ -328,16 +338,23 @@ describe('client', () => {
         image: new Blob(['fake image'], { type: 'image/png' }),
       })
 
-      assert.ok(typeof result.url === 'string')
-      assert.ok(new URL(result.url).protocol, 'ipfs:')
+      assert.equal(
+        result.ipnft,
+        'bafyreib75ot3oyo43f7rhdk6xlv7c4mmjwhbjjnugrw3yqjvarpvtzxkoi'
+      )
 
-      assert.ok(typeof result.ipnft === 'string')
-      assert.equal(CID.parse(result.ipnft).version, 1)
+      assert.equal(
+        result.url,
+        'ipfs://bafyreib75ot3oyo43f7rhdk6xlv7c4mmjwhbjjnugrw3yqjvarpvtzxkoi/metadata.json'
+      )
 
       assert.equal(result.data.name, 'name')
       assert.equal(result.data.description, 'stuff')
       assert.ok(result.data.image instanceof URL)
-      assert.ok(result.data.image.protocol, 'ipfs:')
+      assert.ok(
+        result.data.image.href,
+        '"ipfs://bafybeierifjwnazodizfrpyfrnr6qept7dlppv6fjas24w2wcri2osmrre/blob'
+      )
 
       const embed = result.embed()
       assert.equal(embed.name, 'name')
@@ -457,10 +474,10 @@ describe('client', () => {
     let preloaded
     beforeEach(async () => {
       preloaded = [
-        // QmaCxv35MgHdAD2K9Tn8xrKVZJw7dauYi4V1GmkQRNYbvP
+        // bafkreihujckc4hvdm5qjss3wvyh2zmbxmbdhqh67dsrfezu3d6yvx36u4i
         await client.storeBlob(new Blob(['preload status'])),
-        // QmTPFUEcZvqKBYqJM3itqkDiqJaApYzLJ1ht6iBD4d6M28
-        // await client.storeBlob(new Blob(['missing']))
+        // bafkreih7uy2yhx5gobvypuuexbvq22j2cypeqqfk2lc46225e7b3syq7pu
+        // await client.storeBlob(new Blob(['missing'])),
       ]
     })
 
@@ -469,13 +486,13 @@ describe('client', () => {
     })
 
     it('found', async () => {
-      const cid = 'QmaCxv35MgHdAD2K9Tn8xrKVZJw7dauYi4V1GmkQRNYbvP'
+      const cid = 'bafkreihujckc4hvdm5qjss3wvyh2zmbxmbdhqh67dsrfezu3d6yvx36u4i'
       const status = await client.status(cid)
       assert.equal(status.cid, cid)
     })
 
     it('not found', async () => {
-      const cid = 'QmTPFUEcZvqKBYqJM3itqkDiqJaApYzLJ1ht6iBD4d6M28'
+      const cid = 'bafkreih7uy2yhx5gobvypuuexbvq22j2cypeqqfk2lc46225e7b3syq7pu'
       try {
         await client.status(cid)
         assert.unreachable('Expected to fail')
@@ -485,10 +502,12 @@ describe('client', () => {
     })
 
     it('errors without token', async () => {
-      // @ts-ignore
+      // @ts-expect-error - token option is expected
       const client = new NFTStorage({ endpoint })
       try {
-        await client.status('QmaCxv35MgHdAD2K9Tn8xrKVZJw7dauYi4V1GmkQRNYbvP')
+        await client.status(
+          'bafkreihujckc4hvdm5qjss3wvyh2zmbxmbdhqh67dsrfezu3d6yvx36u4i'
+        )
         assert.unreachable('should have thrown')
       } catch (err) {
         assert.is(err.message, 'missing token')
@@ -550,7 +569,7 @@ describe('client', () => {
   describe('delete', () => {
     it('ok to delete unknown', async () => {
       const client = new NFTStorage({ token, endpoint })
-      const cid = 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD'
+      const cid = 'zdj7Wn9FQAURCP6MbwcWuzi7u65kAsXCdjNTkhbJcoaXBusq9'
       const result = await client.delete(cid)
       assert.equal(result, undefined)
     })
@@ -580,7 +599,7 @@ describe('client', () => {
     })
 
     it('errors without token', async () => {
-      // @ts-ignore
+      // @ts-expect-error - expects token option
       const client = new NFTStorage({ endpoint })
       try {
         const cid = await NFTStorage.storeBlob(
@@ -602,9 +621,9 @@ describe('client', () => {
     let preloaded
     beforeEach(async () => {
       preloaded = [
-        // QmVRC63ZHwHQBC4pkqbiQjPjdHVKueafTpwmkNHhnVfwLQ
+        // bafkreicddgzlcazqnp7ll4ecv7qaddbjstepmd2pwizf7r7ha2eaf7fkry
         await client.storeBlob(new Blob(['preload check'])),
-        // QmTPFUEcZvqKBYqJM3itqkDiqJaApYzLJ1ht6iBD4d6M28
+        // bafkreih7uy2yhx5gobvypuuexbvq22j2cypeqqfk2lc46225e7b3syq7pu
         // await client.storeBlob(new Blob(['missing']))
       ]
     })
@@ -614,13 +633,13 @@ describe('client', () => {
     })
 
     it('found', async () => {
-      const cid = 'QmVRC63ZHwHQBC4pkqbiQjPjdHVKueafTpwmkNHhnVfwLQ'
+      const cid = 'bafkreicddgzlcazqnp7ll4ecv7qaddbjstepmd2pwizf7r7ha2eaf7fkry'
       const status = await client.check(cid)
       assert.equal(status.cid, cid)
     })
 
     it('not found', async () => {
-      const cid = 'QmTPFUEcZvqKBYqJM3itqkDiqJaApYzLJ1ht6iBD4d6M28'
+      const cid = 'bafkreih7uy2yhx5gobvypuuexbvq22j2cypeqqfk2lc46225e7b3syq7pu'
       try {
         await client.check(cid)
         assert.unreachable('Expected to fail')
