@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.2.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v3.1.3...nft.storage-v3.2.0) (2021-08-27)
+
+
+### Features
+
+* remove custom multipart parser ([#336](https://www.github.com/ipfs-shipyard/nft.storage/issues/336)) ([029e71a](https://www.github.com/ipfs-shipyard/nft.storage/commit/029e71aefc1b152a080ffb5739e4f7c2565a1e57))
+
+
+### Bug Fixes
+
+* bad dag creation by store api ([#343](https://www.github.com/ipfs-shipyard/nft.storage/issues/343)) ([307e6cd](https://www.github.com/ipfs-shipyard/nft.storage/commit/307e6cd07e4b3587a404ea8fa367721f574d4e32))
+* Relaxes image/* requirement ([#334](https://www.github.com/ipfs-shipyard/nft.storage/issues/334)) ([f484297](https://www.github.com/ipfs-shipyard/nft.storage/commit/f484297123de4b5eca900831069dcd3fab2ac3b9))
+
 ### [3.1.3](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v3.1.2...nft.storage-v3.1.3) (2021-08-11)
 
 
