@@ -4,7 +4,7 @@ import Multihash from 'multihashing-async'
 import IPLD from 'ipld'
 // @ts-ignore
 import InMemory from 'ipld-in-memory'
-import importer from 'ipfs-unixfs-importer'
+import { importer } from 'ipfs-unixfs-importer'
 import { CarReader } from '@ipld/car'
 
 const DagPB = pb.util
@@ -14,9 +14,10 @@ const inMemory = InMemory
 const { multihash } = Multihash
 
 /**
- * @typedef {import('ipfs-unixfs-importer').BlockAPI} BlockAPI
+ * @typedef {import('ipfs-unixfs-importer').Blockstore} BlockAPI
  * @implements {BlockAPI}
  */
+// @ts-ignore
 class Block {
   /**
    * @param {Object} [options]
@@ -27,12 +28,19 @@ class Block {
     this.ipld = ipld
     this.mh = mh
   }
+  open() {
+    return Promise.resolve()
+  }
+  close() {
+    return Promise.resolve()
+  }
+
   /**
+   * @param {import('multiformats').CID} cid
    * @param {Uint8Array} bytes
-   * @param {{cid:import('ipfs-unixfs-importer').CID}} options
    */
-  async put(bytes, { cid }) {
-    const multihash = this.mh.decode(cid.multihash)
+  async put(cid, bytes) {
+    const multihash = this.mh.decode(cid.bytes)
     const node = DagPB.deserialize(bytes)
 
     await this.ipld.put(node, multicodec.DAG_PB, {
@@ -40,27 +48,28 @@ class Block {
       hashAlg: multihash.code,
     })
 
-    return { cid, data: bytes }
+    // return { cid, data: bytes }
   }
   /**
-   * @param {import('ipfs-unixfs-importer').CID} cid
+   * @param {import('multiformats').CID} cid
    * @param {any} options
    */
   async get(cid, options) {
+    // @ts-ignore
     const node = await this.ipld.get(cid, options)
-
     if (node instanceof Uint8Array) {
-      return { cid, data: node }
+      return node
     } else {
-      return { cid, data: DagPB.serialize(node) }
+      return DagPB.serialize(node)
     }
   }
 }
 
 /**
- * @param {Uint8Array|string} content
+ * @param {Uint8Array} content
  */
 export const importBlob = async (content) => {
+  // @ts-ignore
   const results = importer([{ content }], new Block(), {
     onlyHash: true,
     cidVersion: 1,
@@ -95,6 +104,7 @@ export const importDirectory = async (files) => {
     content: /** @type {AsyncIterable<Uint8Array>} */ (file.stream()),
   }))
 
+  // @ts-ignore
   const results = importer(entries, new Block(), {
     onlyHash: true,
     wrapWithDirectory: true,

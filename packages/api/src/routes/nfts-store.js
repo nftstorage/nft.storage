@@ -1,6 +1,5 @@
 import { validate } from '../utils/auth.js'
 import { setIn } from '../utils/utils.js'
-import { toFormData } from '../utils/form-data.js'
 import * as nfts from '../models/nfts.js'
 import * as pins from '../models/pins.js'
 import * as pinataQueue from '../models/pinata-queue.js'
@@ -23,7 +22,7 @@ const log = debug('nft-store')
 /** @type {import('../utils/router.js').Handler} */
 export async function store(event, ctx) {
   const { user, tokenName } = await validate(event, ctx)
-  const form = await toFormData(event.request)
+  const form = await event.request.formData()
 
   const meta = /** @type {string} */ (form.get('meta'))
   const data = JSON.parse(meta)
@@ -34,11 +33,11 @@ export async function store(event, ctx) {
   for (const [name, content] of form.entries()) {
     if (name !== 'meta') {
       const file = /** @type {File} */ (content)
-      const cid = CID.parse(
-        await cluster.importAsset(file, {
-          local: file.size > constants.cluster.localAddThreshold,
-        })
-      )
+      const asset = await cluster.importAsset(file, {
+        local: file.size > constants.cluster.localAddThreshold,
+      })
+      const cid = CID.parse(asset)
+
       const href = `ipfs://${cid}/${file.name}`
       const path = name.split('.')
       setIn(data, path, href)

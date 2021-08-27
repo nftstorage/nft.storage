@@ -3,6 +3,10 @@ account_id = "fffa4b4363a7e5250af8357087263b3a"
 workers_dev = true
 type = "javascript"
 usage_model = "unbound"
+
+# Compatibility flags https://github.com/cloudflare/wrangler/pull/2009
+compatibility_date = "2021-08-23"
+compatibility_flags = [ "formdata_parser_supports_files" ]
 kv_namespaces = [
     { binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4", id = "7e441603d1bc4d5a87f6cecb959018e4" },
     { binding = "NFTS", preview_id = "f1c35cd1601c452782db6056b2d35f25", id = "f1c35cd1601c452782db6056b2d35f25" },

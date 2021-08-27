@@ -70,7 +70,9 @@ const importToken = async (request) => {
       }
     }
 
-    const metadata = await importBlob(JSON.stringify(data))
+    const metadata = await importBlob(
+      new TextEncoder().encode(JSON.stringify(data))
+    )
 
     const bytes = CBOR.encode({
       ...dag,

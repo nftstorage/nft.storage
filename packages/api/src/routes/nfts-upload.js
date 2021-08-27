@@ -1,5 +1,4 @@
 import { HTTPError } from '../errors.js'
-import { toFormData } from '../utils/form-data.js'
 import * as cluster from '../cluster.js'
 import * as nfts from '../models/nfts.js'
 import * as pins from '../models/pins.js'
@@ -28,11 +27,12 @@ export async function upload(event, ctx) {
   const created = new Date().toISOString()
 
   if (contentType.includes('multipart/form-data')) {
-    const form = await toFormData(event.request)
+    const form = await event.request.formData()
     // Our API schema requires that all file parts be named `file` and
     // encoded as binary, which is why we can expect that each part here is
     // a file (and not a stirng).
     const files = /** @type {File[]} */ (form.getAll('file'))
+
     const dirSize = files.reduce((total, f) => total + f.size, 0)
     const dir = await cluster.addDirectory(files, {
       local: dirSize > LOCAL_ADD_THRESHOLD,
