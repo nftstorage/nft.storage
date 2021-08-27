@@ -456,7 +456,7 @@ const validateERC1155 = ({ name, description, image, decimals }) => {
   } else if (!image.type.startsWith('image/')) {
     console.warn(`According to ERC721 Metadata JSON Schema 'image' must have 'image/*' mime type.
 
-For better interoperability we would highly recommend stroring content with different mime type under 'properties' namespace e.g. \`properties: { video: file }\` and using 'image' field for storing a preview image for it instead.
+For better interoperability we would highly recommend storing content with different mime type under 'properties' namespace e.g. \`properties: { video: file }\` and using 'image' field for storing a preview image for it instead.
 
 For more context please see ERC-721 specification https://eips.ethereum.org/EIPS/eip-721`)
   }
