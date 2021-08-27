@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.3.2](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.3.1...api-v2.3.2) (2021-08-27)
+
+
+### Bug Fixes
+
+* **api:** validate CID input for pins add and replace ([#314](https://www.github.com/ipfs-shipyard/nft.storage/issues/314)) ([dd5baca](https://www.github.com/ipfs-shipyard/nft.storage/commit/dd5bacac8207c715b097e7b1bc0555742c6b8488))
+* temporarily set local=true for all uploads ([f637c86](https://www.github.com/ipfs-shipyard/nft.storage/commit/f637c86a569d1fc81a481574550e71bc02fae9ac))
+
 ### [2.3.2](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.3.1...api-v2.3.2) (2021-08-15)
 
 
