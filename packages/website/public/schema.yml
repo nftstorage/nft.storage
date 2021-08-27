@@ -28,15 +28,11 @@ paths:
       requestBody:
         required: true
         content:
-          image/png:
+          image/*:
             schema:
               type: string
               format: binary
           application/car:
-            schema:
-              type: string
-              format: binary
-          application/octet-stream:
             schema:
               type: string
               format: binary
@@ -49,6 +45,10 @@ paths:
                   items:
                     type: string
                     format: binary
+          */*:
+            schema:
+              type: string
+              format: binary
       responses:
         '200':
           description: OK

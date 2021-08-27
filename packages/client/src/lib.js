@@ -450,13 +450,18 @@ const validateERC1155 = ({ name, description, image, decimals }) => {
       'string property `description` describing asset is required'
     )
   }
-  if (!(image instanceof Blob) || !image.type.startsWith('image/')) {
-    throw new TypeError(
-      'proprety `image` must be a Blob or File object with `image/*` mime type'
-    )
+  if (!(image instanceof Blob)) {
+    throw new TypeError('property `image` must be a Blob or File object')
+  } else if (!image.type.startsWith('image/')) {
+    console.warn(`According to ERC721 Metadata JSON Schema 'image' must have 'image/*' mime type.
+
+For better interoperability we would highly recommend storing content with different mime type under 'properties' namespace e.g. \`properties: { video: file }\` and using 'image' field for storing a preview image for it instead.
+
+For more context please see ERC-721 specification https://eips.ethereum.org/EIPS/eip-721`)
   }
+
   if (typeof decimals !== 'undefined' && typeof decimals !== 'number') {
-    throw new TypeError('proprety `decimals` must be an integer value')
+    throw new TypeError('property `decimals` must be an integer value')
   }
 }
 
