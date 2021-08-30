@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.5.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.5.0...website-v1.5.1) (2021-08-30)
+
+
+### Bug Fixes
+
+* pin ipfs-car verion to avoid empty upload issue ([d1d56b3](https://www.github.com/ipfs-shipyard/nft.storage/commit/d1d56b346f6480bebfcc3d54ad70bbd14dd4934a))
+
 ## [1.5.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.4.0...website-v1.5.0) (2021-08-27)
 
 
