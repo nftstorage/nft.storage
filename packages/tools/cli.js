@@ -52,10 +52,13 @@ cli
             pagination: { per_page: 10 },
           }),
           (/** @type {any} */ i) => {
-            return i.environment === 'production'
+            const lastRelease =
+              i.deployment_trigger.metadata.commit_message.startsWith(
+                'chore: release'
+              )
+            return i.environment === 'production' && !lastRelease
           }
         )
-
         if (
           deploy.latest_stage.status === 'success' &&
           deploy.latest_stage.name === 'deploy'
