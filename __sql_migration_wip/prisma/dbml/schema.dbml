@@ -1,0 +1,117 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Block {
+  hash String [pk, unique]
+  number Int [unique, not null]
+  tokens Token [not null]
+}
+
+Table Token {
+  id String [pk, unique]
+  tokenID String [not null]
+  mintTime String [not null]
+  tokenAssetId String [not null]
+  tokenAsset TokenAsset [not null]
+  blocks Block [not null]
+  tokenContractId String [not null]
+  contract TokenContract [not null]
+  ownerId String [not null]
+  owner Owner [not null]
+  imported ERC721ImportResult [not null]
+}
+
+Table TokenAsset {
+  id String [pk, unique]
+  referrers Token [not null]
+  tokenURI String [unique, not null]
+  ipnft String [not null]
+  problem String
+  metadata Metadata
+}
+
+Table Metadata {
+  id String [pk, unique]
+  cid String [not null]
+  sourceId String [unique, not null]
+  source TokenAsset [not null]
+  name String [not null]
+  description String [not null]
+  imageId String [not null]
+  image Resource
+  assets Resource [not null]
+}
+
+Table Resource {
+  imageOf Metadata [not null]
+  referrers Metadata [not null]
+  status ResourceStatus [not null]
+  uri String [pk, unique]
+  ipfsURL String [unique, not null]
+  cid String [not null]
+  problem String [not null]
+}
+
+Table TokenContract {
+  id String [pk, unique]
+  name String [not null]
+  symbol String [not null]
+  supportsEIP721Metadata Boolean [not null]
+  tokens Token [not null]
+}
+
+Table Owner {
+  id String [pk, unique]
+  token Token [not null]
+}
+
+Table ERC721ImportResult {
+  id String [pk, unique]
+  nextID String [not null]
+  tokens Token [not null]
+}
+
+Table Cursor {
+  id String [pk, unique]
+}
+
+Table BlockToToken {
+  tokensId String [ref: > Token.id]
+  blocksId String [ref: > Block.hash]
+}
+
+Table ERC721ImportResultToToken {
+  importedId String [ref: > ERC721ImportResult.id]
+  tokensId String [ref: > Token.id]
+}
+
+Table MetadataResources {
+  assetsId String [ref: > Resource.uri]
+  referrersId String [ref: > Metadata.id]
+}
+
+Enum ResourceStatus {
+  Idle
+  PinQueued
+  Pinned
+  FailedURIParse
+  FailedFetch
+  PinFailure
+}
+
+Enum TokenAssetStatus {
+  Queued
+  Failed
+  Succeeded
+}
+
+Ref: Token.tokenAssetId > TokenAsset.id
+
+Ref: Token.tokenContractId > TokenContract.id
+
+Ref: Token.ownerId > Owner.id
+
+Ref: Metadata.sourceId - TokenAsset.id
+
+Ref: Metadata.imageId > Resource.uri

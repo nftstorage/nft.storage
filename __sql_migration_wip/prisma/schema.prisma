@@ -1,0 +1,123 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+   provider = "prisma-dbml-generator"
+}
+
+//Enums
+enum ResourceStatus {
+    Idle            // Idle: Has not been processed
+    PinQueued       // PinQueued: Pin request started.
+    // A CID was found in the tokenURI because it was a gateway URL.
+    // Started a pin yet unknown if content fetch is possible.
+    Pinned          //Pinned: Was pinned successfully
+    FailedURIParse  //FailedURIParse: Unable to fetch the content
+    FailedFetch     //FailedFetch: Unable to fetch content
+    PinFailure      //PinFailure:  when pinned by CID but correspoding content isn't online
+}
+
+enum TokenAssetStatus {
+  Queued
+  Failed
+  Succeeded
+}
+
+
+//Models
+model Block {
+    hash                String          @id @unique //the hash of the block
+    number              Int             @unique     //the block number
+    tokens              Token[]
+}
+
+model Token {
+    id                  String          @id @unique
+    tokenID             String
+    mintTime            String
+    tokenAssetId        String
+    // Present when ERC721Metadata interface is implemented.
+    tokenAsset          TokenAsset      @relation(fields: [tokenAssetId], references: [id])
+    blocks              Block[]
+    tokenContractId     String
+    contract            TokenContract   @relation(fields: [tokenContractId], references: [id])
+    ownerId             String
+    // owner               Owner           @relation(fields: [ownerId], references: [id])
+    // Jesse Note: Should we make this an explicit many to many vs (implict)
+    // https://www.prisma.io/docs/concepts/components/prisma-schema/relations/many-to-many-relations#explicit-many-to-many-relations
+    imported            ERC721ImportResult[]
+}
+
+model TokenAsset {
+    id                  String          @id @unique
+    //Multiple tokens may have the same tokenURI. This allows tracking which tokens share same tokenURI.
+    referrers           Token[]
+    tokenURI            String          @unique
+    ipnft               String
+    problem             String?
+    // tokenURI may point to JSON that contorms to ERC721.
+    // this is fetched, parsed and stored as a related Metadata document.
+    metadata            Metadata?
+}
+
+model Metadata {
+    id                  String          @id @unique
+    cid                 String?
+    //Jesse Note: propose we call this 'tokenAssetId' and 'tokenAsset'.
+    sourceId            String          @unique
+    source              TokenAsset      @relation(fields: [sourceId], references: [id])
+    name                String?                      //identifies the asset this token represents
+    description         String?                     //describes the asset this token represents
+    imageId             String
+    //Jesse Note: Must the Metadata always have an image?
+    imageURI            String
+    assets              Resource[]      @relation("MetadataResources")
+}
+
+model Resource {
+    // Jesse Note: This might be not-correct, need to review this relationship
+    // I am assuming a resource can (possible appear in multiple Metadata Images)
+    // confirm with Gozala, fit not Metadata? is also doable.
+
+    // Jesse Note: propose this be metadata referrers
+    referrers           Metadata[]      @relation("MetadataResources")
+    status              ResourceStatus
+    uri                 String          @id @unique //uri with which resource identified
+    ipfsURL             String          @unique     //ipfs:// url if `uri` was referring to gateway URL.
+    cid                 String                      //CID corresponding to this resource once it is pinned.
+    problem             String                      //Problem description if there was a problem pinning
+}
+
+model TokenContract {
+    id                  String          @id @unique
+    name                String                      //descriptive name for a collection of NFTs
+    symbol              String                      //abbreviate name for NFTs
+    supportsEIP721Metadata Boolean
+    tokens              Token[]
+}
+
+model Owner {
+     id                 String          @id @unique
+
+}
+
+model ERC721ImportResult {
+     id                 String          @id @unique // import start cursor
+     // Jesse note: should this be a type of Cursor, then?
+     // tbh no, because the cursor is ONLY an Id.
+     nextID             String                      // new cursor after this import
+     tokens             Token[]                     // tokens that were imported
+}
+
+model Cursor {
+    id                 String          @id @unique // should the ERC721ImportResults use this?
+}

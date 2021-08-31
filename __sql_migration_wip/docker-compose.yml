@@ -1,0 +1,15 @@
+version: "3"
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: johndoe
+      POSTGRES_PASSWORD: randompassword
+      POSTGRES_DB: nifty
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - 5439:5432 #expose to a port that wont conflict with other projects
+volumes:
+  postgres:
