@@ -127,6 +127,28 @@ export const isTokenContract = (obj) => {
   if (!obj.__typename) throw new Error('__typename is missing')
   return TokenContract_possibleTypes.includes(obj.__typename)
 }
+const QueryFindTokenAssetsByCIDPage_possibleTypes = [
+  'QueryFindTokenAssetsByCIDPage',
+]
+export const isQueryFindTokenAssetsByCIDPage = (obj) => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return QueryFindTokenAssetsByCIDPage_possibleTypes.includes(obj.__typename)
+}
+const QueryScheduledAnalysesPage_possibleTypes = ['QueryScheduledAnalysesPage']
+export const isQueryScheduledAnalysesPage = (obj) => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return QueryScheduledAnalysesPage_possibleTypes.includes(obj.__typename)
+}
+const ScheduledAnalyze_possibleTypes = ['ScheduledAnalyze']
+export const isScheduledAnalyze = (obj) => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return ScheduledAnalyze_possibleTypes.includes(obj.__typename)
+}
+const Metric_possibleTypes = ['Metric']
+export const isMetric = (obj) => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Metric_possibleTypes.includes(obj.__typename)
+}
 const QueryFindTokenAssetsPage_possibleTypes = ['QueryFindTokenAssetsPage']
 export const isQueryFindTokenAssetsPage = (obj) => {
   if (!obj.__typename) throw new Error('__typename is missing')
@@ -137,10 +159,27 @@ export const isCursor = (obj) => {
   if (!obj.__typename) throw new Error('__typename is missing')
   return Cursor_possibleTypes.includes(obj.__typename)
 }
+const Analyzed_possibleTypes = ['Analyzed']
+export const isAnalyzed = (obj) => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Analyzed_possibleTypes.includes(obj.__typename)
+}
 const QueryFindResourcesPage_possibleTypes = ['QueryFindResourcesPage']
 export const isQueryFindResourcesPage = (obj) => {
   if (!obj.__typename) throw new Error('__typename is missing')
   return QueryFindResourcesPage_possibleTypes.includes(obj.__typename)
+}
+const FailedAnalyze_possibleTypes = ['FailedAnalyze']
+export const isFailedAnalyze = (obj) => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return FailedAnalyze_possibleTypes.includes(obj.__typename)
+}
+const QueryFindTokenAssetsByURIPage_possibleTypes = [
+  'QueryFindTokenAssetsByURIPage',
+]
+export const isQueryFindTokenAssetsByURIPage = (obj) => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return QueryFindTokenAssetsByURIPage_possibleTypes.includes(obj.__typename)
 }
 const Mutation_possibleTypes = ['Mutation']
 export const isMutation = (obj) => {

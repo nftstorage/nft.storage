@@ -3,13 +3,19 @@ import { Observable } from 'graphql-typed-client'
 export interface Query {
   /** Find a document from the collection of 'Block' by its id. */
   findBlockByID: Block | null
+  findTokenAssetsByCID: QueryFindTokenAssetsByCIDPage
   /** Find a document from the collection of 'TokenContract' by its id. */
   findTokenContractByID: TokenContract | null
   constract: TokenContract | null
+  /** Returns page of scheduled analyze tasks */
+  scheduledAnalyses: QueryScheduledAnalysesPage
+  /** Find a document from the collection of 'Metric' by its id. */
+  findMetricByID: Metric | null
   /** Provides tokens with the */
   findTokenAssets: QueryFindTokenAssetsPage
   /** Find a document from the collection of 'Resource' by its id. */
   findResourceByID: Resource | null
+  findMetricByKey: Metric | null
   /** Find a document from the collection of 'Token' by its id. */
   findTokenByID: Token | null
   findContentByCID: Content | null
@@ -26,14 +32,21 @@ export interface Query {
   block: Block | null
   /** Find a document from the collection of 'Content' by its id. */
   findContentByID: Content | null
+  /** Find a document from the collection of 'Analyzed' by its id. */
+  findAnalyzedByID: Analyzed | null
   /** Find a document from the collection of 'Cursor' by its id. */
   findCursorByID: Cursor | null
   findResources: QueryFindResourcesPage
   /** Find a document from the collection of 'TokenAsset' by its id. */
   findTokenAssetByID: TokenAsset | null
+  /** Find a document from the collection of 'FailedAnalyze' by its id. */
+  findFailedAnalyzeByID: FailedAnalyze | null
   tokens: TokenPage
   owner: Owner | null
+  findTokenAssetsByURI: QueryFindTokenAssetsByURIPage
   findResourceByURI: Resource | null
+  /** Find a document from the collection of 'ScheduledAnalyze' by its id. */
+  findScheduledAnalyzeByID: ScheduledAnalyze | null
   /** Find a document from the collection of 'Pin' by its id. */
   findPinByID: Pin | null
   allTokens: TokenPage
@@ -427,6 +440,62 @@ export interface TokenContract {
 export type Boolean = boolean
 
 /** The pagination object for elements of type 'TokenAsset'. */
+export interface QueryFindTokenAssetsByCIDPage {
+  /** The elements of type 'TokenAsset' in this page. */
+  data: (TokenAsset | null)[]
+  /** A cursor for elements coming after the current page. */
+  after: String | null
+  /** A cursor for elements coming before the current page. */
+  before: String | null
+  __typename: 'QueryFindTokenAssetsByCIDPage'
+}
+
+/** The pagination object for elements of type 'ScheduledAnalyze'. */
+export interface QueryScheduledAnalysesPage {
+  /** The elements of type 'ScheduledAnalyze' in this page. */
+  data: (ScheduledAnalyze | null)[]
+  /** A cursor for elements coming after the current page. */
+  after: String | null
+  /** A cursor for elements coming before the current page. */
+  before: String | null
+  __typename: 'QueryScheduledAnalysesPage'
+}
+
+/**
+ * Represents a scheduled analyze task. Cron job will pull from collection,
+ * perform a task and then remove it.
+ */
+export interface ScheduledAnalyze {
+  /** The document's ID. */
+  _id: ID
+  /** The document's timestamp. */
+  _ts: Long
+  /** Ref to token asset that needs to be analyzed. */
+  tokenAsset: TokenAsset
+  /** Which attempt is it. */
+  attempt: Int
+  __typename: 'ScheduledAnalyze'
+}
+
+export interface Metric {
+  /** The document's ID. */
+  _id: ID
+  /** Cursor into the dataset this metric is calculating. */
+  cursor: ID | null
+  /** Unique key identifying the metric. */
+  key: String
+  /** Last time this metric was updated. */
+  updated: Time
+  /** Arbitrary metadata serialized as JSON string. */
+  metadata: String | null
+  /** Current value for the metric, see updated property for last calculation date. */
+  value: Long
+  /** The document's timestamp. */
+  _ts: Long
+  __typename: 'Metric'
+}
+
+/** The pagination object for elements of type 'TokenAsset'. */
 export interface QueryFindTokenAssetsPage {
   /** The elements of type 'TokenAsset' in this page. */
   data: (TokenAsset | null)[]
@@ -446,6 +515,21 @@ export interface Cursor {
   __typename: 'Cursor'
 }
 
+/**
+ * Represents succesfully completed analyze task. Cron job will create on when
+ * token is succesfully analyzed.
+ */
+export interface Analyzed {
+  /** The document's ID. */
+  _id: ID
+  /** The document's timestamp. */
+  _ts: Long
+  tokenAsset: TokenAsset
+  /** Which attempt is it. */
+  attempt: Int
+  __typename: 'Analyzed'
+}
+
 /** The pagination object for elements of type 'Resource'. */
 export interface QueryFindResourcesPage {
   /** The elements of type 'Resource' in this page. */
@@ -457,6 +541,35 @@ export interface QueryFindResourcesPage {
   __typename: 'QueryFindResourcesPage'
 }
 
+/**
+ * Represents a failed analyze task. Cron job will create one if analyze task
+ * has failed.
+ */
+export interface FailedAnalyze {
+  /** The document's ID. */
+  _id: ID
+  statusText: String
+  status: TokenAssetStatus
+  /** Which attempt is it. */
+  attempt: Int
+  /** Ref to token asset that needs to be analyzed. */
+  tokenAsset: TokenAsset
+  /** The document's timestamp. */
+  _ts: Long
+  __typename: 'FailedAnalyze'
+}
+
+/** The pagination object for elements of type 'TokenAsset'. */
+export interface QueryFindTokenAssetsByURIPage {
+  /** The elements of type 'TokenAsset' in this page. */
+  data: (TokenAsset | null)[]
+  /** A cursor for elements coming after the current page. */
+  after: String | null
+  /** A cursor for elements coming before the current page. */
+  before: String | null
+  __typename: 'QueryFindTokenAssetsByURIPage'
+}
+
 export interface Mutation {
   /** Delete an existing document in the collection of 'Owner' */
   deleteOwner: Owner | null
@@ -464,10 +577,14 @@ export interface Mutation {
   createPin: Pin
   /** Delete an existing document in the collection of 'TokenAsset' */
   deleteTokenAsset: TokenAsset | null
+  /** Update an existing document in the collection of 'ScheduledAnalyze' */
+  updateScheduledAnalyze: ScheduledAnalyze | null
   /** Update an existing document in the collection of 'Pin' */
   updatePin: Pin | null
   /** Create a new document in the collection of 'Metadata' */
   createMetadata: Metadata
+  /** Delete an existing document in the collection of 'Analyzed' */
+  deleteAnalyzed: Analyzed | null
   /** Delete an existing document in the collection of 'Token' */
   deleteToken: Token | null
   /** Create a new document in the collection of 'Block' */
@@ -476,6 +593,8 @@ export interface Mutation {
   deleteERC721ImportResult: ERC721ImportResult | null
   /** Update an existing document in the collection of 'Metadata' */
   updateMetadata: Metadata | null
+  /** Update an existing document in the collection of 'Metric' */
+  updateMetric: Metric | null
   /** Create a new document in the collection of 'TokenContract' */
   createTokenContract: TokenContract
   /** Create a new document in the collection of 'PinLocation' */
@@ -494,6 +613,8 @@ export interface Mutation {
   updateResources: Resource[]
   /** Update an existing document in the collection of 'TokenContract' */
   updateTokenContract: TokenContract | null
+  /** Delete an existing document in the collection of 'Metric' */
+  deleteMetric: Metric | null
   /** Delete an existing document in the collection of 'Resource' */
   deleteResource: Resource | null
   /** Update an existing document in the collection of 'PinLocation' */
@@ -501,6 +622,8 @@ export interface Mutation {
   /** Update an existing document in the collection of 'Owner' */
   updateOwner: Owner | null
   updateTokenAsset: TokenAsset
+  /** Update an existing document in the collection of 'FailedAnalyze' */
+  updateFailedAnalyze: FailedAnalyze | null
   /** Delete an existing document in the collection of 'Block' */
   deleteBlock: Block | null
   /** Create a new document in the collection of 'TokenAsset' */
@@ -509,10 +632,14 @@ export interface Mutation {
   deletePin: Pin | null
   /** Create a new document in the collection of 'Cursor' */
   createCursor: Cursor
+  /** Create a new document in the collection of 'ScheduledAnalyze' */
+  createScheduledAnalyze: ScheduledAnalyze
   /** Update an existing document in the collection of 'Token' */
   updateToken: Token | null
   /** Create a new document in the collection of 'Content' */
   createContent: Content
+  /** Create a new document in the collection of 'Metric' */
+  createMetric: Metric
   /** Create a new document in the collection of 'ERC721ImportResult' */
   createERC721ImportResult: ERC721ImportResult
   /** Delete an existing document in the collection of 'TokenContract' */
@@ -523,10 +650,20 @@ export interface Mutation {
   updateContent: Content | null
   updateTokenAssets: TokenAsset[]
   updateResource: Resource
+  /** Create a new document in the collection of 'Analyzed' */
+  createAnalyzed: Analyzed
   /** Delete an existing document in the collection of 'Metadata' */
   deleteMetadata: Metadata | null
+  /** Delete an existing document in the collection of 'FailedAnalyze' */
+  deleteFailedAnalyze: FailedAnalyze | null
+  /** Create a new document in the collection of 'FailedAnalyze' */
+  createFailedAnalyze: FailedAnalyze
   /** Update an existing document in the collection of 'Block' */
   updateBlock: Block | null
+  /** Update an existing document in the collection of 'Analyzed' */
+  updateAnalyzed: Analyzed | null
+  /** Delete an existing document in the collection of 'ScheduledAnalyze' */
+  deleteScheduledAnalyze: ScheduledAnalyze | null
   /** Delete an existing document in the collection of 'Content' */
   deleteContent: Content | null
   /** Update an existing document in the collection of 'ERC721ImportResult' */
@@ -545,6 +682,18 @@ export interface QueryRequest {
     },
     BlockRequest
   ]
+  findTokenAssetsByCID?:
+    | [
+        {
+          /** The number of items to return per page. */
+          _size?: Int | null
+          /** The pagination cursor. */
+          _cursor?: String | null
+          cid?: ID | null
+        },
+        QueryFindTokenAssetsByCIDPageRequest
+      ]
+    | QueryFindTokenAssetsByCIDPageRequest
   /** Find a document from the collection of 'TokenContract' by its id. */
   findTokenContractByID?: [
     {
@@ -554,6 +703,26 @@ export interface QueryRequest {
     TokenContractRequest
   ]
   constract?: [{ id?: ID | null }, TokenContractRequest] | TokenContractRequest
+  /** Returns page of scheduled analyze tasks */
+  scheduledAnalyses?:
+    | [
+        {
+          /** The number of items to return per page. */
+          _size?: Int | null
+          /** The pagination cursor. */
+          _cursor?: String | null
+        },
+        QueryScheduledAnalysesPageRequest
+      ]
+    | QueryScheduledAnalysesPageRequest
+  /** Find a document from the collection of 'Metric' by its id. */
+  findMetricByID?: [
+    {
+      /** The 'Metric' document's ID */
+      id: ID
+    },
+    MetricRequest
+  ]
   /** Provides tokens with the */
   findTokenAssets?:
     | [
@@ -575,6 +744,7 @@ export interface QueryRequest {
     },
     ResourceRequest
   ]
+  findMetricByKey?: [{ key: String }, MetricRequest]
   /** Find a document from the collection of 'Token' by its id. */
   findTokenByID?: [
     {
@@ -639,6 +809,14 @@ export interface QueryRequest {
     },
     ContentRequest
   ]
+  /** Find a document from the collection of 'Analyzed' by its id. */
+  findAnalyzedByID?: [
+    {
+      /** The 'Analyzed' document's ID */
+      id: ID
+    },
+    AnalyzedRequest
+  ]
   /** Find a document from the collection of 'Cursor' by its id. */
   findCursorByID?: [
     {
@@ -667,6 +845,14 @@ export interface QueryRequest {
     },
     TokenAssetRequest
   ]
+  /** Find a document from the collection of 'FailedAnalyze' by its id. */
+  findFailedAnalyzeByID?: [
+    {
+      /** The 'FailedAnalyze' document's ID */
+      id: ID
+    },
+    FailedAnalyzeRequest
+  ]
   tokens?:
     | [
         {
@@ -681,9 +867,29 @@ export interface QueryRequest {
       ]
     | TokenPageRequest
   owner?: [{ id?: ID | null }, OwnerRequest] | OwnerRequest
+  findTokenAssetsByURI?:
+    | [
+        {
+          /** The number of items to return per page. */
+          _size?: Int | null
+          /** The pagination cursor. */
+          _cursor?: String | null
+          uri?: String | null
+        },
+        QueryFindTokenAssetsByURIPageRequest
+      ]
+    | QueryFindTokenAssetsByURIPageRequest
   findResourceByURI?:
     | [{ uri?: String | null }, ResourceRequest]
     | ResourceRequest
+  /** Find a document from the collection of 'ScheduledAnalyze' by its id. */
+  findScheduledAnalyzeByID?: [
+    {
+      /** The 'ScheduledAnalyze' document's ID */
+      id: ID
+    },
+    ScheduledAnalyzeRequest
+  ]
   /** Find a document from the collection of 'Pin' by its id. */
   findPinByID?: [
     {
@@ -1164,6 +1370,66 @@ export interface TokenContractRequest {
   __scalar?: boolean | number
 }
 
+/** The pagination object for elements of type 'TokenAsset'. */
+export interface QueryFindTokenAssetsByCIDPageRequest {
+  /** The elements of type 'TokenAsset' in this page. */
+  data?: TokenAssetRequest
+  /** A cursor for elements coming after the current page. */
+  after?: boolean | number
+  /** A cursor for elements coming before the current page. */
+  before?: boolean | number
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+/** The pagination object for elements of type 'ScheduledAnalyze'. */
+export interface QueryScheduledAnalysesPageRequest {
+  /** The elements of type 'ScheduledAnalyze' in this page. */
+  data?: ScheduledAnalyzeRequest
+  /** A cursor for elements coming after the current page. */
+  after?: boolean | number
+  /** A cursor for elements coming before the current page. */
+  before?: boolean | number
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+/**
+ * Represents a scheduled analyze task. Cron job will pull from collection,
+ * perform a task and then remove it.
+ */
+export interface ScheduledAnalyzeRequest {
+  /** The document's ID. */
+  _id?: boolean | number
+  /** The document's timestamp. */
+  _ts?: boolean | number
+  /** Ref to token asset that needs to be analyzed. */
+  tokenAsset?: TokenAssetRequest
+  /** Which attempt is it. */
+  attempt?: boolean | number
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+export interface MetricRequest {
+  /** The document's ID. */
+  _id?: boolean | number
+  /** Cursor into the dataset this metric is calculating. */
+  cursor?: boolean | number
+  /** Unique key identifying the metric. */
+  key?: boolean | number
+  /** Last time this metric was updated. */
+  updated?: boolean | number
+  /** Arbitrary metadata serialized as JSON string. */
+  metadata?: boolean | number
+  /** Current value for the metric, see updated property for last calculation date. */
+  value?: boolean | number
+  /** The document's timestamp. */
+  _ts?: boolean | number
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
 export interface FindTokenAssetsInput {
   status?: TokenAssetStatus | null
 }
@@ -1190,6 +1456,22 @@ export interface CursorRequest {
   __scalar?: boolean | number
 }
 
+/**
+ * Represents succesfully completed analyze task. Cron job will create on when
+ * token is succesfully analyzed.
+ */
+export interface AnalyzedRequest {
+  /** The document's ID. */
+  _id?: boolean | number
+  /** The document's timestamp. */
+  _ts?: boolean | number
+  tokenAsset?: TokenAssetRequest
+  /** Which attempt is it. */
+  attempt?: boolean | number
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
 export interface FindResourceInput {
   status?: ResourceStatus | null
 }
@@ -1198,6 +1480,37 @@ export interface FindResourceInput {
 export interface QueryFindResourcesPageRequest {
   /** The elements of type 'Resource' in this page. */
   data?: ResourceRequest
+  /** A cursor for elements coming after the current page. */
+  after?: boolean | number
+  /** A cursor for elements coming before the current page. */
+  before?: boolean | number
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+/**
+ * Represents a failed analyze task. Cron job will create one if analyze task
+ * has failed.
+ */
+export interface FailedAnalyzeRequest {
+  /** The document's ID. */
+  _id?: boolean | number
+  statusText?: boolean | number
+  status?: boolean | number
+  /** Which attempt is it. */
+  attempt?: boolean | number
+  /** Ref to token asset that needs to be analyzed. */
+  tokenAsset?: TokenAssetRequest
+  /** The document's timestamp. */
+  _ts?: boolean | number
+  __typename?: boolean | number
+  __scalar?: boolean | number
+}
+
+/** The pagination object for elements of type 'TokenAsset'. */
+export interface QueryFindTokenAssetsByURIPageRequest {
+  /** The elements of type 'TokenAsset' in this page. */
+  data?: TokenAssetRequest
   /** A cursor for elements coming after the current page. */
   after?: boolean | number
   /** A cursor for elements coming before the current page. */
@@ -1231,6 +1544,16 @@ export interface MutationRequest {
     },
     TokenAssetRequest
   ]
+  /** Update an existing document in the collection of 'ScheduledAnalyze' */
+  updateScheduledAnalyze?: [
+    {
+      /** The 'ScheduledAnalyze' document's ID */
+      id: ID
+      /** 'ScheduledAnalyze' input values */
+      data: ScheduledAnalyzeInput
+    },
+    ScheduledAnalyzeRequest
+  ]
   /** Update an existing document in the collection of 'Pin' */
   updatePin?: [
     {
@@ -1248,6 +1571,14 @@ export interface MutationRequest {
       data: MetadataInput
     },
     MetadataRequest
+  ]
+  /** Delete an existing document in the collection of 'Analyzed' */
+  deleteAnalyzed?: [
+    {
+      /** The 'Analyzed' document's ID */
+      id: ID
+    },
+    AnalyzedRequest
   ]
   /** Delete an existing document in the collection of 'Token' */
   deleteToken?: [
@@ -1282,6 +1613,16 @@ export interface MutationRequest {
       data: MetadataInput
     },
     MetadataRequest
+  ]
+  /** Update an existing document in the collection of 'Metric' */
+  updateMetric?: [
+    {
+      /** The 'Metric' document's ID */
+      id: ID
+      /** 'Metric' input values */
+      data: MetricInput
+    },
+    MetricRequest
   ]
   /** Create a new document in the collection of 'TokenContract' */
   createTokenContract?: [
@@ -1355,6 +1696,14 @@ export interface MutationRequest {
     },
     TokenContractRequest
   ]
+  /** Delete an existing document in the collection of 'Metric' */
+  deleteMetric?: [
+    {
+      /** The 'Metric' document's ID */
+      id: ID
+    },
+    MetricRequest
+  ]
   /** Delete an existing document in the collection of 'Resource' */
   deleteResource?: [
     {
@@ -1384,6 +1733,16 @@ export interface MutationRequest {
     OwnerRequest
   ]
   updateTokenAsset?: [{ input: TokenAssetUpdate }, TokenAssetRequest]
+  /** Update an existing document in the collection of 'FailedAnalyze' */
+  updateFailedAnalyze?: [
+    {
+      /** The 'FailedAnalyze' document's ID */
+      id: ID
+      /** 'FailedAnalyze' input values */
+      data: FailedAnalyzeInput
+    },
+    FailedAnalyzeRequest
+  ]
   /** Delete an existing document in the collection of 'Block' */
   deleteBlock?: [
     {
@@ -1416,6 +1775,14 @@ export interface MutationRequest {
     },
     CursorRequest
   ]
+  /** Create a new document in the collection of 'ScheduledAnalyze' */
+  createScheduledAnalyze?: [
+    {
+      /** 'ScheduledAnalyze' input values */
+      data: ScheduledAnalyzeInput
+    },
+    ScheduledAnalyzeRequest
+  ]
   /** Update an existing document in the collection of 'Token' */
   updateToken?: [
     {
@@ -1433,6 +1800,14 @@ export interface MutationRequest {
       data: ContentInput
     },
     ContentRequest
+  ]
+  /** Create a new document in the collection of 'Metric' */
+  createMetric?: [
+    {
+      /** 'Metric' input values */
+      data: MetricInput
+    },
+    MetricRequest
   ]
   /** Create a new document in the collection of 'ERC721ImportResult' */
   createERC721ImportResult?: [
@@ -1472,6 +1847,14 @@ export interface MutationRequest {
   updateResource?:
     | [{ input?: ResourceUpdate | null }, ResourceRequest]
     | ResourceRequest
+  /** Create a new document in the collection of 'Analyzed' */
+  createAnalyzed?: [
+    {
+      /** 'Analyzed' input values */
+      data: AnalyzedInput
+    },
+    AnalyzedRequest
+  ]
   /** Delete an existing document in the collection of 'Metadata' */
   deleteMetadata?: [
     {
@@ -1479,6 +1862,22 @@ export interface MutationRequest {
       id: ID
     },
     MetadataRequest
+  ]
+  /** Delete an existing document in the collection of 'FailedAnalyze' */
+  deleteFailedAnalyze?: [
+    {
+      /** The 'FailedAnalyze' document's ID */
+      id: ID
+    },
+    FailedAnalyzeRequest
+  ]
+  /** Create a new document in the collection of 'FailedAnalyze' */
+  createFailedAnalyze?: [
+    {
+      /** 'FailedAnalyze' input values */
+      data: FailedAnalyzeInput
+    },
+    FailedAnalyzeRequest
   ]
   /** Update an existing document in the collection of 'Block' */
   updateBlock?: [
@@ -1489,6 +1888,24 @@ export interface MutationRequest {
       data: BlockInput
     },
     BlockRequest
+  ]
+  /** Update an existing document in the collection of 'Analyzed' */
+  updateAnalyzed?: [
+    {
+      /** The 'Analyzed' document's ID */
+      id: ID
+      /** 'Analyzed' input values */
+      data: AnalyzedInput
+    },
+    AnalyzedRequest
+  ]
+  /** Delete an existing document in the collection of 'ScheduledAnalyze' */
+  deleteScheduledAnalyze?: [
+    {
+      /** The 'ScheduledAnalyze' document's ID */
+      id: ID
+    },
+    ScheduledAnalyzeRequest
   ]
   /** Delete an existing document in the collection of 'Content' */
   deleteContent?: [
@@ -1615,58 +2032,20 @@ export interface PinLocationPinsRelation {
   disconnect?: (ID | null)[] | null
 }
 
-export interface MetadataInput {
-  /** CID for the metadata content. */
-  cid: String
-  /** Identifies the asset this token represents */
-  name: String
-  /** Describes the asset this token represents */
-  description: String
-  /** A file representing the asset this token represents */
-  image: ResourceInput
-  assets: ResourceInput[]
+/** 'ScheduledAnalyze' input values */
+export interface ScheduledAnalyzeInput {
+  /** Ref to token asset that needs to be analyzed. */
+  tokenAsset?: ScheduledAnalyzeTokenAssetRelation | null
+  /** Which attempt is it. */
+  attempt: Int
 }
 
-/** 'Block' input values */
-export interface BlockInput {
-  /** The hash of the block */
-  hash: ID
-  /** The block number */
-  number: Long
-  tokens?: BlockTokensRelation | null
-}
-
-/** Allow manipulating the relationship between the types 'Block' and 'Token'. */
-export interface BlockTokensRelation {
-  /** Create one or more documents of type 'Token' and associate them with the current document. */
-  create?: (TokenInput | null)[] | null
-  /** Connect one or more documents of type 'Token' with the current document using their IDs. */
-  connect?: (ID | null)[] | null
-  /** Disconnect the given documents of type 'Token' from the current document using their IDs. */
-  disconnect?: (ID | null)[] | null
-}
-
-/** 'Token' input values */
-export interface TokenInput {
-  id: String
-  tokenID: String
-  mintTime: String
-  /** Present when ERC721Metadata interface is implemented. */
-  tokenAsset?: TokenTokenAssetRelation | null
-  contract?: TokenContractRelation | null
-  owner?: TokenOwnerRelation | null
-  blocks?: TokenBlocksRelation | null
-  imported?: TokenImportedRelation | null
-}
-
-/** Allow manipulating the relationship between the types 'Token' and 'TokenAsset' using the field 'Token.tokenAsset'. */
-export interface TokenTokenAssetRelation {
+/** Allow manipulating the relationship between the types 'ScheduledAnalyze' and 'TokenAsset' using the field 'ScheduledAnalyze.tokenAsset'. */
+export interface ScheduledAnalyzeTokenAssetRelation {
   /** Create a document of type 'TokenAsset' and associate it with the current document. */
   create?: TokenAssetInput | null
   /** Connect a document of type 'TokenAsset' with the current document using its ID. */
   connect?: ID | null
-  /** If true, disconnects this document from 'TokenAsset' */
-  disconnect?: Boolean | null
 }
 
 /** 'TokenAsset' input values */
@@ -1714,12 +2093,27 @@ export interface TokenAssetReferrersRelation {
   disconnect?: (ID | null)[] | null
 }
 
-/** Allow manipulating the relationship between the types 'TokenAsset' and 'Metadata' using the field 'TokenAsset.metadata'. */
-export interface TokenAssetMetadataRelation {
-  /** Create a document of type 'Metadata' and associate it with the current document. */
-  create?: MetadataInput | null
-  /** Connect a document of type 'Metadata' with the current document using its ID. */
+/** 'Token' input values */
+export interface TokenInput {
+  id: String
+  tokenID: String
+  mintTime: String
+  /** Present when ERC721Metadata interface is implemented. */
+  tokenAsset?: TokenTokenAssetRelation | null
+  contract?: TokenContractRelation | null
+  owner?: TokenOwnerRelation | null
+  blocks?: TokenBlocksRelation | null
+  imported?: TokenImportedRelation | null
+}
+
+/** Allow manipulating the relationship between the types 'Token' and 'TokenAsset' using the field 'Token.tokenAsset'. */
+export interface TokenTokenAssetRelation {
+  /** Create a document of type 'TokenAsset' and associate it with the current document. */
+  create?: TokenAssetInput | null
+  /** Connect a document of type 'TokenAsset' with the current document using its ID. */
   connect?: ID | null
+  /** If true, disconnects this document from 'TokenAsset' */
+  disconnect?: Boolean | null
 }
 
 /** Allow manipulating the relationship between the types 'Token' and 'TokenContract' using the field 'Token.contract'. */
@@ -1774,6 +2168,25 @@ export interface TokenBlocksRelation {
   disconnect?: (ID | null)[] | null
 }
 
+/** 'Block' input values */
+export interface BlockInput {
+  /** The hash of the block */
+  hash: ID
+  /** The block number */
+  number: Long
+  tokens?: BlockTokensRelation | null
+}
+
+/** Allow manipulating the relationship between the types 'Block' and 'Token'. */
+export interface BlockTokensRelation {
+  /** Create one or more documents of type 'Token' and associate them with the current document. */
+  create?: (TokenInput | null)[] | null
+  /** Connect one or more documents of type 'Token' with the current document using their IDs. */
+  connect?: (ID | null)[] | null
+  /** Disconnect the given documents of type 'Token' from the current document using their IDs. */
+  disconnect?: (ID | null)[] | null
+}
+
 /** Allow manipulating the relationship between the types 'Token' and 'ERC721ImportResult'. */
 export interface TokenImportedRelation {
   /** Create one or more documents of type 'ERC721ImportResult' and associate them with the current document. */
@@ -1802,6 +2215,40 @@ export interface ERC721ImportResultTokensRelation {
   connect?: (ID | null)[] | null
   /** Disconnect the given documents of type 'Token' from the current document using their IDs. */
   disconnect?: (ID | null)[] | null
+}
+
+/** Allow manipulating the relationship between the types 'TokenAsset' and 'Metadata' using the field 'TokenAsset.metadata'. */
+export interface TokenAssetMetadataRelation {
+  /** Create a document of type 'Metadata' and associate it with the current document. */
+  create?: MetadataInput | null
+  /** Connect a document of type 'Metadata' with the current document using its ID. */
+  connect?: ID | null
+}
+
+export interface MetadataInput {
+  /** CID for the metadata content. */
+  cid: String
+  /** Identifies the asset this token represents */
+  name: String
+  /** Describes the asset this token represents */
+  description: String
+  /** A file representing the asset this token represents */
+  image: ResourceInput
+  assets: ResourceInput[]
+}
+
+/** 'Metric' input values */
+export interface MetricInput {
+  /** Unique key identifying the metric. */
+  key: String
+  /** Current value for the metric, see updated property for last calculation date. */
+  value: Long
+  /** Arbitrary metadata serialized as JSON string. */
+  metadata?: String | null
+  /** Last time this metric was updated. */
+  updated: Time
+  /** Cursor into the dataset this metric is calculating. */
+  cursor?: ID | null
 }
 
 /** 'Cursor' input values */
@@ -1879,8 +2326,41 @@ export interface TokenAssetUpdate {
   metadata?: MetadataInput | null
 }
 
+/** 'FailedAnalyze' input values */
+export interface FailedAnalyzeInput {
+  /** Ref to token asset that needs to be analyzed. */
+  tokenAsset?: FailedAnalyzeTokenAssetRelation | null
+  /** Which attempt is it. */
+  attempt: Int
+  status: TokenAssetStatus
+  statusText: String
+}
+
+/** Allow manipulating the relationship between the types 'FailedAnalyze' and 'TokenAsset' using the field 'FailedAnalyze.tokenAsset'. */
+export interface FailedAnalyzeTokenAssetRelation {
+  /** Create a document of type 'TokenAsset' and associate it with the current document. */
+  create?: TokenAssetInput | null
+  /** Connect a document of type 'TokenAsset' with the current document using its ID. */
+  connect?: ID | null
+}
+
 export interface UpdateTokenAssetsInput {
   updates: TokenAssetUpdate[]
+}
+
+/** 'Analyzed' input values */
+export interface AnalyzedInput {
+  tokenAsset?: AnalyzedTokenAssetRelation | null
+  /** Which attempt is it. */
+  attempt: Int
+}
+
+/** Allow manipulating the relationship between the types 'Analyzed' and 'TokenAsset' using the field 'Analyzed.tokenAsset'. */
+export interface AnalyzedTokenAssetRelation {
+  /** Create a document of type 'TokenAsset' and associate it with the current document. */
+  create?: TokenAssetInput | null
+  /** Connect a document of type 'TokenAsset' with the current document using its ID. */
+  connect?: ID | null
 }
 
 export interface ERC721MetadataQuery {
@@ -2077,6 +2557,38 @@ export const isTokenContract = (obj: {
   return TokenContract_possibleTypes.includes(obj.__typename)
 }
 
+const QueryFindTokenAssetsByCIDPage_possibleTypes = [
+  'QueryFindTokenAssetsByCIDPage',
+]
+export const isQueryFindTokenAssetsByCIDPage = (obj: {
+  __typename: String
+}): obj is QueryFindTokenAssetsByCIDPage => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return QueryFindTokenAssetsByCIDPage_possibleTypes.includes(obj.__typename)
+}
+
+const QueryScheduledAnalysesPage_possibleTypes = ['QueryScheduledAnalysesPage']
+export const isQueryScheduledAnalysesPage = (obj: {
+  __typename: String
+}): obj is QueryScheduledAnalysesPage => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return QueryScheduledAnalysesPage_possibleTypes.includes(obj.__typename)
+}
+
+const ScheduledAnalyze_possibleTypes = ['ScheduledAnalyze']
+export const isScheduledAnalyze = (obj: {
+  __typename: String
+}): obj is ScheduledAnalyze => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return ScheduledAnalyze_possibleTypes.includes(obj.__typename)
+}
+
+const Metric_possibleTypes = ['Metric']
+export const isMetric = (obj: { __typename: String }): obj is Metric => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Metric_possibleTypes.includes(obj.__typename)
+}
+
 const QueryFindTokenAssetsPage_possibleTypes = ['QueryFindTokenAssetsPage']
 export const isQueryFindTokenAssetsPage = (obj: {
   __typename: String
@@ -2091,12 +2603,36 @@ export const isCursor = (obj: { __typename: String }): obj is Cursor => {
   return Cursor_possibleTypes.includes(obj.__typename)
 }
 
+const Analyzed_possibleTypes = ['Analyzed']
+export const isAnalyzed = (obj: { __typename: String }): obj is Analyzed => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return Analyzed_possibleTypes.includes(obj.__typename)
+}
+
 const QueryFindResourcesPage_possibleTypes = ['QueryFindResourcesPage']
 export const isQueryFindResourcesPage = (obj: {
   __typename: String
 }): obj is QueryFindResourcesPage => {
   if (!obj.__typename) throw new Error('__typename is missing')
   return QueryFindResourcesPage_possibleTypes.includes(obj.__typename)
+}
+
+const FailedAnalyze_possibleTypes = ['FailedAnalyze']
+export const isFailedAnalyze = (obj: {
+  __typename: String
+}): obj is FailedAnalyze => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return FailedAnalyze_possibleTypes.includes(obj.__typename)
+}
+
+const QueryFindTokenAssetsByURIPage_possibleTypes = [
+  'QueryFindTokenAssetsByURIPage',
+]
+export const isQueryFindTokenAssetsByURIPage = (obj: {
+  __typename: String
+}): obj is QueryFindTokenAssetsByURIPage => {
+  if (!obj.__typename) throw new Error('__typename is missing')
+  return QueryFindTokenAssetsByURIPage_possibleTypes.includes(obj.__typename)
 }
 
 const Mutation_possibleTypes = ['Mutation']
@@ -2116,6 +2652,24 @@ export interface QueryPromiseChain {
       defaultValue?: Block | null
     ) => Promise<Block | null>
   }
+  findTokenAssetsByCID: ((args?: {
+    /** The number of items to return per page. */
+    _size?: Int | null
+    /** The pagination cursor. */
+    _cursor?: String | null
+    cid?: ID | null
+  }) => QueryFindTokenAssetsByCIDPagePromiseChain & {
+    execute: (
+      request: QueryFindTokenAssetsByCIDPageRequest,
+      defaultValue?: QueryFindTokenAssetsByCIDPage
+    ) => Promise<QueryFindTokenAssetsByCIDPage>
+  }) &
+    (QueryFindTokenAssetsByCIDPagePromiseChain & {
+      execute: (
+        request: QueryFindTokenAssetsByCIDPageRequest,
+        defaultValue?: QueryFindTokenAssetsByCIDPage
+      ) => Promise<QueryFindTokenAssetsByCIDPage>
+    })
   /** Find a document from the collection of 'TokenContract' by its id. */
   findTokenContractByID: (args: {
     /** The 'TokenContract' document's ID */
@@ -2138,6 +2692,34 @@ export interface QueryPromiseChain {
         defaultValue?: TokenContract | null
       ) => Promise<TokenContract | null>
     })
+  /** Returns page of scheduled analyze tasks */
+  scheduledAnalyses: ((args?: {
+    /** The number of items to return per page. */
+    _size?: Int | null
+    /** The pagination cursor. */
+    _cursor?: String | null
+  }) => QueryScheduledAnalysesPagePromiseChain & {
+    execute: (
+      request: QueryScheduledAnalysesPageRequest,
+      defaultValue?: QueryScheduledAnalysesPage
+    ) => Promise<QueryScheduledAnalysesPage>
+  }) &
+    (QueryScheduledAnalysesPagePromiseChain & {
+      execute: (
+        request: QueryScheduledAnalysesPageRequest,
+        defaultValue?: QueryScheduledAnalysesPage
+      ) => Promise<QueryScheduledAnalysesPage>
+    })
+  /** Find a document from the collection of 'Metric' by its id. */
+  findMetricByID: (args: {
+    /** The 'Metric' document's ID */
+    id: ID
+  }) => MetricPromiseChain & {
+    execute: (
+      request: MetricRequest,
+      defaultValue?: Metric | null
+    ) => Promise<Metric | null>
+  }
   /** Provides tokens with the */
   findTokenAssets: ((args?: {
     /** The number of items to return per page. */
@@ -2166,6 +2748,14 @@ export interface QueryPromiseChain {
       request: ResourceRequest,
       defaultValue?: Resource | null
     ) => Promise<Resource | null>
+  }
+  findMetricByKey: (args: {
+    key: String
+  }) => MetricPromiseChain & {
+    execute: (
+      request: MetricRequest,
+      defaultValue?: Metric | null
+    ) => Promise<Metric | null>
   }
   /** Find a document from the collection of 'Token' by its id. */
   findTokenByID: (args: {
@@ -2274,6 +2864,16 @@ export interface QueryPromiseChain {
       defaultValue?: Content | null
     ) => Promise<Content | null>
   }
+  /** Find a document from the collection of 'Analyzed' by its id. */
+  findAnalyzedByID: (args: {
+    /** The 'Analyzed' document's ID */
+    id: ID
+  }) => AnalyzedPromiseChain & {
+    execute: (
+      request: AnalyzedRequest,
+      defaultValue?: Analyzed | null
+    ) => Promise<Analyzed | null>
+  }
   /** Find a document from the collection of 'Cursor' by its id. */
   findCursorByID: (args: {
     /** The 'Cursor' document's ID */
@@ -2312,6 +2912,16 @@ export interface QueryPromiseChain {
       defaultValue?: TokenAsset | null
     ) => Promise<TokenAsset | null>
   }
+  /** Find a document from the collection of 'FailedAnalyze' by its id. */
+  findFailedAnalyzeByID: (args: {
+    /** The 'FailedAnalyze' document's ID */
+    id: ID
+  }) => FailedAnalyzePromiseChain & {
+    execute: (
+      request: FailedAnalyzeRequest,
+      defaultValue?: FailedAnalyze | null
+    ) => Promise<FailedAnalyze | null>
+  }
   tokens: ((args?: {
     /** The number of items to return per page. */
     _size?: Int | null
@@ -2345,6 +2955,24 @@ export interface QueryPromiseChain {
         defaultValue?: Owner | null
       ) => Promise<Owner | null>
     })
+  findTokenAssetsByURI: ((args?: {
+    /** The number of items to return per page. */
+    _size?: Int | null
+    /** The pagination cursor. */
+    _cursor?: String | null
+    uri?: String | null
+  }) => QueryFindTokenAssetsByURIPagePromiseChain & {
+    execute: (
+      request: QueryFindTokenAssetsByURIPageRequest,
+      defaultValue?: QueryFindTokenAssetsByURIPage
+    ) => Promise<QueryFindTokenAssetsByURIPage>
+  }) &
+    (QueryFindTokenAssetsByURIPagePromiseChain & {
+      execute: (
+        request: QueryFindTokenAssetsByURIPageRequest,
+        defaultValue?: QueryFindTokenAssetsByURIPage
+      ) => Promise<QueryFindTokenAssetsByURIPage>
+    })
   findResourceByURI: ((args?: {
     uri?: String | null
   }) => ResourcePromiseChain & {
@@ -2359,6 +2987,16 @@ export interface QueryPromiseChain {
         defaultValue?: Resource | null
       ) => Promise<Resource | null>
     })
+  /** Find a document from the collection of 'ScheduledAnalyze' by its id. */
+  findScheduledAnalyzeByID: (args: {
+    /** The 'ScheduledAnalyze' document's ID */
+    id: ID
+  }) => ScheduledAnalyzePromiseChain & {
+    execute: (
+      request: ScheduledAnalyzeRequest,
+      defaultValue?: ScheduledAnalyze | null
+    ) => Promise<ScheduledAnalyze | null>
+  }
   /** Find a document from the collection of 'Pin' by its id. */
   findPinByID: (args: {
     /** The 'Pin' document's ID */
@@ -2399,6 +3037,24 @@ export interface QueryObservableChain {
       defaultValue?: Block | null
     ) => Observable<Block | null>
   }
+  findTokenAssetsByCID: ((args?: {
+    /** The number of items to return per page. */
+    _size?: Int | null
+    /** The pagination cursor. */
+    _cursor?: String | null
+    cid?: ID | null
+  }) => QueryFindTokenAssetsByCIDPageObservableChain & {
+    execute: (
+      request: QueryFindTokenAssetsByCIDPageRequest,
+      defaultValue?: QueryFindTokenAssetsByCIDPage
+    ) => Observable<QueryFindTokenAssetsByCIDPage>
+  }) &
+    (QueryFindTokenAssetsByCIDPageObservableChain & {
+      execute: (
+        request: QueryFindTokenAssetsByCIDPageRequest,
+        defaultValue?: QueryFindTokenAssetsByCIDPage
+      ) => Observable<QueryFindTokenAssetsByCIDPage>
+    })
   /** Find a document from the collection of 'TokenContract' by its id. */
   findTokenContractByID: (args: {
     /** The 'TokenContract' document's ID */
@@ -2421,6 +3077,34 @@ export interface QueryObservableChain {
         defaultValue?: TokenContract | null
       ) => Observable<TokenContract | null>
     })
+  /** Returns page of scheduled analyze tasks */
+  scheduledAnalyses: ((args?: {
+    /** The number of items to return per page. */
+    _size?: Int | null
+    /** The pagination cursor. */
+    _cursor?: String | null
+  }) => QueryScheduledAnalysesPageObservableChain & {
+    execute: (
+      request: QueryScheduledAnalysesPageRequest,
+      defaultValue?: QueryScheduledAnalysesPage
+    ) => Observable<QueryScheduledAnalysesPage>
+  }) &
+    (QueryScheduledAnalysesPageObservableChain & {
+      execute: (
+        request: QueryScheduledAnalysesPageRequest,
+        defaultValue?: QueryScheduledAnalysesPage
+      ) => Observable<QueryScheduledAnalysesPage>
+    })
+  /** Find a document from the collection of 'Metric' by its id. */
+  findMetricByID: (args: {
+    /** The 'Metric' document's ID */
+    id: ID
+  }) => MetricObservableChain & {
+    execute: (
+      request: MetricRequest,
+      defaultValue?: Metric | null
+    ) => Observable<Metric | null>
+  }
   /** Provides tokens with the */
   findTokenAssets: ((args?: {
     /** The number of items to return per page. */
@@ -2449,6 +3133,12 @@ export interface QueryObservableChain {
       request: ResourceRequest,
       defaultValue?: Resource | null
     ) => Observable<Resource | null>
+  }
+  findMetricByKey: (args: { key: String }) => MetricObservableChain & {
+    execute: (
+      request: MetricRequest,
+      defaultValue?: Metric | null
+    ) => Observable<Metric | null>
   }
   /** Find a document from the collection of 'Token' by its id. */
   findTokenByID: (args: {
@@ -2560,6 +3250,16 @@ export interface QueryObservableChain {
       defaultValue?: Content | null
     ) => Observable<Content | null>
   }
+  /** Find a document from the collection of 'Analyzed' by its id. */
+  findAnalyzedByID: (args: {
+    /** The 'Analyzed' document's ID */
+    id: ID
+  }) => AnalyzedObservableChain & {
+    execute: (
+      request: AnalyzedRequest,
+      defaultValue?: Analyzed | null
+    ) => Observable<Analyzed | null>
+  }
   /** Find a document from the collection of 'Cursor' by its id. */
   findCursorByID: (args: {
     /** The 'Cursor' document's ID */
@@ -2598,6 +3298,16 @@ export interface QueryObservableChain {
       defaultValue?: TokenAsset | null
     ) => Observable<TokenAsset | null>
   }
+  /** Find a document from the collection of 'FailedAnalyze' by its id. */
+  findFailedAnalyzeByID: (args: {
+    /** The 'FailedAnalyze' document's ID */
+    id: ID
+  }) => FailedAnalyzeObservableChain & {
+    execute: (
+      request: FailedAnalyzeRequest,
+      defaultValue?: FailedAnalyze | null
+    ) => Observable<FailedAnalyze | null>
+  }
   tokens: ((args?: {
     /** The number of items to return per page. */
     _size?: Int | null
@@ -2629,6 +3339,24 @@ export interface QueryObservableChain {
         defaultValue?: Owner | null
       ) => Observable<Owner | null>
     })
+  findTokenAssetsByURI: ((args?: {
+    /** The number of items to return per page. */
+    _size?: Int | null
+    /** The pagination cursor. */
+    _cursor?: String | null
+    uri?: String | null
+  }) => QueryFindTokenAssetsByURIPageObservableChain & {
+    execute: (
+      request: QueryFindTokenAssetsByURIPageRequest,
+      defaultValue?: QueryFindTokenAssetsByURIPage
+    ) => Observable<QueryFindTokenAssetsByURIPage>
+  }) &
+    (QueryFindTokenAssetsByURIPageObservableChain & {
+      execute: (
+        request: QueryFindTokenAssetsByURIPageRequest,
+        defaultValue?: QueryFindTokenAssetsByURIPage
+      ) => Observable<QueryFindTokenAssetsByURIPage>
+    })
   findResourceByURI: ((args?: {
     uri?: String | null
   }) => ResourceObservableChain & {
@@ -2643,6 +3371,16 @@ export interface QueryObservableChain {
         defaultValue?: Resource | null
       ) => Observable<Resource | null>
     })
+  /** Find a document from the collection of 'ScheduledAnalyze' by its id. */
+  findScheduledAnalyzeByID: (args: {
+    /** The 'ScheduledAnalyze' document's ID */
+    id: ID
+  }) => ScheduledAnalyzeObservableChain & {
+    execute: (
+      request: ScheduledAnalyzeRequest,
+      defaultValue?: ScheduledAnalyze | null
+    ) => Observable<ScheduledAnalyze | null>
+  }
   /** Find a document from the collection of 'Pin' by its id. */
   findPinByID: (args: {
     /** The 'Pin' document's ID */
@@ -4364,6 +5102,250 @@ export interface TokenContractObservableChain {
 }
 
 /** The pagination object for elements of type 'TokenAsset'. */
+export interface QueryFindTokenAssetsByCIDPagePromiseChain {
+  /** The elements of type 'TokenAsset' in this page. */
+  data: {
+    execute: (
+      request: TokenAssetRequest,
+      defaultValue?: (TokenAsset | null)[]
+    ) => Promise<(TokenAsset | null)[]>
+  }
+  /** A cursor for elements coming after the current page. */
+  after: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+  /** A cursor for elements coming before the current page. */
+  before: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+}
+
+/** The pagination object for elements of type 'TokenAsset'. */
+export interface QueryFindTokenAssetsByCIDPageObservableChain {
+  /** The elements of type 'TokenAsset' in this page. */
+  data: {
+    execute: (
+      request: TokenAssetRequest,
+      defaultValue?: (TokenAsset | null)[]
+    ) => Observable<(TokenAsset | null)[]>
+  }
+  /** A cursor for elements coming after the current page. */
+  after: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
+  /** A cursor for elements coming before the current page. */
+  before: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
+}
+
+/** The pagination object for elements of type 'ScheduledAnalyze'. */
+export interface QueryScheduledAnalysesPagePromiseChain {
+  /** The elements of type 'ScheduledAnalyze' in this page. */
+  data: {
+    execute: (
+      request: ScheduledAnalyzeRequest,
+      defaultValue?: (ScheduledAnalyze | null)[]
+    ) => Promise<(ScheduledAnalyze | null)[]>
+  }
+  /** A cursor for elements coming after the current page. */
+  after: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+  /** A cursor for elements coming before the current page. */
+  before: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+}
+
+/** The pagination object for elements of type 'ScheduledAnalyze'. */
+export interface QueryScheduledAnalysesPageObservableChain {
+  /** The elements of type 'ScheduledAnalyze' in this page. */
+  data: {
+    execute: (
+      request: ScheduledAnalyzeRequest,
+      defaultValue?: (ScheduledAnalyze | null)[]
+    ) => Observable<(ScheduledAnalyze | null)[]>
+  }
+  /** A cursor for elements coming after the current page. */
+  after: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
+  /** A cursor for elements coming before the current page. */
+  before: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
+}
+
+/**
+ * Represents a scheduled analyze task. Cron job will pull from collection,
+ * perform a task and then remove it.
+ */
+export interface ScheduledAnalyzePromiseChain {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Promise<ID>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (request?: boolean | number, defaultValue?: Long) => Promise<Long>
+  }
+  /** Ref to token asset that needs to be analyzed. */
+  tokenAsset: TokenAssetPromiseChain & {
+    execute: (
+      request: TokenAssetRequest,
+      defaultValue?: TokenAsset
+    ) => Promise<TokenAsset>
+  }
+  /** Which attempt is it. */
+  attempt: {
+    execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int>
+  }
+}
+
+/**
+ * Represents a scheduled analyze task. Cron job will pull from collection,
+ * perform a task and then remove it.
+ */
+export interface ScheduledAnalyzeObservableChain {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Observable<ID>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Long
+    ) => Observable<Long>
+  }
+  /** Ref to token asset that needs to be analyzed. */
+  tokenAsset: TokenAssetObservableChain & {
+    execute: (
+      request: TokenAssetRequest,
+      defaultValue?: TokenAsset
+    ) => Observable<TokenAsset>
+  }
+  /** Which attempt is it. */
+  attempt: {
+    execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int>
+  }
+}
+
+export interface MetricPromiseChain {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Promise<ID>
+  }
+  /** Cursor into the dataset this metric is calculating. */
+  cursor: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: ID | null
+    ) => Promise<ID | null>
+  }
+  /** Unique key identifying the metric. */
+  key: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String
+    ) => Promise<String>
+  }
+  /** Last time this metric was updated. */
+  updated: {
+    execute: (request?: boolean | number, defaultValue?: Time) => Promise<Time>
+  }
+  /** Arbitrary metadata serialized as JSON string. */
+  metadata: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+  /** Current value for the metric, see updated property for last calculation date. */
+  value: {
+    execute: (request?: boolean | number, defaultValue?: Long) => Promise<Long>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (request?: boolean | number, defaultValue?: Long) => Promise<Long>
+  }
+}
+
+export interface MetricObservableChain {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Observable<ID>
+  }
+  /** Cursor into the dataset this metric is calculating. */
+  cursor: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: ID | null
+    ) => Observable<ID | null>
+  }
+  /** Unique key identifying the metric. */
+  key: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String
+    ) => Observable<String>
+  }
+  /** Last time this metric was updated. */
+  updated: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Time
+    ) => Observable<Time>
+  }
+  /** Arbitrary metadata serialized as JSON string. */
+  metadata: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
+  /** Current value for the metric, see updated property for last calculation date. */
+  value: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Long
+    ) => Observable<Long>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Long
+    ) => Observable<Long>
+  }
+}
+
+/** The pagination object for elements of type 'TokenAsset'. */
 export interface QueryFindTokenAssetsPagePromiseChain {
   /** The elements of type 'TokenAsset' in this page. */
   data: {
@@ -4450,6 +5432,59 @@ export interface CursorObservableChain {
   }
 }
 
+/**
+ * Represents succesfully completed analyze task. Cron job will create on when
+ * token is succesfully analyzed.
+ */
+export interface AnalyzedPromiseChain {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Promise<ID>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (request?: boolean | number, defaultValue?: Long) => Promise<Long>
+  }
+  tokenAsset: TokenAssetPromiseChain & {
+    execute: (
+      request: TokenAssetRequest,
+      defaultValue?: TokenAsset
+    ) => Promise<TokenAsset>
+  }
+  /** Which attempt is it. */
+  attempt: {
+    execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int>
+  }
+}
+
+/**
+ * Represents succesfully completed analyze task. Cron job will create on when
+ * token is succesfully analyzed.
+ */
+export interface AnalyzedObservableChain {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Observable<ID>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Long
+    ) => Observable<Long>
+  }
+  tokenAsset: TokenAssetObservableChain & {
+    execute: (
+      request: TokenAssetRequest,
+      defaultValue?: TokenAsset
+    ) => Observable<TokenAsset>
+  }
+  /** Which attempt is it. */
+  attempt: {
+    execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int>
+  }
+}
+
 /** The pagination object for elements of type 'Resource'. */
 export interface QueryFindResourcesPagePromiseChain {
   /** The elements of type 'Resource' in this page. */
@@ -4500,6 +5535,135 @@ export interface QueryFindResourcesPageObservableChain {
   }
 }
 
+/**
+ * Represents a failed analyze task. Cron job will create one if analyze task
+ * has failed.
+ */
+export interface FailedAnalyzePromiseChain {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Promise<ID>
+  }
+  statusText: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String
+    ) => Promise<String>
+  }
+  status: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: TokenAssetStatus
+    ) => Promise<TokenAssetStatus>
+  }
+  /** Which attempt is it. */
+  attempt: {
+    execute: (request?: boolean | number, defaultValue?: Int) => Promise<Int>
+  }
+  /** Ref to token asset that needs to be analyzed. */
+  tokenAsset: TokenAssetPromiseChain & {
+    execute: (
+      request: TokenAssetRequest,
+      defaultValue?: TokenAsset
+    ) => Promise<TokenAsset>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (request?: boolean | number, defaultValue?: Long) => Promise<Long>
+  }
+}
+
+/**
+ * Represents a failed analyze task. Cron job will create one if analyze task
+ * has failed.
+ */
+export interface FailedAnalyzeObservableChain {
+  /** The document's ID. */
+  _id: {
+    execute: (request?: boolean | number, defaultValue?: ID) => Observable<ID>
+  }
+  statusText: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String
+    ) => Observable<String>
+  }
+  status: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: TokenAssetStatus
+    ) => Observable<TokenAssetStatus>
+  }
+  /** Which attempt is it. */
+  attempt: {
+    execute: (request?: boolean | number, defaultValue?: Int) => Observable<Int>
+  }
+  /** Ref to token asset that needs to be analyzed. */
+  tokenAsset: TokenAssetObservableChain & {
+    execute: (
+      request: TokenAssetRequest,
+      defaultValue?: TokenAsset
+    ) => Observable<TokenAsset>
+  }
+  /** The document's timestamp. */
+  _ts: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: Long
+    ) => Observable<Long>
+  }
+}
+
+/** The pagination object for elements of type 'TokenAsset'. */
+export interface QueryFindTokenAssetsByURIPagePromiseChain {
+  /** The elements of type 'TokenAsset' in this page. */
+  data: {
+    execute: (
+      request: TokenAssetRequest,
+      defaultValue?: (TokenAsset | null)[]
+    ) => Promise<(TokenAsset | null)[]>
+  }
+  /** A cursor for elements coming after the current page. */
+  after: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+  /** A cursor for elements coming before the current page. */
+  before: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Promise<String | null>
+  }
+}
+
+/** The pagination object for elements of type 'TokenAsset'. */
+export interface QueryFindTokenAssetsByURIPageObservableChain {
+  /** The elements of type 'TokenAsset' in this page. */
+  data: {
+    execute: (
+      request: TokenAssetRequest,
+      defaultValue?: (TokenAsset | null)[]
+    ) => Observable<(TokenAsset | null)[]>
+  }
+  /** A cursor for elements coming after the current page. */
+  after: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
+  /** A cursor for elements coming before the current page. */
+  before: {
+    execute: (
+      request?: boolean | number,
+      defaultValue?: String | null
+    ) => Observable<String | null>
+  }
+}
+
 export interface MutationPromiseChain {
   /** Delete an existing document in the collection of 'Owner' */
   deleteOwner: (args: {
@@ -4528,6 +5692,18 @@ export interface MutationPromiseChain {
       defaultValue?: TokenAsset | null
     ) => Promise<TokenAsset | null>
   }
+  /** Update an existing document in the collection of 'ScheduledAnalyze' */
+  updateScheduledAnalyze: (args: {
+    /** The 'ScheduledAnalyze' document's ID */
+    id: ID
+    /** 'ScheduledAnalyze' input values */
+    data: ScheduledAnalyzeInput
+  }) => ScheduledAnalyzePromiseChain & {
+    execute: (
+      request: ScheduledAnalyzeRequest,
+      defaultValue?: ScheduledAnalyze | null
+    ) => Promise<ScheduledAnalyze | null>
+  }
   /** Update an existing document in the collection of 'Pin' */
   updatePin: (args: {
     /** The 'Pin' document's ID */
@@ -4549,6 +5725,16 @@ export interface MutationPromiseChain {
       request: MetadataRequest,
       defaultValue?: Metadata
     ) => Promise<Metadata>
+  }
+  /** Delete an existing document in the collection of 'Analyzed' */
+  deleteAnalyzed: (args: {
+    /** The 'Analyzed' document's ID */
+    id: ID
+  }) => AnalyzedPromiseChain & {
+    execute: (
+      request: AnalyzedRequest,
+      defaultValue?: Analyzed | null
+    ) => Promise<Analyzed | null>
   }
   /** Delete an existing document in the collection of 'Token' */
   deleteToken: (args: {
@@ -4588,6 +5774,18 @@ export interface MutationPromiseChain {
       request: MetadataRequest,
       defaultValue?: Metadata | null
     ) => Promise<Metadata | null>
+  }
+  /** Update an existing document in the collection of 'Metric' */
+  updateMetric: (args: {
+    /** The 'Metric' document's ID */
+    id: ID
+    /** 'Metric' input values */
+    data: MetricInput
+  }) => MetricPromiseChain & {
+    execute: (
+      request: MetricRequest,
+      defaultValue?: Metric | null
+    ) => Promise<Metric | null>
   }
   /** Create a new document in the collection of 'TokenContract' */
   createTokenContract: (args: {
@@ -4689,6 +5887,16 @@ export interface MutationPromiseChain {
       defaultValue?: TokenContract | null
     ) => Promise<TokenContract | null>
   }
+  /** Delete an existing document in the collection of 'Metric' */
+  deleteMetric: (args: {
+    /** The 'Metric' document's ID */
+    id: ID
+  }) => MetricPromiseChain & {
+    execute: (
+      request: MetricRequest,
+      defaultValue?: Metric | null
+    ) => Promise<Metric | null>
+  }
   /** Delete an existing document in the collection of 'Resource' */
   deleteResource: (args: {
     /** The 'Resource' document's ID */
@@ -4731,6 +5939,18 @@ export interface MutationPromiseChain {
       defaultValue?: TokenAsset
     ) => Promise<TokenAsset>
   }
+  /** Update an existing document in the collection of 'FailedAnalyze' */
+  updateFailedAnalyze: (args: {
+    /** The 'FailedAnalyze' document's ID */
+    id: ID
+    /** 'FailedAnalyze' input values */
+    data: FailedAnalyzeInput
+  }) => FailedAnalyzePromiseChain & {
+    execute: (
+      request: FailedAnalyzeRequest,
+      defaultValue?: FailedAnalyze | null
+    ) => Promise<FailedAnalyze | null>
+  }
   /** Delete an existing document in the collection of 'Block' */
   deleteBlock: (args: {
     /** The 'Block' document's ID */
@@ -4768,6 +5988,16 @@ export interface MutationPromiseChain {
   }) => CursorPromiseChain & {
     execute: (request: CursorRequest, defaultValue?: Cursor) => Promise<Cursor>
   }
+  /** Create a new document in the collection of 'ScheduledAnalyze' */
+  createScheduledAnalyze: (args: {
+    /** 'ScheduledAnalyze' input values */
+    data: ScheduledAnalyzeInput
+  }) => ScheduledAnalyzePromiseChain & {
+    execute: (
+      request: ScheduledAnalyzeRequest,
+      defaultValue?: ScheduledAnalyze
+    ) => Promise<ScheduledAnalyze>
+  }
   /** Update an existing document in the collection of 'Token' */
   updateToken: (args: {
     /** The 'Token' document's ID */
@@ -4789,6 +6019,13 @@ export interface MutationPromiseChain {
       request: ContentRequest,
       defaultValue?: Content
     ) => Promise<Content>
+  }
+  /** Create a new document in the collection of 'Metric' */
+  createMetric: (args: {
+    /** 'Metric' input values */
+    data: MetricInput
+  }) => MetricPromiseChain & {
+    execute: (request: MetricRequest, defaultValue?: Metric) => Promise<Metric>
   }
   /** Create a new document in the collection of 'ERC721ImportResult' */
   createERC721ImportResult: (args: {
@@ -4849,6 +6086,16 @@ export interface MutationPromiseChain {
         defaultValue?: Resource
       ) => Promise<Resource>
     })
+  /** Create a new document in the collection of 'Analyzed' */
+  createAnalyzed: (args: {
+    /** 'Analyzed' input values */
+    data: AnalyzedInput
+  }) => AnalyzedPromiseChain & {
+    execute: (
+      request: AnalyzedRequest,
+      defaultValue?: Analyzed
+    ) => Promise<Analyzed>
+  }
   /** Delete an existing document in the collection of 'Metadata' */
   deleteMetadata: (args: {
     /** The 'Metadata' document's ID */
@@ -4858,6 +6105,26 @@ export interface MutationPromiseChain {
       request: MetadataRequest,
       defaultValue?: Metadata | null
     ) => Promise<Metadata | null>
+  }
+  /** Delete an existing document in the collection of 'FailedAnalyze' */
+  deleteFailedAnalyze: (args: {
+    /** The 'FailedAnalyze' document's ID */
+    id: ID
+  }) => FailedAnalyzePromiseChain & {
+    execute: (
+      request: FailedAnalyzeRequest,
+      defaultValue?: FailedAnalyze | null
+    ) => Promise<FailedAnalyze | null>
+  }
+  /** Create a new document in the collection of 'FailedAnalyze' */
+  createFailedAnalyze: (args: {
+    /** 'FailedAnalyze' input values */
+    data: FailedAnalyzeInput
+  }) => FailedAnalyzePromiseChain & {
+    execute: (
+      request: FailedAnalyzeRequest,
+      defaultValue?: FailedAnalyze
+    ) => Promise<FailedAnalyze>
   }
   /** Update an existing document in the collection of 'Block' */
   updateBlock: (args: {
@@ -4870,6 +6137,28 @@ export interface MutationPromiseChain {
       request: BlockRequest,
       defaultValue?: Block | null
     ) => Promise<Block | null>
+  }
+  /** Update an existing document in the collection of 'Analyzed' */
+  updateAnalyzed: (args: {
+    /** The 'Analyzed' document's ID */
+    id: ID
+    /** 'Analyzed' input values */
+    data: AnalyzedInput
+  }) => AnalyzedPromiseChain & {
+    execute: (
+      request: AnalyzedRequest,
+      defaultValue?: Analyzed | null
+    ) => Promise<Analyzed | null>
+  }
+  /** Delete an existing document in the collection of 'ScheduledAnalyze' */
+  deleteScheduledAnalyze: (args: {
+    /** The 'ScheduledAnalyze' document's ID */
+    id: ID
+  }) => ScheduledAnalyzePromiseChain & {
+    execute: (
+      request: ScheduledAnalyzeRequest,
+      defaultValue?: ScheduledAnalyze | null
+    ) => Promise<ScheduledAnalyze | null>
   }
   /** Delete an existing document in the collection of 'Content' */
   deleteContent: (args: {
@@ -4923,6 +6212,18 @@ export interface MutationObservableChain {
       defaultValue?: TokenAsset | null
     ) => Observable<TokenAsset | null>
   }
+  /** Update an existing document in the collection of 'ScheduledAnalyze' */
+  updateScheduledAnalyze: (args: {
+    /** The 'ScheduledAnalyze' document's ID */
+    id: ID
+    /** 'ScheduledAnalyze' input values */
+    data: ScheduledAnalyzeInput
+  }) => ScheduledAnalyzeObservableChain & {
+    execute: (
+      request: ScheduledAnalyzeRequest,
+      defaultValue?: ScheduledAnalyze | null
+    ) => Observable<ScheduledAnalyze | null>
+  }
   /** Update an existing document in the collection of 'Pin' */
   updatePin: (args: {
     /** The 'Pin' document's ID */
@@ -4944,6 +6245,16 @@ export interface MutationObservableChain {
       request: MetadataRequest,
       defaultValue?: Metadata
     ) => Observable<Metadata>
+  }
+  /** Delete an existing document in the collection of 'Analyzed' */
+  deleteAnalyzed: (args: {
+    /** The 'Analyzed' document's ID */
+    id: ID
+  }) => AnalyzedObservableChain & {
+    execute: (
+      request: AnalyzedRequest,
+      defaultValue?: Analyzed | null
+    ) => Observable<Analyzed | null>
   }
   /** Delete an existing document in the collection of 'Token' */
   deleteToken: (args: {
@@ -4983,6 +6294,18 @@ export interface MutationObservableChain {
       request: MetadataRequest,
       defaultValue?: Metadata | null
     ) => Observable<Metadata | null>
+  }
+  /** Update an existing document in the collection of 'Metric' */
+  updateMetric: (args: {
+    /** The 'Metric' document's ID */
+    id: ID
+    /** 'Metric' input values */
+    data: MetricInput
+  }) => MetricObservableChain & {
+    execute: (
+      request: MetricRequest,
+      defaultValue?: Metric | null
+    ) => Observable<Metric | null>
   }
   /** Create a new document in the collection of 'TokenContract' */
   createTokenContract: (args: {
@@ -5084,6 +6407,16 @@ export interface MutationObservableChain {
       defaultValue?: TokenContract | null
     ) => Observable<TokenContract | null>
   }
+  /** Delete an existing document in the collection of 'Metric' */
+  deleteMetric: (args: {
+    /** The 'Metric' document's ID */
+    id: ID
+  }) => MetricObservableChain & {
+    execute: (
+      request: MetricRequest,
+      defaultValue?: Metric | null
+    ) => Observable<Metric | null>
+  }
   /** Delete an existing document in the collection of 'Resource' */
   deleteResource: (args: {
     /** The 'Resource' document's ID */
@@ -5126,6 +6459,18 @@ export interface MutationObservableChain {
       defaultValue?: TokenAsset
     ) => Observable<TokenAsset>
   }
+  /** Update an existing document in the collection of 'FailedAnalyze' */
+  updateFailedAnalyze: (args: {
+    /** The 'FailedAnalyze' document's ID */
+    id: ID
+    /** 'FailedAnalyze' input values */
+    data: FailedAnalyzeInput
+  }) => FailedAnalyzeObservableChain & {
+    execute: (
+      request: FailedAnalyzeRequest,
+      defaultValue?: FailedAnalyze | null
+    ) => Observable<FailedAnalyze | null>
+  }
   /** Delete an existing document in the collection of 'Block' */
   deleteBlock: (args: {
     /** The 'Block' document's ID */
@@ -5166,6 +6511,16 @@ export interface MutationObservableChain {
       defaultValue?: Cursor
     ) => Observable<Cursor>
   }
+  /** Create a new document in the collection of 'ScheduledAnalyze' */
+  createScheduledAnalyze: (args: {
+    /** 'ScheduledAnalyze' input values */
+    data: ScheduledAnalyzeInput
+  }) => ScheduledAnalyzeObservableChain & {
+    execute: (
+      request: ScheduledAnalyzeRequest,
+      defaultValue?: ScheduledAnalyze
+    ) => Observable<ScheduledAnalyze>
+  }
   /** Update an existing document in the collection of 'Token' */
   updateToken: (args: {
     /** The 'Token' document's ID */
@@ -5187,6 +6542,16 @@ export interface MutationObservableChain {
       request: ContentRequest,
       defaultValue?: Content
     ) => Observable<Content>
+  }
+  /** Create a new document in the collection of 'Metric' */
+  createMetric: (args: {
+    /** 'Metric' input values */
+    data: MetricInput
+  }) => MetricObservableChain & {
+    execute: (
+      request: MetricRequest,
+      defaultValue?: Metric
+    ) => Observable<Metric>
   }
   /** Create a new document in the collection of 'ERC721ImportResult' */
   createERC721ImportResult: (args: {
@@ -5247,6 +6612,16 @@ export interface MutationObservableChain {
         defaultValue?: Resource
       ) => Observable<Resource>
     })
+  /** Create a new document in the collection of 'Analyzed' */
+  createAnalyzed: (args: {
+    /** 'Analyzed' input values */
+    data: AnalyzedInput
+  }) => AnalyzedObservableChain & {
+    execute: (
+      request: AnalyzedRequest,
+      defaultValue?: Analyzed
+    ) => Observable<Analyzed>
+  }
   /** Delete an existing document in the collection of 'Metadata' */
   deleteMetadata: (args: {
     /** The 'Metadata' document's ID */
@@ -5256,6 +6631,26 @@ export interface MutationObservableChain {
       request: MetadataRequest,
       defaultValue?: Metadata | null
     ) => Observable<Metadata | null>
+  }
+  /** Delete an existing document in the collection of 'FailedAnalyze' */
+  deleteFailedAnalyze: (args: {
+    /** The 'FailedAnalyze' document's ID */
+    id: ID
+  }) => FailedAnalyzeObservableChain & {
+    execute: (
+      request: FailedAnalyzeRequest,
+      defaultValue?: FailedAnalyze | null
+    ) => Observable<FailedAnalyze | null>
+  }
+  /** Create a new document in the collection of 'FailedAnalyze' */
+  createFailedAnalyze: (args: {
+    /** 'FailedAnalyze' input values */
+    data: FailedAnalyzeInput
+  }) => FailedAnalyzeObservableChain & {
+    execute: (
+      request: FailedAnalyzeRequest,
+      defaultValue?: FailedAnalyze
+    ) => Observable<FailedAnalyze>
   }
   /** Update an existing document in the collection of 'Block' */
   updateBlock: (args: {
@@ -5268,6 +6663,28 @@ export interface MutationObservableChain {
       request: BlockRequest,
       defaultValue?: Block | null
     ) => Observable<Block | null>
+  }
+  /** Update an existing document in the collection of 'Analyzed' */
+  updateAnalyzed: (args: {
+    /** The 'Analyzed' document's ID */
+    id: ID
+    /** 'Analyzed' input values */
+    data: AnalyzedInput
+  }) => AnalyzedObservableChain & {
+    execute: (
+      request: AnalyzedRequest,
+      defaultValue?: Analyzed | null
+    ) => Observable<Analyzed | null>
+  }
+  /** Delete an existing document in the collection of 'ScheduledAnalyze' */
+  deleteScheduledAnalyze: (args: {
+    /** The 'ScheduledAnalyze' document's ID */
+    id: ID
+  }) => ScheduledAnalyzeObservableChain & {
+    execute: (
+      request: ScheduledAnalyzeRequest,
+      defaultValue?: ScheduledAnalyze | null
+    ) => Observable<ScheduledAnalyze | null>
   }
   /** Delete an existing document in the collection of 'Content' */
   deleteContent: (args: {
