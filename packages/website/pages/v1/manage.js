@@ -107,7 +107,7 @@ export default function ManageKeys({ user }) {
                           disabled
                           className="w-100 h2"
                           type="text"
-                          id={`value-${t._id}`}
+                          id={`value-${t.id}`}
                           value={t.secret}
                         />
                       </td>
@@ -116,7 +116,7 @@ export default function ManageKeys({ user }) {
                           <Button
                             className="bg-white black"
                             type="submit"
-                            id="copy-key"
+                            id={`copy-key-${t.id}`}
                           >
                             {copied === t.secret ? 'Copied!' : 'Copy'}
                           </Button>
@@ -127,16 +127,16 @@ export default function ManageKeys({ user }) {
                           <input
                             type="hidden"
                             name="name"
-                            id={`token-${t._id}`}
-                            value={t._id}
+                            id={`token-${t.id}`}
+                            value={t.id}
                           />
                           <Button
                             className="bg-nsorange white"
                             type="submit"
                             disabled={Boolean(deleting)}
-                            id="delete-key"
+                            id={`delete-key-${t.id}`}
                           >
-                            {deleting === t._id ? 'Deleting...' : 'Delete'}
+                            {deleting === t.id ? 'Deleting...' : 'Delete'}
                           </Button>
                         </form>
                       </td>

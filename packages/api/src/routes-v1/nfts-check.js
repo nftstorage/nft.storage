@@ -1,26 +1,17 @@
 import { JSONResponse } from '../utils/json-response.js'
 import { HTTPError } from '../errors.js'
-import { buildSdk } from './../utils/fauna'
+import { createSupabaseClient } from './../utils/supabase'
+
+const supa = createSupabaseClient()
 
 /** @type {import('../utils/router.js').Handler} */
 export const checkV1 = async (event, { params }) => {
   const { cid } = params
 
-  const { findContentByCid } = await buildSdk().findContentByCid({ cid })
+  const content = await supa.checkUpload(cid)
 
-  if (findContentByCid) {
-    const value = {
-      cid: findContentByCid.cid,
-      /** @type {import('../bindings.js').Pin} */
-      pin: {
-        cid: findContentByCid.cid,
-        created: findContentByCid.created,
-        size: findContentByCid.dagSize || 0,
-        status: findContentByCid.pins.data[0]?.status || 'queued',
-      },
-      deals: [],
-    }
-    return new JSONResponse({ ok: true, value })
+  if (content) {
+    return new JSONResponse({ ok: true, content })
   } else {
     throw new HTTPError('NFT not found', 404)
   }

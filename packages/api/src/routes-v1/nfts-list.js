@@ -3,7 +3,7 @@ import { validate } from '../utils/auth-v1.js'
 
 /** @type {import('../utils/router.js').Handler} */
 export async function nftListV1(event, ctx) {
-  const { fauna } = await validate(event, ctx)
+  const { user, supa } = await validate(event, ctx)
   const options = {}
   const { searchParams } = new URL(event.request.url)
 
@@ -17,37 +17,14 @@ export async function nftListV1(event, ctx) {
     options.before = before
   }
 
-  const { listUploads } = await fauna.listUploads({
-    size: options.limit || 10,
-    before: options.before || new Date().toISOString(),
+  const nfts = await supa.listUploads({
+    limit,
+    before,
+    issuer: user.issuer,
   })
-  /** @type {import('../bindings').NFTResponse[]} */
-  const rsp = []
-
-  if (listUploads) {
-    for (const up of listUploads) {
-      /** @type {import('../bindings').NFTResponse} */
-      const nft = {
-        cid: up.cid,
-        created: up.created,
-        files: up.files || [],
-        scope: up.key?.name || 'session',
-        size: up.content.dagSize || 0,
-        type: up.type,
-        deals: [],
-        pin: {
-          cid: up.cid,
-          created: up.created,
-          size: up.content.dagSize || 0,
-          status: up.content.pins.data[0]?.status || 'queued',
-        },
-      }
-      rsp.push(nft)
-    }
-  }
 
   return new JSONResponse({
     ok: true,
-    value: rsp,
+    value: nfts,
   })
 }

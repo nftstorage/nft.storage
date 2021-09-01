@@ -12,14 +12,13 @@ const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
  * @typedef {import('../bindings').NFT} NFT
  * @typedef {import('../bindings').NFTResponse} NFTResponse
  * @typedef {import('@nftstorage/ipfs-cluster').StatusResponse} StatusResponse
- * @typedef {import('@nftstorage/db').Pin} DBPin
  */
 
 /** @type {import('../utils/router.js').Handler} */
 export async function uploadV1(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
-  const { user, key, fauna } = await validate(event, ctx)
+  const { user, key, supa } = await validate(event, ctx)
   /** @type {NFTResponse} */
   let nft
 
@@ -32,49 +31,27 @@ export async function uploadV1(event, ctx) {
     const dir = await cluster.addDirectory(files)
     const { cid, size } = dir[dir.length - 1]
 
-    const { createUploadCustom } = await fauna.createUploadCustom({
-      input: [
+    nft = await supa.createUpload({
+      type: 'directory',
+      cid,
+      size,
+      issuer: user.issuer,
+      files: files.map(f => ({
+        name: f.name,
+        type: f.type,
+      })),
+      key_id: key?.key_id,
+      pins: [
         {
-          cid,
-          dagSize: size,
-          type: 'MULTIPART',
-          files: files.map((f) => ({
-            name: f.name,
-            type: f.type,
-          })),
-          key: key?._id,
-          pins: [
-            {
-              status: 'unknown',
-              statusText: '',
-              service: 'IPFS_CLUSTER',
-            },
-            {
-              status: 'unknown',
-              statusText: '',
-              service: 'PINATA',
-            },
-          ],
+          status: 'processing',
+          service: 'IPFS_CLUSTER',
+        },
+        {
+          status: 'processing',
+          service: 'PINATA',
         },
       ],
     })
-    nft = {
-      cid: createUploadCustom[0].cid,
-      created: createUploadCustom[0].created,
-      files: createUploadCustom[0].files || [],
-      scope: createUploadCustom[0].key
-        ? createUploadCustom[0].key.name
-        : 'session',
-      type: 'directory',
-      size,
-      pin: {
-        cid: createUploadCustom[0].content.cid,
-        created: createUploadCustom[0].created,
-        size,
-        status: 'queued',
-      },
-      deals: [],
-    }
   } else {
     const blob = await event.request.blob()
     if (blob.size === 0) {
@@ -94,45 +71,24 @@ export async function uploadV1(event, ctx) {
 
     const dagSize = size || bytes
 
-    const { createUploadCustom } = await fauna.createUploadCustom({
-      input: [
+    nft = await supa.createUpload({
+      type: content.type,
+      cid,
+      size: dagSize,
+      issuer: user.issuer,
+      files: [],
+      key_id: key?.key_id,
+      pins: [
         {
-          cid,
-          dagSize,
-          type: isCar ? 'CAR' : 'BLOB',
-          key: key?._id,
-          pins: [
-            {
-              status: 'unknown',
-              statusText: '',
-              service: 'IPFS_CLUSTER',
-            },
-            {
-              status: 'unknown',
-              statusText: '',
-              service: 'PINATA',
-            },
-          ],
+          status: 'processing',
+          service: 'IPFS_CLUSTER',
+        },
+        {
+          status: 'processing',
+          service: 'PINATA',
         },
       ],
     })
-    nft = {
-      cid: createUploadCustom[0].cid,
-      created: createUploadCustom[0].created,
-      type: content.type,
-      scope: createUploadCustom[0].key
-        ? createUploadCustom[0].key.name
-        : 'session',
-      files: [],
-      size: dagSize,
-      pin: {
-        cid: createUploadCustom[0].content.cid,
-        created: createUploadCustom[0].created,
-        size: dagSize,
-        status: 'queued',
-      },
-      deals: [],
-    }
   }
 
   return new JSONResponse({ ok: true, value: nft })
