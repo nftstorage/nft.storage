@@ -18,19 +18,17 @@ export const main = async () => await spawn(configure())
 export const spawn = async (config) => {
   const deadline = Date.now() + config.budget
   while (deadline - Date.now() > 0) {
-    console.log('🔍 Fetching token assets that were queued')
-    const assets = await fetchTokenURIs(config)
-    if (assets.length === 0) {
+    console.log('🔍 Fetching queued token asset analyses')
+    const analyses = await fetchScheduledAnalyses(config)
+    if (analyses.length === 0) {
       return console.log('🏁 Finish, no more queued task were found')
     } else {
-      console.log(`🤹 Spawn ${assets.length} tasks to process fetched assets`)
-      const updates = await Promise.all(
-        assets.map((asset) => analyze(config, asset))
-      )
+      console.log(`🤹 Spawn ${analyses.length} tasks to process assets`)
+      const updates = await Promise.all(analyses.map(($) => analyze(config, $)))
 
       console.log('💾 Update token assets')
       await updateTokenAssets(config, updates)
-      console.log(`✨ Processed batch of ${assets.length} assets`)
+      console.log(`✨ Processed batch of ${analyses.length} assets`)
     }
   }
   console.log('⌛️ Finish, time is up')
@@ -44,40 +42,40 @@ export const spawn = async (config) => {
  * @param {Object} options
  * @param {number} options.batchSize
  * @param {import('./config').DBConfig} options.db
- * @returns {Promise<TokenAsset[]>}
+ * @returns {Promise<Schema.ScheduledAnalyze[]>}
  */
 
-const fetchTokenURIs = async ({ db, batchSize }) => {
+const fetchScheduledAnalyses = async ({ db, batchSize }) => {
   const result = await query(db, {
-    findTokenAssets: [
+    scheduledAnalyses: [
       {
-        where: {
-          status: Schema.TokenAssetStatus.Queued,
-        },
         _size: batchSize,
       },
       {
         data: {
-          _id: 1,
-          tokenURI: 1,
+          attempt: 1,
+          tokenAsset: {
+            _id: 1,
+            tokenURI: 1,
+          },
         },
       },
     ],
   })
 
-  const assets =
-    /** @type {TokenAsset[]} */
-    (Result.value(result).findTokenAssets.data.filter(Boolean))
+  const tasks =
+    /** @type {Schema.ScheduledAnalyze[]} */
+    (Result.value(result).scheduledAnalyses.data.filter(Boolean))
 
-  return assets
+  return tasks
 }
 
 /**
  * @param {import('./config').Config} config
- * @param {TokenAsset} _asset
+ * @param {Schema.ScheduledAnalyze} scheduledAnalyze
  * @returns {Promise<Schema.TokenAssetUpdate>}
  */
-const analyze = async (config, { _id: id, tokenURI }) => {
+const analyze = async (config, { tokenAsset: { tokenURI, _id: id } }) => {
   console.log(`🔬 (${id}) Parsing tokenURI`)
   const urlResult = Result.fromTry(() => new URL(tokenURI))
   if (!urlResult.ok) {
