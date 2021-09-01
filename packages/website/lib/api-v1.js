@@ -20,7 +20,7 @@ export async function getToken() {
 
 /**
  *
- * @returns {Promise<Array<{_id: string, name: string, secret: string}>>}
+ * @returns {Promise<Array<{id: string, name: string, secret: string}>>}
  */
 export async function getTokens() {
   const res = await fetch(API + '/v1/internal/tokens', {

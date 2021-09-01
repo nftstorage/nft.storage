@@ -3,10 +3,12 @@ import { secrets } from '../constants.js'
 import { HTTPError, ErrorUserNotFound, ErrorTokenNotFound } from '../errors.js'
 import { createOrUpdate, getUser, userSafe } from '../models/users.js'
 import { parseJWT, verifyJWT } from './jwt.js'
-import { buildSdk, login } from './fauna'
+// import { buildSdk, login } from './fauna'
+import { createSupabaseClient } from './supabase'
 export const magic = new Magic(secrets.magic)
 
-const fauna = buildSdk()
+// const fauna = buildSdk()
+const supa = createSupabaseClient()
 
 /**
  * @typedef {import('../models/users').User} User
@@ -21,34 +23,43 @@ const fauna = buildSdk()
 export async function validate(event, { sentry }) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
-
   try {
     // validate access tokens
     if (await verifyJWT(token, secrets.salt)) {
       const decoded = parseJWT(token)
-      const { sdk, loginOutput } = await login(decoded.sub)
-      const keys = loginOutput.user.keys.data || []
-      const key = keys.find((k) => k?.secret === token)
 
-      if (key) {
-        return {
-          user: loginOutput.user,
-          key,
-          fauna: sdk,
-          loginOutput,
+      const user = await supa.getUser(decoded.sub, token)
+      if (user.error) {
+        throw new Error(`DB error: ${JSON.stringify(user.error)}`)
+      }
+
+      if (user.data) {
+        const key = user.data.keys.find(k => k?.secret === token)
+        if (key) {
+          return {
+            user: user.data,
+            key,
+            supa,
+          }
+        } else {
+          throw new ErrorTokenNotFound()
         }
       } else {
-        throw new ErrorTokenNotFound()
+        throw new Error('Could not find user')
       }
     } else {
       // validate magic.link tokens
       magic.token.validate(token)
       const [proof, claim] = magic.token.decode(token)
-      const { sdk, loginOutput } = await login(claim.iss)
+
+      const user = await supa.getUser(claim.iss, token)
+      if (user.error) {
+        throw new Error(`DB error: ${JSON.stringify(user.error)}`)
+      }
 
       return {
-        user: loginOutput.user,
-        fauna: sdk,
+        user: user.data,
+        supa,
       }
     }
   } catch (err) {
@@ -75,20 +86,28 @@ export async function loginOrRegister(event, data) {
         ? await parseGithub(data.data, metadata)
         : parseMagic(metadata)
 
-    await fauna.createOrUpdateUser({
-      input: {
-        email: parsed.email,
-        issuer: parsed.issuer,
-        name: parsed.name,
-        publicAddress: parsed.publicAddress,
-        sub: parsed.sub,
-        picture: parsed.picture,
-        // @ts-ignore
-        github: parsed.github ? parsed.github.userInfo.profile : null,
-      },
+    const upsert = await supa.upsertUser({
+      email: parsed.email,
+      issuer: parsed.issuer,
+      name: parsed.name,
+      public_address: parsed.publicAddress,
+      sub: parsed.sub,
+      picture: parsed.picture,
+      // @ts-ignore
+      github: parsed.github ? parsed.github.userInfo.profile : null,
     })
-    const user = await createOrUpdate(parsed)
-    return { user: userSafe(user), tokenName: 'session' }
+
+    if (upsert.data === null) {
+      throw new Error('Could not retrieve user from db.')
+    }
+
+    if (upsert.error) {
+      // @ts-ignore
+      throw new Error(`DB error: ${JSON.stringify(upsert.error)}`)
+    }
+    const user = upsert.data[0]
+
+    return { user, tokenName: 'session' }
   } else {
     throw new HTTPError(
       'Login or register failed. Issuer could not be fetched.'

@@ -5,7 +5,7 @@ import { secrets } from '../constants.js'
 
 /** @type {import('../utils/router.js').Handler} */
 export const tokensCreateV1 = async (event, ctx) => {
-  const { fauna, user } = await validate(event, ctx)
+  const { supa, user } = await validate(event, ctx)
   const body = await event.request.json()
 
   if (body.name) {
@@ -19,13 +19,11 @@ export const tokensCreateV1 = async (event, ctx) => {
       },
       secrets.salt
     )
-    await fauna.createUserKey({
-      input: {
-        name: body.name,
-        secret: token,
-        created: created.toISOString(),
-        user: { connect: user._id },
-      },
+
+    const out = await supa.createKey({
+      name: body.name,
+      secret: token,
+      issuer: user.issuer,
     })
   } else {
     throw new Error('Token name is required.')

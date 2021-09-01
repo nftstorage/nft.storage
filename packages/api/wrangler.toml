@@ -33,6 +33,7 @@ kv_namespaces = [
 [vars]
 ENV = "dev"
 DEBUG = "*"
+SUPABASE_URL = "https://ryoouiwnemjhenyqqlhp.supabase.co"
 FAUNA_URL = "https://graphql.fauna.com/graphql"
 CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/"
 CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/v0/"

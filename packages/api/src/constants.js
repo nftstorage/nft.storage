@@ -1,4 +1,4 @@
-// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN, FAUNA_KEY
+// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN, FAUNA_KEY, SUPABASE_TOKEN
 export const stores = {
   deals: DEALS,
   users: USERS,
@@ -16,6 +16,7 @@ export const secrets = {
   magic: MAGIC_SECRET_KEY,
   sentry: SENTRY_DSN,
   fauna: FAUNA_KEY,
+  supabase: SUPABASE_TOKEN,
 }
 
 export const cluster = {
@@ -52,6 +53,10 @@ export const pinata = {
 
 export const fauna = {
   url: FAUNA_URL,
+}
+
+export const supabase = {
+  url: SUPABASE_URL,
 }
 
 export const isDebug = DEBUG === 'true'

@@ -1,6 +1,6 @@
 export {}
 
-import { Deal } from 'nft.storage/src/lib/interface'
+import { Deal as ClientDeal } from 'nft.storage/src/lib/interface'
 import Toucan from 'toucan-js'
 
 declare global {
@@ -25,6 +25,8 @@ declare global {
   const MAGIC_SECRET_KEY: string
   const FAUNA_KEY: string
   const FAUNA_URL: string
+  const SUPABASE_URL: string
+  const SUPABASE_TOKEN: string
   const ENV: 'dev' | 'staging' | 'production'
   const SENTRY_DSN: string
   const BRANCH: string
@@ -79,7 +81,7 @@ export type NFTResponse = NFT & {
   deals: Deal[]
 }
 
-export type { Deal }
+export type Deal = ClientDeal
 
 export interface User {
   sub: string

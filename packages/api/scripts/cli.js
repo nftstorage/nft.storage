@@ -29,6 +29,9 @@ const PluginAlias = {
     build.onResolve({ filter: /^node-fetch$/ }, () => {
       return { path: path.resolve(__dirname, 'fetch.js') }
     })
+    build.onResolve({ filter: /^cross-fetch$/ }, () => {
+      return { path: path.resolve(__dirname, 'fetch.js') }
+    })
   },
 }
 prog
