@@ -13,7 +13,7 @@ CreateFunction({
       ['size', 'after', 'before'],
       Let(
         {
-          refs: Call('paginate', Collection('ScheduledAnalyze'), {
+          refs: Call('paginate', Documents(Collection('ScheduledAnalyze')), {
             size: Var('size'),
             after: Var('after'),
             before: Var('before'),

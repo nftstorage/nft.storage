@@ -13,6 +13,55 @@ directive @relation(name: String) on FIELD_DEFINITION
 
 directive @unique(index: String) on FIELD_DEFINITION
 
+"""
+Represents succesfully completed analyze task. Cron job will create on when
+token is succesfully analyzed.
+"""
+type Analyzed {
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+  tokenAsset: TokenAsset!
+
+  """
+  Which attempt is it.
+  """
+  attempt: Int!
+}
+
+"""
+'Analyzed' input values
+"""
+input AnalyzedInput {
+  tokenAsset: AnalyzedTokenAssetRelation
+
+  """
+  Which attempt is it.
+  """
+  attempt: Int!
+}
+
+"""
+Allow manipulating the relationship between the types 'Analyzed' and 'TokenAsset' using the field 'Analyzed.tokenAsset'.
+"""
+input AnalyzedTokenAssetRelation {
+  """
+  Create a document of type 'TokenAsset' and associate it with the current document.
+  """
+  create: TokenAssetInput
+
+  """
+  Connect a document of type 'TokenAsset' with the current document using its ID.
+  """
+  connect: ID
+}
+
 type Block {
   """
   The block number
@@ -399,6 +448,67 @@ input ERC721MetadataQuery {
   ipnft: String
 }
 
+"""
+Represents a failed analyze task. Cron job will create one if analyze task
+has failed.
+"""
+type FailedAnalyze {
+  """
+  The document's ID.
+  """
+  _id: ID!
+  statusText: String!
+  status: TokenAssetStatus!
+
+  """
+  Which attempt is it.
+  """
+  attempt: Int!
+
+  """
+  Ref to token asset that needs to be analyzed.
+  """
+  tokenAsset: TokenAsset!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+"""
+'FailedAnalyze' input values
+"""
+input FailedAnalyzeInput {
+  """
+  Ref to token asset that needs to be analyzed.
+  """
+  tokenAsset: FailedAnalyzeTokenAssetRelation
+
+  """
+  Which attempt is it.
+  """
+  attempt: Int!
+  status: TokenAssetStatus!
+  statusText: String!
+}
+
+"""
+Allow manipulating the relationship between the types 'FailedAnalyze' and
+'TokenAsset' using the field 'FailedAnalyze.tokenAsset'.
+"""
+input FailedAnalyzeTokenAssetRelation {
+  """
+  Create a document of type 'TokenAsset' and associate it with the current document.
+  """
+  create: TokenAssetInput
+
+  """
+  Connect a document of type 'TokenAsset' with the current document using its ID.
+  """
+  connect: ID
+}
+
 input FindResourceInput {
   status: ResourceStatus
 }
@@ -580,6 +690,73 @@ input MetadataSourceRelation {
   disconnect: Boolean
 }
 
+type Metric {
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  Cursor into the dataset this metric is calculating.
+  """
+  cursor: ID
+
+  """
+  Unique key identifying the metric.
+  """
+  key: String!
+
+  """
+  Last time this metric was updated.
+  """
+  updated: Time!
+
+  """
+  Arbitrary metadata serialized as JSON string.
+  """
+  metadata: String
+
+  """
+  Current value for the metric, see updated property for last calculation date.
+  """
+  value: Long!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+}
+
+"""
+'Metric' input values
+"""
+input MetricInput {
+  """
+  Unique key identifying the metric.
+  """
+  key: String!
+
+  """
+  Current value for the metric, see updated property for last calculation date.
+  """
+  value: Long!
+
+  """
+  Arbitrary metadata serialized as JSON string.
+  """
+  metadata: String
+
+  """
+  Last time this metric was updated.
+  """
+  updated: Time!
+
+  """
+  Cursor into the dataset this metric is calculating.
+  """
+  cursor: ID
+}
+
 type Mutation {
   """
   Delete an existing document in the collection of 'Owner'
@@ -612,6 +789,21 @@ type Mutation {
   ): TokenAsset
 
   """
+  Update an existing document in the collection of 'ScheduledAnalyze'
+  """
+  updateScheduledAnalyze(
+    """
+    The 'ScheduledAnalyze' document's ID
+    """
+    id: ID!
+
+    """
+    'ScheduledAnalyze' input values
+    """
+    data: ScheduledAnalyzeInput!
+  ): ScheduledAnalyze
+
+  """
   Update an existing document in the collection of 'Pin'
   """
   updatePin(
@@ -635,6 +827,16 @@ type Mutation {
     """
     data: MetadataInput!
   ): Metadata!
+
+  """
+  Delete an existing document in the collection of 'Analyzed'
+  """
+  deleteAnalyzed(
+    """
+    The 'Analyzed' document's ID
+    """
+    id: ID!
+  ): Analyzed
 
   """
   Delete an existing document in the collection of 'Token'
@@ -680,6 +882,21 @@ type Mutation {
     """
     data: MetadataInput!
   ): Metadata
+
+  """
+  Update an existing document in the collection of 'Metric'
+  """
+  updateMetric(
+    """
+    The 'Metric' document's ID
+    """
+    id: ID!
+
+    """
+    'Metric' input values
+    """
+    data: MetricInput!
+  ): Metric
 
   """
   Create a new document in the collection of 'TokenContract'
@@ -774,6 +991,16 @@ type Mutation {
   ): TokenContract
 
   """
+  Delete an existing document in the collection of 'Metric'
+  """
+  deleteMetric(
+    """
+    The 'Metric' document's ID
+    """
+    id: ID!
+  ): Metric
+
+  """
   Delete an existing document in the collection of 'Resource'
   """
   deleteResource(
@@ -813,6 +1040,21 @@ type Mutation {
     data: OwnerInput!
   ): Owner
   updateTokenAsset(input: TokenAssetUpdate!): TokenAsset!
+
+  """
+  Update an existing document in the collection of 'FailedAnalyze'
+  """
+  updateFailedAnalyze(
+    """
+    The 'FailedAnalyze' document's ID
+    """
+    id: ID!
+
+    """
+    'FailedAnalyze' input values
+    """
+    data: FailedAnalyzeInput!
+  ): FailedAnalyze
 
   """
   Delete an existing document in the collection of 'Block'
@@ -855,6 +1097,16 @@ type Mutation {
   ): Cursor!
 
   """
+  Create a new document in the collection of 'ScheduledAnalyze'
+  """
+  createScheduledAnalyze(
+    """
+    'ScheduledAnalyze' input values
+    """
+    data: ScheduledAnalyzeInput!
+  ): ScheduledAnalyze!
+
+  """
   Update an existing document in the collection of 'Token'
   """
   updateToken(
@@ -878,6 +1130,16 @@ type Mutation {
     """
     data: ContentInput!
   ): Content!
+
+  """
+  Create a new document in the collection of 'Metric'
+  """
+  createMetric(
+    """
+    'Metric' input values
+    """
+    data: MetricInput!
+  ): Metric!
 
   """
   Create a new document in the collection of 'ERC721ImportResult'
@@ -927,6 +1189,16 @@ type Mutation {
   updateResource(input: ResourceUpdate): Resource!
 
   """
+  Create a new document in the collection of 'Analyzed'
+  """
+  createAnalyzed(
+    """
+    'Analyzed' input values
+    """
+    data: AnalyzedInput!
+  ): Analyzed!
+
+  """
   Delete an existing document in the collection of 'Metadata'
   """
   deleteMetadata(
@@ -935,6 +1207,26 @@ type Mutation {
     """
     id: ID!
   ): Metadata
+
+  """
+  Delete an existing document in the collection of 'FailedAnalyze'
+  """
+  deleteFailedAnalyze(
+    """
+    The 'FailedAnalyze' document's ID
+    """
+    id: ID!
+  ): FailedAnalyze
+
+  """
+  Create a new document in the collection of 'FailedAnalyze'
+  """
+  createFailedAnalyze(
+    """
+    'FailedAnalyze' input values
+    """
+    data: FailedAnalyzeInput!
+  ): FailedAnalyze!
 
   """
   Update an existing document in the collection of 'Block'
@@ -950,6 +1242,31 @@ type Mutation {
     """
     data: BlockInput!
   ): Block
+
+  """
+  Update an existing document in the collection of 'Analyzed'
+  """
+  updateAnalyzed(
+    """
+    The 'Analyzed' document's ID
+    """
+    id: ID!
+
+    """
+    'Analyzed' input values
+    """
+    data: AnalyzedInput!
+  ): Analyzed
+
+  """
+  Delete an existing document in the collection of 'ScheduledAnalyze'
+  """
+  deleteScheduledAnalyze(
+    """
+    The 'ScheduledAnalyze' document's ID
+    """
+    id: ID!
+  ): ScheduledAnalyze
 
   """
   Delete an existing document in the collection of 'Content'
@@ -1253,6 +1570,18 @@ type Query {
     """
     id: ID!
   ): Block
+  findTokenAssetsByCID(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+    cid: ID
+  ): QueryFindTokenAssetsByCIDPage!
 
   """
   Find a document from the collection of 'TokenContract' by its id.
@@ -1264,6 +1593,31 @@ type Query {
     id: ID!
   ): TokenContract
   constract(id: ID): TokenContract
+
+  """
+  Returns page of scheduled analyze tasks
+  """
+  scheduledAnalyses(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+  ): QueryScheduledAnalysesPage!
+
+  """
+  Find a document from the collection of 'Metric' by its id.
+  """
+  findMetricByID(
+    """
+    The 'Metric' document's ID
+    """
+    id: ID!
+  ): Metric
 
   """
   Provides tokens with the
@@ -1290,6 +1644,7 @@ type Query {
     """
     id: ID!
   ): Resource
+  findMetricByKey(key: String!): Metric
 
   """
   Find a document from the collection of 'Token' by its id.
@@ -1366,6 +1721,16 @@ type Query {
   ): Content
 
   """
+  Find a document from the collection of 'Analyzed' by its id.
+  """
+  findAnalyzedByID(
+    """
+    The 'Analyzed' document's ID
+    """
+    id: ID!
+  ): Analyzed
+
+  """
   Find a document from the collection of 'Cursor' by its id.
   """
   findCursorByID(
@@ -1396,6 +1761,16 @@ type Query {
     """
     id: ID!
   ): TokenAsset
+
+  """
+  Find a document from the collection of 'FailedAnalyze' by its id.
+  """
+  findFailedAnalyzeByID(
+    """
+    The 'FailedAnalyze' document's ID
+    """
+    id: ID!
+  ): FailedAnalyze
   tokens(
     """
     The number of items to return per page.
@@ -1410,7 +1785,29 @@ type Query {
     mintTime: String
   ): TokenPage!
   owner(id: ID): Owner
+  findTokenAssetsByURI(
+    """
+    The number of items to return per page.
+    """
+    _size: Int
+
+    """
+    The pagination cursor.
+    """
+    _cursor: String
+    uri: String
+  ): QueryFindTokenAssetsByURIPage!
   findResourceByURI(uri: String): Resource
+
+  """
+  Find a document from the collection of 'ScheduledAnalyze' by its id.
+  """
+  findScheduledAnalyzeByID(
+    """
+    The 'ScheduledAnalyze' document's ID
+    """
+    id: ID!
+  ): ScheduledAnalyze
 
   """
   Find a document from the collection of 'Pin' by its id.
@@ -1457,11 +1854,71 @@ type QueryFindResourcesPage {
 """
 The pagination object for elements of type 'TokenAsset'.
 """
+type QueryFindTokenAssetsByCIDPage {
+  """
+  The elements of type 'TokenAsset' in this page.
+  """
+  data: [TokenAsset]!
+
+  """
+  A cursor for elements coming after the current page.
+  """
+  after: String
+
+  """
+  A cursor for elements coming before the current page.
+  """
+  before: String
+}
+
+"""
+The pagination object for elements of type 'TokenAsset'.
+"""
+type QueryFindTokenAssetsByURIPage {
+  """
+  The elements of type 'TokenAsset' in this page.
+  """
+  data: [TokenAsset]!
+
+  """
+  A cursor for elements coming after the current page.
+  """
+  after: String
+
+  """
+  A cursor for elements coming before the current page.
+  """
+  before: String
+}
+
+"""
+The pagination object for elements of type 'TokenAsset'.
+"""
 type QueryFindTokenAssetsPage {
   """
   The elements of type 'TokenAsset' in this page.
   """
   data: [TokenAsset]!
+
+  """
+  A cursor for elements coming after the current page.
+  """
+  after: String
+
+  """
+  A cursor for elements coming before the current page.
+  """
+  before: String
+}
+
+"""
+The pagination object for elements of type 'ScheduledAnalyze'.
+"""
+type QueryScheduledAnalysesPage {
+  """
+  The elements of type 'ScheduledAnalyze' in this page.
+  """
+  data: [ScheduledAnalyze]!
 
   """
   A cursor for elements coming after the current page.
@@ -1682,6 +2139,63 @@ input ResourceUpdate {
   If provided status should be `ContentLinked`.
   """
   cid: String
+}
+
+"""
+Represents a scheduled analyze task. Cron job will pull from collection,
+perform a task and then remove it.
+"""
+type ScheduledAnalyze {
+  """
+  The document's ID.
+  """
+  _id: ID!
+
+  """
+  The document's timestamp.
+  """
+  _ts: Long!
+
+  """
+  Ref to token asset that needs to be analyzed.
+  """
+  tokenAsset: TokenAsset!
+
+  """
+  Which attempt is it.
+  """
+  attempt: Int!
+}
+
+"""
+'ScheduledAnalyze' input values
+"""
+input ScheduledAnalyzeInput {
+  """
+  Ref to token asset that needs to be analyzed.
+  """
+  tokenAsset: ScheduledAnalyzeTokenAssetRelation
+
+  """
+  Which attempt is it.
+  """
+  attempt: Int!
+}
+
+"""
+Allow manipulating the relationship between the types 'ScheduledAnalyze' and
+'TokenAsset' using the field 'ScheduledAnalyze.tokenAsset'.
+"""
+input ScheduledAnalyzeTokenAssetRelation {
+  """
+  Create a document of type 'TokenAsset' and associate it with the current document.
+  """
+  create: TokenAssetInput
+
+  """
+  Connect a document of type 'TokenAsset' with the current document using its ID.
+  """
+  connect: ID
 }
 
 scalar Time
