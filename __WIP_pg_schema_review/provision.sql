@@ -107,23 +107,9 @@ CREATE TABLE "token_contract" (
 );
 
 -- CreateTable
-CREATE TABLE "Owner" (
-    "id" TEXT NOT NULL,
-
-    PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "erc721_import_result" (
     "id" TEXT NOT NULL,
     "next_id" TEXT NOT NULL,
-
-    PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Cursor" (
-    "id" TEXT NOT NULL,
 
     PRIMARY KEY ("id")
 );
@@ -186,13 +172,7 @@ CREATE UNIQUE INDEX "pin_location.id_unique" ON "pin_location"("id");
 CREATE UNIQUE INDEX "token_contract.id_unique" ON "token_contract"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Owner.id_unique" ON "Owner"("id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "erc721_import_result.id_unique" ON "erc721_import_result"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Cursor.id_unique" ON "Cursor"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_blockTotoken_AB_unique" ON "_blockTotoken"("A", "B");

@@ -91,18 +91,10 @@ Table token_contract {
   tokens token [not null]
 }
 
-Table Owner {
-  id String [pk, unique]
-}
-
 Table erc721_import_result {
   id String [pk, unique]
   next_id String [not null]
   tokens token [not null]
-}
-
-Table Cursor {
-  id String [pk, unique]
 }
 
 Table blockTotoken {
