@@ -107,7 +107,7 @@ Table erc721_import_resultTotoken {
   tokensId String [ref: > token.id]
 }
 
-Table metadataresources {
+Table metadata_resources {
   assetsId String [ref: > resource.uri]
   referrersId String [ref: > metadata.id]
 }

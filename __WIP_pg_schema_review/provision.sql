@@ -127,7 +127,7 @@ CREATE TABLE "_erc721_import_resultTotoken" (
 );
 
 -- CreateTable
-CREATE TABLE "_metadataresources" (
+CREATE TABLE "_metadata_resources" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
@@ -187,10 +187,10 @@ CREATE UNIQUE INDEX "_erc721_import_resultTotoken_AB_unique" ON "_erc721_import_
 CREATE INDEX "_erc721_import_resultTotoken_B_index" ON "_erc721_import_resultTotoken"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_metadataresources_AB_unique" ON "_metadataresources"("A", "B");
+CREATE UNIQUE INDEX "_metadata_resources_AB_unique" ON "_metadata_resources"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_metadataresources_B_index" ON "_metadataresources"("B");
+CREATE INDEX "_metadata_resources_B_index" ON "_metadata_resources"("B");
 
 -- AddForeignKey
 ALTER TABLE "token" ADD FOREIGN KEY ("token_asset_id") REFERENCES "token_asset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -223,7 +223,7 @@ ALTER TABLE "_erc721_import_resultTotoken" ADD FOREIGN KEY ("A") REFERENCES "erc
 ALTER TABLE "_erc721_import_resultTotoken" ADD FOREIGN KEY ("B") REFERENCES "token"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_metadataresources" ADD FOREIGN KEY ("A") REFERENCES "metadata"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_metadata_resources" ADD FOREIGN KEY ("A") REFERENCES "metadata"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_metadataresources" ADD FOREIGN KEY ("B") REFERENCES "resource"("uri") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_metadata_resources" ADD FOREIGN KEY ("B") REFERENCES "resource"("uri") ON DELETE CASCADE ON UPDATE CASCADE;
