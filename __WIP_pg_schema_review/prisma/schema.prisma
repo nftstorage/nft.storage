@@ -1,0 +1,161 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator dbml {
+   provider = "prisma-dbml-generator"
+}
+
+//Enums
+enum resource_status {
+    Idle            // Idle: Has not been processed
+    PinQueued       // PinQueued: Pin request started.
+    // A CID was found in the token_uri because it was a gateway URL.
+    // Started a pin yet unknown if content fetch is possible.
+    Pinned          //Pinned: Was pinned successfully
+    FailedURIParse  //FailedURIParse: Unable to fetch the content
+    FailedFetch     //FailedFetch: Unable to fetch content
+    PinFailure      //PinFailure:  when pinned by CID but correspoding content isn't online
+}
+
+enum token_asset_status {
+  Queued
+  Failed
+  Succeeded
+}
+
+enum pin_status {
+  PinFailed          // An error occurred pinning.
+  Pinned             // Node has pinned the content.
+  Pinning            // Node is currently pinning the content.
+  PinQueued          // The item has been queued for pinning.
+}
+
+
+//Models
+model block {
+    hash                String          @id @unique //the hash of the block
+    number              Int             @unique     //the block number
+    tokens              token[]
+}
+
+model token {
+    id                  String          @id @unique
+    token_id            String
+    mint_time           String
+    token_asset_id      String
+    // Present when ERC721metadata interface is implemented.
+    token_asset         token_asset      @relation(fields: [token_asset_id], references: [id])
+    blocks              block[]
+    token_contract_id   String
+    contract            token_contract   @relation(fields: [token_contract_id], references: [id])
+    owner_id            String
+    imported            erc721_import_result[]
+}
+
+model token_asset {
+    id                  String          @id @unique
+    //Multiple tokens may have the same token_uri. This allows tracking which tokens share same token_uri.
+    referrers           token[]
+    token_uri           String          @unique
+    ipnft               String
+    problem             String?
+    // token_uri may point to JSON that contorms to ERC721.
+    // this is fetched, parsed and stored as a related metadata document.
+    metadata            metadata?
+}
+
+model metadata {
+    id                  String          @id @unique
+    cid                 String?
+    source_id           String          @unique
+    source              token_asset     @relation(fields: [source_id], references: [id])
+    name                String?                      //identifies the asset this token represents
+    description         String?                     //describes the asset this token represents
+    imageId             String
+    image_uri           String
+    assets              resource[]      @relation("metadataresources")
+}
+
+model resource {
+    // Jesse Note: This might be not-correct, need to review this relationship
+    // I am assuming a resource can (possible appear in multiple metadata Images)
+    // confirm with Gozala, fit not metadata? is also doable.
+    referrers           metadata[]      @relation("metadataresources")
+    status              resource_status
+    status_text         String
+    created             DateTime
+    updated             DateTime
+    uri                 String          @id @unique //uri with which resource identified
+    ipfs_url            String          @unique     //ipfs:// url if `uri` was referring to gateway URL.
+
+    problem             String                      //Problem description if there was a problem pinning
+//   Content referrerced by this resource. When `ipfsURL` is derived content
+//   archiving job will simply pin content by that URL and update resource linking
+//   resource to it. If however `ipfsURL` could not be derived archiving job will
+//   attempt to fetch the content from `uri` and pin it again linkking resource
+//   to it.
+
+//   Content field is only going to be present when resource has a `ContentLinked`
+    cid                 String?           //CID corresponding to this resource once it is pinned.
+    content             content?         @relation(fields: [cid], references: [cid])
+
+}
+
+model content {
+    cid                 String          @id @unique
+    resources           resource[]
+    dag_size            Int?
+    created             DateTime
+    pins                pin[]
+}
+
+model pin {
+    id                  String          @id @unique     // there wasn't an id so I added this.
+    cid                 String
+    content             content         @relation(fields: [cid], references: [cid]) //content being pinned
+    location_id         String
+    location            pin_location    @relation(fields: [location_id], references: [id]) //ref to a pin location pinning this
+    pin                 pin_status                      // pinning status at this location
+    status_text         String?                         // human readable description of pin status (needed in edge cases)
+    updated             DateTime
+    created             DateTime
+}
+
+model pin_location {
+    id                  String          @id @unique
+    pins                pin[]                           // Known pins at this location
+    peer_id             String                          // Libp2p peer id of the node pinning this pin
+    peer_name           String                          // Name of the peer pinning this pin
+    region              String                          // Geo region this node resided in
+}
+
+model token_contract {
+    id                       String     @id @unique
+    name                     String                      // descriptive name for a collection of NFTs
+    symbol                   String                      // abbreviate name for NFTs
+    supports_eip721_metadata Boolean
+    tokens                   token[]
+}
+
+model Owner {
+     id                 String          @id @unique
+}
+
+model erc721_import_result {
+     id                 String          @id @unique // import start cursor
+     next_id            String                      // new cursor after this import
+     tokens             token[]                     // tokens that were imported
+}
+
+model Cursor {
+      id                String          @id @unique // should the erc721_import_results use this?
+}

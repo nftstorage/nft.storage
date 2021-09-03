@@ -1,0 +1,155 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table block {
+  hash String [pk, unique]
+  number Int [unique, not null]
+  tokens token [not null]
+}
+
+Table token {
+  id String [pk, unique]
+  token_id String [not null]
+  mint_time String [not null]
+  token_asset_id String [not null]
+  token_asset token_asset [not null]
+  blocks block [not null]
+  token_contract_id String [not null]
+  contract token_contract [not null]
+  owner_id String [not null]
+  imported erc721_import_result [not null]
+}
+
+Table token_asset {
+  id String [pk, unique]
+  referrers token [not null]
+  token_uri String [unique, not null]
+  ipnft String [not null]
+  problem String
+  metadata metadata
+}
+
+Table metadata {
+  id String [pk, unique]
+  cid String
+  source_id String [unique, not null]
+  source token_asset [not null]
+  name String
+  description String
+  imageId String [not null]
+  image_uri String [not null]
+  assets resource [not null]
+}
+
+Table resource {
+  referrers metadata [not null]
+  status resource_status [not null]
+  status_text String [not null]
+  created DateTime [not null]
+  updated DateTime [not null]
+  uri String [pk, unique]
+  ipfs_url String [unique, not null]
+  problem String [not null]
+  cid String
+  content content
+}
+
+Table content {
+  cid String [pk, unique]
+  resources resource [not null]
+  dag_size Int
+  created DateTime [not null]
+  pins pin [not null]
+}
+
+Table pin {
+  id String [pk, unique]
+  cid String [not null]
+  content content [not null]
+  location_id String [not null]
+  location pin_location [not null]
+  pin pin_status [not null]
+  status_text String
+  updated DateTime [not null]
+  created DateTime [not null]
+}
+
+Table pin_location {
+  id String [pk, unique]
+  pins pin [not null]
+  peer_id String [not null]
+  peer_name String [not null]
+  region String [not null]
+}
+
+Table token_contract {
+  id String [pk, unique]
+  name String [not null]
+  symbol String [not null]
+  supports_eip721_metadata Boolean [not null]
+  tokens token [not null]
+}
+
+Table Owner {
+  id String [pk, unique]
+}
+
+Table erc721_import_result {
+  id String [pk, unique]
+  next_id String [not null]
+  tokens token [not null]
+}
+
+Table Cursor {
+  id String [pk, unique]
+}
+
+Table blockTotoken {
+  tokensId String [ref: > token.id]
+  blocksId String [ref: > block.hash]
+}
+
+Table erc721_import_resultTotoken {
+  importedId String [ref: > erc721_import_result.id]
+  tokensId String [ref: > token.id]
+}
+
+Table metadataresources {
+  assetsId String [ref: > resource.uri]
+  referrersId String [ref: > metadata.id]
+}
+
+Enum resource_status {
+  Idle
+  PinQueued
+  Pinned
+  FailedURIParse
+  FailedFetch
+  PinFailure
+}
+
+Enum token_asset_status {
+  Queued
+  Failed
+  Succeeded
+}
+
+Enum pin_status {
+  PinFailed
+  Pinned
+  Pinning
+  PinQueued
+}
+
+Ref: token.token_asset_id > token_asset.id
+
+Ref: token.token_contract_id > token_contract.id
+
+Ref: metadata.source_id - token_asset.id
+
+Ref: resource.cid > content.cid
+
+Ref: pin.cid > content.cid
+
+Ref: pin.location_id > pin_location.id
