@@ -161,6 +161,8 @@ class Router {
    */
   listen(event) {
     const url = new URL(event.request.url)
+
+    // Ignore calls to local database
     if (url.host !== 'localhost:8000') {
       event.respondWith(this.route(event))
     }
