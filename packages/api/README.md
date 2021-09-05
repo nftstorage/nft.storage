@@ -13,6 +13,9 @@ Note: tokens can be created here https://sentry.io/settings/account/api/auth-tok
 ```ini
 SENTRY_TOKEN=<sentry user auth token>
 SENTRY_UPLOAD=false # toggle for sentry source/sourcemaps upload (capture will still work)
+
+DATABASE_URL=http://localhost:8000
+DATABASE_TOKEN=<token>
 ```
 
 Production vars should be set in Github Actions secrets.

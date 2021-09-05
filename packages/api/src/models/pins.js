@@ -1,12 +1,12 @@
 import { stores } from '../constants.js'
 
-/** @typedef {import('../bindings.js').Pin} Pin */
+/** @typedef {{ cid: string, status: import('../bindings.js').PinStatus, size: number, created: string }} Pin */
 
 /**
  * @param {string} cid CID of the pin
  * @returns {Promise<Pin>}
  */
-export const get = async (cid) => {
+export const get = async cid => {
   const { metadata } = await stores.pins.getWithMetadata(cid)
   // @ts-ignore
   return metadata
