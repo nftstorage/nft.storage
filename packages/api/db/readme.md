@@ -14,9 +14,26 @@ dbname=postgres
 port=5432
 password=secret-password
 
-# then you can
-pg_dump service=supabase -n public -s > dump.sql
-psql service=supabase -f tables.sql
-psql service=supabase -f reset.sql
+[local]
+host=localhost
+user=postgres
+dbname=postgres
+port=5432
+password=postgres
 
+# then you can
+pg_dump service=nft.storage -n public -s > dump.sql
+psql service=nft.storage -f tables.sql
+psql service=nft.storage -f reset.sql
+
+```
+
+# Local env
+
+```bash
+npx supabase init
+npx supabase start
+
+psql service=local -f db/tables.sql
+psql service=local -f db/functions.sql
 ```

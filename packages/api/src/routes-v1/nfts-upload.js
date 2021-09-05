@@ -1,9 +1,9 @@
 import { HTTPError } from '../errors.js'
-import { toFormData } from '../utils/form-data.js'
 import * as cluster from '../cluster.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth-v1.js'
 import { debug } from '../utils/debug.js'
+import { toNFTResponse } from '../utils/db-client.js'
 
 const log = debug('nfts-upload')
 const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
@@ -18,20 +18,24 @@ const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
 export async function uploadV1(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
-  const { user, key, supa } = await validate(event, ctx)
-  /** @type {NFTResponse} */
-  let nft
+  const { user, key, db } = await validate(event, ctx)
+  /** @type {import('../utils/db-client').UploadFull} */
+  let upload
 
   if (contentType.includes('multipart/form-data')) {
-    const form = await toFormData(event.request)
+    const form = await event.request.formData()
     // Our API schema requires that all file parts be named `file` and
     // encoded as binary, which is why we can expect that each part here is
     // a file (and not a stirng).
     const files = /** @type {File[]} */ (form.getAll('file'))
-    const dir = await cluster.addDirectory(files)
+
+    const dirSize = files.reduce((total, f) => total + f.size, 0)
+    const dir = await cluster.addDirectory(files, {
+      local: dirSize > LOCAL_ADD_THRESHOLD,
+    })
     const { cid, size } = dir[dir.length - 1]
 
-    nft = await supa.createUpload({
+    upload = await db.createUpload({
       type: 'directory',
       cid,
       size,
@@ -43,11 +47,11 @@ export async function uploadV1(event, ctx) {
       key_id: key?.key_id,
       pins: [
         {
-          status: 'processing',
+          status: 'queued',
           service: 'IPFS_CLUSTER',
         },
         {
-          status: 'processing',
+          status: 'queued',
           service: 'PINATA',
         },
       ],
@@ -71,7 +75,7 @@ export async function uploadV1(event, ctx) {
 
     const dagSize = size || bytes
 
-    nft = await supa.createUpload({
+    upload = await db.createUpload({
       type: content.type,
       cid,
       size: dagSize,
@@ -80,16 +84,16 @@ export async function uploadV1(event, ctx) {
       key_id: key?.key_id,
       pins: [
         {
-          status: 'processing',
+          status: 'queued',
           service: 'IPFS_CLUSTER',
         },
         {
-          status: 'processing',
+          status: 'queued',
           service: 'PINATA',
         },
       ],
     })
   }
 
-  return new JSONResponse({ ok: true, value: nft })
+  return new JSONResponse({ ok: true, value: toNFTResponse(upload) })
 }

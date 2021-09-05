@@ -32,6 +32,10 @@ import { checkV1 } from './routes-v1/nfts-check.js'
 import { nftDeleteV1 } from './routes-v1/nfts-delete.js'
 import { nftListV1 } from './routes-v1/nfts-list.js'
 import { nftStoreV1 } from './routes-v1/nfts-store.js'
+import { pinsAddV1 } from './routes-v1/pins-add.js'
+import { pinsDeleteV1 } from './routes-v1/pins-delete.js'
+import { pinsGetV1 } from './routes-v1/pins-get.js'
+import { pinsListV1 } from './routes-v1/pins-list.js'
 
 const log = debug('router')
 
@@ -52,7 +56,7 @@ r.add('options', '*', cors)
 r.add('post', '/login', login, [postCors])
 
 // Version
-r.add('get', '/version', (event) => {
+r.add('get', '/version', event => {
   return new JSONResponse({
     version: VERSION,
     commit: COMMITHASH,
@@ -75,6 +79,11 @@ r.add('delete', '/pins/:requestid', pinsDelete, [postCors])
 
 // V1 routes
 r.add('post', '/v1/login', loginV1, [postCors])
+
+r.add('get', '/v1/pins', pinsListV1, [postCors])
+r.add('get', '/v1/pins/:requestid', pinsGetV1, [postCors])
+r.add('post', '/v1/pins', pinsAddV1, [postCors])
+r.add('delete', '/v1/pins/:requestid', pinsDeleteV1, [postCors])
 
 r.add('get', '/v1', nftListV1, [postCors])
 r.add('get', '/v1/:cid', statusV1, [postCors])
@@ -112,7 +121,7 @@ r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))
 
 // Cron jobs
-addEventListener('scheduled', (event) => {
+addEventListener('scheduled', event => {
   // TODO: remove when https://github.com/cloudflare/workers-types/pull/86 released
   // @ts-ignore
   if (event.cron !== '*/15 * * * *') return

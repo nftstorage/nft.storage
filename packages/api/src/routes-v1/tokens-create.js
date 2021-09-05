@@ -5,7 +5,7 @@ import { secrets } from '../constants.js'
 
 /** @type {import('../utils/router.js').Handler} */
 export const tokensCreateV1 = async (event, ctx) => {
-  const { supa, user } = await validate(event, ctx)
+  const { db, user } = await validate(event, ctx)
   const body = await event.request.json()
 
   if (body.name) {
@@ -20,7 +20,7 @@ export const tokensCreateV1 = async (event, ctx) => {
       secrets.salt
     )
 
-    const out = await supa.createKey({
+    const out = await db.createKey({
       name: body.name,
       secret: token,
       issuer: user.issuer,

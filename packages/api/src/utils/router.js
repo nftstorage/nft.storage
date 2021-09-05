@@ -160,7 +160,10 @@ class Router {
    * @param {FetchEvent} event
    */
   listen(event) {
-    event.respondWith(this.route(event))
+    const url = new URL(event.request.url)
+    if (url.host !== 'localhost:8000') {
+      event.respondWith(this.route(event))
+    }
   }
 }
 

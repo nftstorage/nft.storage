@@ -1,6 +1,5 @@
 import { validate } from '../utils/auth-v1.js'
 import setIn from 'just-safe-set'
-import { toFormData } from '../utils/form-data.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as CBOR from '@ipld/dag-cbor'
 import * as cluster from '../cluster.js'
@@ -19,22 +18,23 @@ const log = debug('nft-store')
 
 /** @type {import('../utils/router.js').Handler} */
 export async function nftStoreV1(event, ctx) {
-  const { key, fauna } = await validate(event, ctx)
-  const form = await toFormData(event.request)
+  const { user, key, db } = await validate(event, ctx)
+  const form = await event.request.formData()
 
-  const data = JSON.parse(/** @type {string} */ (form.get('meta')))
-  const dag = JSON.parse(JSON.stringify(data))
+  const meta = /** @type {string} */ (form.get('meta'))
+  const data = JSON.parse(meta)
+  const dag = JSON.parse(meta)
 
   const files = []
 
   for (const [name, content] of form.entries()) {
     if (name !== 'meta') {
       const file = /** @type {File} */ (content)
-      const cid = CID.parse(
-        await cluster.importAsset(file, {
-          local: file.size > constants.cluster.localAddThreshold,
-        })
-      )
+      const asset = await cluster.importAsset(file, {
+        local: file.size > constants.cluster.localAddThreshold,
+      })
+      const cid = CID.parse(asset)
+
       const href = `ipfs://${cid}/${file.name}`
       const path = name.split('.')
       setIn(data, path, href)
@@ -61,25 +61,20 @@ export async function nftStoreV1(event, ctx) {
     local: car.size > constants.cluster.localAddThreshold,
   })
 
-  await fauna.createUploadCustom({
-    input: [
+  await db.createUpload({
+    type: 'NFT',
+    cid,
+    size: bytes,
+    issuer: user.issuer,
+    key_id: key?.key_id,
+    pins: [
       {
-        cid,
-        dagSize: bytes,
-        type: 'NFT',
-        key: key?._id,
-        pins: [
-          {
-            status: 'unknown',
-            statusText: '',
-            service: 'IPFS_CLUSTER',
-          },
-          {
-            status: 'unknown',
-            statusText: '',
-            service: 'PINATA',
-          },
-        ],
+        status: 'queued',
+        service: 'IPFS_CLUSTER',
+      },
+      {
+        status: 'queued',
+        service: 'PINATA',
       },
     ],
   })

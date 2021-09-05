@@ -1,14 +1,11 @@
 import { Magic } from '@magic-sdk/admin'
 import { secrets } from '../constants.js'
 import { HTTPError, ErrorUserNotFound, ErrorTokenNotFound } from '../errors.js'
-import { createOrUpdate, getUser, userSafe } from '../models/users.js'
 import { parseJWT, verifyJWT } from './jwt.js'
-// import { buildSdk, login } from './fauna'
-import { createSupabaseClient } from './supabase'
+import { createDBClient } from './db-client'
 export const magic = new Magic(secrets.magic)
 
-// const fauna = buildSdk()
-const supa = createSupabaseClient()
+const db = createDBClient()
 
 /**
  * @typedef {import('../models/users').User} User
@@ -28,7 +25,7 @@ export async function validate(event, { sentry }) {
     if (await verifyJWT(token, secrets.salt)) {
       const decoded = parseJWT(token)
 
-      const user = await supa.getUser(decoded.sub, token)
+      const user = await db.getUser(decoded.sub, token)
       if (user.error) {
         throw new Error(`DB error: ${JSON.stringify(user.error)}`)
       }
@@ -39,7 +36,7 @@ export async function validate(event, { sentry }) {
           return {
             user: user.data,
             key,
-            supa,
+            db,
           }
         } else {
           throw new ErrorTokenNotFound()
@@ -52,20 +49,20 @@ export async function validate(event, { sentry }) {
       magic.token.validate(token)
       const [proof, claim] = magic.token.decode(token)
 
-      const user = await supa.getUser(claim.iss, token)
+      const user = await db.getUser(claim.iss, token)
       if (user.error) {
         throw new Error(`DB error: ${JSON.stringify(user.error)}`)
       }
 
       return {
         user: user.data,
-        supa,
+        db,
       }
     }
   } catch (err) {
     console.error(err)
     sentry.captureException(err)
-    throw new ErrorUserNotFound()
+    throw new ErrorUserNotFound(err.message)
   }
 }
 
@@ -86,7 +83,7 @@ export async function loginOrRegister(event, data) {
         ? await parseGithub(data.data, metadata)
         : parseMagic(metadata)
 
-    const upsert = await supa.upsertUser({
+    const upsert = await db.upsertUser({
       email: parsed.email,
       issuer: parsed.issuer,
       name: parsed.name,
@@ -127,10 +124,10 @@ async function parseGithub(data, magicMetadata) {
   /** @type {Record<string, string>} */
   let tokens = {}
 
-  const oldUser = await getUser(sub)
-  if (oldUser) {
-    tokens = oldUser.tokens
-  }
+  // const oldUser = await getUser(sub)
+  // if (oldUser) {
+  //   tokens = oldUser.tokens
+  // }
 
   return {
     sub: `github|${data.oauth.userHandle}`,

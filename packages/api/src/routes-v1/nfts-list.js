@@ -3,8 +3,11 @@ import { validate } from '../utils/auth-v1.js'
 
 /** @type {import('../utils/router.js').Handler} */
 export async function nftListV1(event, ctx) {
-  const { user, supa } = await validate(event, ctx)
-  const options = {}
+  const { user, db } = await validate(event, ctx)
+  const options = {
+    limit: 10,
+    before: new Date().toISOString(),
+  }
   const { searchParams } = new URL(event.request.url)
 
   const limit = searchParams.get('limit')
@@ -17,9 +20,9 @@ export async function nftListV1(event, ctx) {
     options.before = before
   }
 
-  const nfts = await supa.listUploads({
-    limit,
-    before,
+  const nfts = await db.listUploads({
+    limit: options.limit,
+    before: options.before,
     issuer: user.issuer,
   })
 
