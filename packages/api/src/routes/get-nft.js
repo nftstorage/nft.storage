@@ -2,7 +2,7 @@ import { JSONResponse } from '../utils/json-response.js'
 import { stores } from '../constants.js'
 
 /**
- * Special route to get nfts for the fauna migration
+ * Special route to get nfts for the migration
  */
 
 /** @type {import('../utils/router.js').Handler} */

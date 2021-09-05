@@ -11,10 +11,10 @@ dotenv.config({
 })
 
 async function run() {
-  const url = `${process.env.SUPABASE_URL}/rest/v1/?apikey=${process.env.SUPABASE_TOKEN}`
+  const url = `${process.env.DATABASE_URL}/rest/v1/?apikey=${process.env.DATABASE_TOKEN}`
   await execa(
     'openapi-typescript',
-    [url, '--output', 'src/utils/supabase-types.ts'],
+    [url, '--output', 'src/utils/db-types.ts'],
     {
       preferLocal: true,
     }

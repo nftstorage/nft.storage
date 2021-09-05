@@ -23,15 +23,22 @@ declare global {
   const CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN: string
   const CLUSTER_ADDRS: string
   const MAGIC_SECRET_KEY: string
-  const FAUNA_KEY: string
-  const FAUNA_URL: string
-  const SUPABASE_URL: string
-  const SUPABASE_TOKEN: string
+  const DATABASE_URL: string
+  const DATABASE_TOKEN: string
   const ENV: 'dev' | 'staging' | 'production'
   const SENTRY_DSN: string
   const BRANCH: string
   const VERSION: string
   const COMMITHASH: string
+}
+
+export interface RouteContext {
+  sentry: Toucan
+  params: Record<string, string>
+}
+
+export interface CronContext {
+  sentry: Toucan
 }
 
 export interface Pin {
@@ -97,11 +104,48 @@ export interface User {
 
 export type UserSafe = Omit<User, 'tokens' | 'github'>
 
-export interface RouteContext {
-  sentry: Toucan
-  params: Record<string, string>
+/**
+ * Pins add endpoint body interface
+ */
+export interface PinsAddInput {
+  cid: string
+  name: string
+  origins: string[]
+  meta: Record<string, string>
 }
 
-export interface CronContext {
-  sentry: Toucan
+/**
+ * Pins endpoints response
+ */
+export interface PinsResponse {
+  requestid: string
+  status: PinStatus
+  created: string
+  pin: {
+    cid: string
+    meta: Record<string, string>
+    name?: string
+    origins: string[]
+  }
+  delegates: string[]
+}
+
+export interface PinsListQueryParams {
+  cid?: string[]
+  /**
+   * Pin objects with specified name (by default a case-sensitive, exact match)
+   */
+  name?: string
+  /**
+   * Customize the text matching strategy applied when the name filter is present; exact (the default) is a case-sensitive exact match, partial matches anywhere in the name, iexact and ipartial are case-insensitive versions of the exact and partial strategies
+   */
+  match?: 'exact' | 'iexact' | 'partial' | 'ipartial'
+  status: PinStatus[]
+  before?: string
+  after?: string
+  /**
+   * Max records (default: 10)
+   */
+  limit?: number
+  meta?: unknown
 }

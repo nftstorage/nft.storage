@@ -1,4 +1,4 @@
-// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN, FAUNA_KEY, SUPABASE_TOKEN
+// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN, DATABASE_TOKEN
 export const stores = {
   deals: DEALS,
   users: USERS,
@@ -15,8 +15,7 @@ export const secrets = {
   pinata: PINATA_JWT,
   magic: MAGIC_SECRET_KEY,
   sentry: SENTRY_DSN,
-  fauna: FAUNA_KEY,
-  supabase: SUPABASE_TOKEN,
+  database: DATABASE_TOKEN,
 }
 
 export const cluster = {
@@ -51,12 +50,8 @@ export const pinata = {
       : 'https://api.pinata.cloud/psa/',
 }
 
-export const fauna = {
-  url: FAUNA_URL,
-}
-
-export const supabase = {
-  url: SUPABASE_URL,
+export const database = {
+  url: DATABASE_URL,
 }
 
 export const isDebug = DEBUG === 'true'
