@@ -15,13 +15,15 @@ CREATE TYPE nft_storage.service AS ENUM (
 CREATE TYPE nft_storage.upload_type AS ENUM (
   'Car',
   'Blob',
-  'Multipart'
+  'Multipart', 
+  'Remote',
+  'NFT'
 );
 
 CREATE TABLE IF NOT EXISTS nft_storage.user (
   id BIGSERIAL PRIMARY KEY,
-  issuer TEXT,
-  sub TEXT,
+  magic_link_id TEXT,
+  github_id TEXT,
   name TEXT NOT NULL,
   picture TEXT,
   github TEXT,
@@ -66,6 +68,8 @@ CREATE TABLE IF NOT EXISTS nft_storage.upload (
   content_cid text NOT NULL REFERENCES content ( cid ),
   name TEXT,
   type nft_storage.upload_type NOT NULL,
+  -- MIME type of the upload data as sent in the request.
+  mime_type TEXT,
   files jsonb,
   origins jsonb,
   meta jsonb,
