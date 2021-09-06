@@ -91,14 +91,14 @@ model metadata {
     description         String?         @db.Text()   //describes the asset this token represents
     imageId             String
     image_uri           String          @db.Text()
-    assets              resource[]      @relation("metadata_to_resources")
+    assets              resources_on_metadata[]
 }
 
 model resource {
     // Jesse Note: This might be not-correct, need to review this relationship
     // I am assuming a resource can (possible appear in multiple metadata Images)
     // confirm with Gozala, fit not metadata? is also doable.
-    referrers           metadata[]      @relation("metadata_to_resources")
+    referrers           resources_on_metadata[]
     status              resource_status
     status_text         String
     created             DateTime        @default(now())
@@ -118,6 +118,17 @@ model resource {
     content             content?         @relation(fields: [cid], references: [cid])
 
 }
+
+//Explicit Join table for metadata and resources.
+model resources_on_metadata {
+    metadata            metadata        @relation(fields: [metadata_id], references: [id])
+    metadata_id         String          //scalar for above relation
+    resource            resource        @relation(fields: [resource_uri], references: [uri])
+    resource_uri        String          //scalar for above relation
+    created_at          DateTime        @default(now())
+    @@id([metadata_id, resource_uri])
+}
+
 
 model content {
     cid                 String          @id @unique

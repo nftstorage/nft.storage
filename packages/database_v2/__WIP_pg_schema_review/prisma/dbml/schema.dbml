@@ -51,11 +51,11 @@ Table metadata {
   description String
   imageId String [not null]
   image_uri String [not null]
-  assets resource [not null]
+  assets resources_on_metadata [not null]
 }
 
 Table resource {
-  referrers metadata [not null]
+  referrers resources_on_metadata [not null]
   status resource_status [not null]
   status_text String [not null]
   created DateTime [default: `now()`, not null]
@@ -65,6 +65,18 @@ Table resource {
   problem String [not null]
   cid String
   content content
+}
+
+Table resources_on_metadata {
+  metadata metadata [not null]
+  metadata_id String [not null]
+  resource resource [not null]
+  resource_uri String [not null]
+  created_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (metadata_id, resource_uri) [pk]
+  }
 }
 
 Table content {
@@ -121,11 +133,6 @@ Table erc721_import_result_to_token {
   }
 }
 
-Table metadata_to_resources {
-  assetsId String [ref: > resource.uri]
-  referrersId String [ref: > metadata.id]
-}
-
 Enum resource_status {
   Idle
   PinQueued
@@ -159,6 +166,10 @@ Ref: tokens_on_blocks.token_id > token.id
 Ref: metadata.source_id - token_asset.id
 
 Ref: resource.cid > content.cid
+
+Ref: resources_on_metadata.metadata_id > metadata.id
+
+Ref: resources_on_metadata.resource_uri > resource.uri
 
 Ref: pin.cid > content.cid
 
