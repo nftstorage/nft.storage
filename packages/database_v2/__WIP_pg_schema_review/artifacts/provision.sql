@@ -1,3 +1,5 @@
+-- Generated from prisma against the schema.prisma file
+
 -- CreateEnum
 CREATE TYPE "resource_status" AS ENUM ('Idle', 'PinQueued', 'Pinned', 'FailedURIParse', 'FailedFetch', 'PinFailure');
 
@@ -63,8 +65,8 @@ CREATE TABLE "metadata" (
 CREATE TABLE "resource" (
     "status" "resource_status" NOT NULL,
     "status_text" TEXT NOT NULL,
-    "created" TIMESTAMP(3) NOT NULL,
-    "updated" TIMESTAMP(3) NOT NULL,
+    "created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "uri" TEXT NOT NULL,
     "ipfs_url" TEXT NOT NULL,
     "problem" TEXT NOT NULL,
@@ -77,7 +79,7 @@ CREATE TABLE "resource" (
 CREATE TABLE "content" (
     "cid" TEXT NOT NULL,
     "dag_size" INTEGER,
-    "created" TIMESTAMP(3) NOT NULL,
+    "created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("cid")
 );
@@ -89,8 +91,8 @@ CREATE TABLE "pin" (
     "location_id" TEXT NOT NULL,
     "pin" "pin_status" NOT NULL,
     "status_text" TEXT,
-    "updated" TIMESTAMP(3) NOT NULL,
-    "created" TIMESTAMP(3) NOT NULL,
+    "updated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("id")
 );
@@ -124,9 +126,12 @@ CREATE TABLE "erc721_import_result" (
 );
 
 -- CreateTable
-CREATE TABLE "_erc721_import_resultTotoken" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL
+CREATE TABLE "erc721_import_result_to_token" (
+    "erc721_import_result_id" TEXT NOT NULL,
+    "token_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY ("erc721_import_result_id","token_id")
 );
 
 -- CreateTable
@@ -178,12 +183,6 @@ CREATE UNIQUE INDEX "token_contract.id_unique" ON "token_contract"("id");
 CREATE UNIQUE INDEX "erc721_import_result.id_unique" ON "erc721_import_result"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_erc721_import_resultTotoken_AB_unique" ON "_erc721_import_resultTotoken"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_erc721_import_resultTotoken_B_index" ON "_erc721_import_resultTotoken"("B");
-
--- CreateIndex
 CREATE UNIQUE INDEX "_metadata_to_resources_AB_unique" ON "_metadata_to_resources"("A", "B");
 
 -- CreateIndex
@@ -214,10 +213,10 @@ ALTER TABLE "pin" ADD FOREIGN KEY ("cid") REFERENCES "content"("cid") ON DELETE 
 ALTER TABLE "pin" ADD FOREIGN KEY ("location_id") REFERENCES "pin_location"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_erc721_import_resultTotoken" ADD FOREIGN KEY ("A") REFERENCES "erc721_import_result"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "erc721_import_result_to_token" ADD FOREIGN KEY ("erc721_import_result_id") REFERENCES "erc721_import_result"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_erc721_import_resultTotoken" ADD FOREIGN KEY ("B") REFERENCES "token"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "erc721_import_result_to_token" ADD FOREIGN KEY ("token_id") REFERENCES "token"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_metadata_to_resources" ADD FOREIGN KEY ("A") REFERENCES "metadata"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -18,7 +18,7 @@ Table token {
   token_contract_id String [not null]
   contract token_contract [not null]
   owner_id String [not null]
-  imported erc721_import_result [not null]
+  imported erc721_import_result_to_token [not null]
 }
 
 Table tokens_on_blocks {
@@ -58,8 +58,8 @@ Table resource {
   referrers metadata [not null]
   status resource_status [not null]
   status_text String [not null]
-  created DateTime [not null]
-  updated DateTime [not null]
+  created DateTime [default: `now()`, not null]
+  updated DateTime [default: `now()`, not null]
   uri String [pk, unique]
   ipfs_url String [unique, not null]
   problem String [not null]
@@ -71,7 +71,7 @@ Table content {
   cid String [pk, unique]
   resources resource [not null]
   dag_size Int
-  created DateTime [not null]
+  created DateTime [default: `now()`, not null]
   pins pin [not null]
 }
 
@@ -83,8 +83,8 @@ Table pin {
   location pin_location [not null]
   pin pin_status [not null]
   status_text String
-  updated DateTime [not null]
-  created DateTime [not null]
+  updated DateTime [default: `now()`, not null]
+  created DateTime [default: `now()`, not null]
 }
 
 Table pin_location {
@@ -106,12 +106,19 @@ Table token_contract {
 Table erc721_import_result {
   id String [pk, unique]
   next_id String [not null]
-  tokens token [not null]
+  tokens erc721_import_result_to_token [not null]
 }
 
-Table erc721_import_resultTotoken {
-  importedId String [ref: > erc721_import_result.id]
-  tokensId String [ref: > token.id]
+Table erc721_import_result_to_token {
+  erc721_import_result erc721_import_result [not null]
+  erc721_import_result_id String [not null]
+  token token [not null]
+  token_id String [not null]
+  created_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (erc721_import_result_id, token_id) [pk]
+  }
 }
 
 Table metadata_to_resources {
@@ -156,3 +163,7 @@ Ref: resource.cid > content.cid
 Ref: pin.cid > content.cid
 
 Ref: pin.location_id > pin_location.id
+
+Ref: erc721_import_result_to_token.erc721_import_result_id > erc721_import_result.id
+
+Ref: erc721_import_result_to_token.token_id > token.id
