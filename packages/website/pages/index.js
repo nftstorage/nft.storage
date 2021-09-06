@@ -110,7 +110,7 @@ function About() {
           <HashLink id="about">About</HashLink>
         </h1>
         <p className="lh-copy mw-none mw-none-m mw6-ns">
-          <strong>nft.storage</strong> is a brand new service in BETA, built
+          <strong>nft.storage</strong> is a brand new service, built
           specifically for storing <strong>off-chain</strong> NFT data. Data is
           stored <em>decentralized</em> on{' '}
           <a href="https://ipfs.io" className="black">
@@ -251,7 +251,7 @@ console.log(metadata.url)
           <Box
             bgColor="nspeach"
             borderColor="nsnavy"
-            wrapperClassName="w-100 w-100-m w-33-ns mh0 mh0-m mh3-ns mb4"
+            wrapperClassName="w-100 w-100-m w-50-ns mh0 mh0-m mh3-ns mb4"
           >
             <h2 className="chicagoflf f5 fw4">
               <HashLink id="js-client-library">JS Client Library</HashLink>
@@ -291,7 +291,7 @@ console.log(metadata.url)
           <Box
             bgColor="nspeach"
             borderColor="nspink"
-            wrapperClassName="w-100 w-100-m w-33-ns mh0 mh0-m mh3-ns mb4"
+            wrapperClassName="w-100 w-100-m w-50-ns mh0 mh0-m mh3-ns mb4"
           >
             <h2 className="chicagoflf f5 fw4">
               <HashLink id="raw-http-request">Raw HTTP Request</HashLink>
@@ -343,7 +343,7 @@ console.log(metadata.url)
               available endpoints.
             </p>
           </Box>
-          <Box
+          {/* <Box
             bgColor="nspeach"
             borderColor="nsred"
             wrapperClassName="w-100 w-100-m w-33-ns mh0 mh0-m mh3-ns mb4"
@@ -377,7 +377,7 @@ console.log(metadata.url)
             <pre className="f6 lh-copy white bg-nsred pa3 br1 ba b--black code overflow-x-scroll">
               ipfs pin remote --help
             </pre>
-          </Box>
+          </Box> */}
         </div>
       </div>
     </article>
