@@ -91,21 +91,13 @@ Table token_contract {
   tokens token [not null]
 }
 
-Table Owner {
-  id String [pk, unique]
-}
-
 Table erc721_import_result {
   id String [pk, unique]
   next_id String [not null]
   tokens token [not null]
 }
 
-Table Cursor {
-  id String [pk, unique]
-}
-
-Table blockTotoken {
+Table block_to_token {
   tokensId String [ref: > token.id]
   blocksId String [ref: > block.hash]
 }
@@ -115,7 +107,7 @@ Table erc721_import_resultTotoken {
   tokensId String [ref: > token.id]
 }
 
-Table metadataresources {
+Table metadata_to_resources {
   assetsId String [ref: > resource.uri]
   referrersId String [ref: > metadata.id]
 }

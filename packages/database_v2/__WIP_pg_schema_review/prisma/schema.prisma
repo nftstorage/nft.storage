@@ -44,7 +44,7 @@ enum pin_status {
 model block {
     hash                String          @id @unique //the hash of the block
     number              Int             @unique     //the block number
-    tokens              token[]
+    tokens              token[]         @relation("block_to_token")
 }
 
 model token {
@@ -54,7 +54,7 @@ model token {
     token_asset_id      String
     // Present when ERC721metadata interface is implemented.
     token_asset         token_asset      @relation(fields: [token_asset_id], references: [id])
-    blocks              block[]
+    blocks              block[]          @relation("block_to_token")
     token_contract_id   String
     contract            token_contract   @relation(fields: [token_contract_id], references: [id])
     owner_id            String
@@ -82,14 +82,14 @@ model metadata {
     description         String?         @db.Text()   //describes the asset this token represents
     imageId             String
     image_uri           String          @db.Text()
-    assets              resource[]      @relation("metadataresources")
+    assets              resource[]      @relation("metadata_to_resources")
 }
 
 model resource {
     // Jesse Note: This might be not-correct, need to review this relationship
     // I am assuming a resource can (possible appear in multiple metadata Images)
     // confirm with Gozala, fit not metadata? is also doable.
-    referrers           metadata[]      @relation("metadataresources")
+    referrers           metadata[]      @relation("metadata_to_resources")
     status              resource_status
     status_text         String
     created             DateTime
@@ -146,16 +146,8 @@ model token_contract {
     tokens                   token[]
 }
 
-model Owner {
-     id                 String          @id @unique
-}
-
 model erc721_import_result {
      id                 String          @id @unique // import start cursor
      next_id            String                      // new cursor after this import
      tokens             token[]                     // tokens that were imported
-}
-
-model Cursor {
-      id                String          @id @unique // should the erc721_import_results use this?
 }
