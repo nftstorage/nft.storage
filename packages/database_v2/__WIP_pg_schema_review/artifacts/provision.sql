@@ -28,6 +28,15 @@ CREATE TABLE "token" (
 );
 
 -- CreateTable
+CREATE TABLE "tokens_on_blocks" (
+    "block_hash" TEXT NOT NULL,
+    "token_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY ("block_hash","token_id")
+);
+
+-- CreateTable
 CREATE TABLE "token_asset" (
     "id" TEXT NOT NULL,
     "token_uri" TEXT NOT NULL,
@@ -107,31 +116,11 @@ CREATE TABLE "token_contract" (
 );
 
 -- CreateTable
-CREATE TABLE "Owner" (
-    "id" TEXT NOT NULL,
-
-    PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "erc721_import_result" (
     "id" TEXT NOT NULL,
     "next_id" TEXT NOT NULL,
 
     PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "Cursor" (
-    "id" TEXT NOT NULL,
-
-    PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "_blockTotoken" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -141,7 +130,7 @@ CREATE TABLE "_erc721_import_resultTotoken" (
 );
 
 -- CreateTable
-CREATE TABLE "_metadataresources" (
+CREATE TABLE "_metadata_to_resources" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
 );
@@ -186,19 +175,7 @@ CREATE UNIQUE INDEX "pin_location.id_unique" ON "pin_location"("id");
 CREATE UNIQUE INDEX "token_contract.id_unique" ON "token_contract"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Owner.id_unique" ON "Owner"("id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "erc721_import_result.id_unique" ON "erc721_import_result"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Cursor.id_unique" ON "Cursor"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_blockTotoken_AB_unique" ON "_blockTotoken"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_blockTotoken_B_index" ON "_blockTotoken"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_erc721_import_resultTotoken_AB_unique" ON "_erc721_import_resultTotoken"("A", "B");
@@ -207,16 +184,22 @@ CREATE UNIQUE INDEX "_erc721_import_resultTotoken_AB_unique" ON "_erc721_import_
 CREATE INDEX "_erc721_import_resultTotoken_B_index" ON "_erc721_import_resultTotoken"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_metadataresources_AB_unique" ON "_metadataresources"("A", "B");
+CREATE UNIQUE INDEX "_metadata_to_resources_AB_unique" ON "_metadata_to_resources"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_metadataresources_B_index" ON "_metadataresources"("B");
+CREATE INDEX "_metadata_to_resources_B_index" ON "_metadata_to_resources"("B");
 
 -- AddForeignKey
 ALTER TABLE "token" ADD FOREIGN KEY ("token_asset_id") REFERENCES "token_asset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "token" ADD FOREIGN KEY ("token_contract_id") REFERENCES "token_contract"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tokens_on_blocks" ADD FOREIGN KEY ("block_hash") REFERENCES "block"("hash") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tokens_on_blocks" ADD FOREIGN KEY ("token_id") REFERENCES "token"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "metadata" ADD FOREIGN KEY ("source_id") REFERENCES "token_asset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -231,19 +214,13 @@ ALTER TABLE "pin" ADD FOREIGN KEY ("cid") REFERENCES "content"("cid") ON DELETE 
 ALTER TABLE "pin" ADD FOREIGN KEY ("location_id") REFERENCES "pin_location"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_blockTotoken" ADD FOREIGN KEY ("A") REFERENCES "block"("hash") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_blockTotoken" ADD FOREIGN KEY ("B") REFERENCES "token"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "_erc721_import_resultTotoken" ADD FOREIGN KEY ("A") REFERENCES "erc721_import_result"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_erc721_import_resultTotoken" ADD FOREIGN KEY ("B") REFERENCES "token"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_metadataresources" ADD FOREIGN KEY ("A") REFERENCES "metadata"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_metadata_to_resources" ADD FOREIGN KEY ("A") REFERENCES "metadata"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_metadataresources" ADD FOREIGN KEY ("B") REFERENCES "resource"("uri") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_metadata_to_resources" ADD FOREIGN KEY ("B") REFERENCES "resource"("uri") ON DELETE CASCADE ON UPDATE CASCADE;

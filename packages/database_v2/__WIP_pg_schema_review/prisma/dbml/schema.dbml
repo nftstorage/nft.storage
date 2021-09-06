@@ -5,7 +5,7 @@
 Table block {
   hash String [pk, unique]
   number Int [unique, not null]
-  tokens token [not null]
+  tokens tokens_on_blocks [not null]
 }
 
 Table token {
@@ -14,11 +14,23 @@ Table token {
   mint_time DateTime [not null]
   token_asset_id String [not null]
   token_asset token_asset [not null]
-  blocks block [not null]
+  blocks tokens_on_blocks [not null]
   token_contract_id String [not null]
   contract token_contract [not null]
   owner_id String [not null]
   imported erc721_import_result [not null]
+}
+
+Table tokens_on_blocks {
+  block block [not null]
+  block_hash String [not null]
+  token token [not null]
+  token_id String [not null]
+  created_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (block_hash, token_id) [pk]
+  }
 }
 
 Table token_asset {
@@ -97,11 +109,6 @@ Table erc721_import_result {
   tokens token [not null]
 }
 
-Table block_to_token {
-  tokensId String [ref: > token.id]
-  blocksId String [ref: > block.hash]
-}
-
 Table erc721_import_resultTotoken {
   importedId String [ref: > erc721_import_result.id]
   tokensId String [ref: > token.id]
@@ -137,6 +144,10 @@ Enum pin_status {
 Ref: token.token_asset_id > token_asset.id
 
 Ref: token.token_contract_id > token_contract.id
+
+Ref: tokens_on_blocks.block_hash > block.hash
+
+Ref: tokens_on_blocks.token_id > token.id
 
 Ref: metadata.source_id - token_asset.id
 

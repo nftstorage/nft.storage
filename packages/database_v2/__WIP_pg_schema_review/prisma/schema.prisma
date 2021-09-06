@@ -44,7 +44,7 @@ enum pin_status {
 model block {
     hash                String          @id @unique //the hash of the block
     number              Int             @unique     //the block number
-    tokens              token[]         @relation("block_to_token")
+    tokens              tokens_on_blocks[]
 }
 
 model token {
@@ -54,11 +54,20 @@ model token {
     token_asset_id      String
     // Present when ERC721metadata interface is implemented.
     token_asset         token_asset      @relation(fields: [token_asset_id], references: [id])
-    blocks              block[]          @relation("block_to_token")
+    blocks              tokens_on_blocks[]
     token_contract_id   String
     contract            token_contract   @relation(fields: [token_contract_id], references: [id])
     owner_id            String
     imported            erc721_import_result[]
+}
+
+model tokens_on_blocks {
+    block               block           @relation(fields: [block_hash], references: [hash])
+    block_hash          String          //scalar for above relation
+    token               token           @relation(fields: [token_id], references: [id])
+    token_id            String          //scalar for above relation
+    created_at          DateTime        @default(now())
+    @@id([block_hash, token_id])
 }
 
 model token_asset {
