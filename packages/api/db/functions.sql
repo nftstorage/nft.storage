@@ -14,34 +14,50 @@ AS
 $$
 BEGIN
 
-  insert into content (cid, size)
-    values (data->>'cid', (data->>'size')::int)
+  insert into content (cid, dag_size)
+    values (
+      data->>'content_cid', 
+      (data->>'dag_size')::bigint
+    )
     ON CONFLICT ( cid ) DO NOTHING;
 
-  insert into upload ( issuer, key_id, cid, type, files, name, origins, meta )
-    values (
-      data->>'issuer', 
-      (data->>'key_id')::int, 
-      data->>'cid', 
-      data->>'type',
-      (data->>'files')::jsonb,
+  insert into pin (content_cid, status, service)
+    select data->>'content_cid', status, service
+    from json_populate_recordset(null::upload_pin_type, (data->>'pins')::json)
+    on conflict (content_cid, service) do nothing;
+
+  insert into upload ( 
+      account_id,
+      key_id,
+      content_cid,
+      source_cid,
+      mime_type,
+      type,
+      name,
+      files, 
+      origins, 
+      meta
+    ) values (
+      (data->>'account_id')::bigint, 
+      (data->>'key_id')::bigint, 
+      data->>'content_cid',
+      data->>'source_cid',
+      data->>'mime_type',
+      data->>'type'::upload_type,
       data->>'name',
+      (data->>'files')::jsonb,
       (data->>'origins')::jsonb,
       (data->>'meta')::jsonb
     )
-    ON CONFLICT ( issuer, cid ) DO NOTHING;
+    ON CONFLICT ( account_id, content_cid ) DO NOTHING;
 
 
-  insert into pin (cid, status, service)
-    select data->>'cid', status, service
-    from json_populate_recordset(null::upload_pin_type, (data->>'pins')::json)
-    on conflict (cid, service) do nothing;
 
   --raise exception 'upload % content % ', inserted_upload.id, inserted_content.cid;
 
   return query select * 
   from upload u
-  where u.issuer = data->>'issuer' AND u.cid = data->>'cid';
+  where u.account_id = data->>'account_id' AND u.content_cid = data->>'content_cid';
 
   IF NOT FOUND THEN
       RAISE EXCEPTION 'No upload found %', data->>'cid';

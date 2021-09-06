@@ -12,7 +12,6 @@
   "license": "MIT",
   "dependencies": {
     "@nftstorage/ipfs-cluster": "^3.3.0",
-    "@nftstorage/db": "^1.0.0",
     "ajv": "^8.6.1",
     "ajv-formats": "^2.1.0",
     "dotenv": "^10.0.0",
