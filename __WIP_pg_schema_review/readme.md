@@ -1,19 +1,13 @@
 # If you only read one thing, read the `provision.sql` file
 
-# SQL Migrataion scratchpad Repo
+# SQL Migrataion scratchpad Folder
 
-This is a repo to test out some ideas for migrating and defining the sql schemas in the postgres database that will be the target for the migration away from fauna
-
-At this moment (8/30/2021) there's just a few folders
-
-- niftysave- Literally just a copy of the niftysave repo so its nearby and convenient to look at
-- prisma-and-gql-test - right now its empty but I plan to test a nexus endpoint on top of the generated prisma client to see how difficult it is
-- prisma-test - this is where I've worked most recently and its got the schemas and migrations generated from prisma
+This is a folder to test out some ideas for migrating and defining the sql schemas in the postgres database that will be the target for the migration away from fauna
 
 ## Quick Start
 
 1. Make sure you have docker installed and working, im running a postgres image there atm
-2. cd into the `prisma-test` and `docker-compose up` should start the image. I've exposted the port on 5439 so it doesn't clash with other things on my system but you're welcome to change this.
+2. `docker-compose up` should start the image. I've exposted the port on 5439 so it doesn't clash with other things on my system but you're welcome to change this.
 3. Be aware the connection string is in the .env file. This is just a test to its `jondoe`, `randompassword` for now.
 4. `npm install`. The Prisma directory has 3 things
    - **dbml**. Every time we run `npx prisma generate` a new .dbml file is made. You can paste this at `https://dbdiagram.io/d` and check out the visualizer
