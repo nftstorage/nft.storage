@@ -27,16 +27,16 @@ enum resource_status {
 }
 
 enum token_asset_status {
-  Queued
-  Failed
-  Succeeded
+    Queued
+    Failed
+    Succeeded
 }
 
 enum pin_status {
-  PinFailed          // An error occurred pinning.
-  Pinned             // Node has pinned the content.
-  Pinning            // Node is currently pinning the content.
-  PinQueued          // The item has been queued for pinning.
+    PinFailed          // An error occurred pinning.
+    Pinned             // Node has pinned the content.
+    Pinning            // Node is currently pinning the content.
+    PinQueued          // The item has been queued for pinning.
 }
 
 
@@ -101,30 +101,30 @@ model resource {
     referrers           resources_on_metadata[]
     status              resource_status
     status_text         String
-    created             DateTime        @default(now())
-    updated             DateTime        @default(now())
+
     uri                 String          @id @unique //uri with which resource identified
     ipfs_url            String          @unique     //ipfs:// url if `uri` was referring to gateway URL.
 
     problem             String          @db.Text()  //Problem description if there was a problem pinning
-//   Content referrerced by this resource. When `ipfsURL` is derived content
-//   archiving job will simply pin content by that URL and update resource linking
-//   resource to it. If however `ipfsURL` could not be derived archiving job will
-//   attempt to fetch the content from `uri` and pin it again linkking resource
-//   to it.
+    // Content referrerced by this resource. When `ipfsURL` is derived content
+    // archiving job will simply pin content by that URL and update resource linking
+    // resource to it. If however `ipfsURL` could not be derived archiving job will
+    // attempt to fetch the content from `uri` and pin it again linkking resource
+    // to it.
 
-//   Content field is only going to be present when resource has a `ContentLinked`
-    cid                 String?           //CID corresponding to this resource once it is pinned.
-    content             content?         @relation(fields: [cid], references: [cid])
-
+    //   Content field is only going to be present when resource has a `ContentLinked`
+    cid                 String?         //CID corresponding to this resource once it is pinned.
+    content             content?        @relation(fields: [cid], references: [cid])
+    created             DateTime        @default(now())
+    updated             DateTime        @default(now())
 }
 
 //Explicit Join table for metadata and resources.
 model resources_on_metadata {
     metadata            metadata        @relation(fields: [metadata_id], references: [id])
-    metadata_id         String          //scalar for above relation
+    metadata_id         String          // scalar for above relation
     resource            resource        @relation(fields: [resource_uri], references: [uri])
-    resource_uri        String          //scalar for above relation
+    resource_uri        String          // scalar for above relation
     created             DateTime        @default(now())
     @@id([metadata_id, resource_uri])
 }
@@ -134,8 +134,8 @@ model content {
     cid                 String          @id @unique
     resources           resource[]
     dag_size            Int?
-    created             DateTime        @default(now())
     pins                pin[]
+    created             DateTime        @default(now())
 }
 
 model pin {
