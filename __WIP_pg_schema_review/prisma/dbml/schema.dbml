@@ -11,7 +11,7 @@ Table block {
 Table token {
   id String [pk, unique]
   token_id String [not null]
-  mint_time String [not null]
+  mint_time DateTime [not null]
   token_asset_id String [not null]
   token_asset token_asset [not null]
   blocks block [not null]
@@ -91,10 +91,18 @@ Table token_contract {
   tokens token [not null]
 }
 
+Table Owner {
+  id String [pk, unique]
+}
+
 Table erc721_import_result {
   id String [pk, unique]
   next_id String [not null]
   tokens token [not null]
+}
+
+Table Cursor {
+  id String [pk, unique]
 }
 
 Table blockTotoken {
@@ -107,7 +115,7 @@ Table erc721_import_resultTotoken {
   tokensId String [ref: > token.id]
 }
 
-Table metadata_resources {
+Table metadataresources {
   assetsId String [ref: > resource.uri]
   referrersId String [ref: > metadata.id]
 }
