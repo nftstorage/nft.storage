@@ -66,7 +66,7 @@ model tokens_on_blocks {
     block_hash          String          //scalar for above relation
     token               token           @relation(fields: [token_id], references: [id])
     token_id            String          //scalar for above relation
-    created_at          DateTime        @default(now())
+    created             DateTime        @default(now())
     @@id([block_hash, token_id])
 }
 
@@ -125,7 +125,7 @@ model resources_on_metadata {
     metadata_id         String          //scalar for above relation
     resource            resource        @relation(fields: [resource_uri], references: [uri])
     resource_uri        String          //scalar for above relation
-    created_at          DateTime        @default(now())
+    created             DateTime        @default(now())
     @@id([metadata_id, resource_uri])
 }
 
@@ -178,6 +178,6 @@ model erc721_import_result_to_token {
     erc721_import_result_id            String                         //scalar for above relation
     token                              token                          @relation(fields: [token_id], references: [id])
     token_id                           String                         //scalar for above relation
-    created_at                         DateTime                       @default(now())
+    created                            DateTime                       @default(now())
     @@id([erc721_import_result_id, token_id])
 }
