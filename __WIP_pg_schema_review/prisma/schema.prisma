@@ -50,7 +50,7 @@ model block {
 model token {
     id                  String          @id @unique
     token_id            String
-    mint_time           String
+    mint_time           DateTime
     token_asset_id      String
     // Present when ERC721metadata interface is implemented.
     token_asset         token_asset      @relation(fields: [token_asset_id], references: [id])
@@ -67,7 +67,7 @@ model token_asset {
     referrers           token[]
     token_uri           String          @unique
     ipnft               String
-    problem             String?
+    problem             String?         @db.Text()
     // token_uri may point to JSON that contorms to ERC721.
     // this is fetched, parsed and stored as a related metadata document.
     metadata            metadata?
@@ -79,9 +79,9 @@ model metadata {
     source_id           String          @unique
     source              token_asset     @relation(fields: [source_id], references: [id])
     name                String?                      //identifies the asset this token represents
-    description         String?                     //describes the asset this token represents
+    description         String?         @db.Text()   //describes the asset this token represents
     imageId             String
-    image_uri           String
+    image_uri           String          @db.Text()
     assets              resource[]      @relation("metadataresources")
 }
 
@@ -97,7 +97,7 @@ model resource {
     uri                 String          @id @unique //uri with which resource identified
     ipfs_url            String          @unique     //ipfs:// url if `uri` was referring to gateway URL.
 
-    problem             String                      //Problem description if there was a problem pinning
+    problem             String          @db.Text()  //Problem description if there was a problem pinning
 //   Content referrerced by this resource. When `ipfsURL` is derived content
 //   archiving job will simply pin content by that URL and update resource linking
 //   resource to it. If however `ipfsURL` could not be derived archiving job will
@@ -125,7 +125,7 @@ model pin {
     location_id         String
     location            pin_location    @relation(fields: [location_id], references: [id]) //ref to a pin location pinning this
     pin                 pin_status                      // pinning status at this location
-    status_text         String?                         // human readable description of pin status (needed in edge cases)
+    status_text         String?         @db.Text()      // human readable description of pin status (needed in edge cases)
     updated             DateTime
     created             DateTime
 }
