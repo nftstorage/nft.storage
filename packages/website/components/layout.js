@@ -21,7 +21,7 @@ export default function Layout({
   redirectIfFound = false,
   title = 'NFT Storage - Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.',
   description = 'NFT Storage is a brand new service, built specifically for storing off-chain NFT data on IPFS and Filecoin.',
-  navBgColor = 'nsorange',
+  navBgColor = 'bg-nsorange',
 }) {
   const { user, status } = useUser({
     redirectTo,
@@ -31,7 +31,7 @@ export default function Layout({
   const shouldWaitForUser = needsUser && status === 'loading'
 
   return (
-    <div className="sans-serif">
+    <div className="sans-serif flex flex-column min-vh-100">
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />

@@ -13,7 +13,7 @@ export function getStaticProps() {
   return {
     props: {
       title: 'Manage API Keys - NFT Storage',
-      navBgColor: 'nsgreen',
+      navBgColor: 'bg-nsgreen',
       redirectTo: '/',
       needsUser: true,
     },
@@ -109,7 +109,7 @@ export default function ManageKeys({ user }) {
                           value={t[1]}
                         />
                       </td>
-                      <td className="pa2">
+                      <td className="flex flex-wrap pa2">
                         <form data-value={t[1]} onSubmit={handleCopyToken}>
                           <Button
                             className="bg-white black"
