@@ -131,7 +131,7 @@ export default function Files({ user }) {
                               {nft.created.split('T')[0]}
                             </td>
                             <td className="pa2 br b--black">
-                              <GatewayLink cid={nft.cid} />
+                              <GatewayLink cid={nft.cid} type={nft.type} />
                             </td>
                             <td className="pa2 br b--black mw7">
                               {bytes(nft.size || 0)}
@@ -193,12 +193,14 @@ export default function Files({ user }) {
 /**
  * Gateway Link Component
  *
- * @param {{cid: string}} props
+ * @param {{cid: string, type?: string}} props
  */
-function GatewayLink({ cid }) {
-  const href = cid.startsWith('Qm')
+function GatewayLink({ cid, type }) {
+  const gatewayLink = cid.startsWith('Qm')
     ? `https://ipfs.io/ipfs/${cid}`
     : `https://${cid}.ipfs.dweb.link`
+  const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
+
   return (
     <a href={href} target="_blank" rel="noopener noreferrer" className="black">
       {cid}
