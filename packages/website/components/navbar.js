@@ -108,16 +108,17 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
                 )}
               </div>
             ))}
-
-          {user ? (
-            <Button onClick={logout} id="logout">
-              Logout
-            </Button>
-          ) : (
-            <Button href="/login" id="login">
-              Login
-            </Button>
-          )}
+          <div className="mb1">
+            {user ? (
+              <Button onClick={logout} id="logout">
+                Logout
+              </Button>
+            ) : (
+              <Button href="/login" id="login">
+                Login
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
