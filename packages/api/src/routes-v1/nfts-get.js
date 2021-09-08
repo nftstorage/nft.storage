@@ -2,6 +2,7 @@ import { HTTPError } from '../errors.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth-v1.js'
 import { toNFTResponse } from '../utils/db-client.js'
+import { parseCid } from '../utils/utils.js'
 
 /**
  * @typedef {import('../bindings').Deal} Deal
@@ -11,8 +12,8 @@ import { toNFTResponse } from '../utils/db-client.js'
 export const statusV1 = async (event, ctx) => {
   const { params } = ctx
   const { user, db } = await validate(event, ctx)
-
-  const nft = await db.getUpload(params.cid, user.issuer)
+  const cid = parseCid(params.cid)
+  const nft = await db.getUpload(cid.contentCid, user.id)
   if (nft) {
     return new JSONResponse({ ok: true, value: toNFTResponse(nft) })
   } else {

@@ -1,5 +1,6 @@
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth-v1.js'
+import { toNFTResponse } from '../utils/db-client.js'
 
 /** @type {import('../utils/router.js').Handler} */
 export async function nftListV1(event, ctx) {
@@ -20,14 +21,13 @@ export async function nftListV1(event, ctx) {
     options.before = before
   }
 
-  const nfts = await db.listUploads({
+  const nfts = await db.listUploads(user.id, {
     limit: options.limit,
     before: options.before,
-    issuer: user.issuer,
   })
 
   return new JSONResponse({
     ok: true,
-    value: nfts,
+    value: nfts?.map((n) => toNFTResponse(n)),
   })
 }

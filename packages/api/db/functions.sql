@@ -1,5 +1,5 @@
-drop function if exists upload_fn;
-drop type if exists upload_pin_type;
+DROP FUNCTION IF EXISTS upload_fn;
+DROP TYPE IF EXISTS upload_pin_type;
 
 CREATE TYPE upload_pin_type AS (
   status pin_status_type,
@@ -17,7 +17,7 @@ BEGIN
   insert into content (cid, dag_size)
     values (
       data->>'content_cid', 
-      (data->>'dag_size')::bigint
+      (data->>'dag_size')::BIGINT
     )
     ON CONFLICT ( cid ) DO NOTHING;
 
@@ -38,12 +38,12 @@ BEGIN
       origins, 
       meta
     ) values (
-      (data->>'account_id')::bigint, 
-      (data->>'key_id')::bigint, 
+      (data->>'account_id')::BIGINT, 
+      (data->>'key_id')::BIGINT, 
       data->>'content_cid',
       data->>'source_cid',
       data->>'mime_type',
-      data->>'type'::upload_type,
+      (data->>'type')::upload_type,
       data->>'name',
       (data->>'files')::jsonb,
       (data->>'origins')::jsonb,
@@ -57,10 +57,10 @@ BEGIN
 
   return query select * 
   from upload u
-  where u.account_id = data->>'account_id' AND u.content_cid = data->>'content_cid';
+  where u.account_id = (data->>'account_id')::BIGINT AND u.content_cid = data->>'content_cid';
 
   IF NOT FOUND THEN
-      RAISE EXCEPTION 'No upload found %', data->>'cid';
+      RAISE EXCEPTION 'No upload found %', data->>'content_cid';
   END IF;
 
   RETURN;

@@ -12,6 +12,13 @@ export function debug(name) {
   return _debug(name)
 }
 
+/**
+ * @param {any} obj
+ */
+export function debugJson(obj) {
+  console.log(JSON.stringify(obj))
+}
+
 const sentryOptions = {
   dsn: secrets.sentry,
   allowedHeaders: ['user-agent'],

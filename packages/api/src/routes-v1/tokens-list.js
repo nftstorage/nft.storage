@@ -5,7 +5,7 @@ import { JSONResponse } from '../utils/json-response.js'
 export const tokensListV1 = async (event, ctx) => {
   const { user, db } = await validate(event, ctx)
 
-  const keys = await db.listKeys(user.issuer)
+  const keys = await db.listKeys(user.id)
 
   return new JSONResponse({
     ok: true,

@@ -2,7 +2,7 @@ import { Magic } from '@magic-sdk/admin'
 import { secrets } from '../constants.js'
 import { HTTPError, ErrorUserNotFound, ErrorTokenNotFound } from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
-import { createDBClient } from './db-client'
+import { createDBClient } from './db-client.js'
 export const magic = new Magic(secrets.magic)
 
 const db = createDBClient()
@@ -25,13 +25,13 @@ export async function validate(event, { sentry }) {
     if (await verifyJWT(token, secrets.salt)) {
       const decoded = parseJWT(token)
 
-      const user = await db.getUser(decoded.sub, token)
+      const user = await db.getUser(decoded.sub)
       if (user.error) {
         throw new Error(`DB error: ${JSON.stringify(user.error)}`)
       }
 
       if (user.data) {
-        const key = user.data.keys.find(k => k?.secret === token)
+        const key = user.data.keys.find((k) => k?.secret === token)
         if (key) {
           return {
             user: user.data,
@@ -49,7 +49,7 @@ export async function validate(event, { sentry }) {
       magic.token.validate(token)
       const [proof, claim] = magic.token.decode(token)
 
-      const user = await db.getUser(claim.iss, token)
+      const user = await db.getUser(claim.iss)
       if (user.error) {
         throw new Error(`DB error: ${JSON.stringify(user.error)}`)
       }
@@ -59,7 +59,7 @@ export async function validate(event, { sentry }) {
         db,
       }
     }
-  } catch (err) {
+  } catch (/** @type {any}*/ err) {
     console.error(err)
     sentry.captureException(err)
     throw new ErrorUserNotFound(err.message)
@@ -85,13 +85,12 @@ export async function loginOrRegister(event, data) {
 
     const upsert = await db.upsertUser({
       email: parsed.email,
-      issuer: parsed.issuer,
+      github_id: parsed.sub,
+      magic_link_id: parsed.issuer,
       name: parsed.name,
       public_address: parsed.publicAddress,
-      sub: parsed.sub,
       picture: parsed.picture,
-      // @ts-ignore
-      github: parsed.github ? parsed.github.userInfo.profile : null,
+      github: parsed.github,
     })
 
     if (upsert.data === null) {

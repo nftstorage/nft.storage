@@ -19,7 +19,7 @@ export async function uploadV1(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
   const { user, key, db } = await validate(event, ctx)
-  /** @type {import('../utils/db-client').UploadFull} */
+  /** @type {import('../utils/db-client-types').UploadOutput} */
   let upload
 
   if (contentType.includes('multipart/form-data')) {
@@ -36,23 +36,25 @@ export async function uploadV1(event, ctx) {
     const { cid, size } = dir[dir.length - 1]
 
     upload = await db.createUpload({
-      type: 'directory',
-      cid,
-      size,
-      issuer: user.issuer,
-      files: files.map(f => ({
+      account_id: user.id,
+      content_cid: cid,
+      source_cid: cid, // TODO need cidv1/0 dedupe
+      key_id: key?.id,
+      dag_size: size,
+      mime_type: contentType,
+      type: 'Multipart',
+      files: files.map((f) => ({
         name: f.name,
         type: f.type,
       })),
-      key_id: key?.key_id,
       pins: [
         {
           status: 'queued',
-          service: 'IPFS_CLUSTER',
+          service: 'IpfsCluster',
         },
         {
           status: 'queued',
-          service: 'PINATA',
+          service: 'Pinata',
         },
       ],
     })
@@ -76,20 +78,22 @@ export async function uploadV1(event, ctx) {
     const dagSize = size || bytes
 
     upload = await db.createUpload({
-      type: content.type,
-      cid,
-      size: dagSize,
-      issuer: user.issuer,
+      mime_type: content.type,
+      type: isCar ? 'Car' : 'Blob',
+      content_cid: cid,
+      source_cid: cid, // TODO need cidv1/0 dedupe,
+      dag_size: dagSize,
+      account_id: user.id,
       files: [],
-      key_id: key?.key_id,
+      key_id: key?.id,
       pins: [
         {
           status: 'queued',
-          service: 'IPFS_CLUSTER',
+          service: 'IpfsCluster',
         },
         {
           status: 'queued',
-          service: 'PINATA',
+          service: 'Pinata',
         },
       ],
     })

@@ -14,7 +14,7 @@ async function run() {
   const url = `${process.env.DATABASE_URL}/rest/v1/?apikey=${process.env.DATABASE_TOKEN}`
   await execa(
     'openapi-typescript',
-    [url, '--output', 'src/utils/db-types.ts'],
+    [url, '--output', 'src/utils/db-types.d.ts'],
     {
       preferLocal: true,
     }
