@@ -33,12 +33,16 @@ enum token_asset_status {
 }
 
 enum pin_status {
-    PinFailed          // An error occurred pinning.
+    Failed             // An error occurred pinning.
     Pinned             // Node has pinned the content.
     Pinning            // Node is currently pinning the content.
-    PinQueued          // The item has been queued for pinning.
+    Queued             // The item has been queued for pinning.
 }
 
+enum pin_service {
+    Pinata
+    IpfsCluster
+}
 
 //Models
 model block {
@@ -58,7 +62,7 @@ model token {
     token_contract_id   String
     contract            token_contract   @relation(fields: [token_contract_id], references: [id])
     owner_id            String
-    imported            erc721_import_result_to_token[]
+    imported            erc721_import_to_token[]
 }
 
 model tokens_on_blocks {
@@ -139,45 +143,48 @@ model content {
 }
 
 model pin {
-    id                  String          @id @unique     // there wasn't an id so I added this.
-    cid                 String
-    content             content         @relation(fields: [cid], references: [cid]) //content being pinned
-    location_id         String
-    location            pin_location    @relation(fields: [location_id], references: [id]) //ref to a pin location pinning this
-    pin                 pin_status                      // pinning status at this location
+    id                  BigInt          @id @unique @default(autoincrement())
+    content_cid         String
+    content             content         @relation(fields: [content_cid], references: [cid]) //content being pinned
+    // unlinking pin location data here.
+    // location_id         String
+    // location            pin_location    @relation(fields: [location_id], references: [id]) //ref to a pin location pinning this
+    service             pin_service
+    status              pin_status                      // pinning status at this location
     status_text         String?         @db.Text()      // human readable description of pin status (needed in edge cases)
     updated_at          DateTime        @default(now())
     inserted_at         DateTime        @default(now())
 }
 
-model pin_location {
-    id                  String          @id @unique
-    pins                pin[]                           // Known pins at this location
-    peer_id             String                          // Libp2p peer id of the node pinning this pin
-    peer_name           String                          // Name of the peer pinning this pin
-    region              String                          // Geo region this node resided in
-}
+// commeting out for now might delete
+// model pin_location {
+//     id                  String          @id @unique
+//     pins                pin[]                           // Known pins at this location
+//     peer_id             String                          // Libp2p peer id of the node pinning this pin
+//     peer_name           String                          // Name of the peer pinning this pin
+//     region              String                          // Geo region this node resided in
+// }
 
 model token_contract {
     id                       String     @id @unique
-    name                     String                      // descriptive name for a collection of NFTs
-    symbol                   String                      // abbreviate name for NFTs
+    name                     String?                      // descriptive name for a collection of NFTs
+    symbol                   String?                      // abbreviate name for NFTs
     supports_eip721_metadata Boolean
     tokens                   token[]
 }
 
-model erc721_import_result {
-    id                 String          @id @unique // import start cursor
-    next_id            String                      // new cursor after this import
-    tokens             erc721_import_result_to_token[]                     // tokens that were imported
+model erc721_import {
+    id                 String          @id @unique          // import start cursor
+    next_id            String                               // new cursor after this import
+    tokens             erc721_import_to_token[]             // tokens that were imported
 }
 
 //Join import respults to tokens (Many to Many)
-model erc721_import_result_to_token {
-    erc721_import_result               erc721_import_result           @relation(fields: [erc721_import_result_id], references: [id])
-    erc721_import_result_id            String                         //scalar for above relation
+model erc721_import_to_token {
+    erc721_import                      erc721_import           @relation(fields: [erc721_import_id], references: [id])
+    erc721_import_id                   String                         //scalar for above relation
     token                              token                          @relation(fields: [token_id], references: [id])
     token_id                           String                         //scalar for above relation
     inserted_at                        DateTime                       @default(now())
-    @@id([erc721_import_result_id, token_id])
+    @@id([erc721_import_id, token_id])
 }

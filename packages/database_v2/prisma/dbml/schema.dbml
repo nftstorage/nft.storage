@@ -26,7 +26,7 @@ Table tokens_on_blocks {
   block_hash String [not null]
   token token [not null]
   token_id String [not null]
-  created DateTime [default: `now()`, not null]
+  inserted_at DateTime [default: `now()`, not null]
 
   indexes {
     (block_hash, token_id) [pk]
@@ -63,8 +63,8 @@ Table resource {
   problem String [not null]
   cid String
   content content
-  created DateTime [default: `now()`, not null]
-  updated DateTime [default: `now()`, not null]
+  inserted_at DateTime [default: `now()`, not null]
+  updated_at DateTime [default: `now()`, not null]
 }
 
 Table resources_on_metadata {
@@ -72,7 +72,7 @@ Table resources_on_metadata {
   metadata_id String [not null]
   resource resource [not null]
   resource_uri String [not null]
-  created DateTime [default: `now()`, not null]
+  inserted_at DateTime [default: `now()`, not null]
 
   indexes {
     (metadata_id, resource_uri) [pk]
@@ -84,19 +84,19 @@ Table content {
   resources resource [not null]
   dag_size Int
   pins pin [not null]
-  created DateTime [default: `now()`, not null]
+  inserted_at DateTime [default: `now()`, not null]
 }
 
 Table pin {
-  id String [pk, unique]
-  cid String [not null]
+  id BigInt [pk, increment, unique]
+  content_cid String [not null]
   content content [not null]
   location_id String [not null]
   location pin_location [not null]
-  pin pin_status [not null]
+  status pin_status [not null]
   status_text String
-  updated DateTime [default: `now()`, not null]
-  created DateTime [default: `now()`, not null]
+  updated_at DateTime [default: `now()`, not null]
+  inserted_at DateTime [default: `now()`, not null]
 }
 
 Table pin_location {
@@ -126,7 +126,7 @@ Table erc721_import_result_to_token {
   erc721_import_result_id String [not null]
   token token [not null]
   token_id String [not null]
-  created DateTime [default: `now()`, not null]
+  inserted_at DateTime [default: `now()`, not null]
 
   indexes {
     (erc721_import_result_id, token_id) [pk]
@@ -171,7 +171,7 @@ Ref: resources_on_metadata.metadata_id > metadata.id
 
 Ref: resources_on_metadata.resource_uri > resource.uri
 
-Ref: pin.cid > content.cid
+Ref: pin.content_cid > content.cid
 
 Ref: pin.location_id > pin_location.id
 
