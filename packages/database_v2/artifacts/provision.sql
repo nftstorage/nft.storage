@@ -5,7 +5,10 @@ CREATE TYPE "resource_status" AS ENUM ('Idle', 'PinQueued', 'Pinned', 'FailedURI
 CREATE TYPE "token_asset_status" AS ENUM ('Queued', 'Failed', 'Succeeded');
 
 -- CreateEnum
-CREATE TYPE "pin_status" AS ENUM ('PinFailed', 'Pinned', 'Pinning', 'PinQueued');
+CREATE TYPE "pin_status" AS ENUM ('Failed', 'Pinned', 'Pinning', 'Queued');
+
+-- CreateEnum
+CREATE TYPE "pin_service" AS ENUM ('Pinata', 'IpfsCluster');
 
 -- CreateTable
 CREATE TABLE "block" (
@@ -95,7 +98,7 @@ CREATE TABLE "content" (
 CREATE TABLE "pin" (
     "id" BIGSERIAL NOT NULL,
     "content_cid" TEXT NOT NULL,
-    "location_id" TEXT NOT NULL,
+    "service" "pin_service" NOT NULL,
     "status" "pin_status" NOT NULL,
     "status_text" TEXT,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -105,27 +108,17 @@ CREATE TABLE "pin" (
 );
 
 -- CreateTable
-CREATE TABLE "pin_location" (
-    "id" TEXT NOT NULL,
-    "peer_id" TEXT NOT NULL,
-    "peer_name" TEXT NOT NULL,
-    "region" TEXT NOT NULL,
-
-    PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "token_contract" (
     "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "symbol" TEXT NOT NULL,
+    "name" TEXT,
+    "symbol" TEXT,
     "supports_eip721_metadata" BOOLEAN NOT NULL,
 
     PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "erc721_import_result" (
+CREATE TABLE "erc721_import" (
     "id" TEXT NOT NULL,
     "next_id" TEXT NOT NULL,
 
@@ -133,12 +126,12 @@ CREATE TABLE "erc721_import_result" (
 );
 
 -- CreateTable
-CREATE TABLE "erc721_import_result_to_token" (
-    "erc721_import_result_id" TEXT NOT NULL,
+CREATE TABLE "erc721_import_to_token" (
+    "erc721_import_id" TEXT NOT NULL,
     "token_id" TEXT NOT NULL,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("erc721_import_result_id","token_id")
+    PRIMARY KEY ("erc721_import_id","token_id")
 );
 
 -- CreateIndex
@@ -175,13 +168,10 @@ CREATE UNIQUE INDEX "content.cid_unique" ON "content"("cid");
 CREATE UNIQUE INDEX "pin.id_unique" ON "pin"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "pin_location.id_unique" ON "pin_location"("id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "token_contract.id_unique" ON "token_contract"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "erc721_import_result.id_unique" ON "erc721_import_result"("id");
+CREATE UNIQUE INDEX "erc721_import.id_unique" ON "erc721_import"("id");
 
 -- AddForeignKey
 ALTER TABLE "token" ADD FOREIGN KEY ("token_asset_id") REFERENCES "token_asset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -211,10 +201,7 @@ ALTER TABLE "resources_on_metadata" ADD FOREIGN KEY ("resource_uri") REFERENCES 
 ALTER TABLE "pin" ADD FOREIGN KEY ("content_cid") REFERENCES "content"("cid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "pin" ADD FOREIGN KEY ("location_id") REFERENCES "pin_location"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "erc721_import_to_token" ADD FOREIGN KEY ("erc721_import_id") REFERENCES "erc721_import"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "erc721_import_result_to_token" ADD FOREIGN KEY ("erc721_import_result_id") REFERENCES "erc721_import_result"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "erc721_import_result_to_token" ADD FOREIGN KEY ("token_id") REFERENCES "token"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "erc721_import_to_token" ADD FOREIGN KEY ("token_id") REFERENCES "token"("id") ON DELETE CASCADE ON UPDATE CASCADE;

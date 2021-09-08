@@ -18,7 +18,7 @@ Table token {
   token_contract_id String [not null]
   contract token_contract [not null]
   owner_id String [not null]
-  imported erc721_import_result_to_token [not null]
+  imported erc721_import_to_token [not null]
 }
 
 Table tokens_on_blocks {
@@ -91,45 +91,36 @@ Table pin {
   id BigInt [pk, increment, unique]
   content_cid String [not null]
   content content [not null]
-  location_id String [not null]
-  location pin_location [not null]
+  service pin_service [not null]
   status pin_status [not null]
   status_text String
   updated_at DateTime [default: `now()`, not null]
   inserted_at DateTime [default: `now()`, not null]
 }
 
-Table pin_location {
-  id String [pk, unique]
-  pins pin [not null]
-  peer_id String [not null]
-  peer_name String [not null]
-  region String [not null]
-}
-
 Table token_contract {
   id String [pk, unique]
-  name String [not null]
-  symbol String [not null]
+  name String
+  symbol String
   supports_eip721_metadata Boolean [not null]
   tokens token [not null]
 }
 
-Table erc721_import_result {
+Table erc721_import {
   id String [pk, unique]
   next_id String [not null]
-  tokens erc721_import_result_to_token [not null]
+  tokens erc721_import_to_token [not null]
 }
 
-Table erc721_import_result_to_token {
-  erc721_import_result erc721_import_result [not null]
-  erc721_import_result_id String [not null]
+Table erc721_import_to_token {
+  erc721_import erc721_import [not null]
+  erc721_import_id String [not null]
   token token [not null]
   token_id String [not null]
   inserted_at DateTime [default: `now()`, not null]
 
   indexes {
-    (erc721_import_result_id, token_id) [pk]
+    (erc721_import_id, token_id) [pk]
   }
 }
 
@@ -149,10 +140,15 @@ Enum token_asset_status {
 }
 
 Enum pin_status {
-  PinFailed
+  Failed
   Pinned
   Pinning
-  PinQueued
+  Queued
+}
+
+Enum pin_service {
+  Pinata
+  IpfsCluster
 }
 
 Ref: token.token_asset_id > token_asset.id
@@ -173,8 +169,6 @@ Ref: resources_on_metadata.resource_uri > resource.uri
 
 Ref: pin.content_cid > content.cid
 
-Ref: pin.location_id > pin_location.id
+Ref: erc721_import_to_token.erc721_import_id > erc721_import.id
 
-Ref: erc721_import_result_to_token.erc721_import_result_id > erc721_import_result.id
-
-Ref: erc721_import_result_to_token.token_id > token.id
+Ref: erc721_import_to_token.token_id > token.id
