@@ -12,7 +12,7 @@ export const tokensCreateV1 = async (event, ctx) => {
     const created = new Date()
     const token = await signJWT(
       {
-        sub: user.issuer,
+        sub: user.magic_link_id,
         iss: 'nft-storage',
         iat: created.valueOf(),
         name: body.name,
@@ -23,7 +23,7 @@ export const tokensCreateV1 = async (event, ctx) => {
     const out = await db.createKey({
       name: body.name,
       secret: token,
-      issuer: user.issuer,
+      userId: user.id,
     })
   } else {
     throw new Error('Token name is required.')

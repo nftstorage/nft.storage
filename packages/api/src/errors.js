@@ -36,6 +36,7 @@ export class HTTPError extends Error {
     switch (err.code) {
       case ErrorUserNotFound.CODE:
       case ErrorTokenNotFound.CODE:
+      case ErrorInvalidCid.CODE:
         break
 
       // Magic SDK errors
@@ -115,3 +116,16 @@ export class ErrorTokenNotFound extends Error {
   }
 }
 ErrorTokenNotFound.CODE = 'ERROR_TOKEN_NOT_FOUND'
+
+export class ErrorInvalidCid extends Error {
+  /**
+   * @param {string} cid
+   */
+  constructor(cid) {
+    super(`Invalid CID: ${cid}`)
+    this.name = 'InvalidCid'
+    this.status = 400
+    this.code = ErrorInvalidCid.CODE
+  }
+}
+ErrorInvalidCid.CODE = 'ERROR_INVALID_CID'

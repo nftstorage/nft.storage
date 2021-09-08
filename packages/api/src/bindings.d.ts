@@ -50,10 +50,10 @@ export interface Pin {
   meta?: Record<string, string>
   status: PinStatus
   created: string
-  size: number
+  size?: number
 }
 
-export type PinStatus = 'queued' | 'pinning' | 'pinned' | 'failed' | 'unknown'
+export type PinStatus = 'queued' | 'pinning' | 'pinned' | 'failed'
 
 export type NFT = {
   /**
@@ -88,6 +88,12 @@ export type NFTResponse = NFT & {
   deals: Deal[]
 }
 
+export type CheckNFTResponse = {
+  cid: string
+  pin: Pin
+  deals: Deal[]
+}
+
 export type Deal = ClientDeal
 
 export interface User {
@@ -99,7 +105,10 @@ export interface User {
   issuer: string
   publicAddress: string
   tokens: Record<string, string>
-  github?: unknown
+  /**
+   * This will actually be json object
+   */
+  github?: string
 }
 
 export type UserSafe = Omit<User, 'tokens' | 'github'>
@@ -128,24 +137,4 @@ export interface PinsResponse {
     origins: string[]
   }
   delegates: string[]
-}
-
-export interface PinsListQueryParams {
-  cid?: string[]
-  /**
-   * Pin objects with specified name (by default a case-sensitive, exact match)
-   */
-  name?: string
-  /**
-   * Customize the text matching strategy applied when the name filter is present; exact (the default) is a case-sensitive exact match, partial matches anywhere in the name, iexact and ipartial are case-insensitive versions of the exact and partial strategies
-   */
-  match?: 'exact' | 'iexact' | 'partial' | 'ipartial'
-  status: PinStatus[]
-  before?: string
-  after?: string
-  /**
-   * Max records (default: 10)
-   */
-  limit?: number
-  meta?: unknown
 }

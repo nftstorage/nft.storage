@@ -1,8 +1,9 @@
-import { CID } from 'multiformats'
 import { JSONResponse } from '../utils/json-response.js'
 import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth-v1.js'
 import { debug } from '../utils/debug.js'
+import { parseCidPinning } from '../utils/utils.js'
+import { toPinsResponse } from '../utils/db-client.js'
 
 const log = debug('pins-add')
 
@@ -14,11 +15,15 @@ export async function pinsAddV1(event, ctx) {
   const pinData = await event.request.json()
 
   // validate CID
-  try {
-    CID.parse(pinData.cid)
-  } catch {
+  let cid = parseCidPinning(pinData.cid)
+  if (!cid) {
     return new JSONResponse(
-      { error: { reason: 'INVALID_PIN_DATA', details: 'invalid CID' } },
+      {
+        error: {
+          reason: 'INVALID_PIN_DATA',
+          details: `Invalid request id: ${pinData.cid}`,
+        },
+      },
       { status: 400 }
     )
   }
@@ -45,49 +50,36 @@ export async function pinsAddV1(event, ctx) {
     )
   }
 
-  await cluster.pin(pinData.cid, {
+  await cluster.pin(cid.contentCid, {
     origins: pinData.origins,
     name: pinData.name,
     metadata: pinData.meta,
   })
 
   const upload = await db.createUpload({
-    type: 'remote',
-    cid: pinData.cid,
-    issuer: user.issuer,
-    key_id: key?.key_id,
+    type: 'Remote',
+    content_cid: cid.contentCid,
+    source_cid: cid.sourceCid,
+    account_id: user.id,
+    key_id: key?.id,
     origins: pinData.origins,
     meta: pinData.meta,
     name: pinData.name,
     pins: [
       {
         status: 'queued',
-        service: 'IPFS_CLUSTER',
+        service: 'IpfsCluster',
       },
       {
         status: 'queued',
-        service: 'PINATA',
+        service: 'Pinata',
       },
     ],
   })
 
-  /** @type import('../bindings').PinsResponse */
-  const pinStatus = {
-    requestid: upload.cid,
-    status: upload.content.pin[0].status,
-    created: upload.inserted_at,
-    pin: {
-      cid: upload.cid,
-      name: upload.name,
-      meta: upload.meta,
-      origins: upload.origins,
-    },
-    delegates: cluster.delegates(),
+  if (upload.content.pin[0].status === 'failed') {
+    await cluster.recover(upload.content_cid)
   }
 
-  if (pinStatus.status === 'failed') {
-    await cluster.recover(upload.cid)
-  }
-
-  return new JSONResponse(pinStatus)
+  return new JSONResponse(toPinsResponse(upload))
 }

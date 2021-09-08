@@ -63,18 +63,19 @@ export async function nftStoreV1(event, ctx) {
 
   await db.createUpload({
     type: 'NFT',
-    cid,
-    size: bytes,
-    issuer: user.issuer,
-    key_id: key?.key_id,
+    content_cid: cid,
+    source_cid: cid,
+    dag_size: bytes,
+    account_id: user.id,
+    key_id: key?.id,
     pins: [
       {
         status: 'queued',
-        service: 'IPFS_CLUSTER',
+        service: 'IpfsCluster',
       },
       {
         status: 'queued',
-        service: 'PINATA',
+        service: 'Pinata',
       },
     ],
   })

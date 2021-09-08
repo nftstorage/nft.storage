@@ -16,13 +16,14 @@ export interface paths {
     get: {
       parameters: {
         query: {
-          issuer?: parameters['rowFilter.account.issuer']
-          sub?: parameters['rowFilter.account.sub']
+          id?: parameters['rowFilter.account.id']
+          magic_link_id?: parameters['rowFilter.account.magic_link_id']
+          github_id?: parameters['rowFilter.account.github_id']
           name?: parameters['rowFilter.account.name']
           picture?: parameters['rowFilter.account.picture']
-          github?: parameters['rowFilter.account.github']
           email?: parameters['rowFilter.account.email']
           public_address?: parameters['rowFilter.account.public_address']
+          github?: parameters['rowFilter.account.github']
           inserted_at?: parameters['rowFilter.account.inserted_at']
           updated_at?: parameters['rowFilter.account.updated_at']
           /** Filtering Columns */
@@ -75,13 +76,14 @@ export interface paths {
     delete: {
       parameters: {
         query: {
-          issuer?: parameters['rowFilter.account.issuer']
-          sub?: parameters['rowFilter.account.sub']
+          id?: parameters['rowFilter.account.id']
+          magic_link_id?: parameters['rowFilter.account.magic_link_id']
+          github_id?: parameters['rowFilter.account.github_id']
           name?: parameters['rowFilter.account.name']
           picture?: parameters['rowFilter.account.picture']
-          github?: parameters['rowFilter.account.github']
           email?: parameters['rowFilter.account.email']
           public_address?: parameters['rowFilter.account.public_address']
+          github?: parameters['rowFilter.account.github']
           inserted_at?: parameters['rowFilter.account.inserted_at']
           updated_at?: parameters['rowFilter.account.updated_at']
         }
@@ -98,13 +100,14 @@ export interface paths {
     patch: {
       parameters: {
         query: {
-          issuer?: parameters['rowFilter.account.issuer']
-          sub?: parameters['rowFilter.account.sub']
+          id?: parameters['rowFilter.account.id']
+          magic_link_id?: parameters['rowFilter.account.magic_link_id']
+          github_id?: parameters['rowFilter.account.github_id']
           name?: parameters['rowFilter.account.name']
           picture?: parameters['rowFilter.account.picture']
-          github?: parameters['rowFilter.account.github']
           email?: parameters['rowFilter.account.email']
           public_address?: parameters['rowFilter.account.public_address']
+          github?: parameters['rowFilter.account.github']
           inserted_at?: parameters['rowFilter.account.inserted_at']
           updated_at?: parameters['rowFilter.account.updated_at']
         }
@@ -127,10 +130,10 @@ export interface paths {
     get: {
       parameters: {
         query: {
-          key_id?: parameters['rowFilter.auth_key.key_id']
+          id?: parameters['rowFilter.auth_key.id']
           name?: parameters['rowFilter.auth_key.name']
           secret?: parameters['rowFilter.auth_key.secret']
-          issuer?: parameters['rowFilter.auth_key.issuer']
+          account_id?: parameters['rowFilter.auth_key.account_id']
           inserted_at?: parameters['rowFilter.auth_key.inserted_at']
           updated_at?: parameters['rowFilter.auth_key.updated_at']
           /** Filtering Columns */
@@ -183,10 +186,10 @@ export interface paths {
     delete: {
       parameters: {
         query: {
-          key_id?: parameters['rowFilter.auth_key.key_id']
+          id?: parameters['rowFilter.auth_key.id']
           name?: parameters['rowFilter.auth_key.name']
           secret?: parameters['rowFilter.auth_key.secret']
-          issuer?: parameters['rowFilter.auth_key.issuer']
+          account_id?: parameters['rowFilter.auth_key.account_id']
           inserted_at?: parameters['rowFilter.auth_key.inserted_at']
           updated_at?: parameters['rowFilter.auth_key.updated_at']
         }
@@ -203,10 +206,10 @@ export interface paths {
     patch: {
       parameters: {
         query: {
-          key_id?: parameters['rowFilter.auth_key.key_id']
+          id?: parameters['rowFilter.auth_key.id']
           name?: parameters['rowFilter.auth_key.name']
           secret?: parameters['rowFilter.auth_key.secret']
-          issuer?: parameters['rowFilter.auth_key.issuer']
+          account_id?: parameters['rowFilter.auth_key.account_id']
           inserted_at?: parameters['rowFilter.auth_key.inserted_at']
           updated_at?: parameters['rowFilter.auth_key.updated_at']
         }
@@ -230,7 +233,7 @@ export interface paths {
       parameters: {
         query: {
           cid?: parameters['rowFilter.content.cid']
-          size?: parameters['rowFilter.content.size']
+          dag_size?: parameters['rowFilter.content.dag_size']
           inserted_at?: parameters['rowFilter.content.inserted_at']
           updated_at?: parameters['rowFilter.content.updated_at']
           /** Filtering Columns */
@@ -284,7 +287,7 @@ export interface paths {
       parameters: {
         query: {
           cid?: parameters['rowFilter.content.cid']
-          size?: parameters['rowFilter.content.size']
+          dag_size?: parameters['rowFilter.content.dag_size']
           inserted_at?: parameters['rowFilter.content.inserted_at']
           updated_at?: parameters['rowFilter.content.updated_at']
         }
@@ -302,7 +305,7 @@ export interface paths {
       parameters: {
         query: {
           cid?: parameters['rowFilter.content.cid']
-          size?: parameters['rowFilter.content.size']
+          dag_size?: parameters['rowFilter.content.dag_size']
           inserted_at?: parameters['rowFilter.content.inserted_at']
           updated_at?: parameters['rowFilter.content.updated_at']
         }
@@ -327,7 +330,7 @@ export interface paths {
         query: {
           pin_id?: parameters['rowFilter.pin.pin_id']
           status?: parameters['rowFilter.pin.status']
-          cid?: parameters['rowFilter.pin.cid']
+          content_cid?: parameters['rowFilter.pin.content_cid']
           service?: parameters['rowFilter.pin.service']
           inserted_at?: parameters['rowFilter.pin.inserted_at']
           updated_at?: parameters['rowFilter.pin.updated_at']
@@ -383,7 +386,7 @@ export interface paths {
         query: {
           pin_id?: parameters['rowFilter.pin.pin_id']
           status?: parameters['rowFilter.pin.status']
-          cid?: parameters['rowFilter.pin.cid']
+          content_cid?: parameters['rowFilter.pin.content_cid']
           service?: parameters['rowFilter.pin.service']
           inserted_at?: parameters['rowFilter.pin.inserted_at']
           updated_at?: parameters['rowFilter.pin.updated_at']
@@ -403,7 +406,7 @@ export interface paths {
         query: {
           pin_id?: parameters['rowFilter.pin.pin_id']
           status?: parameters['rowFilter.pin.status']
-          cid?: parameters['rowFilter.pin.cid']
+          content_cid?: parameters['rowFilter.pin.content_cid']
           service?: parameters['rowFilter.pin.service']
           inserted_at?: parameters['rowFilter.pin.inserted_at']
           updated_at?: parameters['rowFilter.pin.updated_at']
@@ -427,15 +430,17 @@ export interface paths {
     get: {
       parameters: {
         query: {
-          upload_id?: parameters['rowFilter.upload.upload_id']
-          issuer?: parameters['rowFilter.upload.issuer']
+          id?: parameters['rowFilter.upload.id']
+          account_id?: parameters['rowFilter.upload.account_id']
           key_id?: parameters['rowFilter.upload.key_id']
-          cid?: parameters['rowFilter.upload.cid']
+          content_cid?: parameters['rowFilter.upload.content_cid']
+          source_cid?: parameters['rowFilter.upload.source_cid']
+          mime_type?: parameters['rowFilter.upload.mime_type']
           type?: parameters['rowFilter.upload.type']
+          name?: parameters['rowFilter.upload.name']
           files?: parameters['rowFilter.upload.files']
           origins?: parameters['rowFilter.upload.origins']
           meta?: parameters['rowFilter.upload.meta']
-          name?: parameters['rowFilter.upload.name']
           inserted_at?: parameters['rowFilter.upload.inserted_at']
           updated_at?: parameters['rowFilter.upload.updated_at']
           /** Filtering Columns */
@@ -488,15 +493,17 @@ export interface paths {
     delete: {
       parameters: {
         query: {
-          upload_id?: parameters['rowFilter.upload.upload_id']
-          issuer?: parameters['rowFilter.upload.issuer']
+          id?: parameters['rowFilter.upload.id']
+          account_id?: parameters['rowFilter.upload.account_id']
           key_id?: parameters['rowFilter.upload.key_id']
-          cid?: parameters['rowFilter.upload.cid']
+          content_cid?: parameters['rowFilter.upload.content_cid']
+          source_cid?: parameters['rowFilter.upload.source_cid']
+          mime_type?: parameters['rowFilter.upload.mime_type']
           type?: parameters['rowFilter.upload.type']
+          name?: parameters['rowFilter.upload.name']
           files?: parameters['rowFilter.upload.files']
           origins?: parameters['rowFilter.upload.origins']
           meta?: parameters['rowFilter.upload.meta']
-          name?: parameters['rowFilter.upload.name']
           inserted_at?: parameters['rowFilter.upload.inserted_at']
           updated_at?: parameters['rowFilter.upload.updated_at']
         }
@@ -513,15 +520,17 @@ export interface paths {
     patch: {
       parameters: {
         query: {
-          upload_id?: parameters['rowFilter.upload.upload_id']
-          issuer?: parameters['rowFilter.upload.issuer']
+          id?: parameters['rowFilter.upload.id']
+          account_id?: parameters['rowFilter.upload.account_id']
           key_id?: parameters['rowFilter.upload.key_id']
-          cid?: parameters['rowFilter.upload.cid']
+          content_cid?: parameters['rowFilter.upload.content_cid']
+          source_cid?: parameters['rowFilter.upload.source_cid']
+          mime_type?: parameters['rowFilter.upload.mime_type']
           type?: parameters['rowFilter.upload.type']
+          name?: parameters['rowFilter.upload.name']
           files?: parameters['rowFilter.upload.files']
           origins?: parameters['rowFilter.upload.origins']
           meta?: parameters['rowFilter.upload.meta']
-          name?: parameters['rowFilter.upload.name']
           inserted_at?: parameters['rowFilter.upload.inserted_at']
           updated_at?: parameters['rowFilter.upload.updated_at']
         }
@@ -540,25 +549,6 @@ export interface paths {
       }
     }
   }
-  '/rpc/upload_fn': {
-    post: {
-      parameters: {
-        body: {
-          args: {
-            data: string
-          }
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferParams']
-        }
-      }
-      responses: {
-        /** OK */
-        200: unknown
-      }
-    }
-  }
 }
 
 export interface definitions {
@@ -567,13 +557,14 @@ export interface definitions {
      * Note:
      * This is a Primary Key.<pk/>
      */
-    issuer: string
-    sub: string
+    id: number
+    magic_link_id: string
+    github_id: string
     name: string
     picture?: string
-    github?: string
     email: string
     public_address: string
+    github?: string
     inserted_at: string
     updated_at: string
   }
@@ -582,14 +573,14 @@ export interface definitions {
      * Note:
      * This is a Primary Key.<pk/>
      */
-    key_id: number
+    id: number
     name: string
     secret: string
     /**
      * Note:
-     * This is a Foreign Key to `account.issuer`.<fk table='account' column='issuer'/>
+     * This is a Foreign Key to `account.id`.<fk table='account' column='id'/>
      */
-    issuer: string
+    account_id: number
     inserted_at: string
     updated_at: string
   }
@@ -599,7 +590,7 @@ export interface definitions {
      * This is a Primary Key.<pk/>
      */
     cid: string
-    size?: number
+    dag_size?: number
     inserted_at: string
     updated_at: string
   }
@@ -614,8 +605,8 @@ export interface definitions {
      * Note:
      * This is a Foreign Key to `content.cid`.<fk table='content' column='cid'/>
      */
-    cid: string
-    service: 'PINATA' | 'IPFS_CLUSTER'
+    content_cid: string
+    service: 'Pinata' | 'IpfsCluster'
     inserted_at: string
     updated_at: string
   }
@@ -624,27 +615,29 @@ export interface definitions {
      * Note:
      * This is a Primary Key.<pk/>
      */
-    upload_id: number
+    id: number
     /**
      * Note:
-     * This is a Foreign Key to `account.issuer`.<fk table='account' column='issuer'/>
+     * This is a Foreign Key to `account.id`.<fk table='account' column='id'/>
      */
-    issuer: string
+    account_id: number
     /**
      * Note:
-     * This is a Foreign Key to `auth_key.key_id`.<fk table='auth_key' column='key_id'/>
+     * This is a Foreign Key to `auth_key.id`.<fk table='auth_key' column='id'/>
      */
-    key_id?: number
+    key_id: number
     /**
      * Note:
      * This is a Foreign Key to `content.cid`.<fk table='content' column='cid'/>
      */
-    cid: string
-    type: string
+    content_cid: string
+    source_cid: string
+    mime_type?: string
+    type: 'Car' | 'Blob' | 'Multipart' | 'Remote' | 'NFT'
+    name?: string
     files?: string
     origins?: string
     meta?: string
-    name?: string
     inserted_at: string
     updated_at: string
   }
@@ -673,48 +666,51 @@ export interface parameters {
   limit: string
   /** account */
   'body.account': definitions['account']
-  'rowFilter.account.issuer': string
-  'rowFilter.account.sub': string
+  'rowFilter.account.id': string
+  'rowFilter.account.magic_link_id': string
+  'rowFilter.account.github_id': string
   'rowFilter.account.name': string
   'rowFilter.account.picture': string
-  'rowFilter.account.github': string
   'rowFilter.account.email': string
   'rowFilter.account.public_address': string
+  'rowFilter.account.github': string
   'rowFilter.account.inserted_at': string
   'rowFilter.account.updated_at': string
   /** auth_key */
   'body.auth_key': definitions['auth_key']
-  'rowFilter.auth_key.key_id': string
+  'rowFilter.auth_key.id': string
   'rowFilter.auth_key.name': string
   'rowFilter.auth_key.secret': string
-  'rowFilter.auth_key.issuer': string
+  'rowFilter.auth_key.account_id': string
   'rowFilter.auth_key.inserted_at': string
   'rowFilter.auth_key.updated_at': string
   /** content */
   'body.content': definitions['content']
   'rowFilter.content.cid': string
-  'rowFilter.content.size': string
+  'rowFilter.content.dag_size': string
   'rowFilter.content.inserted_at': string
   'rowFilter.content.updated_at': string
   /** pin */
   'body.pin': definitions['pin']
   'rowFilter.pin.pin_id': string
   'rowFilter.pin.status': string
-  'rowFilter.pin.cid': string
+  'rowFilter.pin.content_cid': string
   'rowFilter.pin.service': string
   'rowFilter.pin.inserted_at': string
   'rowFilter.pin.updated_at': string
   /** upload */
   'body.upload': definitions['upload']
-  'rowFilter.upload.upload_id': string
-  'rowFilter.upload.issuer': string
+  'rowFilter.upload.id': string
+  'rowFilter.upload.account_id': string
   'rowFilter.upload.key_id': string
-  'rowFilter.upload.cid': string
+  'rowFilter.upload.content_cid': string
+  'rowFilter.upload.source_cid': string
+  'rowFilter.upload.mime_type': string
   'rowFilter.upload.type': string
+  'rowFilter.upload.name': string
   'rowFilter.upload.files': string
   'rowFilter.upload.origins': string
   'rowFilter.upload.meta': string
-  'rowFilter.upload.name': string
   'rowFilter.upload.inserted_at': string
   'rowFilter.upload.updated_at': string
 }

@@ -1,15 +1,28 @@
 import { validate } from '../utils/auth-v1.js'
 import { JSONResponse } from '../utils/json-response.js'
-import * as cluster from '../cluster.js'
+
+import { parseCidPinning } from '../utils/utils.js'
+import { toPinsResponse } from '../utils/db-client.js'
 
 /** @type {import('../utils/router.js').Handler} */
 export async function pinsGetV1(event, ctx) {
   const { params } = ctx
   const { user, db } = await validate(event, ctx)
 
-  let cid = params.requestid
+  let cid = parseCidPinning(params.requestid)
+  if (!cid) {
+    return new JSONResponse(
+      {
+        error: {
+          reason: 'ERROR_INVALID_REQUEST_ID',
+          details: `Invalid request id: ${params.requestid}`,
+        },
+      },
+      { status: 400 }
+    )
+  }
 
-  const upload = await db.getUpload(cid, user.issuer)
+  const upload = await db.getUpload(cid.contentCid, user.id)
 
   if (!upload) {
     return new JSONResponse(
@@ -18,19 +31,5 @@ export async function pinsGetV1(event, ctx) {
     )
   }
 
-  /** @type import('../bindings').PinsResponse */
-  const pinStatus = {
-    requestid: upload.cid,
-    status: upload.content.pin[0].status,
-    created: upload.inserted_at,
-    pin: {
-      cid: upload.cid,
-      meta: upload.meta,
-      name: upload.name,
-      origins: upload.origins,
-    },
-    delegates: cluster.delegates(),
-  }
-
-  return new JSONResponse(pinStatus)
+  return new JSONResponse(toPinsResponse(upload))
 }
