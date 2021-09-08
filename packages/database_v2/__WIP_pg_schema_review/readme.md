@@ -39,3 +39,4 @@ Prisma is pretty quick and easy to read, but this is nice becuase this is 'the w
 [https://marketplace.visualstudio.com/items?itemName=Prisma.prisma](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma)
 
 Honestly this just makes it a lot easier, at least in VS code. If you don't use Vs Code there might be similar tooling. Gives you the linting and the syntax highlighting
+

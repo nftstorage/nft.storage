@@ -66,7 +66,7 @@ model tokens_on_blocks {
     block_hash          String          //scalar for above relation
     token               token           @relation(fields: [token_id], references: [id])
     token_id            String          //scalar for above relation
-    created             DateTime        @default(now())
+    inserted_at         DateTime        @default(now())
     @@id([block_hash, token_id])
 }
 
@@ -115,8 +115,8 @@ model resource {
     //   Content field is only going to be present when resource has a `ContentLinked`
     cid                 String?         //CID corresponding to this resource once it is pinned.
     content             content?        @relation(fields: [cid], references: [cid])
-    created             DateTime        @default(now())
-    updated             DateTime        @default(now())
+    inserted_at         DateTime        @default(now())
+    updated_at          DateTime        @default(now())
 }
 
 //Explicit Join table for metadata and resources.
@@ -125,7 +125,7 @@ model resources_on_metadata {
     metadata_id         String          // scalar for above relation
     resource            resource        @relation(fields: [resource_uri], references: [uri])
     resource_uri        String          // scalar for above relation
-    created             DateTime        @default(now())
+    inserted_at         DateTime        @default(now())
     @@id([metadata_id, resource_uri])
 }
 
@@ -135,7 +135,7 @@ model content {
     resources           resource[]
     dag_size            Int?
     pins                pin[]
-    created             DateTime        @default(now())
+    inserted_at         DateTime        @default(now())
 }
 
 model pin {
@@ -146,8 +146,8 @@ model pin {
     location            pin_location    @relation(fields: [location_id], references: [id]) //ref to a pin location pinning this
     pin                 pin_status                      // pinning status at this location
     status_text         String?         @db.Text()      // human readable description of pin status (needed in edge cases)
-    updated             DateTime        @default(now())
-    created             DateTime        @default(now())
+    updated_at          DateTime        @default(now())
+    inserted_at         DateTime        @default(now())
 }
 
 model pin_location {
@@ -178,6 +178,6 @@ model erc721_import_result_to_token {
     erc721_import_result_id            String                         //scalar for above relation
     token                              token                          @relation(fields: [token_id], references: [id])
     token_id                           String                         //scalar for above relation
-    created                            DateTime                       @default(now())
+    inserted_at                        DateTime                       @default(now())
     @@id([erc721_import_result_id, token_id])
 }
