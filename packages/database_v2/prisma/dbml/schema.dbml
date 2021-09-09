@@ -127,12 +127,11 @@ Table erc721_import_to_nft {
 }
 
 Enum resource_status {
-  Idle
-  PinQueued
-  Pinned
-  FailedURIParse
-  FailedFetch
-  PinFailure
+  Queued
+  URIParseFailed
+  ContentFetchFailed
+  PinRequestFailed
+  ContentLinked
 }
 
 Enum nft_asset_status {

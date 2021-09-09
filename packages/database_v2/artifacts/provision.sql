@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "resource_status" AS ENUM ('Idle', 'PinQueued', 'Pinned', 'FailedURIParse', 'FailedFetch', 'PinFailure');
+CREATE TYPE "resource_status" AS ENUM ('Queued', 'URIParseFailed', 'ContentFetchFailed', 'PinRequestFailed', 'ContentLinked');
 
 -- CreateEnum
 CREATE TYPE "nft_asset_status" AS ENUM ('Queued', 'URIParseFailed', 'ContentFetchFailed', 'ContentParseFailed', 'PinRequestFailed', 'Linked');
