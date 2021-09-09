@@ -1,4 +1,4 @@
-Create SCHEMA nifty;
+CREATE SCHEMA nifty;
 
 CREATE TYPE nifty.resource_status AS ENUM (
     'Queued',
