@@ -109,14 +109,13 @@ model metadata {
 }
 
 model resource {
-    // Jesse Note: This might be not-correct, need to review this relationship
-    // I am assuming a resource can (possible appear in multiple metadata Images)
-    // confirm with Gozala, fit not metadata? is also doable.
+    //do we want this to go into the join table too? -Jesse
+    source_uri          String          @id @unique //uri with which resource identified
+
     referrers           resources_by_metadata[]
     status              resource_status
     status_text         String
 
-    uri                 String          @id @unique //uri with which resource identified
     ipfs_url            String          @unique     //ipfs:// url if `uri` was referring to gateway URL.
 
     problem             String          @db.Text()  //Problem description if there was a problem pinning
@@ -129,6 +128,7 @@ model resource {
     //   Content field is only going to be present when resource has a `ContentLinked`
     content_cid         String?         //CID corresponding to this resource once it is pinned.
     content             content?        @relation(fields: [content_cid], references: [cid])
+
     inserted_at         DateTime        @default(now())
     updated_at          DateTime        @default(now())
 }
@@ -138,11 +138,11 @@ model resources_by_metadata {
     metadata_cid         String
     metadata            metadata        @relation(fields: [metadata_cid], references: [content_cid])
 
-    resource_uri        String
-    resource            resource        @relation(fields: [resource_uri], references: [uri])
+    resource_source_uri String
+    resource            resource        @relation(fields: [resource_source_uri], references: [source_uri])
 
     inserted_at         DateTime        @default(now())
-    @@id([metadata_cid, resource_uri])
+    @@id([metadata_cid, resource_source_uri])
 }
 
 

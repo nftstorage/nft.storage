@@ -64,25 +64,25 @@ CREATE TABLE "metadata" (
 
 -- CreateTable
 CREATE TABLE "resource" (
+    "source_uri" TEXT NOT NULL,
     "status" "resource_status" NOT NULL,
     "status_text" TEXT NOT NULL,
-    "uri" TEXT NOT NULL,
     "ipfs_url" TEXT NOT NULL,
     "problem" TEXT NOT NULL,
-    "cid" TEXT,
+    "content_cid" TEXT,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("uri")
+    PRIMARY KEY ("source_uri")
 );
 
 -- CreateTable
 CREATE TABLE "resources_by_metadata" (
     "metadata_cid" TEXT NOT NULL,
-    "resource_uri" TEXT NOT NULL,
+    "resource_source_uri" TEXT NOT NULL,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("metadata_cid","resource_uri")
+    PRIMARY KEY ("metadata_cid","resource_source_uri")
 );
 
 -- CreateTable
@@ -153,7 +153,7 @@ CREATE UNIQUE INDEX "metadata.content_cid_unique" ON "metadata"("content_cid");
 CREATE UNIQUE INDEX "metadata.token_uri_unique" ON "metadata"("token_uri");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "resource.uri_unique" ON "resource"("uri");
+CREATE UNIQUE INDEX "resource.source_uri_unique" ON "resource"("source_uri");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "resource.ipfs_url_unique" ON "resource"("ipfs_url");
@@ -186,13 +186,13 @@ ALTER TABLE "nfts_by_blocks" ADD FOREIGN KEY ("nft_id") REFERENCES "nft"("id") O
 ALTER TABLE "metadata" ADD FOREIGN KEY ("token_uri") REFERENCES "nft_asset"("token_uri") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "resource" ADD FOREIGN KEY ("cid") REFERENCES "content"("cid") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "resource" ADD FOREIGN KEY ("content_cid") REFERENCES "content"("cid") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "resources_by_metadata" ADD FOREIGN KEY ("metadata_cid") REFERENCES "metadata"("content_cid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "resources_by_metadata" ADD FOREIGN KEY ("resource_uri") REFERENCES "resource"("uri") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "resources_by_metadata" ADD FOREIGN KEY ("resource_source_uri") REFERENCES "resource"("source_uri") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "pin" ADD FOREIGN KEY ("content_cid") REFERENCES "content"("cid") ON DELETE CASCADE ON UPDATE CASCADE;
