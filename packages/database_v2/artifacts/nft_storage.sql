@@ -15,7 +15,7 @@ CREATE TYPE nft_storage.service AS ENUM (
 CREATE TYPE nft_storage.upload_type AS ENUM (
   'Car',
   'Blob',
-  'Multipart', 
+  'Multipart',
   'Remote',
   'NFT'
 );

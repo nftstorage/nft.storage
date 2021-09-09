@@ -1,232 +1,213 @@
--- CreateEnum
-CREATE TYPE "resource_status" AS ENUM ('Queued', 'URIParseFailed', 'ContentFetchFailed', 'PinRequestFailed', 'ContentLinked');
+Create SCHEMA nifty;
 
--- CreateEnum
-CREATE TYPE "nft_asset_status" AS ENUM ('Queued', 'URIParseFailed', 'ContentFetchFailed', 'ContentParseFailed', 'PinRequestFailed', 'Linked');
-
--- CreateEnum
-CREATE TYPE "pin_status" AS ENUM ('ClusterError', 'PinError', 'PinQueued', 'Pinned', 'Pinning', 'Remote', 'Sharded', 'Undefined', 'UnpinError', 'UnpinQueued', 'Unpinned', 'Unpinning');
-
--- CreateEnum
-CREATE TYPE "pin_service" AS ENUM ('Pinata', 'IpfsCluster');
-
--- CreateTable
-CREATE TABLE "block" (
-    "hash" TEXT NOT NULL,
-    "number" INTEGER NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    PRIMARY KEY ("hash")
+CREATE TYPE nifty.resource_status AS ENUM (
+    'Queued',
+    'URIParseFailed',
+    'ContentFetchFailed',
+    'PinRequestFailed',
+    'ContentLinked'
 );
 
--- CreateTable
-CREATE TABLE "nft" (
-    "id" TEXT NOT NULL,
-    "token_id" TEXT NOT NULL,
-    "mint_time" TIMESTAMP(3) NOT NULL,
-    "token_uri" TEXT NOT NULL,
-    "contract_id" TEXT NOT NULL,
-    "owner_id" TEXT NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    PRIMARY KEY ("id")
+CREATE TYPE nifty.nft_asset_status AS ENUM (
+    'Queued',
+    'URIParseFailed',
+    'ContentFetchFailed',
+    'ContentParseFailed',
+    'PinRequestFailed',
+    'Linked'
 );
 
--- CreateTable
-CREATE TABLE "owner" (
-    "id" TEXT NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    PRIMARY KEY ("id")
+CREATE TYPE nifty.pin_status AS ENUM (
+    'ClusterError',
+    'PinError',
+    'PinQueued',
+    'Pinned',
+    'Pinning',
+    'Remote',
+    'Sharded',
+    'Undefined',
+    'UnpinError',
+    'UnpinQueued',
+    'Unpinned',
+    'Unpinning'
 );
 
--- CreateTable
-CREATE TABLE "nfts_by_blocks" (
-    "block_hash" TEXT NOT NULL,
-    "nft_id" TEXT NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    PRIMARY KEY ("block_hash","nft_id")
+CREATE TYPE nifty.pin_service AS ENUM (
+    'Pinata',
+    'IpfsCluster'
 );
 
--- CreateTable
-CREATE TABLE "nft_asset" (
-    "token_uri" TEXT NOT NULL,
-    "ipfs_URL" TEXT,
-    "status" "nft_asset_status" NOT NULL,
-    "status_text" TEXT NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE  nifty.block (
+    hash TEXT NOT NULL,
+    number INTEGER NOT NULL,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("token_uri")
+    PRIMARY KEY (hash)
 );
 
--- CreateTable
-CREATE TABLE "metadata" (
-    "content_cid" TEXT NOT NULL,
-    "token_uri" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "image_uri" TEXT NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE  nifty.nft (
+    id TEXT NOT NULL,
+    token_id TEXT NOT NULL,
+    mint_time TIMESTAMP(3) NOT NULL,
+    token_uri TEXT NOT NULL,
+    contract_id TEXT NOT NULL,
+    owner_id TEXT NOT NULL,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("content_cid")
+    PRIMARY KEY (id)
 );
 
--- CreateTable
-CREATE TABLE "resource" (
-    "uri" TEXT NOT NULL,
-    "status" "resource_status" NOT NULL,
-    "status_text" TEXT,
-    "ipfs_url" TEXT,
-    "content_cid" TEXT,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE  nifty.owner (
+    id TEXT NOT NULL,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("uri")
+    PRIMARY KEY (id)
 );
 
--- CreateTable
-CREATE TABLE "resources_by_metadata" (
-    "metadata_cid" TEXT NOT NULL,
-    "resource_uri" TEXT NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE  nifty.nfts_by_blocks (
+    block_hash TEXT NOT NULL,
+    nft_id TEXT NOT NULL,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("metadata_cid","resource_uri")
+    PRIMARY KEY (block_hash,nft_id)
 );
 
--- CreateTable
-CREATE TABLE "content" (
-    "cid" TEXT NOT NULL,
-    "dag_size" INTEGER,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE  nifty.nft_asset (
+    token_uri TEXT NOT NULL,
+    ipfs_URL TEXT,
+    status nft_asset_status NOT NULL,
+    status_text TEXT NOT NULL,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("cid")
+    PRIMARY KEY (token_uri)
 );
 
--- CreateTable
-CREATE TABLE "pin" (
-    "id" BIGSERIAL NOT NULL,
-    "content_cid" TEXT NOT NULL,
-    "service" "pin_service" NOT NULL,
-    "status" "pin_status" NOT NULL,
-    "status_text" TEXT,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE  nifty.metadata (
+    content_cid TEXT NOT NULL,
+    token_uri TEXT NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+    image_uri TEXT NOT NULL,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("id")
+    PRIMARY KEY (content_cid)
 );
 
--- CreateTable
-CREATE TABLE "contract" (
-    "id" TEXT NOT NULL,
-    "name" TEXT,
-    "symbol" TEXT,
-    "supports_eip721_metadata" BOOLEAN NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE  nifty.resource (
+    uri TEXT NOT NULL,
+    status resource_status NOT NULL,
+    status_text TEXT,
+    ipfs_url TEXT,
+    content_cid TEXT,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("id")
+    PRIMARY KEY (uri)
 );
 
--- CreateTable
-CREATE TABLE "erc721_import" (
-    "id" TEXT NOT NULL,
-    "next_id" TEXT NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE  nifty.resources_by_metadata (
+    metadata_cid TEXT NOT NULL,
+    resource_uri TEXT NOT NULL,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("id")
+    PRIMARY KEY (metadata_cid,resource_uri)
 );
 
--- CreateTable
-CREATE TABLE "erc721_import_by_nft" (
-    "erc721_import_id" TEXT NOT NULL,
-    "nft_id" TEXT NOT NULL,
-    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE TABLE  nifty.content (
+    cid TEXT NOT NULL,
+    dag_size INTEGER,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("erc721_import_id","nft_id")
+    PRIMARY KEY (cid)
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "block.hash_unique" ON "block"("hash");
+CREATE TABLE  nifty.pin (
+    id BIGSERIAL NOT NULL,
+    content_cid TEXT NOT NULL,
+    service pin_service NOT NULL,
+    status pin_status NOT NULL,
+    status_text TEXT,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
--- CreateIndex
-CREATE UNIQUE INDEX "block.number_unique" ON "block"("number");
+    PRIMARY KEY (id)
+);
 
--- CreateIndex
-CREATE UNIQUE INDEX "nft.id_unique" ON "nft"("id");
+CREATE TABLE  nifty.contract (
+    id TEXT NOT NULL,
+    name TEXT,
+    symbol TEXT,
+    supports_eip721_metadata BOOLEAN NOT NULL,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
--- CreateIndex
-CREATE UNIQUE INDEX "owner.id_unique" ON "owner"("id");
+    PRIMARY KEY (id)
+);
 
--- CreateIndex
-CREATE UNIQUE INDEX "nft_asset.token_uri_unique" ON "nft_asset"("token_uri");
+CREATE TABLE  nifty.erc721_import (
+    id TEXT NOT NULL,
+    next_id TEXT NOT NULL,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
--- CreateIndex
-CREATE UNIQUE INDEX "metadata.content_cid_unique" ON "metadata"("content_cid");
+    PRIMARY KEY (id)
+);
 
--- CreateIndex
-CREATE UNIQUE INDEX "metadata.token_uri_unique" ON "metadata"("token_uri");
+CREATE TABLE  nifty.erc721_import_by_nft (
+    erc721_import_id TEXT NOT NULL,
+    nft_id TEXT NOT NULL,
+    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
--- CreateIndex
-CREATE UNIQUE INDEX "resource.uri_unique" ON "resource"("uri");
+    PRIMARY KEY (erc721_import_id,nft_id)
+);
 
--- CreateIndex
-CREATE UNIQUE INDEX "resource.ipfs_url_unique" ON "resource"("ipfs_url");
+CREATE UNIQUE INDEX nifty.block.hash_unique ON nifty.block(hash);
+CREATE UNIQUE INDEX nifty.block.number_unique ON nifty.block(number);
 
--- CreateIndex
-CREATE UNIQUE INDEX "content.cid_unique" ON "content"("cid");
+CREATE UNIQUE INDEX nifty.nft.id_unique ON nifty.nft(id);
 
--- CreateIndex
-CREATE UNIQUE INDEX "pin.id_unique" ON "pin"("id");
+CREATE UNIQUE INDEX nifty.owner.id_unique ON nifty.owner(id);
 
--- CreateIndex
-CREATE UNIQUE INDEX "contract.id_unique" ON "contract"("id");
+CREATE UNIQUE INDEX nifty.nft_asset.token_uri_unique ON nifty.nft_asset(token_uri);
 
--- CreateIndex
-CREATE UNIQUE INDEX "erc721_import.id_unique" ON "erc721_import"("id");
+CREATE UNIQUE INDEX nifty.metadata.content_cid_unique ON nifty.metadata(content_cid);
+CREATE UNIQUE INDEX nifty.metadata.token_uri_unique ON nifty.metadata(token_uri);
 
--- AddForeignKey
-ALTER TABLE "nft" ADD FOREIGN KEY ("token_uri") REFERENCES "nft_asset"("token_uri") ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE UNIQUE INDEX nifty.resource.uri_unique ON nifty.resource(uri);
+CREATE UNIQUE INDEX nifty.resource.ipfs_url_unique ON nifty.resource(ipfs_url);
 
--- AddForeignKey
-ALTER TABLE "nft" ADD FOREIGN KEY ("contract_id") REFERENCES "contract"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE UNIQUE INDEX nifty.content.cid_unique ON nifty.content(cid);
 
--- AddForeignKey
-ALTER TABLE "nft" ADD FOREIGN KEY ("owner_id") REFERENCES "owner"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE UNIQUE INDEX nifty.pin.id_unique ON nifty.pin(id);
+CREATE UNIQUE INDEX nifty.contract.id_unique ON nifty.contract(id);
 
--- AddForeignKey
-ALTER TABLE "nfts_by_blocks" ADD FOREIGN KEY ("block_hash") REFERENCES "block"("hash") ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE UNIQUE INDEX nifty.erc721_import.id_unique ON nifty.erc721_import(id);
 
--- AddForeignKey
-ALTER TABLE "nfts_by_blocks" ADD FOREIGN KEY ("nft_id") REFERENCES "nft"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE nifty.nft ADD FOREIGN KEY (token_uri) REFERENCES nifty.nft_asset(token_uri) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE nifty.nft ADD FOREIGN KEY (contract_id) REFERENCES nifty.contract(id) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE nifty.nft ADD FOREIGN KEY (owner_id) REFERENCES nifty.owner(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
-ALTER TABLE "metadata" ADD FOREIGN KEY ("token_uri") REFERENCES "nft_asset"("token_uri") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE nifty.nfts_by_blocks ADD FOREIGN KEY (block_hash) REFERENCES nifty.block(hash) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE nifty.nfts_by_blocks ADD FOREIGN KEY (nft_id) REFERENCES nifty.nft(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
-ALTER TABLE "resource" ADD FOREIGN KEY ("content_cid") REFERENCES "content"("cid") ON DELETE SET NULL ON UPDATE CASCADE;
 
--- AddForeignKey
-ALTER TABLE "resources_by_metadata" ADD FOREIGN KEY ("metadata_cid") REFERENCES "metadata"("content_cid") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE nifty.metadata ADD FOREIGN KEY (token_uri) REFERENCES nifty.nft_asset(token_uri) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE nifty.resource ADD FOREIGN KEY (content_cid) REFERENCES nifty.content(cid) ON DELETE SET NULL ON UPDATE CASCADE;
 
--- AddForeignKey
-ALTER TABLE "resources_by_metadata" ADD FOREIGN KEY ("resource_uri") REFERENCES "resource"("uri") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE nifty.resources_by_metadata ADD FOREIGN KEY (metadata_cid) REFERENCES nifty.metadata(content_cid) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE nifty.resources_by_metadata ADD FOREIGN KEY (resource_uri) REFERENCES nifty.resource(uri) ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
-ALTER TABLE "pin" ADD FOREIGN KEY ("content_cid") REFERENCES "content"("cid") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
-ALTER TABLE "erc721_import_by_nft" ADD FOREIGN KEY ("erc721_import_id") REFERENCES "erc721_import"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE nifty.pin ADD FOREIGN KEY (content_cid) REFERENCES nifty.content(cid) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE nifty.erc721_import_by_nft ADD FOREIGN KEY (erc721_import_id) REFERENCES nifty.erc721_import(id) ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
-ALTER TABLE "erc721_import_by_nft" ADD FOREIGN KEY ("nft_id") REFERENCES "nft"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE nifty.erc721_import_by_nft ADD FOREIGN KEY (nft_id) REFERENCES nifty.nft(id) ON DELETE CASCADE ON UPDATE CASCADE;
