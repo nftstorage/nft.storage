@@ -16,27 +16,35 @@ generator dbml {
 
 //Enums
 enum resource_status {
-    Idle            // Idle: Has not been processed
-    PinQueued       // PinQueued: Pin request started.
-    // A CID was found in the token_uri because it was a gateway URL.
-    // Started a pin yet unknown if content fetch is possible.
-    Pinned          //Pinned: Was pinned successfully
-    FailedURIParse  //FailedURIParse: Unable to fetch the content
-    FailedFetch     //FailedFetch: Unable to fetch content
-    PinFailure      //PinFailure:  when pinned by CID but correspoding content isn't online
+  Queued                //  Resource was queued to be processed.
+  URIParseFailed        //  URI is either malformed or the protocol is not supported.
+  ContentFetchFailed    //  Was unable to fetch the content.
+  PinRequestFailed      //  Failed to complete a pin request.
+  ContentLinked         //  Corresponding content was linked.
 }
 
-enum token_asset_status {
-    Queued
-    Failed
-    Succeeded
+enum nft_asset_status {
+  Queued                //  Token asset was queued (for the analyzer to process).
+  URIParseFailed        //  tokenURI is either malformed or the protocol is not supported.
+  ContentFetchFailed    //  Was unable to fetch the content.
+  ContentParseFailed    //  Parsing ERC721 metadata failed.
+  PinRequestFailed      //  Failed to create a metadata pin request.
+  Linked                //  Metadata was parsed and all the resources were linked.
 }
 
 enum pin_status {
-    Failed             // An error occurred pinning.
-    Pinned             // Node has pinned the content.
-    Pinning            // Node is currently pinning the content.
-    Queued             // The item has been queued for pinning.
+    ClusterError
+    PinError
+    PinQueued
+    Pinned
+    Pinning
+    Remote
+    Sharded
+    Undefined
+    UnpinError
+    UnpinQueued
+    Unpinned
+    Unpinning
 }
 
 enum pin_service {
@@ -48,68 +56,76 @@ enum pin_service {
 model block {
     hash                String          @id @unique //the hash of the block
     number              Int             @unique     //the block number
-    tokens              tokens_on_blocks[]
+    nfts                nfts_by_blocks[]
 }
 
-model token {
+model nft {
     id                  String          @id @unique
     token_id            String
     mint_time           DateTime
-    token_asset_id      String
+    nft_asset_id        String
     // Present when ERC721metadata interface is implemented.
-    token_asset         token_asset      @relation(fields: [token_asset_id], references: [id])
-    blocks              tokens_on_blocks[]
-    token_contract_id   String
-    contract            token_contract   @relation(fields: [token_contract_id], references: [id])
+    nft_asset           nft_asset       @relation(fields: [nft_asset_id], references: [token_uri])
+    blocks              nfts_by_blocks[]
+    contract_id         String
+    contract            contract        @relation(fields: [contract_id], references: [id])
+
     owner_id            String
-    imported            erc721_import_to_token[]
+    owner               owner           @relation(fields: [owner_id], references: [id])
+
+    imported            erc721_import_by_nft[]
 }
 
-model tokens_on_blocks {
+model owner {
+    id                  String          @id @unique
+    nfts                nft[]
+}
+
+model nfts_by_blocks {
     block               block           @relation(fields: [block_hash], references: [hash])
     block_hash          String          //scalar for above relation
-    token               token           @relation(fields: [token_id], references: [id])
-    token_id            String          //scalar for above relation
+    token               nft             @relation(fields: [nft_id], references: [id])
+    nft_id              String          //scalar for above relation
     inserted_at         DateTime        @default(now())
-    @@id([block_hash, token_id])
+    @@id([block_hash, nft_id])
 }
 
-model token_asset {
-    id                  String          @id @unique
-    //Multiple tokens may have the same token_uri. This allows tracking which tokens share same token_uri.
-    referrers           token[]
-    token_uri           String          @unique
-    ipnft               String
-    problem             String?         @db.Text()
-    // token_uri may point to JSON that contorms to ERC721.
-    // this is fetched, parsed and stored as a related metadata document.
+model nft_asset {
+    token_uri           String          @id @unique
+    referrers           nft[]
+
+    ipfs_URL            String?
     metadata            metadata?
+    status              nft_asset_status
+    status_text         String
+
+    inserted_at         DateTime        @default(now())
+    updated_at          DateTime        @default(now())
 }
 
 model metadata {
-    id                  String          @id @unique
-    cid                 String?
-    source_id           String          @unique
-    source              token_asset     @relation(fields: [source_id], references: [id])
+    content_cid         String          @id @unique
+
+    token_uri           String          @unique
+    nft_asset           nft_asset       @relation(fields: [token_uri], references: [token_uri])
+
     name                String?                      //identifies the asset this token represents
     description         String?         @db.Text()   //describes the asset this token represents
-    imageId             String
+
     image_uri           String          @db.Text()
-    assets              resources_on_metadata[]
+    resources           resources_by_metadata[]
 }
 
 model resource {
-    // Jesse Note: This might be not-correct, need to review this relationship
-    // I am assuming a resource can (possible appear in multiple metadata Images)
-    // confirm with Gozala, fit not metadata? is also doable.
-    referrers           resources_on_metadata[]
+    //do we want this to go into the join table too? -Jesse
+    source_uri          String          @id @unique //uri with which resource identified
+
+    referrers           resources_by_metadata[]
     status              resource_status
     status_text         String
 
-    uri                 String          @id @unique //uri with which resource identified
-    ipfs_url            String          @unique     //ipfs:// url if `uri` was referring to gateway URL.
+    ipfs_url            String?         @unique     //ipfs:// url if `uri` was referring to gateway URL.
 
-    problem             String          @db.Text()  //Problem description if there was a problem pinning
     // Content referrerced by this resource. When `ipfsURL` is derived content
     // archiving job will simply pin content by that URL and update resource linking
     // resource to it. If however `ipfsURL` could not be derived archiving job will
@@ -117,20 +133,23 @@ model resource {
     // to it.
 
     //   Content field is only going to be present when resource has a `ContentLinked`
-    cid                 String?         //CID corresponding to this resource once it is pinned.
-    content             content?        @relation(fields: [cid], references: [cid])
+    content_cid         String?         //CID corresponding to this resource once it is pinned.
+    content             content?        @relation(fields: [content_cid], references: [cid])
+
     inserted_at         DateTime        @default(now())
     updated_at          DateTime        @default(now())
 }
 
 //Explicit Join table for metadata and resources.
-model resources_on_metadata {
-    metadata            metadata        @relation(fields: [metadata_id], references: [id])
-    metadata_id         String          // scalar for above relation
-    resource            resource        @relation(fields: [resource_uri], references: [uri])
-    resource_uri        String          // scalar for above relation
+model resources_by_metadata {
+    metadata_cid         String
+    metadata            metadata        @relation(fields: [metadata_cid], references: [content_cid])
+
+    resource_source_uri String
+    resource            resource        @relation(fields: [resource_source_uri], references: [source_uri])
+
     inserted_at         DateTime        @default(now())
-    @@id([metadata_id, resource_uri])
+    @@id([metadata_cid, resource_source_uri])
 }
 
 
@@ -146,9 +165,6 @@ model pin {
     id                  BigInt          @id @unique @default(autoincrement())
     content_cid         String
     content             content         @relation(fields: [content_cid], references: [cid]) //content being pinned
-    // unlinking pin location data here.
-    // location_id         String
-    // location            pin_location    @relation(fields: [location_id], references: [id]) //ref to a pin location pinning this
     service             pin_service
     status              pin_status                      // pinning status at this location
     status_text         String?         @db.Text()      // human readable description of pin status (needed in edge cases)
@@ -156,35 +172,26 @@ model pin {
     inserted_at         DateTime        @default(now())
 }
 
-// commeting out for now might delete
-// model pin_location {
-//     id                  String          @id @unique
-//     pins                pin[]                           // Known pins at this location
-//     peer_id             String                          // Libp2p peer id of the node pinning this pin
-//     peer_name           String                          // Name of the peer pinning this pin
-//     region              String                          // Geo region this node resided in
-// }
-
-model token_contract {
+model contract {
     id                       String     @id @unique
     name                     String?                      // descriptive name for a collection of NFTs
     symbol                   String?                      // abbreviate name for NFTs
     supports_eip721_metadata Boolean
-    tokens                   token[]
+    nfts                   nft[]
 }
 
 model erc721_import {
     id                 String          @id @unique          // import start cursor
     next_id            String                               // new cursor after this import
-    tokens             erc721_import_to_token[]             // tokens that were imported
+    tokens             erc721_import_by_nft[]             // tokens that were imported
 }
 
 //Join import respults to tokens (Many to Many)
-model erc721_import_to_token {
-    erc721_import                      erc721_import           @relation(fields: [erc721_import_id], references: [id])
+model erc721_import_by_nft {
+    erc721_import                      erc721_import                @relation(fields: [erc721_import_id], references: [id])
     erc721_import_id                   String                         //scalar for above relation
-    token                              token                          @relation(fields: [token_id], references: [id])
-    token_id                           String                         //scalar for above relation
-    inserted_at                        DateTime                       @default(now())
-    @@id([erc721_import_id, token_id])
+    token                              nft                          @relation(fields: [nft_id], references: [id])
+    nft_id                             String                         //scalar for above relation
+    inserted_at                        DateTime                     @default(now())
+    @@id([erc721_import_id, nft_id])
 }
