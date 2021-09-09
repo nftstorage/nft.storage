@@ -2,10 +2,10 @@
 CREATE TYPE "resource_status" AS ENUM ('Idle', 'PinQueued', 'Pinned', 'FailedURIParse', 'FailedFetch', 'PinFailure');
 
 -- CreateEnum
-CREATE TYPE "token_asset_status" AS ENUM ('Queued', 'Failed', 'Succeeded');
+CREATE TYPE "nft_asset_status" AS ENUM ('Queued', 'URIParseFailed', 'ContentFetchFailed', 'ContentParseFailed', 'PinRequestFailed', 'Linked');
 
 -- CreateEnum
-CREATE TYPE "pin_status" AS ENUM ('Failed', 'Pinned', 'Pinning', 'Queued');
+CREATE TYPE "pin_status" AS ENUM ('ClusterError', 'PinError', 'PinQueued', 'Pinned', 'Pinning', 'Remote', 'Sharded', 'Undefined', 'UnpinError', 'UnpinQueued', 'Unpinned', 'Unpinning');
 
 -- CreateEnum
 CREATE TYPE "pin_service" AS ENUM ('Pinata', 'IpfsCluster');
@@ -23,8 +23,8 @@ CREATE TABLE "nft" (
     "id" TEXT NOT NULL,
     "token_id" TEXT NOT NULL,
     "mint_time" TIMESTAMP(3) NOT NULL,
-    "token_asset_id" TEXT NOT NULL,
-    "token_contract_id" TEXT NOT NULL,
+    "nft_asset_id" TEXT NOT NULL,
+    "contract_id" TEXT NOT NULL,
     "owner_id" TEXT NOT NULL,
 
     PRIMARY KEY ("id")
@@ -33,27 +33,29 @@ CREATE TABLE "nft" (
 -- CreateTable
 CREATE TABLE "nfts_on_blocks" (
     "block_hash" TEXT NOT NULL,
-    "token_id" TEXT NOT NULL,
+    "nft_id" TEXT NOT NULL,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("block_hash","token_id")
+    PRIMARY KEY ("block_hash","nft_id")
 );
 
 -- CreateTable
 CREATE TABLE "nft_asset" (
-    "id" TEXT NOT NULL,
     "token_uri" TEXT NOT NULL,
-    "ipnft" TEXT NOT NULL,
-    "problem" TEXT,
+    "ipfsURL" TEXT NOT NULL,
+    "status" "nft_asset_status" NOT NULL,
+    "status_text" TEXT NOT NULL,
+    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("id")
+    PRIMARY KEY ("token_uri")
 );
 
 -- CreateTable
 CREATE TABLE "metadata" (
     "id" TEXT NOT NULL,
-    "cid" TEXT,
-    "source_id" TEXT NOT NULL,
+    "content_id" TEXT,
+    "token_uri" TEXT NOT NULL,
     "name" TEXT,
     "description" TEXT,
     "imageId" TEXT NOT NULL,
@@ -144,16 +146,13 @@ CREATE UNIQUE INDEX "block.number_unique" ON "block"("number");
 CREATE UNIQUE INDEX "nft.id_unique" ON "nft"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "nft_asset.id_unique" ON "nft_asset"("id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "nft_asset.token_uri_unique" ON "nft_asset"("token_uri");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "metadata.id_unique" ON "metadata"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "metadata.source_id_unique" ON "metadata"("source_id");
+CREATE UNIQUE INDEX "metadata.token_uri_unique" ON "metadata"("token_uri");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "resource.uri_unique" ON "resource"("uri");
@@ -174,19 +173,19 @@ CREATE UNIQUE INDEX "contract.id_unique" ON "contract"("id");
 CREATE UNIQUE INDEX "erc721_import.id_unique" ON "erc721_import"("id");
 
 -- AddForeignKey
-ALTER TABLE "nft" ADD FOREIGN KEY ("token_asset_id") REFERENCES "nft_asset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "nft" ADD FOREIGN KEY ("nft_asset_id") REFERENCES "nft_asset"("token_uri") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "nft" ADD FOREIGN KEY ("token_contract_id") REFERENCES "contract"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "nft" ADD FOREIGN KEY ("contract_id") REFERENCES "contract"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "nfts_on_blocks" ADD FOREIGN KEY ("block_hash") REFERENCES "block"("hash") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "nfts_on_blocks" ADD FOREIGN KEY ("token_id") REFERENCES "nft"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "nfts_on_blocks" ADD FOREIGN KEY ("nft_id") REFERENCES "nft"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "metadata" ADD FOREIGN KEY ("source_id") REFERENCES "nft_asset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "metadata" ADD FOREIGN KEY ("token_uri") REFERENCES "nft_asset"("token_uri") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "resource" ADD FOREIGN KEY ("cid") REFERENCES "content"("cid") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -34,16 +34,19 @@ Table nfts_on_blocks {
 }
 
 Table nft_asset {
-  referrers nft [not null]
   token_uri String [pk, unique]
-  ipnft String [not null]
-  problem String
+  referrers nft [not null]
+  ipfsURL String [not null]
   metadata metadata
+  status nft_asset_status [not null]
+  status_text String [not null]
+  inserted_at DateTime [default: `now()`, not null]
+  updated_at DateTime [default: `now()`, not null]
 }
 
 Table metadata {
   id String [pk, unique]
-  cid String
+  content_id String
   token_uri String [unique, not null]
   nft_asset nft_asset [not null]
   name String
@@ -132,17 +135,28 @@ Enum resource_status {
   PinFailure
 }
 
-Enum token_asset_status {
+Enum nft_asset_status {
   Queued
-  Failed
-  Succeeded
+  URIParseFailed
+  ContentFetchFailed
+  ContentParseFailed
+  PinRequestFailed
+  Linked
 }
 
 Enum pin_status {
-  Failed
+  ClusterError
+  PinError
+  PinQueued
   Pinned
   Pinning
-  Queued
+  Remote
+  Sharded
+  Undefined
+  UnpinError
+  UnpinQueued
+  Unpinned
+  Unpinning
 }
 
 Enum pin_service {
