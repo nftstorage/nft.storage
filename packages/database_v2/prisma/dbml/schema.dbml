@@ -59,8 +59,7 @@ Table resource {
   referrers resources_by_metadata [not null]
   status resource_status [not null]
   status_text String [not null]
-  ipfs_url String [unique, not null]
-  problem String [not null]
+  ipfs_url String [unique]
   content_cid String
   content content
   inserted_at DateTime [default: `now()`, not null]

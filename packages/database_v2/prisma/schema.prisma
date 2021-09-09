@@ -116,9 +116,8 @@ model resource {
     status              resource_status
     status_text         String
 
-    ipfs_url            String          @unique     //ipfs:// url if `uri` was referring to gateway URL.
+    ipfs_url            String?         @unique     //ipfs:// url if `uri` was referring to gateway URL.
 
-    problem             String          @db.Text()  //Problem description if there was a problem pinning
     // Content referrerced by this resource. When `ipfsURL` is derived content
     // archiving job will simply pin content by that URL and update resource linking
     // resource to it. If however `ipfsURL` could not be derived archiving job will
