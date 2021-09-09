@@ -13,6 +13,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^16.7.4",
+    "hasura-cli": "2.0.8",
     "prisma": "^2.30.0",
     "prisma-dbml-generator": "^0.7.0",
     "ts-node": "^10.2.1",
