@@ -86,7 +86,7 @@ class NFTStorage {
    * @param {Blob} blob
    * @returns {Promise<API.CIDString>}
    */
-  static async storeBlob({ endpoint, token, version }, blob) {
+  static async storeBlob({ endpoint, token, version = '' }, blob) {
     const url = new URL(`${version}/upload`, endpoint)
 
     if (blob.size === 0) {
@@ -154,7 +154,7 @@ class NFTStorage {
    * @param {Iterable<File>} files
    * @returns {Promise<API.CIDString>}
    */
-  static async storeDirectory({ endpoint, token, version }, files) {
+  static async storeDirectory({ endpoint, token, version = '' }, files) {
     const url = new URL(`${version}/upload`, endpoint)
     const body = new FormData()
     let size = 0
@@ -189,7 +189,7 @@ class NFTStorage {
    * @param {T} metadata
    * @returns {Promise<API.Token<T>>}
    */
-  static async store({ endpoint, token, version }, metadata) {
+  static async store({ endpoint, token, version = '' }, metadata) {
     validateERC1155(metadata)
 
     const url = new URL(`${version}/store`, endpoint)
@@ -217,7 +217,7 @@ class NFTStorage {
    * @param {string} cid
    * @returns {Promise<API.StatusResult>}
    */
-  static async status({ endpoint, token, version }, cid) {
+  static async status({ endpoint, token, version = '' }, cid) {
     const url = new URL(`${version}/${cid}`, endpoint)
     const response = await fetch(url.toString(), {
       method: 'GET',
@@ -243,7 +243,7 @@ class NFTStorage {
    * @param {string} cid
    * @returns {Promise<API.CheckResult>}
    */
-  static async check({ endpoint, version }, cid) {
+  static async check({ endpoint, version = '' }, cid) {
     const url = new URL(`${version}/check/${cid}`, endpoint)
     const response = await fetch(url.toString())
     const result = await response.json()
@@ -264,7 +264,7 @@ class NFTStorage {
    * @param {string} cid
    * @returns {Promise<void>}
    */
-  static async delete({ endpoint, token, version }, cid) {
+  static async delete({ endpoint, token, version = '' }, cid) {
     const url = new URL(`${version}/${cid}`, endpoint)
     const response = await fetch(url.toString(), {
       method: 'DELETE',

@@ -3,8 +3,34 @@ import { sha256 } from 'multiformats/hashes/sha2'
 import { importCar, importBlob, importDirectory } from './importer.js'
 import { Response, Request } from './mock-server.js'
 import * as CBOR from '@ipld/dag-cbor'
-// @ts-ignore - not tracked by TS
-import { setIn } from '../../api/src/utils/utils.js'
+
+/**
+ * Sets a given `value` at the given `path` on a passed `object`.
+ *
+ * @example
+ * ```js
+ * const obj = { a: { b: { c: 1 }}}
+ * setIn(obj, ['a', 'b', 'c'], 5)
+ * obj.a.b.c //> 5
+ * ```
+ *
+ * @template V
+ * @param {any} object
+ * @param {string[]} path
+ * @param {V} value
+ */
+export const setIn = (object, path, value) => {
+  const n = path.length - 1
+  let target = object
+  for (let [index, key] of path.entries()) {
+    if (index === n) {
+      target[key] = value
+    } else {
+      target = target[key]
+    }
+  }
+}
+
 /**
  * @param {Request} request
  */
