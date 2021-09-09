@@ -161,9 +161,10 @@ class Router {
    */
   listen(event) {
     const url = new URL(event.request.url)
+    const passThrough = [DATABASE_URL, 'http://localhost:8000']
 
     // Ignore calls to local database
-    if (url.host !== 'localhost:8000') {
+    if (!passThrough.includes(`${url.protocol}//${url.host}`)) {
       event.respondWith(this.route(event))
     }
   }
