@@ -5,7 +5,7 @@ import { signJWT } from '../src/utils/jwt.js'
 import { SALT } from './scripts/worker-globals.js'
 import * as Token from '../../client/src/token.js'
 
-import { PostgrestClient } from '@supabase/postgrest-js'
+import { PostgrestClient, PostgrestQueryBuilder } from '@supabase/postgrest-js'
 
 const client = new PostgrestClient(DATABASE_URL + '/rest/v1', {
   headers: {
@@ -17,8 +17,8 @@ const client = new PostgrestClient(DATABASE_URL + '/rest/v1', {
  * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
  */
 async function createTestUser({
-  publicAddress = `0x73573r1630497589341`,
-  issuer = `did:eth:0x73573r1630497589341`,
+  publicAddress = `0x73573${Date.now()}`,
+  issuer = `did:eth:${publicAddress}`,
   name = 'A Tester',
 } = {}) {
   const token = await signJWT(
@@ -30,32 +30,32 @@ async function createTestUser({
     },
     SALT
   )
-
-  await client.from('accounts').upsert(
-    {
+  /** @type {PostgrestQueryBuilder<import('../src/utils/db-types').definitions['account']>} */
+  const account = client.from('account')
+  const { data } = await account
+    .insert({
       email: 'a.tester@example.org',
-      issuer,
+      github_id: issuer,
+      magic_link_id: issuer,
       name,
       public_address: publicAddress,
-      sub: issuer,
       picture: 'http://example.org/avatar.png',
-    },
-    { onConflict: 'issuer' }
-  )
+    })
+    .single()
 
-  await client.from('account_keys').insert({
+  await client.from('auth_key').insert({
     name: 'test',
     secret: token,
-    issuer,
+    account_id: data?.id,
   })
-  return { token, issuer }
+  return { token, userId: data?.id }
 }
 
 describe('V1 - /store', () => {
   beforeEach(clearStores)
 
   it('should store image', async () => {
-    const { token, issuer } = await createTestUser()
+    const { token, userId } = await createTestUser()
 
     const trick =
       'ipfs://bafyreiemweb3jxougg7vaovg7wyiohwqszmgwry5xwitw3heepucg6vyd4'
@@ -90,8 +90,7 @@ describe('V1 - /store', () => {
       result,
       {
         ipnft: 'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
-        url:
-          'ipfs://bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i/metadata.json',
+        url: 'ipfs://bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i/metadata.json',
         data: {
           name: 'name',
           description: 'stuff',
@@ -113,8 +112,8 @@ describe('V1 - /store', () => {
 
     const { data, error } = await client
       .from('upload')
-      .select('*, content(cid, size, pin(cid, status, service))')
-      .match({ cid: result.ipnft })
+      .select('*, content(cid, dag_size, pin(content_cid, status, service))')
+      .match({ content_cid: result.ipnft, account_id: userId })
       .single()
 
     if (error) {
@@ -122,17 +121,19 @@ describe('V1 - /store', () => {
     }
 
     assert.strictEqual(data.type, 'NFT', 'nft type')
-    assert.strictEqual(data.content.size, 324, 'nft size')
+    assert.strictEqual(data.content.dag_size, 324, 'nft size')
     assert.deepStrictEqual(data.content.pin, [
       {
-        cid: 'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
-        status: 'processing',
-        service: 'IPFS_CLUSTER',
+        content_cid:
+          'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
+        status: 'queued',
+        service: 'IpfsCluster',
       },
       {
-        cid: 'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
-        status: 'processing',
-        service: 'PINATA',
+        content_cid:
+          'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
+        status: 'queued',
+        service: 'Pinata',
       },
     ])
   })
