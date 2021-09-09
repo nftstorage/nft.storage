@@ -96,13 +96,14 @@ model nft_asset {
 }
 
 model metadata {
-    id                  String          @id @unique
-    content_id          String?
+    content_cid         String          @id @unique
+
     token_uri           String          @unique
     nft_asset           nft_asset       @relation(fields: [token_uri], references: [token_uri])
+
     name                String?                      //identifies the asset this token represents
     description         String?         @db.Text()   //describes the asset this token represents
-    imageId             String
+
     image_uri           String          @db.Text()
     resources           resources_by_metadata[]
 }
@@ -134,12 +135,14 @@ model resource {
 
 //Explicit Join table for metadata and resources.
 model resources_by_metadata {
-    metadata            metadata        @relation(fields: [metadata_id], references: [id])
-    metadata_id         String          // scalar for above relation
+    metadata_cid         String
+    metadata            metadata        @relation(fields: [metadata_cid], references: [content_cid])
+
+    resource_uri        String
     resource            resource        @relation(fields: [resource_uri], references: [uri])
-    resource_uri        String          // scalar for above relation
+
     inserted_at         DateTime        @default(now())
-    @@id([metadata_id, resource_uri])
+    @@id([metadata_cid, resource_uri])
 }
 
 

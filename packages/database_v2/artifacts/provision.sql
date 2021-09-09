@@ -31,7 +31,7 @@ CREATE TABLE "nft" (
 );
 
 -- CreateTable
-CREATE TABLE "nfts_on_blocks" (
+CREATE TABLE "nfts_by_blocks" (
     "block_hash" TEXT NOT NULL,
     "nft_id" TEXT NOT NULL,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -53,15 +53,13 @@ CREATE TABLE "nft_asset" (
 
 -- CreateTable
 CREATE TABLE "metadata" (
-    "id" TEXT NOT NULL,
-    "content_id" TEXT,
+    "content_cid" TEXT NOT NULL,
     "token_uri" TEXT NOT NULL,
     "name" TEXT,
     "description" TEXT,
-    "imageId" TEXT NOT NULL,
     "image_uri" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    PRIMARY KEY ("content_cid")
 );
 
 -- CreateTable
@@ -79,12 +77,12 @@ CREATE TABLE "resource" (
 );
 
 -- CreateTable
-CREATE TABLE "resources_on_metadata" (
-    "metadata_id" TEXT NOT NULL,
+CREATE TABLE "resources_by_metadata" (
+    "metadata_cid" TEXT NOT NULL,
     "resource_uri" TEXT NOT NULL,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("metadata_id","resource_uri")
+    PRIMARY KEY ("metadata_cid","resource_uri")
 );
 
 -- CreateTable
@@ -128,7 +126,7 @@ CREATE TABLE "erc721_import" (
 );
 
 -- CreateTable
-CREATE TABLE "erc721_import_to_nft" (
+CREATE TABLE "erc721_import_by_nft" (
     "erc721_import_id" TEXT NOT NULL,
     "nft_id" TEXT NOT NULL,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -149,7 +147,7 @@ CREATE UNIQUE INDEX "nft.id_unique" ON "nft"("id");
 CREATE UNIQUE INDEX "nft_asset.token_uri_unique" ON "nft_asset"("token_uri");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "metadata.id_unique" ON "metadata"("id");
+CREATE UNIQUE INDEX "metadata.content_cid_unique" ON "metadata"("content_cid");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "metadata.token_uri_unique" ON "metadata"("token_uri");
@@ -179,10 +177,10 @@ ALTER TABLE "nft" ADD FOREIGN KEY ("nft_asset_id") REFERENCES "nft_asset"("token
 ALTER TABLE "nft" ADD FOREIGN KEY ("contract_id") REFERENCES "contract"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "nfts_on_blocks" ADD FOREIGN KEY ("block_hash") REFERENCES "block"("hash") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "nfts_by_blocks" ADD FOREIGN KEY ("block_hash") REFERENCES "block"("hash") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "nfts_on_blocks" ADD FOREIGN KEY ("nft_id") REFERENCES "nft"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "nfts_by_blocks" ADD FOREIGN KEY ("nft_id") REFERENCES "nft"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "metadata" ADD FOREIGN KEY ("token_uri") REFERENCES "nft_asset"("token_uri") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -191,16 +189,16 @@ ALTER TABLE "metadata" ADD FOREIGN KEY ("token_uri") REFERENCES "nft_asset"("tok
 ALTER TABLE "resource" ADD FOREIGN KEY ("cid") REFERENCES "content"("cid") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "resources_on_metadata" ADD FOREIGN KEY ("metadata_id") REFERENCES "metadata"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "resources_by_metadata" ADD FOREIGN KEY ("metadata_cid") REFERENCES "metadata"("content_cid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "resources_on_metadata" ADD FOREIGN KEY ("resource_uri") REFERENCES "resource"("uri") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "resources_by_metadata" ADD FOREIGN KEY ("resource_uri") REFERENCES "resource"("uri") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "pin" ADD FOREIGN KEY ("content_cid") REFERENCES "content"("cid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "erc721_import_to_nft" ADD FOREIGN KEY ("erc721_import_id") REFERENCES "erc721_import"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "erc721_import_by_nft" ADD FOREIGN KEY ("erc721_import_id") REFERENCES "erc721_import"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "erc721_import_to_nft" ADD FOREIGN KEY ("nft_id") REFERENCES "nft"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "erc721_import_by_nft" ADD FOREIGN KEY ("nft_id") REFERENCES "nft"("id") ON DELETE CASCADE ON UPDATE CASCADE;
