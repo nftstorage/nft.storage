@@ -1,5 +1,5 @@
 import { CID } from 'multiformats/cid'
-import { ErrorInvalidCid } from '../errors'
+import { ErrorInvalidCid } from '../errors.js'
 
 /**
  * Try to serve static assets or the 404 page
