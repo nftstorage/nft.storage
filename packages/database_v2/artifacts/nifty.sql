@@ -14,6 +14,8 @@ CREATE TYPE "pin_service" AS ENUM ('Pinata', 'IpfsCluster');
 CREATE TABLE "block" (
     "hash" TEXT NOT NULL,
     "number" INTEGER NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("hash")
 );
@@ -23,9 +25,11 @@ CREATE TABLE "nft" (
     "id" TEXT NOT NULL,
     "token_id" TEXT NOT NULL,
     "mint_time" TIMESTAMP(3) NOT NULL,
-    "nft_asset_id" TEXT NOT NULL,
+    "token_uri" TEXT NOT NULL,
     "contract_id" TEXT NOT NULL,
     "owner_id" TEXT NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("id")
 );
@@ -33,6 +37,8 @@ CREATE TABLE "nft" (
 -- CreateTable
 CREATE TABLE "owner" (
     "id" TEXT NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("id")
 );
@@ -41,6 +47,7 @@ CREATE TABLE "owner" (
 CREATE TABLE "nfts_by_blocks" (
     "block_hash" TEXT NOT NULL,
     "nft_id" TEXT NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("block_hash","nft_id")
@@ -52,8 +59,8 @@ CREATE TABLE "nft_asset" (
     "ipfs_URL" TEXT,
     "status" "nft_asset_status" NOT NULL,
     "status_text" TEXT NOT NULL,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("token_uri")
 );
@@ -62,39 +69,43 @@ CREATE TABLE "nft_asset" (
 CREATE TABLE "metadata" (
     "content_cid" TEXT NOT NULL,
     "token_uri" TEXT NOT NULL,
-    "name" TEXT,
-    "description" TEXT,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
     "image_uri" TEXT NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("content_cid")
 );
 
 -- CreateTable
 CREATE TABLE "resource" (
-    "source_uri" TEXT NOT NULL,
+    "uri" TEXT NOT NULL,
     "status" "resource_status" NOT NULL,
-    "status_text" TEXT NOT NULL,
+    "status_text" TEXT,
     "ipfs_url" TEXT,
     "content_cid" TEXT,
-    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("source_uri")
+    PRIMARY KEY ("uri")
 );
 
 -- CreateTable
 CREATE TABLE "resources_by_metadata" (
     "metadata_cid" TEXT NOT NULL,
-    "resource_source_uri" TEXT NOT NULL,
+    "resource_uri" TEXT NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("metadata_cid","resource_source_uri")
+    PRIMARY KEY ("metadata_cid","resource_uri")
 );
 
 -- CreateTable
 CREATE TABLE "content" (
     "cid" TEXT NOT NULL,
     "dag_size" INTEGER,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("cid")
@@ -119,6 +130,8 @@ CREATE TABLE "contract" (
     "name" TEXT,
     "symbol" TEXT,
     "supports_eip721_metadata" BOOLEAN NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("id")
 );
@@ -127,6 +140,8 @@ CREATE TABLE "contract" (
 CREATE TABLE "erc721_import" (
     "id" TEXT NOT NULL,
     "next_id" TEXT NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("id")
 );
@@ -135,6 +150,7 @@ CREATE TABLE "erc721_import" (
 CREATE TABLE "erc721_import_by_nft" (
     "erc721_import_id" TEXT NOT NULL,
     "nft_id" TEXT NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY ("erc721_import_id","nft_id")
@@ -162,7 +178,7 @@ CREATE UNIQUE INDEX "metadata.content_cid_unique" ON "metadata"("content_cid");
 CREATE UNIQUE INDEX "metadata.token_uri_unique" ON "metadata"("token_uri");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "resource.source_uri_unique" ON "resource"("source_uri");
+CREATE UNIQUE INDEX "resource.uri_unique" ON "resource"("uri");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "resource.ipfs_url_unique" ON "resource"("ipfs_url");
@@ -180,7 +196,7 @@ CREATE UNIQUE INDEX "contract.id_unique" ON "contract"("id");
 CREATE UNIQUE INDEX "erc721_import.id_unique" ON "erc721_import"("id");
 
 -- AddForeignKey
-ALTER TABLE "nft" ADD FOREIGN KEY ("nft_asset_id") REFERENCES "nft_asset"("token_uri") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "nft" ADD FOREIGN KEY ("token_uri") REFERENCES "nft_asset"("token_uri") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "nft" ADD FOREIGN KEY ("contract_id") REFERENCES "contract"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -204,7 +220,7 @@ ALTER TABLE "resource" ADD FOREIGN KEY ("content_cid") REFERENCES "content"("cid
 ALTER TABLE "resources_by_metadata" ADD FOREIGN KEY ("metadata_cid") REFERENCES "metadata"("content_cid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "resources_by_metadata" ADD FOREIGN KEY ("resource_source_uri") REFERENCES "resource"("source_uri") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "resources_by_metadata" ADD FOREIGN KEY ("resource_uri") REFERENCES "resource"("uri") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "pin" ADD FOREIGN KEY ("content_cid") REFERENCES "content"("cid") ON DELETE CASCADE ON UPDATE CASCADE;

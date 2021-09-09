@@ -57,15 +57,18 @@ model block {
     hash                String          @id @unique //the hash of the block
     number              Int             @unique     //the block number
     nfts                nfts_by_blocks[]
+
+    updated_at          DateTime        @default(now())
+    inserted_at         DateTime        @default(now())
 }
 
 model nft {
     id                  String          @id @unique
     token_id            String
     mint_time           DateTime
-    nft_asset_id        String
+    token_uri           String
     // Present when ERC721metadata interface is implemented.
-    nft_asset           nft_asset       @relation(fields: [nft_asset_id], references: [token_uri])
+    nft_asset           nft_asset       @relation(fields: [token_uri], references: [token_uri])
     blocks              nfts_by_blocks[]
     contract_id         String
     contract            contract        @relation(fields: [contract_id], references: [id])
@@ -74,11 +77,17 @@ model nft {
     owner               owner           @relation(fields: [owner_id], references: [id])
 
     imported            erc721_import_by_nft[]
+
+    updated_at          DateTime        @default(now())
+    inserted_at         DateTime        @default(now())
 }
 
 model owner {
     id                  String          @id @unique
     nfts                nft[]
+
+    updated_at          DateTime        @default(now())
+    inserted_at         DateTime        @default(now())
 }
 
 model nfts_by_blocks {
@@ -86,6 +95,8 @@ model nfts_by_blocks {
     block_hash          String          //scalar for above relation
     token               nft             @relation(fields: [nft_id], references: [id])
     nft_id              String          //scalar for above relation
+
+    updated_at          DateTime        @default(now())
     inserted_at         DateTime        @default(now())
     @@id([block_hash, nft_id])
 }
@@ -99,8 +110,8 @@ model nft_asset {
     status              nft_asset_status
     status_text         String
 
-    inserted_at         DateTime        @default(now())
     updated_at          DateTime        @default(now())
+    inserted_at         DateTime        @default(now())
 }
 
 model metadata {
@@ -109,20 +120,22 @@ model metadata {
     token_uri           String          @unique
     nft_asset           nft_asset       @relation(fields: [token_uri], references: [token_uri])
 
-    name                String?                      //identifies the asset this token represents
-    description         String?         @db.Text()   //describes the asset this token represents
+    name                String                       //identifies the asset this token represents
+    description         String          @db.Text()   //describes the asset this token represents
 
     image_uri           String          @db.Text()
     resources           resources_by_metadata[]
+
+    updated_at          DateTime        @default(now())
+    inserted_at         DateTime        @default(now())
 }
 
 model resource {
-    //do we want this to go into the join table too? -Jesse
-    source_uri          String          @id @unique //uri with which resource identified
+    uri                 String          @id @unique //uri with which resource identified
 
     referrers           resources_by_metadata[]
     status              resource_status
-    status_text         String
+    status_text         String?
 
     ipfs_url            String?         @unique     //ipfs:// url if `uri` was referring to gateway URL.
 
@@ -132,12 +145,12 @@ model resource {
     // attempt to fetch the content from `uri` and pin it again linkking resource
     // to it.
 
-    //   Content field is only going to be present when resource has a `ContentLinked`
+    // Content field is only going to be present when resource has a `ContentLinked`
     content_cid         String?         //CID corresponding to this resource once it is pinned.
     content             content?        @relation(fields: [content_cid], references: [cid])
 
-    inserted_at         DateTime        @default(now())
     updated_at          DateTime        @default(now())
+    inserted_at         DateTime        @default(now())
 }
 
 //Explicit Join table for metadata and resources.
@@ -145,11 +158,12 @@ model resources_by_metadata {
     metadata_cid         String
     metadata            metadata        @relation(fields: [metadata_cid], references: [content_cid])
 
-    resource_source_uri String
-    resource            resource        @relation(fields: [resource_source_uri], references: [source_uri])
+    resource_uri        String
+    resource            resource        @relation(fields: [resource_uri], references: [uri])
 
+    updated_at          DateTime        @default(now())
     inserted_at         DateTime        @default(now())
-    @@id([metadata_cid, resource_source_uri])
+    @@id([metadata_cid, resource_uri])
 }
 
 
@@ -158,6 +172,8 @@ model content {
     resources           resource[]
     dag_size            Int?
     pins                pin[]
+
+    updated_at          DateTime        @default(now())
     inserted_at         DateTime        @default(now())
 }
 
@@ -168,6 +184,7 @@ model pin {
     service             pin_service
     status              pin_status                      // pinning status at this location
     status_text         String?         @db.Text()      // human readable description of pin status (needed in edge cases)
+
     updated_at          DateTime        @default(now())
     inserted_at         DateTime        @default(now())
 }
@@ -177,13 +194,19 @@ model contract {
     name                     String?                      // descriptive name for a collection of NFTs
     symbol                   String?                      // abbreviate name for NFTs
     supports_eip721_metadata Boolean
-    nfts                   nft[]
+    nfts                     nft[]
+
+    updated_at              DateTime    @default(now())
+    inserted_at             DateTime    @default(now())
 }
 
 model erc721_import {
     id                 String          @id @unique          // import start cursor
     next_id            String                               // new cursor after this import
-    tokens             erc721_import_by_nft[]             // tokens that were imported
+    tokens             erc721_import_by_nft[]               // tokens that were imported
+
+    updated_at         DateTime        @default(now())
+    inserted_at        DateTime        @default(now())
 }
 
 //Join import respults to tokens (Many to Many)
@@ -192,6 +215,8 @@ model erc721_import_by_nft {
     erc721_import_id                   String                         //scalar for above relation
     token                              nft                          @relation(fields: [nft_id], references: [id])
     nft_id                             String                         //scalar for above relation
-    inserted_at                        DateTime                     @default(now())
+
+    updated_at          DateTime      @default(now())
+    inserted_at         DateTime      @default(now())
     @@id([erc721_import_id, nft_id])
 }
