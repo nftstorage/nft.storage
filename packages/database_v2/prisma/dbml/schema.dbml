@@ -18,7 +18,13 @@ Table nft {
   contract_id String [not null]
   contract contract [not null]
   owner_id String [not null]
+  owner owner [not null]
   imported erc721_import_by_nft [not null]
+}
+
+Table owner {
+  id String [pk, unique]
+  nfts nft [not null]
 }
 
 Table nfts_by_blocks {
@@ -36,7 +42,7 @@ Table nfts_by_blocks {
 Table nft_asset {
   token_uri String [pk, unique]
   referrers nft [not null]
-  ipfsURL String [not null]
+  ipfs_URL String
   metadata metadata
   status nft_asset_status [not null]
   status_text String [not null]
@@ -163,6 +169,8 @@ Enum pin_service {
 Ref: nft.nft_asset_id > nft_asset.token_uri
 
 Ref: nft.contract_id > contract.id
+
+Ref: nft.owner_id > owner.id
 
 Ref: nfts_by_blocks.block_hash > block.hash
 

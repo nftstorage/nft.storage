@@ -31,6 +31,13 @@ CREATE TABLE "nft" (
 );
 
 -- CreateTable
+CREATE TABLE "owner" (
+    "id" TEXT NOT NULL,
+
+    PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "nfts_by_blocks" (
     "block_hash" TEXT NOT NULL,
     "nft_id" TEXT NOT NULL,
@@ -42,7 +49,7 @@ CREATE TABLE "nfts_by_blocks" (
 -- CreateTable
 CREATE TABLE "nft_asset" (
     "token_uri" TEXT NOT NULL,
-    "ipfsURL" TEXT NOT NULL,
+    "ipfs_URL" TEXT,
     "status" "nft_asset_status" NOT NULL,
     "status_text" TEXT NOT NULL,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -143,6 +150,9 @@ CREATE UNIQUE INDEX "block.number_unique" ON "block"("number");
 CREATE UNIQUE INDEX "nft.id_unique" ON "nft"("id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "owner.id_unique" ON "owner"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "nft_asset.token_uri_unique" ON "nft_asset"("token_uri");
 
 -- CreateIndex
@@ -174,6 +184,9 @@ ALTER TABLE "nft" ADD FOREIGN KEY ("nft_asset_id") REFERENCES "nft_asset"("token
 
 -- AddForeignKey
 ALTER TABLE "nft" ADD FOREIGN KEY ("contract_id") REFERENCES "contract"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "nft" ADD FOREIGN KEY ("owner_id") REFERENCES "owner"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "nfts_by_blocks" ADD FOREIGN KEY ("block_hash") REFERENCES "block"("hash") ON DELETE CASCADE ON UPDATE CASCADE;
