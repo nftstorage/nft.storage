@@ -127,8 +127,8 @@ model resource {
     // to it.
 
     //   Content field is only going to be present when resource has a `ContentLinked`
-    cid                 String?         //CID corresponding to this resource once it is pinned.
-    content             content?        @relation(fields: [cid], references: [cid])
+    content_cid         String?         //CID corresponding to this resource once it is pinned.
+    content             content?        @relation(fields: [content_cid], references: [cid])
     inserted_at         DateTime        @default(now())
     updated_at          DateTime        @default(now())
 }
