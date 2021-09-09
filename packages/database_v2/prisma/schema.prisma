@@ -71,7 +71,7 @@ model nft {
     mint_time           DateTime
     nft_asset_id        String
     // Present when ERC721metadata interface is implemented.
-    nft_asset         nft_asset       @relation(fields: [nft_asset_id], references: [token_uri])
+    nft_asset           nft_asset       @relation(fields: [nft_asset_id], references: [token_uri])
     blocks              nfts_on_blocks[]
     contract_id         String
     contract            contract        @relation(fields: [contract_id], references: [id])
@@ -89,14 +89,11 @@ model nfts_on_blocks {
 }
 
 model nft_asset {
-    //Multiple tokens may have the same token_uri. This allows tracking which tokens share same token_uri.
     referrers           nft[]
     token_uri           String          @id @unique
-    ipnft               String
-    problem             String?         @db.Text()
-    // token_uri may point to JSON that contorms to ERC721.
-    // this is fetched, parsed and stored as a related metadata document.
+    ipfsURL             String
     metadata            metadata?
+    
 }
 
 model metadata {
