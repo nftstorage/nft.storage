@@ -16,27 +16,41 @@ generator dbml {
 
 //Enums
 enum resource_status {
-    Idle            // Idle: Has not been processed
-    PinQueued       // PinQueued: Pin request started.
+    Idle                // Idle: Has not been processed
+    PinQueued           // PinQueued: Pin request started.
     // A CID was found in the token_uri because it was a gateway URL.
     // Started a pin yet unknown if content fetch is possible.
-    Pinned          //Pinned: Was pinned successfully
-    FailedURIParse  //FailedURIParse: Unable to fetch the content
-    FailedFetch     //FailedFetch: Unable to fetch content
-    PinFailure      //PinFailure:  when pinned by CID but correspoding content isn't online
+    Pinned              //Pinned: Was pinned successfully
+    FailedURIParse      //FailedURIParse: Unable to fetch the content
+    FailedFetch         //FailedFetch: Unable to fetch content
+    PinFailure          //PinFailure:  when pinned by CID but correspoding content isn't online
 }
 
-enum token_asset_status {
-    Queued
-    Failed
-    Succeeded
+enum nft_asset_status {
+  Queued                //Token asset was queued (for the analyzer to process).
+  URIParseFailed        //  tokenURI is either malformed or the protocol is not supported.
+  ContentFetchFailed    //  Was unable to fetch the content.
+  ContentParseFailed    //  Parsing ERC721 metadata failed.
+  PinRequestFailed      //  Failed to create a metadata pin request.
+  Linked                // Metadata was parsed and all the resources were linked.
 }
 
 enum pin_status {
-    Failed             // An error occurred pinning.
-    Pinned             // Node has pinned the content.
-    Pinning            // Node is currently pinning the content.
-    Queued             // The item has been queued for pinning.
+    ClusterError
+
+    PinError
+    PinQueued
+    Pinned
+    Pinning
+
+    Remote
+    Sharded
+
+    Undefined
+    UnpinError
+    UnpinQueued
+    Unpinned
+    Unpinning
 }
 
 enum pin_service {
@@ -145,24 +159,12 @@ model pin {
     id                  BigInt          @id @unique @default(autoincrement())
     content_cid         String
     content             content         @relation(fields: [content_cid], references: [cid]) //content being pinned
-    // unlinking pin location data here.
-    // location_id         String
-    // location            pin_location    @relation(fields: [location_id], references: [id]) //ref to a pin location pinning this
     service             pin_service
     status              pin_status                      // pinning status at this location
     status_text         String?         @db.Text()      // human readable description of pin status (needed in edge cases)
     updated_at          DateTime        @default(now())
     inserted_at         DateTime        @default(now())
 }
-
-// commeting out for now might delete
-// model pin_location {
-//     id                  String          @id @unique
-//     pins                pin[]                           // Known pins at this location
-//     peer_id             String                          // Libp2p peer id of the node pinning this pin
-//     peer_name           String                          // Name of the peer pinning this pin
-//     region              String                          // Geo region this node resided in
-// }
 
 model contract {
     id                       String     @id @unique
