@@ -1,6 +1,6 @@
 # [nft.storage](https://nft.storage) <!-- omit in toc -->
 
-Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
+Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin.
 
 <a href="https://nft.storage"><img src="https://raw.githubusercontent.com/ipfs-shipyard/nft.storage/main/screenshot.png" alt="nft.storage screenshot" /></a>
 

@@ -19,7 +19,7 @@ export default function Layout({
   children,
   redirectTo,
   redirectIfFound = false,
-  title = 'NFT Storage - Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.',
+  title = 'NFT Storage - Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin.',
   description = 'NFT Storage is a brand new service, built specifically for storing off-chain NFT data on IPFS and Filecoin.',
   navBgColor = 'nsorange',
 }) {
