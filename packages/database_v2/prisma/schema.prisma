@@ -48,37 +48,36 @@ enum pin_service {
 model block {
     hash                String          @id @unique //the hash of the block
     number              Int             @unique     //the block number
-    tokens              tokens_on_blocks[]
+    nfts                nfts_on_blocks[]
 }
 
-model token {
+model nft {
     id                  String          @id @unique
     token_id            String
     mint_time           DateTime
-    token_asset_id      String
+    nft_asset_id        String
     // Present when ERC721metadata interface is implemented.
-    token_asset         token_asset      @relation(fields: [token_asset_id], references: [id])
-    blocks              tokens_on_blocks[]
-    token_contract_id   String
-    contract            token_contract   @relation(fields: [token_contract_id], references: [id])
+    nft_asset         nft_asset       @relation(fields: [nft_asset_id], references: [token_uri])
+    blocks              nfts_on_blocks[]
+    contract_id         String
+    contract            contract        @relation(fields: [contract_id], references: [id])
     owner_id            String
-    imported            erc721_import_to_token[]
+    imported            erc721_import_to_nft[]
 }
 
-model tokens_on_blocks {
+model nfts_on_blocks {
     block               block           @relation(fields: [block_hash], references: [hash])
     block_hash          String          //scalar for above relation
-    token               token           @relation(fields: [token_id], references: [id])
-    token_id            String          //scalar for above relation
+    token               nft             @relation(fields: [nft_id], references: [id])
+    nft_id              String          //scalar for above relation
     inserted_at         DateTime        @default(now())
-    @@id([block_hash, token_id])
+    @@id([block_hash, nft_id])
 }
 
-model token_asset {
-    id                  String          @id @unique
+model nft_asset {
     //Multiple tokens may have the same token_uri. This allows tracking which tokens share same token_uri.
-    referrers           token[]
-    token_uri           String          @unique
+    referrers           nft[]
+    token_uri           String          @id @unique
     ipnft               String
     problem             String?         @db.Text()
     // token_uri may point to JSON that contorms to ERC721.
@@ -88,9 +87,9 @@ model token_asset {
 
 model metadata {
     id                  String          @id @unique
-    cid                 String?
-    source_id           String          @unique
-    source              token_asset     @relation(fields: [source_id], references: [id])
+    content_id          String?
+    token_uri           String          @unique
+    nft_asset           nft_asset       @relation(fields: [token_uri], references: [token_uri])
     name                String?                      //identifies the asset this token represents
     description         String?         @db.Text()   //describes the asset this token represents
     imageId             String
@@ -165,26 +164,26 @@ model pin {
 //     region              String                          // Geo region this node resided in
 // }
 
-model token_contract {
+model contract {
     id                       String     @id @unique
     name                     String?                      // descriptive name for a collection of NFTs
     symbol                   String?                      // abbreviate name for NFTs
     supports_eip721_metadata Boolean
-    tokens                   token[]
+    nfts                   nft[]
 }
 
 model erc721_import {
     id                 String          @id @unique          // import start cursor
     next_id            String                               // new cursor after this import
-    tokens             erc721_import_to_token[]             // tokens that were imported
+    tokens             erc721_import_to_nft[]             // tokens that were imported
 }
 
 //Join import respults to tokens (Many to Many)
-model erc721_import_to_token {
-    erc721_import                      erc721_import           @relation(fields: [erc721_import_id], references: [id])
+model erc721_import_to_nft {
+    erc721_import                      erc721_import                @relation(fields: [erc721_import_id], references: [id])
     erc721_import_id                   String                         //scalar for above relation
-    token                              token                          @relation(fields: [token_id], references: [id])
-    token_id                           String                         //scalar for above relation
-    inserted_at                        DateTime                       @default(now())
-    @@id([erc721_import_id, token_id])
+    token                              nft                          @relation(fields: [nft_id], references: [id])
+    nft_id                             String                         //scalar for above relation
+    inserted_at                        DateTime                     @default(now())
+    @@id([erc721_import_id, nft_id])
 }

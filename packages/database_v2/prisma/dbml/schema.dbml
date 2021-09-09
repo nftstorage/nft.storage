@@ -5,38 +5,37 @@
 Table block {
   hash String [pk, unique]
   number Int [unique, not null]
-  tokens tokens_on_blocks [not null]
+  nfts nfts_on_blocks [not null]
 }
 
-Table token {
+Table nft {
   id String [pk, unique]
   token_id String [not null]
   mint_time DateTime [not null]
-  token_asset_id String [not null]
-  token_asset token_asset [not null]
-  blocks tokens_on_blocks [not null]
-  token_contract_id String [not null]
-  contract token_contract [not null]
+  nft_asset_id String [not null]
+  nft_asset nft_asset [not null]
+  blocks nfts_on_blocks [not null]
+  contract_id String [not null]
+  contract contract [not null]
   owner_id String [not null]
-  imported erc721_import_to_token [not null]
+  imported erc721_import_to_nft [not null]
 }
 
-Table tokens_on_blocks {
+Table nfts_on_blocks {
   block block [not null]
   block_hash String [not null]
-  token token [not null]
-  token_id String [not null]
+  token nft [not null]
+  nft_id String [not null]
   inserted_at DateTime [default: `now()`, not null]
 
   indexes {
-    (block_hash, token_id) [pk]
+    (block_hash, nft_id) [pk]
   }
 }
 
-Table token_asset {
-  id String [pk, unique]
-  referrers token [not null]
-  token_uri String [unique, not null]
+Table nft_asset {
+  referrers nft [not null]
+  token_uri String [pk, unique]
   ipnft String [not null]
   problem String
   metadata metadata
@@ -45,8 +44,8 @@ Table token_asset {
 Table metadata {
   id String [pk, unique]
   cid String
-  source_id String [unique, not null]
-  source token_asset [not null]
+  token_uri String [unique, not null]
+  nft_asset nft_asset [not null]
   name String
   description String
   imageId String [not null]
@@ -98,29 +97,29 @@ Table pin {
   inserted_at DateTime [default: `now()`, not null]
 }
 
-Table token_contract {
+Table contract {
   id String [pk, unique]
   name String
   symbol String
   supports_eip721_metadata Boolean [not null]
-  tokens token [not null]
+  nfts nft [not null]
 }
 
 Table erc721_import {
   id String [pk, unique]
   next_id String [not null]
-  tokens erc721_import_to_token [not null]
+  tokens erc721_import_to_nft [not null]
 }
 
-Table erc721_import_to_token {
+Table erc721_import_to_nft {
   erc721_import erc721_import [not null]
   erc721_import_id String [not null]
-  token token [not null]
-  token_id String [not null]
+  token nft [not null]
+  nft_id String [not null]
   inserted_at DateTime [default: `now()`, not null]
 
   indexes {
-    (erc721_import_id, token_id) [pk]
+    (erc721_import_id, nft_id) [pk]
   }
 }
 
@@ -151,15 +150,15 @@ Enum pin_service {
   IpfsCluster
 }
 
-Ref: token.token_asset_id > token_asset.id
+Ref: nft.nft_asset_id > nft_asset.token_uri
 
-Ref: token.token_contract_id > token_contract.id
+Ref: nft.contract_id > contract.id
 
-Ref: tokens_on_blocks.block_hash > block.hash
+Ref: nfts_on_blocks.block_hash > block.hash
 
-Ref: tokens_on_blocks.token_id > token.id
+Ref: nfts_on_blocks.nft_id > nft.id
 
-Ref: metadata.source_id - token_asset.id
+Ref: metadata.token_uri - nft_asset.token_uri
 
 Ref: resource.cid > content.cid
 
@@ -169,6 +168,6 @@ Ref: resources_on_metadata.resource_uri > resource.uri
 
 Ref: pin.content_cid > content.cid
 
-Ref: erc721_import_to_token.erc721_import_id > erc721_import.id
+Ref: erc721_import_to_nft.erc721_import_id > erc721_import.id
 
-Ref: erc721_import_to_token.token_id > token.id
+Ref: erc721_import_to_nft.nft_id > nft.id

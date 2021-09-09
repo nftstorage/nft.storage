@@ -19,7 +19,7 @@ CREATE TABLE "block" (
 );
 
 -- CreateTable
-CREATE TABLE "token" (
+CREATE TABLE "nft" (
     "id" TEXT NOT NULL,
     "token_id" TEXT NOT NULL,
     "mint_time" TIMESTAMP(3) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE "token" (
 );
 
 -- CreateTable
-CREATE TABLE "tokens_on_blocks" (
+CREATE TABLE "nfts_on_blocks" (
     "block_hash" TEXT NOT NULL,
     "token_id" TEXT NOT NULL,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -40,7 +40,7 @@ CREATE TABLE "tokens_on_blocks" (
 );
 
 -- CreateTable
-CREATE TABLE "token_asset" (
+CREATE TABLE "nft_asset" (
     "id" TEXT NOT NULL,
     "token_uri" TEXT NOT NULL,
     "ipnft" TEXT NOT NULL,
@@ -108,7 +108,7 @@ CREATE TABLE "pin" (
 );
 
 -- CreateTable
-CREATE TABLE "token_contract" (
+CREATE TABLE "contract" (
     "id" TEXT NOT NULL,
     "name" TEXT,
     "symbol" TEXT,
@@ -126,12 +126,12 @@ CREATE TABLE "erc721_import" (
 );
 
 -- CreateTable
-CREATE TABLE "erc721_import_to_token" (
+CREATE TABLE "erc721_import_to_nft" (
     "erc721_import_id" TEXT NOT NULL,
-    "token_id" TEXT NOT NULL,
+    "nft_id" TEXT NOT NULL,
     "inserted_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY ("erc721_import_id","token_id")
+    PRIMARY KEY ("erc721_import_id","nft_id")
 );
 
 -- CreateIndex
@@ -141,13 +141,13 @@ CREATE UNIQUE INDEX "block.hash_unique" ON "block"("hash");
 CREATE UNIQUE INDEX "block.number_unique" ON "block"("number");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "token.id_unique" ON "token"("id");
+CREATE UNIQUE INDEX "nft.id_unique" ON "nft"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "token_asset.id_unique" ON "token_asset"("id");
+CREATE UNIQUE INDEX "nft_asset.id_unique" ON "nft_asset"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "token_asset.token_uri_unique" ON "token_asset"("token_uri");
+CREATE UNIQUE INDEX "nft_asset.token_uri_unique" ON "nft_asset"("token_uri");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "metadata.id_unique" ON "metadata"("id");
@@ -168,25 +168,25 @@ CREATE UNIQUE INDEX "content.cid_unique" ON "content"("cid");
 CREATE UNIQUE INDEX "pin.id_unique" ON "pin"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "token_contract.id_unique" ON "token_contract"("id");
+CREATE UNIQUE INDEX "contract.id_unique" ON "contract"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "erc721_import.id_unique" ON "erc721_import"("id");
 
 -- AddForeignKey
-ALTER TABLE "token" ADD FOREIGN KEY ("token_asset_id") REFERENCES "token_asset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "nft" ADD FOREIGN KEY ("token_asset_id") REFERENCES "nft_asset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "token" ADD FOREIGN KEY ("token_contract_id") REFERENCES "token_contract"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "nft" ADD FOREIGN KEY ("token_contract_id") REFERENCES "contract"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tokens_on_blocks" ADD FOREIGN KEY ("block_hash") REFERENCES "block"("hash") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "nfts_on_blocks" ADD FOREIGN KEY ("block_hash") REFERENCES "block"("hash") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tokens_on_blocks" ADD FOREIGN KEY ("token_id") REFERENCES "token"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "nfts_on_blocks" ADD FOREIGN KEY ("token_id") REFERENCES "nft"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "metadata" ADD FOREIGN KEY ("source_id") REFERENCES "token_asset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "metadata" ADD FOREIGN KEY ("source_id") REFERENCES "nft_asset"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "resource" ADD FOREIGN KEY ("cid") REFERENCES "content"("cid") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -201,7 +201,7 @@ ALTER TABLE "resources_on_metadata" ADD FOREIGN KEY ("resource_uri") REFERENCES 
 ALTER TABLE "pin" ADD FOREIGN KEY ("content_cid") REFERENCES "content"("cid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "erc721_import_to_token" ADD FOREIGN KEY ("erc721_import_id") REFERENCES "erc721_import"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "erc721_import_to_nft" ADD FOREIGN KEY ("erc721_import_id") REFERENCES "erc721_import"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "erc721_import_to_token" ADD FOREIGN KEY ("token_id") REFERENCES "token"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "erc721_import_to_nft" ADD FOREIGN KEY ("nft_id") REFERENCES "nft"("id") ON DELETE CASCADE ON UPDATE CASCADE;
