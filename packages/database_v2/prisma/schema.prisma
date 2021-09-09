@@ -69,8 +69,16 @@ model nft {
     blocks              nfts_by_blocks[]
     contract_id         String
     contract            contract        @relation(fields: [contract_id], references: [id])
+
     owner_id            String
+    owner               owner           @relation(fields: [owner_id], references: [id])
+
     imported            erc721_import_by_nft[]
+}
+
+model owner {
+    id                  String          @id @unique
+    nfts                nft[]
 }
 
 model nfts_by_blocks {
@@ -86,7 +94,7 @@ model nft_asset {
     token_uri           String          @id @unique
     referrers           nft[]
 
-    ipfsURL             String
+    ipfs_URL            String?
     metadata            metadata?
     status              nft_asset_status
     status_text         String
