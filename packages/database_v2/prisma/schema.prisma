@@ -16,23 +16,20 @@ generator dbml {
 
 //Enums
 enum resource_status {
-    Idle                // Idle: Has not been processed
-    PinQueued           // PinQueued: Pin request started.
-    // A CID was found in the token_uri because it was a gateway URL.
-    // Started a pin yet unknown if content fetch is possible.
-    Pinned              //Pinned: Was pinned successfully
-    FailedURIParse      //FailedURIParse: Unable to fetch the content
-    FailedFetch         //FailedFetch: Unable to fetch content
-    PinFailure          //PinFailure:  when pinned by CID but correspoding content isn't online
+  Queued                //  Resource was queued to be processed.
+  URIParseFailed        //  URI is either malformed or the protocol is not supported.
+  ContentFetchFailed    //  Was unable to fetch the content.
+  PinRequestFailed      //  Failed to complete a pin request.
+  ContentLinked         //  Corresponding content was linked.
 }
 
 enum nft_asset_status {
-  Queued                //Token asset was queued (for the analyzer to process).
+  Queued                //  Token asset was queued (for the analyzer to process).
   URIParseFailed        //  tokenURI is either malformed or the protocol is not supported.
   ContentFetchFailed    //  Was unable to fetch the content.
   ContentParseFailed    //  Parsing ERC721 metadata failed.
   PinRequestFailed      //  Failed to create a metadata pin request.
-  Linked                // Metadata was parsed and all the resources were linked.
+  Linked                //  Metadata was parsed and all the resources were linked.
 }
 
 enum pin_status {
