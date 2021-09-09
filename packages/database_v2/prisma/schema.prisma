@@ -89,11 +89,16 @@ model nfts_on_blocks {
 }
 
 model nft_asset {
-    referrers           nft[]
     token_uri           String          @id @unique
+    referrers           nft[]
+
     ipfsURL             String
     metadata            metadata?
-    
+    status              nft_asset_status
+    status_text         String
+
+    inserted_at         DateTime        @default(now())
+    updated_at          DateTime        @default(now())
 }
 
 model metadata {
