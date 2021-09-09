@@ -34,15 +34,12 @@ enum nft_asset_status {
 
 enum pin_status {
     ClusterError
-
     PinError
     PinQueued
     Pinned
     Pinning
-
     Remote
     Sharded
-
     Undefined
     UnpinError
     UnpinQueued
@@ -59,7 +56,7 @@ enum pin_service {
 model block {
     hash                String          @id @unique //the hash of the block
     number              Int             @unique     //the block number
-    nfts                nfts_on_blocks[]
+    nfts                nfts_by_blocks[]
 }
 
 model nft {
@@ -69,14 +66,14 @@ model nft {
     nft_asset_id        String
     // Present when ERC721metadata interface is implemented.
     nft_asset           nft_asset       @relation(fields: [nft_asset_id], references: [token_uri])
-    blocks              nfts_on_blocks[]
+    blocks              nfts_by_blocks[]
     contract_id         String
     contract            contract        @relation(fields: [contract_id], references: [id])
     owner_id            String
-    imported            erc721_import_to_nft[]
+    imported            erc721_import_by_nft[]
 }
 
-model nfts_on_blocks {
+model nfts_by_blocks {
     block               block           @relation(fields: [block_hash], references: [hash])
     block_hash          String          //scalar for above relation
     token               nft             @relation(fields: [nft_id], references: [id])
@@ -107,14 +104,14 @@ model metadata {
     description         String?         @db.Text()   //describes the asset this token represents
     imageId             String
     image_uri           String          @db.Text()
-    assets              resources_on_metadata[]
+    resources           resources_by_metadata[]
 }
 
 model resource {
     // Jesse Note: This might be not-correct, need to review this relationship
     // I am assuming a resource can (possible appear in multiple metadata Images)
     // confirm with Gozala, fit not metadata? is also doable.
-    referrers           resources_on_metadata[]
+    referrers           resources_by_metadata[]
     status              resource_status
     status_text         String
 
@@ -136,7 +133,7 @@ model resource {
 }
 
 //Explicit Join table for metadata and resources.
-model resources_on_metadata {
+model resources_by_metadata {
     metadata            metadata        @relation(fields: [metadata_id], references: [id])
     metadata_id         String          // scalar for above relation
     resource            resource        @relation(fields: [resource_uri], references: [uri])
@@ -176,11 +173,11 @@ model contract {
 model erc721_import {
     id                 String          @id @unique          // import start cursor
     next_id            String                               // new cursor after this import
-    tokens             erc721_import_to_nft[]             // tokens that were imported
+    tokens             erc721_import_by_nft[]             // tokens that were imported
 }
 
 //Join import respults to tokens (Many to Many)
-model erc721_import_to_nft {
+model erc721_import_by_nft {
     erc721_import                      erc721_import                @relation(fields: [erc721_import_id], references: [id])
     erc721_import_id                   String                         //scalar for above relation
     token                              nft                          @relation(fields: [nft_id], references: [id])
