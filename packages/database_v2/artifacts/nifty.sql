@@ -18,18 +18,18 @@ CREATE TYPE nifty.nft_asset_status AS ENUM (
 );
 
 CREATE TYPE nifty.pin_status AS ENUM (
-    'ClusterError',
+    -- 'ClusterError',
     'PinError',
     'PinQueued',
     'Pinned',
     'Pinning',
-    'Remote',
-    'Sharded',
-    'Undefined',
-    'UnpinError',
-    'UnpinQueued',
-    'Unpinned',
-    'Unpinning'
+    -- 'Remote',
+    -- 'Sharded',
+    -- 'Undefined',
+    -- 'UnpinError',
+    -- 'UnpinQueued',
+    -- 'Unpinned',
+    -- 'Unpinning'
 );
 
 CREATE TYPE nifty.pin_service AS ENUM (
