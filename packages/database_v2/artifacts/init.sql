@@ -7,7 +7,7 @@ CREATE TYPE resource_status AS ENUM (
     'ContentLinked'
 );
 
-DROP TYPE nft_asset_status;
+DROP TYPE IF EXISTS nft_asset_status;
 CREATE TYPE nft_asset_status AS ENUM (
     'Queued',
     'URIParseFailed',
@@ -17,15 +17,15 @@ CREATE TYPE nft_asset_status AS ENUM (
     'Linked'
 );
 
-DROP TYPE pin_status;
+DROP TYPE IF EXISTS pin_status;
 CREATE TYPE pin_status AS ENUM (
     'PinError',
     'PinQueued',
     'Pinned',
-    'Pinning',
+    'Pinning'
 );
 
-DROP TYPE pin_service;
+DROP TYPE IF EXISTS pin_service;
 CREATE TYPE pin_service AS ENUM (
     'Pinata',
     'IpfsCluster'
