@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   postgres:
-    image: postgres:12
+    image: postgres
     restart: always
     environment:
       POSTGRES_USER: johndoe
@@ -11,14 +11,14 @@ services:
     ports:
       # expose to a port that wont conflict with other projects
       - 5442:5432
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
-    ports:
-      - '5050:80'
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   restart: always
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #     PGADMIN_DEFAULT_PASSWORD: root
+  #   ports:
+  #     - '5050:80'
   graphql-engine:
     image: hasura/graphql-engine:v2.0.9
     ports:
@@ -38,7 +38,5 @@ services:
       HASURA_GRAPHQL_DEV_MODE: 'true'
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
-      # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
-      HASURA_MAIN_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
 volumes:
   postgres:
