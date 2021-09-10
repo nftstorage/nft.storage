@@ -1,27 +1,27 @@
 version: '3.6'
 services:
   postgres:
+<<<<<<< HEAD
     image: postgres:12
+    ports:
+      # expose to a port that wont conflict with other projects
+      - 5439:5432
+=======
+    container_name: pg_container
+    image: postgres
+>>>>>>> upstream/WIP_pg_provision_script_and_diagram
     restart: always
     environment:
       POSTGRES_USER: johndoe
       POSTGRES_PASSWORD: randompassword
+      # do we need this ?
+      POSTGRES_DB: niftysave
     volumes:
       - postgres:/var/lib/postgresql/data
-    ports:
-      # expose to a port that wont conflict with other projects
-      - 5439:5432
-  pgadmin:
-    image: dpage/pgadmin4
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: root
-ports:
-- "5050:80"
   graphql-engine:
     image: hasura/graphql-engine:v2.0.9
     ports:
+<<<<<<< HEAD
       - '8080:8080'
     depends_on:
       - 'postgres'
@@ -40,5 +40,17 @@ ports:
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
       HASURA_MAIN_DATABASE_URL: postgres://postgres:postgrespassword@postgres:5432/postgres
+=======
+      - 5442:5432 #expose to a port that wont conflict with other projects
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"
+>>>>>>> upstream/WIP_pg_provision_script_and_diagram
 volumes:
   postgres:
