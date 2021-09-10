@@ -1,0 +1,3 @@
+table:
+  name: nfts_by_blockchain_blocks
+  schema: public

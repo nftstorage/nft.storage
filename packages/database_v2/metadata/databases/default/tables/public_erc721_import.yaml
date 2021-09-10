@@ -1,0 +1,3 @@
+table:
+  name: erc721_import
+  schema: public
