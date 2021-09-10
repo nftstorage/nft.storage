@@ -1,4 +1,4 @@
-CREATE SCHEMA nft_storage;
+CREATE SCHEMA IF NOT EXISTS nft_storage;
 
 CREATE TYPE nft_storage.pin_status AS ENUM (
   'Queued',

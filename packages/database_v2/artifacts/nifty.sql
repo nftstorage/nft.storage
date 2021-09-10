@@ -1,4 +1,4 @@
-CREATE SCHEMA nifty;
+CREATE SCHEMA IF NOT EXISTS nifty;
 
 CREATE TYPE nifty.resource_status AS ENUM (
     'Queued',
@@ -37,7 +37,7 @@ CREATE TYPE nifty.pin_service AS ENUM (
     'IpfsCluster'
 );
 
-CREATE TABLE  nifty.block (
+CREATE TABLE IF NOT EXISTS nifty.block (
     hash TEXT NOT NULL,
     number INTEGER NOT NULL,
     updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -46,7 +46,7 @@ CREATE TABLE  nifty.block (
     PRIMARY KEY (hash)
 );
 
-CREATE TABLE  nifty.nft (
+CREATE TABLE IF NOT EXISTS nifty.nft (
     id TEXT NOT NULL,
     token_id TEXT NOT NULL,
     mint_time TIMESTAMP(3) NOT NULL,
@@ -59,7 +59,7 @@ CREATE TABLE  nifty.nft (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE  nifty.owner (
+CREATE TABLE IF NOT EXISTS nifty.owner (
     id TEXT NOT NULL,
     updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -67,7 +67,7 @@ CREATE TABLE  nifty.owner (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE  nifty.nfts_by_blocks (
+CREATE TABLE IF NOT EXISTS nifty.nfts_by_blocks (
     block_hash TEXT NOT NULL,
     nft_id TEXT NOT NULL,
     updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -76,10 +76,10 @@ CREATE TABLE  nifty.nfts_by_blocks (
     PRIMARY KEY (block_hash,nft_id)
 );
 
-CREATE TABLE  nifty.nft_asset (
+CREATE TABLE IF NOT EXISTS nifty.nft_asset (
     token_uri TEXT NOT NULL,
     ipfs_URL TEXT,
-    status nft_asset_status NOT NULL,
+    status nifty.nft_asset_status NOT NULL,
     status_text TEXT NOT NULL,
     updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -87,7 +87,7 @@ CREATE TABLE  nifty.nft_asset (
     PRIMARY KEY (token_uri)
 );
 
-CREATE TABLE  nifty.metadata (
+CREATE TABLE IF NOT EXISTS nifty.metadata (
     content_cid TEXT NOT NULL,
     token_uri TEXT NOT NULL,
     name TEXT NOT NULL,
@@ -99,9 +99,9 @@ CREATE TABLE  nifty.metadata (
     PRIMARY KEY (content_cid)
 );
 
-CREATE TABLE  nifty.resource (
+CREATE TABLE IF NOT EXISTS nifty.resource (
     uri TEXT NOT NULL,
-    status resource_status NOT NULL,
+    status nifty.resource_status NOT NULL,
     status_text TEXT,
     ipfs_url TEXT,
     content_cid TEXT,
@@ -111,7 +111,7 @@ CREATE TABLE  nifty.resource (
     PRIMARY KEY (uri)
 );
 
-CREATE TABLE  nifty.resources_by_metadata (
+CREATE TABLE IF NOT EXISTS nifty.resources_by_metadata (
     metadata_cid TEXT NOT NULL,
     resource_uri TEXT NOT NULL,
     updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -120,7 +120,7 @@ CREATE TABLE  nifty.resources_by_metadata (
     PRIMARY KEY (metadata_cid,resource_uri)
 );
 
-CREATE TABLE  nifty.content (
+CREATE TABLE IF NOT EXISTS nifty.content (
     cid TEXT NOT NULL,
     dag_size INTEGER,
     updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -129,11 +129,11 @@ CREATE TABLE  nifty.content (
     PRIMARY KEY (cid)
 );
 
-CREATE TABLE  nifty.pin (
+CREATE TABLE IF NOT EXISTS nifty.pin (
     id BIGSERIAL NOT NULL,
     content_cid TEXT NOT NULL,
-    service pin_service NOT NULL,
-    status pin_status NOT NULL,
+    service nifty.pin_service NOT NULL,
+    status nifty.pin_status NOT NULL,
     status_text TEXT,
     updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -141,7 +141,7 @@ CREATE TABLE  nifty.pin (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE  nifty.contract (
+CREATE TABLE IF NOT EXISTS nifty.contract (
     id TEXT NOT NULL,
     name TEXT,
     symbol TEXT,
@@ -152,7 +152,7 @@ CREATE TABLE  nifty.contract (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE  nifty.erc721_import (
+CREATE TABLE IF NOT EXISTS nifty.erc721_import (
     id TEXT NOT NULL,
     next_id TEXT NOT NULL,
     updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -161,7 +161,7 @@ CREATE TABLE  nifty.erc721_import (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE  nifty.erc721_import_by_nft (
+CREATE TABLE IF NOT EXISTS nifty.erc721_import_by_nft (
     erc721_import_id TEXT NOT NULL,
     nft_id TEXT NOT NULL,
     updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
