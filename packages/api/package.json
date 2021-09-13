@@ -11,7 +11,7 @@
     "lt:ipfs-proxy": "npx localtunnel --port 9095 --subdomain \"$(whoami)-ipfs-proxy-api-nft-storage\"",
     "deploy": "wrangler publish --env production",
     "dev": "wrangler dev",
-    "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js --browser webkit",
+    "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js --browser firefox",
     "db-types": "./scripts/db-types.js"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
