@@ -47,20 +47,11 @@ heroku pg:credentials:create nft-storage-prod-0 --name=web_anon --app=nft-storag
 heroku pg:credentials:create nft-storage-prod-0 --name=authenticator --app=nft-storage-prod
 heroku pg:credentials:create nft-storage-prod-0 --name=nft_storage --app=nft-storage-prod
 
-# Setup PostgREST DB users
+# Grant privileges to PostgREST DB users
 # https://postgrest.org/en/stable/tutorials/tut0.html
 # https://postgrest.org/en/stable/tutorials/tut1.html
-heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging
-# -- Run the following SQL:
-# -- Authenticator login
-# GRANT web_anon TO authenticator;
-# -- NFT.Storage user
-# GRANT nft_storage TO authenticator;
-# GRANT USAGE ON SCHEMA public TO nft_storage;
-# GRANT SELECT, UPDATE, DELETE ON public.aggregate, public.aggregate_entry, public.auth_key, public.content, public.deal, public.pin, public.upload, public.user TO nft_storage;
-
-heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod
-# Repeat above SQL
+heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging < grant-postgrest.sql
+heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod < grant-postgrest.sql
 
 # Configure the DB_URI and JWT_SECRET for PostgREST
 heroku config:set DB_URI=$(heroku config:get DATABASE_URL --app=nft-storage-staging) --app=nft-storage-pgrest-staging
@@ -94,11 +85,6 @@ heroku certs:auto:enable --app=nft-storage-pgrest-prod
 heroku pg:credentials:create nft-storage-staging-0 --name=dagcargo --app=nft-storage-staging
 heroku pg:credentials:create nft-storage-prod-0 --name=dagcargo --app=nft-storage-prod
 
-# Grant privileges to staging DB
-heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging
-# -- Run the following SQL:
-# GRANT USAGE ON SCHEMA public TO dagcargo;
-# GRANT SELECT ON public.aggregate, public.aggregate_entry, public.auth_key, public.content, public.deal, public.pin, public.upload, public.user TO dagcargo;
-
-heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod
-# Repeat above SQL
+# Grant privileges to dagcargo user
+heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging < grant-dagcargo.sql
+heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod < grant-dagcargo.sql
