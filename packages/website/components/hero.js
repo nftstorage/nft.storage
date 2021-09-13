@@ -73,7 +73,6 @@ export default function Hero() {
             <Button
               wrapperClassName="mh3 mb3"
               href="#getting-started"
-              id="getting-started"
             >
               Get Started
             </Button>
