@@ -46,10 +46,9 @@ heroku pg:credentials:create nft-storage-prod-0 --name=nft_storage --app=nft-sto
 
 # Setup PostgREST DB users
 # https://postgrest.org/en/stable/tutorials/tut0.html
+# https://postgrest.org/en/stable/tutorials/tut1.html
 heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging
 # -- Run the following SQL:
-# -- Anonomous user login
-# GRANT USAGE ON SCHEMA public TO web_anon;
 # -- Authenticator login
 # GRANT web_anon TO authenticator;
 # -- NFT.Storage user
@@ -78,6 +77,14 @@ git push heroku main
 heroku git:remote --app=nft-storage-pgrest-prod
 git push heroku main
 
+# Custom domains
+heroku domains:add db-staging.nft.storage --app=nft-storage-pgrest-staging
+heroku domains:add db.nft.storage --app=nft-storage-pgrest-prod
+
+# SSL certs
+heroku certs:auto:enable --app=nft-storage-pgrest-staging
+heroku certs:auto:enable --app=nft-storage-pgrest-prod
+
 # dagcargo #####################################################################
 
 # Add dagcargo user
@@ -88,10 +95,7 @@ heroku pg:credentials:create nft-storage-prod-0 --name=dagcargo --app=nft-storag
 heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging
 # -- Run the following SQL:
 # GRANT USAGE ON SCHEMA public TO dagcargo;
-# GRANT SELECT ON ALL TABLES IN SCHEMA public TO dagcargo;
-# GRANT INSERT, UPDATE, DELETE ON TABLE deal TO dagcargo;
-# GRANT INSERT, UPDATE, DELETE ON TABLE aggregate TO dagcargo;
-# GRANT INSERT, UPDATE, DELETE ON TABLE aggregate_entry TO dagcargo;
+# GRANT SELECT ON public.aggregate, public.aggregate_entry, public.auth_key, public.content, public.deal, public.pin, public.upload, public.user TO dagcargo;
 
 heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod
 # Repeat above SQL
