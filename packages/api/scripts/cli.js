@@ -6,6 +6,10 @@ import { fileURLToPath } from 'url'
 import { build } from 'esbuild'
 import Sentry from '@sentry/cli'
 import { createRequire } from 'module'
+import pg from 'pg'
+import fs from 'fs'
+
+const { Client } = pg
 // @ts-ignore
 import git from 'git-rev-sync'
 
@@ -38,7 +42,7 @@ prog
   .command('build')
   .describe('Build the worker.')
   .option('--env', 'Environment', 'dev')
-  .action(async opts => {
+  .action(async (opts) => {
     try {
       await build({
         entryPoints: [path.join(__dirname, '../src/index.js')],
@@ -79,5 +83,60 @@ prog
       console.error(err)
       process.exit(1)
     }
+  })
+  .command('db')
+  .describe('Database scripts')
+  .option('--reset', 'Reset db before running SQL.', false)
+  .action(async (opts) => {
+    const client = new Client({
+      user: process.env.PG_USER,
+      host: process.env.PG_HOST,
+      database: process.env.PG_DATABASE,
+      password: process.env.PG_PASSWORD,
+      // @ts-ignore
+      port: process.env.PG_PORT,
+    })
+    await client.connect()
+    const tables = fs.readFileSync(path.join(__dirname, '../db/tables.sql'), {
+      encoding: 'utf-8',
+    })
+    const functions = fs.readFileSync(
+      path.join(__dirname, '../db/functions.sql'),
+      {
+        encoding: 'utf-8',
+      }
+    )
+    const reset = fs.readFileSync(path.join(__dirname, '../db/reset.sql'), {
+      encoding: 'utf-8',
+    })
+    const cargo = fs.readFileSync(path.join(__dirname, '../db/cargo.sql'), {
+      encoding: 'utf-8',
+    })
+
+    if (opts.reset) {
+      await client.query(reset)
+    }
+    await client.query(tables)
+    await client.query(functions)
+
+    await client.query(
+      `
+CREATE EXTENSION IF NOT EXISTS postgres_fdw;
+
+DROP SERVER IF EXISTS dag_cargo_server CASCADE;
+
+CREATE SERVER dag_cargo_server
+  FOREIGN DATA WRAPPER postgres_fdw
+  OPTIONS (host '${process.env.DAG_CARGO_HOST}', dbname '${process.env.DAG_CARGO_DATABASE}', fetch_size '200000');
+
+CREATE USER MAPPING FOR current_user
+  SERVER dag_cargo_server
+  OPTIONS (user '${process.env.DAG_CARGO_USER}', password '${process.env.DAG_CARGO_PASSWORD}');
+    
+    `
+    )
+
+    await client.query(cargo)
+    await client.end()
   })
 prog.parse(process.argv)
