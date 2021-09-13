@@ -7,10 +7,9 @@ on:
       - 'packages/api/**'
       - '.github/workflows/api.yml'
   pull_request:
-    branches:
-      - main
     paths:
       - 'packages/api/**'
+      - '.github/workflows/api.yml'
 jobs:
   test:
     runs-on: ubuntu-latest
