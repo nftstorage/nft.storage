@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS public.auth_key (
   id BIGSERIAL PRIMARY KEY,
   name TEXT NOT NULL,
   secret TEXT NOT NULL,
-  user_id TEXT NOT NULL REFERENCES user ( id ),
+  user_id BIGINT NOT NULL REFERENCES public.user ( id ),
   inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS public.content (
 CREATE TABLE IF NOT EXISTS public.pin (
   id BIGSERIAL PRIMARY KEY,
   status pin_status NOT NULL,
-  content_cid TEXT NOT NULL REFERENCES content ( cid ),
+  content_cid TEXT NOT NULL REFERENCES public.content ( cid ),
   service public.service NOT NULL,
   inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
@@ -60,10 +60,10 @@ CREATE TABLE IF NOT EXISTS public.pin (
 
 CREATE TABLE IF NOT EXISTS public.upload (
   id BIGSERIAL PRIMARY KEY,
-  user_id TEXT NOT NULL REFERENCES user ( id ),
-  auth_key_id BIGINT REFERENCES auth_key ( id ),
+  user_id BIGINT NOT NULL REFERENCES public.user ( id ),
+  auth_key_id BIGINT REFERENCES public.auth_key ( id ),
   source_cid TEXT NOT NULL,
-  content_cid TEXT NOT NULL REFERENCES content ( cid ),
+  content_cid TEXT NOT NULL REFERENCES public.content ( cid ),
   name TEXT,
   type public.upload_type NOT NULL,
   -- MIME type of the upload data as sent in the request.
