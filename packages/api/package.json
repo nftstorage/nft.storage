@@ -39,6 +39,7 @@
     "@types/pg": "^8.6.1",
     "buffer": "^6.0.3",
     "cf-workers-idbkv": "^0.1.1",
+    "delay": "^5.0.0",
     "dotenv": "^10.0.0",
     "esbuild": "^0.12.15",
     "execa": "^5.1.1",

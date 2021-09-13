@@ -14,7 +14,7 @@ export class DBClient {
    * @param {string} token
    */
   constructor(url, token) {
-    this.client = new PostgrestClient(url + '/rest/v1', {
+    this.client = new PostgrestClient(url, {
       headers: {
         apikey: token,
       },
@@ -93,11 +93,7 @@ export class DBClient {
   async getUpload(cid, userId) {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').UploadOutput>} */
     const query = this.client.from('upload')
-    const {
-      data: upload,
-      error,
-      status,
-    } = await query
+    const { data: upload, error, status } = await query
       .select(this.uploadQuery)
       .eq('content_cid', cid)
       .eq('account_id', userId)
@@ -198,11 +194,7 @@ export class DBClient {
   async getContent(cid) {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').ContentOutput>} */
     const query = this.client.from('content')
-    const {
-      data: content,
-      error,
-      status,
-    } = await query
+    const { data: content, error, status } = await query
       .select(
         `
         cid,
