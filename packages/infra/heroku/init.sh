@@ -14,9 +14,11 @@ heroku addons:create heroku-postgresql:premium-4 --app=nft-storage-prod --name=n
 
 # Add schema
 heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging
-# ...run schema SQL from /packages/db/schema.sql
+# ...run schema SQL from /packages/db/tables.sql
+# ...run schema SQL from /packages/db/cargo-fdw.sql
 heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod
-# ...run schema SQL from /packages/db/schema.sql
+# ...run schema SQL from /packages/db/tables.sql
+# ...run schema SQL from /packages/db/cargo-fdw.sql
 
 # PostgREST ####################################################################
 
@@ -26,6 +28,10 @@ heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod
 heroku apps:create nft-storage-pgrest-staging --buildpack https://github.com/PostgREST/postgrest-heroku --team=web3-storage
 heroku apps:create nft-storage-pgrest-prod --buildpack https://github.com/PostgREST/postgrest-heroku --team=web3-storage
 # heroku git:remote -a nft-storage-pgrest-staging
+
+# Bump dyno sizes
+heroku dyno:resize web=standard-1x --app nft-storage-pgrest-staging
+heroku dyno:resize web=standard-1x --app nft-storage-pgrest-prod
 
 # Create the web_anon, authenticator and nft_storage credentials
 # (Heroku does not allow this to be done in the DB)
@@ -49,8 +55,7 @@ heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging
 # -- NFT.Storage user
 # GRANT nft_storage TO authenticator;
 # GRANT USAGE ON SCHEMA public TO nft_storage;
-# -- TODO: restrict to tables in nft.storage scope
-# GRANT SELECT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO nft_storage;
+# GRANT SELECT, UPDATE, DELETE ON public.aggregate, public.aggregate_entry, public.auth_key, public.content, public.deal, public.pin, public.upload, public.user TO nft_storage;
 
 heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod
 # Repeat above SQL
