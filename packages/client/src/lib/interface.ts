@@ -1,7 +1,7 @@
-import type { CID } from 'multiformats'
-export type { CID }
+import { CID } from 'multiformats'
+export { CID }
 
-import type { RootsReader, BlockReader } from '@ipld/car/api'
+import { RootsReader, BlockReader } from '@ipld/car/api'
 type CarReader = RootsReader & BlockReader
 export type { CarReader }
 
@@ -112,6 +112,7 @@ export interface DealInfo {
 
   /**
    * Filecoin network for this Deal
+   * TODO this needs to be removed
    */
   network?: 'nerpanet' | 'mainnet'
   /**
