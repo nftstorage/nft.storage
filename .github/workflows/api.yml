@@ -23,9 +23,9 @@ jobs:
       - run: npx playwright install-deps
       - run: yarn test:api
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL}}
-          DATABASE_TOKEN: ${{ secrets.DATABASE_TOKEN}}
-          DATABASE_CONNECTION: ${{ secrets.DATABASE_CONNECTION}}
+          DATABASE_URL: ${{secrets.DATABASE_URL}}
+          DATABASE_TOKEN: ${{secrets.DATABASE_TOKEN}}
+          DATABASE_CONNECTION: ${{secrets.DATABASE_CONNECTION}}
   deploy-dev:
     name: Deploy Dev
     if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
@@ -37,9 +37,9 @@ jobs:
       - name: Publish app
         uses: cloudflare/wrangler-action@1.3.0
         env:
-          SENTRY_TOKEN: ${{ secrets.SENTRY_TOKEN}}
+          SENTRY_TOKEN: ${{secrets.SENTRY_TOKEN}}
         with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
+          apiToken: ${{secrets.CF_API_TOKEN }}
           workingDirectory: 'packages/api'
   deploy-staging:
     name: Deploy Staging
@@ -52,8 +52,8 @@ jobs:
       - name: Publish app
         uses: cloudflare/wrangler-action@1.3.0
         env:
-          SENTRY_TOKEN: ${{ secrets.SENTRY_TOKEN}}
+          SENTRY_TOKEN: ${{secrets.SENTRY_TOKEN}}
         with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
+          apiToken: ${{secrets.CF_API_TOKEN }}
           workingDirectory: 'packages/api'
           environment: 'staging'

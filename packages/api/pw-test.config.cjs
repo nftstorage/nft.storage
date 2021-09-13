@@ -17,12 +17,7 @@ const nodeBuiltinsPlugin = {
     build.onResolve({ filter: /^stream$/ }, () => {
       return { path: require.resolve('readable-stream') }
     })
-  },
-}
 
-const fetchPlugin = {
-  name: 'node builtins',
-  setup(build) {
     build.onResolve({ filter: /^cross-fetch$/ }, () => {
       return { path: path.resolve(__dirname, 'scripts/fetch.js') }
     })
@@ -44,7 +39,7 @@ module.exports = {
       path.join(__dirname, './scripts/node-globals.js'),
       path.join(__dirname, './test/scripts/worker-globals.js'),
     ],
-    plugins: [nodeBuiltinsPlugin, fetchPlugin],
+    plugins: [nodeBuiltinsPlugin],
     define: {
       DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
       DATABASE_TOKEN: JSON.stringify(process.env.DATABASE_TOKEN),
