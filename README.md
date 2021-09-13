@@ -29,6 +29,7 @@ The JS client library is the official and supported client to nft.storage. Other
 - [Python](https://github.com/nftstorage/python-client) (Generated from OpenAPI schema)
 - [Ruby](https://github.com/nftstorage/ruby-client) (Generated from OpenAPI schema)
 - [Rust](https://github.com/nftstorage/rust-client) (Generated from OpenAPI schema)
+- [Unity (C#)](https://github.com/filipepolizel/unity-nft-storage)
 
 # HTTP API
 
