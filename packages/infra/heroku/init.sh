@@ -60,9 +60,12 @@ heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging
 heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod
 # Repeat above SQL
 
-# Configure the DB_URI for PostgREST
+# Configure the DB_URI and JWT_SECRET for PostgREST
 heroku config:set DB_URI=$(heroku config:get DATABASE_URL --app=nft-storage-staging) --app=nft-storage-pgrest-staging
 heroku config:set DB_URI=$(heroku config:get DATABASE_URL --app=nft-storage-prod) --app=nft-storage-pgrest-prod
+# Obtain secret from 1password vault!
+heroku config:set JWT_SECRET="supersecret" --app=nft-storage-pgrest-staging
+heroku config:set JWT_SECRET="supersecret" --app=nft-storage-pgrest-prod
 
 # Deploy
 cd postgrest/
