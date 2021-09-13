@@ -43,7 +43,7 @@ prog
   .command('build')
   .describe('Build the worker.')
   .option('--env', 'Environment', 'dev')
-  .action(async opts => {
+  .action(async (opts) => {
     try {
       await build({
         entryPoints: [path.join(__dirname, '../src/index.js')],
@@ -89,7 +89,7 @@ prog
   .describe('Database scripts')
   .option('--reset', 'Reset db before running SQL.', false)
   .option('--cargo', 'Import cargo data.', false)
-  .action(async opts => {
+  .action(async (opts) => {
     const client = new Client({
       connectionString: process.env.DATABASE_CONNECTION,
     })
@@ -145,18 +145,19 @@ CREATE USER MAPPING FOR current_user
   .option('--stop', 'Stop docker container', false)
   .option('--project', 'Project name', 'nft-storage')
   .option('--clean', 'Clean all dockers artifacts', false)
-  .action(async opts => {
+  .action(async (opts) => {
+    const composePath = path.join(__dirname, '../db/docker/docker-compose.yml')
     if (opts.init) {
       await execa('docker-compose', [
         '--file',
-        path.join(__dirname, '../db/docker/docker-compose.yml'),
+        composePath,
         'build',
         '--no-cache',
       ])
 
       await execa('docker-compose', [
         '--file',
-        path.join(__dirname, '../db/docker/docker-compose.yml'),
+        composePath,
         '--project-name',
         opts.project,
         'up',
@@ -169,7 +170,7 @@ CREATE USER MAPPING FOR current_user
     if (opts.start) {
       await execa('docker-compose', [
         '--file',
-        path.join(__dirname, '../db/docker/docker-compose.yml'),
+        composePath,
         '--project-name',
         opts.project,
         'up',
@@ -180,7 +181,7 @@ CREATE USER MAPPING FOR current_user
     if (opts.stop) {
       await execa('docker-compose', [
         '--file',
-        path.join(__dirname, '../db/docker/docker-compose.yml'),
+        composePath,
         '--project-name',
         opts.project,
         'stop',
@@ -189,6 +190,8 @@ CREATE USER MAPPING FOR current_user
 
     if (opts.clean) {
       await execa('docker-compose', [
+        '--file',
+        composePath,
         '--project-name',
         opts.project,
         'down',
