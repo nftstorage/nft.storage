@@ -46,7 +46,7 @@ CREATE TYPE resource_status AS ENUM (
     --    status_text:string
     --    ipfs_uri: string|null
     --    content_cid: string
-    --  } 
+    --  }
     'ContentLinked'
 );
 
@@ -54,7 +54,7 @@ CREATE TYPE resource_status AS ENUM (
 -- As per EIP-721 token asset is identified by a `tokenURI` that MAY
 -- point to a JSON file that conforms to the "ERC721 Metadata JSON Schema.
 -- Here we represent nft asset by a state machine in which states are identified
--- by a `status` field from this enum. 
+-- by a `status` field from this enum.
 DROP TYPE IF EXISTS nft_asset_status CASCADE;
 CREATE TYPE nft_asset_status AS ENUM (
     -- nft asset was created from `tokenURI` is queued for processing.
@@ -110,7 +110,7 @@ CREATE TYPE nft_asset_status AS ENUM (
     --    status_text:string
     --    ipfs_uri: string|null
     --    content_cid: string
-    --  } 
+    --  }
     'Linked'
 );
 
