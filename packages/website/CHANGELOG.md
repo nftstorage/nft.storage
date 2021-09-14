@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.6.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.6.0...website-v1.6.1) (2021-09-13)
+
+
+### Bug Fixes
+
+* remove id from getting started CTA link ([#421](https://www.github.com/ipfs-shipyard/nft.storage/issues/421)) ([84e8e12](https://www.github.com/ipfs-shipyard/nft.storage/commit/84e8e12f1a90c04880c3227ac07e600294113566))
+* update homepage illustration ([#410](https://www.github.com/ipfs-shipyard/nft.storage/issues/410)) ([0dcb3cd](https://www.github.com/ipfs-shipyard/nft.storage/commit/0dcb3cd2c057b67179a8a1a0bad2a4531c8d451c))
+
 ## [1.6.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.5.2...website-v1.6.0) (2021-09-09)
 
 
