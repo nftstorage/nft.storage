@@ -11,16 +11,10 @@ services:
     ports:
       # expose to a port that wont conflict with other projects
       - 5442:5432
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   restart: always
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
-  #     PGADMIN_DEFAULT_PASSWORD: root
-  #   ports:
-  #     - '5050:80'
   graphql-engine:
-    image: hasura/graphql-engine:v2.0.9
+    # note that we use cli-migrations-v3 which needed to be there to
+    # apply migrations
+    image: hasura/graphql-engine:v2.0.9.cli-migrations-v3
     ports:
       - '8080:8080'
     depends_on:
@@ -38,5 +32,10 @@ services:
       HASURA_GRAPHQL_DEV_MODE: 'true'
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
+    volumes:
+      # map the local hasura migration & metadata dirs so that hasura
+      # will pick those up.
+      - ./migrations:/hasura-migrations
+      - ./metadata:/hasura-metadata
 volumes:
   postgres:
