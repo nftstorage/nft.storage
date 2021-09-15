@@ -26,6 +26,10 @@ jobs:
           DATABASE_URL: ${{secrets.DATABASE_URL}}
           DATABASE_TOKEN: ${{secrets.DATABASE_TOKEN}}
           DATABASE_CONNECTION: ${{secrets.DATABASE_CONNECTION}}
+          DAG_CARGO_HOST: ${{secrets.DAG_CARGO_HOST}}
+          DAG_CARGO_DATABASE: ${{secrets.DAG_CARGO_DATABASE}}
+          DAG_CARGO_USER: ${{secrets.DAG_CARGO_USER}}
+          DAG_CARGO_PASSWORD: ${{secrets.DAG_CARGO_PASSWORD}}
   deploy-dev:
     name: Deploy Dev
     if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
