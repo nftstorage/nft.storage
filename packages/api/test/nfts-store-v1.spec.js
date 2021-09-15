@@ -7,7 +7,7 @@ import * as Token from '../../client/src/token.js'
 
 import { PostgrestClient, PostgrestQueryBuilder } from '@supabase/postgrest-js'
 
-const client = new PostgrestClient(DATABASE_URL + '/rest/v1', {
+const client = new PostgrestClient(DATABASE_URL, {
   headers: {
     apikey: DATABASE_TOKEN,
   },
@@ -90,7 +90,8 @@ describe.skip('V1 - /store', () => {
       result,
       {
         ipnft: 'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
-        url: 'ipfs://bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i/metadata.json',
+        url:
+          'ipfs://bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i/metadata.json',
         data: {
           name: 'name',
           description: 'stuff',

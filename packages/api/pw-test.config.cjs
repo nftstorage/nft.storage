@@ -2,10 +2,13 @@ const path = require('path')
 const dotenv = require('dotenv')
 const execa = require('execa')
 const { once } = require('events')
+const delay = require('delay')
 
 dotenv.config({
   path: path.join(__dirname, '.env.local'),
 })
+
+const cli = path.join(__dirname, 'scripts/cli.js')
 
 /** @type {import('esbuild').Plugin} */
 const nodeBuiltinsPlugin = {
@@ -14,6 +17,7 @@ const nodeBuiltinsPlugin = {
     build.onResolve({ filter: /^stream$/ }, () => {
       return { path: require.resolve('readable-stream') }
     })
+
     build.onResolve({ filter: /^cross-fetch$/ }, () => {
       return { path: path.resolve(__dirname, 'scripts/fetch.js') }
     })
@@ -49,7 +53,11 @@ module.exports = {
     if (
       stdout.toString().includes('Server started on: http://localhost:9094')
     ) {
-      return { proc }
+      const project = `nft-storage-db-${Date.now()}`
+      await execa(cli, ['db', '--start', '--project', project])
+      await delay(2000)
+      await execa(cli, ['db-sql', '--reset'])
+      return { proc, project }
     }
 
     throw new Error('Could not start smoke server')
@@ -58,5 +66,6 @@ module.exports = {
     /** @type {import('execa').ExecaChildProcess} */
     const proc = beforeTests.proc
     const killed = proc.kill()
+    await execa(cli, ['db', '--clean', '--project', beforeTests.project])
   },
 }

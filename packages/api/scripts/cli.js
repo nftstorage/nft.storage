@@ -8,6 +8,7 @@ import Sentry from '@sentry/cli'
 import { createRequire } from 'module'
 import pg from 'pg'
 import fs from 'fs'
+import execa from 'execa'
 
 const { Client } = pg
 // @ts-ignore
@@ -84,17 +85,13 @@ prog
       process.exit(1)
     }
   })
-  .command('db')
+  .command('db-sql')
   .describe('Database scripts')
   .option('--reset', 'Reset db before running SQL.', false)
+  .option('--cargo', 'Import cargo data.', false)
   .action(async (opts) => {
     const client = new Client({
-      user: process.env.PG_USER,
-      host: process.env.PG_HOST,
-      database: process.env.PG_DATABASE,
-      password: process.env.PG_PASSWORD,
-      // @ts-ignore
-      port: process.env.PG_PORT,
+      connectionString: process.env.DATABASE_CONNECTION,
     })
     await client.connect()
     const tables = fs.readFileSync(path.join(__dirname, '../db/tables.sql'), {
@@ -136,7 +133,74 @@ CREATE USER MAPPING FOR current_user
     `
     )
 
-    await client.query(cargo)
+    if (opts.cargo) {
+      await client.query(cargo)
+    }
     await client.end()
   })
+  .command('db')
+  .describe('Run docker compose to setup pg and pgrest')
+  .option('--init', 'Init docker container', false)
+  .option('--start', 'Start docker container', false)
+  .option('--stop', 'Stop docker container', false)
+  .option('--project', 'Project name', 'nft-storage')
+  .option('--clean', 'Clean all dockers artifacts', false)
+  .action(async (opts) => {
+    const composePath = path.join(__dirname, '../db/docker/docker-compose.yml')
+    if (opts.init) {
+      await execa('docker-compose', [
+        '--file',
+        composePath,
+        'build',
+        '--no-cache',
+      ])
+
+      await execa('docker-compose', [
+        '--file',
+        composePath,
+        '--project-name',
+        opts.project,
+        'up',
+        '--build',
+        '--no-start',
+        '--renew-anon-volumes',
+      ])
+    }
+
+    if (opts.start) {
+      await execa('docker-compose', [
+        '--file',
+        composePath,
+        '--project-name',
+        opts.project,
+        'up',
+        '--detach',
+      ])
+    }
+
+    if (opts.stop) {
+      await execa('docker-compose', [
+        '--file',
+        composePath,
+        '--project-name',
+        opts.project,
+        'stop',
+      ])
+    }
+
+    if (opts.clean) {
+      await execa('docker-compose', [
+        '--file',
+        composePath,
+        '--project-name',
+        opts.project,
+        'down',
+        '--rmi',
+        'local',
+        '-v',
+        '--remove-orphans',
+      ])
+    }
+  })
+
 prog.parse(process.argv)
