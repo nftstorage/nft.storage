@@ -46,23 +46,29 @@ module.exports = {
     },
   },
   beforeTests: async () => {
+    const project = `nft-storage-db-${Date.now()}`
     const proc = execa('smoke', ['-p', '9094', 'test/mocks/cluster'], {
       preferLocal: true,
     })
     const stdout = await once(proc.stdout, 'data')
+
     if (
       stdout.toString().includes('Server started on: http://localhost:9094')
     ) {
-      const project = `nft-storage-db-${Date.now()}`
+      console.log('⚡️ Mock cluster started.')
       await execa(cli, ['db', '--start', '--project', project])
       await delay(2000)
-      await execa(cli, ['db-sql', '--reset'])
+      await execa(cli, ['db-sql', '--cargo', '--testing'])
+
+      console.log('⚡️ Mock postgres started.')
+      proc.stdout.on('data', (line) => console.log(line.toString()))
       return { proc, project }
     }
 
     throw new Error('Could not start smoke server')
   },
   afterTests: async (ctx, beforeTests) => {
+    console.log('⚡️ Shutting down mock servers.')
     /** @type {import('execa').ExecaChildProcess} */
     const proc = beforeTests.proc
     const killed = proc.kill()

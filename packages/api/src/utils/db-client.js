@@ -93,7 +93,11 @@ export class DBClient {
   async getUpload(cid, userId) {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').UploadOutput>} */
     const query = this.client.from('upload')
-    const { data: upload, error, status } = await query
+    const {
+      data: upload,
+      error,
+      status,
+    } = await query
       .select(this.uploadQuery)
       .eq('content_cid', cid)
       .eq('account_id', userId)
@@ -198,7 +202,11 @@ export class DBClient {
   async getContent(cid) {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').ContentOutput>} */
     const query = this.client.from('content')
-    const { data: content, error, status } = await query
+    const {
+      data: content,
+      error,
+      status,
+    } = await query
       .select(
         `
         cid,
@@ -218,8 +226,24 @@ export class DBClient {
     if (error) {
       throw new Error(JSON.stringify(error))
     }
+    return { ...content, deals: await this.getDeals(cid) }
+  }
 
-    return content
+  /**
+   * Get deals for cid
+   *
+   * @param {string} cid
+   * @returns {Promise<import('./../bindings').Deal[]>}
+   */
+  async getDeals(cid) {
+    const rsp = await this.client.rpc('deals_fn', {
+      cid,
+    })
+    if (rsp.error) {
+      throw new Error(JSON.stringify(rsp.error))
+    }
+
+    return rsp.data
   }
 
   /**
@@ -357,7 +381,7 @@ export function toCheckNftResponse(sourceCid, content) {
       size: content?.dag_size,
       status: content?.pins[0].status,
     },
-    deals: [],
+    deals: content.deals,
   }
   return rsp
 }

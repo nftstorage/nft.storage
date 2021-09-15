@@ -1,4 +1,5 @@
 import { definitions } from './db-types'
+import type { Deal, DealStatus } from '../bindings'
 
 export type UpsertUserInput = Pick<
   definitions['account'],
@@ -48,6 +49,7 @@ export interface CreateUploadInput {
 
 export type ContentOutput = definitions['content'] & {
   pins: Array<definitions['pin']>
+  deals: Deal[]
 }
 
 export interface ListUploadsOptions {

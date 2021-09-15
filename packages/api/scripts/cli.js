@@ -89,6 +89,7 @@ prog
   .describe('Database scripts')
   .option('--reset', 'Reset db before running SQL.', false)
   .option('--cargo', 'Import cargo data.', false)
+  .option('--testing', 'Tweak schema for testing.', false)
   .action(async (opts) => {
     const client = new Client({
       connectionString: process.env.DATABASE_CONNECTION,
@@ -106,7 +107,7 @@ prog
     const reset = fs.readFileSync(path.join(__dirname, '../db/reset.sql'), {
       encoding: 'utf-8',
     })
-    const cargo = fs.readFileSync(path.join(__dirname, '../db/cargo.sql'), {
+    let cargo = fs.readFileSync(path.join(__dirname, '../db/cargo.sql'), {
       encoding: 'utf-8',
     })
 
@@ -114,7 +115,6 @@ prog
       await client.query(reset)
     }
     await client.query(tables)
-    await client.query(functions)
 
     await client.query(
       `
@@ -134,8 +134,27 @@ CREATE USER MAPPING FOR current_user
     )
 
     if (opts.cargo) {
+      if (opts.testing) {
+        cargo = cargo.replace(
+          `
+-- Create materialized view from cargo "aggregate_entries" table
+CREATE MATERIALIZED VIEW public.aggregate_entry
+AS
+SELECT *
+FROM cargo.aggregate_entries;`,
+          `
+CREATE MATERIALIZED VIEW public.aggregate_entry
+AS
+SELECT *
+FROM cargo.aggregate_entries 
+WHERE cid_v1 in ('bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e');
+`
+        )
+      }
       await client.query(cargo)
     }
+
+    await client.query(functions)
     await client.end()
   })
   .command('db')
