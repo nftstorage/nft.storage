@@ -25,6 +25,7 @@ services:
       HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://johndoe:randompassword@postgres:5432/postgres
       ## this env var can be used to add the above postgres database to Hasura as a data source. this can be removed/updated based on your needs
       PG_DATABASE_URL: postgres://johndoe:randompassword@postgres:5432/postgres
+      ## thin env var can be used to add the "default" database connection to Hasura.
       HASURA_GRAPHQL_DATABASE_URL: postgres://johndoe:randompassword@postgres:5432/postgres
       ## enable the console served by server
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'false' # set to "false" to disable console
