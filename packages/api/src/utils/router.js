@@ -1,5 +1,6 @@
 import { parse } from 'regexparam'
 import { getSentry } from './debug.js'
+import { database } from '../constants'
 
 /**
  * @typedef {import('../bindings').RouteContext} RouteContext
@@ -161,9 +162,10 @@ class Router {
    */
   listen(event) {
     const url = new URL(event.request.url)
-    const passThrough = [DATABASE_URL, 'http://localhost:8000']
+    // Add more if needed for other backends
+    const passThrough = [database.url]
 
-    // Ignore calls to local database
+    // Ignore http requests from the passthrough list above
     if (!passThrough.includes(`${url.protocol}//${url.host}`)) {
       event.respondWith(this.route(event))
     }
