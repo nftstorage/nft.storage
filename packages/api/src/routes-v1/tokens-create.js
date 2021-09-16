@@ -20,7 +20,7 @@ export const tokensCreateV1 = async (event, ctx) => {
       secrets.salt
     )
 
-    const out = await db.createKey({
+    await db.createKey({
       name: body.name,
       secret: token,
       userId: user.id,

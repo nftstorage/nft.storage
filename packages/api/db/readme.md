@@ -34,6 +34,6 @@ psql service=nft.storage -f reset.sql
 npx supabase init
 npx supabase start
 
-psql service=local -f db/tables.sql
-psql service=local -f db/functions.sql
+psql service=local -f tables.sql
+psql service=local -f functions.sql
 ```

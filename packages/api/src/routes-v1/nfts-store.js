@@ -1,5 +1,5 @@
 import { validate } from '../utils/auth-v1.js'
-import setIn from 'just-safe-set'
+import { setIn } from '../utils/utils.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as CBOR from '@ipld/dag-cbor'
 import * as cluster from '../cluster.js'

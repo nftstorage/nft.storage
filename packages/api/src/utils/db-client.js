@@ -101,6 +101,8 @@ export class DBClient {
       .select(this.uploadQuery)
       .eq('content_cid', cid)
       .eq('account_id', userId)
+      // @ts-ignore
+      .filter('content.pin.service', 'eq', 'IpfsCluster')
       .single()
 
     if (status === 406) {
@@ -125,6 +127,8 @@ export class DBClient {
     let query = from
       .select(this.uploadQuery)
       .eq('account_id', userId)
+      // @ts-ignore
+      .filter('content.pin.service', 'eq', 'IpfsCluster')
       .limit(opts.limit || 10)
       .order('inserted_at', { ascending: false })
 

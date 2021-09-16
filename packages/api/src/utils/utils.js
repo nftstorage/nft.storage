@@ -64,10 +64,7 @@ export const setIn = (object, path, value) => {
 export function parseCidPinning(cid) {
   try {
     const c = CID.parse(cid)
-    return {
-      contentCid: c.toV1().toString(),
-      sourceCid: c.toString(),
-    }
+    return parseCid(cid)
   } catch (err) {
     return
   }
