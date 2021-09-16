@@ -6,6 +6,7 @@ import Button from '../components/button.js'
 import Loading from '../components/loading'
 import { getNfts, getToken, API } from '../lib/api.js'
 import { When } from 'react-if'
+import { useRouter } from 'next/router'
 
 /**
  * Static Props
@@ -30,16 +31,17 @@ export function getStaticProps() {
  * @returns
  */
 export default function Files({ user }) {
+  const router = useRouter()
+  const version = /** @type {string} */ (router.query.version)
   const [deleting, setDeleting] = useState('')
   const [limit] = useState(25)
-  const [befores, setBefores] = useState([new Date().toISOString()])
+  const [befores, setBefores] = useState([''])
   const queryClient = useQueryClient()
   const queryParams = { before: befores[0], limit }
-  /** @type {[string, { before: string, limit: number }]} */
-  const queryKey = ['get-nfts', queryParams]
+
   const { status, data } = useQuery(
-    queryKey,
-    (ctx) => getNfts(ctx.queryKey[1]),
+    'get-nfts',
+    () => getNfts(queryParams, version),
     {
       enabled: !!user,
     }
@@ -62,7 +64,7 @@ export default function Files({ user }) {
       try {
         const client = new NFTStorage({
           token: await getToken(),
-          endpoint: new URL(API),
+          endpoint: new URL(API + (version === '1' ? '/v1/' : '/')),
         })
         await client.delete(cid)
       } finally {
@@ -94,7 +96,14 @@ export default function Files({ user }) {
           <>
             <div className="flex mb3 items-center">
               <h1 className="chicagoflf mv4 flex-auto">Files</h1>
-              <Button href="/new-file" className="flex-none" id="upload">
+              <Button
+                href={{
+                  pathname: '/new-file',
+                  query: version ? { version: '1' } : null,
+                }}
+                className="flex-none"
+                id="upload"
+              >
                 + Upload
               </Button>
             </div>

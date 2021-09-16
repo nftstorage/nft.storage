@@ -21,6 +21,7 @@ export function getStaticProps() {
 
 export default function NewFile() {
   const router = useRouter()
+  const version = /** @type {string} */ (router.query.version)
   const queryClient = useQueryClient()
   const [uploading, setUploading] = useState(false)
   const [isCar, setIsCar] = useState(false)
@@ -48,7 +49,7 @@ export default function NewFile() {
     if (file && file instanceof File) {
       const client = new NFTStorage({
         token: await getToken(),
-        endpoint: new URL(API),
+        endpoint: new URL(API + (version === '1' ? '/v1/' : '/')),
       })
       setUploading(true)
       try {
@@ -71,7 +72,7 @@ export default function NewFile() {
       } finally {
         await queryClient.invalidateQueries('get-nfts')
         setUploading(false)
-        router.push('/files')
+        router.push({ pathname: '/files', query: version ? { version } : null })
       }
     }
   }

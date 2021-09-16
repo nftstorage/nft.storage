@@ -23,6 +23,7 @@ export function getStaticProps() {
 
 export default function NewKey() {
   const router = useRouter()
+  const version = /** @type {string} */ (router.query.version)
   const queryClient = useQueryClient()
   const [creating, setCreating] = useState(false)
 
@@ -36,11 +37,14 @@ export default function NewKey() {
     if (name && typeof name === 'string') {
       setCreating(true)
       try {
-        await createToken(name)
+        await createToken(name, version)
       } finally {
         await queryClient.invalidateQueries('get-tokens')
         setCreating(false)
-        router.push('/manage')
+        router.push({
+          pathname: '/manage',
+          query: version ? { version } : null,
+        })
       }
     }
   }
