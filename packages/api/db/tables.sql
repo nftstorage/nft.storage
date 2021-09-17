@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS content
 
 CREATE TABLE IF NOT EXISTS pin
 (
-    id      BIGSERIAL PRIMARY KEY,
+    id          BIGSERIAL PRIMARY KEY,
     status      pin_status_type                                               NOT NULL,
     content_cid text                                                          NOT NULL REFERENCES content (cid),
     service     service_type                                                  NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS pin
 CREATE TABLE IF NOT EXISTS upload
 (
     id          BIGSERIAL PRIMARY KEY,
-    account_id  BIGINT                                                     NOT NULL REFERENCES account (id),
+    account_id  BIGINT                                                        NOT NULL REFERENCES account (id),
     key_id      BIGINT REFERENCES auth_key (id),
     content_cid TEXT                                                          NOT NULL REFERENCES content (cid),
     source_cid  TEXT                                                          NOT NULL,
