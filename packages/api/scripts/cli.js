@@ -111,27 +111,25 @@ prog
       encoding: 'utf-8',
     })
 
+    let fdw = fs.readFileSync(path.join(__dirname, '../db/fdw.sql'), {
+      encoding: 'utf-8',
+    })
+    fdw = fdw.replace(":'DAG_CARGO_HOST'", `'${process.env.DAG_CARGO_HOST}'`)
+    fdw = fdw.replace(
+      ":'DAG_CARGO_DATABASE'",
+      `'${process.env.DAG_CARGO_DATABASE}'`
+    )
+    fdw = fdw.replace(":'DAG_CARGO_USER'", `'${process.env.DAG_CARGO_USER}'`)
+    fdw = fdw.replace(
+      ":'DAG_CARGO_PASSWORD'",
+      `'${process.env.DAG_CARGO_PASSWORD}'`
+    )
+
     if (opts.reset) {
       await client.query(reset)
     }
+
     await client.query(tables)
-
-    await client.query(
-      `
-CREATE EXTENSION IF NOT EXISTS postgres_fdw;
-
-DROP SERVER IF EXISTS dag_cargo_server CASCADE;
-
-CREATE SERVER dag_cargo_server
-  FOREIGN DATA WRAPPER postgres_fdw
-  OPTIONS (host '${process.env.DAG_CARGO_HOST}', dbname '${process.env.DAG_CARGO_DATABASE}', fetch_size '200000');
-
-CREATE USER MAPPING FOR current_user
-  SERVER dag_cargo_server
-  OPTIONS (user '${process.env.DAG_CARGO_USER}', password '${process.env.DAG_CARGO_PASSWORD}');
-    
-    `
-    )
 
     if (opts.cargo) {
       if (opts.testing) {
@@ -151,6 +149,8 @@ WHERE cid_v1 in ('bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e');
 `
         )
       }
+
+      await client.query(fdw)
       await client.query(cargo)
     }
 

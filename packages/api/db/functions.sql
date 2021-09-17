@@ -50,8 +50,6 @@ BEGIN
     ON CONFLICT ( account_id, content_cid ) DO NOTHING;
 
 
-    --raise exception 'upload % content % ', inserted_upload.id, inserted_content.cid;
-
     return query select *
                  from upload u
                  where u.account_id = (data ->> 'account_id')::BIGINT

@@ -50,7 +50,7 @@ const fixtures = {
   ],
 }
 
-describe.only('V1 - /check', () => {
+describe('V1 - /check', () => {
   it('check cid v1', async () => {
     const client = await createClientWithUser()
     const cid = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
