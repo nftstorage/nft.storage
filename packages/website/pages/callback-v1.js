@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useQueryClient } from 'react-query'
-import { redirectMagicV1, redirectSocialV1 } from '../../lib/magic.js'
+import { redirectMagic, redirectSocial } from '../lib/magic.js'
 
 /**
  *
- * @returns {{ props: import('../../components/types.js').LayoutProps}}
+ * @returns {{ props: import('../components/types.js').LayoutProps}}
  */
 export function getStaticProps() {
   return {
@@ -19,28 +19,30 @@ export function getStaticProps() {
 
 const Callback = () => {
   const router = useRouter()
+  const version = /** @type {string} */ (router.query.version)
   const queryClient = useQueryClient()
+
   useEffect(() => {
     const finishSocialLogin = async () => {
       try {
-        await redirectSocialV1()
+        await redirectSocial(version)
         await queryClient.invalidateQueries('magic-user')
-        router.push('/v1/files')
+        router.push({ pathname: '/files', query: { version: '1' } })
       } catch (err) {
         console.error(err)
         await queryClient.invalidateQueries('magic-user')
-        router.push('/')
+        router.push({ pathname: '/', query: { version: '1' } })
       }
     }
     const finishEmailRedirectLogin = async () => {
       try {
-        await redirectMagicV1()
+        await redirectMagic(version)
         await queryClient.invalidateQueries('magic-user')
-        router.push('/v1/files')
+        router.push({ pathname: '/files', query: { version: '1' } })
       } catch (err) {
         console.error(err)
         await queryClient.invalidateQueries('magic-user')
-        router.push('/')
+        router.push({ pathname: '/', query: { version: '1' } })
       }
     }
     if (!router.query.provider && router.query.magic_credential) {
@@ -49,7 +51,7 @@ const Callback = () => {
     if (router.query.provider) {
       finishSocialLogin()
     }
-  }, [router, router.query, queryClient])
+  }, [router, router.query, queryClient, version])
 
   // TODO handle errors
   return null

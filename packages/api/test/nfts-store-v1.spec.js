@@ -51,7 +51,7 @@ async function createTestUser({
   return { token, userId: data?.id }
 }
 
-describe('V1 - /store', () => {
+describe.skip('V1 - /store', () => {
   beforeEach(clearStores)
 
   it('should store image', async () => {

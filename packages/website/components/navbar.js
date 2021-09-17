@@ -1,4 +1,4 @@
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 import Link from 'next/link'
 import { getMagic } from '../lib/magic.js'
 import { useQueryClient } from 'react-query'
@@ -13,16 +13,18 @@ import Button from './button.js'
  */
 export default function Navbar({ bgColor = 'nsorange', user }) {
   const queryClient = useQueryClient()
+  const { query } = useRouter()
+  const version = /** @type {string} */ (query.version)
   async function logout() {
     await getMagic().user.logout()
     await queryClient.invalidateQueries('magic-user')
-    Router.push('/')
+    Router.push({ pathname: '/', query: version ? { version } : null })
   }
 
   return (
     <nav className={`bg-${bgColor}`}>
       <div className="flex items-center justify-between ph3 ph5-ns pv3 center mw9">
-        <Link href="/">
+        <Link href={{ pathname: '/', query: version ? { version } : null }}>
           <a className="no-underline v-mid">
             <img
               src="/images/logo-nft.storage-sm.png"
@@ -37,13 +39,23 @@ export default function Navbar({ bgColor = 'nsorange', user }) {
         <div>
           {user ? (
             <>
-              <Link href="/files">
+              <Link
+                href={{
+                  pathname: '/files',
+                  query: version ? { version } : null,
+                }}
+              >
                 <a className="f4 black no-underline underline-hover v-mid">
                   Files
                 </a>
               </Link>
               <span className="mh2 v-mid b black">•</span>
-              <Link href="/manage">
+              <Link
+                href={{
+                  pathname: '/manage',
+                  query: version ? { version } : null,
+                }}
+              >
                 <a className="f4 black no-underline underline-hover v-mid">
                   API Keys
                 </a>
@@ -61,7 +73,10 @@ export default function Navbar({ bgColor = 'nsorange', user }) {
               Logout
             </Button>
           ) : (
-            <Button href="/login" id="login">
+            <Button
+              href={{ pathname: '/login', query: version ? { version } : null }}
+              id="login"
+            >
               Login
             </Button>
           )}

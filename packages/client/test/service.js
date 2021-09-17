@@ -162,6 +162,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
 
   try {
     switch (`${request.method} /${pathParts.join('/')}`) {
+      case 'POST /upload/':
       case 'POST /upload': {
         authorize()
         const { cid } = await importUpload(request)
@@ -185,6 +186,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           headers: headers(request),
         })
       }
+      case 'POST /store/':
       case 'POST /store': {
         authorize()
         const result = await importToken(request)
@@ -192,6 +194,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           headers: headers(request),
         })
       }
+      case `GET /check/${pathParts[1]}/`:
       case `GET /check/${pathParts[1]}`: {
         const cid = CID.parse(pathParts[1] || '')
         const value = store.get(`${AUTH_TOKEN}:${cid}`)
@@ -212,6 +215,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           }
         )
       }
+      case `GET /${pathParts[0]}/`:
       case `GET /${pathParts[0]}`: {
         authorize()
         const cid = CID.parse(pathParts[0] || '')
@@ -231,6 +235,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           headers: headers(request),
         })
       }
+      case `DELETE /${pathParts[0]}/`:
       case `DELETE /${pathParts[0]}`: {
         authorize()
         const cid = CID.parse(pathParts[0] || '')
