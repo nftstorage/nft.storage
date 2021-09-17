@@ -62,7 +62,7 @@ export async function nftStoreV1(event, ctx) {
   })
 
   await db.createUpload({
-    type: 'NFT',
+    type: 'Nft',
     content_cid: cid,
     source_cid: cid,
     dag_size: bytes,

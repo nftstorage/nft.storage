@@ -70,7 +70,7 @@ describe('V1 - /store', () => {
       throw new Error(JSON.stringify(error))
     }
 
-    assert.strictEqual(data.type, 'NFT', 'nft type')
+    assert.strictEqual(data.type, 'Nft', 'nft type')
     assert.strictEqual(data.content.dag_size, 324, 'nft size')
     assert.deepStrictEqual(data.content.pin, [
       {

@@ -447,7 +447,7 @@ export interface paths {
     get: {
       parameters: {
         query: {
-          pin_id?: parameters['rowFilter.pin.pin_id']
+          id?: parameters['rowFilter.pin.id']
           status?: parameters['rowFilter.pin.status']
           content_cid?: parameters['rowFilter.pin.content_cid']
           service?: parameters['rowFilter.pin.service']
@@ -503,7 +503,7 @@ export interface paths {
     delete: {
       parameters: {
         query: {
-          pin_id?: parameters['rowFilter.pin.pin_id']
+          id?: parameters['rowFilter.pin.id']
           status?: parameters['rowFilter.pin.status']
           content_cid?: parameters['rowFilter.pin.content_cid']
           service?: parameters['rowFilter.pin.service']
@@ -523,7 +523,7 @@ export interface paths {
     patch: {
       parameters: {
         query: {
-          pin_id?: parameters['rowFilter.pin.pin_id']
+          id?: parameters['rowFilter.pin.id']
           status?: parameters['rowFilter.pin.status']
           content_cid?: parameters['rowFilter.pin.content_cid']
           service?: parameters['rowFilter.pin.service']
@@ -668,6 +668,59 @@ export interface paths {
       }
     }
   }
+  '/rpc/postgres_fdw_handler': {
+    post: {
+      parameters: {
+        body: {
+          args: { [key: string]: unknown }
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferParams']
+        }
+      }
+      responses: {
+        /** OK */
+        200: unknown
+      }
+    }
+  }
+  '/rpc/upload_fn': {
+    post: {
+      parameters: {
+        body: {
+          args: {
+            data: string
+          }
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferParams']
+        }
+      }
+      responses: {
+        /** OK */
+        200: unknown
+      }
+    }
+  }
+  '/rpc/pgrst_watch': {
+    post: {
+      parameters: {
+        body: {
+          args: { [key: string]: unknown }
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferParams']
+        }
+      }
+      responses: {
+        /** OK */
+        200: unknown
+      }
+    }
+  }
   '/rpc/deals_fn': {
     post: {
       parameters: {
@@ -687,12 +740,12 @@ export interface paths {
       }
     }
   }
-  '/rpc/upload_fn': {
+  '/rpc/postgres_fdw_validator': {
     post: {
       parameters: {
         body: {
           args: {
-            data: string
+            '': string
           }
         }
         header: {
@@ -785,7 +838,7 @@ export interface definitions {
      * Note:
      * This is a Primary Key.<pk/>
      */
-    pin_id: number
+    id: number
     status: 'queued' | 'pinning' | 'pinned' | 'failed'
     /**
      * Note:
@@ -811,7 +864,7 @@ export interface definitions {
      * Note:
      * This is a Foreign Key to `auth_key.id`.<fk table='auth_key' column='id'/>
      */
-    key_id: number
+    key_id?: number
     /**
      * Note:
      * This is a Foreign Key to `content.cid`.<fk table='content' column='cid'/>
@@ -819,7 +872,7 @@ export interface definitions {
     content_cid: string
     source_cid: string
     mime_type?: string
-    type: 'Car' | 'Blob' | 'Multipart' | 'Remote' | 'NFT'
+    type: 'Car' | 'Blob' | 'Multipart' | 'Remote' | 'Nft'
     name?: string
     files?: string
     origins?: string
@@ -907,7 +960,7 @@ export interface parameters {
   'rowFilter.deal.sector_start_time': string
   /** pin */
   'body.pin': definitions['pin']
-  'rowFilter.pin.pin_id': string
+  'rowFilter.pin.id': string
   'rowFilter.pin.status': string
   'rowFilter.pin.content_cid': string
   'rowFilter.pin.service': string
