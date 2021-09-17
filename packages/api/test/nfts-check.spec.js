@@ -18,7 +18,17 @@ describe('/check/{cid}', () => {
     await stores.pins.put(cid, '', { metadata: pin })
 
     /** @type {import('../src/bindings').Deal[]} */
-    const deals = [{ status: 'queued', lastChanged: new Date() }]
+    const deals = [
+      {
+        status: 'queued',
+        lastChanged: new Date(),
+        batchRootCid:
+          'bafybeibj7msecu635umufftjqkd2r6gyttd37miq7xjsemhi657vnqqvca',
+        pieceCid:
+          'baga6ea4seaqgcast3vq72ye4wiaa6fgn6oesayck43gttpuntk4sp4llevdkyhy',
+        datamodelSelector: 'Links/256/Hash/Links/14/Hash/Links/0/Hash',
+      },
+    ]
     await stores.deals.put(cid, JSON.stringify(deals))
 
     const res = await fetch(`check/${cid}`)

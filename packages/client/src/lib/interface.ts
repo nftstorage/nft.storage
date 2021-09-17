@@ -111,6 +111,7 @@ export interface DealInfo {
 
   /**
    * Filecoin network for this Deal
+   * TODO this needs to be removed
    */
   network?: 'nerpanet' | 'mainnet'
   /**

@@ -1,59 +1,9 @@
 import assert from 'assert'
 import { CID } from 'multiformats'
-import { clearStores } from './scripts/helpers.js'
-import { signJWT } from '../src/utils/jwt.js'
-import { SALT } from './scripts/worker-globals.js'
 import * as Token from '../../client/src/token.js'
+import { createTestUser, dbClient } from './scripts/helpers.js'
 
-import { PostgrestClient, PostgrestQueryBuilder } from '@supabase/postgrest-js'
-
-const client = new PostgrestClient(DATABASE_URL + '/rest/v1', {
-  headers: {
-    apikey: DATABASE_TOKEN,
-  },
-})
-
-/**
- * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
- */
-async function createTestUser({
-  publicAddress = `0x73573${Date.now()}`,
-  issuer = `did:eth:${publicAddress}`,
-  name = 'A Tester',
-} = {}) {
-  const token = await signJWT(
-    {
-      sub: issuer,
-      iss: 'nft-storage',
-      iat: Date.now(),
-      name: 'test',
-    },
-    SALT
-  )
-  /** @type {PostgrestQueryBuilder<import('../src/utils/db-types').definitions['account']>} */
-  const account = client.from('account')
-  const { data } = await account
-    .insert({
-      email: 'a.tester@example.org',
-      github_id: issuer,
-      magic_link_id: issuer,
-      name,
-      public_address: publicAddress,
-      picture: 'http://example.org/avatar.png',
-    })
-    .single()
-
-  await client.from('auth_key').insert({
-    name: 'test',
-    secret: token,
-    account_id: data?.id,
-  })
-  return { token, userId: data?.id }
-}
-
-describe.skip('V1 - /store', () => {
-  beforeEach(clearStores)
-
+describe('V1 - /store', () => {
   it('should store image', async () => {
     const { token, userId } = await createTestUser()
 
@@ -110,7 +60,7 @@ describe.skip('V1 - /store', () => {
       'response structure'
     )
 
-    const { data, error } = await client
+    const { data, error } = await dbClient
       .from('upload')
       .select('*, content(cid, dag_size, pin(content_cid, status, service))')
       .match({ content_cid: result.ipnft, account_id: userId })
@@ -120,7 +70,7 @@ describe.skip('V1 - /store', () => {
       throw new Error(JSON.stringify(error))
     }
 
-    assert.strictEqual(data.type, 'NFT', 'nft type')
+    assert.strictEqual(data.type, 'Nft', 'nft type')
     assert.strictEqual(data.content.dag_size, 324, 'nft size')
     assert.deepStrictEqual(data.content.pin, [
       {

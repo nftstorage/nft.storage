@@ -14,7 +14,7 @@ export class DBClient {
    * @param {string} token
    */
   constructor(url, token) {
-    this.client = new PostgrestClient(url + '/rest/v1', {
+    this.client = new PostgrestClient(url, {
       headers: {
         apikey: token,
       },
@@ -226,8 +226,24 @@ export class DBClient {
     if (error) {
       throw new Error(JSON.stringify(error))
     }
+    return { ...content, deals: await this.getDeals(cid) }
+  }
 
-    return content
+  /**
+   * Get deals for cid
+   *
+   * @param {string} cid
+   * @returns {Promise<import('./../bindings').Deal[]>}
+   */
+  async getDeals(cid) {
+    const rsp = await this.client.rpc('deals_fn', {
+      cid,
+    })
+    if (rsp.error) {
+      throw new Error(JSON.stringify(rsp.error))
+    }
+
+    return rsp.data
   }
 
   /**
@@ -365,7 +381,7 @@ export function toCheckNftResponse(sourceCid, content) {
       size: content?.dag_size,
       status: content?.pins[0].status,
     },
-    deals: [],
+    deals: content.deals,
   }
   return rsp
 }

@@ -1,6 +1,5 @@
 export {}
 
-import { Deal as ClientDeal } from 'nft.storage/src/lib/interface'
 import Toucan from 'toucan-js'
 
 declare global {
@@ -94,7 +93,19 @@ export type CheckNFTResponse = {
   deals: Deal[]
 }
 
-export type Deal = ClientDeal
+export type DealStatus = 'queued' | 'active' | 'published' | 'terminated'
+export interface Deal {
+  status: DealStatus
+  lastChanged?: Date
+  chainDealID?: number
+  datamodelSelector: string
+  statusText?: string
+  dealActivation?: Date
+  dealExpiration?: Date
+  miner?: string
+  pieceCid: CIDString
+  batchRootCid: CIDString
+}
 
 export interface User {
   sub: string
