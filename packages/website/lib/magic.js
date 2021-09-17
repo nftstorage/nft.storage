@@ -95,9 +95,9 @@ export async function loginSocial(provider, version) {
 }
 
 /**
- * @param {string} version
+ * @param {string} [version]
  */
-export async function redirectMagic(version) {
+export async function redirectMagic(version = '') {
   const idToken = await getMagic().auth.loginWithCredential()
   if (idToken) {
     try {
