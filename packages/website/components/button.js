@@ -8,7 +8,7 @@ import clsx from 'clsx'
  * @prop {string} [wrapperClassName]
  * @prop {string} [className]
  * @prop { React.MouseEventHandler<HTMLButtonElement> } [onClick]
- * @prop {string} [href]
+ * @prop {string | any} [href]
  * @prop {React.ButtonHTMLAttributes<HTMLButtonElement>["type"]} [type]
  * @prop {React.ReactChildren | string | React.ReactElement} children
  * @prop {boolean} [disabled]

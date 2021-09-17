@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useQueryClient } from 'react-query'
@@ -21,6 +21,8 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
   const queryClient = useQueryClient()
   const [isSmallVariant, setSmallVariant] = useState(false)
   const [isMenuOpen, setMenuOpen] = useState(false)
+  const { query } = useRouter()
+  const version = /** @type {string} */ (query.version)
 
   useResizeObserver(containerRef, () => {
     const shouldGoToSmallVariant = window.innerWidth < 640
@@ -38,19 +40,31 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
     () => [
       ...(user
         ? [
-            { link: '/files', name: 'Files' },
-            { link: '/manage', name: 'API Keys' },
+            {
+              link: {
+                pathname: '/files',
+                query: version ? { version } : null,
+              },
+              name: 'Files',
+            },
+            {
+              link: {
+                pathname: '/manage',
+                query: version ? { version } : null,
+              },
+              name: 'API Keys',
+            },
           ]
         : []),
       { link: '/#docs', name: 'Docs', spacing: isSmallVariant ? '' : 'mr4' },
     ],
-    [user, isSmallVariant]
+    [user, isSmallVariant, version]
   )
 
   async function logout() {
     await getMagic().user.logout()
     await queryClient.invalidateQueries('magic-user')
-    Router.push('/')
+    Router.push({ pathname: '/', query: version ? { version } : null })
   }
 
   const toggleMenu = () => {
@@ -77,7 +91,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
             </Button>
           </div>
         )}
-        <Link href="/">
+        <Link href={{ pathname: '/', query: version ? { version } : null }}>
           <a className="no-underline v-mid">
             <img
               src="/images/logo-nft.storage-sm.png"
@@ -92,17 +106,18 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
         <div className="flex items-center">
           {!isSmallVariant &&
             ITEMS.map((item, index) => (
-              <div key={item.link}>
-                <a
-                  href={item.link}
-                  key={item.name}
-                  className={clsx(
-                    'f4 black no-underline underline-hover v-mid',
-                    item.spacing
-                  )}
-                >
-                  {item.name}
-                </a>
+              <div key={`nav-link-${index}`}>
+                <Link href={item.link}>
+                  <a
+                    key={item.name}
+                    className={clsx(
+                      'f4 black no-underline underline-hover v-mid',
+                      item.spacing
+                    )}
+                  >
+                    {item.name}
+                  </a>
+                </Link>
                 {index !== ITEMS.length - 1 && (
                   <span className="mh2 v-mid b black">•</span>
                 )}
@@ -114,7 +129,13 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
                 Logout
               </Button>
             ) : (
-              <Button href="/login" id="login">
+              <Button
+                href={{
+                  pathname: '/login',
+                  query: version ? { version } : null,
+                }}
+                id="login"
+              >
                 Login
               </Button>
             )}
@@ -148,8 +169,8 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
           </Link>
         </div>
         <div className="flex flex-column items-center justify-center text-center pv4 flex-auto">
-          {ITEMS.map((item) => (
-            <Link href={item.link} key={item.link}>
+          {ITEMS.map((item, index) => (
+            <Link href={item.link} key={`menu-nav-link-${index}`}>
               <a
                 className={clsx(
                   'f1 v-mid chicagoflf pv3',
