@@ -1,6 +1,6 @@
 # [nft.storage](https://nft.storage) <!-- omit in toc -->
 
-Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin BETA.
+Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin.
 
 <a href="https://nft.storage"><img src="https://raw.githubusercontent.com/ipfs-shipyard/nft.storage/main/screenshot.png" alt="nft.storage screenshot" /></a>
 
@@ -29,6 +29,7 @@ The JS client library is the official and supported client to nft.storage. Other
 - [Python](https://github.com/nftstorage/python-client) (Generated from OpenAPI schema)
 - [Ruby](https://github.com/nftstorage/ruby-client) (Generated from OpenAPI schema)
 - [Rust](https://github.com/nftstorage/rust-client) (Generated from OpenAPI schema)
+- [Unity (C#)](https://github.com/filipepolizel/unity-nft-storage)
 
 # HTTP API
 

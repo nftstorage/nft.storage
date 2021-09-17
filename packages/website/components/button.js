@@ -1,16 +1,18 @@
+import React from 'react'
 import Link from 'next/link'
 import clsx from 'clsx'
 
 /**
  * @typedef {Object} ButtonProps
+ * @prop {string} [id]
  * @prop {string} [wrapperClassName]
  * @prop {string} [className]
- * @prop { import('react').MouseEventHandler<HTMLButtonElement> } [onClick]
+ * @prop { React.MouseEventHandler<HTMLButtonElement> } [onClick]
  * @prop {string} [href]
- * @prop {import('react').ButtonHTMLAttributes<HTMLButtonElement>["type"]} [type]
- * @prop {import('react').ReactChildren | string} children
+ * @prop {React.ButtonHTMLAttributes<HTMLButtonElement>["type"]} [type]
+ * @prop {React.ReactChildren | string | React.ReactElement} children
  * @prop {boolean} [disabled]
- * @prop {string} [id]
+ * @prop {boolean} [small]
  */
 
 /**
@@ -27,6 +29,7 @@ export default function Button({
   type = 'button',
   children,
   disabled = false,
+  small = false,
 }) {
   wrapperClassName = clsx(
     'dib',
@@ -36,7 +39,7 @@ export default function Button({
     { grow: !disabled, 'o-50': disabled },
     wrapperClassName
   )
-  const wrapperStyle = { minWidth: '8rem' }
+  const wrapperStyle = { minWidth: small ? '0' : '8rem' }
   const btnStyle = { top: 3, left: 3 }
   const btn = (
     <button

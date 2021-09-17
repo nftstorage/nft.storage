@@ -1,5 +1,26 @@
 # Changelog
 
+### [1.6.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.6.0...website-v1.6.1) (2021-09-13)
+
+
+### Bug Fixes
+
+* remove id from getting started CTA link ([#421](https://www.github.com/ipfs-shipyard/nft.storage/issues/421)) ([84e8e12](https://www.github.com/ipfs-shipyard/nft.storage/commit/84e8e12f1a90c04880c3227ac07e600294113566))
+* update homepage illustration ([#410](https://www.github.com/ipfs-shipyard/nft.storage/issues/410)) ([0dcb3cd](https://www.github.com/ipfs-shipyard/nft.storage/commit/0dcb3cd2c057b67179a8a1a0bad2a4531c8d451c))
+
+## [1.6.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.5.2...website-v1.6.0) (2021-09-09)
+
+
+### Features
+
+* links to metadata.json depending on type ([#398](https://www.github.com/ipfs-shipyard/nft.storage/issues/398)) ([343b835](https://www.github.com/ipfs-shipyard/nft.storage/commit/343b835dc902454b91e702e2845e9f0ec6cae471))
+* remove pinning service from the homepage ([#397](https://www.github.com/ipfs-shipyard/nft.storage/issues/397)) ([aec4669](https://www.github.com/ipfs-shipyard/nft.storage/commit/aec466928ee2ec446ccf0d7f0bcff3764d8c3259))
+
+
+### Bug Fixes
+
+* remove remaining beta information ([#406](https://www.github.com/ipfs-shipyard/nft.storage/issues/406)) ([414f93e](https://www.github.com/ipfs-shipyard/nft.storage/commit/414f93e66b7aa0e67cbd003f39b4b53046112321))
+
 ### [1.5.2](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.5.1...website-v1.5.2) (2021-08-30)
 
 

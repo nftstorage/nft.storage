@@ -16,7 +16,7 @@ export function getStaticProps() {
   return {
     props: {
       title: 'Files - NFT Storage',
-      navBgColor: 'nsyellow',
+      navBgColor: 'bg-nsyellow',
       redirectTo: '/',
       needsUser: true,
     },

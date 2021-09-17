@@ -1,5 +1,12 @@
 # Changelog
 
+### [3.2.2](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v3.2.1...nft.storage-v3.2.2) (2021-09-14)
+
+
+### Bug Fixes
+
+* capitalization ([d62e70b](https://www.github.com/ipfs-shipyard/nft.storage/commit/d62e70bf6bec1c0d6d9f33c74bb8404d8f746b5a))
+
 ### [3.2.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v3.2.0...nft.storage-v3.2.1) (2021-08-30)
 
 

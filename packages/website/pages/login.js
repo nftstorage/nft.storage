@@ -33,15 +33,15 @@ export default function Login() {
       await loginEmail(e.currentTarget.email.value)
       await queryClient.invalidateQueries('magic-user')
       Router.push('/files')
-    } catch (error) {
+    } catch (/** @type {any} */ error) {
       setDisabled(false)
       console.error('An unexpected error happened occurred:', error)
       setErrorMsg(error.message)
     }
   }
   return (
-    <main className="bg-nsorange">
-      <div className="mw9 center pv3 ph5 min-vh-100">
+    <main className="bg-nsorange w-100 flex-auto">
+      <div className="mw9 center pv3 mtauto">
         <form onSubmit={onSubmit} className="tc">
           <label className="f5 db mb2">
             <h2>Log in</h2>

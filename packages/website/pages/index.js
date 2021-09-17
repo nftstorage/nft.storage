@@ -152,9 +152,9 @@ function About() {
           <div className="tr pl5">
             <img
               src="images/diagram-store-and-retrieve.png"
+              srcSet="images/diagram-store-and-retrieve@2x.png 2x"
               alt="diagram of storage and retrieval with nft.storage"
-              width="2354"
-              height="2312"
+              width="1177"
               style={{ width: '1177px', height: 'auto' }}
             />
           </div>
