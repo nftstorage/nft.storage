@@ -3,6 +3,7 @@ import fetch, { Blob } from '@web-std/fetch'
 import { File } from '@web-std/file'
 import { FormData } from '@web-std/form-data'
 import { Cluster } from '@nftstorage/ipfs-cluster'
+import * as Service from './service.js'
 import * as IPFSURL from './ipfs-url.js'
 
 dotenv.config()
@@ -15,25 +16,17 @@ const services = new WeakMap()
  * @typedef {Object} Config
  * @property {URL} url
  * @property {string} secret
- *
  * @typedef {Cluster} Service
  *
  * @param {Config} config
- * @returns {Service}
+ * @returns {Cluster}
  */
-const service = (config) => {
-  const value = services.get(config)
-  if (value) {
-    return value
-  } else {
-    const value = new Cluster(config.url.href, {
-      headers: { Authorization: `Basic ${config.secret}` },
-    })
-    services.set(config, value)
-    return value
-  }
-}
+const connect = config =>
+  new Cluster(config.url.href, {
+    headers: { Authorization: `Basic ${config.secret}` },
+  })
 
+const service = Service.create(connect)
 /**
  * Adds blob to the cluster
  *
@@ -96,7 +89,7 @@ export const pin = async (
  * @see https://github.com/ipfs/ipfs-cluster/issues/1415
  * @param {string} path
  */
-const removeTrailingSlash = (path) => {
+const removeTrailingSlash = path => {
   const offset = path.length - 1
   return path.charAt(offset) === '/' ? path.slice(0, offset) : path
 }

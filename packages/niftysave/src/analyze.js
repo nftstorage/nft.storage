@@ -1,8 +1,8 @@
-import { mutate, query } from './graphql.js'
 import * as Result from './result.js'
 import * as Schema from '../gen/db/schema.js'
 import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
+import * as DB from '../gen/db/index.js'
 import { fetchResource, timeout } from './net.js'
 import { configure } from './config.js'
 import { printURL } from './util.js'
@@ -10,12 +10,22 @@ import { script } from 'subprogram'
 
 const { TokenAssetStatus } = Schema
 
-export const main = async () => await spawn(configure())
+export const main = async () => await spawn(await configure())
 
 /**
- * @param {import('./config').Config} config
+ * @typedef {Object} Config
+ * @property {DB.Config} fauna
+ * @property {import('./ipfs').Config} ipfs
+ * @property {Cluster.Config} cluster
+ * @property {number} budget
+ * @property {number} batchSize
+ * @property {number} fetchTimeout
  */
-export const spawn = async (config) => {
+
+/**
+ * @param {Config} config
+ */
+export const spawn = async config => {
   const deadline = Date.now() + config.budget
   while (deadline - Date.now() > 0) {
     console.log('🔍 Fetching queued token asset analyses')
@@ -24,7 +34,7 @@ export const spawn = async (config) => {
       return console.log('🏁 Finish, no more queued task were found')
     } else {
       console.log(`🤹 Spawn ${analyses.length} tasks to process assets`)
-      const updates = await Promise.all(analyses.map(($) => analyze(config, $)))
+      const updates = await Promise.all(analyses.map($ => analyze(config, $)))
 
       console.log('💾 Update token assets')
       await updateTokenAssets(config, updates)
@@ -39,14 +49,12 @@ export const spawn = async (config) => {
  *
  * Returns batch of queued tokens.
  *
- * @param {Object} options
- * @param {number} options.batchSize
- * @param {import('./config').DBConfig} options.db
+ * @param {{batchSize: number, fauna: DB.Config}} options
  * @returns {Promise<Schema.ScheduledAnalyze[]>}
  */
 
-const fetchScheduledAnalyses = async ({ db, batchSize }) => {
-  const result = await query(db, {
+const fetchScheduledAnalyses = async ({ batchSize, fauna }) => {
+  const result = await DB.query(fauna, {
     scheduledAnalyses: [
       {
         _size: batchSize,
@@ -71,7 +79,7 @@ const fetchScheduledAnalyses = async ({ db, batchSize }) => {
 }
 
 /**
- * @param {import('./config').Config} config
+ * @param {Config} config
  * @param {Schema.ScheduledAnalyze} scheduledAnalyze
  * @returns {Promise<Schema.TokenAssetUpdate>}
  */
@@ -176,7 +184,7 @@ const analyze = async (config, { tokenAsset: { tokenURI, _id: id } }) => {
 /**
  * @param {string} content
  */
-const parseERC721Metadata = async (content) => {
+const parseERC721Metadata = async content => {
   const json = JSON.parse(content)
   const { name, description, image } = json
   if (typeof name !== 'string') {
@@ -210,7 +218,7 @@ const parseERC721Metadata = async (content) => {
  * @param {string} input
  * @returns {Schema.ResourceInput}
  */
-const parseResource = (input) => {
+const parseResource = input => {
   const url = new URL(input)
   const ipfsURL = IPFSURL.asIPFSURL(url)
   if (ipfsURL) {
@@ -229,7 +237,7 @@ const parseResource = (input) => {
  *
  * @param {string} input
  */
-const tryParseResource = (input) => {
+const tryParseResource = input => {
   try {
     return parseResource(input)
   } catch (error) {
@@ -242,7 +250,7 @@ const tryParseResource = (input) => {
  * @param {PropertyKey[]} [path]
  * @returns {Iterable<[string|number|boolean|null, PropertyKey[]]>}
  */
-const iterate = function* (data, path = []) {
+const iterate = function*(data, path = []) {
   if (Array.isArray(data)) {
     for (const [index, element] of data) {
       yield* iterate(element, [...path, index])
@@ -257,13 +265,12 @@ const iterate = function* (data, path = []) {
 }
 
 /**
- * @param {Object} config
- * @param {import('./config').DBConfig} config.db
+ * @param {{ fauna: DB.Config }} config
  * @param {Schema.TokenAssetUpdate[]} updates
  * @returns {Promise<string[]>}
  */
-const updateTokenAssets = async ({ db }, updates) => {
-  const result = await mutate(db, {
+const updateTokenAssets = async ({ fauna }, updates) => {
+  const result = await DB.mutation(fauna, {
     updateTokenAssets: [
       {
         input: { updates },
@@ -274,7 +281,7 @@ const updateTokenAssets = async ({ db }, updates) => {
     ],
   })
 
-  return Result.value(result).updateTokenAssets?.map((token) => token._id) || []
+  return Result.value(result).updateTokenAssets?.map(token => token._id) || []
 }
 
 script({ ...import.meta, main })
