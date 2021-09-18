@@ -200,6 +200,7 @@ CREATE TABLE nft_asset (
     -- present in `Lined` state.
     content_cid TEXT,
     status nft_asset_status NOT NULL,
+    status_text TEXT NOT NULL,
 
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,

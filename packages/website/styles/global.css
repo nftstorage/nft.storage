@@ -78,3 +78,7 @@
   width: 100%;
   overflow-x: auto;
 }
+
+.invisible {
+  pointer-events: none;
+}

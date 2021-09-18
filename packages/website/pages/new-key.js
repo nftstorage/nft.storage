@@ -14,7 +14,7 @@ export function getStaticProps() {
   return {
     props: {
       title: 'New API Key - NFT Storage',
-      navBgColor: 'nsgreen',
+      navBgColor: 'bg-nsgreen',
       needsUser: true,
       redirectTo: '/',
     },

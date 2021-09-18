@@ -70,11 +70,7 @@ export default function Hero() {
             </h2>
           </hgroup>
           <div className="mt3 mb4">
-            <Button
-              wrapperClassName="mh3 mb3"
-              href="#getting-started"
-              id="getting-started"
-            >
+            <Button wrapperClassName="mh3 mb3" href="#getting-started">
               Get Started
             </Button>
           </div>
