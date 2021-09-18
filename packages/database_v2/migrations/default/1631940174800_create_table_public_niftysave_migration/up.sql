@@ -1,1 +1,0 @@
-CREATE TABLE "public"."niftysave_migration" ("id" text NOT NULL, "state" JSONB NOT NULL, "updated_at" timestamptz NOT NULL DEFAULT now(), "inserted_at" timestamptz NOT NULL DEFAULT now(), PRIMARY KEY ("id") , UNIQUE ("id"));COMMENT ON TABLE "public"."niftysave_migration" IS E'Utility table to keep track of migrations';
