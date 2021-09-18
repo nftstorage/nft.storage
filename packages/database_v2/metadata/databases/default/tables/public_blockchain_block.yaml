@@ -1,0 +1,3 @@
+table:
+  name: blockchain_block
+  schema: public

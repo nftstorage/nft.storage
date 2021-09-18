@@ -1,0 +1,19 @@
+{
+  "name": "@nftstorage/niftysave-db",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "docker-compose up -d"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^16.7.4",
+    "hasura-cli": "2.0.8",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.2"
+  }
+}
