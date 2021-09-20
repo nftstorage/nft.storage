@@ -14,6 +14,7 @@ import { script } from 'subprogram'
 const insert = ({ data }) => {
   return {
     hash: data.hash,
+    number: data.number,
     inserted_at: Migration.fromTimestamp(ts),
   }
 }
