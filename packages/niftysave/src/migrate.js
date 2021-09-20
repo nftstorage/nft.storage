@@ -24,6 +24,8 @@ import {
  * }} Config
  *
  * @typedef {Config & {collection:string}} MigrationConfig
+ * @typedef {Hasura.schema.niftysave_migration} Migration
+ * @typedef {import('faunadb').Expr} Query
  */
 
 /**
@@ -33,19 +35,29 @@ import {
 
 /**
  * @template T
+ * @typedef {(config:MigrationConfig, cursor:string|null, input:T[]) => Promise<Migration>} Write
+ */
+/**
+ * @template T
  * @param {Object} options
  * @param {string} options.collection
- * @param {(config:MigrationConfig, cursor:string|null, documents:Document<T>[]) => Promise<Hasura.schema.niftysave_migration>} options.migrate
+ * @param {Write<T>} options.migrate
+ * @param {Query} [options.query]
  */
-export const start = async ({ collection, migrate }) =>
-  migrateWith({ ...(await configure()), collection }, migrate)
+export const start = async ({ collection, migrate, query }) =>
+  migrateWith({ ...(await configure()), collection }, migrate, query)
 
 /**
  * @template T
  * @param {MigrationConfig} config
- * @param {(config:MigrationConfig, cursor:string, documenst:Document<T>[]) => Promise<Hasura.schema.niftysave_migration>} migrate
+ * @param {Write<T>} migrate
+ * @param {Query} [query]
  */
-export const migrateWith = async (config, migrate) => {
+export const migrateWith = async (
+  config,
+  migrate,
+  query = Lambda(['ref'], Get(Var('ref')))
+) => {
   console.log(`🚧 Performing migration`)
   const deadline = Date.now() + config.budget
   const state = await init(config)
@@ -53,7 +65,7 @@ export const migrateWith = async (config, migrate) => {
     console.log(state)
 
     let { after = [{ id: '' }], data } =
-      /** @type {{after?:[{id:string}], data:Document<T>[]}} */ (
+      /** @type {{after?:[{id:string}], data:T[]}} */ (
         await Fauna.query(
           config.fauna,
           Map(
@@ -63,7 +75,7 @@ export const migrateWith = async (config, migrate) => {
                 ? Ref(Collection(config.collection), state.cursor)
                 : undefined,
             }),
-            Lambda(['ref'], Get(Var('ref')))
+            query
           )
         )
       )

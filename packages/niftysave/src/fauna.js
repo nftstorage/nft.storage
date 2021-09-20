@@ -4,6 +4,7 @@ import fauna from 'faunadb'
 const {
   Client,
   Ref,
+  Select,
   Expr,
   Create,
   Collection,
@@ -17,6 +18,7 @@ const {
   Now,
   Map,
   Do,
+  Let,
 } = fauna
 
 export {
@@ -25,6 +27,7 @@ export {
   Collection,
   Get,
   Var,
+  Select,
   Documents,
   Lambda,
   Paginate,
@@ -33,6 +36,7 @@ export {
   Now,
   Map,
   Do,
+  Let,
   Ref,
 }
 
