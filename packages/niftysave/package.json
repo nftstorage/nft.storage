@@ -12,6 +12,7 @@
     "analyze": "node ./src/analyze.js",
     "pin": "node ./src/pin.js",
     "migrate-content": "node ./src/migrate/content.js",
+    "migrate-erc721-import": "node ./src/migrate/erc721-import.js",
     "generate": "yarn generate:erc721-source && yarn generate:db-source && yarn generate:db-v2-source",
     "generate:erc721-source": "generate-graphql-client --post --endpoint https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph --output ./gen/erc721 && cp template/graphql/* gen/erc721 && tsc ./gen/erc721/schema.ts --moduleResolution node --target esnext --esModuleInterop",
     "generate:db-source": "generate-graphql-client --fetcher .fetcher.cjs --output ./gen/db && cp template/graphql/* gen/db && tsc ./gen/db/schema.ts --moduleResolution node --target esnext --esModuleInterop",
