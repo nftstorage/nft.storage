@@ -42,7 +42,7 @@ export {
  * @returns {import('faunadb').Client}
  */
 
-const connect = config => new Client({ secret: config.secret })
+const connect = (config) => new Client({ secret: config.secret })
 const service = Service.create(connect)
 
 /**

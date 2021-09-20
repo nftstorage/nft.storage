@@ -10,8 +10,6 @@ dotenv.config()
 
 Object.assign(globalThis, { File, Blob, FormData, fetch })
 
-const services = new WeakMap()
-
 /**
  * @typedef {Object} Config
  * @property {URL} url
@@ -21,7 +19,7 @@ const services = new WeakMap()
  * @param {Config} config
  * @returns {Cluster}
  */
-const connect = config =>
+const connect = (config) =>
   new Cluster(config.url.href, {
     headers: { Authorization: `Basic ${config.secret}` },
   })
@@ -89,7 +87,7 @@ export const pin = async (
  * @see https://github.com/ipfs/ipfs-cluster/issues/1415
  * @param {string} path
  */
-const removeTrailingSlash = path => {
+const removeTrailingSlash = (path) => {
   const offset = path.length - 1
   return path.charAt(offset) === '/' ? path.slice(0, offset) : path
 }

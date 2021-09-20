@@ -1,26 +1,18 @@
-import { script } from 'subprogram'
 import { configure } from './config.js'
 import * as Hasura from '../gen/db-v2/index.js'
 import * as Fauna from './fauna.js'
 import * as Result from './result.js'
+
 import {
-  Create,
   Collection,
   Get,
   Var,
   Documents,
   Lambda,
   Paginate,
-  Call,
-  Expr,
-  Update,
-  Now,
   Map,
   Ref,
-  Do,
 } from './fauna.js'
-
-export const main = async () => await migrate(await configure(), 'Content')
 
 /**
  * @typedef {{
@@ -30,94 +22,61 @@ export const main = async () => await migrate(await configure(), 'Content')
  *   fauna: Fauna.Config
  *   hasura: Hasura.Config
  * }} Config
- * @param {Config} config
- * @param {string} collection
+ *
+ * @typedef {Config & {collection:string}} MigrationConfig
  */
-export const migrate = async (config, collection) => {
+
+/**
+ * @template T
+ *
+ * @param {Object} options
+ * @param {string} options.collection
+ * @param {(config:MigrationConfig, cursor:string|null, input:{data:T}[]) => Promise<Hasura.schema.niftysave_migration>} options.migrate
+ */
+export const start = async ({ collection, migrate }) =>
+  migrateWith({ ...(await configure()), collection }, migrate)
+
+/**
+ * @template T
+ * @param {MigrationConfig} config
+ * @param {(config:MigrationConfig, cursor:string, input:{data:T}[]) => Promise<Hasura.schema.niftysave_migration>} migrate
+ */
+export const migrateWith = async (config, migrate) => {
   console.log(`🚧 Performing migration`)
   const deadline = Date.now() + config.budget
-  const state = await init2(config, collection)
+  const state = await init(config)
   while (state.cursor !== '' && deadline - Date.now() > 0) {
     console.log(state)
 
-    let {
-      after = [{ id: '' }],
-      data,
-    } = /** @type {{after?:[{id:string}], data:any[]}} */ (await Fauna.query(
-      config.fauna,
-      Map(
-        Paginate(Documents(Collection(collection)), {
-          size: config.batchSize,
-          after: state.cursor
-            ? Ref(Collection(collection), state.cursor)
-            : undefined,
-        }),
-        Lambda(['ref'], Get(Var('ref')))
+    let { after = [{ id: '' }], data } =
+      /** @type {{after?:[{id:string}], data:any[]}} */ (
+        await Fauna.query(
+          config.fauna,
+          Map(
+            Paginate(Documents(Collection(config.collection)), {
+              size: config.batchSize,
+              after: state.cursor
+                ? Ref(Collection(config.collection), state.cursor)
+                : undefined,
+            }),
+            Lambda(['ref'], Get(Var('ref')))
+          )
+        )
       )
-    ))
-    const inserts = []
-    for (const {
-      data: { cid, dagSize, created },
-    } of data) {
-      inserts.push({
-        cid,
-        dag_size: dagSize || null,
-        inserted_at: created.value,
-      })
+
+    if (data.length > 0 && !config.dryRun) {
+      const { cursor } = await migrate(config, after[0].id, data)
+      state.cursor = cursor
     }
 
-    state.cursor = after[0].id
-    if (inserts.length > 0 && !config.dryRun) {
-      const result = await Hasura.mutation(config.hasura, {
-        insert_content: [
-          {
-            objects: inserts,
-          },
-          {
-            affected_rows: 1,
-          },
-        ],
-        insert_niftysave_migration_one: [
-          {
-            object: {
-              id: `fauna-${collection}`,
-              collection,
-              cursor: state.cursor,
-              metadata: {},
-            },
-            on_conflict: {
-              constraint:
-                Hasura.schema.niftysave_migration_constraint
-                  .niftysave_migration_pkey,
-              update_columns: [
-                Hasura.schema.niftysave_migration_update_column.cursor,
-                Hasura.schema.niftysave_migration_update_column.collection,
-                Hasura.schema.niftysave_migration_update_column.metadata,
-              ],
-            },
-          },
-          {
-            cursor: 1,
-            collection: 1,
-            metadata: 1,
-          },
-        ],
-      })
-
-      if (!result.ok) {
-        console.log(`💣 Failed to insert into db, aborting`)
-        return
-      }
-    }
     // If there was nothing we're done
-    if (inserts.length === 0) {
+    if (data.length === 0) {
       break
     } else {
-      console.log('⏭ Page migrated', {
-        cursor: state.cursor,
-      })
+      console.log('⏭ Page migrated', state)
     }
   }
+
   if (state.cursor === '') {
     console.log('🏁 Migration is complete', state)
   } else {
@@ -126,14 +85,12 @@ export const migrate = async (config, collection) => {
 }
 
 /**
- * @param {{hasura: Hasura.Config}} config
- * @param {string} collection
+ * @param {{hasura: Hasura.Config, collection:string}} config
  */
-const init2 = async (config, collection) => {
+const init = async (config) => {
   const state =
-    (await readMigrationState(config, collection)) ||
+    (await readMigrationState(config)) ||
     (await writeMigrationState(config, {
-      collection,
       cursor: null,
       metadata: {},
     }))
@@ -142,10 +99,9 @@ const init2 = async (config, collection) => {
 }
 
 /**
- * @param {{hasura: Hasura.Config}} config
- * @param {string} collection
+ * @param {{hasura: Hasura.Config, collection: string}} config
  */
-const readMigrationState = async ({ hasura }, collection) => {
+const readMigrationState = async ({ hasura, collection }) => {
   const result = await Hasura.query(hasura, {
     niftysave_migration_by_pk: [
       {
@@ -163,14 +119,18 @@ const readMigrationState = async ({ hasura }, collection) => {
 }
 
 /**
- * @param {{hasura: Hasura.Config}} config
- * @param {{collection:string, cursor:string|null, metadata:object|null}} data
+ * @template {Hasura.schema.mutation_rootRequest} Mutation
+ * @param {{hasura: Hasura.Config, collection:string}} config
+ * @param {{cursor:string|null, metadata:object|null}} data
+ * @param {Mutation} [mutation]
  */
-const writeMigrationState = async (
-  { hasura },
-  { collection, cursor, metadata }
+export const writeMigrationState = async (
+  { hasura, collection },
+  { cursor, metadata },
+  mutation
 ) => {
   const result = await Hasura.mutation(hasura, {
+    ...mutation,
     insert_niftysave_migration_one: [
       {
         object: {
@@ -205,5 +165,3 @@ const writeMigrationState = async (
 
   return value
 }
-
-script({ ...import.meta, main })

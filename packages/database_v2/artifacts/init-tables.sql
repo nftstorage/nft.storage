@@ -1,6 +1,5 @@
 -- Resources in database is represented by a state machine in which states
 -- are identified by a `status` field from this enum.
-DROP TYPE IF EXISTS resource_status CASCADE;
 CREATE TYPE resource_status AS ENUM (
     -- Resource that needs to be processed.
     -- {
@@ -55,7 +54,6 @@ CREATE TYPE resource_status AS ENUM (
 -- point to a JSON file that conforms to the "ERC721 Metadata JSON Schema.
 -- Here we represent nft asset by a state machine in which states are identified
 -- by a `status` field from this enum.
-DROP TYPE IF EXISTS nft_asset_status CASCADE;
 CREATE TYPE nft_asset_status AS ENUM (
     -- nft asset was created from `tokenURI` is queued for processing.
     -- {
@@ -114,7 +112,6 @@ CREATE TYPE nft_asset_status AS ENUM (
     'Linked'
 );
 
-DROP TYPE IF EXISTS pin_status CASCADE;
 CREATE TYPE pin_status AS ENUM (
     'PinError',
     'PinQueued',
@@ -122,19 +119,18 @@ CREATE TYPE pin_status AS ENUM (
     'Pinning'
 );
 
-DROP TYPE IF EXISTS pin_service CASCADE;
 CREATE TYPE pin_service AS ENUM (
     'Pinata',
     'IpfsCluster'
 );
 
 -- A blochain block identified by a it's hash.
-CREATE TABLE IF NOT EXISTS blockchain_block (
+CREATE TABLE blockchain_block (
     hash TEXT NOT NULL,
-    number INTEGER NOT NULL,
+    number BIGINT NOT NULL,
 
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     PRIMARY KEY (hash)
 );
 
@@ -143,7 +139,7 @@ CREATE TABLE IF NOT EXISTS blockchain_block (
 -- Each nft will have one associated `nft_asset` mapped by `token_uri`.
 -- Multiple nfts may map to a same `nft_asset` but that would go against
 -- ERC-721 spec, yet nothing enforces that.
-CREATE TABLE IF NOT EXISTS nft (
+CREATE TABLE nft (
     -- unique identifier of the nft in the subgraph, in practice it encodes
     -- (conctact_id, token_id) tuple.
     id TEXT NOT NULL,
@@ -157,34 +153,34 @@ CREATE TABLE IF NOT EXISTS nft (
     -- Schema".
     token_uri TEXT NOT NULL,
     -- Timestamp of when nft was minted.
-    mint_time TIMESTAMP(3) NOT NULL,
+    mint_time TIMESTAMP WITH TIME ZONE NOT NULL,
     -- Current owner of this nft. This changes over time.
     nft_owner_id TEXT NOT NULL,
 
     -- Time when last this record was updated.
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     -- Time when this record was created.
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
 
     PRIMARY KEY (id)
 );
 
 -- Blochain block may contain multiple nft transfers & this table lets us
 -- track n:m relation of which NFTs were discovered in which blocks.
-CREATE TABLE IF NOT EXISTS nfts_by_blockchain_blocks (
+CREATE TABLE nfts_by_blockchain_blocks (
     blockchain_block_hash TEXT NOT NULL,
     nft_id TEXT NOT NULL,
 
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     PRIMARY KEY (blockchain_block_hash, nft_id)
 );
 
-CREATE TABLE IF NOT EXISTS nft_owner (
+CREATE TABLE nft_owner (
     id TEXT NOT NULL,
 
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -192,7 +188,7 @@ CREATE TABLE IF NOT EXISTS nft_owner (
 -- nfts from blochain are discovered their `nft_asset`s are created for
 -- their `token_uri`s. As system processes incoming data it will update
 -- state of each `nft_asset` as per `nft_asset_status`.
-CREATE TABLE IF NOT EXISTS nft_asset (
+CREATE TABLE nft_asset (
     -- URI that was discovered on chain.
     token_uri TEXT NOT NULL,
     -- Represents `ipfs://` URL for this asset. It is present if it was possible
@@ -204,31 +200,30 @@ CREATE TABLE IF NOT EXISTS nft_asset (
     -- present in `Lined` state.
     content_cid TEXT,
     status nft_asset_status NOT NULL,
-    status_text TEXT NOT NULL,
 
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     PRIMARY KEY (token_uri)
 );
 
 -- Once `token_asset` is fetched and parsed as per ERC-721 metadata schema
 -- all mandatory fields will be stored in this table.
-CREATE TABLE IF NOT EXISTS nft_metadata (
+CREATE TABLE nft_metadata (
     -- Cryptographic identifier of the content this metadata was parsed from.
     content_cid TEXT NOT NULL,
     name TEXT NOT NULL,
     description TEXT NOT NULL,
     image_uri TEXT NOT NULL,
 
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     PRIMARY KEY (content_cid)
 );
 
 -- Once nft asset is fetched and parsed all the ecountered URLs are saved
 -- as `resources` and concurrently archived. In the process resource state is
 -- updated as per `resource_status`.
-CREATE TABLE IF NOT EXISTS resource (
+CREATE TABLE resource (
     -- Unique Resource Identifier (URI) of this resource.
     uri TEXT NOT NULL,
     -- Current status of the resource.
@@ -243,8 +238,8 @@ CREATE TABLE IF NOT EXISTS resource (
     -- present in `Lined` state.
     content_cid TEXT,
 
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     PRIMARY KEY (uri)
 );
 
@@ -252,63 +247,62 @@ CREATE TABLE IF NOT EXISTS resource (
 -- however in practice various contracts also tend to include links to
 -- more resources in metadata JSON. This table maps `content_id` of the
 -- `nft_asset` / `nft_metadata` to those unspecified resources.
-CREATE TABLE IF NOT EXISTS other_nft_resources (
+CREATE TABLE other_nft_resources (
     content_cid TEXT NOT NULL,
     resource_uri TEXT NOT NULL,
 
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     PRIMARY KEY (content_cid, resource_uri)
 );
 
-CREATE TABLE IF NOT EXISTS content (
+CREATE TABLE content (
     cid TEXT NOT NULL,
-    dag_size INTEGER,
+    dag_size BIGINT,
 
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     PRIMARY KEY (cid)
 );
 
 
-CREATE TABLE IF NOT EXISTS pin (
+CREATE TABLE pin (
     id BIGSERIAL NOT NULL,
     content_cid TEXT NOT NULL,
     service pin_service NOT NULL,
     status pin_status NOT NULL,
-    status_text TEXT,
 
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     PRIMARY KEY (id)
 );
 
 
-CREATE TABLE IF NOT EXISTS blockchain_contract (
+CREATE TABLE blockchain_contract (
     id TEXT NOT NULL,
     name TEXT,
     symbol TEXT,
     supports_eip721_metadata BOOLEAN NOT NULL,
 
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS erc721_import (
+CREATE TABLE erc721_import (
     id TEXT NOT NULL,
     next_id TEXT NOT NULL,
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
 
     PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS erc721_import_by_nft (
+CREATE TABLE erc721_import_by_nft (
     erc721_import_id TEXT NOT NULL,
     nft_id TEXT NOT NULL,
-    updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    inserted_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
 
     PRIMARY KEY (erc721_import_id,nft_id)
 );
