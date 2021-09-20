@@ -16,7 +16,7 @@ const insert = ({ data }) => ({
 })
 
 /**
- * @param {import('../migrate.js').Config} config
+ * @param {import('../migrate.js').MigrationConfig} config
  * @param {string|null} cursor
  * @param {{data:Content}[]} input
  */
@@ -24,7 +24,6 @@ export const migrate = (config, cursor, input) =>
   writeMigrationState(
     config,
     {
-      collection: 'Content',
       cursor,
       metadata: {},
     },

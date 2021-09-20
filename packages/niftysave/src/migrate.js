@@ -22,6 +22,8 @@ import {
  *   fauna: Fauna.Config
  *   hasura: Hasura.Config
  * }} Config
+ *
+ * @typedef {Config & {collection:string}} MigrationConfig
  */
 
 /**
@@ -29,15 +31,15 @@ import {
  *
  * @param {Object} options
  * @param {string} options.collection
- * @param {(config:Config, cursor:string, input:{data:T}[]) => Promise<Hasura.schema.niftysave_migration>} options.migrate
+ * @param {(config:MigrationConfig, cursor:string|null, input:{data:T}[]) => Promise<Hasura.schema.niftysave_migration>} options.migrate
  */
 export const start = async ({ collection, migrate }) =>
   migrateWith({ ...(await configure()), collection }, migrate)
 
 /**
  * @template T
- * @param {Config & { collection: string }} config
- * @param {(config:Config, cursor:string, input:{data:T}[]) => Promise<Hasura.schema.niftysave_migration>} migrate
+ * @param {MigrationConfig} config
+ * @param {(config:MigrationConfig, cursor:string, input:{data:T}[]) => Promise<Hasura.schema.niftysave_migration>} migrate
  */
 export const migrateWith = async (config, migrate) => {
   console.log(`🚧 Performing migration`)
@@ -64,7 +66,7 @@ export const migrateWith = async (config, migrate) => {
 
     if (data.length > 0 && !config.dryRun) {
       const { cursor } = await migrate(config, after[0].id, data)
-      state.cursor = after[0].id
+      state.cursor = cursor
     }
 
     // If there was nothing we're done
