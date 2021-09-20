@@ -28,10 +28,14 @@ import {
 
 /**
  * @template T
- *
+ * @typedef {import('faunadb').values.Document<T>} Document
+ */
+
+/**
+ * @template T
  * @param {Object} options
  * @param {string} options.collection
- * @param {(config:MigrationConfig, cursor:string|null, input:{data:T}[]) => Promise<Hasura.schema.niftysave_migration>} options.migrate
+ * @param {(config:MigrationConfig, cursor:string|null, documents:Document<T>[]) => Promise<Hasura.schema.niftysave_migration>} options.migrate
  */
 export const start = async ({ collection, migrate }) =>
   migrateWith({ ...(await configure()), collection }, migrate)
@@ -39,7 +43,7 @@ export const start = async ({ collection, migrate }) =>
 /**
  * @template T
  * @param {MigrationConfig} config
- * @param {(config:MigrationConfig, cursor:string, input:{data:T}[]) => Promise<Hasura.schema.niftysave_migration>} migrate
+ * @param {(config:MigrationConfig, cursor:string, documenst:Document<T>[]) => Promise<Hasura.schema.niftysave_migration>} migrate
  */
 export const migrateWith = async (config, migrate) => {
   console.log(`🚧 Performing migration`)
@@ -49,7 +53,7 @@ export const migrateWith = async (config, migrate) => {
     console.log(state)
 
     let { after = [{ id: '' }], data } =
-      /** @type {{after?:[{id:string}], data:any[]}} */ (
+      /** @type {{after?:[{id:string}], data:Document<T>[]}} */ (
         await Fauna.query(
           config.fauna,
           Map(
@@ -165,3 +169,12 @@ export const writeMigrationState = async (
 
   return value
 }
+
+/**
+ * Takes timestamp from fauana document and turns it into a JS date.
+ *
+ * @param {number} ts - Timestamp of the fauna doucemnt
+ * @returns {Date}
+ * @see https://docs.fauna.com/fauna/current/api/fql/documents
+ */
+export const fromTimestamp = (ts) => new Date(ts / 1000)

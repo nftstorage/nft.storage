@@ -2,23 +2,22 @@ import { script } from 'subprogram'
 import * as Migration from '../migrate.js'
 /**
  * @typedef {{
- *    cid: string
- *    created?: import('faunadb').values.FaunaTime
- *    dagSize?: number
- * }} Content
+ *    id: string
+ *    nextID: string
+ * }} ERC721ImportResult
  *
- * @param {Migration.Document<Content>} doc
+ * @param {Migration.Document<ERC721ImportResult>} document
  */
-const insert = ({ data }) => ({
-  cid: data.cid,
-  dag_size: data.dagSize || null,
-  inserted_at: (data.created || { date: new Date() }).date.toUTCString(),
+const insert = ({ ts, data: { id, nextID } }) => ({
+  id,
+  next_id: nextID,
+  inserted_at: Migration.fromTimestamp(ts),
 })
 
 /**
  * @param {Migration.MigrationConfig} config
  * @param {string|null} cursor
- * @param {Migration.Document<Content>[]} documents
+ * @param {Migration.Document<ERC721ImportResult>[]} documents
  */
 export const migrate = (config, cursor, documents) =>
   Migration.writeMigrationState(
@@ -28,7 +27,7 @@ export const migrate = (config, cursor, documents) =>
       metadata: {},
     },
     {
-      insert_content: [
+      insert_erc721_import: [
         {
           objects: documents.map(insert),
         },
@@ -39,6 +38,7 @@ export const migrate = (config, cursor, documents) =>
     }
   )
 
-const main = () => Migration.start({ collection: 'Content', migrate })
+const main = () =>
+  Migration.start({ collection: 'ERC721ImportResult', migrate })
 
 script({ ...import.meta, main })
