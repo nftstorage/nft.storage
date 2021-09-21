@@ -13,7 +13,7 @@ const query = Lambda(
       resource: Get(Select(['data', 'resourceID'], Var('doc'))),
     },
     {
-      ts: Select('ts', Var('metadata')),
+      ts: Select('ts', Var('doc')),
       ref: Var('ref'),
       data: {
         content_cid: Select(['data', 'cid'], Var('content')),
