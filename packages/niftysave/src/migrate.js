@@ -135,10 +135,9 @@ const readMigrationState = async ({ hasura, collection }) => {
 }
 
 /**
- * @template {Hasura.schema.mutation_rootRequest} Mutation
  * @param {{hasura: Hasura.Config, collection:string}} config
  * @param {{cursor:string|null, metadata:object|null}} data
- * @param {Mutation} [mutation]
+ * @param {Hasura.schema.mutation_rootRequest} [mutation]
  */
 export const writeMigrationState = async (
   { hasura, collection },
@@ -190,3 +189,5 @@ export const writeMigrationState = async (
  * @see https://docs.fauna.com/fauna/current/api/fql/documents
  */
 export const fromTimestamp = (ts) => new Date(ts / 1000)
+
+export const schema = Hasura.schema
