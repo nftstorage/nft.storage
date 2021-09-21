@@ -1,6 +1,9 @@
-import { script } from 'subprogram'
 import * as Migration from '../migrate.js'
-import { Get, Var, Lambda, Let, Select, If, IsNull } from '../fauna.js'
+
+import { Get, If, IsNull, Lambda, Let, Select, Var } from '../fauna.js'
+
+import { TokenAssetStatus } from '../../gen/db/schema'
+import { script } from 'subprogram'
 
 export const query = Lambda(
   ['ref'],
@@ -52,7 +55,10 @@ const insert = ({
   token_uri,
   content_cid,
   ipfs_url,
-  status,
+  status:
+    status == TokenAssetStatus.PinRequestFailed
+      ? TokenAssetStatus.Queued
+      : status,
   status_text,
   // If created time isn't recorded we just derive it from `ts`.
   inserted_at: inserted_at ? inserted_at.date : Migration.fromTimestamp(ts),

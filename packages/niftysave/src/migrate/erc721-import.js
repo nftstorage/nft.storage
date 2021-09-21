@@ -1,5 +1,7 @@
-import { script } from 'subprogram'
 import * as Migration from '../migrate.js'
+
+import { script } from 'subprogram'
+
 /**
  * @typedef {{
  *    id: string
