@@ -46,7 +46,6 @@ export const query = Lambda(
  * @param {Migration.Document<Asset>} document
  */
 const insert = ({
-  ts,
   data: { token_uri, content_cid, ipfs_url, status, status_text, updated_at },
 }) => ({
   token_uri,
