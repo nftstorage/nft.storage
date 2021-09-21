@@ -1,4 +1,5 @@
 import * as Migration from '../migrate.js'
+
 import { script } from 'subprogram'
 
 /**
@@ -23,6 +24,12 @@ export const mutation = (blocks) => ({
   insert_blockchain_block: [
     {
       objects: blocks.map(insert),
+      on_constraint: {
+        on_constraint:
+          Migration.schema.blockchain_block_constraint
+            .unique_blockchain_block_hash,
+        update_columns: [],
+      },
     },
     {
       affected_rows: 1,
