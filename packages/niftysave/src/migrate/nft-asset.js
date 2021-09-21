@@ -27,7 +27,7 @@ export const query = Lambda(
         ipfs_url: Select(['data', 'ipfsURL'], Var('tokenAsset'), Var('nil')),
         status: Select(['data', 'status'], Var('tokenAsset')),
         status_text: Select(['data', 'statusText'], Var('tokenAsset'), ''),
-        updated_at: Select(['data', 'updated'], Var('tokenAsset'), Now()),
+        inserted_at: Select(['data', 'created'], Var('tokenAsset'), Var('nil')),
       },
     }
   )
@@ -40,20 +40,23 @@ export const query = Lambda(
  *   ipfs_url: string | null
  *   status: import('../../gen/db/schema').TokenAssetStatus,
  *   status_text: string
- *   updated_at: import('faunadb').values.FaunaTime
+ *   inserted_at: import('faunadb').values.FaunaTime|null
  * }} Asset
  *
  * @param {Migration.Document<Asset>} document
  */
 const insert = ({
-  data: { token_uri, content_cid, ipfs_url, status, status_text, updated_at },
+  ts,
+  data: { token_uri, content_cid, ipfs_url, status, status_text, inserted_at },
 }) => ({
   token_uri,
   content_cid,
   ipfs_url,
   status,
   status_text,
-  updated_at: updated_at.date,
+  // If created time isn't recorded we just derive it from `ts`.
+  inserted_at: inserted_at ? inserted_at.date : Migration.fromTimestamp(ts),
+  updated_at: Migration.fromTimestamp(ts),
 })
 
 /**
