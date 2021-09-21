@@ -1,6 +1,8 @@
-import { script } from 'subprogram'
 import * as Migration from '../migrate.js'
-import { Get, Var, Lambda, Let, Select } from '../fauna.js'
+
+import { Get, Lambda, Let, Select, Var } from '../fauna.js'
+
+import { script } from 'subprogram'
 
 /**
  * @typedef {{
@@ -44,6 +46,12 @@ export const mutation = (documents) => ({
   insert_erc721_import_by_nft: [
     {
       objects: documents.map(insert),
+      on_conflict: {
+        constraint:
+          Migration.schema.erc721_import_by_nft_constraint
+            .erc721_import_by_nft_pkey,
+        update_columns: [],
+      },
     },
     {
       affected_rows: 1,
