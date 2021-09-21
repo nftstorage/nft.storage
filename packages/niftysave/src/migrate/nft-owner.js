@@ -23,7 +23,7 @@ export const mutation = (documents) => ({
     {
       objects: documents.map(insert),
       on_conflict: {
-        constraint: Migration.schema.nft_owner_constraint.id,
+        constraint: Migration.schema.nft_owner_constraint.nft_owner_pkey,
         update_columns: [],
       },
     },
