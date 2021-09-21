@@ -17,6 +17,7 @@
     "migrate-nft-metadata": "node ./src/migrate/nft-metadata.js",
     "migrate-blockchain-block": "node ./src/migrate/blockchain-block.js",
     "migrate-other-nft-resources": "node ./src/migrate/other-nft-resources.js",
+    "migrate-nft": "node ./src/migrate/nft.js",
     "generate": "yarn generate:erc721-source && yarn generate:db-source && yarn generate:db-v2-source",
     "generate:erc721-source": "generate-graphql-client --post --endpoint https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph --output ./gen/erc721 && cp template/graphql/* gen/erc721 && tsc ./gen/erc721/schema.ts --moduleResolution node --target esnext --esModuleInterop",
     "generate:db-source": "generate-graphql-client --fetcher .fetcher.cjs --output ./gen/db && cp template/graphql/* gen/db && tsc ./gen/db/schema.ts --moduleResolution node --target esnext --esModuleInterop",
