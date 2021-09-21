@@ -1,6 +1,6 @@
 import { script } from 'subprogram'
 import * as Migration from '../migrate.js'
-import { Get, Var, Lambda, Let, Select, If, IsNull, Now } from '../fauna.js'
+import { Get, Var, Lambda, Let, Select, If, IsNull } from '../fauna.js'
 
 export const query = Lambda(
   ['ref'],
@@ -8,7 +8,7 @@ export const query = Lambda(
     {
       nil: null,
       resource: Get(Var('ref')),
-      content_ref: Select(['data', 'content'], Var('resource'), null),
+      content_ref: Select(['data', 'content'], Var('resource'), Var('nil')),
       content_cid: If(
         IsNull(Var('content_ref')),
         null,
@@ -23,7 +23,7 @@ export const query = Lambda(
         uri: Select(['data', 'uri'], Var('resource')),
         status: Select(['data', 'status'], Var('resource')),
         status_text: Select(['data', 'statusText'], Var('resource')),
-        ipfs_url: Select(['data', 'ipfsURL'], Var('resource'), null),
+        ipfs_url: Select(['data', 'ipfsURL'], Var('resource'), Var('nil')),
         content_cid: Var('content_cid'),
         inserted_at: Select(['data', 'created'], Var('resource'), Var('nil')),
       },

@@ -1,6 +1,6 @@
 import { script } from 'subprogram'
 import * as Migration from '../migrate.js'
-import { Get, Var, Lambda, Let, Select, If, IsNull, Now } from '../fauna.js'
+import { Get, Var, Lambda, Let, Select, If, IsNull } from '../fauna.js'
 
 export const query = Lambda(
   ['ref'],
