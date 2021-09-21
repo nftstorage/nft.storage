@@ -24,7 +24,7 @@ export const mutation = (blocks) => ({
   insert_blockchain_block: [
     {
       objects: blocks.map(insert),
-      on_constraint: {
+      on_conflict: {
         constraint:
           Migration.schema.blockchain_block_constraint.blockchain_block_pkey,
         update_columns: [],
