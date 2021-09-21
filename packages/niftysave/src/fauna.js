@@ -19,6 +19,8 @@ const {
   Map,
   Do,
   Let,
+  If,
+  IsNull,
 } = fauna
 
 export {
@@ -26,6 +28,8 @@ export {
   Expr,
   Collection,
   Get,
+  If,
+  IsNull,
   Var,
   Select,
   Documents,
