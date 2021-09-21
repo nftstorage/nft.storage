@@ -18,6 +18,7 @@
     "migrate-blockchain-block": "node ./src/migrate/blockchain-block.js",
     "migrate-other-nft-resources": "node ./src/migrate/other-nft-resources.js",
     "migrate-nft": "node ./src/migrate/nft.js",
+    "migrate-nft-owner": "node ./src/migrate/nft-owner.js",
     "migrate-nft-asset": "node ./src/migrate/nft-asset.js",
     "migrate-resource": "node ./src/migrate/resource.js",
     "migrate-nfts-by-blockchain-block": "node ./src/migrate/nfts-by-blockchain-block.js",
