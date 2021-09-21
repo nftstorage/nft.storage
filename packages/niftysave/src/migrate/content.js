@@ -16,29 +16,20 @@ const insert = ({ data }) => ({
 })
 
 /**
- * @param {Migration.MigrationConfig} config
- * @param {string|null} cursor
  * @param {Migration.Document<Content>[]} documents
+ * @returns {Migration.Mutation}
  */
-export const migrate = (config, cursor, documents) =>
-  Migration.writeMigrationState(
-    config,
+export const mutation = (documents) => ({
+  insert_content: [
     {
-      cursor,
-      metadata: {},
+      objects: documents.map(insert),
     },
     {
-      insert_content: [
-        {
-          objects: documents.map(insert),
-        },
-        {
-          affected_rows: 1,
-        },
-      ],
-    }
-  )
+      affected_rows: 1,
+    },
+  ],
+})
 
-const main = () => Migration.start({ collection: 'Content', migrate })
+const main = () => Migration.start({ collection: 'Content', mutation })
 
 script({ ...import.meta, main })

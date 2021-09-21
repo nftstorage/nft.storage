@@ -23,9 +23,9 @@ import {
  *   hasura: Hasura.Config
  * }} Config
  *
- * @typedef {Config & {collection:string}} MigrationConfig
  * @typedef {Hasura.schema.niftysave_migration} Migration
  * @typedef {import('faunadb').Expr} Query
+ * @typedef {Hasura.schema.mutation_rootRequest} Mutation
  */
 
 /**
@@ -35,29 +35,24 @@ import {
 
 /**
  * @template T
- * @typedef {(config:MigrationConfig, cursor:string|null, input:T[]) => Promise<Migration>} Write
+ * @typedef {{
+ *   collection: string
+ *   query?: Query
+ *   mutation: (input:T[]) => Mutation
+ * }} MigrationConfig
  */
 /**
  * @template T
- * @param {Object} options
- * @param {string} options.collection
- * @param {Write<T>} options.migrate
- * @param {Query} [options.query]
+ * @param {MigrationConfig<T>} options
  */
-export const start = async ({ collection, migrate, query }) =>
-  migrateWith({ ...(await configure()), collection }, migrate, query)
+export const start = async ({ collection, query, mutation }) =>
+  migrate({ ...(await configure()), collection, mutation, query })
 
 /**
  * @template T
- * @param {MigrationConfig} config
- * @param {Write<T>} migrate
- * @param {Query} [query]
+ * @param {Config & MigrationConfig<T> } config
  */
-export const migrateWith = async (
-  config,
-  migrate,
-  query = Lambda(['ref'], Get(Var('ref')))
-) => {
+export const migrate = async (config) => {
   console.log(`🚧 Performing migration`)
   const deadline = Date.now() + config.budget
   const state = await init(config)
@@ -75,13 +70,20 @@ export const migrateWith = async (
                 ? Ref(Collection(config.collection), state.cursor)
                 : undefined,
             }),
-            query
+            config.query || Lambda(['ref'], Get(Var('ref')))
           )
         )
       )
 
     if (data.length > 0 && !config.dryRun) {
-      const { cursor } = await migrate(config, after[0].id, data)
+      const { cursor } = await writeMigrationState(
+        config,
+        {
+          cursor: after[0].id,
+          metadata: {},
+        },
+        config.mutation(data)
+      )
       state.cursor = cursor
     }
 
@@ -139,7 +141,7 @@ const readMigrationState = async ({ hasura, collection }) => {
  * @param {{cursor:string|null, metadata:object|null}} data
  * @param {Hasura.schema.mutation_rootRequest} [mutation]
  */
-export const writeMigrationState = async (
+const writeMigrationState = async (
   { hasura, collection },
   { cursor, metadata },
   mutation

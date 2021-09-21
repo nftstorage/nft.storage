@@ -37,30 +37,21 @@ const query = Lambda(
 )
 
 /**
- * @param {Migration.MigrationConfig} config
- * @param {string|null} cursor
- * @param {Migration.Document<ERC721ImportResult>[]} documents
+ * @param {Migration.Document<ERC721ImportByNFT>[]} documents
+ * @returns {Migration.Mutation}
  */
-export const migrate = (config, cursor, documents) =>
-  Migration.writeMigrationState(
-    config,
+export const mutation = (documents) => ({
+  insert_erc721_import_by_nft: [
     {
-      cursor,
-      metadata: {},
+      objects: documents.map(insert),
     },
     {
-      insert_erc721_import_by_nft: [
-        {
-          objects: documents.map(insert),
-        },
-        {
-          affected_rows: 1,
-        },
-      ],
-    }
-  )
+      affected_rows: 1,
+    },
+  ],
+})
 
-const main = () =>
-  Migration.start({ collection: 'eRC721ImportResult_tokens', migrate, query })
+export const main = () =>
+  Migration.start({ collection: 'eRC721ImportResult_tokens', mutation, query })
 
 script({ ...import.meta, main })

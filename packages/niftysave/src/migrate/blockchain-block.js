@@ -1,48 +1,35 @@
 import * as Migration from '../migrate.js'
-
 import { script } from 'subprogram'
 
 /**
  * @typedef {{
- *    cid: string
- *    created?: import('faunadb').values.FaunaTime
- *    dagSize?: number
- * }} Content
+ *    hash: string
+ *    number: number
+ * }} Block
  *
- * @param {{data: Content}} input
+ * @param {Migration.Document<Block>} input
  */
-const insert = ({ data }) => {
-  return {
-    hash: data.hash,
-    number: data.number,
-    inserted_at: Migration.fromTimestamp(ts),
-  }
-}
+const insert = ({ ts, data: { hash, number } }) => ({
+  hash,
+  number,
+  inserted_at: Migration.fromTimestamp(ts),
+})
 
 /**
- * @param {import('../migrate.js').MigrationConfig} config
- * @param {string|null} cursor
- * @param {{Migration.Document<Block>}[]} blocks
+ * @param {Migration.Document<Block>[]} blocks
+ * @returns {Migration.Mutation}
  */
-export const migrate = (config, cursor, blocks) =>
-  writeMigrationState(
-    config,
+export const mutation = (blocks) => ({
+  insert_blockchain_block: [
     {
-      cursor,
-      metadata: {},
+      objects: blocks.map(insert),
     },
     {
-      insert_blockchain_block: [
-        {
-          objects: blocks.map(insert),
-        },
-        {
-          affected_rows: 1,
-        },
-      ],
-    }
-  )
+      affected_rows: 1,
+    },
+  ],
+})
 
-const main = () => start({ collection: 'Block', migrate })
+export const main = () => Migration.start({ collection: 'Block', mutation })
 
 script({ ...import.meta, main })

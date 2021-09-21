@@ -46,36 +46,27 @@ const query = Lambda(
 )
 
 /**
- * @param {Migration.MigrationConfig} config
- * @param {string|null} cursor
  * @param {Migration.Document<Metadata>[]} documents
+ * @returns {Migration.Mutation}
  */
-export const migrate = (config, cursor, documents) =>
-  Migration.writeMigrationState(
-    config,
+export const mutation = (documents) => ({
+  insert_nft_metadata: [
     {
-      cursor,
-      metadata: {},
+      objects: documents.map(insert),
+      // Ignore duplicates because fauna does not seemed to have upheld
+      // uniquness constraint causing >1 metadata witha same cid.
+      on_conflict: {
+        constraint: Migration.schema.nft_metadata_constraint.nft_metadata_pkey,
+        update_columns: [],
+      },
     },
     {
-      insert_nft_metadata: [
-        {
-          objects: documents.map(insert),
-          // Ignore duplicates because fauna does not seemed to have upheld
-          // uniquness constraint causing >1 metadata witha same cid.
-          on_conflict: {
-            constraint:
-              Migration.schema.nft_metadata_constraint.nft_metadata_pkey,
-            update_columns: [],
-          },
-        },
-        {
-          affected_rows: 1,
-        },
-      ],
-    }
-  )
+      affected_rows: 1,
+    },
+  ],
+})
 
-const main = () => Migration.start({ collection: 'Metadata', migrate, query })
+export const main = () =>
+  Migration.start({ collection: 'Metadata', mutation, query })
 
 script({ ...import.meta, main })

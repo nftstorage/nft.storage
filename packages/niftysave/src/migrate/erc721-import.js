@@ -15,30 +15,21 @@ const insert = ({ ts, data: { id, nextID } }) => ({
 })
 
 /**
- * @param {Migration.MigrationConfig} config
- * @param {string|null} cursor
  * @param {Migration.Document<ERC721ImportResult>[]} documents
+ * @returns {Migration.Mutation}
  */
-export const migrate = (config, cursor, documents) =>
-  Migration.writeMigrationState(
-    config,
+export const mutation = (documents) => ({
+  insert_erc721_import: [
     {
-      cursor,
-      metadata: {},
+      objects: documents.map(insert),
     },
     {
-      insert_erc721_import: [
-        {
-          objects: documents.map(insert),
-        },
-        {
-          affected_rows: 1,
-        },
-      ],
-    }
-  )
+      affected_rows: 1,
+    },
+  ],
+})
 
-const main = () =>
-  Migration.start({ collection: 'ERC721ImportResult', migrate })
+export const main = () =>
+  Migration.start({ collection: 'ERC721ImportResult', mutation })
 
 script({ ...import.meta, main })
