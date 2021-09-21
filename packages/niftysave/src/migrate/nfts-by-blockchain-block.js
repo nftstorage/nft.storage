@@ -13,7 +13,6 @@ const query = Lambda(
     {
       ts: Select('ts', Var('doc')),
       ref: Var('ref'),
-      doc: Var('doc'),
       data: {
         nft_id: Select(['data', 'id'], Var('token')),
         blockchain_block_hash: Select(['data', 'hash'], Var('block')),
