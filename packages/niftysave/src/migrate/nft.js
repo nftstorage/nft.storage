@@ -33,7 +33,7 @@ export const query = Lambda(
  *   contract_id: string
  *   token_id: string
  *   token_uri: string
- *   mint_time: Date
+ *   mint_time: string
  *   nft_owner_id: string
  * }}
  * NFT
