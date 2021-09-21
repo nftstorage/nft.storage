@@ -47,10 +47,6 @@ export default function ManageKeys({ user }) {
     e.preventDefault()
     const data = new FormData(e.target)
     const name = data.get('name')
-    console.log(
-      '🚀 ~ file: manage.js ~ line 50 ~ handleDeleteToken ~ name',
-      name
-    )
     if (name && typeof name === 'string') {
       if (!confirm('Are you sure? Deleted keys cannot be recovered!')) {
         return

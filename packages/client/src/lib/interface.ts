@@ -17,7 +17,6 @@ export interface Service {
 
 export interface PublicService {
   endpoint: URL
-  version?: string
 }
 
 /**

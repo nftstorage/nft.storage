@@ -38,7 +38,7 @@ export async function uploadV1(event, ctx) {
     upload = await db.createUpload({
       account_id: user.id,
       content_cid: cid,
-      source_cid: cid, // TODO need cidv1/0 dedupe
+      source_cid: cid,
       key_id: key?.id,
       dag_size: size,
       mime_type: contentType,
@@ -81,7 +81,7 @@ export async function uploadV1(event, ctx) {
       mime_type: content.type,
       type: isCar ? 'Car' : 'Blob',
       content_cid: cid,
-      source_cid: cid, // TODO need cidv1/0 dedupe,
+      source_cid: cid,
       dag_size: dagSize,
       account_id: user.id,
       files: [],
