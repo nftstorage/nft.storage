@@ -19,7 +19,7 @@ const insert = ({ data }) => ({
  * @returns {Migration.Mutation}
  */
 export const mutation = (documents) => ({
-  insert_owner: [
+  insert_nft_owner: [
     {
       objects: documents.map(insert),
     },
