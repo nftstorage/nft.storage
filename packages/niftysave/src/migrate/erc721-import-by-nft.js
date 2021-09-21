@@ -9,7 +9,7 @@ import { Get, Var, Lambda, Let, Select } from '../fauna.js'
  * }}
  * ERC721ImportByNFT
  *
- * @param {Migration.Document<ERC721ImportResult>} document
+ * @param {Migration.Document<ERC721ImportByNFT>} document
  */
 const insert = ({ ts, data: { nft_id, erc721_import_id } }) => ({
   nft_id,
