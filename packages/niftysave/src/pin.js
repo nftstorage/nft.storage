@@ -1,4 +1,3 @@
-import { mutate, query } from './graphql.js'
 import * as Result from './result.js'
 import * as Schema from '../gen/db/schema.js'
 import * as IPFSURL from './ipfs-url.js'
@@ -7,18 +6,23 @@ import { fetchWebResource, timeout } from './net.js'
 import { configure } from './config.js'
 import { printURL } from './util.js'
 import { script } from 'subprogram'
+import * as DB from '../gen/db/index.js'
 
-export const main = () => spawn(configure())
+export const main = async () => await spawn(await configure())
 
 /**
- * @param {Object} config
- * @param {number} config.budget - Time budget
- * @param {number} config.batchSize - Number of tokens in each import
- * @param {import('./cluster').Config} config.cluster
- * @param {import('./config').DBConfig} config.db
- * @param {number} config.fetchTimeout
+ * @typedef {Object} Config
+ * @property {number} budget - Time budget
+ * @property {number} fetchTimeout
+ * @property {number} batchSize - Number of tokens in each import
+ * @property {DB.Config} fauna - Database config
+ * @property {Cluster.Config} cluster
  */
-export const spawn = async (config) => {
+
+/**
+ * @param {Config} config
+ */
+export const spawn = async config => {
   const deadline = Date.now() + config.budget
   while (deadline - Date.now() > 0) {
     console.log('🔍 Fetching resources linked referrenced by tokens')
@@ -28,7 +32,7 @@ export const spawn = async (config) => {
     } else {
       console.log(`🤹 Spawn ${resources.length} tasks to process each resource`)
       const updates = await Promise.all(
-        resources.map((resource) => archive(config, resource))
+        resources.map(resource => archive(config, resource))
       )
       console.log(`💾 Update ${updates.length} records in database`)
       await updateResources(config, updates)
@@ -43,12 +47,12 @@ export const spawn = async (config) => {
  *
  * @param {Object} options
  * @param {number} options.batchSize
- * @param {import('./config').DBConfig} options.db
+ * @param {DB.Config} options.fauna
  * @returns {Promise<Resource[]>}
  */
 
-const fetchTokenResources = async ({ db, batchSize }) => {
-  const result = await query(db, {
+const fetchTokenResources = async ({ fauna, batchSize }) => {
+  const result = await DB.query(fauna, {
     findResources: [
       {
         where: {
@@ -75,12 +79,12 @@ const fetchTokenResources = async ({ db, batchSize }) => {
 
 /**
  * @param {Object} config
- * @param {import('./config').DBConfig} config.db
+ * @param {DB.Config} config.fauna
  * @param {Schema.ResourceUpdate[]} updates
  */
 
 const updateResources = async (config, updates) => {
-  const result = await mutate(config.db, {
+  const result = await DB.mutation(config.fauna, {
     updateResources: [
       {
         input: {
@@ -94,7 +98,7 @@ const updateResources = async (config, updates) => {
   })
 
   if (result.ok) {
-    return result.value.updateResources?.map((r) => r._id) || []
+    return result.value.updateResources?.map(r => r._id) || []
   } else {
     console.error(
       `💣 Attempt to update resource failed with ${result.error}, letting it crash`

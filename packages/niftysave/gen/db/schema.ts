@@ -2680,7 +2680,9 @@ export interface QueryPromiseChain {
       defaultValue?: TokenContract | null
     ) => Promise<TokenContract | null>
   }
-  constract: ((args?: { id?: ID | null }) => TokenContractPromiseChain & {
+  constract: ((args?: {
+    id?: ID | null
+  }) => TokenContractPromiseChain & {
     execute: (
       request: TokenContractRequest,
       defaultValue?: TokenContract | null
@@ -2767,7 +2769,9 @@ export interface QueryPromiseChain {
       defaultValue?: Token | null
     ) => Promise<Token | null>
   }
-  findContentByCID: ((args?: { cid?: ID | null }) => ContentPromiseChain & {
+  findContentByCID: ((args?: {
+    cid?: ID | null
+  }) => ContentPromiseChain & {
     execute: (
       request: ContentRequest,
       defaultValue?: Content | null
@@ -3065,7 +3069,9 @@ export interface QueryObservableChain {
       defaultValue?: TokenContract | null
     ) => Observable<TokenContract | null>
   }
-  constract: ((args?: { id?: ID | null }) => TokenContractObservableChain & {
+  constract: ((args?: {
+    id?: ID | null
+  }) => TokenContractObservableChain & {
     execute: (
       request: TokenContractRequest,
       defaultValue?: TokenContract | null
@@ -3134,7 +3140,9 @@ export interface QueryObservableChain {
       defaultValue?: Resource | null
     ) => Observable<Resource | null>
   }
-  findMetricByKey: (args: { key: String }) => MetricObservableChain & {
+  findMetricByKey: (args: {
+    key: String
+  }) => MetricObservableChain & {
     execute: (
       request: MetricRequest,
       defaultValue?: Metric | null
@@ -3150,7 +3158,9 @@ export interface QueryObservableChain {
       defaultValue?: Token | null
     ) => Observable<Token | null>
   }
-  findContentByCID: ((args?: { cid?: ID | null }) => ContentObservableChain & {
+  findContentByCID: ((args?: {
+    cid?: ID | null
+  }) => ContentObservableChain & {
     execute: (
       request: ContentRequest,
       defaultValue?: Content | null
@@ -3327,7 +3337,9 @@ export interface QueryObservableChain {
         defaultValue?: TokenPage
       ) => Observable<TokenPage>
     })
-  owner: ((args?: { id?: ID | null }) => OwnerObservableChain & {
+  owner: ((args?: {
+    id?: ID | null
+  }) => OwnerObservableChain & {
     execute: (
       request: OwnerRequest,
       defaultValue?: Owner | null
@@ -5864,7 +5876,9 @@ export interface MutationPromiseChain {
       defaultValue?: ERC721ImportResult
     ) => Promise<ERC721ImportResult>
   }
-  updateResources: ((args?: { input?: UpdateResourcesInput | null }) => {
+  updateResources: ((args?: {
+    input?: UpdateResourcesInput | null
+  }) => {
     execute: (
       request: ResourceRequest,
       defaultValue?: Resource[]
@@ -6066,7 +6080,9 @@ export interface MutationPromiseChain {
       defaultValue?: Content | null
     ) => Promise<Content | null>
   }
-  updateTokenAssets: (args: { input: UpdateTokenAssetsInput }) => {
+  updateTokenAssets: (args: {
+    input: UpdateTokenAssetsInput
+  }) => {
     execute: (
       request: TokenAssetRequest,
       defaultValue?: TokenAsset[]
@@ -6384,7 +6400,9 @@ export interface MutationObservableChain {
       defaultValue?: ERC721ImportResult
     ) => Observable<ERC721ImportResult>
   }
-  updateResources: ((args?: { input?: UpdateResourcesInput | null }) => {
+  updateResources: ((args?: {
+    input?: UpdateResourcesInput | null
+  }) => {
     execute: (
       request: ResourceRequest,
       defaultValue?: Resource[]
@@ -6592,7 +6610,9 @@ export interface MutationObservableChain {
       defaultValue?: Content | null
     ) => Observable<Content | null>
   }
-  updateTokenAssets: (args: { input: UpdateTokenAssetsInput }) => {
+  updateTokenAssets: (args: {
+    input: UpdateTokenAssetsInput
+  }) => {
     execute: (
       request: TokenAssetRequest,
       defaultValue?: TokenAsset[]

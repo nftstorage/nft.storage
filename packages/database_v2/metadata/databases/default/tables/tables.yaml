@@ -8,6 +8,7 @@
 - "!include public_nft_metadata.yaml"
 - "!include public_nft_owner.yaml"
 - "!include public_nfts_by_blockchain_blocks.yaml"
+- "!include public_niftysave_migration.yaml"
 - "!include public_other_nft_resources.yaml"
 - "!include public_pin.yaml"
 - "!include public_resource.yaml"

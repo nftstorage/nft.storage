@@ -1,0 +1,3 @@
+table:
+  name: resources_by_nft_metadata
+  schema: public

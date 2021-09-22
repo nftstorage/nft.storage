@@ -26,7 +26,9 @@ const connect = ({ url, headers }) =>
         body: JSON.stringify({ query, variables }),
       })
 
-      return /** @type {import('graphql').ExecutionResult<any>} */ (await response.json())
+      return /** @type {import('graphql').ExecutionResult<any>} */ (
+        await response.json()
+      )
     },
   })
 
@@ -35,14 +37,14 @@ export const service = Service.create(connect)
 /**
  *
  * @param {Config} config
- * @param {schema.QueryRequest} request
+ * @param {schema.query_rootRequest} request
  */
 export const query = async (config, request) =>
   asResult(await service(config).query(request))
 
 /**
  * @param {Config} config
- * @param {schema.MutationRequest} request
+ * @param {schema.mutation_rootRequest} request
  */
 export const mutation = async (config, request) =>
   asResult(await service(config).mutation(request))
@@ -53,7 +55,7 @@ export const mutation = async (config, request) =>
  * @returns {Result.Result<Failure, T>}
  */
 
-const asResult = input => {
+const asResult = (input) => {
   if (input.data) {
     return Result.ok(input.data)
   } else {
@@ -70,6 +72,6 @@ export class Failure extends Error {
     this.errors = errors
   }
   get message() {
-    return this.errors.map(error => error.message).join('\n')
+    return this.errors.map((error) => error.message).join('\n')
   }
 }

@@ -1,17 +1,21 @@
-import { mutate, query } from './graphql.js'
 import * as Result from './result.js'
 import { configure } from './config.js'
 import { script } from 'subprogram'
-export const main = async () => await spawn(configure())
+import * as ERC721 from '../gen/erc721/index.js'
+import * as DB from '../gen/db/index.js'
+
+export const main = async () => await spawn(await configure())
 
 /**
- * @param {Object} config
- * @param {number} config.budget - Time budget
- * @param {number} config.batchSize - Number of tokens in each import
- * @param {import('./config').DBConfig} config.db
- * @param {import('./config').ERC721Config} config.erc721
+ * @typedef {Object} Config
+ * @property {number} config.budget - Time budget
+ * @property {number} config.batchSize - Number of tokens in each import
+ * @property {ERC721.Config} config.erc721
+ * @property {DB.Config} config.fauna
+ *
+ * @param {Config} config
  */
-export const spawn = async (config) => {
+export const spawn = async config => {
   const deadline = Date.now() + config.budget
   console.log('Obtain current cursor')
   const cursor = await readCursor(config)
@@ -33,9 +37,7 @@ export const spawn = async (config) => {
 }
 
 /**
- * @param {Object} config
- * @param {import('./config').ERC721Config} config.erc721
- * @param {import('./config').DBConfig} config.db
+ * @param {{ erc721: ERC721.Config, fauna: DB.Config}} config
  * @param {Object} options
  * @param {string} options.id
  * @param {number} options.batchSize
@@ -65,11 +67,10 @@ export const importBatch = async (config, { id, batchSize }) => {
 }
 
 /**
- * @param {Object} config
- * @param {import('./config').DBConfig} config.db
+ * @param {{fauna: DB.Config}} config
  */
-const readCursor = async ({ db }) => {
-  const result = await query(db, {
+const readCursor = async ({ fauna }) => {
+  const result = await DB.query(fauna, {
     cursor: {
       _id: 1,
       id: 1,
@@ -80,15 +81,13 @@ const readCursor = async ({ db }) => {
 }
 
 /**
- *
- * @param {Object} config
- * @param {import('./config').DBConfig} config.db
+ * @param {{fauna: DB.Config}} config
  * @param {Object} input
  * @param {string} input.id
  * @param {import('../gen/erc721/schema').Token[]} input.tokens
  */
-const importTokens = async ({ db }, input) => {
-  const result = await mutate(db, {
+const importTokens = async ({ fauna }, input) => {
+  const result = await DB.mutation(fauna, {
     importERC721: [
       {
         input,
@@ -114,13 +113,12 @@ const importTokens = async ({ db }, input) => {
 }
 
 /**
- * @param {Object} config
- * @param {import('./config').ERC721Config} config.erc721
+ * @param {{ erc721: ERC721.Config }} config
  * @param {{scanSize:number, cursor:string}} settings
  * @returns {Promise<import('../gen/erc721/schema').Token[]>}
  */
-const fetchTokens = async ({ erc721 }, { cursor, scanSize }) => {
-  const result = await query(erc721, {
+const fetchTokens = async (config, { cursor, scanSize }) => {
+  const result = await ERC721.query(config.erc721, {
     tokens: [
       {
         first: scanSize,

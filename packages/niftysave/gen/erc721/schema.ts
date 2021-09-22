@@ -1089,7 +1089,9 @@ export interface QueryObservableChain {
     ) => Observable<OwnerPerTokenContract[]>
   }
   /** Access to subgraph metadata */
-  _meta: ((args?: { block?: Block_height | null }) => _Meta_ObservableChain & {
+  _meta: ((args?: {
+    block?: Block_height | null
+  }) => _Meta_ObservableChain & {
     execute: (
       request: _Meta_Request,
       defaultValue?: _Meta_ | null
@@ -1823,7 +1825,9 @@ export interface SubscriptionObservableChain {
     ) => Observable<OwnerPerTokenContract[]>
   }
   /** Access to subgraph metadata */
-  _meta: ((args?: { block?: Block_height | null }) => _Meta_ObservableChain & {
+  _meta: ((args?: {
+    block?: Block_height | null
+  }) => _Meta_ObservableChain & {
     execute: (
       request: _Meta_Request,
       defaultValue?: _Meta_ | null
