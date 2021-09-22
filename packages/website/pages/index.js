@@ -287,6 +287,26 @@ console.log(metadata.url)
               </a>
               .
             </p>
+            <p className="lh-copy">
+              For additional example code, check out our{' '}
+              <a
+                className="black"
+                href="https://github.com/ipfs-shipyard/nft.storage/tree/2bb82aeb23ac139513c1af6615d010579f22a7cc/packages/client/examples/node.js"
+                target="_blank"
+                rel="noreferrer"
+              >
+                GitHub repo
+              </a>{' '}
+              and{' '}
+              <a
+                className="black"
+                href="https://nftschool.dev/tutorial/end-to-end-experience/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                NFT School.
+              </a>
+            </p>
           </Box>
           <Box
             bgColor="nspeach"
@@ -341,6 +361,18 @@ console.log(metadata.url)
               </Link>{' '}
               for information on uploading multiple files and the other
               available endpoints.
+            </p>
+            <p className="lh-copy">
+              For additional example code, check out our{' '}
+              <a
+                className="black"
+                href="https://github.com/ipfs-shipyard/nft.storage/tree/2bb82aeb23ac139513c1af6615d010579f22a7cc/packages/client/examples/browser"
+                target="_blank"
+                rel="noreferrer"
+              >
+                GitHub repo
+              </a>
+              .
             </p>
           </Box>
           {/* <Box
