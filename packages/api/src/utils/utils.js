@@ -10,26 +10,6 @@ export async function notFound(_event) {
 }
 
 /**
- * @template T
- * @param {(ctx : import("../bindings").CronContext) => Promise<T | void>} fn
- * @param {string} label
- * @param {import("../bindings").CronContext} ctx
- * @returns {Promise<T | void>}
- */
-export async function timed(fn, label, ctx) {
-  const { sentry } = ctx
-  sentry.addBreadcrumb({
-    message: label,
-  })
-  try {
-    const res = await fn(ctx)
-    return res
-  } catch (err) {
-    sentry.captureException(err)
-  }
-}
-
-/**
  * Sets a given `value` at the given `path` on a passed `object`.
  *
  * @example

@@ -36,10 +36,6 @@ export interface RouteContext {
   params: Record<string, string>
 }
 
-export interface CronContext {
-  sentry: Toucan
-}
-
 export interface Pin {
   /**
    * Content Identifier for the NFT data.
