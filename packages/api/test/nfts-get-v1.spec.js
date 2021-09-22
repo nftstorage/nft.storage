@@ -10,7 +10,7 @@ describe('V1 - Get NFT', () => {
     client = await createClientWithUser()
   })
 
-  it('cid v1', async () => {
+  it('should return proper response for cid v1', async () => {
     const cid = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
     await client.addPin({
       cid,
@@ -27,7 +27,7 @@ describe('V1 - Get NFT', () => {
     assert.deepStrictEqual(value.deals, fixtures.dealsV0andV1)
   })
 
-  it('cid v0', async () => {
+  it('should return proper response for cid v0', async () => {
     const cid = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
     await client.addPin({
       cid,
@@ -43,7 +43,7 @@ describe('V1 - Get NFT', () => {
     assert.deepStrictEqual(value.deals, fixtures.dealsV0andV1)
   })
 
-  it('invalid cid error', async () => {
+  it('should error on invalid cid', async () => {
     const cid = 'asdhjkahsdja'
     const res = await fetch(`v1/${cid}`, {
       headers: { Authorization: `Bearer ${client.token}` },
@@ -57,7 +57,7 @@ describe('V1 - Get NFT', () => {
     })
   })
 
-  it('not found error', async () => {
+  it('should error on not found', async () => {
     const cid = 'bafybeia22kh3smc7p67oa76pcleaxp4u5zatsvcndi3xrqod5vtxq5avpa'
     const res = await fetch(`v1/${cid}`, {
       headers: { Authorization: `Bearer ${client.token}` },
