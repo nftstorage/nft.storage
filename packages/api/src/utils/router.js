@@ -1,5 +1,6 @@
 import { parse } from 'regexparam'
 import { getSentry } from './debug.js'
+import { database } from '../constants'
 
 /**
  * @typedef {import('../bindings').RouteContext} RouteContext
@@ -160,7 +161,14 @@ class Router {
    * @param {FetchEvent} event
    */
   listen(event) {
-    event.respondWith(this.route(event))
+    const url = new URL(event.request.url)
+    // Add more if needed for other backends
+    const passThrough = [database.url]
+
+    // Ignore http requests from the passthrough list above
+    if (!passThrough.includes(`${url.protocol}//${url.host}`)) {
+      event.respondWith(this.route(event))
+    }
   }
 }
 

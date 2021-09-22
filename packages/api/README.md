@@ -13,6 +13,9 @@ Note: tokens can be created here https://sentry.io/settings/account/api/auth-tok
 ```ini
 SENTRY_TOKEN=<sentry user auth token>
 SENTRY_UPLOAD=false # toggle for sentry source/sourcemaps upload (capture will still work)
+
+DATABASE_URL=http://localhost:8000
+DATABASE_TOKEN=<token>
 ```
 
 Production vars should be set in Github Actions secrets.
@@ -129,6 +132,7 @@ wrangler secret put MAGIC_SECRET_KEY --env USER # Get from magic.link account
 wrangler secret put SALT --env USER # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env USER # Get from Pinata
 wrangler secret put SENTRY_DSN --env USER # Get from Sentry
+wrangler secret put DATABASE_TOKEN --env USER # Get from database postgrest
 ```
 
 Go to `/packages/api/src/constants.js` _comment_ the first line and run `wrangler publish --env USER`.
@@ -154,6 +158,7 @@ wrangler kv:namespace create FOLLOWUPS --env production
 wrangler kv:namespace create PINATA_QUEUE --env production
 # Follow the instructions from the cli output
 wrangler secret put MAGIC_SECRET_KEY --env production # Get from magic.link account
+wrangler secret put DATABASE_TOKEN --env production # Get from database account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env production # Get from Pinata
 wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password

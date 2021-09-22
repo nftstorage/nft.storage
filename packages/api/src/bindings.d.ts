@@ -1,6 +1,5 @@
 export {}
 
-import { Deal } from 'nft.storage/src/lib/interface'
 import Toucan from 'toucan-js'
 
 declare global {
@@ -23,11 +22,22 @@ declare global {
   const CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN: string
   const CLUSTER_ADDRS: string
   const MAGIC_SECRET_KEY: string
+  const DATABASE_URL: string
+  const DATABASE_TOKEN: string
   const ENV: 'dev' | 'staging' | 'production'
   const SENTRY_DSN: string
   const BRANCH: string
   const VERSION: string
   const COMMITHASH: string
+}
+
+export interface RouteContext {
+  sentry: Toucan
+  params: Record<string, string>
+}
+
+export interface CronContext {
+  sentry: Toucan
 }
 
 export interface Pin {
@@ -39,7 +49,7 @@ export interface Pin {
   meta?: Record<string, string>
   status: PinStatus
   created: string
-  size: number
+  size?: number
 }
 
 export type PinStatus = 'queued' | 'pinning' | 'pinned' | 'failed'
@@ -56,7 +66,7 @@ export type NFT = {
   /**
    * Files in the directory (only if this NFT is a directory).
    */
-  files: Array<{ name: string; type: string }>
+  files: Array<{ name?: string; type?: string } | undefined>
   /**
    * Pinata pin name and meta.
    */
@@ -77,7 +87,25 @@ export type NFTResponse = NFT & {
   deals: Deal[]
 }
 
-export type { Deal }
+export type CheckNFTResponse = {
+  cid: string
+  pin: Pin
+  deals: Deal[]
+}
+
+export type DealStatus = 'queued' | 'active' | 'published' | 'terminated'
+export interface Deal {
+  status: DealStatus
+  lastChanged?: Date
+  chainDealID?: number
+  datamodelSelector: string
+  statusText?: string
+  dealActivation?: Date
+  dealExpiration?: Date
+  miner?: string
+  pieceCid: CIDString
+  batchRootCid: CIDString
+}
 
 export interface User {
   sub: string
@@ -88,16 +116,36 @@ export interface User {
   issuer: string
   publicAddress: string
   tokens: Record<string, string>
-  github?: unknown
+  /**
+   * This will actually be json object
+   */
+  github?: string
 }
 
 export type UserSafe = Omit<User, 'tokens' | 'github'>
 
-export interface RouteContext {
-  sentry: Toucan
-  params: Record<string, string>
+/**
+ * Pins add endpoint body interface
+ */
+export interface PinsAddInput {
+  cid: string
+  name: string
+  origins: string[]
+  meta: Record<string, string>
 }
 
-export interface CronContext {
-  sentry: Toucan
+/**
+ * Pins endpoints response
+ */
+export interface PinsResponse {
+  requestid: string
+  status: PinStatus
+  created: string
+  pin: {
+    cid: string
+    meta: Record<string, string>
+    name?: string
+    origins: string[]
+  }
+  delegates: string[]
 }

@@ -81,7 +81,7 @@ class NFTStorage {
    * @returns {Promise<API.CIDString>}
    */
   static async storeBlob({ endpoint, token }, blob) {
-    const url = new URL('/upload', endpoint)
+    const url = new URL(`upload/`, endpoint)
 
     if (blob.size === 0) {
       throw new Error('Content size is 0, make sure to provide some content')
@@ -145,7 +145,7 @@ class NFTStorage {
    * @returns {Promise<API.CIDString>}
    */
   static async storeDirectory({ endpoint, token }, files) {
-    const url = new URL('/upload', endpoint)
+    const url = new URL(`upload/`, endpoint)
     const body = new FormData()
     let size = 0
     for (const file of files) {
@@ -182,7 +182,7 @@ class NFTStorage {
   static async store({ endpoint, token }, metadata) {
     validateERC1155(metadata)
 
-    const url = new URL(`/store`, endpoint)
+    const url = new URL(`store/`, endpoint)
     const body = Token.encode(metadata)
     const paths = new Set(body.keys())
 
@@ -208,7 +208,7 @@ class NFTStorage {
    * @returns {Promise<API.StatusResult>}
    */
   static async status({ endpoint, token }, cid) {
-    const url = new URL(`/${cid}`, endpoint)
+    const url = new URL(`${cid}/`, endpoint)
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: NFTStorage.auth(token),
@@ -234,7 +234,7 @@ class NFTStorage {
    * @returns {Promise<API.CheckResult>}
    */
   static async check({ endpoint }, cid) {
-    const url = new URL(`/check/${cid}`, endpoint)
+    const url = new URL(`check/${cid}/`, endpoint)
     const response = await fetch(url.toString())
     const result = await response.json()
 
@@ -255,7 +255,7 @@ class NFTStorage {
    * @returns {Promise<void>}
    */
   static async delete({ endpoint, token }, cid) {
-    const url = new URL(`/${cid}`, endpoint)
+    const url = new URL(`${cid}/`, endpoint)
     const response = await fetch(url.toString(), {
       method: 'DELETE',
       headers: NFTStorage.auth(token),

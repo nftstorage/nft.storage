@@ -1,3 +1,6 @@
+import { CID } from 'multiformats/cid'
+import { ErrorInvalidCid } from '../errors.js'
+
 /**
  * Try to serve static assets or the 404 page
  * @param {FetchEvent} _event
@@ -50,5 +53,36 @@ export const setIn = (object, path, value) => {
     } else {
       target = target[key]
     }
+  }
+}
+
+/**
+ * Parse CID and return v1 and original
+ *
+ * @param {string} cid
+ */
+export function parseCidPinning(cid) {
+  try {
+    const c = CID.parse(cid)
+    return parseCid(cid)
+  } catch (err) {
+    return
+  }
+}
+
+/**
+ * Parse CID and return v1 and original
+ *
+ * @param {string} cid
+ */
+export function parseCid(cid) {
+  try {
+    const c = CID.parse(cid)
+    return {
+      contentCid: c.toV1().toString(),
+      sourceCid: c.toString(),
+    }
+  } catch (err) {
+    throw new ErrorInvalidCid(cid)
   }
 }

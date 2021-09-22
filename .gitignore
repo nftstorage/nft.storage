@@ -39,3 +39,4 @@ site/public
 *.http
 .faunarc
 .local
+.supabase

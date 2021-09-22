@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Router from 'next/router'
+import Router, { useRouter } from 'next/router'
 import { loginEmail, loginSocial } from '../lib/magic.js'
 import Button from '../components/button.js'
 import { useQueryClient } from 'react-query'
@@ -19,6 +19,8 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState('')
   const [disabled, setDisabled] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
+  const { query } = useRouter()
+  const version = /** @type {string} */ (query.version)
 
   /**
    * @param {import('react').ChangeEvent<HTMLFormElement>} e
@@ -30,7 +32,7 @@ export default function Login() {
     setDisabled(true)
 
     try {
-      await loginEmail(e.currentTarget.email.value)
+      await loginEmail(e.currentTarget.email.value, version)
       await queryClient.invalidateQueries('magic-user')
       Router.push('/files')
     } catch (/** @type {any} */ error) {
@@ -66,7 +68,7 @@ export default function Login() {
             wrapperClassName="w5"
             onClick={() => {
               setIsRedirecting(true)
-              loginSocial('github')
+              loginSocial('github', version)
             }}
           >
             {isRedirecting ? 'Redirecting...' : 'Github'}

@@ -41,7 +41,7 @@ export async function addDirectory(files, options = {}) {
     metadata: { size: size.toString() },
     ...options,
   })
-  return results.map((result) => ({
+  return results.map(result => ({
     cid: result.cid,
     size: Number(result.size),
   }))
@@ -66,9 +66,10 @@ export const importAsset = async (file, options = {}) => {
 }
 /**
  * @param {string} cid
+ * @param {import("@nftstorage/ipfs-cluster").PinOptions | undefined} [options]
  */
-export async function pin(cid) {
-  return client.pin(cid)
+export async function pin(cid, options) {
+  return client.pin(cid, options)
 }
 
 /**
@@ -124,8 +125,8 @@ export async function dagSize(cid) {
  */
 export function toPSAStatus(status) {
   const pinInfos = Object.values(status.peerMap)
-  if (pinInfos.some((i) => i.status === 'pinned')) return 'pinned'
-  if (pinInfos.some((i) => i.status === 'pinning')) return 'pinning'
-  if (pinInfos.some((i) => i.status === 'pin_queued')) return 'queued'
+  if (pinInfos.some(i => i.status === 'pinned')) return 'pinned'
+  if (pinInfos.some(i => i.status === 'pinning')) return 'pinning'
+  if (pinInfos.some(i => i.status === 'pin_queued')) return 'queued'
   return 'failed'
 }

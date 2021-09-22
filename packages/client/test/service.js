@@ -3,8 +3,34 @@ import { sha256 } from 'multiformats/hashes/sha2'
 import { importCar, importBlob, importDirectory } from './importer.js'
 import { Response, Request } from './mock-server.js'
 import * as CBOR from '@ipld/dag-cbor'
-// @ts-ignore - not tracked by TS
-import { setIn } from '../../api/src/utils/utils.js'
+
+/**
+ * Sets a given `value` at the given `path` on a passed `object`.
+ *
+ * @example
+ * ```js
+ * const obj = { a: { b: { c: 1 }}}
+ * setIn(obj, ['a', 'b', 'c'], 5)
+ * obj.a.b.c //> 5
+ * ```
+ *
+ * @template V
+ * @param {any} object
+ * @param {string[]} path
+ * @param {V} value
+ */
+export const setIn = (object, path, value) => {
+  const n = path.length - 1
+  let target = object
+  for (let [index, key] of path.entries()) {
+    if (index === n) {
+      target[key] = value
+    } else {
+      target = target[key]
+    }
+  }
+}
+
 /**
  * @param {Request} request
  */
@@ -136,6 +162,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
 
   try {
     switch (`${request.method} /${pathParts.join('/')}`) {
+      case 'POST /upload/':
       case 'POST /upload': {
         authorize()
         const { cid } = await importUpload(request)
@@ -159,6 +186,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           headers: headers(request),
         })
       }
+      case 'POST /store/':
       case 'POST /store': {
         authorize()
         const result = await importToken(request)
@@ -166,6 +194,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           headers: headers(request),
         })
       }
+      case `GET /check/${pathParts[1]}/`:
       case `GET /check/${pathParts[1]}`: {
         const cid = CID.parse(pathParts[1] || '')
         const value = store.get(`${AUTH_TOKEN}:${cid}`)
@@ -186,6 +215,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           }
         )
       }
+      case `GET /${pathParts[0]}/`:
       case `GET /${pathParts[0]}`: {
         authorize()
         const cid = CID.parse(pathParts[0] || '')
@@ -205,6 +235,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
           headers: headers(request),
         })
       }
+      case `DELETE /${pathParts[0]}/`:
       case `DELETE /${pathParts[0]}`: {
         authorize()
         const cid = CID.parse(pathParts[0] || '')

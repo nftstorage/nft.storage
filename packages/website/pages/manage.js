@@ -4,6 +4,7 @@ import Button from '../components/button.js'
 import { deleteToken, getTokens } from '../lib/api'
 import { useQuery, useQueryClient } from 'react-query'
 import Loading from '../components/loading.js'
+import { useRouter } from 'next/router'
 
 /**
  *
@@ -26,10 +27,12 @@ export function getStaticProps() {
  * @returns
  */
 export default function ManageKeys({ user }) {
+  const router = useRouter()
+  const version = /** @type {string} */ (router.query.version)
   const [deleting, setDeleting] = useState('')
   const [copied, setCopied] = useState('')
   const queryClient = useQueryClient()
-  const { status, data } = useQuery('get-tokens', getTokens, {
+  const { status, data } = useQuery('get-tokens', () => getTokens(version), {
     enabled: !!user,
   })
   useEffect(() => {
@@ -52,7 +55,7 @@ export default function ManageKeys({ user }) {
       setDeleting(name)
 
       try {
-        await deleteToken(name)
+        await deleteToken(name, version)
       } finally {
         await queryClient.invalidateQueries('get-tokens')
         setDeleting('')
@@ -71,7 +74,14 @@ export default function ManageKeys({ user }) {
     setCopied(key)
   }
 
-  const keys = Object.entries(data || {})
+  let keys = []
+  if (version === '1') {
+    for (const key of data || []) {
+      keys.push([key.name, key.secret, key.id])
+    }
+  } else {
+    keys = Object.entries(data || {})
+  }
 
   return (
     <main className="bg-nsgreen">
@@ -83,7 +93,14 @@ export default function ManageKeys({ user }) {
           <Else>
             <div className="flex mb3 items-center">
               <h1 className="chicagoflf mv4 flex-auto">API Keys</h1>
-              <Button href="/new-key" className="flex-none" id="new-key">
+              <Button
+                href={{
+                  pathname: '/new-key',
+                  query: version ? { version: '1' } : null,
+                }}
+                className="flex-none"
+                id="new-key"
+              >
                 + New Key
               </Button>
             </div>
@@ -126,15 +143,18 @@ export default function ManageKeys({ user }) {
                             type="hidden"
                             name="name"
                             id={`token-${t[0]}`}
-                            value={t[0]}
+                            value={version === '1' ? `${t[2]}` : t[0]}
                           />
                           <Button
                             className="bg-nsorange white"
                             type="submit"
                             disabled={Boolean(deleting)}
-                            id="delete-key"
+                            id={`delete-key-${t[0]}`}
                           >
-                            {deleting === t[0] ? 'Deleting...' : 'Delete'}
+                            {deleting ===
+                            (version === '1' ? `${t[2]}` + '' : t[0])
+                              ? 'Deleting...'
+                              : 'Delete'}
                           </Button>
                         </form>
                       </td>
