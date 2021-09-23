@@ -16,9 +16,9 @@ import {
 
 /**
  * @typedef {{
- *   batchSize:number,
- *   budget: number,
- *   dryRun: boolean,
+ *   batchSize:number
+ *   budget: number
+ *   dryRun: boolean
  *   fauna: Fauna.Config
  *   hasura: Hasura.Config
  * }} Config
