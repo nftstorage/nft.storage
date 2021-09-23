@@ -8,6 +8,9 @@ import yargs from 'yargs'
  * @property {number} batchSize
  * @property {number} fetchTimeout
  * @property {boolean} dryRun
+ * @property {number} retryLimit
+ * @property {number} retryInterval
+ * @property {number} retryMaxInterval
  * @property {import('./cluster').Config} cluster
  * @property {import('./ipfs').Config} ipfs
  * @property {Endpoint} erc721
@@ -28,6 +31,21 @@ export const configure = async () => {
         type: 'number',
         default: parseInt(process.env['BATCH_SIZE'] || '100'),
         description: 'Number of items to process at once',
+      },
+      'retry-limit': {
+        type: 'number',
+        default: parseInt(process.env['RETRY_LIMIT'] || '0'),
+        description: 'Max number of retries to perform on errors',
+      },
+      'retry-interval': {
+        type: 'number',
+        default: parseInt(process.env['RETRY_INTERVAL'] || '500'),
+        description: 'Interval to space out retries by',
+      },
+      'retry-max-interval': {
+        type: 'number',
+        default: parseInt(process.env['RETRY_MAX_INTERVAL'] || 'Infinity'),
+        description: 'Max sleep frame between retries',
       },
       budget: {
         type: 'number',
@@ -103,6 +121,9 @@ export const configure = async () => {
     budget: config.budget,
     fetchTimeout: config['fetch-timeout'],
     dryRun: config['dry-run'],
+    retryLimit: config['retry-limit'],
+    retryInterval: config['retry-interval'],
+    retryMaxInterval: config['retry-max-interval'],
 
     cluster: {
       url: new URL(config['cluster-endpoint']),

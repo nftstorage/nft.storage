@@ -1,55 +1,73 @@
 /**
- * @template {Error} X
- * @typedef {Object} Policy
- * @property {'Policy'} type
- * @property {(startTime:number, lastPolicy:Policy<X>, error:X) => Promise<Policy<X>>} nextPolicy
+ *
+ * @typedef {{
+ *   attempt: number
+ *   error: Error
+ *   startTime: number
+ *   policy: Policy
+ * }} RetryState
+ * @typedef {(state:RetryState) => number} Policy
+ */
+
+/**
+ * @typedef {{
+ *   startTime: number
+ *   error: Error
+ *   attempt: number
+ *   policy: RetryPolicy
+ * }} State
+ *
+
+ * @typedef {(state:State) => RetryPolicy|Promise<RetryPolicy>} RetryPolicy
  */
 
 /**
  * @template T
- * @param {Policy<Error>[]} policies
  * @param {() => Promise<T>} task
+ * @param {Policy[]} policies
  * @returns {Promise<T>}
  */
-export const retry = async (policies, task) => {
+export const retry = async (task, policies = []) => {
   const startTime = Date.now()
+  let attempt = 0
   while (true) {
+    attempt++
     try {
       return await task()
     } catch (error) {
-      const next = []
+      let pauseDuration = 0
       for (const policy of policies) {
-        next.push(await policy.nextPolicy(startTime, policy, error))
-        policies = policies
+        pauseDuration += policy({ startTime, attempt, policy, error })
+
+        if (pauseDuration >= Infinity) {
+          throw error
+        }
+      }
+
+      if (pauseDuration > 0) {
+        await new Promise((resume) => setTimeout(resume, pauseDuration))
       }
     }
   }
 }
 
 /**
- * Stop retrying `originalTask` after a number of retries.
+ * Stop retrying `task` after a number of retries.
  * Note: The code above does NOT sleep between retries, it is best to combine
  * it with `constantInterval` or `exponentialBackoff`.
  *
  * @example
  * ```js
- * retry([maxRetries(20)], () => fetch(url))
+ * retry(() => fetch(url), [maxRetries(20)])
  * ```
  *
- * @template {Error} X
  * @param {number} n
- * @returns {Policy<X>}
+ * @returns {Policy}
  */
-export const maxRetries = (n) => ({
-  type: 'Policy',
-  async nextPolicy(_startTime, _policy, lastError) {
-    if (n <= 0) {
-      throw lastError
-    } else {
-      return maxRetries(n - 1)
-    }
-  },
-})
+export const maxRetries =
+  (n) =>
+  ({ attempt }) =>
+    attempt >= n ? Infinity : 0
 
 /**
  * Stop retrying `task` after some number of milliseconds.
@@ -58,65 +76,52 @@ export const maxRetries = (n) => ({
  *
  * @example
  * ```js
- * retry([maxDuration(7000)],  () => fetch(url))
+ * retry(() => fetch(url), [maxDuration(7000)])
  * ```
  *
- * @template {Error} X
  * @param {number} duration
- * @returns {Policy<X>}
+ * @returns {Policy}
  */
-export const maxDuration = (duration) => ({
-  type: 'Policy',
-  async nextPolicy(startTime, policy, error) {
-    const now = Date.now()
-    if (now - startTime >= duration) {
-      throw error
-    } else {
-      return policy
-    }
-  },
-})
+export const maxDuration =
+  (duration) =>
+  ({ startTime }) =>
+    Date.now() - startTime >= duration ? Infinity : 0
 
 /**
  * Sleep for the same number of milliseconds before every retry.
  * Note: The code above will keep retrying `task` and never give up, it is best
  * to combine with `maxRetries` or `maxDuration` to allow it to fail.
  *
- * @template {Error} X
+ * @example
+ * ```js
+ * retry(() => fetch(url), [constantBackoff(1000)])
+ * ```
+ *
  * @param {number} duration
- * @returns {Policy<X>}
+ * @returns {Policy}
  */
-export const constantInterval = (duration) => ({
-  type: 'Policy',
-  async nextPolicy(_startTime, lastPolicy, _error) {
-    await sleep(duration)
-    return lastPolicy
-  },
-})
+export const constantBackoff = (duration) => () => duration
 
 /**
- * @template {Error} X
- * @param {{interval:number, maxInterval:number}} options
- * @returns {Policy<X>}
- */
-export const exponentialBackoff = ({ interval, maxInterval }) =>
-  backoffWith(0, interval, maxInterval)
-
-/**
- * @template {Error} X
- * @param {number} attempt
+ * Uses exponential backoff algorithm to space out retries. On each attempt
+ * sleep frame is increased in which random slot is picked which reduces
+ * chance of collisions. If `maxInterval` is provided sleep frame is not going
+ * to increas beyond it.
+ *
+ * @see https://en.wikipedia.org/wiki/Exponential_backoff
+ * @example
+ * ```js
+ * retry(() => fetch(url), [exponentialBackoff(1000, 30 * 60 * 1000)])
+ * ```
+ *
  * @param {number} interval
  * @param {number} maxInterval
- * @returns {Policy<X>}
+ * @returns {Policy}
  */
-const backoffWith = (attempt, interval, maxInterval) => ({
-  type: 'Policy',
-  async nextPolicy(_startTime, _lastPolicy, _lastError) {
-    const time = Math.min(backoff(attempt, interval), maxInterval)
-    await sleep(time)
-    return backoffWith(attempt + 1, interval, maxInterval)
-  },
-})
+export const exponentialBackoff =
+  (interval, maxInterval = Infinity) =>
+  ({ attempt }) =>
+    Math.min(backoff(attempt, interval), maxInterval)
 
 /**
  * @param {number} multiplier
