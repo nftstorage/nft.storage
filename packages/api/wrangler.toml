@@ -2,7 +2,6 @@ name = "nft-storage-dev"
 account_id = "fffa4b4363a7e5250af8357087263b3a"
 workers_dev = true
 type = "javascript"
-usage_model = "unbound"
 
 # Compatibility flags https://github.com/cloudflare/wrangler/pull/2009
 compatibility_date = "2021-08-23"
@@ -56,6 +55,7 @@ crons = ["* * * * *", "*/15 * * * *"]
 name = "nft-storage-staging"
 route = "api-staging.nft.storage/*"
 zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"
+usage_model = "unbound"
 kv_namespaces = [
     { binding = "USERS", preview_id = "8964654a0a1d4f7586b59db90ef97594", id = "8964654a0a1d4f7586b59db90ef97594" },
     { binding = "NFTS", preview_id = "21763d3a9ce2465b875a49ae57a5a598", id = "21763d3a9ce2465b875a49ae57a5a598" },
@@ -73,6 +73,7 @@ DEBUG = ""
 CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/"
 CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/v0/"
 CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ"
+DATABASE_URL = "https://db-staging.nft.storage"
 
 [env.staging.build]
 command = "scripts/cli.js build --env staging"
@@ -87,6 +88,7 @@ format = "service-worker"
 name = "nft-storage"
 route = "api.nft.storage/*"
 zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"
+usage_model = "unbound"
 kv_namespaces = [
     { binding = "USERS", id = "8a5a55b5d1af49ed8fcfab16e9fa8c41", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" },
     { binding = "NFTS", id = "9610798d5e5845fa94e4392cc1288ddf", preview_id = "f1c35cd1601c452782db6056b2d35f25" },
@@ -104,6 +106,7 @@ DEBUG = ""
 CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/"
 CLUSTER_IPFS_PROXY_API_URL = "https://nft.storage.ipfscluster.io/api/v0/"
 CLUSTER_ADDRS = "/dns4/nft-storage-am6.nft.dwebops.net/tcp/18402/p2p/12D3KooWCRscMgHgEo3ojm8ovzheydpvTEqsDtq7Vby38cMHrYjt,/dns4/nft-storage-dc13.nft.dwebops.net/tcp/18402/p2p/12D3KooWQtpvNvUYFzAo1cRYkydgk15JrMSHp6B6oujqgYSnvsVm,/dns4/nft-storage-sv15.nft.dwebops.net/tcp/18402/p2p/12D3KooWQcgCwNCTYkyLXXQSZuL5ry1TzpM8PRe9dKddfsk1BxXZ"
+DATABASE_URL = "https://db.nft.storage"
 
 [env.production.build]
 command = "scripts/cli.js build --env production"
@@ -114,12 +117,10 @@ format = "service-worker"
 
 [env.alanshaw]
 name = "nft-storage-alanshaw"
-type = "webpack"
 account_id = "4fe12d085474d33bdcfd8e9bed4d8f95"
 workers_dev = true
 route = ""
 zone_id = ""
-vars = { ENV= "dev", DEBUG = "*", CLUSTER_API_URL = "https://alan-cluster-api-nft-storage.loca.lt", CLUSTER_IPFS_PROXY_API_URL = "https://alan-ipfs-proxy-api-nft-storage.loca.lt/api/v0/", CLUSTER_ADDRS = "" }
 kv_namespaces = [
     { binding = "USERS", preview_id = "3dfa88660d0d4863a5f6b83781160637", id = "3dfa88660d0d4863a5f6b83781160637" },
     { binding = "NFTS", preview_id = "c8fd3b56aa284e1395169c681a04fc91", id = "c8fd3b56aa284e1395169c681a04fc91" },
@@ -131,15 +132,21 @@ kv_namespaces = [
     { binding = "PINATA_QUEUE", preview_id = "d5b0b953a6df45419aa5c00f15a02221", id = "d5b0b953a6df45419aa5c00f15a02221" }
 ]
 
+[env.alanshaw.vars]
+ENV = "dev"
+DEBUG = "*"
+CLUSTER_API_URL = "https://alan-cluster-api-nft-storage.loca.lt"
+CLUSTER_IPFS_PROXY_API_URL = "https://alan-ipfs-proxy-api-nft-storage.loca.lt/api/v0/"
+CLUSTER_ADDRS = ""
+DATABASE_URL = "http://localhost:8000"
+
 [env.gozala]
-type = "webpack"
 name="nft-storage-gozala"
 account_id="fffa4b4363a7e5250af8357087263b3a"
 workers_dev = true
 usage_model="bundled"
 route = ""
 zone_id = ""
-vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/", CLUSTER_IPFS_PROXY_API_URL = "", CLUSTER_ADDRS = "" }
 kv_namespaces = [
     { binding = "USERS", preview_id = "1146fee7831747b4ae89e929c2b6f38a", id = "1146fee7831747b4ae89e929c2b6f38a" },
     { binding = "NFTS", preview_id = "c385d94d0a9d4e9ebb32d7f2f40c30cb", id = "c385d94d0a9d4e9ebb32d7f2f40c30cb" },
@@ -150,3 +157,11 @@ kv_namespaces = [
     { binding = "FOLLOWUPS", preview_id = "d1ba66882ae240f0814d843a67ee8db3", id = "d1ba66882ae240f0814d843a67ee8db3" },
     { binding = "PINATA_QUEUE", preview_id = "6c2cd05b986c4a998675484e3a253cf1", id = "6c2cd05b986c4a998675484e3a253cf1" }
 ]
+
+[env.gozala.vars]
+ENV = "dev"
+DEBUG = "*"
+CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/"
+CLUSTER_IPFS_PROXY_API_URL = ""
+CLUSTER_ADDRS = ""
+DATABASE_URL = "http://localhost:8000"
