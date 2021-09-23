@@ -79,24 +79,29 @@ Open `wrangler.toml` and add an env for yourself (replacing "USER" with your nam
 
 ```toml
 [env.USER]
-type = "webpack"
 name = "nft-storage-USER"
 account_id = "CF_ACCOUNT"
 workers_dev = true
 route = ""
 zone_id = ""
-vars = { ENV = "dev", DEBUG = "*", CLUSTER_API_URL = "", CLUSTER_IPFS_PROXY_API_URL = "", CLUSTER_ADDRS = "" }
 kv_namespaces = []
+
+[env.USER.vars]
+ENV = "dev"
+DEBUG = "*"
+CLUSTER_API_URL = ""
+CLUSTER_IPFS_PROXY_API_URL = ""
+CLUSTER_ADDRS = ""
+DATABASE_URL = "http://localhost:8000"
 ```
 
 Additionally, fill in the `CLUSTER_API_URL` and `CLUSTER_IPFS_PROXY_API_URL` with the localtunnel URLs you obtained when setting up the IPFS Cluster.
 
 e.g.
 
-```js
-CLUSTER_API_URL = 'https://USER-cluster-api-nft-storage.loca.lt'
-CLUSTER_IPFS_PROXY_API_URL =
-  'https://USER-ipfs-proxy-api-nft-storage.loca.lt/api/v0/'
+```toml
+CLUSTER_API_URL = "https://USER-cluster-api-nft-storage.loca.lt"
+CLUSTER_IPFS_PROXY_API_URL = "https://USER-ipfs-proxy-api-nft-storage.loca.lt/api/v0/"
 ```
 
 Now run the following to install dependencies and create KV namespaces on Cloudflare:
