@@ -34,7 +34,7 @@ export const configure = async () => {
       },
       'retry-limit': {
         type: 'number',
-        default: parseInt(process.env['RETRY_LIMIT'] || '0'),
+        default: Number(process.env['RETRY_LIMIT'] || '100'),
         description: 'Max number of retries to perform on errors',
       },
       'retry-interval': {
@@ -44,7 +44,7 @@ export const configure = async () => {
       },
       'retry-max-interval': {
         type: 'number',
-        default: parseInt(process.env['RETRY_MAX_INTERVAL'] || 'Infinity'),
+        default: Number(process.env['RETRY_MAX_INTERVAL'] || 'Infinity'),
         description: 'Max sleep frame between retries',
       },
       budget: {
