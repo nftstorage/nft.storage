@@ -2,6 +2,7 @@ import { configure } from './config.js'
 import * as Hasura from '../gen/db-v2/index.js'
 import * as Fauna from './fauna.js'
 import * as Result from './result.js'
+import { retry, exponentialBackoff, maxRetries } from './retry.js'
 
 import {
   Collection,
@@ -16,9 +17,9 @@ import {
 
 /**
  * @typedef {{
- *   batchSize:number,
- *   budget: number,
- *   dryRun: boolean,
+ *   batchSize:number
+ *   budget: number
+ *   dryRun: boolean
  *   fauna: Fauna.Config
  *   hasura: Hasura.Config
  * }} Config
@@ -45,60 +46,71 @@ import {
  * @template T
  * @param {MigrationConfig<T>} options
  */
-export const start = async ({ collection, query, mutation }) =>
-  migrate({ ...(await configure()), collection, mutation, query })
+export const start = async ({ collection, query, mutation }) => {
+  const config = await configure()
+  return await retry(
+    () => migrate({ ...config, collection, query, mutation }),
+    [
+      maxRetries(config.retryLimit),
+      exponentialBackoff(config.retryInterval, config.retryMaxInterval),
+    ]
+  )
+}
 
 /**
  * @template T
  * @param {Config & MigrationConfig<T> } config
  */
 export const migrate = async (config) => {
-  console.log(`🚧 Performing migration`)
-  const deadline = Date.now() + config.budget
-  const state = await init(config)
-  while (state.cursor !== '' && deadline - Date.now() > 0) {
-    console.log(state)
-
-    let { after = [{ id: '' }], data } =
-      /** @type {{after?:[{id:string}], data:T[]}} */ (
-        await Fauna.query(
-          config.fauna,
-          Map(
-            Paginate(Documents(Collection(config.collection)), {
-              size: config.batchSize,
-              after: state.cursor
-                ? Ref(Collection(config.collection), state.cursor)
-                : undefined,
-            }),
-            config.query || Lambda(['ref'], Get(Var('ref')))
+  try {
+    console.log(`🚧 Performing migration`)
+    const deadline = Date.now() + config.budget
+    const state = await init(config)
+    while (state.cursor !== '' && deadline - Date.now() > 0) {
+      let { after = [{ id: '' }], data } =
+        /** @type {{after?:[{id:string}], data:T[]}} */ (
+          await Fauna.query(
+            config.fauna,
+            Map(
+              Paginate(Documents(Collection(config.collection)), {
+                size: config.batchSize,
+                after: state.cursor
+                  ? Ref(Collection(config.collection), state.cursor)
+                  : undefined,
+              }),
+              config.query || Lambda(['ref'], Get(Var('ref')))
+            )
           )
         )
-      )
 
-    if (data.length > 0 && !config.dryRun) {
-      const { cursor } = await writeMigrationState(
-        config,
-        {
-          cursor: after[0].id,
-          metadata: {},
-        },
-        config.mutation(data)
-      )
-      state.cursor = cursor
+      if (data.length > 0 && !config.dryRun) {
+        const { cursor } = await writeMigrationState(
+          config,
+          {
+            cursor: after[0].id,
+            metadata: {},
+          },
+          config.mutation(data)
+        )
+        state.cursor = cursor
+      }
+
+      // If there was nothing we're done
+      if (data.length === 0) {
+        break
+      } else {
+        console.log('⏭ Page migrated', state)
+      }
     }
 
-    // If there was nothing we're done
-    if (data.length === 0) {
-      break
+    if (state.cursor === '') {
+      console.log('🏁 Migration is complete', state)
     } else {
-      console.log('⏭ Page migrated', state)
+      console.log('⌛️ Finish migration, time is up')
     }
-  }
-
-  if (state.cursor === '') {
-    console.log('🏁 Migration is complete', state)
-  } else {
-    console.log('⌛️ Finish migration, time is up')
+  } catch (error) {
+    console.log(`🚨 Oops, ${error}`)
+    throw error
   }
 }
 

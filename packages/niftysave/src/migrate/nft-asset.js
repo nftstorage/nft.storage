@@ -2,7 +2,7 @@ import * as Migration from '../migrate.js'
 
 import { Get, If, IsNull, Lambda, Let, Select, Var } from '../fauna.js'
 
-import { TokenAssetStatus } from '../../gen/db/schema'
+import { TokenAssetStatus } from '../../gen/db/schema.js'
 import { script } from 'subprogram'
 
 export const query = Lambda(

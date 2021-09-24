@@ -8,6 +8,7 @@ import { timeout } from './src/net.js'
 import * as Hasura from './gen/db-v2/index.js'
 import * as ERC721 from './gen/erc721/index.js'
 import * as DB from './gen/db/index.js'
+import * as Retry from './src/retry.js'
 
 const main = async () => {
   const config = await configure()
@@ -25,6 +26,7 @@ const main = async () => {
     Hasura,
     DB,
     ERC721,
+    Retry,
   })
 }
 
