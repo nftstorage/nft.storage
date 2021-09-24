@@ -109,7 +109,7 @@ export const migrate = async (config) => {
       console.log('⌛️ Finish migration, time is up')
     }
   } catch (error) {
-    console.log(`🚨 Oops, ${error}`)
+    console.error(`🚨 Oops`, error)
     throw error
   }
 }
