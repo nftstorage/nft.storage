@@ -287,6 +287,26 @@ console.log(metadata.url)
               </a>
               .
             </p>
+            <p className="lh-copy">
+              For additional example code, check out our{' '}
+              <a
+                className="black"
+                href="https://github.com/ipfs-shipyard/nft.storage/tree/2bb82aeb23ac139513c1af6615d010579f22a7cc/packages/client/examples/node.js"
+                target="_blank"
+                rel="noreferrer"
+              >
+                GitHub repo
+              </a>{' '}
+              and{' '}
+              <a
+                className="black"
+                href="https://nftschool.dev/tutorial/end-to-end-experience/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                NFT School.
+              </a>
+            </p>
           </Box>
           <Box
             bgColor="nspeach"
@@ -341,6 +361,18 @@ console.log(metadata.url)
               </Link>{' '}
               for information on uploading multiple files and the other
               available endpoints.
+            </p>
+            <p className="lh-copy">
+              For additional example code, check out our{' '}
+              <a
+                className="black"
+                href="https://github.com/ipfs-shipyard/nft.storage/tree/2bb82aeb23ac139513c1af6615d010579f22a7cc/packages/client/examples/browser"
+                target="_blank"
+                rel="noreferrer"
+              >
+                GitHub repo
+              </a>
+              .
             </p>
           </Box>
           {/* <Box
@@ -441,6 +473,28 @@ function FAQ() {
           </a>{' '}
           for information on NFT best practices as well as a variety of helpful
           tutorials and how-to guides for NFT developers.
+        </p>
+        <h2 className="chicagoflf white">
+          <HashLink id="who-can-access-the-data-i-store-on-nftstorage">
+            Who can access the data I store on NFT.Storage?
+          </HashLink>
+        </h2>
+        <p className="lh-copy white">
+          All data uploaded to NFT.Storage is available to anyone who requests
+          it using the correct CID. Do not store any private or sensitive
+          information in an unencrypted form using NFT.Storage.
+        </p>
+        <h2 className="chicagoflf white">
+          <HashLink id="can-i-delete-my-data-on-nftstorage">
+            Can I delete my data on NFT.Storage?
+          </HashLink>
+        </h2>
+        <p className="lh-copy white">
+          You can delete data from being associated with your account, and they
+          will no longer appear on the Files page of your account. However, this
+          doesn’t prevent nodes in the IPFS decentralized storage network from
+          retaining copies of the data indefinitely. Do not use NFT.Storage for
+          data that may need to be permanently deleted in the future.
         </p>
       </div>
     </article>
