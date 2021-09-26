@@ -1,2 +1,0 @@
-ALTER TABLE resource
-    ALTER COLUMN uri_hash SET NOT NULL;
