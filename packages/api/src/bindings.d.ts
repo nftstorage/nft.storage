@@ -1,6 +1,7 @@
 export {}
 
 import Toucan from 'toucan-js'
+import { Mode } from './middleware/maintenance.js'
 
 declare global {
   const SALT: string
@@ -29,7 +30,7 @@ declare global {
   const BRANCH: string
   const VERSION: string
   const COMMITHASH: string
-  const MAINTENANCE_MODE: 'rw' | 'r-' | '--'
+  const MAINTENANCE_MODE: Mode
 }
 
 export interface RouteContext {
