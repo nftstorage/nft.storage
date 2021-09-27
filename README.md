@@ -68,7 +68,7 @@ To run nft.storage locally, start the following processes:
 1. API server (`yarn dev --env USER` in `/packages/api`).
 1. Web server (`yarn dev` in `/packages/website`).
 
-The site should now be available at http://localhost:3000
+The site should now be available at http://localhost:4000
 
 ## Release
 

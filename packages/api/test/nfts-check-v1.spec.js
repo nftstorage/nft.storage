@@ -11,7 +11,7 @@ const fixtures = {
       statusText:
         'containing sector active as of 2021-09-10 00:36:30 at epoch 1097593',
       dealActivation: '2021-09-11T14:11:00+00:00',
-      dealExpiration: '2021-09-11T14:11:00+00:00',
+      dealExpiration: '2023-02-03T14:11:00+00:00',
       miner: 'f0678914',
       pieceCid:
         'baga6ea4seaqfanmqerzaiq7udm5wxx3hcmgapukudbadjarzkadudexamn5gwny',
@@ -26,7 +26,7 @@ const fixtures = {
       statusText:
         'containing sector active as of 2021-09-10 05:32:00 at epoch 1098184',
       dealActivation: '2021-09-10T14:41:30+00:00',
-      dealExpiration: '2021-09-10T14:41:30+00:00',
+      dealExpiration: '2023-02-02T14:41:30+00:00',
       miner: 'f0707721',
       pieceCid:
         'baga6ea4seaqfanmqerzaiq7udm5wxx3hcmgapukudbadjarzkadudexamn5gwny',
@@ -40,7 +40,7 @@ const fixtures = {
       datamodelSelector: 'Links/19/Hash/Links/46/Hash/Links/0/Hash',
       statusText: 'containing sector missed expected sealing epoch 1098402',
       dealActivation: '2021-09-10T07:21:00+00:00',
-      dealExpiration: '2021-09-10T07:21:00+00:00',
+      dealExpiration: '2023-02-02T07:21:00+00:00',
       miner: 'f01163272',
       pieceCid:
         'baga6ea4seaqfanmqerzaiq7udm5wxx3hcmgapukudbadjarzkadudexamn5gwny',

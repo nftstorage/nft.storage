@@ -14,8 +14,20 @@ Note: tokens can be created here https://sentry.io/settings/account/api/auth-tok
 SENTRY_TOKEN=<sentry user auth token>
 SENTRY_UPLOAD=false # toggle for sentry source/sourcemaps upload (capture will still work)
 
-DATABASE_URL=http://localhost:8000
-DATABASE_TOKEN=<token>
+# PostgREST API URL
+DATABASE_URL=http://localhost:3000
+# Create a token, for role "postgres", using secret value PGRST_JWT_SECRET from '../db/docker/docker-compose.yml'
+# https://postgrest.org/en/v8.0/tutorials/tut1.html#step-3-sign-a-token
+DATABASE_TOKEN=<jwt token>
+
+# Connection string for locally running postgres used in tests
+DATABASE_CONNECTION=postgres://postgres:postgres@127.0.0.1:5432/postgres
+
+# RO dagcargo credentials for fdw in tests
+DAG_CARGO_HOST=<get from password vault>
+DAG_CARGO_USER=<get from password vault>
+DAG_CARGO_PASSWORD=<get from password vault>
+DAG_CARGO_DATABASE=<get from password vault>
 ```
 
 Production vars should be set in Github Actions secrets.
