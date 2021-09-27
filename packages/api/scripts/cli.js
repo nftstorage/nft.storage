@@ -9,6 +9,7 @@ import { createRequire } from 'module'
 import pg from 'pg'
 import fs from 'fs'
 import execa from 'execa'
+import retry from 'p-retry'
 
 const { Client } = pg
 // @ts-ignore
@@ -91,10 +92,15 @@ prog
   .option('--cargo', 'Import cargo data.', false)
   .option('--testing', 'Tweak schema for testing.', false)
   .action(async (opts) => {
-    const client = new Client({
-      connectionString: process.env.DATABASE_CONNECTION,
-    })
-    await client.connect()
+    const connectionString = process.env.DATABASE_CONNECTION
+    const client = await retry(
+      async () => {
+        const c = new Client({ connectionString })
+        await c.connect()
+        return c
+      },
+      { minTimeout: 100 }
+    )
     const tables = fs.readFileSync(path.join(__dirname, '../db/tables.sql'), {
       encoding: 'utf-8',
     })
