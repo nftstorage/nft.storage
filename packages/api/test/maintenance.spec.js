@@ -29,8 +29,8 @@ describe('maintenance middleware', () => {
   it('should throw error when in maintenance', () => {
     /** @type {import('../src/utils/router.js').Handler} */
     let handler
-    // @ts-expect-error not passing params to our test handler
     const block = () => {
+      // @ts-expect-error not passing params to our test handler
       handler()
     }
 
