@@ -56,7 +56,7 @@ module.exports = {
       stdout.toString().includes('Server started on: http://localhost:9094')
     ) {
       console.log('⚡️ Mock cluster started.')
-      await execa(cli, ['db', '--init', '--start', '--project', project])
+      await execa(cli, ['db', '--start', '--project', project])
       await execa(cli, ['db-sql', '--cargo', '--testing'])
 
       console.log('⚡️ Mock postgres started.')
