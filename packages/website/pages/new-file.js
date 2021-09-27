@@ -77,7 +77,7 @@ export default function NewFile() {
       } catch (/** @type any */ err) {
         console.error(err)
         setError(
-          `Error uploading (${err.message}). Check the console for more details`
+          `Error uploading: ${err.message}`
         )
       } finally {
         await queryClient.invalidateQueries('get-nfts')
