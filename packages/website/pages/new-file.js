@@ -76,9 +76,7 @@ export default function NewFile() {
         setError('')
       } catch (/** @type any */ err) {
         console.error(err)
-        setError(
-          `Error uploading: ${err.message}`
-        )
+        setError(`Error uploading: ${err.message}`)
       } finally {
         await queryClient.invalidateQueries('get-nfts')
         setUploading(false)
@@ -192,7 +190,7 @@ export default function NewFile() {
         <When condition={error !== ''}>
           <Alert
             className="pa4 white"
-            position="bottom"
+            position="top"
             type="error"
             timer={4}
             onTimerEnd={() => setError('')}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 
 /**
@@ -28,12 +28,14 @@ export default function Alert({
 }) {
   const [hasTimerEnded, setTimerHasEnded] = useState(false)
 
-  if (timer && onTimerEnd) {
-    setTimeout(() => {
-      setTimerHasEnded(true)
-      setTimeout(onTimerEnd, ANIMATION_DURATION)
-    }, timer * 1000)
-  }
+  useEffect(() => {
+    if (timer && onTimerEnd) {
+      setTimeout(() => {
+        setTimerHasEnded(true)
+        setTimeout(onTimerEnd, ANIMATION_DURATION)
+      }, timer * 1000)
+    }
+  }, [timer, onTimerEnd])
 
   return (
     <div
