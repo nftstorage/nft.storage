@@ -1,12 +1,3 @@
-/**
- * The MAINTENANCE_MODE constant dictates which API handlers are enabled and may
- * have one of the following values:
- *
- * -- = no reading or writing
- * r- = read only mode
- * rw = read and write (normal operation)
- */
-import { maintenance } from '../constants.js'
 import { HTTPError } from '../errors.js'
 
 /**
@@ -14,16 +5,44 @@ import { HTTPError } from '../errors.js'
  * @typedef {import('../utils/router.js').Handler} Handler
  */
 
-const currentModeBits = modeBits(maintenance.mode)
+let currentMode = 'rw'
+let currentModeBits = modeBits(currentMode)
 
-/** @type {Mode[]} */
-const modes = ['--', 'r-', 'rw']
+/**
+ * Read and write.
+ */
+export const READ_WRITE = 'rw'
 
-export const R = 'r-'
-export const RW = 'rw'
+/**
+ * Read only mode.
+ */
+export const READ_ONLY = 'r-'
+
+/**
+ * No reading or writing.
+ */
+export const NO_READ_OR_WRITE = '--'
+
+/** @type {readonly Mode[]} */
+export const modes = Object.freeze([NO_READ_OR_WRITE, READ_ONLY, READ_WRITE])
 
 export function getMaintenanceMode() {
-  return maintenance.mode
+  return currentMode
+}
+
+/**
+ * Dictates which request handlers (that have been wrapped with `withMode`) are
+ * enabled and may have one of the following values:
+ *
+ * -- = no reading or writing
+ * r- = read only mode
+ * rw = read and write (normal operation)
+ *
+ * @param {Mode} mode
+ */
+export function setMaintenanceMode(mode) {
+  currentModeBits = modeBits(mode)
+  currentMode = mode
 }
 
 /**
@@ -36,11 +55,12 @@ export function getMaintenanceMode() {
  * @returns {Handler}
  */
 export function withMode(handler, mode) {
-  const enabled = modeBits(mode).every((bit, i) => {
-    if (bit === '-') return true
-    return currentModeBits[i] === bit
-  })
-  return enabled ? handler : maintenanceHandler
+  const enabled = () =>
+    modeBits(mode).every((bit, i) => {
+      if (bit === '-') return true
+      return currentModeBits[i] === bit
+    })
+  return (...args) => (enabled() ? handler(...args) : maintenanceHandler())
 }
 
 /**
