@@ -5,9 +5,6 @@ import { HTTPError } from '../errors.js'
  * @typedef {import('../utils/router.js').Handler} Handler
  */
 
-let currentMode = 'rw'
-let currentModeBits = modeBits(currentMode)
-
 /**
  * Read and write.
  */
@@ -25,6 +22,9 @@ export const NO_READ_OR_WRITE = '--'
 
 /** @type {readonly Mode[]} */
 export const modes = Object.freeze([NO_READ_OR_WRITE, READ_ONLY, READ_WRITE])
+
+let currentMode = 'rw'
+let currentModeBits = modeBits(currentMode)
 
 export function getMaintenanceMode() {
   return currentMode
@@ -55,6 +55,9 @@ export function setMaintenanceMode(mode) {
  * @returns {Handler}
  */
 export function withMode(handler, mode) {
+  if (mode === NO_READ_OR_WRITE) {
+    throw new Error('invalid mode')
+  }
   const enabled = () =>
     modeBits(mode).every((bit, i) => {
       if (bit === '-') return true
