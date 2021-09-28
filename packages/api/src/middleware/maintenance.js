@@ -26,7 +26,7 @@ export const modes = Object.freeze([NO_READ_OR_WRITE, READ_ONLY, READ_WRITE])
 /**
  * The default maintenance mode (normal operation).
  */
-const DEFAULT_MODE = READ_WRITE
+export const DEFAULT_MODE = READ_WRITE
 
 /** @type {() => Mode} */
 let getMaintenanceMode = () => DEFAULT_MODE
