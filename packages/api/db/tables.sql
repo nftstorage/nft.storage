@@ -63,26 +63,6 @@ CREATE TABLE IF NOT EXISTS pin
     UNIQUE (content_cid, service)
 );
 
--- Pin view with api response status
-CREATE OR REPLACE VIEW pin_view
-AS
-SELECT id,
-       CASE
-           WHEN status = 'PinQueued'
-               THEN 'queued'
-           WHEN status = 'Pinned'
-               THEN 'pinned'
-           WHEN status = 'Pinning'
-               THEN 'pinning'
-           WHEN status = 'PinError'
-               THEN 'failed'
-           END status,
-       content_cid,
-       service,
-       inserted_at,
-       updated_at
-FROM pin;
-
 
 -- removed_at and add the on conflict logic to the function, null or date depending on the situation
 -- check cid v1 or v0 logic 

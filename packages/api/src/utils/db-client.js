@@ -91,7 +91,7 @@ export class DBClient {
         *,
         user:account(id, magic_link_id),
         key:auth_key(name),
-        content(dag_size, pin:pin_view(status, service))`
+        content(dag_size, pin(status, service))`
 
   /**
    * Get upload with user, auth_keys, content and pins
@@ -233,7 +233,7 @@ export class DBClient {
         dag_size,
         inserted_at,
         updated_at,
-        pins:pin_view(status, service)`
+        pins:pin(status, service)`
       )
       // @ts-ignore
       .filter('pins.service', 'eq', 'IpfsCluster')

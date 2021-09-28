@@ -62,9 +62,7 @@ describe('V1 - /store', () => {
 
     const { data, error } = await rawClient
       .from('upload')
-      .select(
-        '*, content(cid, dag_size, pin:pin_view(content_cid, status, service))'
-      )
+      .select('*, content(cid, dag_size, pin(content_cid, status, service))')
       .match({ content_cid: result.ipnft, account_id: userId })
       .single()
 
@@ -78,13 +76,13 @@ describe('V1 - /store', () => {
       {
         content_cid:
           'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
-        status: 'queued',
+        status: 'PinQueued',
         service: 'IpfsCluster',
       },
       {
         content_cid:
           'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
-        status: 'queued',
+        status: 'PinQueued',
         service: 'Pinata',
       },
     ])

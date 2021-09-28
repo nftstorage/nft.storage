@@ -18,9 +18,9 @@ export type UserOutput = definitions['account'] & {
   >
 }
 
-type PinOutput = definitions['pin_view'] & {
-  status: PinStatus
-}
+// type PinOutput = definitions['pin_view'] & {
+//   status: PinStatus
+// }
 
 export type UploadOutput = definitions['upload'] & {
   files: Array<{ name?: string; type?: string } | undefined>
@@ -29,7 +29,7 @@ export type UploadOutput = definitions['upload'] & {
   user: Pick<definitions['account'], 'id' | 'magic_link_id'>
   key: Pick<definitions['auth_key'], 'name'>
   content: Pick<definitions['content'], 'dag_size'> & {
-    pin: Pick<PinOutput, 'service' | 'status'>[]
+    pin: Pick<definitions['pin'], 'service' | 'status'>[]
   }
   deals: Deal[]
 }
@@ -42,10 +42,6 @@ export interface CreateUploadInput {
   mime_type?: definitions['upload']['mime_type']
   type: definitions['upload']['type']
   dag_size?: definitions['content']['dag_size']
-  // pins: Array<{
-  //   status: definitions['pin']['status']
-  //   service: definitions['pin']['service']
-  // }>
   files?: Array<{ name?: string; type?: string }>
   origins?: string[]
   meta?: Record<string, string>
@@ -53,7 +49,7 @@ export interface CreateUploadInput {
 }
 
 export type ContentOutput = definitions['content'] & {
-  pins: Array<PinOutput>
+  pins: Array<definitions['pin']>
   deals: Deal[]
 }
 
