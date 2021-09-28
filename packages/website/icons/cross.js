@@ -4,7 +4,7 @@ import React from 'react'
  * @param {any} props
  */
 const Cross = (props) => (
-  <svg width="48" height="48" xmlns="http://www.w3.org/2000/svg" {...props}>
+  <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       fillRule="evenodd"
       clipRule="evenodd"
