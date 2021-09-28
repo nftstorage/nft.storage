@@ -5,6 +5,7 @@ import { NFTStorage } from 'nft.storage'
 import Button from '../components/button.js'
 import Loading from '../components/loading'
 import { getNfts, getToken, API } from '../lib/api.js'
+import countly from '../lib/countly.js'
 import { When } from 'react-if'
 import { useRouter } from 'next/router'
 
@@ -103,6 +104,10 @@ export default function Files({ user }) {
                 }}
                 className="flex-none"
                 id="upload"
+                tracking={{
+                  ui: countly.ui.FILES,
+                  action: 'Upload File',
+                }}
               >
                 + Upload
               </Button>
@@ -157,6 +162,11 @@ export default function Files({ user }) {
                                   type="submit"
                                   disabled={Boolean(deleting)}
                                   id="delete-nft"
+                                  tracking={{
+                                    event: countly.events.FILE_DELETE_CLICK,
+                                    ui: countly.ui.FILES,
+                                    action: 'Delete File',
+                                  }}
                                 >
                                   {deleting === nft.cid
                                     ? 'Deleting...'
@@ -176,6 +186,11 @@ export default function Files({ user }) {
                       disabled={befores.length === 1}
                       onClick={handlePrevClick}
                       id="files-previous"
+                      tracking={{
+                        event: countly.events.FILES_NAVIGATION_CLICK,
+                        ui: countly.ui.FILES,
+                        action: 'Previous',
+                      }}
                     >
                       ← Previous
                     </Button>
@@ -185,6 +200,11 @@ export default function Files({ user }) {
                       disabled={nfts.length < limit}
                       onClick={handleNextClick}
                       id="files-next"
+                      tracking={{
+                        event: countly.events.FILES_NAVIGATION_CLICK,
+                        ui: countly.ui.FILES,
+                        action: 'Next',
+                      }}
                     >
                       Next →
                     </Button>

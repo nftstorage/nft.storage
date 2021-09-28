@@ -4,6 +4,7 @@ import { useQueryClient } from 'react-query'
 import Box from '../components/box.js'
 import Button from '../components/button.js'
 import { createToken } from '../lib/api.js'
+import countly from '../lib/countly.js'
 
 /**
  * Static Props
@@ -77,6 +78,10 @@ export default function NewKey() {
                 type="submit"
                 disabled={creating}
                 id="create-new-key"
+                tracking={{
+                  event: countly.events.TOKEN_CREATE,
+                  ui: countly.ui.NEW_TOKEN,
+                }}
               >
                 {creating ? 'Creating...' : 'Create'}
               </Button>
