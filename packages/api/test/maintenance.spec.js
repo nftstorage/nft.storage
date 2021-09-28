@@ -42,11 +42,6 @@ describe('maintenance middleware', () => {
       handler()
     }
 
-    modes.forEach((m) => {
-      setMaintenanceModeGetter(() => m)
-      assert.doesNotThrow(block)
-    })
-
     const invalidModes = ['', null, undefined, ['r', '-'], 'rwx']
     invalidModes.forEach((m) => {
       // @ts-expect-error purposely passing invalid mode
