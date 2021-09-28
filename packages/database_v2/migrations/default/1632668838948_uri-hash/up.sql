@@ -1,11 +1,12 @@
 BEGIN;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 --- NFT Asset
 
 -- Create a derived column
 ALTER TABLE nft_asset
     ADD COLUMN token_uri_hash bytea
-    GENERATED ALWAYS AS (sha256(convert_to(token_uri, 'utf-8')))
+    GENERATED ALWAYS AS (digest(token_uri, 'sha256'))
     STORED;
 
 -- Remove primary key constraint
@@ -25,7 +26,7 @@ ALTER TABLE nft
 
 -- Populate column with hashes
 UPDATE nft
-    SET token_uri_hash = sha256(convert_to(token_uri, 'utf-8'));
+    SET token_uri_hash = digest(token_uri, 'sha256');
 
 -- Make token_uri_hash non-nullable.
 ALTER TABLE nft
@@ -40,7 +41,7 @@ ALTER TABLE nft
 -- Create a derived column
 ALTER TABLE resource
     ADD COLUMN uri_hash bytea
-    GENERATED ALWAYS AS (sha256(convert_to(uri, 'utf-8')))
+    GENERATED ALWAYS AS (digest(uri, 'sha256'))
     STORED;
 
 -- Make token_uri_hash non-nullable.
@@ -63,7 +64,7 @@ ALTER TABLE nft_metadata
 
 -- Populate column with hashes
 UPDATE nft_metadata
-    SET image_uri_hash = sha256(convert_to(image_uri, 'utf-8'));
+    SET image_uri_hash = digest(image_uri, 'sha256');
 
 -- Make image_uri_hash non-nullable.
 ALTER TABLE nft_metadata
@@ -81,7 +82,7 @@ ALTER TABLE other_nft_resources
 
 -- Populate column with hashes
 UPDATE other_nft_resources
-    SET resource_uri_hash = sha256(convert_to(resource_uri, 'utf-8'));
+    SET resource_uri_hash = digest(resource_uri, 'sha256');
 
 -- Make token_uri_hash non-nullable.
 ALTER TABLE other_nft_resources
