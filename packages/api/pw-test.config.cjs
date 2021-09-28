@@ -2,7 +2,6 @@ const path = require('path')
 const dotenv = require('dotenv')
 const execa = require('execa')
 const { once } = require('events')
-const delay = require('delay')
 
 dotenv.config({
   path: path.join(__dirname, '.env.local'),

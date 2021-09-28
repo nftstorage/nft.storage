@@ -19,13 +19,12 @@ export function getStaticProps() {
 
 const Callback = () => {
   const router = useRouter()
-  const version = /** @type {string} */ (router.query.version)
   const queryClient = useQueryClient()
 
   useEffect(() => {
     const finishSocialLogin = async () => {
       try {
-        await redirectSocial(version)
+        await redirectSocial('1')
         await queryClient.invalidateQueries('magic-user')
         router.push({ pathname: '/files', query: { version: '1' } })
       } catch (err) {
@@ -36,7 +35,7 @@ const Callback = () => {
     }
     const finishEmailRedirectLogin = async () => {
       try {
-        await redirectMagic(version)
+        await redirectMagic('1')
         await queryClient.invalidateQueries('magic-user')
         router.push({ pathname: '/files', query: { version: '1' } })
       } catch (err) {
@@ -51,7 +50,7 @@ const Callback = () => {
     if (router.query.provider) {
       finishSocialLogin()
     }
-  }, [router, router.query, queryClient, version])
+  }, [router, router.query, queryClient])
 
   // TODO handle errors
   return null
