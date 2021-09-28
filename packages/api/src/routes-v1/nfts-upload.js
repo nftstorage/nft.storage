@@ -3,7 +3,7 @@ import * as cluster from '../cluster.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth-v1.js'
 import { debug } from '../utils/debug.js'
-import { toNFTResponse } from '../utils/db-client.js'
+import { toNFTResponse } from '../utils/db-transforms.js'
 
 const log = debug('nfts-upload')
 const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
@@ -19,8 +19,10 @@ export async function uploadV1(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
   const { user, key, db } = await validate(event, ctx)
+
   /** @type {import('../utils/db-client-types').UploadOutput} */
   let upload
+  let sourceCid
 
   if (contentType.includes('multipart/form-data')) {
     const form = await event.request.formData()
@@ -35,6 +37,8 @@ export async function uploadV1(event, ctx) {
     })
     const { cid, size } = dir[dir.length - 1]
 
+    sourceCid = cid
+
     upload = await db.createUpload({
       account_id: user.id,
       content_cid: cid,
@@ -47,16 +51,6 @@ export async function uploadV1(event, ctx) {
         name: f.name,
         type: f.type,
       })),
-      pins: [
-        {
-          status: 'queued',
-          service: 'IpfsCluster',
-        },
-        {
-          status: 'queued',
-          service: 'Pinata',
-        },
-      ],
     })
   } else {
     const blob = await event.request.blob()
@@ -75,6 +69,7 @@ export async function uploadV1(event, ctx) {
       local: blob.size > LOCAL_ADD_THRESHOLD,
     })
 
+    sourceCid = cid
     const dagSize = size || bytes
 
     upload = await db.createUpload({
@@ -86,18 +81,8 @@ export async function uploadV1(event, ctx) {
       account_id: user.id,
       files: [],
       key_id: key?.id,
-      pins: [
-        {
-          status: 'queued',
-          service: 'IpfsCluster',
-        },
-        {
-          status: 'queued',
-          service: 'Pinata',
-        },
-      ],
     })
   }
 
-  return new JSONResponse({ ok: true, value: toNFTResponse(upload) })
+  return new JSONResponse({ ok: true, value: toNFTResponse(upload, sourceCid) })
 }

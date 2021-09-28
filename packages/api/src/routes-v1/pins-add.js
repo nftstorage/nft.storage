@@ -3,7 +3,7 @@ import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth-v1.js'
 import { debug } from '../utils/debug.js'
 import { parseCidPinning } from '../utils/utils.js'
-import { toPinsResponse } from '../utils/db-client.js'
+import { toPinsResponse } from '../utils/db-transforms.js'
 
 const log = debug('pins-add')
 
@@ -65,19 +65,9 @@ export async function pinsAddV1(event, ctx) {
     origins: pinData.origins,
     meta: pinData.meta,
     name: pinData.name,
-    pins: [
-      {
-        status: 'queued',
-        service: 'IpfsCluster',
-      },
-      {
-        status: 'queued',
-        service: 'Pinata',
-      },
-    ],
   })
 
-  if (upload.content.pin[0].status === 'failed') {
+  if (upload.content.pin[0].status === 'PinError') {
     await cluster.recover(upload.content_cid)
   }
 
