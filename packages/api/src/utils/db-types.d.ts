@@ -412,9 +412,9 @@ export interface paths {
           entry_last_updated?: parameters['rowFilter.deal.entry_last_updated']
           status_meta?: parameters['rowFilter.deal.status_meta']
           start_time?: parameters['rowFilter.deal.start_time']
-          end_time?: parameters['rowFilter.deal.end_time']
           sector_start_epoch?: parameters['rowFilter.deal.sector_start_epoch']
           sector_start_time?: parameters['rowFilter.deal.sector_start_time']
+          end_time?: parameters['rowFilter.deal.end_time']
           /** Filtering Columns */
           select?: parameters['select']
           /** Ordering */
@@ -533,108 +533,6 @@ export interface paths {
         body: {
           /** pin */
           pin?: definitions['pin']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** No Content */
-        204: never
-      }
-    }
-  }
-  '/pin_view': {
-    get: {
-      parameters: {
-        query: {
-          id?: parameters['rowFilter.pin_view.id']
-          status?: parameters['rowFilter.pin_view.status']
-          content_cid?: parameters['rowFilter.pin_view.content_cid']
-          service?: parameters['rowFilter.pin_view.service']
-          inserted_at?: parameters['rowFilter.pin_view.inserted_at']
-          updated_at?: parameters['rowFilter.pin_view.updated_at']
-          /** Filtering Columns */
-          select?: parameters['select']
-          /** Ordering */
-          order?: parameters['order']
-          /** Limiting and Pagination */
-          offset?: parameters['offset']
-          /** Limiting and Pagination */
-          limit?: parameters['limit']
-        }
-        header: {
-          /** Limiting and Pagination */
-          Range?: parameters['range']
-          /** Limiting and Pagination */
-          'Range-Unit'?: parameters['rangeUnit']
-          /** Preference */
-          Prefer?: parameters['preferCount']
-        }
-      }
-      responses: {
-        /** OK */
-        200: {
-          schema: definitions['pin_view'][]
-        }
-        /** Partial Content */
-        206: unknown
-      }
-    }
-    post: {
-      parameters: {
-        body: {
-          /** pin_view */
-          pin_view?: definitions['pin_view']
-        }
-        query: {
-          /** Filtering Columns */
-          select?: parameters['select']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** Created */
-        201: unknown
-      }
-    }
-    delete: {
-      parameters: {
-        query: {
-          id?: parameters['rowFilter.pin_view.id']
-          status?: parameters['rowFilter.pin_view.status']
-          content_cid?: parameters['rowFilter.pin_view.content_cid']
-          service?: parameters['rowFilter.pin_view.service']
-          inserted_at?: parameters['rowFilter.pin_view.inserted_at']
-          updated_at?: parameters['rowFilter.pin_view.updated_at']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** No Content */
-        204: never
-      }
-    }
-    patch: {
-      parameters: {
-        query: {
-          id?: parameters['rowFilter.pin_view.id']
-          status?: parameters['rowFilter.pin_view.status']
-          content_cid?: parameters['rowFilter.pin_view.content_cid']
-          service?: parameters['rowFilter.pin_view.service']
-          inserted_at?: parameters['rowFilter.pin_view.inserted_at']
-          updated_at?: parameters['rowFilter.pin_view.updated_at']
-        }
-        body: {
-          /** pin_view */
-          pin_view?: definitions['pin_view']
         }
         header: {
           /** Preference */
@@ -931,9 +829,9 @@ export interface definitions {
     entry_last_updated?: string
     status_meta?: string
     start_time?: string
-    end_time?: string
     sector_start_epoch?: number
     sector_start_time?: string
+    end_time?: string
   }
   pin: {
     /**
@@ -950,22 +848,6 @@ export interface definitions {
     service: 'Pinata' | 'IpfsCluster'
     inserted_at: string
     updated_at: string
-  }
-  pin_view: {
-    /**
-     * Note:
-     * This is a Primary Key.<pk/>
-     */
-    id?: number
-    status?: string
-    /**
-     * Note:
-     * This is a Foreign Key to `content.cid`.<fk table='content' column='cid'/>
-     */
-    content_cid?: string
-    service?: 'Pinata' | 'IpfsCluster'
-    inserted_at?: string
-    updated_at?: string
   }
   upload: {
     /**
@@ -1073,9 +955,9 @@ export interface parameters {
   'rowFilter.deal.entry_last_updated': string
   'rowFilter.deal.status_meta': string
   'rowFilter.deal.start_time': string
-  'rowFilter.deal.end_time': string
   'rowFilter.deal.sector_start_epoch': string
   'rowFilter.deal.sector_start_time': string
+  'rowFilter.deal.end_time': string
   /** pin */
   'body.pin': definitions['pin']
   'rowFilter.pin.id': string
@@ -1084,14 +966,6 @@ export interface parameters {
   'rowFilter.pin.service': string
   'rowFilter.pin.inserted_at': string
   'rowFilter.pin.updated_at': string
-  /** pin_view */
-  'body.pin_view': definitions['pin_view']
-  'rowFilter.pin_view.id': string
-  'rowFilter.pin_view.status': string
-  'rowFilter.pin_view.content_cid': string
-  'rowFilter.pin_view.service': string
-  'rowFilter.pin_view.inserted_at': string
-  'rowFilter.pin_view.updated_at': string
   /** upload */
   'body.upload': definitions['upload']
   'rowFilter.upload.id': string
