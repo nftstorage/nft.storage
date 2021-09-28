@@ -5,27 +5,10 @@ import {
   READ_ONLY,
   READ_WRITE,
   NO_READ_OR_WRITE,
-  getMaintenanceMode,
-  setMaintenanceMode,
+  setMaintenanceModeGetter,
 } from '../src/middleware/maintenance.js'
 
 describe('maintenance middleware', () => {
-  it('should validate maintenance mode', () => {
-    modes.forEach((m) => assert.doesNotThrow(() => setMaintenanceMode(m)))
-    const invalidModes = ['', null, undefined, ['r', '-'], 'rwx']
-    invalidModes.forEach((m) => {
-      // @ts-expect-error
-      assert.throws(() => setMaintenanceMode(m), /invalid maintenance mode/)
-    })
-  })
-
-  it('should retrieve current maintenance mode', () => {
-    modes.forEach((m) => {
-      setMaintenanceMode(m)
-      assert.strictEqual(getMaintenanceMode(), m)
-    })
-  })
-
   it('should throw error when in maintenance', () => {
     /** @type {import('../src/utils/router.js').Handler} */
     let handler
@@ -35,20 +18,41 @@ describe('maintenance middleware', () => {
     }
 
     handler = withMode(() => new Response(), READ_ONLY)
-    setMaintenanceMode(READ_WRITE)
+    setMaintenanceModeGetter(() => READ_WRITE)
     assert.doesNotThrow(block)
-    setMaintenanceMode(READ_ONLY)
+    setMaintenanceModeGetter(() => READ_ONLY)
     assert.doesNotThrow(block)
-    setMaintenanceMode(NO_READ_OR_WRITE)
+    setMaintenanceModeGetter(() => NO_READ_OR_WRITE)
     assert.throws(block, /API undergoing maintenance/)
 
     handler = withMode(() => new Response(), READ_WRITE)
-    setMaintenanceMode(READ_WRITE)
+    setMaintenanceModeGetter(() => READ_WRITE)
     assert.doesNotThrow(block)
-    setMaintenanceMode(READ_ONLY)
+    setMaintenanceModeGetter(() => READ_ONLY)
     assert.throws(block, /API undergoing maintenance/)
-    setMaintenanceMode(NO_READ_OR_WRITE)
+    setMaintenanceModeGetter(() => NO_READ_OR_WRITE)
     assert.throws(block, /API undergoing maintenance/)
+  })
+
+  it('should throw for invalid maintenance mode', () => {
+    /** @type {import('../src/utils/router.js').Handler} */
+    const handler = withMode(() => new Response(), READ_WRITE)
+    const block = () => {
+      // @ts-expect-error not passing params to our test handler
+      handler()
+    }
+
+    modes.forEach((m) => {
+      setMaintenanceModeGetter(() => m)
+      assert.doesNotThrow(block)
+    })
+
+    const invalidModes = ['', null, undefined, ['r', '-'], 'rwx']
+    invalidModes.forEach((m) => {
+      // @ts-expect-error purposely passing invalid mode
+      setMaintenanceModeGetter(() => m)
+      assert.throws(block, /invalid maintenance mode/)
+    })
   })
 
   it('should not allow invalid handler mode', () => {

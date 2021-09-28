@@ -39,14 +39,12 @@ import {
   withMode,
   READ_ONLY,
   READ_WRITE,
-  getMaintenanceMode,
-  setMaintenanceMode,
+  setMaintenanceModeGetter,
 } from './middleware/maintenance.js'
-import { maintenance } from './constants.js'
 
 const log = debug('router')
 
-setMaintenanceMode(maintenance.mode)
+setMaintenanceModeGetter(() => MAINTENANCE_MODE)
 
 const r = new Router({
   onError(req, err, { sentry }) {
@@ -70,7 +68,7 @@ r.add('get', '/version', (event) => {
     version: VERSION,
     commit: COMMITHASH,
     branch: BRANCH,
-    mode: getMaintenanceMode(),
+    mode: MAINTENANCE_MODE,
   })
 })
 

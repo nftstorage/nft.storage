@@ -138,7 +138,7 @@ DEBUG = "*"
 CLUSTER_API_URL = "https://alan-cluster-api-nft-storage.loca.lt"
 CLUSTER_IPFS_PROXY_API_URL = "https://alan-ipfs-proxy-api-nft-storage.loca.lt/api/v0/"
 CLUSTER_ADDRS = ""
-DATABASE_URL = "http://localhost:8000"
+DATABASE_URL = "https://alan-postgrest-nft-storage.loca.lt"
 
 [env.gozala]
 name="nft-storage-gozala"

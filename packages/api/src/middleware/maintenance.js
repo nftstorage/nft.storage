@@ -23,26 +23,31 @@ export const NO_READ_OR_WRITE = '--'
 /** @type {readonly Mode[]} */
 export const modes = Object.freeze([NO_READ_OR_WRITE, READ_ONLY, READ_WRITE])
 
-let currentMode = 'rw'
-let currentModeBits = modeBits(currentMode)
+/**
+ * The default maintenance mode (normal operation).
+ */
+const DEFAULT_MODE = READ_WRITE
 
-export function getMaintenanceMode() {
-  return currentMode
-}
+/** @type {() => Mode} */
+let getMaintenanceMode = () => DEFAULT_MODE
 
 /**
- * Dictates which request handlers (that have been wrapped with `withMode`) are
- * enabled and may have one of the following values:
+ * Sets the function that returns the current maintenance mode. This allows us
+ * to pass a function that accesses a global variable. Cloudflare secrets are
+ * exposed as global variables so this is the way to dynamically access them.
+ *
+ * The return value from the getter function dictates which request handlers
+ * (that have been wrapped with `withMode`) are enabled. The returned value is
+ * one of:
  *
  * -- = no reading or writing
  * r- = read only mode
  * rw = read and write (normal operation)
  *
- * @param {Mode} mode
+ * @param {() => Mode} getter
  */
-export function setMaintenanceMode(mode) {
-  currentModeBits = modeBits(mode)
-  currentMode = mode
+export function setMaintenanceModeGetter(getter) {
+  getMaintenanceMode = getter
 }
 
 /**
@@ -58,11 +63,14 @@ export function withMode(handler, mode) {
   if (mode === NO_READ_OR_WRITE) {
     throw new Error('invalid mode')
   }
-  const enabled = () =>
-    modeBits(mode).every((bit, i) => {
+  const enabled = () => {
+    const currentMode = getMaintenanceMode()
+    const currentModeBits = modeBits(currentMode)
+    return modeBits(mode).every((bit, i) => {
       if (bit === '-') return true
       return currentModeBits[i] === bit
     })
+  }
   return (...args) => (enabled() ? handler(...args) : maintenanceHandler())
 }
 
