@@ -10,6 +10,7 @@ import Box from '../components/box.js'
 import Alert from '../components/alert.js'
 import Button from '../components/button.js'
 import Link from 'next/link'
+import Cross from '../icons/cross'
 
 export function getStaticProps() {
   return {
@@ -56,6 +57,7 @@ export default function NewFile() {
         endpoint: new URL(API + (version === '1' ? '/v1/' : '/')),
       })
       setUploading(true)
+      setError('')
       try {
         /** @type File|Blob */
         let car
@@ -188,20 +190,14 @@ export default function NewFile() {
           </form>
         </Box>
         <When condition={error !== ''}>
-          <Alert
-            className="pa4 white"
-            position="top"
-            type="error"
-            timer={4}
-            onTimerEnd={() => setError('')}
-          >
+          <Alert className="pa4 white" position="top" type="error">
             <>
               {error}{' '}
               <button
-                className="border ml2 br-100 b--transparent pointer"
+                className="border ml2 ph2 pv1 br-100 b--transparent pointer"
                 onClick={() => setError('')}
               >
-                X
+                <Cross width="12" height="12" fill="currentColor" />
               </button>
             </>
           </Alert>
