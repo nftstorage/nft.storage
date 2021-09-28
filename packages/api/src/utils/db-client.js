@@ -28,7 +28,7 @@ export class DBClient {
     /**@type {PostgrestQueryBuilder<definitions['account']>} */
     const query = this.client.from('account')
 
-    return query.upsert(account)
+    return query.upsert(account, { onConflict: 'magic_link_id' })
   }
 
   /**
@@ -300,11 +300,20 @@ export class DBClient {
     /** @type {PostgrestQueryBuilder<definitions['auth_key']>} */
     const query = this.client.from('auth_key')
 
-    const { data, error } = await query.insert({
-      name: key.name,
-      secret: key.secret,
-      account_id: key.userId,
-    })
+    const { data, error } = await query
+      .upsert(
+        {
+          name: key.name,
+          secret: key.secret,
+          account_id: key.userId,
+        },
+        { onConflict: 'name,account_id' }
+      )
+      .single()
+
+    if (!data) {
+      throw new Error('Auth key not created.')
+    }
 
     if (error) {
       throw new Error(JSON.stringify(error))

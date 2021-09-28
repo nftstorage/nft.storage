@@ -18,6 +18,17 @@ CREATE TYPE upload_type AS ENUM (
     'Nft'
     );
 
+-- Utils functions
+CREATE OR REPLACE
+  FUNCTION update_updated_at() RETURNS TRIGGER
+    LANGUAGE plpgsql
+AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$;
+
 -- Create upload table
 CREATE TABLE IF NOT EXISTS account
 (
@@ -40,7 +51,8 @@ CREATE TABLE IF NOT EXISTS auth_key
     secret      TEXT                                                          NOT NULL,
     account_id  BIGINT                                                        NOT NULL REFERENCES account (id),
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    UNIQUE (name, account_id)
 );
 
 CREATE TABLE IF NOT EXISTS content
@@ -52,6 +64,7 @@ CREATE TABLE IF NOT EXISTS content
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- Create Pin table
 CREATE TABLE IF NOT EXISTS pin
 (
     id          BIGSERIAL PRIMARY KEY,

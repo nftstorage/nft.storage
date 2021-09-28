@@ -17,27 +17,49 @@ class Cluster {
    */
   async status(cid) {
     const url = new URL(`pins/${cid}`, this.options.url)
+    try {
+      const data = await got(url, {
+        headers: this.options.headers,
+        timeout: 5000,
+      }).json()
 
-    const data = await got(url, {
-      headers: this.options.headers,
-    }).json()
+      let status = 'PinError'
 
-    let status = 'failed'
+      // eslint-disable-next-line dot-notation
+      const pinInfos = Object.values(data['peer_map'])
+      if (pinInfos.some((i) => i.status === 'pinned')) {
+        status = 'Pinned'
+      } else if (pinInfos.some((i) => i.status === 'pinning')) {
+        status = 'Pinning'
+      } else if (pinInfos.some((i) => i.status === 'pin_queued')) {
+        status = 'PinQueued'
+      }
 
-    // eslint-disable-next-line dot-notation
-    const pinInfos = Object.values(data['peer_map'])
-    if (pinInfos.some((i) => i.status === 'pinned')) {
-      status = 'pinned'
-    } else if (pinInfos.some((i) => i.status === 'pinning')) {
-      status = 'pinning'
-    } else if (pinInfos.some((i) => i.status === 'queued')) {
-      status = 'queued'
+      return status
+    } catch (err) {
+      return 'PinError'
     }
+  }
 
-    return {
-      cid: data.cid['/'],
-      status,
-      date: pinInfos[0].timestamp,
+  /**
+   * @param {string} cid
+   */
+  async recover(cid) {
+    const url = new URL(
+      `pins/${encodeURIComponent(cid)}/recover`,
+      this.options.url
+    )
+    try {
+      const data = await got
+        .post(url, {
+          headers: this.options.headers,
+          timeout: 1000,
+        })
+        .json()
+
+      return data
+    } catch (err) {
+      return err
     }
   }
 
