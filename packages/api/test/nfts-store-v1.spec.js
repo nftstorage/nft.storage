@@ -76,13 +76,13 @@ describe('V1 - /store', () => {
       {
         content_cid:
           'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
-        status: 'queued',
+        status: 'PinQueued',
         service: 'IpfsCluster',
       },
       {
         content_cid:
           'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
-        status: 'queued',
+        status: 'PinQueued',
         service: 'Pinata',
       },
     ])

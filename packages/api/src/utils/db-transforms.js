@@ -19,7 +19,7 @@ export function toNFTResponse(upload, sourceCid) {
       cid: sourceCid || upload.source_cid,
       created: upload.inserted_at,
       size: upload.content.dag_size || 0,
-      status: upload.content.pin[0].status,
+      status: transformPinStatus(upload.content.pin[0].status),
     },
     deals: upload.deals,
   }
@@ -35,7 +35,7 @@ export function toPinsResponse(upload) {
   /** @type {import('../bindings').PinsResponse} */
   const rsp = {
     requestid: upload.source_cid,
-    status: upload.content.pin[0].status,
+    status: transformPinStatus(upload.content.pin[0].status),
     created: upload.inserted_at,
     pin: {
       cid: upload.source_cid,
@@ -62,9 +62,27 @@ export function toCheckNftResponse(sourceCid, content) {
       cid: sourceCid,
       created: content?.inserted_at,
       size: content?.dag_size,
-      status: content?.pins[0].status,
+      status: transformPinStatus(content?.pins[0].status),
     },
     deals: content.deals,
   }
   return rsp
+}
+
+/**
+ *
+ * @param {import('./db-types').definitions['pin']['status']} status
+ * @return {import('../bindings').PinStatus}
+ */
+function transformPinStatus(status) {
+  switch (status) {
+    case 'PinQueued':
+      return 'queued'
+    case 'Pinned':
+      return 'pinned'
+    case 'Pinning':
+      return 'pinning'
+    default:
+      return 'failed'
+  }
 }

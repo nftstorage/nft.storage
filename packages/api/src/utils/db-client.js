@@ -62,7 +62,19 @@ export class DBClient {
    */
   async createUpload(data) {
     const rsp = await this.client.rpc('upload_fn', {
-      data,
+      data: {
+        ...data,
+        pins: [
+          {
+            status: 'PinQueued',
+            service: 'IpfsCluster',
+          },
+          {
+            status: 'PinQueued',
+            service: 'Pinata',
+          },
+        ],
+      },
     })
     if (rsp.error) {
       throw new Error(JSON.stringify(rsp.error))

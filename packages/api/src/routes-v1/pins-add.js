@@ -65,19 +65,9 @@ export async function pinsAddV1(event, ctx) {
     origins: pinData.origins,
     meta: pinData.meta,
     name: pinData.name,
-    pins: [
-      {
-        status: 'queued',
-        service: 'IpfsCluster',
-      },
-      {
-        status: 'queued',
-        service: 'Pinata',
-      },
-    ],
   })
 
-  if (upload.content.pin[0].status === 'failed') {
+  if (upload.content.pin[0].status === 'PinError') {
     await cluster.recover(upload.content_cid)
   }
 

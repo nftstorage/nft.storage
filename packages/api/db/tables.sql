@@ -1,12 +1,12 @@
--- Pin status 
+-- Pin status Type
 CREATE TYPE pin_status_type AS ENUM (
-    'queued',
-    'pinning',
-    'pinned',
-    'failed'
+    'PinError',
+    'PinQueued',
+    'Pinned',
+    'Pinning'
     );
 
--- Pin Services
+-- Pin Services Type
 CREATE TYPE service_type AS ENUM ('Pinata', 'IpfsCluster');
 
 -- Upload Type

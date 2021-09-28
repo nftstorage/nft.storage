@@ -412,9 +412,9 @@ export interface paths {
           entry_last_updated?: parameters['rowFilter.deal.entry_last_updated']
           status_meta?: parameters['rowFilter.deal.status_meta']
           start_time?: parameters['rowFilter.deal.start_time']
-          end_time?: parameters['rowFilter.deal.end_time']
           sector_start_epoch?: parameters['rowFilter.deal.sector_start_epoch']
           sector_start_time?: parameters['rowFilter.deal.sector_start_time']
+          end_time?: parameters['rowFilter.deal.end_time']
           /** Filtering Columns */
           select?: parameters['select']
           /** Ordering */
@@ -726,7 +726,7 @@ export interface paths {
       parameters: {
         body: {
           args: {
-            cid: string
+            cids: string
           }
         }
         header: {
@@ -829,9 +829,9 @@ export interface definitions {
     entry_last_updated?: string
     status_meta?: string
     start_time?: string
-    end_time?: string
     sector_start_epoch?: number
     sector_start_time?: string
+    end_time?: string
   }
   pin: {
     /**
@@ -839,7 +839,7 @@ export interface definitions {
      * This is a Primary Key.<pk/>
      */
     id: number
-    status: 'queued' | 'pinning' | 'pinned' | 'failed'
+    status: 'PinError' | 'PinQueued' | 'Pinned' | 'Pinning'
     /**
      * Note:
      * This is a Foreign Key to `content.cid`.<fk table='content' column='cid'/>
@@ -955,9 +955,9 @@ export interface parameters {
   'rowFilter.deal.entry_last_updated': string
   'rowFilter.deal.status_meta': string
   'rowFilter.deal.start_time': string
-  'rowFilter.deal.end_time': string
   'rowFilter.deal.sector_start_epoch': string
   'rowFilter.deal.sector_start_time': string
+  'rowFilter.deal.end_time': string
   /** pin */
   'body.pin': definitions['pin']
   'rowFilter.pin.id': string
