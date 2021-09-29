@@ -2833,6 +2833,11 @@ cosmiconfig@^7.0.0:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
+countly-sdk-web@^20.11.3:
+  version "20.11.3"
+  resolved "https://registry.yarnpkg.com/countly-sdk-web/-/countly-sdk-web-20.11.3.tgz#2f385246ca4e1bef2669504d7d3b3fc7314e9e38"
+  integrity sha512-/blaOEvojWDBqD2wujxiQhnssKeFzRc4WCu0Wexoy9pBwPSQsapNbYP8HLs/MDcJo9ACaRfcxPU2sPN6J4wFSQ==
+
 create-ecdh@^4.0.0:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/create-ecdh/-/create-ecdh-4.0.4.tgz#d6e7f4bffa66736085a0762fd3a632684dabcc4e"
