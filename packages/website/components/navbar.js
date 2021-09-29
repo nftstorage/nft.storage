@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, useCallback } from 'react'
 import Router, { useRouter } from 'next/router'
 import clsx from 'clsx'
 import Link from 'next/link'
@@ -8,6 +8,7 @@ import { useResizeObserver } from '../hooks/resize-observer'
 import Button from './button.js'
 import Cross from '../icons/cross'
 import Hamburger from '../icons/hamburger'
+import countly from '../lib/countly'
 
 /**
  * Navbar Component
@@ -60,18 +61,30 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
     ],
     [user, isSmallVariant, version]
   )
+  const onLinkClick = useCallback((event) => {
+    countly.trackCustomLinkClick(
+      countly.events.LINK_CLICK_NAVBAR,
+      event.currentTarget
+    )
+  }, [])
+
+  const toggleMenu = useCallback(() => {
+    isMenuOpen
+      ? document.body.classList.remove('overflow-hidden')
+      : document.body.classList.add('overflow-hidden')
+    setMenuOpen(!isMenuOpen)
+  }, [isMenuOpen])
+
+  const onMobileLinkClick = useCallback((event) => {
+    onLinkClick(event)
+
+    toggleMenu()
+  }, [onLinkClick, toggleMenu])
 
   async function logout() {
     await getMagic().user.logout()
     await queryClient.invalidateQueries('magic-user')
     Router.push({ pathname: '/', query: version ? { version } : null })
-  }
-
-  const toggleMenu = () => {
-    isMenuOpen
-      ? document.body.classList.remove('overflow-hidden')
-      : document.body.classList.add('overflow-hidden')
-    setMenuOpen(!isMenuOpen)
   }
 
   return (
@@ -92,7 +105,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
           </div>
         )}
         <Link href={{ pathname: '/', query: version ? { version } : null }}>
-          <a className="no-underline v-mid">
+          <a className="no-underline v-mid" onClick={onLinkClick}>
             <img
               src="/images/logo-nft.storage-sm.png"
               width="160"
@@ -114,6 +127,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
                       'f4 black no-underline underline-hover v-mid',
                       item.spacing
                     )}
+                    onClick={onLinkClick}
                   >
                     {item.name}
                   </a>
@@ -125,7 +139,15 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
             ))}
           <div className="mb1">
             {user ? (
-              <Button onClick={logout} id="logout">
+              <Button
+                onClick={logout}
+                id="logout"
+                tracking={{
+                  event: countly.events.LOGOUT_CLICK,
+                  ui: countly.ui.NAVBAR,
+                  action: 'Logout',
+                }}
+              >
                 Logout
               </Button>
             ) : (
@@ -135,6 +157,10 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
                   query: version ? { version } : null,
                 }}
                 id="login"
+                tracking={{
+                  ui: countly.ui.NAVBAR,
+                  action: 'Login',
+                }}
               >
                 Login
               </Button>
@@ -177,7 +203,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
                   item.spacing,
                   bgColor === 'bg-nsgreen' ? 'black' : 'white'
                 )}
-                onClick={() => toggleMenu()}
+                onClick={onMobileLinkClick}
               >
                 {item.name}
               </a>
@@ -185,7 +211,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
           ))}
         </div>
         <div className="flex flex-column items-center mb4">
-          <Button className="flex justify-center" onClick={() => toggleMenu()}>
+          <Button className="flex justify-center" onClick={toggleMenu}>
             <Cross fill="currentColor" />
           </Button>
         </div>
