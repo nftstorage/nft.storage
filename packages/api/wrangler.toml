@@ -138,7 +138,7 @@ DEBUG = "*"
 CLUSTER_API_URL = "https://alan-cluster-api-nft-storage.loca.lt"
 CLUSTER_IPFS_PROXY_API_URL = "https://alan-ipfs-proxy-api-nft-storage.loca.lt/api/v0/"
 CLUSTER_ADDRS = ""
-DATABASE_URL = "http://localhost:8000"
+DATABASE_URL = "https://alan-postgrest-nft-storage.loca.lt"
 
 [env.gozala]
 name="nft-storage-gozala"
@@ -163,5 +163,33 @@ ENV = "dev"
 DEBUG = "*"
 CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/"
 CLUSTER_IPFS_PROXY_API_URL = ""
+CLUSTER_ADDRS = ""
+DATABASE_URL = "http://localhost:8000"
+
+[env.ze]
+type = "webpack"
+name = "nft-storage-ze"
+account_id = "9357c50891f315d3c8a84e87ee47f740"
+workers_dev = true
+usage_model = ""
+route = ""
+zone_id = ""
+kv_namespaces = [
+    { binding = "USERS", preview_id = "ae5de1d8a7b24a7380bcf152d0a34405", id = "ae5de1d8a7b24a7380bcf152d0a34405" },
+    { binding = "NFTS", preview_id = "e151334b3ca14ba381a5eec9c0143e94", id = "e151334b3ca14ba381a5eec9c0143e94" },
+    { binding = "NFTS_IDX", preview_id = "8eb6bf97cfa243ab9bebe5dcb61233dc", id = "8eb6bf97cfa243ab9bebe5dcb61233dc" },
+    { binding = "DEALS", preview_id = "653d8a2c419843f18b9092fb2cc090dd", id = "653d8a2c419843f18b9092fb2cc090dd" },
+    { binding = "METRICS", preview_id = "dae53a615e7741d2a5d89a601e5b4c8d", id = "dae53a615e7741d2a5d89a601e5b4c8d" },
+    { binding = "PINS", preview_id = "a2fe6ea3f15d42deb208d482be50cc01", id = "a2fe6ea3f15d42deb208d482be50cc01" },
+    { binding = "FOLLOWUPS", preview_id = "6b8fd71bbbd241428585a91fb540519d", id = "6b8fd71bbbd241428585a91fb540519d" },
+    { binding = "PINATA_QUEUE", preview_id = "fba21c792337417e85296320a0ae58e4", id = "fba21c792337417e85296320a0ae58e4" }
+]
+
+
+[env.ze.vars]
+ENV = "dev"
+DEBUG = "*"
+CLUSTER_API_URL = "https://ze-cluster-api-nft-storage.loca.lt"
+CLUSTER_IPFS_PROXY_API_URL = "https://ze-ipfs-proxy-api-nft-storage.loca.lt"
 CLUSTER_ADDRS = ""
 DATABASE_URL = "http://localhost:8000"

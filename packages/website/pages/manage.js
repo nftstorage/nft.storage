@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { If, Then, Else, When } from 'react-if'
 import Button from '../components/button.js'
 import { deleteToken, getTokens } from '../lib/api'
+import countly from '../lib/countly.js'
 import { useQuery, useQueryClient } from 'react-query'
 import Loading from '../components/loading.js'
 import { useRouter } from 'next/router'
@@ -100,6 +101,7 @@ export default function ManageKeys({ user }) {
                 }}
                 className="flex-none"
                 id="new-key"
+                tracking={{ ui: countly.ui.TOKENS, action: 'New API Token' }}
               >
                 + New Key
               </Button>
@@ -132,6 +134,10 @@ export default function ManageKeys({ user }) {
                             className="bg-white black"
                             type="submit"
                             id="copy-key"
+                            tracking={{
+                              event: countly.events.TOKEN_COPY,
+                              ui: countly.ui.TOKENS,
+                            }}
                           >
                             {copied === t[1] ? 'Copied!' : 'Copy'}
                           </Button>
@@ -150,6 +156,10 @@ export default function ManageKeys({ user }) {
                             type="submit"
                             disabled={Boolean(deleting)}
                             id={`delete-key-${t[0]}`}
+                            tracking={{
+                              event: countly.events.TOKEN_DELETE,
+                              ui: countly.ui.TOKENS,
+                            }}
                           >
                             {deleting ===
                             (version === '1' ? `${t[2]}` + '' : t[0])

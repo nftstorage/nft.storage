@@ -6,9 +6,10 @@
   "type": "module",
   "main": "dist/worker.js",
   "scripts": {
-    "lt": "npm run lt:cluster & npm run lt:ipfs-proxy",
+    "lt": "npm run lt:cluster & npm run lt:ipfs-proxy & npm run lt:postgrest",
     "lt:cluster": "npx localtunnel --port 9094 --subdomain \"$(whoami)-cluster-api-nft-storage\"",
     "lt:ipfs-proxy": "npx localtunnel --port 9095 --subdomain \"$(whoami)-ipfs-proxy-api-nft-storage\"",
+    "lt:postgrest": "npx localtunnel --port 3000 --subdomain \"$(whoami)-postgrest-nft-storage\"",
     "deploy": "wrangler publish --env production",
     "dev": "wrangler dev",
     "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js",
