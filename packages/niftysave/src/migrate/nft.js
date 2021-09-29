@@ -55,21 +55,7 @@ const insert = ({
   inserted_at: Migration.fromTimestamp(ts),
 })
 
-/**
- * @param {Migration.Document<NFT>[]} document
- * @returns {Migration.Mutation}
- */
-
-function docToMutation(document) {
-  return {
-    add_nft: [
-      {
-        args: insert(document),
-      },
-    ],
-  }
-}
-
+//this will break the build until we fix the client
 /**
  * @param {Migration.Document<NFT>[]} documents
  * @returns { Migration.Mutation}
