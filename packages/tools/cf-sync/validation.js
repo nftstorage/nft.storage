@@ -1,6 +1,7 @@
 import Ajv from 'ajv'
 import ajvFormats from 'ajv-formats'
 import PQueue from 'p-queue'
+import { CID } from 'multiformats'
 
 /**
  * @typedef {import('./cli2').Context} Context
@@ -72,7 +73,7 @@ export async function validateLocal(ctx, task) {
 
   for await (const item of ctx.nftStore.iterator()) {
     count++
-    task.output = `Queue: ${count} - ${item.value.data.cid}`
+    task.output = `Queue: ${count}`
 
     const valid = validate(item.value)
 
@@ -80,7 +81,7 @@ export async function validateLocal(ctx, task) {
       // Fix no scope
       if (
         validate.errors?.some(
-          (err) => err.message === "must have required property 'scope'"
+          err => err.message === "must have required property 'scope'"
         )
       ) {
         // await ctx.nftStore.put(item.key, { data: { scope: 'nft-storage' } })
@@ -89,7 +90,7 @@ export async function validateLocal(ctx, task) {
       // Fix no deals
       if (
         validate.errors?.some(
-          (err) => err.message === "must have required property 'deals'"
+          err => err.message === "must have required property 'deals'"
         )
       ) {
         await ctx.nftStore.put(item.key, { deals: [] })
@@ -97,7 +98,7 @@ export async function validateLocal(ctx, task) {
 
       if (
         validate.errors?.some(
-          (err) => err.message === "must have required property 'pinStatus'"
+          err => err.message === "must have required property 'pinStatus'"
         )
       ) {
         // await ctx.nftStore.put(item.key, { pinStatus: status.status })
@@ -105,7 +106,7 @@ export async function validateLocal(ctx, task) {
 
       if (
         validate.errors?.some(
-          (err) => err.message === "must have required property 'size'"
+          err => err.message === "must have required property 'size'"
         )
       ) {
         // await ctx.nftStore.put(item.key, { size })
@@ -143,7 +144,7 @@ export async function validateLocal(ctx, task) {
       const fixed = await ctx.nftStore.get(item.key)
       const fixedValid = validate(fixed)
       if (!fixedValid) {
-        console.log(JSON.stringify(fixed, null, 2))
+        console.log(item.key, JSON.stringify(fixed, null, 2))
 
         console.log(validate.errors)
         throw new Error('Still invalid')
@@ -169,10 +170,26 @@ function validation() {
   const ajv = new Ajv()
   ajvFormats(ajv)
 
+  ajv.addFormat('cid', {
+    type: 'string',
+    validate: data => {
+      console.log(
+        '🚀 ~ file: validation.js ~ line 176 ~ validation ~ data',
+        data
+      )
+      try {
+        CID.parse(data)
+        return true
+      } catch (err) {
+        return false
+      }
+    },
+  })
+
   /** @type {import('ajv').JSONSchemaType<import('./schema').LocalNFT>} */
   const schema = {
     type: 'object',
-    required: ['data', 'deals', 'name', 'pinStatus', 'size'],
+    required: ['data', 'deals', 'pinStatus', 'size'],
     properties: {
       name: { type: 'string' },
       size: { type: 'integer', minimum: 0 },
@@ -198,7 +215,7 @@ function validation() {
         type: 'object',
         required: ['cid', 'created', 'files', 'scope', 'type'],
         properties: {
-          cid: { type: 'string' },
+          cid: { type: 'string', format: 'cid' },
           created: { type: 'string' },
           type: { type: 'string' },
           scope: { type: 'string' },

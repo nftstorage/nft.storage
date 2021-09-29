@@ -9,9 +9,21 @@ dotenv.config({
   path: path.resolve(__dirname, '../../../.env'),
 })
 
-const db = new DBClient(process.env.DATABASE_URL, process.env.DATABASE_TOKEN)
+const db = new DBClient(
+  process.env.DATABASE_URL || '',
+  process.env.DATABASE_TOKEN || ''
+)
 const cluster = new Cluster(process.env.CLUSTER_TOKEN || '')
 
+/**
+ * @typedef {import('../../api/src/utils/db-types').definitions} definitions
+ * @typedef {Pick<definitions['pin'], 'id'|'status'|'content_cid'|'service'|'updated_at'>} Pin
+ * @typedef {import('@supabase/postgrest-js').PostgrestQueryBuilder<Pin>} PinQuery
+ */
+
+/**
+ * Pin status sync
+ */
 async function run() {
   const { count, error: countError } = await db.client
     .from('pin')
@@ -20,19 +32,26 @@ async function run() {
     .neq('status', 'Pinned')
 
   if (countError) {
-    return console.log(countError)
+    throw new Error(JSON.stringify(countError))
   }
-  const { data: pins, error } = await db.client
-    .from('pin')
+
+  /** @type {PinQuery} */
+  const query = db.client.from('pin')
+  const { data: pins, error } = await query
     .select('id,status,content_cid,service')
     .eq('service', 'IpfsCluster')
     .neq('status', 'Pinned')
     .limit(20)
 
   if (error) {
-    return console.log(error)
+    throw new Error(JSON.stringify(error))
   }
 
+  if (!pins) {
+    throw new Error('no pins found')
+  }
+
+  /** @type {Pin[]} */
   const updatedPins = []
   for (const pin of pins) {
     const status = await cluster.status(pin.content_cid)
@@ -44,6 +63,7 @@ async function run() {
       updatedPins.push({
         ...pin,
         status,
+        updated_at: new Date().toISOString(),
       })
     }
   }

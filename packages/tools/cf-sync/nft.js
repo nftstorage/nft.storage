@@ -37,9 +37,9 @@ export async function syncNFTData(ctx, task) {
   let count = 0
   let missing = 0
   const queue = new PQueue({
-    concurrency: 20,
+    concurrency: 10,
     interval: 1000,
-    intervalCap: 200,
+    intervalCap: 100,
   })
 
   queue.on('active', () => {
@@ -64,6 +64,7 @@ export async function syncNFTData(ctx, task) {
         if (rsp.ok) {
           await ctx.nftStore.put(key, { data: rsp.nft })
         } else {
+          console.log(rsp.error)
           // await ctx.nftStore.del(key)
         }
       }
@@ -71,7 +72,7 @@ export async function syncNFTData(ctx, task) {
     }
   }
   await queue.onIdle()
-  task.title += `nfts ${count} new ${missing}`
+  task.title += ` nfts ${count} new ${missing}`
 }
 
 /**
@@ -124,6 +125,11 @@ export async function syncCheck(ctx, task) {
             })
           }
         } catch (err) {
+          console.log(
+            '🚀 ~ file: nft.js ~ line 127 ~ run ~ err',
+            err.message,
+            item
+          )
           errors.push(`${cid}: ${err.message}`)
         }
       }
@@ -134,3 +140,69 @@ export async function syncCheck(ctx, task) {
   await queue.onIdle()
   task.title += ` -> Total: ${countTotal} New: ${countMissingData} Errors: ${errors.length}`
 }
+
+/**
+ * @param {Context} ctx
+ * @param {Task} task
+ */
+export async function checkDeletes(ctx, task) {
+  let count = 0
+  let deleted = 0
+  const errors = []
+  const queue = new PQueue({
+    concurrency: 100,
+    interval: 5000,
+    intervalCap: 1000,
+    autoStart: false,
+  })
+
+  queue.on('active', () => {
+    task.output = `Queue: ${queue.size}. count: ${count} deleted: ${deleted}`
+  })
+
+  for await (const { key, value } of ctx.nftStore.iterator()) {
+    count++
+    const run = async () => {
+      const rsp = await got
+        .get(
+          'https://nft-storage-dev.protocol-labs.workers.dev/internal/list2',
+          {
+            searchParams: {
+              key,
+            },
+          }
+        )
+        .json()
+      if (rsp.ok) {
+        // console.log(rsp)
+        await ctx.nftStore.put(key, {
+          data: rsp.nft,
+          pinStatus: rsp.pin.status,
+          size: rsp.pin.size,
+        })
+      } else {
+        deleted++
+        errors.push(rsp.error)
+        // console.log(rsp.error)
+        await ctx.nftStore.del(key)
+      }
+    }
+    queue.add(() => run())
+  }
+
+  await queue.start()
+  await queue.onIdle()
+  task.title += ` nfts ${count} deleted ${deleted}`
+}
+
+// {
+//   ok: true,
+//   nft: {
+//     cid: 'bafkreie6kbyjd4tjda2dct5kemfb5xyhjy3cqmyggpnyrvnilhl7foa7ay',
+//     created: '2021-06-08T17:54:20.043Z',
+//     type: 'application/octet-stream',
+//     scope: 'sky_nft_test',
+//     files: []
+//   },
+//   pin: { status: 'pinned', size: 250 }
+// }

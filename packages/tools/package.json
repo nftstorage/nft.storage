@@ -20,6 +20,7 @@
     "level": "^7.0.0",
     "listr": "^0.14.3",
     "merge-options": "^3.0.4",
+    "multiformats": "^9.4.8",
     "ora": "^5.4.1",
     "p-queue": "^7.1.0",
     "sade": "^1.7.4"

@@ -1,6 +1,11 @@
 import { URL } from 'url'
 import got from 'got'
 
+/**
+ * @typedef {import('../../api/src/utils/db-types').definitions} definitions
+ * @typedef {definitions['pin']['status']} Status
+ */
+
 class Cluster {
   /**
    * @param {String} token
@@ -14,6 +19,7 @@ class Cluster {
 
   /**
    * @param {string} cid
+   * @returns {Promise<Status>}
    */
   async status(cid) {
     const url = new URL(`pins/${cid}`, this.options.url)
@@ -23,15 +29,16 @@ class Cluster {
         timeout: 5000,
       }).json()
 
+      /** @type {Status} */
       let status = 'PinError'
 
       // eslint-disable-next-line dot-notation
       const pinInfos = Object.values(data['peer_map'])
-      if (pinInfos.some((i) => i.status === 'pinned')) {
+      if (pinInfos.some(i => i.status === 'pinned')) {
         status = 'Pinned'
-      } else if (pinInfos.some((i) => i.status === 'pinning')) {
+      } else if (pinInfos.some(i => i.status === 'pinning')) {
         status = 'Pinning'
-      } else if (pinInfos.some((i) => i.status === 'pin_queued')) {
+      } else if (pinInfos.some(i => i.status === 'pin_queued')) {
         status = 'PinQueued'
       }
 
@@ -85,7 +92,7 @@ class Cluster {
       headers: this.options.headers,
     }).json()
     const peers = Object.entries(rsp.peer_map)
-    return peers.map((p) => ({
+    return peers.map(p => ({
       peerId: p[0],
       peerName: p[1].peername,
       status: getStatus(p[1].status),
