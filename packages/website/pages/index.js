@@ -49,6 +49,33 @@ function About() {
         <strong>nft.storage</strong> is attacked or taken down the NFT data
         persists!
       </p>
+      <p className="lh-copy">
+        Optionally, you can provide additional redundancy by running your own
+        IPFS node and{' '}
+        <a
+          className="black"
+          href="https://docs.ipfs.io/concepts/persistence/#pinning-in-context"
+          target="_blank"
+          rel="noreferrer"
+        >
+          pinning
+        </a>{' '}
+        the CIDs of content uploaded to NFT.Storage.
+      </p>
+      <p className="lh-copy">
+        Alternately, you can use an{' '}
+        <a
+          className="black"
+          href="https://docs.ipfs.io/concepts/persistence/#pinning-services"
+          target="_blank"
+          rel="noreferrer"
+        >
+          additional pinning service
+        </a>{' '}
+        for redundancy (NFT.Storage already does this when it backs things up to
+        Pinata). Doing this is not necessary, but might be of interest for users
+        looking to be in full control of their data and its availability.
+      </p>
     </>
   )
   const retrieveText = (
@@ -100,6 +127,14 @@ function About() {
           IPFS command line
         </a>
         .
+      </p>
+      <p className="lh-copy">
+        If fetching content using a public IPFS gateway (e.g., directly using an
+        HTTP URL or via Brave), note that the availability and speed of
+        retrieving the content depends on the gateway. In cases where the
+        gateway is unable to retrieve a given CID (e.g., returns a 429 error),
+        you can try a different gateway or running and using your own IPFS node
+        instead.
       </p>
     </>
   )
@@ -495,6 +530,23 @@ function FAQ() {
           doesn’t prevent nodes in the IPFS decentralized storage network from
           retaining copies of the data indefinitely. Do not use NFT.Storage for
           data that may need to be permanently deleted in the future.
+        </p>
+        <h2 className="chicagoflf white">
+          <HashLink id="can-i-delete-my-data-on-nftstorage">
+            I tried using an HTTP gateway to retrieve my content from IPFS but
+            am receiving an HTTP error. Does this mean my content was not stored
+            successfully on NFT.Storage?
+          </HashLink>
+        </h2>
+        <p className="lh-copy white">
+          Not necessarily! HTTP gateways are a great way for users who{' '}
+          {"aren't"} running their own IPFS nodes to retrieve content from the
+          IPFS network. However, they do introduce a centralized point of
+          failure to a user flow. If a given gateway is down, or is under too
+          much load, or is facing other issues, users who are accessing content
+          through that gateway might be unable to access content. In this case,
+          we recommend trying another gateway or running and using your own IPFS
+          node.
         </p>
       </div>
     </article>
