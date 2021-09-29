@@ -35,7 +35,7 @@ CREATE OR REPLACE FUNCTION add_nft(
     token_uri text,
     updated_at timestamp with time zone DEFAULT timezone('utc' :: text, now()),
     inserted_at timestamp with time zone DEFAULT timezone('utc' :: text, now())
-) RETURNS SETOF nft LANGUAGE plpgsql AS $ function $ DECLARE inserted_id TEXT;
+) RETURNS SETOF nft LANGUAGE plpgsql AS $function$ DECLARE inserted_id TEXT;
 
 BEGIN
 INSERT INTO
@@ -71,14 +71,14 @@ WHERE
 
 END;
 
-$ function $;
+$function$;
 
 CREATE OR REPLACE FUNCTION add_other_nft_resource (
     content_cid text,
     resource_uri text,
     updated_at timestamp with time zone DEFAULT timezone('utc' :: text, now()),
     inserted_at timestamp with time zone DEFAULT timezone('utc' :: text, now())
-) RETURNS SETOF other_nft_resources LANGUAGE plpgsql AS $ function $ DECLARE inserted_cid TEXT;
+) RETURNS SETOF other_nft_resources LANGUAGE plpgsql AS $function$ DECLARE inserted_cid TEXT;
 
 BEGIN
 INSERT INTO
@@ -106,7 +106,7 @@ WHERE
 
 END;
 
-$ function $;
+$function$;
 
 CREATE OR REPLACE FUNCTION add_nft_metadata (
     content_cid text,
@@ -115,7 +115,7 @@ CREATE OR REPLACE FUNCTION add_nft_metadata (
     image_uri text,
     updated_at timestamp with time zone DEFAULT timezone('utc' :: text, now()),
     inserted_at timestamp with time zone DEFAULT timezone('utc' :: text, now())
-) RETURNS SETOF nft_metadata LANGUAGE plpgsql AS $ function $ DECLARE inserted_cid TEXT;
+) RETURNS SETOF nft_metadata LANGUAGE plpgsql AS $function$ DECLARE inserted_cid TEXT;
 
 BEGIN
 INSERT INTO
@@ -147,4 +147,4 @@ WHERE
 
 END;
 
-$ function $;
+$function$;
