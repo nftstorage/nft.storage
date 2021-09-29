@@ -72,6 +72,6 @@ export const mutation = (documents) => {
 //Object.fromEntries(records.map(rec) => [rec.id, insert(rec)])
 
 export const main = () =>
-  Migration.start({ collection: 'Token', mutations, query })
+  Migration.start({ collection: 'Token', mutation, query })
 
 script({ ...import.meta, main })
