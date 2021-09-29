@@ -1,0 +1,3 @@
+table:
+  name: nft_asset_view
+  schema: public
