@@ -1,6 +1,8 @@
-import { script } from 'subprogram'
 import * as Migration from '../migrate.js'
-import { Get, Var, Lambda, Let, Select } from '../fauna.js'
+
+import { Get, Lambda, Let, Select, Var } from '../fauna.js'
+
+import { script } from 'subprogram'
 
 export const query = Lambda(
   ['ref'],
@@ -54,21 +56,36 @@ const insert = ({
 })
 
 /**
- * @param {Migration.Document<NFT>[]} documents
+ * @param {Migration.Document<NFT>[]} document
  * @returns {Migration.Mutation}
  */
-export const mutation = (documents) => ({
-  insert_nft: [
-    {
-      objects: documents.map(insert),
+
+function docToMutation(document) {
+  return {
+    add_nft: [
+      {
+        args: insert(document),
+      },
+    ],
+  }
+}
+
+/**
+ * @param {Migration.Document<NFT>[]} documents
+ * @returns { Migration.Mutation}
+ */
+export const mutation = (documents) => {
+  return documents.reduce(
+    (acc: Migration.Mutation, doc: Migration.Document<NFT>, index: number) => {
+      acc[`nft_${index}`] = { add_nft: insert(doc) }
+      return acc
     },
-    {
-      affected_rows: 1,
-    },
-  ],
-})
+    {}
+  )
+}
+//Object.fromEntries(records.map(rec) => [rec.id, insert(rec)])
 
 export const main = () =>
-  Migration.start({ collection: 'Token', mutation, query })
+  Migration.start({ collection: 'Token', mutations, query })
 
 script({ ...import.meta, main })

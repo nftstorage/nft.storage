@@ -1,19 +1,20 @@
-import { configure } from './config.js'
-import * as Hasura from '../gen/db-v2/index.js'
 import * as Fauna from './fauna.js'
+import * as Hasura from '../gen/db-v2/index.js'
 import * as Result from './result.js'
-import { retry, exponentialBackoff, maxRetries } from './retry.js'
 
 import {
   Collection,
-  Get,
-  Var,
   Documents,
+  Get,
   Lambda,
-  Paginate,
   Map,
+  Paginate,
   Ref,
+  Var,
 } from './fauna.js'
+import { exponentialBackoff, maxRetries, retry } from './retry.js'
+
+import { configure } from './config.js'
 
 /**
  * @typedef {{
