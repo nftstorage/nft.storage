@@ -26,7 +26,7 @@ FROM
 WHERE
     uri_hash = digest(uri, 'sha256');
 
-CREATE FUNCTION add_nft(
+CREATE OR REPLACE FUNCTION add_nft(
     id text,
     contract_id text,
     token_id text,
@@ -73,7 +73,7 @@ END;
 
 $ function $;
 
-CREATE FUNCTION add_other_nft_resource (
+CREATE OR REPLACE FUNCTION add_other_nft_resource (
     content_cid text,
     resource_uri text,
     updated_at timestamp with time zone DEFAULT timezone('utc' :: text, now()),
@@ -108,7 +108,7 @@ END;
 
 $ function $;
 
-CREATE FUNCTION add_nft_metadata (
+CREATE OR REPLACE FUNCTION add_nft_metadata (
     content_cid text,
     name text,
     description text,
