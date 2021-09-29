@@ -685,7 +685,7 @@ export interface paths {
       }
     }
   }
-  '/rpc/upload_fn': {
+  '/rpc/create_upload': {
     post: {
       parameters: {
         body: {
@@ -721,7 +721,7 @@ export interface paths {
       }
     }
   }
-  '/rpc/deals_fn': {
+  '/rpc/find_deals_by_content_cids': {
     post: {
       parameters: {
         body: {

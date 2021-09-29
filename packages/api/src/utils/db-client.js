@@ -61,7 +61,7 @@ export class DBClient {
    * @returns
    */
   async createUpload(data) {
-    const rsp = await this.client.rpc('upload_fn', {
+    const rsp = await this.client.rpc('create_upload', {
       data: {
         ...data,
         pins: [
@@ -267,7 +267,7 @@ export class DBClient {
    * @param {string[]} cids
    */
   async getDealsForCids(cids = []) {
-    const rsp = await this.client.rpc('deals_fn', {
+    const rsp = await this.client.rpc('find_deals_by_content_cids', {
       cids,
     })
     if (rsp.error) {

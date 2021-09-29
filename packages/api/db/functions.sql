@@ -1,5 +1,5 @@
-DROP FUNCTION IF EXISTS upload_fn;
-DROP FUNCTION IF EXISTS deals_fn;
+DROP FUNCTION IF EXISTS create_upload;
+DROP FUNCTION IF EXISTS find_deals_by_content_cids;
 
 DROP TYPE IF EXISTS upload_pin_type;
 
@@ -9,7 +9,7 @@ CREATE TYPE upload_pin_type AS
     service service_type
 );
 
-CREATE OR REPLACE FUNCTION upload_fn(data json) RETURNS setof upload
+CREATE OR REPLACE FUNCTION create_upload(data json) RETURNS setof upload
     LANGUAGE plpgsql
     volatile
     PARALLEL UNSAFE
@@ -64,7 +64,7 @@ BEGIN
 END
 $$;
 
-CREATE OR REPLACE FUNCTION deals_fn(cids text[])
+CREATE OR REPLACE FUNCTION find_deals_by_content_cids(cids text[])
     RETURNS TABLE
             (
                 status              text,
