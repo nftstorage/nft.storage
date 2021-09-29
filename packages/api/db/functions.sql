@@ -33,7 +33,7 @@ BEGIN
     from json_populate_recordset(null::upload_pin_type, (data ->> 'pins')::json)
     on conflict (content_cid, service) do nothing;
 
-    insert into upload (account_id,
+    insert into upload (user_id,
                         key_id,
                         content_cid,
                         source_cid,
@@ -43,7 +43,7 @@ BEGIN
                         files,
                         origins,
                         meta, inserted_at, updated_at)
-    values ((data ->> 'account_id')::BIGINT,
+    values ((data ->> 'user_id')::BIGINT,
             (data ->> 'key_id')::BIGINT,
             data ->> 'content_cid',
             data ->> 'source_cid',
@@ -55,12 +55,12 @@ BEGIN
             (data ->> 'meta')::jsonb,
             (data ->> 'updated_at')::timestamptz,
             (data ->> 'inserted_at')::timestamptz)
-    ON CONFLICT ( account_id, source_cid ) DO NOTHING;
+    ON CONFLICT ( user_id, source_cid ) DO NOTHING;
 
 
     return query select *
                  from upload u
-                 where u.account_id = (data ->> 'account_id')::BIGINT
+                 where u.user_id = (data ->> 'user_id')::BIGINT
                    AND u.content_cid = data ->> 'content_cid';
 
     IF NOT FOUND THEN

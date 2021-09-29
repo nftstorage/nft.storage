@@ -18,8 +18,7 @@ CREATE TYPE upload_type AS ENUM (
     'Nft'
     );
 
--- Create upload table
-CREATE TABLE IF NOT EXISTS account
+CREATE TABLE IF NOT EXISTS public.user
 (
     id             BIGSERIAL PRIMARY KEY,
     magic_link_id  TEXT UNIQUE,
@@ -38,7 +37,7 @@ CREATE TABLE IF NOT EXISTS auth_key
     id          BIGSERIAL PRIMARY KEY,
     name        TEXT                                                          NOT NULL,
     secret      TEXT                                                          NOT NULL,
-    account_id  BIGINT                                                        NOT NULL REFERENCES account (id),
+    user_id     BIGINT                                                        NOT NULL REFERENCES public.user (id),
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     UNIQUE (name, account_id)
@@ -69,7 +68,7 @@ CREATE TABLE IF NOT EXISTS pin
 CREATE TABLE IF NOT EXISTS upload
 (
     id          BIGSERIAL PRIMARY KEY,
-    account_id  BIGINT                                                        NOT NULL REFERENCES account (id),
+    user_id     BIGINT                                                        NOT NULL REFERENCES public.user (id),
     key_id      BIGINT REFERENCES auth_key (id),
     content_cid TEXT                                                          NOT NULL REFERENCES content (cid),
     source_cid  TEXT                                                          NOT NULL,
@@ -83,5 +82,5 @@ CREATE TABLE IF NOT EXISTS upload
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     --deleted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-    UNIQUE (account_id, source_cid)
+    UNIQUE (user_id, source_cid)
 );

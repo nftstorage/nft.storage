@@ -22,13 +22,13 @@ export class DBClient {
   /**
    * Upsert user
    *
-   * @param {import('./db-client-types').UpsertUserInput} account
+   * @param {import('./db-client-types').UpsertUserInput} user
    */
-  upsertUser(account) {
-    /**@type {PostgrestQueryBuilder<definitions['account']>} */
-    const query = this.client.from('account')
+  upsertUser(user) {
+    /**@type {PostgrestQueryBuilder<definitions['user']>} */
+    const query = this.client.from('user')
 
-    return query.upsert(account, { onConflict: 'github_id' })
+    return query.upsert(user, { onConflict: 'github_id' })
   }
 
   /**
@@ -38,7 +38,7 @@ export class DBClient {
    */
   getUser(id) {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').UserOutput>} */
-    const query = this.client.from('account')
+    const query = this.client.from('user')
 
     let select = query
       .select(
@@ -46,7 +46,7 @@ export class DBClient {
     id,
     magic_link_id,
     github_id,
-    keys:auth_key_account_id_fkey(account_id,id,name,secret)
+    keys:auth_key_user_id_fkey(user_id,id,name,secret)
     `
       )
       .or(`magic_link_id.eq.${id},github_id.eq.${id}`)
@@ -86,7 +86,7 @@ export class DBClient {
       throw new Error(JSON.stringify(rsp.error))
     }
 
-    const upload = await this.getUpload(data.content_cid, data.account_id)
+    const upload = await this.getUpload(data.content_cid, data.user_id)
     if (upload) {
       return upload
     }
@@ -95,7 +95,7 @@ export class DBClient {
 
   uploadQuery = `
         *,
-        user:account(id, magic_link_id),
+        user(id, magic_link_id),
         key:auth_key(name),
         content(dag_size, pin(status, service))`
 
@@ -116,7 +116,7 @@ export class DBClient {
     } = await query
       .select(this.uploadQuery)
       .eq('source_cid', cid)
-      .eq('account_id', userId)
+      .eq('user_id', userId)
       // @ts-ignore
       .filter('content.pin.service', 'eq', 'IpfsCluster')
       .single()
@@ -143,7 +143,7 @@ export class DBClient {
     const match = opts.match || 'exact'
     let query = from
       .select(this.uploadQuery)
-      .eq('account_id', userId)
+      .eq('user_id', userId)
       // @ts-ignore
       .filter('content.pin.service', 'eq', 'IpfsCluster')
       .limit(opts.limit || 10)
@@ -211,7 +211,7 @@ export class DBClient {
 
     const { data, error } = await query
       .delete()
-      .match({ source_cid: cid, account_id: userId })
+      .match({ source_cid: cid, user_id: userId })
 
     if (error) {
       throw new Error(JSON.stringify(error))
@@ -311,11 +311,12 @@ export class DBClient {
         {
           name: key.name,
           secret: key.secret,
-          account_id: key.userId,
+          user_id: key.userId,
         },
-        { onConflict: 'name,account_id' }
+        { onConflict: 'name,user_id' }
       )
       .single()
+
     if (error) {
       throw new Error(JSON.stringify(error))
     }
@@ -344,7 +345,7 @@ export class DBClient {
       secret
       `
       )
-      .match({ account_id: userId })
+      .match({ user_id: userId })
 
     if (error) {
       throw new Error(JSON.stringify(error))

@@ -57,7 +57,15 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
             },
           ]
         : []),
-      { link: '/#docs', name: 'Docs', spacing: isSmallVariant ? '' : 'mr4' },
+      {
+        link: {
+          pathname: '/',
+          hash: '#docs',
+          query: version ? { version } : null,
+        },
+        name: 'Docs',
+        spacing: isSmallVariant ? '' : 'mr4',
+      },
     ],
     [user, isSmallVariant, version]
   )
@@ -75,11 +83,14 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
     setMenuOpen(!isMenuOpen)
   }, [isMenuOpen])
 
-  const onMobileLinkClick = useCallback((event) => {
-    onLinkClick(event)
+  const onMobileLinkClick = useCallback(
+    (event) => {
+      onLinkClick(event)
 
-    toggleMenu()
-  }, [onLinkClick, toggleMenu])
+      toggleMenu()
+    },
+    [onLinkClick, toggleMenu]
+  )
 
   async function logout() {
     await getMagic().user.logout()

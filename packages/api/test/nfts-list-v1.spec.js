@@ -84,7 +84,7 @@ describe('V1 - List NFTs', () => {
 
     for (let i = 0; i < 10; i++) {
       await client.client.createUpload({
-        account_id: client.userId,
+        user_id: client.userId,
         content_cid: `bafy${i}`,
         source_cid: `bafy${i}`,
         type: 'Blob',
