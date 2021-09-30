@@ -2,6 +2,7 @@ import { Cluster } from '@nftstorage/ipfs-cluster'
 import { Cloudflare } from '../lib/cloudflare.js'
 import { IPFS } from './ipfs.js'
 import { Pinata } from './pinata.js'
+import { DBClient } from '../../../api/src/utils/db-client.js'
 
 /**
  * @param {import('./cloudflare').Namespace[]} namespaces
@@ -65,4 +66,15 @@ export function getPinata(env) {
   const apiToken = env.PINATA_JWT
   if (!apiToken) throw new Error('missing Pinata API token')
   return new Pinata({ apiToken })
+}
+
+/**
+ * Create a new DBClient instance from the passed environment variables.
+ * @param {Record<string, string|undefined>} env
+ */
+export function getDBClient(env) {
+  const url = env.DATABASE_URL
+  const token = env.DATABASE_TOKEN
+  if (!url || !token) throw new Error('missing PostgREST credentials')
+  return new DBClient(url, token)
 }
