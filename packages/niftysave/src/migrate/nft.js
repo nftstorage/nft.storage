@@ -29,6 +29,14 @@ export const query = Lambda(
 )
 
 /**
+ * @param {Migration.Document<NFT>[]} documents
+ * @returns {Migration.Mutation}
+ */
+export const mutation = (documents) => ({
+  __alias: Object.fromEntries(documents.map(add)),
+})
+
+/**
  * @typedef {{
  *   id: string
  *   contract_id: string
@@ -36,9 +44,24 @@ export const query = Lambda(
  *   token_uri: string
  *   mint_time: string
  *   nft_owner_id: string
- * }}
- * NFT
+ * }} NFT
  *
+ * @param {Migration.Document<NFT>} doc
+ * @param {number} index
+ * @returns {[number, Migration.Mutation]}
+ */
+const add = (doc, index) => [
+  index,
+  {
+    add_nft: [
+      { args: insert(doc) },
+      {
+        id: true,
+      },
+    ],
+  },
+]
+/**
  * @param {Migration.Document<NFT>} document
  */
 const insert = ({
@@ -52,31 +75,6 @@ const insert = ({
   nft_owner_id,
   contract_id,
   inserted_at: Migration.fromTimestamp(ts),
-})
-
-/**
- * @param {Migration.Document<NFT>} doc
- * @param {number} index
- * @returns {[number, Migration.Mutation]}
- */
-const addNFT = (doc, index) => [
-  index,
-  {
-    add_nft: [
-      { args: insert(doc) },
-      {
-        id: true,
-      },
-    ],
-  },
-]
-
-/**
- * @param {Migration.Document<NFT>[]} documents
- * @returns {Migration.Mutation}
- */
-export const mutation = (documents) => ({
-  __alias: Object.fromEntries(documents.map(addNFT)),
 })
 
 export const main = () =>
