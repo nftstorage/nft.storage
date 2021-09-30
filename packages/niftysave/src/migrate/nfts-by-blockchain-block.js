@@ -46,7 +46,7 @@ export const mutation = (documents) => ({
       objects: documents.map(insert),
     },
     {
-      affected_rows: 1,
+      affected_rows: true,
     },
   ],
 })

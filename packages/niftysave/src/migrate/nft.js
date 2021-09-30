@@ -1,6 +1,7 @@
 import { script } from 'subprogram'
 import * as Migration from '../migrate.js'
 import { Get, Var, Lambda, Let, Select } from '../fauna.js'
+import * as Hasura from '../hasura.js'
 
 export const query = Lambda(
   ['ref'],
@@ -54,18 +55,28 @@ const insert = ({
 })
 
 /**
+ * @param {Migration.Document<NFT>} doc
+ * @param {number} index
+ * @returns {[number, Migration.Mutation]}
+ */
+const addNFT = (doc, index) => [
+  index,
+  {
+    add_nft: [
+      { args: insert(doc) },
+      {
+        id: true,
+      },
+    ],
+  },
+]
+
+/**
  * @param {Migration.Document<NFT>[]} documents
  * @returns {Migration.Mutation}
  */
 export const mutation = (documents) => ({
-  insert_nft: [
-    {
-      objects: documents.map(insert),
-    },
-    {
-      affected_rows: 1,
-    },
-  ],
+  __alias: Object.fromEntries(documents.map(addNFT)),
 })
 
 export const main = () =>

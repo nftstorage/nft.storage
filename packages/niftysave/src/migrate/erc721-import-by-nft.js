@@ -54,7 +54,7 @@ export const mutation = (documents) => ({
       },
     },
     {
-      affected_rows: 1,
+      affected_rows: true,
     },
   ],
 })
