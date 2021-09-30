@@ -215,7 +215,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
         </div>
         <div className="flex flex-column items-center mb4">
           <Button className="flex justify-center" onClick={toggleMenu}>
-            <Cross fill="currentColor" />
+            <Cross width="48" height="48" fill="currentColor" />
           </Button>
         </div>
       </div>
