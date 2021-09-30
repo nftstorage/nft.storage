@@ -73,8 +73,17 @@ export function getPinata(env) {
  * @param {Record<string, string|undefined>} env
  */
 export function getDBClient(env) {
-  const url = env.DATABASE_URL
-  const token = env.DATABASE_TOKEN
+  let url, token
+  if (env.ENV === 'production') {
+    url = env.PROD_DATABASE_URL
+    token = env.PROD_DATABASE_TOKEN
+  } else if (env.ENV === 'staging') {
+    url = env.STAGING_DATABASE_URL
+    token = env.STAGING_DATABASE_TOKEN
+  } else {
+    url = env.DATABASE_URL
+    token = env.DATABASE_TOKEN
+  }
   if (!url || !token) throw new Error('missing PostgREST credentials')
   return new DBClient(url, token)
 }

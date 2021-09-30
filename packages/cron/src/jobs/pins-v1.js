@@ -1,12 +1,16 @@
+import debug from 'debug'
+
+const log = debug('pins:updatePinStatuses')
+
 /**
  * @typedef {import('../../../api/src/utils/db-types').definitions} definitions
  * @typedef {Pick<definitions['pin'], 'id'|'status'|'content_cid'|'service'|'updated_at'>} Pin
+ * @typedef {Pick<Pin, 'id'|'status'|'updated_at'>} PinUpdate
  * @typedef {import('@supabase/postgrest-js').PostgrestQueryBuilder<Pin>} PinQuery
  */
 
 /**
- * Updates pin status and size in the PINS table by consuming records in the
- * FOLLOWUPS table and retrieving updated status from cluster.
+ * Updates pin status and size by retrieving updated status from cluster.
  *
  * @param {{
  *   env: string
@@ -51,13 +55,13 @@ export async function updatePinStatuses({ db, cluster }) {
       break
     }
 
-    /** @type {Pin[]} */
+    /** @type {PinUpdate[]} */
     const updatedPins = []
     for (const pin of pins) {
       const statusRes = await cluster.status(pin.content_cid)
       const pinInfos = Object.values(statusRes.peerMap)
 
-      /** @type {"Pinned" | "PinError" | "PinQueued" | "Pinning"} */
+      /** @type {Pin['status']} */
       let status = 'PinError'
       if (pinInfos.some((i) => i.status === 'pinned')) {
         status = 'Pinned'
@@ -69,7 +73,7 @@ export async function updatePinStatuses({ db, cluster }) {
 
       if (status !== pin.status) {
         updatedPins.push({
-          ...pin,
+          id: pin.id,
           status,
           updated_at: new Date().toISOString(),
         })
@@ -87,11 +91,11 @@ export async function updatePinStatuses({ db, cluster }) {
       }
     }
 
-    console.log(`Overall there's ${count} pins to be processed.`)
-    console.log(
-      `In this run, ${pins.length} were processed and ${updatedPins.length} updated to new status.`
-    )
+    log(`ℹ️ ${count} pins to process.`)
+    log(`🗂 ${pins.length} processed, ${updatedPins.length} updated.`)
 
     from += pageSize
   }
+
+  log('✅ Done')
 }
