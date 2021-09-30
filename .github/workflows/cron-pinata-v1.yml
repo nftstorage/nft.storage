@@ -1,4 +1,4 @@
-name: Cron Pinata Sync V1
+name: Cron Pinata Sync v1
 
 on:
   schedule:
