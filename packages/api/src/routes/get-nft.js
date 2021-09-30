@@ -36,7 +36,9 @@ export async function getNFT(event, ctx) {
     ok: true,
     nft,
     pin: {
+      // @ts-ignore
       status: pin.metadata.status,
+      // @ts-ignore
       size: pin.metadata.size,
     },
   })

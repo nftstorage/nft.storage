@@ -4,8 +4,8 @@
  * @typedef {import('../../api/src/utils/db-client').definitions} definitions
  */
 
-const issuer = 'did:ethr:0x03cefdE6FC0391b16B0eC33734996b29146Cd142'
-const sub = 'did:ethr:0x03cefdE6FC0391b16B0eC33734996b29146Cd142'
+// const issuer = 'did:ethr:0x03cefdE6FC0391b16B0eC33734996b29146Cd142'
+// const sub = 'did:ethr:0x03cefdE6FC0391b16B0eC33734996b29146Cd142'
 
 // const issuer = 'did:ethr:0x856da5805f9Ec6A723560d21d28DF7C7e289d738'
 // const sub = 'did:ethr:0x856da5805f9Ec6A723560d21d28DF7C7e289d738'
@@ -21,7 +21,6 @@ export async function pushToDB(ctx, task) {
       const data = user.value.data
       const tokens = Object.entries(user.value.data.tokens)
 
-      // console.log(data)
       // create user
       const { data: dbUser, error } = await ctx.db
         .upsertUser({
@@ -54,6 +53,7 @@ export async function pushToDB(ctx, task) {
       }
 
       task.title = `Processing user ${data.email}`
+      // @ts-ignore
       await nftByUser(data.issuer, data.sub, ctx, task, authKeys, dbUser)
     }
   }
@@ -106,6 +106,7 @@ async function addNft(value, keys, ctx, dbUser) {
       account_id: dbUser.id,
       content_cid: data.cid,
       source_cid: data.cid,
+      // @ts-ignore
       type: types.type,
       dag_size: size,
       files: data.files,
@@ -113,6 +114,18 @@ async function addNft(value, keys, ctx, dbUser) {
       mime_type: types.mime_type,
       meta: data.pin?.meta,
       name: data.pin?.name,
+      inserted_at: data.created,
+      updated_at: data.created,
+      pins: [
+        {
+          status: getDBPinStatus(pinStatus),
+          service: 'IpfsCluster',
+        },
+        {
+          status: 'PinQueued',
+          service: 'Pinata',
+        },
+      ],
     })
   }
 }
@@ -149,5 +162,21 @@ function getMimeAndType(type) {
         type: 'Blob',
         mime_type: type,
       }
+  }
+}
+
+/**
+ * @param {any} status
+ */
+function getDBPinStatus(status) {
+  switch (status) {
+    case 'pinned':
+      return 'Pinned'
+    case 'failed':
+      return 'PinError'
+    case 'pinning':
+      return 'Pinning'
+    default:
+      return 'PinError'
   }
 }

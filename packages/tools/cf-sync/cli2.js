@@ -3,13 +3,12 @@ import Store from './store.js'
 import dotenv from 'dotenv'
 import { fileURLToPath } from 'node:url'
 import Listr from 'listr'
-import { CID } from 'multiformats'
 import Cluster from '../utils/cluster.js'
 import Cloudflare from '../utils/cloudflare.js'
 import { DBClient } from '../../api/src/utils/db-client.js'
 import { syncUsers, syncUsersData } from './users.js'
-import { syncNFTs, syncNFTData, syncCheck, checkDeletes } from './nft.js'
-import { validateLocal, checkStatus } from './validation.js'
+import { syncNFTs, syncNFTData } from './nft.js'
+import { validateLocal } from './validation.js'
 import { pushToDB } from './push-to-db.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -19,64 +18,39 @@ dotenv.config({
 
 const tasks = new Listr(
   [
-    // {
-    //   title: 'Sync users',
-    //   task: syncUsers,
-    // },
-    // {
-    //   title: 'Sync users data',
-    //   task: syncUsersData,
-    // },
-    // {
-    //   title: 'Sync nfts',
-    //   task: syncNFTs,
-    // },
     {
-      title: 'Check deleted',
-      task: checkDeletes,
+      title: 'Sync users',
+      task: syncUsers,
     },
-    // {
-    //   title: 'Sync nfts data',
-    //   task: () => {
-    //     return new Listr(
-    //       [
-    //         {
-    //           title: 'Sync nfts info',
-    //           task: syncNFTData,
-    //         },
-    // {
-    //   title: 'Sync nfts status and deals',
-    //   task: syncCheck,
-    // },
-    //       ],
-    //       { concurrent: true }
-    //     )
-    //   },
-    // },
-    // {
-    //   title: 'Validate nft data',
-    //   task: checkStatus,
-    // },
-    // {
-    //   title: 'Validate nft data structure',
-    //   task: validateLocal,
-    // },
+    {
+      title: 'Sync users data',
+      task: syncUsersData,
+    },
+    {
+      title: 'Sync nfts',
+      task: syncNFTs,
+    },
+    {
+      title: 'Sync nfts data',
+      task: syncNFTData,
+    },
+    {
+      title: 'Validate nft data structure',
+      task: validateLocal,
+    },
     // {
     //   title: 'Test',
     //   task: async (/** @type {Context} */ ctx, task) => {
     //     let count = 0
-    //     for await (const { key, value } of ctx.nftStore.iterator()) {
-    //       const { size, checked, pinStatus, data, name } = value
-    //       if (!name) {
-    //         console.log(key, value)
-    //       }
+    //     for await (const { key, value } of ctx.userStore.iterator()) {
+    //       console.log(value)
     //     }
     //   },
     // },
-    // {
-    //   title: 'Push to DB',
-    //   task: pushToDB,
-    // },
+    {
+      title: 'Push to DB',
+      task: pushToDB,
+    },
   ],
   { renderer: 'default' }
 )
@@ -107,7 +81,7 @@ tasks
   .then(() => {
     process.exit(0)
   })
-  .catch(err => {
+  .catch((err) => {
     console.error(err)
   })
 
