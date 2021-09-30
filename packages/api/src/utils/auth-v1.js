@@ -93,14 +93,15 @@ export async function loginOrRegister(event, data) {
       github: parsed.github,
     })
 
-    if (upsert.data === null) {
-      throw new Error('Could not retrieve user from db.')
-    }
-
     if (upsert.error) {
       // @ts-ignore
       throw new Error(`DB error: ${JSON.stringify(upsert.error)}`)
     }
+
+    if (upsert.data === null) {
+      throw new Error('Could not retrieve user from db.')
+    }
+
     const user = upsert.data[0]
 
     return { user, tokenName: 'session' }
