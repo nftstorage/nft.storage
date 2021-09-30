@@ -37,22 +37,22 @@
     "assert": "^2.0.0",
     "c8": "^7.7.1",
     "graphql-tag-pluck": "0.8.7",
+    "graphql-zeus": "git://github.com/gozala/graphql-zeus#fix/import",
     "mocha": "^9.1.0",
-    "yargs": "^17.0.1",
-    "graphql-zeus": "git://github.com/gozala/graphql-zeus#fix/import"
+    "yargs": "^17.0.1"
   },
   "dependencies": {
     "@nftstorage/ipfs-cluster": "^3.3.0",
     "@web-std/fetch": "^2.0.3",
     "@web-std/file": "^1.1.0",
     "@web-std/form-data": "^2.1.0",
+    "abort-controller": "^3.0.0",
     "dotenv": "^10.0.0",
     "faunadb": "^4.4.1",
     "graphql-typed-client": "1.7.4",
     "multiformats": "^9.4.3",
-    "nft.storage": "^1.4.0",
-    "subprogram": "^1.2.0",
-    "abort-controller": "^3.0.0"
+    "nft.storage": "^3.3.0",
+    "subprogram": "^1.2.0"
   },
   "repository": {
     "type": "git",
