@@ -5,9 +5,12 @@ import { NFTStorage } from 'nft.storage'
 import { packToBlob } from 'ipfs-car/pack/blob'
 import { useQueryClient } from 'react-query'
 import { useState } from 'react'
+import { When } from 'react-if'
 import Box from '../components/box.js'
+import Alert from '../components/alert.js'
 import Button from '../components/button.js'
 import Link from 'next/link'
+import Cross from '../icons/cross'
 
 export function getStaticProps() {
   return {
@@ -27,6 +30,7 @@ export default function NewFile() {
   const [uploading, setUploading] = useState(false)
   const [isCar, setIsCar] = useState(false)
   const [percentComplete, setPercentComplete] = useState(0)
+  const [error, setError] = useState('')
 
   /**
    * @param {import('react').ChangeEvent<HTMLInputElement>} e
@@ -53,6 +57,7 @@ export default function NewFile() {
         endpoint: new URL(API + (version === '1' ? '/v1/' : '/')),
       })
       setUploading(true)
+      setError('')
       try {
         /** @type File|Blob */
         let car
@@ -68,12 +73,15 @@ export default function NewFile() {
             setPercentComplete(Math.round((totalBytesSent / car.size) * 100))
           },
         })
-      } catch (err) {
+
+        router.push({ pathname: '/files', query: version ? { version } : null })
+        setError('')
+      } catch (/** @type any */ err) {
         console.error(err)
+        setError(`Error uploading: ${err.message}`)
       } finally {
         await queryClient.invalidateQueries('get-nfts')
         setUploading(false)
-        router.push({ pathname: '/files', query: version ? { version } : null })
       }
     }
   }
@@ -181,6 +189,19 @@ export default function NewFile() {
             </div>
           </form>
         </Box>
+        <When condition={error !== ''}>
+          <Alert className="pa4 white" position="top" type="error">
+            <>
+              {error}{' '}
+              <button
+                className="border ml2 ph2 pv1 br-100 b--transparent pointer"
+                onClick={() => setError('')}
+              >
+                <Cross width="12" height="12" fill="currentColor" />
+              </button>
+            </>
+          </Alert>
+        </When>
       </div>
     </main>
   )
