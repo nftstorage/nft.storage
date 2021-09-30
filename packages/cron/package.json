@@ -14,8 +14,9 @@
     "start": "run-s start:*",
     "start:metrics": "node src/bin/metrics.js",
     "start:pins": "node src/bin/pins.js",
+    "start:pins-v1": "node src/bin/pins-v1.js",
     "start:pinata": "node src/bin/pinata.js",
-    "start:pins-v1": "node src/bin/pins-v1.js"
+    "start:pinata-v1": "node src/bin/pinata-v1.js"
   },
   "author": "Alan Shaw",
   "license": "(Apache-2.0 AND MIT)",
