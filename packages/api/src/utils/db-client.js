@@ -67,7 +67,7 @@ export class DBClient {
         pins: [
           {
             status: 'PinQueued',
-            service: 'IpfsCluster',
+            service: 'IpfsCluster2',
           },
           {
             status: 'PinQueued',
@@ -112,7 +112,7 @@ export class DBClient {
       .eq('content_cid', cid)
       .eq('account_id', userId)
       // @ts-ignore
-      .filter('content.pin.service', 'eq', 'IpfsCluster')
+      .filter('content.pin.service', 'in', '(IpfsCluster,IpfsCluster2)')
       .single()
 
     if (status === 406 || !upload) {
@@ -139,7 +139,7 @@ export class DBClient {
       .select(this.uploadQuery)
       .eq('account_id', userId)
       // @ts-ignore
-      .filter('content.pin.service', 'eq', 'IpfsCluster')
+      .filter('content.pin.service', 'in', '(IpfsCluster,IpfsCluster2)')
       .limit(opts.limit || 10)
       .order('inserted_at', { ascending: false })
 
@@ -236,7 +236,7 @@ export class DBClient {
         pins:pin(status, service)`
       )
       // @ts-ignore
-      .filter('pins.service', 'eq', 'IpfsCluster')
+      .filter('pins.service', 'in', '(IpfsCluster,IpfsCluster2)')
       .eq('cid', cid)
       .single()
 
