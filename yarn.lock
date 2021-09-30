@@ -7748,9 +7748,9 @@ onigasm@^2.2.5:
     lru-cache "^5.1.1"
 
 openapi-typescript@^4.0.2:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/openapi-typescript/-/openapi-typescript-4.2.0.tgz#d2c25a868417d027a21b4ffeaa55dab42d4de955"
-  integrity sha512-hi1RThXIcmORpHwFnfp1HJ3XpWkFJw8zBoB5WXh2qBxRAkM+L3wgchjUlwlKGRrR66fUy8YLKCXPH2qSUf4XiQ==
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/openapi-typescript/-/openapi-typescript-4.3.0.tgz#fa9e239a485c90f40f93de828b97646125e11701"
+  integrity sha512-mAvW7lCS8V2s2KLp81uAH8DynJgMHFOyD4k5IWi15JbmTacvKQCKglXf8mhEkxhWUTKaNfis23cPNJy+IL/16w==
   dependencies:
     hosted-git-info "^3.0.8"
     js-yaml "^4.1.0"
