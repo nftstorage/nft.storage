@@ -29,7 +29,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: yarn --cwd packages/niftysave install
+        run: yarn install
 
       - name: Typecheck
         uses: gozala/typescript-error-reporter-action@v1.0.8
