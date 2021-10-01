@@ -5,7 +5,6 @@ const log = debug('pins:updatePinStatuses')
 /**
  * @typedef {import('../../../api/src/utils/db-types').definitions} definitions
  * @typedef {Pick<definitions['pin'], 'id'|'status'|'content_cid'|'service'|'updated_at'>} Pin
- * @typedef {Pick<definitions['pin'], 'id'|'status'|'updated_at'>} PinUpdate
  * @typedef {import('@supabase/postgrest-js').PostgrestQueryBuilder<Pin>} PinQuery
  */
 
@@ -48,7 +47,7 @@ export async function updatePinStatuses({ db, cluster }) {
       .range(from, from + pageSize - 1)
 
     if (error) {
-      throw error
+      throw Object.assign(new Error(), error)
     }
 
     if (!pins) {
@@ -59,7 +58,7 @@ export async function updatePinStatuses({ db, cluster }) {
       break
     }
 
-    /** @type {PinUpdate[]} */
+    /** @type {Pin[]} */
     const updatedPins = []
     for (const pin of pins) {
       const statusRes = await cluster.status(pin.content_cid)
@@ -78,7 +77,7 @@ export async function updatePinStatuses({ db, cluster }) {
       if (status !== pin.status) {
         log(`📌 ${pin.content_cid} ${pin.status} => ${status}`)
         updatedPins.push({
-          id: pin.id,
+          ...pin,
           status,
           updated_at: new Date().toISOString(),
         })
@@ -92,12 +91,12 @@ export async function updatePinStatuses({ db, cluster }) {
         .upsert(updatedPins, { count: 'exact', returning: 'minimal' })
 
       if (updateError) {
-        throw updateError
+        throw Object.assign(new Error(), updateError)
       }
     }
 
-    log(`ℹ️ ${count} pins to process.`)
-    log(`🗂 ${pins.length} processed, ${updatedPins.length} updated.`)
+    log(`🗂 ${pins.length} processed, ${updatedPins.length} updated`)
+    log(`ℹ️ ${from + pins.length} of ${count} processed in total`)
 
     from += pageSize
   }

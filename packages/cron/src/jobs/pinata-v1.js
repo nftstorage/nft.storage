@@ -5,7 +5,6 @@ const log = debug('pinata:pinToPinata')
 /**
  * @typedef {import('../../../api/src/utils/db-types').definitions} definitions
  * @typedef {Pick<definitions['pin'], 'id'|'status'|'content_cid'|'service'|'updated_at'>} Pin
- * @typedef {Pick<definitions['pin'], 'id'|'status'|'updated_at'>} PinUpdate
  * @typedef {import('@supabase/postgrest-js').PostgrestQueryBuilder<Pin>} PinQuery
  */
 
@@ -30,7 +29,7 @@ export async function pinToPinata({ db, pinata }) {
     .neq('status', 'PinError')
 
   if (countError) {
-    throw countError
+    throw Object.assign(new Error(), countError)
   }
 
   log(`🎯 Updating pin ${count} statuses`)
@@ -41,7 +40,7 @@ export async function pinToPinata({ db, pinata }) {
     /** @type {PinQuery} */
     const query = db.client.from('pin')
     const { data: pins, error } = await query
-      .select('id,status,content_cid')
+      .select('id,status,content_cid,service')
       .eq('service', 'Pinata')
       .neq('status', 'Pinned')
       .neq('status', 'PinError')
@@ -61,15 +60,17 @@ export async function pinToPinata({ db, pinata }) {
 
     /** @type {PinUpdate[]} */
     const updatedPins = []
-    let i = 0
     for (const pin of pins) {
-      i++
       try {
         const pinataOptions = {} // TODO: add origins
         await pinata.pinByHash(pin.content_cid, { pinataOptions })
-        log(`📌 ${pin.content_cid} submitted to Pinata! ${i}/${pins.length}`)
+        log(
+          `📌 ${pin.content_cid} submitted to Pinata! ${pins.findIndex(pin)}/${
+            pins.length
+          }`
+        )
         updatedPins.push({
-          id: pin.id,
+          ...pin,
           status: 'Pinned', // FIXME: not really pinned, queued
           updated_at: new Date().toISOString(),
         })
@@ -84,12 +85,12 @@ export async function pinToPinata({ db, pinata }) {
         .upsert(updatedPins, { count: 'exact', returning: 'minimal' })
 
       if (updateError) {
-        throw updateError
+        throw Object.assign(new Error(), updateError)
       }
     }
 
-    log(`🗂 ${pins.length} processed, ${updatedPins.length} updated.`)
-    log(`ℹ️ ${from + pageSize}/${count} processed in total.`)
+    log(`🗂 ${pins.length} processed, ${updatedPins.length} updated`)
+    log(`ℹ️ ${from + pins.length} of ${count} processed in total`)
 
     from += pageSize
   }
