@@ -24,6 +24,13 @@ export const mutation = (documents) => ({
   insert_erc721_import: [
     {
       objects: documents.map(insert),
+      on_conflict: {
+        constraint:
+          Migration.schema.erc721_import_constraint.erc721_import_pkey,
+        update_columns: [
+          Migration.schema.erc721_import_update_column.updated_at,
+        ],
+      },
     },
     {
       affected_rows: true,
