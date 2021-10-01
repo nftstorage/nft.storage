@@ -28,29 +28,33 @@ const query = Lambda(
  * @returns {Migration.Mutation}
  */
 export const mutation = (documents) => ({
-  insert_other_nft_resources: [
-    {
-      objects: documents.map(insert),
-      // Ignore duplicates, just in case fauna's uniqness constrained has failed.
-      on_conflict: {
-        constraint:
-          Migration.schema.other_nft_resources_constraint
-            .other_nft_resources_pkey,
-        update_columns: [],
-      },
-    },
-    {
-      affected_rows: 1,
-    },
-  ],
+  __alias: Object.fromEntries(documents.map(add)),
 })
 
 /**
  * @typedef {{
  *    resource_uri: string
  *    content_cid: string
- * }}
- * OtherNFTResource
+ * }} OtherNFTResource
+ *
+ * @param {Migration.Document<OtherNFTResource>} doc
+ * @param {number} index
+ * @returns {[number, Migration.Mutation]}
+ */
+const add = (doc, index) => [
+  index,
+  {
+    add_other_nft_resource: [
+      { args: insert(doc) },
+      {
+        resource_uri_hash: true,
+      },
+    ],
+  },
+]
+
+/**
+ 
  *
  * @param {Migration.Document<OtherNFTResource>} document
  */

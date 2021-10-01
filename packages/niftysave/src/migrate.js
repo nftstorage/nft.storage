@@ -1,7 +1,6 @@
 import { configure } from './config.js'
-import * as Hasura from '../gen/db-v2/index.js'
+import * as Hasura from './hasura.js'
 import * as Fauna from './fauna.js'
-import * as Result from './result.js'
 import { retry, exponentialBackoff, maxRetries } from './retry.js'
 
 import {
@@ -24,9 +23,9 @@ import {
  *   hasura: Hasura.Config
  * }} Config
  *
- * @typedef {Hasura.schema.niftysave_migration} Migration
+ * @typedef {{}} Migration
  * @typedef {import('faunadb').Expr} Query
- * @typedef {Hasura.schema.mutation_rootRequest} Mutation
+ * @typedef {Hasura.Mutation} Mutation
  */
 
 /**
@@ -138,20 +137,21 @@ const readMigrationState = async ({ hasura, collection }) => {
         id: `fauna-${collection}`,
       },
       {
-        cursor: 1,
-        collection: 1,
-        metadata: 1,
+        cursor: true,
+        collection: true,
+        metadata: [{}, true],
       },
     ],
   })
 
-  return Result.value(result).niftysave_migration_by_pk
+  return result.niftysave_migration_by_pk
 }
 
 /**
+ * @template {Migration} T
  * @param {{hasura: Hasura.Config, collection:string}} config
  * @param {{cursor:string|null, metadata:object|null}} data
- * @param {Hasura.schema.mutation_rootRequest} [mutation]
+ * @param {T} [mutation]
  */
 const writeMigrationState = async (
   { hasura, collection },
@@ -180,14 +180,14 @@ const writeMigrationState = async (
         },
       },
       {
-        cursor: 1,
-        collection: 1,
-        metadata: 1,
+        cursor: true,
+        collection: true,
+        metadata: [{}, true],
       },
     ],
   })
 
-  const value = Result.value(result).insert_niftysave_migration_one
+  const value = result.insert_niftysave_migration_one
   if (value == null) {
     throw new Error('Invalid result')
   }

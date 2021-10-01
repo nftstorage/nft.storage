@@ -2,28 +2,6 @@ import { script } from 'subprogram'
 import * as Migration from '../migrate.js'
 import { Get, Var, Lambda, Let, Select } from '../fauna.js'
 
-/**
- * @typedef {{
- *    name: string
- *    description: string
- *    image_uri: string
- *    content_cid: string
- * }}
- * Metadata
- *
- * @param {Migration.Document<Metadata>} document
- */
-const insert = ({
-  ts,
-  data: { name, description, image_uri, content_cid },
-}) => ({
-  name,
-  description,
-  image_uri,
-  content_cid,
-  inserted_at: Migration.fromTimestamp(ts),
-})
-
 const query = Lambda(
   ['ref'],
   Let(
@@ -50,20 +28,45 @@ const query = Lambda(
  * @returns {Migration.Mutation}
  */
 export const mutation = (documents) => ({
-  insert_nft_metadata: [
-    {
-      objects: documents.map(insert),
-      // Ignore duplicates because fauna does not seemed to have upheld
-      // uniquness constraint causing >1 metadata witha same cid.
-      on_conflict: {
-        constraint: Migration.schema.nft_metadata_constraint.nft_metadata_pkey,
-        update_columns: [],
+  __alias: Object.fromEntries(documents.map(add)),
+})
+
+/**
+ * @typedef {{
+ *    name: string
+ *    description: string
+ *    image_uri: string
+ *    content_cid: string
+ * }} Metadata
+ *
+ * @param {Migration.Document<Metadata>} doc
+ * @param {number} index
+ * @returns {[number, Migration.Mutation]}
+ */
+const add = (doc, index) => [
+  index,
+  {
+    add_nft_metadata: [
+      { args: insert(doc) },
+      {
+        content_cid: true,
       },
-    },
-    {
-      affected_rows: 1,
-    },
-  ],
+    ],
+  },
+]
+
+/**
+ * @param {Migration.Document<Metadata>} document
+ */
+const insert = ({
+  ts,
+  data: { name, description, image_uri, content_cid },
+}) => ({
+  name,
+  description,
+  image_uri,
+  content_cid,
+  inserted_at: Migration.fromTimestamp(ts),
 })
 
 export const main = () =>
