@@ -102,7 +102,7 @@ function parseSearchParams(params) {
     for (const cid of cids) {
       const parsed = parseCidPinning(cid)
       if (parsed) {
-        cidsV1.push(parsed.contentCid)
+        cidsV1.push(parsed.sourceCid)
       } else {
         return {
           error: { reason: 'INVALID_CID', details: `Invalid cid ${cid}` },

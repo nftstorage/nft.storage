@@ -13,7 +13,7 @@ export const statusV1 = async (event, ctx) => {
   const { params } = ctx
   const { user, db } = await validate(event, ctx)
   const cid = parseCid(params.cid)
-  const nft = await db.getUpload(cid.contentCid, user.id)
+  const nft = await db.getUpload(cid.sourceCid, user.id)
   if (nft) {
     return new JSONResponse({
       ok: true,

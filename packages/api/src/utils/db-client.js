@@ -72,10 +72,13 @@ export class DBClient {
       },
     ]
 
+    const now = new Date().toISOString()
     const rsp = await this.client.rpc('upload_fn', {
       data: {
         ...data,
         pins: data.pins || defaultPins,
+        inserted_at: data.inserted_at || now,
+        updated_at: data.updated_at || now,
       },
     })
 
@@ -112,7 +115,7 @@ export class DBClient {
       status,
     } = await query
       .select(this.uploadQuery)
-      .eq('content_cid', cid)
+      .eq('source_cid', cid)
       .eq('account_id', userId)
       // @ts-ignore
       .filter('content.pin.service', 'eq', 'IpfsCluster')
@@ -125,7 +128,7 @@ export class DBClient {
       throw new Error(JSON.stringify(error))
     }
 
-    return { ...upload, deals: await this.getDeals(cid) }
+    return { ...upload, deals: await this.getDeals(upload.content_cid) }
   }
 
   /**
@@ -152,7 +155,7 @@ export class DBClient {
     }
 
     if (opts.cid) {
-      query = query.in('content_cid', opts.cid)
+      query = query.in('source_cid', opts.cid)
     }
 
     if (opts.name && match === 'exact') {
@@ -208,7 +211,7 @@ export class DBClient {
 
     const { data, error } = await query
       .delete()
-      .match({ content_cid: cid, account_id: userId })
+      .match({ source_cid: cid, account_id: userId })
 
     if (error) {
       throw new Error(JSON.stringify(error))
