@@ -1,0 +1,3 @@
+function:
+  name: ingest_erc721_token
+  schema: public

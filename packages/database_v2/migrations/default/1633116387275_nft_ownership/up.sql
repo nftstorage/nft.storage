@@ -3,5 +3,7 @@ CREATE TABLE nft_ownership (
     owner_id TEXT NOT NULL,
     block_number TEXT NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    
+    PRIMARY KEY (block_number, nft_id, owner_id)
 );
