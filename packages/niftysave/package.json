@@ -12,7 +12,7 @@
     "analyze": "node ./src/analyze.js",
     "pin": "node ./src/pin.js",
     "migrate-content": "node ./src/migrate/content.js",
-    "migrate-erc721-import": "node ./src/migrate/erc721-import.js",
+    "migrate-erc721-import": "node ./src/migrate/erc721-import.js --batch-size 1",
     "migrate-erc721-import-by-nft": "node ./src/migrate/erc721-import-by-nft.js",
     "migrate-nft-metadata": "node ./src/migrate/nft-metadata.js",
     "migrate-blockchain-block": "node ./src/migrate/blockchain-block.js",
