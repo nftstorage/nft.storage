@@ -141,14 +141,14 @@ async function scrapeBlockChain() {
       return false
     }
     console.log(`Inbox at ${importInbox.length}`)
-    await setTimeout(100)
+    await setTimeout(10)
   } else {
     if (!_draining) {
       console.log('Start Drain.')
       drainInbox()
       //this is going to be a stream, but until then
-      await setTimeout(500)
     }
+    await setTimeout(500)
   }
   return scrapeBlockChain()
 }
