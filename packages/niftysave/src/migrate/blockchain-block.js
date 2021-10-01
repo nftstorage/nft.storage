@@ -31,7 +31,7 @@ export const mutation = (blocks) => ({
       },
     },
     {
-      affected_rows: 1,
+      affected_rows: true,
     },
   ],
 })

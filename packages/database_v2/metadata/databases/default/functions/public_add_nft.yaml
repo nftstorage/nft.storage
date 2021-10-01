@@ -1,0 +1,5 @@
+function:
+  name: add_nft
+  schema: public
+configuration:
+  exposed_as: mutation
