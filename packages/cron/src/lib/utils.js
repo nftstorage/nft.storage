@@ -1,4 +1,5 @@
 import { Cluster } from '@nftstorage/ipfs-cluster'
+import pg from 'pg'
 import { Cloudflare } from '../lib/cloudflare.js'
 import { IPFS } from './ipfs.js'
 import { Pinata } from './pinata.js'
@@ -86,4 +87,21 @@ export function getDBClient(env) {
   }
   if (!url || !token) throw new Error('missing PostgREST credentials')
   return new DBClient(url, token)
+}
+
+/**
+ * Create a new Postgres client instance from the passed environment variables.
+ * @param {Record<string, string|undefined>} env
+ */
+export function getPg(env) {
+  let connectionString
+  if (env.ENV === 'production') {
+    connectionString = env.PROD_DATABASE_CONNECTION
+  } else if (env.ENV === 'staging') {
+    connectionString = env.STAGING_DATABASE_CONNECTION
+  } else {
+    connectionString = env.DATABASE_CONNECTION
+  }
+  if (!connectionString) throw new Error('missing Postgres connection string')
+  return new pg.Client({ connectionString })
 }
