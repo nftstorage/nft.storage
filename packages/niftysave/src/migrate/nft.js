@@ -2,6 +2,7 @@ import { script } from 'subprogram'
 import * as Migration from '../migrate.js'
 import { Get, Var, Lambda, Let, Select } from '../fauna.js'
 
+// test
 export const query = Lambda(
   ['ref'],
   Let(
