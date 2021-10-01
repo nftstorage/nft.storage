@@ -10,6 +10,7 @@ import * as ERC721 from '../gen/erc721/index.js'
 const SCRAPE_BATCH_SIZE = 100
 const MAX_INBOX_SIZE = 1000
 const SUBGRAPH_URL = `https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph`
+
 const ERC721_QUERYARGS = {
   url: new URL(SUBGRAPH_URL),
 }
@@ -35,7 +36,7 @@ const ERC721_RESULT_DEFINITON = {
 const nextQuery = () => {
   const query = {
     first: SCRAPE_BATCH_SIZE,
-    where: { tokenURI_not: '', id_gt: 0 },
+    where: { tokenURI_not: '', id_gt: lastScrapeCursor() },
   }
   return {
     tokens: [query, ERC721_RESULT_DEFINITON],
@@ -46,7 +47,7 @@ const nextQuery = () => {
 let importInbox = []
 
 let lastScrapeCursor = () => {
-  return 1
+  return 0
 }
 
 async function writeImportRecord() {}
