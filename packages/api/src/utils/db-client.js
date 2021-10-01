@@ -316,13 +316,12 @@ export class DBClient {
         { onConflict: 'name,account_id' }
       )
       .single()
+    if (error) {
+      throw new Error(JSON.stringify(error))
+    }
 
     if (!data) {
       throw new Error('Auth key not created.')
-    }
-
-    if (error) {
-      throw new Error(JSON.stringify(error))
     }
 
     return data
