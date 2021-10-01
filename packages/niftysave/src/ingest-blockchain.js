@@ -94,9 +94,7 @@ async function writeScrapedRecord(erc721Import) {
           next_id: erc721Import.id,
         },
         on_conflict: {
-          constraint:
-            Hasura.schema.niftysave_migration_constraint
-              .niftysave_migration_pkey,
+          constraint: Hasura.schema.erc721_import_constraint.erc721_import_pkey,
           update_columns: [],
         },
       },
