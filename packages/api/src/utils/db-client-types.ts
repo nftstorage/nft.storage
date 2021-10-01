@@ -1,5 +1,5 @@
 import { definitions } from './db-types'
-import type { Deal, PinStatus } from '../bindings'
+import type { Deal } from '../bindings'
 
 export type UpsertUserInput = Pick<
   definitions['account'],
@@ -17,10 +17,6 @@ export type UserOutput = definitions['account'] & {
     Pick<definitions['auth_key'], 'account_id' | 'id' | 'name' | 'secret'>
   >
 }
-
-// type PinOutput = definitions['pin_view'] & {
-//   status: PinStatus
-// }
 
 export type UploadOutput = definitions['upload'] & {
   files: Array<{ name?: string; type?: string } | undefined>
@@ -46,6 +42,9 @@ export interface CreateUploadInput {
   origins?: string[]
   meta?: Record<string, string>
   name?: string
+  inserted_at?: definitions['upload']['inserted_at']
+  updated_at?: definitions['upload']['updated_at']
+  pins?: Pick<definitions['pin'], 'service' | 'status'>[]
 }
 
 export type ContentOutput = definitions['content'] & {
