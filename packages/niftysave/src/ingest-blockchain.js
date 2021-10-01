@@ -91,7 +91,13 @@ async function writeScrapedRecord(erc721Import) {
       {
         object: {
           id: erc721Import.id,
-          nextId: 'foo',
+          next_id: erc721Import.id,
+        },
+        on_conflict: {
+          constraint:
+            Hasura.schema.niftysave_migration_constraint
+              .niftysave_migration_pkey,
+          update_columns: [],
         },
       },
       {
@@ -121,7 +127,7 @@ async function drainInbox() {
   }
 
   console.log(`Inbox at: ${importInbox.length}`)
-  drainInbox()
+  return drainInbox()
 }
 
 async function scrapeBlockChain() {
@@ -135,6 +141,7 @@ async function scrapeBlockChain() {
       return false
     }
     console.log(`Inbox at ${importInbox.length}`)
+    await setTimeout(100)
   } else {
     if (!_draining) {
       console.log('Start Drain.')
