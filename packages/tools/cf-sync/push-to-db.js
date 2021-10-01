@@ -1,14 +1,13 @@
+import { CID } from 'multiformats/cid'
+
 /**
  * @typedef {import('./cli2').Context} Context
  * @typedef {import('listr').ListrTaskWrapper} Task
  * @typedef {import('../../api/src/utils/db-client').definitions} definitions
+ * @typedef {import('@supabase/postgrest-js').PostgrestQueryBuilder<definitions['content']>} ContentQuery
+ * @typedef {import('@supabase/postgrest-js').PostgrestQueryBuilder<definitions['pin']>} PinQuery
+ * @typedef {import('@supabase/postgrest-js').PostgrestQueryBuilder<definitions['upload']>} UploadQuery
  */
-
-// const issuer = 'did:ethr:0x03cefdE6FC0391b16B0eC33734996b29146Cd142'
-// const sub = 'did:ethr:0x03cefdE6FC0391b16B0eC33734996b29146Cd142'
-
-// const issuer = 'did:ethr:0x856da5805f9Ec6A723560d21d28DF7C7e289d738'
-// const sub = 'did:ethr:0x856da5805f9Ec6A723560d21d28DF7C7e289d738'
 
 /**
  * @param {Context} ctx
@@ -16,7 +15,10 @@
  */
 export async function pushToDB(ctx, task) {
   for await (const user of ctx.userStore.iterator()) {
-    // if (user.value.data.issuer === issuer || user.value.data.sub === sub) {
+    if (user.value.data.email === 'hugomrdias@gmail.com') {
+      continue
+    }
+
     if (user) {
       const data = user.value.data
       const tokens = Object.entries(user.value.data.tokens)
@@ -35,7 +37,7 @@ export async function pushToDB(ctx, task) {
 
       if (error) {
         console.error(error)
-        throw new Error('create user failed')
+        throw new Error(`create user failed ${data.email} ${data.issuer}`)
       }
 
       // create auth keys for user
@@ -68,65 +70,131 @@ export async function pushToDB(ctx, task) {
  * @param {definitions['account']} dbUser
  */
 async function nftByUser(issuer, sub, ctx, task, keys, dbUser) {
+  const threshold = 20000
   let count = 0
+  let values = []
+
+  // Find all nfts by issuer
   for await (const { value } of ctx.nftStore.iterator({
     gt: issuer,
     lt: issuer + '\xFF',
   })) {
     count++
-    await addNft(value, keys, ctx, dbUser)
+    values.push(value)
+
+    if (values.length > threshold) {
+      await addNFTs(values, keys, ctx, dbUser)
+      values = []
+    }
     task.output = ` nfts: ${count} by issuer`
   }
-
+  // Find all nfts by sub
   if (sub !== issuer) {
     for await (const { value } of ctx.nftStore.iterator({
       gt: sub,
       lt: sub + '\xFF',
     })) {
       count++
-      await addNft(value, keys, ctx, dbUser)
+      values.push(value)
+
+      if (values.length > threshold) {
+        await addNFTs(values, keys, ctx, dbUser)
+        values = []
+      }
       task.output = ` nfts: ${count} by sub`
     }
+  }
+
+  if (values.length !== 0) {
+    await addNFTs(values, keys, ctx, dbUser)
   }
 }
 
 /**
  * @param {Context} ctx
- * @param {any} value
+ * @param {any[]} values
  * @param {definitions['auth_key'][]} keys
  * @param {definitions['account']} dbUser
  */
-async function addNft(value, keys, ctx, dbUser) {
-  const { data, pinStatus, size, checked } = value
-
-  if (checked) {
-    const authKey = keys.find((k) => k.name === data.scope)
-    const types = getMimeAndType(data.type)
-    await ctx.db.createUpload({
-      account_id: dbUser.id,
-      content_cid: data.cid,
-      source_cid: data.cid,
-      // @ts-ignore
-      type: types.type,
+async function addNFTs(values, keys, ctx, dbUser) {
+  /** @type {ContentQuery} */
+  const contentQuery = ctx.db.client.from('content')
+  /** @type {PinQuery} */
+  const pinQuery = ctx.db.client.from('pin')
+  /** @type {UploadQuery} */
+  const uploadQuery = ctx.db.client.from('upload')
+  const contentArray = []
+  const pinsArray = []
+  const uploadArray = []
+  for (const { data, size, pinStatus } of values) {
+    contentArray.push({
+      cid: data.cid,
       dag_size: size,
-      files: data.files,
-      key_id: authKey ? authKey.id : undefined,
-      mime_type: types.mime_type,
-      meta: data.pin?.meta,
-      name: data.pin?.name,
       inserted_at: data.created,
       updated_at: data.created,
-      pins: [
-        {
-          status: getDBPinStatus(pinStatus),
-          service: 'IpfsCluster',
-        },
-        {
-          status: 'PinQueued',
-          service: 'Pinata',
-        },
-      ],
     })
+
+    pinsArray.push({
+      status: getDBPinStatus(pinStatus),
+      service: 'IpfsCluster',
+      content_cid: data.cid,
+      inserted_at: data.created,
+      updated_at: data.created,
+    })
+    pinsArray.push({
+      status: 'PinQueued',
+      service: 'Pinata',
+      content_cid: data.cid,
+      inserted_at: data.created,
+      updated_at: data.created,
+    })
+
+    const authKey = keys.find((k) => k.name === data.scope)
+    const types = getMimeAndType(data.type)
+    const parsedCID = parseCid(data.cid)
+    uploadArray.push({
+      account_id: dbUser.id,
+      key_id: authKey ? authKey.id : null,
+      content_cid: parsedCID.contentCid,
+      source_cid: parsedCID.sourceCid,
+      mime_type: types.mime_type,
+      // @ts-ignore
+      type: types.type,
+      name: data.pin && data.pin.name ? data.pin.name : '',
+      files: data.files || [],
+      origins: data.pin && data.pin.origins ? data.pin.origins : null,
+      meta: data.pin && data.pin.meta ? data.pin.meta : null,
+      inserted_at: data.created,
+      updated_at: data.created,
+    })
+  }
+
+  // push contents
+  const { error: contentError } = await contentQuery.upsert(contentArray, {
+    onConflict: 'cid',
+  })
+  if (contentError) {
+    throw new Error(JSON.stringify(contentError))
+  }
+
+  // push pins and uploads
+  const [pins, uploads] = await Promise.all([
+    // @ts-ignore
+    pinQuery.upsert(pinsArray, {
+      onConflict: 'content_cid, service',
+    }),
+    // @ts-ignore
+    uploadQuery.upsert(uploadArray, {
+      onConflict: 'account_id, source_cid',
+    }),
+  ])
+  if (uploads.error) {
+    console.log(uploadArray)
+    console.log(uploads)
+    throw new Error(JSON.stringify(uploads.error))
+  }
+  if (pins.error) {
+    throw new Error(JSON.stringify(pins.error))
   }
 }
 
@@ -178,5 +246,22 @@ function getDBPinStatus(status) {
       return 'Pinning'
     default:
       return 'PinError'
+  }
+}
+
+/**
+ * Parse CID and return v1 and original
+ *
+ * @param {string} cid
+ */
+export function parseCid(cid) {
+  try {
+    const c = CID.parse(cid)
+    return {
+      contentCid: c.toV1().toString(),
+      sourceCid: c.toString(),
+    }
+  } catch (err) {
+    throw new Error(`invalid cid ${cid}`)
   }
 }

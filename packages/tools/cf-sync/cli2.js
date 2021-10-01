@@ -30,27 +30,18 @@ const tasks = new Listr(
       title: 'Sync nfts',
       task: syncNFTs,
     },
-    {
-      title: 'Sync nfts data',
-      task: syncNFTData,
-    },
-    {
-      title: 'Validate nft data structure',
-      task: validateLocal,
-    },
     // {
-    //   title: 'Test',
-    //   task: async (/** @type {Context} */ ctx, task) => {
-    //     let count = 0
-    //     for await (const { key, value } of ctx.userStore.iterator()) {
-    //       console.log(value)
-    //     }
-    //   },
+    //   title: 'Sync nfts data',
+    //   task: syncNFTData,
     // },
-    {
-      title: 'Push to DB',
-      task: pushToDB,
-    },
+    // {
+    //   title: 'Validate nft data structure',
+    //   task: validateLocal,
+    // },
+    // {
+    //   title: 'Push to DB',
+    //   task: pushToDB,
+    // },
   ],
   { renderer: 'default' }
 )

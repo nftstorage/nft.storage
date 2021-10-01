@@ -55,7 +55,7 @@ BEGIN
             (data ->> 'meta')::jsonb,
             (data ->> 'updated_at')::timestamptz,
             (data ->> 'inserted_at')::timestamptz)
-    ON CONFLICT ( account_id, content_cid ) DO NOTHING;
+    ON CONFLICT ( account_id, source_cid ) DO NOTHING;
 
 
     return query select *

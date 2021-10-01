@@ -14,7 +14,7 @@ export class DBClient {
   constructor(url, token) {
     this.client = new PostgrestClient(url, {
       headers: {
-        apikey: token,
+        Authorization: `Bearer ${token}`,
       },
     })
   }
@@ -28,7 +28,7 @@ export class DBClient {
     /**@type {PostgrestQueryBuilder<definitions['account']>} */
     const query = this.client.from('account')
 
-    return query.upsert(account, { onConflict: 'magic_link_id' })
+    return query.upsert(account, { onConflict: 'github_id' })
   }
 
   /**
