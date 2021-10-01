@@ -10,8 +10,8 @@ import { setTimeout } from 'timers/promises'
 */
 
 /* Abstract to the config */
-const SCRAPE_BATCH_SIZE = 11
-const MAX_INBOX_SIZE = 100
+const SCRAPE_BATCH_SIZE = 50
+const MAX_INBOX_SIZE = 1000
 const SUBGRAPH_URL = `https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph`
 
 const HASURA_CONFIG = {
@@ -109,9 +109,8 @@ let _draining = false
 async function drainInbox() {
   if (importInbox.length > 0) {
     _draining = true
-    const nextImport = { ...importInbox[0] }
+    const nextImport = { ...importInbox[importInbox.length - 1] }
     console.log(`writing: ${nextImport.id}`)
-    console.log(nextImport)
     try {
       await writeScrapedRecord(nextImport)
       importInbox.pop()
