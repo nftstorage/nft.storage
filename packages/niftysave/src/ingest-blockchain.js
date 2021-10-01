@@ -1,6 +1,10 @@
 import * as ERC721 from '../gen/erc721/index.js'
 
-/* Note: this is super bare-bones still, and not ready for review */
+/* Note:
+    this is still a timeb-xed "spike"
+    not ready for review
+    Will be refactored into existing config/typing patterns
+*/
 
 /* Abstract to the config */
 const SCRAPE_BATCH_SIZE = 100
