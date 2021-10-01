@@ -1,6 +1,8 @@
 import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
+import { setTimeout } from 'timers/promises'
+
 /* Note:
     this is still a timeb-xed "spike"
     not ready for review
@@ -8,8 +10,8 @@ import * as Hasura from './hasura.js'
 */
 
 /* Abstract to the config */
-const SCRAPE_BATCH_SIZE = 26
-const MAX_INBOX_SIZE = 200
+const SCRAPE_BATCH_SIZE = 11
+const MAX_INBOX_SIZE = 100
 const SUBGRAPH_URL = `https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph`
 
 const HASURA_CONFIG = {
@@ -83,42 +85,56 @@ async function fetchNextNFTBatch() {
   return nftResults
 }
 
-async function writeImportRecord(erc721Import) {
-  let importResult = await Hasura.mutation(HASURA_CONFIG, {
+async function writeScrapedRecord(erc721Import) {
+  const record = {
     insert_erc721_import_one: {
       object: {
         id: erc721Import.id,
       },
     },
-  })
-
-  return importResult
-}
-
-async function drainInbox() {
-  if (importInbox.length > 0) {
-    const nextImport = importInbox.pop()
-    console.log(`writing: ${nextImport.id}`)
-    const done = await writeImportRecord(nextImport)
   }
 
+  const returnValue = {
+    id: true,
+  }
+
+  return Hasura.mutation(HASURA_CONFIG, record, returnValue)
+}
+
+let _draining = false
+async function drainInbox() {
+  if (importInbox.length > 0) {
+    _draining = true
+    const nextImport = { ...importInbox[0] }
+    console.log(`writing: ${nextImport.id}`)
+    console.log(nextImport)
+    try {
+      await writeScrapedRecord(nextImport)
+      importInbox.pop()
+    } catch (err) {
+      console.log(err)
+    }
+  } else {
+    _draining = false
+  }
+
+  console.log(`Inbox at: ${importInbox.length}`)
   drainInbox()
 }
 
 async function scrapeBlockChain() {
-  //simulate 3 scrapes
-
   if (importInbox.length < MAX_INBOX_SIZE) {
     let scrape = await fetchNextNFTBatch()
-
     importInbox = [...importInbox, ...scrape.value.tokens]
-
     console.log(`Inbox at ${importInbox.length}`)
   } else {
-    drainInbox()
-    console.log(`.`)
+    if (!_draining) {
+      console.log('Start Drain.')
+      drainInbox()
+      //this is going to be a stream, but until then
+      await setTimeout(500)
+    }
   }
-
   return scrapeBlockChain()
 }
 
