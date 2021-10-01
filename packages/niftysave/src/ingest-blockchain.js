@@ -86,19 +86,19 @@ async function fetchNextNFTBatch() {
 }
 
 async function writeScrapedRecord(erc721Import) {
-  const record = {
-    insert_erc721_import_one: {
-      object: {
-        id: erc721Import.id,
+  return Hasura.mutation(HASURA_CONFIG, {
+    insert_erc721_import_one: [
+      {
+        object: {
+          id: erc721Import.id,
+          nextId: 'foo',
+        },
       },
-    },
-  }
-
-  const returnValue = {
-    id: true,
-  }
-
-  return Hasura.mutation(HASURA_CONFIG, record, returnValue)
+      {
+        id: true,
+      },
+    ],
+  })
 }
 
 let _draining = false
@@ -113,9 +113,11 @@ async function drainInbox() {
       importInbox.pop()
     } catch (err) {
       console.log(err)
+      return false
     }
   } else {
     _draining = false
+    await setTimeout(500)
   }
 
   console.log(`Inbox at: ${importInbox.length}`)
@@ -124,8 +126,14 @@ async function drainInbox() {
 
 async function scrapeBlockChain() {
   if (importInbox.length < MAX_INBOX_SIZE) {
-    let scrape = await fetchNextNFTBatch()
-    importInbox = [...importInbox, ...scrape.value.tokens]
+    let scrape = []
+    try {
+      scrape = await fetchNextNFTBatch()
+      importInbox = [...importInbox, ...scrape.value.tokens]
+    } catch (err) {
+      console.log(err)
+      return false
+    }
     console.log(`Inbox at ${importInbox.length}`)
   } else {
     if (!_draining) {
