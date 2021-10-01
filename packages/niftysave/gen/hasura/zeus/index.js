@@ -238,18 +238,6 @@ export var nft_update_column
   nft_update_column['token_uri_hash'] = 'token_uri_hash'
   nft_update_column['updated_at'] = 'updated_at'
 })(nft_update_column || (nft_update_column = {}))
-/** select columns of table "nft_view" */
-export var nft_view_select_column
-;(function (nft_view_select_column) {
-  nft_view_select_column['contract_id'] = 'contract_id'
-  nft_view_select_column['id'] = 'id'
-  nft_view_select_column['inserted_at'] = 'inserted_at'
-  nft_view_select_column['mint_time'] = 'mint_time'
-  nft_view_select_column['nft_owner_id'] = 'nft_owner_id'
-  nft_view_select_column['token_id'] = 'token_id'
-  nft_view_select_column['token_uri'] = 'token_uri'
-  nft_view_select_column['updated_at'] = 'updated_at'
-})(nft_view_select_column || (nft_view_select_column = {}))
 /** unique or primary key constraints on table "nfts_by_blockchain_blocks" */
 export var nfts_by_blockchain_blocks_constraint
 ;(function (nfts_by_blockchain_blocks_constraint) {
