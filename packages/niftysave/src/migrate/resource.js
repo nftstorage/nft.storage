@@ -22,7 +22,7 @@ export const query = Lambda(
       data: {
         uri: Select(['data', 'uri'], Var('resource')),
         status: Select(['data', 'status'], Var('resource')),
-        status_text: Select(['data', 'statusText'], Var('resource')),
+        status_text: Select(['data', 'statusText'], Var('resource'), ''),
         ipfs_url: Select(['data', 'ipfsURL'], Var('resource'), Var('nil')),
         content_cid: Var('content_cid'),
         inserted_at: Select(['data', 'created'], Var('resource'), Var('nil')),
