@@ -1,4 +1,4 @@
-name: Cron dagcargo
+name: Cron dagcargo Refresh Materialized Views
 
 on:
   schedule:
@@ -24,4 +24,4 @@ jobs:
           ENV: ${{ matrix.env }}
           STAGING_DATABASE_CONNECTION: ${{ secrets.STAGING_DATABASE_CONNECTION }}
           PROD_DATABASE_CONNECTION: ${{ secrets.PROD_DATABASE_CONNECTION }}
-        run: yarn --cwd packages/cron start:dagcargo
+        run: yarn --cwd packages/cron start:dagcargo:views

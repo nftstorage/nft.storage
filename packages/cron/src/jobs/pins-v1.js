@@ -34,8 +34,8 @@ export async function updatePinStatuses({ db, cluster }) {
 
   log(`🎯 Updating pin ${count} statuses`)
 
-  let from = 0
-  const pageSize = 1000
+  let offset = 0
+  const limit = 1000
   while (true) {
     /** @type {PinQuery} */
     const query = db.client.from('pin')
@@ -44,7 +44,7 @@ export async function updatePinStatuses({ db, cluster }) {
       .eq('service', 'IpfsCluster')
       .neq('status', 'Pinned')
       .neq('status', 'PinError')
-      .range(from, from + pageSize - 1)
+      .range(offset, offset + limit - 1)
 
     if (error) {
       throw Object.assign(new Error(), error)
@@ -96,9 +96,9 @@ export async function updatePinStatuses({ db, cluster }) {
     }
 
     log(`🗂 ${pins.length} processed, ${updatedPins.length} updated`)
-    log(`ℹ️ ${from + pins.length} of ${count} processed in total`)
+    log(`ℹ️ ${offset + pins.length} of ${count} processed in total`)
 
-    from += pageSize
+    offset += limit
   }
 
   log('✅ Done')

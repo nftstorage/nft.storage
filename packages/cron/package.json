@@ -17,7 +17,8 @@
     "start:pins-v1": "node src/bin/pins-v1.js",
     "start:pinata": "node src/bin/pinata.js",
     "start:pinata-v1": "node src/bin/pinata-v1.js",
-    "start:dagcargo": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo.js"
+    "start:dagcargo:views": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo-views.js",
+    "start:dagcargo:sizes": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo-sizes.js"
   },
   "author": "Alan Shaw",
   "license": "(Apache-2.0 AND MIT)",
