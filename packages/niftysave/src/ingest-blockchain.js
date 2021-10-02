@@ -124,7 +124,7 @@ async function writeScrapedRecord(erc721Import) {
     contract_supports_eip721_metadata: contract.supportsEIP721Metadata,
     contract_symbol: contract.symbol,
     id: id,
-    mint_time: mintTime,
+    mint_time: new Date(parseInt(mintTime.padEnd(13, '0'))),
     owner_id: owner.id,
     token_id: tokenID,
     token_uri: tokenURI,
