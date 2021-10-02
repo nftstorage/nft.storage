@@ -85,7 +85,7 @@ async function fetchNextNFTBatch() {
   return nftResults
 }
 
-const example = {
+const exampleERC721Import = {
   blockHash:
     '0xb9251c163c0af58a7bddefcefc716f4793a9a3160f89894e99c33e2109022e05',
   blockNumber: '7958619',
@@ -116,22 +116,24 @@ async function writeScrapedRecord(erc721Import) {
     tokenURI,
   } = erc721Import
 
+  const nftRecord = {
+    block_hash: blockHash,
+    block_number: blockNumber,
+    contract_id: contract.id,
+    contract_name: contract.name,
+    contract_supports_eip721_metadata: contract.supportsEIP721Metadata,
+    contract_symbol: contract.symbol,
+    id: id,
+    mint_time: mintTime,
+    owner_id: owner.id,
+    token_id: tokenID,
+    token_uri: tokenURI,
+  }
+
   return Hasura.mutation(HASURA_CONFIG, {
     ingest_erc721_token: [
       {
-        args: {
-          block_hash: blockHash,
-          block_number: blockNumber,
-          contract_id: contract.id,
-          contract_name: contract.name,
-          contract_supports_eip721_metadata: contract.supportsEIP721Metadata,
-          contract_symbol: contract.symbol,
-          id: id,
-          mint_time: mintTime,
-          owner_id: owner.id,
-          token_id: tokenID,
-          token_uri: tokenURI,
-        },
+        args: nftRecord,
         on_conflict: {
           constraint: Hasura.schema.erc721_import_constraint.erc721_import_pkey,
           update_columns: [],
@@ -187,8 +189,8 @@ async function scrapeBlockChain() {
     if (!_draining) {
       console.log('Start Drain.')
       drainInbox()
-      //this is going to be a stream, but until then
     }
+    //this is going to be a stream, but until then
     await setTimeout(500)
   }
   return scrapeBlockChain()
