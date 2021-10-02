@@ -10,7 +10,7 @@ import { setTimeout } from 'timers/promises'
 */
 
 /* Abstract to the config */
-const SCRAPE_BATCH_SIZE = 100
+const SCRAPE_BATCH_SIZE = 200
 const MAX_INBOX_SIZE = 10000
 const SUBGRAPH_URL = `https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph`
 
@@ -65,8 +65,8 @@ const lastScrapeId = (id) => {
 
   //you're starting over from scratch
   if (lastScrapeId == 0 || id == 0) {
-    //actually go get the lat id from the database
-    //let _lastScrapeId = await (db, sort by time stamp extract id)
+    //actually go get the last id from the database
+    //TODO:_lastScrapeId = await (db, sort by time stamp extract id)
     //or its zero, the first time ever.
   }
 
