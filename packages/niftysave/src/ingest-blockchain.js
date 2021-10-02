@@ -10,8 +10,8 @@ import { setTimeout } from 'timers/promises'
 */
 
 /* Abstract to the config */
-const SCRAPE_BATCH_SIZE = 200
-const MAX_INBOX_SIZE = 10000
+const SCRAPE_BATCH_SIZE = 1
+const MAX_INBOX_SIZE = 1
 const SUBGRAPH_URL = `https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph`
 
 const HASURA_CONFIG = {
@@ -46,7 +46,7 @@ const ERC721_RESULT_DEFINITON = {
   },
 }
 
-const nextQuery = () => {
+const nextSubgraphQuery = () => {
   const query = {
     first: SCRAPE_BATCH_SIZE,
     where: { tokenURI_not: '', id_gt: lastScrapeId() },
@@ -74,7 +74,7 @@ const lastScrapeId = (id) => {
 }
 
 async function fetchNextNFTBatch() {
-  const nftResults = await ERC721.query(ERC721_QUERYARGS, nextQuery())
+  const nftResults = await ERC721.query(ERC721_QUERYARGS, nextSubgraphQuery())
   //Ok { ok: true, value: { tokens: [ [Object] ] }, done: true }
 
   const lastId = nftResults.value.tokens.map((nft) => nft.id)[
@@ -87,11 +87,20 @@ async function fetchNextNFTBatch() {
 
 async function writeScrapedRecord(erc721Import) {
   return Hasura.mutation(HASURA_CONFIG, {
-    insert_erc721_import_one: [
+    ingest_erc721_token: [
       {
-        object: {
-          id: erc721Import.id,
-          next_id: erc721Import.id,
+        args: {
+          block_hash: '',
+          block_number: '',
+          contract_id: '',
+          contract_name: '',
+          contract_supports_eip721_metadata: false,
+          contract_symbol: '',
+          id: '',
+          mint_time: '',
+          owner_id: '',
+          token_id: '',
+          token_uri: '',
         },
         on_conflict: {
           constraint: Hasura.schema.erc721_import_constraint.erc721_import_pkey,
@@ -99,7 +108,12 @@ async function writeScrapedRecord(erc721Import) {
         },
       },
       {
+        contract_id: true,
         id: true,
+        mint_time: true,
+        nft_owner_id: true,
+        token_id: true,
+        token_uri_hash: true,
       },
     ],
   })
@@ -132,6 +146,7 @@ async function scrapeBlockChain() {
     try {
       scrape = await fetchNextNFTBatch()
       importInbox = [...importInbox, ...scrape.value.tokens]
+      console.log(importInbox)
     } catch (err) {
       console.log(err)
       return false
@@ -141,7 +156,7 @@ async function scrapeBlockChain() {
   } else {
     if (!_draining) {
       console.log('Start Drain.')
-      drainInbox()
+      //drainInbox()
       //this is going to be a stream, but until then
     }
     await setTimeout(500)
