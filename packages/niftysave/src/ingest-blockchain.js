@@ -10,8 +10,8 @@ import { setTimeout } from 'timers/promises'
 */
 
 /* Abstract to the config */
-const SCRAPE_BATCH_SIZE = 1
-const MAX_INBOX_SIZE = 1
+const SCRAPE_BATCH_SIZE = 100
+const MAX_INBOX_SIZE = 1000
 const SUBGRAPH_URL = `https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph`
 
 const HASURA_CONFIG = {
