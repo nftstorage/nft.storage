@@ -134,10 +134,6 @@ async function writeScrapedRecord(erc721Import) {
     ingest_erc721_token: [
       {
         args: nftRecord,
-        on_conflict: {
-          constraint: Hasura.schema.erc721_import_constraint.erc721_import_pkey,
-          update_columns: [],
-        },
       },
       {
         contract_id: true,

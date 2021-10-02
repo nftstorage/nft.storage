@@ -1,7 +1,8 @@
 /* eslint-disable */
-import { AllTypesProps, ReturnTypes } from './const.js'
+
+import { AllTypesProps, ReturnTypes } from './const'
+
 export class GraphQLError extends Error {
-  response
   constructor(response) {
     super('')
     this.response = response
@@ -11,7 +12,7 @@ export class GraphQLError extends Error {
     return 'GraphQL Response Error'
   }
 }
-export const ZeusSelect = () => (t) => t
+
 export const ScalarResolver = (scalar, value) => {
   switch (scalar) {
     case 'String':
@@ -32,6 +33,7 @@ export const ScalarResolver = (scalar, value) => {
       return false
   }
 }
+
 export const TypesPropsResolver = ({ value, type, name, key, blockArrays }) => {
   if (value === null) {
     return `null`
@@ -91,12 +93,14 @@ export const TypesPropsResolver = ({ value, type, name, key, blockArrays }) => {
   }
   return reslovedScalar
 }
+
 const isArrayFunction = (parent, a) => {
   const [values, r] = a
   const [mainKey, key, ...keys] = parent
   const keyValues = Object.keys(values).filter(
     (k) => typeof values[k] !== 'undefined'
   )
+
   if (!keys.length) {
     return keyValues.length > 0
       ? `(${keyValues
@@ -112,11 +116,13 @@ const isArrayFunction = (parent, a) => {
           .join(',')})${r ? traverseToSeekArrays(parent, r) : ''}`
       : traverseToSeekArrays(parent, r)
   }
+
   const [typeResolverKey] = keys.splice(keys.length - 1, 1)
   let valueToResolve = ReturnTypes[mainKey][key]
   for (const k of keys) {
     valueToResolve = ReturnTypes[valueToResolve][k]
   }
+
   const argumentString =
     keyValues.length > 0
       ? `(${keyValues
@@ -133,16 +139,19 @@ const isArrayFunction = (parent, a) => {
       : traverseToSeekArrays(parent, r)
   return argumentString
 }
+
 const resolveKV = (k, v) =>
   typeof v === 'boolean'
     ? k
     : typeof v === 'object'
     ? `${k}{${objectToTree(v)}}`
     : `${k}${v}`
+
 const objectToTree = (o) =>
   `{${Object.keys(o)
     .map((k) => `${resolveKV(k, o[k])}`)
     .join(' ')}}`
+
 const traverseToSeekArrays = (parent, a) => {
   if (!a) return ''
   if (Object.keys(a).length === 0) {
@@ -178,7 +187,9 @@ const traverseToSeekArrays = (parent, a) => {
   }
   return objectToTree(b)
 }
+
 const buildQuery = (type, a) => traverseToSeekArrays([type], a)
+
 const inspectVariables = (query) => {
   const regex = /\$\b\w*__ZEUS_VAR__\[?[^!^\]^\s^,^\)^\}]*[!]?[\]]?[!]?/g
   let result
@@ -205,26 +216,32 @@ const inspectVariables = (query) => {
     .map(([variableName, variableType]) => `${variableName}:${variableType}`)
     .join(', ')})${filteredQuery}`
 }
+
 export const queryConstruct = (t, tName, operationName) => (o) =>
   `${t.toLowerCase()}${
     operationName ? ' ' + operationName : ''
   }${inspectVariables(buildQuery(tName, o))}`
+
 const fullChainConstruct = (fn) => (t, tName) => (o, options) =>
   fn(
-    queryConstruct(t, tName, options?.operationName)(o),
-    options?.variables
+    queryConstruct(t, tName, options ? options.operationName : undefined)(o),
+    options ? options.variables : undefined
   ).then((r) => {
     seekForAliases(r)
     return r
   })
+
 export const fullChainConstructor = (fn, operation, key) => (o, options) =>
   fullChainConstruct(fn)(operation, key)(o, options)
+
 const fullSubscriptionConstruct = (fn) => (t, tName) => (o, options) =>
-  fn(queryConstruct(t, tName, options?.operationName)(o))
+  fn(queryConstruct(t, tName, options ? options.operationName : undefined)(o))
+
 export const fullSubscriptionConstructor =
   (fn, operation, key) => (o, options) =>
     fullSubscriptionConstruct(fn)(operation, key)(o, options)
-const seekForAliases = (response) => {
+
+const seekForAliases = (o) => {
   const traverseAlias = (value) => {
     if (Array.isArray(value)) {
       value.forEach(seekForAliases)
@@ -234,29 +251,34 @@ const seekForAliases = (response) => {
       }
     }
   }
-  if (typeof response === 'object' && response) {
-    const keys = Object.keys(response)
+  if (typeof o === 'object' && o) {
+    const keys = Object.keys(o)
     if (keys.length < 1) {
       return
     }
     keys.forEach((k) => {
-      const value = response[k]
+      const value = o[k]
       if (k.indexOf('__alias__') !== -1) {
         const [operation, alias] = k.split('__alias__')
-        response[alias] = {
+        o[alias] = {
           [operation]: value,
         }
-        delete response[k]
+        delete o[k]
       }
       traverseAlias(value)
     })
   }
 }
+
 export const $ = (t) => `ZEUS_VAR$${t.join('')}`
+
+export const ZeusSelect = () => (t) => t
+
 export const resolverFor = (type, field, fn) => fn
+
 const handleFetchResponse = (response) => {
   if (!response.ok) {
-    return new Promise((_, reject) => {
+    return new Promise((resolve, reject) => {
       response
         .text()
         .then((text) => {
@@ -271,10 +293,11 @@ const handleFetchResponse = (response) => {
   }
   return response.json()
 }
+
 export const apiFetch =
   (options) =>
   (query, variables = {}) => {
-    let fetchFunction = fetch
+    const fetchFunction = fetch
     let queryString = query
     let fetchOptions = options[1] || {}
     if (fetchOptions.method && fetchOptions.method === 'GET') {
@@ -285,6 +308,7 @@ export const apiFetch =
           if (response.errors) {
             throw new GraphQLError(response)
           }
+          seekForAliases(response.data)
           return response.data
         })
     }
@@ -301,9 +325,11 @@ export const apiFetch =
         if (response.errors) {
           throw new GraphQLError(response)
         }
+        seekForAliases(response.data)
         return response.data
       })
   }
+
 export const apiSubscription = (options) => (query) => {
   try {
     const queryString = options[0] + '?query=' + encodeURIComponent(query)
@@ -339,6 +365,7 @@ export const apiSubscription = (options) => (query) => {
     throw new Error('No websockets implemented')
   }
 }
+
 export const Thunder = (fn, subscriptionFn) => ({
   query: fullChainConstructor(fn, 'query', 'query_root'),
   mutation: fullChainConstructor(fn, 'mutation', 'mutation_root'),
@@ -348,6 +375,7 @@ export const Thunder = (fn, subscriptionFn) => ({
     'subscription_root'
   ),
 })
+
 export const Chain = (...options) => ({
   query: fullChainConstructor(apiFetch(options), 'query', 'query_root'),
   mutation: fullChainConstructor(
@@ -374,4 +402,5 @@ export const Selectors = {
   mutation: ZeusSelect(),
   subscription: ZeusSelect(),
 }
+
 export const Gql = Chain('http://localhost:8080/v1/graphql')
