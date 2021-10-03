@@ -117,25 +117,76 @@ let importInbox = []
  *  value: NFTSSubGraphResultValue
  *  done: Boolean
  * }} NFTSSubgraphResult
- * @returns NFTSubgraphResult
+ *
  */
 
+/**
+ *
+ * {
+ * id: string;
+ * contract: ERC721.schema.TokenContract;
+ * tokenID: any;
+ * owner: ERC721.schema.Owner;
+ * mintTime: any;
+ * tokenURI: string;
+ * blockNumber: any;
+ * blockHash: any;
+ * __typename: "Token"; }
+ */
+
+/**
+ * This function is a hook to clean up data (or loosen typing)
+ * @param { ERC721.schema.Token } token
+ * @returns { ERC721ImportNFT }
+ */
+function subgraphTokenToERC721ImportNFT(token) {
+  const {
+    id,
+    tokenID,
+    mintTime,
+    tokenURI,
+    blockNumber,
+    blockHash,
+    contract,
+    owner,
+  } = token
+  return {
+    id,
+    tokenID: tokenID.toString() || '',
+    mintTime: mintTime.toString() || '',
+    tokenURI: tokenURI.toString(),
+    blockNumber,
+    blockHash,
+    contract: {
+      id: contract.id || '',
+      name: contract.name || '',
+      symbol: contract.symbol || '',
+      supportsEIP721Metadata: contract.supportsEIP721Metadata,
+    },
+    owner: {
+      id: owner.id,
+    },
+  }
+}
+
+/**
+ *
+ * @returns { Promise<ERC721ImportNFT[]> }
+ */
 async function fetchNextNFTBatch() {
   const nftsResult = await ERC721.query(ERC721_QUERYARGS, nextSubgraphQuery())
-
   //something broke.
   if (nftsResult.ok === false) {
     console.error(nftsResult)
     return []
   }
-
   const { tokens } = nftsResult?.value || []
   const lastId = tokens.map((nft) => nft.id)[tokens.length - 1]
   if (lastId) {
+    //this is where we keep track lat Id if successful.
     lastScrapeId(parseInt(lastId))
   }
-
-  return nftsResult
+  return tokens.map(subgraphTokenToERC721ImportNFT)
 }
 
 /**
@@ -220,7 +271,7 @@ async function scrapeBlockChain() {
     let scrape = []
     try {
       scrape = await fetchNextNFTBatch()
-      importInbox = [...importInbox, ...scrape.value.tokens]
+      importInbox = [...importInbox, ...scrape]
     } catch (err) {
       console.log(err)
       return false
