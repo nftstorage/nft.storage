@@ -21,8 +21,29 @@ const HASURA_CONFIG = {
   },
 }
 
-//todo: make this a stream
-let importInbox = []
+/**
+ *
+ * @typedef {{
+ *  id: string
+ *  name: string
+ *  symbol: string
+ *  supportsEIP721Metadata: Boolean
+ * }} ERC721ImportNFTContract
+ *
+ * @typedef {{
+ *   id: String
+ * }} ERC721ImportNFTOwner
+ *
+ * @typedef {{
+ *  id: string
+ *  tokenId: string
+ *  mintTime: Number
+ *  blockNumber: Number
+ *  blockHash: String
+ *  contract: ERC721ImportNFTContract
+ *  owner: ERC721ImportNFTOwner
+ * }} ERC721ImportNFT
+ */
 
 const ERC721_QUERYARGS = {
   url: new URL(SUBGRAPH_URL),
@@ -46,6 +67,9 @@ const ERC721_RESULT_DEFINITON = {
   },
 }
 
+/**
+ * @returns {any}
+ */
 const nextSubgraphQuery = () => {
   const query = {
     first: SCRAPE_BATCH_SIZE,
@@ -56,22 +80,31 @@ const nextSubgraphQuery = () => {
   }
 }
 
-//This needs to initialize with the current cursor
+/**
+ * @type {Number}
+ */
 let _lastScrapeId = 0
-const lastScrapeId = (id) => {
-  if (id) {
+/**
+ * @param {Number=} id
+ * @returns {Number}
+ */
+
+function lastScrapeId(id) {
+  if (typeof id === 'number') {
     _lastScrapeId = id
   }
-
-  //you're starting over from scratch
-  if (lastScrapeId == 0 || id == 0) {
+  if (_lastScrapeId === 0) {
     //actually go get the last id from the database
     //TODO:_lastScrapeId = await (db, sort by time stamp extract id)
     //or its zero, the first time ever.
   }
-
   return _lastScrapeId
 }
+
+/**
+ * @type {ERC721ImportNFT[]}
+ */
+let importInbox = []
 
 async function fetchNextNFTBatch() {
   const nftResults = await ERC721.query(ERC721_QUERYARGS, nextSubgraphQuery())
