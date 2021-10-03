@@ -191,8 +191,8 @@ async function fetchNextNFTBatch() {
 
 /**
  *
- * @param {ERC721ImportNFT} erc721Import
- * @returns
+ * @param { ERC721ImportNFT } erc721Import
+ * @returns { Promise<any> }
  */
 async function writeScrapedRecord(erc721Import) {
   const {
@@ -238,23 +238,43 @@ async function writeScrapedRecord(erc721Import) {
 }
 
 /**
- *
- * @returns
+ * A private flag that keeps track of whether the
+ * drainInbox function is actively writing records
+ * and depleting the inbox
+ * @type {Boolean}
  */
 let _draining = false
+/**
+ * Recursive function that either
+ * 1. Writes a single record in the inbox buffer
+ * 2. Has nothing to write, so it waits for the inbox to fill
+ * 3. Encounters exception and returns false
+ * @returns {Promise<Boolean | Function>}
+ */
 async function drainInbox() {
   if (importInbox.length > 0) {
     _draining = true
-    const nextImport = { ...importInbox[importInbox.length - 1] }
+    const nextImport = importInbox[importInbox.length - 1]
     try {
-      await writeScrapedRecord(nextImport)
-      importInbox.pop()
+      // this should literally never be undefined
+      // and this is changing to a TransformStream
+      if (nextImport) {
+        await writeScrapedRecord(nextImport)
+        importInbox.pop()
+      } else {
+        console.error(
+          `Attempted to get the next ERC721ImportNFT but instead got undefined`
+        )
+        return false
+      }
     } catch (err) {
       console.log(err)
       return false
     }
   } else {
     _draining = false
+    // this is going to be a stream, but until then,
+    // prevent running too quickly on failure or empty
     await setTimeout(500)
   }
 
@@ -263,8 +283,11 @@ async function drainInbox() {
 }
 
 /**
- *
- * @returns
+ * Recursive function that either
+ * 1. Scrapes the chain
+ * 2. Is full and waits a bit to scrape
+ * 3. Encounters an exception and returns false.
+ * @returns {Promise<Boolean | Function>}
  */
 async function scrapeBlockChain() {
   if (importInbox.length < MAX_INBOX_SIZE) {
@@ -283,7 +306,8 @@ async function scrapeBlockChain() {
       console.log('Start Drain.')
       drainInbox()
     }
-    //this is going to be a stream, but until then
+    // this is going to be a stream, but until then,
+    // prevent running too quickly on failure or empty
     await setTimeout(500)
   }
   return scrapeBlockChain()
