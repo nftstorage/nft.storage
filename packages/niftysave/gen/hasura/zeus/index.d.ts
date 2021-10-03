@@ -11154,6 +11154,7 @@ export declare const Chain: (...options: chainOptions) => {
         },
         ValueTypes['nfts_by_blockchain_blocks']
       ]
+
       insert_niftysave_migration?: [
         {
           objects: ValueTypes['niftysave_migration_insert_input'][] /** on conflict condition */
@@ -12990,6 +12991,20 @@ export declare const Selectors: {
           where: ValueTypes['resource_view_bool_exp']
         },
         ValueTypes['resource_view_mutation_response']
+      ]
+      ingest_erc721_token?: [
+        {
+          /** input parameters for function "ingest_erc721_token" */
+          args: ValueTypes['ingest_erc721_token_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_bool_exp'] | null
+        },
+        ValueTypes['nft']
       ]
       insert_blockchain_block?: [
         {

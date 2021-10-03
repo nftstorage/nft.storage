@@ -11,7 +11,7 @@ const SUBGRAPH_URL = `https://api.thegraph.com/subgraphs/name/nftstorage/eip721-
 const HASURA_CONFIG = {
   url: new URL(`http://localhost:8080/v1/graphql`),
   headers: {
-    'x-hasura-admin-secret': process.env['HASURA_KEY'] || 'foo',
+    'x-hasura-admin-secret': process.env['HASURA_KEY'] || '',
   },
 }
 
@@ -186,7 +186,7 @@ async function writeScrapedRecord(erc721Import) {
     tokenURI,
   } = erc721Import
 
-  const nftRecord = {
+  const nft = {
     block_hash: blockHash,
     block_number: blockNumber,
     contract_id: contract.id,
@@ -200,10 +200,10 @@ async function writeScrapedRecord(erc721Import) {
     token_uri: tokenURI,
   }
 
-  return Hasura.mutation(HASURA_CONFIG, {
+  const mutation = {
     ingest_erc721_token: [
       {
-        args: nftRecord,
+        args: nft,
       },
       {
         contract_id: true,
@@ -214,7 +214,9 @@ async function writeScrapedRecord(erc721Import) {
         token_uri_hash: true,
       },
     ],
-  })
+  }
+
+  return Hasura.mutation(HASURA_CONFIG, mutation)
 }
 
 /**
