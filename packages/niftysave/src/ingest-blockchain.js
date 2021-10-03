@@ -3,12 +3,6 @@ import * as Hasura from './hasura.js'
 
 import { setTimeout } from 'timers/promises'
 
-/* Note:
-    this is still a timeb-xed "spike"
-    not ready for review
-    Will be refactored into existing config/typing patterns
-*/
-
 /* Abstract to the config */
 const SCRAPE_BATCH_SIZE = 100
 const MAX_INBOX_SIZE = 1000
@@ -118,20 +112,6 @@ let importInbox = []
  *  done: Boolean
  * }} NFTSSubgraphResult
  *
- */
-
-/**
- *
- * {
- * id: string;
- * contract: ERC721.schema.TokenContract;
- * tokenID: any;
- * owner: ERC721.schema.Owner;
- * mintTime: any;
- * tokenURI: string;
- * blockNumber: any;
- * blockHash: any;
- * __typename: "Token"; }
  */
 
 /**
