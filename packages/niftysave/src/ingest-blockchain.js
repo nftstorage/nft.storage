@@ -187,8 +187,8 @@ async function writeScrapedRecord(erc721Import) {
   } = erc721Import
 
   const nft = {
-    block_hash: blockHash,
-    block_number: blockNumber,
+    block_hash: blockHash || '',
+    block_number: blockNumber || 0,
     contract_id: contract.id,
     contract_name: contract.name,
     contract_supports_eip721_metadata: contract.supportsEIP721Metadata,
@@ -200,23 +200,16 @@ async function writeScrapedRecord(erc721Import) {
     token_uri: tokenURI,
   }
 
-  const mutation = {
+  return Hasura.mutation(HASURA_CONFIG, {
     ingest_erc721_token: [
       {
         args: nft,
       },
       {
-        contract_id: true,
         id: true,
-        mint_time: true,
-        nft_owner_id: true,
-        token_id: true,
-        token_uri_hash: true,
       },
     ],
-  }
-
-  return Hasura.mutation(HASURA_CONFIG, mutation)
+  })
 }
 
 /**
