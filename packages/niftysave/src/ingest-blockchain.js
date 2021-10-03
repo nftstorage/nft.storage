@@ -36,8 +36,9 @@ const HASURA_CONFIG = {
  *
  * @typedef {{
  *  id: string
- *  tokenId: string
- *  mintTime: Number
+ *  tokenID: string
+ *  tokenURI: string
+ *  mintTime: string
  *  blockNumber: Number
  *  blockHash: String
  *  contract: ERC721ImportNFTContract
@@ -106,18 +107,42 @@ function lastScrapeId(id) {
  */
 let importInbox = []
 
-async function fetchNextNFTBatch() {
-  const nftResults = await ERC721.query(ERC721_QUERYARGS, nextSubgraphQuery())
-  //Ok { ok: true, value: { tokens: [ [Object] ] }, done: true }
+/**
+ * @typedef {{
+ *  tokens: ERC721ImportNFT[]
+ * }} NFTSSubGraphResultValue
+ *
+ * @typedef {{
+ *  ok: Boolean
+ *  value: NFTSSubGraphResultValue
+ *  done: Boolean
+ * }} NFTSSubgraphResult
+ * @returns NFTSubgraphResult
+ */
 
-  const lastId = nftResults.value.tokens.map((nft) => nft.id)[
-    nftResults.value.tokens.length - 1
-  ]
-  //setId
-  lastScrapeId(lastId)
-  return nftResults
+async function fetchNextNFTBatch() {
+  const nftsResult = await ERC721.query(ERC721_QUERYARGS, nextSubgraphQuery())
+
+  //something broke.
+  if (nftsResult.ok === false) {
+    console.error(nftsResult)
+    return []
+  }
+
+  const { tokens } = nftsResult?.value || []
+  const lastId = tokens.map((nft) => nft.id)[tokens.length - 1]
+  if (lastId) {
+    lastScrapeId(parseInt(lastId))
+  }
+
+  return nftsResult
 }
 
+/**
+ *
+ * @param {ERC721ImportNFT} erc721Import
+ * @returns
+ */
 async function writeScrapedRecord(erc721Import) {
   const {
     blockHash,
@@ -161,6 +186,10 @@ async function writeScrapedRecord(erc721Import) {
   })
 }
 
+/**
+ *
+ * @returns
+ */
 let _draining = false
 async function drainInbox() {
   if (importInbox.length > 0) {
@@ -182,6 +211,10 @@ async function drainInbox() {
   return drainInbox()
 }
 
+/**
+ *
+ * @returns
+ */
 async function scrapeBlockChain() {
   if (importInbox.length < MAX_INBOX_SIZE) {
     let scrape = []
