@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS auth_key
     user_id     BIGINT                                                        NOT NULL REFERENCES public.user (id),
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    UNIQUE (name, account_id)
+    UNIQUE (name, user_id)
 );
 
 CREATE TABLE IF NOT EXISTS content
