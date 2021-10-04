@@ -4,7 +4,7 @@ import { DBClient } from '../utils/db-client.js'
 const db = new DBClient(database.url, secrets.database)
 
 export async function getUserMetrics() {
-  const query = db.client.from('account')
+  const query = db.client.from('user')
   const res = await query.select('*', { head: true, count: 'exact' })
   if (res.error) {
     throw res.error
