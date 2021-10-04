@@ -66,7 +66,7 @@ export async function nftStoreV1(event, ctx) {
     content_cid: cid,
     source_cid: cid,
     dag_size: bytes,
-    account_id: user.id,
+    user_id: user.id,
     key_id: key?.id,
   })
 

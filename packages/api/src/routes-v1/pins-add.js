@@ -60,7 +60,7 @@ export async function pinsAddV1(event, ctx) {
     type: 'Remote',
     content_cid: cid.contentCid,
     source_cid: cid.sourceCid,
-    account_id: user.id,
+    user_id: user.id,
     key_id: key?.id,
     origins: pinData.origins,
     meta: pinData.meta,

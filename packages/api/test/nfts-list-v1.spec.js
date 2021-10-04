@@ -55,6 +55,7 @@ describe('V1 - List NFTs', () => {
 
     assert.ok(value.length === 1)
   })
+
   it('should list 0 nfts with date before any uploads', async () => {
     const date = new Date().toISOString()
     const client = await createClientWithUser()
@@ -84,7 +85,7 @@ describe('V1 - List NFTs', () => {
 
     for (let i = 0; i < 10; i++) {
       await client.client.createUpload({
-        account_id: client.userId,
+        user_id: client.userId,
         content_cid: `bafy${i}`,
         source_cid: `bafy${i}`,
         type: 'Blob',
@@ -98,5 +99,32 @@ describe('V1 - List NFTs', () => {
     const { ok, value } = await res.json()
 
     assert.ok(value.length === 10)
+  })
+
+  it('should validate the limit param', async () => {
+    const client = await createClientWithUser()
+
+    for (let i = 0; i < 10; i++) {
+      await client.client.createUpload({
+        user_id: client.userId,
+        content_cid: `bafy${i}`,
+        source_cid: `bafy${i}`,
+        type: 'Blob',
+      })
+    }
+    await delay(300)
+
+    const invalidLimits = [-1, 0, 1001, 'not-a-number', 1.138]
+
+    for (const limit of invalidLimits) {
+      const res = await fetch(`v1?limit=${limit}`, {
+        headers: { Authorization: `Bearer ${client.token}` },
+      })
+      assert.strictEqual(res.status, 400)
+
+      const { ok, error } = await res.json()
+      assert.strictEqual(ok, false)
+      assert.strictEqual(error.message, 'invalid params')
+    }
   })
 })
