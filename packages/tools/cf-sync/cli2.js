@@ -5,9 +5,11 @@ import { fileURLToPath } from 'node:url'
 import Listr from 'listr'
 import Cluster from '../utils/cluster.js'
 import Cloudflare from '../utils/cloudflare.js'
+import { DBClient } from '../../api/src/utils/db-client.js'
 import { syncUsers, syncUsersData } from './users.js'
-import { syncNFTs, syncNFTData, syncCheck } from './nft.js'
-import { validateLocal, checkStatus } from './validation.js'
+import { syncNFTs, syncNFTData } from './nft.js'
+import { validateLocal } from './validation.js'
+import { pushToDB } from './push-to-db.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({
@@ -16,77 +18,30 @@ dotenv.config({
 
 const tasks = new Listr(
   [
-    // {
-    //   title: 'Sync users',
-    //   task: syncUsers,
-    // },
-    // {
-    //   title: 'Sync users data',
-    //   task: syncUsersData,
-    // },
-    // {
-    //   title: 'Sync nfts',
-    //   task: syncNFTs,
-    // },
     {
-      title: 'Sync nfts data',
-      task: () => {
-        return new Listr(
-          [
-            {
-              title: 'Sync nfts info',
-              task: syncNFTData,
-            },
-            {
-              title: 'Sync nfts status and deals',
-              task: syncCheck,
-            },
-          ],
-          { concurrent: true }
-        )
-      },
+      title: 'Sync users',
+      task: syncUsers,
     },
     {
-      title: 'Validate nft data',
-      task: checkStatus,
+      title: 'Sync users data',
+      task: syncUsersData,
     },
-    //   {
-    //     title: 'Test',
-    //     task: async (/** @type {Context} */ ctx, task) => {
-    //       let count = 0
-    //       let countNFTS = 0
-    //       for await (const { key, value } of ctx.userStore.iterator()) {
-    //         for await (const nft of ctx.nftStore.iterator({
-    //           gt: key,
-    //           lt: key + '\xFF',
-    //         })) {
-    //           count++
-    //           task.output = `nfts: ${count}`
-    //         }
-    //       }
-    //       task.title += `nft ${count}`
-    //     },
-    //   },
-    //   {
-    //     title: 'Sync nfts',
-    //     task: syncNFTs,
-    //   },
-    //   {
-    //     title: 'Test',
-    //     task: async (ctx) => {
-    //       for await (const user of ctx.userStore.iterator()) {
-    //         if (
-    //           user.value.data.issuer ===
-    //             'did:ethr:0x03cefdE6FC0391b16B0eC33734996b29146Cd142' ||
-    //           user.value.data.sub ===
-    //             'did:ethr:0x03cefdE6FC0391b16B0eC33734996b29146Cd142'
-    //         ) {
-    //           console.log(user.key, user.value.data)
-    //           return
-    //         }
-    //       }
-    //     },
-    //   },
+    {
+      title: 'Sync nfts',
+      task: syncNFTs,
+    },
+    // {
+    //   title: 'Sync nfts data',
+    //   task: syncNFTData,
+    // },
+    // {
+    //   title: 'Validate nft data structure',
+    //   task: validateLocal,
+    // },
+    // {
+    //   title: 'Push to DB',
+    //   task: pushToDB,
+    // },
   ],
   { renderer: 'default' }
 )
@@ -95,6 +50,10 @@ const userStore = new Store(path.join(__dirname, '../../../.local/users'))
 const nftStore = new Store(path.join(__dirname, '../../../.local/nft-meta'))
 const cluster = new Cluster(process.env.CLUSTER_TOKEN || '')
 const cf = new Cloudflare({ token: process.env.CF_TOKEN })
+const db = new DBClient(
+  process.env.DATABASE_URL || '',
+  process.env.DATABASE_TOKEN || ''
+)
 
 /** @type {Context} */
 const ctx = {
@@ -106,6 +65,7 @@ const ctx = {
   nftStore,
   cluster,
   cf,
+  db,
 }
 tasks
   .run(ctx)
@@ -125,6 +85,7 @@ tasks
  * @prop {Cluster} cluster
  * @prop {Cloudflare} cf
  * @prop {string} cfAccount
+ * @prop {DBClient} db
  * @prop {string} [nftStorageToken]
  *
  */

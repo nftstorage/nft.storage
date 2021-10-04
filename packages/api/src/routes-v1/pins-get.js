@@ -21,7 +21,7 @@ export async function pinsGetV1(event, ctx) {
     )
   }
 
-  const upload = await db.getUpload(cid.contentCid, user.id)
+  const upload = await db.getUpload(cid.sourceCid, user.id)
 
   if (!upload) {
     return new JSONResponse(

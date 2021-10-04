@@ -17,13 +17,19 @@ AS
 $$
 BEGIN
 
-    insert into content (cid, dag_size)
+    insert into content (cid, dag_size, updated_at, inserted_at)
     values (data ->> 'content_cid',
-            (data ->> 'dag_size')::BIGINT)
+            (data ->> 'dag_size')::BIGINT,
+            (data ->> 'updated_at')::timestamptz,
+            (data ->> 'inserted_at')::timestamptz)
     ON CONFLICT ( cid ) DO NOTHING;
 
-    insert into pin (content_cid, status, service)
-    select data ->> 'content_cid', status, service
+    insert into pin (content_cid, status, service, updated_at, inserted_at)
+    select data ->> 'content_cid',
+           status,
+           service,
+           (data ->> 'updated_at')::timestamptz,
+           (data ->> 'inserted_at')::timestamptz
     from json_populate_recordset(null::upload_pin_type, (data ->> 'pins')::json)
     on conflict (content_cid, service) do nothing;
 
@@ -36,7 +42,7 @@ BEGIN
                         name,
                         files,
                         origins,
-                        meta)
+                        meta, inserted_at, updated_at)
     values ((data ->> 'account_id')::BIGINT,
             (data ->> 'key_id')::BIGINT,
             data ->> 'content_cid',
@@ -46,8 +52,10 @@ BEGIN
             data ->> 'name',
             (data ->> 'files')::jsonb,
             (data ->> 'origins')::jsonb,
-            (data ->> 'meta')::jsonb)
-    ON CONFLICT ( account_id, content_cid ) DO NOTHING;
+            (data ->> 'meta')::jsonb,
+            (data ->> 'updated_at')::timestamptz,
+            (data ->> 'inserted_at')::timestamptz)
+    ON CONFLICT ( account_id, source_cid ) DO NOTHING;
 
 
     return query select *
@@ -98,6 +106,6 @@ SELECT COALESCE(de.status, 'queued') as status,
 FROM public.aggregate_entry ae
          join public.aggregate a using (aggregate_cid)
          LEFT JOIN public.deal de USING (aggregate_cid)
-WHERE ae.cid_v1 = ANY(cids)
+WHERE ae.cid_v1 = ANY (cids)
 ORDER BY de.entry_last_updated
 $$;

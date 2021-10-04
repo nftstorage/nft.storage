@@ -22,12 +22,12 @@ CREATE TYPE upload_type AS ENUM (
 CREATE TABLE IF NOT EXISTS account
 (
     id             BIGSERIAL PRIMARY KEY,
-    magic_link_id  TEXT                                                          NOT NULL UNIQUE,
+    magic_link_id  TEXT UNIQUE,
     github_id      TEXT                                                          NOT NULL UNIQUE,
     name           TEXT                                                          NOT NULL,
     picture        TEXT,
     email          TEXT                                                          NOT NULL,
-    public_address TEXT                                                          NOT NULL UNIQUE,
+    public_address TEXT UNIQUE,
     github         jsonb,
     inserted_at    TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at     TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS auth_key
     secret      TEXT                                                          NOT NULL,
     account_id  BIGINT                                                        NOT NULL REFERENCES account (id),
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    UNIQUE (name, account_id)
 );
 
 CREATE TABLE IF NOT EXISTS content
@@ -52,6 +53,7 @@ CREATE TABLE IF NOT EXISTS content
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+-- Create Pin table
 CREATE TABLE IF NOT EXISTS pin
 (
     id          BIGSERIAL PRIMARY KEY,
@@ -63,9 +65,7 @@ CREATE TABLE IF NOT EXISTS pin
     UNIQUE (content_cid, service)
 );
 
-
--- removed_at and add the on conflict logic to the function, null or date depending on the situation
--- check cid v1 or v0 logic 
+-- Create Upload table
 CREATE TABLE IF NOT EXISTS upload
 (
     id          BIGSERIAL PRIMARY KEY,
@@ -83,5 +83,5 @@ CREATE TABLE IF NOT EXISTS upload
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     --deleted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-    UNIQUE (account_id, content_cid)
+    UNIQUE (account_id, source_cid)
 );

@@ -22,7 +22,7 @@ export const query = Lambda(
       data: {
         uri: Select(['data', 'uri'], Var('resource')),
         status: Select(['data', 'status'], Var('resource')),
-        status_text: Select(['data', 'statusText'], Var('resource')),
+        status_text: Select(['data', 'statusText'], Var('resource'), ''),
         ipfs_url: Select(['data', 'ipfsURL'], Var('resource'), Var('nil')),
         content_cid: Var('content_cid'),
         inserted_at: Select(['data', 'created'], Var('resource'), Var('nil')),
@@ -62,20 +62,12 @@ const insert = ({
  * @returns {Migration.Mutation}
  */
 export const mutation = (documents) => ({
-  insert_resource: [
+  insert_resource_view: [
     {
       objects: documents.map(insert),
-      // Ignore duplicates, just in case fauna's uniqness constrained has failed.
-      // We may end up in a situation where we had linked and failed resource
-      // and end up picking failed, but that's ok we'll have to retry failed
-      // ones anyhow.
-      on_conflict: {
-        constraint: Migration.schema.resource_constraint.resource_pkey,
-        update_columns: [],
-      },
     },
     {
-      affected_rows: 1,
+      affected_rows: true,
     },
   ],
 })

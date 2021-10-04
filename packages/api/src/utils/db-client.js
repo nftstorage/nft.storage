@@ -28,7 +28,7 @@ export class DBClient {
     /**@type {PostgrestQueryBuilder<definitions['account']>} */
     const query = this.client.from('account')
 
-    return query.upsert(account)
+    return query.upsert(account, { onConflict: 'github_id' })
   }
 
   /**
@@ -61,21 +61,27 @@ export class DBClient {
    * @returns
    */
   async createUpload(data) {
+    const defaultPins = [
+      {
+        status: 'PinQueued',
+        service: 'IpfsCluster',
+      },
+      {
+        status: 'PinQueued',
+        service: 'Pinata',
+      },
+    ]
+
+    const now = new Date().toISOString()
     const rsp = await this.client.rpc('create_upload', {
       data: {
         ...data,
-        pins: [
-          {
-            status: 'PinQueued',
-            service: 'IpfsCluster',
-          },
-          {
-            status: 'PinQueued',
-            service: 'Pinata',
-          },
-        ],
+        pins: data.pins || defaultPins,
+        inserted_at: data.inserted_at || now,
+        updated_at: data.updated_at || now,
       },
     })
+
     if (rsp.error) {
       throw new Error(JSON.stringify(rsp.error))
     }
@@ -109,7 +115,7 @@ export class DBClient {
       status,
     } = await query
       .select(this.uploadQuery)
-      .eq('content_cid', cid)
+      .eq('source_cid', cid)
       .eq('account_id', userId)
       // @ts-ignore
       .filter('content.pin.service', 'eq', 'IpfsCluster')
@@ -122,7 +128,7 @@ export class DBClient {
       throw new Error(JSON.stringify(error))
     }
 
-    return { ...upload, deals: await this.getDeals(cid) }
+    return { ...upload, deals: await this.getDeals(upload.content_cid) }
   }
 
   /**
@@ -149,7 +155,7 @@ export class DBClient {
     }
 
     if (opts.cid) {
-      query = query.in('content_cid', opts.cid)
+      query = query.in('source_cid', opts.cid)
     }
 
     if (opts.name && match === 'exact') {
@@ -205,7 +211,7 @@ export class DBClient {
 
     const { data, error } = await query
       .delete()
-      .match({ content_cid: cid, account_id: userId })
+      .match({ source_cid: cid, account_id: userId })
 
     if (error) {
       throw new Error(JSON.stringify(error))
@@ -300,14 +306,22 @@ export class DBClient {
     /** @type {PostgrestQueryBuilder<definitions['auth_key']>} */
     const query = this.client.from('auth_key')
 
-    const { data, error } = await query.insert({
-      name: key.name,
-      secret: key.secret,
-      account_id: key.userId,
-    })
-
+    const { data, error } = await query
+      .upsert(
+        {
+          name: key.name,
+          secret: key.secret,
+          account_id: key.userId,
+        },
+        { onConflict: 'name,account_id' }
+      )
+      .single()
     if (error) {
       throw new Error(JSON.stringify(error))
+    }
+
+    if (!data) {
+      throw new Error('Auth key not created.')
     }
 
     return data

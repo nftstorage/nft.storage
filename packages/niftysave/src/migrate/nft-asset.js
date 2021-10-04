@@ -70,17 +70,12 @@ const insert = ({
  * @returns {Migration.Mutation}
  */
 export const mutation = (documents) => ({
-  insert_nft_asset: [
+  insert_nft_asset_view: [
     {
       objects: documents.map(insert),
-      // Ignore duplicates, just in case fauna's uniqness constrained has failed.
-      on_conflict: {
-        constraint: Migration.schema.nft_asset_constraint.nft_asset_pkey,
-        update_columns: [],
-      },
     },
     {
-      affected_rows: 1,
+      affected_rows: true,
     },
   ],
 })

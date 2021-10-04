@@ -20,7 +20,7 @@ export async function pinsDeleteV1(event, ctx) {
     )
   }
 
-  const data = await db.deleteUpload(cid.contentCid, user.id)
+  const data = await db.deleteUpload(cid.sourceCid, user.id)
   if (data && data.length > 0) {
     return new JSONResponse(undefined, { status: 202 })
   } else {
