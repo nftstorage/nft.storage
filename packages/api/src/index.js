@@ -43,6 +43,7 @@ import {
   DEFAULT_MODE,
   setMaintenanceModeGetter,
 } from './middleware/maintenance.js'
+import { withPsaErrorHandler } from './middleware/psa.js'
 
 const log = debug('router')
 
@@ -78,33 +79,80 @@ r.add('get', '/version', (event) => {
 })
 
 // Remote Pinning API
-r.add('get', '/api/pins', withMode(pinsList, READ_ONLY), [postCors])
-r.add('get', '/api/pins/:requestid', withMode(pinsGet, READ_ONLY), [postCors])
-r.add('post', '/api/pins', withMode(pinsAdd, READ_WRITE), [postCors])
-r.add('post', '/api/pins/:requestid', withMode(pinsReplace, READ_WRITE), [
+r.add('get', '/api/pins', withPsaErrorHandler(withMode(pinsList, READ_ONLY)), [
   postCors,
 ])
-r.add('delete', '/api/pins/:requestid', withMode(pinsDelete, READ_WRITE), [
+r.add(
+  'get',
+  '/api/pins/:requestid',
+  withPsaErrorHandler(withMode(pinsGet, READ_ONLY)),
+  [postCors]
+)
+r.add('post', '/api/pins', withPsaErrorHandler(withMode(pinsAdd, READ_WRITE)), [
   postCors,
 ])
+r.add(
+  'post',
+  '/api/pins/:requestid',
+  withPsaErrorHandler(withMode(pinsReplace, READ_WRITE)),
+  [postCors]
+)
+r.add(
+  'delete',
+  '/api/pins/:requestid',
+  withPsaErrorHandler(withMode(pinsDelete, READ_WRITE)),
+  [postCors]
+)
 
-r.add('post', '/pins', withMode(pinsAdd, READ_WRITE), [postCors])
-r.add('get', '/pins', withMode(pinsList, READ_ONLY), [postCors])
-r.add('get', '/pins/:requestid', withMode(pinsGet, READ_ONLY), [postCors])
-r.add('post', '/pins/:requestid', withMode(pinsReplace, READ_WRITE), [postCors])
-r.add('delete', '/pins/:requestid', withMode(pinsDelete, READ_WRITE), [
+r.add('post', '/pins', withPsaErrorHandler(withMode(pinsAdd, READ_WRITE)), [
   postCors,
 ])
+r.add('get', '/pins', withPsaErrorHandler(withMode(pinsList, READ_ONLY)), [
+  postCors,
+])
+r.add(
+  'get',
+  '/pins/:requestid',
+  withPsaErrorHandler(withMode(pinsGet, READ_ONLY)),
+  [postCors]
+)
+r.add(
+  'post',
+  '/pins/:requestid',
+  withPsaErrorHandler(withMode(pinsReplace, READ_WRITE)),
+  [postCors]
+)
+r.add(
+  'delete',
+  '/pins/:requestid',
+  withPsaErrorHandler(withMode(pinsDelete, READ_WRITE)),
+  [postCors]
+)
 
 // V1 routes
 r.add('post', '/v1/login', withMode(loginV1, READ_ONLY), [postCors])
 
-r.add('get', '/v1/pins', withMode(pinsListV1, READ_ONLY), [postCors])
-r.add('get', '/v1/pins/:requestid', withMode(pinsGetV1, READ_ONLY), [postCors])
-r.add('post', '/v1/pins', withMode(pinsAddV1, READ_WRITE), [postCors])
-r.add('delete', '/v1/pins/:requestid', withMode(pinsDeleteV1, READ_WRITE), [
+r.add('get', '/v1/pins', withPsaErrorHandler(withMode(pinsListV1, READ_ONLY)), [
   postCors,
 ])
+r.add(
+  'get',
+  '/v1/pins/:requestid',
+  withPsaErrorHandler(withMode(pinsGetV1, READ_ONLY)),
+  [postCors]
+)
+r.add(
+  'post',
+  '/v1/pins',
+  withPsaErrorHandler(withMode(pinsAddV1, READ_WRITE)),
+  [postCors]
+)
+r.add(
+  'delete',
+  '/v1/pins/:requestid',
+  withPsaErrorHandler(withMode(pinsDeleteV1, READ_WRITE)),
+  [postCors]
+)
 
 r.add('get', '/v1', withMode(nftListV1, READ_ONLY), [postCors])
 r.add('get', '/v1/:cid', withMode(statusV1, READ_ONLY), [postCors])
