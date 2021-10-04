@@ -73,7 +73,7 @@ export class DBClient {
     ]
 
     const now = new Date().toISOString()
-    const rsp = await this.client.rpc('upload_fn', {
+    const rsp = await this.client.rpc('create_upload', {
       data: {
         ...data,
         pins: data.pins || defaultPins,
@@ -273,7 +273,7 @@ export class DBClient {
    * @param {string[]} cids
    */
   async getDealsForCids(cids = []) {
-    const rsp = await this.client.rpc('deals_fn', {
+    const rsp = await this.client.rpc('find_deals_by_content_cids', {
       cids,
     })
     if (rsp.error) {
