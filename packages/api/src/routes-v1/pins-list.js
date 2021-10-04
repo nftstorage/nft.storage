@@ -1,9 +1,11 @@
-import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth-v1.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { Validator } from '@cfworker/json-schema'
 import { parseCidPinning } from '../utils/utils.js'
 import { toPinsResponse } from '../utils/db-transforms.js'
+
+const DEFAULT_LIMIT = 10
+const MAX_LIMIT = 1000
 
 /**
  * @typedef {import('../utils/db-client-types').ListUploadsOptions} ListUploadsOptions
@@ -71,7 +73,7 @@ const validator = new Validator({
     after: { type: 'string', format: 'date-time' },
     before: { type: 'string', format: 'date-time' },
     cid: { type: 'array', items: { type: 'string' } },
-    limit: { type: 'number' },
+    limit: { type: 'integer', minimum: 1, maximum: MAX_LIMIT },
     meta: { type: 'object' },
     match: {
       type: 'string',
@@ -141,8 +143,10 @@ function parseSearchParams(params) {
   }
 
   const limitParam = params.get('limit')
-  if (limitParam && !Number.isNaN(Number(limitParam))) {
+  if (limitParam) {
     out.limit = Number(limitParam)
+  } else {
+    out.limit = DEFAULT_LIMIT
   }
 
   const metaParam = params.get('meta')
