@@ -1,4 +1,5 @@
 import { PostgrestClient, PostgrestQueryBuilder } from '@supabase/postgrest-js'
+import { DBError } from '../errors.js'
 
 /**
  * @typedef {import('./db-types').definitions} definitions
@@ -83,14 +84,14 @@ export class DBClient {
     })
 
     if (rsp.error) {
-      throw new Error(JSON.stringify(rsp.error))
+      throw new DBError(rsp.error)
     }
 
     const upload = await this.getUpload(data.content_cid, data.account_id)
     if (upload) {
       return upload
     }
-    throw new Error('Error getting new upload.')
+    throw new Error('failed to get new upload')
   }
 
   uploadQuery = `
@@ -125,7 +126,7 @@ export class DBClient {
       return
     }
     if (error) {
-      throw new Error(JSON.stringify(error))
+      throw new DBError(error)
     }
 
     return { ...upload, deals: await this.getDeals(upload.content_cid) }
@@ -184,7 +185,7 @@ export class DBClient {
 
     const { data: uploads, error } = await query
     if (error) {
-      throw new Error(JSON.stringify(error))
+      throw new DBError(error)
     }
 
     const cids = uploads?.map((u) => u.content_cid)
@@ -214,7 +215,7 @@ export class DBClient {
       .match({ source_cid: cid, account_id: userId })
 
     if (error) {
-      throw new Error(JSON.stringify(error))
+      throw new DBError(error)
     }
 
     return data
@@ -250,7 +251,7 @@ export class DBClient {
       return
     }
     if (error) {
-      throw new Error(JSON.stringify(error))
+      throw new DBError(error)
     }
     return { ...content, deals: await this.getDeals(cid) }
   }
@@ -277,7 +278,7 @@ export class DBClient {
       cids,
     })
     if (rsp.error) {
-      throw new Error(JSON.stringify(rsp.error))
+      throw new DBError(rsp.error)
     }
 
     /** @type {Record<string, import('./../bindings').Deal[]>} */
@@ -317,7 +318,7 @@ export class DBClient {
       )
       .single()
     if (error) {
-      throw new Error(JSON.stringify(error))
+      throw new DBError(error)
     }
 
     if (!data) {
@@ -347,7 +348,7 @@ export class DBClient {
       .match({ account_id: userId })
 
     if (error) {
-      throw new Error(JSON.stringify(error))
+      throw new DBError(error)
     }
 
     return data
@@ -365,7 +366,7 @@ export class DBClient {
     const { data, error } = await query.delete().match({ id })
 
     if (error) {
-      throw new Error(JSON.stringify(error))
+      throw new DBError(error)
     }
   }
 }

@@ -38,6 +38,10 @@ export class HTTPError extends Error {
       case ErrorTokenNotFound.CODE:
       case ErrorInvalidCid.CODE:
         break
+      case DBError.CODE:
+        error.message = 'Database error'
+        sentry.captureException(err)
+        break
 
       // Magic SDK errors
       case MagicErrors.TokenExpired:
@@ -129,3 +133,20 @@ export class ErrorInvalidCid extends Error {
   }
 }
 ErrorInvalidCid.CODE = 'ERROR_INVALID_CID'
+
+export class DBError extends Error {
+  /**
+   * @param {{
+   *   message: string
+   *   details: string
+   *   hint: string
+   *   code: string
+   * }} cause
+   */
+  constructor({ message, details, hint, code }) {
+    super(`${message}, details: ${details}, hint: ${hint}, code: ${code}`)
+    this.name = 'DBError'
+    this.code = DBError.CODE
+  }
+}
+DBError.CODE = 'ERROR_DB'
