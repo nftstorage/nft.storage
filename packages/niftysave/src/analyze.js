@@ -1,5 +1,5 @@
-import * as Result from './result.js'
-import * as Schema from '../gen/db/schema.js'
+// import * as Result from './result.js'
+// import * as Schema from '../gen/db/schema.js'
 import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
 import * as DB from '../gen/db/index.js'
@@ -7,25 +7,152 @@ import { fetchResource, timeout } from './net.js'
 import { configure } from './config.js'
 import { printURL } from './util.js'
 import { script } from 'subprogram'
+import * as Hasura from './hasura.js'
 
-const { TokenAssetStatus } = Schema
+// const { TokenAssetStatus } = Schema
+
+import { TransformStream } from './stream.js'
+
+/**
+ * @param {Config} config
+ */
+const activate = async (config) => {
+  const channel = new TransformStream(
+    {},
+    {
+      highWaterMark: config.poolSize,
+    }
+  )
+
+  readInto(channel.writable, config)
+  analyzeFrom(channel.readable, config)
+}
+
+/**
+ * @typedef {Object} Asset
+ * @property {string} token_uri
+ * @property {string} token_uri_hash
+ * @property {string|undefined} [ipfs_url]
+ *
+ * @param {WritableStream<Asset>} writable
+ * @param {Config} config
+ */
+const readInto = async (writable, config) => {
+  const writer = writable.getWriter()
+  // Initially we start query from UNIX epoch and offset 0, that way we
+  // get the olders queued nft asset first and will advance cursor as we
+  // make progress.
+  let cursor = { updated_at: new Date(0).toISOString(), offset: 0 }
+
+  while (!writer.closed) {
+    console.log(`📥 Fetch ${config.batchSize} queued nft assets`)
+    // Pull queued tasks in FIFO order by `update_at`.
+    const { nft_asset: page } = await Hasura.query(config.hasura, {
+      nft_asset: [
+        {
+          where: {
+            status: {
+              _eq: 'Queued',
+            },
+            updated_at: {
+              _gte: cursor.updated_at,
+            },
+          },
+          order_by: [
+            {
+              updated_at: Hasura.schema.order_by.asc,
+            },
+          ],
+          limit: config.batchSize,
+          offset: cursor.offset,
+        },
+        {
+          token_uri: true,
+          token_uri_hash: true,
+          ipfs_url: true,
+          updated_at: true,
+        },
+      ],
+    })
+
+    // If we got no queued assets we just sleep for some time and try again.
+    if (page.length == 0) {
+      await sleep(config.retryInterval)
+    } else {
+      // wait for the writer to be ready before queuing more items.
+      await writer.ready
+
+      for (const each of page) {
+        // If time has not changed move offset so next query
+        // wil skip this item otherwise update the cursor
+        // time and set offset to 1 to skip this record.
+        cursor =
+          each.updated_at === cursor.updated_at
+            ? { ...cursor, offset: cursor.offset + 1 }
+            : { updated_at: each.updated_at, offset: 1 }
+
+        writer.write(each)
+      }
+    }
+  }
+}
+
+/**
+ *
+ * @param {ReadableStream<Asset>} readable
+ * @param {Config} config
+ */
+const analyzeFrom = async (readable, config) => {
+  const reader = readable.getReader()
+  // spawn number of (as per configuration) concurrent
+  // analyzer tasks that will pull incoming `nft_asset` records
+  // and advance their state.
+  const tasks = Array(config.concurrency).map(() => {
+    analyzer(reader, config)
+  })
+
+  await Promise.all(tasks)
+  await reader.cancel()
+}
+
+/**
+ *
+ * @param {ReadableStreamDefaultReader<Asset>} reader
+ * @param {Config} config
+ */
+const analyzer = async (reader, config) => {
+  while (true) {
+    const next = await reader.read()
+    if (next.done) {
+      break
+    } else {
+      await analyzeAsset(next.value, config)
+    }
+  }
+}
+/**
+ * @param {number} ms
+ */
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export const main = async () => await spawn(await configure())
 
 /**
  * @typedef {Object} Config
- * @property {DB.Config} fauna
+ * @property {Hasura.Config} hasura
  * @property {import('./ipfs').Config} ipfs
  * @property {Cluster.Config} cluster
  * @property {number} budget
  * @property {number} batchSize
+ * @property {number} concurrency
  * @property {number} fetchTimeout
+ * @property {number} retryInterval
  */
 
 /**
  * @param {Config} config
  */
-export const spawn = async config => {
+export const spawn = async (config) => {
   const deadline = Date.now() + config.budget
   while (deadline - Date.now() > 0) {
     console.log('🔍 Fetching queued token asset analyses')
@@ -34,7 +161,7 @@ export const spawn = async config => {
       return console.log('🏁 Finish, no more queued task were found')
     } else {
       console.log(`🤹 Spawn ${analyses.length} tasks to process assets`)
-      const updates = await Promise.all(analyses.map($ => analyze(config, $)))
+      const updates = await Promise.all(analyses.map(($) => analyze(config, $)))
 
       console.log('💾 Update token assets')
       await updateTokenAssets(config, updates)
@@ -184,7 +311,7 @@ const analyze = async (config, { tokenAsset: { tokenURI, _id: id } }) => {
 /**
  * @param {string} content
  */
-const parseERC721Metadata = async content => {
+const parseERC721Metadata = async (content) => {
   const json = JSON.parse(content)
   const { name, description, image } = json
   if (typeof name !== 'string') {
@@ -218,7 +345,7 @@ const parseERC721Metadata = async content => {
  * @param {string} input
  * @returns {Schema.ResourceInput}
  */
-const parseResource = input => {
+const parseResource = (input) => {
   const url = new URL(input)
   const ipfsURL = IPFSURL.asIPFSURL(url)
   if (ipfsURL) {
@@ -237,7 +364,7 @@ const parseResource = input => {
  *
  * @param {string} input
  */
-const tryParseResource = input => {
+const tryParseResource = (input) => {
   try {
     return parseResource(input)
   } catch (error) {
@@ -250,7 +377,7 @@ const tryParseResource = input => {
  * @param {PropertyKey[]} [path]
  * @returns {Iterable<[string|number|boolean|null, PropertyKey[]]>}
  */
-const iterate = function*(data, path = []) {
+const iterate = function* (data, path = []) {
   if (Array.isArray(data)) {
     for (const [index, element] of data) {
       yield* iterate(element, [...path, index])
@@ -281,7 +408,7 @@ const updateTokenAssets = async ({ fauna }, updates) => {
     ],
   })
 
-  return Result.value(result).updateTokenAssets?.map(token => token._id) || []
+  return Result.value(result).updateTokenAssets?.map((token) => token._id) || []
 }
 
 script({ ...import.meta, main })
