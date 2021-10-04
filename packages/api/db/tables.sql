@@ -7,7 +7,7 @@ CREATE TYPE pin_status_type AS ENUM (
     );
 
 -- Pin Services Type
-CREATE TYPE service_type AS ENUM ('Pinata', 'IpfsCluster');
+CREATE TYPE service_type AS ENUM ('Pinata', 'IpfsCluster', 'IpfsCluster2');
 
 -- Upload Type
 CREATE TYPE upload_type AS ENUM (
