@@ -1,5 +1,19 @@
 # Changelog
 
+### [2.1.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/cron-v2.1.0...cron-v2.1.1) (2021-10-04)
+
+
+### Bug Fixes
+
+* conversion to PSA status ([be7e005](https://www.github.com/ipfs-shipyard/nft.storage/commit/be7e005895434ee12848cb0cb03f494fcaaa2d69))
+* niftysave pin job failures by adopting request timeouts ([#267](https://www.github.com/ipfs-shipyard/nft.storage/issues/267)) ([0bac638](https://www.github.com/ipfs-shipyard/nft.storage/commit/0bac6385ef0417a7a3453172bf3a3ed9e664f9e6))
+* set stream-channels=false for cluster add ([#304](https://www.github.com/ipfs-shipyard/nft.storage/issues/304)) ([f1121d0](https://www.github.com/ipfs-shipyard/nft.storage/commit/f1121d0e75b1750e6d1a5a851d5eeed8f04cb64b))
+
+
+### Changes
+
+* missed one ([df92e6e](https://www.github.com/ipfs-shipyard/nft.storage/commit/df92e6e673bb73a0cd8cbc25a6f9738d718ad474))
+
 ## [2.1.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/cron-v2.0.0...cron-v2.1.0) (2021-07-13)
 
 
