@@ -67,7 +67,7 @@ export async function pushToDB(ctx, task) {
  * @param {Context} ctx
  * @param {Task} task
  * @param {definitions['auth_key'][]} keys
- * @param {definitions['account']} dbUser
+ * @param {definitions['user']} dbUser
  */
 async function nftByUser(issuer, sub, ctx, task, keys, dbUser) {
   const threshold = 20000
@@ -153,7 +153,7 @@ async function addNFTs(values, keys, ctx, dbUser) {
     const types = getMimeAndType(data.type)
     const parsedCID = parseCid(data.cid)
     uploadArray.push({
-      account_id: dbUser.id,
+      user_id: dbUser.id,
       key_id: authKey ? authKey.id : null,
       content_cid: parsedCID.contentCid,
       source_cid: parsedCID.sourceCid,
