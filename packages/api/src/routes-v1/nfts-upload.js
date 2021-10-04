@@ -40,7 +40,7 @@ export async function uploadV1(event, ctx) {
     sourceCid = cid
 
     upload = await db.createUpload({
-      account_id: user.id,
+      user_id: user.id,
       content_cid: cid,
       source_cid: cid,
       key_id: key?.id,
@@ -78,7 +78,7 @@ export async function uploadV1(event, ctx) {
       content_cid: cid,
       source_cid: cid,
       dag_size: dagSize,
-      account_id: user.id,
+      user_id: user.id,
       files: [],
       key_id: key?.id,
     })
