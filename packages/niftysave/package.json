@@ -36,7 +36,7 @@
     "@types/yargs": "^17.0.0",
     "assert": "^2.0.0",
     "c8": "^7.7.1",
-    "graphql-zeus": "git://github.com/gozala/graphql-zeus#fix/import",
+    "graphql-zeus": "git://github.com/gozala/graphql-zeus.git#fork/niftysave",
     "mocha": "^9.1.0",
     "yargs": "^17.2.1"
   },
