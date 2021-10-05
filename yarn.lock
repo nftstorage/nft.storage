@@ -453,9 +453,9 @@
     crypto-js "^3.3.0"
 
 "@magic-sdk/admin@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@magic-sdk/admin/-/admin-1.3.0.tgz#08d53aa39f94090221999be60660bdc50b8e6e12"
-  integrity sha512-PcDP+8i82p7e+oSohqE5dPoRyymEsoOcXaAKxK7S13TypVf1lxf4MCpBBQI7Q+nFwNa4zTRcaE6QaDdvruBDKA==
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@magic-sdk/admin/-/admin-1.3.1.tgz#7cad0d9a1f9db8224cbcbc5a77526941d2b1a83f"
+  integrity sha512-g1B8MHSBpJoDfFL/y7gd1YtgrwYbS7m7iRijOgiXrkMnIoid0bHgUsRS9LQKy6mImH/JleJSZcaofm2mIvs6tQ==
   dependencies:
     eth-sig-util "2.1.2"
     ethereumjs-util "^6.2.0"
@@ -4651,9 +4651,9 @@ graphql-typed-client@1.7.4:
     subscriptions-transport-ws "^0.9.16"
     ws "^6.1.4"
 
-"graphql-zeus@git://github.com/gozala/graphql-zeus#fix/import":
+"graphql-zeus@git://github.com/gozala/graphql-zeus.git#fix/import":
   version "3.2.3"
-  resolved "git://github.com/gozala/graphql-zeus#299c0e8b516056fd78681b022c2e3f0e8b0d96a1"
+  resolved "git://github.com/gozala/graphql-zeus.git#299c0e8b516056fd78681b022c2e3f0e8b0d96a1"
   dependencies:
     cross-fetch "^3.0.4"
     graphql "^15.4.0"
@@ -5066,9 +5066,9 @@ ink-link@^2.0.0:
     lodash.isequal "^4.5.0"
 
 ink-spinner@^4.0.1:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/ink-spinner/-/ink-spinner-4.0.2.tgz#ee87a363533fa4932998e1bd303e0aa186572b02"
-  integrity sha512-vQGmhWUEh3IG1IxK1Hl2w6RfH6aaRIJWw9lrG8CvFFyrQ23UpJ8GClJs5/sFBxkNvsrrK9sKNEGlGnsqTYiUww==
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/ink-spinner/-/ink-spinner-4.0.3.tgz#0d0f4a787ae1a4270928e063d9c52527cb264feb"
+  integrity sha512-uJ4nbH00MM9fjTJ5xdw0zzvtXMkeGb0WV6dzSWvFv2/+ks6FIhpkt+Ge/eLdh0Ah6Vjw5pLMyNfoHQpRDRVFbQ==
   dependencies:
     cli-spinners "^2.3.0"
 
