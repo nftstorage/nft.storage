@@ -6,8 +6,6 @@ import { configure } from './config.js'
 import { script } from 'subprogram'
 import { setTimeout } from 'timers/promises'
 
-const config = await configure()
-
 /* Abstract to the config */
 const SCRAPE_BATCH_SIZE = 100
 const MAX_INBOX_SIZE = 1000
@@ -292,5 +290,18 @@ async function scrapeBlockChain() {
   }
   return scrapeBlockChain()
 }
+
+/**
+ * @typedef { Object } Config
+ *
+ * @param {Config} config
+ */
+async function spawn(config) {
+  console.log(config)
+  console.log(`Begin Scraping the Blockchain.`)
+  scrapeBlockChain()
+}
+
+export const main = async () => await spawn(await configure())
 
 script({ ...import.meta, main })
