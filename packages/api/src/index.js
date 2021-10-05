@@ -77,7 +77,7 @@ r.add('get', '/version', (event) => {
   })
 })
 
-// Remote Pinning API
+// Remote Pinning Service API
 r.add('get', '/api/pins', withMode(pinsList, READ_ONLY), [postCors])
 r.add('get', '/api/pins/:requestid', withMode(pinsGet, READ_ONLY), [postCors])
 r.add('post', '/api/pins', withMode(pinsAdd, READ_WRITE), [postCors])
