@@ -9,14 +9,6 @@ import { setTimeout } from 'timers/promises'
 /* Abstract to the config */
 const SCRAPE_BATCH_SIZE = 100
 const MAX_INBOX_SIZE = 1000
-const SUBGRAPH_URL = `https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph`
-
-const HASURA_CONFIG = {
-  url: new URL(`http://localhost:8080/v1/graphql`),
-  headers: {
-    'x-hasura-admin-secret': process.env['HASURA_KEY'] || '',
-  },
-}
 
 /**
  *
@@ -42,10 +34,6 @@ const HASURA_CONFIG = {
  *  owner: ERC721ImportNFTOwner
  * }} ERC721ImportNFT
  */
-
-const ERC721_QUERYARGS = {
-  url: new URL(SUBGRAPH_URL),
-}
 
 const ERC721_RESULT_DEFINITON = {
   id: 1,
@@ -153,11 +141,11 @@ function subgraphTokenToERC721ImportNFT(token) {
 }
 
 /**
- *
+ * @param { Config } config
  * @returns { Promise<ERC721ImportNFT[]> }
  */
-async function fetchNextNFTBatch() {
-  const nftsResult = await ERC721.query(ERC721_QUERYARGS, nextSubgraphQuery())
+async function fetchNextNFTBatch(config) {
+  const nftsResult = await ERC721.query(config.erc721, nextSubgraphQuery())
   //something broke.
   if (nftsResult.ok === false) {
     console.error(nftsResult)
@@ -173,11 +161,11 @@ async function fetchNextNFTBatch() {
 }
 
 /**
- *
+ * @param { Config } config
  * @param { ERC721ImportNFT } erc721Import
  * @returns { Promise<any> }
  */
-async function writeScrapedRecord(erc721Import) {
+async function writeScrapedRecord(config, erc721Import) {
   const {
     blockHash,
     blockNumber,
@@ -203,7 +191,7 @@ async function writeScrapedRecord(erc721Import) {
     token_uri: tokenURI,
   }
 
-  return Hasura.mutation(HASURA_CONFIG, {
+  return Hasura.mutation(config.hasura, {
     ingest_erc721_token: [
       {
         args: nft,
@@ -227,9 +215,11 @@ let _draining = false
  * 1. Writes a single record in the inbox buffer
  * 2. Has nothing to write, so it waits for the inbox to fill
  * 3. Encounters exception and returns false
+ *
+ * @param { Config } config
  * @returns {Promise<Boolean | Function>}
  */
-async function drainInbox() {
+async function drainInbox(config) {
   if (importInbox.length > 0) {
     _draining = true
     const nextImport = importInbox[importInbox.length - 1]
@@ -237,7 +227,7 @@ async function drainInbox() {
       // this should literally never be undefined
       // and this is changing to a TransformStream
       if (nextImport) {
-        await writeScrapedRecord(nextImport)
+        await writeScrapedRecord(config, nextImport)
         importInbox.pop()
       } else {
         console.error(
@@ -257,7 +247,7 @@ async function drainInbox() {
   }
 
   console.log(`Inbox at: ${importInbox.length}`)
-  return drainInbox()
+  return drainInbox(config)
 }
 
 /**
@@ -265,13 +255,14 @@ async function drainInbox() {
  * 1. Scrapes the chain
  * 2. Is full and waits a bit to scrape
  * 3. Encounters an exception and returns false.
+ * @param { Config } config
  * @returns {Promise<Boolean | Function>}
  */
-async function scrapeBlockChain() {
+async function scrapeBlockChain(config) {
   if (importInbox.length < MAX_INBOX_SIZE) {
     let scrape = []
     try {
-      scrape = await fetchNextNFTBatch()
+      scrape = await fetchNextNFTBatch(config)
       importInbox = [...importInbox, ...scrape]
     } catch (err) {
       console.log(err)
@@ -282,24 +273,25 @@ async function scrapeBlockChain() {
   } else {
     if (!_draining) {
       console.log('Start Drain.')
-      drainInbox()
+      drainInbox(config)
     }
     // this is going to be a stream, but until then,
     // prevent running too quickly on failure or empty
     await setTimeout(500)
   }
-  return scrapeBlockChain()
+  return scrapeBlockChain(config)
 }
 
 /**
  * @typedef { Object } Config
- *
+ * @property { ERC721.Config } config.erc721
+ * @property { Hasura.Config } config.hasura
  * @param {Config} config
  */
 async function spawn(config) {
   console.log(config)
   console.log(`Begin Scraping the Blockchain.`)
-  scrapeBlockChain()
+  scrapeBlockChain(config)
 }
 
 export const main = async () => await spawn(await configure())
