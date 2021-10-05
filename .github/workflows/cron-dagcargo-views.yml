@@ -3,6 +3,7 @@ name: Cron dagcargo Refresh Materialized Views
 on:
   schedule:
     - cron: '38 * * * *'
+  workflow_dispatch:
 
 jobs:
   update:

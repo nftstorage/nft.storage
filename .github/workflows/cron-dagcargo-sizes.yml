@@ -3,6 +3,7 @@ name: Cron dagcargo Populate Content DAG Sizes
 on:
   schedule:
     - cron: '38 * * * *'
+  workflow_dispatch:
 
 jobs:
   update:
