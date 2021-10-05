@@ -15,7 +15,7 @@ const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
  */
 
 /** @type {import('../utils/router.js').Handler} */
-export async function uploadV1(event, ctx) {
+export async function nftsUpload(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
   const { user, key, db } = await validate(event, ctx)

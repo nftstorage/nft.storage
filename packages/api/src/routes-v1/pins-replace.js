@@ -5,8 +5,18 @@ import { parseCidPinning } from '../utils/utils.js'
 import { toPinsResponse } from '../utils/db-transforms.js'
 
 /** @type {import('../utils/router.js').Handler} */
-export async function pinsAdd(event, ctx) {
+export async function pinsReplace(event, ctx) {
   const { db, user, key } = await validate(event, ctx)
+
+  const existingCid = ctx.params.requestid
+  const existingUpload = await db.getUpload(existingCid, user.id)
+
+  if (!existingUpload) {
+    return new JSONResponse(
+      { error: { reason: 'NOT_FOUND', details: 'pin not found' } },
+      { status: 404 }
+    )
+  }
 
   /** @type {import('../bindings').PinsAddInput} */
   const pinData = await event.request.json()
@@ -19,6 +29,18 @@ export async function pinsAdd(event, ctx) {
         error: {
           reason: 'INVALID_PIN_DATA',
           details: `Invalid request id: ${pinData.cid}`,
+        },
+      },
+      { status: 400 }
+    )
+  }
+
+  if (pinData.cid === existingCid) {
+    return new JSONResponse(
+      {
+        error: {
+          reason: 'INVALID_PIN_DATA',
+          details: 'exiting and replacement CID are the same',
         },
       },
       { status: 400 }
@@ -67,6 +89,8 @@ export async function pinsAdd(event, ctx) {
   if (upload.content.pin[0].status === 'PinError') {
     await cluster.recover(upload.content_cid)
   }
+
+  await db.deleteUpload(existingCid, user.id)
 
   return new JSONResponse(toPinsResponse(upload))
 }

@@ -3,7 +3,7 @@ import { validate } from '../utils/auth-v1.js'
 import { parseCidPinning } from '../utils/utils.js'
 
 /** @type {import('../utils/router.js').Handler} */
-export async function pinsDeleteV1(event, ctx) {
+export async function pinsDelete(event, ctx) {
   const { params } = ctx
   const { user, db } = await validate(event, ctx)
 

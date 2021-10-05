@@ -4,7 +4,7 @@ import { JSONResponse } from '../utils/json-response.js'
 import { parseCid } from '../utils/utils.js'
 
 /** @type {import('../utils/router.js').Handler} */
-export const nftDeleteV1 = async (event, ctx) => {
+export const nftsDelete = async (event, ctx) => {
   const { db, user } = await validate(event, ctx)
   const { params } = ctx
   const cid = parseCid(params.cid)

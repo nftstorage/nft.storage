@@ -4,7 +4,7 @@ import { JSONResponse } from '../utils/json-response.js'
 import { parseCidPinning } from '../utils/utils.js'
 
 /** @type {import('../utils/router.js').Handler} */
-export async function pinsGetV1(event, ctx) {
+export async function pinsGet(event, ctx) {
   const { params } = ctx
   const { user, db } = await validate(event, ctx)
 

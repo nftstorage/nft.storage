@@ -17,7 +17,7 @@ const validator = new Validator({
 })
 
 /** @type {import('../utils/router.js').Handler} */
-export async function nftListV1(event, ctx) {
+export async function nftsList(event, ctx) {
   const { user, db } = await validate(event, ctx)
   const { searchParams } = new URL(event.request.url)
   const options = {

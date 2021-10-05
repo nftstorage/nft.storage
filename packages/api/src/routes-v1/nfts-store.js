@@ -17,7 +17,7 @@ const log = debug('nft-store')
  */
 
 /** @type {import('../utils/router.js').Handler} */
-export async function nftStoreV1(event, ctx) {
+export async function nftsStore(event, ctx) {
   const { user, key, db } = await validate(event, ctx)
   const form = await event.request.formData()
 

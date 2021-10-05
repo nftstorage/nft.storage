@@ -9,7 +9,7 @@ import { toNFTResponse } from '../utils/db-transforms.js'
  */
 
 /** @type {import('../utils/router.js').Handler} */
-export const statusV1 = async (event, ctx) => {
+export const nftsStatus = async (event, ctx) => {
   const { params } = ctx
   const { user, db } = await validate(event, ctx)
   const cid = parseCid(params.cid)
