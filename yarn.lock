@@ -453,9 +453,9 @@
     crypto-js "^3.3.0"
 
 "@magic-sdk/admin@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@magic-sdk/admin/-/admin-1.3.0.tgz#08d53aa39f94090221999be60660bdc50b8e6e12"
-  integrity sha512-PcDP+8i82p7e+oSohqE5dPoRyymEsoOcXaAKxK7S13TypVf1lxf4MCpBBQI7Q+nFwNa4zTRcaE6QaDdvruBDKA==
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@magic-sdk/admin/-/admin-1.3.1.tgz#7cad0d9a1f9db8224cbcbc5a77526941d2b1a83f"
+  integrity sha512-g1B8MHSBpJoDfFL/y7gd1YtgrwYbS7m7iRijOgiXrkMnIoid0bHgUsRS9LQKy6mImH/JleJSZcaofm2mIvs6tQ==
   dependencies:
     eth-sig-util "2.1.2"
     ethereumjs-util "^6.2.0"
@@ -2799,9 +2799,9 @@ copy-to-clipboard@^3:
     toggle-selection "^1.0.6"
 
 core-js-pure@^3.16.0:
-  version "3.18.1"
-  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.18.1.tgz#097d34d24484be45cea700a448d1e74622646c80"
-  integrity sha512-kmW/k8MaSuqpvA1xm2l3TVlBuvW+XBkcaOroFUpO3D4lsTGQWBTb/tBDCf/PNkkPLrwgrkQRIYNPB0CeqGJWGQ==
+  version "3.18.2"
+  resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.18.2.tgz#d8cc11d4885ea919f3de776d45e720e4c769d406"
+  integrity sha512-4hMMLUlZhKJKOWbbGD1/VDUxGPEhEoN/T01k7bx271WiBKCvCfkgPzy0IeRS4PB50p6/N1q/SZL4B/TRsTE5bA==
 
 core-js@^2.4.0:
   version "2.6.12"
@@ -2809,9 +2809,9 @@ core-js@^2.4.0:
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
 
 core-js@^3.1.3:
-  version "3.18.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.18.1.tgz#289d4be2ce0085d40fc1244c0b1a54c00454622f"
-  integrity sha512-vJlUi/7YdlCZeL6fXvWNaLUPh/id12WXj3MbkMw5uOyF0PfWPBNOCNbs53YqgrvtujLNlt9JQpruyIKkUZ+PKA==
+  version "3.18.2"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.18.2.tgz#63a551e8a29f305cd4123754846e65896619ba5b"
+  integrity sha512-zNhPOUoSgoizoSQFdX1MeZO16ORRb9FFQLts8gSYbZU5FcgXhp24iMWMxnOQo5uIaIG7/6FA/IqJPwev1o9ZXQ==
 
 core-util-is@~1.0.0:
   version "1.0.3"
@@ -4651,9 +4651,9 @@ graphql-typed-client@1.7.4:
     subscriptions-transport-ws "^0.9.16"
     ws "^6.1.4"
 
-"graphql-zeus@git://github.com/gozala/graphql-zeus#fix/import":
+"graphql-zeus@git://github.com/gozala/graphql-zeus.git#fork/niftysave":
   version "3.2.3"
-  resolved "git://github.com/gozala/graphql-zeus#299c0e8b516056fd78681b022c2e3f0e8b0d96a1"
+  resolved "git://github.com/gozala/graphql-zeus.git#54b1fe2be99f25ece3a2f5874c15b624fb4c8287"
   dependencies:
     cross-fetch "^3.0.4"
     graphql "^15.4.0"
@@ -5066,9 +5066,9 @@ ink-link@^2.0.0:
     lodash.isequal "^4.5.0"
 
 ink-spinner@^4.0.1:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/ink-spinner/-/ink-spinner-4.0.2.tgz#ee87a363533fa4932998e1bd303e0aa186572b02"
-  integrity sha512-vQGmhWUEh3IG1IxK1Hl2w6RfH6aaRIJWw9lrG8CvFFyrQ23UpJ8GClJs5/sFBxkNvsrrK9sKNEGlGnsqTYiUww==
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/ink-spinner/-/ink-spinner-4.0.3.tgz#0d0f4a787ae1a4270928e063d9c52527cb264feb"
+  integrity sha512-uJ4nbH00MM9fjTJ5xdw0zzvtXMkeGb0WV6dzSWvFv2/+ks6FIhpkt+Ge/eLdh0Ah6Vjw5pLMyNfoHQpRDRVFbQ==
   dependencies:
     cli-spinners "^2.3.0"
 
