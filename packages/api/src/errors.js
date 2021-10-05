@@ -1,6 +1,7 @@
 import Toucan from 'toucan-js'
 import { ErrorCode as MagicErrors } from '@magic-sdk/admin'
 import { JSONResponse } from './utils/json-response.js'
+import { DBError } from './utils/db-client.js'
 
 export class HTTPError extends Error {
   /**
@@ -133,20 +134,3 @@ export class ErrorInvalidCid extends Error {
   }
 }
 ErrorInvalidCid.CODE = 'ERROR_INVALID_CID'
-
-export class DBError extends Error {
-  /**
-   * @param {{
-   *   message: string
-   *   details: string
-   *   hint: string
-   *   code: string
-   * }} cause
-   */
-  constructor({ message, details, hint, code }) {
-    super(`${message}, details: ${details}, hint: ${hint}, code: ${code}`)
-    this.name = 'DBError'
-    this.code = DBError.CODE
-  }
-}
-DBError.CODE = 'ERROR_DB'
