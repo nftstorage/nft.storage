@@ -67,19 +67,19 @@ const nextSubgraphQuery = () => {
 }
 
 /**
- * @type {Number}
+ * @type {String}
  */
-let _lastScrapeId = 0
+let _lastScrapeId = '0'
 /**
- * @param {Number=} id
- * @returns {Number}
+ * @param {String=} id
+ * @returns {String}
  */
 
 function lastScrapeId(id) {
-  if (typeof id === 'number') {
+  if (typeof id === 'string') {
     _lastScrapeId = id
   }
-  if (_lastScrapeId === 0) {
+  if (_lastScrapeId === '0') {
     //actually go get the last id from the database
     //TODO:_lastScrapeId = await (db, sort by time stamp extract id)
     //or its zero, the first time ever.
@@ -155,7 +155,7 @@ async function fetchNextNFTBatch(config) {
   const lastId = tokens.map((nft) => nft.id)[tokens.length - 1]
   if (lastId) {
     //this is where we keep track lat Id if successful.
-    lastScrapeId(parseInt(lastId))
+    lastScrapeId(lastId)
   }
   return tokens.map(subgraphTokenToERC721ImportNFT)
 }
