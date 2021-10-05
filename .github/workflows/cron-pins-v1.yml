@@ -3,6 +3,7 @@ name: Cron Pins v1
 on:
   schedule:
     - cron: '30 * * * *'
+  workflow_dispatch:
 
 jobs:
   update:
