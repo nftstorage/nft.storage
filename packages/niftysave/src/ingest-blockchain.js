@@ -6,10 +6,6 @@ import { configure } from './config.js'
 import { script } from 'subprogram'
 import { setTimeout } from 'timers/promises'
 
-/* Abstract to the config */
-const SCRAPE_BATCH_SIZE = 100
-const MAX_INBOX_SIZE = 1000
-
 /**
  *
  * @typedef {{
@@ -35,34 +31,35 @@ const MAX_INBOX_SIZE = 1000
  * }} ERC721ImportNFT
  */
 
-const ERC721_RESULT_DEFINITON = {
-  id: 1,
-  tokenID: 1,
-  tokenURI: 1,
-  mintTime: 1,
-  blockNumber: 1,
-  blockHash: 1,
-  contract: {
-    id: 1,
-    name: 1,
-    symbol: 1,
-    supportsEIP721Metadata: 1,
-  },
-  owner: {
-    id: 1,
-  },
-}
-
 /**
+ * @param { IngestorState } state
  * @returns {any}
  */
-const nextSubgraphQuery = () => {
+const nextSubgraphQuery = (state) => {
   const query = {
-    first: SCRAPE_BATCH_SIZE,
+    first: state.scrapeBatchSize,
     where: { tokenURI_not: '', id_gt: lastScrapeId() },
   }
+  const erc721ResultDefinition = {
+    id: 1,
+    tokenID: 1,
+    tokenURI: 1,
+    mintTime: 1,
+    blockNumber: 1,
+    blockHash: 1,
+    contract: {
+      id: 1,
+      name: 1,
+      symbol: 1,
+      supportsEIP721Metadata: 1,
+    },
+    owner: {
+      id: 1,
+    },
+  }
+
   return {
-    tokens: [query, ERC721_RESULT_DEFINITON],
+    tokens: [query, erc721ResultDefinition],
   }
 }
 
@@ -72,10 +69,9 @@ const nextSubgraphQuery = () => {
 let _lastScrapeId = '0'
 /**
  * @param {String=} id
- * @returns {String}
+ * @returns { Promise<String>}
  */
-
-function lastScrapeId(id) {
+async function lastScrapeId(id) {
   if (typeof id === 'string') {
     _lastScrapeId = id
   }
@@ -86,11 +82,6 @@ function lastScrapeId(id) {
   }
   return _lastScrapeId
 }
-
-/**
- * @type {ERC721ImportNFT[]}
- */
-let importInbox = []
 
 /**
  * @typedef {{
@@ -142,10 +133,11 @@ function subgraphTokenToERC721ImportNFT(token) {
 
 /**
  * @param { Config } config
+ * @param { IngestorState } state
  * @returns { Promise<ERC721ImportNFT[]> }
  */
-async function fetchNextNFTBatch(config) {
-  const nftsResult = await ERC721.query(config.erc721, nextSubgraphQuery())
+async function fetchNextNFTBatch(config, state) {
+  const nftsResult = await ERC721.query(config.erc721, nextSubgraphQuery(state))
   //something broke.
   if (nftsResult.ok === false) {
     console.error(nftsResult)
@@ -217,18 +209,18 @@ let _draining = false
  * 3. Encounters exception and returns false
  *
  * @param { Config } config
+ * @param { IngestorState } state
  * @returns {Promise<Boolean | Function>}
  */
-async function drainInbox(config) {
-  if (importInbox.length > 0) {
+async function drainInbox(config, state) {
+  if (state.importInbox.length > 0) {
     _draining = true
-    const nextImport = importInbox[importInbox.length - 1]
+    const nextImport = state.importInbox[state.importInbox.length - 1]
     try {
       // this should literally never be undefined
-      // and this is changing to a TransformStream
       if (nextImport) {
         await writeScrapedRecord(config, nextImport)
-        importInbox.pop()
+        state.importInbox.pop()
       } else {
         console.error(
           `Attempted to get the next ERC721ImportNFT but instead got undefined`
@@ -241,13 +233,11 @@ async function drainInbox(config) {
     }
   } else {
     _draining = false
-    // this is going to be a stream, but until then,
-    // prevent running too quickly on failure or empty
-    await setTimeout(500)
+    await setTimeout(state.emptyDrainThrottle)
   }
 
-  console.log(`Inbox at: ${importInbox.length}`)
-  return drainInbox(config)
+  console.log(`Inbox at: ${state.importInbox.length}`)
+  return drainInbox(config, state)
 }
 
 /**
@@ -256,42 +246,71 @@ async function drainInbox(config) {
  * 2. Is full and waits a bit to scrape
  * 3. Encounters an exception and returns false.
  * @param { Config } config
+ * @param { IngestorState } state
  * @returns {Promise<Boolean | Function>}
  */
-async function scrapeBlockChain(config) {
-  if (importInbox.length < MAX_INBOX_SIZE) {
+async function scrapeBlockChain(config, state) {
+  if (state.importInbox.length < state.maxInboxSize) {
     let scrape = []
     try {
-      scrape = await fetchNextNFTBatch(config)
-      importInbox = [...importInbox, ...scrape]
+      scrape = await fetchNextNFTBatch(config, state)
+      state.importInbox = [...state.importInbox, ...scrape]
     } catch (err) {
       console.log(err)
       return false
     }
-    console.log(`Inbox at ${importInbox.length}`)
+    console.log(`Inbox at ${state.importInbox.length}`)
     await setTimeout(10)
   } else {
     if (!_draining) {
       console.log('Start Drain.')
-      drainInbox(config)
+      drainInbox(config, state)
     }
     // this is going to be a stream, but until then,
     // prevent running too quickly on failure or empty
-    await setTimeout(500)
+    await setTimeout(state.emptyScrapeThrottle)
   }
-  return scrapeBlockChain(config)
+  return scrapeBlockChain(config, state)
 }
 
 /**
  * @typedef { Object } Config
  * @property { ERC721.Config } config.erc721
  * @property { Hasura.Config } config.hasura
+ */
+
+/**
+ * @typedef {{
+ *   importInbox: ERC721ImportNFT[]
+ *   lastScrapeId: String
+ *   draining: Boolean
+ *   maxInboxSize: Number
+ *   scrapeBatchSize: Number
+ *   emptyDrainThrottle: Number
+ *   emptyScrapeThrottle: Number
+ * }} IngestorState
+ */
+
+/**
  * @param {Config} config
  */
+
 async function spawn(config) {
   console.log(config)
   console.log(`Begin Scraping the Blockchain.`)
-  scrapeBlockChain(config)
+
+  //init state.
+  let state = {
+    importInbox: [],
+    lastScrapeId: '0',
+    draining: false,
+    maxInboxSize: 1000,
+    scrapeBatchSize: 10,
+    emptyDrainThrottle: 500,
+    emptyScrapeThrottle: 500,
+  }
+
+  scrapeBlockChain(config, state)
 }
 
 export const main = async () => await spawn(await configure())
