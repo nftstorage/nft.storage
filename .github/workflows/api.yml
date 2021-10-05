@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - uses: bahmutov/npm-install@v1
+      - run: yarn
       - run: npx playwright install-deps
       - run: yarn test:api
         env:

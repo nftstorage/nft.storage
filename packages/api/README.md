@@ -1,6 +1,6 @@
 # API
 
-The nft.storage public API.
+The NFT.Storage public API.
 
 ## Getting Started
 
