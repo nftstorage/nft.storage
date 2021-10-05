@@ -32,13 +32,44 @@ import { setTimeout } from 'timers/promises'
  */
 
 /**
- * @param { IngestorState } state
+ * @typedef { Object } Config
+ * @property { ERC721.Config } config.erc721
+ * @property { Hasura.Config } config.hasura
+ */
+
+/**
+ * @typedef {{
+ *   importInbox: ERC721ImportNFT[]
+ *   lastScrapeId: String
+ *   draining: Boolean
+ *   maxInboxSize: Number
+ *   scrapeBatchSize: Number
+ *   emptyDrainThrottle: Number
+ *   emptyScrapeThrottle: Number
+ * }} IngestorState
+ */
+
+/**
+ * @typedef {{
+ *  tokens: ERC721ImportNFT[]
+ * }} NFTSSubGraphResultValue
+ *
+ * @typedef {{
+ *  ok: Boolean
+ *  value: NFTSSubGraphResultValue
+ *  done: Boolean
+ * }} NFTSSubgraphResult
+ *
+ */
+
+/**
+ * @param {Config} config
  * @returns {any}
  */
-const nextSubgraphQuery = (state) => {
+const nextSubgraphQuery = (config) => {
   const query = {
     first: state.scrapeBatchSize,
-    where: { tokenURI_not: '', id_gt: lastScrapeId() },
+    where: { tokenURI_not: '', id_gt: lastScrapeId(config) },
   }
   const erc721ResultDefinition = {
     id: 1,
@@ -64,37 +95,50 @@ const nextSubgraphQuery = (state) => {
 }
 
 /**
+ * @param { Config } config
+ * @returns { Promise<String>}
+ */
+async function getLastScrapeIdFromHasura(config) {
+  const query = { limit: 1 }
+
+  /**
+   * required type annotation due to desin limitation in TS
+   * https://github.com/microsoft/TypeScript/issues/19360
+   * @type {{
+   *    id: true | undefined
+   *    updated_at: true | undefined
+   * }}
+   */
+  const resultsDefinition = { id: true, updated_at: true }
+  const lastNFT = await Hasura.query(config.hasura, {
+    nft: [query, resultsDefinition],
+  })
+
+  console.log(lastNFT)
+
+  let _lastNftId = '0'
+
+  return _lastNftId
+}
+
+/**
  * @type {String}
  */
 let _lastScrapeId = '0'
 /**
  * @param {String=} id
+ * @param {Config} config
  * @returns { Promise<String>}
  */
-async function lastScrapeId(id) {
+async function lastScrapeId(config, id) {
   if (typeof id === 'string') {
     _lastScrapeId = id
   }
   if (_lastScrapeId === '0') {
-    //actually go get the last id from the database
-    //TODO:_lastScrapeId = await (db, sort by time stamp extract id)
-    //or its zero, the first time ever.
+    _lastScrapeId = await getLastScrapeIdFromHasura(config)
   }
   return _lastScrapeId
 }
-
-/**
- * @typedef {{
- *  tokens: ERC721ImportNFT[]
- * }} NFTSSubGraphResultValue
- *
- * @typedef {{
- *  ok: Boolean
- *  value: NFTSSubGraphResultValue
- *  done: Boolean
- * }} NFTSSubgraphResult
- *
- */
 
 /**
  * This function is a hook to clean up data (or loosen typing)
@@ -133,11 +177,13 @@ function subgraphTokenToERC721ImportNFT(token) {
 
 /**
  * @param { Config } config
- * @param { IngestorState } state
  * @returns { Promise<ERC721ImportNFT[]> }
  */
-async function fetchNextNFTBatch(config, state) {
-  const nftsResult = await ERC721.query(config.erc721, nextSubgraphQuery(state))
+async function fetchNextNFTBatch(config) {
+  const nftsResult = await ERC721.query(
+    config.erc721,
+    nextSubgraphQuery(config)
+  )
   //something broke.
   if (nftsResult.ok === false) {
     console.error(nftsResult)
@@ -147,7 +193,7 @@ async function fetchNextNFTBatch(config, state) {
   const lastId = tokens.map((nft) => nft.id)[tokens.length - 1]
   if (lastId) {
     //this is where we keep track lat Id if successful.
-    lastScrapeId(lastId)
+    lastScrapeId(config, lastId)
   }
   return tokens.map(subgraphTokenToERC721ImportNFT)
 }
@@ -196,25 +242,17 @@ async function writeScrapedRecord(config, erc721Import) {
 }
 
 /**
- * A private flag that keeps track of whether the
- * drainInbox function is actively writing records
- * and depleting the inbox
- * @type {Boolean}
- */
-let _draining = false
-/**
  * Recursive function that either
  * 1. Writes a single record in the inbox buffer
  * 2. Has nothing to write, so it waits for the inbox to fill
  * 3. Encounters exception and returns false
  *
  * @param { Config } config
- * @param { IngestorState } state
  * @returns {Promise<Boolean | Function>}
  */
-async function drainInbox(config, state) {
+async function drainInbox(config) {
   if (state.importInbox.length > 0) {
-    _draining = true
+    state.draining = true
     const nextImport = state.importInbox[state.importInbox.length - 1]
     try {
       // this should literally never be undefined
@@ -232,12 +270,12 @@ async function drainInbox(config, state) {
       return false
     }
   } else {
-    _draining = false
+    state.draining = false
     await setTimeout(state.emptyDrainThrottle)
   }
 
   console.log(`Inbox at: ${state.importInbox.length}`)
-  return drainInbox(config, state)
+  return drainInbox(config)
 }
 
 /**
@@ -246,14 +284,13 @@ async function drainInbox(config, state) {
  * 2. Is full and waits a bit to scrape
  * 3. Encounters an exception and returns false.
  * @param { Config } config
- * @param { IngestorState } state
  * @returns {Promise<Boolean | Function>}
  */
-async function scrapeBlockChain(config, state) {
+async function scrapeBlockChain(config) {
   if (state.importInbox.length < state.maxInboxSize) {
     let scrape = []
     try {
-      scrape = await fetchNextNFTBatch(config, state)
+      scrape = await fetchNextNFTBatch(config)
       state.importInbox = [...state.importInbox, ...scrape]
     } catch (err) {
       console.log(err)
@@ -262,55 +299,40 @@ async function scrapeBlockChain(config, state) {
     console.log(`Inbox at ${state.importInbox.length}`)
     await setTimeout(10)
   } else {
-    if (!_draining) {
+    if (!state.draining) {
       console.log('Start Drain.')
-      drainInbox(config, state)
+      drainInbox(config)
     }
     // this is going to be a stream, but until then,
     // prevent running too quickly on failure or empty
     await setTimeout(state.emptyScrapeThrottle)
   }
-  return scrapeBlockChain(config, state)
+  return scrapeBlockChain(config)
 }
 
 /**
- * @typedef { Object } Config
- * @property { ERC721.Config } config.erc721
- * @property { Hasura.Config } config.hasura
+ * @type { IngestorState }
  */
+let state = {
+  importInbox: [],
+  lastScrapeId: '0',
+  draining: false,
+  maxInboxSize: 1000,
 
-/**
- * @typedef {{
- *   importInbox: ERC721ImportNFT[]
- *   lastScrapeId: String
- *   draining: Boolean
- *   maxInboxSize: Number
- *   scrapeBatchSize: Number
- *   emptyDrainThrottle: Number
- *   emptyScrapeThrottle: Number
- * }} IngestorState
- */
+  //↓ move to config ↓
+  scrapeBatchSize: 10,
+  emptyDrainThrottle: 500,
+  emptyScrapeThrottle: 500,
+}
 
 /**
  * @param {Config} config
  */
-
 async function spawn(config) {
-  console.log(config)
   console.log(`Begin Scraping the Blockchain.`)
+  //scrapeBlockChain(config)
 
-  //init state.
-  let state = {
-    importInbox: [],
-    lastScrapeId: '0',
-    draining: false,
-    maxInboxSize: 1000,
-    scrapeBatchSize: 10,
-    emptyDrainThrottle: 500,
-    emptyScrapeThrottle: 500,
-  }
-
-  scrapeBlockChain(config, state)
+  getLastScrapeIdFromHasura(config)
 }
 
 export const main = async () => await spawn(await configure())
