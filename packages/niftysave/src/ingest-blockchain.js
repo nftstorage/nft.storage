@@ -6,6 +6,8 @@ import { configure } from './config.js'
 import { script } from 'subprogram'
 import { setTimeout } from 'timers/promises'
 
+const config = await configure()
+
 /* Abstract to the config */
 const SCRAPE_BATCH_SIZE = 100
 const MAX_INBOX_SIZE = 1000
@@ -290,7 +292,5 @@ async function scrapeBlockChain() {
   }
   return scrapeBlockChain()
 }
-
-export const main = () => scrapeBlockChain()
 
 script({ ...import.meta, main })
