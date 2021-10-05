@@ -158,6 +158,19 @@ function About() {
           <a href="https://filecoin.io" className="black">
             Filecoin
           </a>
+          , and are referenced using content-addressed IPFS URIs that can be
+          used in your smart contract without fear of the data being referenced
+          changing.
+        </p>
+        <p className="lh-copy mw-none mw-none-m mw6-ns">
+          To learn more about the importance of content addressing, check out
+          this page on{' '}
+          <a
+            href="https://nftschool.dev/concepts/content-addressing/"
+            className="black"
+          >
+            NFT School
+          </a>
           .
         </p>
         <div className="db db-m dn-ns">
