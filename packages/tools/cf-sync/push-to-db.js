@@ -114,7 +114,7 @@ async function nftByUser(issuer, sub, ctx, task, keys, dbUser) {
  * @param {Context} ctx
  * @param {any[]} values
  * @param {definitions['auth_key'][]} keys
- * @param {definitions['account']} dbUser
+ * @param {definitions['user']} dbUser
  */
 async function addNFTs(values, keys, ctx, dbUser) {
   /** @type {ContentQuery} */
@@ -126,32 +126,41 @@ async function addNFTs(values, keys, ctx, dbUser) {
   const contentArray = []
   const pinsArray = []
   const uploadArray = []
-  for (const { data, size, pinStatus } of values) {
-    contentArray.push({
-      cid: data.cid,
-      dag_size: size,
-      inserted_at: data.created,
-      updated_at: data.created,
-    })
+  /**
+   * @type {string[]}
+   */
+  const cids = []
 
-    pinsArray.push({
-      status: getDBPinStatus(pinStatus),
-      service: 'IpfsCluster',
-      content_cid: data.cid,
-      inserted_at: data.created,
-      updated_at: data.created,
-    })
-    pinsArray.push({
-      status: 'PinQueued',
-      service: 'Pinata',
-      content_cid: data.cid,
-      inserted_at: data.created,
-      updated_at: data.created,
-    })
+  for (const { data, size, pinStatus } of values) {
+    const parsedCID = parseCid(data.cid)
+    // avoid duplicate cidv1 in content and pin
+    if (!cids.includes(parsedCID.contentCid)) {
+      cids.push(parsedCID.contentCid)
+      contentArray.push({
+        cid: parsedCID.contentCid,
+        dag_size: size,
+        inserted_at: data.created,
+        updated_at: data.created,
+      })
+
+      pinsArray.push({
+        status: getDBPinStatus(pinStatus),
+        service: 'IpfsCluster',
+        content_cid: parsedCID.contentCid,
+        inserted_at: data.created,
+        updated_at: data.created,
+      })
+      pinsArray.push({
+        status: 'PinQueued',
+        service: 'Pinata',
+        content_cid: parsedCID.contentCid,
+        inserted_at: data.created,
+        updated_at: data.created,
+      })
+    }
 
     const authKey = keys.find((k) => k.name === data.scope)
     const types = getMimeAndType(data.type)
-    const parsedCID = parseCid(data.cid)
     uploadArray.push({
       user_id: dbUser.id,
       key_id: authKey ? authKey.id : null,
@@ -185,7 +194,7 @@ async function addNFTs(values, keys, ctx, dbUser) {
     }),
     // @ts-ignore
     uploadQuery.upsert(uploadArray, {
-      onConflict: 'account_id, source_cid',
+      onConflict: 'user_id, source_cid',
     }),
   ])
   if (uploads.error) {
