@@ -1,7 +1,7 @@
 import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
-// import { TransformStream } from './stream.js'
+import { TransformStream } from './stream.js'
 import { configure } from './config.js'
 import { script } from 'subprogram'
 import { setTimeout } from 'timers/promises'
@@ -322,6 +322,16 @@ async function scrapeBlockChain(config) {
 }
 
 /**
+ * @param { Config } config
+ * @param { ReadableStream<ERC721ImportNFT>} readable
+ */
+async function scrapeFrom(config, readable) {
+  console.log('start scraper here.')
+}
+
+async function writeFrom(config, writeable) {}
+
+/**
  * @type { IngestorState }
  */
 let state = {
@@ -341,7 +351,17 @@ let state = {
  */
 async function spawn(config) {
   console.log(`Begin Scraping the Blockchain.`)
-  scrapeBlockChain(config)
+  //scrapeBlockChain(config)
+
+  const channel = new TransformStream(
+    {},
+    {
+      highWater: state.maxInboxSize,
+    }
+  )
+
+  scrapeFrom(config, channel.readable)
+  writeFrom(config, channel.writeable)
 }
 
 export const main = async () => await spawn(await configure())
