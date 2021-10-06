@@ -10,6 +10,7 @@ import * as Hasura from './hasura.js'
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
 import * as Cursor from './analyze/cursor.js'
 import { TransformStream } from './stream.js'
+import { setTimeout as sleep } from 'timers/promises'
 
 export const main = async () => await spawn(await configure())
 
@@ -58,10 +59,15 @@ const spawn = async (config) => {
  */
 const readInto = async (writable, config) => {
   const writer = writable.getWriter()
+
   let cursor = Cursor.init()
 
   while (true) {
-    console.log(`📥 Fetch ${config.batchSize} queued nft assets from ${cursor}`)
+    console.log(
+      `📥 Fetch ${config.batchSize} queued nft assets from ${JSON.stringify(
+        cursor
+      )}`
+    )
     // Pull queued tasks in FIFO order by `update_at`.
     const page = await fetchQueuedAssets(config, cursor)
 
@@ -148,9 +154,9 @@ const analyzeFrom = async (readable, config) => {
   // spawn number of (as per configuration) concurrent
   // analyzer tasks that will pull incoming `nft_asset` records
   // and advance their state.
-  const tasks = Array(config.concurrency).map(() => {
+  const tasks = Array.from({ length: config.concurrency }, () =>
     analyzer(config, inbox)
-  })
+  )
 
   await Promise.all(tasks)
   await inbox.cancel()
@@ -163,6 +169,7 @@ const analyzeFrom = async (readable, config) => {
  */
 const analyzer = async (config, inbox) => {
   while (true) {
+    console.log('📤 Pull nft asset from the queue')
     const next = await inbox.read()
     if (next.done) {
       break
@@ -197,7 +204,7 @@ const analyze = async (config, asset) => {
     return {
       hash,
       status: 'URIParseFailed',
-      statusText: `${urlResult.error}`,
+      statusText: `${urlResult.error}\n${urlResult.error.stack}`,
     }
   }
 
@@ -227,7 +234,7 @@ const analyze = async (config, asset) => {
     return {
       hash,
       status: 'ContentFetchFailed',
-      statusText: `${content.error}`,
+      statusText: `${content.error}\n${content.error.stack}`,
       ipfsURL,
     }
   }
@@ -241,7 +248,7 @@ const analyze = async (config, asset) => {
     return {
       hash,
       status: 'ContentParseFailed',
-      statusText: `${metadata.error}`,
+      statusText: `${metadata.error}\n${metadata.error.stack}`,
       ipfsURL: ipfsURL,
     }
   }
@@ -285,43 +292,53 @@ const linkAsset = async (
 ) => {
   const resources = links.map((url) => linkResource(cid, url))
 
-  const { link_nft_asset } = await Hasura.mutation(config.hasura, {
-    link_nft_asset: [
-      {
-        args: {
-          token_uri_hash: hash,
-          status_text: statusText,
-          ipfs_url: ipfsURL ? ipfsURL.href : null,
-          content_cid: cid,
-          metadata: content,
+  const { link_nft_asset } = await Hasura.mutation(
+    config.hasura,
+    {
+      link_nft_asset: [
+        {
+          args: {
+            token_uri_hash: hash,
+            status_text: statusText,
+            ipfs_url: ipfsURL ? ipfsURL.href : null,
+            content_cid: cid,
+            // note need to use variable to workaround
+            // https://github.com/graphql-editor/graphql-zeus/issues/144
+            metadata: Hasura.$`metadata`,
+          },
         },
+        {
+          updated_at: true,
+          status: true,
+        },
+      ],
+      __alias: Object.fromEntries(resources.entries()),
+    },
+    {
+      variables: {
+        metadata: content,
       },
-      {
-        updated_at: true,
-        status: true,
-      },
-    ],
-    __alias: Object.fromEntries(resources.entries()),
-  })
+    }
+  )
 
   return link_nft_asset
 }
 
 /**
  * @param {string} cid
- * @param {string} url
+ * @param {string} uri
  * @returns {Hasura.Mutation}
  */
-const linkResource = (cid, url) => ({
-  add_other_nft_resource: [
+const linkResource = (cid, uri) => ({
+  link_nft_resource: [
     {
       args: {
-        content_cid: cid,
-        resource_uri: url,
+        cid,
+        uri,
       },
     },
     {
-      resource_uri_hash: true,
+      uri_hash: true,
     },
   ],
 })
@@ -357,11 +374,6 @@ const failAsset = async (config, { hash, status, statusText, ipfsURL }) => {
 
   return fail_nft_asset
 }
-
-/**
- * @param {number} ms
- */
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 /**
  * @typedef {Object} Metadata
