@@ -99,7 +99,20 @@ const nextSubgraphQuery = (config) => {
  * @returns { Promise<String>}
  */
 async function getLastScrapeIdFromHasura(config) {
-  const query = { limit: 1 }
+  /**
+   * @type {{
+   *    limit: number
+   *    order_by: Object[]
+   * }}
+   */
+  const query = {
+    limit: 1,
+    order_by: [
+      {
+        inserted_at: 'desc',
+      },
+    ],
+  }
 
   /**
    * required type annotation due to desin limitation in TS
@@ -110,14 +123,11 @@ async function getLastScrapeIdFromHasura(config) {
    * }}
    */
   const resultsDefinition = { id: true, updated_at: true }
+
   const lastNFT = await Hasura.query(config.hasura, {
     nft: [query, resultsDefinition],
   })
-
-  console.log(lastNFT)
-
-  let _lastNftId = '0'
-
+  let _lastNftId = lastNFT?.nft[0]?.id || '0'
   return _lastNftId
 }
 
@@ -330,9 +340,7 @@ let state = {
  */
 async function spawn(config) {
   console.log(`Begin Scraping the Blockchain.`)
-  //scrapeBlockChain(config)
-
-  getLastScrapeIdFromHasura(config)
+  scrapeBlockChain(config)
 }
 
 export const main = async () => await spawn(await configure())
