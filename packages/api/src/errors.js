@@ -3,6 +3,8 @@ import { ErrorCode as MagicErrors } from '@magic-sdk/admin'
 import { JSONResponse } from './utils/json-response.js'
 import { DBError } from './utils/db-client.js'
 
+/** @typedef {{ code: string }} Coded */
+
 export class HTTPError extends Error {
   /**
    *
@@ -28,78 +30,80 @@ export class HTTPError extends Error {
    * @param {{sentry: Toucan}} ctx
    */
   static respond(err, { sentry }) {
-    let error = {
-      code: err.code,
-      message: err.message,
-    }
-    let status = err.status || 500
-
-    switch (err.code) {
-      case ErrorUserNotFound.CODE:
-      case ErrorTokenNotFound.CODE:
-      case ErrorInvalidCid.CODE:
-        break
-      case DBError.CODE:
-        error.message = 'Database error'
-        sentry.captureException(err)
-        break
-
-      // Magic SDK errors
-      case MagicErrors.TokenExpired:
-        status = 401
-        error.message = 'API Key has expired.'
-        break
-      case MagicErrors.ExpectedBearerString:
-        status = 401
-        error.message =
-          'API Key is missing, make sure the `Authorization` header has a value in the following format `Bearer {api key}`.'
-        break
-      case MagicErrors.MalformedTokenError:
-        status = 401
-        error.message = 'API Key is malformed or failed to parse.'
-        break
-      case MagicErrors.TokenCannotBeUsedYet:
-      case MagicErrors.IncorrectSignerAddress:
-      case MagicErrors.FailedRecoveryProof:
-      case MagicErrors.ApiKeyMissing:
-        status = 401
-        error.code = 'AUTH_ERROR'
-        error.message = 'Authentication failed.'
-        sentry.captureException(err)
-        break
-      case MagicErrors.ServiceError:
-        status = 500
-        error.code = 'SERVER_ERROR'
-        sentry.captureException(err)
-        break
-      default:
-        // catch all server errors
-        if (status >= 500) {
-          error = {
-            code: err.name,
-            message: err.message,
-          }
-          sentry.captureException(err)
-        } else {
-          // Custom HTTPError
-          error = {
-            code: err.code || 'HTTP_ERROR',
-            message: err.message,
-          }
-        }
-        break
-    }
-
+    const { message, code, status } = maybeCapture(err, { sentry })
     return new JSONResponse(
       {
         ok: false,
-        error,
+        error: { code, message },
       },
       {
         status,
       }
     )
   }
+}
+
+/**
+ * Pass me an error and I might send it to sentry if it's important. Either way
+ * I'll give you back a HTTPError with a user friendly error message and code.
+ *
+ * @param {any} err
+ * @param {{ sentry: Toucan }} ctx
+ * @returns {HTTPError & Coded} A HTTPError with an error code.
+ */
+export function maybeCapture(err, { sentry }) {
+  let code = err.code || 'HTTP_ERROR'
+  let message = err.message
+  let status = err.status || 500
+
+  switch (err.code) {
+    case ErrorUserNotFound.CODE:
+    case ErrorTokenNotFound.CODE:
+    case ErrorInvalidCid.CODE:
+      break
+    case DBError.CODE:
+      message = 'Database error'
+      sentry.captureException(err)
+      break
+    // Magic SDK errors
+    case MagicErrors.TokenExpired:
+      status = 401
+      message = 'API Key has expired.'
+      break
+    case MagicErrors.ExpectedBearerString:
+      status = 401
+      message =
+        'API Key is missing, make sure the `Authorization` header has a value in the following format `Bearer {api key}`.'
+      break
+    case MagicErrors.MalformedTokenError:
+      status = 401
+      message = 'API Key is malformed or failed to parse.'
+      break
+    case MagicErrors.TokenCannotBeUsedYet:
+    case MagicErrors.IncorrectSignerAddress:
+    case MagicErrors.FailedRecoveryProof:
+    case MagicErrors.ApiKeyMissing:
+      status = 401
+      code = 'AUTH_ERROR'
+      message = 'Authentication failed.'
+      sentry.captureException(err)
+      break
+    case MagicErrors.ServiceError:
+      status = 500
+      code = 'SERVER_ERROR'
+      sentry.captureException(err)
+      break
+    default:
+      // catch all server errors
+      if (status >= 500) {
+        code = err.name
+        message = err.message
+        sentry.captureException(err)
+      }
+      break
+  }
+
+  return Object.assign(new HTTPError(message, status), { code })
 }
 
 export class ErrorUserNotFound extends Error {
