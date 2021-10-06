@@ -10,7 +10,7 @@ export class Pinata {
    */
   constructor({ apiToken }) {
     this.apiToken = apiToken
-    this.limiter = new RateLimiter({ tokensPerInterval: 2, interval: 'second' })
+    this.limiter = new RateLimiter({ tokensPerInterval: 3, interval: 'second' })
   }
 
   /**
