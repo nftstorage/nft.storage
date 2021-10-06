@@ -4,7 +4,7 @@ import * as Hasura from './hasura.js'
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
 import { script } from 'subprogram'
-import { setTimeout } from 'timers/promises'
+import { setTimeout as sleep } from 'timers/promises'
 
 /**
  *
@@ -282,7 +282,7 @@ async function drainInbox(config) {
     }
   } else {
     state.draining = false
-    await setTimeout(state.emptyDrainThrottle)
+    await sleep(state.emptyDrainThrottle)
   }
 
   console.log(`Inbox at: ${state.importInbox.length}`)
@@ -308,7 +308,7 @@ async function scrapeBlockChain(config) {
       return false
     }
     console.log(`Inbox at ${state.importInbox.length}`)
-    await setTimeout(10)
+    await sleep(10)
   } else {
     if (!state.draining) {
       console.log('Start Drain.')
@@ -316,7 +316,7 @@ async function scrapeBlockChain(config) {
     }
     // this is going to be a stream, but until then,
     // prevent running too quickly on failure or empty
-    await setTimeout(state.emptyScrapeThrottle)
+    await sleep(state.emptyScrapeThrottle)
   }
   return scrapeBlockChain(config)
 }
@@ -325,11 +325,33 @@ async function scrapeBlockChain(config) {
  * @param { Config } config
  * @param { ReadableStream<ERC721ImportNFT>} readable
  */
-async function scrapeFrom(config, readable) {
+async function writeFromInbox(config, readable) {
   console.log('start scraper here.')
+  const reader = readable.getReader()
 }
 
-async function writeFrom(config, writeable) {}
+/**
+ * @param { Config } config
+ * @param { WritableStream<ERC721ImportNFT>} writeable
+ */
+async function readIntoInbox(config, writeable) {
+  const writer = writeable.getWriter()
+
+  while (!writer.closed) {
+    let scrape = []
+    try {
+      scrape = await fetchNextNFTBatch(config)
+    } catch (err) {
+      console.log(err)
+      return err
+    }
+
+    //you scraped successfully, but you're caught up.
+    if (scrape.length == 0) {
+      sleep()
+    }
+  }
+}
 
 /**
  * @type { IngestorState }
@@ -353,15 +375,18 @@ async function spawn(config) {
   console.log(`Begin Scraping the Blockchain.`)
   //scrapeBlockChain(config)
 
-  const channel = new TransformStream(
+  /**
+   * @type { TransformStream }
+   */
+  const inbox = new TransformStream(
     {},
     {
-      highWater: state.maxInboxSize,
+      highWaterMark: state.maxInboxSize,
     }
   )
 
-  scrapeFrom(config, channel.readable)
-  writeFrom(config, channel.writeable)
+  readIntoInbox(config, inbox.writable)
+  writeFromInbox(config, inbox.readable)
 }
 
 export const main = async () => await spawn(await configure())
