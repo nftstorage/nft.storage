@@ -341,6 +341,7 @@ async function readIntoInbox(config, writeable) {
     let scrape = []
     try {
       scrape = await fetchNextNFTBatch(config)
+      console.log(scrape)
     } catch (err) {
       console.log(err)
       return err
@@ -348,8 +349,10 @@ async function readIntoInbox(config, writeable) {
 
     //you scraped successfully, but you're caught up.
     if (scrape.length == 0) {
-      sleep()
+      sleep(1000)
     }
+
+    console.log(scrape)
   }
 }
 
@@ -386,7 +389,7 @@ async function spawn(config) {
   )
 
   readIntoInbox(config, inbox.writable)
-  writeFromInbox(config, inbox.readable)
+  //writeFromInbox(config, inbox.readable)
 }
 
 export const main = async () => await spawn(await configure())
