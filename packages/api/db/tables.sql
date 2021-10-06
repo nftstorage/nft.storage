@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS upload
     id          BIGSERIAL PRIMARY KEY,
     user_id     BIGINT                                                        NOT NULL REFERENCES public.user (id),
     -- User authentication token that was used to upload this content.
-    -- Note: nullable, because the user may have used a Magic.link token.
+    -- Note: maybe be null when the user upload through the website.
     key_id      BIGINT REFERENCES auth_key (id),
     -- The root CID of the uploaded content, normalized as base32 v1.
     content_cid TEXT                                                          NOT NULL REFERENCES content (cid),
