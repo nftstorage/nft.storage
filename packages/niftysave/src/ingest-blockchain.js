@@ -64,13 +64,14 @@ import { setTimeout } from 'timers/promises'
 
 /**
  * @param {Config} config
- * @returns {any}
+ * @returns {Promise<any>}
  */
-const nextSubgraphQuery = (config) => {
+const nextSubgraphQuery = async (config) => {
   const query = {
     first: state.scrapeBatchSize,
-    where: { tokenURI_not: '', id_gt: lastScrapeId(config) },
+    where: { tokenURI_not: '', id_gt: await lastScrapeId(config) },
   }
+  console.log(query)
   const erc721ResultDefinition = {
     id: 1,
     tokenID: 1,
@@ -127,7 +128,9 @@ async function getLastScrapeIdFromHasura(config) {
   const lastNFT = await Hasura.query(config.hasura, {
     nft: [query, resultsDefinition],
   })
+
   let _lastNftId = lastNFT?.nft[0]?.id || '0'
+
   return _lastNftId
 }
 
@@ -190,11 +193,10 @@ function subgraphTokenToERC721ImportNFT(token) {
  * @returns { Promise<ERC721ImportNFT[]> }
  */
 async function fetchNextNFTBatch(config) {
-  const nftsResult = await ERC721.query(
-    config.erc721,
-    nextSubgraphQuery(config)
-  )
+  const query = await nextSubgraphQuery(config)
+  const nftsResult = await ERC721.query(config.erc721, query)
   //something broke.
+  //TODO add retry.
   if (nftsResult.ok === false) {
     console.error(nftsResult)
     return []
@@ -202,7 +204,6 @@ async function fetchNextNFTBatch(config) {
   const { tokens } = nftsResult?.value || []
   const lastId = tokens.map((nft) => nft.id)[tokens.length - 1]
   if (lastId) {
-    //this is where we keep track lat Id if successful.
     lastScrapeId(config, lastId)
   }
   return tokens.map(subgraphTokenToERC721ImportNFT)
@@ -330,7 +331,7 @@ let state = {
   maxInboxSize: 1000,
 
   //↓ move to config ↓
-  scrapeBatchSize: 10,
+  scrapeBatchSize: 100,
   emptyDrainThrottle: 500,
   emptyScrapeThrottle: 500,
 }
