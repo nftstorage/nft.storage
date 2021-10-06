@@ -47,7 +47,7 @@ describe('/upload', () => {
     const file = new Blob(['hello world!'])
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
-    const res = await fetch('/upload', {
+    const res = await fetch('v0/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: file,
@@ -79,7 +79,7 @@ describe('/upload', () => {
     const file2 = new Blob(['hello world! 2'])
     body.append('file', file1, 'name1')
     body.append('file', file2, 'name2')
-    const res = await fetch('/upload', {
+    const res = await fetch('v0/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body,
@@ -108,7 +108,7 @@ describe('/upload', () => {
     const file2 = new Blob(['hello world! 2'])
     body.append('file', file1)
     body.append('file', file2)
-    const res = await fetch('/upload', {
+    const res = await fetch('v0/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body,
@@ -137,7 +137,7 @@ describe('/upload', () => {
     const file2 = new Blob(['hello world! 2'])
     body.append('file', new File([file1], 'name1.png'))
     body.append('file', new File([file2], 'name1.png'))
-    const res = await fetch('/upload', {
+    const res = await fetch('v0/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body,
@@ -165,7 +165,7 @@ describe('/upload', () => {
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
     assert.strictEqual(root.toString(), cid, 'car file has correct root')
-    const res = await fetch('/upload', {
+    const res = await fetch('v0/upload', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,

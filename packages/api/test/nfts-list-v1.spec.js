@@ -19,7 +19,7 @@ describe('V1 - List NFTs', () => {
     })
 
     await delay(300)
-    const res = await fetch(`v1`, {
+    const res = await fetch('', {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
@@ -48,7 +48,7 @@ describe('V1 - List NFTs', () => {
     })
 
     await delay(300)
-    const res = await fetch(`v1?limit=1`, {
+    const res = await fetch('?limit=1', {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
@@ -72,7 +72,7 @@ describe('V1 - List NFTs', () => {
     })
 
     await delay(300)
-    const res = await fetch(`v1?before=${date}`, {
+    const res = await fetch(`?before=${date}`, {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
@@ -93,7 +93,7 @@ describe('V1 - List NFTs', () => {
     }
 
     await delay(300)
-    const res = await fetch(`v1`, {
+    const res = await fetch('', {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
@@ -117,7 +117,7 @@ describe('V1 - List NFTs', () => {
     const invalidLimits = [-1, 0, 1001, 'not-a-number', 1.138]
 
     for (const limit of invalidLimits) {
-      const res = await fetch(`v1?limit=${limit}`, {
+      const res = await fetch(`?limit=${limit}`, {
         headers: { Authorization: `Bearer ${client.token}` },
       })
       assert.strictEqual(res.status, 400)

@@ -22,7 +22,7 @@ export async function getToken() {
  * @param {string} version
  */
 export async function getTokens(version) {
-  const route = version === '1' ? '/v1/internal/tokens' : '/internal/tokens'
+  const route = `${version ? `/v${version}` : ''}/internal/tokens`
   const res = await fetch(API + route, {
     method: 'GET',
     headers: {
@@ -47,8 +47,8 @@ export async function getTokens(version) {
  * @param {string | undefined} [version]
  */
 export async function deleteToken(name, version) {
-  const route = version === '1' ? '/v1/internal/tokens' : '/internal/tokens'
-  const data = version === '1' ? { id: name } : { name }
+  const route = `${version ? `/v${version}` : ''}/internal/tokens`
+  const data = version !== '0' ? { id: name } : { name }
   const res = await fetch(API + route, {
     method: 'DELETE',
     headers: {
@@ -74,7 +74,7 @@ export async function deleteToken(name, version) {
  * @param {string | undefined} [version]
  */
 export async function createToken(name, version) {
-  const route = version === '1' ? '/v1/internal/tokens' : '/internal/tokens'
+  const route = `${version ? `/v${version}` : ''}/internal/tokens`
   const res = await fetch(API + route, {
     method: 'POST',
     headers: {
@@ -101,7 +101,7 @@ export async function createToken(name, version) {
  * @returns
  */
 export async function getNfts({ limit, before }, version = '') {
-  const route = version === '1' ? '/v1' : '/'
+  const route = version ? `/v${version}` : '/'
   const params = new URLSearchParams({ before, limit: String(limit) })
   const res = await fetch(`${API}${route}?${params}`, {
     method: 'GET',

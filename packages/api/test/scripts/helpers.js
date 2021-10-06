@@ -77,7 +77,7 @@ export class DBTestClient {
    * @param {{ cid: string; name: string; }} data
    */
   async addPin(data) {
-    await fetch('/v1/pins', {
+    await fetch('pins', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.token}`,

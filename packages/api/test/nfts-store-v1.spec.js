@@ -24,7 +24,7 @@ describe('V1 - /store', () => {
     }
     const body = Token.encode(metadata)
 
-    const res = await fetch('/v1/store', {
+    const res = await fetch('store', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body,

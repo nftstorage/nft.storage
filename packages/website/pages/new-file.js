@@ -54,7 +54,7 @@ export default function NewFile() {
     if (file && file instanceof File) {
       const client = new NFTStorage({
         token: await getToken(),
-        endpoint: new URL(API + (version === '1' ? '/v1/' : '/')),
+        endpoint: new URL(API + (version ? `/v${version}/` : '/')),
       })
       setUploading(true)
       setError('')

@@ -17,7 +17,7 @@ describe('V1 - Get NFT', () => {
       name: 'test-file11',
     })
 
-    const res = await fetch(`v1/${cid}`, {
+    const res = await fetch(cid, {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
@@ -34,7 +34,7 @@ describe('V1 - Get NFT', () => {
       name: 'test-file-cid-v0',
     })
 
-    const res = await fetch(`v1/${cid}`, {
+    const res = await fetch(cid, {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
@@ -45,7 +45,7 @@ describe('V1 - Get NFT', () => {
 
   it('should error on invalid cid', async () => {
     const cid = 'asdhjkahsdja'
-    const res = await fetch(`v1/${cid}`, {
+    const res = await fetch(cid, {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value, error } = await res.json()
@@ -59,7 +59,7 @@ describe('V1 - Get NFT', () => {
 
   it('should error on not found', async () => {
     const cid = 'bafybeia22kh3smc7p67oa76pcleaxp4u5zatsvcndi3xrqod5vtxq5avpa'
-    const res = await fetch(`v1/${cid}`, {
+    const res = await fetch(cid, {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value, error } = await res.json()

@@ -65,7 +65,7 @@ export default function Files({ user }) {
       try {
         const client = new NFTStorage({
           token: await getToken(),
-          endpoint: new URL(API + (version === '1' ? '/v1/' : '/')),
+          endpoint: new URL(API + (version ? `/v${version}/` : '/')),
         })
         await client.delete(cid)
       } finally {
@@ -100,7 +100,7 @@ export default function Files({ user }) {
               <Button
                 href={{
                   pathname: '/new-file',
-                  query: version ? { version: '1' } : null,
+                  query: version ? { version } : null,
                 }}
                 className="flex-none"
                 id="upload"
