@@ -191,4 +191,60 @@ WHERE
 
 END;
 
-$$
+$$ --
+-- Function can be used to link resource found in nft metadata with it.
+-- It takes care of creating necessary resource record before creating
+-- link between metadata and a resource.
+CREATE FUNCTION link_nft_resource (
+  -- CID of the metadata
+  cid nft_metadata.content_cid % TYPE,
+  -- Resource uri found in metadata.
+  uri resource .uri % TYPE
+) RETURNS SETOF resource LANGUAGE plpgsql AS $$
+DECLARE
+  hash resource .uri_hash % TYPE;
+
+BEGIN
+  -- Create a corresponding resource record
+  INSERT INTO
+    Resource (
+      uri,
+      status,
+      status_text,
+      ipfs_url,
+      content_cid
+    )
+  VALUES
+    (uri, 'Queued', '', NULL, NULL) --
+    -- If record for this uri_hash exists
+    ON CONFLICT ON CONSTRAINT resource_pkey DO
+  UPDATE
+    -- update the `update_at` date
+  SET
+    updated_at = EXCLUDED.updated_at --
+    -- and save the `uri_hash` 
+    RETURNING resource .uri_hash INTO hash;
+
+-- Then link nft metadata to a corresponding resource
+INSERT INTO
+  other_nft_resources (content_cid, resource_uri_hash)
+VALUES
+  (cid, hash) --
+  -- If association already exists
+  ON CONFLICT ON CONSTRAINT other_nft_resources_pkey DO
+UPDATE
+  -- just update the `updated_at` timestamp
+SET
+  updated_at = EXCLUDED.updated_at;
+
+RETURN QUERY
+SELECT
+  *
+FROM
+  resource
+WHERE
+  resource .uri_hash = hash;
+
+END;
+
+$$;
