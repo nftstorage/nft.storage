@@ -1,3 +1,7 @@
+# Schema
+
+[![nft.storage schema](https://bafybeicyzqvvloqvxcscifhmohzjnd6uelcwxcjihrjo3hjahyexlz22ma.ipfs.dweb.link/schema-diagram.png)](https://bafybeicyzqvvloqvxcscifhmohzjnd6uelcwxcjihrjo3hjahyexlz22ma.ipfs.dweb.link/schema-diagram.png)
+
 # Config `psql`
 
 ```bash
