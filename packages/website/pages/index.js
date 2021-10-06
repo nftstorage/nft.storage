@@ -14,6 +14,7 @@ import Link from 'next/link'
 export function getStaticProps() {
   return {
     props: {
+      description: 'NFT.Storage Homepage',
       needsUser: false,
     },
   }

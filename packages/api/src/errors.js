@@ -25,9 +25,9 @@ export class HTTPError extends Error {
 
   /**
    * @param {Error & {status?: number;code?: string;}} err
-   * @param {{sentry: Toucan}} ctx
+   * @param {{sentry: Toucan, req: Request }} ctx
    */
-  static respond(err, { sentry }) {
+  static respond(err, { sentry, req }) {
     let error = {
       code: err.code,
       message: err.message,
@@ -50,6 +50,13 @@ export class HTTPError extends Error {
         error.message = 'API Key has expired.'
         break
       case MagicErrors.ExpectedBearerString:
+        const contentType = req.headers.get('Content-Type')
+        if (!contentType || contentType === 'text/html') {
+          return new Response(null, {
+            status: 302,
+            headers: { location: 'https://nft.storage/api-docs/' },
+          })
+        }
         status = 401
         error.message =
           'API Key is missing, make sure the `Authorization` header has a value in the following format `Bearer {api key}`.'

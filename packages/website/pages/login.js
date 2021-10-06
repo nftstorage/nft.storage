@@ -9,6 +9,7 @@ export function getStaticProps() {
   return {
     props: {
       title: 'Login - NFT Storage',
+      description: 'Login to NFT.Storage',
       redirectTo: '/files',
       redirectIfFound: true,
     },

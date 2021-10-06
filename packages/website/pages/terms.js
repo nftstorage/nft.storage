@@ -7,6 +7,7 @@ export function getStaticProps() {
   return {
     props: {
       title: 'Terms of Service - NFT Storage',
+      description: 'NFT.Storage Terms of Service',
       navBgColor: 'bg-nspeach',
       needsUser: false,
     },
