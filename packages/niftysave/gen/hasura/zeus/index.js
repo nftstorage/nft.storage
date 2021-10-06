@@ -178,6 +178,7 @@ export var nft_metadata_constraint
 /** select columns of table "nft_metadata" */
 export var nft_metadata_select_column
 ;(function (nft_metadata_select_column) {
+  nft_metadata_select_column['content'] = 'content'
   nft_metadata_select_column['content_cid'] = 'content_cid'
   nft_metadata_select_column['description'] = 'description'
   nft_metadata_select_column['image_uri_hash'] = 'image_uri_hash'
@@ -188,6 +189,7 @@ export var nft_metadata_select_column
 /** update columns of table "nft_metadata" */
 export var nft_metadata_update_column
 ;(function (nft_metadata_update_column) {
+  nft_metadata_update_column['content'] = 'content'
   nft_metadata_update_column['content_cid'] = 'content_cid'
   nft_metadata_update_column['description'] = 'description'
   nft_metadata_update_column['image_uri_hash'] = 'image_uri_hash'
@@ -214,6 +216,29 @@ export var nft_owner_update_column
   nft_owner_update_column['inserted_at'] = 'inserted_at'
   nft_owner_update_column['updated_at'] = 'updated_at'
 })(nft_owner_update_column || (nft_owner_update_column = {}))
+/** unique or primary key constraints on table "nft_ownership" */
+export var nft_ownership_constraint
+;(function (nft_ownership_constraint) {
+  nft_ownership_constraint['nft_ownership_pkey'] = 'nft_ownership_pkey'
+})(nft_ownership_constraint || (nft_ownership_constraint = {}))
+/** select columns of table "nft_ownership" */
+export var nft_ownership_select_column
+;(function (nft_ownership_select_column) {
+  nft_ownership_select_column['block_number'] = 'block_number'
+  nft_ownership_select_column['inserted_at'] = 'inserted_at'
+  nft_ownership_select_column['nft_id'] = 'nft_id'
+  nft_ownership_select_column['owner_id'] = 'owner_id'
+  nft_ownership_select_column['updated_at'] = 'updated_at'
+})(nft_ownership_select_column || (nft_ownership_select_column = {}))
+/** update columns of table "nft_ownership" */
+export var nft_ownership_update_column
+;(function (nft_ownership_update_column) {
+  nft_ownership_update_column['block_number'] = 'block_number'
+  nft_ownership_update_column['inserted_at'] = 'inserted_at'
+  nft_ownership_update_column['nft_id'] = 'nft_id'
+  nft_ownership_update_column['owner_id'] = 'owner_id'
+  nft_ownership_update_column['updated_at'] = 'updated_at'
+})(nft_ownership_update_column || (nft_ownership_update_column = {}))
 /** select columns of table "nft" */
 export var nft_select_column
 ;(function (nft_select_column) {

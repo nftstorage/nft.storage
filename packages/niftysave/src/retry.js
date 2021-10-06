@@ -1,5 +1,4 @@
 /**
- *
  * @typedef {{
  *   attempt: number
  *   error: Error
@@ -7,18 +6,6 @@
  *   policy: Policy
  * }} RetryState
  * @typedef {(state:RetryState) => number} Policy
- */
-
-/**
- * @typedef {{
- *   startTime: number
- *   error: Error
- *   attempt: number
- *   policy: RetryPolicy
- * }} State
- *
-
- * @typedef {(state:State) => RetryPolicy|Promise<RetryPolicy>} RetryPolicy
  */
 
 /**
@@ -37,7 +24,12 @@ export const retry = async (task, policies = []) => {
     } catch (error) {
       let pauseDuration = 0
       for (const policy of policies) {
-        pauseDuration += policy({ startTime, attempt, policy, error })
+        pauseDuration += policy({
+          startTime,
+          attempt,
+          policy,
+          error: /** @type {Error} */ (error),
+        })
 
         if (pauseDuration >= Infinity) {
           throw error

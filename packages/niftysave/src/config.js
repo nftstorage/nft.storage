@@ -11,6 +11,8 @@ import yargs from 'yargs'
  * @property {number} retryLimit
  * @property {number} retryInterval
  * @property {number} retryMaxInterval
+ * @property {number} queueSize
+ * @property {number} concurrency
  * @property {import('./cluster').Config} cluster
  * @property {import('./ipfs').Config} ipfs
  * @property {Endpoint} erc721
@@ -47,6 +49,11 @@ export const configure = async () => {
         default: Number(process.env['RETRY_MAX_INTERVAL'] || 'Infinity'),
         description: 'Max sleep frame between retries',
       },
+      'queue-size': {
+        type: 'number',
+        default: Number(process.env['QUEUE_SIZE'] || '300'),
+        description: 'Number of items to queue before applying backpressure',
+      },
       budget: {
         type: 'number',
         default: Number(process.env['TIME_BUDGET'] || 30) * 1000,
@@ -55,6 +62,11 @@ export const configure = async () => {
         type: 'number',
         default: Number(process.env['FETCH_TIMEOUT'] || 30 * 100),
         description: 'Time given to each request before it is aborted',
+      },
+      concurrency: {
+        type: 'number',
+        default: Number(process.env['CONCURRENCY']) || 50,
+        description: 'Number of concurrent tasks to use',
       },
       'cluster-endpoint': {
         alias: 'clusterEndpoint',
@@ -124,6 +136,8 @@ export const configure = async () => {
     retryLimit: config['retry-limit'],
     retryInterval: config['retry-interval'],
     retryMaxInterval: config['retry-max-interval'],
+    queueSize: config['queue-size'],
+    concurrency: config.concurrency,
 
     cluster: {
       url: new URL(config['cluster-endpoint']),

@@ -1,4 +1,5 @@
 import * as IPFSURL from './ipfs-url.js'
+import { importer } from 'ipfs-unixfs-importer'
 
 /**
  * @typedef {Object} Config
@@ -38,4 +39,22 @@ export const cat = async (config, url, { v0 = false, signal } = {}) => {
       `Fetch error: Status ${response.status} ${response.statusText}`
     )
   }
+}
+
+/**
+ * @typedef {import('multiformats').CID} CID
+ * @param {Blob} content
+ * @returns {Promise<{cid:CID, size:number}>}
+ */
+export const importBlob = async (content) => {
+  // @ts-expect-error - 'Block' instance is not a valid 'Blockstore'
+  const results = importer([{ content }], new Block(), {
+    onlyHash: true,
+    cidVersion: 1,
+    rawLeaves: true,
+  })
+  for await (const result of results) {
+    return result
+  }
+  throw new Error(`Import failed`)
 }
