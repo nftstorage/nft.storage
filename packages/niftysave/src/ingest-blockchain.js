@@ -1,6 +1,8 @@
 import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
+import { exponentialBackoff, maxRetries, retry } from './retry.js'
+
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
 import { lastScrapeId } from './ingest-blockchain/cursor.js'
@@ -46,6 +48,9 @@ import { setTimeout as sleep } from 'timers/promises'
  * @property { Number } config.ingestRetryThrottle
  * @property { Number } config.ingestHighWatermark
  * @property { Number } config.ingestBatchSize
+ * @property { Number } config.ingestRetryLimit
+ * @property { Number } config.ingestRetryInterval
+ * @property { Number } config.ingestRetryMaxInterval
  */
 
 /**
@@ -144,16 +149,19 @@ function subgraphTokenToERC721ImportNFT(token) {
  * @returns { Promise<ERC721ImportNFT[]> }
  */
 async function fetchNextNFTBatch(config) {
-  const query = await nextSubgraphQuery(config)
-  const nftsResult = await ERC721.query(config.erc721, query)
-
-  //TODO: add retry.
-  if (nftsResult.ok === false) {
-    console.error(nftsResult)
-    return []
+  try {
+    const query = await nextSubgraphQuery(config)
+    const nftsResult = await ERC721.query(config.erc721, query)
+    if (nftsResult.ok === false) {
+      console.error(nftsResult)
+      throw new Error(JSON.stringify(nftsResult))
+    }
+    const { tokens } = nftsResult?.value || []
+    return tokens.map(subgraphTokenToERC721ImportNFT)
+  } catch (err) {
+    console.error(`🚨 Something unexpected happened scraping nfts`, err)
+    throw err
   }
-  const { tokens } = nftsResult?.value || []
-  return tokens.map(subgraphTokenToERC721ImportNFT)
 }
 
 /**
@@ -226,14 +234,23 @@ async function readIntoInbox(config, writeable) {
   while (true) {
     let scrape = []
     try {
-      scrape = await fetchNextNFTBatch(config)
+      scrape = await retry(
+        async () => fetchNextNFTBatch(config),
+        [
+          maxRetries(config.ingestRetryLimit),
+          exponentialBackoff(
+            config.ingestRetryInterval,
+            config.ingestRetryMaxInterval
+          ),
+        ]
+      )
     } catch (err) {
-      console.error(err)
+      console.error(`Something unexpected happened scraping nfts`, err)
       return err
     }
 
     // you scraped successfully, got nothing.
-    // you're caught up. Rerty later
+    // you're caught up. Retry later
     if (scrape.length == 0) {
       sleep(config.ingestRetryThrottle)
     } else {
