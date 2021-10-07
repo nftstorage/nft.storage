@@ -3,6 +3,7 @@ import * as Hasura from './hasura.js'
 
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
+import { lastScrapeId } from './ingest-blockchain/cursor.js'
 import { script } from 'subprogram'
 import { setTimeout as sleep } from 'timers/promises'
 
@@ -93,64 +94,6 @@ const nextSubgraphQuery = async (config) => {
   return {
     tokens: [query, erc721ResultDefinition],
   }
-}
-
-/**
- * @param { Config } config
- * @returns { Promise<String>}
- */
-async function getLastScrapeIdFromHasura(config) {
-  /**
-   * @type {{
-   *    limit: number
-   *    order_by: Object[]
-   * }}
-   */
-  const query = {
-    limit: 1,
-    order_by: [
-      {
-        inserted_at: 'desc',
-      },
-    ],
-  }
-
-  /**
-   * required type annotation due to desin limitation in TS
-   * https://github.com/microsoft/TypeScript/issues/19360
-   * @type {{
-   *    id: true | undefined
-   *    updated_at: true | undefined
-   * }}
-   */
-  const resultsDefinition = { id: true, updated_at: true }
-
-  const lastNFT = await Hasura.query(config.hasura, {
-    nft: [query, resultsDefinition],
-  })
-
-  let _lastNftId = lastNFT?.nft[0]?.id || '0'
-
-  return _lastNftId
-}
-
-/**
- * @type {String}
- */
-let _lastScrapeId = '0'
-/**
- * @param {String=} id
- * @param {Config} config
- * @returns { Promise<String>}
- */
-async function lastScrapeId(config, id) {
-  if (typeof id === 'string') {
-    _lastScrapeId = id
-  }
-  if (_lastScrapeId === '0') {
-    _lastScrapeId = await getLastScrapeIdFromHasura(config)
-  }
-  return _lastScrapeId
 }
 
 /**
