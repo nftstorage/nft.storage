@@ -286,43 +286,10 @@ async function drainInbox(config) {
 }
 
 /**
- * Recursive function that either
- * 1. Scrapes the chain
- * 2. Is full and waits a bit to scrape
- * 3. Encounters an exception and returns false.
- * @param { Config } config
- * @returns {Promise<Boolean | Function>}
- */
-async function scrapeBlockChain(config) {
-  if (state.importInbox.length < state.maxInboxSize) {
-    let scrape = []
-    try {
-      scrape = await fetchNextNFTBatch(config)
-      state.importInbox = [...state.importInbox, ...scrape]
-    } catch (err) {
-      console.log(err)
-      return false
-    }
-    console.log(`Inbox at ${state.importInbox.length}`)
-    await sleep(10)
-  } else {
-    if (!state.draining) {
-      console.log('Start Drain.')
-      drainInbox(config)
-    }
-    // this is going to be a stream, but until then,
-    // prevent running too quickly on failure or empty
-    await sleep(state.emptyScrapeThrottle)
-  }
-  return scrapeBlockChain(config)
-}
-
-/**
  * @param { Config } config
  * @param { ReadableStream<ERC721ImportNFT>} readable
  */
 async function writeFromInbox(config, readable) {
-  console.log('start scraper here.')
   const reader = readable.getReader()
 }
 
@@ -388,7 +355,7 @@ async function spawn(config) {
   )
 
   readIntoInbox(config, inbox.writable)
-  //writeFromInbox(config, inbox.readable)
+  writeFromInbox(config, inbox.readable)
 }
 
 export const main = async () => await spawn(await configure())
