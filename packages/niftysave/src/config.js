@@ -14,9 +14,12 @@ import yargs from 'yargs'
  * @property {number} ingestRetryThrottle
  * @property {number} ingestHighWatermark
  * @property {number} ingestBatchSize
- * @property {number} ingestRetryLimit
- * @property {number} ingestRetryInterval
- * @property {number} ingestRetryMaxInterval
+ * @property {number} ingestScraperRetryLimit
+ * @property {number} ingestScraperRetryInterval
+ * @property {number} ingestScraperRetryMaxInterval
+ * @property {number} ingestWriterRetryLimit
+ * @property {number} ingestWriterRetryInterval
+ * @property {number} ingestWriterRetryMaxInterval
  * @property {import('./cluster').Config} cluster
  * @property {import('./ipfs').Config} ipfs
  * @property {Endpoint} erc721
@@ -137,23 +140,47 @@ export const configure = async () => {
         default: Number(process.env['INGEST_BATCH_SIZE']) || 100,
         description: `The number of records the ingestor tries to pull of the blockchain per-scrape`,
       },
-      'ingest-retry-limit': {
+      'ingest-scraper-retry-limit': {
         type: 'number',
-        default: Number(process.env['INGEST_RETRY_LIMIT'] || '100'),
+        default: Number(process.env['INGEST_SCRAPER_RETRY_LIMIT'] || '100'),
         description:
           'Max number of retries to perform when scraping the blockchain and an error is encountered (eg. as network is down)',
       },
-      'ingest-retry-interval': {
+      'ingest-scraper-retry-interval': {
         type: 'number',
-        default: parseInt(process.env['INGEST_RETRY_INTERVAL'] || '500'),
+        default: parseInt(
+          process.env['INGEST_SCRAPER_RETRY_INTERVAL'] || '500'
+        ),
         description:
           'Interval to space out retries by when scraping the blockchain',
       },
-      'ingest-retry-max-interval': {
+      'ingest-scraper-retry-max-interval': {
         type: 'number',
-        default: Number(process.env['INGEST_RETRY_MAX_INTERVAL'] || 'Infinity'),
+        default: Number(
+          process.env['INGEST_SCRAPER_RETRY_MAX_INTERVAL'] || 'Infinity'
+        ),
         description:
           'Max sleep frame between retries when scraping the blockchain',
+      },
+      'ingest-writer-retry-limit': {
+        type: 'number',
+        default: Number(process.env['INGEST_WRITER_RETRY_LIMIT'] || '50'),
+        description:
+          'Max number of retries to perform when writing scraped records aquired from the blockchain and an error is encountered (eg. as network is down)',
+      },
+      'ingest-writer-retry-interval': {
+        type: 'number',
+        default: parseInt(process.env['INGEST_WRITER_RETRY_INTERVAL'] || '500'),
+        description:
+          'Interval to space out retries by when writing scraped records aquired from the blockchain',
+      },
+      'ingest-writer-retry-max-interval': {
+        type: 'number',
+        default: Number(
+          process.env['INGEST_WRITER_RETRY_MAX_INTERVAL'] || 'Infinity'
+        ),
+        description:
+          'Max sleep frame between retrieswhen writing scraped records aquired from the blockchain',
       },
     })
     .parse()
@@ -166,12 +193,19 @@ export const configure = async () => {
     retryLimit: config['retry-limit'],
     retryInterval: config['retry-interval'],
     retryMaxInterval: config['retry-max-interval'],
+
     ingestRetryThrottle: config['ingest-retry-throttle'],
     ingestHighWatermark: config['ingest-high-watermark'],
     ingestBatchSize: config['ingest-batch-size'],
-    ingestRetryLimit: config['retry-limit'],
-    ingestRetryInterval: config['retry-interval'],
-    ingestRetryMaxInterval: config['retry-max-interval'],
+
+    ingestScraperRetryLimit: config['ingest-scraper-retry-limit'],
+    ingestScraperRetryInterval: config['ingest-scraper-retry-interval'],
+    ingestScraperRetryMaxInterval: config['ingest-scraper-retry-max-interval'],
+
+    ingestWriterRetryLimit: config['ingest-writer-retry-limit'],
+    ingestWriterRetryInterval: config['ingest-writer-retry-interval'],
+    ingestWriterRetryMaxInterval: config['ingest-writer-retry-max-interval'],
+
     cluster: {
       url: new URL(config['cluster-endpoint']),
       secret: config['cluster-key'],

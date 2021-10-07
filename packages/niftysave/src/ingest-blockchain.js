@@ -48,9 +48,12 @@ import { setTimeout as sleep } from 'timers/promises'
  * @property { Number } config.ingestRetryThrottle
  * @property { Number } config.ingestHighWatermark
  * @property { Number } config.ingestBatchSize
- * @property { Number } config.ingestRetryLimit
- * @property { Number } config.ingestRetryInterval
- * @property { Number } config.ingestRetryMaxInterval
+ * @property { Number } config.ingestScraperRetryLimit
+ * @property { Number } config.ingestScraperRetryInterval
+ * @property { Number } config.ingestScraperRetryMaxInterval
+ * @property { Number } config.ingestWriterRetryLimit
+ * @property { Number } config.ingestWriterRetryInterval
+ * @property { Number } config.ingestWriterRetryMaxInterval
  */
 
 /**
@@ -216,9 +219,20 @@ async function writeFromInbox(config, readable) {
   while (true) {
     const nextImport = await inbox.read()
     try {
-      nextImport.value && (await writeScrapedRecord(config, nextImport.value))
+      nextImport.value &&
+        retry(
+          async () => await writeScrapedRecord(config, nextImport.value),
+          [
+            maxRetries(config.ingestWriterRetryLimit),
+            exponentialBackoff(
+              config.ingestWriterRetryInterval,
+              config.ingestWriterRetryMaxInterval
+            ),
+          ]
+        )
     } catch (err) {
-      console.error(err)
+      console.log('Last NFT', nextImport)
+      console.error(`Something went wrong when writing scraped nfts`, err)
       return err
     }
   }
@@ -237,16 +251,16 @@ async function readIntoInbox(config, writeable) {
       scrape = await retry(
         async () => fetchNextNFTBatch(config),
         [
-          maxRetries(config.ingestRetryLimit),
+          maxRetries(config.ingestScraperRetryLimit),
           exponentialBackoff(
-            config.ingestRetryInterval,
-            config.ingestRetryMaxInterval
+            config.ingestScraperRetryInterval,
+            config.ingestScraperRetryMaxInterval
           ),
         ]
       )
     } catch (err) {
       console.error(`Something unexpected happened scraping nfts`, err)
-      return err
+      throw err
     }
 
     // you scraped successfully, got nothing.
