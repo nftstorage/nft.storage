@@ -48,7 +48,7 @@ import { setTimeout as sleep } from 'timers/promises'
  * If this is the first query, starting this module for the first time, the cursor
  * will be the id of whatever record was written last in our database.
  * @param {Config} config
- * @returns {Promise<any>}
+ * @returns {Promise<ERC721.schema.QueryRequest>}
  */
 const nextSubgraphQuery = async (config) => {
   const query = {

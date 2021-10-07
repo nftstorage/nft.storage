@@ -25,9 +25,9 @@ async function getLastScrapeIdFromHasura(config) {
     limit: 1,
     order_by: [
       {
-        // TODO: Stringer type needed
-        // some issues with zeus
-        // Hasura.schema.order_by is undefined
+        // TODO: Regen Zeus and try to fix this typing issue.
+        // (will replace the Object[])
+        // Hasura.schema.order_by was undefined, but this does work.
         inserted_at: 'desc',
       },
     ],
