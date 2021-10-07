@@ -31,7 +31,7 @@ async function getLastScrapeIdFromHasura(config) {
   }
 
   /**
-   * required type annotation due to desin limitation in TS
+   * required type annotation due to design limitation in TS
    * https://github.com/microsoft/TypeScript/issues/19360
    * @type {{
    *    id: true | undefined
@@ -39,13 +39,10 @@ async function getLastScrapeIdFromHasura(config) {
    * }}
    */
   const resultsDefinition = { id: true, updated_at: true }
-
   const lastNFT = await Hasura.query(config.hasura, {
     nft: [query, resultsDefinition],
   })
-
   let _lastNftId = lastNFT?.nft[0]?.id || '0'
-
   return _lastNftId
 }
 

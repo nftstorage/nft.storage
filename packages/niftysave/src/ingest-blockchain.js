@@ -255,7 +255,6 @@ async function spawn(config) {
       highWaterMark: config.ingestHighWatermark,
     }
   )
-
   readIntoInbox(config, inbox.writable)
   writeFromInbox(config, inbox.readable)
 }
