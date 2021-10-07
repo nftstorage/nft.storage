@@ -11,6 +11,7 @@ import yargs from 'yargs'
  * @property {number} retryLimit
  * @property {number} retryInterval
  * @property {number} retryMaxInterval
+ * @property {number} ingestRetryThrottle
  * @property {import('./cluster').Config} cluster
  * @property {import('./ipfs').Config} ipfs
  * @property {Endpoint} erc721
@@ -113,6 +114,11 @@ export const configure = async () => {
         default: process.env['HASURA_KEY'],
         demandOption: true,
       },
+      'ingest-retry-throttle': {
+        alias: 'ingestRetryThrottle',
+        type: 'number',
+        default: Number(process.env['INGEST_RETRY_THROTTLE']) || 1000,
+      },
     })
     .parse()
 
@@ -124,7 +130,7 @@ export const configure = async () => {
     retryLimit: config['retry-limit'],
     retryInterval: config['retry-interval'],
     retryMaxInterval: config['retry-max-interval'],
-
+    ingestRetryThrottle: config['ingest-retry-throttle'],
     cluster: {
       url: new URL(config['cluster-endpoint']),
       secret: config['cluster-key'],

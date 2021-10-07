@@ -33,9 +33,17 @@ import { setTimeout as sleep } from 'timers/promises'
  */
 
 /**
+ *
+ * @typedef {{
+ *  scrapeRetryThrottle: Number
+ * }} IngestBlockchainConfig
+ */
+
+/**
  * @typedef { Object } Config
  * @property { ERC721.Config } config.erc721
  * @property { Hasura.Config } config.hasura
+ * @property { Number } config.ingestRetryThrottle
  */
 
 /**
@@ -69,7 +77,7 @@ import { setTimeout as sleep } from 'timers/promises'
  */
 const nextSubgraphQuery = async (config) => {
   const query = {
-    first: state.scrapeBatchSize,
+    first: 100,
     where: { tokenURI_not: '', id_gt: await lastScrapeId(config) },
   }
   console.log(query)
@@ -192,48 +200,13 @@ async function writeScrapedRecord(config, erc721Import) {
 }
 
 /**
- * Recursive function that either
- * 1. Writes a single record in the inbox buffer
- * 2. Has nothing to write, so it waits for the inbox to fill
- * 3. Encounters exception and returns false
- *
- * @param { Config } config
- * @returns {Promise<Boolean | Function>}
- */
-async function drainInbox(config) {
-  if (state.importInbox.length > 0) {
-    state.draining = true
-    const nextImport = state.importInbox[state.importInbox.length - 1]
-    try {
-      // this should literally never be undefined
-      if (nextImport) {
-        await writeScrapedRecord(config, nextImport)
-        state.importInbox.pop()
-      } else {
-        console.error(
-          `Attempted to get the next ERC721ImportNFT but instead got undefined`
-        )
-        return false
-      }
-    } catch (err) {
-      console.log(err)
-      return false
-    }
-  } else {
-    state.draining = false
-    await sleep(state.emptyDrainThrottle)
-  }
-
-  console.log(`Inbox at: ${state.importInbox.length}`)
-  return drainInbox(config)
-}
-
-/**
  * @param { Config } config
  * @param { ReadableStream<ERC721ImportNFT>} readable
  */
 async function writeFromInbox(config, readable) {
   const reader = readable.getReader()
+
+  //await writeScrapedRecord(config, nextImport)
 }
 
 /**
@@ -252,9 +225,10 @@ async function readIntoInbox(config, writeable) {
       return err
     }
 
-    //you scraped successfully, but you're caught up.
+    // you scraped successfully, got nothing.
+    // you're caught up. Rety later
     if (scrape.length == 0) {
-      sleep(1000)
+      sleep(config.ingestRetryThrottle)
     } else {
       await writer.ready
       for (const nft of scrape) {
@@ -266,26 +240,10 @@ async function readIntoInbox(config, writeable) {
 }
 
 /**
- * @type { IngestorState }
- */
-let state = {
-  importInbox: [],
-  lastScrapeId: '0',
-  draining: false,
-  maxInboxSize: 200,
-
-  //↓ move to config ↓
-  scrapeBatchSize: 100,
-  emptyDrainThrottle: 500,
-  emptyScrapeThrottle: 500,
-}
-
-/**
  * @param {Config} config
  */
 async function spawn(config) {
   console.log(`Begin Scraping the Blockchain.`)
-  //scrapeBlockChain(config)
 
   /**
    * @type { TransformStream<ERC721ImportNFT> }
@@ -293,7 +251,7 @@ async function spawn(config) {
   const inbox = new TransformStream(
     {},
     {
-      highWaterMark: state.maxInboxSize,
+      highWaterMark: 1000,
     }
   )
 
