@@ -1,153 +1,234 @@
-import * as Result from './result.js'
-import { configure } from './config.js'
-import { script } from 'subprogram'
 import * as ERC721 from '../gen/erc721/index.js'
-import * as DB from '../gen/db/index.js'
+import * as Hasura from './hasura.js'
 
-export const main = async () => await spawn(await configure())
+import {
+  erc721ImportToNFTEndpoint,
+  subgraphTokenToERC721ImportNFT,
+} from './ingest/transforms.js'
+import { exponentialBackoff, maxRetries, retry } from './retry.js'
+
+import { TransformStream } from './stream.js'
+import { configure } from './config.js'
+import { lastScrapeId } from './ingest/cursor.js'
+import { script } from 'subprogram'
+import { setTimeout as sleep } from 'timers/promises'
 
 /**
- * @typedef {Object} Config
- * @property {number} config.budget - Time budget
- * @property {number} config.batchSize - Number of tokens in each import
- * @property {ERC721.Config} config.erc721
- * @property {DB.Config} config.fauna
+ * @typedef {import('./ingest').ERC721ImportNFT} ERC721ImportNFT
+ */
+
+/**
+ * @typedef { Object } Config
+ * @property { ERC721.Config } config.erc721
+ * @property { Hasura.Config } config.hasura
+ * @property { Number } config.ingestRetryThrottle
+ * @property { Number } config.ingestHighWatermark
+ * @property { Number } config.ingestBatchSize
+ * @property { Number } config.ingestScraperRetryLimit
+ * @property { Number } config.ingestScraperRetryInterval
+ * @property { Number } config.ingestScraperRetryMaxInterval
+ * @property { Number } config.ingestWriterRetryLimit
+ * @property { Number } config.ingestWriterRetryInterval
+ * @property { Number } config.ingestWriterRetryMaxInterval
+ */
+
+/**
+ * @typedef {{
+ *  tokens: ERC721ImportNFT[]
+ * }} NFTSSubGraphResultValue
  *
+ * @typedef {{
+ *  ok: Boolean
+ *  value: NFTSSubGraphResultValue
+ *  done: Boolean
+ * }} NFTSSubgraphResult
+ *
+ */
+
+/**
+ * Returns a query for the subgraph that provisions the correct batch size
+ * and starts at the correct NFT Id (the cursor).
+ * If this is the first query, starting this module for the first time, the cursor
+ * will be the id of whatever record was written last in our database.
  * @param {Config} config
+ * @returns {Promise<ERC721.schema.QueryRequest>}
  */
-export const spawn = async config => {
-  const deadline = Date.now() + config.budget
-  console.log('Obtain current cursor')
-  const cursor = await readCursor(config)
-  let { id } = cursor
-  while (deadline - Date.now() > 0) {
-    const result = await importBatch(config, {
-      id,
-      batchSize: config.batchSize,
-    })
-
-    if (result.found < config.batchSize) {
-      console.log('🏁 Finish scanning, not enough tokens were found')
-      return
-    } else {
-      id = result.id
-    }
+const nextSubgraphQuery = async (config) => {
+  const query = {
+    first: config.ingestBatchSize,
+    where: { tokenURI_not: '', id_gt: await lastScrapeId(config) },
   }
-  console.log('⌛️ Finish scanning, time is up')
-}
-
-/**
- * @param {{ erc721: ERC721.Config, fauna: DB.Config}} config
- * @param {Object} options
- * @param {string} options.id
- * @param {number} options.batchSize
- */
-export const importBatch = async (config, { id, batchSize }) => {
-  console.log(`⛓ Fetch ERC721 tokens from ${id}`)
-  const tokens = await fetchTokens(config, {
-    cursor: id,
-    scanSize: batchSize,
-  })
-  console.log(`💾 Import ${tokens.length} tokens`)
-
-  const result = await importTokens(config, {
-    id,
-    tokens,
-  })
-
-  console.log(
-    `✨ Imported ${result.tokens.data.length} tokens, new cursor is "${result.nextID}"`
-  )
-
-  return {
-    found: tokens.length,
-    imported: result.tokens.data.length,
-    id: result.nextID,
-  }
-}
-
-/**
- * @param {{fauna: DB.Config}} config
- */
-const readCursor = async ({ fauna }) => {
-  const result = await DB.query(fauna, {
-    cursor: {
-      _id: 1,
+  const erc721ResultDefinition = {
+    id: 1,
+    tokenID: 1,
+    tokenURI: 1,
+    mintTime: 1,
+    blockNumber: 1,
+    blockHash: 1,
+    contract: {
+      id: 1,
+      name: 1,
+      symbol: 1,
+      supportsEIP721Metadata: 1,
+    },
+    owner: {
       id: 1,
     },
-  })
-
-  return Result.value(result).cursor
+  }
+  return {
+    tokens: [query, erc721ResultDefinition],
+  }
 }
 
 /**
- * @param {{fauna: DB.Config}} config
- * @param {Object} input
- * @param {string} input.id
- * @param {import('../gen/erc721/schema').Token[]} input.tokens
+ * Calls Subgraph and returns a batch of NFT records.
+ * Hydrates the inbox.
+ * @param { Config } config
+ * @returns { Promise<ERC721ImportNFT[]> }
  */
-const importTokens = async ({ fauna }, input) => {
-  const result = await DB.mutation(fauna, {
-    importERC721: [
-      {
-        input,
-      },
-      {
-        _id: 1,
-        id: 1,
-        nextID: 1,
-        tokens: [
-          {
-            _size: input.tokens.length,
-          },
-          {
-            data: {
-              _id: 1,
-            },
-          },
-        ],
-      },
-    ],
-  })
-  return Result.value(result).importERC721
+async function fetchNextNFTBatch(config) {
+  try {
+    const query = await nextSubgraphQuery(config)
+    const nftsResult = await ERC721.query(config.erc721, query)
+    if (nftsResult.ok === false) {
+      console.error(nftsResult)
+      throw new Error(JSON.stringify(nftsResult))
+    }
+    const { tokens } = nftsResult?.value || []
+    return tokens.map(subgraphTokenToERC721ImportNFT)
+  } catch (err) {
+    console.error(`🚨 Something unexpected happened scraping nfts`, err)
+    throw err
+  }
 }
 
 /**
- * @param {{ erc721: ERC721.Config }} config
- * @param {{scanSize:number, cursor:string}} settings
- * @returns {Promise<import('../gen/erc721/schema').Token[]>}
+ * Persist a single NFT Record that was imported.
+ * Drains the inbox.
+ * @param { Config } config
+ * @param { ERC721ImportNFT } erc721Import
  */
-const fetchTokens = async (config, { cursor, scanSize }) => {
-  const result = await ERC721.query(config.erc721, {
-    tokens: [
+async function writeScrapedRecord(config, erc721Import) {
+  return Hasura.mutation(config.hasura, {
+    ingest_erc721_token: [
       {
-        first: scanSize,
-        where: {
-          tokenURI_not: '',
-          id_gt: cursor,
-        },
+        args: erc721ImportToNFTEndpoint(erc721Import),
       },
       {
-        id: 1,
-        tokenID: 1,
-        tokenURI: 1,
-        mintTime: 1,
-        blockNumber: 1,
-        blockHash: 1,
-        contract: {
-          id: 1,
-          name: 1,
-          symbol: 1,
-          supportsEIP721Metadata: 1,
-        },
-        owner: {
-          id: 1,
-        },
+        id: true,
       },
     ],
   })
-
-  return Result.value(result).tokens
 }
+
+/**
+ * Drains records sequentially from the inbox
+ * @param { Config } config
+ * @param { ReadableStream<ERC721ImportNFT>} readable
+ */
+async function writeFromInbox(config, readable) {
+  const inbox = readable.getReader()
+  while (true) {
+    const nextImport = await inbox.read()
+    try {
+      /**
+       * (nextImport.value should never be undefined)
+       * We will attempt to write an import record that has been scraped.
+       * If the write is a failure, we will retry, to account for intermittent outages
+       * If we failur occurs times and for long enough, we throw
+       * We write from the Transform stream, one record at a time, as quickly as we can.
+       * this makes cursor-tracking on restart very simple and prevents lossy data.
+       */
+      nextImport.value &&
+        (await retry(
+          async () => await writeScrapedRecord(config, nextImport.value),
+          [
+            maxRetries(config.ingestWriterRetryLimit),
+            exponentialBackoff(
+              config.ingestWriterRetryInterval,
+              config.ingestWriterRetryMaxInterval
+            ),
+          ]
+        ))
+    } catch (err) {
+      console.log('Last NFT', nextImport)
+      console.error(`Something went wrong when writing scraped nfts`, err)
+      return err
+    }
+  }
+}
+
+/**
+ * Stuffs records by batches into the inbox.
+ * @param { Config } config
+ * @param { WritableStream<ERC721ImportNFT>} writeable
+ */
+async function readIntoInbox(config, writeable) {
+  const writer = writeable.getWriter()
+
+  while (true) {
+    let scrape = []
+    try {
+      /*
+       * Attempt to call subgraph, and make a scrape.
+       * if something goes wrong, we can retry, each time waiting longer.
+       * This is to account for intermittent 'yellow flag' failures, like
+       * network temporary outages.
+       * Eventually after enough failures, we can actually throw
+       */
+      scrape = await retry(
+        async () => fetchNextNFTBatch(config),
+        [
+          maxRetries(config.ingestScraperRetryLimit),
+          exponentialBackoff(
+            config.ingestScraperRetryInterval,
+            config.ingestScraperRetryMaxInterval
+          ),
+        ]
+      )
+    } catch (err) {
+      console.error(`Something unexpected happened scraping nfts`, err)
+      throw err
+    }
+
+    // you scraped successfully, got nothing.
+    // you're caught up. Retry later
+    if (scrape.length == 0) {
+      sleep(config.ingestRetryThrottle)
+    } else {
+      await writer.ready
+      for (const nft of scrape) {
+        writer.write(nft)
+        //Continusiusly update the in-memory cursor
+        lastScrapeId(config, nft.id)
+      }
+    }
+  }
+}
+
+/**
+ * Spawn process and create a TransformStream to store and write from.
+ * Storing and writing are independent processes running asynchronously
+ * Backpressure is managed by the Transform Stream's high Watermark.
+ *
+ * The TransformStream is 'the inbox'.
+ * @param {Config} config
+ */
+async function spawn(config) {
+  console.log(`⏲️ Begin Scraping the Blockchain.`)
+  /**
+   * @type { TransformStream<ERC721ImportNFT> }
+   */
+  const inbox = new TransformStream(
+    {},
+    {
+      highWaterMark: config.ingestHighWatermark,
+    }
+  )
+  readIntoInbox(config, inbox.writable)
+  writeFromInbox(config, inbox.readable)
+}
+
+export const main = async () => await spawn(await configure())
 
 script({ ...import.meta, main })

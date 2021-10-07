@@ -1,8 +1,8 @@
 import * as ERC721 from '../../gen/erc721/index.js'
 
 /**
- * @typedef {import('./types.d').ERC721ImportNFT} ERC721ImportNFT
- * @typedef {import('./types.d').NFTEndpointRecord} NFTEndpointRecord
+ * @typedef {import('.').ERC721ImportNFT} ERC721ImportNFT
+ * @typedef {import('.').NFTEndpointRecord} NFTEndpointRecord
  */
 
 /**
