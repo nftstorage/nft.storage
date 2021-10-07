@@ -1,5 +1,6 @@
 import { stores } from '../constants.js'
 import * as nftsIndex from './nfts-index.js'
+import * as events from './events.js'
 
 /**
  * @typedef {{user: import('./users').User, cid: string}} Key
@@ -37,6 +38,7 @@ export const set = async (key, nft, pin) => {
       size: pin.size,
     }
   )
+  await events.add('nft:create', { key, nft })
   return nft
 }
 
@@ -61,6 +63,7 @@ export const remove = async (key) => {
   if (!nft) return
   await stores.nfts.delete(encodeKey(key))
   await nftsIndex.remove({ ...key, created: nft.created })
+  await events.add('nft:delete', { key })
 }
 
 /**

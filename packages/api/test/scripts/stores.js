@@ -9,4 +9,5 @@ export default {
   pins: new IDBKV('PINS'),
   followups: new IDBKV('FOLLOWUPS'),
   pinataQueue: new IDBKV('PINATA_QUEUE'),
+  events: new IDBKV('EVENTS'),
 }

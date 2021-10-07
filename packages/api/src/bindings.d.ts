@@ -14,6 +14,7 @@ declare global {
   const PINS: KVNamespace
   const FOLLOWUPS: KVNamespace
   const PINATA_QUEUE: KVNamespace
+  const EVENTS: KVNamespace
   const PINATA_API_URL: string
   const PINATA_PSA_API_URL: string
   const PINATA_JWT: string

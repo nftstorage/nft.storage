@@ -2,6 +2,7 @@ import { signJWT } from '../utils/jwt.js'
 import merge from 'merge-options'
 import { ErrorUserNotFound, HTTPError } from '../errors.js'
 import { secrets } from '../constants.js'
+import * as events from './events.js'
 
 const users = USERS
 
@@ -22,6 +23,7 @@ export async function createOrUpdate(newUser) {
   const user = await users.get(newUser.issuer)
   if (user === null) {
     await users.put(newUser.issuer, JSON.stringify(newUser))
+    await events.add('user:create', newUser)
     return newUser
   }
 

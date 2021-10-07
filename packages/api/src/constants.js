@@ -8,6 +8,7 @@ export const stores = {
   pins: PINS,
   followups: FOLLOWUPS,
   pinataQueue: PINATA_QUEUE,
+  events: EVENTS,
 }
 
 export const secrets = {

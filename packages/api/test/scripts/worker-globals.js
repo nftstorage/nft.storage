@@ -10,6 +10,7 @@ export const METRICS = stores.metrics
 export const PINS = stores.pins
 export const FOLLOWUPS = stores.followups
 export const PINATA_QUEUE = stores.pinataQueue
+export const EVENTS = stores.events
 export const PINATA_JWT = 'test'
 export const CLUSTER_API_URL = 'http://localhost:9094'
 export const CLUSTER_BASIC_AUTH_TOKEN = 'test'
