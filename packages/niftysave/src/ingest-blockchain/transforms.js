@@ -3,6 +3,8 @@ import * as ERC721 from '../../gen/erc721/index.js'
 import { ERC721ImportNFT, NFTEndpointRecord } from './types.d'
 
 /**
+ * This converts the Ttype returned from the ERC721 (token) to
+ * the type stored in the TransformStream (ERC721ImportNFT)
  * @param { ERC721.schema.Token } token
  * @returns { ERC721ImportNFT }
  */
@@ -37,6 +39,8 @@ export function subgraphTokenToERC721ImportNFT(token) {
 }
 
 /**
+ * Converts a scraped NFT record into the expected shape
+ * The Hasura Endpoint expects (which is flattened)
  * @param { ERC721ImportNFT} erc721Import
  * @returns { NFTEndpointRecord }
  */

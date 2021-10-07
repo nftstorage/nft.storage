@@ -2,16 +2,12 @@ import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
 import {
-  ERC721ImportNFT,
-  ERC721ImportNFTContract,
-  ERC721ImportNFTOwner,
-} from './ingest-blockchain/types.d'
-import {
   erc721ImportToNFTEndpoint,
   subgraphTokenToERC721ImportNFT,
 } from './ingest-blockchain/transforms.js'
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
 
+import { ERC721ImportNFT } from './ingest-blockchain/types.d'
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
 import { lastScrapeId } from './ingest-blockchain/cursor.js'
@@ -35,18 +31,6 @@ import { setTimeout as sleep } from 'timers/promises'
 
 /**
  * @typedef {{
- *   importInbox: ERC721ImportNFT[]
- *   lastScrapeId: String
- *   draining: Boolean
- *   maxInboxSize: Number
- *   scrapeBatchSize: Number
- *   emptyDrainThrottle: Number
- *   emptyScrapeThrottle: Number
- * }} IngestorState
- */
-
-/**
- * @typedef {{
  *  tokens: ERC721ImportNFT[]
  * }} NFTSSubGraphResultValue
  *
@@ -59,6 +43,10 @@ import { setTimeout as sleep } from 'timers/promises'
  */
 
 /**
+ * Returns a query for the subgraph that provisions the correct batch size
+ * and starts at the correct NFT Id (the cursor).
+ * If this is the first query, starting this module for the first time, the cursor
+ * will be the id of whatever record was written last in our database.
  * @param {Config} config
  * @returns {Promise<any>}
  */
@@ -90,6 +78,8 @@ const nextSubgraphQuery = async (config) => {
 }
 
 /**
+ * Calls Subgraph and returns a batch of NFT records.
+ * Hydrates the inbox.
  * @param { Config } config
  * @returns { Promise<ERC721ImportNFT[]> }
  */
@@ -110,9 +100,11 @@ async function fetchNextNFTBatch(config) {
 }
 
 /**
+ * Persist a single NFT Record that was imported.
+ * Drains the inbox.
  * @param { Config } config
  * @param { ERC721ImportNFT } erc721Import
- * @returns { Promise<any> }
+ * @returns { Promise<Hasura.Mutation> }
  */
 async function writeScrapedRecord(config, erc721Import) {
   return Hasura.mutation(config.hasura, {
@@ -128,6 +120,7 @@ async function writeScrapedRecord(config, erc721Import) {
 }
 
 /**
+ * Drains records sequentially from the inbox
  * @param { Config } config
  * @param { ReadableStream<ERC721ImportNFT>} readable
  */
@@ -136,6 +129,14 @@ async function writeFromInbox(config, readable) {
   while (true) {
     const nextImport = await inbox.read()
     try {
+      /**
+       * (nextImport.value should never be undefined)
+       * We will attempt to write an import record that has been scraped.
+       * If the write is a failure, we will retry, to account for intermittent outages
+       * If we failur occurs times and for long enough, we throw
+       * We write from the Transform stream, one record at a time, as quickly as we can.
+       * this makes cursor-tracking on restart very simple and prevents lossy data.
+       */
       nextImport.value &&
         retry(
           async () => await writeScrapedRecord(config, nextImport.value),
@@ -156,6 +157,7 @@ async function writeFromInbox(config, readable) {
 }
 
 /**
+ * Stuffs records by batches into the inbox.
  * @param { Config } config
  * @param { WritableStream<ERC721ImportNFT>} writeable
  */
@@ -165,6 +167,13 @@ async function readIntoInbox(config, writeable) {
   while (true) {
     let scrape = []
     try {
+      /*
+       * Attempt to call subgraph, and make a scrape.
+       * if something goes wrong, we can retry, each time waiting longer.
+       * This is to account for intermittent 'yellow flag' failures, like
+       * network temporary outages.
+       * Eventually after enough failures, we can actually throw
+       */
       scrape = await retry(
         async () => fetchNextNFTBatch(config),
         [
@@ -188,6 +197,7 @@ async function readIntoInbox(config, writeable) {
       await writer.ready
       for (const nft of scrape) {
         writer.write(nft)
+        //Continusiusly update the in-memory cursor
         lastScrapeId(config, nft.id)
       }
     }
@@ -195,10 +205,15 @@ async function readIntoInbox(config, writeable) {
 }
 
 /**
+ * Spawn process and create a TransformStream to store and write from.
+ * Storing and writing are independent processes running asynchronously
+ * Backpressure is managed by the Transform Stream's high Watermark.
+ *
+ * The TransformStream is 'the inbox'.
  * @param {Config} config
  */
 async function spawn(config) {
-  console.log(`Begin Scraping the Blockchain.`)
+  console.log(`⏲️ Begin Scraping the Blockchain.`)
   /**
    * @type { TransformStream<ERC721ImportNFT> }
    */

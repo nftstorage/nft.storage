@@ -8,6 +8,9 @@ import * as Hasura from '../hasura.js'
  */
 
 /**
+ * If the module was started, and the 'cursor' is '0', we want to check
+ * our own database and look at the last Id that was written.
+ * This is our starting cursor.
  * @param { Config } config
  * @returns { Promise<String>}
  */
@@ -47,11 +50,16 @@ async function getLastScrapeIdFromHasura(config) {
 }
 
 /**
+ * "the cursor"
  * @type {String}
  */
 let _lastScrapeId = '0'
 
 /**
+ * This function drives this module and holds
+ * a single value in its state; the 'last known id' which is the cursor.
+ * Upon a cold start, we check the database for the last cursor
+ * As we batch records, we update this cursor.
  * @param {String=} id
  * @param {Config} config
  * @returns { Promise<String>}
