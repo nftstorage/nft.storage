@@ -23,44 +23,32 @@ export async function pinsListV1(event, ctx) {
     const params = result.data
 
     // Query database
-    try {
-      const data = await db.listUploads(user.id, params)
+    const data = await db.listUploads(user.id, params)
 
-      // Not found
-      if (!data || data.length === 0) {
-        return new JSONResponse(
-          {
-            error: {
-              reason: 'NOT_FOUND',
-              details: 'The specified resource was not found',
-            },
-          },
-          { status: 404 }
-        )
-      }
-
-      // Aggregate result into proper output
-      let count = 0
-      const results = []
-      for (const upload of data) {
-        if (upload.content.pin.length > 0) {
-          count++
-          results.push(toPinsResponse(upload))
-        }
-      }
-
-      return new JSONResponse({ count, results })
-    } catch (/** @type{any} */ err) {
+    // Not found
+    if (!data || data.length === 0) {
       return new JSONResponse(
         {
           error: {
-            reason: 'INTERNAL_SERVER_ERROR',
-            details: err.message,
+            reason: 'NOT_FOUND',
+            details: 'The specified resource was not found',
           },
         },
-        { status: 500 }
+        { status: 404 }
       )
     }
+
+    // Aggregate result into proper output
+    let count = 0
+    const results = []
+    for (const upload of data) {
+      if (upload.content.pin.length > 0) {
+        count++
+        results.push(toPinsResponse(upload))
+      }
+    }
+
+    return new JSONResponse({ count, results })
   }
 }
 

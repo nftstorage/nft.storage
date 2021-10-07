@@ -27,12 +27,13 @@ export async function updatePinStatuses({ db, cluster }) {
     .eq('service', 'IpfsCluster')
     .neq('status', 'Pinned')
     .neq('status', 'PinError')
+    .range(0, 1)
 
   if (countError) {
     throw countError
   }
 
-  log(`🎯 Updating pin ${count} statuses`)
+  log(`🎯 Updating ${count} pin statuses`)
 
   let offset = 0
   const limit = 1000
