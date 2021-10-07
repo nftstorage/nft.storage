@@ -141,7 +141,7 @@ async function writeFromInbox(config, readable) {
        * this makes cursor-tracking on restart very simple and prevents lossy data.
        */
       nextImport.value &&
-        retry(
+        (await retry(
           async () => await writeScrapedRecord(config, nextImport.value),
           [
             maxRetries(config.ingestWriterRetryLimit),
@@ -150,7 +150,7 @@ async function writeFromInbox(config, readable) {
               config.ingestWriterRetryMaxInterval
             ),
           ]
-        )
+        ))
     } catch (err) {
       console.log('Last NFT', nextImport)
       console.error(`Something went wrong when writing scraped nfts`, err)
