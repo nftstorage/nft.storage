@@ -202,10 +202,6 @@ async function fetchNextNFTBatch(config) {
     return []
   }
   const { tokens } = nftsResult?.value || []
-  const lastId = tokens.map((nft) => nft.id)[tokens.length - 1]
-  if (lastId) {
-    lastScrapeId(config, lastId)
-  }
   return tokens.map(subgraphTokenToERC721ImportNFT)
 }
 
@@ -337,11 +333,10 @@ async function writeFromInbox(config, readable) {
 async function readIntoInbox(config, writeable) {
   const writer = writeable.getWriter()
 
-  while (!writer.closed) {
+  while (true) {
     let scrape = []
     try {
       scrape = await fetchNextNFTBatch(config)
-      console.log(scrape)
     } catch (err) {
       console.log(err)
       return err
@@ -350,9 +345,13 @@ async function readIntoInbox(config, writeable) {
     //you scraped successfully, but you're caught up.
     if (scrape.length == 0) {
       sleep(1000)
+    } else {
+      await writer.ready
+      for (const nft of scrape) {
+        writer.write(nft)
+        lastScrapeId(config, nft.id)
+      }
     }
-
-    console.log(scrape)
   }
 }
 
@@ -363,7 +362,7 @@ let state = {
   importInbox: [],
   lastScrapeId: '0',
   draining: false,
-  maxInboxSize: 1000,
+  maxInboxSize: 200,
 
   //↓ move to config ↓
   scrapeBatchSize: 100,
@@ -379,7 +378,7 @@ async function spawn(config) {
   //scrapeBlockChain(config)
 
   /**
-   * @type { TransformStream }
+   * @type { TransformStream<ERC721ImportNFT> }
    */
   const inbox = new TransformStream(
     {},
