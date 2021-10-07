@@ -107,7 +107,6 @@ async function fetchNextNFTBatch(config) {
  * Drains the inbox.
  * @param { Config } config
  * @param { ERC721ImportNFT } erc721Import
- * @returns { Promise<Hasura.Mutation> }
  */
 async function writeScrapedRecord(config, erc721Import) {
   return Hasura.mutation(config.hasura, {

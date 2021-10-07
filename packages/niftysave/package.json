@@ -26,7 +26,7 @@
     "generate": "yarn generate:erc721-source && yarn generate:db-source && yarn generate:db-v2-source",
     "generate:erc721-source": "generate-graphql-client --post --endpoint https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph --output ./gen/erc721 && cp template/graphql/* gen/erc721 && tsc ./gen/erc721/schema.ts --moduleResolution node --target esnext --esModuleInterop",
     "generate:db-source": "generate-graphql-client --fetcher .fetcher.cjs --output ./gen/db && cp template/graphql/* gen/db && tsc ./gen/db/schema.ts --moduleResolution node --target esnext --esModuleInterop",
-    "generate:hasura": "zeus http://localhost:8080/v1/graphql ./gen/hasura --ts && tsc ./gen/hasura/zeus/*.ts --moduleResolution node --target esnext --esModuleInterop --declaration && rm ./gen/hasura/zeus/index.ts && rm ./gen/hasura/zeus/const.ts",
+    "generate:hasura": "rm -rf ./gen/hasura && zeus http://localhost:8080/v1/graphql ./gen/hasura --ts && tsc ./gen/hasura/zeus/*.ts --moduleResolution node --target esnext --esModuleInterop --declaration && rm ./gen/hasura/zeus/index.ts && rm ./gen/hasura/zeus/const.ts",
     "wip:ingest": "node src/ingest-blockchain.js"
   },
   "license": "(Apache-2.0 AND MIT)",

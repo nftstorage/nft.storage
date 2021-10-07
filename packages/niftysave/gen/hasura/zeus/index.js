@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { AllTypesProps, ReturnTypes } from './const.js'
+import { AllTypesProps, ReturnTypes } from './const'
 export class GraphQLError extends Error {
   response
   constructor(response) {

@@ -1755,6 +1755,34 @@ export const AllTypesProps = {
         required: true,
       },
     },
+    delete_nft_ownership: {
+      where: {
+        type: 'nft_ownership_bool_exp',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+    },
+    delete_nft_ownership_by_pk: {
+      block_number: {
+        type: 'String',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+      nft_id: {
+        type: 'String',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+      owner_id: {
+        type: 'String',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+    },
     delete_nfts_by_blockchain_blocks: {
       where: {
         type: 'nfts_by_blockchain_blocks_bool_exp',
@@ -2156,6 +2184,34 @@ export const AllTypesProps = {
       },
       on_conflict: {
         type: 'nft_owner_on_conflict',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+    },
+    insert_nft_ownership: {
+      objects: {
+        type: 'nft_ownership_insert_input',
+        array: true,
+        arrayRequired: true,
+        required: true,
+      },
+      on_conflict: {
+        type: 'nft_ownership_on_conflict',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+    },
+    insert_nft_ownership_one: {
+      object: {
+        type: 'nft_ownership_insert_input',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+      on_conflict: {
+        type: 'nft_ownership_on_conflict',
         array: false,
         arrayRequired: false,
         required: false,
@@ -2602,6 +2658,34 @@ export const AllTypesProps = {
       },
       pk_columns: {
         type: 'nft_owner_pk_columns_input',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+    },
+    update_nft_ownership: {
+      _set: {
+        type: 'nft_ownership_set_input',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+      where: {
+        type: 'nft_ownership_bool_exp',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+    },
+    update_nft_ownership_by_pk: {
+      _set: {
+        type: 'nft_ownership_set_input',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+      pk_columns: {
+        type: 'nft_ownership_pk_columns_input',
         array: false,
         arrayRequired: false,
         required: true,
@@ -3934,6 +4018,211 @@ export const AllTypesProps = {
     },
   },
   nft_owner_update_column: 'enum',
+  nft_ownership_aggregate_fields: {
+    count: {
+      columns: {
+        type: 'nft_ownership_select_column',
+        array: true,
+        arrayRequired: false,
+        required: true,
+      },
+      distinct: {
+        type: 'Boolean',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+    },
+  },
+  nft_ownership_bool_exp: {
+    _and: {
+      type: 'nft_ownership_bool_exp',
+      array: true,
+      arrayRequired: false,
+      required: true,
+    },
+    _not: {
+      type: 'nft_ownership_bool_exp',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    _or: {
+      type: 'nft_ownership_bool_exp',
+      array: true,
+      arrayRequired: false,
+      required: true,
+    },
+    block_number: {
+      type: 'String_comparison_exp',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    inserted_at: {
+      type: 'timestamptz_comparison_exp',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    nft_id: {
+      type: 'String_comparison_exp',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    owner_id: {
+      type: 'String_comparison_exp',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    updated_at: {
+      type: 'timestamptz_comparison_exp',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+  },
+  nft_ownership_constraint: 'enum',
+  nft_ownership_insert_input: {
+    block_number: {
+      type: 'String',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    inserted_at: {
+      type: 'timestamptz',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    nft_id: {
+      type: 'String',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    owner_id: {
+      type: 'String',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    updated_at: {
+      type: 'timestamptz',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+  },
+  nft_ownership_on_conflict: {
+    constraint: {
+      type: 'nft_ownership_constraint',
+      array: false,
+      arrayRequired: false,
+      required: true,
+    },
+    update_columns: {
+      type: 'nft_ownership_update_column',
+      array: true,
+      arrayRequired: true,
+      required: true,
+    },
+    where: {
+      type: 'nft_ownership_bool_exp',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+  },
+  nft_ownership_order_by: {
+    block_number: {
+      type: 'order_by',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    inserted_at: {
+      type: 'order_by',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    nft_id: {
+      type: 'order_by',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    owner_id: {
+      type: 'order_by',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    updated_at: {
+      type: 'order_by',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+  },
+  nft_ownership_pk_columns_input: {
+    block_number: {
+      type: 'String',
+      array: false,
+      arrayRequired: false,
+      required: true,
+    },
+    nft_id: {
+      type: 'String',
+      array: false,
+      arrayRequired: false,
+      required: true,
+    },
+    owner_id: {
+      type: 'String',
+      array: false,
+      arrayRequired: false,
+      required: true,
+    },
+  },
+  nft_ownership_select_column: 'enum',
+  nft_ownership_set_input: {
+    block_number: {
+      type: 'String',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    inserted_at: {
+      type: 'timestamptz',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    nft_id: {
+      type: 'String',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    owner_id: {
+      type: 'String',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+    updated_at: {
+      type: 'timestamptz',
+      array: false,
+      arrayRequired: false,
+      required: false,
+    },
+  },
+  nft_ownership_update_column: 'enum',
   nft_pk_columns_input: {
     id: {
       type: 'String',
@@ -5670,6 +5959,90 @@ export const AllTypesProps = {
         required: true,
       },
     },
+    nft_ownership: {
+      distinct_on: {
+        type: 'nft_ownership_select_column',
+        array: true,
+        arrayRequired: false,
+        required: true,
+      },
+      limit: {
+        type: 'Int',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+      offset: {
+        type: 'Int',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+      order_by: {
+        type: 'nft_ownership_order_by',
+        array: true,
+        arrayRequired: false,
+        required: true,
+      },
+      where: {
+        type: 'nft_ownership_bool_exp',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+    },
+    nft_ownership_aggregate: {
+      distinct_on: {
+        type: 'nft_ownership_select_column',
+        array: true,
+        arrayRequired: false,
+        required: true,
+      },
+      limit: {
+        type: 'Int',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+      offset: {
+        type: 'Int',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+      order_by: {
+        type: 'nft_ownership_order_by',
+        array: true,
+        arrayRequired: false,
+        required: true,
+      },
+      where: {
+        type: 'nft_ownership_bool_exp',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+    },
+    nft_ownership_by_pk: {
+      block_number: {
+        type: 'String',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+      nft_id: {
+        type: 'String',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+      owner_id: {
+        type: 'String',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+    },
     nfts_by_blockchain_blocks: {
       distinct_on: {
         type: 'nfts_by_blockchain_blocks_select_column',
@@ -7359,6 +7732,90 @@ export const AllTypesProps = {
         required: true,
       },
     },
+    nft_ownership: {
+      distinct_on: {
+        type: 'nft_ownership_select_column',
+        array: true,
+        arrayRequired: false,
+        required: true,
+      },
+      limit: {
+        type: 'Int',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+      offset: {
+        type: 'Int',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+      order_by: {
+        type: 'nft_ownership_order_by',
+        array: true,
+        arrayRequired: false,
+        required: true,
+      },
+      where: {
+        type: 'nft_ownership_bool_exp',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+    },
+    nft_ownership_aggregate: {
+      distinct_on: {
+        type: 'nft_ownership_select_column',
+        array: true,
+        arrayRequired: false,
+        required: true,
+      },
+      limit: {
+        type: 'Int',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+      offset: {
+        type: 'Int',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+      order_by: {
+        type: 'nft_ownership_order_by',
+        array: true,
+        arrayRequired: false,
+        required: true,
+      },
+      where: {
+        type: 'nft_ownership_bool_exp',
+        array: false,
+        arrayRequired: false,
+        required: false,
+      },
+    },
+    nft_ownership_by_pk: {
+      block_number: {
+        type: 'String',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+      nft_id: {
+        type: 'String',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+      owner_id: {
+        type: 'String',
+        array: false,
+        arrayRequired: false,
+        required: true,
+      },
+    },
     nfts_by_blockchain_blocks: {
       distinct_on: {
         type: 'nfts_by_blockchain_blocks_select_column',
@@ -8105,6 +8562,8 @@ export const ReturnTypes = {
     delete_nft_metadata_by_pk: 'nft_metadata',
     delete_nft_owner: 'nft_owner_mutation_response',
     delete_nft_owner_by_pk: 'nft_owner',
+    delete_nft_ownership: 'nft_ownership_mutation_response',
+    delete_nft_ownership_by_pk: 'nft_ownership',
     delete_nfts_by_blockchain_blocks:
       'nfts_by_blockchain_blocks_mutation_response',
     delete_nfts_by_blockchain_blocks_by_pk: 'nfts_by_blockchain_blocks',
@@ -8138,6 +8597,8 @@ export const ReturnTypes = {
     insert_nft_one: 'nft',
     insert_nft_owner: 'nft_owner_mutation_response',
     insert_nft_owner_one: 'nft_owner',
+    insert_nft_ownership: 'nft_ownership_mutation_response',
+    insert_nft_ownership_one: 'nft_ownership',
     insert_nfts_by_blockchain_blocks:
       'nfts_by_blockchain_blocks_mutation_response',
     insert_nfts_by_blockchain_blocks_one: 'nfts_by_blockchain_blocks',
@@ -8170,6 +8631,8 @@ export const ReturnTypes = {
     update_nft_metadata_by_pk: 'nft_metadata',
     update_nft_owner: 'nft_owner_mutation_response',
     update_nft_owner_by_pk: 'nft_owner',
+    update_nft_ownership: 'nft_ownership_mutation_response',
+    update_nft_ownership_by_pk: 'nft_ownership',
     update_nfts_by_blockchain_blocks:
       'nfts_by_blockchain_blocks_mutation_response',
     update_nfts_by_blockchain_blocks_by_pk: 'nfts_by_blockchain_blocks',
@@ -8364,6 +8827,40 @@ export const ReturnTypes = {
     affected_rows: 'Int',
     returning: 'nft_owner',
   },
+  nft_ownership: {
+    block_number: 'String',
+    inserted_at: 'timestamptz',
+    nft_id: 'String',
+    owner_id: 'String',
+    updated_at: 'timestamptz',
+  },
+  nft_ownership_aggregate: {
+    aggregate: 'nft_ownership_aggregate_fields',
+    nodes: 'nft_ownership',
+  },
+  nft_ownership_aggregate_fields: {
+    count: 'Int',
+    max: 'nft_ownership_max_fields',
+    min: 'nft_ownership_min_fields',
+  },
+  nft_ownership_max_fields: {
+    block_number: 'String',
+    inserted_at: 'timestamptz',
+    nft_id: 'String',
+    owner_id: 'String',
+    updated_at: 'timestamptz',
+  },
+  nft_ownership_min_fields: {
+    block_number: 'String',
+    inserted_at: 'timestamptz',
+    nft_id: 'String',
+    owner_id: 'String',
+    updated_at: 'timestamptz',
+  },
+  nft_ownership_mutation_response: {
+    affected_rows: 'Int',
+    returning: 'nft_ownership',
+  },
   nfts_by_blockchain_blocks: {
     blockchain_block_hash: 'String',
     inserted_at: 'timestamptz',
@@ -8554,6 +9051,9 @@ export const ReturnTypes = {
     nft_owner: 'nft_owner',
     nft_owner_aggregate: 'nft_owner_aggregate',
     nft_owner_by_pk: 'nft_owner',
+    nft_ownership: 'nft_ownership',
+    nft_ownership_aggregate: 'nft_ownership_aggregate',
+    nft_ownership_by_pk: 'nft_ownership',
     nfts_by_blockchain_blocks: 'nfts_by_blockchain_blocks',
     nfts_by_blockchain_blocks_aggregate: 'nfts_by_blockchain_blocks_aggregate',
     nfts_by_blockchain_blocks_by_pk: 'nfts_by_blockchain_blocks',
@@ -8679,6 +9179,9 @@ export const ReturnTypes = {
     nft_owner: 'nft_owner',
     nft_owner_aggregate: 'nft_owner_aggregate',
     nft_owner_by_pk: 'nft_owner',
+    nft_ownership: 'nft_ownership',
+    nft_ownership_aggregate: 'nft_ownership_aggregate',
+    nft_ownership_by_pk: 'nft_ownership',
     nfts_by_blockchain_blocks: 'nfts_by_blockchain_blocks',
     nfts_by_blockchain_blocks_aggregate: 'nfts_by_blockchain_blocks_aggregate',
     nfts_by_blockchain_blocks_by_pk: 'nfts_by_blockchain_blocks',
