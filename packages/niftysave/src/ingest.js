@@ -21,15 +21,15 @@ import { setTimeout as sleep } from 'timers/promises'
  * @typedef { Object } Config
  * @property { ERC721.Config } config.erc721
  * @property { Hasura.Config } config.hasura
- * @property { Number } config.ingestRetryThrottle
- * @property { Number } config.ingestHighWatermark
- * @property { Number } config.ingestBatchSize
- * @property { Number } config.ingestScraperRetryLimit
- * @property { Number } config.ingestScraperRetryInterval
- * @property { Number } config.ingestScraperRetryMaxInterval
- * @property { Number } config.ingestWriterRetryLimit
- * @property { Number } config.ingestWriterRetryInterval
- * @property { Number } config.ingestWriterRetryMaxInterval
+ * @property { number } config.ingestRetryThrottle
+ * @property { number } config.ingestHighWatermark
+ * @property { number } config.ingestBatchSize
+ * @property { number } config.ingestScraperRetryLimit
+ * @property { number } config.ingestScraperRetryInterval
+ * @property { number } config.ingestScraperRetryMaxInterval
+ * @property { number } config.ingestWriterRetryLimit
+ * @property { number } config.ingestWriterRetryInterval
+ * @property { number } config.ingestWriterRetryMaxInterval
  */
 
 /**
