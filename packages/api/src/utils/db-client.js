@@ -307,14 +307,11 @@ export class DBClient {
     const query = this.client.from('auth_key')
 
     const { data, error } = await query
-      .upsert(
-        {
-          name: key.name,
-          secret: key.secret,
-          user_id: key.userId,
-        },
-        { onConflict: 'name,user_id' }
-      )
+      .upsert({
+        name: key.name,
+        secret: key.secret,
+        user_id: key.userId,
+      })
       .single()
 
     if (error) {
@@ -345,7 +342,8 @@ export class DBClient {
       secret
       `
       )
-      .match({ user_id: userId })
+      .eq('user_id', userId)
+      .is('deleted_at', null)
 
     if (error) {
       throw new DBError(error)
@@ -363,7 +361,12 @@ export class DBClient {
     /** @type {PostgrestQueryBuilder<definitions['auth_key']>} */
     const query = this.client.from('auth_key')
 
-    const { data, error } = await query.delete().match({ id })
+    const { error } = await query
+      .update({
+        deleted_at: new Date().toISOString(),
+      })
+      .match({ id })
+      .single()
 
     if (error) {
       throw new DBError(error)
