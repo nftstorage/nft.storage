@@ -1,6 +1,15 @@
 import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
+import {
+  ERC721ImportNFT,
+  ERC721ImportNFTContract,
+  ERC721ImportNFTOwner,
+} from './ingest-blockchain/types.d'
+import {
+  erc721ImportToNFTEndpoint,
+  subgraphTokenToERC721ImportNFT,
+} from './ingest-blockchain/transforms.js'
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
 
 import { TransformStream } from './stream.js'
@@ -8,38 +17,6 @@ import { configure } from './config.js'
 import { lastScrapeId } from './ingest-blockchain/cursor.js'
 import { script } from 'subprogram'
 import { setTimeout as sleep } from 'timers/promises'
-
-/**
- *
- * @typedef {{
- *  id: string
- *  name: string
- *  symbol: string
- *  supportsEIP721Metadata: Boolean
- * }} ERC721ImportNFTContract
- *
- * @typedef {{
- *   id: String
- * }} ERC721ImportNFTOwner
- *
- * @typedef {{
- *  id: string
- *  tokenID: string
- *  tokenURI: string
- *  mintTime: string
- *  blockNumber: Number
- *  blockHash: String
- *  contract: ERC721ImportNFTContract
- *  owner: ERC721ImportNFTOwner
- * }} ERC721ImportNFT
- */
-
-/**
- *
- * @typedef {{
- *  scrapeRetryThrottle: Number
- * }} IngestBlockchainConfig
- */
 
 /**
  * @typedef { Object } Config
@@ -113,41 +90,6 @@ const nextSubgraphQuery = async (config) => {
 }
 
 /**
- * This function is a hook to clean up data (or loosen typing)
- * @param { ERC721.schema.Token } token
- * @returns { ERC721ImportNFT }
- */
-function subgraphTokenToERC721ImportNFT(token) {
-  const {
-    id,
-    tokenID,
-    mintTime,
-    tokenURI,
-    blockNumber,
-    blockHash,
-    contract,
-    owner,
-  } = token
-  return {
-    id,
-    tokenID: tokenID.toString() || '',
-    mintTime: mintTime.toString() || '',
-    tokenURI: tokenURI.toString(),
-    blockNumber,
-    blockHash,
-    contract: {
-      id: contract.id || '',
-      name: contract.name || '',
-      symbol: contract.symbol || '',
-      supportsEIP721Metadata: contract.supportsEIP721Metadata,
-    },
-    owner: {
-      id: owner.id,
-    },
-  }
-}
-
-/**
  * @param { Config } config
  * @returns { Promise<ERC721ImportNFT[]> }
  */
@@ -173,35 +115,10 @@ async function fetchNextNFTBatch(config) {
  * @returns { Promise<any> }
  */
 async function writeScrapedRecord(config, erc721Import) {
-  const {
-    blockHash,
-    blockNumber,
-    contract,
-    id,
-    mintTime,
-    owner,
-    tokenID,
-    tokenURI,
-  } = erc721Import
-
-  const nft = {
-    block_hash: blockHash || '',
-    block_number: blockNumber || 0,
-    contract_id: contract.id,
-    contract_name: contract.name,
-    contract_supports_eip721_metadata: contract.supportsEIP721Metadata,
-    contract_symbol: contract.symbol,
-    id: id,
-    mint_time: new Date(parseInt(mintTime.padEnd(13, '0'))),
-    owner_id: owner.id,
-    token_id: tokenID,
-    token_uri: tokenURI,
-  }
-
   return Hasura.mutation(config.hasura, {
     ingest_erc721_token: [
       {
-        args: nft,
+        args: erc721ImportToNFTEndpoint(erc721Import),
       },
       {
         id: true,
