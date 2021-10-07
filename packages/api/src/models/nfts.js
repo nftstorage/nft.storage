@@ -13,6 +13,14 @@ import * as events from './events.js'
 const encodeKey = ({ user, cid }) => `${user.sub}:${cid}`
 
 /**
+ * @param {Key} k
+ */
+const toEventData = (k) => ({
+  user: { sub: k.user.sub, issuer: k.user.issuer },
+  cid: k.cid,
+})
+
+/**
  * @param {Key} key
  * @returns {Promise<boolean>}
  */
@@ -38,7 +46,7 @@ export const set = async (key, nft, pin) => {
       size: pin.size,
     }
   )
-  await events.add('nft:create', { key, nft })
+  await events.add('nft:create', toEventData(key))
   return nft
 }
 
@@ -63,7 +71,7 @@ export const remove = async (key) => {
   if (!nft) return
   await stores.nfts.delete(encodeKey(key))
   await nftsIndex.remove({ ...key, created: nft.created })
-  await events.add('nft:delete', { key })
+  await events.add('nft:delete', toEventData(key))
 }
 
 /**

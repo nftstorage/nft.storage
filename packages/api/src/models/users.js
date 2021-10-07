@@ -23,7 +23,7 @@ export async function createOrUpdate(newUser) {
   const user = await users.get(newUser.issuer)
   if (user === null) {
     await users.put(newUser.issuer, JSON.stringify(newUser))
-    await events.add('user:create', newUser)
+    await events.add('user:create', newUser.issuer)
     return newUser
   }
 
