@@ -86,7 +86,7 @@ export class DBClient {
       throw new DBError(rsp.error)
     }
 
-    const upload = await this.getUpload(data.content_cid, data.user_id)
+    const upload = await this.getUpload(data.source_cid, data.user_id)
     if (upload) {
       return upload
     }
