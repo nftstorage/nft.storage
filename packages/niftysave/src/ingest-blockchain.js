@@ -45,6 +45,7 @@ import { setTimeout as sleep } from 'timers/promises'
  * @property { Hasura.Config } config.hasura
  * @property { Number } config.ingestRetryThrottle
  * @property { Number } config.ingestHighWatermark
+ * @property { Number } config.ingestBatchSize
  */
 
 /**
@@ -78,7 +79,7 @@ import { setTimeout as sleep } from 'timers/promises'
  */
 const nextSubgraphQuery = async (config) => {
   const query = {
-    first: 100,
+    first: config.ingestBatchSize,
     where: { tokenURI_not: '', id_gt: await lastScrapeId(config) },
   }
   const erc721ResultDefinition = {

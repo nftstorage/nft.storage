@@ -13,6 +13,7 @@ import yargs from 'yargs'
  * @property {number} retryMaxInterval
  * @property {number} ingestRetryThrottle
  * @property {number} ingestHighWatermark
+ * @property {number} ingestBatchSize
  * @property {import('./cluster').Config} cluster
  * @property {import('./ipfs').Config} ipfs
  * @property {Endpoint} erc721
@@ -127,6 +128,12 @@ export const configure = async () => {
         default: Number(process.env['INGEST_HIGH_WATERMARK']) || 2000,
         description: `The max number of records the ingestion buffer will hold in memory. Going below this line will trigger additional scraping`,
       },
+      'ingest-batch-size': {
+        alias: 'ingestHighWatermark',
+        type: 'number',
+        default: Number(process.env['INGEST_BATCH_SIZE']) || 100,
+        description: `The number of records the ingestor tries to pull of the blockchain per-scrape`,
+      },
     })
     .parse()
 
@@ -140,6 +147,7 @@ export const configure = async () => {
     retryMaxInterval: config['retry-max-interval'],
     ingestRetryThrottle: config['ingest-retry-throttle'],
     ingestHighWatermark: config['ingest-high-watermark'],
+    ingestBatchSize: config['ingest-batch-size'],
     cluster: {
       url: new URL(config['cluster-endpoint']),
       secret: config['cluster-key'],
