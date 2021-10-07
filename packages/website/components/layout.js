@@ -35,7 +35,6 @@ export default function Layout({
   const [maintenanceMessage, setMaintenanceMessage] = useState('')
 
   useEffect(() => {
-    console.log(children)
     fetch('https://status.nft.storage/api/v2/summary.json')
       .then((response) => response.json())
       .then((data) => {
