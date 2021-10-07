@@ -50,6 +50,8 @@ export class DBClient {
     `
       )
       .or(`magic_link_id.eq.${id},github_id.eq.${id}`)
+      // @ts-ignore
+      .filter('keys.deleted_at', 'is', null)
 
     return select.single()
   }
