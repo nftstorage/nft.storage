@@ -80,7 +80,6 @@ const nextSubgraphQuery = async (config) => {
     first: 100,
     where: { tokenURI_not: '', id_gt: await lastScrapeId(config) },
   }
-  console.log(query)
   const erc721ResultDefinition = {
     id: 1,
     tokenID: 1,
@@ -98,7 +97,6 @@ const nextSubgraphQuery = async (config) => {
       id: 1,
     },
   }
-
   return {
     tokens: [query, erc721ResultDefinition],
   }
@@ -204,9 +202,14 @@ async function writeScrapedRecord(config, erc721Import) {
  * @param { ReadableStream<ERC721ImportNFT>} readable
  */
 async function writeFromInbox(config, readable) {
-  const reader = readable.getReader()
+  const inbox = readable.getReader()
 
-  //await writeScrapedRecord(config, nextImport)
+  while (true) {
+    const nextImport = await inbox.read()
+    if (nextImport.value) {
+      await writeScrapedRecord(config, nextImport.value)
+    }
+  }
 }
 
 /**
@@ -244,14 +247,13 @@ async function readIntoInbox(config, writeable) {
  */
 async function spawn(config) {
   console.log(`Begin Scraping the Blockchain.`)
-
   /**
    * @type { TransformStream<ERC721ImportNFT> }
    */
   const inbox = new TransformStream(
     {},
     {
-      highWaterMark: 1000,
+      highWaterMark: 300,
     }
   )
 
