@@ -12,6 +12,7 @@ import yargs from 'yargs'
  * @property {number} retryInterval
  * @property {number} retryMaxInterval
  * @property {number} ingestRetryThrottle
+ * @property {number} ingestHighWatermark
  * @property {import('./cluster').Config} cluster
  * @property {import('./ipfs').Config} ipfs
  * @property {Endpoint} erc721
@@ -117,7 +118,14 @@ export const configure = async () => {
       'ingest-retry-throttle': {
         alias: 'ingestRetryThrottle',
         type: 'number',
-        default: Number(process.env['INGEST_RETRY_THROTTLE']) || 1000,
+        default: Number(process.env['INGEST_RETRY_THROTTLE']) || 10 * 1000,
+        description: `The rate(ms) at which the ingestor will recheck to see if there are more blockchain entries when a scrape is performed but notrhing returned`,
+      },
+      'ingest-high-watermark': {
+        alias: 'ingestHighWatermark',
+        type: 'number',
+        default: Number(process.env['INGEST_HIGH_WATERMARK']) || 2000,
+        description: `The max number of records the ingestion buffer will hold in memory. Going below this line will trigger additional scraping`,
       },
     })
     .parse()
@@ -131,6 +139,7 @@ export const configure = async () => {
     retryInterval: config['retry-interval'],
     retryMaxInterval: config['retry-max-interval'],
     ingestRetryThrottle: config['ingest-retry-throttle'],
+    ingestHighWatermark: config['ingest-high-watermark'],
     cluster: {
       url: new URL(config['cluster-endpoint']),
       secret: config['cluster-key'],

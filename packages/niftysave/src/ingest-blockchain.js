@@ -44,6 +44,7 @@ import { setTimeout as sleep } from 'timers/promises'
  * @property { ERC721.Config } config.erc721
  * @property { Hasura.Config } config.hasura
  * @property { Number } config.ingestRetryThrottle
+ * @property { Number } config.ingestHighWatermark
  */
 
 /**
@@ -203,12 +204,9 @@ async function writeScrapedRecord(config, erc721Import) {
  */
 async function writeFromInbox(config, readable) {
   const inbox = readable.getReader()
-
   while (true) {
     const nextImport = await inbox.read()
-    if (nextImport.value) {
-      await writeScrapedRecord(config, nextImport.value)
-    }
+    nextImport.value && (await writeScrapedRecord(config, nextImport.value))
   }
 }
 
@@ -253,7 +251,7 @@ async function spawn(config) {
   const inbox = new TransformStream(
     {},
     {
-      highWaterMark: 300,
+      highWaterMark: config.ingestHighWatermark,
     }
   )
 
