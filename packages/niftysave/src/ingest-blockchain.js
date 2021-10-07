@@ -146,8 +146,8 @@ function subgraphTokenToERC721ImportNFT(token) {
 async function fetchNextNFTBatch(config) {
   const query = await nextSubgraphQuery(config)
   const nftsResult = await ERC721.query(config.erc721, query)
-  //something broke.
-  //TODO add retry.
+
+  //TODO: add retry.
   if (nftsResult.ok === false) {
     console.error(nftsResult)
     return []
@@ -207,7 +207,12 @@ async function writeFromInbox(config, readable) {
   const inbox = readable.getReader()
   while (true) {
     const nextImport = await inbox.read()
-    nextImport.value && (await writeScrapedRecord(config, nextImport.value))
+    try {
+      nextImport.value && (await writeScrapedRecord(config, nextImport.value))
+    } catch (err) {
+      console.log(err)
+      return err
+    }
   }
 }
 
