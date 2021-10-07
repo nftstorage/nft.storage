@@ -210,7 +210,7 @@ async function writeFromInbox(config, readable) {
     try {
       nextImport.value && (await writeScrapedRecord(config, nextImport.value))
     } catch (err) {
-      console.log(err)
+      console.error(err)
       return err
     }
   }
@@ -228,12 +228,12 @@ async function readIntoInbox(config, writeable) {
     try {
       scrape = await fetchNextNFTBatch(config)
     } catch (err) {
-      console.log(err)
+      console.error(err)
       return err
     }
 
     // you scraped successfully, got nothing.
-    // you're caught up. Rety later
+    // you're caught up. Rerty later
     if (scrape.length == 0) {
       sleep(config.ingestRetryThrottle)
     } else {
