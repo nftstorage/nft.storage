@@ -1,6 +1,9 @@
 import * as ERC721 from '../../gen/erc721/index.js'
 
-import { ERC721ImportNFT, NFTEndpointRecord } from './types.d'
+/**
+ * @typedef {import('./types.d').ERC721ImportNFT} ERC721ImportNFT
+ * @typedef {import('./types.d').NFTEndpointRecord} NFTEndpointRecord
+ */
 
 /**
  * This converts the Ttype returned from the ERC721 (token) to

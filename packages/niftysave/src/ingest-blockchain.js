@@ -7,12 +7,15 @@ import {
 } from './ingest-blockchain/transforms.js'
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
 
-import { ERC721ImportNFT } from './ingest-blockchain/types.d'
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
 import { lastScrapeId } from './ingest-blockchain/cursor.js'
 import { script } from 'subprogram'
 import { setTimeout as sleep } from 'timers/promises'
+
+/**
+ * @typedef {import('./ingest-blockchain/types.d').ERC721ImportNFT} ERC721ImportNFT
+ */
 
 /**
  * @typedef { Object } Config
