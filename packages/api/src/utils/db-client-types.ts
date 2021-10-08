@@ -2,7 +2,7 @@ import { definitions } from './db-types'
 import type { Deal } from '../bindings'
 
 export type UpsertUserInput = Pick<
-  definitions['account'],
+  definitions['user'],
   | 'magic_link_id'
   | 'github_id'
   | 'name'
@@ -12,9 +12,9 @@ export type UpsertUserInput = Pick<
   | 'github'
 >
 
-export type UserOutput = definitions['account'] & {
+export type UserOutput = definitions['user'] & {
   keys: Array<
-    Pick<definitions['auth_key'], 'account_id' | 'id' | 'name' | 'secret'>
+    Pick<definitions['auth_key'], 'user_id' | 'id' | 'name' | 'secret'>
   >
 }
 
@@ -22,16 +22,16 @@ export type UploadOutput = definitions['upload'] & {
   files: Array<{ name?: string; type?: string } | undefined>
   meta: Record<string, string>
   origins: string[]
-  user: Pick<definitions['account'], 'id' | 'magic_link_id'>
+  user: Pick<definitions['user'], 'id' | 'magic_link_id'>
   key: Pick<definitions['auth_key'], 'name'>
   content: Pick<definitions['content'], 'dag_size'> & {
-    pin: Pick<definitions['pin'], 'service' | 'status'>[]
+    pin: Pick<definitions['pin'], 'service' | 'status' | 'inserted_at'>[]
   }
   deals: Deal[]
 }
 
 export interface CreateUploadInput {
-  account_id: definitions['upload']['account_id']
+  user_id: definitions['upload']['user_id']
   content_cid: definitions['upload']['content_cid']
   source_cid: definitions['upload']['source_cid']
   key_id?: definitions['upload']['key_id']

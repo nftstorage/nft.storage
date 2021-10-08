@@ -7,7 +7,7 @@ export async function pinsDeleteV1(event, ctx) {
   const { params } = ctx
   const { user, db } = await validate(event, ctx)
 
-  let cid = parseCidPinning(params.requestid)
+  const cid = parseCidPinning(params.requestid)
   if (!cid) {
     return new JSONResponse(
       {

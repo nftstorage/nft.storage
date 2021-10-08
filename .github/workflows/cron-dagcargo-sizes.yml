@@ -1,0 +1,28 @@
+name: Cron dagcargo Populate Content DAG Sizes
+
+on:
+  schedule:
+    - cron: '38 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    name: Populate Missing Content DAG Sizes
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: ['staging', 'production']
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - uses: bahmutov/npm-install@v1
+      - name: Run job
+        env:
+          DEBUG: '*'
+          ENV: ${{ matrix.env }}
+          STAGING_DATABASE_CONNECTION: ${{ secrets.STAGING_DATABASE_CONNECTION }}
+          PROD_DATABASE_CONNECTION: ${{ secrets.PROD_DATABASE_CONNECTION }}
+        run: yarn --cwd packages/cron start:dagcargo:sizes

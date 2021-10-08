@@ -1,9 +1,11 @@
-import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth-v1.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { Validator } from '@cfworker/json-schema'
 import { parseCidPinning } from '../utils/utils.js'
 import { toPinsResponse } from '../utils/db-transforms.js'
+
+const DEFAULT_LIMIT = 10
+const MAX_LIMIT = 1000
 
 /**
  * @typedef {import('../utils/db-client-types').ListUploadsOptions} ListUploadsOptions
@@ -21,44 +23,32 @@ export async function pinsListV1(event, ctx) {
     const params = result.data
 
     // Query database
-    try {
-      const data = await db.listUploads(user.id, params)
+    const data = await db.listUploads(user.id, params)
 
-      // Not found
-      if (!data || data.length === 0) {
-        return new JSONResponse(
-          {
-            error: {
-              reason: 'NOT_FOUND',
-              details: 'The specified resource was not found',
-            },
-          },
-          { status: 404 }
-        )
-      }
-
-      // Aggregate result into proper output
-      let count = 0
-      const results = []
-      for (const upload of data) {
-        if (upload.content.pin.length > 0) {
-          count++
-          results.push(toPinsResponse(upload))
-        }
-      }
-
-      return new JSONResponse({ count, results })
-    } catch (/** @type{any} */ err) {
+    // Not found
+    if (!data || data.length === 0) {
       return new JSONResponse(
         {
           error: {
-            reason: 'INTERNAL_SERVER_ERROR',
-            details: err.message,
+            reason: 'NOT_FOUND',
+            details: 'The specified resource was not found',
           },
         },
-        { status: 500 }
+        { status: 404 }
       )
     }
+
+    // Aggregate result into proper output
+    let count = 0
+    const results = []
+    for (const upload of data) {
+      if (upload.content.pin.length > 0) {
+        count++
+        results.push(toPinsResponse(upload))
+      }
+    }
+
+    return new JSONResponse({ count, results })
   }
 }
 
@@ -71,7 +61,7 @@ const validator = new Validator({
     after: { type: 'string', format: 'date-time' },
     before: { type: 'string', format: 'date-time' },
     cid: { type: 'array', items: { type: 'string' } },
-    limit: { type: 'number' },
+    limit: { type: 'integer', minimum: 1, maximum: MAX_LIMIT },
     meta: { type: 'object' },
     match: {
       type: 'string',
@@ -141,8 +131,10 @@ function parseSearchParams(params) {
   }
 
   const limitParam = params.get('limit')
-  if (limitParam && !Number.isNaN(Number(limitParam))) {
+  if (limitParam) {
     out.limit = Number(limitParam)
+  } else {
+    out.limit = DEFAULT_LIMIT
   }
 
   const metaParam = params.get('meta')

@@ -1,11 +1,8 @@
 import { JSONResponse } from '../utils/json-response.js'
 import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth-v1.js'
-import { debug } from '../utils/debug.js'
 import { parseCidPinning } from '../utils/utils.js'
 import { toPinsResponse } from '../utils/db-transforms.js'
-
-const log = debug('pins-add')
 
 /** @type {import('../utils/router.js').Handler} */
 export async function pinsAddV1(event, ctx) {
@@ -15,7 +12,7 @@ export async function pinsAddV1(event, ctx) {
   const pinData = await event.request.json()
 
   // validate CID
-  let cid = parseCidPinning(pinData.cid)
+  const cid = parseCidPinning(pinData.cid)
   if (!cid) {
     return new JSONResponse(
       {
@@ -60,7 +57,7 @@ export async function pinsAddV1(event, ctx) {
     type: 'Remote',
     content_cid: cid.contentCid,
     source_cid: cid.sourceCid,
-    account_id: user.id,
+    user_id: user.id,
     key_id: key?.id,
     origins: pinData.origins,
     meta: pinData.meta,

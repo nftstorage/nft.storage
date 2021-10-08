@@ -1,0 +1,33 @@
+name: Cron Pins v1
+
+on:
+  schedule:
+    - cron: '30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    name: Update pin statuses and size
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: ['staging', 'production']
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - uses: bahmutov/npm-install@v1
+      - name: Run job
+        env:
+          DEBUG: '*'
+          ENV: ${{ matrix.env }}
+          STAGING_DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
+          STAGING_DATABASE_TOKEN: ${{ secrets.STAGING_DATABASE_TOKEN }}
+          PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+          PROD_DATABASE_TOKEN: ${{ secrets.PROD_DATABASE_TOKEN }}
+          CLUSTER_API_URL: ${{ secrets.CLUSTER_API_URL }}
+          CLUSTER_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER_BASIC_AUTH_TOKEN }}
+          CLUSTER_IPFS_PROXY_API_URL: ${{ secrets.CLUSTER_IPFS_PROXY_API_URL }}
+        run: yarn --cwd packages/cron start:pins-v1
