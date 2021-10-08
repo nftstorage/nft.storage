@@ -10,8 +10,7 @@ import { exponentialBackoff, maxRetries, retry } from './retry.js'
 import * as Cursor from './hasura/cursor.js'
 import { TransformStream } from './stream.js'
 import { setTimeout as sleep } from 'timers/promises'
-import { CID } from 'multiformats'
-import { base32 } from 'multiformats/bases/base32'
+import * as CID from './cid.js'
 
 export const main = async () => await spawn(await configure())
 
@@ -199,114 +198,6 @@ const archiver = async (config, inbox) => {
 }
 
 /**
- * @typedef {ArchiveOk|ArchiveError} ArchiveResult
- * @param {Object} config
- * @param {Hasura.Config} config.hasura
- * @param {ArchiveResult} state
- */
-
-const updateResource = async (config, state) =>
-  state.status === 'ContentLinked'
-    ? linkResource(config, state)
-    : failResource(config, state)
-
-/**
- * @typedef {Object} ArchiveOk
- * @property {string} hash
- * @property {'ContentLinked'} status
- * @property {string} statusText
- * @property {URL|null} ipfsURL
- * @property {import('multiformats').CID} cid
- *
- * @param {Object} config
- * @param {Hasura.Config} config.hasura
- * @param {ArchiveOk} state
- */
-const linkResource = async (config, { hash, statusText, ipfsURL, cid }) => {
-  const content_cid = cid.toV1().toString(base32.encoder)
-  Hasura.mutation(config.hasura, {
-    update_resource_by_pk: [
-      {
-        pk_columns: {
-          uri_hash: hash,
-        },
-        _set: {
-          status: 'ContentLinked',
-          status_text: statusText,
-          ipfs_url: ipfsURL ? ipfsURL.href : null,
-          content_cid,
-        },
-      },
-      {
-        updated_at: true,
-      },
-    ],
-    insert_content_one: [
-      {
-        object: {
-          cid: content_cid,
-        },
-        on_conflict: {
-          constraint: Hasura.schema.content_constraint.content_pkey,
-          update_columns: [Hasura.schema.content_update_column.updated_at],
-        },
-      },
-      {
-        updated_at: true,
-      },
-    ],
-    insert_pin_one: [
-      {
-        object: {
-          content_cid,
-          status: 'PinQueued',
-          service: 'IpfsCluster',
-        },
-        on_conflict: {
-          constraint: Hasura.schema.pin_constraint.pin_pkey,
-          update_columns: [Hasura.schema.pin_update_column.updated_at],
-        },
-      },
-      {
-        updated_at: true,
-      },
-    ],
-  })
-}
-
-/**
- * @typedef {Object} ArchiveError
- * @property {string} hash
- * @property {'URIParseFailed'|'ContentFetchFailed'|'PinRequestFailed'} status
- * @property {string} statusText
- * @property {URL|null} [ipfsURL]
- *
- * @param {Object} config
- * @param {Hasura.Config} config.hasura
- * @param {ArchiveError} result
- *
- */
-const failResource = async (config, { hash, status, statusText, ipfsURL }) => {
-  await Hasura.mutation(config.hasura, {
-    update_resource_by_pk: [
-      {
-        pk_columns: {
-          uri_hash: hash,
-        },
-        _set: {
-          status,
-          status_text: statusText,
-          ipfs_url: ipfsURL ? ipfsURL.href : null,
-        },
-      },
-      {
-        updated_at: true,
-      },
-    ],
-  })
-}
-
-/**
  * @param {Object} config
  * @param {import('./cluster').Config} config.cluster
  * @param {number} config.fetchTimeout
@@ -372,6 +263,7 @@ const archiveIPFSResource = async (config, { ipfsURL, hash }) => {
     hash,
     ipfsURL: ipfsURL,
     statusText: 'ContentLinked',
+    dagSize: null,
     cid,
   }
 }
@@ -435,8 +327,86 @@ const archiveWebResource = async (config, { hash, url }) => {
     ipfsURL: null,
     status: 'ContentLinked',
     statusText: 'ContentLinked',
+    dagSize: pin.value.bytes || pin.value.size,
     cid,
   }
+}
+
+/**
+ * @typedef {ArchiveOk|ArchiveError} ArchiveResult
+ * @param {Object} config
+ * @param {Hasura.Config} config.hasura
+ * @param {ArchiveResult} state
+ */
+
+const updateResource = async (config, state) =>
+  state.status === 'ContentLinked'
+    ? linkResource(config, state)
+    : failResource(config, state)
+
+/**
+ * @typedef {Object} ArchiveOk
+ * @property {string} hash
+ * @property {'ContentLinked'} status
+ * @property {string} statusText
+ * @property {URL|null} ipfsURL
+ * @property {number|null} dagSize
+ * @property {CID.CID} cid
+ *
+ * @param {Object} config
+ * @param {Hasura.Config} config.hasura
+ * @param {ArchiveOk} state
+ */
+const linkResource = async (
+  config,
+  { hash, statusText, ipfsURL, dagSize, cid }
+) => {
+  Hasura.mutation(config.hasura, {
+    link_resource_content: [
+      {
+        args: {
+          uri_hash: hash,
+          cid: CID.format(cid),
+          ipfs_url: ipfsURL ? ipfsURL.href : null,
+          dag_size: dagSize,
+          status_text: statusText,
+        },
+      },
+      {
+        updated_at: true,
+      },
+    ],
+  })
+}
+
+/**
+ * @typedef {Object} ArchiveError
+ * @property {string} hash
+ * @property {'URIParseFailed'|'ContentFetchFailed'|'PinRequestFailed'} status
+ * @property {string} statusText
+ * @property {URL|null} [ipfsURL]
+ *
+ * @param {Object} config
+ * @param {Hasura.Config} config.hasura
+ * @param {ArchiveError} result
+ *
+ */
+const failResource = async (config, { hash, status, statusText, ipfsURL }) => {
+  await Hasura.mutation(config.hasura, {
+    fail_resource: [
+      {
+        args: {
+          uri_hash: hash,
+          status,
+          status_text: statusText,
+          ipfs_url: ipfsURL ? ipfsURL.href : null,
+        },
+      },
+      {
+        updated_at: true,
+      },
+    ],
+  })
 }
 
 script({ ...import.meta, main })
