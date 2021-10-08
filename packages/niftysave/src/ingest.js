@@ -125,6 +125,7 @@ async function writeScrapedRecord(config, erc721Import) {
  * Drains records sequentially from the inbox
  * @param { Config } config
  * @param { ReadableStream<ERC721ImportNFT>} readable
+ * @return { Promise<never> }
  */
 async function writeFromInbox(config, readable) {
   const inbox = readable.getReader()
@@ -153,15 +154,16 @@ async function writeFromInbox(config, readable) {
     } catch (err) {
       console.log('Last NFT', nextImport)
       console.error(`Something went wrong when writing scraped nfts`, err)
-      return err
+      throw err
     }
   }
 }
 
 /**
- * Stuffs records by batches into the inbox.
+ * Inserts nft records by batches into the inbox.
  * @param { Config } config
  * @param { WritableStream<ERC721ImportNFT>} writeable
+ * @return { Promise<never> }
  */
 async function readIntoInbox(config, writeable) {
   const writer = writeable.getWriter()
@@ -225,8 +227,11 @@ async function spawn(config) {
       highWaterMark: config.ingestHighWatermark,
     }
   )
-  readIntoInbox(config, inbox.writable)
-  writeFromInbox(config, inbox.readable)
+  const reader = readIntoInbox(config, inbox.writable)
+  const writer = writeFromInbox(config, inbox.readable)
+
+  await Promise.all([reader, writer])
+  return undefined
 }
 
 export const main = async () => await spawn(await configure())
