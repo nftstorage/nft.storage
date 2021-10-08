@@ -72,7 +72,7 @@ describe('/upload', () => {
     )
   })
 
-  it.only('should record nft:create migration event', async () => {
+  it('should record nft:create migration event', async () => {
     const { token } = await createTestUser()
 
     const file = new Blob(['test-migration-event-' + Date.now()])
