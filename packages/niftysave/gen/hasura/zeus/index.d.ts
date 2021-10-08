@@ -354,6 +354,26 @@ export declare type ValueTypes = {
         cid?: true;
         dag_size?: true;
         inserted_at?: true;
+        pins?: [
+            {
+                distinct_on?: ValueTypes["pin_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["pin_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["pin_bool_exp"] | null;
+            },
+            ValueTypes["pin"]
+        ];
+        pins_aggregate?: [
+            {
+                distinct_on?: ValueTypes["pin_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["pin_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["pin_bool_exp"] | null;
+            },
+            ValueTypes["pin_aggregate"]
+        ];
         updated_at?: true;
         __typename?: true;
     }>;
@@ -394,6 +414,7 @@ export declare type ValueTypes = {
         cid?: ValueTypes["String_comparison_exp"] | null;
         dag_size?: ValueTypes["bigint_comparison_exp"] | null;
         inserted_at?: ValueTypes["timestamptz_comparison_exp"] | null;
+        pins?: ValueTypes["pin_bool_exp"] | null;
         updated_at?: ValueTypes["timestamptz_comparison_exp"] | null;
     };
     /** unique or primary key constraints on table "content" */
@@ -407,6 +428,7 @@ export declare type ValueTypes = {
         cid?: string | null;
         dag_size?: ValueTypes["bigint"] | null;
         inserted_at?: ValueTypes["timestamptz"] | null;
+        pins?: ValueTypes["pin_arr_rel_insert_input"] | null;
         updated_at?: ValueTypes["timestamptz"] | null;
     };
     /** aggregate max on columns */
@@ -433,6 +455,12 @@ export declare type ValueTypes = {
         returning?: ValueTypes["content"];
         __typename?: true;
     }>;
+    /** input type for inserting object relation for remote table "content" */
+    ["content_obj_rel_insert_input"]: {
+        data: ValueTypes["content_insert_input"];
+        /** on conflict condition */
+        on_conflict?: ValueTypes["content_on_conflict"] | null;
+    };
     /** on conflict condition type for table "content" */
     ["content_on_conflict"]: {
         constraint: ValueTypes["content_constraint"];
@@ -444,6 +472,7 @@ export declare type ValueTypes = {
         cid?: ValueTypes["order_by"] | null;
         dag_size?: ValueTypes["order_by"] | null;
         inserted_at?: ValueTypes["order_by"] | null;
+        pins_aggregate?: ValueTypes["pin_aggregate_order_by"] | null;
         updated_at?: ValueTypes["order_by"] | null;
     };
     /** primary key columns input for table: content */
@@ -693,6 +722,12 @@ export declare type ValueTypes = {
         status_text?: string | null;
         token_uri_hash?: string | null;
     };
+    ["fail_resource_args"]: {
+        ipfs_url?: string | null;
+        status?: ValueTypes["resource_status"] | null;
+        status_text?: string | null;
+        uri_hash?: ValueTypes["bytea"] | null;
+    };
     ["ingest_erc721_token_args"]: {
         block_hash?: string | null;
         block_number?: ValueTypes["bigint"] | null;
@@ -741,6 +776,14 @@ export declare type ValueTypes = {
     ["link_nft_resource_args"]: {
         cid?: string | null;
         uri?: string | null;
+    };
+    ["link_resource_content_args"]: {
+        cid?: string | null;
+        dag_size?: ValueTypes["bigint"] | null;
+        ipfs_url?: string | null;
+        pin_service?: ValueTypes["pin_service"] | null;
+        status_text?: string | null;
+        uri_hash?: ValueTypes["bytea"] | null;
     };
     /** mutation root */
     ["mutation_root"]: AliasType<{
@@ -939,6 +982,17 @@ export declare type ValueTypes = {
                 where?: ValueTypes["nft_asset_bool_exp"] | null;
             },
             ValueTypes["nft_asset"]
+        ];
+        fail_resource?: [
+            {
+                args: ValueTypes["fail_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
         ];
         ingest_erc721_token?: [
             {
@@ -1199,6 +1253,17 @@ export declare type ValueTypes = {
         link_nft_resource?: [
             {
                 args: ValueTypes["link_nft_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
+        link_resource_content?: [
+            {
+                args: ValueTypes["link_resource_content_args"]; /** distinct select on columns */
                 distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
                 limit?: number | null; /** skip the first n rows. Use only with order_by */
                 offset?: number | null; /** sort the rows by one or more columns */
@@ -2625,11 +2690,35 @@ columns and relationships of "niftysave_migration" */
         variance?: ValueTypes["pin_variance_fields"];
         __typename?: true;
     }>;
+    /** order by aggregate values of table "pin" */
+    ["pin_aggregate_order_by"]: {
+        avg?: ValueTypes["pin_avg_order_by"] | null;
+        count?: ValueTypes["order_by"] | null;
+        max?: ValueTypes["pin_max_order_by"] | null;
+        min?: ValueTypes["pin_min_order_by"] | null;
+        stddev?: ValueTypes["pin_stddev_order_by"] | null;
+        stddev_pop?: ValueTypes["pin_stddev_pop_order_by"] | null;
+        stddev_samp?: ValueTypes["pin_stddev_samp_order_by"] | null;
+        sum?: ValueTypes["pin_sum_order_by"] | null;
+        var_pop?: ValueTypes["pin_var_pop_order_by"] | null;
+        var_samp?: ValueTypes["pin_var_samp_order_by"] | null;
+        variance?: ValueTypes["pin_variance_order_by"] | null;
+    };
+    /** input type for inserting array relation for remote table "pin" */
+    ["pin_arr_rel_insert_input"]: {
+        data: ValueTypes["pin_insert_input"][];
+        /** on conflict condition */
+        on_conflict?: ValueTypes["pin_on_conflict"] | null;
+    };
     /** aggregate avg on columns */
     ["pin_avg_fields"]: AliasType<{
         id?: true;
         __typename?: true;
     }>;
+    /** order by avg() on columns of table "pin" */
+    ["pin_avg_order_by"]: {
+        id?: ValueTypes["order_by"] | null;
+    };
     /** Boolean expression to filter rows from the table "pin". All fields are combined with a logical 'AND'. */
     ["pin_bool_exp"]: {
         _and?: ValueTypes["pin_bool_exp"][];
@@ -2665,6 +2754,13 @@ columns and relationships of "niftysave_migration" */
         updated_at?: true;
         __typename?: true;
     }>;
+    /** order by max() on columns of table "pin" */
+    ["pin_max_order_by"]: {
+        content_cid?: ValueTypes["order_by"] | null;
+        id?: ValueTypes["order_by"] | null;
+        inserted_at?: ValueTypes["order_by"] | null;
+        updated_at?: ValueTypes["order_by"] | null;
+    };
     /** aggregate min on columns */
     ["pin_min_fields"]: AliasType<{
         content_cid?: true;
@@ -2673,6 +2769,13 @@ columns and relationships of "niftysave_migration" */
         updated_at?: true;
         __typename?: true;
     }>;
+    /** order by min() on columns of table "pin" */
+    ["pin_min_order_by"]: {
+        content_cid?: ValueTypes["order_by"] | null;
+        id?: ValueTypes["order_by"] | null;
+        inserted_at?: ValueTypes["order_by"] | null;
+        updated_at?: ValueTypes["order_by"] | null;
+    };
     /** response of any mutation on the table "pin" */
     ["pin_mutation_response"]: AliasType<{
         /** number of rows affected by the mutation */
@@ -2742,21 +2845,37 @@ columns and relationships of "niftysave_migration" */
         id?: true;
         __typename?: true;
     }>;
+    /** order by stddev() on columns of table "pin" */
+    ["pin_stddev_order_by"]: {
+        id?: ValueTypes["order_by"] | null;
+    };
     /** aggregate stddev_pop on columns */
     ["pin_stddev_pop_fields"]: AliasType<{
         id?: true;
         __typename?: true;
     }>;
+    /** order by stddev_pop() on columns of table "pin" */
+    ["pin_stddev_pop_order_by"]: {
+        id?: ValueTypes["order_by"] | null;
+    };
     /** aggregate stddev_samp on columns */
     ["pin_stddev_samp_fields"]: AliasType<{
         id?: true;
         __typename?: true;
     }>;
+    /** order by stddev_samp() on columns of table "pin" */
+    ["pin_stddev_samp_order_by"]: {
+        id?: ValueTypes["order_by"] | null;
+    };
     /** aggregate sum on columns */
     ["pin_sum_fields"]: AliasType<{
         id?: true;
         __typename?: true;
     }>;
+    /** order by sum() on columns of table "pin" */
+    ["pin_sum_order_by"]: {
+        id?: ValueTypes["order_by"] | null;
+    };
     /** update columns of table "pin" */
     ["pin_update_column"]: pin_update_column;
     /** aggregate var_pop on columns */
@@ -2764,16 +2883,28 @@ columns and relationships of "niftysave_migration" */
         id?: true;
         __typename?: true;
     }>;
+    /** order by var_pop() on columns of table "pin" */
+    ["pin_var_pop_order_by"]: {
+        id?: ValueTypes["order_by"] | null;
+    };
     /** aggregate var_samp on columns */
     ["pin_var_samp_fields"]: AliasType<{
         id?: true;
         __typename?: true;
     }>;
+    /** order by var_samp() on columns of table "pin" */
+    ["pin_var_samp_order_by"]: {
+        id?: ValueTypes["order_by"] | null;
+    };
     /** aggregate variance on columns */
     ["pin_variance_fields"]: AliasType<{
         id?: true;
         __typename?: true;
     }>;
+    /** order by variance() on columns of table "pin" */
+    ["pin_variance_order_by"]: {
+        id?: ValueTypes["order_by"] | null;
+    };
     ["query_root"]: AliasType<{
         blockchain_block?: [
             {
@@ -3169,6 +3300,8 @@ columns and relationships of "niftysave_migration" */
     }>;
     /** columns and relationships of "resource" */
     ["resource"]: AliasType<{
+        /** An object relationship */
+        content?: ValueTypes["content"];
         content_cid?: true;
         inserted_at?: true;
         ipfs_url?: true;
@@ -3200,6 +3333,7 @@ columns and relationships of "niftysave_migration" */
         _and?: ValueTypes["resource_bool_exp"][];
         _not?: ValueTypes["resource_bool_exp"] | null;
         _or?: ValueTypes["resource_bool_exp"][];
+        content?: ValueTypes["content_bool_exp"] | null;
         content_cid?: ValueTypes["String_comparison_exp"] | null;
         inserted_at?: ValueTypes["timestamptz_comparison_exp"] | null;
         ipfs_url?: ValueTypes["String_comparison_exp"] | null;
@@ -3213,6 +3347,7 @@ columns and relationships of "niftysave_migration" */
     ["resource_constraint"]: resource_constraint;
     /** input type for inserting data into table "resource" */
     ["resource_insert_input"]: {
+        content?: ValueTypes["content_obj_rel_insert_input"] | null;
         content_cid?: string | null;
         inserted_at?: ValueTypes["timestamptz"] | null;
         ipfs_url?: string | null;
@@ -3264,6 +3399,7 @@ columns and relationships of "niftysave_migration" */
     };
     /** Ordering options when selecting data from "resource". */
     ["resource_order_by"]: {
+        content?: ValueTypes["content_order_by"] | null;
         content_cid?: ValueTypes["order_by"] | null;
         inserted_at?: ValueTypes["order_by"] | null;
         ipfs_url?: ValueTypes["order_by"] | null;
@@ -3991,6 +4127,10 @@ export declare type ModelTypes = {
         cid: string;
         dag_size?: ModelTypes["bigint"];
         inserted_at: ModelTypes["timestamptz"];
+        /** An array relationship */
+        pins: ModelTypes["pin"][];
+        /** An aggregate relationship */
+        pins_aggregate: ModelTypes["pin_aggregate"];
         updated_at: ModelTypes["timestamptz"];
     };
     /** aggregated selection of "content" */
@@ -4045,6 +4185,8 @@ export declare type ModelTypes = {
         /** data from the rows affected by the mutation */
         returning: ModelTypes["content"][];
     };
+    /** input type for inserting object relation for remote table "content" */
+    ["content_obj_rel_insert_input"]: GraphQLTypes["content_obj_rel_insert_input"];
     /** on conflict condition type for table "content" */
     ["content_on_conflict"]: GraphQLTypes["content_on_conflict"];
     /** Ordering options when selecting data from "content". */
@@ -4200,12 +4342,14 @@ export declare type ModelTypes = {
     /** update columns of table "erc721_import" */
     ["erc721_import_update_column"]: GraphQLTypes["erc721_import_update_column"];
     ["fail_nft_asset_args"]: GraphQLTypes["fail_nft_asset_args"];
+    ["fail_resource_args"]: GraphQLTypes["fail_resource_args"];
     ["ingest_erc721_token_args"]: GraphQLTypes["ingest_erc721_token_args"];
     ["jsonb"]: any;
     /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
     ["jsonb_comparison_exp"]: GraphQLTypes["jsonb_comparison_exp"];
     ["link_nft_asset_args"]: GraphQLTypes["link_nft_asset_args"];
     ["link_nft_resource_args"]: GraphQLTypes["link_nft_resource_args"];
+    ["link_resource_content_args"]: GraphQLTypes["link_resource_content_args"];
     /** mutation root */
     ["mutation_root"]: {
         /** execute VOLATILE function "add_nft" which returns "nft" */
@@ -4280,6 +4424,8 @@ export declare type ModelTypes = {
         delete_resource_view?: ModelTypes["resource_view_mutation_response"];
         /** execute VOLATILE function "fail_nft_asset" which returns "nft_asset" */
         fail_nft_asset: ModelTypes["nft_asset"][];
+        /** execute VOLATILE function "fail_resource" which returns "resource" */
+        fail_resource: ModelTypes["resource"][];
         /** execute VOLATILE function "ingest_erc721_token" which returns "nft" */
         ingest_erc721_token: ModelTypes["nft"][];
         /** insert data into the table: "blockchain_block" */
@@ -4354,6 +4500,8 @@ export declare type ModelTypes = {
         link_nft_asset: ModelTypes["nft_asset"][];
         /** execute VOLATILE function "link_nft_resource" which returns "resource" */
         link_nft_resource: ModelTypes["resource"][];
+        /** execute VOLATILE function "link_resource_content" which returns "resource" */
+        link_resource_content: ModelTypes["resource"][];
         /** update data of the table: "blockchain_block" */
         update_blockchain_block?: ModelTypes["blockchain_block_mutation_response"];
         /** update single row of the table: "blockchain_block" */
@@ -5044,10 +5192,16 @@ columns and relationships of "niftysave_migration" */
         var_samp?: ModelTypes["pin_var_samp_fields"];
         variance?: ModelTypes["pin_variance_fields"];
     };
+    /** order by aggregate values of table "pin" */
+    ["pin_aggregate_order_by"]: GraphQLTypes["pin_aggregate_order_by"];
+    /** input type for inserting array relation for remote table "pin" */
+    ["pin_arr_rel_insert_input"]: GraphQLTypes["pin_arr_rel_insert_input"];
     /** aggregate avg on columns */
     ["pin_avg_fields"]: {
         id?: number;
     };
+    /** order by avg() on columns of table "pin" */
+    ["pin_avg_order_by"]: GraphQLTypes["pin_avg_order_by"];
     /** Boolean expression to filter rows from the table "pin". All fields are combined with a logical 'AND'. */
     ["pin_bool_exp"]: GraphQLTypes["pin_bool_exp"];
     /** unique or primary key constraints on table "pin" */
@@ -5063,6 +5217,8 @@ columns and relationships of "niftysave_migration" */
         inserted_at?: ModelTypes["timestamptz"];
         updated_at?: ModelTypes["timestamptz"];
     };
+    /** order by max() on columns of table "pin" */
+    ["pin_max_order_by"]: GraphQLTypes["pin_max_order_by"];
     /** aggregate min on columns */
     ["pin_min_fields"]: {
         content_cid?: string;
@@ -5070,6 +5226,8 @@ columns and relationships of "niftysave_migration" */
         inserted_at?: ModelTypes["timestamptz"];
         updated_at?: ModelTypes["timestamptz"];
     };
+    /** order by min() on columns of table "pin" */
+    ["pin_min_order_by"]: GraphQLTypes["pin_min_order_by"];
     /** response of any mutation on the table "pin" */
     ["pin_mutation_response"]: {
         /** number of rows affected by the mutation */
@@ -5097,32 +5255,46 @@ columns and relationships of "niftysave_migration" */
     ["pin_stddev_fields"]: {
         id?: number;
     };
+    /** order by stddev() on columns of table "pin" */
+    ["pin_stddev_order_by"]: GraphQLTypes["pin_stddev_order_by"];
     /** aggregate stddev_pop on columns */
     ["pin_stddev_pop_fields"]: {
         id?: number;
     };
+    /** order by stddev_pop() on columns of table "pin" */
+    ["pin_stddev_pop_order_by"]: GraphQLTypes["pin_stddev_pop_order_by"];
     /** aggregate stddev_samp on columns */
     ["pin_stddev_samp_fields"]: {
         id?: number;
     };
+    /** order by stddev_samp() on columns of table "pin" */
+    ["pin_stddev_samp_order_by"]: GraphQLTypes["pin_stddev_samp_order_by"];
     /** aggregate sum on columns */
     ["pin_sum_fields"]: {
         id?: ModelTypes["bigint"];
     };
+    /** order by sum() on columns of table "pin" */
+    ["pin_sum_order_by"]: GraphQLTypes["pin_sum_order_by"];
     /** update columns of table "pin" */
     ["pin_update_column"]: GraphQLTypes["pin_update_column"];
     /** aggregate var_pop on columns */
     ["pin_var_pop_fields"]: {
         id?: number;
     };
+    /** order by var_pop() on columns of table "pin" */
+    ["pin_var_pop_order_by"]: GraphQLTypes["pin_var_pop_order_by"];
     /** aggregate var_samp on columns */
     ["pin_var_samp_fields"]: {
         id?: number;
     };
+    /** order by var_samp() on columns of table "pin" */
+    ["pin_var_samp_order_by"]: GraphQLTypes["pin_var_samp_order_by"];
     /** aggregate variance on columns */
     ["pin_variance_fields"]: {
         id?: number;
     };
+    /** order by variance() on columns of table "pin" */
+    ["pin_variance_order_by"]: GraphQLTypes["pin_variance_order_by"];
     ["query_root"]: {
         /** fetch data from the table: "blockchain_block" */
         blockchain_block: ModelTypes["blockchain_block"][];
@@ -5225,6 +5397,8 @@ columns and relationships of "niftysave_migration" */
     };
     /** columns and relationships of "resource" */
     ["resource"]: {
+        /** An object relationship */
+        content?: ModelTypes["content"];
         content_cid?: string;
         inserted_at: ModelTypes["timestamptz"];
         ipfs_url?: string;
@@ -5802,6 +5976,10 @@ export declare type GraphQLTypes = {
         cid: string;
         dag_size?: GraphQLTypes["bigint"];
         inserted_at: GraphQLTypes["timestamptz"];
+        /** An array relationship */
+        pins: Array<GraphQLTypes["pin"]>;
+        /** An aggregate relationship */
+        pins_aggregate: GraphQLTypes["pin_aggregate"];
         updated_at: GraphQLTypes["timestamptz"];
     };
     /** aggregated selection of "content" */
@@ -5838,6 +6016,7 @@ export declare type GraphQLTypes = {
         cid?: GraphQLTypes["String_comparison_exp"];
         dag_size?: GraphQLTypes["bigint_comparison_exp"];
         inserted_at?: GraphQLTypes["timestamptz_comparison_exp"];
+        pins?: GraphQLTypes["pin_bool_exp"];
         updated_at?: GraphQLTypes["timestamptz_comparison_exp"];
     };
     /** unique or primary key constraints on table "content" */
@@ -5851,6 +6030,7 @@ export declare type GraphQLTypes = {
         cid?: string;
         dag_size?: GraphQLTypes["bigint"];
         inserted_at?: GraphQLTypes["timestamptz"];
+        pins?: GraphQLTypes["pin_arr_rel_insert_input"];
         updated_at?: GraphQLTypes["timestamptz"];
     };
     /** aggregate max on columns */
@@ -5877,6 +6057,12 @@ export declare type GraphQLTypes = {
         /** data from the rows affected by the mutation */
         returning: Array<GraphQLTypes["content"]>;
     };
+    /** input type for inserting object relation for remote table "content" */
+    ["content_obj_rel_insert_input"]: {
+        data: GraphQLTypes["content_insert_input"];
+        /** on conflict condition */
+        on_conflict?: GraphQLTypes["content_on_conflict"];
+    };
     /** on conflict condition type for table "content" */
     ["content_on_conflict"]: {
         constraint: GraphQLTypes["content_constraint"];
@@ -5888,6 +6074,7 @@ export declare type GraphQLTypes = {
         cid?: GraphQLTypes["order_by"];
         dag_size?: GraphQLTypes["order_by"];
         inserted_at?: GraphQLTypes["order_by"];
+        pins_aggregate?: GraphQLTypes["pin_aggregate_order_by"];
         updated_at?: GraphQLTypes["order_by"];
     };
     /** primary key columns input for table: content */
@@ -6131,6 +6318,12 @@ export declare type GraphQLTypes = {
         status_text?: string;
         token_uri_hash?: string;
     };
+    ["fail_resource_args"]: {
+        ipfs_url?: string;
+        status?: GraphQLTypes["resource_status"];
+        status_text?: string;
+        uri_hash?: GraphQLTypes["bytea"];
+    };
     ["ingest_erc721_token_args"]: {
         block_hash?: string;
         block_number?: GraphQLTypes["bigint"];
@@ -6179,6 +6372,14 @@ export declare type GraphQLTypes = {
     ["link_nft_resource_args"]: {
         cid?: string;
         uri?: string;
+    };
+    ["link_resource_content_args"]: {
+        cid?: string;
+        dag_size?: GraphQLTypes["bigint"];
+        ipfs_url?: string;
+        pin_service?: GraphQLTypes["pin_service"];
+        status_text?: string;
+        uri_hash?: GraphQLTypes["bytea"];
     };
     /** mutation root */
     ["mutation_root"]: {
@@ -6255,6 +6456,8 @@ export declare type GraphQLTypes = {
         delete_resource_view?: GraphQLTypes["resource_view_mutation_response"];
         /** execute VOLATILE function "fail_nft_asset" which returns "nft_asset" */
         fail_nft_asset: Array<GraphQLTypes["nft_asset"]>;
+        /** execute VOLATILE function "fail_resource" which returns "resource" */
+        fail_resource: Array<GraphQLTypes["resource"]>;
         /** execute VOLATILE function "ingest_erc721_token" which returns "nft" */
         ingest_erc721_token: Array<GraphQLTypes["nft"]>;
         /** insert data into the table: "blockchain_block" */
@@ -6329,6 +6532,8 @@ export declare type GraphQLTypes = {
         link_nft_asset: Array<GraphQLTypes["nft_asset"]>;
         /** execute VOLATILE function "link_nft_resource" which returns "resource" */
         link_nft_resource: Array<GraphQLTypes["resource"]>;
+        /** execute VOLATILE function "link_resource_content" which returns "resource" */
+        link_resource_content: Array<GraphQLTypes["resource"]>;
         /** update data of the table: "blockchain_block" */
         update_blockchain_block?: GraphQLTypes["blockchain_block_mutation_response"];
         /** update single row of the table: "blockchain_block" */
@@ -7488,10 +7693,34 @@ columns and relationships of "niftysave_migration" */
         var_samp?: GraphQLTypes["pin_var_samp_fields"];
         variance?: GraphQLTypes["pin_variance_fields"];
     };
+    /** order by aggregate values of table "pin" */
+    ["pin_aggregate_order_by"]: {
+        avg?: GraphQLTypes["pin_avg_order_by"];
+        count?: GraphQLTypes["order_by"];
+        max?: GraphQLTypes["pin_max_order_by"];
+        min?: GraphQLTypes["pin_min_order_by"];
+        stddev?: GraphQLTypes["pin_stddev_order_by"];
+        stddev_pop?: GraphQLTypes["pin_stddev_pop_order_by"];
+        stddev_samp?: GraphQLTypes["pin_stddev_samp_order_by"];
+        sum?: GraphQLTypes["pin_sum_order_by"];
+        var_pop?: GraphQLTypes["pin_var_pop_order_by"];
+        var_samp?: GraphQLTypes["pin_var_samp_order_by"];
+        variance?: GraphQLTypes["pin_variance_order_by"];
+    };
+    /** input type for inserting array relation for remote table "pin" */
+    ["pin_arr_rel_insert_input"]: {
+        data: Array<GraphQLTypes["pin_insert_input"]>;
+        /** on conflict condition */
+        on_conflict?: GraphQLTypes["pin_on_conflict"];
+    };
     /** aggregate avg on columns */
     ["pin_avg_fields"]: {
         __typename: "pin_avg_fields";
         id?: number;
+    };
+    /** order by avg() on columns of table "pin" */
+    ["pin_avg_order_by"]: {
+        id?: GraphQLTypes["order_by"];
     };
     /** Boolean expression to filter rows from the table "pin". All fields are combined with a logical 'AND'. */
     ["pin_bool_exp"]: {
@@ -7528,6 +7757,13 @@ columns and relationships of "niftysave_migration" */
         inserted_at?: GraphQLTypes["timestamptz"];
         updated_at?: GraphQLTypes["timestamptz"];
     };
+    /** order by max() on columns of table "pin" */
+    ["pin_max_order_by"]: {
+        content_cid?: GraphQLTypes["order_by"];
+        id?: GraphQLTypes["order_by"];
+        inserted_at?: GraphQLTypes["order_by"];
+        updated_at?: GraphQLTypes["order_by"];
+    };
     /** aggregate min on columns */
     ["pin_min_fields"]: {
         __typename: "pin_min_fields";
@@ -7535,6 +7771,13 @@ columns and relationships of "niftysave_migration" */
         id?: GraphQLTypes["bigint"];
         inserted_at?: GraphQLTypes["timestamptz"];
         updated_at?: GraphQLTypes["timestamptz"];
+    };
+    /** order by min() on columns of table "pin" */
+    ["pin_min_order_by"]: {
+        content_cid?: GraphQLTypes["order_by"];
+        id?: GraphQLTypes["order_by"];
+        inserted_at?: GraphQLTypes["order_by"];
+        updated_at?: GraphQLTypes["order_by"];
     };
     /** response of any mutation on the table "pin" */
     ["pin_mutation_response"]: {
@@ -7605,20 +7848,36 @@ columns and relationships of "niftysave_migration" */
         __typename: "pin_stddev_fields";
         id?: number;
     };
+    /** order by stddev() on columns of table "pin" */
+    ["pin_stddev_order_by"]: {
+        id?: GraphQLTypes["order_by"];
+    };
     /** aggregate stddev_pop on columns */
     ["pin_stddev_pop_fields"]: {
         __typename: "pin_stddev_pop_fields";
         id?: number;
+    };
+    /** order by stddev_pop() on columns of table "pin" */
+    ["pin_stddev_pop_order_by"]: {
+        id?: GraphQLTypes["order_by"];
     };
     /** aggregate stddev_samp on columns */
     ["pin_stddev_samp_fields"]: {
         __typename: "pin_stddev_samp_fields";
         id?: number;
     };
+    /** order by stddev_samp() on columns of table "pin" */
+    ["pin_stddev_samp_order_by"]: {
+        id?: GraphQLTypes["order_by"];
+    };
     /** aggregate sum on columns */
     ["pin_sum_fields"]: {
         __typename: "pin_sum_fields";
         id?: GraphQLTypes["bigint"];
+    };
+    /** order by sum() on columns of table "pin" */
+    ["pin_sum_order_by"]: {
+        id?: GraphQLTypes["order_by"];
     };
     /** update columns of table "pin" */
     ["pin_update_column"]: pin_update_column;
@@ -7627,15 +7886,27 @@ columns and relationships of "niftysave_migration" */
         __typename: "pin_var_pop_fields";
         id?: number;
     };
+    /** order by var_pop() on columns of table "pin" */
+    ["pin_var_pop_order_by"]: {
+        id?: GraphQLTypes["order_by"];
+    };
     /** aggregate var_samp on columns */
     ["pin_var_samp_fields"]: {
         __typename: "pin_var_samp_fields";
         id?: number;
     };
+    /** order by var_samp() on columns of table "pin" */
+    ["pin_var_samp_order_by"]: {
+        id?: GraphQLTypes["order_by"];
+    };
     /** aggregate variance on columns */
     ["pin_variance_fields"]: {
         __typename: "pin_variance_fields";
         id?: number;
+    };
+    /** order by variance() on columns of table "pin" */
+    ["pin_variance_order_by"]: {
+        id?: GraphQLTypes["order_by"];
     };
     ["query_root"]: {
         __typename: "query_root";
@@ -7741,6 +8012,8 @@ columns and relationships of "niftysave_migration" */
     /** columns and relationships of "resource" */
     ["resource"]: {
         __typename: "resource";
+        /** An object relationship */
+        content?: GraphQLTypes["content"];
         content_cid?: string;
         inserted_at: GraphQLTypes["timestamptz"];
         ipfs_url?: string;
@@ -7768,6 +8041,7 @@ columns and relationships of "niftysave_migration" */
         _and?: Array<GraphQLTypes["resource_bool_exp"]>;
         _not?: GraphQLTypes["resource_bool_exp"];
         _or?: Array<GraphQLTypes["resource_bool_exp"]>;
+        content?: GraphQLTypes["content_bool_exp"];
         content_cid?: GraphQLTypes["String_comparison_exp"];
         inserted_at?: GraphQLTypes["timestamptz_comparison_exp"];
         ipfs_url?: GraphQLTypes["String_comparison_exp"];
@@ -7781,6 +8055,7 @@ columns and relationships of "niftysave_migration" */
     ["resource_constraint"]: resource_constraint;
     /** input type for inserting data into table "resource" */
     ["resource_insert_input"]: {
+        content?: GraphQLTypes["content_obj_rel_insert_input"];
         content_cid?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
         ipfs_url?: string;
@@ -7832,6 +8107,7 @@ columns and relationships of "niftysave_migration" */
     };
     /** Ordering options when selecting data from "resource". */
     ["resource_order_by"]: {
+        content?: GraphQLTypes["content_order_by"];
         content_cid?: GraphQLTypes["order_by"];
         inserted_at?: GraphQLTypes["order_by"];
         ipfs_url?: GraphQLTypes["order_by"];
@@ -8371,6 +8647,7 @@ export declare enum other_nft_resources_update_column {
 }
 /** unique or primary key constraints on table "pin" */
 export declare enum pin_constraint {
+    pin_content_cid_service_key = "pin_content_cid_service_key",
     pin_pkey = "pin_pkey"
 }
 /** select columns of table "pin" */
@@ -9216,6 +9493,17 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             },
             ValueTypes["nft_asset"]
         ];
+        fail_resource?: [
+            {
+                args: ValueTypes["fail_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
         ingest_erc721_token?: [
             {
                 args: ValueTypes["ingest_erc721_token_args"]; /** distinct select on columns */
@@ -9475,6 +9763,17 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         link_nft_resource?: [
             {
                 args: ValueTypes["link_nft_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
+        link_resource_content?: [
+            {
+                args: ValueTypes["link_resource_content_args"]; /** distinct select on columns */
                 distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
                 limit?: number | null; /** skip the first n rows. Use only with order_by */
                 offset?: number | null; /** sort the rows by one or more columns */
@@ -9808,6 +10107,8 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         delete_resource_view?: GraphQLTypes["resource_view_mutation_response"];
         /** execute VOLATILE function "fail_nft_asset" which returns "nft_asset" */
         fail_nft_asset: Array<GraphQLTypes["nft_asset"]>;
+        /** execute VOLATILE function "fail_resource" which returns "resource" */
+        fail_resource: Array<GraphQLTypes["resource"]>;
         /** execute VOLATILE function "ingest_erc721_token" which returns "nft" */
         ingest_erc721_token: Array<GraphQLTypes["nft"]>;
         /** insert data into the table: "blockchain_block" */
@@ -9882,6 +10183,8 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         link_nft_asset: Array<GraphQLTypes["nft_asset"]>;
         /** execute VOLATILE function "link_nft_resource" which returns "resource" */
         link_nft_resource: Array<GraphQLTypes["resource"]>;
+        /** execute VOLATILE function "link_resource_content" which returns "resource" */
+        link_resource_content: Array<GraphQLTypes["resource"]>;
         /** update data of the table: "blockchain_block" */
         update_blockchain_block?: GraphQLTypes["blockchain_block_mutation_response"];
         /** update single row of the table: "blockchain_block" */
@@ -11132,6 +11435,17 @@ export declare const Chain: (...options: chainOptions) => {
             },
             ValueTypes["nft_asset"]
         ];
+        fail_resource?: [
+            {
+                args: ValueTypes["fail_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
         ingest_erc721_token?: [
             {
                 args: ValueTypes["ingest_erc721_token_args"]; /** distinct select on columns */
@@ -11391,6 +11705,17 @@ export declare const Chain: (...options: chainOptions) => {
         link_nft_resource?: [
             {
                 args: ValueTypes["link_nft_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
+        link_resource_content?: [
+            {
+                args: ValueTypes["link_resource_content_args"]; /** distinct select on columns */
                 distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
                 limit?: number | null; /** skip the first n rows. Use only with order_by */
                 offset?: number | null; /** sort the rows by one or more columns */
@@ -11724,6 +12049,8 @@ export declare const Chain: (...options: chainOptions) => {
         delete_resource_view?: GraphQLTypes["resource_view_mutation_response"];
         /** execute VOLATILE function "fail_nft_asset" which returns "nft_asset" */
         fail_nft_asset: Array<GraphQLTypes["nft_asset"]>;
+        /** execute VOLATILE function "fail_resource" which returns "resource" */
+        fail_resource: Array<GraphQLTypes["resource"]>;
         /** execute VOLATILE function "ingest_erc721_token" which returns "nft" */
         ingest_erc721_token: Array<GraphQLTypes["nft"]>;
         /** insert data into the table: "blockchain_block" */
@@ -11798,6 +12125,8 @@ export declare const Chain: (...options: chainOptions) => {
         link_nft_asset: Array<GraphQLTypes["nft_asset"]>;
         /** execute VOLATILE function "link_nft_resource" which returns "resource" */
         link_nft_resource: Array<GraphQLTypes["resource"]>;
+        /** execute VOLATILE function "link_resource_content" which returns "resource" */
+        link_resource_content: Array<GraphQLTypes["resource"]>;
         /** update data of the table: "blockchain_block" */
         update_blockchain_block?: GraphQLTypes["blockchain_block_mutation_response"];
         /** update single row of the table: "blockchain_block" */
@@ -12953,6 +13282,17 @@ export declare const Selectors: {
             },
             ValueTypes["nft_asset"]
         ];
+        fail_resource?: [
+            {
+                args: ValueTypes["fail_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
         ingest_erc721_token?: [
             {
                 args: ValueTypes["ingest_erc721_token_args"]; /** distinct select on columns */
@@ -13212,6 +13552,17 @@ export declare const Selectors: {
         link_nft_resource?: [
             {
                 args: ValueTypes["link_nft_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
+        link_resource_content?: [
+            {
+                args: ValueTypes["link_resource_content_args"]; /** distinct select on columns */
                 distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
                 limit?: number | null; /** skip the first n rows. Use only with order_by */
                 offset?: number | null; /** sort the rows by one or more columns */
@@ -14557,6 +14908,17 @@ export declare const Gql: {
             },
             ValueTypes["nft_asset"]
         ];
+        fail_resource?: [
+            {
+                args: ValueTypes["fail_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
         ingest_erc721_token?: [
             {
                 args: ValueTypes["ingest_erc721_token_args"]; /** distinct select on columns */
@@ -14816,6 +15178,17 @@ export declare const Gql: {
         link_nft_resource?: [
             {
                 args: ValueTypes["link_nft_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
+        link_resource_content?: [
+            {
+                args: ValueTypes["link_resource_content_args"]; /** distinct select on columns */
                 distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
                 limit?: number | null; /** skip the first n rows. Use only with order_by */
                 offset?: number | null; /** sort the rows by one or more columns */
@@ -15149,6 +15522,8 @@ export declare const Gql: {
         delete_resource_view?: GraphQLTypes["resource_view_mutation_response"];
         /** execute VOLATILE function "fail_nft_asset" which returns "nft_asset" */
         fail_nft_asset: Array<GraphQLTypes["nft_asset"]>;
+        /** execute VOLATILE function "fail_resource" which returns "resource" */
+        fail_resource: Array<GraphQLTypes["resource"]>;
         /** execute VOLATILE function "ingest_erc721_token" which returns "nft" */
         ingest_erc721_token: Array<GraphQLTypes["nft"]>;
         /** insert data into the table: "blockchain_block" */
@@ -15223,6 +15598,8 @@ export declare const Gql: {
         link_nft_asset: Array<GraphQLTypes["nft_asset"]>;
         /** execute VOLATILE function "link_nft_resource" which returns "resource" */
         link_nft_resource: Array<GraphQLTypes["resource"]>;
+        /** execute VOLATILE function "link_resource_content" which returns "resource" */
+        link_resource_content: Array<GraphQLTypes["resource"]>;
         /** update data of the table: "blockchain_block" */
         update_blockchain_block?: GraphQLTypes["blockchain_block_mutation_response"];
         /** update single row of the table: "blockchain_block" */

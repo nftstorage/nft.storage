@@ -794,6 +794,72 @@ export const AllTypesProps = {
             required: true
         }
     },
+    content: {
+        pins: {
+            distinct_on: {
+                type: "pin_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "pin_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "pin_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        pins_aggregate: {
+            distinct_on: {
+                type: "pin_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "pin_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "pin_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        }
+    },
     content_aggregate_fields: {
         count: {
             columns: {
@@ -847,6 +913,12 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: false
         },
+        pins: {
+            type: "pin_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         updated_at: {
             type: "timestamptz_comparison_exp",
             array: false,
@@ -882,8 +954,28 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: false
         },
+        pins: {
+            type: "pin_arr_rel_insert_input",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         updated_at: {
             type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    content_obj_rel_insert_input: {
+        data: {
+            type: "content_insert_input",
+            array: false,
+            arrayRequired: false,
+            required: true
+        },
+        on_conflict: {
+            type: "content_on_conflict",
             array: false,
             arrayRequired: false,
             required: false
@@ -924,6 +1016,12 @@ export const AllTypesProps = {
         },
         inserted_at: {
             type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        pins_aggregate: {
+            type: "pin_aggregate_order_by",
             array: false,
             arrayRequired: false,
             required: false
@@ -1341,6 +1439,32 @@ export const AllTypesProps = {
             required: false
         }
     },
+    fail_resource_args: {
+        ipfs_url: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        status: {
+            type: "resource_status",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        status_text: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        uri_hash: {
+            type: "bytea",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
     ingest_erc721_token_args: {
         block_hash: {
             type: "String",
@@ -1549,6 +1673,44 @@ export const AllTypesProps = {
         },
         uri: {
             type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    link_resource_content_args: {
+        cid: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        dag_size: {
+            type: "bigint",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        ipfs_url: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        pin_service: {
+            type: "pin_service",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        status_text: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        uri_hash: {
+            type: "bytea",
             array: false,
             arrayRequired: false,
             required: false
@@ -1988,6 +2150,44 @@ export const AllTypesProps = {
             },
             where: {
                 type: "nft_asset_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        fail_resource: {
+            args: {
+                type: "fail_resource_args",
+                array: false,
+                arrayRequired: false,
+                required: true
+            },
+            distinct_on: {
+                type: "resource_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "resource_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "resource_bool_exp",
                 array: false,
                 arrayRequired: false,
                 required: false
@@ -2524,6 +2724,44 @@ export const AllTypesProps = {
         link_nft_resource: {
             args: {
                 type: "link_nft_resource_args",
+                array: false,
+                arrayRequired: false,
+                required: true
+            },
+            distinct_on: {
+                type: "resource_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "resource_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "resource_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        link_resource_content: {
+            args: {
+                type: "link_resource_content_args",
                 array: false,
                 arrayRequired: false,
                 required: true
@@ -5667,6 +5905,96 @@ export const AllTypesProps = {
             }
         }
     },
+    pin_aggregate_order_by: {
+        avg: {
+            type: "pin_avg_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        count: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        max: {
+            type: "pin_max_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        min: {
+            type: "pin_min_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        stddev: {
+            type: "pin_stddev_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        stddev_pop: {
+            type: "pin_stddev_pop_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        stddev_samp: {
+            type: "pin_stddev_samp_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        sum: {
+            type: "pin_sum_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        var_pop: {
+            type: "pin_var_pop_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        var_samp: {
+            type: "pin_var_samp_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        variance: {
+            type: "pin_variance_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    pin_arr_rel_insert_input: {
+        data: {
+            type: "pin_insert_input",
+            array: true,
+            arrayRequired: true,
+            required: true
+        },
+        on_conflict: {
+            type: "pin_on_conflict",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    pin_avg_order_by: {
+        id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
     pin_bool_exp: {
         _and: {
             type: "pin_bool_exp",
@@ -5765,6 +6093,58 @@ export const AllTypesProps = {
         },
         updated_at: {
             type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    pin_max_order_by: {
+        content_cid: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        inserted_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    pin_min_order_by: {
+        content_cid: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        inserted_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "order_by",
             array: false,
             arrayRequired: false,
             required: false
@@ -5989,7 +6369,63 @@ export const AllTypesProps = {
             required: true
         }
     },
+    pin_stddev_order_by: {
+        id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    pin_stddev_pop_order_by: {
+        id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    pin_stddev_samp_order_by: {
+        id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    pin_sum_order_by: {
+        id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
     pin_update_column: "enum",
+    pin_var_pop_order_by: {
+        id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    pin_var_samp_order_by: {
+        id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    pin_variance_order_by: {
+        id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
     query_root: {
         blockchain_block: {
             distinct_on: {
@@ -7265,6 +7701,12 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: true
         },
+        content: {
+            type: "content_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         content_cid: {
             type: "String_comparison_exp",
             array: false,
@@ -7316,6 +7758,12 @@ export const AllTypesProps = {
     },
     resource_constraint: "enum",
     resource_insert_input: {
+        content: {
+            type: "content_obj_rel_insert_input",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         content_cid: {
             type: "String",
             array: false,
@@ -7400,6 +7848,12 @@ export const AllTypesProps = {
         }
     },
     resource_order_by: {
+        content: {
+            type: "content_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         content_cid: {
             type: "order_by",
             array: false,
@@ -9182,6 +9636,8 @@ export const ReturnTypes = {
         cid: "String",
         dag_size: "bigint",
         inserted_at: "timestamptz",
+        pins: "pin",
+        pins_aggregate: "pin_aggregate",
         updated_at: "timestamptz"
     },
     content_aggregate: {
@@ -9340,6 +9796,7 @@ export const ReturnTypes = {
         delete_resource_by_pk: "resource",
         delete_resource_view: "resource_view_mutation_response",
         fail_nft_asset: "nft_asset",
+        fail_resource: "resource",
         ingest_erc721_token: "nft",
         insert_blockchain_block: "blockchain_block_mutation_response",
         insert_blockchain_block_one: "blockchain_block",
@@ -9377,6 +9834,7 @@ export const ReturnTypes = {
         insert_resource_view_one: "resource_view",
         link_nft_asset: "nft_asset",
         link_nft_resource: "resource",
+        link_resource_content: "resource",
         update_blockchain_block: "blockchain_block_mutation_response",
         update_blockchain_block_by_pk: "blockchain_block",
         update_blockchain_contract: "blockchain_contract_mutation_response",
@@ -9845,6 +10303,7 @@ export const ReturnTypes = {
         resource_view_aggregate: "resource_view_aggregate"
     },
     resource: {
+        content: "content",
         content_cid: "String",
         inserted_at: "timestamptz",
         ipfs_url: "String",
