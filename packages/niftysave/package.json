@@ -66,8 +66,5 @@
   "homepage": "https://github.com/nftstorage/niftysave#readme",
   "publishConfig": {
     "access": "public"
-  },
-  "engines": {
-    "node": ">=16.10.0"
   }
 }
