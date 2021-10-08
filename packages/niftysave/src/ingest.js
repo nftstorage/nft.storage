@@ -10,14 +10,12 @@ export const main = async () => await spawn(await configure())
  * @typedef {Object} Config
  * @property {number} config.budget - Time budget
  * @property {number} config.batchSize - Number of tokens in each import
- * @property {number} config.poolSize - Number of active tasks
  * @property {ERC721.Config} config.erc721
  * @property {DB.Config} config.fauna
- * @property {Hasura.Config} config.hasura
  *
  * @param {Config} config
  */
-export const spawn = async (config) => {
+export const spawn = async config => {
   const deadline = Date.now() + config.budget
   console.log('Obtain current cursor')
   const cursor = await readCursor(config)
