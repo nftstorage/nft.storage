@@ -4,6 +4,7 @@ import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth-v1.js'
 import { debug } from '../utils/debug.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
+import { parseCid } from '../utils/utils.js'
 
 const log = debug('nfts-upload')
 const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
@@ -72,10 +73,15 @@ export async function uploadV1(event, ctx) {
     sourceCid = cid
     const dagSize = size || bytes
 
+    let contentCid = cid
+    if (isCar) {
+      ;({ contentCid } = parseCid(cid))
+    }
+
     upload = await db.createUpload({
       mime_type: content.type,
       type: isCar ? 'Car' : 'Blob',
-      content_cid: cid,
+      content_cid: contentCid,
       source_cid: cid,
       dag_size: dagSize,
       user_id: user.id,
