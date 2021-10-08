@@ -4,6 +4,7 @@ import stores from './scripts/stores.js'
 import { signJWT } from '../src/utils/jwt.js'
 import { SALT } from './scripts/worker-globals.js'
 import { createCar } from './scripts/car.js'
+import { rawClient } from './scripts/helpers.js'
 
 /**
  * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
@@ -69,6 +70,34 @@ describe('/upload', () => {
       'queued',
       'pin status is "queued"'
     )
+  })
+
+  it.only('should record nft:create migration event', async () => {
+    const { token } = await createTestUser()
+
+    const file = new Blob(['test-migration-event-' + Date.now()])
+    const res = await fetch('/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: file,
+    })
+
+    assert(res, 'Server responded')
+    assert(res.ok, 'Server response ok')
+    const {
+      ok,
+      value: { cid },
+    } = await res.json()
+    assert(ok, 'Server response payload has `ok` property')
+
+    const { data, error } = await rawClient
+      .from('migration_event')
+      .select('*')
+      .filter('name', 'eq', 'nft:create')
+
+    assert.ok(!error)
+    const eventData = data?.find((d) => d.data.nft.cid === cid)
+    assert(eventData)
   })
 
   it('should upload a multiple blobs', async () => {

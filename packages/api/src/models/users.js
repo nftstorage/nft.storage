@@ -1,8 +1,10 @@
 import { signJWT } from '../utils/jwt.js'
 import merge from 'merge-options'
 import { ErrorUserNotFound, HTTPError } from '../errors.js'
-import { secrets } from '../constants.js'
+import { secrets, database } from '../constants.js'
+import { DBClient } from '../utils/db-client.js'
 
+const db = new DBClient(database.url, secrets.database)
 const users = USERS
 
 /**
@@ -22,6 +24,7 @@ export async function createOrUpdate(newUser) {
   const user = await users.get(newUser.issuer)
   if (user === null) {
     await users.put(newUser.issuer, JSON.stringify(newUser))
+    await db.addMigrationEvent('user:create', newUser)
     return newUser
   }
 

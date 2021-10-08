@@ -374,6 +374,19 @@ export class DBClient {
       throw new DBError(error)
     }
   }
+
+  /**
+   * @param {string} name Arbitrary event identifier.
+   * @param {any} [data] Information about the event.
+   */
+  async addMigrationEvent(name, data) {
+    /** @type {PostgrestQueryBuilder<definitions['migration_event']>} */
+    const query = this.client.from('migration_event')
+    const { error } = await query.insert({ name, data })
+    if (error) {
+      throw new DBError(error)
+    }
+  }
 }
 
 export class DBError extends Error {
