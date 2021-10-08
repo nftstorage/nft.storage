@@ -30,7 +30,7 @@ export function toNFTResponse(upload, sourceCid) {
     size: upload.content.dag_size || 0,
     pin: {
       cid: sourceCid || upload.source_cid,
-      created: upload.inserted_at,
+      created: upload.content.pin[0].inserted_at,
       size: upload.content.dag_size || 0,
       status: transformPinStatus(upload.content.pin[0].status),
     },
@@ -73,7 +73,7 @@ export function toCheckNftResponse(sourceCid, content) {
     cid: sourceCid,
     pin: {
       cid: sourceCid,
-      created: content?.inserted_at,
+      created: content?.pins[0].inserted_at,
       size: content?.dag_size,
       status: transformPinStatus(content?.pins[0].status),
     },
