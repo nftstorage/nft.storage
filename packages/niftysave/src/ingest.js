@@ -194,7 +194,7 @@ async function readIntoInbox(config, writeable) {
     // you scraped successfully, got nothing.
     // you're caught up. Retry later
     if (scrape.length == 0) {
-      sleep(config.ingestRetryThrottle)
+      await sleep(config.ingestRetryThrottle)
     } else {
       await writer.ready
       for (const nft of scrape) {
@@ -215,7 +215,7 @@ async function readIntoInbox(config, writeable) {
  * @param {Config} config
  */
 async function spawn(config) {
-  console.log(`⏲️ Begin Scraping the Blockchain.`)
+  console.log(`⏲️ Begin Scraping the Ethereum Blockchain.`)
   /**
    * @type { TransformStream<ERC721ImportNFT> }
    */
