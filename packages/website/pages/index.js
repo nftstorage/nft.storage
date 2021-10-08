@@ -147,7 +147,7 @@ function About() {
         <h1 className="chicagoflf">
           <HashLink id="about">About</HashLink>
         </h1>
-        <p className="lh-copy mw-none mw-none-m mw6-ns">
+        <p className="lh-copy about-text">
           <strong>nft.storage</strong> is a brand new service, built
           specifically for storing <strong>off-chain</strong> NFT data. Data is
           stored <em>decentralized</em> on{' '}
@@ -162,7 +162,7 @@ function About() {
           used in your smart contract without fear of the data being referenced
           changing.
         </p>
-        <p className="lh-copy mw-none mw-none-m mw6-ns">
+        <p className="lh-copy about-text">
           To learn more about the importance of content addressing, check out
           this page on{' '}
           <a
@@ -173,7 +173,7 @@ function About() {
           </a>
           .
         </p>
-        <div className="db db-m dn-ns">
+        <div className="store-and-retrieve-mobile">
           <div>
             {storeText}
             <div className="tc mv4">
@@ -199,22 +199,24 @@ function About() {
             </div>
           </div>
         </div>
-        <div className="relative dn dn-m db-ns">
-          <div className="tr pl5">
+        <div className="relative store-and-retrieve-desktop">
+          <div className="tr">
             <img
               src="images/diagram-store-and-retrieve.png"
               srcSet="images/diagram-store-and-retrieve@2x.png 2x"
               alt="diagram of storage and retrieval with nft.storage"
               width="1177"
-              style={{ width: '1177px', height: 'auto' }}
+              style={{ width: '1177px', height: 'auto', maxWidth: '90%' }}
             />
           </div>
-          <div className="absolute top-0 w-100 h-100 flex">
-            <div className="flex-auto w-50">
+          <div className="absolute top-0 w-100 h-100 flex justify-between">
+            <div className="flex-auto" style={{ maxWidth: '30%' }}>
               <div className="pt6 pr4">{storeText}</div>
             </div>
-            <div className="flex-none" style={{ width: 400 }} />
-            <div className="flex-auto flex items-center w-50">
+            <div
+              className="flex-auto flex items-center w-50"
+              style={{ maxWidth: '35%', paddingBottom: '4rem' }}
+            >
               <div>{retrieveText}</div>
             </div>
           </div>
