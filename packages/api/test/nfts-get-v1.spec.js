@@ -71,4 +71,31 @@ describe('V1 - Get NFT', () => {
       message: `NFT not found`,
     })
   })
+
+  it('should error on not found for a deleted nft', async () => {
+    const client = await createClientWithUser()
+    const cidv1 = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
+    await client.client.createUpload({
+      content_cid: cidv1,
+      source_cid: cidv1,
+      type: 'Blob',
+      user_id: client.userId,
+      dag_size: 100,
+    })
+
+    const deleted = await client.client.deleteUpload(cidv1, client.userId)
+    assert.ok(deleted)
+    assert.equal(deleted.source_cid, cidv1)
+
+    const res = await fetch(`v1/${cidv1}`, {
+      headers: { Authorization: `Bearer ${client.token}` },
+    })
+    const { ok, error } = await res.json()
+
+    assert.equal(ok, false, 'not found')
+    assert.deepStrictEqual(error, {
+      code: 'HTTP_ERROR',
+      message: `NFT not found`,
+    })
+  })
 })

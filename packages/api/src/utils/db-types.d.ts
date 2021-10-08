@@ -451,6 +451,7 @@ export interface paths {
           meta?: parameters['rowFilter.upload.meta']
           inserted_at?: parameters['rowFilter.upload.inserted_at']
           updated_at?: parameters['rowFilter.upload.updated_at']
+          deleted_at?: parameters['rowFilter.upload.deleted_at']
           /** Filtering Columns */
           select?: parameters['select']
           /** Ordering */
@@ -514,6 +515,7 @@ export interface paths {
           meta?: parameters['rowFilter.upload.meta']
           inserted_at?: parameters['rowFilter.upload.inserted_at']
           updated_at?: parameters['rowFilter.upload.updated_at']
+          deleted_at?: parameters['rowFilter.upload.deleted_at']
         }
         header: {
           /** Preference */
@@ -541,6 +543,7 @@ export interface paths {
           meta?: parameters['rowFilter.upload.meta']
           inserted_at?: parameters['rowFilter.upload.inserted_at']
           updated_at?: parameters['rowFilter.upload.updated_at']
+          deleted_at?: parameters['rowFilter.upload.deleted_at']
         }
         body: {
           /** upload */
@@ -867,6 +870,7 @@ export interface definitions {
     meta?: string
     inserted_at: string
     updated_at: string
+    deleted_at?: string
   }
   user: {
     /**
@@ -974,6 +978,7 @@ export interface parameters {
   'rowFilter.upload.meta': string
   'rowFilter.upload.inserted_at': string
   'rowFilter.upload.updated_at': string
+  'rowFilter.upload.deleted_at': string
   /** user */
   'body.user': definitions['user']
   'rowFilter.user.id': string

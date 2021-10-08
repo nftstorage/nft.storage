@@ -55,7 +55,7 @@ BEGIN
             (data ->> 'meta')::jsonb,
             (data ->> 'updated_at')::timestamptz,
             (data ->> 'inserted_at')::timestamptz)
-    ON CONFLICT ( user_id, source_cid ) DO NOTHING;
+    ON CONFLICT ( user_id, source_cid ) DO UPDATE SET deleted_at = null;
 
 
     return query select *

@@ -119,6 +119,6 @@ CREATE TABLE IF NOT EXISTS upload
     meta        jsonb,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    --deleted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+    deleted_at TIMESTAMP WITH TIME ZONE,
     UNIQUE (user_id, source_cid)
 );
