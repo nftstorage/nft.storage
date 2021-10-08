@@ -1,9 +1,65 @@
-import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Footer from './footer.js'
 import Navbar from './navbar.js'
 import Loading from './loading'
 import { useUser } from '../lib/user'
+import { getVersion } from '../lib/api'
+import { getStatusPageSummary } from '../lib/statuspage-api'
+import { useQuery } from 'react-query'
+
+const MaintenanceBanner = () => {
+  let maintenanceMessage = ''
+
+  const { data: statusPageData, error: statusPageError } = useQuery(
+    'get-statuspage-summary',
+    () => getStatusPageSummary()
+  )
+  const scheduledMaintenances =
+    statusPageData?.scheduled_maintenances.filter(
+      (/** @type {{ status: string; }} */ maintenance) =>
+        maintenance.status !== 'completed'
+    ) || []
+
+  const { data: apiVersionData, error: apiVersionError } = useQuery(
+    'get-version',
+    () => getVersion(),
+    {
+      enabled:
+        (statusPageData && scheduledMaintenances.length === 0) ||
+        statusPageError !== null,
+    }
+  )
+
+  if (scheduledMaintenances.length > 0) {
+    maintenanceMessage =
+      statusPageData.scheduled_maintenances[0].incident_updates[0].body
+  }
+
+  if (apiVersionData && apiVersionData.mode !== 'rw' && !maintenanceMessage) {
+    maintenanceMessage =
+      'The NFT.Storage API is currently undergoing maintenance...'
+  }
+
+  if (statusPageError) {
+    console.log(statusPageError)
+  }
+
+  if (apiVersionError) {
+    console.log(apiVersionError)
+  }
+
+  if (maintenanceMessage) {
+    return (
+      <div className="bg-yellow bb b--black" style={{ zIndex: 50 }}>
+        <div className="lh-copy mw9 tc center pv3 ph3-ns">
+          <span className="f4">⚠</span> {maintenanceMessage}
+        </div>
+      </div>
+    )
+  } else {
+    return null
+  }
+}
 
 /**
  * @typedef {import('react').ReactChildren} Children
@@ -30,36 +86,6 @@ export default function Layout({
     enabled: needsUser,
   })
   const shouldWaitForUser = needsUser && status === 'loading'
-
-  const [showMaintenanceBanner, setShowMaintenanceBanner] = useState(false)
-  const [maintenanceMessage, setMaintenanceMessage] = useState('')
-
-  useEffect(() => {
-    fetch('https://status.nft.storage/api/v2/summary.json')
-      .then((response) => response.json())
-      .then((data) => {
-        const scheduledMaintenances = data.scheduled_maintenances.filter(
-          (/** @type {{ status: string; }} */ m) => m.status !== 'completed'
-        )
-        if (scheduledMaintenances.length > 0) {
-          setShowMaintenanceBanner(true)
-          setMaintenanceMessage(
-            data.scheduled_maintenances[0].incident_updates[0].body
-          )
-        } else {
-          fetch('https://api.nft.storage/version')
-            .then((response) => response.json())
-            .then((data) => {
-              setShowMaintenanceBanner(data.mode !== 'rw')
-              setMaintenanceMessage(
-                data.mode !== 'rw'
-                  ? 'The NFT.Storage API is currently undergoing maintenance...'
-                  : ''
-              )
-            })
-        }
-      })
-  }, [children])
 
   return (
     <div className="sans-serif flex flex-column min-vh-100">
@@ -88,13 +114,7 @@ export default function Layout({
         </>
       ) : (
         <>
-          {showMaintenanceBanner && (
-            <div className="bg-yellow bb b--black" style={{ zIndex: 50 }}>
-              <div className="lh-copy mw9 tc center pv3 ph3-ns">
-                <span className="f4">⚠️</span> {maintenanceMessage}
-              </div>
-            </div>
-          )}
+          <MaintenanceBanner />
           <Navbar bgColor={navBgColor} user={user} />
           {children({ user })}
           <Footer />
