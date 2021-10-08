@@ -23,6 +23,7 @@ export const main = async () => await spawn(await configure())
  * @property {number} batchSize
  * @property {number} concurrency
  * @property {number} fetchTimeout
+ * @property {number} fetchRetryLimit
  * @property {number} retryInterval
  * @property {number} retryLimit
  * @property {number} queueSize
@@ -32,69 +33,80 @@ export const main = async () => await spawn(await configure())
 const spawn = async (config) => {
   // Create channel for reader to push data into & writer
   // to pull data from.
-  const channel = new TransformStream(
+  const { writable, readable } = new TransformStream(
     {},
     {
       highWaterMark: config.queueSize,
     }
   )
 
-  // create a read task that will keep retrying with exponential backoff
-  // and will crash after nummer of retry limits is reached.
-  const read = retry(
-    () => readInto(channel.writable, config),
-    [exponentialBackoff(config.retryInterval), maxRetries(config.retryLimit)]
-  )
-
-  // create a write task that will pull nft_assts from the channel,
-  // analyze and write updated state to the data base.
-  const write = analyzeFrom(channel.readable, config)
-
-  await Promise.all([read, write])
+  // wait for task completion before resuming.
+  await Promise.all([
+    // create read task that will pull queued nft assets and queue them for
+    // analyzer to process.
+    readInto(writable, config),
+    // create an analyzer task that will pull nft assets from the queue and
+    // write updated state to the database.
+    analyzeFrom(readable, config),
+  ])
 }
 
 /**
+ * Pulls queued nft assets from the database and queues them into a writer
+ * stream. On error will close a stream and release a lock.
+ *
  * @param {WritableStream<Asset>} writable
  * @param {Config} config
+ * @returns {Promise<never>}
  */
 const readInto = async (writable, config) => {
   const writer = writable.getWriter()
+  try {
+    let cursor = Cursor.init()
 
-  let cursor = Cursor.init()
-
-  while (true) {
-    console.log(
-      `📥 Fetch ${config.batchSize} queued nft assets from ${JSON.stringify(
-        cursor
-      )}`
-    )
-    // Pull queued tasks in FIFO order by `update_at`.
-    const page = await fetchQueuedAssets(config, cursor)
-
-    // If we got no queued assets we just sleep for some time and try again.
-    if (page.length == 0) {
+    while (true) {
       console.log(
-        `📭  No more queued nft assets, pause for ${config.retryInterval}ms`
+        `📥 Fetch ${config.batchSize} queued nft assets from ${JSON.stringify(
+          cursor
+        )}`
       )
-      await sleep(config.retryInterval)
-    } else {
-      console.log('📬 Wait for space in a queue')
-      // Now if queue is full, we wait until there is more space.
-      await writer.ready
-      console.log(`📨 Push ${page.length} nft assets into a queue`)
-      // Then we drain all the records even if queue will overflow (no point)
-      // in keeping some in memory and constant awaits are likely to slow us
-      // down here. One we flush the batch we also pull new batch, chances are
-      // items are picked off of queue while we're fetching and if not, then
-      // we will wait (see await above).
-      for (const record of page) {
-        writer.write(record)
-      }
+      // Pull queued tasks in FIFO order by `update_at`.
+      const page = await retry(
+        () => fetchQueuedAssets(config, cursor),
+        [
+          exponentialBackoff(config.retryInterval),
+          maxRetries(config.retryLimit),
+        ]
+      )
 
-      // Update cursor to point to the record after the last one.
-      const lastRecord = /** @type {Asset} */ (page[page.length - 1])
-      cursor = Cursor.after(cursor, lastRecord)
+      // If we got no queued assets we just sleep for some time and try again.
+      if (page.length == 0) {
+        console.log(
+          `📭  No more queued nft assets, pause for ${config.retryInterval}ms`
+        )
+        await sleep(config.retryInterval)
+      } else {
+        console.log('📬 Wait for space in a queue')
+        // Now if queue is full, we wait until there is more space.
+        await writer.ready
+        console.log(`📨 Push ${page.length} nft assets into a queue`)
+        // Then we drain all the records even if queue will overflow (no point)
+        // in keeping some in memory and constant awaits are likely to slow us
+        // down here. One we flush the batch we also pull new batch, chances are
+        // items are picked off of queue while we're fetching and if not, then
+        // we will wait (see await above).
+        for (const record of page) {
+          writer.write(record)
+        }
+
+        // Update cursor to point to the record after the last one.
+        const lastRecord = /** @type {Asset} */ (page[page.length - 1])
+        cursor = Cursor.after(cursor, lastRecord)
+      }
     }
+  } finally {
+    writer.close()
+    writer.releaseLock()
   }
 }
 
@@ -105,12 +117,13 @@ const readInto = async (writable, config) => {
  * @property {string} [ipfs_url]
  * @property {string} updated_at
  *
+ * Fetches batch of queued nft assets from the database from the given cursor.
+ *
  * @param {Object} config
  * @param {Hasura.Config} config.hasura
  * @param {number} config.batchSize
  * @param {Cursor.Cursor} cursor
  * @returns {Promise<Asset[]>}
- *
  */
 const fetchQueuedAssets = async (config, cursor) => {
   const { nft_asset: page } = await Hasura.query(config.hasura, {
@@ -145,9 +158,12 @@ const fetchQueuedAssets = async (config, cursor) => {
 }
 
 /**
+ * Pulls nft assets from the given `readable` stream and after performing
+ * analysis writes results out to database.
  *
  * @param {ReadableStream<Asset>} readable
  * @param {Config} config
+ * @returns {Promise<void>}
  */
 const analyzeFrom = async (readable, config) => {
   const inbox = readable.getReader()
@@ -160,12 +176,13 @@ const analyzeFrom = async (readable, config) => {
 
   await Promise.all(tasks)
   await inbox.cancel()
+  inbox.releaseLock()
 }
 
 /**
- *
  * @param {Config} config
  * @param {ReadableStreamDefaultReader<Asset>} inbox
+ * @returns {Promise<void>}
  */
 const analyzer = async (config, inbox) => {
   while (true) {
@@ -217,13 +234,20 @@ const analyze = async (config, asset) => {
     `🌐 (${hash}) Fetching token metadata from ${printURL(ipfsURL || url)}`
   )
 
-  // TODO: Use more sophisticated fetch strategy to phase request per host and
-  // perform sereral retries
+  // Use exponentian backoff on network requests and retry several times before
+  // bailing
   const blob = await Result.fromPromise(
-    fetchResource(
-      config,
-      { url, ipfsURL },
-      { signal: timeout(config.fetchTimeout) }
+    retry(
+      () =>
+        fetchResource(
+          config,
+          { url, ipfsURL },
+          { signal: timeout(config.fetchTimeout) }
+        ),
+      [
+        exponentialBackoff(config.retryInterval),
+        maxRetries(config.fetchRetryLimit),
+      ]
     )
   )
   const content = blob.ok ? await Result.fromPromise(blob.value.text()) : blob

@@ -7,6 +7,7 @@ import yargs from 'yargs'
  * @property {number} budget
  * @property {number} batchSize
  * @property {number} fetchTimeout
+ * @property {number} fetchRetryLimit
  * @property {boolean} dryRun
  * @property {number} retryLimit
  * @property {number} retryInterval
@@ -60,8 +61,13 @@ export const configure = async () => {
       },
       'fetch-timeout': {
         type: 'number',
-        default: Number(process.env['FETCH_TIMEOUT'] || 30 * 100),
+        default: Number(process.env['FETCH_TIMEOUT'] || 30 * 60 * 1000),
         description: 'Time given to each request before it is aborted',
+      },
+      'fetch-retry-limit': {
+        type: 'number',
+        default: Number(process.env['FETCH_RETRY_LIMIT'] || 10),
+        description: 'Max number of fetch attempts to make',
       },
       concurrency: {
         type: 'number',
@@ -132,6 +138,7 @@ export const configure = async () => {
     batchSize: config['batch-size'],
     budget: config.budget,
     fetchTimeout: config['fetch-timeout'],
+    fetchRetryLimit: config['fetch-retry-limit'],
     dryRun: config['dry-run'],
     retryLimit: config['retry-limit'],
     retryInterval: config['retry-interval'],
