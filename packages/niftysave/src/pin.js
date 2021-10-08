@@ -1,5 +1,4 @@
 import * as Result from './result.js'
-import * as Schema from '../gen/db/schema.js'
 import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
 import { fetchWebResource, timeout } from './net.js'
@@ -11,6 +10,8 @@ import { exponentialBackoff, maxRetries, retry } from './retry.js'
 import * as Cursor from './analyze/cursor.js'
 import { TransformStream } from './stream.js'
 import { setTimeout as sleep } from 'timers/promises'
+import { CID } from 'multiformats'
+import { base32 } from 'multiformats/bases/base32'
 
 export const main = async () => await spawn(await configure())
 
@@ -31,24 +32,25 @@ export const main = async () => await spawn(await configure())
 /**
  * @param {Config} config
  */
-export const spawn = async (config) => {
-  const deadline = Date.now() + config.budget
-  while (deadline - Date.now() > 0) {
-    console.log('🔍 Fetching resources linked referrenced by tokens')
-    const resources = await fetchTokenResources(config)
-    if (resources.length === 0) {
-      return console.log('🏁 Finish, no more queued task were found')
-    } else {
-      console.log(`🤹 Spawn ${resources.length} tasks to process each resource`)
-      const updates = await Promise.all(
-        resources.map((resource) => archive(config, resource))
-      )
-      console.log(`💾 Update ${updates.length} records in database`)
-      await updateResources(config, updates)
-      console.log(`✨ Processed batch of ${resources.length} assets`)
+const spawn = async (config) => {
+  // Create channel for reader to push data into & writer
+  // to pull data from.
+  const { writable, readable } = new TransformStream(
+    {},
+    {
+      highWaterMark: config.queueSize,
     }
-  }
-  console.log('⌛️ Finish, time is up')
+  )
+
+  // wait for task completion before resuming.
+  await Promise.all([
+    // create read task that will pull queued nft assets and queue them for
+    // analyzer to process.
+    readInto(writable, config),
+    // create an analyzer task that will pull nft assets from the queue and
+    // write updated state to the database.
+    archiveFrom(readable, config),
+  ])
 }
 
 /**
@@ -197,50 +199,114 @@ const archiver = async (config, inbox) => {
 }
 
 /**
+ * @typedef {ArchiveOk|ArchiveError} ArchiveResult
  * @param {Object} config
- * @param {DB.Config} config.fauna
- * @param {Schema.ResourceUpdate[]} updates
+ * @param {Hasura.Config} config.hasura
+ * @param {ArchiveResult} state
  */
 
-const updateResources = async (config, updates) => {
-  const result = await DB.mutation(config.fauna, {
-    updateResources: [
-      {
-        input: {
-          updates,
-        },
-      },
-      {
-        _id: 1,
-      },
-    ],
-  })
-
-  if (result.ok) {
-    return result.value.updateResources?.map((r) => r._id) || []
-  } else {
-    console.error(
-      `💣 Attempt to update resource failed with ${result.error}, letting it crash`
-    )
-    throw result.error
-  }
-}
+const updateResource = async (config, state) =>
+  state.status === 'ContentLinked'
+    ? linkResource(config, state)
+    : failResource(config, state)
 
 /**
- * @typedef {Object} ArchiveError
- * @property {string} hash
- * @property {'URIParseFailed'|'ContentFetchFailed'|'ContentParseFailed'} status
- * @property {string} statusText
- * @property {URL|null} [ipfsURL]
- *
  * @typedef {Object} ArchiveOk
  * @property {string} hash
  * @property {'ContentLinked'} status
  * @property {string} statusText
  * @property {URL|null} ipfsURL
- * @property {string} cid
+ * @property {import('multiformats').CID} cid
  *
- * @typedef {ArchiveOk|ArchiveError} ArchiveResult
+ * @param {Object} config
+ * @param {Hasura.Config} config.hasura
+ * @param {ArchiveOk} state
+ */
+const linkResource = async (config, { hash, statusText, ipfsURL, cid }) => {
+  const content_cid = cid.toV1().toString(base32.encoder)
+  Hasura.mutation(config.hasura, {
+    update_resource_by_pk: [
+      {
+        pk_columns: {
+          uri_hash: hash,
+        },
+        _set: {
+          status: 'ContentLinked',
+          status_text: statusText,
+          ipfs_url: ipfsURL ? ipfsURL.href : null,
+          content_cid,
+        },
+      },
+      {
+        updated_at: true,
+      },
+    ],
+    insert_content_one: [
+      {
+        object: {
+          cid: content_cid,
+        },
+        on_conflict: {
+          constraint: Hasura.schema.content_constraint.content_pkey,
+          update_columns: [Hasura.schema.content_update_column.updated_at],
+        },
+      },
+      {
+        updated_at: true,
+      },
+    ],
+    insert_pin_one: [
+      {
+        object: {
+          content_cid,
+          status: 'PinQueued',
+          service: 'IpfsCluster',
+        },
+        on_conflict: {
+          constraint: Hasura.schema.pin_constraint.pin_pkey,
+          update_columns: [Hasura.schema.pin_update_column.updated_at],
+        },
+      },
+      {
+        updated_at: true,
+      },
+    ],
+  })
+}
+
+/**
+ * @typedef {Object} ArchiveError
+ * @property {string} hash
+ * @property {'URIParseFailed'|'ContentFetchFailed'|'PinRequestFailed'} status
+ * @property {string} statusText
+ * @property {URL|null} [ipfsURL]
+ *
+ * @param {Object} config
+ * @param {Hasura.Config} config.hasura
+ * @param {ArchiveError} result
+ *
+ */
+const failResource = async (config, { hash, status, statusText, ipfsURL }) => {
+  await Hasura.mutation(config.hasura, {
+    update_resource_by_pk: [
+      {
+        pk_columns: {
+          uri_hash: hash,
+        },
+        _set: {
+          status,
+          status_text: statusText,
+          ipfs_url: ipfsURL ? ipfsURL.href : null,
+        },
+      },
+      {
+        updated_at: true,
+      },
+    ],
+  })
+}
+
+/**
  * @param {Object} config
  * @param {import('./cluster').Config} config.cluster
  * @param {number} config.fetchTimeout
@@ -255,7 +321,7 @@ const archive = async (config, resource) => {
   if (!urlResult.ok) {
     console.error(`🚨 (${hash}) Failed to parse uri ${urlResult.error}`)
     return {
-      id,
+      hash,
       status: 'URIParseFailed',
       statusText: String(urlResult.error),
     }
@@ -264,7 +330,7 @@ const archive = async (config, resource) => {
   console.log(`🧬 (${hash}) Parsed URL ${printURL(url)}`)
 
   const ipfsURL = IPFSURL.asIPFSURL(url)
-  ipfsURL && console.log(`🚀 (${id}) Derived IPFS URL ${ipfsURL}`)
+  ipfsURL && console.log(`🚀 (${hash}) Derived IPFS URL ${ipfsURL}`)
 
   return ipfsURL
     ? await archiveIPFSResource(config, { ...resource, hash, ipfsURL })
@@ -276,9 +342,9 @@ const archive = async (config, resource) => {
  * @param {import('./cluster').Config} config.cluster
  * @param {number} config.fetchTimeout
  * @param {{hash: string, uri: string, ipfsURL: IPFSURL.IPFSURL}} resource
- * @returns {Promise<Schema.ResourceUpdate>}
+ * @returns {Promise<ArchiveResult>}
  */
-const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
+const archiveIPFSResource = async (config, { ipfsURL, hash }) => {
   console.log(`📌 (${hash}) Pin an IPFS resource ${ipfsURL}`)
   const pin = await Result.fromPromise(
     Cluster.pin(config.cluster, ipfsURL, {
@@ -293,18 +359,18 @@ const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
     console.error(`🚨 (${hash}) Failed to pin ${pin.error}`)
     return {
       hash,
-      ipfsURL: ipfsURL.href,
+      ipfsURL: ipfsURL,
       status: 'PinRequestFailed',
       statusText: String(pin.error),
     }
   }
-  const { cid } = pin.value
+  const cid = CID.parse(pin.value.cid)
 
   console.log(`📝 (${hash}) Link resource with content ${cid}`)
   return {
-    id,
-    ipfsURL: ipfsURL.href,
-    status: Schema.ResourceStatus.ContentLinked,
+    status: 'ContentLinked',
+    hash,
+    ipfsURL: ipfsURL,
     statusText: 'ContentLinked',
     cid,
   }
@@ -314,11 +380,11 @@ const archiveIPFSResource = async (config, { ipfsURL, uri, id }) => {
  * @param {Object} config
  * @param {import('./cluster').Config} config.cluster
  * @param {number} config.fetchTimeout
- * @param {Resource & {id: string, url: URL}} resource
- * @returns {Promise<Schema.ResourceUpdate>}
+ * @param {Resource & {hash: string, url: URL}} resource
+ * @returns {Promise<ArchiveResult>}
  */
-const archiveWebResource = async (config, { id, url }) => {
-  console.log(`📡 (${id}) Fetching content from ${printURL(url)}`)
+const archiveWebResource = async (config, { hash, url }) => {
+  console.log(`📡 (${hash}) Fetching content from ${printURL(url)}`)
   const fetch = await Result.fromPromise(
     fetchWebResource(url, {
       signal: timeout(config.fetchTimeout),
@@ -326,47 +392,48 @@ const archiveWebResource = async (config, { id, url }) => {
   )
   if (!fetch.ok) {
     console.error(
-      `🚨 (${id}) Failed to fetch from ${printURL(url)} ${fetch.error}`
+      `🚨 (${hash}) Failed to fetch from ${printURL(url)} ${fetch.error}`
     )
 
     return {
-      id,
-      status: Schema.ResourceStatus.ContentFetchFailed,
+      hash,
+      status: 'ContentFetchFailed',
       statusText: String(fetch.error),
     }
   }
   const content = fetch.value
 
   console.log(
-    `📌 (${id}) Pin fetched content by uploading ${content.size} bytes`
+    `📌 (${hash}) Pin fetched content by uploading ${content.size} bytes`
   )
 
   const pin = await Result.fromPromise(
     Cluster.add(config.cluster, content, {
       signal: timeout(config.fetchTimeout),
       metadata: {
-        id,
+        uri_hash: hash,
         sourceURL: url.protocol === 'data:' ? 'data:...' : url.href,
       },
     })
   )
 
   if (!pin.ok) {
-    console.error(`🚨 (${id}) Failed to pin ${pin.error}`)
+    console.error(`🚨 (${hash}) Failed to pin ${pin.error}`)
     return {
-      id,
-      status: Schema.ResourceStatus.PinRequestFailed,
+      hash,
+      status: 'PinRequestFailed',
       statusText: String(pin.error),
     }
   }
 
-  const { cid } = pin.value
+  const cid = CID.parse(pin.value.cid)
 
-  console.log(`📝 (${id}) Link resource with content ${cid}`)
+  console.log(`📝 (${hash}) Link resource with content ${cid}`)
 
   return {
-    id,
-    status: Schema.ResourceStatus.ContentLinked,
+    hash,
+    ipfsURL: null,
+    status: 'ContentLinked',
     statusText: 'ContentLinked',
     cid,
   }
