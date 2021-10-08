@@ -57,18 +57,19 @@ export async function createTestUser({
     userId: user.id,
   })
 
-  return { token, userId: user.id }
+  return { token, userId: user.id, githubId: user.github_id }
 }
 
 export class DBTestClient {
   /**
-   * @param {{ token: string; userId: number; }} opts
+   * @param {{ token: string; userId: number; githubId: string }} opts
    */
   constructor(opts) {
     this.rawClient = rawClient
     this.client = client
     this.token = opts.token
     this.userId = opts.userId
+    this.githubId = opts.githubId
   }
 
   /**

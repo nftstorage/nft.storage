@@ -7,6 +7,7 @@ import yargs from 'yargs'
  * @property {number} budget
  * @property {number} batchSize
  * @property {number} fetchTimeout
+ * @property {number} fetchRetryLimit
  * @property {boolean} dryRun
  * @property {number} retryLimit
  * @property {number} retryInterval
@@ -20,6 +21,8 @@ import yargs from 'yargs'
  * @property {number} ingestWriterRetryLimit
  * @property {number} ingestWriterRetryInterval
  * @property {number} ingestWriterRetryMaxInterval
+ * @property {number} queueSize
+ * @property {number} concurrency
  * @property {import('./cluster').Config} cluster
  * @property {import('./ipfs').Config} ipfs
  * @property {Endpoint} erc721
@@ -56,14 +59,29 @@ export const configure = async () => {
         default: Number(process.env['RETRY_MAX_INTERVAL'] || 'Infinity'),
         description: 'Max sleep frame between retries',
       },
+      'queue-size': {
+        type: 'number',
+        default: Number(process.env['QUEUE_SIZE'] || '300'),
+        description: 'Number of items to queue before applying backpressure',
+      },
       budget: {
         type: 'number',
         default: Number(process.env['TIME_BUDGET'] || 30) * 1000,
       },
       'fetch-timeout': {
         type: 'number',
-        default: Number(process.env['FETCH_TIMEOUT'] || 30 * 100),
+        default: Number(process.env['FETCH_TIMEOUT'] || 30 * 60 * 1000),
         description: 'Time given to each request before it is aborted',
+      },
+      'fetch-retry-limit': {
+        type: 'number',
+        default: Number(process.env['FETCH_RETRY_LIMIT'] || 10),
+        description: 'Max number of fetch attempts to make',
+      },
+      concurrency: {
+        type: 'number',
+        default: Number(process.env['CONCURRENCY']) || 50,
+        description: 'Number of concurrent tasks to use',
       },
       'cluster-endpoint': {
         alias: 'clusterEndpoint',
@@ -189,10 +207,13 @@ export const configure = async () => {
     batchSize: config['batch-size'],
     budget: config.budget,
     fetchTimeout: config['fetch-timeout'],
+    fetchRetryLimit: config['fetch-retry-limit'],
     dryRun: config['dry-run'],
     retryLimit: config['retry-limit'],
     retryInterval: config['retry-interval'],
     retryMaxInterval: config['retry-max-interval'],
+    queueSize: config['queue-size'],
+    concurrency: config.concurrency,
 
     ingestRetryThrottle: config['ingest-retry-throttle'],
     ingestHighWatermark: config['ingest-high-watermark'],

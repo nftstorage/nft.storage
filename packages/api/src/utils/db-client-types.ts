@@ -25,7 +25,7 @@ export type UploadOutput = definitions['upload'] & {
   user: Pick<definitions['user'], 'id' | 'magic_link_id'>
   key: Pick<definitions['auth_key'], 'name'>
   content: Pick<definitions['content'], 'dag_size'> & {
-    pin: Pick<definitions['pin'], 'service' | 'status'>[]
+    pin: Pick<definitions['pin'], 'service' | 'status' | 'inserted_at'>[]
   }
   deals: Deal[]
 }

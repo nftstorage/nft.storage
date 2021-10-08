@@ -20,16 +20,16 @@ export const tokensCreateV1 = async (event, ctx) => {
       secrets.salt
     )
 
-    await db.createKey({
+    const key = await db.createKey({
       name: body.name,
       secret: token,
       userId: user.id,
     })
+    return new JSONResponse({
+      ok: true,
+      value: key,
+    })
   } else {
     throw new Error('Token name is required.')
   }
-
-  return new JSONResponse({
-    ok: true,
-  })
 }

@@ -143,7 +143,7 @@ export default function Files({ user }) {
                       {nfts.map(
                         (/** @type {any} */ nft, /** @type {number} */ i) => (
                           <tr className="bb b--black" key={`nft-${i}`}>
-                            <td className="pa2 br b--black">
+                            <td className="pa2 br b--black" title={nft.created}>
                               {nft.created.split('T')[0]}
                             </td>
                             <td className="pa2 br b--black">
