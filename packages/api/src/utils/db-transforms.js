@@ -1,6 +1,19 @@
 import * as cluster from '../cluster.js'
 
 /**
+ * We mixed upload type and content type. This was split into `type` and
+ * `mime_type` in the move to Postgres but the API was not changed. This object
+ * maps the DB `type`s that we want to use in the API response `type`. Other
+ * API response `type`s are DB `mime_type`.
+ * @type {Record<string, string>}
+ */
+const typeMap = {
+  Nft: 'nft',
+  Multipart: 'directory',
+  Remote: 'remote',
+}
+
+/**
  * Transform db response into NFT response
  *
  * @param {import('./db-client-types').UploadOutput} upload
@@ -11,7 +24,7 @@ export function toNFTResponse(upload, sourceCid) {
   const nft = {
     cid: sourceCid || upload.source_cid,
     created: upload.inserted_at,
-    type: upload.type,
+    type: typeMap[upload.type] || upload.mime_type || '',
     scope: upload.key ? upload.key.name : 'session',
     files: upload.files,
     size: upload.content.dag_size || 0,
