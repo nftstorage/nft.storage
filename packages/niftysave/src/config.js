@@ -18,7 +18,6 @@ import yargs from 'yargs'
  * @property {import('./ipfs').Config} ipfs
  * @property {Endpoint} erc721
  * @property {Endpoint} hasura
- * @property {Endpoint & {secret: string}} fauna
  *
  * @returns {Promise<Config>}
  */
@@ -100,18 +99,6 @@ export const configure = async () => {
         default: process.env['NIFTYSAVE_IPFS_API_KEY'],
         demandOption: true,
       },
-      'fauna-endpoint': {
-        alias: 'faunaEndpoint',
-        type: 'string',
-        default:
-          process.env['FAUNA_ENDPOINT'] || 'https://graphql.fauna.com/graphql',
-      },
-      'fauna-key': {
-        alias: 'faunaKey',
-        type: 'string',
-        default: process.env['FAUNA_KEY'],
-        demandOption: true,
-      },
       'subgraph-endpoint': {
         type: 'string',
         default:
@@ -154,14 +141,6 @@ export const configure = async () => {
     ipfs: {
       url: new URL(config['ipfs-api-endpoint']),
       secret: config['ipfs-api-key'],
-    },
-
-    fauna: {
-      url: new URL(config['fauna-endpoint']),
-      secret: config['fauna-key'],
-      headers: {
-        authorization: `Bearer ${config['fauna-key']}`,
-      },
     },
 
     erc721: {

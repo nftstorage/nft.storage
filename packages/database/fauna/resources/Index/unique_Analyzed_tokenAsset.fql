@@ -1,8 +1,0 @@
-CreateIndex({
-  name: 'unique_Analyzed_tokenAsset',
-  source: Collection('Analyzed'),
-  terms: [{ field: ['data', 'tokenAsset'] }],
-  unique: true,
-  serialized: true,
-  data: { gql: {} },
-})

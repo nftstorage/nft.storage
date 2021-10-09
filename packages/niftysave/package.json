@@ -23,9 +23,8 @@
     "migrate-resource": "node ./src/migrate/resource.js",
     "migrate-nfts-by-blockchain-block": "node ./src/migrate/nfts-by-blockchain-block.js",
     "migrate-blockchain-contract": "node ./src/migrate/blockchain-contract.js",
-    "generate": "yarn generate:erc721-source && yarn generate:db-source && yarn generate:db-v2-source",
+    "generate": "yarn generate:erc721-source && && yarn generate:hasura",
     "generate:erc721-source": "generate-graphql-client --post --endpoint https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph --output ./gen/erc721 && cp template/graphql/* gen/erc721 && tsc ./gen/erc721/schema.ts --moduleResolution node --target esnext --esModuleInterop",
-    "generate:db-source": "generate-graphql-client --fetcher .fetcher.cjs --output ./gen/db && cp template/graphql/* gen/db && tsc ./gen/db/schema.ts --moduleResolution node --target esnext --esModuleInterop",
     "generate:hasura": "rm -rf ./gen/hasura && zeus http://localhost:8080/v1/graphql ./gen/hasura --ts && tsc ./gen/hasura/zeus/*.ts --moduleResolution node --target esnext --esModuleInterop --declaration && rm ./gen/hasura/zeus/index.ts && rm ./gen/hasura/zeus/const.ts"
   },
   "license": "(Apache-2.0 AND MIT)",
@@ -47,7 +46,6 @@
     "@web-std/form-data": "^2.1.0",
     "abort-controller": "^3.0.0",
     "dotenv": "^10.0.0",
-    "faunadb": "^4.4.1",
     "graphql-typed-client": "1.7.4",
     "multiformats": "^9.4.3",
     "nft.storage": "^3.3.0",

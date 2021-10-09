@@ -26,17 +26,7 @@
     "trailingComma": "es5",
     "tabWidth": 2,
     "semi": false,
-    "singleQuote": true,
-    "overrides": [
-      {
-        "files": [
-          "*.fql"
-        ],
-        "options": {
-          "parser": "babel"
-        }
-      }
-    ]
+    "singleQuote": true
   },
   "devDependencies": {
     "lint-staged": "^11.0.0",

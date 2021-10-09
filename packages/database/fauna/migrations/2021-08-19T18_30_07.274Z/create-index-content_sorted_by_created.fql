@@ -1,9 +1,0 @@
-CreateIndex({
-  "name": "content_sorted_by_created",
-  "source": Collection("Content"),
-  "values": [{
-    "field": ["data", "created"]
-  }, {
-    "field": "ref"
-  }]
-})
