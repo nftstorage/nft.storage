@@ -1,9 +1,11 @@
+const withOffline = require('next-offline')
 const { withSentryConfig } = require('@sentry/nextjs')
 
 const nextConfig = {
+  ...withOffline(),
   trailingSlash: true,
   reactStrictMode: true,
-  exportPathMap: async function () {
+  exportPathMap: async function() {
     return {
       '/ipfs-404.html': { page: '/404' },
     }
