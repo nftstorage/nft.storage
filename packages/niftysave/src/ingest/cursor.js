@@ -6,8 +6,9 @@ import * as Hasura from '../hasura.js'
  */
 
 /**
- * If the module was started, and the 'cursor' is '0', we want to check
- * our own database and look at the last Id that was written.
+ * we want to check our own database and look at
+ * the last Id that was written, otherwise just start at the
+ * beginning because the db is empty
  * This is our starting cursor.
  * @param { Config } config
  * @returns { Promise<String>}
