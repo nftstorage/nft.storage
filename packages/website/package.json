@@ -19,6 +19,8 @@
     "ipfs-car": "0.4.3",
     "isomorphic-form-data": "^2.0.0",
     "magic-sdk": "^4.2.1",
+    "next-compose-plugins": "^2.2.1",
+    "next-offline": "^5.0.5",
     "nft.storage": "^3.3.0",
     "querystring-browser": "^1.0.4",
     "react": "17.0.2",
