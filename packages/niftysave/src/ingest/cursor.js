@@ -1,9 +1,7 @@
-import * as ERC721 from '../../gen/erc721/index.js'
 import * as Hasura from '../hasura.js'
 
 /**
  * @typedef { Object } Config
- * @property { ERC721.Config } config.erc721
  * @property { Hasura.Config } config.hasura
  */
 
@@ -14,21 +12,12 @@ import * as Hasura from '../hasura.js'
  * @param { Config } config
  * @returns { Promise<String>}
  */
-async function getLastScrapeIdFromHasura(config) {
-  /**
-   * @type {{
-   *    limit: number
-   *    order_by: Object[]
-   * }}
-   */
+export async function intializeCursor(config) {
   const query = {
     limit: 1,
     order_by: [
       {
-        // TODO: Regen Zeus and try to fix this typing issue.
-        // (will replace the Object[])
-        // Hasura.schema.order_by was undefined, but this does work.
-        inserted_at: 'desc',
+        inserted_at: Hasura.schema.order_by.desc,
       },
     ],
   }
@@ -45,31 +34,6 @@ async function getLastScrapeIdFromHasura(config) {
   const lastNFT = await Hasura.query(config.hasura, {
     nft: [query, resultsDefinition],
   })
-  let _lastNftId = lastNFT?.nft[0]?.id || '0'
-  return _lastNftId
-}
 
-/**
- * "the cursor"
- * @type {String}
- */
-let _lastScrapeId = '0'
-
-/**
- * This function drives this module and holds
- * a single value in its state; the 'last known id' which is the cursor.
- * Upon a cold start, we check the database for the last cursor
- * As we batch records, we update this cursor.
- * @param {String=} id
- * @param {Config} config
- * @returns { Promise<String>}
- */
-export async function lastScrapeId(config, id) {
-  if (typeof id === 'string') {
-    _lastScrapeId = id
-  }
-  if (_lastScrapeId === '0') {
-    _lastScrapeId = await getLastScrapeIdFromHasura(config)
-  }
-  return _lastScrapeId
+  return lastNFT?.nft[0]?.id || '0'
 }

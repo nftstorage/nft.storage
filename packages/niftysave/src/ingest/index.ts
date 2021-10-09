@@ -33,3 +33,13 @@ export type NFTEndpointRecord = {
   token_id: string
   token_uri: string
 }
+
+export type NFTSSubGraphResultValue = {
+  tokens: ERC721ImportNFT[]
+}
+
+export type NFTSSubgraphResult = {
+  ok: Boolean
+  value: NFTSSubGraphResultValue
+  done: Boolean
+}
