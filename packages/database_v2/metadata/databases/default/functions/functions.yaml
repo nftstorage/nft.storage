@@ -1,9 +1,10 @@
-- '!include public_add_nft.yaml'
-- '!include public_add_nft_metadata.yaml'
-- '!include public_add_other_nft_resource.yaml'
-- '!include public_fail_nft_asset.yaml'
-- '!include public_fail_resource.yaml'
-- '!include public_ingest_erc721_token.yaml'
-- '!include public_link_nft_asset.yaml'
-- '!include public_link_nft_resource.yaml'
-- '!include public_link_resource_content.yaml'
+# prettier-ignore
+- "!include public_add_nft.yaml"
+- "!include public_add_nft_metadata.yaml"
+- "!include public_add_other_nft_resource.yaml"
+- "!include public_fail_nft_asset.yaml"
+- "!include public_fail_resource.yaml"
+- "!include public_ingest_erc721_token.yaml"
+- "!include public_link_nft_asset.yaml"
+- "!include public_link_nft_resource.yaml"
+- "!include public_link_resource_content.yaml"
