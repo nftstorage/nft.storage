@@ -11,3 +11,4 @@ migrate-resource: node ./packages/niftysave/src/migrate/resource.js
 migrate-nfts-by-blockchain-block: node ./packages/niftysave/src/migrate/nfts-by-blockchain-block.js
 migrate-blockchain-contract: node ./packages/niftysave/src/migrate/blockchain-contract.js
 cron-niftysave-analyze: yarn --cwd packages/niftysave analyze
+cron-niftysave-pin: yarn --cwd packages/niftysave pin
