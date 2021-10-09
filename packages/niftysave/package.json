@@ -53,6 +53,9 @@
     "nft.storage": "^3.3.0",
     "subprogram": "^1.2.0"
   },
+  "engines": {
+    "node": ">=16.10.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nftstorage/niftysave.git"

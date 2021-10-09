@@ -37,6 +37,9 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
       - uses: bahmutov/npm-install@v1
       - name: Publish app
         uses: cloudflare/wrangler-action@1.3.0
@@ -52,6 +55,9 @@ jobs:
     needs: test
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
       - uses: bahmutov/npm-install@v1
       - name: Publish app
         uses: cloudflare/wrangler-action@1.3.0
