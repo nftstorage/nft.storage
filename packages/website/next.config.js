@@ -1,3 +1,4 @@
+const withPlugins = require('next-compose-plugins')
 const withOffline = require('next-offline')
 const { withSentryConfig } = require('@sentry/nextjs')
 
@@ -17,4 +18,7 @@ const SentryWebpackPluginOptions = {
   silent: true,
 }
 
-module.exports = withSentryConfig(nextConfig, SentryWebpackPluginOptions)
+module.exports = withPlugins(
+  [[withSentryConfig, SentryWebpackPluginOptions], withOffline],
+  nextConfig
+)
