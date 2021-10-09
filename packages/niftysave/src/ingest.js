@@ -128,20 +128,24 @@ async function writeScrapedRecord(config, erc721Import) {
  * @return { Promise<never> }
  */
 async function writeFromInbox(config, readable) {
-  const inbox = readable.getReader()
+  const reader = readable.getReader()
   while (true) {
-    const nextImport = await inbox.read()
+    const nextImport = await reader.read()
     try {
       /**
-       * (nextImport.value should never be undefined)
        * We will attempt to write an import record that has been scraped.
        * If the write is a failure, we will retry, to account for intermittent outages
-       * If we failur occurs times and for long enough, we throw
+       * If failure occurs several times and for long enough, we throw an error.
        * We write from the Transform stream, one record at a time, as quickly as we can.
        * this makes cursor-tracking on restart very simple and prevents lossy data.
+       * this stream should typically never be closed,
+       * unless the writeable end has unexpectely aborted due to an error
        */
-      nextImport.value &&
-        (await retry(
+      if (nextImport.done) {
+        console.error(`The Ingestion Stream unexpectedly completed`)
+        reader.cancel()
+      } else {
+        await retry(
           async () => await writeScrapedRecord(config, nextImport.value),
           [
             maxRetries(config.ingestWriterRetryLimit),
@@ -150,7 +154,8 @@ async function writeFromInbox(config, readable) {
               config.ingestWriterRetryMaxInterval
             ),
           ]
-        ))
+        )
+      }
     } catch (err) {
       console.log('Last NFT', nextImport)
       console.error(`Something went wrong when writing scraped nfts`, err)
@@ -188,22 +193,22 @@ async function readIntoInbox(config, writeable) {
           ),
         ]
       )
+      // you scraped successfully, got nothing.
+      // you're caught up. Retry later
+      if (scrape.length == 0) {
+        await sleep(config.ingestRetryThrottle)
+      } else {
+        await writer.ready
+        for (const nft of scrape) {
+          writer.write(nft)
+          //Continusiusly update the in-memory cursor
+          lastScrapeId(config, nft.id)
+        }
+      }
     } catch (err) {
       console.error(`Something unexpected happened scraping nfts`, err)
+      writer.abort(err)
       throw err
-    }
-
-    // you scraped successfully, got nothing.
-    // you're caught up. Retry later
-    if (scrape.length == 0) {
-      await sleep(config.ingestRetryThrottle)
-    } else {
-      await writer.ready
-      for (const nft of scrape) {
-        writer.write(nft)
-        //Continusiusly update the in-memory cursor
-        lastScrapeId(config, nft.id)
-      }
     }
   }
 }
