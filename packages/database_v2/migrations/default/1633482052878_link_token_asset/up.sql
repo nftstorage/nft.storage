@@ -1,49 +1,36 @@
 -- Update nft_metadata table adding content field
 -- and removing not-null constraints.
-ALTER TABLE
-  nft_metadata
-ALTER COLUMN
-  "name" DROP NOT NULL;
 
-ALTER TABLE
-  nft_metadata
-ALTER COLUMN
-  "description" DROP NOT NULL;
+ALTER TABLE nft_metadata
+ALTER COLUMN "name"
+DROP NOT NULL;
 
-ALTER TABLE
-  nft_metadata
-ALTER COLUMN
-  "image_uri_hash" DROP NOT NULL;
 
-CREATE FUNCTION link_nft_asset (
-  -- pk to identify the nft_asset
-  token_uri_hash nft_asset.token_uri % TYPE,
-  status_text nft_asset.status_text % TYPE,
-  ipfs_url nft_asset.ipfs_url % TYPE,
-  content_cid nft_asset.content_cid % TYPE,
-  metadata nft_metadata.content % TYPE
-) RETURNS SETOF nft_asset LANGUAGE plpgsql AS $$
+ALTER TABLE nft_metadata
+ALTER COLUMN "description"
+DROP NOT NULL;
+
+
+ALTER TABLE nft_metadata
+ALTER COLUMN "image_uri_hash"
+DROP NOT NULL;
+
+
+CREATE FUNCTION link_nft_asset (-- pk to identify the nft_asset
+ token_uri_hash nft_asset.token_uri % TYPE, status_text nft_asset.status_text % TYPE, ipfs_url nft_asset.ipfs_url % TYPE, content_cid nft_asset.content_cid % TYPE, metadata nft_metadata.content % TYPE) RETURNS
+SETOF nft_asset AS $$
 DECLARE
   hash nft_asset.token_uri_hash % TYPE;
-
-asset_status_text nft_asset.status_text % TYPE;
-
-asset_ipfs_url nft_asset.ipfs_url % TYPE;
-
-cid nft_metadata.content_cid % TYPE;
-
-image_uri resource .uri % TYPE;
-
-image_uri_hash nft_metadata.image_uri_hash % TYPE;
-
+  asset_status_text nft_asset.status_text % TYPE;
+  asset_ipfs_url nft_asset.ipfs_url % TYPE;
+  cid nft_metadata.content_cid % TYPE;
+  image_uri resource .uri % TYPE;
+  image_uri_hash nft_metadata.image_uri_hash % TYPE;
 BEGIN
   hash := token_uri_hash;
-
-asset_status_text := status_text;
-
-asset_ipfs_url := ipfs_url;
-
-cid := content_cid;
+  asset_status_text := status_text;
+  asset_ipfs_url := ipfs_url;
+  cid := content_cid;
 
 -- Ensure that there is a matching record to begin with.
 IF NOT EXISTS (
@@ -130,14 +117,12 @@ WHERE
 
 END;
 
-$$ --------------
-CREATE FUNCTION fail_nft_asset (
-  -- pk to identify the nft_asset
-  token_uri_hash nft_asset.token_uri % TYPE,
-  status nft_asset.status % TYPE,
-  status_text nft_asset.status_text % TYPE,
-  ipfs_url nft_asset.ipfs_url % TYPE DEFAULT NULL
-) RETURNS SETOF nft_asset LANGUAGE plpgsql AS $$
+$$ LANGUAGE plpgsql;
+
+
+CREATE FUNCTION fail_nft_asset (-- pk to identify the nft_asset
+ token_uri_hash nft_asset.token_uri % TYPE, status nft_asset.status % TYPE, status_text nft_asset.status_text % TYPE, ipfs_url nft_asset.ipfs_url % TYPE DEFAULT NULL) RETURNS
+SETOF nft_asset AS $$
 DECLARE
   hash nft_asset.token_uri_hash % TYPE;
 
@@ -191,16 +176,17 @@ WHERE
 
 END;
 
-$$ --
+$$ LANGUAGE plpgsql;
+
+--
 -- Function can be used to link resource found in nft metadata with it.
 -- It takes care of creating necessary resource record before creating
 -- link between metadata and a resource.
-CREATE FUNCTION link_nft_resource (
-  -- CID of the metadata
-  cid nft_metadata.content_cid % TYPE,
-  -- Resource uri found in metadata.
-  uri resource .uri % TYPE
-) RETURNS SETOF resource LANGUAGE plpgsql AS $$
+
+CREATE FUNCTION link_nft_resource (-- CID of the metadata
+ cid nft_metadata.content_cid % TYPE, -- Resource uri found in metadata.
+ uri resource .uri % TYPE) RETURNS
+SETOF resource AS $$
 DECLARE
   hash resource .uri_hash % TYPE;
 
@@ -222,7 +208,7 @@ BEGIN
     -- update the `update_at` date
   SET
     updated_at = EXCLUDED.updated_at --
-    -- and save the `uri_hash` 
+    -- and save the `uri_hash`
     RETURNING resource .uri_hash INTO hash;
 
 -- Then link nft metadata to a corresponding resource
@@ -247,4 +233,5 @@ WHERE
 
 END;
 
-$$;
+$$ LANGUAGE plpgsql;
+

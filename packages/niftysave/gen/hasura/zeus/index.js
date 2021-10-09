@@ -365,6 +365,7 @@ export var other_nft_resources_update_column
 /** unique or primary key constraints on table "pin" */
 export var pin_constraint
 ;(function (pin_constraint) {
+  pin_constraint['pin_content_cid_service_key'] = 'pin_content_cid_service_key'
   pin_constraint['pin_pkey'] = 'pin_pkey'
 })(pin_constraint || (pin_constraint = {}))
 /** select columns of table "pin" */
