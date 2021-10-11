@@ -332,6 +332,102 @@ export interface paths {
       }
     }
   }
+  '/migration_event': {
+    get: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.migration_event.id']
+          name?: parameters['rowFilter.migration_event.name']
+          data?: parameters['rowFilter.migration_event.data']
+          inserted_at?: parameters['rowFilter.migration_event.inserted_at']
+          /** Filtering Columns */
+          select?: parameters['select']
+          /** Ordering */
+          order?: parameters['order']
+          /** Limiting and Pagination */
+          offset?: parameters['offset']
+          /** Limiting and Pagination */
+          limit?: parameters['limit']
+        }
+        header: {
+          /** Limiting and Pagination */
+          Range?: parameters['range']
+          /** Limiting and Pagination */
+          'Range-Unit'?: parameters['rangeUnit']
+          /** Preference */
+          Prefer?: parameters['preferCount']
+        }
+      }
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions['migration_event'][]
+        }
+        /** Partial Content */
+        206: unknown
+      }
+    }
+    post: {
+      parameters: {
+        body: {
+          /** migration_event */
+          migration_event?: definitions['migration_event']
+        }
+        query: {
+          /** Filtering Columns */
+          select?: parameters['select']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** Created */
+        201: unknown
+      }
+    }
+    delete: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.migration_event.id']
+          name?: parameters['rowFilter.migration_event.name']
+          data?: parameters['rowFilter.migration_event.data']
+          inserted_at?: parameters['rowFilter.migration_event.inserted_at']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+    patch: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.migration_event.id']
+          name?: parameters['rowFilter.migration_event.name']
+          data?: parameters['rowFilter.migration_event.data']
+          inserted_at?: parameters['rowFilter.migration_event.inserted_at']
+        }
+        body: {
+          /** migration_event */
+          migration_event?: definitions['migration_event']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+  }
   '/pin': {
     get: {
       parameters: {
@@ -821,6 +917,16 @@ export interface definitions {
     sector_start_time?: string
     end_time?: string
   }
+  migration_event: {
+    /**
+     * Note:
+     * This is a Primary Key.<pk/>
+     */
+    id: number
+    name: string
+    data?: string
+    inserted_at: string
+  }
   pin: {
     /**
      * Note:
@@ -951,6 +1057,12 @@ export interface parameters {
   'rowFilter.deal.sector_start_epoch': string
   'rowFilter.deal.sector_start_time': string
   'rowFilter.deal.end_time': string
+  /** migration_event */
+  'body.migration_event': definitions['migration_event']
+  'rowFilter.migration_event.id': string
+  'rowFilter.migration_event.name': string
+  'rowFilter.migration_event.data': string
+  'rowFilter.migration_event.inserted_at': string
   /** pin */
   'body.pin': definitions['pin']
   'rowFilter.pin.id': string

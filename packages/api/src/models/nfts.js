@@ -1,5 +1,9 @@
 import { stores } from '../constants.js'
 import * as nftsIndex from './nfts-index.js'
+import { secrets, database } from '../constants.js'
+import { DBClient } from '../utils/db-client.js'
+
+const db = new DBClient(database.url, secrets.database)
 
 /**
  * @typedef {{user: import('./users').User, cid: string}} Key
@@ -37,6 +41,7 @@ export const set = async (key, nft, pin) => {
       size: pin.size,
     }
   )
+  await db.addMigrationEvent('nft:create', { key, nft, pin })
   return nft
 }
 
@@ -61,6 +66,7 @@ export const remove = async (key) => {
   if (!nft) return
   await stores.nfts.delete(encodeKey(key))
   await nftsIndex.remove({ ...key, created: nft.created })
+  await db.addMigrationEvent('nft:delete', key)
 }
 
 /**
