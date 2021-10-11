@@ -102,7 +102,7 @@ async function readIntoInbox(config, writeable) {
       }
     } catch (err) {
       console.error(`Something unexpected happened scraping nfts`, err)
-      writer.abort(err)
+      writer.close()
       throw err
     }
   }

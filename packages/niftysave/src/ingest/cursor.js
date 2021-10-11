@@ -11,7 +11,7 @@ import * as Hasura from '../hasura.js'
  * beginning because the db is empty
  * This is our starting cursor.
  * @param { Config } config
- * @returns { Promise<String>}
+ * @returns { Promise<string>}
  */
 export async function intializeCursor(config) {
   const query = {
