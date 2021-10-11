@@ -24,7 +24,7 @@ export function getMagic() {
  * @param {string} [version]
  */
 export async function login(token, type = 'magic', data = {}, version = '') {
-  const loginURL = version === '1' ? '/v1/login' : '/login'
+  const loginURL = version ? `/v${version}/login` : '/login'
   const res = await fetch(API + loginURL, {
     method: 'POST',
     headers: {
@@ -64,7 +64,7 @@ export async function isLoggedIn() {
  * @param {string} version
  */
 export async function loginEmail(email, version) {
-  const callback = version === '1' ? '/callback-v1' : '/callback'
+  const callback = version === '0' ? '/callback-v0' : '/callback'
   const didToken = await getMagic().auth.loginWithMagicLink({
     email: email,
     redirectURI: new URL(callback, window.location.origin).href,
@@ -85,7 +85,7 @@ export async function loginEmail(email, version) {
  * @param {string} version
  */
 export async function loginSocial(provider, version) {
-  const callback = version === '1' ? '/callback-v1' : '/callback'
+  const callback = version === '0' ? '/callback-v0' : '/callback'
 
   // @ts-ignore - TODO fix Magic extension types
   await getMagic().oauth.loginWithRedirect({
