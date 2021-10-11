@@ -11,6 +11,19 @@ const { Client } = pg
  * @param {{ reset?: boolean; cargo?: boolean; testing?: boolean; }} opts
  */
 export async function dbSqlCmd(opts) {
+  // Check required env vars are present
+  ;[
+    'DAG_CARGO_HOST',
+    'DAG_CARGO_DATABASE',
+    'DAG_CARGO_USER',
+    'DAG_CARGO_PASSWORD',
+    'DATABASE_CONNECTION',
+  ].forEach((v) => {
+    if (!process.env[v]) {
+      throw new Error(`missing environment variable ${v}`)
+    }
+  })
+
   // read all the SQL files
   const tables = fs.readFileSync(path.join(__dirname, '../../db/tables.sql'), {
     encoding: 'utf-8',
