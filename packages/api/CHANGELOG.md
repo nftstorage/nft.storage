@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.6.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.5.0...api-v2.6.0) (2021-10-11)
+
+
+### Features
+
+* migration events in postgres ([#554](https://www.github.com/ipfs-shipyard/nft.storage/issues/554)) ([391a9e5](https://www.github.com/ipfs-shipyard/nft.storage/commit/391a9e54d7b8d523364f61d3cc6c688354b23d53))
+
+
+### Bug Fixes
+
+* set range on metrics queries ([#572](https://www.github.com/ipfs-shipyard/nft.storage/issues/572)) ([08ef4de](https://www.github.com/ipfs-shipyard/nft.storage/commit/08ef4dec7524dd5bf8cdb290c7e61e9e52ea787d))
+
 ## [2.5.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.4.0...api-v2.5.0) (2021-10-08)
 
 
