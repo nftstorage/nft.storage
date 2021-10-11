@@ -1,4 +1,4 @@
-import { Chain } from '../gen/hasura/zeus/index.js'
+import { Chain, Selectors, Zeus, $ } from '../gen/hasura/zeus/index.js'
 import * as schema from '../gen/hasura/zeus/index.js'
 import { create } from './service.js'
 import fetch from '@web-std/fetch'
@@ -21,23 +21,29 @@ export const service = create(connect)
  * @template {Parameters<ReturnType<typeof service>['query']>[0]} R
  * @param {Config} config
  * @param {R} request
+ * @param {schema.OperationOptions} [options]
  * @returns
  */
-export const query = (config, request) => service(config).query(request)
+export const query = (config, request, options) =>
+  service(config).query(request, options)
 
 /**
  * @template {Parameters<ReturnType<typeof service>['mutation']>[0]} R
  * @param {Config} config
  * @param {R} request
+ * @param {schema.OperationOptions} [options]
  */
-export const mutation = (config, request) => service(config).mutation(request)
+export const mutation = (config, request, options) =>
+  service(config).mutation(request, options)
 
 /**
  * @template {Parameters<ReturnType<typeof service>['subscription']>[0]} R
  * @param {Config} config
  * @param {R} request
+ * @param {schema.OperationOptions} [options]
+ *
  */
-export const subscriptions = (config, request) =>
-  service(config).subscription(request)
+export const subscriptions = (config, request, options) =>
+  service(config).subscription(request, options)
 
-export { schema }
+export { schema, Selectors, Zeus, $ }

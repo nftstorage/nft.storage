@@ -50,6 +50,8 @@ export class DBClient {
     `
       )
       .or(`magic_link_id.eq.${id},github_id.eq.${id}`)
+      // @ts-ignore
+      .filter('keys.deleted_at', 'is', null)
 
     return select.single()
   }
@@ -86,7 +88,7 @@ export class DBClient {
       throw new DBError(rsp.error)
     }
 
-    const upload = await this.getUpload(data.content_cid, data.user_id)
+    const upload = await this.getUpload(data.source_cid, data.user_id)
     if (upload) {
       return upload
     }
@@ -97,7 +99,7 @@ export class DBClient {
         *,
         user(id, magic_link_id),
         key:auth_key(name),
-        content(dag_size, pin(status, service))`
+        content(dag_size, pin(status, service, inserted_at))`
 
   /**
    * Get upload with user, auth_keys, content and pins
@@ -117,6 +119,7 @@ export class DBClient {
       .select(this.uploadQuery)
       .eq('source_cid', cid)
       .eq('user_id', userId)
+      .is('deleted_at', null)
       // @ts-ignore
       .filter('content.pin.service', 'eq', 'IpfsCluster')
       .single()
@@ -144,6 +147,7 @@ export class DBClient {
     let query = from
       .select(this.uploadQuery)
       .eq('user_id', userId)
+      .is('deleted_at', null)
       // @ts-ignore
       .filter('content.pin.service', 'eq', 'IpfsCluster')
       .limit(opts.limit || 10)
@@ -209,10 +213,18 @@ export class DBClient {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').UploadOutput>} */
     const query = this.client.from('upload')
 
-    const { data, error } = await query
-      .delete()
+    const date = new Date().toISOString()
+    const { data, error, status } = await query
+      .update({
+        deleted_at: date,
+        updated_at: date,
+      })
       .match({ source_cid: cid, user_id: userId })
+      .single()
 
+    if (status === 406 || !data) {
+      return
+    }
     if (error) {
       throw new DBError(error)
     }
@@ -239,7 +251,7 @@ export class DBClient {
         dag_size,
         inserted_at,
         updated_at,
-        pins:pin(status, service)`
+        pins:pin(status, service, inserted_at)`
       )
       // @ts-ignore
       .filter('pins.service', 'eq', 'IpfsCluster')
@@ -307,14 +319,11 @@ export class DBClient {
     const query = this.client.from('auth_key')
 
     const { data, error } = await query
-      .upsert(
-        {
-          name: key.name,
-          secret: key.secret,
-          user_id: key.userId,
-        },
-        { onConflict: 'name,user_id' }
-      )
+      .upsert({
+        name: key.name,
+        secret: key.secret,
+        user_id: key.userId,
+      })
       .single()
 
     if (error) {
@@ -345,7 +354,8 @@ export class DBClient {
       secret
       `
       )
-      .match({ user_id: userId })
+      .eq('user_id', userId)
+      .is('deleted_at', null)
 
     if (error) {
       throw new DBError(error)
@@ -363,8 +373,28 @@ export class DBClient {
     /** @type {PostgrestQueryBuilder<definitions['auth_key']>} */
     const query = this.client.from('auth_key')
 
-    const { data, error } = await query.delete().match({ id })
+    const date = new Date().toISOString()
+    const { error } = await query
+      .update({
+        deleted_at: date,
+        updated_at: date,
+      })
+      .match({ id })
+      .single()
 
+    if (error) {
+      throw new DBError(error)
+    }
+  }
+
+  /**
+   * @param {string} name Arbitrary event identifier.
+   * @param {any} [data] Information about the event.
+   */
+  async addMigrationEvent(name, data) {
+    /** @type {PostgrestQueryBuilder<definitions['migration_event']>} */
+    const query = this.client.from('migration_event')
+    const { error } = await query.insert({ name, data })
     if (error) {
       throw new DBError(error)
     }

@@ -16,9 +16,13 @@ async function main() {
     properties: {
       custom:
         'Any custom data can appear in properties, files are automatically uploaded.',
-      file: new File([await fs.promises.readFile('README.md')], 'README.md', {
-        type: 'text/plain',
-      }),
+      file: new File(
+        [await fs.promises.readFile('seamonster.jpg')],
+        'seamonster.jpg',
+        {
+          type: 'image/jpg',
+        }
+      ),
     },
   })
   console.log('IPFS URL for the metadata:', metadata.url)

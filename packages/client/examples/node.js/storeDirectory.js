@@ -7,11 +7,8 @@ const token = 'API_KEY' // your API key from https://nft.storage/manage
 async function main() {
   const storage = new NFTStorage({ endpoint, token })
   const cid = await storage.storeDirectory([
-    new File(
-      [await fs.promises.readFile('storeDirectory.js')],
-      'storeDirectory.js'
-    ),
-    new File([await fs.promises.readFile('package.json')], 'package.json'),
+    new File([await fs.promises.readFile('pinpie.jpg')], 'pinpie.jpg'),
+    new File([await fs.promises.readFile('seamonster.jpg')], 'seamonster.jpg'),
   ])
   console.log({ cid })
   const status = await storage.status(cid)

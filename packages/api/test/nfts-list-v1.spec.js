@@ -127,4 +127,40 @@ describe('V1 - List NFTs', () => {
       assert.strictEqual(error.message, 'invalid params')
     }
   })
+
+  it('should list only active nfts', async () => {
+    const client = await createClientWithUser()
+    const cidv1 = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
+    const cidv0 = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
+    await client.client.createUpload({
+      content_cid: cidv1,
+      source_cid: cidv0,
+      type: 'Blob',
+      user_id: client.userId,
+      dag_size: 100,
+    })
+    await client.client.createUpload({
+      content_cid: cidv1,
+      source_cid: cidv1,
+      type: 'Blob',
+      user_id: client.userId,
+      dag_size: 100,
+    })
+
+    const deleteRsp = await fetch(`v1/${cidv0}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${client.token}` },
+    })
+    const deleteData = await deleteRsp.json()
+    assert.ok(deleteData.ok)
+
+    const res = await fetch(`v1`, {
+      headers: { Authorization: `Bearer ${client.token}` },
+    })
+    const { ok, value } = await res.json()
+
+    assert.ok(ok)
+    assert.equal(value.length, 1)
+    assert.equal(value[0].cid, cidv1)
+  })
 })

@@ -12,7 +12,7 @@ export async function clearStores() {
 
 export const rawClient = new PostgrestClient(DATABASE_URL, {
   headers: {
-    apikey: DATABASE_TOKEN,
+    Authorization: `Bearer ${DATABASE_TOKEN}`,
   },
 })
 
@@ -57,18 +57,19 @@ export async function createTestUser({
     userId: user.id,
   })
 
-  return { token, userId: user.id }
+  return { token, userId: user.id, githubId: user.github_id }
 }
 
 export class DBTestClient {
   /**
-   * @param {{ token: string; userId: number; }} opts
+   * @param {{ token: string; userId: number; githubId: string }} opts
    */
   constructor(opts) {
     this.rawClient = rawClient
     this.client = client
     this.token = opts.token
     this.userId = opts.userId
+    this.githubId = opts.githubId
   }
 
   /**
@@ -77,7 +78,7 @@ export class DBTestClient {
    * @param {{ cid: string; name: string; }} data
    */
   async addPin(data) {
-    await fetch('pins', {
+    const res = await fetch('pins', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.token}`,
@@ -88,6 +89,9 @@ export class DBTestClient {
         name: data.name,
       }),
     })
+    if (!res.ok) {
+      throw new Error(`Failed to add pin: ${await res.text()}`)
+    }
   }
 }
 /**

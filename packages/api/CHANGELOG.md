@@ -1,5 +1,56 @@
 # Changelog
 
+## [2.6.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.5.0...api-v2.6.0) (2021-10-11)
+
+
+### Features
+
+* migration events in postgres ([#554](https://www.github.com/ipfs-shipyard/nft.storage/issues/554)) ([391a9e5](https://www.github.com/ipfs-shipyard/nft.storage/commit/391a9e54d7b8d523364f61d3cc6c688354b23d53))
+
+
+### Bug Fixes
+
+* set range on metrics queries ([#572](https://www.github.com/ipfs-shipyard/nft.storage/issues/572)) ([08ef4de](https://www.github.com/ipfs-shipyard/nft.storage/commit/08ef4dec7524dd5bf8cdb290c7e61e9e52ea787d))
+
+## [2.5.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.4.0...api-v2.5.0) (2021-10-08)
+
+
+### Features
+
+* add new cluster enum and nothing else ([#509](https://www.github.com/ipfs-shipyard/nft.storage/issues/509)) ([cc4ed28](https://www.github.com/ipfs-shipyard/nft.storage/commit/cc4ed281a848af695fdb8f729f24796f7051b8b0))
+* add prom metrics endpoint generated from postgres data ([#495](https://www.github.com/ipfs-shipyard/nft.storage/issues/495)) ([a99df3d](https://www.github.com/ipfs-shipyard/nft.storage/commit/a99df3ddc4f7f056a83758548992ed98e474b59a))
+* add PSA error handler ([#512](https://www.github.com/ipfs-shipyard/nft.storage/issues/512)) ([50daf83](https://www.github.com/ipfs-shipyard/nft.storage/commit/50daf83acea8d41ee174e28fa5827d61d3782dd4))
+* **api:** deals and pin status ([#455](https://www.github.com/ipfs-shipyard/nft.storage/issues/455)) ([692d514](https://www.github.com/ipfs-shipyard/nft.storage/commit/692d5140ad323b27d431f59a189a3a6cfc56ba6c)), closes [#459](https://www.github.com/ipfs-shipyard/nft.storage/issues/459)
+* cron v1 ([#496](https://www.github.com/ipfs-shipyard/nft.storage/issues/496)) ([fa850a5](https://www.github.com/ipfs-shipyard/nft.storage/commit/fa850a5344f23cf8f520c85e982345b59f26f6b9))
+* db error reporting ([#510](https://www.github.com/ipfs-shipyard/nft.storage/issues/510)) ([d9d8579](https://www.github.com/ipfs-shipyard/nft.storage/commit/d9d8579f0eace2ffefb0e13921f55a544f27965a))
+* db migration pipeline ([#491](https://www.github.com/ipfs-shipyard/nft.storage/issues/491)) ([56b8697](https://www.github.com/ipfs-shipyard/nft.storage/commit/56b8697c65b9f86d1bc76b4e7c3001cffd36b87e))
+* do not delete auth keys ([#539](https://www.github.com/ipfs-shipyard/nft.storage/issues/539)) ([d1b07e0](https://www.github.com/ipfs-shipyard/nft.storage/commit/d1b07e0481412759c71c91eef274b0b21aa70a64))
+* maintenance mode ([#466](https://www.github.com/ipfs-shipyard/nft.storage/issues/466)) ([1627588](https://www.github.com/ipfs-shipyard/nft.storage/commit/16275886066f3530a2d79b963df2d686a6f1b7f8))
+* migrate database to postgres  ([#263](https://www.github.com/ipfs-shipyard/nft.storage/issues/263)) ([ff0c919](https://www.github.com/ipfs-shipyard/nft.storage/commit/ff0c919ad63f8452357ff5f23b3f1ecd24880c86))
+
+
+### Bug Fixes
+
+* add CORS headers to /version endpoint ([#545](https://www.github.com/ipfs-shipyard/nft.storage/issues/545)) ([08654e9](https://www.github.com/ipfs-shipyard/nft.storage/commit/08654e9e950c4784746ab23873bfe2afe835c3fb))
+* db client usage in node.js and avoid duplicate cids ([#522](https://www.github.com/ipfs-shipyard/nft.storage/issues/522)) ([6d09ae7](https://www.github.com/ipfs-shipyard/nft.storage/commit/6d09ae73aa1c79ff1d03272a803f0cde9ad1a0de))
+* db config documentation and test fixes ([#471](https://www.github.com/ipfs-shipyard/nft.storage/issues/471)) ([a1911f3](https://www.github.com/ipfs-shipyard/nft.storage/commit/a1911f31f1079cf29f74192da4cebe576c069e77))
+* do not swallow error ([6733512](https://www.github.com/ipfs-shipyard/nft.storage/commit/673351273c99c4e8997a35573ed65ea9860ef8f7))
+* min, max and default limits for v1 list endpoints ([#493](https://www.github.com/ipfs-shipyard/nft.storage/issues/493)) ([64cd15d](https://www.github.com/ipfs-shipyard/nft.storage/commit/64cd15daa74f834338057f087a6ebbe52c85a354))
+* normalize CAR file content CID ([#549](https://www.github.com/ipfs-shipyard/nft.storage/issues/549)) ([0115443](https://www.github.com/ipfs-shipyard/nft.storage/commit/0115443fde4d44396498ffbbcda8446647498f78))
+* remove nft index cron job ([#453](https://www.github.com/ipfs-shipyard/nft.storage/issues/453)) ([a93433c](https://www.github.com/ipfs-shipyard/nft.storage/commit/a93433c56ba303e10b7c594d83b02c7c6af1a1ec))
+* remove usage_model from top level ([#463](https://www.github.com/ipfs-shipyard/nft.storage/issues/463)) ([9d9391d](https://www.github.com/ipfs-shipyard/nft.storage/commit/9d9391d1a9d9eded82bdd834e70bcfcce0024770))
+* retain correct value for NFT type ([#548](https://www.github.com/ipfs-shipyard/nft.storage/issues/548)) ([ad597d0](https://www.github.com/ipfs-shipyard/nft.storage/commit/ad597d0eae302e1ea09f97d4b563840ab82c5986))
+* retrieve upload after create ([#540](https://www.github.com/ipfs-shipyard/nft.storage/issues/540)) ([8bb9b8d](https://www.github.com/ipfs-shipyard/nft.storage/commit/8bb9b8d92360829fbaac3f0b138dd95a952b9ef2))
+* use Authorization header ([79889fb](https://www.github.com/ipfs-shipyard/nft.storage/commit/79889fb2f69065e2645db99a8cbf999edd57454d))
+* use pin creation date not upload creation date ([#547](https://www.github.com/ipfs-shipyard/nft.storage/issues/547)) ([5e51ebf](https://www.github.com/ipfs-shipyard/nft.storage/commit/5e51ebf43d8a6461b74701cf2b1e12a6cb4d20b0))
+
+
+### Changes
+
+* rename account table to user ([#485](https://www.github.com/ipfs-shipyard/nft.storage/issues/485)) ([a3423a1](https://www.github.com/ipfs-shipyard/nft.storage/commit/a3423a18b537d7b1accdf2ffa4d716939a7bdd2a))
+* rename stored procedures ([#486](https://www.github.com/ipfs-shipyard/nft.storage/issues/486)) ([f2218dd](https://www.github.com/ipfs-shipyard/nft.storage/commit/f2218ddecf622aa7e01b7dceeefffc0fb1365d3e))
+* setup countly analytics ([#432](https://www.github.com/ipfs-shipyard/nft.storage/issues/432)) ([8b90bfa](https://www.github.com/ipfs-shipyard/nft.storage/commit/8b90bfa4ba5b2a51c9f10b169e15fa217948faed))
+
 ## [2.4.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.3.1...api-v2.4.0) (2021-08-27)
 
 

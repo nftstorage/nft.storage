@@ -70,14 +70,19 @@ r.add('options', '*', cors)
 r.add('post', '/v0/login', withMode(login, RO), [postCors])
 
 // Version
-r.add('get', '/version', (event) => {
-  return new JSONResponse({
-    version: VERSION,
-    commit: COMMITHASH,
-    branch: BRANCH,
-    mode: getMaintenanceMode(),
-  })
-})
+r.add(
+  'get',
+  '/version',
+  (event) => {
+    return new JSONResponse({
+      version: VERSION,
+      commit: COMMITHASH,
+      branch: BRANCH,
+      mode: getMaintenanceMode(),
+    })
+  },
+  [postCors]
+)
 
 // Remote Pinning API
 

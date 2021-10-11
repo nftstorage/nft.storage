@@ -360,6 +360,30 @@ export declare type ValueTypes = {
     cid?: true
     dag_size?: true
     inserted_at?: true
+    pins?: [
+      {
+        distinct_on?: ValueTypes['pin_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['pin_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['pin_bool_exp'] | null
+      },
+      ValueTypes['pin']
+    ]
+    pins_aggregate?: [
+      {
+        distinct_on?: ValueTypes['pin_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['pin_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['pin_bool_exp'] | null
+      },
+      ValueTypes['pin_aggregate']
+    ]
     updated_at?: true
     __typename?: true
   }>
@@ -403,6 +427,7 @@ export declare type ValueTypes = {
     cid?: ValueTypes['String_comparison_exp'] | null
     dag_size?: ValueTypes['bigint_comparison_exp'] | null
     inserted_at?: ValueTypes['timestamptz_comparison_exp'] | null
+    pins?: ValueTypes['pin_bool_exp'] | null
     updated_at?: ValueTypes['timestamptz_comparison_exp'] | null
   }
   /** unique or primary key constraints on table "content" */
@@ -416,6 +441,7 @@ export declare type ValueTypes = {
     cid?: string | null
     dag_size?: ValueTypes['bigint'] | null
     inserted_at?: ValueTypes['timestamptz'] | null
+    pins?: ValueTypes['pin_arr_rel_insert_input'] | null
     updated_at?: ValueTypes['timestamptz'] | null
   }
   /** aggregate max on columns */
@@ -442,6 +468,12 @@ export declare type ValueTypes = {
     returning?: ValueTypes['content']
     __typename?: true
   }>
+  /** input type for inserting object relation for remote table "content" */
+  ['content_obj_rel_insert_input']: {
+    data: ValueTypes['content_insert_input']
+    /** on conflict condition */
+    on_conflict?: ValueTypes['content_on_conflict'] | null
+  }
   /** on conflict condition type for table "content" */
   ['content_on_conflict']: {
     constraint: ValueTypes['content_constraint']
@@ -453,6 +485,7 @@ export declare type ValueTypes = {
     cid?: ValueTypes['order_by'] | null
     dag_size?: ValueTypes['order_by'] | null
     inserted_at?: ValueTypes['order_by'] | null
+    pins_aggregate?: ValueTypes['pin_aggregate_order_by'] | null
     updated_at?: ValueTypes['order_by'] | null
   }
   /** primary key columns input for table: content */
@@ -702,6 +735,33 @@ export declare type ValueTypes = {
   }
   /** update columns of table "erc721_import" */
   ['erc721_import_update_column']: erc721_import_update_column
+  ['fail_nft_asset_args']: {
+    ipfs_url?: string | null
+    status?: ValueTypes['nft_asset_status'] | null
+    status_text?: string | null
+    token_uri_hash?: string | null
+  }
+  ['fail_resource_args']: {
+    ipfs_url?: string | null
+    status?: ValueTypes['resource_status'] | null
+    status_text?: string | null
+    uri_hash?: ValueTypes['bytea'] | null
+  }
+  ['ingest_erc721_token_args']: {
+    block_hash?: string | null
+    block_number?: ValueTypes['bigint'] | null
+    contract_id?: string | null
+    contract_name?: string | null
+    contract_supports_eip721_metadata?: boolean | null
+    contract_symbol?: string | null
+    id?: string | null
+    inserted_at?: ValueTypes['timestamptz'] | null
+    mint_time?: ValueTypes['timestamptz'] | null
+    owner_id?: string | null
+    token_id?: string | null
+    token_uri?: string | null
+    updated_at?: ValueTypes['timestamptz'] | null
+  }
   ['jsonb']: unknown
   /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
   ['jsonb_comparison_exp']: {
@@ -724,6 +784,25 @@ export declare type ValueTypes = {
     _lte?: ValueTypes['jsonb'] | null
     _neq?: ValueTypes['jsonb'] | null
     _nin?: ValueTypes['jsonb'][]
+  }
+  ['link_nft_asset_args']: {
+    content_cid?: string | null
+    ipfs_url?: string | null
+    metadata?: ValueTypes['jsonb'] | null
+    status_text?: string | null
+    token_uri_hash?: string | null
+  }
+  ['link_nft_resource_args']: {
+    cid?: string | null
+    uri?: string | null
+  }
+  ['link_resource_content_args']: {
+    cid?: string | null
+    dag_size?: ValueTypes['bigint'] | null
+    ipfs_url?: string | null
+    pin_service?: ValueTypes['pin_service'] | null
+    status_text?: string | null
+    uri_hash?: ValueTypes['bytea'] | null
   }
   /** mutation root */
   ['mutation_root']: AliasType<{
@@ -881,6 +960,20 @@ export declare type ValueTypes = {
       },
       ValueTypes['nft_owner']
     ]
+    delete_nft_ownership?: [
+      {
+        where: ValueTypes['nft_ownership_bool_exp']
+      },
+      ValueTypes['nft_ownership_mutation_response']
+    ]
+    delete_nft_ownership_by_pk?: [
+      {
+        block_number: string
+        nft_id: string
+        owner_id: string
+      },
+      ValueTypes['nft_ownership']
+    ]
     delete_nfts_by_blockchain_blocks?: [
       {
         where: ValueTypes['nfts_by_blockchain_blocks_bool_exp']
@@ -948,6 +1041,45 @@ export declare type ValueTypes = {
         where: ValueTypes['resource_view_bool_exp']
       },
       ValueTypes['resource_view_mutation_response']
+    ]
+    fail_nft_asset?: [
+      {
+        args: ValueTypes['fail_nft_asset_args'] /** distinct select on columns */
+        distinct_on?: ValueTypes['nft_asset_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['nft_asset_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['nft_asset_bool_exp'] | null
+      },
+      ValueTypes['nft_asset']
+    ]
+    fail_resource?: [
+      {
+        args: ValueTypes['fail_resource_args'] /** distinct select on columns */
+        distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['resource_bool_exp'] | null
+      },
+      ValueTypes['resource']
+    ]
+    ingest_erc721_token?: [
+      {
+        args: ValueTypes['ingest_erc721_token_args'] /** distinct select on columns */
+        distinct_on?: ValueTypes['nft_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['nft_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['nft_bool_exp'] | null
+      },
+      ValueTypes['nft']
     ]
     insert_blockchain_block?: [
       {
@@ -1087,6 +1219,20 @@ export declare type ValueTypes = {
       },
       ValueTypes['nft_owner']
     ]
+    insert_nft_ownership?: [
+      {
+        objects: ValueTypes['nft_ownership_insert_input'][] /** on conflict condition */
+        on_conflict?: ValueTypes['nft_ownership_on_conflict'] | null
+      },
+      ValueTypes['nft_ownership_mutation_response']
+    ]
+    insert_nft_ownership_one?: [
+      {
+        object: ValueTypes['nft_ownership_insert_input'] /** on conflict condition */
+        on_conflict?: ValueTypes['nft_ownership_on_conflict'] | null
+      },
+      ValueTypes['nft_ownership']
+    ]
     insert_nfts_by_blockchain_blocks?: [
       {
         objects: ValueTypes['nfts_by_blockchain_blocks_insert_input'][] /** on conflict condition */
@@ -1168,6 +1314,45 @@ export declare type ValueTypes = {
         object: ValueTypes['resource_view_insert_input']
       },
       ValueTypes['resource_view']
+    ]
+    link_nft_asset?: [
+      {
+        args: ValueTypes['link_nft_asset_args'] /** distinct select on columns */
+        distinct_on?: ValueTypes['nft_asset_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['nft_asset_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['nft_asset_bool_exp'] | null
+      },
+      ValueTypes['nft_asset']
+    ]
+    link_nft_resource?: [
+      {
+        args: ValueTypes['link_nft_resource_args'] /** distinct select on columns */
+        distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['resource_bool_exp'] | null
+      },
+      ValueTypes['resource']
+    ]
+    link_resource_content?: [
+      {
+        args: ValueTypes['link_resource_content_args'] /** distinct select on columns */
+        distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['resource_bool_exp'] | null
+      },
+      ValueTypes['resource']
     ]
     update_blockchain_block?: [
       {
@@ -1304,6 +1489,21 @@ export declare type ValueTypes = {
     ]
     update_nft_metadata?: [
       {
+        _append?:
+          | ValueTypes['nft_metadata_append_input']
+          | null /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+        _delete_at_path?:
+          | ValueTypes['nft_metadata_delete_at_path_input']
+          | null /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+        _delete_elem?:
+          | ValueTypes['nft_metadata_delete_elem_input']
+          | null /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+        _delete_key?:
+          | ValueTypes['nft_metadata_delete_key_input']
+          | null /** prepend existing jsonb value of filtered columns with new jsonb value */
+        _prepend?:
+          | ValueTypes['nft_metadata_prepend_input']
+          | null /** sets the columns of the filtered rows to the given values */
         _set?:
           | ValueTypes['nft_metadata_set_input']
           | null /** filter the rows which have to be updated */
@@ -1313,6 +1513,21 @@ export declare type ValueTypes = {
     ]
     update_nft_metadata_by_pk?: [
       {
+        _append?:
+          | ValueTypes['nft_metadata_append_input']
+          | null /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+        _delete_at_path?:
+          | ValueTypes['nft_metadata_delete_at_path_input']
+          | null /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+        _delete_elem?:
+          | ValueTypes['nft_metadata_delete_elem_input']
+          | null /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+        _delete_key?:
+          | ValueTypes['nft_metadata_delete_key_input']
+          | null /** prepend existing jsonb value of filtered columns with new jsonb value */
+        _prepend?:
+          | ValueTypes['nft_metadata_prepend_input']
+          | null /** sets the columns of the filtered rows to the given values */
         _set?: ValueTypes['nft_metadata_set_input'] | null
         pk_columns: ValueTypes['nft_metadata_pk_columns_input']
       },
@@ -1333,6 +1548,22 @@ export declare type ValueTypes = {
         pk_columns: ValueTypes['nft_owner_pk_columns_input']
       },
       ValueTypes['nft_owner']
+    ]
+    update_nft_ownership?: [
+      {
+        _set?:
+          | ValueTypes['nft_ownership_set_input']
+          | null /** filter the rows which have to be updated */
+        where: ValueTypes['nft_ownership_bool_exp']
+      },
+      ValueTypes['nft_ownership_mutation_response']
+    ]
+    update_nft_ownership_by_pk?: [
+      {
+        _set?: ValueTypes['nft_ownership_set_input'] | null
+        pk_columns: ValueTypes['nft_ownership_pk_columns_input']
+      },
+      ValueTypes['nft_ownership']
     ]
     update_nfts_by_blockchain_blocks?: [
       {
@@ -1492,11 +1723,49 @@ export declare type ValueTypes = {
     min?: ValueTypes['nft_min_fields']
     __typename?: true
   }>
+  /** order by aggregate values of table "nft" */
+  ['nft_aggregate_order_by']: {
+    count?: ValueTypes['order_by'] | null
+    max?: ValueTypes['nft_max_order_by'] | null
+    min?: ValueTypes['nft_min_order_by'] | null
+  }
+  /** input type for inserting array relation for remote table "nft" */
+  ['nft_arr_rel_insert_input']: {
+    data: ValueTypes['nft_insert_input'][]
+    /** on conflict condition */
+    on_conflict?: ValueTypes['nft_on_conflict'] | null
+  }
   /** columns and relationships of "nft_asset" */
   ['nft_asset']: AliasType<{
     content_cid?: true
     inserted_at?: true
     ipfs_url?: true
+    /** An object relationship */
+    metadata?: ValueTypes['nft_metadata']
+    nfts?: [
+      {
+        distinct_on?: ValueTypes['nft_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['nft_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['nft_bool_exp'] | null
+      },
+      ValueTypes['nft']
+    ]
+    nfts_aggregate?: [
+      {
+        distinct_on?: ValueTypes['nft_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['nft_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['nft_bool_exp'] | null
+      },
+      ValueTypes['nft_aggregate']
+    ]
     status?: true
     status_text?: true
     token_uri?: true
@@ -1531,6 +1800,8 @@ export declare type ValueTypes = {
     content_cid?: ValueTypes['String_comparison_exp'] | null
     inserted_at?: ValueTypes['timestamptz_comparison_exp'] | null
     ipfs_url?: ValueTypes['String_comparison_exp'] | null
+    metadata?: ValueTypes['nft_metadata_bool_exp'] | null
+    nfts?: ValueTypes['nft_bool_exp'] | null
     status?: ValueTypes['nft_asset_status_comparison_exp'] | null
     status_text?: ValueTypes['String_comparison_exp'] | null
     token_uri?: ValueTypes['String_comparison_exp'] | null
@@ -1544,6 +1815,8 @@ export declare type ValueTypes = {
     content_cid?: string | null
     inserted_at?: ValueTypes['timestamptz'] | null
     ipfs_url?: string | null
+    metadata?: ValueTypes['nft_metadata_obj_rel_insert_input'] | null
+    nfts?: ValueTypes['nft_arr_rel_insert_input'] | null
     status?: ValueTypes['nft_asset_status'] | null
     status_text?: string | null
     token_uri?: string | null
@@ -1589,6 +1862,8 @@ export declare type ValueTypes = {
     content_cid?: ValueTypes['order_by'] | null
     inserted_at?: ValueTypes['order_by'] | null
     ipfs_url?: ValueTypes['order_by'] | null
+    metadata?: ValueTypes['nft_metadata_order_by'] | null
+    nfts_aggregate?: ValueTypes['nft_aggregate_order_by'] | null
     status?: ValueTypes['order_by'] | null
     status_text?: ValueTypes['order_by'] | null
     token_uri?: ValueTypes['order_by'] | null
@@ -1768,13 +2043,55 @@ export declare type ValueTypes = {
     updated_at?: true
     __typename?: true
   }>
+  /** order by max() on columns of table "nft" */
+  ['nft_max_order_by']: {
+    contract_id?: ValueTypes['order_by'] | null
+    id?: ValueTypes['order_by'] | null
+    inserted_at?: ValueTypes['order_by'] | null
+    mint_time?: ValueTypes['order_by'] | null
+    nft_owner_id?: ValueTypes['order_by'] | null
+    token_id?: ValueTypes['order_by'] | null
+    updated_at?: ValueTypes['order_by'] | null
+  }
   /** columns and relationships of "nft_metadata" */
   ['nft_metadata']: AliasType<{
+    content?: [
+      {
+        path?: string | null
+      },
+      true
+    ]
     content_cid?: true
     description?: true
+    /** An object relationship */
+    image?: ValueTypes['resource']
     image_uri_hash?: true
     inserted_at?: true
     name?: true
+    other_resources?: [
+      {
+        distinct_on?: ValueTypes['other_nft_resources_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['other_nft_resources_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['other_nft_resources_bool_exp'] | null
+      },
+      ValueTypes['other_nft_resources']
+    ]
+    other_resources_aggregate?: [
+      {
+        distinct_on?: ValueTypes['other_nft_resources_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['other_nft_resources_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['other_nft_resources_bool_exp'] | null
+      },
+      ValueTypes['other_nft_resources_aggregate']
+    ]
     updated_at?: true
     __typename?: true
   }>
@@ -1797,27 +2114,51 @@ export declare type ValueTypes = {
     min?: ValueTypes['nft_metadata_min_fields']
     __typename?: true
   }>
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  ['nft_metadata_append_input']: {
+    content?: ValueTypes['jsonb'] | null
+  }
   /** Boolean expression to filter rows from the table "nft_metadata". All fields are combined with a logical 'AND'. */
   ['nft_metadata_bool_exp']: {
     _and?: ValueTypes['nft_metadata_bool_exp'][]
     _not?: ValueTypes['nft_metadata_bool_exp'] | null
     _or?: ValueTypes['nft_metadata_bool_exp'][]
+    content?: ValueTypes['jsonb_comparison_exp'] | null
     content_cid?: ValueTypes['String_comparison_exp'] | null
     description?: ValueTypes['String_comparison_exp'] | null
+    image?: ValueTypes['resource_bool_exp'] | null
     image_uri_hash?: ValueTypes['bytea_comparison_exp'] | null
     inserted_at?: ValueTypes['timestamptz_comparison_exp'] | null
     name?: ValueTypes['String_comparison_exp'] | null
+    other_resources?: ValueTypes['other_nft_resources_bool_exp'] | null
     updated_at?: ValueTypes['timestamptz_comparison_exp'] | null
   }
   /** unique or primary key constraints on table "nft_metadata" */
   ['nft_metadata_constraint']: nft_metadata_constraint
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  ['nft_metadata_delete_at_path_input']: {
+    content?: string[]
+  }
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  ['nft_metadata_delete_elem_input']: {
+    content?: number | null
+  }
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  ['nft_metadata_delete_key_input']: {
+    content?: string | null
+  }
   /** input type for inserting data into table "nft_metadata" */
   ['nft_metadata_insert_input']: {
+    content?: ValueTypes['jsonb'] | null
     content_cid?: string | null
     description?: string | null
+    image?: ValueTypes['resource_obj_rel_insert_input'] | null
     image_uri_hash?: ValueTypes['bytea'] | null
     inserted_at?: ValueTypes['timestamptz'] | null
     name?: string | null
+    other_resources?:
+      | ValueTypes['other_nft_resources_arr_rel_insert_input']
+      | null
     updated_at?: ValueTypes['timestamptz'] | null
   }
   /** aggregate max on columns */
@@ -1846,6 +2187,12 @@ export declare type ValueTypes = {
     returning?: ValueTypes['nft_metadata']
     __typename?: true
   }>
+  /** input type for inserting object relation for remote table "nft_metadata" */
+  ['nft_metadata_obj_rel_insert_input']: {
+    data: ValueTypes['nft_metadata_insert_input']
+    /** on conflict condition */
+    on_conflict?: ValueTypes['nft_metadata_on_conflict'] | null
+  }
   /** on conflict condition type for table "nft_metadata" */
   ['nft_metadata_on_conflict']: {
     constraint: ValueTypes['nft_metadata_constraint']
@@ -1854,21 +2201,31 @@ export declare type ValueTypes = {
   }
   /** Ordering options when selecting data from "nft_metadata". */
   ['nft_metadata_order_by']: {
+    content?: ValueTypes['order_by'] | null
     content_cid?: ValueTypes['order_by'] | null
     description?: ValueTypes['order_by'] | null
+    image?: ValueTypes['resource_order_by'] | null
     image_uri_hash?: ValueTypes['order_by'] | null
     inserted_at?: ValueTypes['order_by'] | null
     name?: ValueTypes['order_by'] | null
+    other_resources_aggregate?:
+      | ValueTypes['other_nft_resources_aggregate_order_by']
+      | null
     updated_at?: ValueTypes['order_by'] | null
   }
   /** primary key columns input for table: nft_metadata */
   ['nft_metadata_pk_columns_input']: {
     content_cid: string
   }
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  ['nft_metadata_prepend_input']: {
+    content?: ValueTypes['jsonb'] | null
+  }
   /** select columns of table "nft_metadata" */
   ['nft_metadata_select_column']: nft_metadata_select_column
   /** input type for updating data in table "nft_metadata" */
   ['nft_metadata_set_input']: {
+    content?: ValueTypes['jsonb'] | null
     content_cid?: string | null
     description?: string | null
     image_uri_hash?: ValueTypes['bytea'] | null
@@ -1889,6 +2246,16 @@ export declare type ValueTypes = {
     updated_at?: true
     __typename?: true
   }>
+  /** order by min() on columns of table "nft" */
+  ['nft_min_order_by']: {
+    contract_id?: ValueTypes['order_by'] | null
+    id?: ValueTypes['order_by'] | null
+    inserted_at?: ValueTypes['order_by'] | null
+    mint_time?: ValueTypes['order_by'] | null
+    nft_owner_id?: ValueTypes['order_by'] | null
+    token_id?: ValueTypes['order_by'] | null
+    updated_at?: ValueTypes['order_by'] | null
+  }
   /** response of any mutation on the table "nft" */
   ['nft_mutation_response']: AliasType<{
     /** number of rows affected by the mutation */
@@ -2005,6 +2372,113 @@ export declare type ValueTypes = {
   }
   /** update columns of table "nft_owner" */
   ['nft_owner_update_column']: nft_owner_update_column
+  /** columns and relationships of "nft_ownership" */
+  ['nft_ownership']: AliasType<{
+    block_number?: true
+    inserted_at?: true
+    nft_id?: true
+    owner_id?: true
+    updated_at?: true
+    __typename?: true
+  }>
+  /** aggregated selection of "nft_ownership" */
+  ['nft_ownership_aggregate']: AliasType<{
+    aggregate?: ValueTypes['nft_ownership_aggregate_fields']
+    nodes?: ValueTypes['nft_ownership']
+    __typename?: true
+  }>
+  /** aggregate fields of "nft_ownership" */
+  ['nft_ownership_aggregate_fields']: AliasType<{
+    count?: [
+      {
+        columns?: ValueTypes['nft_ownership_select_column'][]
+        distinct?: boolean | null
+      },
+      true
+    ]
+    max?: ValueTypes['nft_ownership_max_fields']
+    min?: ValueTypes['nft_ownership_min_fields']
+    __typename?: true
+  }>
+  /** Boolean expression to filter rows from the table "nft_ownership". All fields are combined with a logical 'AND'. */
+  ['nft_ownership_bool_exp']: {
+    _and?: ValueTypes['nft_ownership_bool_exp'][]
+    _not?: ValueTypes['nft_ownership_bool_exp'] | null
+    _or?: ValueTypes['nft_ownership_bool_exp'][]
+    block_number?: ValueTypes['String_comparison_exp'] | null
+    inserted_at?: ValueTypes['timestamptz_comparison_exp'] | null
+    nft_id?: ValueTypes['String_comparison_exp'] | null
+    owner_id?: ValueTypes['String_comparison_exp'] | null
+    updated_at?: ValueTypes['timestamptz_comparison_exp'] | null
+  }
+  /** unique or primary key constraints on table "nft_ownership" */
+  ['nft_ownership_constraint']: nft_ownership_constraint
+  /** input type for inserting data into table "nft_ownership" */
+  ['nft_ownership_insert_input']: {
+    block_number?: string | null
+    inserted_at?: ValueTypes['timestamptz'] | null
+    nft_id?: string | null
+    owner_id?: string | null
+    updated_at?: ValueTypes['timestamptz'] | null
+  }
+  /** aggregate max on columns */
+  ['nft_ownership_max_fields']: AliasType<{
+    block_number?: true
+    inserted_at?: true
+    nft_id?: true
+    owner_id?: true
+    updated_at?: true
+    __typename?: true
+  }>
+  /** aggregate min on columns */
+  ['nft_ownership_min_fields']: AliasType<{
+    block_number?: true
+    inserted_at?: true
+    nft_id?: true
+    owner_id?: true
+    updated_at?: true
+    __typename?: true
+  }>
+  /** response of any mutation on the table "nft_ownership" */
+  ['nft_ownership_mutation_response']: AliasType<{
+    /** number of rows affected by the mutation */
+    affected_rows?: true
+    /** data from the rows affected by the mutation */
+    returning?: ValueTypes['nft_ownership']
+    __typename?: true
+  }>
+  /** on conflict condition type for table "nft_ownership" */
+  ['nft_ownership_on_conflict']: {
+    constraint: ValueTypes['nft_ownership_constraint']
+    update_columns: ValueTypes['nft_ownership_update_column'][]
+    where?: ValueTypes['nft_ownership_bool_exp'] | null
+  }
+  /** Ordering options when selecting data from "nft_ownership". */
+  ['nft_ownership_order_by']: {
+    block_number?: ValueTypes['order_by'] | null
+    inserted_at?: ValueTypes['order_by'] | null
+    nft_id?: ValueTypes['order_by'] | null
+    owner_id?: ValueTypes['order_by'] | null
+    updated_at?: ValueTypes['order_by'] | null
+  }
+  /** primary key columns input for table: nft_ownership */
+  ['nft_ownership_pk_columns_input']: {
+    block_number: string
+    nft_id: string
+    owner_id: string
+  }
+  /** select columns of table "nft_ownership" */
+  ['nft_ownership_select_column']: nft_ownership_select_column
+  /** input type for updating data in table "nft_ownership" */
+  ['nft_ownership_set_input']: {
+    block_number?: string | null
+    inserted_at?: ValueTypes['timestamptz'] | null
+    nft_id?: string | null
+    owner_id?: string | null
+    updated_at?: ValueTypes['timestamptz'] | null
+  }
+  /** update columns of table "nft_ownership" */
+  ['nft_ownership_update_column']: nft_ownership_update_column
   /** primary key columns input for table: nft */
   ['nft_pk_columns_input']: {
     id: string
@@ -2267,6 +2741,8 @@ columns and relationships of "niftysave_migration" */
   ['other_nft_resources']: AliasType<{
     content_cid?: true
     inserted_at?: true
+    /** An object relationship */
+    resource?: ValueTypes['resource']
     resource_uri_hash?: true
     updated_at?: true
     __typename?: true
@@ -2290,6 +2766,18 @@ columns and relationships of "niftysave_migration" */
     min?: ValueTypes['other_nft_resources_min_fields']
     __typename?: true
   }>
+  /** order by aggregate values of table "other_nft_resources" */
+  ['other_nft_resources_aggregate_order_by']: {
+    count?: ValueTypes['order_by'] | null
+    max?: ValueTypes['other_nft_resources_max_order_by'] | null
+    min?: ValueTypes['other_nft_resources_min_order_by'] | null
+  }
+  /** input type for inserting array relation for remote table "other_nft_resources" */
+  ['other_nft_resources_arr_rel_insert_input']: {
+    data: ValueTypes['other_nft_resources_insert_input'][]
+    /** on conflict condition */
+    on_conflict?: ValueTypes['other_nft_resources_on_conflict'] | null
+  }
   /** Boolean expression to filter rows from the table "other_nft_resources". All fields are combined with a logical 'AND'. */
   ['other_nft_resources_bool_exp']: {
     _and?: ValueTypes['other_nft_resources_bool_exp'][]
@@ -2297,6 +2785,7 @@ columns and relationships of "niftysave_migration" */
     _or?: ValueTypes['other_nft_resources_bool_exp'][]
     content_cid?: ValueTypes['String_comparison_exp'] | null
     inserted_at?: ValueTypes['timestamptz_comparison_exp'] | null
+    resource?: ValueTypes['resource_bool_exp'] | null
     resource_uri_hash?: ValueTypes['bytea_comparison_exp'] | null
     updated_at?: ValueTypes['timestamptz_comparison_exp'] | null
   }
@@ -2306,6 +2795,7 @@ columns and relationships of "niftysave_migration" */
   ['other_nft_resources_insert_input']: {
     content_cid?: string | null
     inserted_at?: ValueTypes['timestamptz'] | null
+    resource?: ValueTypes['resource_obj_rel_insert_input'] | null
     resource_uri_hash?: ValueTypes['bytea'] | null
     updated_at?: ValueTypes['timestamptz'] | null
   }
@@ -2316,6 +2806,12 @@ columns and relationships of "niftysave_migration" */
     updated_at?: true
     __typename?: true
   }>
+  /** order by max() on columns of table "other_nft_resources" */
+  ['other_nft_resources_max_order_by']: {
+    content_cid?: ValueTypes['order_by'] | null
+    inserted_at?: ValueTypes['order_by'] | null
+    updated_at?: ValueTypes['order_by'] | null
+  }
   /** aggregate min on columns */
   ['other_nft_resources_min_fields']: AliasType<{
     content_cid?: true
@@ -2323,6 +2819,12 @@ columns and relationships of "niftysave_migration" */
     updated_at?: true
     __typename?: true
   }>
+  /** order by min() on columns of table "other_nft_resources" */
+  ['other_nft_resources_min_order_by']: {
+    content_cid?: ValueTypes['order_by'] | null
+    inserted_at?: ValueTypes['order_by'] | null
+    updated_at?: ValueTypes['order_by'] | null
+  }
   /** response of any mutation on the table "other_nft_resources" */
   ['other_nft_resources_mutation_response']: AliasType<{
     /** number of rows affected by the mutation */
@@ -2341,6 +2843,7 @@ columns and relationships of "niftysave_migration" */
   ['other_nft_resources_order_by']: {
     content_cid?: ValueTypes['order_by'] | null
     inserted_at?: ValueTypes['order_by'] | null
+    resource?: ValueTypes['resource_order_by'] | null
     resource_uri_hash?: ValueTypes['order_by'] | null
     updated_at?: ValueTypes['order_by'] | null
   }
@@ -2397,11 +2900,35 @@ columns and relationships of "niftysave_migration" */
     variance?: ValueTypes['pin_variance_fields']
     __typename?: true
   }>
+  /** order by aggregate values of table "pin" */
+  ['pin_aggregate_order_by']: {
+    avg?: ValueTypes['pin_avg_order_by'] | null
+    count?: ValueTypes['order_by'] | null
+    max?: ValueTypes['pin_max_order_by'] | null
+    min?: ValueTypes['pin_min_order_by'] | null
+    stddev?: ValueTypes['pin_stddev_order_by'] | null
+    stddev_pop?: ValueTypes['pin_stddev_pop_order_by'] | null
+    stddev_samp?: ValueTypes['pin_stddev_samp_order_by'] | null
+    sum?: ValueTypes['pin_sum_order_by'] | null
+    var_pop?: ValueTypes['pin_var_pop_order_by'] | null
+    var_samp?: ValueTypes['pin_var_samp_order_by'] | null
+    variance?: ValueTypes['pin_variance_order_by'] | null
+  }
+  /** input type for inserting array relation for remote table "pin" */
+  ['pin_arr_rel_insert_input']: {
+    data: ValueTypes['pin_insert_input'][]
+    /** on conflict condition */
+    on_conflict?: ValueTypes['pin_on_conflict'] | null
+  }
   /** aggregate avg on columns */
   ['pin_avg_fields']: AliasType<{
     id?: true
     __typename?: true
   }>
+  /** order by avg() on columns of table "pin" */
+  ['pin_avg_order_by']: {
+    id?: ValueTypes['order_by'] | null
+  }
   /** Boolean expression to filter rows from the table "pin". All fields are combined with a logical 'AND'. */
   ['pin_bool_exp']: {
     _and?: ValueTypes['pin_bool_exp'][]
@@ -2437,6 +2964,13 @@ columns and relationships of "niftysave_migration" */
     updated_at?: true
     __typename?: true
   }>
+  /** order by max() on columns of table "pin" */
+  ['pin_max_order_by']: {
+    content_cid?: ValueTypes['order_by'] | null
+    id?: ValueTypes['order_by'] | null
+    inserted_at?: ValueTypes['order_by'] | null
+    updated_at?: ValueTypes['order_by'] | null
+  }
   /** aggregate min on columns */
   ['pin_min_fields']: AliasType<{
     content_cid?: true
@@ -2445,6 +2979,13 @@ columns and relationships of "niftysave_migration" */
     updated_at?: true
     __typename?: true
   }>
+  /** order by min() on columns of table "pin" */
+  ['pin_min_order_by']: {
+    content_cid?: ValueTypes['order_by'] | null
+    id?: ValueTypes['order_by'] | null
+    inserted_at?: ValueTypes['order_by'] | null
+    updated_at?: ValueTypes['order_by'] | null
+  }
   /** response of any mutation on the table "pin" */
   ['pin_mutation_response']: AliasType<{
     /** number of rows affected by the mutation */
@@ -2514,21 +3055,37 @@ columns and relationships of "niftysave_migration" */
     id?: true
     __typename?: true
   }>
+  /** order by stddev() on columns of table "pin" */
+  ['pin_stddev_order_by']: {
+    id?: ValueTypes['order_by'] | null
+  }
   /** aggregate stddev_pop on columns */
   ['pin_stddev_pop_fields']: AliasType<{
     id?: true
     __typename?: true
   }>
+  /** order by stddev_pop() on columns of table "pin" */
+  ['pin_stddev_pop_order_by']: {
+    id?: ValueTypes['order_by'] | null
+  }
   /** aggregate stddev_samp on columns */
   ['pin_stddev_samp_fields']: AliasType<{
     id?: true
     __typename?: true
   }>
+  /** order by stddev_samp() on columns of table "pin" */
+  ['pin_stddev_samp_order_by']: {
+    id?: ValueTypes['order_by'] | null
+  }
   /** aggregate sum on columns */
   ['pin_sum_fields']: AliasType<{
     id?: true
     __typename?: true
   }>
+  /** order by sum() on columns of table "pin" */
+  ['pin_sum_order_by']: {
+    id?: ValueTypes['order_by'] | null
+  }
   /** update columns of table "pin" */
   ['pin_update_column']: pin_update_column
   /** aggregate var_pop on columns */
@@ -2536,16 +3093,28 @@ columns and relationships of "niftysave_migration" */
     id?: true
     __typename?: true
   }>
+  /** order by var_pop() on columns of table "pin" */
+  ['pin_var_pop_order_by']: {
+    id?: ValueTypes['order_by'] | null
+  }
   /** aggregate var_samp on columns */
   ['pin_var_samp_fields']: AliasType<{
     id?: true
     __typename?: true
   }>
+  /** order by var_samp() on columns of table "pin" */
+  ['pin_var_samp_order_by']: {
+    id?: ValueTypes['order_by'] | null
+  }
   /** aggregate variance on columns */
   ['pin_variance_fields']: AliasType<{
     id?: true
     __typename?: true
   }>
+  /** order by variance() on columns of table "pin" */
+  ['pin_variance_order_by']: {
+    id?: ValueTypes['order_by'] | null
+  }
   ['query_root']: AliasType<{
     blockchain_block?: [
       {
@@ -2842,6 +3411,38 @@ columns and relationships of "niftysave_migration" */
       },
       ValueTypes['nft_owner']
     ]
+    nft_ownership?: [
+      {
+        distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['nft_ownership_bool_exp'] | null
+      },
+      ValueTypes['nft_ownership']
+    ]
+    nft_ownership_aggregate?: [
+      {
+        distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['nft_ownership_bool_exp'] | null
+      },
+      ValueTypes['nft_ownership_aggregate']
+    ]
+    nft_ownership_by_pk?: [
+      {
+        block_number: string
+        nft_id: string
+        owner_id: string
+      },
+      ValueTypes['nft_ownership']
+    ]
     nfts_by_blockchain_blocks?: [
       {
         distinct_on?: ValueTypes['nfts_by_blockchain_blocks_select_column'][] /** limit the number of rows returned */
@@ -3022,6 +3623,8 @@ columns and relationships of "niftysave_migration" */
   }>
   /** columns and relationships of "resource" */
   ['resource']: AliasType<{
+    /** An object relationship */
+    content?: ValueTypes['content']
     content_cid?: true
     inserted_at?: true
     ipfs_url?: true
@@ -3056,6 +3659,7 @@ columns and relationships of "niftysave_migration" */
     _and?: ValueTypes['resource_bool_exp'][]
     _not?: ValueTypes['resource_bool_exp'] | null
     _or?: ValueTypes['resource_bool_exp'][]
+    content?: ValueTypes['content_bool_exp'] | null
     content_cid?: ValueTypes['String_comparison_exp'] | null
     inserted_at?: ValueTypes['timestamptz_comparison_exp'] | null
     ipfs_url?: ValueTypes['String_comparison_exp'] | null
@@ -3069,6 +3673,7 @@ columns and relationships of "niftysave_migration" */
   ['resource_constraint']: resource_constraint
   /** input type for inserting data into table "resource" */
   ['resource_insert_input']: {
+    content?: ValueTypes['content_obj_rel_insert_input'] | null
     content_cid?: string | null
     inserted_at?: ValueTypes['timestamptz'] | null
     ipfs_url?: string | null
@@ -3106,6 +3711,12 @@ columns and relationships of "niftysave_migration" */
     returning?: ValueTypes['resource']
     __typename?: true
   }>
+  /** input type for inserting object relation for remote table "resource" */
+  ['resource_obj_rel_insert_input']: {
+    data: ValueTypes['resource_insert_input']
+    /** on conflict condition */
+    on_conflict?: ValueTypes['resource_on_conflict'] | null
+  }
   /** on conflict condition type for table "resource" */
   ['resource_on_conflict']: {
     constraint: ValueTypes['resource_constraint']
@@ -3114,6 +3725,7 @@ columns and relationships of "niftysave_migration" */
   }
   /** Ordering options when selecting data from "resource". */
   ['resource_order_by']: {
+    content?: ValueTypes['content_order_by'] | null
     content_cid?: ValueTypes['order_by'] | null
     inserted_at?: ValueTypes['order_by'] | null
     ipfs_url?: ValueTypes['order_by'] | null
@@ -3554,6 +4166,38 @@ columns and relationships of "niftysave_migration" */
       },
       ValueTypes['nft_owner']
     ]
+    nft_ownership?: [
+      {
+        distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['nft_ownership_bool_exp'] | null
+      },
+      ValueTypes['nft_ownership']
+    ]
+    nft_ownership_aggregate?: [
+      {
+        distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+        limit?:
+          | number
+          | null /** skip the first n rows. Use only with order_by */
+        offset?: number | null /** sort the rows by one or more columns */
+        order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+        where?: ValueTypes['nft_ownership_bool_exp'] | null
+      },
+      ValueTypes['nft_ownership_aggregate']
+    ]
+    nft_ownership_by_pk?: [
+      {
+        block_number: string
+        nft_id: string
+        owner_id: string
+      },
+      ValueTypes['nft_ownership']
+    ]
     nfts_by_blockchain_blocks?: [
       {
         distinct_on?: ValueTypes['nfts_by_blockchain_blocks_select_column'][] /** limit the number of rows returned */
@@ -3925,6 +4569,10 @@ export declare type ModelTypes = {
     cid: string
     dag_size?: ModelTypes['bigint']
     inserted_at: ModelTypes['timestamptz']
+    /** An array relationship */
+    pins: ModelTypes['pin'][]
+    /** An aggregate relationship */
+    pins_aggregate: ModelTypes['pin_aggregate']
     updated_at: ModelTypes['timestamptz']
   }
   /** aggregated selection of "content" */
@@ -3979,6 +4627,8 @@ export declare type ModelTypes = {
     /** data from the rows affected by the mutation */
     returning: ModelTypes['content'][]
   }
+  /** input type for inserting object relation for remote table "content" */
+  ['content_obj_rel_insert_input']: GraphQLTypes['content_obj_rel_insert_input']
   /** on conflict condition type for table "content" */
   ['content_on_conflict']: GraphQLTypes['content_on_conflict']
   /** Ordering options when selecting data from "content". */
@@ -4133,9 +4783,15 @@ export declare type ModelTypes = {
   ['erc721_import_set_input']: GraphQLTypes['erc721_import_set_input']
   /** update columns of table "erc721_import" */
   ['erc721_import_update_column']: GraphQLTypes['erc721_import_update_column']
+  ['fail_nft_asset_args']: GraphQLTypes['fail_nft_asset_args']
+  ['fail_resource_args']: GraphQLTypes['fail_resource_args']
+  ['ingest_erc721_token_args']: GraphQLTypes['ingest_erc721_token_args']
   ['jsonb']: any
   /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
   ['jsonb_comparison_exp']: GraphQLTypes['jsonb_comparison_exp']
+  ['link_nft_asset_args']: GraphQLTypes['link_nft_asset_args']
+  ['link_nft_resource_args']: GraphQLTypes['link_nft_resource_args']
+  ['link_resource_content_args']: GraphQLTypes['link_resource_content_args']
   /** mutation root */
   ['mutation_root']: {
     /** execute VOLATILE function "add_nft" which returns "nft" */
@@ -4182,6 +4838,10 @@ export declare type ModelTypes = {
     delete_nft_owner?: ModelTypes['nft_owner_mutation_response']
     /** delete single row from the table: "nft_owner" */
     delete_nft_owner_by_pk?: ModelTypes['nft_owner']
+    /** delete data from the table: "nft_ownership" */
+    delete_nft_ownership?: ModelTypes['nft_ownership_mutation_response']
+    /** delete single row from the table: "nft_ownership" */
+    delete_nft_ownership_by_pk?: ModelTypes['nft_ownership']
     /** delete data from the table: "nfts_by_blockchain_blocks" */
     delete_nfts_by_blockchain_blocks?: ModelTypes['nfts_by_blockchain_blocks_mutation_response']
     /** delete single row from the table: "nfts_by_blockchain_blocks" */
@@ -4204,6 +4864,12 @@ export declare type ModelTypes = {
     delete_resource_by_pk?: ModelTypes['resource']
     /** delete data from the table: "resource_view" */
     delete_resource_view?: ModelTypes['resource_view_mutation_response']
+    /** execute VOLATILE function "fail_nft_asset" which returns "nft_asset" */
+    fail_nft_asset: ModelTypes['nft_asset'][]
+    /** execute VOLATILE function "fail_resource" which returns "resource" */
+    fail_resource: ModelTypes['resource'][]
+    /** execute VOLATILE function "ingest_erc721_token" which returns "nft" */
+    ingest_erc721_token: ModelTypes['nft'][]
     /** insert data into the table: "blockchain_block" */
     insert_blockchain_block?: ModelTypes['blockchain_block_mutation_response']
     /** insert a single row into the table: "blockchain_block" */
@@ -4244,6 +4910,10 @@ export declare type ModelTypes = {
     insert_nft_owner?: ModelTypes['nft_owner_mutation_response']
     /** insert a single row into the table: "nft_owner" */
     insert_nft_owner_one?: ModelTypes['nft_owner']
+    /** insert data into the table: "nft_ownership" */
+    insert_nft_ownership?: ModelTypes['nft_ownership_mutation_response']
+    /** insert a single row into the table: "nft_ownership" */
+    insert_nft_ownership_one?: ModelTypes['nft_ownership']
     /** insert data into the table: "nfts_by_blockchain_blocks" */
     insert_nfts_by_blockchain_blocks?: ModelTypes['nfts_by_blockchain_blocks_mutation_response']
     /** insert a single row into the table: "nfts_by_blockchain_blocks" */
@@ -4268,6 +4938,12 @@ export declare type ModelTypes = {
     insert_resource_view?: ModelTypes['resource_view_mutation_response']
     /** insert a single row into the table: "resource_view" */
     insert_resource_view_one?: ModelTypes['resource_view']
+    /** execute VOLATILE function "link_nft_asset" which returns "nft_asset" */
+    link_nft_asset: ModelTypes['nft_asset'][]
+    /** execute VOLATILE function "link_nft_resource" which returns "resource" */
+    link_nft_resource: ModelTypes['resource'][]
+    /** execute VOLATILE function "link_resource_content" which returns "resource" */
+    link_resource_content: ModelTypes['resource'][]
     /** update data of the table: "blockchain_block" */
     update_blockchain_block?: ModelTypes['blockchain_block_mutation_response']
     /** update single row of the table: "blockchain_block" */
@@ -4306,6 +4982,10 @@ export declare type ModelTypes = {
     update_nft_owner?: ModelTypes['nft_owner_mutation_response']
     /** update single row of the table: "nft_owner" */
     update_nft_owner_by_pk?: ModelTypes['nft_owner']
+    /** update data of the table: "nft_ownership" */
+    update_nft_ownership?: ModelTypes['nft_ownership_mutation_response']
+    /** update single row of the table: "nft_ownership" */
+    update_nft_ownership_by_pk?: ModelTypes['nft_ownership']
     /** update data of the table: "nfts_by_blockchain_blocks" */
     update_nfts_by_blockchain_blocks?: ModelTypes['nfts_by_blockchain_blocks_mutation_response']
     /** update single row of the table: "nfts_by_blockchain_blocks" */
@@ -4351,11 +5031,21 @@ export declare type ModelTypes = {
     max?: ModelTypes['nft_max_fields']
     min?: ModelTypes['nft_min_fields']
   }
+  /** order by aggregate values of table "nft" */
+  ['nft_aggregate_order_by']: GraphQLTypes['nft_aggregate_order_by']
+  /** input type for inserting array relation for remote table "nft" */
+  ['nft_arr_rel_insert_input']: GraphQLTypes['nft_arr_rel_insert_input']
   /** columns and relationships of "nft_asset" */
   ['nft_asset']: {
     content_cid?: string
     inserted_at: ModelTypes['timestamptz']
     ipfs_url?: string
+    /** An object relationship */
+    metadata?: ModelTypes['nft_metadata']
+    /** An array relationship */
+    nfts: ModelTypes['nft'][]
+    /** An aggregate relationship */
+    nfts_aggregate: ModelTypes['nft_aggregate']
     status: ModelTypes['nft_asset_status']
     status_text: string
     token_uri: string
@@ -4491,13 +5181,22 @@ export declare type ModelTypes = {
     token_id?: string
     updated_at?: ModelTypes['timestamptz']
   }
+  /** order by max() on columns of table "nft" */
+  ['nft_max_order_by']: GraphQLTypes['nft_max_order_by']
   /** columns and relationships of "nft_metadata" */
   ['nft_metadata']: {
+    content?: ModelTypes['jsonb']
     content_cid: string
-    description: string
-    image_uri_hash: ModelTypes['bytea']
+    description?: string
+    /** An object relationship */
+    image?: ModelTypes['resource']
+    image_uri_hash?: ModelTypes['bytea']
     inserted_at: ModelTypes['timestamptz']
-    name: string
+    name?: string
+    /** An array relationship */
+    other_resources: ModelTypes['other_nft_resources'][]
+    /** An aggregate relationship */
+    other_resources_aggregate: ModelTypes['other_nft_resources_aggregate']
     updated_at: ModelTypes['timestamptz']
   }
   /** aggregated selection of "nft_metadata" */
@@ -4511,10 +5210,18 @@ export declare type ModelTypes = {
     max?: ModelTypes['nft_metadata_max_fields']
     min?: ModelTypes['nft_metadata_min_fields']
   }
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  ['nft_metadata_append_input']: GraphQLTypes['nft_metadata_append_input']
   /** Boolean expression to filter rows from the table "nft_metadata". All fields are combined with a logical 'AND'. */
   ['nft_metadata_bool_exp']: GraphQLTypes['nft_metadata_bool_exp']
   /** unique or primary key constraints on table "nft_metadata" */
   ['nft_metadata_constraint']: GraphQLTypes['nft_metadata_constraint']
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  ['nft_metadata_delete_at_path_input']: GraphQLTypes['nft_metadata_delete_at_path_input']
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  ['nft_metadata_delete_elem_input']: GraphQLTypes['nft_metadata_delete_elem_input']
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  ['nft_metadata_delete_key_input']: GraphQLTypes['nft_metadata_delete_key_input']
   /** input type for inserting data into table "nft_metadata" */
   ['nft_metadata_insert_input']: GraphQLTypes['nft_metadata_insert_input']
   /** aggregate max on columns */
@@ -4540,12 +5247,16 @@ export declare type ModelTypes = {
     /** data from the rows affected by the mutation */
     returning: ModelTypes['nft_metadata'][]
   }
+  /** input type for inserting object relation for remote table "nft_metadata" */
+  ['nft_metadata_obj_rel_insert_input']: GraphQLTypes['nft_metadata_obj_rel_insert_input']
   /** on conflict condition type for table "nft_metadata" */
   ['nft_metadata_on_conflict']: GraphQLTypes['nft_metadata_on_conflict']
   /** Ordering options when selecting data from "nft_metadata". */
   ['nft_metadata_order_by']: GraphQLTypes['nft_metadata_order_by']
   /** primary key columns input for table: nft_metadata */
   ['nft_metadata_pk_columns_input']: GraphQLTypes['nft_metadata_pk_columns_input']
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  ['nft_metadata_prepend_input']: GraphQLTypes['nft_metadata_prepend_input']
   /** select columns of table "nft_metadata" */
   ['nft_metadata_select_column']: GraphQLTypes['nft_metadata_select_column']
   /** input type for updating data in table "nft_metadata" */
@@ -4562,6 +5273,8 @@ export declare type ModelTypes = {
     token_id?: string
     updated_at?: ModelTypes['timestamptz']
   }
+  /** order by min() on columns of table "nft" */
+  ['nft_min_order_by']: GraphQLTypes['nft_min_order_by']
   /** response of any mutation on the table "nft" */
   ['nft_mutation_response']: {
     /** number of rows affected by the mutation */
@@ -4627,6 +5340,66 @@ export declare type ModelTypes = {
   ['nft_owner_set_input']: GraphQLTypes['nft_owner_set_input']
   /** update columns of table "nft_owner" */
   ['nft_owner_update_column']: GraphQLTypes['nft_owner_update_column']
+  /** columns and relationships of "nft_ownership" */
+  ['nft_ownership']: {
+    block_number: string
+    inserted_at: ModelTypes['timestamptz']
+    nft_id: string
+    owner_id: string
+    updated_at: ModelTypes['timestamptz']
+  }
+  /** aggregated selection of "nft_ownership" */
+  ['nft_ownership_aggregate']: {
+    aggregate?: ModelTypes['nft_ownership_aggregate_fields']
+    nodes: ModelTypes['nft_ownership'][]
+  }
+  /** aggregate fields of "nft_ownership" */
+  ['nft_ownership_aggregate_fields']: {
+    count: number
+    max?: ModelTypes['nft_ownership_max_fields']
+    min?: ModelTypes['nft_ownership_min_fields']
+  }
+  /** Boolean expression to filter rows from the table "nft_ownership". All fields are combined with a logical 'AND'. */
+  ['nft_ownership_bool_exp']: GraphQLTypes['nft_ownership_bool_exp']
+  /** unique or primary key constraints on table "nft_ownership" */
+  ['nft_ownership_constraint']: GraphQLTypes['nft_ownership_constraint']
+  /** input type for inserting data into table "nft_ownership" */
+  ['nft_ownership_insert_input']: GraphQLTypes['nft_ownership_insert_input']
+  /** aggregate max on columns */
+  ['nft_ownership_max_fields']: {
+    block_number?: string
+    inserted_at?: ModelTypes['timestamptz']
+    nft_id?: string
+    owner_id?: string
+    updated_at?: ModelTypes['timestamptz']
+  }
+  /** aggregate min on columns */
+  ['nft_ownership_min_fields']: {
+    block_number?: string
+    inserted_at?: ModelTypes['timestamptz']
+    nft_id?: string
+    owner_id?: string
+    updated_at?: ModelTypes['timestamptz']
+  }
+  /** response of any mutation on the table "nft_ownership" */
+  ['nft_ownership_mutation_response']: {
+    /** number of rows affected by the mutation */
+    affected_rows: number
+    /** data from the rows affected by the mutation */
+    returning: ModelTypes['nft_ownership'][]
+  }
+  /** on conflict condition type for table "nft_ownership" */
+  ['nft_ownership_on_conflict']: GraphQLTypes['nft_ownership_on_conflict']
+  /** Ordering options when selecting data from "nft_ownership". */
+  ['nft_ownership_order_by']: GraphQLTypes['nft_ownership_order_by']
+  /** primary key columns input for table: nft_ownership */
+  ['nft_ownership_pk_columns_input']: GraphQLTypes['nft_ownership_pk_columns_input']
+  /** select columns of table "nft_ownership" */
+  ['nft_ownership_select_column']: GraphQLTypes['nft_ownership_select_column']
+  /** input type for updating data in table "nft_ownership" */
+  ['nft_ownership_set_input']: GraphQLTypes['nft_ownership_set_input']
+  /** update columns of table "nft_ownership" */
+  ['nft_ownership_update_column']: GraphQLTypes['nft_ownership_update_column']
   /** primary key columns input for table: nft */
   ['nft_pk_columns_input']: GraphQLTypes['nft_pk_columns_input']
   /** select columns of table "nft" */
@@ -4772,6 +5545,8 @@ columns and relationships of "niftysave_migration" */
   ['other_nft_resources']: {
     content_cid: string
     inserted_at: ModelTypes['timestamptz']
+    /** An object relationship */
+    resource?: ModelTypes['resource']
     resource_uri_hash: ModelTypes['bytea']
     updated_at: ModelTypes['timestamptz']
   }
@@ -4786,6 +5561,10 @@ columns and relationships of "niftysave_migration" */
     max?: ModelTypes['other_nft_resources_max_fields']
     min?: ModelTypes['other_nft_resources_min_fields']
   }
+  /** order by aggregate values of table "other_nft_resources" */
+  ['other_nft_resources_aggregate_order_by']: GraphQLTypes['other_nft_resources_aggregate_order_by']
+  /** input type for inserting array relation for remote table "other_nft_resources" */
+  ['other_nft_resources_arr_rel_insert_input']: GraphQLTypes['other_nft_resources_arr_rel_insert_input']
   /** Boolean expression to filter rows from the table "other_nft_resources". All fields are combined with a logical 'AND'. */
   ['other_nft_resources_bool_exp']: GraphQLTypes['other_nft_resources_bool_exp']
   /** unique or primary key constraints on table "other_nft_resources" */
@@ -4798,12 +5577,16 @@ columns and relationships of "niftysave_migration" */
     inserted_at?: ModelTypes['timestamptz']
     updated_at?: ModelTypes['timestamptz']
   }
+  /** order by max() on columns of table "other_nft_resources" */
+  ['other_nft_resources_max_order_by']: GraphQLTypes['other_nft_resources_max_order_by']
   /** aggregate min on columns */
   ['other_nft_resources_min_fields']: {
     content_cid?: string
     inserted_at?: ModelTypes['timestamptz']
     updated_at?: ModelTypes['timestamptz']
   }
+  /** order by min() on columns of table "other_nft_resources" */
+  ['other_nft_resources_min_order_by']: GraphQLTypes['other_nft_resources_min_order_by']
   /** response of any mutation on the table "other_nft_resources" */
   ['other_nft_resources_mutation_response']: {
     /** number of rows affected by the mutation */
@@ -4851,10 +5634,16 @@ columns and relationships of "niftysave_migration" */
     var_samp?: ModelTypes['pin_var_samp_fields']
     variance?: ModelTypes['pin_variance_fields']
   }
+  /** order by aggregate values of table "pin" */
+  ['pin_aggregate_order_by']: GraphQLTypes['pin_aggregate_order_by']
+  /** input type for inserting array relation for remote table "pin" */
+  ['pin_arr_rel_insert_input']: GraphQLTypes['pin_arr_rel_insert_input']
   /** aggregate avg on columns */
   ['pin_avg_fields']: {
     id?: number
   }
+  /** order by avg() on columns of table "pin" */
+  ['pin_avg_order_by']: GraphQLTypes['pin_avg_order_by']
   /** Boolean expression to filter rows from the table "pin". All fields are combined with a logical 'AND'. */
   ['pin_bool_exp']: GraphQLTypes['pin_bool_exp']
   /** unique or primary key constraints on table "pin" */
@@ -4870,6 +5659,8 @@ columns and relationships of "niftysave_migration" */
     inserted_at?: ModelTypes['timestamptz']
     updated_at?: ModelTypes['timestamptz']
   }
+  /** order by max() on columns of table "pin" */
+  ['pin_max_order_by']: GraphQLTypes['pin_max_order_by']
   /** aggregate min on columns */
   ['pin_min_fields']: {
     content_cid?: string
@@ -4877,6 +5668,8 @@ columns and relationships of "niftysave_migration" */
     inserted_at?: ModelTypes['timestamptz']
     updated_at?: ModelTypes['timestamptz']
   }
+  /** order by min() on columns of table "pin" */
+  ['pin_min_order_by']: GraphQLTypes['pin_min_order_by']
   /** response of any mutation on the table "pin" */
   ['pin_mutation_response']: {
     /** number of rows affected by the mutation */
@@ -4904,32 +5697,46 @@ columns and relationships of "niftysave_migration" */
   ['pin_stddev_fields']: {
     id?: number
   }
+  /** order by stddev() on columns of table "pin" */
+  ['pin_stddev_order_by']: GraphQLTypes['pin_stddev_order_by']
   /** aggregate stddev_pop on columns */
   ['pin_stddev_pop_fields']: {
     id?: number
   }
+  /** order by stddev_pop() on columns of table "pin" */
+  ['pin_stddev_pop_order_by']: GraphQLTypes['pin_stddev_pop_order_by']
   /** aggregate stddev_samp on columns */
   ['pin_stddev_samp_fields']: {
     id?: number
   }
+  /** order by stddev_samp() on columns of table "pin" */
+  ['pin_stddev_samp_order_by']: GraphQLTypes['pin_stddev_samp_order_by']
   /** aggregate sum on columns */
   ['pin_sum_fields']: {
     id?: ModelTypes['bigint']
   }
+  /** order by sum() on columns of table "pin" */
+  ['pin_sum_order_by']: GraphQLTypes['pin_sum_order_by']
   /** update columns of table "pin" */
   ['pin_update_column']: GraphQLTypes['pin_update_column']
   /** aggregate var_pop on columns */
   ['pin_var_pop_fields']: {
     id?: number
   }
+  /** order by var_pop() on columns of table "pin" */
+  ['pin_var_pop_order_by']: GraphQLTypes['pin_var_pop_order_by']
   /** aggregate var_samp on columns */
   ['pin_var_samp_fields']: {
     id?: number
   }
+  /** order by var_samp() on columns of table "pin" */
+  ['pin_var_samp_order_by']: GraphQLTypes['pin_var_samp_order_by']
   /** aggregate variance on columns */
   ['pin_variance_fields']: {
     id?: number
   }
+  /** order by variance() on columns of table "pin" */
+  ['pin_variance_order_by']: GraphQLTypes['pin_variance_order_by']
   ['query_root']: {
     /** fetch data from the table: "blockchain_block" */
     blockchain_block: ModelTypes['blockchain_block'][]
@@ -4989,6 +5796,12 @@ columns and relationships of "niftysave_migration" */
     nft_owner_aggregate: ModelTypes['nft_owner_aggregate']
     /** fetch data from the table: "nft_owner" using primary key columns */
     nft_owner_by_pk?: ModelTypes['nft_owner']
+    /** fetch data from the table: "nft_ownership" */
+    nft_ownership: ModelTypes['nft_ownership'][]
+    /** fetch aggregated fields from the table: "nft_ownership" */
+    nft_ownership_aggregate: ModelTypes['nft_ownership_aggregate']
+    /** fetch data from the table: "nft_ownership" using primary key columns */
+    nft_ownership_by_pk?: ModelTypes['nft_ownership']
     /** fetch data from the table: "nfts_by_blockchain_blocks" */
     nfts_by_blockchain_blocks: ModelTypes['nfts_by_blockchain_blocks'][]
     /** fetch aggregated fields from the table: "nfts_by_blockchain_blocks" */
@@ -5026,6 +5839,8 @@ columns and relationships of "niftysave_migration" */
   }
   /** columns and relationships of "resource" */
   ['resource']: {
+    /** An object relationship */
+    content?: ModelTypes['content']
     content_cid?: string
     inserted_at: ModelTypes['timestamptz']
     ipfs_url?: string
@@ -5077,6 +5892,8 @@ columns and relationships of "niftysave_migration" */
     /** data from the rows affected by the mutation */
     returning: ModelTypes['resource'][]
   }
+  /** input type for inserting object relation for remote table "resource" */
+  ['resource_obj_rel_insert_input']: GraphQLTypes['resource_obj_rel_insert_input']
   /** on conflict condition type for table "resource" */
   ['resource_on_conflict']: GraphQLTypes['resource_on_conflict']
   /** Ordering options when selecting data from "resource". */
@@ -5207,6 +6024,12 @@ columns and relationships of "niftysave_migration" */
     nft_owner_aggregate: ModelTypes['nft_owner_aggregate']
     /** fetch data from the table: "nft_owner" using primary key columns */
     nft_owner_by_pk?: ModelTypes['nft_owner']
+    /** fetch data from the table: "nft_ownership" */
+    nft_ownership: ModelTypes['nft_ownership'][]
+    /** fetch aggregated fields from the table: "nft_ownership" */
+    nft_ownership_aggregate: ModelTypes['nft_ownership_aggregate']
+    /** fetch data from the table: "nft_ownership" using primary key columns */
+    nft_ownership_by_pk?: ModelTypes['nft_ownership']
     /** fetch data from the table: "nfts_by_blockchain_blocks" */
     nfts_by_blockchain_blocks: ModelTypes['nfts_by_blockchain_blocks'][]
     /** fetch aggregated fields from the table: "nfts_by_blockchain_blocks" */
@@ -5595,6 +6418,10 @@ export declare type GraphQLTypes = {
     cid: string
     dag_size?: GraphQLTypes['bigint']
     inserted_at: GraphQLTypes['timestamptz']
+    /** An array relationship */
+    pins: Array<GraphQLTypes['pin']>
+    /** An aggregate relationship */
+    pins_aggregate: GraphQLTypes['pin_aggregate']
     updated_at: GraphQLTypes['timestamptz']
   }
   /** aggregated selection of "content" */
@@ -5631,6 +6458,7 @@ export declare type GraphQLTypes = {
     cid?: GraphQLTypes['String_comparison_exp']
     dag_size?: GraphQLTypes['bigint_comparison_exp']
     inserted_at?: GraphQLTypes['timestamptz_comparison_exp']
+    pins?: GraphQLTypes['pin_bool_exp']
     updated_at?: GraphQLTypes['timestamptz_comparison_exp']
   }
   /** unique or primary key constraints on table "content" */
@@ -5644,6 +6472,7 @@ export declare type GraphQLTypes = {
     cid?: string
     dag_size?: GraphQLTypes['bigint']
     inserted_at?: GraphQLTypes['timestamptz']
+    pins?: GraphQLTypes['pin_arr_rel_insert_input']
     updated_at?: GraphQLTypes['timestamptz']
   }
   /** aggregate max on columns */
@@ -5670,6 +6499,12 @@ export declare type GraphQLTypes = {
     /** data from the rows affected by the mutation */
     returning: Array<GraphQLTypes['content']>
   }
+  /** input type for inserting object relation for remote table "content" */
+  ['content_obj_rel_insert_input']: {
+    data: GraphQLTypes['content_insert_input']
+    /** on conflict condition */
+    on_conflict?: GraphQLTypes['content_on_conflict']
+  }
   /** on conflict condition type for table "content" */
   ['content_on_conflict']: {
     constraint: GraphQLTypes['content_constraint']
@@ -5681,6 +6516,7 @@ export declare type GraphQLTypes = {
     cid?: GraphQLTypes['order_by']
     dag_size?: GraphQLTypes['order_by']
     inserted_at?: GraphQLTypes['order_by']
+    pins_aggregate?: GraphQLTypes['pin_aggregate_order_by']
     updated_at?: GraphQLTypes['order_by']
   }
   /** primary key columns input for table: content */
@@ -5918,6 +6754,33 @@ export declare type GraphQLTypes = {
   }
   /** update columns of table "erc721_import" */
   ['erc721_import_update_column']: erc721_import_update_column
+  ['fail_nft_asset_args']: {
+    ipfs_url?: string
+    status?: GraphQLTypes['nft_asset_status']
+    status_text?: string
+    token_uri_hash?: string
+  }
+  ['fail_resource_args']: {
+    ipfs_url?: string
+    status?: GraphQLTypes['resource_status']
+    status_text?: string
+    uri_hash?: GraphQLTypes['bytea']
+  }
+  ['ingest_erc721_token_args']: {
+    block_hash?: string
+    block_number?: GraphQLTypes['bigint']
+    contract_id?: string
+    contract_name?: string
+    contract_supports_eip721_metadata?: boolean
+    contract_symbol?: string
+    id?: string
+    inserted_at?: GraphQLTypes['timestamptz']
+    mint_time?: GraphQLTypes['timestamptz']
+    owner_id?: string
+    token_id?: string
+    token_uri?: string
+    updated_at?: GraphQLTypes['timestamptz']
+  }
   ['jsonb']: any
   /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
   ['jsonb_comparison_exp']: {
@@ -5940,6 +6803,25 @@ export declare type GraphQLTypes = {
     _lte?: GraphQLTypes['jsonb']
     _neq?: GraphQLTypes['jsonb']
     _nin?: Array<GraphQLTypes['jsonb']>
+  }
+  ['link_nft_asset_args']: {
+    content_cid?: string
+    ipfs_url?: string
+    metadata?: GraphQLTypes['jsonb']
+    status_text?: string
+    token_uri_hash?: string
+  }
+  ['link_nft_resource_args']: {
+    cid?: string
+    uri?: string
+  }
+  ['link_resource_content_args']: {
+    cid?: string
+    dag_size?: GraphQLTypes['bigint']
+    ipfs_url?: string
+    pin_service?: GraphQLTypes['pin_service']
+    status_text?: string
+    uri_hash?: GraphQLTypes['bytea']
   }
   /** mutation root */
   ['mutation_root']: {
@@ -5988,6 +6870,10 @@ export declare type GraphQLTypes = {
     delete_nft_owner?: GraphQLTypes['nft_owner_mutation_response']
     /** delete single row from the table: "nft_owner" */
     delete_nft_owner_by_pk?: GraphQLTypes['nft_owner']
+    /** delete data from the table: "nft_ownership" */
+    delete_nft_ownership?: GraphQLTypes['nft_ownership_mutation_response']
+    /** delete single row from the table: "nft_ownership" */
+    delete_nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
     /** delete data from the table: "nfts_by_blockchain_blocks" */
     delete_nfts_by_blockchain_blocks?: GraphQLTypes['nfts_by_blockchain_blocks_mutation_response']
     /** delete single row from the table: "nfts_by_blockchain_blocks" */
@@ -6010,6 +6896,12 @@ export declare type GraphQLTypes = {
     delete_resource_by_pk?: GraphQLTypes['resource']
     /** delete data from the table: "resource_view" */
     delete_resource_view?: GraphQLTypes['resource_view_mutation_response']
+    /** execute VOLATILE function "fail_nft_asset" which returns "nft_asset" */
+    fail_nft_asset: Array<GraphQLTypes['nft_asset']>
+    /** execute VOLATILE function "fail_resource" which returns "resource" */
+    fail_resource: Array<GraphQLTypes['resource']>
+    /** execute VOLATILE function "ingest_erc721_token" which returns "nft" */
+    ingest_erc721_token: Array<GraphQLTypes['nft']>
     /** insert data into the table: "blockchain_block" */
     insert_blockchain_block?: GraphQLTypes['blockchain_block_mutation_response']
     /** insert a single row into the table: "blockchain_block" */
@@ -6050,6 +6942,10 @@ export declare type GraphQLTypes = {
     insert_nft_owner?: GraphQLTypes['nft_owner_mutation_response']
     /** insert a single row into the table: "nft_owner" */
     insert_nft_owner_one?: GraphQLTypes['nft_owner']
+    /** insert data into the table: "nft_ownership" */
+    insert_nft_ownership?: GraphQLTypes['nft_ownership_mutation_response']
+    /** insert a single row into the table: "nft_ownership" */
+    insert_nft_ownership_one?: GraphQLTypes['nft_ownership']
     /** insert data into the table: "nfts_by_blockchain_blocks" */
     insert_nfts_by_blockchain_blocks?: GraphQLTypes['nfts_by_blockchain_blocks_mutation_response']
     /** insert a single row into the table: "nfts_by_blockchain_blocks" */
@@ -6074,6 +6970,12 @@ export declare type GraphQLTypes = {
     insert_resource_view?: GraphQLTypes['resource_view_mutation_response']
     /** insert a single row into the table: "resource_view" */
     insert_resource_view_one?: GraphQLTypes['resource_view']
+    /** execute VOLATILE function "link_nft_asset" which returns "nft_asset" */
+    link_nft_asset: Array<GraphQLTypes['nft_asset']>
+    /** execute VOLATILE function "link_nft_resource" which returns "resource" */
+    link_nft_resource: Array<GraphQLTypes['resource']>
+    /** execute VOLATILE function "link_resource_content" which returns "resource" */
+    link_resource_content: Array<GraphQLTypes['resource']>
     /** update data of the table: "blockchain_block" */
     update_blockchain_block?: GraphQLTypes['blockchain_block_mutation_response']
     /** update single row of the table: "blockchain_block" */
@@ -6112,6 +7014,10 @@ export declare type GraphQLTypes = {
     update_nft_owner?: GraphQLTypes['nft_owner_mutation_response']
     /** update single row of the table: "nft_owner" */
     update_nft_owner_by_pk?: GraphQLTypes['nft_owner']
+    /** update data of the table: "nft_ownership" */
+    update_nft_ownership?: GraphQLTypes['nft_ownership_mutation_response']
+    /** update single row of the table: "nft_ownership" */
+    update_nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
     /** update data of the table: "nfts_by_blockchain_blocks" */
     update_nfts_by_blockchain_blocks?: GraphQLTypes['nfts_by_blockchain_blocks_mutation_response']
     /** update single row of the table: "nfts_by_blockchain_blocks" */
@@ -6160,12 +7066,30 @@ export declare type GraphQLTypes = {
     max?: GraphQLTypes['nft_max_fields']
     min?: GraphQLTypes['nft_min_fields']
   }
+  /** order by aggregate values of table "nft" */
+  ['nft_aggregate_order_by']: {
+    count?: GraphQLTypes['order_by']
+    max?: GraphQLTypes['nft_max_order_by']
+    min?: GraphQLTypes['nft_min_order_by']
+  }
+  /** input type for inserting array relation for remote table "nft" */
+  ['nft_arr_rel_insert_input']: {
+    data: Array<GraphQLTypes['nft_insert_input']>
+    /** on conflict condition */
+    on_conflict?: GraphQLTypes['nft_on_conflict']
+  }
   /** columns and relationships of "nft_asset" */
   ['nft_asset']: {
     __typename: 'nft_asset'
     content_cid?: string
     inserted_at: GraphQLTypes['timestamptz']
     ipfs_url?: string
+    /** An object relationship */
+    metadata?: GraphQLTypes['nft_metadata']
+    /** An array relationship */
+    nfts: Array<GraphQLTypes['nft']>
+    /** An aggregate relationship */
+    nfts_aggregate: GraphQLTypes['nft_aggregate']
     status: GraphQLTypes['nft_asset_status']
     status_text: string
     token_uri: string
@@ -6193,6 +7117,8 @@ export declare type GraphQLTypes = {
     content_cid?: GraphQLTypes['String_comparison_exp']
     inserted_at?: GraphQLTypes['timestamptz_comparison_exp']
     ipfs_url?: GraphQLTypes['String_comparison_exp']
+    metadata?: GraphQLTypes['nft_metadata_bool_exp']
+    nfts?: GraphQLTypes['nft_bool_exp']
     status?: GraphQLTypes['nft_asset_status_comparison_exp']
     status_text?: GraphQLTypes['String_comparison_exp']
     token_uri?: GraphQLTypes['String_comparison_exp']
@@ -6206,6 +7132,8 @@ export declare type GraphQLTypes = {
     content_cid?: string
     inserted_at?: GraphQLTypes['timestamptz']
     ipfs_url?: string
+    metadata?: GraphQLTypes['nft_metadata_obj_rel_insert_input']
+    nfts?: GraphQLTypes['nft_arr_rel_insert_input']
     status?: GraphQLTypes['nft_asset_status']
     status_text?: string
     token_uri?: string
@@ -6251,6 +7179,8 @@ export declare type GraphQLTypes = {
     content_cid?: GraphQLTypes['order_by']
     inserted_at?: GraphQLTypes['order_by']
     ipfs_url?: GraphQLTypes['order_by']
+    metadata?: GraphQLTypes['nft_metadata_order_by']
+    nfts_aggregate?: GraphQLTypes['nft_aggregate_order_by']
     status?: GraphQLTypes['order_by']
     status_text?: GraphQLTypes['order_by']
     token_uri?: GraphQLTypes['order_by']
@@ -6424,14 +7354,31 @@ export declare type GraphQLTypes = {
     token_id?: string
     updated_at?: GraphQLTypes['timestamptz']
   }
+  /** order by max() on columns of table "nft" */
+  ['nft_max_order_by']: {
+    contract_id?: GraphQLTypes['order_by']
+    id?: GraphQLTypes['order_by']
+    inserted_at?: GraphQLTypes['order_by']
+    mint_time?: GraphQLTypes['order_by']
+    nft_owner_id?: GraphQLTypes['order_by']
+    token_id?: GraphQLTypes['order_by']
+    updated_at?: GraphQLTypes['order_by']
+  }
   /** columns and relationships of "nft_metadata" */
   ['nft_metadata']: {
     __typename: 'nft_metadata'
+    content?: GraphQLTypes['jsonb']
     content_cid: string
-    description: string
-    image_uri_hash: GraphQLTypes['bytea']
+    description?: string
+    /** An object relationship */
+    image?: GraphQLTypes['resource']
+    image_uri_hash?: GraphQLTypes['bytea']
     inserted_at: GraphQLTypes['timestamptz']
-    name: string
+    name?: string
+    /** An array relationship */
+    other_resources: Array<GraphQLTypes['other_nft_resources']>
+    /** An aggregate relationship */
+    other_resources_aggregate: GraphQLTypes['other_nft_resources_aggregate']
     updated_at: GraphQLTypes['timestamptz']
   }
   /** aggregated selection of "nft_metadata" */
@@ -6447,27 +7394,49 @@ export declare type GraphQLTypes = {
     max?: GraphQLTypes['nft_metadata_max_fields']
     min?: GraphQLTypes['nft_metadata_min_fields']
   }
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  ['nft_metadata_append_input']: {
+    content?: GraphQLTypes['jsonb']
+  }
   /** Boolean expression to filter rows from the table "nft_metadata". All fields are combined with a logical 'AND'. */
   ['nft_metadata_bool_exp']: {
     _and?: Array<GraphQLTypes['nft_metadata_bool_exp']>
     _not?: GraphQLTypes['nft_metadata_bool_exp']
     _or?: Array<GraphQLTypes['nft_metadata_bool_exp']>
+    content?: GraphQLTypes['jsonb_comparison_exp']
     content_cid?: GraphQLTypes['String_comparison_exp']
     description?: GraphQLTypes['String_comparison_exp']
+    image?: GraphQLTypes['resource_bool_exp']
     image_uri_hash?: GraphQLTypes['bytea_comparison_exp']
     inserted_at?: GraphQLTypes['timestamptz_comparison_exp']
     name?: GraphQLTypes['String_comparison_exp']
+    other_resources?: GraphQLTypes['other_nft_resources_bool_exp']
     updated_at?: GraphQLTypes['timestamptz_comparison_exp']
   }
   /** unique or primary key constraints on table "nft_metadata" */
   ['nft_metadata_constraint']: nft_metadata_constraint
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  ['nft_metadata_delete_at_path_input']: {
+    content?: Array<string>
+  }
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  ['nft_metadata_delete_elem_input']: {
+    content?: number
+  }
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  ['nft_metadata_delete_key_input']: {
+    content?: string
+  }
   /** input type for inserting data into table "nft_metadata" */
   ['nft_metadata_insert_input']: {
+    content?: GraphQLTypes['jsonb']
     content_cid?: string
     description?: string
+    image?: GraphQLTypes['resource_obj_rel_insert_input']
     image_uri_hash?: GraphQLTypes['bytea']
     inserted_at?: GraphQLTypes['timestamptz']
     name?: string
+    other_resources?: GraphQLTypes['other_nft_resources_arr_rel_insert_input']
     updated_at?: GraphQLTypes['timestamptz']
   }
   /** aggregate max on columns */
@@ -6496,6 +7465,12 @@ export declare type GraphQLTypes = {
     /** data from the rows affected by the mutation */
     returning: Array<GraphQLTypes['nft_metadata']>
   }
+  /** input type for inserting object relation for remote table "nft_metadata" */
+  ['nft_metadata_obj_rel_insert_input']: {
+    data: GraphQLTypes['nft_metadata_insert_input']
+    /** on conflict condition */
+    on_conflict?: GraphQLTypes['nft_metadata_on_conflict']
+  }
   /** on conflict condition type for table "nft_metadata" */
   ['nft_metadata_on_conflict']: {
     constraint: GraphQLTypes['nft_metadata_constraint']
@@ -6504,21 +7479,29 @@ export declare type GraphQLTypes = {
   }
   /** Ordering options when selecting data from "nft_metadata". */
   ['nft_metadata_order_by']: {
+    content?: GraphQLTypes['order_by']
     content_cid?: GraphQLTypes['order_by']
     description?: GraphQLTypes['order_by']
+    image?: GraphQLTypes['resource_order_by']
     image_uri_hash?: GraphQLTypes['order_by']
     inserted_at?: GraphQLTypes['order_by']
     name?: GraphQLTypes['order_by']
+    other_resources_aggregate?: GraphQLTypes['other_nft_resources_aggregate_order_by']
     updated_at?: GraphQLTypes['order_by']
   }
   /** primary key columns input for table: nft_metadata */
   ['nft_metadata_pk_columns_input']: {
     content_cid: string
   }
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  ['nft_metadata_prepend_input']: {
+    content?: GraphQLTypes['jsonb']
+  }
   /** select columns of table "nft_metadata" */
   ['nft_metadata_select_column']: nft_metadata_select_column
   /** input type for updating data in table "nft_metadata" */
   ['nft_metadata_set_input']: {
+    content?: GraphQLTypes['jsonb']
     content_cid?: string
     description?: string
     image_uri_hash?: GraphQLTypes['bytea']
@@ -6538,6 +7521,16 @@ export declare type GraphQLTypes = {
     nft_owner_id?: string
     token_id?: string
     updated_at?: GraphQLTypes['timestamptz']
+  }
+  /** order by min() on columns of table "nft" */
+  ['nft_min_order_by']: {
+    contract_id?: GraphQLTypes['order_by']
+    id?: GraphQLTypes['order_by']
+    inserted_at?: GraphQLTypes['order_by']
+    mint_time?: GraphQLTypes['order_by']
+    nft_owner_id?: GraphQLTypes['order_by']
+    token_id?: GraphQLTypes['order_by']
+    updated_at?: GraphQLTypes['order_by']
   }
   /** response of any mutation on the table "nft" */
   ['nft_mutation_response']: {
@@ -6649,6 +7642,107 @@ export declare type GraphQLTypes = {
   }
   /** update columns of table "nft_owner" */
   ['nft_owner_update_column']: nft_owner_update_column
+  /** columns and relationships of "nft_ownership" */
+  ['nft_ownership']: {
+    __typename: 'nft_ownership'
+    block_number: string
+    inserted_at: GraphQLTypes['timestamptz']
+    nft_id: string
+    owner_id: string
+    updated_at: GraphQLTypes['timestamptz']
+  }
+  /** aggregated selection of "nft_ownership" */
+  ['nft_ownership_aggregate']: {
+    __typename: 'nft_ownership_aggregate'
+    aggregate?: GraphQLTypes['nft_ownership_aggregate_fields']
+    nodes: Array<GraphQLTypes['nft_ownership']>
+  }
+  /** aggregate fields of "nft_ownership" */
+  ['nft_ownership_aggregate_fields']: {
+    __typename: 'nft_ownership_aggregate_fields'
+    count: number
+    max?: GraphQLTypes['nft_ownership_max_fields']
+    min?: GraphQLTypes['nft_ownership_min_fields']
+  }
+  /** Boolean expression to filter rows from the table "nft_ownership". All fields are combined with a logical 'AND'. */
+  ['nft_ownership_bool_exp']: {
+    _and?: Array<GraphQLTypes['nft_ownership_bool_exp']>
+    _not?: GraphQLTypes['nft_ownership_bool_exp']
+    _or?: Array<GraphQLTypes['nft_ownership_bool_exp']>
+    block_number?: GraphQLTypes['String_comparison_exp']
+    inserted_at?: GraphQLTypes['timestamptz_comparison_exp']
+    nft_id?: GraphQLTypes['String_comparison_exp']
+    owner_id?: GraphQLTypes['String_comparison_exp']
+    updated_at?: GraphQLTypes['timestamptz_comparison_exp']
+  }
+  /** unique or primary key constraints on table "nft_ownership" */
+  ['nft_ownership_constraint']: nft_ownership_constraint
+  /** input type for inserting data into table "nft_ownership" */
+  ['nft_ownership_insert_input']: {
+    block_number?: string
+    inserted_at?: GraphQLTypes['timestamptz']
+    nft_id?: string
+    owner_id?: string
+    updated_at?: GraphQLTypes['timestamptz']
+  }
+  /** aggregate max on columns */
+  ['nft_ownership_max_fields']: {
+    __typename: 'nft_ownership_max_fields'
+    block_number?: string
+    inserted_at?: GraphQLTypes['timestamptz']
+    nft_id?: string
+    owner_id?: string
+    updated_at?: GraphQLTypes['timestamptz']
+  }
+  /** aggregate min on columns */
+  ['nft_ownership_min_fields']: {
+    __typename: 'nft_ownership_min_fields'
+    block_number?: string
+    inserted_at?: GraphQLTypes['timestamptz']
+    nft_id?: string
+    owner_id?: string
+    updated_at?: GraphQLTypes['timestamptz']
+  }
+  /** response of any mutation on the table "nft_ownership" */
+  ['nft_ownership_mutation_response']: {
+    __typename: 'nft_ownership_mutation_response'
+    /** number of rows affected by the mutation */
+    affected_rows: number
+    /** data from the rows affected by the mutation */
+    returning: Array<GraphQLTypes['nft_ownership']>
+  }
+  /** on conflict condition type for table "nft_ownership" */
+  ['nft_ownership_on_conflict']: {
+    constraint: GraphQLTypes['nft_ownership_constraint']
+    update_columns: Array<GraphQLTypes['nft_ownership_update_column']>
+    where?: GraphQLTypes['nft_ownership_bool_exp']
+  }
+  /** Ordering options when selecting data from "nft_ownership". */
+  ['nft_ownership_order_by']: {
+    block_number?: GraphQLTypes['order_by']
+    inserted_at?: GraphQLTypes['order_by']
+    nft_id?: GraphQLTypes['order_by']
+    owner_id?: GraphQLTypes['order_by']
+    updated_at?: GraphQLTypes['order_by']
+  }
+  /** primary key columns input for table: nft_ownership */
+  ['nft_ownership_pk_columns_input']: {
+    block_number: string
+    nft_id: string
+    owner_id: string
+  }
+  /** select columns of table "nft_ownership" */
+  ['nft_ownership_select_column']: nft_ownership_select_column
+  /** input type for updating data in table "nft_ownership" */
+  ['nft_ownership_set_input']: {
+    block_number?: string
+    inserted_at?: GraphQLTypes['timestamptz']
+    nft_id?: string
+    owner_id?: string
+    updated_at?: GraphQLTypes['timestamptz']
+  }
+  /** update columns of table "nft_ownership" */
+  ['nft_ownership_update_column']: nft_ownership_update_column
   /** primary key columns input for table: nft */
   ['nft_pk_columns_input']: {
     id: string
@@ -6897,6 +7991,8 @@ columns and relationships of "niftysave_migration" */
     __typename: 'other_nft_resources'
     content_cid: string
     inserted_at: GraphQLTypes['timestamptz']
+    /** An object relationship */
+    resource?: GraphQLTypes['resource']
     resource_uri_hash: GraphQLTypes['bytea']
     updated_at: GraphQLTypes['timestamptz']
   }
@@ -6913,6 +8009,18 @@ columns and relationships of "niftysave_migration" */
     max?: GraphQLTypes['other_nft_resources_max_fields']
     min?: GraphQLTypes['other_nft_resources_min_fields']
   }
+  /** order by aggregate values of table "other_nft_resources" */
+  ['other_nft_resources_aggregate_order_by']: {
+    count?: GraphQLTypes['order_by']
+    max?: GraphQLTypes['other_nft_resources_max_order_by']
+    min?: GraphQLTypes['other_nft_resources_min_order_by']
+  }
+  /** input type for inserting array relation for remote table "other_nft_resources" */
+  ['other_nft_resources_arr_rel_insert_input']: {
+    data: Array<GraphQLTypes['other_nft_resources_insert_input']>
+    /** on conflict condition */
+    on_conflict?: GraphQLTypes['other_nft_resources_on_conflict']
+  }
   /** Boolean expression to filter rows from the table "other_nft_resources". All fields are combined with a logical 'AND'. */
   ['other_nft_resources_bool_exp']: {
     _and?: Array<GraphQLTypes['other_nft_resources_bool_exp']>
@@ -6920,6 +8028,7 @@ columns and relationships of "niftysave_migration" */
     _or?: Array<GraphQLTypes['other_nft_resources_bool_exp']>
     content_cid?: GraphQLTypes['String_comparison_exp']
     inserted_at?: GraphQLTypes['timestamptz_comparison_exp']
+    resource?: GraphQLTypes['resource_bool_exp']
     resource_uri_hash?: GraphQLTypes['bytea_comparison_exp']
     updated_at?: GraphQLTypes['timestamptz_comparison_exp']
   }
@@ -6929,6 +8038,7 @@ columns and relationships of "niftysave_migration" */
   ['other_nft_resources_insert_input']: {
     content_cid?: string
     inserted_at?: GraphQLTypes['timestamptz']
+    resource?: GraphQLTypes['resource_obj_rel_insert_input']
     resource_uri_hash?: GraphQLTypes['bytea']
     updated_at?: GraphQLTypes['timestamptz']
   }
@@ -6939,12 +8049,24 @@ columns and relationships of "niftysave_migration" */
     inserted_at?: GraphQLTypes['timestamptz']
     updated_at?: GraphQLTypes['timestamptz']
   }
+  /** order by max() on columns of table "other_nft_resources" */
+  ['other_nft_resources_max_order_by']: {
+    content_cid?: GraphQLTypes['order_by']
+    inserted_at?: GraphQLTypes['order_by']
+    updated_at?: GraphQLTypes['order_by']
+  }
   /** aggregate min on columns */
   ['other_nft_resources_min_fields']: {
     __typename: 'other_nft_resources_min_fields'
     content_cid?: string
     inserted_at?: GraphQLTypes['timestamptz']
     updated_at?: GraphQLTypes['timestamptz']
+  }
+  /** order by min() on columns of table "other_nft_resources" */
+  ['other_nft_resources_min_order_by']: {
+    content_cid?: GraphQLTypes['order_by']
+    inserted_at?: GraphQLTypes['order_by']
+    updated_at?: GraphQLTypes['order_by']
   }
   /** response of any mutation on the table "other_nft_resources" */
   ['other_nft_resources_mutation_response']: {
@@ -6964,6 +8086,7 @@ columns and relationships of "niftysave_migration" */
   ['other_nft_resources_order_by']: {
     content_cid?: GraphQLTypes['order_by']
     inserted_at?: GraphQLTypes['order_by']
+    resource?: GraphQLTypes['resource_order_by']
     resource_uri_hash?: GraphQLTypes['order_by']
     updated_at?: GraphQLTypes['order_by']
   }
@@ -7014,10 +8137,34 @@ columns and relationships of "niftysave_migration" */
     var_samp?: GraphQLTypes['pin_var_samp_fields']
     variance?: GraphQLTypes['pin_variance_fields']
   }
+  /** order by aggregate values of table "pin" */
+  ['pin_aggregate_order_by']: {
+    avg?: GraphQLTypes['pin_avg_order_by']
+    count?: GraphQLTypes['order_by']
+    max?: GraphQLTypes['pin_max_order_by']
+    min?: GraphQLTypes['pin_min_order_by']
+    stddev?: GraphQLTypes['pin_stddev_order_by']
+    stddev_pop?: GraphQLTypes['pin_stddev_pop_order_by']
+    stddev_samp?: GraphQLTypes['pin_stddev_samp_order_by']
+    sum?: GraphQLTypes['pin_sum_order_by']
+    var_pop?: GraphQLTypes['pin_var_pop_order_by']
+    var_samp?: GraphQLTypes['pin_var_samp_order_by']
+    variance?: GraphQLTypes['pin_variance_order_by']
+  }
+  /** input type for inserting array relation for remote table "pin" */
+  ['pin_arr_rel_insert_input']: {
+    data: Array<GraphQLTypes['pin_insert_input']>
+    /** on conflict condition */
+    on_conflict?: GraphQLTypes['pin_on_conflict']
+  }
   /** aggregate avg on columns */
   ['pin_avg_fields']: {
     __typename: 'pin_avg_fields'
     id?: number
+  }
+  /** order by avg() on columns of table "pin" */
+  ['pin_avg_order_by']: {
+    id?: GraphQLTypes['order_by']
   }
   /** Boolean expression to filter rows from the table "pin". All fields are combined with a logical 'AND'. */
   ['pin_bool_exp']: {
@@ -7054,6 +8201,13 @@ columns and relationships of "niftysave_migration" */
     inserted_at?: GraphQLTypes['timestamptz']
     updated_at?: GraphQLTypes['timestamptz']
   }
+  /** order by max() on columns of table "pin" */
+  ['pin_max_order_by']: {
+    content_cid?: GraphQLTypes['order_by']
+    id?: GraphQLTypes['order_by']
+    inserted_at?: GraphQLTypes['order_by']
+    updated_at?: GraphQLTypes['order_by']
+  }
   /** aggregate min on columns */
   ['pin_min_fields']: {
     __typename: 'pin_min_fields'
@@ -7061,6 +8215,13 @@ columns and relationships of "niftysave_migration" */
     id?: GraphQLTypes['bigint']
     inserted_at?: GraphQLTypes['timestamptz']
     updated_at?: GraphQLTypes['timestamptz']
+  }
+  /** order by min() on columns of table "pin" */
+  ['pin_min_order_by']: {
+    content_cid?: GraphQLTypes['order_by']
+    id?: GraphQLTypes['order_by']
+    inserted_at?: GraphQLTypes['order_by']
+    updated_at?: GraphQLTypes['order_by']
   }
   /** response of any mutation on the table "pin" */
   ['pin_mutation_response']: {
@@ -7131,20 +8292,36 @@ columns and relationships of "niftysave_migration" */
     __typename: 'pin_stddev_fields'
     id?: number
   }
+  /** order by stddev() on columns of table "pin" */
+  ['pin_stddev_order_by']: {
+    id?: GraphQLTypes['order_by']
+  }
   /** aggregate stddev_pop on columns */
   ['pin_stddev_pop_fields']: {
     __typename: 'pin_stddev_pop_fields'
     id?: number
+  }
+  /** order by stddev_pop() on columns of table "pin" */
+  ['pin_stddev_pop_order_by']: {
+    id?: GraphQLTypes['order_by']
   }
   /** aggregate stddev_samp on columns */
   ['pin_stddev_samp_fields']: {
     __typename: 'pin_stddev_samp_fields'
     id?: number
   }
+  /** order by stddev_samp() on columns of table "pin" */
+  ['pin_stddev_samp_order_by']: {
+    id?: GraphQLTypes['order_by']
+  }
   /** aggregate sum on columns */
   ['pin_sum_fields']: {
     __typename: 'pin_sum_fields'
     id?: GraphQLTypes['bigint']
+  }
+  /** order by sum() on columns of table "pin" */
+  ['pin_sum_order_by']: {
+    id?: GraphQLTypes['order_by']
   }
   /** update columns of table "pin" */
   ['pin_update_column']: pin_update_column
@@ -7153,15 +8330,27 @@ columns and relationships of "niftysave_migration" */
     __typename: 'pin_var_pop_fields'
     id?: number
   }
+  /** order by var_pop() on columns of table "pin" */
+  ['pin_var_pop_order_by']: {
+    id?: GraphQLTypes['order_by']
+  }
   /** aggregate var_samp on columns */
   ['pin_var_samp_fields']: {
     __typename: 'pin_var_samp_fields'
     id?: number
   }
+  /** order by var_samp() on columns of table "pin" */
+  ['pin_var_samp_order_by']: {
+    id?: GraphQLTypes['order_by']
+  }
   /** aggregate variance on columns */
   ['pin_variance_fields']: {
     __typename: 'pin_variance_fields'
     id?: number
+  }
+  /** order by variance() on columns of table "pin" */
+  ['pin_variance_order_by']: {
+    id?: GraphQLTypes['order_by']
   }
   ['query_root']: {
     __typename: 'query_root'
@@ -7223,6 +8412,12 @@ columns and relationships of "niftysave_migration" */
     nft_owner_aggregate: GraphQLTypes['nft_owner_aggregate']
     /** fetch data from the table: "nft_owner" using primary key columns */
     nft_owner_by_pk?: GraphQLTypes['nft_owner']
+    /** fetch data from the table: "nft_ownership" */
+    nft_ownership: Array<GraphQLTypes['nft_ownership']>
+    /** fetch aggregated fields from the table: "nft_ownership" */
+    nft_ownership_aggregate: GraphQLTypes['nft_ownership_aggregate']
+    /** fetch data from the table: "nft_ownership" using primary key columns */
+    nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
     /** fetch data from the table: "nfts_by_blockchain_blocks" */
     nfts_by_blockchain_blocks: Array<GraphQLTypes['nfts_by_blockchain_blocks']>
     /** fetch aggregated fields from the table: "nfts_by_blockchain_blocks" */
@@ -7261,6 +8456,8 @@ columns and relationships of "niftysave_migration" */
   /** columns and relationships of "resource" */
   ['resource']: {
     __typename: 'resource'
+    /** An object relationship */
+    content?: GraphQLTypes['content']
     content_cid?: string
     inserted_at: GraphQLTypes['timestamptz']
     ipfs_url?: string
@@ -7288,6 +8485,7 @@ columns and relationships of "niftysave_migration" */
     _and?: Array<GraphQLTypes['resource_bool_exp']>
     _not?: GraphQLTypes['resource_bool_exp']
     _or?: Array<GraphQLTypes['resource_bool_exp']>
+    content?: GraphQLTypes['content_bool_exp']
     content_cid?: GraphQLTypes['String_comparison_exp']
     inserted_at?: GraphQLTypes['timestamptz_comparison_exp']
     ipfs_url?: GraphQLTypes['String_comparison_exp']
@@ -7301,6 +8499,7 @@ columns and relationships of "niftysave_migration" */
   ['resource_constraint']: resource_constraint
   /** input type for inserting data into table "resource" */
   ['resource_insert_input']: {
+    content?: GraphQLTypes['content_obj_rel_insert_input']
     content_cid?: string
     inserted_at?: GraphQLTypes['timestamptz']
     ipfs_url?: string
@@ -7338,6 +8537,12 @@ columns and relationships of "niftysave_migration" */
     /** data from the rows affected by the mutation */
     returning: Array<GraphQLTypes['resource']>
   }
+  /** input type for inserting object relation for remote table "resource" */
+  ['resource_obj_rel_insert_input']: {
+    data: GraphQLTypes['resource_insert_input']
+    /** on conflict condition */
+    on_conflict?: GraphQLTypes['resource_on_conflict']
+  }
   /** on conflict condition type for table "resource" */
   ['resource_on_conflict']: {
     constraint: GraphQLTypes['resource_constraint']
@@ -7346,6 +8551,7 @@ columns and relationships of "niftysave_migration" */
   }
   /** Ordering options when selecting data from "resource". */
   ['resource_order_by']: {
+    content?: GraphQLTypes['content_order_by']
     content_cid?: GraphQLTypes['order_by']
     inserted_at?: GraphQLTypes['order_by']
     ipfs_url?: GraphQLTypes['order_by']
@@ -7544,6 +8750,12 @@ columns and relationships of "niftysave_migration" */
     nft_owner_aggregate: GraphQLTypes['nft_owner_aggregate']
     /** fetch data from the table: "nft_owner" using primary key columns */
     nft_owner_by_pk?: GraphQLTypes['nft_owner']
+    /** fetch data from the table: "nft_ownership" */
+    nft_ownership: Array<GraphQLTypes['nft_ownership']>
+    /** fetch aggregated fields from the table: "nft_ownership" */
+    nft_ownership_aggregate: GraphQLTypes['nft_ownership_aggregate']
+    /** fetch data from the table: "nft_ownership" using primary key columns */
+    nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
     /** fetch data from the table: "nfts_by_blockchain_blocks" */
     nfts_by_blockchain_blocks: Array<GraphQLTypes['nfts_by_blockchain_blocks']>
     /** fetch aggregated fields from the table: "nfts_by_blockchain_blocks" */
@@ -7734,6 +8946,7 @@ export declare enum nft_metadata_constraint {
 }
 /** select columns of table "nft_metadata" */
 export declare enum nft_metadata_select_column {
+  content = 'content',
   content_cid = 'content_cid',
   description = 'description',
   image_uri_hash = 'image_uri_hash',
@@ -7743,6 +8956,7 @@ export declare enum nft_metadata_select_column {
 }
 /** update columns of table "nft_metadata" */
 export declare enum nft_metadata_update_column {
+  content = 'content',
   content_cid = 'content_cid',
   description = 'description',
   image_uri_hash = 'image_uri_hash',
@@ -7764,6 +8978,26 @@ export declare enum nft_owner_select_column {
 export declare enum nft_owner_update_column {
   id = 'id',
   inserted_at = 'inserted_at',
+  updated_at = 'updated_at',
+}
+/** unique or primary key constraints on table "nft_ownership" */
+export declare enum nft_ownership_constraint {
+  nft_ownership_pkey = 'nft_ownership_pkey',
+}
+/** select columns of table "nft_ownership" */
+export declare enum nft_ownership_select_column {
+  block_number = 'block_number',
+  inserted_at = 'inserted_at',
+  nft_id = 'nft_id',
+  owner_id = 'owner_id',
+  updated_at = 'updated_at',
+}
+/** update columns of table "nft_ownership" */
+export declare enum nft_ownership_update_column {
+  block_number = 'block_number',
+  inserted_at = 'inserted_at',
+  nft_id = 'nft_id',
+  owner_id = 'owner_id',
   updated_at = 'updated_at',
 }
 /** select columns of table "nft" */
@@ -7857,6 +9091,7 @@ export declare enum other_nft_resources_update_column {
 }
 /** unique or primary key constraints on table "pin" */
 export declare enum pin_constraint {
+  pin_content_cid_service_key = 'pin_content_cid_service_key',
   pin_pkey = 'pin_pkey',
 }
 /** select columns of table "pin" */
@@ -8416,6 +9651,38 @@ export declare const Thunder: (
         },
         ValueTypes['nft_owner']
       ]
+      nft_ownership?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership']
+      ]
+      nft_ownership_aggregate?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership_aggregate']
+      ]
+      nft_ownership_by_pk?: [
+        {
+          block_number: string
+          nft_id: string
+          owner_id: string
+        },
+        ValueTypes['nft_ownership']
+      ]
       nfts_by_blockchain_blocks?: [
         {
           distinct_on?: ValueTypes['nfts_by_blockchain_blocks_select_column'][] /** limit the number of rows returned */
@@ -8654,6 +9921,12 @@ export declare const Thunder: (
       nft_owner_aggregate: GraphQLTypes['nft_owner_aggregate']
       /** fetch data from the table: "nft_owner" using primary key columns */
       nft_owner_by_pk?: GraphQLTypes['nft_owner']
+      /** fetch data from the table: "nft_ownership" */
+      nft_ownership: Array<GraphQLTypes['nft_ownership']>
+      /** fetch aggregated fields from the table: "nft_ownership" */
+      nft_ownership_aggregate: GraphQLTypes['nft_ownership_aggregate']
+      /** fetch data from the table: "nft_ownership" using primary key columns */
+      nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
       /** fetch data from the table: "nfts_by_blockchain_blocks" */
       nfts_by_blockchain_blocks: Array<
         GraphQLTypes['nfts_by_blockchain_blocks']
@@ -8848,6 +10121,20 @@ export declare const Thunder: (
         },
         ValueTypes['nft_owner']
       ]
+      delete_nft_ownership?: [
+        {
+          where: ValueTypes['nft_ownership_bool_exp']
+        },
+        ValueTypes['nft_ownership_mutation_response']
+      ]
+      delete_nft_ownership_by_pk?: [
+        {
+          block_number: string
+          nft_id: string
+          owner_id: string
+        },
+        ValueTypes['nft_ownership']
+      ]
       delete_nfts_by_blockchain_blocks?: [
         {
           where: ValueTypes['nfts_by_blockchain_blocks_bool_exp']
@@ -8915,6 +10202,45 @@ export declare const Thunder: (
           where: ValueTypes['resource_view_bool_exp']
         },
         ValueTypes['resource_view_mutation_response']
+      ]
+      fail_nft_asset?: [
+        {
+          args: ValueTypes['fail_nft_asset_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_asset_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_asset_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_asset_bool_exp'] | null
+        },
+        ValueTypes['nft_asset']
+      ]
+      fail_resource?: [
+        {
+          args: ValueTypes['fail_resource_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['resource_bool_exp'] | null
+        },
+        ValueTypes['resource']
+      ]
+      ingest_erc721_token?: [
+        {
+          args: ValueTypes['ingest_erc721_token_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_bool_exp'] | null
+        },
+        ValueTypes['nft']
       ]
       insert_blockchain_block?: [
         {
@@ -9054,6 +10380,20 @@ export declare const Thunder: (
         },
         ValueTypes['nft_owner']
       ]
+      insert_nft_ownership?: [
+        {
+          objects: ValueTypes['nft_ownership_insert_input'][] /** on conflict condition */
+          on_conflict?: ValueTypes['nft_ownership_on_conflict'] | null
+        },
+        ValueTypes['nft_ownership_mutation_response']
+      ]
+      insert_nft_ownership_one?: [
+        {
+          object: ValueTypes['nft_ownership_insert_input'] /** on conflict condition */
+          on_conflict?: ValueTypes['nft_ownership_on_conflict'] | null
+        },
+        ValueTypes['nft_ownership']
+      ]
       insert_nfts_by_blockchain_blocks?: [
         {
           objects: ValueTypes['nfts_by_blockchain_blocks_insert_input'][] /** on conflict condition */
@@ -9139,6 +10479,45 @@ export declare const Thunder: (
           object: ValueTypes['resource_view_insert_input']
         },
         ValueTypes['resource_view']
+      ]
+      link_nft_asset?: [
+        {
+          args: ValueTypes['link_nft_asset_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_asset_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_asset_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_asset_bool_exp'] | null
+        },
+        ValueTypes['nft_asset']
+      ]
+      link_nft_resource?: [
+        {
+          args: ValueTypes['link_nft_resource_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['resource_bool_exp'] | null
+        },
+        ValueTypes['resource']
+      ]
+      link_resource_content?: [
+        {
+          args: ValueTypes['link_resource_content_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['resource_bool_exp'] | null
+        },
+        ValueTypes['resource']
       ]
       update_blockchain_block?: [
         {
@@ -9275,6 +10654,21 @@ export declare const Thunder: (
       ]
       update_nft_metadata?: [
         {
+          _append?:
+            | ValueTypes['nft_metadata_append_input']
+            | null /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+          _delete_at_path?:
+            | ValueTypes['nft_metadata_delete_at_path_input']
+            | null /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+          _delete_elem?:
+            | ValueTypes['nft_metadata_delete_elem_input']
+            | null /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+          _delete_key?:
+            | ValueTypes['nft_metadata_delete_key_input']
+            | null /** prepend existing jsonb value of filtered columns with new jsonb value */
+          _prepend?:
+            | ValueTypes['nft_metadata_prepend_input']
+            | null /** sets the columns of the filtered rows to the given values */
           _set?:
             | ValueTypes['nft_metadata_set_input']
             | null /** filter the rows which have to be updated */
@@ -9284,6 +10678,21 @@ export declare const Thunder: (
       ]
       update_nft_metadata_by_pk?: [
         {
+          _append?:
+            | ValueTypes['nft_metadata_append_input']
+            | null /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+          _delete_at_path?:
+            | ValueTypes['nft_metadata_delete_at_path_input']
+            | null /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+          _delete_elem?:
+            | ValueTypes['nft_metadata_delete_elem_input']
+            | null /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+          _delete_key?:
+            | ValueTypes['nft_metadata_delete_key_input']
+            | null /** prepend existing jsonb value of filtered columns with new jsonb value */
+          _prepend?:
+            | ValueTypes['nft_metadata_prepend_input']
+            | null /** sets the columns of the filtered rows to the given values */
           _set?: ValueTypes['nft_metadata_set_input'] | null
           pk_columns: ValueTypes['nft_metadata_pk_columns_input']
         },
@@ -9304,6 +10713,22 @@ export declare const Thunder: (
           pk_columns: ValueTypes['nft_owner_pk_columns_input']
         },
         ValueTypes['nft_owner']
+      ]
+      update_nft_ownership?: [
+        {
+          _set?:
+            | ValueTypes['nft_ownership_set_input']
+            | null /** filter the rows which have to be updated */
+          where: ValueTypes['nft_ownership_bool_exp']
+        },
+        ValueTypes['nft_ownership_mutation_response']
+      ]
+      update_nft_ownership_by_pk?: [
+        {
+          _set?: ValueTypes['nft_ownership_set_input'] | null
+          pk_columns: ValueTypes['nft_ownership_pk_columns_input']
+        },
+        ValueTypes['nft_ownership']
       ]
       update_nfts_by_blockchain_blocks?: [
         {
@@ -9478,6 +10903,10 @@ export declare const Thunder: (
       delete_nft_owner?: GraphQLTypes['nft_owner_mutation_response']
       /** delete single row from the table: "nft_owner" */
       delete_nft_owner_by_pk?: GraphQLTypes['nft_owner']
+      /** delete data from the table: "nft_ownership" */
+      delete_nft_ownership?: GraphQLTypes['nft_ownership_mutation_response']
+      /** delete single row from the table: "nft_ownership" */
+      delete_nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
       /** delete data from the table: "nfts_by_blockchain_blocks" */
       delete_nfts_by_blockchain_blocks?: GraphQLTypes['nfts_by_blockchain_blocks_mutation_response']
       /** delete single row from the table: "nfts_by_blockchain_blocks" */
@@ -9500,6 +10929,12 @@ export declare const Thunder: (
       delete_resource_by_pk?: GraphQLTypes['resource']
       /** delete data from the table: "resource_view" */
       delete_resource_view?: GraphQLTypes['resource_view_mutation_response']
+      /** execute VOLATILE function "fail_nft_asset" which returns "nft_asset" */
+      fail_nft_asset: Array<GraphQLTypes['nft_asset']>
+      /** execute VOLATILE function "fail_resource" which returns "resource" */
+      fail_resource: Array<GraphQLTypes['resource']>
+      /** execute VOLATILE function "ingest_erc721_token" which returns "nft" */
+      ingest_erc721_token: Array<GraphQLTypes['nft']>
       /** insert data into the table: "blockchain_block" */
       insert_blockchain_block?: GraphQLTypes['blockchain_block_mutation_response']
       /** insert a single row into the table: "blockchain_block" */
@@ -9540,6 +10975,10 @@ export declare const Thunder: (
       insert_nft_owner?: GraphQLTypes['nft_owner_mutation_response']
       /** insert a single row into the table: "nft_owner" */
       insert_nft_owner_one?: GraphQLTypes['nft_owner']
+      /** insert data into the table: "nft_ownership" */
+      insert_nft_ownership?: GraphQLTypes['nft_ownership_mutation_response']
+      /** insert a single row into the table: "nft_ownership" */
+      insert_nft_ownership_one?: GraphQLTypes['nft_ownership']
       /** insert data into the table: "nfts_by_blockchain_blocks" */
       insert_nfts_by_blockchain_blocks?: GraphQLTypes['nfts_by_blockchain_blocks_mutation_response']
       /** insert a single row into the table: "nfts_by_blockchain_blocks" */
@@ -9564,6 +11003,12 @@ export declare const Thunder: (
       insert_resource_view?: GraphQLTypes['resource_view_mutation_response']
       /** insert a single row into the table: "resource_view" */
       insert_resource_view_one?: GraphQLTypes['resource_view']
+      /** execute VOLATILE function "link_nft_asset" which returns "nft_asset" */
+      link_nft_asset: Array<GraphQLTypes['nft_asset']>
+      /** execute VOLATILE function "link_nft_resource" which returns "resource" */
+      link_nft_resource: Array<GraphQLTypes['resource']>
+      /** execute VOLATILE function "link_resource_content" which returns "resource" */
+      link_resource_content: Array<GraphQLTypes['resource']>
       /** update data of the table: "blockchain_block" */
       update_blockchain_block?: GraphQLTypes['blockchain_block_mutation_response']
       /** update single row of the table: "blockchain_block" */
@@ -9602,6 +11047,10 @@ export declare const Thunder: (
       update_nft_owner?: GraphQLTypes['nft_owner_mutation_response']
       /** update single row of the table: "nft_owner" */
       update_nft_owner_by_pk?: GraphQLTypes['nft_owner']
+      /** update data of the table: "nft_ownership" */
+      update_nft_ownership?: GraphQLTypes['nft_ownership_mutation_response']
+      /** update single row of the table: "nft_ownership" */
+      update_nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
       /** update data of the table: "nfts_by_blockchain_blocks" */
       update_nfts_by_blockchain_blocks?: GraphQLTypes['nfts_by_blockchain_blocks_mutation_response']
       /** update single row of the table: "nfts_by_blockchain_blocks" */
@@ -9923,6 +11372,38 @@ export declare const Thunder: (
         },
         ValueTypes['nft_owner']
       ]
+      nft_ownership?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership']
+      ]
+      nft_ownership_aggregate?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership_aggregate']
+      ]
+      nft_ownership_by_pk?: [
+        {
+          block_number: string
+          nft_id: string
+          owner_id: string
+        },
+        ValueTypes['nft_ownership']
+      ]
       nfts_by_blockchain_blocks?: [
         {
           distinct_on?: ValueTypes['nfts_by_blockchain_blocks_select_column'][] /** limit the number of rows returned */
@@ -10161,6 +11642,12 @@ export declare const Thunder: (
       nft_owner_aggregate: GraphQLTypes['nft_owner_aggregate']
       /** fetch data from the table: "nft_owner" using primary key columns */
       nft_owner_by_pk?: GraphQLTypes['nft_owner']
+      /** fetch data from the table: "nft_ownership" */
+      nft_ownership: Array<GraphQLTypes['nft_ownership']>
+      /** fetch aggregated fields from the table: "nft_ownership" */
+      nft_ownership_aggregate: GraphQLTypes['nft_ownership_aggregate']
+      /** fetch data from the table: "nft_ownership" using primary key columns */
+      nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
       /** fetch data from the table: "nfts_by_blockchain_blocks" */
       nfts_by_blockchain_blocks: Array<
         GraphQLTypes['nfts_by_blockchain_blocks']
@@ -10498,6 +11985,38 @@ export declare const Chain: (...options: chainOptions) => {
         },
         ValueTypes['nft_owner']
       ]
+      nft_ownership?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership']
+      ]
+      nft_ownership_aggregate?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership_aggregate']
+      ]
+      nft_ownership_by_pk?: [
+        {
+          block_number: string
+          nft_id: string
+          owner_id: string
+        },
+        ValueTypes['nft_ownership']
+      ]
       nfts_by_blockchain_blocks?: [
         {
           distinct_on?: ValueTypes['nfts_by_blockchain_blocks_select_column'][] /** limit the number of rows returned */
@@ -10736,6 +12255,12 @@ export declare const Chain: (...options: chainOptions) => {
       nft_owner_aggregate: GraphQLTypes['nft_owner_aggregate']
       /** fetch data from the table: "nft_owner" using primary key columns */
       nft_owner_by_pk?: GraphQLTypes['nft_owner']
+      /** fetch data from the table: "nft_ownership" */
+      nft_ownership: Array<GraphQLTypes['nft_ownership']>
+      /** fetch aggregated fields from the table: "nft_ownership" */
+      nft_ownership_aggregate: GraphQLTypes['nft_ownership_aggregate']
+      /** fetch data from the table: "nft_ownership" using primary key columns */
+      nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
       /** fetch data from the table: "nfts_by_blockchain_blocks" */
       nfts_by_blockchain_blocks: Array<
         GraphQLTypes['nfts_by_blockchain_blocks']
@@ -10930,6 +12455,20 @@ export declare const Chain: (...options: chainOptions) => {
         },
         ValueTypes['nft_owner']
       ]
+      delete_nft_ownership?: [
+        {
+          where: ValueTypes['nft_ownership_bool_exp']
+        },
+        ValueTypes['nft_ownership_mutation_response']
+      ]
+      delete_nft_ownership_by_pk?: [
+        {
+          block_number: string
+          nft_id: string
+          owner_id: string
+        },
+        ValueTypes['nft_ownership']
+      ]
       delete_nfts_by_blockchain_blocks?: [
         {
           where: ValueTypes['nfts_by_blockchain_blocks_bool_exp']
@@ -10997,6 +12536,45 @@ export declare const Chain: (...options: chainOptions) => {
           where: ValueTypes['resource_view_bool_exp']
         },
         ValueTypes['resource_view_mutation_response']
+      ]
+      fail_nft_asset?: [
+        {
+          args: ValueTypes['fail_nft_asset_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_asset_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_asset_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_asset_bool_exp'] | null
+        },
+        ValueTypes['nft_asset']
+      ]
+      fail_resource?: [
+        {
+          args: ValueTypes['fail_resource_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['resource_bool_exp'] | null
+        },
+        ValueTypes['resource']
+      ]
+      ingest_erc721_token?: [
+        {
+          args: ValueTypes['ingest_erc721_token_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_bool_exp'] | null
+        },
+        ValueTypes['nft']
       ]
       insert_blockchain_block?: [
         {
@@ -11136,6 +12714,20 @@ export declare const Chain: (...options: chainOptions) => {
         },
         ValueTypes['nft_owner']
       ]
+      insert_nft_ownership?: [
+        {
+          objects: ValueTypes['nft_ownership_insert_input'][] /** on conflict condition */
+          on_conflict?: ValueTypes['nft_ownership_on_conflict'] | null
+        },
+        ValueTypes['nft_ownership_mutation_response']
+      ]
+      insert_nft_ownership_one?: [
+        {
+          object: ValueTypes['nft_ownership_insert_input'] /** on conflict condition */
+          on_conflict?: ValueTypes['nft_ownership_on_conflict'] | null
+        },
+        ValueTypes['nft_ownership']
+      ]
       insert_nfts_by_blockchain_blocks?: [
         {
           objects: ValueTypes['nfts_by_blockchain_blocks_insert_input'][] /** on conflict condition */
@@ -11221,6 +12813,45 @@ export declare const Chain: (...options: chainOptions) => {
           object: ValueTypes['resource_view_insert_input']
         },
         ValueTypes['resource_view']
+      ]
+      link_nft_asset?: [
+        {
+          args: ValueTypes['link_nft_asset_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_asset_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_asset_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_asset_bool_exp'] | null
+        },
+        ValueTypes['nft_asset']
+      ]
+      link_nft_resource?: [
+        {
+          args: ValueTypes['link_nft_resource_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['resource_bool_exp'] | null
+        },
+        ValueTypes['resource']
+      ]
+      link_resource_content?: [
+        {
+          args: ValueTypes['link_resource_content_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['resource_bool_exp'] | null
+        },
+        ValueTypes['resource']
       ]
       update_blockchain_block?: [
         {
@@ -11357,6 +12988,21 @@ export declare const Chain: (...options: chainOptions) => {
       ]
       update_nft_metadata?: [
         {
+          _append?:
+            | ValueTypes['nft_metadata_append_input']
+            | null /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+          _delete_at_path?:
+            | ValueTypes['nft_metadata_delete_at_path_input']
+            | null /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+          _delete_elem?:
+            | ValueTypes['nft_metadata_delete_elem_input']
+            | null /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+          _delete_key?:
+            | ValueTypes['nft_metadata_delete_key_input']
+            | null /** prepend existing jsonb value of filtered columns with new jsonb value */
+          _prepend?:
+            | ValueTypes['nft_metadata_prepend_input']
+            | null /** sets the columns of the filtered rows to the given values */
           _set?:
             | ValueTypes['nft_metadata_set_input']
             | null /** filter the rows which have to be updated */
@@ -11366,6 +13012,21 @@ export declare const Chain: (...options: chainOptions) => {
       ]
       update_nft_metadata_by_pk?: [
         {
+          _append?:
+            | ValueTypes['nft_metadata_append_input']
+            | null /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+          _delete_at_path?:
+            | ValueTypes['nft_metadata_delete_at_path_input']
+            | null /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+          _delete_elem?:
+            | ValueTypes['nft_metadata_delete_elem_input']
+            | null /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+          _delete_key?:
+            | ValueTypes['nft_metadata_delete_key_input']
+            | null /** prepend existing jsonb value of filtered columns with new jsonb value */
+          _prepend?:
+            | ValueTypes['nft_metadata_prepend_input']
+            | null /** sets the columns of the filtered rows to the given values */
           _set?: ValueTypes['nft_metadata_set_input'] | null
           pk_columns: ValueTypes['nft_metadata_pk_columns_input']
         },
@@ -11386,6 +13047,22 @@ export declare const Chain: (...options: chainOptions) => {
           pk_columns: ValueTypes['nft_owner_pk_columns_input']
         },
         ValueTypes['nft_owner']
+      ]
+      update_nft_ownership?: [
+        {
+          _set?:
+            | ValueTypes['nft_ownership_set_input']
+            | null /** filter the rows which have to be updated */
+          where: ValueTypes['nft_ownership_bool_exp']
+        },
+        ValueTypes['nft_ownership_mutation_response']
+      ]
+      update_nft_ownership_by_pk?: [
+        {
+          _set?: ValueTypes['nft_ownership_set_input'] | null
+          pk_columns: ValueTypes['nft_ownership_pk_columns_input']
+        },
+        ValueTypes['nft_ownership']
       ]
       update_nfts_by_blockchain_blocks?: [
         {
@@ -11560,6 +13237,10 @@ export declare const Chain: (...options: chainOptions) => {
       delete_nft_owner?: GraphQLTypes['nft_owner_mutation_response']
       /** delete single row from the table: "nft_owner" */
       delete_nft_owner_by_pk?: GraphQLTypes['nft_owner']
+      /** delete data from the table: "nft_ownership" */
+      delete_nft_ownership?: GraphQLTypes['nft_ownership_mutation_response']
+      /** delete single row from the table: "nft_ownership" */
+      delete_nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
       /** delete data from the table: "nfts_by_blockchain_blocks" */
       delete_nfts_by_blockchain_blocks?: GraphQLTypes['nfts_by_blockchain_blocks_mutation_response']
       /** delete single row from the table: "nfts_by_blockchain_blocks" */
@@ -11582,6 +13263,12 @@ export declare const Chain: (...options: chainOptions) => {
       delete_resource_by_pk?: GraphQLTypes['resource']
       /** delete data from the table: "resource_view" */
       delete_resource_view?: GraphQLTypes['resource_view_mutation_response']
+      /** execute VOLATILE function "fail_nft_asset" which returns "nft_asset" */
+      fail_nft_asset: Array<GraphQLTypes['nft_asset']>
+      /** execute VOLATILE function "fail_resource" which returns "resource" */
+      fail_resource: Array<GraphQLTypes['resource']>
+      /** execute VOLATILE function "ingest_erc721_token" which returns "nft" */
+      ingest_erc721_token: Array<GraphQLTypes['nft']>
       /** insert data into the table: "blockchain_block" */
       insert_blockchain_block?: GraphQLTypes['blockchain_block_mutation_response']
       /** insert a single row into the table: "blockchain_block" */
@@ -11622,6 +13309,10 @@ export declare const Chain: (...options: chainOptions) => {
       insert_nft_owner?: GraphQLTypes['nft_owner_mutation_response']
       /** insert a single row into the table: "nft_owner" */
       insert_nft_owner_one?: GraphQLTypes['nft_owner']
+      /** insert data into the table: "nft_ownership" */
+      insert_nft_ownership?: GraphQLTypes['nft_ownership_mutation_response']
+      /** insert a single row into the table: "nft_ownership" */
+      insert_nft_ownership_one?: GraphQLTypes['nft_ownership']
       /** insert data into the table: "nfts_by_blockchain_blocks" */
       insert_nfts_by_blockchain_blocks?: GraphQLTypes['nfts_by_blockchain_blocks_mutation_response']
       /** insert a single row into the table: "nfts_by_blockchain_blocks" */
@@ -11646,6 +13337,12 @@ export declare const Chain: (...options: chainOptions) => {
       insert_resource_view?: GraphQLTypes['resource_view_mutation_response']
       /** insert a single row into the table: "resource_view" */
       insert_resource_view_one?: GraphQLTypes['resource_view']
+      /** execute VOLATILE function "link_nft_asset" which returns "nft_asset" */
+      link_nft_asset: Array<GraphQLTypes['nft_asset']>
+      /** execute VOLATILE function "link_nft_resource" which returns "resource" */
+      link_nft_resource: Array<GraphQLTypes['resource']>
+      /** execute VOLATILE function "link_resource_content" which returns "resource" */
+      link_resource_content: Array<GraphQLTypes['resource']>
       /** update data of the table: "blockchain_block" */
       update_blockchain_block?: GraphQLTypes['blockchain_block_mutation_response']
       /** update single row of the table: "blockchain_block" */
@@ -11684,6 +13381,10 @@ export declare const Chain: (...options: chainOptions) => {
       update_nft_owner?: GraphQLTypes['nft_owner_mutation_response']
       /** update single row of the table: "nft_owner" */
       update_nft_owner_by_pk?: GraphQLTypes['nft_owner']
+      /** update data of the table: "nft_ownership" */
+      update_nft_ownership?: GraphQLTypes['nft_ownership_mutation_response']
+      /** update single row of the table: "nft_ownership" */
+      update_nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
       /** update data of the table: "nfts_by_blockchain_blocks" */
       update_nfts_by_blockchain_blocks?: GraphQLTypes['nfts_by_blockchain_blocks_mutation_response']
       /** update single row of the table: "nfts_by_blockchain_blocks" */
@@ -12005,6 +13706,38 @@ export declare const Chain: (...options: chainOptions) => {
         },
         ValueTypes['nft_owner']
       ]
+      nft_ownership?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership']
+      ]
+      nft_ownership_aggregate?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership_aggregate']
+      ]
+      nft_ownership_by_pk?: [
+        {
+          block_number: string
+          nft_id: string
+          owner_id: string
+        },
+        ValueTypes['nft_ownership']
+      ]
       nfts_by_blockchain_blocks?: [
         {
           distinct_on?: ValueTypes['nfts_by_blockchain_blocks_select_column'][] /** limit the number of rows returned */
@@ -12243,6 +13976,12 @@ export declare const Chain: (...options: chainOptions) => {
       nft_owner_aggregate: GraphQLTypes['nft_owner_aggregate']
       /** fetch data from the table: "nft_owner" using primary key columns */
       nft_owner_by_pk?: GraphQLTypes['nft_owner']
+      /** fetch data from the table: "nft_ownership" */
+      nft_ownership: Array<GraphQLTypes['nft_ownership']>
+      /** fetch aggregated fields from the table: "nft_ownership" */
+      nft_ownership_aggregate: GraphQLTypes['nft_ownership_aggregate']
+      /** fetch data from the table: "nft_ownership" using primary key columns */
+      nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
       /** fetch data from the table: "nfts_by_blockchain_blocks" */
       nfts_by_blockchain_blocks: Array<
         GraphQLTypes['nfts_by_blockchain_blocks']
@@ -12588,6 +14327,38 @@ export declare const Selectors: {
         },
         ValueTypes['nft_owner']
       ]
+      nft_ownership?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership']
+      ]
+      nft_ownership_aggregate?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership_aggregate']
+      ]
+      nft_ownership_by_pk?: [
+        {
+          block_number: string
+          nft_id: string
+          owner_id: string
+        },
+        ValueTypes['nft_ownership']
+      ]
       nfts_by_blockchain_blocks?: [
         {
           distinct_on?: ValueTypes['nfts_by_blockchain_blocks_select_column'][] /** limit the number of rows returned */
@@ -12923,6 +14694,20 @@ export declare const Selectors: {
         },
         ValueTypes['nft_owner']
       ]
+      delete_nft_ownership?: [
+        {
+          where: ValueTypes['nft_ownership_bool_exp']
+        },
+        ValueTypes['nft_ownership_mutation_response']
+      ]
+      delete_nft_ownership_by_pk?: [
+        {
+          block_number: string
+          nft_id: string
+          owner_id: string
+        },
+        ValueTypes['nft_ownership']
+      ]
       delete_nfts_by_blockchain_blocks?: [
         {
           where: ValueTypes['nfts_by_blockchain_blocks_bool_exp']
@@ -12990,6 +14775,45 @@ export declare const Selectors: {
           where: ValueTypes['resource_view_bool_exp']
         },
         ValueTypes['resource_view_mutation_response']
+      ]
+      fail_nft_asset?: [
+        {
+          args: ValueTypes['fail_nft_asset_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_asset_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_asset_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_asset_bool_exp'] | null
+        },
+        ValueTypes['nft_asset']
+      ]
+      fail_resource?: [
+        {
+          args: ValueTypes['fail_resource_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['resource_bool_exp'] | null
+        },
+        ValueTypes['resource']
+      ]
+      ingest_erc721_token?: [
+        {
+          args: ValueTypes['ingest_erc721_token_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_bool_exp'] | null
+        },
+        ValueTypes['nft']
       ]
       insert_blockchain_block?: [
         {
@@ -13129,6 +14953,20 @@ export declare const Selectors: {
         },
         ValueTypes['nft_owner']
       ]
+      insert_nft_ownership?: [
+        {
+          objects: ValueTypes['nft_ownership_insert_input'][] /** on conflict condition */
+          on_conflict?: ValueTypes['nft_ownership_on_conflict'] | null
+        },
+        ValueTypes['nft_ownership_mutation_response']
+      ]
+      insert_nft_ownership_one?: [
+        {
+          object: ValueTypes['nft_ownership_insert_input'] /** on conflict condition */
+          on_conflict?: ValueTypes['nft_ownership_on_conflict'] | null
+        },
+        ValueTypes['nft_ownership']
+      ]
       insert_nfts_by_blockchain_blocks?: [
         {
           objects: ValueTypes['nfts_by_blockchain_blocks_insert_input'][] /** on conflict condition */
@@ -13214,6 +15052,45 @@ export declare const Selectors: {
           object: ValueTypes['resource_view_insert_input']
         },
         ValueTypes['resource_view']
+      ]
+      link_nft_asset?: [
+        {
+          args: ValueTypes['link_nft_asset_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_asset_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_asset_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_asset_bool_exp'] | null
+        },
+        ValueTypes['nft_asset']
+      ]
+      link_nft_resource?: [
+        {
+          args: ValueTypes['link_nft_resource_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['resource_bool_exp'] | null
+        },
+        ValueTypes['resource']
+      ]
+      link_resource_content?: [
+        {
+          args: ValueTypes['link_resource_content_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['resource_bool_exp'] | null
+        },
+        ValueTypes['resource']
       ]
       update_blockchain_block?: [
         {
@@ -13350,6 +15227,21 @@ export declare const Selectors: {
       ]
       update_nft_metadata?: [
         {
+          _append?:
+            | ValueTypes['nft_metadata_append_input']
+            | null /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+          _delete_at_path?:
+            | ValueTypes['nft_metadata_delete_at_path_input']
+            | null /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+          _delete_elem?:
+            | ValueTypes['nft_metadata_delete_elem_input']
+            | null /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+          _delete_key?:
+            | ValueTypes['nft_metadata_delete_key_input']
+            | null /** prepend existing jsonb value of filtered columns with new jsonb value */
+          _prepend?:
+            | ValueTypes['nft_metadata_prepend_input']
+            | null /** sets the columns of the filtered rows to the given values */
           _set?:
             | ValueTypes['nft_metadata_set_input']
             | null /** filter the rows which have to be updated */
@@ -13359,6 +15251,21 @@ export declare const Selectors: {
       ]
       update_nft_metadata_by_pk?: [
         {
+          _append?:
+            | ValueTypes['nft_metadata_append_input']
+            | null /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+          _delete_at_path?:
+            | ValueTypes['nft_metadata_delete_at_path_input']
+            | null /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+          _delete_elem?:
+            | ValueTypes['nft_metadata_delete_elem_input']
+            | null /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+          _delete_key?:
+            | ValueTypes['nft_metadata_delete_key_input']
+            | null /** prepend existing jsonb value of filtered columns with new jsonb value */
+          _prepend?:
+            | ValueTypes['nft_metadata_prepend_input']
+            | null /** sets the columns of the filtered rows to the given values */
           _set?: ValueTypes['nft_metadata_set_input'] | null
           pk_columns: ValueTypes['nft_metadata_pk_columns_input']
         },
@@ -13379,6 +15286,22 @@ export declare const Selectors: {
           pk_columns: ValueTypes['nft_owner_pk_columns_input']
         },
         ValueTypes['nft_owner']
+      ]
+      update_nft_ownership?: [
+        {
+          _set?:
+            | ValueTypes['nft_ownership_set_input']
+            | null /** filter the rows which have to be updated */
+          where: ValueTypes['nft_ownership_bool_exp']
+        },
+        ValueTypes['nft_ownership_mutation_response']
+      ]
+      update_nft_ownership_by_pk?: [
+        {
+          _set?: ValueTypes['nft_ownership_set_input'] | null
+          pk_columns: ValueTypes['nft_ownership_pk_columns_input']
+        },
+        ValueTypes['nft_ownership']
       ]
       update_nfts_by_blockchain_blocks?: [
         {
@@ -13804,6 +15727,38 @@ export declare const Selectors: {
           id: string
         },
         ValueTypes['nft_owner']
+      ]
+      nft_ownership?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership']
+      ]
+      nft_ownership_aggregate?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership_aggregate']
+      ]
+      nft_ownership_by_pk?: [
+        {
+          block_number: string
+          nft_id: string
+          owner_id: string
+        },
+        ValueTypes['nft_ownership']
       ]
       nfts_by_blockchain_blocks?: [
         {
@@ -14283,6 +16238,38 @@ export declare const Gql: {
         },
         ValueTypes['nft_owner']
       ]
+      nft_ownership?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership']
+      ]
+      nft_ownership_aggregate?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership_aggregate']
+      ]
+      nft_ownership_by_pk?: [
+        {
+          block_number: string
+          nft_id: string
+          owner_id: string
+        },
+        ValueTypes['nft_ownership']
+      ]
       nfts_by_blockchain_blocks?: [
         {
           distinct_on?: ValueTypes['nfts_by_blockchain_blocks_select_column'][] /** limit the number of rows returned */
@@ -14521,6 +16508,12 @@ export declare const Gql: {
       nft_owner_aggregate: GraphQLTypes['nft_owner_aggregate']
       /** fetch data from the table: "nft_owner" using primary key columns */
       nft_owner_by_pk?: GraphQLTypes['nft_owner']
+      /** fetch data from the table: "nft_ownership" */
+      nft_ownership: Array<GraphQLTypes['nft_ownership']>
+      /** fetch aggregated fields from the table: "nft_ownership" */
+      nft_ownership_aggregate: GraphQLTypes['nft_ownership_aggregate']
+      /** fetch data from the table: "nft_ownership" using primary key columns */
+      nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
       /** fetch data from the table: "nfts_by_blockchain_blocks" */
       nfts_by_blockchain_blocks: Array<
         GraphQLTypes['nfts_by_blockchain_blocks']
@@ -14715,6 +16708,20 @@ export declare const Gql: {
         },
         ValueTypes['nft_owner']
       ]
+      delete_nft_ownership?: [
+        {
+          where: ValueTypes['nft_ownership_bool_exp']
+        },
+        ValueTypes['nft_ownership_mutation_response']
+      ]
+      delete_nft_ownership_by_pk?: [
+        {
+          block_number: string
+          nft_id: string
+          owner_id: string
+        },
+        ValueTypes['nft_ownership']
+      ]
       delete_nfts_by_blockchain_blocks?: [
         {
           where: ValueTypes['nfts_by_blockchain_blocks_bool_exp']
@@ -14782,6 +16789,45 @@ export declare const Gql: {
           where: ValueTypes['resource_view_bool_exp']
         },
         ValueTypes['resource_view_mutation_response']
+      ]
+      fail_nft_asset?: [
+        {
+          args: ValueTypes['fail_nft_asset_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_asset_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_asset_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_asset_bool_exp'] | null
+        },
+        ValueTypes['nft_asset']
+      ]
+      fail_resource?: [
+        {
+          args: ValueTypes['fail_resource_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['resource_bool_exp'] | null
+        },
+        ValueTypes['resource']
+      ]
+      ingest_erc721_token?: [
+        {
+          args: ValueTypes['ingest_erc721_token_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_bool_exp'] | null
+        },
+        ValueTypes['nft']
       ]
       insert_blockchain_block?: [
         {
@@ -14921,6 +16967,20 @@ export declare const Gql: {
         },
         ValueTypes['nft_owner']
       ]
+      insert_nft_ownership?: [
+        {
+          objects: ValueTypes['nft_ownership_insert_input'][] /** on conflict condition */
+          on_conflict?: ValueTypes['nft_ownership_on_conflict'] | null
+        },
+        ValueTypes['nft_ownership_mutation_response']
+      ]
+      insert_nft_ownership_one?: [
+        {
+          object: ValueTypes['nft_ownership_insert_input'] /** on conflict condition */
+          on_conflict?: ValueTypes['nft_ownership_on_conflict'] | null
+        },
+        ValueTypes['nft_ownership']
+      ]
       insert_nfts_by_blockchain_blocks?: [
         {
           objects: ValueTypes['nfts_by_blockchain_blocks_insert_input'][] /** on conflict condition */
@@ -15006,6 +17066,45 @@ export declare const Gql: {
           object: ValueTypes['resource_view_insert_input']
         },
         ValueTypes['resource_view']
+      ]
+      link_nft_asset?: [
+        {
+          args: ValueTypes['link_nft_asset_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['nft_asset_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_asset_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_asset_bool_exp'] | null
+        },
+        ValueTypes['nft_asset']
+      ]
+      link_nft_resource?: [
+        {
+          args: ValueTypes['link_nft_resource_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['resource_bool_exp'] | null
+        },
+        ValueTypes['resource']
+      ]
+      link_resource_content?: [
+        {
+          args: ValueTypes['link_resource_content_args'] /** distinct select on columns */
+          distinct_on?: ValueTypes['resource_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['resource_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['resource_bool_exp'] | null
+        },
+        ValueTypes['resource']
       ]
       update_blockchain_block?: [
         {
@@ -15142,6 +17241,21 @@ export declare const Gql: {
       ]
       update_nft_metadata?: [
         {
+          _append?:
+            | ValueTypes['nft_metadata_append_input']
+            | null /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+          _delete_at_path?:
+            | ValueTypes['nft_metadata_delete_at_path_input']
+            | null /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+          _delete_elem?:
+            | ValueTypes['nft_metadata_delete_elem_input']
+            | null /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+          _delete_key?:
+            | ValueTypes['nft_metadata_delete_key_input']
+            | null /** prepend existing jsonb value of filtered columns with new jsonb value */
+          _prepend?:
+            | ValueTypes['nft_metadata_prepend_input']
+            | null /** sets the columns of the filtered rows to the given values */
           _set?:
             | ValueTypes['nft_metadata_set_input']
             | null /** filter the rows which have to be updated */
@@ -15151,6 +17265,21 @@ export declare const Gql: {
       ]
       update_nft_metadata_by_pk?: [
         {
+          _append?:
+            | ValueTypes['nft_metadata_append_input']
+            | null /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+          _delete_at_path?:
+            | ValueTypes['nft_metadata_delete_at_path_input']
+            | null /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+          _delete_elem?:
+            | ValueTypes['nft_metadata_delete_elem_input']
+            | null /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+          _delete_key?:
+            | ValueTypes['nft_metadata_delete_key_input']
+            | null /** prepend existing jsonb value of filtered columns with new jsonb value */
+          _prepend?:
+            | ValueTypes['nft_metadata_prepend_input']
+            | null /** sets the columns of the filtered rows to the given values */
           _set?: ValueTypes['nft_metadata_set_input'] | null
           pk_columns: ValueTypes['nft_metadata_pk_columns_input']
         },
@@ -15171,6 +17300,22 @@ export declare const Gql: {
           pk_columns: ValueTypes['nft_owner_pk_columns_input']
         },
         ValueTypes['nft_owner']
+      ]
+      update_nft_ownership?: [
+        {
+          _set?:
+            | ValueTypes['nft_ownership_set_input']
+            | null /** filter the rows which have to be updated */
+          where: ValueTypes['nft_ownership_bool_exp']
+        },
+        ValueTypes['nft_ownership_mutation_response']
+      ]
+      update_nft_ownership_by_pk?: [
+        {
+          _set?: ValueTypes['nft_ownership_set_input'] | null
+          pk_columns: ValueTypes['nft_ownership_pk_columns_input']
+        },
+        ValueTypes['nft_ownership']
       ]
       update_nfts_by_blockchain_blocks?: [
         {
@@ -15345,6 +17490,10 @@ export declare const Gql: {
       delete_nft_owner?: GraphQLTypes['nft_owner_mutation_response']
       /** delete single row from the table: "nft_owner" */
       delete_nft_owner_by_pk?: GraphQLTypes['nft_owner']
+      /** delete data from the table: "nft_ownership" */
+      delete_nft_ownership?: GraphQLTypes['nft_ownership_mutation_response']
+      /** delete single row from the table: "nft_ownership" */
+      delete_nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
       /** delete data from the table: "nfts_by_blockchain_blocks" */
       delete_nfts_by_blockchain_blocks?: GraphQLTypes['nfts_by_blockchain_blocks_mutation_response']
       /** delete single row from the table: "nfts_by_blockchain_blocks" */
@@ -15367,6 +17516,12 @@ export declare const Gql: {
       delete_resource_by_pk?: GraphQLTypes['resource']
       /** delete data from the table: "resource_view" */
       delete_resource_view?: GraphQLTypes['resource_view_mutation_response']
+      /** execute VOLATILE function "fail_nft_asset" which returns "nft_asset" */
+      fail_nft_asset: Array<GraphQLTypes['nft_asset']>
+      /** execute VOLATILE function "fail_resource" which returns "resource" */
+      fail_resource: Array<GraphQLTypes['resource']>
+      /** execute VOLATILE function "ingest_erc721_token" which returns "nft" */
+      ingest_erc721_token: Array<GraphQLTypes['nft']>
       /** insert data into the table: "blockchain_block" */
       insert_blockchain_block?: GraphQLTypes['blockchain_block_mutation_response']
       /** insert a single row into the table: "blockchain_block" */
@@ -15407,6 +17562,10 @@ export declare const Gql: {
       insert_nft_owner?: GraphQLTypes['nft_owner_mutation_response']
       /** insert a single row into the table: "nft_owner" */
       insert_nft_owner_one?: GraphQLTypes['nft_owner']
+      /** insert data into the table: "nft_ownership" */
+      insert_nft_ownership?: GraphQLTypes['nft_ownership_mutation_response']
+      /** insert a single row into the table: "nft_ownership" */
+      insert_nft_ownership_one?: GraphQLTypes['nft_ownership']
       /** insert data into the table: "nfts_by_blockchain_blocks" */
       insert_nfts_by_blockchain_blocks?: GraphQLTypes['nfts_by_blockchain_blocks_mutation_response']
       /** insert a single row into the table: "nfts_by_blockchain_blocks" */
@@ -15431,6 +17590,12 @@ export declare const Gql: {
       insert_resource_view?: GraphQLTypes['resource_view_mutation_response']
       /** insert a single row into the table: "resource_view" */
       insert_resource_view_one?: GraphQLTypes['resource_view']
+      /** execute VOLATILE function "link_nft_asset" which returns "nft_asset" */
+      link_nft_asset: Array<GraphQLTypes['nft_asset']>
+      /** execute VOLATILE function "link_nft_resource" which returns "resource" */
+      link_nft_resource: Array<GraphQLTypes['resource']>
+      /** execute VOLATILE function "link_resource_content" which returns "resource" */
+      link_resource_content: Array<GraphQLTypes['resource']>
       /** update data of the table: "blockchain_block" */
       update_blockchain_block?: GraphQLTypes['blockchain_block_mutation_response']
       /** update single row of the table: "blockchain_block" */
@@ -15469,6 +17634,10 @@ export declare const Gql: {
       update_nft_owner?: GraphQLTypes['nft_owner_mutation_response']
       /** update single row of the table: "nft_owner" */
       update_nft_owner_by_pk?: GraphQLTypes['nft_owner']
+      /** update data of the table: "nft_ownership" */
+      update_nft_ownership?: GraphQLTypes['nft_ownership_mutation_response']
+      /** update single row of the table: "nft_ownership" */
+      update_nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
       /** update data of the table: "nfts_by_blockchain_blocks" */
       update_nfts_by_blockchain_blocks?: GraphQLTypes['nfts_by_blockchain_blocks_mutation_response']
       /** update single row of the table: "nfts_by_blockchain_blocks" */
@@ -15790,6 +17959,38 @@ export declare const Gql: {
         },
         ValueTypes['nft_owner']
       ]
+      nft_ownership?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership']
+      ]
+      nft_ownership_aggregate?: [
+        {
+          distinct_on?: ValueTypes['nft_ownership_select_column'][] /** limit the number of rows returned */
+          limit?:
+            | number
+            | null /** skip the first n rows. Use only with order_by */
+          offset?: number | null /** sort the rows by one or more columns */
+          order_by?: ValueTypes['nft_ownership_order_by'][] /** filter the rows returned */
+          where?: ValueTypes['nft_ownership_bool_exp'] | null
+        },
+        ValueTypes['nft_ownership_aggregate']
+      ]
+      nft_ownership_by_pk?: [
+        {
+          block_number: string
+          nft_id: string
+          owner_id: string
+        },
+        ValueTypes['nft_ownership']
+      ]
       nfts_by_blockchain_blocks?: [
         {
           distinct_on?: ValueTypes['nfts_by_blockchain_blocks_select_column'][] /** limit the number of rows returned */
@@ -16028,6 +18229,12 @@ export declare const Gql: {
       nft_owner_aggregate: GraphQLTypes['nft_owner_aggregate']
       /** fetch data from the table: "nft_owner" using primary key columns */
       nft_owner_by_pk?: GraphQLTypes['nft_owner']
+      /** fetch data from the table: "nft_ownership" */
+      nft_ownership: Array<GraphQLTypes['nft_ownership']>
+      /** fetch aggregated fields from the table: "nft_ownership" */
+      nft_ownership_aggregate: GraphQLTypes['nft_ownership_aggregate']
+      /** fetch data from the table: "nft_ownership" using primary key columns */
+      nft_ownership_by_pk?: GraphQLTypes['nft_ownership']
       /** fetch data from the table: "nfts_by_blockchain_blocks" */
       nfts_by_blockchain_blocks: Array<
         GraphQLTypes['nfts_by_blockchain_blocks']

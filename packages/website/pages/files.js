@@ -39,10 +39,12 @@ export default function Files({ user }) {
   const [befores, setBefores] = useState([''])
   const queryClient = useQueryClient()
   const queryParams = { before: befores[0], limit }
+  /** @type {[string, { before: string, limit: number }]} */
+  const queryKey = ['get-nfts', queryParams]
 
   const { status, data } = useQuery(
-    'get-nfts',
-    () => getNfts(queryParams, version),
+    queryKey,
+    (ctx) => getNfts(ctx.queryKey[1], version),
     {
       enabled: !!user,
     }
@@ -141,7 +143,7 @@ export default function Files({ user }) {
                       {nfts.map(
                         (/** @type {any} */ nft, /** @type {number} */ i) => (
                           <tr className="bb b--black" key={`nft-${i}`}>
-                            <td className="pa2 br b--black">
+                            <td className="pa2 br b--black" title={nft.created}>
                               {nft.created.split('T')[0]}
                             </td>
                             <td className="pa2 br b--black">

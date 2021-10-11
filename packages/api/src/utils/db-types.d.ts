@@ -12,120 +12,6 @@ export interface paths {
       }
     }
   }
-  '/user': {
-    get: {
-      parameters: {
-        query: {
-          id?: parameters['rowFilter.user.id']
-          magic_link_id?: parameters['rowFilter.user.magic_link_id']
-          github_id?: parameters['rowFilter.user.github_id']
-          name?: parameters['rowFilter.user.name']
-          picture?: parameters['rowFilter.user.picture']
-          email?: parameters['rowFilter.user.email']
-          public_address?: parameters['rowFilter.user.public_address']
-          github?: parameters['rowFilter.user.github']
-          inserted_at?: parameters['rowFilter.user.inserted_at']
-          updated_at?: parameters['rowFilter.user.updated_at']
-          /** Filtering Columns */
-          select?: parameters['select']
-          /** Ordering */
-          order?: parameters['order']
-          /** Limiting and Pagination */
-          offset?: parameters['offset']
-          /** Limiting and Pagination */
-          limit?: parameters['limit']
-        }
-        header: {
-          /** Limiting and Pagination */
-          Range?: parameters['range']
-          /** Limiting and Pagination */
-          'Range-Unit'?: parameters['rangeUnit']
-          /** Preference */
-          Prefer?: parameters['preferCount']
-        }
-      }
-      responses: {
-        /** OK */
-        200: {
-          schema: definitions['user'][]
-        }
-        /** Partial Content */
-        206: unknown
-      }
-    }
-    post: {
-      parameters: {
-        body: {
-          /** user */
-          user?: definitions['user']
-        }
-        query: {
-          /** Filtering Columns */
-          select?: parameters['select']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** Created */
-        201: unknown
-      }
-    }
-    delete: {
-      parameters: {
-        query: {
-          id?: parameters['rowFilter.user.id']
-          magic_link_id?: parameters['rowFilter.user.magic_link_id']
-          github_id?: parameters['rowFilter.user.github_id']
-          name?: parameters['rowFilter.user.name']
-          picture?: parameters['rowFilter.user.picture']
-          email?: parameters['rowFilter.user.email']
-          public_address?: parameters['rowFilter.user.public_address']
-          github?: parameters['rowFilter.user.github']
-          inserted_at?: parameters['rowFilter.user.inserted_at']
-          updated_at?: parameters['rowFilter.user.updated_at']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** No Content */
-        204: never
-      }
-    }
-    patch: {
-      parameters: {
-        query: {
-          id?: parameters['rowFilter.user.id']
-          magic_link_id?: parameters['rowFilter.user.magic_link_id']
-          github_id?: parameters['rowFilter.user.github_id']
-          name?: parameters['rowFilter.user.name']
-          picture?: parameters['rowFilter.user.picture']
-          email?: parameters['rowFilter.user.email']
-          public_address?: parameters['rowFilter.user.public_address']
-          github?: parameters['rowFilter.user.github']
-          inserted_at?: parameters['rowFilter.user.inserted_at']
-          updated_at?: parameters['rowFilter.user.updated_at']
-        }
-        body: {
-          /** user */
-          user?: definitions['user']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** No Content */
-        204: never
-      }
-    }
-  }
   '/aggregate': {
     get: {
       parameters: {
@@ -209,6 +95,7 @@ export interface paths {
           user_id?: parameters['rowFilter.auth_key.user_id']
           inserted_at?: parameters['rowFilter.auth_key.inserted_at']
           updated_at?: parameters['rowFilter.auth_key.updated_at']
+          deleted_at?: parameters['rowFilter.auth_key.deleted_at']
           /** Filtering Columns */
           select?: parameters['select']
           /** Ordering */
@@ -265,6 +152,7 @@ export interface paths {
           user_id?: parameters['rowFilter.auth_key.user_id']
           inserted_at?: parameters['rowFilter.auth_key.inserted_at']
           updated_at?: parameters['rowFilter.auth_key.updated_at']
+          deleted_at?: parameters['rowFilter.auth_key.deleted_at']
         }
         header: {
           /** Preference */
@@ -285,6 +173,7 @@ export interface paths {
           user_id?: parameters['rowFilter.auth_key.user_id']
           inserted_at?: parameters['rowFilter.auth_key.inserted_at']
           updated_at?: parameters['rowFilter.auth_key.updated_at']
+          deleted_at?: parameters['rowFilter.auth_key.deleted_at']
         }
         body: {
           /** auth_key */
@@ -443,6 +332,102 @@ export interface paths {
       }
     }
   }
+  '/migration_event': {
+    get: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.migration_event.id']
+          name?: parameters['rowFilter.migration_event.name']
+          data?: parameters['rowFilter.migration_event.data']
+          inserted_at?: parameters['rowFilter.migration_event.inserted_at']
+          /** Filtering Columns */
+          select?: parameters['select']
+          /** Ordering */
+          order?: parameters['order']
+          /** Limiting and Pagination */
+          offset?: parameters['offset']
+          /** Limiting and Pagination */
+          limit?: parameters['limit']
+        }
+        header: {
+          /** Limiting and Pagination */
+          Range?: parameters['range']
+          /** Limiting and Pagination */
+          'Range-Unit'?: parameters['rangeUnit']
+          /** Preference */
+          Prefer?: parameters['preferCount']
+        }
+      }
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions['migration_event'][]
+        }
+        /** Partial Content */
+        206: unknown
+      }
+    }
+    post: {
+      parameters: {
+        body: {
+          /** migration_event */
+          migration_event?: definitions['migration_event']
+        }
+        query: {
+          /** Filtering Columns */
+          select?: parameters['select']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** Created */
+        201: unknown
+      }
+    }
+    delete: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.migration_event.id']
+          name?: parameters['rowFilter.migration_event.name']
+          data?: parameters['rowFilter.migration_event.data']
+          inserted_at?: parameters['rowFilter.migration_event.inserted_at']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+    patch: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.migration_event.id']
+          name?: parameters['rowFilter.migration_event.name']
+          data?: parameters['rowFilter.migration_event.data']
+          inserted_at?: parameters['rowFilter.migration_event.inserted_at']
+        }
+        body: {
+          /** migration_event */
+          migration_event?: definitions['migration_event']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+  }
   '/pin': {
     get: {
       parameters: {
@@ -562,6 +547,7 @@ export interface paths {
           meta?: parameters['rowFilter.upload.meta']
           inserted_at?: parameters['rowFilter.upload.inserted_at']
           updated_at?: parameters['rowFilter.upload.updated_at']
+          deleted_at?: parameters['rowFilter.upload.deleted_at']
           /** Filtering Columns */
           select?: parameters['select']
           /** Ordering */
@@ -625,6 +611,7 @@ export interface paths {
           meta?: parameters['rowFilter.upload.meta']
           inserted_at?: parameters['rowFilter.upload.inserted_at']
           updated_at?: parameters['rowFilter.upload.updated_at']
+          deleted_at?: parameters['rowFilter.upload.deleted_at']
         }
         header: {
           /** Preference */
@@ -652,10 +639,125 @@ export interface paths {
           meta?: parameters['rowFilter.upload.meta']
           inserted_at?: parameters['rowFilter.upload.inserted_at']
           updated_at?: parameters['rowFilter.upload.updated_at']
+          deleted_at?: parameters['rowFilter.upload.deleted_at']
         }
         body: {
           /** upload */
           upload?: definitions['upload']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+  }
+  '/user': {
+    get: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.user.id']
+          magic_link_id?: parameters['rowFilter.user.magic_link_id']
+          github_id?: parameters['rowFilter.user.github_id']
+          name?: parameters['rowFilter.user.name']
+          picture?: parameters['rowFilter.user.picture']
+          email?: parameters['rowFilter.user.email']
+          public_address?: parameters['rowFilter.user.public_address']
+          github?: parameters['rowFilter.user.github']
+          inserted_at?: parameters['rowFilter.user.inserted_at']
+          updated_at?: parameters['rowFilter.user.updated_at']
+          /** Filtering Columns */
+          select?: parameters['select']
+          /** Ordering */
+          order?: parameters['order']
+          /** Limiting and Pagination */
+          offset?: parameters['offset']
+          /** Limiting and Pagination */
+          limit?: parameters['limit']
+        }
+        header: {
+          /** Limiting and Pagination */
+          Range?: parameters['range']
+          /** Limiting and Pagination */
+          'Range-Unit'?: parameters['rangeUnit']
+          /** Preference */
+          Prefer?: parameters['preferCount']
+        }
+      }
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions['user'][]
+        }
+        /** Partial Content */
+        206: unknown
+      }
+    }
+    post: {
+      parameters: {
+        body: {
+          /** user */
+          user?: definitions['user']
+        }
+        query: {
+          /** Filtering Columns */
+          select?: parameters['select']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** Created */
+        201: unknown
+      }
+    }
+    delete: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.user.id']
+          magic_link_id?: parameters['rowFilter.user.magic_link_id']
+          github_id?: parameters['rowFilter.user.github_id']
+          name?: parameters['rowFilter.user.name']
+          picture?: parameters['rowFilter.user.picture']
+          email?: parameters['rowFilter.user.email']
+          public_address?: parameters['rowFilter.user.public_address']
+          github?: parameters['rowFilter.user.github']
+          inserted_at?: parameters['rowFilter.user.inserted_at']
+          updated_at?: parameters['rowFilter.user.updated_at']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+    patch: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.user.id']
+          magic_link_id?: parameters['rowFilter.user.magic_link_id']
+          github_id?: parameters['rowFilter.user.github_id']
+          name?: parameters['rowFilter.user.name']
+          picture?: parameters['rowFilter.user.picture']
+          email?: parameters['rowFilter.user.email']
+          public_address?: parameters['rowFilter.user.public_address']
+          github?: parameters['rowFilter.user.github']
+          inserted_at?: parameters['rowFilter.user.inserted_at']
+          updated_at?: parameters['rowFilter.user.updated_at']
+        }
+        body: {
+          /** user */
+          user?: definitions['user']
         }
         header: {
           /** Preference */
@@ -685,49 +787,11 @@ export interface paths {
       }
     }
   }
-  '/rpc/create_upload': {
-    post: {
-      parameters: {
-        body: {
-          args: {
-            data: string
-          }
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferParams']
-        }
-      }
-      responses: {
-        /** OK */
-        200: unknown
-      }
-    }
-  }
   '/rpc/pgrst_watch': {
     post: {
       parameters: {
         body: {
           args: { [key: string]: unknown }
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferParams']
-        }
-      }
-      responses: {
-        /** OK */
-        200: unknown
-      }
-    }
-  }
-  '/rpc/find_deals_by_content_cids': {
-    post: {
-      parameters: {
-        body: {
-          args: {
-            cids: string
-          }
         }
         header: {
           /** Preference */
@@ -759,25 +823,47 @@ export interface paths {
       }
     }
   }
+  '/rpc/find_deals_by_content_cids': {
+    post: {
+      parameters: {
+        body: {
+          args: {
+            cids: string
+          }
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferParams']
+        }
+      }
+      responses: {
+        /** OK */
+        200: unknown
+      }
+    }
+  }
+  '/rpc/create_upload': {
+    post: {
+      parameters: {
+        body: {
+          args: {
+            data: string
+          }
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferParams']
+        }
+      }
+      responses: {
+        /** OK */
+        200: unknown
+      }
+    }
+  }
 }
 
 export interface definitions {
-  user: {
-    /**
-     * Note:
-     * This is a Primary Key.<pk/>
-     */
-    id: number
-    magic_link_id: string
-    github_id: string
-    name: string
-    picture?: string
-    email: string
-    public_address: string
-    github?: string
-    inserted_at: string
-    updated_at: string
-  }
   aggregate: {
     aggregate_cid?: string
     piece_cid?: string
@@ -806,6 +892,7 @@ export interface definitions {
     user_id: number
     inserted_at: string
     updated_at: string
+    deleted_at?: string
   }
   content: {
     /**
@@ -833,6 +920,16 @@ export interface definitions {
     sector_start_time?: string
     end_time?: string
   }
+  migration_event: {
+    /**
+     * Note:
+     * This is a Primary Key.<pk/>
+     */
+    id: number
+    name: string
+    data?: string
+    inserted_at: string
+  }
   pin: {
     /**
      * Note:
@@ -845,7 +942,7 @@ export interface definitions {
      * This is a Foreign Key to `content.cid`.<fk table='content' column='cid'/>
      */
     content_cid: string
-    service: 'Pinata' | 'IpfsCluster'
+    service: 'Pinata' | 'IpfsCluster' | 'IpfsCluster2'
     inserted_at: string
     updated_at: string
   }
@@ -879,6 +976,23 @@ export interface definitions {
     meta?: string
     inserted_at: string
     updated_at: string
+    deleted_at?: string
+  }
+  user: {
+    /**
+     * Note:
+     * This is a Primary Key.<pk/>
+     */
+    id: number
+    magic_link_id?: string
+    github_id: string
+    name: string
+    picture?: string
+    email: string
+    public_address?: string
+    github?: string
+    inserted_at: string
+    updated_at: string
   }
 }
 
@@ -903,18 +1017,6 @@ export interface parameters {
   offset: string
   /** Limiting and Pagination */
   limit: string
-  /** user */
-  'body.user': definitions['user']
-  'rowFilter.user.id': string
-  'rowFilter.user.magic_link_id': string
-  'rowFilter.user.github_id': string
-  'rowFilter.user.name': string
-  'rowFilter.user.picture': string
-  'rowFilter.user.email': string
-  'rowFilter.user.public_address': string
-  'rowFilter.user.github': string
-  'rowFilter.user.inserted_at': string
-  'rowFilter.user.updated_at': string
   /** aggregate */
   'body.aggregate': definitions['aggregate']
   'rowFilter.aggregate.aggregate_cid': string
@@ -936,6 +1038,7 @@ export interface parameters {
   'rowFilter.auth_key.user_id': string
   'rowFilter.auth_key.inserted_at': string
   'rowFilter.auth_key.updated_at': string
+  'rowFilter.auth_key.deleted_at': string
   /** content */
   'body.content': definitions['content']
   'rowFilter.content.cid': string
@@ -958,6 +1061,12 @@ export interface parameters {
   'rowFilter.deal.sector_start_epoch': string
   'rowFilter.deal.sector_start_time': string
   'rowFilter.deal.end_time': string
+  /** migration_event */
+  'body.migration_event': definitions['migration_event']
+  'rowFilter.migration_event.id': string
+  'rowFilter.migration_event.name': string
+  'rowFilter.migration_event.data': string
+  'rowFilter.migration_event.inserted_at': string
   /** pin */
   'body.pin': definitions['pin']
   'rowFilter.pin.id': string
@@ -981,6 +1090,19 @@ export interface parameters {
   'rowFilter.upload.meta': string
   'rowFilter.upload.inserted_at': string
   'rowFilter.upload.updated_at': string
+  'rowFilter.upload.deleted_at': string
+  /** user */
+  'body.user': definitions['user']
+  'rowFilter.user.id': string
+  'rowFilter.user.magic_link_id': string
+  'rowFilter.user.github_id': string
+  'rowFilter.user.name': string
+  'rowFilter.user.picture': string
+  'rowFilter.user.email': string
+  'rowFilter.user.public_address': string
+  'rowFilter.user.github': string
+  'rowFilter.user.inserted_at': string
+  'rowFilter.user.updated_at': string
 }
 
 export interface operations {}
