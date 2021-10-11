@@ -126,10 +126,10 @@ async function writeFromInbox(config, readable) {
        * We write from the Transform stream, one record at a time, as quickly as we can.
        * this makes cursor-tracking on restart very simple and prevents lossy data.
        * this stream should typically never be closed,
-       * unless the writeable end has unexpectely aborted due to an error
+       * unless the writeable end has unexpectely closed due to an error
        */
       if (nextImport.done) {
-        console.error(`The Ingestion Stream unexpectedly completed`)
+        console.log(`⚠️ The Ingestion Stream was closed`)
         reader.cancel()
       } else {
         await retry(
