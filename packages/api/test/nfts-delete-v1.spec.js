@@ -24,7 +24,7 @@ describe('V1 - Delete NFT', () => {
     })
 
     const testTs = Date.now()
-    const res = await fetch(`v1/${cid}`, {
+    const res = await fetch(cid, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${client.token}` },
     })
@@ -71,7 +71,7 @@ describe('V1 - Delete NFT', () => {
       dag_size: 100,
     })
 
-    const res = await fetch(`v1/${cidv0}`, {
+    const res = await fetch(cidv0, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${client.token}` },
     })
@@ -106,7 +106,7 @@ describe('V1 - Delete NFT', () => {
       dag_size: 100,
     })
 
-    const res = await fetch(`v1/${cidv1}`, {
+    const res = await fetch(cidv1, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${client.token}` },
     })
@@ -126,7 +126,7 @@ describe('V1 - Delete NFT', () => {
   it('should error deleting invalid cid', async () => {
     const cid = 'bafybeissss'
 
-    const res = await fetch(`v1/${cid}`, {
+    const res = await fetch(cid, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${client.token}` },
     })
@@ -142,7 +142,7 @@ describe('V1 - Delete NFT', () => {
     const client = await createClientWithUser()
     const cid = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
 
-    const res = await fetch(`v1/${cid}`, {
+    const res = await fetch(cid, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${client.token}` },
     })

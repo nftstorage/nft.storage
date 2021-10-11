@@ -16,7 +16,7 @@ describe(' V1 - Pin add ', () => {
   it('should pin with just cid', async () => {
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
-    const res = await fetch('v1/pins', {
+    const res = await fetch('pins', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({ cid }),
@@ -44,7 +44,7 @@ describe(' V1 - Pin add ', () => {
   it('should pin with everything', async () => {
     // expected CID for the above data
     const cid = 'bafkreigu63ufwrs6d7zkybgdm36orqwe6opiseut4b6ehhwi5mtgryklzi'
-    const res = await fetch('v1/pins', {
+    const res = await fetch('pins', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({
@@ -82,7 +82,7 @@ describe(' V1 - Pin add ', () => {
     // expected CID for the above data
     const cid = 'bafkreihwlixzeusjrd5avlg53yidaoonf5r5srzumu7y5uuumtt7rxxbrm'
 
-    const res1 = await fetch('v1/pins', {
+    const res1 = await fetch('pins', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({
@@ -101,7 +101,7 @@ describe(' V1 - Pin add ', () => {
       },
       'Server responded with expected data for first pin'
     )
-    const res2 = await fetch('v1/pins', {
+    const res2 = await fetch('pins', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({
@@ -128,7 +128,7 @@ describe(' V1 - Pin add ', () => {
   it('should error pinning with invalid cid', async () => {
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2y'
-    const res = await fetch('v1/pins', {
+    const res = await fetch('pins', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({ cid }),
@@ -145,7 +145,7 @@ describe(' V1 - Pin add ', () => {
   it('should error pinning with invalid name', async () => {
     // expected CID for the above data
     const cid = 'bafkreihwlixzeusjrd5avlg53yidaoonf5r5srzumu7y5uuumtt7rxxbrm'
-    const res = await fetch('v1/pins', {
+    const res = await fetch('pins', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({ cid, name: 3333 }),
@@ -162,7 +162,7 @@ describe(' V1 - Pin add ', () => {
   it('should error pinning with invalid meta', async () => {
     // expected CID for the above data
     const cid = 'bafkreihwlixzeusjrd5avlg53yidaoonf5r5srzumu7y5uuumtt7rxxbrm'
-    const res = await fetch('v1/pins', {
+    const res = await fetch('pins', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({ cid, meta: ['dd'] }),

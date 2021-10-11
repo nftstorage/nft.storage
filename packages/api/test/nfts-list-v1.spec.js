@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { createClientWithUser, DBTestClient } from './scripts/helpers.js'
+import { createClientWithUser } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import delay from 'delay'
 
@@ -147,14 +147,14 @@ describe('V1 - List NFTs', () => {
       dag_size: 100,
     })
 
-    const deleteRsp = await fetch(`v1/${cidv0}`, {
+    const deleteRsp = await fetch(cidv0, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const deleteData = await deleteRsp.json()
     assert.ok(deleteData.ok)
 
-    const res = await fetch(`v1`, {
+    const res = await fetch('', {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()

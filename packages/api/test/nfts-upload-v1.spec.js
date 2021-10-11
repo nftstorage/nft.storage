@@ -18,7 +18,7 @@ describe(' V1 - Upload ', () => {
     const file = new Blob(['hello world!'], { type: 'application/text' })
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
-    const res = await fetch('v1/upload', {
+    const res = await fetch('upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: file,
@@ -50,7 +50,7 @@ describe(' V1 - Upload ', () => {
     const file2 = new Blob(['hello world! 2'])
     body.append('file', file1, 'name1')
     body.append('file', file2, 'name2')
-    const res = await fetch('v1/upload', {
+    const res = await fetch('upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body,
@@ -78,7 +78,7 @@ describe(' V1 - Upload ', () => {
     const file2 = new Blob(['hello world! 2'])
     body.append('file', file1)
     body.append('file', file2)
-    const res = await fetch('v1/upload', {
+    const res = await fetch('upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body,
@@ -106,7 +106,7 @@ describe(' V1 - Upload ', () => {
     const file2 = new Blob(['hello world! 2'])
     body.append('file', new File([file1], 'name1.png'))
     body.append('file', new File([file2], 'name1.png'))
-    const res = await fetch('v1/upload', {
+    const res = await fetch('upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body,
@@ -132,7 +132,7 @@ describe(' V1 - Upload ', () => {
     // expected CID for the above data
     const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
     assert.strictEqual(root.toString(), cid, 'car file has correct root')
-    const res = await fetch('v1/upload', {
+    const res = await fetch('upload', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${client.token}`,
@@ -168,7 +168,7 @@ describe(' V1 - Upload ', () => {
     const file = new Blob(['hello world!'], { type: 'application/text' })
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
-    const res1 = await fetch('v1/upload', {
+    const res1 = await fetch('upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: file,
@@ -178,7 +178,7 @@ describe(' V1 - Upload ', () => {
     assert.equal(data1.value.type, 'application/text', 'text')
 
     const { root, car } = await createCar('hello world!')
-    const res2 = await fetch('v1/upload', {
+    const res2 = await fetch('upload', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${client.token}`,
@@ -203,7 +203,7 @@ describe(' V1 - Upload ', () => {
     const file = new Blob(['hello world!'])
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
-    const res = await fetch('v1/upload', {
+    const res = await fetch('upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: file,
@@ -214,7 +214,7 @@ describe(' V1 - Upload ', () => {
     assert.notEqual(deleted?.deleted_at, null)
 
     const testTs = Date.now()
-    const reup = await fetch('v1/upload', {
+    const reup = await fetch('upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: file,

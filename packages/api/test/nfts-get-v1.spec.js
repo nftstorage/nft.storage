@@ -87,7 +87,7 @@ describe('V1 - Get NFT', () => {
     assert.ok(deleted)
     assert.equal(deleted.source_cid, cidv1)
 
-    const res = await fetch(`v1/${cidv1}`, {
+    const res = await fetch(cidv1, {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, error } = await res.json()
