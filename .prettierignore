@@ -7,6 +7,11 @@ worker
 site/public
 docs
 packages/database/fauna/migrations
+packages/niftysave/gen
+packages/api
 CHANGELOG.md
 .next
 .supabase
+.prettierignore
+.gitignore
+.gitattributes
