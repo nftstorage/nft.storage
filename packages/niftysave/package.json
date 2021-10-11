@@ -51,7 +51,8 @@
     "graphql-typed-client": "1.7.4",
     "multiformats": "^9.4.3",
     "nft.storage": "^3.3.0",
-    "subprogram": "^1.2.0"
+    "subprogram": "^1.2.0",
+    "web-streams-polyfill": "^3.0.2"
   },
   "repository": {
     "type": "git",

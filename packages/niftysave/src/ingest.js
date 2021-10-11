@@ -8,7 +8,7 @@ import { TransformStream } from './stream.js'
 import { configure } from './config.js'
 import { intializeCursor } from './ingest/cursor.js'
 import { script } from 'subprogram'
-import { setTimeout as sleep } from 'timers/promises'
+import { setTimeout as sleep } from './timers.js'
 
 /**
  * @typedef {import('./ingest').ERC721ImportNFT} ERC721ImportNFT
