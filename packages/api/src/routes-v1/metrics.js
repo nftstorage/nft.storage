@@ -5,7 +5,9 @@ const db = new DBClient(database.url, secrets.database)
 
 export async function getUserMetrics() {
   const query = db.client.from('user')
-  const res = await query.select('*', { head: true, count: 'exact' })
+  const res = await query
+    .select('*', { head: true, count: 'exact' })
+    .range(0, 1)
   if (res.error) {
     throw res.error
   }
@@ -20,6 +22,7 @@ export async function getNftMetrics() {
       const res = await query
         .select('*', { head: true, count: 'exact' })
         .filter('type', 'eq', t)
+        .range(0, 1)
       if (res.error) {
         throw res.error
       }
@@ -41,6 +44,7 @@ export async function getPinMetrics() {
             .select('*', { head: true, count: 'exact' })
             .filter('service', 'eq', service)
             .filter('status', 'eq', status)
+            .range(0, 1)
           if (res.error) {
             throw res.error
           }

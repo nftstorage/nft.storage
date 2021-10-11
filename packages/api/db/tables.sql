@@ -119,6 +119,16 @@ CREATE TABLE IF NOT EXISTS upload
     meta        jsonb,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    --deleted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+    deleted_at TIMESTAMP WITH TIME ZONE,
     UNIQUE (user_id, source_cid)
+);
+
+-- Temporary table to record events from the live site between KV sync start
+-- and the migration window.
+CREATE TABLE IF NOT EXISTS migration_event
+(
+    id          BIGSERIAL PRIMARY KEY,
+    name        TEXT NOT NULL,
+    data        jsonb,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );

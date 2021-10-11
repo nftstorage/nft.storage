@@ -2,12 +2,12 @@ table:
   name: other_nft_resources
   schema: public
 object_relationships:
-- name: resource
-  using:
-    manual_configuration:
-      column_mapping:
-        resource_uri_hash: uri_hash
-      insertion_order: null
-      remote_table:
-        name: resource
-        schema: public
+  - name: resource
+    using:
+      manual_configuration:
+        column_mapping:
+          resource_uri_hash: uri_hash
+        insertion_order: null
+        remote_table:
+          name: resource
+          schema: public

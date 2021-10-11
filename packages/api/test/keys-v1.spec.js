@@ -14,7 +14,7 @@ describe('V1 - Auth Keys', () => {
   })
 
   it('should list just the default key', async () => {
-    const res = await fetch(`v1/internal/tokens`, {
+    const res = await fetch(`internal/tokens`, {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
@@ -24,7 +24,7 @@ describe('V1 - Auth Keys', () => {
   })
 
   it('should create a key', async () => {
-    const res = await fetch(`v1/internal/tokens`, {
+    const res = await fetch(`internal/tokens`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({ name: 'test2' }),
@@ -38,7 +38,7 @@ describe('V1 - Auth Keys', () => {
   })
 
   it('should error creating a key when name is not provided', async () => {
-    const res = await fetch(`v1/internal/tokens`, {
+    const res = await fetch(`internal/tokens`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({}),
@@ -53,7 +53,7 @@ describe('V1 - Auth Keys', () => {
   })
 
   it('should delete a key', async () => {
-    const res = await fetch(`v1/internal/tokens`, {
+    const res = await fetch(`internal/tokens`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({ name: 'test-delete' }),
@@ -61,7 +61,8 @@ describe('V1 - Auth Keys', () => {
     const { ok, value } = await res.json()
     assert.ok(ok, 'create key')
 
-    const resDelete = await fetch(`v1/internal/tokens`, {
+    const testTs = Date.now()
+    const resDelete = await fetch(`internal/tokens`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({ id: value.id }),
@@ -76,11 +77,23 @@ describe('V1 - Auth Keys', () => {
       .single()
 
     // @ts-ignore
-    assert.notEqual(data.deleted_at, null)
+    assert.ok(
+      new Date(data.deleted_at).valueOf() > testTs,
+      'deleted_at should be bigger than date before delete request'
+    )
+    assert.ok(
+      new Date(data.updated_at).valueOf() > testTs,
+      'updated_at should be bigger than date before delete request'
+    )
+    assert.equal(
+      data.deleted_at,
+      data.updated_at,
+      'deleted_at and updated_at should be equal'
+    )
   })
 
   it('should error deleting a key when id is not provided', async () => {
-    const resDelete = await fetch(`v1/internal/tokens`, {
+    const resDelete = await fetch(`internal/tokens`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({}),
@@ -95,7 +108,7 @@ describe('V1 - Auth Keys', () => {
 
   it('should not list deleted a keys', async () => {
     const client = await createClientWithUser()
-    const res1 = await fetch(`v1/internal/tokens`, {
+    const res1 = await fetch(`internal/tokens`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({ name: 'test-key-1' }),
@@ -103,7 +116,7 @@ describe('V1 - Auth Keys', () => {
     const key1 = await res1.json()
     assert.ok(key1.ok, 'create key 1')
 
-    const res2 = await fetch(`v1/internal/tokens`, {
+    const res2 = await fetch(`internal/tokens`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({ name: 'test-key-2' }),
@@ -111,7 +124,7 @@ describe('V1 - Auth Keys', () => {
     const key2 = await res2.json()
     assert.ok(res2.ok, 'create key 1')
 
-    const resDelete = await fetch(`v1/internal/tokens`, {
+    const resDelete = await fetch(`internal/tokens`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${client.token}` },
       body: JSON.stringify({ id: key2.value.id }),
@@ -119,7 +132,7 @@ describe('V1 - Auth Keys', () => {
     const deleteData = await resDelete.json()
     assert.ok(deleteData.ok, 'delete key 2')
 
-    const res = await fetch(`v1/internal/tokens`, {
+    const res = await fetch(`internal/tokens`, {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
