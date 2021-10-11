@@ -61,6 +61,7 @@ describe('V1 - Auth Keys', () => {
     const { ok, value } = await res.json()
     assert.ok(ok, 'create key')
 
+    const testTs = Date.now()
     const resDelete = await fetch(`v1/internal/tokens`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${client.token}` },
@@ -76,7 +77,19 @@ describe('V1 - Auth Keys', () => {
       .single()
 
     // @ts-ignore
-    assert.notEqual(data.deleted_at, null)
+    assert.ok(
+      new Date(data.deleted_at).valueOf() > testTs,
+      'deleted_at should be bigger than date before delete request'
+    )
+    assert.ok(
+      new Date(data.updated_at).valueOf() > testTs,
+      'updated_at should be bigger than date before delete request'
+    )
+    assert.equal(
+      data.deleted_at,
+      data.updated_at,
+      'deleted_at and updated_at should be equal'
+    )
   })
 
   it('should error deleting a key when id is not provided', async () => {

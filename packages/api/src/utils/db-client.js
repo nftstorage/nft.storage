@@ -119,6 +119,7 @@ export class DBClient {
       .select(this.uploadQuery)
       .eq('source_cid', cid)
       .eq('user_id', userId)
+      .is('deleted_at', null)
       // @ts-ignore
       .filter('content.pin.service', 'eq', 'IpfsCluster')
       .single()
@@ -146,6 +147,7 @@ export class DBClient {
     let query = from
       .select(this.uploadQuery)
       .eq('user_id', userId)
+      .is('deleted_at', null)
       // @ts-ignore
       .filter('content.pin.service', 'eq', 'IpfsCluster')
       .limit(opts.limit || 10)
@@ -211,10 +213,18 @@ export class DBClient {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').UploadOutput>} */
     const query = this.client.from('upload')
 
-    const { data, error } = await query
-      .delete()
+    const date = new Date().toISOString()
+    const { data, error, status } = await query
+      .update({
+        deleted_at: date,
+        updated_at: date,
+      })
       .match({ source_cid: cid, user_id: userId })
+      .single()
 
+    if (status === 406 || !data) {
+      return
+    }
     if (error) {
       throw new DBError(error)
     }
@@ -363,9 +373,11 @@ export class DBClient {
     /** @type {PostgrestQueryBuilder<definitions['auth_key']>} */
     const query = this.client.from('auth_key')
 
+    const date = new Date().toISOString()
     const { error } = await query
       .update({
-        deleted_at: new Date().toISOString(),
+        deleted_at: date,
+        updated_at: date,
       })
       .match({ id })
       .single()

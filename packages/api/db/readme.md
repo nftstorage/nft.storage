@@ -45,6 +45,8 @@ psql service=local -f functions.sql
 # Migration
 
 ```bash
+# sync users and nft keys 2h41m
+# sync nft data 8h14m
 pg_dump "service=local" --data-only > dump.sql
 NODE_TLS_REJECT_UNAUTHORIZED=0 ./scripts/cli.js db-sql --reset --cargo --testing
 psql "service=nft-staging" < dump.sql
