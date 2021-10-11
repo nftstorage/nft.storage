@@ -2,22 +2,22 @@ table:
   name: nft_asset
   schema: public
 object_relationships:
-- name: metadata
-  using:
-    manual_configuration:
-      column_mapping:
-        content_cid: content_cid
-      insertion_order: null
-      remote_table:
-        name: nft_metadata
-        schema: public
+  - name: metadata
+    using:
+      manual_configuration:
+        column_mapping:
+          content_cid: content_cid
+        insertion_order: null
+        remote_table:
+          name: nft_metadata
+          schema: public
 array_relationships:
-- name: nfts
-  using:
-    manual_configuration:
-      column_mapping:
-        token_uri_hash: token_uri_hash
-      insertion_order: null
-      remote_table:
-        name: nft
-        schema: public
+  - name: nfts
+    using:
+      manual_configuration:
+        column_mapping:
+          token_uri_hash: token_uri_hash
+        insertion_order: null
+        remote_table:
+          name: nft
+          schema: public

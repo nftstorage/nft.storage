@@ -15,7 +15,7 @@ export const main = async () => await spawn(await configure())
  *
  * @param {Config} config
  */
-export const spawn = async config => {
+export const spawn = async (config) => {
   const deadline = Date.now() + config.budget
   console.log('Obtain current cursor')
   const cursor = await readCursor(config)
