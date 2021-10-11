@@ -32,6 +32,7 @@ export async function pushToDB(ctx, task) {
           name: data.name,
           public_address: data.publicAddress,
           picture: data.picture,
+          github: data.github,
         })
         .single()
 

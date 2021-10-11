@@ -23,6 +23,7 @@ describe('V1 - Get NFT', () => {
     const { ok, value } = await res.json()
 
     assert.equal(value.cid, cid)
+    assert.equal(value.type, 'remote')
     assert.equal(value.pin.status, 'queued')
     assert.deepStrictEqual(value.deals, fixtures.dealsV0andV1)
   })

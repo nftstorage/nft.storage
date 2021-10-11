@@ -1,245 +1,438 @@
 import * as Result from './result.js'
-import * as Schema from '../gen/db/schema.js'
 import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
-import * as DB from '../gen/db/index.js'
+import * as IPFS from './ipfs.js'
 import { fetchResource, timeout } from './net.js'
 import { configure } from './config.js'
 import { printURL } from './util.js'
 import { script } from 'subprogram'
-
-const { TokenAssetStatus } = Schema
+import * as Hasura from './hasura.js'
+import { exponentialBackoff, maxRetries, retry } from './retry.js'
+import * as Cursor from './hasura/cursor.js'
+import { TransformStream } from './stream.js'
+import { setTimeout as sleep } from 'timers/promises'
 
 export const main = async () => await spawn(await configure())
 
 /**
  * @typedef {Object} Config
- * @property {DB.Config} fauna
+ * @property {Hasura.Config} hasura
  * @property {import('./ipfs').Config} ipfs
  * @property {Cluster.Config} cluster
  * @property {number} budget
  * @property {number} batchSize
+ * @property {number} concurrency
  * @property {number} fetchTimeout
- */
-
-/**
+ * @property {number} fetchRetryLimit
+ * @property {number} retryInterval
+ * @property {number} retryLimit
+ * @property {number} queueSize
+ *
  * @param {Config} config
  */
-export const spawn = async config => {
-  const deadline = Date.now() + config.budget
-  while (deadline - Date.now() > 0) {
-    console.log('🔍 Fetching queued token asset analyses')
-    const analyses = await fetchScheduledAnalyses(config)
-    if (analyses.length === 0) {
-      return console.log('🏁 Finish, no more queued task were found')
-    } else {
-      console.log(`🤹 Spawn ${analyses.length} tasks to process assets`)
-      const updates = await Promise.all(analyses.map($ => analyze(config, $)))
-
-      console.log('💾 Update token assets')
-      await updateTokenAssets(config, updates)
-      console.log(`✨ Processed batch of ${analyses.length} assets`)
+const spawn = async (config) => {
+  // Create channel for reader to push data into & writer
+  // to pull data from.
+  const { writable, readable } = new TransformStream(
+    {},
+    {
+      highWaterMark: config.queueSize,
     }
-  }
-  console.log('⌛️ Finish, time is up')
+  )
+
+  // wait for task completion before resuming.
+  await Promise.all([
+    // create read task that will pull queued nft assets and queue them for
+    // analyzer to process.
+    readInto(writable, config),
+    // create an analyzer task that will pull nft assets from the queue and
+    // write updated state to the database.
+    analyzeFrom(readable, config),
+  ])
 }
 
 /**
- * @typedef {{ tokenURI:string, _id:string }} TokenAsset
+ * Pulls queued nft assets from the database and queues them into a writer
+ * stream. On error will close a stream and release a lock.
  *
- * Returns batch of queued tokens.
- *
- * @param {{batchSize: number, fauna: DB.Config}} options
- * @returns {Promise<Schema.ScheduledAnalyze[]>}
+ * @param {WritableStream<Asset>} writable
+ * @param {Config} config
+ * @returns {Promise<never>}
  */
+const readInto = async (writable, config) => {
+  const writer = writable.getWriter()
+  try {
+    let cursor = Cursor.init()
 
-const fetchScheduledAnalyses = async ({ batchSize, fauna }) => {
-  const result = await DB.query(fauna, {
-    scheduledAnalyses: [
+    while (true) {
+      console.log(
+        `📥 Fetch ${config.batchSize} queued nft assets from ${JSON.stringify(
+          cursor
+        )}`
+      )
+      // Pull queued tasks in FIFO order by `update_at`.
+      const page = await retry(
+        () => fetchQueuedAssets(config, cursor),
+        [
+          exponentialBackoff(config.retryInterval),
+          maxRetries(config.retryLimit),
+        ]
+      )
+
+      // If we got no queued assets we just sleep for some time and try again.
+      if (page.length == 0) {
+        console.log(
+          `📭  No more queued nft assets, pause for ${config.retryInterval}ms`
+        )
+        await sleep(config.retryInterval)
+      } else {
+        console.log('📬 Wait for space in a queue')
+        // Now if queue is full, we wait until there is more space.
+        await writer.ready
+        console.log(`📨 Push ${page.length} nft assets into a queue`)
+        // Then we drain all the records even if queue will overflow (no point)
+        // in keeping some in memory and constant awaits are likely to slow us
+        // down here. One we flush the batch we also pull new batch, chances are
+        // items are picked off of queue while we're fetching and if not, then
+        // we will wait (see await above).
+        for (const record of page) {
+          writer.write(record)
+        }
+
+        // Update cursor to point to the record after the last one.
+        const lastRecord = /** @type {Asset} */ (page[page.length - 1])
+        cursor = Cursor.after(cursor, lastRecord)
+      }
+    }
+  } finally {
+    writer.close()
+    writer.releaseLock()
+  }
+}
+
+/**
+ * @typedef {Object} Asset
+ * @property {string} token_uri
+ * @property {string} token_uri_hash
+ * @property {string} [ipfs_url]
+ * @property {string} updated_at
+ *
+ * Fetches batch of queued nft assets from the database from the given cursor.
+ *
+ * @param {Object} config
+ * @param {Hasura.Config} config.hasura
+ * @param {number} config.batchSize
+ * @param {Cursor.Cursor} cursor
+ * @returns {Promise<Asset[]>}
+ */
+const fetchQueuedAssets = async (config, cursor) => {
+  const { nft_asset: page } = await Hasura.query(config.hasura, {
+    nft_asset: [
       {
-        _size: batchSize,
-      },
-      {
-        data: {
-          attempt: 1,
-          tokenAsset: {
-            _id: 1,
-            tokenURI: 1,
+        where: {
+          status: {
+            _eq: 'Queued',
+          },
+          updated_at: {
+            _gte: cursor.updated_at,
           },
         },
+        order_by: [
+          {
+            updated_at: Hasura.schema.order_by.asc,
+          },
+        ],
+        limit: config.batchSize,
+        offset: cursor.offset,
+      },
+      {
+        token_uri: true,
+        token_uri_hash: true,
+        ipfs_url: true,
+        updated_at: true,
       },
     ],
   })
 
-  const tasks =
-    /** @type {Schema.ScheduledAnalyze[]} */
-    (Result.value(result).scheduledAnalyses.data.filter(Boolean))
+  return page
+}
 
-  return tasks
+/**
+ * Pulls nft assets from the given `readable` stream and after performing
+ * analysis writes results out to database.
+ *
+ * @param {ReadableStream<Asset>} readable
+ * @param {Config} config
+ * @returns {Promise<void>}
+ */
+const analyzeFrom = async (readable, config) => {
+  const inbox = readable.getReader()
+  // spawn number of (as per configuration) concurrent
+  // analyzer tasks that will pull incoming `nft_asset` records
+  // and advance their state.
+  const tasks = Array.from({ length: config.concurrency }, () =>
+    analyzer(config, inbox)
+  )
+
+  await Promise.all(tasks)
+  await inbox.cancel()
+  inbox.releaseLock()
 }
 
 /**
  * @param {Config} config
- * @param {Schema.ScheduledAnalyze} scheduledAnalyze
- * @returns {Promise<Schema.TokenAssetUpdate>}
+ * @param {ReadableStreamDefaultReader<Asset>} inbox
+ * @returns {Promise<void>}
  */
-const analyze = async (config, { tokenAsset: { tokenURI, _id: id } }) => {
-  console.log(`🔬 (${id}) Parsing tokenURI`)
-  const urlResult = Result.fromTry(() => new URL(tokenURI))
+const analyzer = async (config, inbox) => {
+  while (true) {
+    console.log('📤 Pull nft asset from the queue')
+    const next = await inbox.read()
+    if (next.done) {
+      break
+    } else {
+      const result = await analyze(config, next.value)
+      console.log(
+        `💾 (${result.hash}) Update nft assets status to ${result.status}`
+      )
+      await updateAsset(config, result)
+      console.log(`⏭ (${result.hash}) update complete, moving one`)
+    }
+  }
+}
+
+/**
+ * @typedef {AnalyzeOk|AnalyzeError} AnalyzeResult
+ *
+ * @param {Config} config
+ * @param {Asset} asset
+ * @returns {Promise<AnalyzeResult>}
+ */
+
+const analyze = async (config, asset) => {
+  const { token_uri_hash: hash } = asset
+  console.log(`🔬 (${hash}) Parsing tokenURI`)
+  const urlResult = Result.fromTry(() => new URL(asset.token_uri))
   if (!urlResult.ok) {
     console.error(
-      `🚨 (${id}) Parsing URL failed ${urlResult.error}, report problem`
+      `🚨 (${asset.token_uri_hash}) Parsing URL failed ${urlResult.error}, report problem`
     )
 
     return {
-      id,
-      status: TokenAssetStatus.URIParseFailed,
-      statusText: `${urlResult.error}`,
+      hash,
+      status: 'URIParseFailed',
+      statusText: `${urlResult.error}\n${urlResult.error.stack}`,
     }
   }
+
   const url = urlResult.value
-  console.log(`🧬 (${id}) Parsed URL ${printURL(url)}`)
+  console.log(`🧬 (${hash}) Parsed URL ${printURL(url)}`)
   const ipfsURL = IPFSURL.asIPFSURL(url)
-  const asset = ipfsURL ? { id, ipfsURL: ipfsURL.href } : { id }
-  ipfsURL && console.log(`🚀 (${id}) Derived IPFS URL ${ipfsURL}`)
+  ipfsURL && console.log(`🚀 (${hash}) Derived IPFS URL ${ipfsURL}`)
 
   console.log(
-    `🌐 (${id}) Fetching token metadata from ${printURL(ipfsURL || url)}`
+    `🌐 (${hash}) Fetching token metadata from ${printURL(ipfsURL || url)}`
   )
 
+  // Use exponentian backoff on network requests and retry several times before
+  // bailing
   const blob = await Result.fromPromise(
-    fetchResource(
-      config,
-      { url, ipfsURL },
-      { signal: timeout(config.fetchTimeout) }
+    retry(
+      () =>
+        fetchResource(
+          config,
+          { url, ipfsURL },
+          { signal: timeout(config.fetchTimeout) }
+        ),
+      [
+        exponentialBackoff(config.retryInterval),
+        maxRetries(config.fetchRetryLimit),
+      ]
     )
   )
   const content = blob.ok ? await Result.fromPromise(blob.value.text()) : blob
 
   if (!content.ok) {
-    console.error(`🚨 (${id}) Fetch failed ${content.error}`)
+    console.error(`🚨 (${hash}) Fetch failed ${content.error}`)
 
     return {
-      ...asset,
-      status: TokenAssetStatus.ContentFetchFailed,
-      statusText: `${content.error}`,
+      hash,
+      status: 'ContentFetchFailed',
+      statusText: `${content.error}\n${content.error.stack}`,
+      ipfsURL,
     }
   }
 
-  console.log(`🔬 (${id}) Parsing token metadata`)
+  console.log(`🔬 (${hash}) Parsing token metadata`)
 
   const metadata = await Result.fromPromise(parseERC721Metadata(content.value))
   if (!metadata.ok) {
-    console.error(`🚨 (${id}) Parse failed ${metadata.error}`)
+    console.error(`🚨 (${hash}) Parse failed ${metadata.error}`)
 
     return {
-      ...asset,
-      status: TokenAssetStatus.ContentParseFailed,
-      statusText: `${metadata.error}`,
+      hash,
+      status: 'ContentParseFailed',
+      statusText: `${metadata.error}\n${metadata.error.stack}`,
+      ipfsURL: ipfsURL,
     }
   }
 
-  console.log(`📌 (${id}) Pinning token metadata ${ipfsURL || 'by uploading'}`)
+  console.log(`📝 (${hash}) Link metadata ${metadata.value.cid}`)
 
-  const pin = ipfsURL
-    ? await Result.fromPromise(
-        Cluster.pin(config.cluster, ipfsURL, {
-          signal: timeout(config.fetchTimeout),
-          metadata: {
-            assetID: id,
-            sourceURL: tokenURI,
-          },
-        })
-      )
-    : await Result.fromPromise(
-        Cluster.add(config.cluster, new Blob([content.value]), {
-          signal: timeout(config.fetchTimeout),
-          metadata: {
-            assetID: id,
-            // if it is a data uri just omit it.
-            ...(url.protocol !== 'data:' && { sourceURL: url.href }),
-          },
-        })
-      )
-
-  if (!pin.ok) {
-    console.error(`🚨 (${id}) Failed to pin ${pin.error}`)
-    return {
-      ...asset,
-      status: TokenAssetStatus.PinRequestFailed,
-      statusText: `${pin.error}`,
-    }
-  }
-  const { cid } = pin.value
-
-  console.log(`📝 (${id}) Link token to metadata ${cid}`)
   return {
-    ...asset,
-    status: TokenAssetStatus.Linked,
+    hash,
+    status: 'Linked',
     statusText: 'Linked',
-    metadata: { ...metadata.value, cid },
+    ipfsURL: ipfsURL,
+    metadata: metadata.value,
   }
 }
 
 /**
+ * @param {Object} config
+ * @param {Hasura.Config} config.hasura
+ * @param {AnalyzeResult} state
+ */
+const updateAsset = async (config, state) =>
+  state.status === 'Linked'
+    ? linkAsset(config, state)
+    : failAsset(config, state)
+
+/**
+ * @typedef {Object} AnalyzeOk
+ * @property {string} hash
+ * @property {'Linked'} status
+ * @property {string} statusText
+ * @property {URL|null} ipfsURL
+ * @property {Metadata} metadata
+ *
+ * @param {Object} config
+ * @param {Hasura.Config} config.hasura
+ * @param {AnalyzeOk} state
+ */
+const linkAsset = async (
+  config,
+  { hash, statusText, ipfsURL, metadata: { cid, content, links } }
+) => {
+  const resources = links.map((url) => linkResource(cid, url))
+
+  const { link_nft_asset } = await Hasura.mutation(
+    config.hasura,
+    {
+      link_nft_asset: [
+        {
+          args: {
+            token_uri_hash: hash,
+            status_text: statusText,
+            ipfs_url: ipfsURL ? ipfsURL.href : null,
+            content_cid: cid,
+            // note need to use variable to workaround
+            // https://github.com/graphql-editor/graphql-zeus/issues/144
+            metadata: Hasura.$`metadata`,
+          },
+        },
+        {
+          updated_at: true,
+          status: true,
+        },
+      ],
+      __alias: Object.fromEntries(resources.entries()),
+    },
+    {
+      variables: {
+        metadata: content,
+      },
+    }
+  )
+
+  return link_nft_asset
+}
+
+/**
+ * @param {string} cid
+ * @param {string} uri
+ * @returns {Hasura.Mutation}
+ */
+const linkResource = (cid, uri) => ({
+  link_nft_resource: [
+    {
+      args: {
+        cid,
+        uri,
+      },
+    },
+    {
+      uri_hash: true,
+    },
+  ],
+})
+
+/**
+ * @typedef {Object} AnalyzeError
+ * @property {string} hash
+ * @property {'URIParseFailed'|'ContentFetchFailed'|'ContentParseFailed'} status
+ * @property {string} statusText
+ * @property {URL|null} [ipfsURL]
+ *
+ * @param {Object} config
+ * @param {Hasura.Config} config.hasura
+ * @param {AnalyzeError} state
+ */
+const failAsset = async (config, { hash, status, statusText, ipfsURL }) => {
+  const { fail_nft_asset } = await Hasura.mutation(config.hasura, {
+    fail_nft_asset: [
+      {
+        args: {
+          token_uri_hash: hash,
+          status,
+          status_text: statusText,
+          ipfs_url: ipfsURL ? ipfsURL.href : null,
+        },
+      },
+      {
+        status: true,
+        updated_at: true,
+      },
+    ],
+  })
+
+  return fail_nft_asset
+}
+
+/**
+ * @typedef {Object} Metadata
+ * @property {string} cid - CID for the metadata content.
+ * @property {Object} content - actual JSON data.
+ * @property {string[]} links
+ *
  * @param {string} content
+ * @returns {Promise<Metadata>}
  */
-const parseERC721Metadata = async content => {
+const parseERC721Metadata = async (content) => {
   const json = JSON.parse(content)
-  const { name, description, image } = json
-  if (typeof name !== 'string') {
-    throw new Error('name field is missing')
-  }
-  if (typeof description !== 'string') {
-    throw new Error('description field is missing')
-  }
-  if (typeof image !== 'string') {
-    throw new Error('image field is missing')
-  }
 
-  const imageResource = parseResource(image)
+  const { cid } = await IPFS.importBlob(new Blob([content]))
 
-  /** @type {Schema.ResourceInput[]} */
-  const assets = []
+  const urls = new Set()
 
-  /** @type {Schema.MetadataInput} */
-  const metadata = { cid: '', name, description, image: imageResource, assets }
-  for (const [value] of iterate({ ...metadata, image: null })) {
-    const asset = typeof value === 'string' ? tryParseResource(value) : null
-    if (asset) {
-      assets.push(asset)
+  /** @type {Metadata} */
+  for (const [value] of iterate({ ...json, image: null })) {
+    const url = typeof value === 'string' ? tryParseURL(value) : null
+    if (url) {
+      urls.add(url.href)
     }
   }
 
-  return metadata
-}
-
-/**
- * @param {string} input
- * @returns {Schema.ResourceInput}
- */
-const parseResource = input => {
-  const url = new URL(input)
-  const ipfsURL = IPFSURL.asIPFSURL(url)
-  if (ipfsURL) {
-    return {
-      uri: input,
-      ipfsURL: ipfsURL.href,
-    }
-  } else {
-    return {
-      uri: input,
-    }
-  }
+  return { cid: cid.toString(), links: [...urls], content: json }
 }
 
 /**
  *
  * @param {string} input
  */
-const tryParseResource = input => {
+const tryParseURL = (input) => {
   try {
-    return parseResource(input)
+    return new URL(input)
   } catch (error) {
     return null
   }
@@ -250,7 +443,7 @@ const tryParseResource = input => {
  * @param {PropertyKey[]} [path]
  * @returns {Iterable<[string|number|boolean|null, PropertyKey[]]>}
  */
-const iterate = function*(data, path = []) {
+const iterate = function* (data, path = []) {
   if (Array.isArray(data)) {
     for (const [index, element] of data) {
       yield* iterate(element, [...path, index])
@@ -262,26 +455,6 @@ const iterate = function*(data, path = []) {
   } else {
     yield [data, path]
   }
-}
-
-/**
- * @param {{ fauna: DB.Config }} config
- * @param {Schema.TokenAssetUpdate[]} updates
- * @returns {Promise<string[]>}
- */
-const updateTokenAssets = async ({ fauna }, updates) => {
-  const result = await DB.mutation(fauna, {
-    updateTokenAssets: [
-      {
-        input: { updates },
-      },
-      {
-        _id: 1,
-      },
-    ],
-  })
-
-  return Result.value(result).updateTokenAssets?.map(token => token._id) || []
 }
 
 script({ ...import.meta, main })

@@ -27,12 +27,13 @@ export async function pinToPinata({ db, pinata }) {
     .eq('service', 'Pinata')
     .neq('status', 'Pinned')
     .neq('status', 'PinError')
+    .range(0, 1)
 
   if (countError) {
     throw Object.assign(new Error(), countError)
   }
 
-  log(`🎯 Updating pin ${count} statuses`)
+  log(`🎯 Updating ${count} pin statuses`)
 
   let offset = 0
   const limit = 1000
@@ -65,7 +66,7 @@ export async function pinToPinata({ db, pinata }) {
         const pinataOptions = {} // TODO: add origins
         await pinata.pinByHash(pin.content_cid, { pinataOptions })
         log(
-          `📌 ${pin.content_cid} submitted to Pinata! ${pins.findIndex(pin)}/${
+          `📌 ${pin.content_cid} submitted to Pinata! ${pins.indexOf(pin)}/${
             pins.length
           }`
         )

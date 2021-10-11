@@ -77,7 +77,7 @@ r.add('get', '/version', (event) => {
     branch: BRANCH,
     mode: getMaintenanceMode(),
   })
-})
+}, [postCors])
 
 // Remote Pinning API
 
