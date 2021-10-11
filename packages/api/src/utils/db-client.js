@@ -220,6 +220,7 @@ export class DBClient {
         updated_at: date,
       })
       .match({ source_cid: cid, user_id: userId })
+      .filter('deleted_at', 'is', null)
       .single()
 
     if (status === 406 || !data) {
