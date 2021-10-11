@@ -10,7 +10,7 @@
     "test:website": "yarn --cwd packages/website test",
     "build:client:docs": "yarn --cwd packages/client typedoc",
     "build:website": "yarn --cwd packages/website build",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx,md,html,css,fql,graphql}'",
+    "format": "prettier --write .",
     "clean": "rimraf node_modules yarn.lock packages/*/{yarn.lock,package-lock.json,.next,out,coverage,.nyc_output,worker,dist,node_modules}",
     "setup-database": "yarn --cwd packages/database setup",
     "create-migration": "yarn --cwd packages/database create-migration",
