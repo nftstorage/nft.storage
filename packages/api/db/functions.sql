@@ -55,7 +55,14 @@ BEGIN
             (data ->> 'meta')::jsonb,
             (data ->> 'updated_at')::timestamptz,
             (data ->> 'inserted_at')::timestamptz)
-    ON CONFLICT ( user_id, source_cid ) DO UPDATE SET deleted_at = null;
+    ON CONFLICT ( user_id, source_cid )
+        DO UPDATE SET deleted_at = null,
+                      updated_at = (data ->> 'inserted_at')::timestamptz,
+                      name       = data ->> 'name',
+                      meta       = (data ->> 'meta')::jsonb,
+                      origins    = (data ->> 'origins')::jsonb,
+                      mime_type  = data ->> 'mime_type',
+                      type       = (data ->> 'type')::upload_type;
 
 
     return query select *

@@ -213,9 +213,11 @@ export class DBClient {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').UploadOutput>} */
     const query = this.client.from('upload')
 
+    const date = new Date().toISOString()
     const { data, error, status } = await query
       .update({
-        deleted_at: new Date().toISOString(),
+        deleted_at: date,
+        updated_at: date,
       })
       .match({ source_cid: cid, user_id: userId })
       .single()
@@ -371,9 +373,11 @@ export class DBClient {
     /** @type {PostgrestQueryBuilder<definitions['auth_key']>} */
     const query = this.client.from('auth_key')
 
+    const date = new Date().toISOString()
     const { error } = await query
       .update({
-        deleted_at: new Date().toISOString(),
+        deleted_at: date,
+        updated_at: date,
       })
       .match({ id })
       .single()

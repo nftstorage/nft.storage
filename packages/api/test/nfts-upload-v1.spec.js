@@ -15,7 +15,7 @@ describe(' V1 - Upload ', () => {
   })
 
   it('should upload a single file', async () => {
-    const file = new Blob(['hello world!'])
+    const file = new Blob(['hello world!'], { type: 'application/text' })
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
     const res = await fetch('v1/upload', {
@@ -26,6 +26,11 @@ describe(' V1 - Upload ', () => {
     const { ok, value } = await res.json()
     assert(ok, 'Server response payload has `ok` property')
     assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
+    assert.strictEqual(
+      value.type,
+      'application/text',
+      'type should match blob mime-type'
+    )
 
     const { data } = await rawClient
       .from('upload')
@@ -123,9 +128,9 @@ describe(' V1 - Upload ', () => {
   })
 
   it('should upload a single CAR file', async () => {
-    const { root, car } = await createCar('hello world!')
+    const { root, car } = await createCar('hello world car')
     // expected CID for the above data
-    const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+    const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
     assert.strictEqual(root.toString(), cid, 'car file has correct root')
     const res = await fetch('v1/upload', {
       method: 'POST',
@@ -141,6 +146,11 @@ describe(' V1 - Upload ', () => {
     const { ok, value } = await res.json()
     assert(ok, 'Server response payload has `ok` property')
     assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
+    assert.strictEqual(
+      value.type,
+      'application/car',
+      'type should match blob mime-type'
+    )
 
     const { data } = await rawClient
       .from('upload')
@@ -151,7 +161,42 @@ describe(' V1 - Upload ', () => {
     // @ts-ignore
     assert.equal(data.source_cid, cid)
     assert.equal(data.deleted_at, null)
-    assert.equal(data.content.dag_size, 12, 'correct dag size')
+    assert.equal(data.content.dag_size, 15, 'correct dag size')
+  })
+
+  it('should re-upload same data and update mime-type', async () => {
+    const file = new Blob(['hello world!'], { type: 'application/text' })
+    // expected CID for the above data
+    const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+    const res1 = await fetch('v1/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: file,
+    })
+    const data1 = await res1.json()
+    assert.equal(data1.value.cid, cid)
+    assert.equal(data1.value.type, 'application/text', 'text')
+
+    const { root, car } = await createCar('hello world!')
+    const res2 = await fetch('v1/upload', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${client.token}`,
+        'Content-Type': 'application/car',
+      },
+      body: car,
+    })
+    const data2 = await res2.json()
+    assert.equal(data2.value.cid, cid)
+    assert.equal(data2.value.type, 'application/car', 'car')
+
+    const { data } = await rawClient
+      .from('upload')
+      .select('*')
+      .match({ source_cid: cid, user_id: client.userId })
+      .single()
+
+    assert.equal(data.type, 'Car', 'type should be Car at the end.')
   })
 
   it('should re-upload nft turning a deleted nft into an active nft again', async () => {
@@ -168,6 +213,7 @@ describe(' V1 - Upload ', () => {
     const deleted = await client.client.deleteUpload(cid, client.userId)
     assert.notEqual(deleted?.deleted_at, null)
 
+    const testTs = Date.now()
     const reup = await fetch('v1/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
@@ -183,5 +229,9 @@ describe(' V1 - Upload ', () => {
       .single()
 
     assert.equal(data.deleted_at, null, 'its active again')
+    assert.ok(
+      new Date(data.updated_at).valueOf() > testTs,
+      'updated_at should be bigger than a date before re-upload request'
+    )
   })
 })

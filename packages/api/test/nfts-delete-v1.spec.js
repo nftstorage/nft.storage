@@ -23,6 +23,7 @@ describe('V1 - Delete NFT', () => {
       dag_size: 100,
     })
 
+    const testTs = Date.now()
     const res = await fetch(`v1/${cid}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${client.token}` },
@@ -37,7 +38,19 @@ describe('V1 - Delete NFT', () => {
       .single()
 
     // @ts-ignore
-    assert.notEqual(data.deleted_at, null)
+    assert.ok(
+      new Date(data.deleted_at).valueOf() > testTs,
+      'deleted_at should be bigger than date before delete request'
+    )
+    assert.ok(
+      new Date(data.updated_at).valueOf() > testTs,
+      'updated_at should be bigger than date before delete request'
+    )
+    assert.equal(
+      data.deleted_at,
+      data.updated_at,
+      'deleted_at and updated_at should be equal'
+    )
   })
 
   it('should delete correct cid version 0', async () => {
