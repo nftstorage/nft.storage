@@ -1,50 +1,49 @@
-import {
-  DEFAULT_MODE,
-  READ_ONLY as RO,
-  READ_WRITE as RW,
-  setMaintenanceModeGetter,
-  withMode,
-} from './middleware/maintenance.js'
-import { cors, postCors } from './routes/cors.js'
-
-import { HTTPError } from './errors.js'
-import { JSONResponse } from './utils/json-response.js'
 import { Router } from './utils/router.js'
+import { notFound } from './utils/utils.js'
+import { HTTPError } from './errors.js'
+import { cors, postCors } from './routes/cors.js'
 import { check } from './routes/nfts-check.js'
-import { checkV1 } from './routes-v1/nfts-check.js'
+import { upload } from './routes/nfts-upload.js'
+import { store } from './routes/nfts-store.js'
+import { status } from './routes/nfts-get.js'
+import { remove } from './routes/nfts-delete.js'
+import { list } from './routes/nfts-list.js'
+import { tokensList } from './routes/tokens-list.js'
+import { tokensCreate } from './routes/tokens-create.js'
+import { tokensDelete } from './routes/tokens-delete.js'
+import { pinsAdd } from './routes/pins-add.js'
+import { pinsGet } from './routes/pins-get.js'
+import { pinsList } from './routes/pins-list.js'
+import { pinsReplace } from './routes/pins-replace.js'
+import { pinsDelete } from './routes/pins-delete.js'
+import { metrics } from './routes/metrics.js'
+import { login } from './routes/login.js'
+import { JSONResponse } from './utils/json-response.js'
 import { debug } from './utils/debug.js'
 import { getNFT } from './routes/get-nft.js'
-import { list } from './routes/nfts-list.js'
-import { login } from './routes/login.js'
-import { loginV1 } from './routes-v1/login.js'
-import { metrics } from './routes/metrics.js'
 import { metrics as metricsV1 } from './routes-v1/metrics.js'
+import { tokensDeleteV1 } from './routes-v1/tokens-delete.js'
+import { tokensCreateV1 } from './routes-v1/tokens-create.js'
+import { tokensListV1 } from './routes-v1/tokens-list.js'
+import { loginV1 } from './routes-v1/login.js'
+import { uploadV1 } from './routes-v1/nfts-upload.js'
+import { statusV1 } from './routes-v1/nfts-get.js'
+import { checkV1 } from './routes-v1/nfts-check.js'
 import { nftDeleteV1 } from './routes-v1/nfts-delete.js'
 import { nftListV1 } from './routes-v1/nfts-list.js'
 import { nftStoreV1 } from './routes-v1/nfts-store.js'
-import { notFound } from './utils/utils.js'
-import { pinsAdd } from './routes/pins-add.js'
 import { pinsAddV1 } from './routes-v1/pins-add.js'
-import { pinsDelete } from './routes/pins-delete.js'
 import { pinsDeleteV1 } from './routes-v1/pins-delete.js'
-import { pinsGet } from './routes/pins-get.js'
 import { pinsGetV1 } from './routes-v1/pins-get.js'
-import { pinsList } from './routes/pins-list.js'
 import { pinsListV1 } from './routes-v1/pins-list.js'
-import { pinsReplace } from './routes/pins-replace.js'
 import { pinsReplace as pinsReplaceV1 } from './routes-v1/pins-replace.js'
-import { remove } from './routes/nfts-delete.js'
-import { status } from './routes/nfts-get.js'
-import { statusV1 } from './routes-v1/nfts-get.js'
-import { store } from './routes/nfts-store.js'
-import { tokensCreate } from './routes/tokens-create.js'
-import { tokensCreateV1 } from './routes-v1/tokens-create.js'
-import { tokensDelete } from './routes/tokens-delete.js'
-import { tokensDeleteV1 } from './routes-v1/tokens-delete.js'
-import { tokensList } from './routes/tokens-list.js'
-import { tokensListV1 } from './routes-v1/tokens-list.js'
-import { upload } from './routes/nfts-upload.js'
-import { uploadV1 } from './routes-v1/nfts-upload.js'
+import {
+  withMode,
+  READ_ONLY as RO,
+  READ_WRITE as RW,
+  DEFAULT_MODE,
+  setMaintenanceModeGetter,
+} from './middleware/maintenance.js'
 import { withPsaErrorHandler } from './middleware/psa.js'
 
 const log = debug('router')
