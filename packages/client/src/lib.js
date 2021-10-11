@@ -341,6 +341,13 @@ class NFTStorage {
    * Argument can be a [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList)
    * instance as well, in which case directory structure will be retained.
    *
+   * For directories with large files, consider using
+   * [storeCar](https://ipfs-shipyard.github.io/nft.storage/client/classes/NFTStorage.html#storeCar).
+   *
+   * See [`storeDirectory` limit](https://github.com/ipfs-shipyard/nft.storage/issues/514#issuecomment-936548101)
+   * and [CAR chunking for large data](https://github.com/ipfs-shipyard/nft.storage/issues/220)
+   * for more details.
+   *
    * @param {Iterable<File>} files
    */
   storeDirectory(files) {
