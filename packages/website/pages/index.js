@@ -497,7 +497,7 @@ function FAQ() {
             What is the long-term vision for NFT.Storage?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
+        <p className="lh-copy white mb4">
           NFT.Storage fills the gap for NFT developers <strong>today </strong>
           who are looking for easy APIs and best practices for storing their NFT
           data securely and resiliently. In the long-term, NFT.Storage will
@@ -510,7 +510,7 @@ function FAQ() {
             How long will data be stored on NFT.storage?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
+        <p className="lh-copy white mb4">
           Data will be available in IPFS indefinitely as well as stored in
           long-term, redundant Filecoin storage deals with the global community
           of miners. See the{' '}
@@ -524,7 +524,7 @@ function FAQ() {
             Are there any size restrictions for stored NFTs?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
+        <p className="lh-copy white mb4">
           NFT.storage can store NFTs up to <strong>32GB </strong>
           in size! (There was previously a 100MB limit due to Cloudflare workers
           but NFT.storage now supports chunked uploads, allowing files bigger
@@ -535,7 +535,7 @@ function FAQ() {
             Where can I learn more about NFT best practices?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
+        <p className="lh-copy white mb4">
           Visit{' '}
           <a href="https://nftschool.dev" className="white">
             NFT School
@@ -548,7 +548,7 @@ function FAQ() {
             Who can access the data I store on NFT.Storage?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
+        <p className="lh-copy white mb4">
           All data uploaded to NFT.Storage is available to anyone who requests
           it using the correct CID. Do not store any private or sensitive
           information in an unencrypted form using NFT.Storage.
@@ -558,8 +558,8 @@ function FAQ() {
             Can I delete my data on NFT.Storage?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
-          You can delete data from being associated with your account, and they
+        <p className="lh-copy white mb4">
+          You can delete data from being associated with your account, and it
           will no longer appear on the Files page of your account. However, this
           doesn’t prevent nodes in the IPFS decentralized storage network from
           retaining copies of the data indefinitely. Do not use NFT.Storage for
@@ -572,7 +572,7 @@ function FAQ() {
             successfully on NFT.Storage?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
+        <p className="lh-copy white mb4">
           Not necessarily! HTTP gateways are a great way for users who{' '}
           {"aren't"} running their own IPFS nodes to retrieve content from the
           IPFS network. However, they do introduce a centralized point of
