@@ -76,7 +76,7 @@ describe('/upload', () => {
     const { token } = await createTestUser()
 
     const file = new Blob(['test-migration-event-' + Date.now()])
-    const res = await fetch('/upload', {
+    const res = await fetch('v0/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: file,
