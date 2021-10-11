@@ -153,4 +153,47 @@ describe('V1 - Delete NFT', () => {
       message: 'NFT not found',
     })
   })
+
+  it('should not delete already deleted nft', async () => {
+    const cid = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
+    await client.client.createUpload({
+      content_cid: cid,
+      source_cid: cid,
+      type: 'Blob',
+      user_id: client.userId,
+      dag_size: 100,
+    })
+
+    const res = await fetch(cid, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${client.token}` },
+    })
+    const { ok } = await res.json()
+    assert.ok(ok)
+
+    const getNftData = async () => {
+      const { data } = await rawClient
+        .from('upload')
+        .select('*')
+        .match({ source_cid: cid, user_id: client.userId })
+        .single()
+      return data
+    }
+
+    const nftData0 = await getNftData()
+    assert(nftData0.deleted_at, 'deleted_at was set')
+
+    const res2 = await fetch(cid, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${client.token}` },
+    })
+    assert.strictEqual(res2.status, 404)
+
+    const nftData1 = await getNftData()
+    assert.equal(
+      nftData1.deleted_at,
+      nftData0.deleted_at,
+      'deleted_at did not change'
+    )
+  })
 })
