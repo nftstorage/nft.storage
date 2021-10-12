@@ -150,7 +150,7 @@ async function writeFromInbox(config, readable) {
     } catch (err) {
       console.log('Last NFT', nextImport)
       console.error(`Something went wrong when writing scraped nfts`, err)
-      reader.cancel()
+      reader.cancel(err)
       throw err
     }
   }
