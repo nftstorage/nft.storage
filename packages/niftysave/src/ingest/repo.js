@@ -26,6 +26,7 @@ import {
  * @param { ERC721ImportNFT } erc721Import
  */
 export async function writeScrapedRecord(config, erc721Import) {
+  console.log(`📥 Write ${erc721Import.id} to Hasura`)
   return Hasura.mutation(config.hasura, {
     ingest_erc721_token: [
       {
@@ -57,6 +58,7 @@ export async function fetchNextNFTBatch(config, cursor) {
       throw new Error(JSON.stringify(nftsResult))
     }
     const { tokens } = nftsResult?.value || []
+    console.log(`📤 Scraped ${tokens.length} nfts from Subgraph.`)
     return tokens.map(subgraphTokenToERC721ImportNFT)
   } catch (err) {
     console.error(`🚨 Something unexpected happened scraping nfts`, err)

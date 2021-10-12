@@ -91,9 +91,13 @@ async function readIntoInbox(config, writeable) {
       // you scraped successfully, got nothing.
       // you're caught up. Retry later
       if (scrape.length == 0) {
+        console.log(
+          `🥂 You're caught up, retry in ${config.ingestRetryThrottle}`
+        )
         await sleep(config.ingestRetryThrottle)
       } else {
         await writer.ready
+        console.log(`📨  Adding ${scrape.length} items into Queue.`)
         for (const nft of scrape) {
           writer.write(nft)
           //Continuously update the in-memory cursor
@@ -146,6 +150,7 @@ async function writeFromInbox(config, readable) {
     } catch (err) {
       console.log('Last NFT', nextImport)
       console.error(`Something went wrong when writing scraped nfts`, err)
+      reader.cancel(err)
       throw err
     }
   }
