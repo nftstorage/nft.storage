@@ -1,4 +1,5 @@
 /**
  * This is shadowed by stream.d.ts, because ts doesn't know about node streams.
  */
-export * from 'node:stream/web'
+import WebStreams from 'web-streams-polyfill'
+export const { ReadableStream, WritableStream, TransformStream } = WebStreams

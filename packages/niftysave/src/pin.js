@@ -9,7 +9,7 @@ import * as Hasura from './hasura.js'
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
 import * as Cursor from './hasura/cursor.js'
 import { TransformStream } from './stream.js'
-import { setTimeout as sleep } from 'timers/promises'
+import { setTimeout as sleep } from './timers.js'
 import * as CID from './cid.js'
 
 export const main = async () => await spawn(await configure())
