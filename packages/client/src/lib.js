@@ -16,9 +16,11 @@
 
 import { transform } from 'streaming-iterables'
 import pRetry from 'p-retry'
+import { CarReader } from '@ipld/car'
 import { TreewalkCarSplitter } from 'carbites/treewalk'
+import { pack } from 'ipfs-car/pack'
 import * as Token from './token.js'
-import { fetch, File, Blob, FormData } from './platform.js'
+import { fetch, File, Blob, FormData, Blockstore } from './platform.js'
 import { toGatewayURL } from './gateway.js'
 
 const MAX_STORE_RETRIES = 5
@@ -28,9 +30,9 @@ const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
 /**
  * @typedef {import('multiformats/block').BlockDecoder<any, any>} AnyBlockDecoder
  * @typedef {import('./lib/interface').Service} Service
- * @typedef {import('./lib/interface.js').CIDString} CIDString
- * @typedef {import('./lib/interface.js').Deal} Deal
- * @typedef {import('./lib/interface.js').Pin} Pin
+ * @typedef {import('./lib/interface').CIDString} CIDString
+ * @typedef {import('./lib/interface').Deal} Deal
+ * @typedef {import('./lib/interface').Pin} Pin
  */
 
 /**
@@ -90,42 +92,41 @@ class NFTStorage {
   /**
    * @param {Service} service
    * @param {Blob} blob
+   * @param {import('./lib/interface.js').StoreBlobOptions} [options]
    * @returns {Promise<CIDString>}
    */
-  static async storeBlob({ endpoint, token }, blob) {
-    const url = new URL(`upload/`, endpoint)
-
+  static async storeBlob(
+    { endpoint, token },
+    blob,
+    { onRootCidReady, onStoredChunk, maxRetries } = {}
+  ) {
     if (blob.size === 0) {
       throw new Error('Content size is 0, make sure to provide some content')
     }
-
-    const request = await fetch(url.toString(), {
-      method: 'POST',
-      headers: NFTStorage.auth(token),
-      body: blob,
-    })
-    const result = await request.json()
-
-    if (result.ok) {
-      return result.value.cid
-    } else {
-      throw new Error(result.error.message)
+    const blockstore = new Blockstore()
+    try {
+      const { out, root } = await pack({
+        // @ts-ignore
+        input: [{ path: 'blob', content: blob.stream() }],
+        blockstore,
+        wrapWithDirectory: false
+      })
+      onRootCidReady && onRootCidReady(root.toString())
+      const car = await CarReader.fromIterable(out)
+      return await NFTStorage.storeCar({ endpoint, token }, car, { onStoredChunk, maxRetries })
+    } finally {
+      await blockstore.close()
     }
   }
+
   /**
    * @param {Service} service
-   * @param {Blob|import('./lib/interface.js').CarReader} car
-   * @param {{
-   *   onStoredChunk?: (size: number) => void
-   *   decoders?: AnyBlockDecoder[]
-   * }} [options]
+   * @param {Blob|import('./lib/interface').CarReader} car
+   * @param {import('./lib/interface').StoreCarOptions} [options]
    * @returns {Promise<CIDString>}
    */
-  static async storeCar(
-    { endpoint, token },
-    car,
-    { onStoredChunk, decoders } = {}
-  ) {
+  static async storeCar({ endpoint, token }, car, { onStoredChunk, maxRetries, decoders } = {}) {
+    const url = new URL(`upload/`, endpoint)
     const targetSize = MAX_CHUNK_SIZE
     const splitter =
       car instanceof Blob
@@ -139,15 +140,24 @@ class NFTStorage {
         for await (const part of car) {
           carParts.push(part)
         }
-        const carFile = new Blob(carParts, {
-          type: 'application/car',
-        })
-        const res = await pRetry(
-          () => NFTStorage.storeBlob({ endpoint, token }, carFile),
-          { retries: MAX_STORE_RETRIES }
+        const carFile = new Blob(carParts, { type: 'application/car' })
+        const cid = await pRetry(
+          async () => {
+            const response = await fetch(url.toString(), {
+              method: 'POST',
+              headers: NFTStorage.auth(token),
+              body: carFile,
+            })
+            const result = await response.json()
+            if (!result.ok) {
+              throw new Error(result.error.message)
+            }
+            return result.value.cid
+          },
+          { retries: maxRetries == null ? MAX_STORE_RETRIES : maxRetries }
         )
         onStoredChunk && onStoredChunk(carFile.size)
-        return res
+        return cid
       }
     )
 
@@ -158,17 +168,22 @@ class NFTStorage {
 
     return /** @type {CIDString} */ (root)
   }
+
   /**
    * @param {Service} service
    * @param {Iterable<File>} files
+   * @param {import('./lib/interface.js').StoreDirectoryOptions} [options]
    * @returns {Promise<CIDString>}
    */
-  static async storeDirectory({ endpoint, token }, files) {
-    const url = new URL(`upload/`, endpoint)
-    const body = new FormData()
+  static async storeDirectory(
+    { endpoint, token },
+    files,
+    { onRootCidReady, onStoredChunk, maxRetries } = {}
+  ) {
+    const input = []
     let size = 0
     for (const file of files) {
-      body.append('file', file, file.name)
+      input.push({ path: file.name, content: file.stream() })
       size += file.size
     }
 
@@ -178,17 +193,18 @@ class NFTStorage {
       )
     }
 
-    const response = await fetch(url.toString(), {
-      method: 'POST',
-      headers: NFTStorage.auth(token),
-      body,
-    })
-    const result = await response.json()
-
-    if (result.ok) {
-      return result.value.cid
-    } else {
-      throw new Error(result.error.message)
+    const blockstore = new Blockstore()
+    try {
+      const { out, root } = await pack({
+        input,
+        blockstore,
+        wrapWithDirectory: true
+      })
+      onRootCidReady && onRootCidReady(root.toString())
+      const car = await CarReader.fromIterable(out)
+      return await NFTStorage.storeCar({ endpoint, token }, car, { onStoredChunk, maxRetries })
+    } finally {
+      await blockstore.close()
     }
   }
 
@@ -301,9 +317,10 @@ class NFTStorage {
    * ```
    *
    * @param {Blob} blob
+   * @param {import('./lib/interface.js').StoreBlobOptions} [options]
    */
-  storeBlob(blob) {
-    return NFTStorage.storeBlob(this, blob)
+  storeBlob(blob, options) {
+    return NFTStorage.storeBlob(this, blob, options)
   }
   /**
    * Stores files encoded as a single [Content Addressed Archive
@@ -339,15 +356,8 @@ class NFTStorage {
    * const cid = await client.storeCar(car)
    * console.assert(cid === expectedCid)
    * ```
-   * @param {Blob|import('./lib/interface.js').CarReader} car
-   * @param {object} [options]
-   * @param {(size: number) => void} [options.onStoredChunk] Callback called
-   * after each chunk of data has been uploaded. By default, data is split into
-   * chunks of around 10MB. It is passed the actual chunk size in bytes.
-   * @param {AnyBlockDecoder[]} [options.decoders] Additional IPLD block
-   * decoders. Used to interpret the data in the CAR file and split it into
-   * multiple chunks. Note these are only required if the CAR file was not
-   * encoded using the default encoders: `dag-pb`, `dag-cbor` and `raw`.
+   * @param {Blob|import('./lib/interface').CarReader} car
+   * @param {import('./lib/interface').StoreCarOptions} [options]
    */
   storeCar(car, options) {
     return NFTStorage.storeCar(this, car, options)
@@ -368,9 +378,10 @@ class NFTStorage {
    * instance as well, in which case directory structure will be retained.
    *
    * @param {Iterable<File>} files
+   * @param {import('./lib/interface.js').StoreDirectoryOptions} [options]
    */
-  storeDirectory(files) {
-    return NFTStorage.storeDirectory(this, files)
+  storeDirectory(files, options) {
+    return NFTStorage.storeDirectory(this, files, options)
   }
   /**
    * Returns current status of the stored NFT by its CID. Note the NFT must

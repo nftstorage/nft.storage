@@ -49,20 +49,11 @@ const headers = ({ headers }) => ({
  */
 const importUpload = async (request) => {
   const contentType = request.headers.get('content-type') || ''
-  if (contentType.includes('multipart/form-data')) {
-    const data = await request.formData()
-    const files = /** @type {File[]} */ (data.getAll('file'))
-    if (files.length === 0) {
-      throw Error('No files were provided')
-    }
-    return await importDirectory(files)
-  } else if (contentType.includes('application/car')) {
-    const content = await request.arrayBuffer()
-    return await importCar(new Uint8Array(content))
-  } else {
-    const content = await request.arrayBuffer()
-    return await importBlob(new Uint8Array(content))
+  if (!contentType.includes('application/car')) {
+    throw new Error(`unexpected content type: ${contentType}`)
   }
+  const content = await request.arrayBuffer()
+  return await importCar(new Uint8Array(content))
 }
 
 /**

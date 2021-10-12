@@ -46,39 +46,32 @@ export interface API {
    * `ipfs://bafy...hash/image/blob`.
    */
   store<T extends TokenInput>(service: Service, token: T): Promise<Token<T>>
-
   /**
    * Stores a single file and returns a corresponding CID.
    */
-  storeBlob(service: Service, content: Blob | File): Promise<CIDString>
+  storeBlob(
+    service: Service,
+    content: Blob | File,
+    options?: StoreBlobOptions
+  ): Promise<CIDString>
   /**
    * Stores CAR file and returns a corresponding CID.
    */
   storeCar(
     service: Service,
     content: Blob | CarReader,
-    options?: {
-      /**
-       * Callback called after each chunk of data has been uploaded. By default,
-       * data is split into chunks of around 10MB. It is passed the actual chunk
-       * size in bytes.
-       */
-      onStoredChunk?: (size: number) => void
-      /**
-       * Additional IPLD block decoders. Used to interpret the data in the CAR
-       * file and split it into multiple chunks. Note these are only required if
-       * the CAR file was not encoded using the default encoders: `dag-pb`,
-       * `dag-cbor` and `raw`.
-       */
-      decoders?: BlockDecoder<any, any>[]
-    }
+    options?: StoreCarOptions
   ): Promise<CIDString>
   /**
    * Stores a directory of files and returns a CID. Provided files **MUST**
    * be within a same directory, otherwise error is raised. E.g. `foo/bar.png`,
    * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
    */
-  storeDirectory(service: Service, files: Iterable<File>): Promise<CIDString>
+  storeDirectory(
+    service: Service,
+    files: Iterable<File>,
+    options?: StoreDirectoryOptions
+  ): Promise<CIDString>
   /**
    * Returns current status of the stored NFT by its CID. Note the NFT must
    * have previously been stored by this account.
@@ -95,6 +88,37 @@ export interface API {
    */
   check(service: PublicService, cid: string): Promise<CheckResult>
 }
+
+export interface StoreCarOptions {
+  /**
+   * Callback called after each chunk of data has been uploaded. By default,
+   * data is split into chunks of around 10MB. It is passed the actual chunk
+   * size in bytes.
+   */
+  onStoredChunk?: (size: number) => void
+  /**
+   * Maximum times to retry a failed upload. Default: 5
+   */
+  maxRetries?: number
+  /**
+   * Additional IPLD block decoders. Used to interpret the data in the CAR
+   * file and split it into multiple chunks. Note these are only required if
+   * the CAR file was not encoded using the default encoders: `dag-pb`,
+   * `dag-cbor` and `raw`.
+   */
+  decoders?: BlockDecoder<any, any>[]
+}
+
+export interface StoreBlobOptions extends StoreCarOptions {
+  /**
+   * Callback called after the data has been assembled into a DAG, but before
+   * any upload requests begin. It is passed the CID of the root node of the
+   * graph.
+   */
+  onRootCidReady?: (cid: CIDString) => void
+}
+
+export interface StoreDirectoryOptions extends StoreBlobOptions {}
 
 export interface CheckResult {
   cid: string
