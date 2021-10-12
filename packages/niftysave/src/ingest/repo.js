@@ -57,6 +57,7 @@ export async function fetchNextNFTBatch(config, cursor) {
       throw new Error(JSON.stringify(nftsResult))
     }
     const { tokens } = nftsResult?.value || []
+    console.log(`Scraped ${tokens.length} nfts from Subgraph.`)
     return tokens.map(subgraphTokenToERC721ImportNFT)
   } catch (err) {
     console.error(`🚨 Something unexpected happened scraping nfts`, err)
