@@ -44,12 +44,14 @@
     "@web-std/file": "^1.1.0",
     "@web-std/form-data": "^2.1.0",
     "carbites": "^1.0.6",
+    "multiformats": "^9.4.8",
     "p-retry": "^4.6.1",
     "streaming-iterables": "^6.0.0"
   },
   "devDependencies": {
     "@ipld/car": "^3.1.16",
     "@ipld/dag-cbor": "^6.0.9",
+    "@ipld/dag-json": "^8.0.1",
     "@ssttevee/multipart-parser": "0.1.9",
     "@types/mocha": "^9.0.0",
     "hundreds": "0.0.9",
@@ -62,7 +64,6 @@
     "just-safe-set": "^2.2.1",
     "mocha": "^9.1.0",
     "multicodec": "3.0.1",
-    "multiformats": "^9.4.3",
     "multihashing-async": "^2.1.2",
     "npm-run-all": "^4.1.5",
     "nyc": "15.1.0",

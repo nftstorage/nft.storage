@@ -1,8 +1,10 @@
 import type { CID } from 'multiformats'
 export type { CID }
 
-import type { RootsReader, BlockReader } from '@ipld/car/api'
-type CarReader = RootsReader & BlockReader
+import type { BlockDecoder } from 'multiformats/block'
+export type { BlockDecoder }
+
+import type { CarReader } from '@ipld/car/api'
 export type { CarReader }
 
 /**
@@ -55,7 +57,21 @@ export interface API {
   storeCar(
     service: Service,
     content: Blob | CarReader,
-    options?: { onStoredChunk?: (size: number) => void }
+    options?: {
+      /**
+       * Callback called after each chunk of data has been uploaded. By default,
+       * data is split into chunks of around 10MB. It is passed the actual chunk
+       * size in bytes.
+       */
+      onStoredChunk?: (size: number) => void
+      /**
+       * Additional IPLD block decoders. Used to interpret the data in the CAR
+       * file and split it into multiple chunks. Note these are only required if
+       * the CAR file was not encoded using the default encoders: `dag-pb`,
+       * `dag-cbor` and `raw`.
+       */
+      decoders?: BlockDecoder<any, any>[]
+    }
   ): Promise<CIDString>
   /**
    * Stores a directory of files and returns a CID. Provided files **MUST**

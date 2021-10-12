@@ -26,6 +26,8 @@ const MAX_STORE_RETRIES = 5
 const MAX_CONCURRENT_UPLOADS = 3
 const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
 
+/** @typedef {import('multiformats/block').BlockDecoder<any, any>} AnyBlockDecoder */
+
 /**
  * @implements API.Service
  */
@@ -103,15 +105,18 @@ class NFTStorage {
   /**
    * @param {API.Service} service
    * @param {Blob|API.CarReader} car
-   * @param {{onStoredChunk?: (size: number) => void}} [options]
+   * @param {{
+   *   onStoredChunk?: (size: number) => void
+   *   decoders?: AnyBlockDecoder[]
+   * }} [options]
    * @returns {Promise<API.CIDString>}
    */
-  static async storeCar({ endpoint, token }, car, { onStoredChunk } = {}) {
+  static async storeCar({ endpoint, token }, car, { onStoredChunk, decoders } = {}) {
     const targetSize = MAX_CHUNK_SIZE
     const splitter =
       car instanceof Blob
-        ? await TreewalkCarSplitter.fromBlob(car, targetSize)
-        : new TreewalkCarSplitter(car, targetSize)
+        ? await TreewalkCarSplitter.fromBlob(car, targetSize, { decoders })
+        : new TreewalkCarSplitter(car, targetSize, { decoders })
 
     const upload = transform(
       MAX_CONCURRENT_UPLOADS,
@@ -321,7 +326,14 @@ class NFTStorage {
    * console.assert(cid === expectedCid)
    * ```
    * @param {Blob|API.CarReader} car
-   * @param {{onStoredChunk?: (size: number) => void}} [options]
+   * @param {object} [options]
+   * @param {(size: number) => void} [options.onStoredChunk] Callback called
+   * after each chunk of data has been uploaded. By default, data is split into
+   * chunks of around 10MB. It is passed the actual chunk size in bytes.
+   * @param {AnyBlockDecoder[]} [options.decoders] Additional IPLD block
+   * decoders. Used to interpret the data in the CAR file and split it into
+   * multiple chunks. Note these are only required if the CAR file was not
+   * encoded using the default encoders: `dag-pb`, `dag-cbor` and `raw`.
    */
   storeCar(car, options) {
     return NFTStorage.storeCar(this, car, options)
