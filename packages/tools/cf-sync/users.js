@@ -1,3 +1,4 @@
+import got from 'got'
 import PQueue from 'p-queue'
 
 /**
@@ -11,21 +12,17 @@ import PQueue from 'p-queue'
  */
 export async function syncUsers(ctx, task) {
   let count = 0
-  let missing = 0
 
   for await (const user of ctx.cf.kvPaginate({
     accountId: ctx.cfAccount,
     kvId: ctx.kvUser,
   })) {
     count++
-    if (!(await ctx.userStore.has(user.name))) {
-      missing++
-      await ctx.userStore.put(user.name, {})
-    }
-    task.output = `count: ${count} new: ${missing}`
+    await ctx.userStore.put(user.name, {})
+    task.output = `count: ${count}`
   }
 
-  task.title += ` count: ${count} new: ${missing}`
+  task.title += ` count: ${count}`
 }
 
 /**
@@ -34,37 +31,47 @@ export async function syncUsers(ctx, task) {
  */
 export async function syncUsersData(ctx, task) {
   let count = 0
-  let missing = 0
+  /** @type {string[]} */
+  const errors = []
   const queue = new PQueue({
-    concurrency: 10,
-    interval: 300000,
-    intervalCap: 1180,
+    concurrency: 100,
+    interval: 1000,
   })
 
   queue.on('active', () => {
-    task.output = `Queue: ${queue.size}. count: ${count} new: ${missing}`
+    task.output = `Queue: ${queue.size}. count: ${count} errors: ${errors.length}`
   })
 
-  for await (const { key, value } of ctx.userStore.iterator()) {
+  for await (const { key } of ctx.userStore.iterator()) {
     count++
-    if (!value.data) {
-      missing++
-      const run = async () => {
-        try {
-          const data = await ctx.cf.kvValue({
-            accountId: ctx.cfAccount,
-            kvId: ctx.kvUser,
-            key,
-          })
-          await ctx.userStore.put(key, { data })
-        } catch (err) {
-          console.log(key)
-          console.log(err.message)
+
+    const run = async () => {
+      try {
+        const rsp = await got
+          .get(
+            'https://nft-storage-migration.protocol-labs.workers.dev/internal/user',
+            {
+              searchParams: {
+                key,
+              },
+            }
+          )
+          .json()
+        if (rsp.ok) {
+          await ctx.userStore.put(key, { data: rsp.user })
+        } else {
+          errors.push(JSON.stringify(rsp.error))
         }
+      } catch (err) {
+        console.log(key)
+        console.log('🚀 ~ file: users.js ~ line 67 ~ run ~ err', err)
       }
-      queue.add(() => run())
     }
+    queue.add(() => run())
   }
   await queue.onIdle()
-  task.title += ` count: ${count} new: ${missing}`
+  if (errors.length > 0) {
+    console.error(errors.join('\n'))
+  }
+  task.title += ` count: ${count} errors: ${errors.length}`
 }

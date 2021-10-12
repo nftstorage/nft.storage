@@ -54,7 +54,7 @@ export async function syncNFTData(ctx, task) {
     const run = async () => {
       const rsp = await got
         .get(
-          'https://nft-storage-dev.protocol-labs.workers.dev/internal/list2',
+          'https://nft-storage-migration.protocol-labs.workers.dev/internal/list2',
           {
             searchParams: {
               key,

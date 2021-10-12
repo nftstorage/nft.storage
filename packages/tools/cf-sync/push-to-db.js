@@ -19,6 +19,10 @@ export async function pushToDB(ctx, task) {
       continue
     }
 
+    if (user.value.data.email === 'nft.storage@scnr.io') {
+      continue
+    }
+
     if (user) {
       const data = user.value.data
       const tokens = Object.entries(user.value.data.tokens)

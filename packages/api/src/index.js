@@ -44,6 +44,7 @@ import {
   setMaintenanceModeGetter,
 } from './middleware/maintenance.js'
 import { withPsaErrorHandler } from './middleware/psa.js'
+import { getUser } from './routes/get-user.js'
 
 const log = debug('router')
 
@@ -69,14 +70,19 @@ r.add('options', '*', cors)
 r.add('post', '/login', withMode(login, RO), [postCors])
 
 // Version
-r.add('get', '/version', (event) => {
-  return new JSONResponse({
-    version: VERSION,
-    commit: COMMITHASH,
-    branch: BRANCH,
-    mode: getMaintenanceMode(),
-  })
-}, [postCors])
+r.add(
+  'get',
+  '/version',
+  (event) => {
+    return new JSONResponse({
+      version: VERSION,
+      commit: COMMITHASH,
+      branch: BRANCH,
+      mode: getMaintenanceMode(),
+    })
+  },
+  [postCors]
+)
 
 // Remote Pinning API
 
@@ -140,6 +146,7 @@ r.add('get', '/internal/tokens', withMode(tokensList, RO), [postCors])
 r.add('post', '/internal/tokens', withMode(tokensCreate, RW), [postCors])
 r.add('delete', '/internal/tokens', withMode(tokensDelete, RW), [postCors])
 r.add('get', '/internal/list2', withMode(getNFT, RO), [postCors])
+r.add('get', '/internal/user', withMode(getUser, RO), [postCors])
 
 r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))
