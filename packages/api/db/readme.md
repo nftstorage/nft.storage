@@ -45,9 +45,22 @@ psql service=local -f functions.sql
 # Migration
 
 ```bash
-# sync users and nft keys 2h41m
-# sync nft data 8h14m
+# From packages/api run the following
+
+# 0. Drop local postgres start a clean one
+./scripts/cli.js db --clean
+./scripts/cli.js db --start
+./scripts/cli.js db-sql --cargo --testing
+# From packages/tools run `node cf-sync/cli2.js`
+# 1. run Sync users and Sync users data           35s
+# 2. run Validate nft data structure              3m55s
+# 3. run Push to DB
+# 4. run Sync users again and Push to DB just users
+# 5. run Push events to DB
+# 6. dump local psql to file
 pg_dump "service=local" --data-only > dump.sql
+# 7. clean target DB staging or production !!CHECK .env FILES!!!
 NODE_TLS_REJECT_UNAUTHORIZED=0 ./scripts/cli.js db-sql --reset --cargo --testing
+# 8. import dump to target DB
 psql "service=nft-staging" < dump.sql
 ```

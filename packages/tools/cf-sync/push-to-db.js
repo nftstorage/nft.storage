@@ -186,6 +186,7 @@ async function addNFTs(values, keys, ctx, dbUser) {
   // push contents
   const { error: contentError } = await contentQuery.upsert(contentArray, {
     onConflict: 'cid',
+    returning: 'minimal',
   })
   if (contentError) {
     throw new Error(JSON.stringify(contentError))
@@ -196,10 +197,12 @@ async function addNFTs(values, keys, ctx, dbUser) {
     // @ts-ignore
     pinQuery.upsert(pinsArray, {
       onConflict: 'content_cid, service',
+      returning: 'minimal',
     }),
     // @ts-ignore
     uploadQuery.upsert(uploadArray, {
       onConflict: 'user_id, source_cid',
+      returning: 'minimal',
     }),
   ])
   if (uploads.error) {
@@ -217,7 +220,7 @@ async function addNFTs(values, keys, ctx, dbUser) {
  * @param {string} type
  * @returns
  */
-function getMimeAndType(type) {
+export function getMimeAndType(type) {
   switch (type) {
     case 'nft':
       return {
@@ -250,7 +253,7 @@ function getMimeAndType(type) {
 /**
  * @param {any} status
  */
-function getDBPinStatus(status) {
+export function getDBPinStatus(status) {
   switch (status) {
     case 'pinned':
       return 'Pinned'

@@ -10,6 +10,7 @@ import { syncUsers, syncUsersData } from './users.js'
 import { syncNFTs, syncNFTData } from './nft.js'
 import { validateLocal } from './validation.js'
 import { pushToDB } from './push-to-db.js'
+import { pushEvents } from './push-events.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({
@@ -26,10 +27,10 @@ const tasks = new Listr(
       title: 'Sync users data',
       task: syncUsersData,
     },
-    {
-      title: 'Sync nfts',
-      task: syncNFTs,
-    },
+    // {
+    //   title: 'Sync nfts',
+    //   task: syncNFTs,
+    // },
     // {
     //   title: 'Sync nfts data',
     //   task: syncNFTData,
@@ -38,10 +39,14 @@ const tasks = new Listr(
     //   title: 'Validate nft data structure',
     //   task: validateLocal,
     // },
-    // {
-    //   title: 'Push to DB',
-    //   task: pushToDB,
-    // },
+    {
+      title: 'Push to DB',
+      task: pushToDB,
+    },
+    {
+      title: 'Push events to DB',
+      task: pushEvents,
+    },
   ],
   { renderer: 'default' }
 )

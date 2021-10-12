@@ -4,7 +4,7 @@ import stores from './scripts/stores.js'
 import { signJWT } from '../src/utils/jwt.js'
 import { SALT } from './scripts/worker-globals.js'
 import { createCar } from './scripts/car.js'
-import { rawClient } from './scripts/helpers.js'
+import { rawClient, client } from './scripts/helpers.js'
 
 /**
  * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
@@ -224,5 +224,59 @@ describe('/upload', () => {
       'queued',
       'pin status is "queued"'
     )
+  })
+
+  it.only('should upload a single file and delete it after', async () => {
+    const { token, issuer } = await createTestUser()
+
+    const file = new Blob(['hello world!!!!!'])
+    // expected CID for the above data
+    const cid = 'bafkreiev7ps7faudm2smgc6nfmwesr2hfwza3vveu2bbekrzfh44tbjr3u'
+    const res = await fetch('/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: file,
+    })
+    assert(res, 'Server responded')
+    assert(res.ok, 'Server response ok')
+    const { ok, value } = await res.json()
+    assert(ok, 'Server response payload has `ok` property')
+    assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
+
+    const nftData = await stores.nfts.get(`${issuer}:${cid}`)
+    assert(nftData, 'nft data was stored')
+
+    const pinData = await stores.pins.getWithMetadata(cid)
+    assert(pinData.metadata, 'pin metadata was stored')
+    assert.strictEqual(
+      // @ts-ignore
+      pinData.metadata.status,
+      'queued',
+      'pin status is "queued"'
+    )
+
+    const deleteRsp = await fetch(`/${cid}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    const deleteData = await deleteRsp.json()
+    assert(deleteData.ok, 'delete done')
+
+    const { data: user, error } = await client
+      .upsertUser({
+        email: 'a.tester@example.org',
+        github_id: issuer,
+        name: 'A Tester',
+        magic_link_id: issuer,
+      })
+      .single()
+    if (error || !user) {
+      throw new Error('error creating user')
+    }
+    await client.createKey({
+      name: 'test',
+      secret: token,
+      userId: user.id,
+    })
   })
 })
