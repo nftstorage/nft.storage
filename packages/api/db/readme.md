@@ -1,8 +1,6 @@
 # Schema
 
-[![nft.storage schema](https://bafybeiaykyqk6vroa7my2cqm7jnby3p5jd2dwlb3scnu4d2qlcusadla6q.ipfs.dweb.link/nft.storage-db-diagram.png)
-
-https://dbdiagram.io/d/615d7356940c4c4eec87e2be
+[![nft.storage schema](https://ipfs.io/ipfs/bafybeiaykyqk6vroa7my2cqm7jnby3p5jd2dwlb3scnu4d2qlcusadla6q/nft.storage-db-diagram.png)](https://dbdiagram.io/d/615d7356940c4c4eec87e2be)
 
 # Config `psql`
 
