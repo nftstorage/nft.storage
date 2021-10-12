@@ -41,6 +41,24 @@ describe('client', () => {
       )
     })
 
+    it('callback with root CID', async () => {
+      let called = false
+      const client = new NFTStorage({ token, endpoint })
+      await client.storeBlob(
+        new Blob(['hello world']),
+        {
+          onRootCidReady: root => {
+            called = true
+            assert.equal(
+              root,
+              'bafkreifzjut3te2nhyekklss27nh3k72ysco7y32koao5eei66wof36n5e'
+            )
+          }
+        }
+      )
+      assert.ok(called)
+    })
+
     it('can upload twice', async () => {
       const client = new NFTStorage({ token, endpoint })
       const blob = new Blob(['upload twice'])
@@ -202,6 +220,24 @@ describe('client', () => {
         cid,
         'bafybeigkms36pnnjsa7t2mq2g4mx77s4no2hilirs4wqx3eebbffy2ay3a'
       )
+    })
+
+    it('callback with root CID', async () => {
+      let called = false
+      const client = new NFTStorage({ token, endpoint })
+      await client.storeDirectory([
+        new File(['hello world'], 'hello.txt'),
+        new File(
+          [JSON.stringify({ from: 'incognito' }, null, 2)],
+          'metadata.json'
+        ),
+      ], {
+        onRootCidReady: root => {
+          called = true
+          assert.equal(root, 'bafybeigkms36pnnjsa7t2mq2g4mx77s4no2hilirs4wqx3eebbffy2ay3a')
+        }
+      })
+      assert.ok(called)
     })
 
     it('upload empty files', async () => {

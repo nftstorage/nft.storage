@@ -196,6 +196,7 @@ class NFTStorage {
     const blockstore = new Blockstore()
     try {
       const { out, root } = await pack({
+        // @ts-ignore
         input,
         blockstore,
         wrapWithDirectory: true
