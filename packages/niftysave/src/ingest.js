@@ -6,7 +6,7 @@ import { fetchNextNFTBatch, writeScrapedRecord } from './ingest/repo.js'
 
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
-import { intializeCursor } from './ingest/cursor.js'
+// import { intializeCursor } from './ingest/cursor.js'
 import { script } from 'subprogram'
 import { setTimeout as sleep } from './timers.js'
 
@@ -67,7 +67,8 @@ async function spawn(config) {
  */
 async function readIntoInbox(config, writeable) {
   const writer = writeable.getWriter()
-  let cursor = await intializeCursor(config)
+  //   let cursor = await intializeCursor(config)
+  let cursor = ''
   while (true) {
     let scrape = []
     try {
