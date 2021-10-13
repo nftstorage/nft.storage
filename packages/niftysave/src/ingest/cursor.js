@@ -11,7 +11,7 @@ import * as Hasura from '../hasura.js'
  * beginning because the db is empty
  * This is our starting cursor.
  * @param { Config } config
- * @returns { Promise<string>}
+ * @returns { Promise<number>}
  */
 export async function intializeCursor(config) {
   const lastNFT = await Hasura.query(config.hasura, {
@@ -27,5 +27,11 @@ export async function intializeCursor(config) {
       { id: true, inserted_at: true, mint_time: true },
     ],
   })
-  return lastNFT?.nft[0]?.mint_time || '0'
+
+  /**
+   * You need to get the date in the database, or just start at the epoch,
+   * [ new Date(null) = Dec 31st 1969 whereas new Date() = now ]
+   * return the epoch { number } in UTC; getTime() always uses UTC
+   */
+  return new Date(lastNFT?.nft[0]?.mint_time || null).getTime()
 }
