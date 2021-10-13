@@ -52,7 +52,7 @@ export interface API {
   storeBlob(
     service: Service,
     content: Blob | File,
-    options?: StoreBlobOptions
+    options?: BlobStorerOptions
   ): Promise<CIDString>
   /**
    * Stores CAR file and returns a corresponding CID.
@@ -60,7 +60,7 @@ export interface API {
   storeCar(
     service: Service,
     content: Blob | CarReader,
-    options?: StoreCarOptions
+    options?: CarStorerOptions
   ): Promise<CIDString>
   /**
    * Stores a directory of files and returns a CID. Provided files **MUST**
@@ -70,7 +70,7 @@ export interface API {
   storeDirectory(
     service: Service,
     files: Iterable<File>,
-    options?: StoreDirectoryOptions
+    options?: DirectoryStorerOptions
   ): Promise<CIDString>
   /**
    * Returns current status of the stored NFT by its CID. Note the NFT must
@@ -89,7 +89,7 @@ export interface API {
   check(service: PublicService, cid: string): Promise<CheckResult>
 }
 
-export interface StoreCarOptions {
+export interface CarStorerOptions {
   /**
    * Callback called after each chunk of data has been uploaded. By default,
    * data is split into chunks of around 10MB. It is passed the actual chunk
@@ -109,7 +109,7 @@ export interface StoreCarOptions {
   decoders?: BlockDecoder<any, any>[]
 }
 
-export interface StoreBlobOptions extends StoreCarOptions {
+export interface DagStorerOptions extends CarStorerOptions {
   /**
    * Callback called after the data has been assembled into a DAG, but before
    * any upload requests begin. It is passed the CID of the root node of the
@@ -118,7 +118,9 @@ export interface StoreBlobOptions extends StoreCarOptions {
   onRootCidReady?: (cid: CIDString) => void
 }
 
-export interface StoreDirectoryOptions extends StoreBlobOptions {}
+export interface BlobStorerOptions extends DagStorerOptions {}
+export interface DirectoryStorerOptions extends DagStorerOptions {}
+export interface MetadataStorerOptions extends DagStorerOptions {}
 
 export interface CheckResult {
   cid: string

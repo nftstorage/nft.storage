@@ -55,6 +55,19 @@ export class Token {
   static embed({ data }) {
     return embed(data, { gateway: GATEWAY })
   }
+
+  /**
+   * Encode the passed metadata object as an IPNFT and store the DAG in the
+   * passed blockstore.
+   *
+   * @template {API.TokenInput} T
+   * @param {API.Encoded<T, [[Blob, Blob]]>} metadata
+   * @param {import('ipfs-car/blockstore').Blockstore} blockstore
+   * @returns {Promise<Token<T>>}
+   */
+  static async encode(metadata, blockstore) {
+    throw new Error('not implemented')
+  }
 }
 
 /**
