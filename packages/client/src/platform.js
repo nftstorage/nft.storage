@@ -13,5 +13,5 @@ export {
   FormData,
   File,
   ReadableStream,
-  Blockstore
+  Blockstore,
 }
