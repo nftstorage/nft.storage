@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS public.user
     updated_at     TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS user_updated_at_idx ON user (updated_at);
+CREATE INDEX IF NOT EXISTS user_updated_at_idx ON public.user (updated_at);
 
 -- API authentication tokens.
 CREATE TABLE IF NOT EXISTS auth_key
