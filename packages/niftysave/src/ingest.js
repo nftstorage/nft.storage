@@ -60,6 +60,17 @@ async function spawn(config) {
 }
 
 /**
+ * A method to debug the cursor periodically.
+ * @param { number } cursor
+ */
+function printCursor(cursor) {
+  const cursorAsDate = new Date(cursor * 1000).toUTCString()
+  console.log(
+    `┄\n👉 Cursor Position:\n⌛ Sec\t${cursor}\n🕰️ UTC\t${cursorAsDate}\n┄`
+  )
+}
+
+/**
  * Inserts nft records by batches into the inbox.
  * @param { Config } config
  * @param { WritableStream<ERC721ImportNFT>} writeable
@@ -68,12 +79,7 @@ async function spawn(config) {
 async function readIntoInbox(config, writeable) {
   const writer = writeable.getWriter()
   let cursor = await intializeCursor(config)
-  console.log(
-    `👉 Cursor initialized at \n⌛ ${cursor} which is \n🕰️ ${new Date(
-      cursor
-    ).toUTCString()}`
-  )
-
+  printCursor(cursor)
   while (true) {
     let scrape = []
     try {
@@ -109,6 +115,8 @@ async function readIntoInbox(config, writeable) {
           //Continuously update the in-memory cursor
           cursor = parseInt(nft.mintTime)
         }
+        //Its useful to see what the cursor is periodically.
+        printCursor(cursor)
       }
     } catch (err) {
       console.error(`Something unexpected happened scraping nfts`, err)
