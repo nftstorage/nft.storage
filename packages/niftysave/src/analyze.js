@@ -326,7 +326,7 @@ const linkAsset = async (
             status_text: statusText,
             ipfs_url: ipfsURL ? ipfsURL.href : null,
             content_cid: cid,
-            dagSize,
+            dag_size: dagSize,
             // note need to use variable to workaround
             // https://github.com/graphql-editor/graphql-zeus/issues/144
             metadata: Hasura.$`metadata`,
