@@ -71,6 +71,7 @@ export async function pushEvents(ctx, task) {
         user = users.get(issuer)
       } else {
         user = await ctx.db.getUser(issuer)
+        users.set(issuer, user)
         if (!user.data) {
           console.log(data.key.user)
           throw new Error(`user not found ${issuer}`)
@@ -85,32 +86,33 @@ export async function pushEvents(ctx, task) {
       const { id, keys } = user.data
       // @ts-ignore
       const authKey = keys.find((k) => k.name === nft.scope)
-      const types = getMimeAndType(data.type)
+      const types = getMimeAndType(nft.type)
       const parsedCID = parseCid(nft.cid)
 
       pinsCluster.set(parsedCID.contentCid, {
         status: getDBPinStatus(pin.status),
         service: 'IpfsCluster',
         content_cid: parsedCID.contentCid,
-        inserted_at: inserted_at,
-        updated_at: inserted_at,
+        inserted_at: pin.created,
+        updated_at: pin.created,
       })
 
       pinsPinata.set(parsedCID.contentCid, {
         status: 'PinQueued',
         service: 'Pinata',
         content_cid: parsedCID.contentCid,
-        inserted_at: inserted_at,
-        updated_at: inserted_at,
+        inserted_at: pin.created,
+        updated_at: pin.created,
       })
+
       contents.set(parsedCID.contentCid, {
         cid: parsedCID.contentCid,
         dag_size: pin.size,
-        inserted_at: inserted_at,
-        updated_at: inserted_at,
+        inserted_at: nft.created,
+        updated_at: nft.created,
       })
 
-      uploads.set(parsedCID.sourceCid, {
+      uploads.set(`${issuer}:${parsedCID.sourceCid}`, {
         user_id: id,
         key_id: authKey ? authKey.id : null,
         content_cid: parsedCID.contentCid,
@@ -118,12 +120,12 @@ export async function pushEvents(ctx, task) {
         mime_type: types.mime_type,
         // @ts-ignore
         type: types.type,
-        name: data.pin.name || '',
+        name: pin.name || '',
         files: nft.files || [],
         origins: pin.origins || null,
         meta: pin.meta || null,
-        inserted_at: inserted_at,
-        updated_at: inserted_at,
+        inserted_at: nft.created,
+        updated_at: nft.created,
         deleted_at: null,
       })
     }
@@ -152,9 +154,10 @@ export async function pushEvents(ctx, task) {
       }
 
       // Either mutate from the created uploads or just delete directly
-      if (uploads.has(data.cid)) {
-        const up = uploads.get(data.cid)
-        uploads.set(data.cid, {
+      const key = `${issuer}:${data.cid}`
+      if (uploads.has(key)) {
+        const up = uploads.get(key)
+        uploads.set(key, {
           ...up,
           updated_at: inserted_at,
           deleted_at: inserted_at,
@@ -203,6 +206,7 @@ async function push(ctx, pinsCluster, pinsPinata, uploads, contents) {
     {
       onConflict: 'cid',
       returning: 'minimal',
+      ignoreDuplicates: true,
     }
   )
   if (contentError) {
@@ -215,6 +219,7 @@ async function push(ctx, pinsCluster, pinsPinata, uploads, contents) {
     pinQuery.upsert([...pinsCluster.values(), ...pinsPinata.values()], {
       onConflict: 'content_cid, service',
       returning: 'minimal',
+      ignoreDuplicates: true,
     }),
     // @ts-ignore
     uploadQuery.upsert(Array.from(uploads.values()), {
