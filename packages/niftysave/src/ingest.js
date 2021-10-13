@@ -68,6 +68,12 @@ async function spawn(config) {
 async function readIntoInbox(config, writeable) {
   const writer = writeable.getWriter()
   let cursor = await intializeCursor(config)
+  console.log(
+    `👉 Cursor initialized at \n⌛ ${cursor} which is \n🕰️ ${new Date(
+      cursor
+    ).toUTCString()}`
+  )
+
   while (true) {
     let scrape = []
     try {

@@ -78,7 +78,7 @@ export async function fetchNextNFTBatch(config, cursor) {
 const createSubgraphQuery = (config, cursor) => {
   const query = {
     first: config.ingestBatchSize,
-    where: { tokenURI_not: '', mint_time: cursor },
+    where: { mintTime_gt: cursor.toString() },
   }
   const erc721ResultDefinition = {
     id: 1,
