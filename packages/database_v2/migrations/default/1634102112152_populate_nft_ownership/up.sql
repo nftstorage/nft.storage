@@ -70,8 +70,7 @@ BEGIN
     VALUES (nft_id, token_id, token_uri_hash, mint_time, contract_id)
   ON CONFLICT ON CONSTRAINT nft_pkey
     DO UPDATE SET
-      updated_at = EXCLUDED.updated_at,
-      nft_owner_id = EXCLUDED.nft_owner_id;
+      updated_at = EXCLUDED.updated_at;
 
   -- Record nft to block association
   INSERT INTO nfts_by_blockchain_blocks (blockchain_block_hash, nft_id)
