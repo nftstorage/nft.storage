@@ -312,7 +312,7 @@ const updateAsset = async (config, state) =>
  */
 const linkAsset = async (
   config,
-  { hash, statusText, ipfsURL, metadata: { cid, content, links } }
+  { hash, statusText, ipfsURL, metadata: { cid, dagSize, content, links } }
 ) => {
   const resources = links.map((url) => linkResource(cid, url))
 
@@ -326,6 +326,7 @@ const linkAsset = async (
             status_text: statusText,
             ipfs_url: ipfsURL ? ipfsURL.href : null,
             content_cid: cid,
+            dagSize,
             // note need to use variable to workaround
             // https://github.com/graphql-editor/graphql-zeus/issues/144
             metadata: Hasura.$`metadata`,
@@ -402,6 +403,7 @@ const failAsset = async (config, { hash, status, statusText, ipfsURL }) => {
 /**
  * @typedef {Object} Metadata
  * @property {string} cid - CID for the metadata content.
+ * @property {number} dagSize
  * @property {Object} content - actual JSON data.
  * @property {string[]} links
  *
@@ -411,7 +413,7 @@ const failAsset = async (config, { hash, status, statusText, ipfsURL }) => {
 const parseERC721Metadata = async (content) => {
   const json = JSON.parse(content)
 
-  const { cid } = await IPFS.importBlob(new Blob([content]))
+  const { cid, size: dagSize } = await IPFS.importBlob(new Blob([content]))
 
   const urls = new Set()
 
@@ -423,7 +425,7 @@ const parseERC721Metadata = async (content) => {
     }
   }
 
-  return { cid: cid.toString(), links: [...urls], content: json }
+  return { cid: cid.toString(), dagSize, links: [...urls], content: json }
 }
 
 /**
