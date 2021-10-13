@@ -78,14 +78,12 @@ async function nftByUser(issuer, sub, ctx, task, keys, dbUser) {
   const threshold = 20000
   let count = 0
   let values = []
-
   // Find all nfts by issuer
-  for await (const { value } of ctx.nftStore.iterator({
-    gt: issuer,
-    lt: issuer + '\xFF',
-  })) {
-    count++
-    values.push(value)
+  for await (const { key, value } of ctx.nftStore.iterator()) {
+    if (key.startsWith(issuer)) {
+      count++
+      values.push(value)
+    }
 
     if (values.length > threshold) {
       await addNFTs(values, keys, ctx, dbUser)
@@ -95,12 +93,11 @@ async function nftByUser(issuer, sub, ctx, task, keys, dbUser) {
   }
   // Find all nfts by sub
   if (sub !== issuer) {
-    for await (const { value } of ctx.nftStore.iterator({
-      gt: sub,
-      lt: sub + '\xFF',
-    })) {
-      count++
-      values.push(value)
+    for await (const { key, value } of ctx.nftStore.iterator()) {
+      if (key.startsWith(sub + ':')) {
+        count++
+        values.push(value)
+      }
 
       if (values.length > threshold) {
         await addNFTs(values, keys, ctx, dbUser)
