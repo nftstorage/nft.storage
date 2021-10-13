@@ -5,7 +5,6 @@
 - '!include public_erc721_import_by_nft.yaml'
 - '!include public_nft.yaml'
 - '!include public_nft_asset.yaml'
-- '!include public_nft_asset_view.yaml'
 - '!include public_nft_metadata.yaml'
 - '!include public_nft_owner.yaml'
 - '!include public_nft_ownership.yaml'
@@ -14,4 +13,3 @@
 - '!include public_other_nft_resources.yaml'
 - '!include public_pin.yaml'
 - '!include public_resource.yaml'
-- '!include public_resource_view.yaml'
