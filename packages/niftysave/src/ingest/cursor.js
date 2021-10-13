@@ -14,27 +14,18 @@ import * as Hasura from '../hasura.js'
  * @returns { Promise<string>}
  */
 export async function intializeCursor(config) {
-  const query = {
-    limit: 1,
-    order_by: [
-      {
-        inserted_at: Hasura.schema.order_by.desc,
-      },
-    ],
-  }
-
-  /**
-   * required type annotation due to design limitation in TS
-   * https://github.com/microsoft/TypeScript/issues/19360
-   * @type {{
-   *    id: true | undefined
-   *    updated_at: true | undefined
-   * }}
-   */
-  const resultsDefinition = { id: true, updated_at: true }
   const lastNFT = await Hasura.query(config.hasura, {
-    nft: [query, resultsDefinition],
+    nft: [
+      {
+        limit: 1,
+        order_by: [
+          {
+            inserted_at: Hasura.schema.order_by.desc,
+          },
+        ],
+      },
+      { id: true, inserted_at: true, mint_time: true },
+    ],
   })
-
-  return lastNFT?.nft[0]?.id || '0'
+  return lastNFT?.nft[0]?.mint_time || '0'
 }
