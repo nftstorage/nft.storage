@@ -19,26 +19,28 @@
  * Cursors for them would be represented as follows:
  *
  * ```js
- * { updated_at: '2021-10-01T22:16:21.369Z', offset: 0 } // data:a
- * { updated_at: '2021-10-01T22:16:21.369Z', offset: 1 } // data:b
- * { updated_at: '2021-10-01T22:16:21.369Z', offset: 2 } // data:c
- * { updated_at: '2021-10-04T22:17:26.934Z', offset: 0 } // data:d
- * { updated_at: '2021-10-04T22:17:26.934Z', offset: 1 } // data:e
+ * { time: '2021-10-01T22:16:21.369Z', offset: 0 } // data:a
+ * { time: '2021-10-01T22:16:21.369Z', offset: 1 } // data:b
+ * { time: '2021-10-01T22:16:21.369Z', offset: 2 } // data:c
+ * { time: '2021-10-04T22:17:26.934Z', offset: 0 } // data:d
+ * { time: '2021-10-04T22:17:26.934Z', offset: 1 } // data:e
  * ```
  *
+ * @template Time
  * @typedef {Object} Cursor
- * @property {DateISOString} updated_at - Timestamp of the record as an ISO string.
+ * @property {Time} time - Timestamp of the record as an ISO string.
  * @property {number} offset - Number of records with matching `updated_at` to skip.
  */
 
 /**
  * Returns cursor representing UNIX epoch at offset 0. In practice this
  * implies starting from the very beginning.
- *
- * @returns {Cursor}
+ * 
+ * @template Time
+ * @returns {Cursor<Time>}
  */
-export const init = () => ({
-  updated_at: new Date(0).toISOString(),
+export const init = (time) => ({
+  time,
   offset: 0,
 })
 
@@ -49,14 +51,15 @@ export const init = () => ({
  * Note: API assumes that state is fed records in a order, otherwise results
  * are unreliable.
  *
- * @param {Cursor} cursor
- * @param {{updated_at: DateISOString}} record
- * @returns {Cursor}
+ * @template Time
+ * @param {Cursor<Time>} cursor
+ * @param {Time} time
+ * @returns {Cursor<Time>}
  */
-export const after = (cursor, { updated_at }) =>
-  // If `updated_at` is the same inrease the offset by one, otherwise capture
-  // new `updated_at` and set offset to 1 so this record is skipped.
+export const after = (cursor, time) =>
+  // If `time` is the same inrease the offset by one, otherwise capture
+  // new `time` and set offset to 1 so this record is skipped.
 
-  cursor.updated_at === updated_at
-    ? { ...cursor, offset: cursor.offset + 1 }
-    : { updated_at, offset: 1 }
+  cursor.time === time
+    ? { time, offset: cursor.offset + 1 }
+    : { time, offset: 1 }
