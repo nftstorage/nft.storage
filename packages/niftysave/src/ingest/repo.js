@@ -44,7 +44,7 @@ export async function writeScrapedRecord(config, erc721Import) {
  * Calls Subgraph and returns a batch of NFT records.
  * Hydrates the inbox.
  * @param { Config } config
- * @param { string } cursor
+ * @param { number } cursor
  * @returns { Promise<ERC721ImportNFT[]> }
  */
 export async function fetchNextNFTBatch(config, cursor) {
@@ -72,13 +72,13 @@ export async function fetchNextNFTBatch(config, cursor) {
  * If this is the first query, starting this module for the first time, the cursor
  * will be the id of whatever record was written last in our database.
  * @param {Config} config
- * @param {string} cursor
+ * @param {number} cursor
  * @returns { ERC721.schema.QueryRequest }
  */
 const createSubgraphQuery = (config, cursor) => {
   const query = {
     first: config.ingestBatchSize,
-    where: { tokenURI_not: '', id_gt: cursor },
+    where: { tokenURI_not: '', mint_time: cursor },
   }
   const erc721ResultDefinition = {
     id: 1,

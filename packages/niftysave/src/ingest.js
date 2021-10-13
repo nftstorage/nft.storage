@@ -101,7 +101,7 @@ async function readIntoInbox(config, writeable) {
         for (const nft of scrape) {
           writer.write(nft)
           //Continuously update the in-memory cursor
-          cursor = nft.id
+          cursor = parseInt(nft.mintTime)
         }
       }
     } catch (err) {
