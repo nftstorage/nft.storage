@@ -68,48 +68,6 @@ export var content_update_column;
     content_update_column["inserted_at"] = "inserted_at";
     content_update_column["updated_at"] = "updated_at";
 })(content_update_column || (content_update_column = {}));
-/** unique or primary key constraints on table "erc721_import_by_nft" */
-export var erc721_import_by_nft_constraint;
-(function (erc721_import_by_nft_constraint) {
-    erc721_import_by_nft_constraint["erc721_import_by_nft_pkey"] = "erc721_import_by_nft_pkey";
-})(erc721_import_by_nft_constraint || (erc721_import_by_nft_constraint = {}));
-/** select columns of table "erc721_import_by_nft" */
-export var erc721_import_by_nft_select_column;
-(function (erc721_import_by_nft_select_column) {
-    erc721_import_by_nft_select_column["erc721_import_id"] = "erc721_import_id";
-    erc721_import_by_nft_select_column["inserted_at"] = "inserted_at";
-    erc721_import_by_nft_select_column["nft_id"] = "nft_id";
-    erc721_import_by_nft_select_column["updated_at"] = "updated_at";
-})(erc721_import_by_nft_select_column || (erc721_import_by_nft_select_column = {}));
-/** update columns of table "erc721_import_by_nft" */
-export var erc721_import_by_nft_update_column;
-(function (erc721_import_by_nft_update_column) {
-    erc721_import_by_nft_update_column["erc721_import_id"] = "erc721_import_id";
-    erc721_import_by_nft_update_column["inserted_at"] = "inserted_at";
-    erc721_import_by_nft_update_column["nft_id"] = "nft_id";
-    erc721_import_by_nft_update_column["updated_at"] = "updated_at";
-})(erc721_import_by_nft_update_column || (erc721_import_by_nft_update_column = {}));
-/** unique or primary key constraints on table "erc721_import" */
-export var erc721_import_constraint;
-(function (erc721_import_constraint) {
-    erc721_import_constraint["erc721_import_pkey"] = "erc721_import_pkey";
-})(erc721_import_constraint || (erc721_import_constraint = {}));
-/** select columns of table "erc721_import" */
-export var erc721_import_select_column;
-(function (erc721_import_select_column) {
-    erc721_import_select_column["id"] = "id";
-    erc721_import_select_column["inserted_at"] = "inserted_at";
-    erc721_import_select_column["next_id"] = "next_id";
-    erc721_import_select_column["updated_at"] = "updated_at";
-})(erc721_import_select_column || (erc721_import_select_column = {}));
-/** update columns of table "erc721_import" */
-export var erc721_import_update_column;
-(function (erc721_import_update_column) {
-    erc721_import_update_column["id"] = "id";
-    erc721_import_update_column["inserted_at"] = "inserted_at";
-    erc721_import_update_column["next_id"] = "next_id";
-    erc721_import_update_column["updated_at"] = "updated_at";
-})(erc721_import_update_column || (erc721_import_update_column = {}));
 /** unique or primary key constraints on table "nft_asset" */
 export var nft_asset_constraint;
 (function (nft_asset_constraint) {
@@ -139,17 +97,6 @@ export var nft_asset_update_column;
     nft_asset_update_column["token_uri_hash"] = "token_uri_hash";
     nft_asset_update_column["updated_at"] = "updated_at";
 })(nft_asset_update_column || (nft_asset_update_column = {}));
-/** select columns of table "nft_asset_view" */
-export var nft_asset_view_select_column;
-(function (nft_asset_view_select_column) {
-    nft_asset_view_select_column["content_cid"] = "content_cid";
-    nft_asset_view_select_column["inserted_at"] = "inserted_at";
-    nft_asset_view_select_column["ipfs_url"] = "ipfs_url";
-    nft_asset_view_select_column["status"] = "status";
-    nft_asset_view_select_column["status_text"] = "status_text";
-    nft_asset_view_select_column["token_uri"] = "token_uri";
-    nft_asset_view_select_column["updated_at"] = "updated_at";
-})(nft_asset_view_select_column || (nft_asset_view_select_column = {}));
 /** unique or primary key constraints on table "nft" */
 export var nft_constraint;
 (function (nft_constraint) {
@@ -182,25 +129,6 @@ export var nft_metadata_update_column;
     nft_metadata_update_column["name"] = "name";
     nft_metadata_update_column["updated_at"] = "updated_at";
 })(nft_metadata_update_column || (nft_metadata_update_column = {}));
-/** unique or primary key constraints on table "nft_owner" */
-export var nft_owner_constraint;
-(function (nft_owner_constraint) {
-    nft_owner_constraint["nft_owner_pkey"] = "nft_owner_pkey";
-})(nft_owner_constraint || (nft_owner_constraint = {}));
-/** select columns of table "nft_owner" */
-export var nft_owner_select_column;
-(function (nft_owner_select_column) {
-    nft_owner_select_column["id"] = "id";
-    nft_owner_select_column["inserted_at"] = "inserted_at";
-    nft_owner_select_column["updated_at"] = "updated_at";
-})(nft_owner_select_column || (nft_owner_select_column = {}));
-/** update columns of table "nft_owner" */
-export var nft_owner_update_column;
-(function (nft_owner_update_column) {
-    nft_owner_update_column["id"] = "id";
-    nft_owner_update_column["inserted_at"] = "inserted_at";
-    nft_owner_update_column["updated_at"] = "updated_at";
-})(nft_owner_update_column || (nft_owner_update_column = {}));
 /** unique or primary key constraints on table "nft_ownership" */
 export var nft_ownership_constraint;
 (function (nft_ownership_constraint) {
@@ -231,7 +159,6 @@ export var nft_select_column;
     nft_select_column["id"] = "id";
     nft_select_column["inserted_at"] = "inserted_at";
     nft_select_column["mint_time"] = "mint_time";
-    nft_select_column["nft_owner_id"] = "nft_owner_id";
     nft_select_column["token_id"] = "token_id";
     nft_select_column["token_uri_hash"] = "token_uri_hash";
     nft_select_column["updated_at"] = "updated_at";
@@ -243,7 +170,6 @@ export var nft_update_column;
     nft_update_column["id"] = "id";
     nft_update_column["inserted_at"] = "inserted_at";
     nft_update_column["mint_time"] = "mint_time";
-    nft_update_column["nft_owner_id"] = "nft_owner_id";
     nft_update_column["token_id"] = "token_id";
     nft_update_column["token_uri_hash"] = "token_uri_hash";
     nft_update_column["updated_at"] = "updated_at";
@@ -380,17 +306,6 @@ export var resource_update_column;
     resource_update_column["uri"] = "uri";
     resource_update_column["uri_hash"] = "uri_hash";
 })(resource_update_column || (resource_update_column = {}));
-/** select columns of table "resource_view" */
-export var resource_view_select_column;
-(function (resource_view_select_column) {
-    resource_view_select_column["content_cid"] = "content_cid";
-    resource_view_select_column["inserted_at"] = "inserted_at";
-    resource_view_select_column["ipfs_url"] = "ipfs_url";
-    resource_view_select_column["status"] = "status";
-    resource_view_select_column["status_text"] = "status_text";
-    resource_view_select_column["updated_at"] = "updated_at";
-    resource_view_select_column["uri"] = "uri";
-})(resource_view_select_column || (resource_view_select_column = {}));
 export class GraphQLError extends Error {
     response;
     constructor(response) {
