@@ -71,7 +71,6 @@ export async function pushEvents(ctx, task) {
         user = users.get(issuer)
       } else {
         user = await ctx.db.getUser(issuer)
-        users.set(issuer, user)
         if (!user.data) {
           console.log(data.key.user)
           throw new Error(`user not found ${issuer}`)
@@ -80,6 +79,7 @@ export async function pushEvents(ctx, task) {
           // @ts-ignore
           throw new Error(JSON.stringify(user.error))
         }
+        users.set(issuer, user)
       }
 
       // Process create upload
