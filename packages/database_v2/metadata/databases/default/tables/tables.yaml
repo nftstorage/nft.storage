@@ -6,7 +6,6 @@
 - '!include public_nft.yaml'
 - '!include public_nft_asset.yaml'
 - '!include public_nft_metadata.yaml'
-- '!include public_nft_owner.yaml'
 - '!include public_nft_ownership.yaml'
 - '!include public_nfts_by_blockchain_blocks.yaml'
 - '!include public_niftysave_migration.yaml'
