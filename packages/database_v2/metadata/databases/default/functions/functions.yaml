@@ -1,6 +1,3 @@
-- '!include public_add_nft.yaml'
-- '!include public_add_nft_metadata.yaml'
-- '!include public_add_other_nft_resource.yaml'
 - '!include public_fail_nft_asset.yaml'
 - '!include public_fail_resource.yaml'
 - '!include public_ingest_erc721_token.yaml'
