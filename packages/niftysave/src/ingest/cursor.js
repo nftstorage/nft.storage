@@ -32,6 +32,9 @@ export async function intializeCursor(config) {
    * You need to get the date in the database, or just start at the epoch,
    * [ new Date(null) = Dec 31st 1969 whereas new Date() = now ]
    * return the epoch { number } in UTC; getTime() always uses UTC
+   * ERC721 is in *seconds* JS is in *ms* so /1000
    */
-  return new Date(lastNFT?.nft[0]?.mint_time || null).getTime()
+  return Math.round(
+    new Date(lastNFT?.nft[0]?.mint_time || null).getTime() / 1000
+  )
 }
