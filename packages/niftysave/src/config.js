@@ -27,6 +27,7 @@ import yargs from 'yargs'
  * @property {import('./ipfs').Config} ipfs
  * @property {Endpoint} erc721
  * @property {Endpoint} hasura
+ * @property {import('nft.storage/src/lib/interface').Service} nftStorage
  * @property {Endpoint & {secret: string}} fauna
  *
  * @returns {Promise<Config>}
@@ -138,6 +139,18 @@ export const configure = async () => {
         alias: 'hasuraKey',
         type: 'string',
         default: process.env['HASURA_KEY'],
+        demandOption: true,
+      },
+      'nftstorage-enpoint': {
+        alias: 'nftStorageEndpoint',
+        type: 'string',
+        default:
+          process.env['NFT_STORAGE_ENDPOINT'] || 'https://api.nft.storage',
+      },
+      'nftstorage-key': {
+        alias: 'nftStorageKey',
+        type: 'string',
+        default: process.env['NFT_STORAGE_KEY'],
         demandOption: true,
       },
       'ingest-retry-throttle': {
@@ -254,6 +267,11 @@ export const configure = async () => {
       headers: {
         'x-hasura-admin-secret': config['hasura-key'],
       },
+    },
+
+    nftStorage: {
+      endpoint: new URL(config['nftstorage-enpoint']),
+      token: config['nftstorage-key'],
     },
   }
 }

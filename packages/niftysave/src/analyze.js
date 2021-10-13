@@ -11,7 +11,8 @@ import { exponentialBackoff, maxRetries, retry } from './retry.js'
 import * as Cursor from './hasura/cursor.js'
 import { TransformStream } from './stream.js'
 import { setTimeout as sleep } from './timers.js'
-
+import * as Car from './car.js'
+import { NFTStorage } from 'nft.storage'
 export const main = async () => await spawn(await configure())
 
 /**
@@ -19,6 +20,7 @@ export const main = async () => await spawn(await configure())
  * @property {Hasura.Config} hasura
  * @property {import('./ipfs').Config} ipfs
  * @property {Cluster.Config} cluster
+ * @property {import('nft.storage/src/lib/interface').Service} nftStorage
  * @property {number} budget
  * @property {number} batchSize
  * @property {number} concurrency
@@ -265,7 +267,7 @@ const analyze = async (config, asset) => {
 
   console.log(`🔬 (${hash}) Parsing token metadata`)
 
-  const metadata = await Result.fromPromise(parseERC721Metadata(content.value))
+  const metadata = await Result.fromPromise(analyzeMetadata(content.value))
   if (!metadata.ok) {
     console.error(`🚨 (${hash}) Parse failed ${metadata.error}`)
 
@@ -277,6 +279,13 @@ const analyze = async (config, asset) => {
     }
   }
 
+  const car = await Result.fromPromise(
+    NFTStorage.storeCar(config.nftStorage, metadata.value.car)
+  )
+
+  if (!car.ok) {
+  }
+
   console.log(`📝 (${hash}) Link metadata ${metadata.value.cid}`)
 
   return {
@@ -285,6 +294,9 @@ const analyze = async (config, asset) => {
     statusText: 'Linked',
     ipfsURL: ipfsURL,
     metadata: metadata.value,
+
+    resourceStatus: car.ok ? 'ContentLinked' : 'PinRequestFailed',
+    resourceStatusText: car.ok ? '' : `${car.error}\n${car.error.stack}`,
   }
 }
 
@@ -305,6 +317,16 @@ const updateAsset = async (config, state) =>
  * @property {string} statusText
  * @property {URL|null} ipfsURL
  * @property {Metadata} metadata
+ * @property {ContentLinked|PinRequestFailed} resource
+ *
+ * @typedef {Object} ContentLinked
+ * @property {'ContentLinked'} status
+ * @property {string} statusText
+ * @property {CID} cid
+ *
+ * @typedef {Object} PinRequestFailed
+ * @property {'PinRequestFailed'} status
+ * @property {string} statusText
  *
  * @param {Object} config
  * @param {Hasura.Config} config.hasura
@@ -406,14 +428,21 @@ const failAsset = async (config, { hash, status, statusText, ipfsURL }) => {
  * @property {number} dagSize
  * @property {Object} content - actual JSON data.
  * @property {string[]} links
+ * @property {import('@ipld/car').CarReader} car
  *
  * @param {string} content
  * @returns {Promise<Metadata>}
  */
-const parseERC721Metadata = async (content) => {
+const analyzeMetadata = async (content) => {
   const json = JSON.parse(content)
 
-  const { cid, size: dagSize } = await IPFS.importBlob(new Blob([content]))
+  // Note we use original source to keep the formatting so that CID will come
+  // out exactly the same.
+  const {
+    root: cid,
+    size: dagSize,
+    car,
+  } = await Car.fromBlob(new Blob([content]))
 
   const urls = new Set()
 
@@ -425,7 +454,7 @@ const parseERC721Metadata = async (content) => {
     }
   }
 
-  return { cid: cid.toString(), dagSize, links: [...urls], content: json }
+  return { cid: cid.toString(), dagSize, links: [...urls], content: json, car }
 }
 
 /**

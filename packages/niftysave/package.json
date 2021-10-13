@@ -58,7 +58,8 @@
     "ipld-in-memory": "^8.0.0",
     "ipld-dag-pb": "^0.22.2",
     "ipld": "^0.30.2",
-    "multicodec": "^3.0.1"
+    "multicodec": "^3.0.1",
+    "ipfs-car": "^0.5.8"
   },
   "repository": {
     "type": "git",

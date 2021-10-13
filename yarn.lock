@@ -5246,7 +5246,7 @@ ipfs-car@0.4.3:
     streaming-iterables "^5.0.4"
     uint8arrays "^2.1.5"
 
-ipfs-car@^0.5.6:
+ipfs-car@^0.5.6, ipfs-car@^0.5.8:
   version "0.5.8"
   resolved "https://registry.yarnpkg.com/ipfs-car/-/ipfs-car-0.5.8.tgz#0a0355cc968331a802f546070d39043f3691fa48"
   integrity sha512-77dwPVpMqq++ZlM6csNs0FMrNnBy+lJxDTQbPz/jYYiwPmvmMq1Z1VoB/h9zRu0KVZPt1xUQvH8cSIOTUmQNSw==
@@ -5557,7 +5557,7 @@ ipld-dag-pb@0.22.2:
     stable "^0.1.8"
     uint8arrays "^2.0.5"
 
-ipld-dag-pb@^0.22.0, ipld-dag-pb@^0.22.1:
+ipld-dag-pb@^0.22.0, ipld-dag-pb@^0.22.1, ipld-dag-pb@^0.22.2:
   version "0.22.3"
   resolved "https://registry.yarnpkg.com/ipld-dag-pb/-/ipld-dag-pb-0.22.3.tgz#6d5af28b5752236a5cb0e0a1888c87dd733b55cd"
   integrity sha512-dfG5C5OVAR4FEP7Al2CrHWvAyIM7UhAQrjnOYOIxXGQz5NlEj6wGX0XQf6Ru6or1na6upvV3NQfstapQG8X2rg==
@@ -5577,7 +5577,7 @@ ipld-garbage@^4.0.1:
   dependencies:
     multiformats "^9.0.0"
 
-ipld-in-memory@8.0.0:
+ipld-in-memory@8.0.0, ipld-in-memory@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/ipld-in-memory/-/ipld-in-memory-8.0.0.tgz#6b97af539c7145271757c14238cbb1059fbba643"
   integrity sha512-NSXw60wyl3xNnqYDQgxf8KOUjj4YctRWLQ2IjM5TQwXp9ul0LKKponwEXjH3PbjWrIMyrc9dZqbwOPMkhJdsNQ==
@@ -5597,7 +5597,7 @@ ipld-raw@^7.0.0:
     multicodec "^3.0.1"
     multihashing-async "^2.1.2"
 
-ipld@0.30.2:
+ipld@0.30.2, ipld@^0.30.2:
   version "0.30.2"
   resolved "https://registry.yarnpkg.com/ipld/-/ipld-0.30.2.tgz#6fbe37d1e2b8e0dc947da27b79ebe67114713b4a"
   integrity sha512-8nfJrxR91njRu5wKEeH5Fh5F39bCs5GhZdzZwNSzQPZesE6opURCaw94Hg0JdynNQ2AHZCn8P03cSnZB/xfX8A==
