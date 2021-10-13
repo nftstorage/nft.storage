@@ -1,0 +1,8 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- ALTER TABLE nft_ownership ADD
+-- FOREIGN KEY (nft_id) REFERENCES nft(id);
+--
+--
+-- ALTER TABLE nft_ownership ADD
+-- FOREIGN KEY (block_number) REFERENCES blockchain_block(number);

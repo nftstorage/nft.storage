@@ -1,0 +1,4 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- ALTER TABLE nft_asset ADD
+-- FOREIGN KEY (content_cid) REFERENCES nft_metadata(content_cid);
