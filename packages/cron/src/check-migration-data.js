@@ -54,17 +54,28 @@ async function main() {
       pgNftCount = count
       spinner.text = spinnerText()
 
-      const prefix =
-        user.magic_link_id !== user.github_id
-          ? user.github_id
-          : user.magic_link_id
-
-      for await (const nftKeys of cf.fetchKVKeys(nftsNs.id, {
-        prefix: `${prefix}:`,
-      })) {
-        kvNftCount += nftKeys.length
-        spinner.text = spinnerText()
+      if (user.magic_link_id !== user.github_id) {
+        for await (const nftKeys of cf.fetchKVKeys(nftsNs.id, {
+          prefix: `${user.magic_link_id}:`,
+        })) {
+          kvNftCount += nftKeys.length
+          spinner.text = spinnerText()
+        }
+        for await (const nftKeys of cf.fetchKVKeys(nftsNs.id, {
+          prefix: `${user.github_id}:`,
+        })) {
+          kvNftCount += nftKeys.length
+          spinner.text = spinnerText()
+        }
+      } else {
+        for await (const nftKeys of cf.fetchKVKeys(nftsNs.id, {
+          prefix: `${user.magic_link_id}:`,
+        })) {
+          kvNftCount += nftKeys.length
+          spinner.text = spinnerText()
+        }
       }
+
       if (kvNftCount === pgNftCount) {
         spinner.succeed()
       } else {
