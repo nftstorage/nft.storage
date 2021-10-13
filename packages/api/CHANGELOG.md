@@ -1,5 +1,20 @@
 # Changelog
 
+### [2.6.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.6.0...api-v2.6.1) (2021-10-13)
+
+
+### Bug Fixes
+
+* db diagram link ([b234556](https://www.github.com/ipfs-shipyard/nft.storage/commit/b2345563c27cdf7052e2d62ca0865f397d96014e))
+* do not allow delete of deleted NFT ([#581](https://www.github.com/ipfs-shipyard/nft.storage/issues/581)) ([fca5bde](https://www.github.com/ipfs-shipyard/nft.storage/commit/fca5bde2f008328deffce3dd01e420e26e4a02eb))
+* dont delete uploads ([#551](https://www.github.com/ipfs-shipyard/nft.storage/issues/551)) ([b797f9c](https://www.github.com/ipfs-shipyard/nft.storage/commit/b797f9c7e9cbf770b29829959b10e0bb12ee555e))
+* throw an error for missing env vars ([#576](https://www.github.com/ipfs-shipyard/nft.storage/issues/576)) ([2dddc13](https://www.github.com/ipfs-shipyard/nft.storage/commit/2dddc130270db745e1dd0115085f6ff90f9d54f1))
+
+
+### Changes
+
+* move v1 to root (minimal changes) ([#534](https://www.github.com/ipfs-shipyard/nft.storage/issues/534)) ([c60cf6c](https://www.github.com/ipfs-shipyard/nft.storage/commit/c60cf6c06dc5812f980152fcb9b451a84cf9aba7))
+
 ## [2.6.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.5.0...api-v2.6.0) (2021-10-11)
 
 
