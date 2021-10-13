@@ -522,8 +522,8 @@ function FAQ() {
           NFT.Storage storage service, as well as relying more directly on the
           Filecoin network (e.g., storing data directly on the Filecoin network
           without putting it on a centralized IPFS node first), upgrading
-          today's NFT.Storage implementation into the provably permanent storage
-          solutions of tomorrow.
+          {"today's"} NFT.Storage implementation into the provably permanent
+          storage solutions of tomorrow.
         </p>
         <h2 className="chicagoflf white">
           <HashLink id="how-long-will-data-be-stored-on-nftstorage">
