@@ -67,7 +67,7 @@ export const after = (cursor, time) =>
 
 /**
  * @template Time
- *  @param {Cursor<Time>} cursor
+ * @param {Cursor<Time>} cursor
  */
 export const print = (cursor) => {
   const { time, offset } = cursor
