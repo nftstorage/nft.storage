@@ -37,7 +37,7 @@
  * implies starting from the very beginning.
  *
  * @template Time
- * @param { Time } time
+ * @param {Time} time
  * @returns {Cursor<Time>}
  */
 export const init = (time) => ({
