@@ -34,7 +34,7 @@ heroku apps:create nft-storage-pgrest-prod --buildpack https://github.com/PostgR
 
 # Bump dyno sizes
 heroku dyno:resize web=standard-1x --app nft-storage-pgrest-staging
-heroku dyno:resize web=standard-1x --app nft-storage-pgrest-prod
+heroku dyno:resize web=standard-2x --app nft-storage-pgrest-prod
 
 # Create the web_anon, authenticator and nft_storage credentials
 # (Heroku does not allow this to be done in the DB)
