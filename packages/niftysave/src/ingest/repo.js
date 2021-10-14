@@ -82,6 +82,7 @@ const createSubgraphQuery = (config, cursor) => {
     first: config.ingestBatchSize,
     skip: cursor.offset,
     where: { mintTime_gte: cursor.time.toString() },
+    orderBy: ERC721.schema.Token_orderBy.mintTime,
   }
   const erc721ResultDefinition = {
     id: 1,

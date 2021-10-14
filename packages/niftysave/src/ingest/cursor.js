@@ -13,7 +13,7 @@ import * as Hasura from '../hasura.js'
  * @param { Config } config
  * @returns { Promise<number>}
  */
-export async function intializeCursor(config) {
+export async function intiIngestCursor(config) {
   const lastNFT = await Hasura.query(config.hasura, {
     nft: [
       {
