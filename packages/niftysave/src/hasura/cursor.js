@@ -77,7 +77,7 @@ export const print = (cursor) => {
   if (typeof time === 'number') {
     const cursorAsDate = new Date(time * 1000).toUTCString()
     console.log(
-      `┄\n👉 Cursor:\n⌛ Sec\t${time}\n🕰️ UTC\t${cursorAsDate}\n➡️ Offset\t${offset}\n┄`
+      `┄\n👇 Cursor\t${time}\n👉 Offset\t${offset}\n🕰️ UTC\t${cursorAsDate}\n┄`
     )
   } else {
     console.table(cursor)

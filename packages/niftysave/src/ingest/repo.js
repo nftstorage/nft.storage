@@ -28,7 +28,7 @@ import {
  */
 export async function writeScrapedRecord(config, erc721Import) {
   const record = erc721ImportToNFTEndpoint(erc721Import)
-  console.log(`📥 ${record.mint_time} ${record.id}`)
+  console.log(`✍️ 🌿 ${record.mint_time.toUTCString()}\t🏷️ ${record.id}`)
   return Hasura.mutation(config.hasura, {
     ingest_erc721_token: [
       {

@@ -19,13 +19,13 @@ export async function intiIngestCursor(config) {
       {
         limit: 1,
         where: {
-          updated_at: {
-            _gte: new Date().toISOString(),
+          inserted_at: {
+            _gte: new Date(new Date().toDateString()).toISOString(),
           },
         },
         order_by: [
           {
-            updated_at: Hasura.schema.order_by.desc,
+            inserted_at: Hasura.schema.order_by.desc,
           },
         ],
       },

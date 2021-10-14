@@ -102,7 +102,7 @@ async function readIntoInbox(config, writeable) {
         await sleep(config.ingestRetryThrottle)
       } else {
         await writer.ready
-        console.log(`📨  Adding ${scrape.length} items into Queue.`)
+        console.log(`📨 Adding ${scrape.length} items into Queue.`)
         for (const nft of scrape) {
           writer.write(nft)
           //Continuously update the in-memory cursor
