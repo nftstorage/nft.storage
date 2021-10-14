@@ -107,14 +107,6 @@ r.add('get', '/v0/pins/:requestid', psa(pinsGet, RO), [postCors])
 r.add('post', '/v0/pins/:requestid', psa(pinsReplace, RW), [postCors])
 r.add('delete', '/v0/pins/:requestid', psa(pinsDelete, RW), [postCors])
 
-// Temporary backdoor bypassing maintenance mode middleware
-r.add('get', '/_backdoor', nftListV1, [postCors])
-r.add('get', '/_backdoor/:cid', statusV1, [postCors])
-r.add('post', '/_backdoor/upload', uploadV1, [postCors])
-r.add('post', '/_backdoor/store', nftStoreV1, [postCors])
-r.add('delete', '/_backdoor/:cid', nftDeleteV1, [postCors])
-r.add('get', '/_backdoor/check/:cid', checkV1, [postCors])
-
 // V1 routes
 r.add('post', '/login', withMode(loginV1, RO), [postCors])
 
