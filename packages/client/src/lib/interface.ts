@@ -45,7 +45,11 @@ export interface API {
    * will be transformed into a URL that looks like
    * `ipfs://bafy...hash/image/blob`.
    */
-  store<T extends TokenInput>(service: Service, token: T): Promise<Token<T>>
+  store<T extends TokenInput>(
+    service: Service,
+    token: T,
+    options?: MetadataStorerOptions
+  ): Promise<Token<T>>
   /**
    * Stores a single file and returns a corresponding CID.
    */

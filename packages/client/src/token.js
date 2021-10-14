@@ -1,4 +1,4 @@
-import { Blob, FormData } from './platform.js'
+import { Blob } from './platform.js'
 import { toGatewayURL, GATEWAY } from './gateway.js'
 
 /**
@@ -54,19 +54,6 @@ export class Token {
    */
   static embed({ data }) {
     return embed(data, { gateway: GATEWAY })
-  }
-
-  /**
-   * Encode the passed metadata object as an IPNFT and store the DAG in the
-   * passed blockstore.
-   *
-   * @template {API.TokenInput} T
-   * @param {API.Encoded<T, [[Blob, Blob]]>} metadata
-   * @param {import('ipfs-car/blockstore').Blockstore} blockstore
-   * @returns {Promise<Token<T>>}
-   */
-  static async encode(metadata, blockstore) {
-    throw new Error('not implemented')
   }
 }
 
@@ -125,21 +112,20 @@ const isEncodedURL = (value, assetPaths, path) =>
   typeof value === 'string' && assetPaths.has(path.join('.'))
 
 /**
- * Takes token input and encodes it into
- * [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
- * object where form field values are discovered `Blob` (or `File`) objects in
+ * Takes token input and encodes it into a
+ * [Map](https://developer.mozilla.org/en-US/docs/Web/API/Map)
+ * object where values are discovered `Blob` (or `File`) objects in
  * the given token and field keys are `.` joined paths where they were discoverd
- * in the token. Additionally encoded `FormData` will also have a field
- * named `meta` containing JSON serialized token with blobs and file values
- * `null` set to null (this allows backend to injest all of the files from
- * `multipart/form-data` request and update provided "meta" data with
+ * in the token. Additionally a clone of the passed input `meta` with blobs and
+ * file values set to `null` (this allows backend to injest all of the files
+ * from `multipart/form-data` request and update provided "meta" data with
  * corresponding file ipfs:// URLs)
  *
  * @example
  * ```js
  * const cat = new File([], 'cat.png')
  * const kitty = new File([], 'kitty.png')
- * const form = encode({
+ * const [map, meta] = encode({
  *   name: 'hello'
  *   image: cat
  *   properties: {
@@ -148,35 +134,36 @@ const isEncodedURL = (value, assetPaths, path) =>
  *     }
  *   }
  * })
- * [...form.entries()] //>
+ * [...map.entries()] //>
  * // [
  * //   ['image', cat],
  * //   ['properties.extra.image', kitty],
  * //   ['meta', '{"name":"hello",image:null,"properties":{"extra":{"kitty": null}}}']
  * // ]
+ * meta //>
+ * // {
+ * //   name: 'hello'
+ * //   image: null
+ * //   properties: {
+ * //     extra: {
+ * //       image: null
+ * //     }
+ * //   }
+ * // }
  * ```
  *
  * @template {TokenInput} T
  * @param {EncodedBlobBlob<T>} input
- * @returns {FormData}
+ * @returns {[Map<string, Blob>, MatchRecord<T, (input: Blob) => void>]}
  */
-export const encode = (input) => {
-  const [form, meta] = mapValueWith(
-    input,
-    isBlob,
-    encodeBlob,
-    new FormData(),
-    []
-  )
-  form.set('meta', JSON.stringify(meta))
-  return form
-}
+export const encode = (input) =>
+  mapValueWith(input, isBlob, encodeBlob, new Map(), [])
 
 /**
- * @param {FormData} data
+ * @param {Map<string, Blob>} data
  * @param {Blob} blob
  * @param {PropertyKey[]} path
- * @returns {[FormData, void]}
+ * @returns {[Map<string, Blob>, void]}
  */
 const encodeBlob = (data, blob, path) => {
   data.set(path.join('.'), blob)

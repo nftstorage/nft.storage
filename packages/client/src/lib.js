@@ -19,6 +19,9 @@ import pRetry from 'p-retry'
 import { TreewalkCarSplitter } from 'carbites/treewalk'
 import { pack } from 'ipfs-car/pack'
 import { CID } from 'multiformats/cid'
+import * as Block from 'multiformats/block'
+import { sha256 } from 'multiformats/hashes/sha2'
+import * as dagCbor from '@ipld/dag-cbor'
 import { BlockstoreCarReader } from './blockstore.js'
 import * as Token from './token.js'
 import { fetch, File, Blob, FormData, Blockstore } from './platform.js'
@@ -221,29 +224,75 @@ class NFTStorage {
   }
 
   /**
-   * @template {import('./lib/interface.js').TokenInput} T
+   * @template {import('./lib/interface').TokenInput} T
    * @param {Service} service
-   * @param {T} metadata
+   * @param {T} input
    * @param {import('./lib/interface').MetadataStorerOptions} [options]
    * @returns {Promise<TokenType<T>>}
    */
   static async store(
     service,
-    metadata,
+    input,
     { onRootCidReady, onStoredChunk, maxRetries } = {}
   ) {
-    validateERC1155(metadata)
+    validateERC1155(input)
     const blockstore = new Blockstore()
     try {
-      const token = await Token.Token.encode(metadata, blockstore)
-      onRootCidReady && onRootCidReady(token.ipnft)
-      const car = new BlockstoreCarReader(
-        1,
-        [CID.parse(token.ipnft)],
-        blockstore
-      )
+      const [blobs, meta] = Token.encode(input)
+      /** @type {import('./lib/interface').Encoded<T, [[Blob, URL]]>} */
+      const data = JSON.parse(JSON.stringify(meta))
+      /** @type {import('./lib/interface').Encoded<T, [[Blob, CID]]>} */
+      const dag = JSON.parse(JSON.stringify(meta))
+
+      for (const [dotPath, blob] of blobs.entries()) {
+        /** @type {string|undefined} */
+        // @ts-ignore blob may be a File!
+        const name = blob.name || 'blob'
+        const { root: cid } = await pack({
+          // @ts-ignore
+          input: [{ path: name, content: blob.stream() }],
+          blockstore,
+          wrapWithDirectory: true,
+        })
+
+        const href = new URL(`ipfs://${cid}/${name}`)
+        const path = dotPath.split('.')
+        setIn(data, path, href)
+        setIn(dag, path, cid)
+      }
+
+      const { root: metadataJsonCid } = await pack({
+        // @ts-ignore
+        input: [
+          {
+            path: 'metadata.json',
+            content: new Blob([JSON.stringify(data)]).stream(),
+          },
+        ],
+        blockstore,
+        wrapWithDirectory: false,
+      })
+
+      const block = await Block.encode({
+        value: {
+          ...dag,
+          'metadata.json': metadataJsonCid,
+          type: 'nft',
+        },
+        codec: dagCbor,
+        hasher: sha256,
+      })
+      await blockstore.put(block.cid, block.bytes)
+
+      onRootCidReady && onRootCidReady(block.cid.toString())
+      const car = new BlockstoreCarReader(1, [block.cid], blockstore)
       await NFTStorage.storeCar(service, car, { onStoredChunk, maxRetries })
-      return token
+
+      return new Token.Token(
+        block.cid.toString(),
+        `ipfs://${block.cid}/metadata.json`,
+        data
+      )
     } finally {
       await blockstore.close()
     }
@@ -475,12 +524,13 @@ class NFTStorage {
    * console.log('metadata.json with IPFS gateway URLs:\n', metadata.embed())
    * ```
    *
-   * @template {import('./lib/interface.js').TokenInput} T
+   * @template {import('./lib/interface').TokenInput} T
    * @param {T} token
+   * @param {import('./lib/interface').MetadataStorerOptions} [options]
    * @returns {Promise<TokenType<T>>}
    */
-  store(token) {
-    return NFTStorage.store(this, token)
+  store(token, options) {
+    return NFTStorage.store(this, token, options)
   }
 }
 
@@ -539,5 +589,32 @@ const decodeDeals = (deals) =>
  * @returns {Pin}
  */
 const decodePin = (pin) => ({ ...pin, created: new Date(pin.created) })
+
+/**
+ * Sets a given `value` at the given `path` on a passed `object`.
+ *
+ * @example
+ * ```js
+ * const obj = { a: { b: { c: 1 }}}
+ * setIn(obj, ['a', 'b', 'c'], 5)
+ * obj.a.b.c //> 5
+ * ```
+ *
+ * @template V
+ * @param {any} object
+ * @param {string[]} path
+ * @param {V} value
+ */
+const setIn = (object, path, value) => {
+  const n = path.length - 1
+  let target = object
+  for (let [index, key] of path.entries()) {
+    if (index === n) {
+      target[key] = value
+    } else {
+      target = target[key]
+    }
+  }
+}
 
 export { NFTStorage, File, Blob, FormData, toGatewayURL, Token }
