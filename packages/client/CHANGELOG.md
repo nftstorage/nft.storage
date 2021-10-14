@@ -1,5 +1,13 @@
 # Changelog
 
+### [3.3.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v3.3.0...nft.storage-v3.3.1) (2021-10-14)
+
+
+### Changes
+
+* prettier and LF line endings (no functional changes) ([#580](https://www.github.com/ipfs-shipyard/nft.storage/issues/580)) ([e1e5bc4](https://www.github.com/ipfs-shipyard/nft.storage/commit/e1e5bc47e5ae112a0775a25b275691a818665f37))
+* update example dependencies ([f1ca9db](https://www.github.com/ipfs-shipyard/nft.storage/commit/f1ca9dbed41cad4a21b1f27f78abf84307194840))
+
 ## [3.3.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/nft.storage-v3.2.2...nft.storage-v3.3.0) (2021-09-29)
 
 
