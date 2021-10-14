@@ -1,3 +1,4 @@
+import * as Cursor from './../hasura/cursor.js'
 import * as ERC721 from '../../gen/erc721/index.js'
 import * as Hasura from './../hasura.js'
 
@@ -26,11 +27,12 @@ import {
  * @param { ERC721ImportNFT } erc721Import
  */
 export async function writeScrapedRecord(config, erc721Import) {
-  console.log(`📥 Write ${erc721Import.id} to Hasura`)
+  const record = erc721ImportToNFTEndpoint(erc721Import)
+  console.log(`✍️ 🌿 ${record.mint_time.toUTCString()}\t🏷️ ${record.id}`)
   return Hasura.mutation(config.hasura, {
     ingest_erc721_token: [
       {
-        args: erc721ImportToNFTEndpoint(erc721Import),
+        args: record,
       },
       {
         id: true,
@@ -44,10 +46,10 @@ export async function writeScrapedRecord(config, erc721Import) {
  * Calls Subgraph and returns a batch of NFT records.
  * Hydrates the inbox.
  * @param { Config } config
- * @param { string } cursor
+ * @param { Cursor.Cursor<number> } cursor
  * @returns { Promise<ERC721ImportNFT[]> }
  */
-export async function fetchNextNFTBatch(config, cursor) {
+export async function fetchNFTBatch(config, cursor) {
   try {
     const nftsResult = await ERC721.query(
       config.erc721,
@@ -72,13 +74,15 @@ export async function fetchNextNFTBatch(config, cursor) {
  * If this is the first query, starting this module for the first time, the cursor
  * will be the id of whatever record was written last in our database.
  * @param {Config} config
- * @param {string} cursor
+ * @param {Cursor.Cursor<number>} cursor
  * @returns { ERC721.schema.QueryRequest }
  */
 const createSubgraphQuery = (config, cursor) => {
   const query = {
     first: config.ingestBatchSize,
-    where: { tokenURI_not: '', id_gt: cursor },
+    skip: cursor.offset,
+    where: { mintTime_gte: cursor.time.toString() },
+    orderBy: ERC721.schema.Token_orderBy.mintTime,
   }
   const erc721ResultDefinition = {
     id: 1,

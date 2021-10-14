@@ -1,12 +1,13 @@
+import * as Cursor from './hasura/cursor.js'
 import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
-import { fetchNextNFTBatch, writeScrapedRecord } from './ingest/repo.js'
+import { fetchNFTBatch, writeScrapedRecord } from './ingest/repo.js'
 
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
-// import { intializeCursor } from './ingest/cursor.js'
+import { initIngestCursor } from './ingest/cursor.js'
 import { script } from 'subprogram'
 import { setTimeout as sleep } from './timers.js'
 
@@ -67,8 +68,11 @@ async function spawn(config) {
  */
 async function readIntoInbox(config, writeable) {
   const writer = writeable.getWriter()
-  //   let cursor = await intializeCursor(config)
-  let cursor = ''
+
+  let cursor = Cursor.init(await initIngestCursor(config))
+
+  Cursor.print(cursor)
+
   while (true) {
     let scrape = []
     try {
@@ -80,7 +84,7 @@ async function readIntoInbox(config, writeable) {
        * Eventually after enough failures, we can actually throw
        */
       scrape = await retry(
-        async () => fetchNextNFTBatch(config, cursor),
+        async () => fetchNFTBatch(config, cursor),
         [
           maxRetries(config.ingestScraperRetryLimit),
           exponentialBackoff(
@@ -98,12 +102,14 @@ async function readIntoInbox(config, writeable) {
         await sleep(config.ingestRetryThrottle)
       } else {
         await writer.ready
-        console.log(`📨  Adding ${scrape.length} items into Queue.`)
+        console.log(`📨 Adding ${scrape.length} items into Queue.`)
         for (const nft of scrape) {
           writer.write(nft)
           //Continuously update the in-memory cursor
-          cursor = nft.id
+          cursor = Cursor.after(cursor, parseInt(nft.mintTime))
         }
+        //Its useful to see what the cursor is periodically.
+        Cursor.print(cursor)
       }
     } catch (err) {
       console.error(`Something unexpected happened scraping nfts`, err)

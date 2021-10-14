@@ -11,30 +11,35 @@ import * as Hasura from '../hasura.js'
  * beginning because the db is empty
  * This is our starting cursor.
  * @param { Config } config
- * @returns { Promise<string>}
+ * @returns { Promise<number>}
  */
-export async function intializeCursor(config) {
-  const query = {
-    limit: 1,
-    order_by: [
-      {
-        inserted_at: Hasura.schema.order_by.desc,
-      },
-    ],
-  }
-
-  /**
-   * required type annotation due to design limitation in TS
-   * https://github.com/microsoft/TypeScript/issues/19360
-   * @type {{
-   *    id: true | undefined
-   *    updated_at: true | undefined
-   * }}
-   */
-  const resultsDefinition = { id: true, updated_at: true }
+export async function initIngestCursor(config) {
   const lastNFT = await Hasura.query(config.hasura, {
-    nft: [query, resultsDefinition],
+    nft: [
+      {
+        limit: 1,
+        where: {
+          inserted_at: {
+            _gte: new Date(new Date().toDateString()).toISOString(),
+          },
+        },
+        order_by: [
+          {
+            inserted_at: Hasura.schema.order_by.desc,
+          },
+        ],
+      },
+      { id: true, inserted_at: true, mint_time: true },
+    ],
   })
-
-  return lastNFT?.nft[0]?.id || '0'
+  console.log(`🪙 Init NFT\n${JSON.stringify(lastNFT, null, 2)}`)
+  /**
+   * You need to get the date in the database, or just start at the epoch,
+   * [ new Date(0) = Dec 31st 1969 whereas new Date() = now ]
+   * return the epoch { number } in UTC; getTime() always uses UTC
+   * ERC721 is in *seconds* JS is in *ms* so /1000
+   */
+  const mint_time = lastNFT?.nft[0]?.mint_time || 0
+  const cursor = Math.round(new Date(mint_time).getTime() / 1000)
+  return cursor
 }
