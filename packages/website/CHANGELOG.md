@@ -1,5 +1,18 @@
 # Changelog
 
+### [1.7.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.7.0...website-v1.7.1) (2021-10-14)
+
+
+### Bug Fixes
+
+* add more vertical space between FAQ items ([6958970](https://www.github.com/ipfs-shipyard/nft.storage/commit/6958970c5016cfd3bc5a8e1286ba2022d05a2988))
+
+
+### Changes
+
+* move v1 to root (minimal changes) ([#534](https://www.github.com/ipfs-shipyard/nft.storage/issues/534)) ([c60cf6c](https://www.github.com/ipfs-shipyard/nft.storage/commit/c60cf6c06dc5812f980152fcb9b451a84cf9aba7))
+* prettier and LF line endings (no functional changes) ([#580](https://www.github.com/ipfs-shipyard/nft.storage/issues/580)) ([e1e5bc4](https://www.github.com/ipfs-shipyard/nft.storage/commit/e1e5bc47e5ae112a0775a25b275691a818665f37))
+
 ## [1.7.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.6.1...website-v1.7.0) (2021-10-08)
 
 
