@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.7.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.7.0...api-v2.7.1) (2021-10-14)
+
+
+### Bug Fixes
+
+* metrics exposition format ([#614](https://www.github.com/ipfs-shipyard/nft.storage/issues/614)) ([242cd3a](https://www.github.com/ipfs-shipyard/nft.storage/commit/242cd3ab1bbf459281e9febc506fd76be612a5a8))
+
 ## [2.7.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.6.0...api-v2.7.0) (2021-10-14)
 
 
