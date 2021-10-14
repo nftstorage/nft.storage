@@ -1,3 +1,4 @@
+import * as Cursor from './../hasura/cursor'
 import * as ERC721 from '../../gen/erc721/index.js'
 import * as Hasura from './../hasura.js'
 
@@ -45,7 +46,7 @@ export async function writeScrapedRecord(config, erc721Import) {
  * Calls Subgraph and returns a batch of NFT records.
  * Hydrates the inbox.
  * @param { Config } config
- * @param { Cursor } cursor
+ * @param { Cursor.Cursor<any> } cursor
  * @returns { Promise<ERC721ImportNFT[]> }
  */
 export async function fetchNextNFTBatch(config, cursor) {
@@ -73,7 +74,7 @@ export async function fetchNextNFTBatch(config, cursor) {
  * If this is the first query, starting this module for the first time, the cursor
  * will be the id of whatever record was written last in our database.
  * @param {Config} config
- * @param {Cursor} cursor
+ * @param {Cursor.Cursor<any>} cursor
  * @returns { ERC721.schema.QueryRequest }
  */
 const createSubgraphQuery = (config, cursor) => {
