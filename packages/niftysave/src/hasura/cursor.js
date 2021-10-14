@@ -26,6 +26,7 @@
  * { time: '2021-10-04T22:17:26.934Z', offset: 1 } // data:e
  * ```
  *
+ *
  * @template Time
  * @typedef {Object} Cursor
  * @property {Time} time - Timestamp of the record as an ISO (string) or Unix Timestamp (number in seconds)

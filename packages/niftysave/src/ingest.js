@@ -3,7 +3,7 @@ import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
-import { fetchNextNFTBatch, writeScrapedRecord } from './ingest/repo.js'
+import { fetchNFTBatch, writeScrapedRecord } from './ingest/repo.js'
 
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
@@ -84,7 +84,7 @@ async function readIntoInbox(config, writeable) {
        * Eventually after enough failures, we can actually throw
        */
       scrape = await retry(
-        async () => fetchNextNFTBatch(config, cursor),
+        async () => fetchNFTBatch(config, cursor),
         [
           maxRetries(config.ingestScraperRetryLimit),
           exponentialBackoff(

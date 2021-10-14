@@ -39,7 +39,7 @@ export async function intializeCursor(config) {
    * return the epoch { number } in UTC; getTime() always uses UTC
    * ERC721 is in *seconds* JS is in *ms* so /1000
    */
-  const mint_time = lastNFT?.nft[0]?.mint_time || '0'
+  const mint_time = lastNFT?.nft[0]?.mint_time || 0
   const cursor = Math.round(new Date(mint_time).getTime() / 1000)
   return cursor
 }
