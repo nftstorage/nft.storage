@@ -146,6 +146,7 @@ class Router {
       try {
         rsp = await handler(event, { sentry: this.sentry, params })
       } catch (err) {
+        // @ts-ignore
         rsp = this.options.onError(req, err, { sentry: this.sentry, params })
       }
     } else {

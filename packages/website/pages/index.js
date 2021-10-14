@@ -498,12 +498,32 @@ function FAQ() {
           </HashLink>
         </h2>
         <p className="lh-copy white mb4">
-          NFT.Storage fills the gap for NFT developers <strong>today </strong>
-          who are looking for easy APIs and best practices for storing their NFT
-          data securely and resiliently. In the long-term, NFT.Storage will
-          hopefully decentralize itself out of existence, upgrading today&apos;s
-          implementation into the provably permanent storage solutions of
-          tomorrow.
+          NFT.Storage helps NFT developers today who are looking for easy APIs
+          and best practices for storing their NFT data securely and
+          resiliently. Even in the short-term, it is a fairly decentralized
+          solution. Users are able to trustlessly verify that the{' '}
+          <a
+            className="white"
+            href="https://docs.ipfs.io/concepts/content-addressing"
+            target="_blank"
+            rel="noreferrer"
+          >
+            content identifiers
+          </a>{' '}
+          that the service provides corresponds to their data, and that this
+          data is hosted in multiple ways across the IPFS and Filecoin networks
+          (allowing for accessibility across the network and preventing
+          lock-in).
+          <br />
+          Though we believe that there will always be value in some form of the
+          libraries and services NFT.Storage provides, in the long-term the goal
+          is to increasingly decentralize NFT.Storage. This includes, but is not
+          limited to, making it easy for users to deploy and run their own
+          NFT.Storage storage service, as well as relying more directly on the
+          Filecoin network (e.g., storing data directly on the Filecoin network
+          without putting it on a centralized IPFS node first), upgrading
+          {"today's"} NFT.Storage implementation into the provably permanent
+          storage solutions of tomorrow.
         </p>
         <h2 className="chicagoflf white">
           <HashLink id="how-long-will-data-be-stored-on-nftstorage">
