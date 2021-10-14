@@ -20,6 +20,7 @@
     "isomorphic-form-data": "^2.0.0",
     "magic-sdk": "^4.2.1",
     "nft.storage": "^3.3.0",
+    "querystring-browser": "^1.0.4",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-if": "^4.0.1",
