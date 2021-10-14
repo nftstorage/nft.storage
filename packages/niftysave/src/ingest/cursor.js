@@ -18,9 +18,14 @@ export async function intializeCursor(config) {
     nft: [
       {
         limit: 1,
+        where: {
+          updated_at: {
+            _gte: new Date().toISOString(),
+          },
+        },
         order_by: [
           {
-            inserted_at: Hasura.schema.order_by.desc,
+            updated_at: Hasura.schema.order_by.desc,
           },
         ],
       },
@@ -34,7 +39,7 @@ export async function intializeCursor(config) {
    * return the epoch { number } in UTC; getTime() always uses UTC
    * ERC721 is in *seconds* JS is in *ms* so /1000
    */
-  const mint_time = 0
+  const mint_time = lastNFT?.nft[0]?.mint_time || '0'
   const cursor = Math.round(new Date(mint_time).getTime() / 1000)
   return cursor
 }
