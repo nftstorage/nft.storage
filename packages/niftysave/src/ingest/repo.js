@@ -74,14 +74,14 @@ export async function fetchNextNFTBatch(config, cursor) {
  * If this is the first query, starting this module for the first time, the cursor
  * will be the id of whatever record was written last in our database.
  * @param {Config} config
- * @param {Cursor.Cursor<any>} cursor
+ * @param {Cursor.Cursor<number>} cursor
  * @returns { ERC721.schema.QueryRequest }
  */
 const createSubgraphQuery = (config, cursor) => {
   const query = {
     first: config.ingestBatchSize,
     offset: cursor.offset,
-    where: { mintTime_gte: cursor.time },
+    where: { mintTime_gte: cursor.time.toString() },
   }
   const erc721ResultDefinition = {
     id: 1,

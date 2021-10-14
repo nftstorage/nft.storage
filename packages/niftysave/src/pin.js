@@ -125,7 +125,7 @@ const readInto = async (writable, config) => {
  * @param {Object} config
  * @param {Hasura.Config} config.hasura
  * @param {number} config.batchSize
- * @param {Cursor.Cursor<any>} cursor
+ * @param {Cursor.Cursor<string>} cursor
  * @returns {Promise<Resource[]>}
  */
 const fetchQueuedResources = async (config, cursor) => {

@@ -28,7 +28,7 @@
  *
  * @template Time
  * @typedef {Object} Cursor
- * @property {Time} time - Timestamp of the record as an ISO string.
+ * @property {Time} time - Timestamp of the record as an ISO (string) or Unix Timestamp (number in seconds)
  * @property {number} offset - Number of records with matching `updated_at` to skip.
  */
 
