@@ -40,10 +40,12 @@
  * @param {Time} time
  * @returns {Cursor<Time>}
  */
-export const init = (time) => ({
-  time,
-  offset: 0,
-})
+export const init = (time) => {
+  return {
+    time,
+    offset: 0,
+  }
+}
 
 /**
  * Advanced current `cursor` given a new `record`. New cursor

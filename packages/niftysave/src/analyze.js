@@ -1,15 +1,17 @@
-import * as Result from './result.js'
-import * as IPFSURL from './ipfs-url.js'
 import * as Cluster from './cluster.js'
+import * as Cursor from './hasura/cursor.js'
+import * as Hasura from './hasura.js'
 import * as IPFS from './ipfs.js'
+import * as IPFSURL from './ipfs-url.js'
+import * as Result from './result.js'
+
+import { exponentialBackoff, maxRetries, retry } from './retry.js'
 import { fetchResource, timeout } from './net.js'
+
+import { TransformStream } from './stream.js'
 import { configure } from './config.js'
 import { printURL } from './util.js'
 import { script } from 'subprogram'
-import * as Hasura from './hasura.js'
-import { exponentialBackoff, maxRetries, retry } from './retry.js'
-import * as Cursor from './hasura/cursor.js'
-import { TransformStream } from './stream.js'
 import { setTimeout as sleep } from './timers.js'
 
 export const main = async () => await spawn(await configure())
@@ -62,7 +64,7 @@ const spawn = async (config) => {
 const readInto = async (writable, config) => {
   const writer = writable.getWriter()
   try {
-    let cursor = Cursor.init()
+    let cursor = Cursor.init(new Date().toISOString())
 
     while (true) {
       console.log(
@@ -101,7 +103,7 @@ const readInto = async (writable, config) => {
 
         // Update cursor to point to the record after the last one.
         const lastRecord = /** @type {Asset} */ (page[page.length - 1])
-        cursor = Cursor.after(cursor, lastRecord)
+        cursor = Cursor.after(cursor, lastRecord.updated_at)
       }
     }
   } finally {
@@ -122,7 +124,7 @@ const readInto = async (writable, config) => {
  * @param {Object} config
  * @param {Hasura.Config} config.hasura
  * @param {number} config.batchSize
- * @param {Cursor.Cursor} cursor
+ * @param {Cursor} cursor
  * @returns {Promise<Asset[]>}
  */
 const fetchQueuedAssets = async (config, cursor) => {
@@ -134,7 +136,7 @@ const fetchQueuedAssets = async (config, cursor) => {
             _eq: 'Queued',
           },
           updated_at: {
-            _gte: cursor.updated_at,
+            _gte: cursor.time,
           },
         },
         order_by: [
