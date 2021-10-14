@@ -1,4 +1,4 @@
-import * as Cursor from './../hasura/cursor'
+import * as Cursor from './../hasura/cursor.js'
 import * as ERC721 from '../../gen/erc721/index.js'
 import * as Hasura from './../hasura.js'
 
