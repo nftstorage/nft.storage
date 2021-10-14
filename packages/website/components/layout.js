@@ -51,7 +51,7 @@ const MaintenanceBanner = () => {
   if (maintenanceMessage) {
     return (
       <div className="bg-yellow bb b--black" style={{ zIndex: 50 }}>
-        <div className="lh-copy mw9 tc center pv3 ph3-ns">
+        <div className="lh-copy mw9 tc center pv3 ph3">
           <span className="f4">⚠</span> {maintenanceMessage}
         </div>
       </div>
