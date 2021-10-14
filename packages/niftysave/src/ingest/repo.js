@@ -26,11 +26,12 @@ import {
  * @param { ERC721ImportNFT } erc721Import
  */
 export async function writeScrapedRecord(config, erc721Import) {
-  console.log(`📥 Write ${erc721Import.id} to Hasura`)
+  const record = erc721ImportToNFTEndpoint(erc721Import)
+  console.log(`📥 ${record.mint_time} ${record.id}`)
   return Hasura.mutation(config.hasura, {
     ingest_erc721_token: [
       {
-        args: erc721ImportToNFTEndpoint(erc721Import),
+        args: record,
       },
       {
         id: true,

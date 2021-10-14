@@ -30,11 +30,11 @@ export async function intializeCursor(config) {
   console.log(`🪙 Init NFT\n${JSON.stringify(lastNFT, null, 2)}`)
   /**
    * You need to get the date in the database, or just start at the epoch,
-   * [ new Date(null) = Dec 31st 1969 whereas new Date() = now ]
+   * [ new Date(0) = Dec 31st 1969 whereas new Date() = now ]
    * return the epoch { number } in UTC; getTime() always uses UTC
    * ERC721 is in *seconds* JS is in *ms* so /1000
    */
-  const mint_time = lastNFT?.nft[0]?.mint_time || null
+  const mint_time = 0
   const cursor = Math.round(new Date(mint_time).getTime() / 1000)
   return cursor
 }

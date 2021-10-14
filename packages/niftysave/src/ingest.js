@@ -1,3 +1,4 @@
+import * as Cursor from './hasura/cursor'
 import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
@@ -60,17 +61,6 @@ async function spawn(config) {
 }
 
 /**
- * A method to debug the cursor periodically.
- * @param { number } cursor
- */
-function printCursor(cursor) {
-  const cursorAsDate = new Date(cursor * 1000).toUTCString()
-  console.log(
-    `┄\n👉 Cursor Position:\n⌛ Sec\t${cursor}\n🕰️ UTC\t${cursorAsDate}\n┄`
-  )
-}
-
-/**
  * Inserts nft records by batches into the inbox.
  * @param { Config } config
  * @param { WritableStream<ERC721ImportNFT>} writeable
@@ -78,8 +68,11 @@ function printCursor(cursor) {
  */
 async function readIntoInbox(config, writeable) {
   const writer = writeable.getWriter()
-  let cursor = await intializeCursor(config)
-  printCursor(cursor)
+
+  let cursor = Cursor.init(await intializeCursor(config))
+
+  Cursor.print(cursor)
+
   while (true) {
     let scrape = []
     try {
@@ -91,7 +84,7 @@ async function readIntoInbox(config, writeable) {
        * Eventually after enough failures, we can actually throw
        */
       scrape = await retry(
-        async () => fetchNextNFTBatch(config, cursor),
+        async () => fetchNextNFTBatch(config, cursor.time),
         [
           maxRetries(config.ingestScraperRetryLimit),
           exponentialBackoff(
@@ -113,10 +106,10 @@ async function readIntoInbox(config, writeable) {
         for (const nft of scrape) {
           writer.write(nft)
           //Continuously update the in-memory cursor
-          cursor = parseInt(nft.mintTime)
+          cursor = Cursor.after(cursor, parseInt(nft.mintTime))
         }
         //Its useful to see what the cursor is periodically.
-        printCursor(cursor)
+        Cursor.print(cursor)
       }
     } catch (err) {
       console.error(`Something unexpected happened scraping nfts`, err)
