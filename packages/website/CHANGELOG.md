@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.8.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.8.0...website-v1.8.1) (2021-10-14)
+
+
+### Bug Fixes
+
+* maintenance banner padding and button text color ([#609](https://www.github.com/ipfs-shipyard/nft.storage/issues/609)) ([c04e2f7](https://www.github.com/ipfs-shipyard/nft.storage/commit/c04e2f73d38b72d106a50d090ad0e8fa9e1f9484)), closes [#569](https://www.github.com/ipfs-shipyard/nft.storage/issues/569)
+
 ## [1.8.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/website-v1.7.0...website-v1.8.0) (2021-10-14)
 
 
