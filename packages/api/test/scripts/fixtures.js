@@ -143,6 +143,18 @@ export const fixtures = {
       miner: 'f010479',
       pieceCid: 'baga6ea4seaqi3u2amdhq6dba6kdaccbevfcbqskvqkutdfphfjsa7ntitll7ajy',
       batchRootCid: 'bafybeifaow2p3qrzndvr4dzvms7fun3e3bijuwkwrmzou4zupatyennufy'
+    },
+    {
+      status: 'published',
+      lastChanged: '2021-10-14T22:31:02.522689+00:00',
+      chainDealID: 2596819,
+      datamodelSelector: 'Links/19/Hash/Links/824/Hash/Links/13/Hash',
+      statusText: null,
+      dealActivation: '2021-10-15T22:33:30+00:00',
+      dealExpiration: '2023-03-09T22:33:30+00:00',
+      miner: 'f010446',
+      pieceCid: 'baga6ea4seaqi3u2amdhq6dba6kdaccbevfcbqskvqkutdfphfjsa7ntitll7ajy',
+      batchRootCid: 'bafybeifaow2p3qrzndvr4dzvms7fun3e3bijuwkwrmzou4zupatyennufy'
     }
   ],
 }
