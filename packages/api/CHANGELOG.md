@@ -1,5 +1,14 @@
 # Changelog
 
+### [2.7.2](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.7.1...api-v2.7.2) (2021-10-15)
+
+
+### Bug Fixes
+
+* prometheus metrics tag syntax ([1721e1d](https://www.github.com/ipfs-shipyard/nft.storage/commit/1721e1d20943f4f4c1157cccbbad36160f19f4bf))
+* remove temporary backdoor routes ([#611](https://www.github.com/ipfs-shipyard/nft.storage/issues/611)) ([e1ea7b1](https://www.github.com/ipfs-shipyard/nft.storage/commit/e1ea7b19d9346ae08a02e987599559f5a826cdbd))
+* test fixtures ([7eda172](https://www.github.com/ipfs-shipyard/nft.storage/commit/7eda172ff25285dde234cde1b665e223ec49b6c5))
+
 ### [2.7.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.7.0...api-v2.7.1) (2021-10-14)
 
 
