@@ -45,7 +45,7 @@ describe('client', () => {
       let called = false
       const client = new NFTStorage({ token, endpoint })
       await client.storeBlob(new Blob(['hello world']), {
-        onRootCidReady: (root) => {
+        onRootCidReady: root => {
           called = true
           assert.equal(
             root,
@@ -151,7 +151,7 @@ describe('client', () => {
       assert.equal(cid, expectedCid)
     })
 
-    it('upload large CAR with a CarReader', async function () {
+    it('upload large CAR with a CarReader', async function() {
       this.timeout(130e3)
       let uploadedChunks = 0
 
@@ -231,7 +231,7 @@ describe('client', () => {
           ),
         ],
         {
-          onRootCidReady: (root) => {
+          onRootCidReady: root => {
             called = true
             assert.equal(
               root,
@@ -329,7 +329,7 @@ describe('client', () => {
       const client = new NFTStorage({ token, endpoint })
       try {
         // @ts-expect-error
-        await client.store({ name: 'name' })
+        const t = await client.store({ name: 'name' })
         assert.unreachable('sholud have failed')
       } catch (err) {
         const error = /** @type {Error} */ (err)
@@ -358,7 +358,7 @@ describe('client', () => {
       const warn = console.warn
       try {
         let warnings = ['']
-        console.warn = (msg) => {
+        console.warn = msg => {
           warnings.push(msg)
         }
 
@@ -577,7 +577,7 @@ describe('client', () => {
     })
 
     afterEach(async () => {
-      await Promise.all(preloaded.map((cid) => client.delete(cid)))
+      await Promise.all(preloaded.map(cid => client.delete(cid)))
     })
 
     it('found', async () => {
@@ -729,7 +729,7 @@ describe('client', () => {
     })
 
     afterEach(async () => {
-      await Promise.all(preloaded.map((cid) => client.delete(cid)))
+      await Promise.all(preloaded.map(cid => client.delete(cid)))
     })
 
     it('found', async () => {
@@ -778,12 +778,12 @@ async function randomCar(targetSize) {
     blocks.push({ cid, bytes })
     size += bytes.length
   }
-  const rootBytes = dagCbor.encode(blocks.map((b) => b.cid))
+  const rootBytes = dagCbor.encode(blocks.map(b => b.cid))
   const rootHash = await sha256.digest(rootBytes)
   const rootCid = CID.create(1, dagCbor.code, rootHash)
   const { writer, out } = CarWriter.create([rootCid])
   writer.put({ cid: rootCid, bytes: rootBytes })
-  blocks.forEach((b) => writer.put(b))
+  blocks.forEach(b => writer.put(b))
   writer.close()
   return out
 }

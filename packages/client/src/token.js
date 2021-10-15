@@ -1,9 +1,16 @@
+import { pack } from 'ipfs-car/pack'
+import { CID } from 'multiformats/cid'
+import * as Block from 'multiformats/block'
+import { sha256 } from 'multiformats/hashes/sha2'
+import * as dagCbor from '@ipld/dag-cbor'
+import * as API from './lib/interface.js'
 import { Blob } from './platform.js'
 import { toGatewayURL, GATEWAY } from './gateway.js'
 
 /**
  * @typedef {import('./gateway.js').GatewayURLOptions} EmbedOptions
  * @typedef {import('./lib/interface.js').TokenInput} TokenInput
+ * @typedef {import('ipfs-car/blockstore').Blockstore} Blockstore
  */
 
 /**
@@ -79,7 +86,7 @@ export const decode = ({ ipnft, url, data }, paths) =>
  * @param {any} value
  * @returns {value is URL}
  */
-const isURL = (value) => value instanceof URL
+const isURL = value => value instanceof URL
 
 /**
  * @template State
@@ -100,7 +107,7 @@ const embedURL = (context, url) => [context, toGatewayURL(url, context)]
  * @param {any} value
  * @returns {value is object}
  */
-const isObject = (value) => typeof value === 'object' && value != null
+const isObject = value => typeof value === 'object' && value != null
 
 /**
  * @param {any} value
@@ -112,20 +119,18 @@ const isEncodedURL = (value, assetPaths, path) =>
   typeof value === 'string' && assetPaths.has(path.join('.'))
 
 /**
- * Takes token input and encodes it into a
- * [Map](https://developer.mozilla.org/en-US/docs/Web/API/Map)
- * object where values are discovered `Blob` (or `File`) objects in
- * the given token and field keys are `.` joined paths where they were discoverd
- * in the token. Additionally a clone of the passed input `meta` with blobs and
- * file values set to `null` (this allows backend to injest all of the files
- * from `multipart/form-data` request and update provided "meta" data with
- * corresponding file ipfs:// URLs)
+ * Takes token input and encodes it into a Token object. Where values are
+ * discovered `Blob` (or `File`) objects in the given input, they are replaced
+ * with IPFS URLs (an `ipfs://` prefixed CID with an optional path).
+ *
+ * The passed blockstore is used to store the DAG that is created. The root CID
+ * of which is `token.ipnft`.
  *
  * @example
  * ```js
  * const cat = new File([], 'cat.png')
  * const kitty = new File([], 'kitty.png')
- * const [map, meta] = encode({
+ * const token = await encode({
  *   name: 'hello'
  *   image: cat
  *   properties: {
@@ -133,31 +138,67 @@ const isEncodedURL = (value, assetPaths, path) =>
  *       image: kitty
  *     }
  *   }
- * })
- * [...map.entries()] //>
- * // [
- * //   ['image', cat],
- * //   ['properties.extra.image', kitty],
- * //   ['meta', '{"name":"hello",image:null,"properties":{"extra":{"kitty": null}}}']
- * // ]
- * meta //>
- * // {
- * //   name: 'hello'
- * //   image: null
- * //   properties: {
- * //     extra: {
- * //       image: null
- * //     }
- * //   }
- * // }
+ * }, blockstore)
  * ```
  *
  * @template {TokenInput} T
  * @param {EncodedBlobBlob<T>} input
- * @returns {[Map<string, Blob>, MatchRecord<T, (input: Blob) => void>]}
+ * @param {Blockstore} blockstore
+ * @returns {Promise<Token<T>>}
  */
-export const encode = (input) =>
-  mapValueWith(input, isBlob, encodeBlob, new Map(), [])
+export const encode = async (input, blockstore) => {
+  const [blobs, meta] = mapValueWith(input, isBlob, encodeBlob, new Map(), [])
+  /** @type {API.Encoded<T, [[Blob, URL]]>} */
+  const data = JSON.parse(JSON.stringify(meta))
+  /** @type {API.Encoded<T, [[Blob, CID]]>} */
+  const dag = JSON.parse(JSON.stringify(meta))
+
+  for (const [dotPath, blob] of blobs.entries()) {
+    /** @type {string|undefined} */
+    // @ts-ignore blob may be a File!
+    const name = blob.name || 'blob'
+    const { root: cid } = await pack({
+      // @ts-ignore
+      input: [{ path: name, content: blob.stream() }],
+      blockstore,
+      wrapWithDirectory: true,
+    })
+
+    const href = new URL(`ipfs://${cid}/${name}`)
+    const path = dotPath.split('.')
+    setIn(data, path, href)
+    setIn(dag, path, cid)
+  }
+
+  const { root: metadataJsonCid } = await pack({
+    // @ts-ignore
+    input: [
+      {
+        path: 'metadata.json',
+        content: new Blob([JSON.stringify(data)]).stream(),
+      },
+    ],
+    blockstore,
+    wrapWithDirectory: false,
+  })
+
+  const block = await Block.encode({
+    value: {
+      ...dag,
+      'metadata.json': metadataJsonCid,
+      type: 'nft',
+    },
+    codec: dagCbor,
+    hasher: sha256,
+  })
+  await blockstore.put(block.cid, block.bytes)
+
+  return new Token(
+    block.cid.toString(),
+    `ipfs://${block.cid}/metadata.json`,
+    data
+  )
+}
 
 /**
  * @param {Map<string, Blob>} data
@@ -174,7 +215,7 @@ const encodeBlob = (data, blob, path) => {
  * @param {any} value
  * @returns {value is Blob}
  */
-const isBlob = (value) => value instanceof Blob
+const isBlob = value => value instanceof Blob
 
 /**
  * Substitues values in the given `input` that match `p(value) == true` with
@@ -268,4 +309,31 @@ const mapArrayWith = (input, p, f, init, path) => {
     state,
     /** @type {import('./lib/interface.js').Encoded<T, [[I, O]]>} */ (output),
   ]
+}
+
+/**
+ * Sets a given `value` at the given `path` on a passed `object`.
+ *
+ * @example
+ * ```js
+ * const obj = { a: { b: { c: 1 }}}
+ * setIn(obj, ['a', 'b', 'c'], 5)
+ * obj.a.b.c //> 5
+ * ```
+ *
+ * @template V
+ * @param {any} object
+ * @param {string[]} path
+ * @param {V} value
+ */
+const setIn = (object, path, value) => {
+  const n = path.length - 1
+  let target = object
+  for (let [index, key] of path.entries()) {
+    if (index === n) {
+      target[key] = value
+    } else {
+      target = target[key]
+    }
+  }
 }
