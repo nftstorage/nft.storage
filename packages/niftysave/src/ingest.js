@@ -119,7 +119,7 @@ async function readIntoInbox(config, writeable) {
   }
 }
 
-const BATCH_SIZE = 100
+const BATCH_SIZE = 500
 
 /**
  * Drains records sequentially from the inbox

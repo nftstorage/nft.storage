@@ -29,20 +29,33 @@ import {
 export async function writeScrapedRecords(config, erc721Imports) {
   const records = erc721Imports.map(erc721ImportToNFTEndpoint)
 
-  console.log(`Writing ${records.length}`)
-  console.log(records[0])
+  if (records.length) {
+    console.log(
+      `✍️\n Writing ${
+        records.length
+      }\n⎾ 🌿 ${records[0]?.mint_time.toUTCString()}\t🏷️ ${
+        records[0]?.id
+      }\n⎿ 🌿 ${records[records.length - 1]?.mint_time.toUTCString()}\t🏷️ ${
+        records[records.length - 1]?.id
+      }`
+    )
 
-  //   console.log(`✍️ 🌿 ${record.mint_time.toUTCString()}\t🏷️ ${record.id}`)
-  //   return Hasura.mutation(config.hasura, {
-  //     ingest_erc721_token: [
-  //       {
-  //         args: record,
-  //       },
-  //       {
-  //         id: true,
-  //       },
-  //     ],
-  //   })
+    return Hasura.mutation(config.hasura, {
+      __alias: records.reduce((acc, record, index) => {
+        acc[record.id] = {
+          ingest_erc721_token: [
+            {
+              args: record,
+            },
+            {
+              id: true,
+            },
+          ],
+        }
+        return acc
+      }, {}),
+    })
+  }
 }
 
 /**
