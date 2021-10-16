@@ -134,20 +134,6 @@ async function writeFromInbox(config, readable) {
      * @type ERC721ImportNFT[]
      */
     let nextBatch = []
-
-    //Assemble next batch.
-    while (nextBatch.length < BATCH_SIZE) {
-      const nextImport = await reader.read()
-      if (nextImport.done) {
-        console.log(
-          `⚠️ The Ingestion Stream was closed while assembling a new batch.`
-        )
-        reader.cancel()
-      } else {
-        nextBatch.push(nextImport.value)
-      }
-    }
-
     try {
       /**
        * We will attempt to write an import record that has been scraped.
@@ -159,6 +145,19 @@ async function writeFromInbox(config, readable) {
        * unless the writeable end has unexpectely closed due to an error
        */
 
+      //Assemble next batch.
+      while (nextBatch.length < BATCH_SIZE) {
+        const nextImport = await reader.read()
+        if (nextImport.done) {
+          console.log(
+            `⚠️ The Ingestion Stream was closed while assembling a new batch.`
+          )
+          reader.cancel()
+        } else {
+          nextBatch.push(nextImport.value)
+        }
+      }
+
       await retry(
         async () => await writeScrapedRecords(config, nextBatch),
         [
@@ -169,10 +168,11 @@ async function writeFromInbox(config, readable) {
           ),
         ]
       )
-      //Drain batch after writing.
+
+      //Reset the batch after writing.
       nextBatch = []
     } catch (err) {
-      console.log('Last NFT Batch', nextBatch)
+      console.log('Last NFT Batch', JSON.stringify(nextBatch, null, 2))
       console.error(`Something went wrong when writing scraped nfts`, err)
       reader.cancel(err)
       throw err
