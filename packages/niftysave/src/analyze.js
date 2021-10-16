@@ -283,9 +283,6 @@ const analyze = async (config, asset) => {
     NFTStorage.storeCar(config.nftStorage, metadata.value.car)
   )
 
-  if (!car.ok) {
-  }
-
   console.log(`📝 (${hash}) Link metadata ${metadata.value.cid}`)
 
   return {
@@ -295,8 +292,16 @@ const analyze = async (config, asset) => {
     ipfsURL: ipfsURL,
     metadata: metadata.value,
 
-    resourceStatus: car.ok ? 'ContentLinked' : 'PinRequestFailed',
-    resourceStatusText: car.ok ? '' : `${car.error}\n${car.error.stack}`,
+    resource: car.ok
+      ? {
+          status: 'ContentLinked',
+          statusText: '',
+          cid: metadata.value.cid,
+        }
+      : {
+          status: 'PinRequestFailed',
+          statusText: `${car.error}\n${car.error.stack}`,
+        },
   }
 }
 
@@ -322,7 +327,7 @@ const updateAsset = async (config, state) =>
  * @typedef {Object} ContentLinked
  * @property {'ContentLinked'} status
  * @property {string} statusText
- * @property {CID} cid
+ * @property {string} cid
  *
  * @typedef {Object} PinRequestFailed
  * @property {'PinRequestFailed'} status
