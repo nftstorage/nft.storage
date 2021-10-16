@@ -14,10 +14,11 @@ import yargs from 'yargs'
  * @property {number} retryMaxInterval
  * @property {number} ingestRetryThrottle
  * @property {number} ingestHighWatermark
- * @property {number} ingestBatchSize
+ * @property {number} ingestScraperBatchSize
  * @property {number} ingestScraperRetryLimit
  * @property {number} ingestScraperRetryInterval
  * @property {number} ingestScraperRetryMaxInterval
+ * @property {number} ingestWriterBatchSize
  * @property {number} ingestWriterRetryLimit
  * @property {number} ingestWriterRetryInterval
  * @property {number} ingestWriterRetryMaxInterval
@@ -152,10 +153,10 @@ export const configure = async () => {
         default: Number(process.env['INGEST_HIGH_WATERMARK']) || 500,
         description: `The max number of records the ingestion buffer will hold in memory. Going below this line will trigger additional scraping`,
       },
-      'ingest-batch-size': {
-        alias: 'ingestHighWatermark',
+      'ingest-scraper-batch-size': {
+        alias: 'ingestScraperBatchSize',
         type: 'number',
-        default: Number(process.env['INGEST_BATCH_SIZE']) || 100,
+        default: Number(process.env['INGEST_SCRAPER_BATCH_SIZE']) || 1000,
         description: `The number of records the ingestor tries to pull of the blockchain per-scrape`,
       },
       'ingest-scraper-retry-limit': {
@@ -179,6 +180,12 @@ export const configure = async () => {
         ),
         description:
           'Max sleep frame between retries when scraping the blockchain',
+      },
+      'ingest-writer-batch-size': {
+        alias: 'ingestWriterBatchSize',
+        type: 'number',
+        default: Number(process.env['INGEST_WRITER_BATCH_SIZE']) || 500,
+        description: `The number of records the ingestor tries write into the database as a batch`,
       },
       'ingest-writer-retry-limit': {
         type: 'number',
@@ -217,12 +224,13 @@ export const configure = async () => {
 
     ingestRetryThrottle: config['ingest-retry-throttle'],
     ingestHighWatermark: config['ingest-high-watermark'],
-    ingestBatchSize: config['ingest-batch-size'],
+    ingestScraperBatchSize: config['ingest-scraper-batch-size'],
 
     ingestScraperRetryLimit: config['ingest-scraper-retry-limit'],
     ingestScraperRetryInterval: config['ingest-scraper-retry-interval'],
     ingestScraperRetryMaxInterval: config['ingest-scraper-retry-max-interval'],
 
+    ingestWriterBatchSize: config['ingest-writer-batch-size'],
     ingestWriterRetryLimit: config['ingest-writer-retry-limit'],
     ingestWriterRetryInterval: config['ingest-writer-retry-interval'],
     ingestWriterRetryMaxInterval: config['ingest-writer-retry-max-interval'],

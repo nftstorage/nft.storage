@@ -10,13 +10,14 @@ import {
 /**
  * @typedef {import('./index').ERC721ImportNFT} ERC721ImportNFT
  * @typedef {import('./index').NFTSSubgraphResult} NFTSSubgraphResult
+ * @typedef {import('./index').NFTEndpointRecord } NFTEndpointRecord
  */
 
 /**
  * @typedef { Object } Config
  * @property { ERC721.Config } config.erc721
  * @property { Hasura.Config } config.hasura
- * @property { number } config.ingestBatchSize
+ * @property { number } config.ingestScraperBatchSize
  */
 
 /**
@@ -24,12 +25,40 @@ import {
  * Persist a single NFT Record that was imported.
  * Drains the inbox.
  * @param { Config } config
- * @param { ERC721ImportNFT } erc721Import
+ * @param { ERC721ImportNFT[] } erc721Imports
  */
-export async function writeScrapedRecord(config, erc721Import) {
-  const record = erc721ImportToNFTEndpoint(erc721Import)
-  console.log(`✍️ 🌿 ${record.mint_time.toUTCString()}\t🏷️ ${record.id}`)
+export async function writeScrapedRecords(config, erc721Imports) {
+  const records = erc721Imports.map(erc721ImportToNFTEndpoint)
+  printBatch(records)
+  const batchMutation = Object.fromEntries(
+    records.map(recordToMutation).entries()
+  )
   return Hasura.mutation(config.hasura, {
+    __alias: batchMutation,
+  })
+}
+
+/**
+ * @param {NFTEndpointRecord[]} records
+ */
+function printBatch(records) {
+  console.log(
+    `✍️\n Writing ${
+      records.length
+    }\n⎾ 🌿 ${records[0]?.mint_time.toUTCString()}\t🏷️ ${
+      records[0]?.id
+    }\n⎿ 🌿 ${records[records.length - 1]?.mint_time.toUTCString()}\t🏷️ ${
+      records[records.length - 1]?.id
+    }`
+  )
+}
+
+/**
+ * @param {NFTEndpointRecord} record
+ * @returns {Hasura.Mutation}
+ */
+function recordToMutation(record) {
+  return {
     ingest_erc721_token: [
       {
         args: record,
@@ -38,7 +67,7 @@ export async function writeScrapedRecord(config, erc721Import) {
         id: true,
       },
     ],
-  })
+  }
 }
 
 /**
@@ -79,7 +108,7 @@ export async function fetchNFTBatch(config, cursor) {
  */
 const createSubgraphQuery = (config, cursor) => {
   const query = {
-    first: config.ingestBatchSize,
+    first: config.ingestScraperBatchSize,
     skip: cursor.offset,
     where: { mintTime_gte: cursor.time.toString() },
     orderBy: ERC721.schema.Token_orderBy.mintTime,
