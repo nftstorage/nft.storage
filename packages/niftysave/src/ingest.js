@@ -22,10 +22,11 @@ import { setTimeout as sleep } from './timers.js'
  * @property { Hasura.Config } config.hasura
  * @property { number } config.ingestRetryThrottle
  * @property { number } config.ingestHighWatermark
- * @property { number } config.ingestBatchSize
+ * @property { number } config.ingestScraperBatchSize
  * @property { number } config.ingestScraperRetryLimit
  * @property { number } config.ingestScraperRetryInterval
  * @property { number } config.ingestScraperRetryMaxInterval
+ * @property { number } config.ingestWriterBatchSize
  * @property { number } config.ingestWriterRetryLimit
  * @property { number } config.ingestWriterRetryInterval
  * @property { number } config.ingestWriterRetryMaxInterval
@@ -119,8 +120,6 @@ async function readIntoInbox(config, writeable) {
   }
 }
 
-const BATCH_SIZE = 500
-
 /**
  * Drains records sequentially from the inbox
  * @param { Config } config
@@ -136,17 +135,16 @@ async function writeFromInbox(config, readable) {
     let nextBatch = []
     try {
       /**
-       * We will attempt to write an import record that has been scraped.
+       * We will attempt to write several import records that have been scraped.
        * If the write is a failure, we will retry, to account for intermittent outages
        * If failure occurs several times and for long enough, we throw an error.
-       * We write from the Transform stream, one record at a time, as quickly as we can.
-       * this makes cursor-tracking on restart very simple and prevents lossy data.
+       * We write from the Transform stream, in specified batches.
        * this stream should typically never be closed,
        * unless the writeable end has unexpectely closed due to an error
        */
 
       //Assemble next batch.
-      while (nextBatch.length < BATCH_SIZE) {
+      while (nextBatch.length < config.ingestWriterBatchSize) {
         const nextImport = await reader.read()
         if (nextImport.done) {
           console.log(

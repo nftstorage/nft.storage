@@ -10,13 +10,14 @@ import {
 /**
  * @typedef {import('./index').ERC721ImportNFT} ERC721ImportNFT
  * @typedef {import('./index').NFTSSubgraphResult} NFTSSubgraphResult
+ * @typedef {import('./index').NFTEndpointRecord } NFTEndpointRecord
  */
 
 /**
  * @typedef { Object } Config
  * @property { ERC721.Config } config.erc721
  * @property { Hasura.Config } config.hasura
- * @property { number } config.ingestBatchSize
+ * @property { number } config.ingestScraperBatchSize
  */
 
 /**
@@ -28,7 +29,19 @@ import {
  */
 export async function writeScrapedRecords(config, erc721Imports) {
   const records = erc721Imports.map(erc721ImportToNFTEndpoint)
+  printBatch(records)
+  const batchMutation = Object.fromEntries(
+    records.map(recordToMutation).entries()
+  )
+  return Hasura.mutation(config.hasura, {
+    __alias: batchMutation,
+  })
+}
 
+/**
+ * @param {NFTEndpointRecord[]} records
+ */
+function printBatch(records) {
   console.log(
     `✍️\n Writing ${
       records.length
@@ -38,18 +51,10 @@ export async function writeScrapedRecords(config, erc721Imports) {
       records[records.length - 1]?.id
     }`
   )
-
-  const batchMutation = Object.fromEntries(
-    records.map(recordToMutation).entries()
-  )
-
-  return Hasura.mutation(config.hasura, {
-    __alias: batchMutation,
-  })
 }
 
 /**
- * @param {import('./index').NFTEndpointRecord} record
+ * @param {NFTEndpointRecord} record
  * @returns {Hasura.Mutation}
  */
 function recordToMutation(record) {
@@ -103,7 +108,7 @@ export async function fetchNFTBatch(config, cursor) {
  */
 const createSubgraphQuery = (config, cursor) => {
   const query = {
-    first: config.ingestBatchSize,
+    first: config.ingestScraperBatchSize,
     skip: cursor.offset,
     where: { mintTime_gte: cursor.time.toString() },
     orderBy: ERC721.schema.Token_orderBy.mintTime,
