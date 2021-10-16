@@ -24,21 +24,25 @@ import {
  * Persist a single NFT Record that was imported.
  * Drains the inbox.
  * @param { Config } config
- * @param { ERC721ImportNFT } erc721Import
+ * @param { ERC721ImportNFT[] } erc721Imports
  */
-export async function writeScrapedRecord(config, erc721Import) {
-  const record = erc721ImportToNFTEndpoint(erc721Import)
-  console.log(`✍️ 🌿 ${record.mint_time.toUTCString()}\t🏷️ ${record.id}`)
-  return Hasura.mutation(config.hasura, {
-    ingest_erc721_token: [
-      {
-        args: record,
-      },
-      {
-        id: true,
-      },
-    ],
-  })
+export async function writeScrapedRecords(config, erc721Imports) {
+  const records = erc721Imports.map(erc721ImportToNFTEndpoint)
+
+  console.log(`Writing ${records.length}`)
+  console.log(records[0])
+
+  //   console.log(`✍️ 🌿 ${record.mint_time.toUTCString()}\t🏷️ ${record.id}`)
+  //   return Hasura.mutation(config.hasura, {
+  //     ingest_erc721_token: [
+  //       {
+  //         args: record,
+  //       },
+  //       {
+  //         id: true,
+  //       },
+  //     ],
+  //   })
 }
 
 /**

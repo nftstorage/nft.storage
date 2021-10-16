@@ -3,7 +3,7 @@ import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
-import { fetchNFTBatch, writeScrapedRecord } from './ingest/repo.js'
+import { fetchNFTBatch, writeScrapedRecords } from './ingest/repo.js'
 
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
@@ -119,16 +119,35 @@ async function readIntoInbox(config, writeable) {
   }
 }
 
+const BATCH_SIZE = 100
+
 /**
  * Drains records sequentially from the inbox
  * @param { Config } config
  * @param { ReadableStream<ERC721ImportNFT>} readable
- * @return { Promise<never> }
+ *
  */
 async function writeFromInbox(config, readable) {
   const reader = readable.getReader()
   while (true) {
-    const nextImport = await reader.read()
+    /**
+     * @type ERC721ImportNFT[]
+     */
+    let nextBatch = []
+
+    //Assemble next batch.
+    while (nextBatch.length < BATCH_SIZE) {
+      const nextImport = await reader.read()
+      if (nextImport.done) {
+        console.log(
+          `⚠️ The Ingestion Stream was closed while assembling a new batch.`
+        )
+        reader.cancel()
+      } else {
+        nextBatch.push(nextImport.value)
+      }
+    }
+
     try {
       /**
        * We will attempt to write an import record that has been scraped.
@@ -139,23 +158,21 @@ async function writeFromInbox(config, readable) {
        * this stream should typically never be closed,
        * unless the writeable end has unexpectely closed due to an error
        */
-      if (nextImport.done) {
-        console.log(`⚠️ The Ingestion Stream was closed`)
-        reader.cancel()
-      } else {
-        await retry(
-          async () => await writeScrapedRecord(config, nextImport.value),
-          [
-            maxRetries(config.ingestWriterRetryLimit),
-            exponentialBackoff(
-              config.ingestWriterRetryInterval,
-              config.ingestWriterRetryMaxInterval
-            ),
-          ]
-        )
-      }
+
+      await retry(
+        async () => await writeScrapedRecords(config, nextBatch),
+        [
+          maxRetries(config.ingestWriterRetryLimit),
+          exponentialBackoff(
+            config.ingestWriterRetryInterval,
+            config.ingestWriterRetryMaxInterval
+          ),
+        ]
+      )
+      //Drain batch after writing.
+      nextBatch = []
     } catch (err) {
-      console.log('Last NFT', nextImport)
+      console.log('Last NFT Batch', nextBatch)
       console.error(`Something went wrong when writing scraped nfts`, err)
       reader.cancel(err)
       throw err
