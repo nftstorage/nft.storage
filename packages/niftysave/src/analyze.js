@@ -204,11 +204,11 @@ const analyzer = async (config, inbox) => {
 }
 
 /**
- * @typedef {AnalyzeOk|AnalyzeError} AnalyzeResult
+ * @typedef {Failed|Parsed|Linked} Analysis
  *
  * @param {Config} config
  * @param {Asset} asset
- * @returns {Promise<AnalyzeResult>}
+ * @returns {Promise<Analysis>}
  */
 
 const analyze = async (config, asset) => {
@@ -283,6 +283,16 @@ const analyze = async (config, asset) => {
     NFTStorage.storeCar(config.nftStorage, metadata.value.car)
   )
 
+  if (!car.ok) {
+    return {
+      hash,
+      status: 'Parsed',
+      statusText: `${car.error}\n${car.error.stack}`,
+      ipfsURL,
+      metadata: metadata.value,
+    }
+  }
+
   console.log(`📝 (${hash}) Link metadata ${metadata.value.cid}`)
 
   return {
@@ -291,38 +301,38 @@ const analyze = async (config, asset) => {
     statusText: 'Linked',
     ipfsURL: ipfsURL,
     metadata: metadata.value,
-
-    resource: car.ok
-      ? {
-          status: 'ContentLinked',
-          statusText: '',
-          cid: metadata.value.cid,
-        }
-      : {
-          status: 'PinRequestFailed',
-          statusText: `${car.error}\n${car.error.stack}`,
-        },
   }
 }
 
 /**
  * @param {Object} config
  * @param {Hasura.Config} config.hasura
- * @param {AnalyzeResult} state
+ * @param {Analysis} state
  */
-const updateAsset = async (config, state) =>
-  state.status === 'Linked'
-    ? linkAsset(config, state)
-    : failAsset(config, state)
+const updateAsset = async (config, state) => {
+  switch (state.status) {
+    case 'Linked':
+    case 'Parsed':
+      return linkAsset(config, state)
+    default:
+      return failAsset(config, state)
+  }
+}
 
 /**
- * @typedef {Object} AnalyzeOk
+ * @typedef {Object} Linked
  * @property {string} hash
  * @property {'Linked'} status
  * @property {string} statusText
  * @property {URL|null} ipfsURL
  * @property {Metadata} metadata
- * @property {ContentLinked|PinRequestFailed} resource
+ *
+ * @typedef {Object} Parsed
+ * @property {string} hash
+ * @property {'Parsed'} status
+ * @property {string} statusText
+ * @property {URL|null} ipfsURL
+ * @property {Metadata} metadata
  *
  * @typedef {Object} ContentLinked
  * @property {'ContentLinked'} status
@@ -335,11 +345,17 @@ const updateAsset = async (config, state) =>
  *
  * @param {Object} config
  * @param {Hasura.Config} config.hasura
- * @param {AnalyzeOk} state
+ * @param {Parsed|Linked} state
  */
 const linkAsset = async (
   config,
-  { hash, statusText, ipfsURL, metadata: { cid, dagSize, content, links } }
+  {
+    hash,
+    status,
+    statusText,
+    ipfsURL,
+    metadata: { cid, dagSize, content, links },
+  }
 ) => {
   const resources = links.map((url) => linkResource(cid, url))
 
@@ -349,6 +365,7 @@ const linkAsset = async (
       link_nft_asset: [
         {
           args: {
+            status,
             token_uri_hash: hash,
             status_text: statusText,
             ipfs_url: ipfsURL ? ipfsURL.href : null,
@@ -396,7 +413,7 @@ const linkResource = (cid, uri) => ({
 })
 
 /**
- * @typedef {Object} AnalyzeError
+ * @typedef {Object} Failed
  * @property {string} hash
  * @property {'URIParseFailed'|'ContentFetchFailed'|'ContentParseFailed'} status
  * @property {string} statusText
@@ -404,7 +421,7 @@ const linkResource = (cid, uri) => ({
  *
  * @param {Object} config
  * @param {Hasura.Config} config.hasura
- * @param {AnalyzeError} state
+ * @param {Failed} state
  */
 const failAsset = async (config, { hash, status, statusText, ipfsURL }) => {
   const { fail_nft_asset } = await Hasura.mutation(config.hasura, {
@@ -447,7 +464,7 @@ const analyzeMetadata = async (content) => {
     root: cid,
     size: dagSize,
     car,
-  } = await Car.fromBlob(new Blob([content]))
+  } = await Car.fromBlob(new Blob([JSON.stringify(json)]))
 
   const urls = new Set()
 

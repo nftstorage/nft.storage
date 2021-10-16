@@ -8,9 +8,9 @@ import { CarReader } from '@ipld/car'
  *
  * @param {Blob} content
  */
-export const fromBlob = async (blob) => {
+export const fromBlob = async (content) => {
   const { out, root } = await pack({
-    input: blob,
+    input: [content],
     blockstore: new MemoryBlockStore(),
     wrapWithDirectory: false,
     // As per web3.storage client
