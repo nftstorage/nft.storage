@@ -18,8 +18,8 @@ CREATE FUNCTION queue_resource (--
  content_cid resource.content_cid % TYPE DEFAULT NULL) RETURNS
 SETOF resource AS $$
 DECLARE
-  hash resource.uri_hash;
-BEGIN;
+  hash resource.uri_hash % TYPE;
+BEGIN
 
   INSERT INTO resource ( uri,
                         status,
@@ -32,8 +32,13 @@ BEGIN;
           ipfs_url,
           content_cid) ON CONFLICT ON CONSTRAINT resource_pkey DO
   UPDATE
-  SET updated_at = EXCLUDED.updated_at
-  RETURNING resource .uri_hash INTO image_uri_hash;
+    SET updated_at = EXCLUDED.updated_at
+    RETURNING resource .uri_hash INTO hash;
+
+  RETURN QUERY
+    SELECT *
+    FROM nft_asset
+    WHERE nft_asset.token_uri_hash = hash;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -45,8 +50,7 @@ CREATE FUNCTION parse_nft_asset (-- pk to identify the nft_asset
  ipfs_url nft_asset.ipfs_url % TYPE, --
  metadata_cid nft_asset.metadata_cid % TYPE, --
  dag_size content.dag_size % TYPE, --
- metadata nft_metadata.content % TYPE, --
- pin_service pin_service DEFAULT 'nft.storage'::pin_service) RETURNS
+ metadata nft_metadata.content % TYPE) RETURNS
 SETOF nft_asset AS $$
 DECLARE
   hash nft_asset.token_uri_hash % TYPE;
@@ -62,6 +66,7 @@ BEGIN
   new_status_text := status_text;
   new_ipfs_url := ipfs_url;
   cid := metadata_cid;
+  image_uri_hash := NULL;
 
   -- Ensure that there is a matching nft_asset to begin with, crash if there
   -- is not.
@@ -71,7 +76,9 @@ BEGIN
    -- it's uri_hash.
   image_uri := metadata ->> 'image';
   IF image_uri IS NOT NULL THEN
-    image_uri_hash := queue_resource(uri, status_text);
+    SELECT uri_hash
+    INTO image_uri_hash
+    FROM queue_resource(uri, status_text);
   END IF;
   
   -- Create metadata content record unless already exists.
@@ -108,5 +115,6 @@ BEGIN
   RETURN QUERY
     SELECT * FROM nft_asset
     WHERE nft_asset.token_uri_hash = hash;
-END; $$ LANGUAGE plpgsql;
+END;
+$$ LANGUAGE plpgsql;
 
