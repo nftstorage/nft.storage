@@ -75,8 +75,8 @@ export const embed = (input, options) =>
 
 /**
  * @template {TokenInput} T
- * @param {import('./lib/interface.js').EncodedToken<T>} value
- * @param {Set<string>} paths - Paths were to expcet EncodedURLs
+ * @param {import('./lib/interface').EncodedToken<T>} value
+ * @param {Set<string>} paths - Paths were to expect EncodedURLs
  * @returns {Token<T>}
  */
 export const decode = ({ ipnft, url, data }, paths) =>

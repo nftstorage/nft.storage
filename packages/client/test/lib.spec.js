@@ -4,11 +4,10 @@ import { NFTStorage, Blob, File, Token } from 'nft.storage'
 import { CID } from 'multiformats'
 import { pack } from 'ipfs-car/pack'
 import { CarWriter } from '@ipld/car'
-import * as dagCbor from '@ipld/dag-cbor'
 import * as dagJson from '@ipld/dag-json'
-import { garbage } from 'ipld-garbage'
 import { encode } from 'multiformats/block'
 import { sha256 } from 'multiformats/hashes/sha2'
+import { randomCar } from './helpers.js'
 
 const DWEB_LINK = 'dweb.link'
 
@@ -458,6 +457,28 @@ describe('client', () => {
       assert.ok(embed.image.protocol, 'https:')
     })
 
+    it('callback with root CID', async () => {
+      let called = false
+      const client = new NFTStorage({ token, endpoint })
+      await client.store(
+        {
+          name: 'name',
+          description: 'stuff',
+          image: new Blob(['fake image'], { type: 'image/png' }),
+        },
+        {
+          onRootCidReady: root => {
+            called = true
+            assert.equal(
+              root,
+              'bafyreib75ot3oyo43f7rhdk6xlv7c4mmjwhbjjnugrw3yqjvarpvtzxkoi'
+            )
+          },
+        }
+      )
+      assert.ok(called)
+    })
+
     it('store with properties', async () => {
       const client = new NFTStorage({ token, endpoint })
       const trick =
@@ -750,40 +771,3 @@ describe('client', () => {
     })
   })
 })
-
-const MAX_BLOCK_SIZE = 1024 * 1024 * 4
-
-function randomBlockSize() {
-  const max = MAX_BLOCK_SIZE
-  const min = max / 2
-  return Math.random() * (max - min) + min
-}
-
-/**
- * @param {number} targetSize
- * @returns {Promise<AsyncIterable<Uint8Array>>}
- */
-async function randomCar(targetSize) {
-  const blocks = []
-  let size = 0
-  const seen = new Set()
-  while (size < targetSize) {
-    const bytes = dagCbor.encode(
-      garbage(randomBlockSize(), { weights: { CID: 0 } })
-    )
-    const hash = await sha256.digest(bytes)
-    const cid = CID.create(1, dagCbor.code, hash)
-    if (seen.has(cid.toString())) continue
-    seen.add(cid.toString())
-    blocks.push({ cid, bytes })
-    size += bytes.length
-  }
-  const rootBytes = dagCbor.encode(blocks.map(b => b.cid))
-  const rootHash = await sha256.digest(rootBytes)
-  const rootCid = CID.create(1, dagCbor.code, rootHash)
-  const { writer, out } = CarWriter.create([rootCid])
-  writer.put({ cid: rootCid, bytes: rootBytes })
-  blocks.forEach(b => writer.put(b))
-  writer.close()
-  return out
-}

@@ -1,4 +1,6 @@
 /**
+ * An implementation of the CAR reader interface that is backed by a blockstore.
+ *
  * @typedef {import('multiformats').CID} CID
  * @typedef {import('@ipld/car/api').CarReader} CarReader
  * @implements {CarReader}
@@ -10,8 +12,17 @@ export class BlockstoreCarReader {
    * @param {import('ipfs-car/blockstore').Blockstore} blockstore
    */
   constructor(version, roots, blockstore) {
+    /**
+     * @private
+     */
     this._version = version
+    /**
+     * @private
+     */
     this._roots = roots
+    /**
+     * @private
+     */
     this._blockstore = blockstore
   }
 
