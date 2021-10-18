@@ -14,5 +14,90 @@
   ],
   "theme_color": "#F5C32C",
   "background_color": "#ffffff",
-  "display": "standalone"
+  "display": "standalone",
+  "share_target": {
+    "action": "/upload",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "files": [
+        {
+          "name": "flac",
+          "accept": ["audio/flac", ".flac"]
+        },
+        {
+          "name": "x-m4a",
+          "accept": ["audio/x-m4a", ".x-m4a"]
+        },
+        {
+          "name": "mp3",
+          "accept": ["audio/mp3", ".mp3"]
+        },
+        {
+          "name": "ogg",
+          "accept": ["audio/ogg", ".ogg"]
+        },
+        {
+          "name": "wav",
+          "accept": ["audio/wav", ".wav"]
+        },
+        {
+          "name": "webm",
+          "accept": ["audio/webm", ".webm"]
+        },
+        {
+          "name": "bmp",
+          "accept": ["image/bmp", ".bmp"]
+        },
+        {
+          "name": "gif",
+          "accept": ["image/gif", ".gif"]
+        },
+        {
+          "name": "x-icon",
+          "accept": ["image/x-icon", ".x-icon"]
+        },
+        {
+          "name": "svg+xml",
+          "accept": ["image/svg+xml", ".svg+xml"]
+        },
+        {
+          "name": "tiff",
+          "accept": ["image/tiff", ".tiff"]
+        },
+        {
+          "name": "webp",
+          "accept": ["image/webp", ".webp"]
+        },
+        {
+          "name": "css",
+          "accept": ["text/css", ".css"]
+        },
+        {
+          "name": "html",
+          "accept": ["text/html", ".html"]
+        },
+        {
+          "name": "plain",
+          "accept": ["text/plain", ".plain"]
+        },
+        {
+          "name": "mp4",
+          "accept": ["video/mp4", ".mp4"]
+        },
+        {
+          "name": "mpeg",
+          "accept": ["video/mpeg", ".mpeg"]
+        },
+        {
+          "name": "ogg",
+          "accept": ["video/ogg", ".ogg"]
+        },
+        {
+          "name": "webm",
+          "accept": ["video/webm", ".webm"]
+        }
+      ]
+    }
+  }
 }
