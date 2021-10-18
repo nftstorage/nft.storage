@@ -62,7 +62,7 @@ const spawn = async (config) => {
 const readInto = async (writable, config) => {
   const writer = writable.getWriter()
   try {
-    let cursor = Cursor.init()
+    let cursor = Cursor.init(new Date().toISOString())
 
     while (true) {
       console.log(
@@ -101,7 +101,7 @@ const readInto = async (writable, config) => {
 
         // Update cursor to point to the record after the last one.
         const lastRecord = /** @type {ParsedAsset} */ (page[page.length - 1])
-        cursor = Cursor.after(cursor, lastRecord)
+        cursor = Cursor.after(cursor, lastRecord.updated_at)
       }
     }
   } finally {
@@ -115,13 +115,15 @@ const readInto = async (writable, config) => {
  * @property {string} token_uri_hash
  * @property {string} updated_at
  * @property {{content?:any}} metadata
- *
- * Fetches batch of queued nft assets from the database from the given cursor.
+ */
+/**
+ * Fetches batch of parsed nft assets and corresponding metadata from the
+ * given cursor position.
  *
  * @param {Object} config
  * @param {Hasura.Config} config.hasura
  * @param {number} config.batchSize
- * @param {Cursor.Cursor} cursor
+ * @param {Cursor.Cursor<string>} cursor
  * @returns {Promise<ParsedAsset[]>}
  */
 const fetchParsedAssets = async (config, cursor) => {
@@ -136,7 +138,7 @@ const fetchParsedAssets = async (config, cursor) => {
             _is_null: false,
           },
           updated_at: {
-            _gte: cursor.updated_at,
+            _gte: cursor.time,
           },
         },
         limit: config.batchSize,

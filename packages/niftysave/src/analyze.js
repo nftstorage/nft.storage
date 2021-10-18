@@ -1,7 +1,6 @@
 import * as Cluster from './cluster.js'
 import * as Cursor from './hasura/cursor.js'
 import * as Hasura from './hasura.js'
-import * as IPFS from './ipfs.js'
 import * as IPFSURL from './ipfs-url.js'
 import * as Result from './result.js'
 
