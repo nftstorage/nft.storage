@@ -25,7 +25,7 @@ export const service = create(connect)
  * @returns
  */
 export const query = (config, request, options) =>
-  service(config).query(request, options)
+  service(config).query(request, options).catch(HasuraError.throw)
 
 /**
  * @template {Parameters<ReturnType<typeof service>['mutation']>[0]} R
@@ -34,7 +34,7 @@ export const query = (config, request, options) =>
  * @param {schema.OperationOptions} [options]
  */
 export const mutation = (config, request, options) =>
-  service(config).mutation(request, options)
+  service(config).mutation(request, options).catch(HasuraError.throw)
 
 /**
  * @template {Parameters<ReturnType<typeof service>['subscription']>[0]} R
@@ -45,5 +45,43 @@ export const mutation = (config, request, options) =>
  */
 export const subscriptions = (config, request, options) =>
   service(config).subscription(request, options)
+
+class HasuraError extends Error {
+  /**
+   * @typedef {import('../gen/hasura/zeus/index').GraphQLError} GraphQLError
+   *
+   * @param {GraphQLError} error
+   */
+  static throw(error) {
+    throw new HasuraError(error)
+  }
+  /**
+   * @param {GraphQLError} error
+   */
+  constructor(error) {
+    super()
+    this.error = error
+  }
+  get message() {
+    const { error } = this
+    const errors = error.response.errors || []
+
+    return `${error.message}\n${errors
+      .map(
+        ({
+          message,
+          // @ts-ignore: extensions does exist
+          extensions = {},
+        }) =>
+          `- ${message}\n    ${JSON.stringify(extensions, null, 2)
+            .split('\n')
+            .join('\n    ')}`
+      )
+      .join('\n')}`
+  }
+  get stack() {
+    return this.error.stack
+  }
+}
 
 export { schema, Selectors, Zeus, $ }
