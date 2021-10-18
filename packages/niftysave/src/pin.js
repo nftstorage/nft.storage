@@ -65,7 +65,7 @@ const spawn = async (config) => {
 const readInto = async (writable, config) => {
   const writer = writable.getWriter()
   try {
-    let cursor = Cursor.init(new Date().toISOString())
+    let cursor = Cursor.init(new Date(0).toISOString())
 
     while (true) {
       console.log(

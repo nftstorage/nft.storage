@@ -62,7 +62,7 @@ const spawn = async (config) => {
 const readInto = async (writable, config) => {
   const writer = writable.getWriter()
   try {
-    let cursor = Cursor.init(new Date().toISOString())
+    let cursor = Cursor.init(new Date(0).toISOString())
 
     while (true) {
       console.log(
@@ -251,6 +251,8 @@ const archive = async (config, asset) => {
  */
 
 const updateAsset = async (config, { hash, status, statusText }) => {
+  // TODO: Consider exposing more limited interface from sql function which
+  // upholds invariant of unidirectional status update.
   await Hasura.mutation(config.hasura, {
     update_nft_asset_by_pk: [
       {

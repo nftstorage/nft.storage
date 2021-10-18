@@ -65,7 +65,7 @@ const spawn = async (config) => {
 const readInto = async (writable, config) => {
   const writer = writable.getWriter()
   try {
-    let cursor = Cursor.init(new Date().toISOString())
+    let cursor = Cursor.init(new Date(0).toISOString())
 
     while (true) {
       console.log(
@@ -191,6 +191,7 @@ const analyzer = async (config, inbox) => {
   while (true) {
     console.log('📤 Pull nft asset from the queue')
     const next = await inbox.read()
+    console.log(next)
     if (next.done) {
       break
     } else {
@@ -360,17 +361,17 @@ const linkAsset = async (
 ) => {
   const resources = links.map((url) => linkResource(cid, url))
 
-  const { link_nft_asset } = await Hasura.mutation(
+  const { parse_nft_asset } = await Hasura.mutation(
     config.hasura,
     {
-      link_nft_asset: [
+      parse_nft_asset: [
         {
           args: {
             status,
             token_uri_hash: hash,
             status_text: statusText,
             ipfs_url: ipfsURL ? ipfsURL.href : null,
-            content_cid: cid,
+            metadata_cid: cid,
             dag_size: dagSize,
             // note need to use variable to workaround
             // https://github.com/graphql-editor/graphql-zeus/issues/144
@@ -391,7 +392,7 @@ const linkAsset = async (
     }
   )
 
-  return link_nft_asset
+  return parse_nft_asset
 }
 
 /**
