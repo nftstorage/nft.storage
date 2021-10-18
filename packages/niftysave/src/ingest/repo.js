@@ -1,3 +1,4 @@
+import * as Cursor from './../hasura/cursor.js'
 import * as ERC721 from '../../gen/erc721/index.js'
 import * as Hasura from './../hasura.js'
 
@@ -9,13 +10,14 @@ import {
 /**
  * @typedef {import('./index').ERC721ImportNFT} ERC721ImportNFT
  * @typedef {import('./index').NFTSSubgraphResult} NFTSSubgraphResult
+ * @typedef {import('./index').NFTEndpointRecord } NFTEndpointRecord
  */
 
 /**
  * @typedef { Object } Config
  * @property { ERC721.Config } config.erc721
  * @property { Hasura.Config } config.hasura
- * @property { number } config.ingestBatchSize
+ * @property { number } config.ingestScraperBatchSize
  */
 
 /**
@@ -23,20 +25,49 @@ import {
  * Persist a single NFT Record that was imported.
  * Drains the inbox.
  * @param { Config } config
- * @param { ERC721ImportNFT } erc721Import
+ * @param { ERC721ImportNFT[] } erc721Imports
  */
-export async function writeScrapedRecord(config, erc721Import) {
-  console.log(`📥 Write ${erc721Import.id} to Hasura`)
+export async function writeScrapedRecords(config, erc721Imports) {
+  const records = erc721Imports.map(erc721ImportToNFTEndpoint)
+  printBatch(records)
+  const batchMutation = Object.fromEntries(
+    records.map(recordToMutation).entries()
+  )
   return Hasura.mutation(config.hasura, {
+    __alias: batchMutation,
+  })
+}
+
+/**
+ * @param {NFTEndpointRecord[]} records
+ */
+function printBatch(records) {
+  console.log(
+    `✍️\n Writing ${
+      records.length
+    }\n⎾ 🌿 ${records[0]?.mint_time.toUTCString()}\t🏷️ ${
+      records[0]?.id
+    }\n⎿ 🌿 ${records[records.length - 1]?.mint_time.toUTCString()}\t🏷️ ${
+      records[records.length - 1]?.id
+    }`
+  )
+}
+
+/**
+ * @param {NFTEndpointRecord} record
+ * @returns {Hasura.Mutation}
+ */
+function recordToMutation(record) {
+  return {
     ingest_erc721_token: [
       {
-        args: erc721ImportToNFTEndpoint(erc721Import),
+        args: record,
       },
       {
         id: true,
       },
     ],
-  })
+  }
 }
 
 /**
@@ -44,10 +75,10 @@ export async function writeScrapedRecord(config, erc721Import) {
  * Calls Subgraph and returns a batch of NFT records.
  * Hydrates the inbox.
  * @param { Config } config
- * @param { string } cursor
+ * @param { Cursor.Cursor<number> } cursor
  * @returns { Promise<ERC721ImportNFT[]> }
  */
-export async function fetchNextNFTBatch(config, cursor) {
+export async function fetchNFTBatch(config, cursor) {
   try {
     const nftsResult = await ERC721.query(
       config.erc721,
@@ -72,13 +103,15 @@ export async function fetchNextNFTBatch(config, cursor) {
  * If this is the first query, starting this module for the first time, the cursor
  * will be the id of whatever record was written last in our database.
  * @param {Config} config
- * @param {string} cursor
+ * @param {Cursor.Cursor<number>} cursor
  * @returns { ERC721.schema.QueryRequest }
  */
 const createSubgraphQuery = (config, cursor) => {
   const query = {
-    first: config.ingestBatchSize,
-    where: { tokenURI_not: '', id_gt: cursor },
+    first: config.ingestScraperBatchSize,
+    skip: cursor.offset,
+    where: { mintTime_gte: cursor.time.toString() },
+    orderBy: ERC721.schema.Token_orderBy.mintTime,
   }
   const erc721ResultDefinition = {
     id: 1,

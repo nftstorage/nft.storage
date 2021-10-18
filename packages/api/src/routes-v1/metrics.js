@@ -81,22 +81,18 @@ async function exportPromMetrics() {
     '# TYPE nftstorage_users_total counter',
     `nftstorage_users_total ${users.total}`,
 
+    '# HELP nftstorage_uploads_total Total number of uploads by type.',
+    '# TYPE nftstorage_uploads_total counter',
     ...Object.entries(nfts.totals).map(([type, total]) =>
-      [
-        `# HELP nftstorage_uploads_total Total number of ${type} uploads.`,
-        '# TYPE nftstorage_uploads_total counter',
-        `nftstorage_uploads_total{type:"${type}"} ${total}`,
-      ].join('\n')
+      `nftstorage_uploads_total{type="${type}"} ${total}`
     ),
 
+    '# HELP nftstorage_pins_total Total number of pins by service and status.',
+    '# TYPE nftstorage_pins_total counter',
     ...Object.entries(pins.totals).map(([service, totals]) => {
       return Object.entries(totals)
         .map(([status, total]) =>
-          [
-            `# HELP nftstorage_pins_total Total number of ${service} pins that are ${status}.`,
-            '# TYPE nftstorage_pins_total counter',
-            `nftstorage_pins_total{service:"${service}",status:"${status}"} ${total}`,
-          ].join('\n')
+          `nftstorage_pins_total{service="${service}",status="${status}"} ${total}`
         )
         .join('\n')
     }),

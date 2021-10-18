@@ -1,12 +1,13 @@
+import * as Cursor from './hasura/cursor.js'
 import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
-import { fetchNextNFTBatch, writeScrapedRecord } from './ingest/repo.js'
+import { fetchNFTBatch, writeScrapedRecords } from './ingest/repo.js'
 
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
-// import { intializeCursor } from './ingest/cursor.js'
+import { initIngestCursor } from './ingest/cursor.js'
 import { script } from 'subprogram'
 import { setTimeout as sleep } from './timers.js'
 
@@ -21,10 +22,11 @@ import { setTimeout as sleep } from './timers.js'
  * @property { Hasura.Config } config.hasura
  * @property { number } config.ingestRetryThrottle
  * @property { number } config.ingestHighWatermark
- * @property { number } config.ingestBatchSize
+ * @property { number } config.ingestScraperBatchSize
  * @property { number } config.ingestScraperRetryLimit
  * @property { number } config.ingestScraperRetryInterval
  * @property { number } config.ingestScraperRetryMaxInterval
+ * @property { number } config.ingestWriterBatchSize
  * @property { number } config.ingestWriterRetryLimit
  * @property { number } config.ingestWriterRetryInterval
  * @property { number } config.ingestWriterRetryMaxInterval
@@ -67,8 +69,11 @@ async function spawn(config) {
  */
 async function readIntoInbox(config, writeable) {
   const writer = writeable.getWriter()
-  //   let cursor = await intializeCursor(config)
-  let cursor = ''
+
+  let cursor = Cursor.init(await initIngestCursor(config))
+
+  Cursor.print(cursor)
+
   while (true) {
     let scrape = []
     try {
@@ -80,7 +85,7 @@ async function readIntoInbox(config, writeable) {
        * Eventually after enough failures, we can actually throw
        */
       scrape = await retry(
-        async () => fetchNextNFTBatch(config, cursor),
+        async () => fetchNFTBatch(config, cursor),
         [
           maxRetries(config.ingestScraperRetryLimit),
           exponentialBackoff(
@@ -98,12 +103,14 @@ async function readIntoInbox(config, writeable) {
         await sleep(config.ingestRetryThrottle)
       } else {
         await writer.ready
-        console.log(`📨  Adding ${scrape.length} items into Queue.`)
+        console.log(`📨 Adding ${scrape.length} items into Queue.`)
         for (const nft of scrape) {
           writer.write(nft)
           //Continuously update the in-memory cursor
-          cursor = nft.id
+          cursor = Cursor.after(cursor, parseInt(nft.mintTime))
         }
+        //Its useful to see what the cursor is periodically.
+        Cursor.print(cursor)
       }
     } catch (err) {
       console.error(`Something unexpected happened scraping nfts`, err)
@@ -117,39 +124,53 @@ async function readIntoInbox(config, writeable) {
  * Drains records sequentially from the inbox
  * @param { Config } config
  * @param { ReadableStream<ERC721ImportNFT>} readable
- * @return { Promise<never> }
+ *
  */
 async function writeFromInbox(config, readable) {
   const reader = readable.getReader()
   while (true) {
-    const nextImport = await reader.read()
+    /**
+     * @type ERC721ImportNFT[]
+     */
+    let nextBatch = []
     try {
       /**
-       * We will attempt to write an import record that has been scraped.
+       * We will attempt to write several import records that have been scraped.
        * If the write is a failure, we will retry, to account for intermittent outages
        * If failure occurs several times and for long enough, we throw an error.
-       * We write from the Transform stream, one record at a time, as quickly as we can.
-       * this makes cursor-tracking on restart very simple and prevents lossy data.
+       * We write from the Transform stream, in specified batches.
        * this stream should typically never be closed,
        * unless the writeable end has unexpectely closed due to an error
        */
-      if (nextImport.done) {
-        console.log(`⚠️ The Ingestion Stream was closed`)
-        reader.cancel()
-      } else {
-        await retry(
-          async () => await writeScrapedRecord(config, nextImport.value),
-          [
-            maxRetries(config.ingestWriterRetryLimit),
-            exponentialBackoff(
-              config.ingestWriterRetryInterval,
-              config.ingestWriterRetryMaxInterval
-            ),
-          ]
-        )
+
+      //Assemble next batch.
+      while (nextBatch.length < config.ingestWriterBatchSize) {
+        const nextImport = await reader.read()
+        if (nextImport.done) {
+          console.log(
+            `⚠️ The Ingestion Stream was closed while assembling a new batch.`
+          )
+          reader.cancel()
+        } else {
+          nextBatch.push(nextImport.value)
+        }
       }
+
+      await retry(
+        async () => await writeScrapedRecords(config, nextBatch),
+        [
+          maxRetries(config.ingestWriterRetryLimit),
+          exponentialBackoff(
+            config.ingestWriterRetryInterval,
+            config.ingestWriterRetryMaxInterval
+          ),
+        ]
+      )
+
+      //Reset the batch after writing.
+      nextBatch = []
     } catch (err) {
-      console.log('Last NFT', nextImport)
+      console.log('Last NFT Batch', JSON.stringify(nextBatch, null, 2))
       console.error(`Something went wrong when writing scraped nfts`, err)
       reader.cancel(err)
       throw err

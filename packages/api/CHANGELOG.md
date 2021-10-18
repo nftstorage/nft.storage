@@ -1,5 +1,43 @@
 # Changelog
 
+### [2.7.2](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.7.1...api-v2.7.2) (2021-10-15)
+
+
+### Bug Fixes
+
+* prometheus metrics tag syntax ([1721e1d](https://www.github.com/ipfs-shipyard/nft.storage/commit/1721e1d20943f4f4c1157cccbbad36160f19f4bf))
+* remove temporary backdoor routes ([#611](https://www.github.com/ipfs-shipyard/nft.storage/issues/611)) ([e1ea7b1](https://www.github.com/ipfs-shipyard/nft.storage/commit/e1ea7b19d9346ae08a02e987599559f5a826cdbd))
+* test fixtures ([7eda172](https://www.github.com/ipfs-shipyard/nft.storage/commit/7eda172ff25285dde234cde1b665e223ec49b6c5))
+
+### [2.7.1](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.7.0...api-v2.7.1) (2021-10-14)
+
+
+### Bug Fixes
+
+* metrics exposition format ([#614](https://www.github.com/ipfs-shipyard/nft.storage/issues/614)) ([242cd3a](https://www.github.com/ipfs-shipyard/nft.storage/commit/242cd3ab1bbf459281e9febc506fd76be612a5a8))
+
+## [2.7.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.6.0...api-v2.7.0) (2021-10-14)
+
+
+### Features
+
+* add indexes to updated_at fields ([#598](https://www.github.com/ipfs-shipyard/nft.storage/issues/598)) ([d4f110a](https://www.github.com/ipfs-shipyard/nft.storage/commit/d4f110a03eac53b2b9d921d60da8cd0ababb09c6))
+* temporary API backdoor endpoints ([#605](https://www.github.com/ipfs-shipyard/nft.storage/issues/605)) ([e02e371](https://www.github.com/ipfs-shipyard/nft.storage/commit/e02e371964f68d8cdf3196eca47d0d657aaec50b))
+
+
+### Bug Fixes
+
+* db diagram link ([b234556](https://www.github.com/ipfs-shipyard/nft.storage/commit/b2345563c27cdf7052e2d62ca0865f397d96014e))
+* do not allow delete of deleted NFT ([#581](https://www.github.com/ipfs-shipyard/nft.storage/issues/581)) ([fca5bde](https://www.github.com/ipfs-shipyard/nft.storage/commit/fca5bde2f008328deffce3dd01e420e26e4a02eb))
+* dont delete uploads ([#551](https://www.github.com/ipfs-shipyard/nft.storage/issues/551)) ([b797f9c](https://www.github.com/ipfs-shipyard/nft.storage/commit/b797f9c7e9cbf770b29829959b10e0bb12ee555e))
+* tests ([d294432](https://www.github.com/ipfs-shipyard/nft.storage/commit/d294432cc44c48af78bc1c3673ac61075a18710c))
+* throw an error for missing env vars ([#576](https://www.github.com/ipfs-shipyard/nft.storage/issues/576)) ([2dddc13](https://www.github.com/ipfs-shipyard/nft.storage/commit/2dddc130270db745e1dd0115085f6ff90f9d54f1))
+
+
+### Changes
+
+* move v1 to root (minimal changes) ([#534](https://www.github.com/ipfs-shipyard/nft.storage/issues/534)) ([c60cf6c](https://www.github.com/ipfs-shipyard/nft.storage/commit/c60cf6c06dc5812f980152fcb9b451a84cf9aba7))
+
 ## [2.6.0](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.5.0...api-v2.6.0) (2021-10-11)
 
 

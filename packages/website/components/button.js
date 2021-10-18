@@ -63,7 +63,7 @@ export default function Button({
     'dib',
     'bg-nsgray',
     'ba',
-    'b-black',
+    'b--black',
     { grow: !disabled, 'o-50': disabled },
     wrapperClassName
   )
