@@ -229,6 +229,72 @@ export const AllTypesProps = {
             required: true
         }
     },
+    blockchain_block: {
+        nfts: {
+            distinct_on: {
+                type: "nfts_by_blockchain_blocks_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "nfts_by_blockchain_blocks_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "nfts_by_blockchain_blocks_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        nfts_aggregate: {
+            distinct_on: {
+                type: "nfts_by_blockchain_blocks_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "nfts_by_blockchain_blocks_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "nfts_by_blockchain_blocks_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        }
+    },
     blockchain_block_aggregate_fields: {
         count: {
             columns: {
@@ -276,6 +342,12 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: false
         },
+        nfts: {
+            type: "nfts_by_blockchain_blocks_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         number: {
             type: "bigint_comparison_exp",
             array: false,
@@ -307,6 +379,12 @@ export const AllTypesProps = {
         },
         inserted_at: {
             type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        nfts: {
+            type: "nfts_by_blockchain_blocks_arr_rel_insert_input",
             array: false,
             arrayRequired: false,
             required: false
@@ -353,6 +431,12 @@ export const AllTypesProps = {
         },
         inserted_at: {
             type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        nfts_aggregate: {
+            type: "nfts_by_blockchain_blocks_aggregate_order_by",
             array: false,
             arrayRequired: false,
             required: false
@@ -512,6 +596,20 @@ export const AllTypesProps = {
         },
         updated_at: {
             type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    blockchain_contract_obj_rel_insert_input: {
+        data: {
+            type: "blockchain_contract_insert_input",
+            array: false,
+            arrayRequired: false,
+            required: true
+        },
+        on_conflict: {
+            type: "blockchain_contract_on_conflict",
             array: false,
             arrayRequired: false,
             required: false
@@ -955,6 +1053,350 @@ export const AllTypesProps = {
         }
     },
     content_update_column: "enum",
+    erc721_import_aggregate_fields: {
+        count: {
+            columns: {
+                type: "erc721_import_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            distinct: {
+                type: "Boolean",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        }
+    },
+    erc721_import_bool_exp: {
+        _and: {
+            type: "erc721_import_bool_exp",
+            array: true,
+            arrayRequired: false,
+            required: true
+        },
+        _not: {
+            type: "erc721_import_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        _or: {
+            type: "erc721_import_bool_exp",
+            array: true,
+            arrayRequired: false,
+            required: true
+        },
+        id: {
+            type: "String_comparison_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        inserted_at: {
+            type: "timestamptz_comparison_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        next_id: {
+            type: "String_comparison_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "timestamptz_comparison_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    erc721_import_by_nft_aggregate_fields: {
+        count: {
+            columns: {
+                type: "erc721_import_by_nft_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            distinct: {
+                type: "Boolean",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        }
+    },
+    erc721_import_by_nft_bool_exp: {
+        _and: {
+            type: "erc721_import_by_nft_bool_exp",
+            array: true,
+            arrayRequired: false,
+            required: true
+        },
+        _not: {
+            type: "erc721_import_by_nft_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        _or: {
+            type: "erc721_import_by_nft_bool_exp",
+            array: true,
+            arrayRequired: false,
+            required: true
+        },
+        erc721_import_id: {
+            type: "String_comparison_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        inserted_at: {
+            type: "timestamptz_comparison_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        nft_id: {
+            type: "String_comparison_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "timestamptz_comparison_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    erc721_import_by_nft_constraint: "enum",
+    erc721_import_by_nft_insert_input: {
+        erc721_import_id: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        inserted_at: {
+            type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        nft_id: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    erc721_import_by_nft_on_conflict: {
+        constraint: {
+            type: "erc721_import_by_nft_constraint",
+            array: false,
+            arrayRequired: false,
+            required: true
+        },
+        update_columns: {
+            type: "erc721_import_by_nft_update_column",
+            array: true,
+            arrayRequired: true,
+            required: true
+        },
+        where: {
+            type: "erc721_import_by_nft_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    erc721_import_by_nft_order_by: {
+        erc721_import_id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        inserted_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        nft_id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    erc721_import_by_nft_pk_columns_input: {
+        erc721_import_id: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: true
+        },
+        nft_id: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: true
+        }
+    },
+    erc721_import_by_nft_select_column: "enum",
+    erc721_import_by_nft_set_input: {
+        erc721_import_id: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        inserted_at: {
+            type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        nft_id: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    erc721_import_by_nft_update_column: "enum",
+    erc721_import_constraint: "enum",
+    erc721_import_insert_input: {
+        id: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        inserted_at: {
+            type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        next_id: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    erc721_import_on_conflict: {
+        constraint: {
+            type: "erc721_import_constraint",
+            array: false,
+            arrayRequired: false,
+            required: true
+        },
+        update_columns: {
+            type: "erc721_import_update_column",
+            array: true,
+            arrayRequired: true,
+            required: true
+        },
+        where: {
+            type: "erc721_import_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    erc721_import_order_by: {
+        id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        inserted_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        next_id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    erc721_import_pk_columns_input: {
+        id: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: true
+        }
+    },
+    erc721_import_select_column: "enum",
+    erc721_import_set_input: {
+        id: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        inserted_at: {
+            type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        next_id: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    erc721_import_update_column: "enum",
     fail_nft_asset_args: {
         ipfs_url: {
             type: "String",
@@ -1174,50 +1616,6 @@ export const AllTypesProps = {
             required: true
         }
     },
-    link_nft_asset_args: {
-        content_cid: {
-            type: "String",
-            array: false,
-            arrayRequired: false,
-            required: false
-        },
-        dag_size: {
-            type: "bigint",
-            array: false,
-            arrayRequired: false,
-            required: false
-        },
-        ipfs_url: {
-            type: "String",
-            array: false,
-            arrayRequired: false,
-            required: false
-        },
-        metadata: {
-            type: "jsonb",
-            array: false,
-            arrayRequired: false,
-            required: false
-        },
-        pin_service: {
-            type: "pin_service",
-            array: false,
-            arrayRequired: false,
-            required: false
-        },
-        status_text: {
-            type: "String",
-            array: false,
-            arrayRequired: false,
-            required: false
-        },
-        token_uri_hash: {
-            type: "String",
-            array: false,
-            arrayRequired: false,
-            required: false
-        }
-    },
     link_nft_resource_args: {
         cid: {
             type: "String",
@@ -1319,6 +1717,44 @@ export const AllTypesProps = {
                 required: true
             }
         },
+        delete_erc721_import: {
+            where: {
+                type: "erc721_import_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
+        delete_erc721_import_by_nft: {
+            where: {
+                type: "erc721_import_by_nft_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
+        delete_erc721_import_by_nft_by_pk: {
+            erc721_import_id: {
+                type: "String",
+                array: false,
+                arrayRequired: false,
+                required: true
+            },
+            nft_id: {
+                type: "String",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
+        delete_erc721_import_by_pk: {
+            id: {
+                type: "String",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
         delete_nft: {
             where: {
                 type: "nft_bool_exp",
@@ -1360,7 +1796,7 @@ export const AllTypesProps = {
             }
         },
         delete_nft_metadata_by_pk: {
-            content_cid: {
+            cid: {
                 type: "String",
                 array: false,
                 arrayRequired: false,
@@ -1442,7 +1878,7 @@ export const AllTypesProps = {
             }
         },
         delete_other_nft_resources_by_pk: {
-            content_cid: {
+            metadata_cid: {
                 type: "String",
                 array: false,
                 arrayRequired: false,
@@ -1680,6 +2116,62 @@ export const AllTypesProps = {
             },
             on_conflict: {
                 type: "content_on_conflict",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        insert_erc721_import: {
+            objects: {
+                type: "erc721_import_insert_input",
+                array: true,
+                arrayRequired: true,
+                required: true
+            },
+            on_conflict: {
+                type: "erc721_import_on_conflict",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        insert_erc721_import_by_nft: {
+            objects: {
+                type: "erc721_import_by_nft_insert_input",
+                array: true,
+                arrayRequired: true,
+                required: true
+            },
+            on_conflict: {
+                type: "erc721_import_by_nft_on_conflict",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        insert_erc721_import_by_nft_one: {
+            object: {
+                type: "erc721_import_by_nft_insert_input",
+                array: false,
+                arrayRequired: false,
+                required: true
+            },
+            on_conflict: {
+                type: "erc721_import_by_nft_on_conflict",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        insert_erc721_import_one: {
+            object: {
+                type: "erc721_import_insert_input",
+                array: false,
+                arrayRequired: false,
+                required: true
+            },
+            on_conflict: {
+                type: "erc721_import_on_conflict",
                 array: false,
                 arrayRequired: false,
                 required: false
@@ -1937,44 +2429,6 @@ export const AllTypesProps = {
                 required: false
             }
         },
-        link_nft_asset: {
-            args: {
-                type: "link_nft_asset_args",
-                array: false,
-                arrayRequired: false,
-                required: true
-            },
-            distinct_on: {
-                type: "nft_asset_select_column",
-                array: true,
-                arrayRequired: false,
-                required: true
-            },
-            limit: {
-                type: "Int",
-                array: false,
-                arrayRequired: false,
-                required: false
-            },
-            offset: {
-                type: "Int",
-                array: false,
-                arrayRequired: false,
-                required: false
-            },
-            order_by: {
-                type: "nft_asset_order_by",
-                array: true,
-                arrayRequired: false,
-                required: true
-            },
-            where: {
-                type: "nft_asset_bool_exp",
-                array: false,
-                arrayRequired: false,
-                required: false
-            }
-        },
         link_nft_resource: {
             args: {
                 type: "link_nft_resource_args",
@@ -2154,6 +2608,62 @@ export const AllTypesProps = {
             },
             pk_columns: {
                 type: "content_pk_columns_input",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
+        update_erc721_import: {
+            _set: {
+                type: "erc721_import_set_input",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            where: {
+                type: "erc721_import_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
+        update_erc721_import_by_nft: {
+            _set: {
+                type: "erc721_import_by_nft_set_input",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            where: {
+                type: "erc721_import_by_nft_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
+        update_erc721_import_by_nft_by_pk: {
+            _set: {
+                type: "erc721_import_by_nft_set_input",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            pk_columns: {
+                type: "erc721_import_by_nft_pk_columns_input",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
+        update_erc721_import_by_pk: {
+            _set: {
+                type: "erc721_import_set_input",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            pk_columns: {
+                type: "erc721_import_pk_columns_input",
                 array: false,
                 arrayRequired: false,
                 required: true
@@ -2556,6 +3066,72 @@ export const AllTypesProps = {
             }
         }
     },
+    nft: {
+        referrer_blocks: {
+            distinct_on: {
+                type: "nfts_by_blockchain_blocks_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "nfts_by_blockchain_blocks_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "nfts_by_blockchain_blocks_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        referrer_blocks_aggregate: {
+            distinct_on: {
+                type: "nfts_by_blockchain_blocks_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "nfts_by_blockchain_blocks_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "nfts_by_blockchain_blocks_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        }
+    },
     nft_aggregate_fields: {
         count: {
             columns: {
@@ -2688,6 +3264,40 @@ export const AllTypesProps = {
             }
         }
     },
+    nft_asset_aggregate_order_by: {
+        count: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        max: {
+            type: "nft_asset_max_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        min: {
+            type: "nft_asset_min_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    nft_asset_arr_rel_insert_input: {
+        data: {
+            type: "nft_asset_insert_input",
+            array: true,
+            arrayRequired: true,
+            required: true
+        },
+        on_conflict: {
+            type: "nft_asset_on_conflict",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
     nft_asset_bool_exp: {
         _and: {
             type: "nft_asset_bool_exp",
@@ -2707,12 +3317,6 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: true
         },
-        content_cid: {
-            type: "String_comparison_exp",
-            array: false,
-            arrayRequired: false,
-            required: false
-        },
         inserted_at: {
             type: "timestamptz_comparison_exp",
             array: false,
@@ -2727,6 +3331,12 @@ export const AllTypesProps = {
         },
         metadata: {
             type: "nft_metadata_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        metadata_cid: {
+            type: "String_comparison_exp",
             array: false,
             arrayRequired: false,
             required: false
@@ -2770,12 +3380,6 @@ export const AllTypesProps = {
     },
     nft_asset_constraint: "enum",
     nft_asset_insert_input: {
-        content_cid: {
-            type: "String",
-            array: false,
-            arrayRequired: false,
-            required: false
-        },
         inserted_at: {
             type: "timestamptz",
             array: false,
@@ -2790,6 +3394,12 @@ export const AllTypesProps = {
         },
         metadata: {
             type: "nft_metadata_obj_rel_insert_input",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        metadata_cid: {
+            type: "String",
             array: false,
             arrayRequired: false,
             required: false
@@ -2831,6 +3441,96 @@ export const AllTypesProps = {
             required: false
         }
     },
+    nft_asset_max_order_by: {
+        inserted_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        ipfs_url: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        metadata_cid: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        status_text: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        token_uri: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    nft_asset_min_order_by: {
+        inserted_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        ipfs_url: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        metadata_cid: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        status_text: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        token_uri: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    nft_asset_obj_rel_insert_input: {
+        data: {
+            type: "nft_asset_insert_input",
+            array: false,
+            arrayRequired: false,
+            required: true
+        },
+        on_conflict: {
+            type: "nft_asset_on_conflict",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
     nft_asset_on_conflict: {
         constraint: {
             type: "nft_asset_constraint",
@@ -2852,12 +3552,6 @@ export const AllTypesProps = {
         }
     },
     nft_asset_order_by: {
-        content_cid: {
-            type: "order_by",
-            array: false,
-            arrayRequired: false,
-            required: false
-        },
         inserted_at: {
             type: "order_by",
             array: false,
@@ -2872,6 +3566,12 @@ export const AllTypesProps = {
         },
         metadata: {
             type: "nft_metadata_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        metadata_cid: {
+            type: "order_by",
             array: false,
             arrayRequired: false,
             required: false
@@ -2923,12 +3623,6 @@ export const AllTypesProps = {
     },
     nft_asset_select_column: "enum",
     nft_asset_set_input: {
-        content_cid: {
-            type: "String",
-            array: false,
-            arrayRequired: false,
-            required: false
-        },
         inserted_at: {
             type: "timestamptz",
             array: false,
@@ -2936,6 +3630,12 @@ export const AllTypesProps = {
             required: false
         },
         ipfs_url: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        metadata_cid: {
             type: "String",
             array: false,
             arrayRequired: false,
@@ -3049,6 +3749,12 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: true
         },
+        contract: {
+            type: "blockchain_contract_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         contract_id: {
             type: "String_comparison_exp",
             array: false,
@@ -3069,6 +3775,18 @@ export const AllTypesProps = {
         },
         mint_time: {
             type: "timestamptz_comparison_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        nft_asset: {
+            type: "nft_asset_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        referrer_blocks: {
+            type: "nfts_by_blockchain_blocks_bool_exp",
             array: false,
             arrayRequired: false,
             required: false
@@ -3094,6 +3812,12 @@ export const AllTypesProps = {
     },
     nft_constraint: "enum",
     nft_insert_input: {
+        contract: {
+            type: "blockchain_contract_obj_rel_insert_input",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         contract_id: {
             type: "String",
             array: false,
@@ -3114,6 +3838,18 @@ export const AllTypesProps = {
         },
         mint_time: {
             type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        nft_asset: {
+            type: "nft_asset_obj_rel_insert_input",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        referrer_blocks: {
+            type: "nfts_by_blockchain_blocks_arr_rel_insert_input",
             array: false,
             arrayRequired: false,
             required: false
@@ -3176,7 +3912,7 @@ export const AllTypesProps = {
         }
     },
     nft_metadata: {
-        content: {
+        json: {
             path: {
                 type: "String",
                 array: false,
@@ -3184,7 +3920,71 @@ export const AllTypesProps = {
                 required: false
             }
         },
-        other_resources: {
+        nft_assets: {
+            distinct_on: {
+                type: "nft_asset_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "nft_asset_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "nft_asset_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        nft_assets_aggregate: {
+            distinct_on: {
+                type: "nft_asset_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "nft_asset_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "nft_asset_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        other_nft_resources: {
             distinct_on: {
                 type: "other_nft_resources_select_column",
                 array: true,
@@ -3216,7 +4016,7 @@ export const AllTypesProps = {
                 required: false
             }
         },
-        other_resources_aggregate: {
+        other_nft_resources_aggregate: {
             distinct_on: {
                 type: "other_nft_resources_select_column",
                 array: true,
@@ -3266,7 +4066,7 @@ export const AllTypesProps = {
         }
     },
     nft_metadata_append_input: {
-        content: {
+        json: {
             type: "jsonb",
             array: false,
             arrayRequired: false,
@@ -3292,14 +4092,14 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: true
         },
-        content: {
-            type: "jsonb_comparison_exp",
+        cid: {
+            type: "String_comparison_exp",
             array: false,
             arrayRequired: false,
             required: false
         },
-        content_cid: {
-            type: "String_comparison_exp",
+        content: {
+            type: "content_bool_exp",
             array: false,
             arrayRequired: false,
             required: false
@@ -3328,13 +4128,25 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: false
         },
+        json: {
+            type: "jsonb_comparison_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         name: {
             type: "String_comparison_exp",
             array: false,
             arrayRequired: false,
             required: false
         },
-        other_resources: {
+        nft_assets: {
+            type: "nft_asset_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        other_nft_resources: {
             type: "other_nft_resources_bool_exp",
             array: false,
             arrayRequired: false,
@@ -3349,7 +4161,7 @@ export const AllTypesProps = {
     },
     nft_metadata_constraint: "enum",
     nft_metadata_delete_at_path_input: {
-        content: {
+        json: {
             type: "String",
             array: true,
             arrayRequired: false,
@@ -3357,7 +4169,7 @@ export const AllTypesProps = {
         }
     },
     nft_metadata_delete_elem_input: {
-        content: {
+        json: {
             type: "Int",
             array: false,
             arrayRequired: false,
@@ -3365,7 +4177,7 @@ export const AllTypesProps = {
         }
     },
     nft_metadata_delete_key_input: {
-        content: {
+        json: {
             type: "String",
             array: false,
             arrayRequired: false,
@@ -3373,14 +4185,14 @@ export const AllTypesProps = {
         }
     },
     nft_metadata_insert_input: {
-        content: {
-            type: "jsonb",
+        cid: {
+            type: "String",
             array: false,
             arrayRequired: false,
             required: false
         },
-        content_cid: {
-            type: "String",
+        content: {
+            type: "content_obj_rel_insert_input",
             array: false,
             arrayRequired: false,
             required: false
@@ -3409,13 +4221,25 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: false
         },
+        json: {
+            type: "jsonb",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         name: {
             type: "String",
             array: false,
             arrayRequired: false,
             required: false
         },
-        other_resources: {
+        nft_assets: {
+            type: "nft_asset_arr_rel_insert_input",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        other_nft_resources: {
             type: "other_nft_resources_arr_rel_insert_input",
             array: false,
             arrayRequired: false,
@@ -3463,14 +4287,14 @@ export const AllTypesProps = {
         }
     },
     nft_metadata_order_by: {
-        content: {
+        cid: {
             type: "order_by",
             array: false,
             arrayRequired: false,
             required: false
         },
-        content_cid: {
-            type: "order_by",
+        content: {
+            type: "content_order_by",
             array: false,
             arrayRequired: false,
             required: false
@@ -3499,13 +4323,25 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: false
         },
+        json: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         name: {
             type: "order_by",
             array: false,
             arrayRequired: false,
             required: false
         },
-        other_resources_aggregate: {
+        nft_assets_aggregate: {
+            type: "nft_asset_aggregate_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        other_nft_resources_aggregate: {
             type: "other_nft_resources_aggregate_order_by",
             array: false,
             arrayRequired: false,
@@ -3519,7 +4355,7 @@ export const AllTypesProps = {
         }
     },
     nft_metadata_pk_columns_input: {
-        content_cid: {
+        cid: {
             type: "String",
             array: false,
             arrayRequired: false,
@@ -3527,7 +4363,7 @@ export const AllTypesProps = {
         }
     },
     nft_metadata_prepend_input: {
-        content: {
+        json: {
             type: "jsonb",
             array: false,
             arrayRequired: false,
@@ -3536,13 +4372,7 @@ export const AllTypesProps = {
     },
     nft_metadata_select_column: "enum",
     nft_metadata_set_input: {
-        content: {
-            type: "jsonb",
-            array: false,
-            arrayRequired: false,
-            required: false
-        },
-        content_cid: {
+        cid: {
             type: "String",
             array: false,
             arrayRequired: false,
@@ -3562,6 +4392,12 @@ export const AllTypesProps = {
         },
         inserted_at: {
             type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        json: {
+            type: "jsonb",
             array: false,
             arrayRequired: false,
             required: false
@@ -3639,6 +4475,12 @@ export const AllTypesProps = {
         }
     },
     nft_order_by: {
+        contract: {
+            type: "blockchain_contract_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         contract_id: {
             type: "order_by",
             array: false,
@@ -3659,6 +4501,18 @@ export const AllTypesProps = {
         },
         mint_time: {
             type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        nft_asset: {
+            type: "nft_asset_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        referrer_blocks_aggregate: {
+            type: "nfts_by_blockchain_blocks_aggregate_order_by",
             array: false,
             arrayRequired: false,
             required: false
@@ -3965,6 +4819,40 @@ export const AllTypesProps = {
             }
         }
     },
+    nfts_by_blockchain_blocks_aggregate_order_by: {
+        count: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        max: {
+            type: "nfts_by_blockchain_blocks_max_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        min: {
+            type: "nfts_by_blockchain_blocks_min_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    nfts_by_blockchain_blocks_arr_rel_insert_input: {
+        data: {
+            type: "nfts_by_blockchain_blocks_insert_input",
+            array: true,
+            arrayRequired: true,
+            required: true
+        },
+        on_conflict: {
+            type: "nfts_by_blockchain_blocks_on_conflict",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
     nfts_by_blockchain_blocks_bool_exp: {
         _and: {
             type: "nfts_by_blockchain_blocks_bool_exp",
@@ -4031,6 +4919,58 @@ export const AllTypesProps = {
         },
         updated_at: {
             type: "timestamptz",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    nfts_by_blockchain_blocks_max_order_by: {
+        blockchain_block_hash: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        inserted_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        nft_id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
+    nfts_by_blockchain_blocks_min_order_by: {
+        blockchain_block_hash: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        inserted_at: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        nft_id: {
+            type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        updated_at: {
+            type: "order_by",
             array: false,
             arrayRequired: false,
             required: false
@@ -4461,14 +5401,20 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: true
         },
-        content_cid: {
-            type: "String_comparison_exp",
+        inserted_at: {
+            type: "timestamptz_comparison_exp",
             array: false,
             arrayRequired: false,
             required: false
         },
-        inserted_at: {
-            type: "timestamptz_comparison_exp",
+        metadata: {
+            type: "nft_metadata_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        metadata_cid: {
+            type: "String_comparison_exp",
             array: false,
             arrayRequired: false,
             required: false
@@ -4494,14 +5440,20 @@ export const AllTypesProps = {
     },
     other_nft_resources_constraint: "enum",
     other_nft_resources_insert_input: {
-        content_cid: {
-            type: "String",
+        inserted_at: {
+            type: "timestamptz",
             array: false,
             arrayRequired: false,
             required: false
         },
-        inserted_at: {
-            type: "timestamptz",
+        metadata: {
+            type: "nft_metadata_obj_rel_insert_input",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        metadata_cid: {
+            type: "String",
             array: false,
             arrayRequired: false,
             required: false
@@ -4526,13 +5478,13 @@ export const AllTypesProps = {
         }
     },
     other_nft_resources_max_order_by: {
-        content_cid: {
+        inserted_at: {
             type: "order_by",
             array: false,
             arrayRequired: false,
             required: false
         },
-        inserted_at: {
+        metadata_cid: {
             type: "order_by",
             array: false,
             arrayRequired: false,
@@ -4546,13 +5498,13 @@ export const AllTypesProps = {
         }
     },
     other_nft_resources_min_order_by: {
-        content_cid: {
+        inserted_at: {
             type: "order_by",
             array: false,
             arrayRequired: false,
             required: false
         },
-        inserted_at: {
+        metadata_cid: {
             type: "order_by",
             array: false,
             arrayRequired: false,
@@ -4586,13 +5538,19 @@ export const AllTypesProps = {
         }
     },
     other_nft_resources_order_by: {
-        content_cid: {
+        inserted_at: {
             type: "order_by",
             array: false,
             arrayRequired: false,
             required: false
         },
-        inserted_at: {
+        metadata: {
+            type: "nft_metadata_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        metadata_cid: {
             type: "order_by",
             array: false,
             arrayRequired: false,
@@ -4618,7 +5576,7 @@ export const AllTypesProps = {
         }
     },
     other_nft_resources_pk_columns_input: {
-        content_cid: {
+        metadata_cid: {
             type: "String",
             array: false,
             arrayRequired: false,
@@ -4633,14 +5591,14 @@ export const AllTypesProps = {
     },
     other_nft_resources_select_column: "enum",
     other_nft_resources_set_input: {
-        content_cid: {
-            type: "String",
+        inserted_at: {
+            type: "timestamptz",
             array: false,
             arrayRequired: false,
             required: false
         },
-        inserted_at: {
-            type: "timestamptz",
+        metadata_cid: {
+            type: "String",
             array: false,
             arrayRequired: false,
             required: false
@@ -4784,6 +5742,12 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: true
         },
+        content: {
+            type: "content_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         content_cid: {
             type: "String_comparison_exp",
             array: false,
@@ -4831,6 +5795,12 @@ export const AllTypesProps = {
         }
     },
     pin_insert_input: {
+        content: {
+            type: "content_obj_rel_insert_input",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         content_cid: {
             type: "String",
             array: false,
@@ -4941,6 +5911,12 @@ export const AllTypesProps = {
         }
     },
     pin_order_by: {
+        content: {
+            type: "content_order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         content_cid: {
             type: "order_by",
             array: false,
@@ -5413,6 +6389,156 @@ export const AllTypesProps = {
                 required: true
             }
         },
+        erc721_import: {
+            distinct_on: {
+                type: "erc721_import_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "erc721_import_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "erc721_import_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        erc721_import_aggregate: {
+            distinct_on: {
+                type: "erc721_import_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "erc721_import_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "erc721_import_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        erc721_import_by_nft: {
+            distinct_on: {
+                type: "erc721_import_by_nft_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "erc721_import_by_nft_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "erc721_import_by_nft_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        erc721_import_by_nft_aggregate: {
+            distinct_on: {
+                type: "erc721_import_by_nft_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "erc721_import_by_nft_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "erc721_import_by_nft_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        erc721_import_by_nft_by_pk: {
+            erc721_import_id: {
+                type: "String",
+                array: false,
+                arrayRequired: false,
+                required: true
+            },
+            nft_id: {
+                type: "String",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
+        erc721_import_by_pk: {
+            id: {
+                type: "String",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
         nft: {
             distinct_on: {
                 type: "nft_select_column",
@@ -5622,7 +6748,7 @@ export const AllTypesProps = {
             }
         },
         nft_metadata_by_pk: {
-            content_cid: {
+            cid: {
                 type: "String",
                 array: false,
                 arrayRequired: false,
@@ -5928,7 +7054,7 @@ export const AllTypesProps = {
             }
         },
         other_nft_resources_by_pk: {
-            content_cid: {
+            metadata_cid: {
                 type: "String",
                 array: false,
                 arrayRequired: false,
@@ -6086,6 +7212,72 @@ export const AllTypesProps = {
             }
         }
     },
+    resource: {
+        referrer_metadata: {
+            distinct_on: {
+                type: "other_nft_resources_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "other_nft_resources_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "other_nft_resources_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        referrer_metadata_aggregate: {
+            distinct_on: {
+                type: "other_nft_resources_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "other_nft_resources_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "other_nft_resources_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        }
+    },
     resource_aggregate_fields: {
         count: {
             columns: {
@@ -6145,6 +7337,12 @@ export const AllTypesProps = {
             arrayRequired: false,
             required: false
         },
+        referrer_metadata: {
+            type: "other_nft_resources_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
         status: {
             type: "resource_status_comparison_exp",
             array: false,
@@ -6198,6 +7396,12 @@ export const AllTypesProps = {
         },
         ipfs_url: {
             type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        referrer_metadata: {
+            type: "other_nft_resources_arr_rel_insert_input",
             array: false,
             arrayRequired: false,
             required: false
@@ -6288,6 +7492,12 @@ export const AllTypesProps = {
         },
         ipfs_url: {
             type: "order_by",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        referrer_metadata_aggregate: {
+            type: "other_nft_resources_aggregate_order_by",
             array: false,
             arrayRequired: false,
             required: false
@@ -6657,6 +7867,156 @@ export const AllTypesProps = {
                 required: true
             }
         },
+        erc721_import: {
+            distinct_on: {
+                type: "erc721_import_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "erc721_import_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "erc721_import_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        erc721_import_aggregate: {
+            distinct_on: {
+                type: "erc721_import_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "erc721_import_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "erc721_import_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        erc721_import_by_nft: {
+            distinct_on: {
+                type: "erc721_import_by_nft_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "erc721_import_by_nft_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "erc721_import_by_nft_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        erc721_import_by_nft_aggregate: {
+            distinct_on: {
+                type: "erc721_import_by_nft_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "erc721_import_by_nft_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "erc721_import_by_nft_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        erc721_import_by_nft_by_pk: {
+            erc721_import_id: {
+                type: "String",
+                array: false,
+                arrayRequired: false,
+                required: true
+            },
+            nft_id: {
+                type: "String",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
+        erc721_import_by_pk: {
+            id: {
+                type: "String",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
         nft: {
             distinct_on: {
                 type: "nft_select_column",
@@ -6866,7 +8226,7 @@ export const AllTypesProps = {
             }
         },
         nft_metadata_by_pk: {
-            content_cid: {
+            cid: {
                 type: "String",
                 array: false,
                 arrayRequired: false,
@@ -7172,7 +8532,7 @@ export const AllTypesProps = {
             }
         },
         other_nft_resources_by_pk: {
-            content_cid: {
+            metadata_cid: {
                 type: "String",
                 array: false,
                 arrayRequired: false,
@@ -7396,6 +8756,8 @@ export const ReturnTypes = {
     blockchain_block: {
         hash: "String",
         inserted_at: "timestamptz",
+        nfts: "nfts_by_blockchain_blocks",
+        nfts_aggregate: "nfts_by_blockchain_blocks_aggregate",
         number: "bigint",
         updated_at: "timestamptz"
     },
@@ -7556,6 +8918,68 @@ export const ReturnTypes = {
     content_variance_fields: {
         dag_size: "Float"
     },
+    erc721_import: {
+        id: "String",
+        inserted_at: "timestamptz",
+        next_id: "String",
+        updated_at: "timestamptz"
+    },
+    erc721_import_aggregate: {
+        aggregate: "erc721_import_aggregate_fields",
+        nodes: "erc721_import"
+    },
+    erc721_import_aggregate_fields: {
+        count: "Int",
+        max: "erc721_import_max_fields",
+        min: "erc721_import_min_fields"
+    },
+    erc721_import_by_nft: {
+        erc721_import_id: "String",
+        inserted_at: "timestamptz",
+        nft_id: "String",
+        updated_at: "timestamptz"
+    },
+    erc721_import_by_nft_aggregate: {
+        aggregate: "erc721_import_by_nft_aggregate_fields",
+        nodes: "erc721_import_by_nft"
+    },
+    erc721_import_by_nft_aggregate_fields: {
+        count: "Int",
+        max: "erc721_import_by_nft_max_fields",
+        min: "erc721_import_by_nft_min_fields"
+    },
+    erc721_import_by_nft_max_fields: {
+        erc721_import_id: "String",
+        inserted_at: "timestamptz",
+        nft_id: "String",
+        updated_at: "timestamptz"
+    },
+    erc721_import_by_nft_min_fields: {
+        erc721_import_id: "String",
+        inserted_at: "timestamptz",
+        nft_id: "String",
+        updated_at: "timestamptz"
+    },
+    erc721_import_by_nft_mutation_response: {
+        affected_rows: "Int",
+        returning: "erc721_import_by_nft"
+    },
+    erc721_import_max_fields: {
+        id: "String",
+        inserted_at: "timestamptz",
+        next_id: "String",
+        updated_at: "timestamptz"
+    },
+    erc721_import_min_fields: {
+        id: "String",
+        inserted_at: "timestamptz",
+        next_id: "String",
+        updated_at: "timestamptz"
+    },
+    erc721_import_mutation_response: {
+        affected_rows: "Int",
+        returning: "erc721_import"
+    },
     mutation_root: {
         delete_blockchain_block: "blockchain_block_mutation_response",
         delete_blockchain_block_by_pk: "blockchain_block",
@@ -7563,6 +8987,10 @@ export const ReturnTypes = {
         delete_blockchain_contract_by_pk: "blockchain_contract",
         delete_content: "content_mutation_response",
         delete_content_by_pk: "content",
+        delete_erc721_import: "erc721_import_mutation_response",
+        delete_erc721_import_by_nft: "erc721_import_by_nft_mutation_response",
+        delete_erc721_import_by_nft_by_pk: "erc721_import_by_nft",
+        delete_erc721_import_by_pk: "erc721_import",
         delete_nft: "nft_mutation_response",
         delete_nft_asset: "nft_asset_mutation_response",
         delete_nft_asset_by_pk: "nft_asset",
@@ -7590,6 +9018,10 @@ export const ReturnTypes = {
         insert_blockchain_contract_one: "blockchain_contract",
         insert_content: "content_mutation_response",
         insert_content_one: "content",
+        insert_erc721_import: "erc721_import_mutation_response",
+        insert_erc721_import_by_nft: "erc721_import_by_nft_mutation_response",
+        insert_erc721_import_by_nft_one: "erc721_import_by_nft",
+        insert_erc721_import_one: "erc721_import",
         insert_nft: "nft_mutation_response",
         insert_nft_asset: "nft_asset_mutation_response",
         insert_nft_asset_one: "nft_asset",
@@ -7608,7 +9040,6 @@ export const ReturnTypes = {
         insert_pin_one: "pin",
         insert_resource: "resource_mutation_response",
         insert_resource_one: "resource",
-        link_nft_asset: "nft_asset",
         link_nft_resource: "resource",
         link_resource_content: "resource",
         update_blockchain_block: "blockchain_block_mutation_response",
@@ -7617,6 +9048,10 @@ export const ReturnTypes = {
         update_blockchain_contract_by_pk: "blockchain_contract",
         update_content: "content_mutation_response",
         update_content_by_pk: "content",
+        update_erc721_import: "erc721_import_mutation_response",
+        update_erc721_import_by_nft: "erc721_import_by_nft_mutation_response",
+        update_erc721_import_by_nft_by_pk: "erc721_import_by_nft",
+        update_erc721_import_by_pk: "erc721_import",
         update_nft: "nft_mutation_response",
         update_nft_asset: "nft_asset_mutation_response",
         update_nft_asset_by_pk: "nft_asset",
@@ -7637,10 +9072,14 @@ export const ReturnTypes = {
         update_resource_by_pk: "resource"
     },
     nft: {
+        contract: "blockchain_contract",
         contract_id: "String",
         id: "String",
         inserted_at: "timestamptz",
         mint_time: "timestamptz",
+        nft_asset: "nft_asset",
+        referrer_blocks: "nfts_by_blockchain_blocks",
+        referrer_blocks_aggregate: "nfts_by_blockchain_blocks_aggregate",
         token_id: "String",
         token_uri_hash: "bytea",
         updated_at: "timestamptz"
@@ -7655,10 +9094,10 @@ export const ReturnTypes = {
         min: "nft_min_fields"
     },
     nft_asset: {
-        content_cid: "String",
         inserted_at: "timestamptz",
         ipfs_url: "String",
         metadata: "nft_metadata",
+        metadata_cid: "String",
         nfts: "nft",
         nfts_aggregate: "nft_aggregate",
         status: "nft_asset_status",
@@ -7677,17 +9116,17 @@ export const ReturnTypes = {
         min: "nft_asset_min_fields"
     },
     nft_asset_max_fields: {
-        content_cid: "String",
         inserted_at: "timestamptz",
         ipfs_url: "String",
+        metadata_cid: "String",
         status_text: "String",
         token_uri: "String",
         updated_at: "timestamptz"
     },
     nft_asset_min_fields: {
-        content_cid: "String",
         inserted_at: "timestamptz",
         ipfs_url: "String",
+        metadata_cid: "String",
         status_text: "String",
         token_uri: "String",
         updated_at: "timestamptz"
@@ -7705,15 +9144,18 @@ export const ReturnTypes = {
         updated_at: "timestamptz"
     },
     nft_metadata: {
-        content: "jsonb",
-        content_cid: "String",
+        cid: "String",
+        content: "content",
         description: "String",
         image: "resource",
         image_uri_hash: "bytea",
         inserted_at: "timestamptz",
+        json: "jsonb",
         name: "String",
-        other_resources: "other_nft_resources",
-        other_resources_aggregate: "other_nft_resources_aggregate",
+        nft_assets: "nft_asset",
+        nft_assets_aggregate: "nft_asset_aggregate",
+        other_nft_resources: "other_nft_resources",
+        other_nft_resources_aggregate: "other_nft_resources_aggregate",
         updated_at: "timestamptz"
     },
     nft_metadata_aggregate: {
@@ -7726,14 +9168,14 @@ export const ReturnTypes = {
         min: "nft_metadata_min_fields"
     },
     nft_metadata_max_fields: {
-        content_cid: "String",
+        cid: "String",
         description: "String",
         inserted_at: "timestamptz",
         name: "String",
         updated_at: "timestamptz"
     },
     nft_metadata_min_fields: {
-        content_cid: "String",
+        cid: "String",
         description: "String",
         inserted_at: "timestamptz",
         name: "String",
@@ -7888,8 +9330,9 @@ export const ReturnTypes = {
         returning: "niftysave_migration"
     },
     other_nft_resources: {
-        content_cid: "String",
         inserted_at: "timestamptz",
+        metadata: "nft_metadata",
+        metadata_cid: "String",
         resource: "resource",
         resource_uri_hash: "bytea",
         updated_at: "timestamptz"
@@ -7904,13 +9347,13 @@ export const ReturnTypes = {
         min: "other_nft_resources_min_fields"
     },
     other_nft_resources_max_fields: {
-        content_cid: "String",
         inserted_at: "timestamptz",
+        metadata_cid: "String",
         updated_at: "timestamptz"
     },
     other_nft_resources_min_fields: {
-        content_cid: "String",
         inserted_at: "timestamptz",
+        metadata_cid: "String",
         updated_at: "timestamptz"
     },
     other_nft_resources_mutation_response: {
@@ -7918,6 +9361,7 @@ export const ReturnTypes = {
         returning: "other_nft_resources"
     },
     pin: {
+        content: "content",
         content_cid: "String",
         id: "bigint",
         inserted_at: "timestamptz",
@@ -7992,6 +9436,12 @@ export const ReturnTypes = {
         content: "content",
         content_aggregate: "content_aggregate",
         content_by_pk: "content",
+        erc721_import: "erc721_import",
+        erc721_import_aggregate: "erc721_import_aggregate",
+        erc721_import_by_nft: "erc721_import_by_nft",
+        erc721_import_by_nft_aggregate: "erc721_import_by_nft_aggregate",
+        erc721_import_by_nft_by_pk: "erc721_import_by_nft",
+        erc721_import_by_pk: "erc721_import",
         nft: "nft",
         nft_aggregate: "nft_aggregate",
         nft_asset: "nft_asset",
@@ -8025,6 +9475,8 @@ export const ReturnTypes = {
         content_cid: "String",
         inserted_at: "timestamptz",
         ipfs_url: "String",
+        referrer_metadata: "other_nft_resources",
+        referrer_metadata_aggregate: "other_nft_resources_aggregate",
         status: "resource_status",
         status_text: "String",
         updated_at: "timestamptz",
@@ -8070,6 +9522,12 @@ export const ReturnTypes = {
         content: "content",
         content_aggregate: "content_aggregate",
         content_by_pk: "content",
+        erc721_import: "erc721_import",
+        erc721_import_aggregate: "erc721_import_aggregate",
+        erc721_import_by_nft: "erc721_import_by_nft",
+        erc721_import_by_nft_aggregate: "erc721_import_by_nft_aggregate",
+        erc721_import_by_nft_by_pk: "erc721_import_by_nft",
+        erc721_import_by_pk: "erc721_import",
         nft: "nft",
         nft_aggregate: "nft_aggregate",
         nft_asset: "nft_asset",

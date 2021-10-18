@@ -62,6 +62,26 @@ export declare type ValueTypes = {
     ["blockchain_block"]: AliasType<{
         hash?: true;
         inserted_at?: true;
+        nfts?: [
+            {
+                distinct_on?: ValueTypes["nfts_by_blockchain_blocks_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["nfts_by_blockchain_blocks_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["nfts_by_blockchain_blocks_bool_exp"] | null;
+            },
+            ValueTypes["nfts_by_blockchain_blocks"]
+        ];
+        nfts_aggregate?: [
+            {
+                distinct_on?: ValueTypes["nfts_by_blockchain_blocks_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["nfts_by_blockchain_blocks_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["nfts_by_blockchain_blocks_bool_exp"] | null;
+            },
+            ValueTypes["nfts_by_blockchain_blocks_aggregate"]
+        ];
         number?: true;
         updated_at?: true;
         __typename?: true;
@@ -102,6 +122,7 @@ export declare type ValueTypes = {
         _or?: ValueTypes["blockchain_block_bool_exp"][];
         hash?: ValueTypes["String_comparison_exp"] | null;
         inserted_at?: ValueTypes["timestamptz_comparison_exp"] | null;
+        nfts?: ValueTypes["nfts_by_blockchain_blocks_bool_exp"] | null;
         number?: ValueTypes["bigint_comparison_exp"] | null;
         updated_at?: ValueTypes["timestamptz_comparison_exp"] | null;
     };
@@ -115,6 +136,7 @@ export declare type ValueTypes = {
     ["blockchain_block_insert_input"]: {
         hash?: string | null;
         inserted_at?: ValueTypes["timestamptz"] | null;
+        nfts?: ValueTypes["nfts_by_blockchain_blocks_arr_rel_insert_input"] | null;
         number?: ValueTypes["bigint"] | null;
         updated_at?: ValueTypes["timestamptz"] | null;
     };
@@ -152,6 +174,7 @@ export declare type ValueTypes = {
     ["blockchain_block_order_by"]: {
         hash?: ValueTypes["order_by"] | null;
         inserted_at?: ValueTypes["order_by"] | null;
+        nfts_aggregate?: ValueTypes["nfts_by_blockchain_blocks_aggregate_order_by"] | null;
         number?: ValueTypes["order_by"] | null;
         updated_at?: ValueTypes["order_by"] | null;
     };
@@ -280,6 +303,12 @@ export declare type ValueTypes = {
         returning?: ValueTypes["blockchain_contract"];
         __typename?: true;
     }>;
+    /** input type for inserting object relation for remote table "blockchain_contract" */
+    ["blockchain_contract_obj_rel_insert_input"]: {
+        data: ValueTypes["blockchain_contract_insert_input"];
+        /** on conflict condition */
+        on_conflict?: ValueTypes["blockchain_contract_on_conflict"] | null;
+    };
     /** on conflict condition type for table "blockchain_contract" */
     ["blockchain_contract_on_conflict"]: {
         constraint: ValueTypes["blockchain_contract_constraint"];
@@ -501,6 +530,197 @@ export declare type ValueTypes = {
         dag_size?: true;
         __typename?: true;
     }>;
+    /** columns and relationships of "erc721_import" */
+    ["erc721_import"]: AliasType<{
+        id?: true;
+        inserted_at?: true;
+        next_id?: true;
+        updated_at?: true;
+        __typename?: true;
+    }>;
+    /** aggregated selection of "erc721_import" */
+    ["erc721_import_aggregate"]: AliasType<{
+        aggregate?: ValueTypes["erc721_import_aggregate_fields"];
+        nodes?: ValueTypes["erc721_import"];
+        __typename?: true;
+    }>;
+    /** aggregate fields of "erc721_import" */
+    ["erc721_import_aggregate_fields"]: AliasType<{
+        count?: [{
+            columns?: ValueTypes["erc721_import_select_column"][];
+            distinct?: boolean | null;
+        }, true];
+        max?: ValueTypes["erc721_import_max_fields"];
+        min?: ValueTypes["erc721_import_min_fields"];
+        __typename?: true;
+    }>;
+    /** Boolean expression to filter rows from the table "erc721_import". All fields are combined with a logical 'AND'. */
+    ["erc721_import_bool_exp"]: {
+        _and?: ValueTypes["erc721_import_bool_exp"][];
+        _not?: ValueTypes["erc721_import_bool_exp"] | null;
+        _or?: ValueTypes["erc721_import_bool_exp"][];
+        id?: ValueTypes["String_comparison_exp"] | null;
+        inserted_at?: ValueTypes["timestamptz_comparison_exp"] | null;
+        next_id?: ValueTypes["String_comparison_exp"] | null;
+        updated_at?: ValueTypes["timestamptz_comparison_exp"] | null;
+    };
+    /** columns and relationships of "erc721_import_by_nft" */
+    ["erc721_import_by_nft"]: AliasType<{
+        erc721_import_id?: true;
+        inserted_at?: true;
+        nft_id?: true;
+        updated_at?: true;
+        __typename?: true;
+    }>;
+    /** aggregated selection of "erc721_import_by_nft" */
+    ["erc721_import_by_nft_aggregate"]: AliasType<{
+        aggregate?: ValueTypes["erc721_import_by_nft_aggregate_fields"];
+        nodes?: ValueTypes["erc721_import_by_nft"];
+        __typename?: true;
+    }>;
+    /** aggregate fields of "erc721_import_by_nft" */
+    ["erc721_import_by_nft_aggregate_fields"]: AliasType<{
+        count?: [{
+            columns?: ValueTypes["erc721_import_by_nft_select_column"][];
+            distinct?: boolean | null;
+        }, true];
+        max?: ValueTypes["erc721_import_by_nft_max_fields"];
+        min?: ValueTypes["erc721_import_by_nft_min_fields"];
+        __typename?: true;
+    }>;
+    /** Boolean expression to filter rows from the table "erc721_import_by_nft". All fields are combined with a logical 'AND'. */
+    ["erc721_import_by_nft_bool_exp"]: {
+        _and?: ValueTypes["erc721_import_by_nft_bool_exp"][];
+        _not?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+        _or?: ValueTypes["erc721_import_by_nft_bool_exp"][];
+        erc721_import_id?: ValueTypes["String_comparison_exp"] | null;
+        inserted_at?: ValueTypes["timestamptz_comparison_exp"] | null;
+        nft_id?: ValueTypes["String_comparison_exp"] | null;
+        updated_at?: ValueTypes["timestamptz_comparison_exp"] | null;
+    };
+    /** unique or primary key constraints on table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_constraint"]: erc721_import_by_nft_constraint;
+    /** input type for inserting data into table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_insert_input"]: {
+        erc721_import_id?: string | null;
+        inserted_at?: ValueTypes["timestamptz"] | null;
+        nft_id?: string | null;
+        updated_at?: ValueTypes["timestamptz"] | null;
+    };
+    /** aggregate max on columns */
+    ["erc721_import_by_nft_max_fields"]: AliasType<{
+        erc721_import_id?: true;
+        inserted_at?: true;
+        nft_id?: true;
+        updated_at?: true;
+        __typename?: true;
+    }>;
+    /** aggregate min on columns */
+    ["erc721_import_by_nft_min_fields"]: AliasType<{
+        erc721_import_id?: true;
+        inserted_at?: true;
+        nft_id?: true;
+        updated_at?: true;
+        __typename?: true;
+    }>;
+    /** response of any mutation on the table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_mutation_response"]: AliasType<{
+        /** number of rows affected by the mutation */
+        affected_rows?: true;
+        /** data from the rows affected by the mutation */
+        returning?: ValueTypes["erc721_import_by_nft"];
+        __typename?: true;
+    }>;
+    /** on conflict condition type for table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_on_conflict"]: {
+        constraint: ValueTypes["erc721_import_by_nft_constraint"];
+        update_columns: ValueTypes["erc721_import_by_nft_update_column"][];
+        where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+    };
+    /** Ordering options when selecting data from "erc721_import_by_nft". */
+    ["erc721_import_by_nft_order_by"]: {
+        erc721_import_id?: ValueTypes["order_by"] | null;
+        inserted_at?: ValueTypes["order_by"] | null;
+        nft_id?: ValueTypes["order_by"] | null;
+        updated_at?: ValueTypes["order_by"] | null;
+    };
+    /** primary key columns input for table: erc721_import_by_nft */
+    ["erc721_import_by_nft_pk_columns_input"]: {
+        erc721_import_id: string;
+        nft_id: string;
+    };
+    /** select columns of table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_select_column"]: erc721_import_by_nft_select_column;
+    /** input type for updating data in table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_set_input"]: {
+        erc721_import_id?: string | null;
+        inserted_at?: ValueTypes["timestamptz"] | null;
+        nft_id?: string | null;
+        updated_at?: ValueTypes["timestamptz"] | null;
+    };
+    /** update columns of table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_update_column"]: erc721_import_by_nft_update_column;
+    /** unique or primary key constraints on table "erc721_import" */
+    ["erc721_import_constraint"]: erc721_import_constraint;
+    /** input type for inserting data into table "erc721_import" */
+    ["erc721_import_insert_input"]: {
+        id?: string | null;
+        inserted_at?: ValueTypes["timestamptz"] | null;
+        next_id?: string | null;
+        updated_at?: ValueTypes["timestamptz"] | null;
+    };
+    /** aggregate max on columns */
+    ["erc721_import_max_fields"]: AliasType<{
+        id?: true;
+        inserted_at?: true;
+        next_id?: true;
+        updated_at?: true;
+        __typename?: true;
+    }>;
+    /** aggregate min on columns */
+    ["erc721_import_min_fields"]: AliasType<{
+        id?: true;
+        inserted_at?: true;
+        next_id?: true;
+        updated_at?: true;
+        __typename?: true;
+    }>;
+    /** response of any mutation on the table "erc721_import" */
+    ["erc721_import_mutation_response"]: AliasType<{
+        /** number of rows affected by the mutation */
+        affected_rows?: true;
+        /** data from the rows affected by the mutation */
+        returning?: ValueTypes["erc721_import"];
+        __typename?: true;
+    }>;
+    /** on conflict condition type for table "erc721_import" */
+    ["erc721_import_on_conflict"]: {
+        constraint: ValueTypes["erc721_import_constraint"];
+        update_columns: ValueTypes["erc721_import_update_column"][];
+        where?: ValueTypes["erc721_import_bool_exp"] | null;
+    };
+    /** Ordering options when selecting data from "erc721_import". */
+    ["erc721_import_order_by"]: {
+        id?: ValueTypes["order_by"] | null;
+        inserted_at?: ValueTypes["order_by"] | null;
+        next_id?: ValueTypes["order_by"] | null;
+        updated_at?: ValueTypes["order_by"] | null;
+    };
+    /** primary key columns input for table: erc721_import */
+    ["erc721_import_pk_columns_input"]: {
+        id: string;
+    };
+    /** select columns of table "erc721_import" */
+    ["erc721_import_select_column"]: erc721_import_select_column;
+    /** input type for updating data in table "erc721_import" */
+    ["erc721_import_set_input"]: {
+        id?: string | null;
+        inserted_at?: ValueTypes["timestamptz"] | null;
+        next_id?: string | null;
+        updated_at?: ValueTypes["timestamptz"] | null;
+    };
+    /** update columns of table "erc721_import" */
+    ["erc721_import_update_column"]: erc721_import_update_column;
     ["fail_nft_asset_args"]: {
         ipfs_url?: string | null;
         status?: ValueTypes["nft_asset_status"] | null;
@@ -551,15 +771,6 @@ export declare type ValueTypes = {
         _neq?: ValueTypes["jsonb"] | null;
         _nin?: ValueTypes["jsonb"][];
     };
-    ["link_nft_asset_args"]: {
-        content_cid?: string | null;
-        dag_size?: ValueTypes["bigint"] | null;
-        ipfs_url?: string | null;
-        metadata?: ValueTypes["jsonb"] | null;
-        pin_service?: ValueTypes["pin_service"] | null;
-        status_text?: string | null;
-        token_uri_hash?: string | null;
-    };
     ["link_nft_resource_args"]: {
         cid?: string | null;
         uri?: string | null;
@@ -601,6 +812,25 @@ export declare type ValueTypes = {
         delete_content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        delete_erc721_import?: [
+            {
+                where: ValueTypes["erc721_import_bool_exp"];
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        delete_erc721_import_by_nft?: [
+            {
+                where: ValueTypes["erc721_import_by_nft_bool_exp"];
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        delete_erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        delete_erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         delete_nft?: [
             {
                 where: ValueTypes["nft_bool_exp"];
@@ -626,7 +856,7 @@ export declare type ValueTypes = {
             ValueTypes["nft_metadata_mutation_response"]
         ];
         delete_nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         delete_nft_ownership?: [
             {
@@ -665,7 +895,7 @@ export declare type ValueTypes = {
             ValueTypes["other_nft_resources_mutation_response"]
         ];
         delete_other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         delete_pin?: [
@@ -760,6 +990,34 @@ export declare type ValueTypes = {
                 on_conflict?: ValueTypes["content_on_conflict"] | null;
             },
             ValueTypes["content"]
+        ];
+        insert_erc721_import?: [
+            {
+                objects: ValueTypes["erc721_import_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        insert_erc721_import_by_nft?: [
+            {
+                objects: ValueTypes["erc721_import_by_nft_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_by_nft_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        insert_erc721_import_by_nft_one?: [
+            {
+                object: ValueTypes["erc721_import_by_nft_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_by_nft_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        insert_erc721_import_one?: [
+            {
+                object: ValueTypes["erc721_import_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import"]
         ];
         insert_nft?: [
             {
@@ -887,17 +1145,6 @@ export declare type ValueTypes = {
             },
             ValueTypes["resource"]
         ];
-        link_nft_asset?: [
-            {
-                args: ValueTypes["link_nft_asset_args"]; /** distinct select on columns */
-                distinct_on?: ValueTypes["nft_asset_select_column"][]; /** limit the number of rows returned */
-                limit?: number | null; /** skip the first n rows. Use only with order_by */
-                offset?: number | null; /** sort the rows by one or more columns */
-                order_by?: ValueTypes["nft_asset_order_by"][]; /** filter the rows returned */
-                where?: ValueTypes["nft_asset_bool_exp"] | null;
-            },
-            ValueTypes["nft_asset"]
-        ];
         link_nft_resource?: [
             {
                 args: ValueTypes["link_nft_resource_args"]; /** distinct select on columns */
@@ -965,6 +1212,34 @@ export declare type ValueTypes = {
                 pk_columns: ValueTypes["content_pk_columns_input"];
             },
             ValueTypes["content"]
+        ];
+        update_erc721_import?: [
+            {
+                _set?: ValueTypes["erc721_import_set_input"] | null; /** filter the rows which have to be updated */
+                where: ValueTypes["erc721_import_bool_exp"];
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        update_erc721_import_by_nft?: [
+            {
+                _set?: ValueTypes["erc721_import_by_nft_set_input"] | null; /** filter the rows which have to be updated */
+                where: ValueTypes["erc721_import_by_nft_bool_exp"];
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        update_erc721_import_by_nft_by_pk?: [
+            {
+                _set?: ValueTypes["erc721_import_by_nft_set_input"] | null;
+                pk_columns: ValueTypes["erc721_import_by_nft_pk_columns_input"];
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        update_erc721_import_by_pk?: [
+            {
+                _set?: ValueTypes["erc721_import_set_input"] | null;
+                pk_columns: ValueTypes["erc721_import_pk_columns_input"];
+            },
+            ValueTypes["erc721_import"]
         ];
         update_nft?: [
             {
@@ -1120,10 +1395,34 @@ export declare type ValueTypes = {
     }>;
     /** columns and relationships of "nft" */
     ["nft"]: AliasType<{
+        /** An object relationship */
+        contract?: ValueTypes["blockchain_contract"];
         contract_id?: true;
         id?: true;
         inserted_at?: true;
         mint_time?: true;
+        /** An object relationship */
+        nft_asset?: ValueTypes["nft_asset"];
+        referrer_blocks?: [
+            {
+                distinct_on?: ValueTypes["nfts_by_blockchain_blocks_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["nfts_by_blockchain_blocks_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["nfts_by_blockchain_blocks_bool_exp"] | null;
+            },
+            ValueTypes["nfts_by_blockchain_blocks"]
+        ];
+        referrer_blocks_aggregate?: [
+            {
+                distinct_on?: ValueTypes["nfts_by_blockchain_blocks_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["nfts_by_blockchain_blocks_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["nfts_by_blockchain_blocks_bool_exp"] | null;
+            },
+            ValueTypes["nfts_by_blockchain_blocks_aggregate"]
+        ];
         token_id?: true;
         token_uri_hash?: true;
         updated_at?: true;
@@ -1159,11 +1458,11 @@ export declare type ValueTypes = {
     };
     /** columns and relationships of "nft_asset" */
     ["nft_asset"]: AliasType<{
-        content_cid?: true;
         inserted_at?: true;
         ipfs_url?: true;
         /** An object relationship */
         metadata?: ValueTypes["nft_metadata"];
+        metadata_cid?: true;
         nfts?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -1207,15 +1506,27 @@ export declare type ValueTypes = {
         min?: ValueTypes["nft_asset_min_fields"];
         __typename?: true;
     }>;
+    /** order by aggregate values of table "nft_asset" */
+    ["nft_asset_aggregate_order_by"]: {
+        count?: ValueTypes["order_by"] | null;
+        max?: ValueTypes["nft_asset_max_order_by"] | null;
+        min?: ValueTypes["nft_asset_min_order_by"] | null;
+    };
+    /** input type for inserting array relation for remote table "nft_asset" */
+    ["nft_asset_arr_rel_insert_input"]: {
+        data: ValueTypes["nft_asset_insert_input"][];
+        /** on conflict condition */
+        on_conflict?: ValueTypes["nft_asset_on_conflict"] | null;
+    };
     /** Boolean expression to filter rows from the table "nft_asset". All fields are combined with a logical 'AND'. */
     ["nft_asset_bool_exp"]: {
         _and?: ValueTypes["nft_asset_bool_exp"][];
         _not?: ValueTypes["nft_asset_bool_exp"] | null;
         _or?: ValueTypes["nft_asset_bool_exp"][];
-        content_cid?: ValueTypes["String_comparison_exp"] | null;
         inserted_at?: ValueTypes["timestamptz_comparison_exp"] | null;
         ipfs_url?: ValueTypes["String_comparison_exp"] | null;
         metadata?: ValueTypes["nft_metadata_bool_exp"] | null;
+        metadata_cid?: ValueTypes["String_comparison_exp"] | null;
         nfts?: ValueTypes["nft_bool_exp"] | null;
         status?: ValueTypes["nft_asset_status_comparison_exp"] | null;
         status_text?: ValueTypes["String_comparison_exp"] | null;
@@ -1227,10 +1538,10 @@ export declare type ValueTypes = {
     ["nft_asset_constraint"]: nft_asset_constraint;
     /** input type for inserting data into table "nft_asset" */
     ["nft_asset_insert_input"]: {
-        content_cid?: string | null;
         inserted_at?: ValueTypes["timestamptz"] | null;
         ipfs_url?: string | null;
         metadata?: ValueTypes["nft_metadata_obj_rel_insert_input"] | null;
+        metadata_cid?: string | null;
         nfts?: ValueTypes["nft_arr_rel_insert_input"] | null;
         status?: ValueTypes["nft_asset_status"] | null;
         status_text?: string | null;
@@ -1240,24 +1551,42 @@ export declare type ValueTypes = {
     };
     /** aggregate max on columns */
     ["nft_asset_max_fields"]: AliasType<{
-        content_cid?: true;
         inserted_at?: true;
         ipfs_url?: true;
+        metadata_cid?: true;
         status_text?: true;
         token_uri?: true;
         updated_at?: true;
         __typename?: true;
     }>;
+    /** order by max() on columns of table "nft_asset" */
+    ["nft_asset_max_order_by"]: {
+        inserted_at?: ValueTypes["order_by"] | null;
+        ipfs_url?: ValueTypes["order_by"] | null;
+        metadata_cid?: ValueTypes["order_by"] | null;
+        status_text?: ValueTypes["order_by"] | null;
+        token_uri?: ValueTypes["order_by"] | null;
+        updated_at?: ValueTypes["order_by"] | null;
+    };
     /** aggregate min on columns */
     ["nft_asset_min_fields"]: AliasType<{
-        content_cid?: true;
         inserted_at?: true;
         ipfs_url?: true;
+        metadata_cid?: true;
         status_text?: true;
         token_uri?: true;
         updated_at?: true;
         __typename?: true;
     }>;
+    /** order by min() on columns of table "nft_asset" */
+    ["nft_asset_min_order_by"]: {
+        inserted_at?: ValueTypes["order_by"] | null;
+        ipfs_url?: ValueTypes["order_by"] | null;
+        metadata_cid?: ValueTypes["order_by"] | null;
+        status_text?: ValueTypes["order_by"] | null;
+        token_uri?: ValueTypes["order_by"] | null;
+        updated_at?: ValueTypes["order_by"] | null;
+    };
     /** response of any mutation on the table "nft_asset" */
     ["nft_asset_mutation_response"]: AliasType<{
         /** number of rows affected by the mutation */
@@ -1266,6 +1595,12 @@ export declare type ValueTypes = {
         returning?: ValueTypes["nft_asset"];
         __typename?: true;
     }>;
+    /** input type for inserting object relation for remote table "nft_asset" */
+    ["nft_asset_obj_rel_insert_input"]: {
+        data: ValueTypes["nft_asset_insert_input"];
+        /** on conflict condition */
+        on_conflict?: ValueTypes["nft_asset_on_conflict"] | null;
+    };
     /** on conflict condition type for table "nft_asset" */
     ["nft_asset_on_conflict"]: {
         constraint: ValueTypes["nft_asset_constraint"];
@@ -1274,10 +1609,10 @@ export declare type ValueTypes = {
     };
     /** Ordering options when selecting data from "nft_asset". */
     ["nft_asset_order_by"]: {
-        content_cid?: ValueTypes["order_by"] | null;
         inserted_at?: ValueTypes["order_by"] | null;
         ipfs_url?: ValueTypes["order_by"] | null;
         metadata?: ValueTypes["nft_metadata_order_by"] | null;
+        metadata_cid?: ValueTypes["order_by"] | null;
         nfts_aggregate?: ValueTypes["nft_aggregate_order_by"] | null;
         status?: ValueTypes["order_by"] | null;
         status_text?: ValueTypes["order_by"] | null;
@@ -1293,9 +1628,9 @@ export declare type ValueTypes = {
     ["nft_asset_select_column"]: nft_asset_select_column;
     /** input type for updating data in table "nft_asset" */
     ["nft_asset_set_input"]: {
-        content_cid?: string | null;
         inserted_at?: ValueTypes["timestamptz"] | null;
         ipfs_url?: string | null;
+        metadata_cid?: string | null;
         status?: ValueTypes["nft_asset_status"] | null;
         status_text?: string | null;
         token_uri?: string | null;
@@ -1322,10 +1657,13 @@ export declare type ValueTypes = {
         _and?: ValueTypes["nft_bool_exp"][];
         _not?: ValueTypes["nft_bool_exp"] | null;
         _or?: ValueTypes["nft_bool_exp"][];
+        contract?: ValueTypes["blockchain_contract_bool_exp"] | null;
         contract_id?: ValueTypes["String_comparison_exp"] | null;
         id?: ValueTypes["String_comparison_exp"] | null;
         inserted_at?: ValueTypes["timestamptz_comparison_exp"] | null;
         mint_time?: ValueTypes["timestamptz_comparison_exp"] | null;
+        nft_asset?: ValueTypes["nft_asset_bool_exp"] | null;
+        referrer_blocks?: ValueTypes["nfts_by_blockchain_blocks_bool_exp"] | null;
         token_id?: ValueTypes["String_comparison_exp"] | null;
         token_uri_hash?: ValueTypes["bytea_comparison_exp"] | null;
         updated_at?: ValueTypes["timestamptz_comparison_exp"] | null;
@@ -1334,10 +1672,13 @@ export declare type ValueTypes = {
     ["nft_constraint"]: nft_constraint;
     /** input type for inserting data into table "nft" */
     ["nft_insert_input"]: {
+        contract?: ValueTypes["blockchain_contract_obj_rel_insert_input"] | null;
         contract_id?: string | null;
         id?: string | null;
         inserted_at?: ValueTypes["timestamptz"] | null;
         mint_time?: ValueTypes["timestamptz"] | null;
+        nft_asset?: ValueTypes["nft_asset_obj_rel_insert_input"] | null;
+        referrer_blocks?: ValueTypes["nfts_by_blockchain_blocks_arr_rel_insert_input"] | null;
         token_id?: string | null;
         token_uri_hash?: ValueTypes["bytea"] | null;
         updated_at?: ValueTypes["timestamptz"] | null;
@@ -1363,20 +1704,42 @@ export declare type ValueTypes = {
     };
     /** columns and relationships of "nft_metadata" */
     ["nft_metadata"]: AliasType<{
-        content?: [
-            {
-                path?: string | null;
-            },
-            true
-        ];
-        content_cid?: true;
+        cid?: true;
+        /** An object relationship */
+        content?: ValueTypes["content"];
         description?: true;
         /** An object relationship */
         image?: ValueTypes["resource"];
         image_uri_hash?: true;
         inserted_at?: true;
+        json?: [
+            {
+                path?: string | null;
+            },
+            true
+        ];
         name?: true;
-        other_resources?: [
+        nft_assets?: [
+            {
+                distinct_on?: ValueTypes["nft_asset_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["nft_asset_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["nft_asset_bool_exp"] | null;
+            },
+            ValueTypes["nft_asset"]
+        ];
+        nft_assets_aggregate?: [
+            {
+                distinct_on?: ValueTypes["nft_asset_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["nft_asset_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["nft_asset_bool_exp"] | null;
+            },
+            ValueTypes["nft_asset_aggregate"]
+        ];
+        other_nft_resources?: [
             {
                 distinct_on?: ValueTypes["other_nft_resources_select_column"][]; /** limit the number of rows returned */
                 limit?: number | null; /** skip the first n rows. Use only with order_by */
@@ -1386,7 +1749,7 @@ export declare type ValueTypes = {
             },
             ValueTypes["other_nft_resources"]
         ];
-        other_resources_aggregate?: [
+        other_nft_resources_aggregate?: [
             {
                 distinct_on?: ValueTypes["other_nft_resources_select_column"][]; /** limit the number of rows returned */
                 limit?: number | null; /** skip the first n rows. Use only with order_by */
@@ -1417,52 +1780,56 @@ export declare type ValueTypes = {
     }>;
     /** append existing jsonb value of filtered columns with new jsonb value */
     ["nft_metadata_append_input"]: {
-        content?: ValueTypes["jsonb"] | null;
+        json?: ValueTypes["jsonb"] | null;
     };
     /** Boolean expression to filter rows from the table "nft_metadata". All fields are combined with a logical 'AND'. */
     ["nft_metadata_bool_exp"]: {
         _and?: ValueTypes["nft_metadata_bool_exp"][];
         _not?: ValueTypes["nft_metadata_bool_exp"] | null;
         _or?: ValueTypes["nft_metadata_bool_exp"][];
-        content?: ValueTypes["jsonb_comparison_exp"] | null;
-        content_cid?: ValueTypes["String_comparison_exp"] | null;
+        cid?: ValueTypes["String_comparison_exp"] | null;
+        content?: ValueTypes["content_bool_exp"] | null;
         description?: ValueTypes["String_comparison_exp"] | null;
         image?: ValueTypes["resource_bool_exp"] | null;
         image_uri_hash?: ValueTypes["bytea_comparison_exp"] | null;
         inserted_at?: ValueTypes["timestamptz_comparison_exp"] | null;
+        json?: ValueTypes["jsonb_comparison_exp"] | null;
         name?: ValueTypes["String_comparison_exp"] | null;
-        other_resources?: ValueTypes["other_nft_resources_bool_exp"] | null;
+        nft_assets?: ValueTypes["nft_asset_bool_exp"] | null;
+        other_nft_resources?: ValueTypes["other_nft_resources_bool_exp"] | null;
         updated_at?: ValueTypes["timestamptz_comparison_exp"] | null;
     };
     /** unique or primary key constraints on table "nft_metadata" */
     ["nft_metadata_constraint"]: nft_metadata_constraint;
     /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
     ["nft_metadata_delete_at_path_input"]: {
-        content?: string[];
+        json?: string[];
     };
     /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
     ["nft_metadata_delete_elem_input"]: {
-        content?: number | null;
+        json?: number | null;
     };
     /** delete key/value pair or string element. key/value pairs are matched based on their key value */
     ["nft_metadata_delete_key_input"]: {
-        content?: string | null;
+        json?: string | null;
     };
     /** input type for inserting data into table "nft_metadata" */
     ["nft_metadata_insert_input"]: {
-        content?: ValueTypes["jsonb"] | null;
-        content_cid?: string | null;
+        cid?: string | null;
+        content?: ValueTypes["content_obj_rel_insert_input"] | null;
         description?: string | null;
         image?: ValueTypes["resource_obj_rel_insert_input"] | null;
         image_uri_hash?: ValueTypes["bytea"] | null;
         inserted_at?: ValueTypes["timestamptz"] | null;
+        json?: ValueTypes["jsonb"] | null;
         name?: string | null;
-        other_resources?: ValueTypes["other_nft_resources_arr_rel_insert_input"] | null;
+        nft_assets?: ValueTypes["nft_asset_arr_rel_insert_input"] | null;
+        other_nft_resources?: ValueTypes["other_nft_resources_arr_rel_insert_input"] | null;
         updated_at?: ValueTypes["timestamptz"] | null;
     };
     /** aggregate max on columns */
     ["nft_metadata_max_fields"]: AliasType<{
-        content_cid?: true;
+        cid?: true;
         description?: true;
         inserted_at?: true;
         name?: true;
@@ -1471,7 +1838,7 @@ export declare type ValueTypes = {
     }>;
     /** aggregate min on columns */
     ["nft_metadata_min_fields"]: AliasType<{
-        content_cid?: true;
+        cid?: true;
         description?: true;
         inserted_at?: true;
         name?: true;
@@ -1500,33 +1867,35 @@ export declare type ValueTypes = {
     };
     /** Ordering options when selecting data from "nft_metadata". */
     ["nft_metadata_order_by"]: {
-        content?: ValueTypes["order_by"] | null;
-        content_cid?: ValueTypes["order_by"] | null;
+        cid?: ValueTypes["order_by"] | null;
+        content?: ValueTypes["content_order_by"] | null;
         description?: ValueTypes["order_by"] | null;
         image?: ValueTypes["resource_order_by"] | null;
         image_uri_hash?: ValueTypes["order_by"] | null;
         inserted_at?: ValueTypes["order_by"] | null;
+        json?: ValueTypes["order_by"] | null;
         name?: ValueTypes["order_by"] | null;
-        other_resources_aggregate?: ValueTypes["other_nft_resources_aggregate_order_by"] | null;
+        nft_assets_aggregate?: ValueTypes["nft_asset_aggregate_order_by"] | null;
+        other_nft_resources_aggregate?: ValueTypes["other_nft_resources_aggregate_order_by"] | null;
         updated_at?: ValueTypes["order_by"] | null;
     };
     /** primary key columns input for table: nft_metadata */
     ["nft_metadata_pk_columns_input"]: {
-        content_cid: string;
+        cid: string;
     };
     /** prepend existing jsonb value of filtered columns with new jsonb value */
     ["nft_metadata_prepend_input"]: {
-        content?: ValueTypes["jsonb"] | null;
+        json?: ValueTypes["jsonb"] | null;
     };
     /** select columns of table "nft_metadata" */
     ["nft_metadata_select_column"]: nft_metadata_select_column;
     /** input type for updating data in table "nft_metadata" */
     ["nft_metadata_set_input"]: {
-        content?: ValueTypes["jsonb"] | null;
-        content_cid?: string | null;
+        cid?: string | null;
         description?: string | null;
         image_uri_hash?: ValueTypes["bytea"] | null;
         inserted_at?: ValueTypes["timestamptz"] | null;
+        json?: ValueTypes["jsonb"] | null;
         name?: string | null;
         updated_at?: ValueTypes["timestamptz"] | null;
     };
@@ -1567,10 +1936,13 @@ export declare type ValueTypes = {
     };
     /** Ordering options when selecting data from "nft". */
     ["nft_order_by"]: {
+        contract?: ValueTypes["blockchain_contract_order_by"] | null;
         contract_id?: ValueTypes["order_by"] | null;
         id?: ValueTypes["order_by"] | null;
         inserted_at?: ValueTypes["order_by"] | null;
         mint_time?: ValueTypes["order_by"] | null;
+        nft_asset?: ValueTypes["nft_asset_order_by"] | null;
+        referrer_blocks_aggregate?: ValueTypes["nfts_by_blockchain_blocks_aggregate_order_by"] | null;
         token_id?: ValueTypes["order_by"] | null;
         token_uri_hash?: ValueTypes["order_by"] | null;
         updated_at?: ValueTypes["order_by"] | null;
@@ -1773,6 +2145,18 @@ export declare type ValueTypes = {
         min?: ValueTypes["nfts_by_blockchain_blocks_min_fields"];
         __typename?: true;
     }>;
+    /** order by aggregate values of table "nfts_by_blockchain_blocks" */
+    ["nfts_by_blockchain_blocks_aggregate_order_by"]: {
+        count?: ValueTypes["order_by"] | null;
+        max?: ValueTypes["nfts_by_blockchain_blocks_max_order_by"] | null;
+        min?: ValueTypes["nfts_by_blockchain_blocks_min_order_by"] | null;
+    };
+    /** input type for inserting array relation for remote table "nfts_by_blockchain_blocks" */
+    ["nfts_by_blockchain_blocks_arr_rel_insert_input"]: {
+        data: ValueTypes["nfts_by_blockchain_blocks_insert_input"][];
+        /** on conflict condition */
+        on_conflict?: ValueTypes["nfts_by_blockchain_blocks_on_conflict"] | null;
+    };
     /** Boolean expression to filter rows from the table "nfts_by_blockchain_blocks". All fields are combined with a logical 'AND'. */
     ["nfts_by_blockchain_blocks_bool_exp"]: {
         _and?: ValueTypes["nfts_by_blockchain_blocks_bool_exp"][];
@@ -1800,6 +2184,13 @@ export declare type ValueTypes = {
         updated_at?: true;
         __typename?: true;
     }>;
+    /** order by max() on columns of table "nfts_by_blockchain_blocks" */
+    ["nfts_by_blockchain_blocks_max_order_by"]: {
+        blockchain_block_hash?: ValueTypes["order_by"] | null;
+        inserted_at?: ValueTypes["order_by"] | null;
+        nft_id?: ValueTypes["order_by"] | null;
+        updated_at?: ValueTypes["order_by"] | null;
+    };
     /** aggregate min on columns */
     ["nfts_by_blockchain_blocks_min_fields"]: AliasType<{
         blockchain_block_hash?: true;
@@ -1808,6 +2199,13 @@ export declare type ValueTypes = {
         updated_at?: true;
         __typename?: true;
     }>;
+    /** order by min() on columns of table "nfts_by_blockchain_blocks" */
+    ["nfts_by_blockchain_blocks_min_order_by"]: {
+        blockchain_block_hash?: ValueTypes["order_by"] | null;
+        inserted_at?: ValueTypes["order_by"] | null;
+        nft_id?: ValueTypes["order_by"] | null;
+        updated_at?: ValueTypes["order_by"] | null;
+    };
     /** response of any mutation on the table "nfts_by_blockchain_blocks" */
     ["nfts_by_blockchain_blocks_mutation_response"]: AliasType<{
         /** number of rows affected by the mutation */
@@ -1984,8 +2382,10 @@ columns and relationships of "niftysave_migration" */
     ["order_by"]: order_by;
     /** columns and relationships of "other_nft_resources" */
     ["other_nft_resources"]: AliasType<{
-        content_cid?: true;
         inserted_at?: true;
+        /** An object relationship */
+        metadata?: ValueTypes["nft_metadata"];
+        metadata_cid?: true;
         /** An object relationship */
         resource?: ValueTypes["resource"];
         resource_uri_hash?: true;
@@ -2025,8 +2425,9 @@ columns and relationships of "niftysave_migration" */
         _and?: ValueTypes["other_nft_resources_bool_exp"][];
         _not?: ValueTypes["other_nft_resources_bool_exp"] | null;
         _or?: ValueTypes["other_nft_resources_bool_exp"][];
-        content_cid?: ValueTypes["String_comparison_exp"] | null;
         inserted_at?: ValueTypes["timestamptz_comparison_exp"] | null;
+        metadata?: ValueTypes["nft_metadata_bool_exp"] | null;
+        metadata_cid?: ValueTypes["String_comparison_exp"] | null;
         resource?: ValueTypes["resource_bool_exp"] | null;
         resource_uri_hash?: ValueTypes["bytea_comparison_exp"] | null;
         updated_at?: ValueTypes["timestamptz_comparison_exp"] | null;
@@ -2035,36 +2436,37 @@ columns and relationships of "niftysave_migration" */
     ["other_nft_resources_constraint"]: other_nft_resources_constraint;
     /** input type for inserting data into table "other_nft_resources" */
     ["other_nft_resources_insert_input"]: {
-        content_cid?: string | null;
         inserted_at?: ValueTypes["timestamptz"] | null;
+        metadata?: ValueTypes["nft_metadata_obj_rel_insert_input"] | null;
+        metadata_cid?: string | null;
         resource?: ValueTypes["resource_obj_rel_insert_input"] | null;
         resource_uri_hash?: ValueTypes["bytea"] | null;
         updated_at?: ValueTypes["timestamptz"] | null;
     };
     /** aggregate max on columns */
     ["other_nft_resources_max_fields"]: AliasType<{
-        content_cid?: true;
         inserted_at?: true;
+        metadata_cid?: true;
         updated_at?: true;
         __typename?: true;
     }>;
     /** order by max() on columns of table "other_nft_resources" */
     ["other_nft_resources_max_order_by"]: {
-        content_cid?: ValueTypes["order_by"] | null;
         inserted_at?: ValueTypes["order_by"] | null;
+        metadata_cid?: ValueTypes["order_by"] | null;
         updated_at?: ValueTypes["order_by"] | null;
     };
     /** aggregate min on columns */
     ["other_nft_resources_min_fields"]: AliasType<{
-        content_cid?: true;
         inserted_at?: true;
+        metadata_cid?: true;
         updated_at?: true;
         __typename?: true;
     }>;
     /** order by min() on columns of table "other_nft_resources" */
     ["other_nft_resources_min_order_by"]: {
-        content_cid?: ValueTypes["order_by"] | null;
         inserted_at?: ValueTypes["order_by"] | null;
+        metadata_cid?: ValueTypes["order_by"] | null;
         updated_at?: ValueTypes["order_by"] | null;
     };
     /** response of any mutation on the table "other_nft_resources" */
@@ -2083,23 +2485,24 @@ columns and relationships of "niftysave_migration" */
     };
     /** Ordering options when selecting data from "other_nft_resources". */
     ["other_nft_resources_order_by"]: {
-        content_cid?: ValueTypes["order_by"] | null;
         inserted_at?: ValueTypes["order_by"] | null;
+        metadata?: ValueTypes["nft_metadata_order_by"] | null;
+        metadata_cid?: ValueTypes["order_by"] | null;
         resource?: ValueTypes["resource_order_by"] | null;
         resource_uri_hash?: ValueTypes["order_by"] | null;
         updated_at?: ValueTypes["order_by"] | null;
     };
     /** primary key columns input for table: other_nft_resources */
     ["other_nft_resources_pk_columns_input"]: {
-        content_cid: string;
+        metadata_cid: string;
         resource_uri_hash: ValueTypes["bytea"];
     };
     /** select columns of table "other_nft_resources" */
     ["other_nft_resources_select_column"]: other_nft_resources_select_column;
     /** input type for updating data in table "other_nft_resources" */
     ["other_nft_resources_set_input"]: {
-        content_cid?: string | null;
         inserted_at?: ValueTypes["timestamptz"] | null;
+        metadata_cid?: string | null;
         resource_uri_hash?: ValueTypes["bytea"] | null;
         updated_at?: ValueTypes["timestamptz"] | null;
     };
@@ -2107,6 +2510,8 @@ columns and relationships of "niftysave_migration" */
     ["other_nft_resources_update_column"]: other_nft_resources_update_column;
     /** columns and relationships of "pin" */
     ["pin"]: AliasType<{
+        /** An object relationship */
+        content?: ValueTypes["content"];
         content_cid?: true;
         id?: true;
         inserted_at?: true;
@@ -2173,6 +2578,7 @@ columns and relationships of "niftysave_migration" */
         _and?: ValueTypes["pin_bool_exp"][];
         _not?: ValueTypes["pin_bool_exp"] | null;
         _or?: ValueTypes["pin_bool_exp"][];
+        content?: ValueTypes["content_bool_exp"] | null;
         content_cid?: ValueTypes["String_comparison_exp"] | null;
         id?: ValueTypes["bigint_comparison_exp"] | null;
         inserted_at?: ValueTypes["timestamptz_comparison_exp"] | null;
@@ -2188,6 +2594,7 @@ columns and relationships of "niftysave_migration" */
     };
     /** input type for inserting data into table "pin" */
     ["pin_insert_input"]: {
+        content?: ValueTypes["content_obj_rel_insert_input"] | null;
         content_cid?: string | null;
         id?: ValueTypes["bigint"] | null;
         inserted_at?: ValueTypes["timestamptz"] | null;
@@ -2241,6 +2648,7 @@ columns and relationships of "niftysave_migration" */
     };
     /** Ordering options when selecting data from "pin". */
     ["pin_order_by"]: {
+        content?: ValueTypes["content_order_by"] | null;
         content_cid?: ValueTypes["order_by"] | null;
         id?: ValueTypes["order_by"] | null;
         inserted_at?: ValueTypes["order_by"] | null;
@@ -2424,6 +2832,53 @@ columns and relationships of "niftysave_migration" */
         content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        erc721_import?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import"]
+        ];
+        erc721_import_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_aggregate"]
+        ];
+        erc721_import_by_nft?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        erc721_import_by_nft_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_aggregate"]
+        ];
+        erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -2491,7 +2946,7 @@ columns and relationships of "niftysave_migration" */
             ValueTypes["nft_metadata_aggregate"]
         ];
         nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         nft_ownership?: [
             {
@@ -2586,7 +3041,7 @@ columns and relationships of "niftysave_migration" */
             ValueTypes["other_nft_resources_aggregate"]
         ];
         other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         pin?: [
@@ -2644,6 +3099,26 @@ columns and relationships of "niftysave_migration" */
         content_cid?: true;
         inserted_at?: true;
         ipfs_url?: true;
+        referrer_metadata?: [
+            {
+                distinct_on?: ValueTypes["other_nft_resources_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["other_nft_resources_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["other_nft_resources_bool_exp"] | null;
+            },
+            ValueTypes["other_nft_resources"]
+        ];
+        referrer_metadata_aggregate?: [
+            {
+                distinct_on?: ValueTypes["other_nft_resources_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["other_nft_resources_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["other_nft_resources_bool_exp"] | null;
+            },
+            ValueTypes["other_nft_resources_aggregate"]
+        ];
         status?: true;
         status_text?: true;
         updated_at?: true;
@@ -2676,6 +3151,7 @@ columns and relationships of "niftysave_migration" */
         content_cid?: ValueTypes["String_comparison_exp"] | null;
         inserted_at?: ValueTypes["timestamptz_comparison_exp"] | null;
         ipfs_url?: ValueTypes["String_comparison_exp"] | null;
+        referrer_metadata?: ValueTypes["other_nft_resources_bool_exp"] | null;
         status?: ValueTypes["resource_status_comparison_exp"] | null;
         status_text?: ValueTypes["String_comparison_exp"] | null;
         updated_at?: ValueTypes["timestamptz_comparison_exp"] | null;
@@ -2690,6 +3166,7 @@ columns and relationships of "niftysave_migration" */
         content_cid?: string | null;
         inserted_at?: ValueTypes["timestamptz"] | null;
         ipfs_url?: string | null;
+        referrer_metadata?: ValueTypes["other_nft_resources_arr_rel_insert_input"] | null;
         status?: ValueTypes["resource_status"] | null;
         status_text?: string | null;
         updated_at?: ValueTypes["timestamptz"] | null;
@@ -2742,6 +3219,7 @@ columns and relationships of "niftysave_migration" */
         content_cid?: ValueTypes["order_by"] | null;
         inserted_at?: ValueTypes["order_by"] | null;
         ipfs_url?: ValueTypes["order_by"] | null;
+        referrer_metadata_aggregate?: ValueTypes["other_nft_resources_aggregate_order_by"] | null;
         status?: ValueTypes["order_by"] | null;
         status_text?: ValueTypes["order_by"] | null;
         updated_at?: ValueTypes["order_by"] | null;
@@ -2850,6 +3328,53 @@ columns and relationships of "niftysave_migration" */
         content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        erc721_import?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import"]
+        ];
+        erc721_import_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_aggregate"]
+        ];
+        erc721_import_by_nft?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        erc721_import_by_nft_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_aggregate"]
+        ];
+        erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -2917,7 +3442,7 @@ columns and relationships of "niftysave_migration" */
             ValueTypes["nft_metadata_aggregate"]
         ];
         nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         nft_ownership?: [
             {
@@ -3012,7 +3537,7 @@ columns and relationships of "niftysave_migration" */
             ValueTypes["other_nft_resources_aggregate"]
         ];
         other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         pin?: [
@@ -3089,6 +3614,10 @@ export declare type ModelTypes = {
     ["blockchain_block"]: {
         hash: string;
         inserted_at: ModelTypes["timestamptz"];
+        /** An array relationship */
+        nfts: ModelTypes["nfts_by_blockchain_blocks"][];
+        /** An aggregate relationship */
+        nfts_aggregate: ModelTypes["nfts_by_blockchain_blocks_aggregate"];
         number: ModelTypes["bigint"];
         updated_at: ModelTypes["timestamptz"];
     };
@@ -3233,6 +3762,8 @@ export declare type ModelTypes = {
         /** data from the rows affected by the mutation */
         returning: ModelTypes["blockchain_contract"][];
     };
+    /** input type for inserting object relation for remote table "blockchain_contract" */
+    ["blockchain_contract_obj_rel_insert_input"]: GraphQLTypes["blockchain_contract_obj_rel_insert_input"];
     /** on conflict condition type for table "blockchain_contract" */
     ["blockchain_contract_on_conflict"]: GraphQLTypes["blockchain_contract_on_conflict"];
     /** Ordering options when selecting data from "blockchain_contract". */
@@ -3353,13 +3884,126 @@ export declare type ModelTypes = {
     ["content_variance_fields"]: {
         dag_size?: number;
     };
+    /** columns and relationships of "erc721_import" */
+    ["erc721_import"]: {
+        id: string;
+        inserted_at: ModelTypes["timestamptz"];
+        next_id: string;
+        updated_at: ModelTypes["timestamptz"];
+    };
+    /** aggregated selection of "erc721_import" */
+    ["erc721_import_aggregate"]: {
+        aggregate?: ModelTypes["erc721_import_aggregate_fields"];
+        nodes: ModelTypes["erc721_import"][];
+    };
+    /** aggregate fields of "erc721_import" */
+    ["erc721_import_aggregate_fields"]: {
+        count: number;
+        max?: ModelTypes["erc721_import_max_fields"];
+        min?: ModelTypes["erc721_import_min_fields"];
+    };
+    /** Boolean expression to filter rows from the table "erc721_import". All fields are combined with a logical 'AND'. */
+    ["erc721_import_bool_exp"]: GraphQLTypes["erc721_import_bool_exp"];
+    /** columns and relationships of "erc721_import_by_nft" */
+    ["erc721_import_by_nft"]: {
+        erc721_import_id: string;
+        inserted_at: ModelTypes["timestamptz"];
+        nft_id: string;
+        updated_at: ModelTypes["timestamptz"];
+    };
+    /** aggregated selection of "erc721_import_by_nft" */
+    ["erc721_import_by_nft_aggregate"]: {
+        aggregate?: ModelTypes["erc721_import_by_nft_aggregate_fields"];
+        nodes: ModelTypes["erc721_import_by_nft"][];
+    };
+    /** aggregate fields of "erc721_import_by_nft" */
+    ["erc721_import_by_nft_aggregate_fields"]: {
+        count: number;
+        max?: ModelTypes["erc721_import_by_nft_max_fields"];
+        min?: ModelTypes["erc721_import_by_nft_min_fields"];
+    };
+    /** Boolean expression to filter rows from the table "erc721_import_by_nft". All fields are combined with a logical 'AND'. */
+    ["erc721_import_by_nft_bool_exp"]: GraphQLTypes["erc721_import_by_nft_bool_exp"];
+    /** unique or primary key constraints on table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_constraint"]: GraphQLTypes["erc721_import_by_nft_constraint"];
+    /** input type for inserting data into table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_insert_input"]: GraphQLTypes["erc721_import_by_nft_insert_input"];
+    /** aggregate max on columns */
+    ["erc721_import_by_nft_max_fields"]: {
+        erc721_import_id?: string;
+        inserted_at?: ModelTypes["timestamptz"];
+        nft_id?: string;
+        updated_at?: ModelTypes["timestamptz"];
+    };
+    /** aggregate min on columns */
+    ["erc721_import_by_nft_min_fields"]: {
+        erc721_import_id?: string;
+        inserted_at?: ModelTypes["timestamptz"];
+        nft_id?: string;
+        updated_at?: ModelTypes["timestamptz"];
+    };
+    /** response of any mutation on the table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_mutation_response"]: {
+        /** number of rows affected by the mutation */
+        affected_rows: number;
+        /** data from the rows affected by the mutation */
+        returning: ModelTypes["erc721_import_by_nft"][];
+    };
+    /** on conflict condition type for table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_on_conflict"]: GraphQLTypes["erc721_import_by_nft_on_conflict"];
+    /** Ordering options when selecting data from "erc721_import_by_nft". */
+    ["erc721_import_by_nft_order_by"]: GraphQLTypes["erc721_import_by_nft_order_by"];
+    /** primary key columns input for table: erc721_import_by_nft */
+    ["erc721_import_by_nft_pk_columns_input"]: GraphQLTypes["erc721_import_by_nft_pk_columns_input"];
+    /** select columns of table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_select_column"]: GraphQLTypes["erc721_import_by_nft_select_column"];
+    /** input type for updating data in table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_set_input"]: GraphQLTypes["erc721_import_by_nft_set_input"];
+    /** update columns of table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_update_column"]: GraphQLTypes["erc721_import_by_nft_update_column"];
+    /** unique or primary key constraints on table "erc721_import" */
+    ["erc721_import_constraint"]: GraphQLTypes["erc721_import_constraint"];
+    /** input type for inserting data into table "erc721_import" */
+    ["erc721_import_insert_input"]: GraphQLTypes["erc721_import_insert_input"];
+    /** aggregate max on columns */
+    ["erc721_import_max_fields"]: {
+        id?: string;
+        inserted_at?: ModelTypes["timestamptz"];
+        next_id?: string;
+        updated_at?: ModelTypes["timestamptz"];
+    };
+    /** aggregate min on columns */
+    ["erc721_import_min_fields"]: {
+        id?: string;
+        inserted_at?: ModelTypes["timestamptz"];
+        next_id?: string;
+        updated_at?: ModelTypes["timestamptz"];
+    };
+    /** response of any mutation on the table "erc721_import" */
+    ["erc721_import_mutation_response"]: {
+        /** number of rows affected by the mutation */
+        affected_rows: number;
+        /** data from the rows affected by the mutation */
+        returning: ModelTypes["erc721_import"][];
+    };
+    /** on conflict condition type for table "erc721_import" */
+    ["erc721_import_on_conflict"]: GraphQLTypes["erc721_import_on_conflict"];
+    /** Ordering options when selecting data from "erc721_import". */
+    ["erc721_import_order_by"]: GraphQLTypes["erc721_import_order_by"];
+    /** primary key columns input for table: erc721_import */
+    ["erc721_import_pk_columns_input"]: GraphQLTypes["erc721_import_pk_columns_input"];
+    /** select columns of table "erc721_import" */
+    ["erc721_import_select_column"]: GraphQLTypes["erc721_import_select_column"];
+    /** input type for updating data in table "erc721_import" */
+    ["erc721_import_set_input"]: GraphQLTypes["erc721_import_set_input"];
+    /** update columns of table "erc721_import" */
+    ["erc721_import_update_column"]: GraphQLTypes["erc721_import_update_column"];
     ["fail_nft_asset_args"]: GraphQLTypes["fail_nft_asset_args"];
     ["fail_resource_args"]: GraphQLTypes["fail_resource_args"];
     ["ingest_erc721_token_args"]: GraphQLTypes["ingest_erc721_token_args"];
     ["jsonb"]: any;
     /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
     ["jsonb_comparison_exp"]: GraphQLTypes["jsonb_comparison_exp"];
-    ["link_nft_asset_args"]: GraphQLTypes["link_nft_asset_args"];
     ["link_nft_resource_args"]: GraphQLTypes["link_nft_resource_args"];
     ["link_resource_content_args"]: GraphQLTypes["link_resource_content_args"];
     /** mutation root */
@@ -3376,6 +4020,14 @@ export declare type ModelTypes = {
         delete_content?: ModelTypes["content_mutation_response"];
         /** delete single row from the table: "content" */
         delete_content_by_pk?: ModelTypes["content"];
+        /** delete data from the table: "erc721_import" */
+        delete_erc721_import?: ModelTypes["erc721_import_mutation_response"];
+        /** delete data from the table: "erc721_import_by_nft" */
+        delete_erc721_import_by_nft?: ModelTypes["erc721_import_by_nft_mutation_response"];
+        /** delete single row from the table: "erc721_import_by_nft" */
+        delete_erc721_import_by_nft_by_pk?: ModelTypes["erc721_import_by_nft"];
+        /** delete single row from the table: "erc721_import" */
+        delete_erc721_import_by_pk?: ModelTypes["erc721_import"];
         /** delete data from the table: "nft" */
         delete_nft?: ModelTypes["nft_mutation_response"];
         /** delete data from the table: "nft_asset" */
@@ -3430,6 +4082,14 @@ export declare type ModelTypes = {
         insert_content?: ModelTypes["content_mutation_response"];
         /** insert a single row into the table: "content" */
         insert_content_one?: ModelTypes["content"];
+        /** insert data into the table: "erc721_import" */
+        insert_erc721_import?: ModelTypes["erc721_import_mutation_response"];
+        /** insert data into the table: "erc721_import_by_nft" */
+        insert_erc721_import_by_nft?: ModelTypes["erc721_import_by_nft_mutation_response"];
+        /** insert a single row into the table: "erc721_import_by_nft" */
+        insert_erc721_import_by_nft_one?: ModelTypes["erc721_import_by_nft"];
+        /** insert a single row into the table: "erc721_import" */
+        insert_erc721_import_one?: ModelTypes["erc721_import"];
         /** insert data into the table: "nft" */
         insert_nft?: ModelTypes["nft_mutation_response"];
         /** insert data into the table: "nft_asset" */
@@ -3466,8 +4126,6 @@ export declare type ModelTypes = {
         insert_resource?: ModelTypes["resource_mutation_response"];
         /** insert a single row into the table: "resource" */
         insert_resource_one?: ModelTypes["resource"];
-        /** execute VOLATILE function "link_nft_asset" which returns "nft_asset" */
-        link_nft_asset: ModelTypes["nft_asset"][];
         /** execute VOLATILE function "link_nft_resource" which returns "resource" */
         link_nft_resource: ModelTypes["resource"][];
         /** execute VOLATILE function "link_resource_content" which returns "resource" */
@@ -3484,6 +4142,14 @@ export declare type ModelTypes = {
         update_content?: ModelTypes["content_mutation_response"];
         /** update single row of the table: "content" */
         update_content_by_pk?: ModelTypes["content"];
+        /** update data of the table: "erc721_import" */
+        update_erc721_import?: ModelTypes["erc721_import_mutation_response"];
+        /** update data of the table: "erc721_import_by_nft" */
+        update_erc721_import_by_nft?: ModelTypes["erc721_import_by_nft_mutation_response"];
+        /** update single row of the table: "erc721_import_by_nft" */
+        update_erc721_import_by_nft_by_pk?: ModelTypes["erc721_import_by_nft"];
+        /** update single row of the table: "erc721_import" */
+        update_erc721_import_by_pk?: ModelTypes["erc721_import"];
         /** update data of the table: "nft" */
         update_nft?: ModelTypes["nft_mutation_response"];
         /** update data of the table: "nft_asset" */
@@ -3523,10 +4189,18 @@ export declare type ModelTypes = {
     };
     /** columns and relationships of "nft" */
     ["nft"]: {
+        /** An object relationship */
+        contract: ModelTypes["blockchain_contract"];
         contract_id: string;
         id: string;
         inserted_at: ModelTypes["timestamptz"];
         mint_time: ModelTypes["timestamptz"];
+        /** An object relationship */
+        nft_asset: ModelTypes["nft_asset"];
+        /** An array relationship */
+        referrer_blocks: ModelTypes["nfts_by_blockchain_blocks"][];
+        /** An aggregate relationship */
+        referrer_blocks_aggregate: ModelTypes["nfts_by_blockchain_blocks_aggregate"];
         token_id: string;
         token_uri_hash: ModelTypes["bytea"];
         updated_at: ModelTypes["timestamptz"];
@@ -3548,11 +4222,11 @@ export declare type ModelTypes = {
     ["nft_arr_rel_insert_input"]: GraphQLTypes["nft_arr_rel_insert_input"];
     /** columns and relationships of "nft_asset" */
     ["nft_asset"]: {
-        content_cid?: string;
         inserted_at: ModelTypes["timestamptz"];
         ipfs_url?: string;
         /** An object relationship */
         metadata?: ModelTypes["nft_metadata"];
+        metadata_cid?: string;
         /** An array relationship */
         nfts: ModelTypes["nft"][];
         /** An aggregate relationship */
@@ -3574,6 +4248,10 @@ export declare type ModelTypes = {
         max?: ModelTypes["nft_asset_max_fields"];
         min?: ModelTypes["nft_asset_min_fields"];
     };
+    /** order by aggregate values of table "nft_asset" */
+    ["nft_asset_aggregate_order_by"]: GraphQLTypes["nft_asset_aggregate_order_by"];
+    /** input type for inserting array relation for remote table "nft_asset" */
+    ["nft_asset_arr_rel_insert_input"]: GraphQLTypes["nft_asset_arr_rel_insert_input"];
     /** Boolean expression to filter rows from the table "nft_asset". All fields are combined with a logical 'AND'. */
     ["nft_asset_bool_exp"]: GraphQLTypes["nft_asset_bool_exp"];
     /** unique or primary key constraints on table "nft_asset" */
@@ -3582,22 +4260,26 @@ export declare type ModelTypes = {
     ["nft_asset_insert_input"]: GraphQLTypes["nft_asset_insert_input"];
     /** aggregate max on columns */
     ["nft_asset_max_fields"]: {
-        content_cid?: string;
         inserted_at?: ModelTypes["timestamptz"];
         ipfs_url?: string;
+        metadata_cid?: string;
         status_text?: string;
         token_uri?: string;
         updated_at?: ModelTypes["timestamptz"];
     };
+    /** order by max() on columns of table "nft_asset" */
+    ["nft_asset_max_order_by"]: GraphQLTypes["nft_asset_max_order_by"];
     /** aggregate min on columns */
     ["nft_asset_min_fields"]: {
-        content_cid?: string;
         inserted_at?: ModelTypes["timestamptz"];
         ipfs_url?: string;
+        metadata_cid?: string;
         status_text?: string;
         token_uri?: string;
         updated_at?: ModelTypes["timestamptz"];
     };
+    /** order by min() on columns of table "nft_asset" */
+    ["nft_asset_min_order_by"]: GraphQLTypes["nft_asset_min_order_by"];
     /** response of any mutation on the table "nft_asset" */
     ["nft_asset_mutation_response"]: {
         /** number of rows affected by the mutation */
@@ -3605,6 +4287,8 @@ export declare type ModelTypes = {
         /** data from the rows affected by the mutation */
         returning: ModelTypes["nft_asset"][];
     };
+    /** input type for inserting object relation for remote table "nft_asset" */
+    ["nft_asset_obj_rel_insert_input"]: GraphQLTypes["nft_asset_obj_rel_insert_input"];
     /** on conflict condition type for table "nft_asset" */
     ["nft_asset_on_conflict"]: GraphQLTypes["nft_asset_on_conflict"];
     /** Ordering options when selecting data from "nft_asset". */
@@ -3639,18 +4323,24 @@ export declare type ModelTypes = {
     ["nft_max_order_by"]: GraphQLTypes["nft_max_order_by"];
     /** columns and relationships of "nft_metadata" */
     ["nft_metadata"]: {
-        content?: ModelTypes["jsonb"];
-        content_cid: string;
+        cid: string;
+        /** An object relationship */
+        content: ModelTypes["content"];
         description?: string;
         /** An object relationship */
         image?: ModelTypes["resource"];
         image_uri_hash?: ModelTypes["bytea"];
         inserted_at: ModelTypes["timestamptz"];
+        json?: ModelTypes["jsonb"];
         name?: string;
         /** An array relationship */
-        other_resources: ModelTypes["other_nft_resources"][];
+        nft_assets: ModelTypes["nft_asset"][];
         /** An aggregate relationship */
-        other_resources_aggregate: ModelTypes["other_nft_resources_aggregate"];
+        nft_assets_aggregate: ModelTypes["nft_asset_aggregate"];
+        /** An array relationship */
+        other_nft_resources: ModelTypes["other_nft_resources"][];
+        /** An aggregate relationship */
+        other_nft_resources_aggregate: ModelTypes["other_nft_resources_aggregate"];
         updated_at: ModelTypes["timestamptz"];
     };
     /** aggregated selection of "nft_metadata" */
@@ -3680,7 +4370,7 @@ export declare type ModelTypes = {
     ["nft_metadata_insert_input"]: GraphQLTypes["nft_metadata_insert_input"];
     /** aggregate max on columns */
     ["nft_metadata_max_fields"]: {
-        content_cid?: string;
+        cid?: string;
         description?: string;
         inserted_at?: ModelTypes["timestamptz"];
         name?: string;
@@ -3688,7 +4378,7 @@ export declare type ModelTypes = {
     };
     /** aggregate min on columns */
     ["nft_metadata_min_fields"]: {
-        content_cid?: string;
+        cid?: string;
         description?: string;
         inserted_at?: ModelTypes["timestamptz"];
         name?: string;
@@ -3867,6 +4557,10 @@ export declare type ModelTypes = {
         max?: ModelTypes["nfts_by_blockchain_blocks_max_fields"];
         min?: ModelTypes["nfts_by_blockchain_blocks_min_fields"];
     };
+    /** order by aggregate values of table "nfts_by_blockchain_blocks" */
+    ["nfts_by_blockchain_blocks_aggregate_order_by"]: GraphQLTypes["nfts_by_blockchain_blocks_aggregate_order_by"];
+    /** input type for inserting array relation for remote table "nfts_by_blockchain_blocks" */
+    ["nfts_by_blockchain_blocks_arr_rel_insert_input"]: GraphQLTypes["nfts_by_blockchain_blocks_arr_rel_insert_input"];
     /** Boolean expression to filter rows from the table "nfts_by_blockchain_blocks". All fields are combined with a logical 'AND'. */
     ["nfts_by_blockchain_blocks_bool_exp"]: GraphQLTypes["nfts_by_blockchain_blocks_bool_exp"];
     /** unique or primary key constraints on table "nfts_by_blockchain_blocks" */
@@ -3880,6 +4574,8 @@ export declare type ModelTypes = {
         nft_id?: string;
         updated_at?: ModelTypes["timestamptz"];
     };
+    /** order by max() on columns of table "nfts_by_blockchain_blocks" */
+    ["nfts_by_blockchain_blocks_max_order_by"]: GraphQLTypes["nfts_by_blockchain_blocks_max_order_by"];
     /** aggregate min on columns */
     ["nfts_by_blockchain_blocks_min_fields"]: {
         blockchain_block_hash?: string;
@@ -3887,6 +4583,8 @@ export declare type ModelTypes = {
         nft_id?: string;
         updated_at?: ModelTypes["timestamptz"];
     };
+    /** order by min() on columns of table "nfts_by_blockchain_blocks" */
+    ["nfts_by_blockchain_blocks_min_order_by"]: GraphQLTypes["nfts_by_blockchain_blocks_min_order_by"];
     /** response of any mutation on the table "nfts_by_blockchain_blocks" */
     ["nfts_by_blockchain_blocks_mutation_response"]: {
         /** number of rows affected by the mutation */
@@ -3984,8 +4682,10 @@ columns and relationships of "niftysave_migration" */
     ["order_by"]: GraphQLTypes["order_by"];
     /** columns and relationships of "other_nft_resources" */
     ["other_nft_resources"]: {
-        content_cid: string;
         inserted_at: ModelTypes["timestamptz"];
+        /** An object relationship */
+        metadata: ModelTypes["nft_metadata"];
+        metadata_cid: string;
         /** An object relationship */
         resource?: ModelTypes["resource"];
         resource_uri_hash: ModelTypes["bytea"];
@@ -4014,16 +4714,16 @@ columns and relationships of "niftysave_migration" */
     ["other_nft_resources_insert_input"]: GraphQLTypes["other_nft_resources_insert_input"];
     /** aggregate max on columns */
     ["other_nft_resources_max_fields"]: {
-        content_cid?: string;
         inserted_at?: ModelTypes["timestamptz"];
+        metadata_cid?: string;
         updated_at?: ModelTypes["timestamptz"];
     };
     /** order by max() on columns of table "other_nft_resources" */
     ["other_nft_resources_max_order_by"]: GraphQLTypes["other_nft_resources_max_order_by"];
     /** aggregate min on columns */
     ["other_nft_resources_min_fields"]: {
-        content_cid?: string;
         inserted_at?: ModelTypes["timestamptz"];
+        metadata_cid?: string;
         updated_at?: ModelTypes["timestamptz"];
     };
     /** order by min() on columns of table "other_nft_resources" */
@@ -4049,6 +4749,8 @@ columns and relationships of "niftysave_migration" */
     ["other_nft_resources_update_column"]: GraphQLTypes["other_nft_resources_update_column"];
     /** columns and relationships of "pin" */
     ["pin"]: {
+        /** An object relationship */
+        content: ModelTypes["content"];
         content_cid: string;
         id: ModelTypes["bigint"];
         inserted_at: ModelTypes["timestamptz"];
@@ -4197,6 +4899,18 @@ columns and relationships of "niftysave_migration" */
         content_aggregate: ModelTypes["content_aggregate"];
         /** fetch data from the table: "content" using primary key columns */
         content_by_pk?: ModelTypes["content"];
+        /** fetch data from the table: "erc721_import" */
+        erc721_import: ModelTypes["erc721_import"][];
+        /** fetch aggregated fields from the table: "erc721_import" */
+        erc721_import_aggregate: ModelTypes["erc721_import_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft: ModelTypes["erc721_import_by_nft"][];
+        /** fetch aggregated fields from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft_aggregate: ModelTypes["erc721_import_by_nft_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" using primary key columns */
+        erc721_import_by_nft_by_pk?: ModelTypes["erc721_import_by_nft"];
+        /** fetch data from the table: "erc721_import" using primary key columns */
+        erc721_import_by_pk?: ModelTypes["erc721_import"];
         /** fetch data from the table: "nft" */
         nft: ModelTypes["nft"][];
         /** fetch aggregated fields from the table: "nft" */
@@ -4233,9 +4947,9 @@ columns and relationships of "niftysave_migration" */
         niftysave_migration_aggregate: ModelTypes["niftysave_migration_aggregate"];
         /** fetch data from the table: "niftysave_migration" using primary key columns */
         niftysave_migration_by_pk?: ModelTypes["niftysave_migration"];
-        /** fetch data from the table: "other_nft_resources" */
+        /** An array relationship */
         other_nft_resources: ModelTypes["other_nft_resources"][];
-        /** fetch aggregated fields from the table: "other_nft_resources" */
+        /** An aggregate relationship */
         other_nft_resources_aggregate: ModelTypes["other_nft_resources_aggregate"];
         /** fetch data from the table: "other_nft_resources" using primary key columns */
         other_nft_resources_by_pk?: ModelTypes["other_nft_resources"];
@@ -4259,6 +4973,10 @@ columns and relationships of "niftysave_migration" */
         content_cid?: string;
         inserted_at: ModelTypes["timestamptz"];
         ipfs_url?: string;
+        /** An array relationship */
+        referrer_metadata: ModelTypes["other_nft_resources"][];
+        /** An aggregate relationship */
+        referrer_metadata_aggregate: ModelTypes["other_nft_resources_aggregate"];
         status: ModelTypes["resource_status"];
         status_text?: string;
         updated_at: ModelTypes["timestamptz"];
@@ -4343,6 +5061,18 @@ columns and relationships of "niftysave_migration" */
         content_aggregate: ModelTypes["content_aggregate"];
         /** fetch data from the table: "content" using primary key columns */
         content_by_pk?: ModelTypes["content"];
+        /** fetch data from the table: "erc721_import" */
+        erc721_import: ModelTypes["erc721_import"][];
+        /** fetch aggregated fields from the table: "erc721_import" */
+        erc721_import_aggregate: ModelTypes["erc721_import_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft: ModelTypes["erc721_import_by_nft"][];
+        /** fetch aggregated fields from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft_aggregate: ModelTypes["erc721_import_by_nft_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" using primary key columns */
+        erc721_import_by_nft_by_pk?: ModelTypes["erc721_import_by_nft"];
+        /** fetch data from the table: "erc721_import" using primary key columns */
+        erc721_import_by_pk?: ModelTypes["erc721_import"];
         /** fetch data from the table: "nft" */
         nft: ModelTypes["nft"][];
         /** fetch aggregated fields from the table: "nft" */
@@ -4379,9 +5109,9 @@ columns and relationships of "niftysave_migration" */
         niftysave_migration_aggregate: ModelTypes["niftysave_migration_aggregate"];
         /** fetch data from the table: "niftysave_migration" using primary key columns */
         niftysave_migration_by_pk?: ModelTypes["niftysave_migration"];
-        /** fetch data from the table: "other_nft_resources" */
+        /** An array relationship */
         other_nft_resources: ModelTypes["other_nft_resources"][];
-        /** fetch aggregated fields from the table: "other_nft_resources" */
+        /** An aggregate relationship */
         other_nft_resources_aggregate: ModelTypes["other_nft_resources_aggregate"];
         /** fetch data from the table: "other_nft_resources" using primary key columns */
         other_nft_resources_by_pk?: ModelTypes["other_nft_resources"];
@@ -4465,6 +5195,10 @@ export declare type GraphQLTypes = {
         __typename: "blockchain_block";
         hash: string;
         inserted_at: GraphQLTypes["timestamptz"];
+        /** An array relationship */
+        nfts: Array<GraphQLTypes["nfts_by_blockchain_blocks"]>;
+        /** An aggregate relationship */
+        nfts_aggregate: GraphQLTypes["nfts_by_blockchain_blocks_aggregate"];
         number: GraphQLTypes["bigint"];
         updated_at: GraphQLTypes["timestamptz"];
     };
@@ -4501,6 +5235,7 @@ export declare type GraphQLTypes = {
         _or?: Array<GraphQLTypes["blockchain_block_bool_exp"]>;
         hash?: GraphQLTypes["String_comparison_exp"];
         inserted_at?: GraphQLTypes["timestamptz_comparison_exp"];
+        nfts?: GraphQLTypes["nfts_by_blockchain_blocks_bool_exp"];
         number?: GraphQLTypes["bigint_comparison_exp"];
         updated_at?: GraphQLTypes["timestamptz_comparison_exp"];
     };
@@ -4514,6 +5249,7 @@ export declare type GraphQLTypes = {
     ["blockchain_block_insert_input"]: {
         hash?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
+        nfts?: GraphQLTypes["nfts_by_blockchain_blocks_arr_rel_insert_input"];
         number?: GraphQLTypes["bigint"];
         updated_at?: GraphQLTypes["timestamptz"];
     };
@@ -4551,6 +5287,7 @@ export declare type GraphQLTypes = {
     ["blockchain_block_order_by"]: {
         hash?: GraphQLTypes["order_by"];
         inserted_at?: GraphQLTypes["order_by"];
+        nfts_aggregate?: GraphQLTypes["nfts_by_blockchain_blocks_aggregate_order_by"];
         number?: GraphQLTypes["order_by"];
         updated_at?: GraphQLTypes["order_by"];
     };
@@ -4675,6 +5412,12 @@ export declare type GraphQLTypes = {
         affected_rows: number;
         /** data from the rows affected by the mutation */
         returning: Array<GraphQLTypes["blockchain_contract"]>;
+    };
+    /** input type for inserting object relation for remote table "blockchain_contract" */
+    ["blockchain_contract_obj_rel_insert_input"]: {
+        data: GraphQLTypes["blockchain_contract_insert_input"];
+        /** on conflict condition */
+        on_conflict?: GraphQLTypes["blockchain_contract_on_conflict"];
     };
     /** on conflict condition type for table "blockchain_contract" */
     ["blockchain_contract_on_conflict"]: {
@@ -4878,6 +5621,191 @@ export declare type GraphQLTypes = {
         __typename: "content_variance_fields";
         dag_size?: number;
     };
+    /** columns and relationships of "erc721_import" */
+    ["erc721_import"]: {
+        __typename: "erc721_import";
+        id: string;
+        inserted_at: GraphQLTypes["timestamptz"];
+        next_id: string;
+        updated_at: GraphQLTypes["timestamptz"];
+    };
+    /** aggregated selection of "erc721_import" */
+    ["erc721_import_aggregate"]: {
+        __typename: "erc721_import_aggregate";
+        aggregate?: GraphQLTypes["erc721_import_aggregate_fields"];
+        nodes: Array<GraphQLTypes["erc721_import"]>;
+    };
+    /** aggregate fields of "erc721_import" */
+    ["erc721_import_aggregate_fields"]: {
+        __typename: "erc721_import_aggregate_fields";
+        count: number;
+        max?: GraphQLTypes["erc721_import_max_fields"];
+        min?: GraphQLTypes["erc721_import_min_fields"];
+    };
+    /** Boolean expression to filter rows from the table "erc721_import". All fields are combined with a logical 'AND'. */
+    ["erc721_import_bool_exp"]: {
+        _and?: Array<GraphQLTypes["erc721_import_bool_exp"]>;
+        _not?: GraphQLTypes["erc721_import_bool_exp"];
+        _or?: Array<GraphQLTypes["erc721_import_bool_exp"]>;
+        id?: GraphQLTypes["String_comparison_exp"];
+        inserted_at?: GraphQLTypes["timestamptz_comparison_exp"];
+        next_id?: GraphQLTypes["String_comparison_exp"];
+        updated_at?: GraphQLTypes["timestamptz_comparison_exp"];
+    };
+    /** columns and relationships of "erc721_import_by_nft" */
+    ["erc721_import_by_nft"]: {
+        __typename: "erc721_import_by_nft";
+        erc721_import_id: string;
+        inserted_at: GraphQLTypes["timestamptz"];
+        nft_id: string;
+        updated_at: GraphQLTypes["timestamptz"];
+    };
+    /** aggregated selection of "erc721_import_by_nft" */
+    ["erc721_import_by_nft_aggregate"]: {
+        __typename: "erc721_import_by_nft_aggregate";
+        aggregate?: GraphQLTypes["erc721_import_by_nft_aggregate_fields"];
+        nodes: Array<GraphQLTypes["erc721_import_by_nft"]>;
+    };
+    /** aggregate fields of "erc721_import_by_nft" */
+    ["erc721_import_by_nft_aggregate_fields"]: {
+        __typename: "erc721_import_by_nft_aggregate_fields";
+        count: number;
+        max?: GraphQLTypes["erc721_import_by_nft_max_fields"];
+        min?: GraphQLTypes["erc721_import_by_nft_min_fields"];
+    };
+    /** Boolean expression to filter rows from the table "erc721_import_by_nft". All fields are combined with a logical 'AND'. */
+    ["erc721_import_by_nft_bool_exp"]: {
+        _and?: Array<GraphQLTypes["erc721_import_by_nft_bool_exp"]>;
+        _not?: GraphQLTypes["erc721_import_by_nft_bool_exp"];
+        _or?: Array<GraphQLTypes["erc721_import_by_nft_bool_exp"]>;
+        erc721_import_id?: GraphQLTypes["String_comparison_exp"];
+        inserted_at?: GraphQLTypes["timestamptz_comparison_exp"];
+        nft_id?: GraphQLTypes["String_comparison_exp"];
+        updated_at?: GraphQLTypes["timestamptz_comparison_exp"];
+    };
+    /** unique or primary key constraints on table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_constraint"]: erc721_import_by_nft_constraint;
+    /** input type for inserting data into table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_insert_input"]: {
+        erc721_import_id?: string;
+        inserted_at?: GraphQLTypes["timestamptz"];
+        nft_id?: string;
+        updated_at?: GraphQLTypes["timestamptz"];
+    };
+    /** aggregate max on columns */
+    ["erc721_import_by_nft_max_fields"]: {
+        __typename: "erc721_import_by_nft_max_fields";
+        erc721_import_id?: string;
+        inserted_at?: GraphQLTypes["timestamptz"];
+        nft_id?: string;
+        updated_at?: GraphQLTypes["timestamptz"];
+    };
+    /** aggregate min on columns */
+    ["erc721_import_by_nft_min_fields"]: {
+        __typename: "erc721_import_by_nft_min_fields";
+        erc721_import_id?: string;
+        inserted_at?: GraphQLTypes["timestamptz"];
+        nft_id?: string;
+        updated_at?: GraphQLTypes["timestamptz"];
+    };
+    /** response of any mutation on the table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_mutation_response"]: {
+        __typename: "erc721_import_by_nft_mutation_response";
+        /** number of rows affected by the mutation */
+        affected_rows: number;
+        /** data from the rows affected by the mutation */
+        returning: Array<GraphQLTypes["erc721_import_by_nft"]>;
+    };
+    /** on conflict condition type for table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_on_conflict"]: {
+        constraint: GraphQLTypes["erc721_import_by_nft_constraint"];
+        update_columns: Array<GraphQLTypes["erc721_import_by_nft_update_column"]>;
+        where?: GraphQLTypes["erc721_import_by_nft_bool_exp"];
+    };
+    /** Ordering options when selecting data from "erc721_import_by_nft". */
+    ["erc721_import_by_nft_order_by"]: {
+        erc721_import_id?: GraphQLTypes["order_by"];
+        inserted_at?: GraphQLTypes["order_by"];
+        nft_id?: GraphQLTypes["order_by"];
+        updated_at?: GraphQLTypes["order_by"];
+    };
+    /** primary key columns input for table: erc721_import_by_nft */
+    ["erc721_import_by_nft_pk_columns_input"]: {
+        erc721_import_id: string;
+        nft_id: string;
+    };
+    /** select columns of table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_select_column"]: erc721_import_by_nft_select_column;
+    /** input type for updating data in table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_set_input"]: {
+        erc721_import_id?: string;
+        inserted_at?: GraphQLTypes["timestamptz"];
+        nft_id?: string;
+        updated_at?: GraphQLTypes["timestamptz"];
+    };
+    /** update columns of table "erc721_import_by_nft" */
+    ["erc721_import_by_nft_update_column"]: erc721_import_by_nft_update_column;
+    /** unique or primary key constraints on table "erc721_import" */
+    ["erc721_import_constraint"]: erc721_import_constraint;
+    /** input type for inserting data into table "erc721_import" */
+    ["erc721_import_insert_input"]: {
+        id?: string;
+        inserted_at?: GraphQLTypes["timestamptz"];
+        next_id?: string;
+        updated_at?: GraphQLTypes["timestamptz"];
+    };
+    /** aggregate max on columns */
+    ["erc721_import_max_fields"]: {
+        __typename: "erc721_import_max_fields";
+        id?: string;
+        inserted_at?: GraphQLTypes["timestamptz"];
+        next_id?: string;
+        updated_at?: GraphQLTypes["timestamptz"];
+    };
+    /** aggregate min on columns */
+    ["erc721_import_min_fields"]: {
+        __typename: "erc721_import_min_fields";
+        id?: string;
+        inserted_at?: GraphQLTypes["timestamptz"];
+        next_id?: string;
+        updated_at?: GraphQLTypes["timestamptz"];
+    };
+    /** response of any mutation on the table "erc721_import" */
+    ["erc721_import_mutation_response"]: {
+        __typename: "erc721_import_mutation_response";
+        /** number of rows affected by the mutation */
+        affected_rows: number;
+        /** data from the rows affected by the mutation */
+        returning: Array<GraphQLTypes["erc721_import"]>;
+    };
+    /** on conflict condition type for table "erc721_import" */
+    ["erc721_import_on_conflict"]: {
+        constraint: GraphQLTypes["erc721_import_constraint"];
+        update_columns: Array<GraphQLTypes["erc721_import_update_column"]>;
+        where?: GraphQLTypes["erc721_import_bool_exp"];
+    };
+    /** Ordering options when selecting data from "erc721_import". */
+    ["erc721_import_order_by"]: {
+        id?: GraphQLTypes["order_by"];
+        inserted_at?: GraphQLTypes["order_by"];
+        next_id?: GraphQLTypes["order_by"];
+        updated_at?: GraphQLTypes["order_by"];
+    };
+    /** primary key columns input for table: erc721_import */
+    ["erc721_import_pk_columns_input"]: {
+        id: string;
+    };
+    /** select columns of table "erc721_import" */
+    ["erc721_import_select_column"]: erc721_import_select_column;
+    /** input type for updating data in table "erc721_import" */
+    ["erc721_import_set_input"]: {
+        id?: string;
+        inserted_at?: GraphQLTypes["timestamptz"];
+        next_id?: string;
+        updated_at?: GraphQLTypes["timestamptz"];
+    };
+    /** update columns of table "erc721_import" */
+    ["erc721_import_update_column"]: erc721_import_update_column;
     ["fail_nft_asset_args"]: {
         ipfs_url?: string;
         status?: GraphQLTypes["nft_asset_status"];
@@ -4928,15 +5856,6 @@ export declare type GraphQLTypes = {
         _neq?: GraphQLTypes["jsonb"];
         _nin?: Array<GraphQLTypes["jsonb"]>;
     };
-    ["link_nft_asset_args"]: {
-        content_cid?: string;
-        dag_size?: GraphQLTypes["bigint"];
-        ipfs_url?: string;
-        metadata?: GraphQLTypes["jsonb"];
-        pin_service?: GraphQLTypes["pin_service"];
-        status_text?: string;
-        token_uri_hash?: string;
-    };
     ["link_nft_resource_args"]: {
         cid?: string;
         uri?: string;
@@ -4964,6 +5883,14 @@ export declare type GraphQLTypes = {
         delete_content?: GraphQLTypes["content_mutation_response"];
         /** delete single row from the table: "content" */
         delete_content_by_pk?: GraphQLTypes["content"];
+        /** delete data from the table: "erc721_import" */
+        delete_erc721_import?: GraphQLTypes["erc721_import_mutation_response"];
+        /** delete data from the table: "erc721_import_by_nft" */
+        delete_erc721_import_by_nft?: GraphQLTypes["erc721_import_by_nft_mutation_response"];
+        /** delete single row from the table: "erc721_import_by_nft" */
+        delete_erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** delete single row from the table: "erc721_import" */
+        delete_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** delete data from the table: "nft" */
         delete_nft?: GraphQLTypes["nft_mutation_response"];
         /** delete data from the table: "nft_asset" */
@@ -5018,6 +5945,14 @@ export declare type GraphQLTypes = {
         insert_content?: GraphQLTypes["content_mutation_response"];
         /** insert a single row into the table: "content" */
         insert_content_one?: GraphQLTypes["content"];
+        /** insert data into the table: "erc721_import" */
+        insert_erc721_import?: GraphQLTypes["erc721_import_mutation_response"];
+        /** insert data into the table: "erc721_import_by_nft" */
+        insert_erc721_import_by_nft?: GraphQLTypes["erc721_import_by_nft_mutation_response"];
+        /** insert a single row into the table: "erc721_import_by_nft" */
+        insert_erc721_import_by_nft_one?: GraphQLTypes["erc721_import_by_nft"];
+        /** insert a single row into the table: "erc721_import" */
+        insert_erc721_import_one?: GraphQLTypes["erc721_import"];
         /** insert data into the table: "nft" */
         insert_nft?: GraphQLTypes["nft_mutation_response"];
         /** insert data into the table: "nft_asset" */
@@ -5054,8 +5989,6 @@ export declare type GraphQLTypes = {
         insert_resource?: GraphQLTypes["resource_mutation_response"];
         /** insert a single row into the table: "resource" */
         insert_resource_one?: GraphQLTypes["resource"];
-        /** execute VOLATILE function "link_nft_asset" which returns "nft_asset" */
-        link_nft_asset: Array<GraphQLTypes["nft_asset"]>;
         /** execute VOLATILE function "link_nft_resource" which returns "resource" */
         link_nft_resource: Array<GraphQLTypes["resource"]>;
         /** execute VOLATILE function "link_resource_content" which returns "resource" */
@@ -5072,6 +6005,14 @@ export declare type GraphQLTypes = {
         update_content?: GraphQLTypes["content_mutation_response"];
         /** update single row of the table: "content" */
         update_content_by_pk?: GraphQLTypes["content"];
+        /** update data of the table: "erc721_import" */
+        update_erc721_import?: GraphQLTypes["erc721_import_mutation_response"];
+        /** update data of the table: "erc721_import_by_nft" */
+        update_erc721_import_by_nft?: GraphQLTypes["erc721_import_by_nft_mutation_response"];
+        /** update single row of the table: "erc721_import_by_nft" */
+        update_erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** update single row of the table: "erc721_import" */
+        update_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** update data of the table: "nft" */
         update_nft?: GraphQLTypes["nft_mutation_response"];
         /** update data of the table: "nft_asset" */
@@ -5112,10 +6053,18 @@ export declare type GraphQLTypes = {
     /** columns and relationships of "nft" */
     ["nft"]: {
         __typename: "nft";
+        /** An object relationship */
+        contract: GraphQLTypes["blockchain_contract"];
         contract_id: string;
         id: string;
         inserted_at: GraphQLTypes["timestamptz"];
         mint_time: GraphQLTypes["timestamptz"];
+        /** An object relationship */
+        nft_asset: GraphQLTypes["nft_asset"];
+        /** An array relationship */
+        referrer_blocks: Array<GraphQLTypes["nfts_by_blockchain_blocks"]>;
+        /** An aggregate relationship */
+        referrer_blocks_aggregate: GraphQLTypes["nfts_by_blockchain_blocks_aggregate"];
         token_id: string;
         token_uri_hash: GraphQLTypes["bytea"];
         updated_at: GraphQLTypes["timestamptz"];
@@ -5148,11 +6097,11 @@ export declare type GraphQLTypes = {
     /** columns and relationships of "nft_asset" */
     ["nft_asset"]: {
         __typename: "nft_asset";
-        content_cid?: string;
         inserted_at: GraphQLTypes["timestamptz"];
         ipfs_url?: string;
         /** An object relationship */
         metadata?: GraphQLTypes["nft_metadata"];
+        metadata_cid?: string;
         /** An array relationship */
         nfts: Array<GraphQLTypes["nft"]>;
         /** An aggregate relationship */
@@ -5176,15 +6125,27 @@ export declare type GraphQLTypes = {
         max?: GraphQLTypes["nft_asset_max_fields"];
         min?: GraphQLTypes["nft_asset_min_fields"];
     };
+    /** order by aggregate values of table "nft_asset" */
+    ["nft_asset_aggregate_order_by"]: {
+        count?: GraphQLTypes["order_by"];
+        max?: GraphQLTypes["nft_asset_max_order_by"];
+        min?: GraphQLTypes["nft_asset_min_order_by"];
+    };
+    /** input type for inserting array relation for remote table "nft_asset" */
+    ["nft_asset_arr_rel_insert_input"]: {
+        data: Array<GraphQLTypes["nft_asset_insert_input"]>;
+        /** on conflict condition */
+        on_conflict?: GraphQLTypes["nft_asset_on_conflict"];
+    };
     /** Boolean expression to filter rows from the table "nft_asset". All fields are combined with a logical 'AND'. */
     ["nft_asset_bool_exp"]: {
         _and?: Array<GraphQLTypes["nft_asset_bool_exp"]>;
         _not?: GraphQLTypes["nft_asset_bool_exp"];
         _or?: Array<GraphQLTypes["nft_asset_bool_exp"]>;
-        content_cid?: GraphQLTypes["String_comparison_exp"];
         inserted_at?: GraphQLTypes["timestamptz_comparison_exp"];
         ipfs_url?: GraphQLTypes["String_comparison_exp"];
         metadata?: GraphQLTypes["nft_metadata_bool_exp"];
+        metadata_cid?: GraphQLTypes["String_comparison_exp"];
         nfts?: GraphQLTypes["nft_bool_exp"];
         status?: GraphQLTypes["nft_asset_status_comparison_exp"];
         status_text?: GraphQLTypes["String_comparison_exp"];
@@ -5196,10 +6157,10 @@ export declare type GraphQLTypes = {
     ["nft_asset_constraint"]: nft_asset_constraint;
     /** input type for inserting data into table "nft_asset" */
     ["nft_asset_insert_input"]: {
-        content_cid?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
         ipfs_url?: string;
         metadata?: GraphQLTypes["nft_metadata_obj_rel_insert_input"];
+        metadata_cid?: string;
         nfts?: GraphQLTypes["nft_arr_rel_insert_input"];
         status?: GraphQLTypes["nft_asset_status"];
         status_text?: string;
@@ -5210,22 +6171,40 @@ export declare type GraphQLTypes = {
     /** aggregate max on columns */
     ["nft_asset_max_fields"]: {
         __typename: "nft_asset_max_fields";
-        content_cid?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
         ipfs_url?: string;
+        metadata_cid?: string;
         status_text?: string;
         token_uri?: string;
         updated_at?: GraphQLTypes["timestamptz"];
     };
+    /** order by max() on columns of table "nft_asset" */
+    ["nft_asset_max_order_by"]: {
+        inserted_at?: GraphQLTypes["order_by"];
+        ipfs_url?: GraphQLTypes["order_by"];
+        metadata_cid?: GraphQLTypes["order_by"];
+        status_text?: GraphQLTypes["order_by"];
+        token_uri?: GraphQLTypes["order_by"];
+        updated_at?: GraphQLTypes["order_by"];
+    };
     /** aggregate min on columns */
     ["nft_asset_min_fields"]: {
         __typename: "nft_asset_min_fields";
-        content_cid?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
         ipfs_url?: string;
+        metadata_cid?: string;
         status_text?: string;
         token_uri?: string;
         updated_at?: GraphQLTypes["timestamptz"];
+    };
+    /** order by min() on columns of table "nft_asset" */
+    ["nft_asset_min_order_by"]: {
+        inserted_at?: GraphQLTypes["order_by"];
+        ipfs_url?: GraphQLTypes["order_by"];
+        metadata_cid?: GraphQLTypes["order_by"];
+        status_text?: GraphQLTypes["order_by"];
+        token_uri?: GraphQLTypes["order_by"];
+        updated_at?: GraphQLTypes["order_by"];
     };
     /** response of any mutation on the table "nft_asset" */
     ["nft_asset_mutation_response"]: {
@@ -5235,6 +6214,12 @@ export declare type GraphQLTypes = {
         /** data from the rows affected by the mutation */
         returning: Array<GraphQLTypes["nft_asset"]>;
     };
+    /** input type for inserting object relation for remote table "nft_asset" */
+    ["nft_asset_obj_rel_insert_input"]: {
+        data: GraphQLTypes["nft_asset_insert_input"];
+        /** on conflict condition */
+        on_conflict?: GraphQLTypes["nft_asset_on_conflict"];
+    };
     /** on conflict condition type for table "nft_asset" */
     ["nft_asset_on_conflict"]: {
         constraint: GraphQLTypes["nft_asset_constraint"];
@@ -5243,10 +6228,10 @@ export declare type GraphQLTypes = {
     };
     /** Ordering options when selecting data from "nft_asset". */
     ["nft_asset_order_by"]: {
-        content_cid?: GraphQLTypes["order_by"];
         inserted_at?: GraphQLTypes["order_by"];
         ipfs_url?: GraphQLTypes["order_by"];
         metadata?: GraphQLTypes["nft_metadata_order_by"];
+        metadata_cid?: GraphQLTypes["order_by"];
         nfts_aggregate?: GraphQLTypes["nft_aggregate_order_by"];
         status?: GraphQLTypes["order_by"];
         status_text?: GraphQLTypes["order_by"];
@@ -5262,9 +6247,9 @@ export declare type GraphQLTypes = {
     ["nft_asset_select_column"]: nft_asset_select_column;
     /** input type for updating data in table "nft_asset" */
     ["nft_asset_set_input"]: {
-        content_cid?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
         ipfs_url?: string;
+        metadata_cid?: string;
         status?: GraphQLTypes["nft_asset_status"];
         status_text?: string;
         token_uri?: string;
@@ -5291,10 +6276,13 @@ export declare type GraphQLTypes = {
         _and?: Array<GraphQLTypes["nft_bool_exp"]>;
         _not?: GraphQLTypes["nft_bool_exp"];
         _or?: Array<GraphQLTypes["nft_bool_exp"]>;
+        contract?: GraphQLTypes["blockchain_contract_bool_exp"];
         contract_id?: GraphQLTypes["String_comparison_exp"];
         id?: GraphQLTypes["String_comparison_exp"];
         inserted_at?: GraphQLTypes["timestamptz_comparison_exp"];
         mint_time?: GraphQLTypes["timestamptz_comparison_exp"];
+        nft_asset?: GraphQLTypes["nft_asset_bool_exp"];
+        referrer_blocks?: GraphQLTypes["nfts_by_blockchain_blocks_bool_exp"];
         token_id?: GraphQLTypes["String_comparison_exp"];
         token_uri_hash?: GraphQLTypes["bytea_comparison_exp"];
         updated_at?: GraphQLTypes["timestamptz_comparison_exp"];
@@ -5303,10 +6291,13 @@ export declare type GraphQLTypes = {
     ["nft_constraint"]: nft_constraint;
     /** input type for inserting data into table "nft" */
     ["nft_insert_input"]: {
+        contract?: GraphQLTypes["blockchain_contract_obj_rel_insert_input"];
         contract_id?: string;
         id?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
         mint_time?: GraphQLTypes["timestamptz"];
+        nft_asset?: GraphQLTypes["nft_asset_obj_rel_insert_input"];
+        referrer_blocks?: GraphQLTypes["nfts_by_blockchain_blocks_arr_rel_insert_input"];
         token_id?: string;
         token_uri_hash?: GraphQLTypes["bytea"];
         updated_at?: GraphQLTypes["timestamptz"];
@@ -5333,18 +6324,24 @@ export declare type GraphQLTypes = {
     /** columns and relationships of "nft_metadata" */
     ["nft_metadata"]: {
         __typename: "nft_metadata";
-        content?: GraphQLTypes["jsonb"];
-        content_cid: string;
+        cid: string;
+        /** An object relationship */
+        content: GraphQLTypes["content"];
         description?: string;
         /** An object relationship */
         image?: GraphQLTypes["resource"];
         image_uri_hash?: GraphQLTypes["bytea"];
         inserted_at: GraphQLTypes["timestamptz"];
+        json?: GraphQLTypes["jsonb"];
         name?: string;
         /** An array relationship */
-        other_resources: Array<GraphQLTypes["other_nft_resources"]>;
+        nft_assets: Array<GraphQLTypes["nft_asset"]>;
         /** An aggregate relationship */
-        other_resources_aggregate: GraphQLTypes["other_nft_resources_aggregate"];
+        nft_assets_aggregate: GraphQLTypes["nft_asset_aggregate"];
+        /** An array relationship */
+        other_nft_resources: Array<GraphQLTypes["other_nft_resources"]>;
+        /** An aggregate relationship */
+        other_nft_resources_aggregate: GraphQLTypes["other_nft_resources_aggregate"];
         updated_at: GraphQLTypes["timestamptz"];
     };
     /** aggregated selection of "nft_metadata" */
@@ -5362,53 +6359,57 @@ export declare type GraphQLTypes = {
     };
     /** append existing jsonb value of filtered columns with new jsonb value */
     ["nft_metadata_append_input"]: {
-        content?: GraphQLTypes["jsonb"];
+        json?: GraphQLTypes["jsonb"];
     };
     /** Boolean expression to filter rows from the table "nft_metadata". All fields are combined with a logical 'AND'. */
     ["nft_metadata_bool_exp"]: {
         _and?: Array<GraphQLTypes["nft_metadata_bool_exp"]>;
         _not?: GraphQLTypes["nft_metadata_bool_exp"];
         _or?: Array<GraphQLTypes["nft_metadata_bool_exp"]>;
-        content?: GraphQLTypes["jsonb_comparison_exp"];
-        content_cid?: GraphQLTypes["String_comparison_exp"];
+        cid?: GraphQLTypes["String_comparison_exp"];
+        content?: GraphQLTypes["content_bool_exp"];
         description?: GraphQLTypes["String_comparison_exp"];
         image?: GraphQLTypes["resource_bool_exp"];
         image_uri_hash?: GraphQLTypes["bytea_comparison_exp"];
         inserted_at?: GraphQLTypes["timestamptz_comparison_exp"];
+        json?: GraphQLTypes["jsonb_comparison_exp"];
         name?: GraphQLTypes["String_comparison_exp"];
-        other_resources?: GraphQLTypes["other_nft_resources_bool_exp"];
+        nft_assets?: GraphQLTypes["nft_asset_bool_exp"];
+        other_nft_resources?: GraphQLTypes["other_nft_resources_bool_exp"];
         updated_at?: GraphQLTypes["timestamptz_comparison_exp"];
     };
     /** unique or primary key constraints on table "nft_metadata" */
     ["nft_metadata_constraint"]: nft_metadata_constraint;
     /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
     ["nft_metadata_delete_at_path_input"]: {
-        content?: Array<string>;
+        json?: Array<string>;
     };
     /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
     ["nft_metadata_delete_elem_input"]: {
-        content?: number;
+        json?: number;
     };
     /** delete key/value pair or string element. key/value pairs are matched based on their key value */
     ["nft_metadata_delete_key_input"]: {
-        content?: string;
+        json?: string;
     };
     /** input type for inserting data into table "nft_metadata" */
     ["nft_metadata_insert_input"]: {
-        content?: GraphQLTypes["jsonb"];
-        content_cid?: string;
+        cid?: string;
+        content?: GraphQLTypes["content_obj_rel_insert_input"];
         description?: string;
         image?: GraphQLTypes["resource_obj_rel_insert_input"];
         image_uri_hash?: GraphQLTypes["bytea"];
         inserted_at?: GraphQLTypes["timestamptz"];
+        json?: GraphQLTypes["jsonb"];
         name?: string;
-        other_resources?: GraphQLTypes["other_nft_resources_arr_rel_insert_input"];
+        nft_assets?: GraphQLTypes["nft_asset_arr_rel_insert_input"];
+        other_nft_resources?: GraphQLTypes["other_nft_resources_arr_rel_insert_input"];
         updated_at?: GraphQLTypes["timestamptz"];
     };
     /** aggregate max on columns */
     ["nft_metadata_max_fields"]: {
         __typename: "nft_metadata_max_fields";
-        content_cid?: string;
+        cid?: string;
         description?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
         name?: string;
@@ -5417,7 +6418,7 @@ export declare type GraphQLTypes = {
     /** aggregate min on columns */
     ["nft_metadata_min_fields"]: {
         __typename: "nft_metadata_min_fields";
-        content_cid?: string;
+        cid?: string;
         description?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
         name?: string;
@@ -5445,33 +6446,35 @@ export declare type GraphQLTypes = {
     };
     /** Ordering options when selecting data from "nft_metadata". */
     ["nft_metadata_order_by"]: {
-        content?: GraphQLTypes["order_by"];
-        content_cid?: GraphQLTypes["order_by"];
+        cid?: GraphQLTypes["order_by"];
+        content?: GraphQLTypes["content_order_by"];
         description?: GraphQLTypes["order_by"];
         image?: GraphQLTypes["resource_order_by"];
         image_uri_hash?: GraphQLTypes["order_by"];
         inserted_at?: GraphQLTypes["order_by"];
+        json?: GraphQLTypes["order_by"];
         name?: GraphQLTypes["order_by"];
-        other_resources_aggregate?: GraphQLTypes["other_nft_resources_aggregate_order_by"];
+        nft_assets_aggregate?: GraphQLTypes["nft_asset_aggregate_order_by"];
+        other_nft_resources_aggregate?: GraphQLTypes["other_nft_resources_aggregate_order_by"];
         updated_at?: GraphQLTypes["order_by"];
     };
     /** primary key columns input for table: nft_metadata */
     ["nft_metadata_pk_columns_input"]: {
-        content_cid: string;
+        cid: string;
     };
     /** prepend existing jsonb value of filtered columns with new jsonb value */
     ["nft_metadata_prepend_input"]: {
-        content?: GraphQLTypes["jsonb"];
+        json?: GraphQLTypes["jsonb"];
     };
     /** select columns of table "nft_metadata" */
     ["nft_metadata_select_column"]: nft_metadata_select_column;
     /** input type for updating data in table "nft_metadata" */
     ["nft_metadata_set_input"]: {
-        content?: GraphQLTypes["jsonb"];
-        content_cid?: string;
+        cid?: string;
         description?: string;
         image_uri_hash?: GraphQLTypes["bytea"];
         inserted_at?: GraphQLTypes["timestamptz"];
+        json?: GraphQLTypes["jsonb"];
         name?: string;
         updated_at?: GraphQLTypes["timestamptz"];
     };
@@ -5512,10 +6515,13 @@ export declare type GraphQLTypes = {
     };
     /** Ordering options when selecting data from "nft". */
     ["nft_order_by"]: {
+        contract?: GraphQLTypes["blockchain_contract_order_by"];
         contract_id?: GraphQLTypes["order_by"];
         id?: GraphQLTypes["order_by"];
         inserted_at?: GraphQLTypes["order_by"];
         mint_time?: GraphQLTypes["order_by"];
+        nft_asset?: GraphQLTypes["nft_asset_order_by"];
+        referrer_blocks_aggregate?: GraphQLTypes["nfts_by_blockchain_blocks_aggregate_order_by"];
         token_id?: GraphQLTypes["order_by"];
         token_uri_hash?: GraphQLTypes["order_by"];
         updated_at?: GraphQLTypes["order_by"];
@@ -5712,6 +6718,18 @@ export declare type GraphQLTypes = {
         max?: GraphQLTypes["nfts_by_blockchain_blocks_max_fields"];
         min?: GraphQLTypes["nfts_by_blockchain_blocks_min_fields"];
     };
+    /** order by aggregate values of table "nfts_by_blockchain_blocks" */
+    ["nfts_by_blockchain_blocks_aggregate_order_by"]: {
+        count?: GraphQLTypes["order_by"];
+        max?: GraphQLTypes["nfts_by_blockchain_blocks_max_order_by"];
+        min?: GraphQLTypes["nfts_by_blockchain_blocks_min_order_by"];
+    };
+    /** input type for inserting array relation for remote table "nfts_by_blockchain_blocks" */
+    ["nfts_by_blockchain_blocks_arr_rel_insert_input"]: {
+        data: Array<GraphQLTypes["nfts_by_blockchain_blocks_insert_input"]>;
+        /** on conflict condition */
+        on_conflict?: GraphQLTypes["nfts_by_blockchain_blocks_on_conflict"];
+    };
     /** Boolean expression to filter rows from the table "nfts_by_blockchain_blocks". All fields are combined with a logical 'AND'. */
     ["nfts_by_blockchain_blocks_bool_exp"]: {
         _and?: Array<GraphQLTypes["nfts_by_blockchain_blocks_bool_exp"]>;
@@ -5739,6 +6757,13 @@ export declare type GraphQLTypes = {
         nft_id?: string;
         updated_at?: GraphQLTypes["timestamptz"];
     };
+    /** order by max() on columns of table "nfts_by_blockchain_blocks" */
+    ["nfts_by_blockchain_blocks_max_order_by"]: {
+        blockchain_block_hash?: GraphQLTypes["order_by"];
+        inserted_at?: GraphQLTypes["order_by"];
+        nft_id?: GraphQLTypes["order_by"];
+        updated_at?: GraphQLTypes["order_by"];
+    };
     /** aggregate min on columns */
     ["nfts_by_blockchain_blocks_min_fields"]: {
         __typename: "nfts_by_blockchain_blocks_min_fields";
@@ -5746,6 +6771,13 @@ export declare type GraphQLTypes = {
         inserted_at?: GraphQLTypes["timestamptz"];
         nft_id?: string;
         updated_at?: GraphQLTypes["timestamptz"];
+    };
+    /** order by min() on columns of table "nfts_by_blockchain_blocks" */
+    ["nfts_by_blockchain_blocks_min_order_by"]: {
+        blockchain_block_hash?: GraphQLTypes["order_by"];
+        inserted_at?: GraphQLTypes["order_by"];
+        nft_id?: GraphQLTypes["order_by"];
+        updated_at?: GraphQLTypes["order_by"];
     };
     /** response of any mutation on the table "nfts_by_blockchain_blocks" */
     ["nfts_by_blockchain_blocks_mutation_response"]: {
@@ -5916,8 +6948,10 @@ columns and relationships of "niftysave_migration" */
     /** columns and relationships of "other_nft_resources" */
     ["other_nft_resources"]: {
         __typename: "other_nft_resources";
-        content_cid: string;
         inserted_at: GraphQLTypes["timestamptz"];
+        /** An object relationship */
+        metadata: GraphQLTypes["nft_metadata"];
+        metadata_cid: string;
         /** An object relationship */
         resource?: GraphQLTypes["resource"];
         resource_uri_hash: GraphQLTypes["bytea"];
@@ -5953,8 +6987,9 @@ columns and relationships of "niftysave_migration" */
         _and?: Array<GraphQLTypes["other_nft_resources_bool_exp"]>;
         _not?: GraphQLTypes["other_nft_resources_bool_exp"];
         _or?: Array<GraphQLTypes["other_nft_resources_bool_exp"]>;
-        content_cid?: GraphQLTypes["String_comparison_exp"];
         inserted_at?: GraphQLTypes["timestamptz_comparison_exp"];
+        metadata?: GraphQLTypes["nft_metadata_bool_exp"];
+        metadata_cid?: GraphQLTypes["String_comparison_exp"];
         resource?: GraphQLTypes["resource_bool_exp"];
         resource_uri_hash?: GraphQLTypes["bytea_comparison_exp"];
         updated_at?: GraphQLTypes["timestamptz_comparison_exp"];
@@ -5963,8 +6998,9 @@ columns and relationships of "niftysave_migration" */
     ["other_nft_resources_constraint"]: other_nft_resources_constraint;
     /** input type for inserting data into table "other_nft_resources" */
     ["other_nft_resources_insert_input"]: {
-        content_cid?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
+        metadata?: GraphQLTypes["nft_metadata_obj_rel_insert_input"];
+        metadata_cid?: string;
         resource?: GraphQLTypes["resource_obj_rel_insert_input"];
         resource_uri_hash?: GraphQLTypes["bytea"];
         updated_at?: GraphQLTypes["timestamptz"];
@@ -5972,27 +7008,27 @@ columns and relationships of "niftysave_migration" */
     /** aggregate max on columns */
     ["other_nft_resources_max_fields"]: {
         __typename: "other_nft_resources_max_fields";
-        content_cid?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
+        metadata_cid?: string;
         updated_at?: GraphQLTypes["timestamptz"];
     };
     /** order by max() on columns of table "other_nft_resources" */
     ["other_nft_resources_max_order_by"]: {
-        content_cid?: GraphQLTypes["order_by"];
         inserted_at?: GraphQLTypes["order_by"];
+        metadata_cid?: GraphQLTypes["order_by"];
         updated_at?: GraphQLTypes["order_by"];
     };
     /** aggregate min on columns */
     ["other_nft_resources_min_fields"]: {
         __typename: "other_nft_resources_min_fields";
-        content_cid?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
+        metadata_cid?: string;
         updated_at?: GraphQLTypes["timestamptz"];
     };
     /** order by min() on columns of table "other_nft_resources" */
     ["other_nft_resources_min_order_by"]: {
-        content_cid?: GraphQLTypes["order_by"];
         inserted_at?: GraphQLTypes["order_by"];
+        metadata_cid?: GraphQLTypes["order_by"];
         updated_at?: GraphQLTypes["order_by"];
     };
     /** response of any mutation on the table "other_nft_resources" */
@@ -6011,23 +7047,24 @@ columns and relationships of "niftysave_migration" */
     };
     /** Ordering options when selecting data from "other_nft_resources". */
     ["other_nft_resources_order_by"]: {
-        content_cid?: GraphQLTypes["order_by"];
         inserted_at?: GraphQLTypes["order_by"];
+        metadata?: GraphQLTypes["nft_metadata_order_by"];
+        metadata_cid?: GraphQLTypes["order_by"];
         resource?: GraphQLTypes["resource_order_by"];
         resource_uri_hash?: GraphQLTypes["order_by"];
         updated_at?: GraphQLTypes["order_by"];
     };
     /** primary key columns input for table: other_nft_resources */
     ["other_nft_resources_pk_columns_input"]: {
-        content_cid: string;
+        metadata_cid: string;
         resource_uri_hash: GraphQLTypes["bytea"];
     };
     /** select columns of table "other_nft_resources" */
     ["other_nft_resources_select_column"]: other_nft_resources_select_column;
     /** input type for updating data in table "other_nft_resources" */
     ["other_nft_resources_set_input"]: {
-        content_cid?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
+        metadata_cid?: string;
         resource_uri_hash?: GraphQLTypes["bytea"];
         updated_at?: GraphQLTypes["timestamptz"];
     };
@@ -6036,6 +7073,8 @@ columns and relationships of "niftysave_migration" */
     /** columns and relationships of "pin" */
     ["pin"]: {
         __typename: "pin";
+        /** An object relationship */
+        content: GraphQLTypes["content"];
         content_cid: string;
         id: GraphQLTypes["bigint"];
         inserted_at: GraphQLTypes["timestamptz"];
@@ -6098,6 +7137,7 @@ columns and relationships of "niftysave_migration" */
         _and?: Array<GraphQLTypes["pin_bool_exp"]>;
         _not?: GraphQLTypes["pin_bool_exp"];
         _or?: Array<GraphQLTypes["pin_bool_exp"]>;
+        content?: GraphQLTypes["content_bool_exp"];
         content_cid?: GraphQLTypes["String_comparison_exp"];
         id?: GraphQLTypes["bigint_comparison_exp"];
         inserted_at?: GraphQLTypes["timestamptz_comparison_exp"];
@@ -6113,6 +7153,7 @@ columns and relationships of "niftysave_migration" */
     };
     /** input type for inserting data into table "pin" */
     ["pin_insert_input"]: {
+        content?: GraphQLTypes["content_obj_rel_insert_input"];
         content_cid?: string;
         id?: GraphQLTypes["bigint"];
         inserted_at?: GraphQLTypes["timestamptz"];
@@ -6166,6 +7207,7 @@ columns and relationships of "niftysave_migration" */
     };
     /** Ordering options when selecting data from "pin". */
     ["pin_order_by"]: {
+        content?: GraphQLTypes["content_order_by"];
         content_cid?: GraphQLTypes["order_by"];
         id?: GraphQLTypes["order_by"];
         inserted_at?: GraphQLTypes["order_by"];
@@ -6299,6 +7341,18 @@ columns and relationships of "niftysave_migration" */
         content_aggregate: GraphQLTypes["content_aggregate"];
         /** fetch data from the table: "content" using primary key columns */
         content_by_pk?: GraphQLTypes["content"];
+        /** fetch data from the table: "erc721_import" */
+        erc721_import: Array<GraphQLTypes["erc721_import"]>;
+        /** fetch aggregated fields from the table: "erc721_import" */
+        erc721_import_aggregate: GraphQLTypes["erc721_import_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft: Array<GraphQLTypes["erc721_import_by_nft"]>;
+        /** fetch aggregated fields from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft_aggregate: GraphQLTypes["erc721_import_by_nft_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" using primary key columns */
+        erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** fetch data from the table: "erc721_import" using primary key columns */
+        erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -6335,9 +7389,9 @@ columns and relationships of "niftysave_migration" */
         niftysave_migration_aggregate: GraphQLTypes["niftysave_migration_aggregate"];
         /** fetch data from the table: "niftysave_migration" using primary key columns */
         niftysave_migration_by_pk?: GraphQLTypes["niftysave_migration"];
-        /** fetch data from the table: "other_nft_resources" */
+        /** An array relationship */
         other_nft_resources: Array<GraphQLTypes["other_nft_resources"]>;
-        /** fetch aggregated fields from the table: "other_nft_resources" */
+        /** An aggregate relationship */
         other_nft_resources_aggregate: GraphQLTypes["other_nft_resources_aggregate"];
         /** fetch data from the table: "other_nft_resources" using primary key columns */
         other_nft_resources_by_pk?: GraphQLTypes["other_nft_resources"];
@@ -6362,6 +7416,10 @@ columns and relationships of "niftysave_migration" */
         content_cid?: string;
         inserted_at: GraphQLTypes["timestamptz"];
         ipfs_url?: string;
+        /** An array relationship */
+        referrer_metadata: Array<GraphQLTypes["other_nft_resources"]>;
+        /** An aggregate relationship */
+        referrer_metadata_aggregate: GraphQLTypes["other_nft_resources_aggregate"];
         status: GraphQLTypes["resource_status"];
         status_text?: string;
         updated_at: GraphQLTypes["timestamptz"];
@@ -6390,6 +7448,7 @@ columns and relationships of "niftysave_migration" */
         content_cid?: GraphQLTypes["String_comparison_exp"];
         inserted_at?: GraphQLTypes["timestamptz_comparison_exp"];
         ipfs_url?: GraphQLTypes["String_comparison_exp"];
+        referrer_metadata?: GraphQLTypes["other_nft_resources_bool_exp"];
         status?: GraphQLTypes["resource_status_comparison_exp"];
         status_text?: GraphQLTypes["String_comparison_exp"];
         updated_at?: GraphQLTypes["timestamptz_comparison_exp"];
@@ -6404,6 +7463,7 @@ columns and relationships of "niftysave_migration" */
         content_cid?: string;
         inserted_at?: GraphQLTypes["timestamptz"];
         ipfs_url?: string;
+        referrer_metadata?: GraphQLTypes["other_nft_resources_arr_rel_insert_input"];
         status?: GraphQLTypes["resource_status"];
         status_text?: string;
         updated_at?: GraphQLTypes["timestamptz"];
@@ -6456,6 +7516,7 @@ columns and relationships of "niftysave_migration" */
         content_cid?: GraphQLTypes["order_by"];
         inserted_at?: GraphQLTypes["order_by"];
         ipfs_url?: GraphQLTypes["order_by"];
+        referrer_metadata_aggregate?: GraphQLTypes["other_nft_resources_aggregate_order_by"];
         status?: GraphQLTypes["order_by"];
         status_text?: GraphQLTypes["order_by"];
         updated_at?: GraphQLTypes["order_by"];
@@ -6514,6 +7575,18 @@ columns and relationships of "niftysave_migration" */
         content_aggregate: GraphQLTypes["content_aggregate"];
         /** fetch data from the table: "content" using primary key columns */
         content_by_pk?: GraphQLTypes["content"];
+        /** fetch data from the table: "erc721_import" */
+        erc721_import: Array<GraphQLTypes["erc721_import"]>;
+        /** fetch aggregated fields from the table: "erc721_import" */
+        erc721_import_aggregate: GraphQLTypes["erc721_import_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft: Array<GraphQLTypes["erc721_import_by_nft"]>;
+        /** fetch aggregated fields from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft_aggregate: GraphQLTypes["erc721_import_by_nft_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" using primary key columns */
+        erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** fetch data from the table: "erc721_import" using primary key columns */
+        erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -6550,9 +7623,9 @@ columns and relationships of "niftysave_migration" */
         niftysave_migration_aggregate: GraphQLTypes["niftysave_migration_aggregate"];
         /** fetch data from the table: "niftysave_migration" using primary key columns */
         niftysave_migration_by_pk?: GraphQLTypes["niftysave_migration"];
-        /** fetch data from the table: "other_nft_resources" */
+        /** An array relationship */
         other_nft_resources: Array<GraphQLTypes["other_nft_resources"]>;
-        /** fetch aggregated fields from the table: "other_nft_resources" */
+        /** An aggregate relationship */
         other_nft_resources_aggregate: GraphQLTypes["other_nft_resources_aggregate"];
         /** fetch data from the table: "other_nft_resources" using primary key columns */
         other_nft_resources_by_pk?: GraphQLTypes["other_nft_resources"];
@@ -6642,15 +7715,51 @@ export declare enum content_update_column {
     inserted_at = "inserted_at",
     updated_at = "updated_at"
 }
+/** unique or primary key constraints on table "erc721_import_by_nft" */
+export declare enum erc721_import_by_nft_constraint {
+    erc721_import_by_nft_pkey = "erc721_import_by_nft_pkey"
+}
+/** select columns of table "erc721_import_by_nft" */
+export declare enum erc721_import_by_nft_select_column {
+    erc721_import_id = "erc721_import_id",
+    inserted_at = "inserted_at",
+    nft_id = "nft_id",
+    updated_at = "updated_at"
+}
+/** update columns of table "erc721_import_by_nft" */
+export declare enum erc721_import_by_nft_update_column {
+    erc721_import_id = "erc721_import_id",
+    inserted_at = "inserted_at",
+    nft_id = "nft_id",
+    updated_at = "updated_at"
+}
+/** unique or primary key constraints on table "erc721_import" */
+export declare enum erc721_import_constraint {
+    erc721_import_pkey = "erc721_import_pkey"
+}
+/** select columns of table "erc721_import" */
+export declare enum erc721_import_select_column {
+    id = "id",
+    inserted_at = "inserted_at",
+    next_id = "next_id",
+    updated_at = "updated_at"
+}
+/** update columns of table "erc721_import" */
+export declare enum erc721_import_update_column {
+    id = "id",
+    inserted_at = "inserted_at",
+    next_id = "next_id",
+    updated_at = "updated_at"
+}
 /** unique or primary key constraints on table "nft_asset" */
 export declare enum nft_asset_constraint {
     nft_asset_pkey = "nft_asset_pkey"
 }
 /** select columns of table "nft_asset" */
 export declare enum nft_asset_select_column {
-    content_cid = "content_cid",
     inserted_at = "inserted_at",
     ipfs_url = "ipfs_url",
+    metadata_cid = "metadata_cid",
     status = "status",
     status_text = "status_text",
     token_uri = "token_uri",
@@ -6659,9 +7768,9 @@ export declare enum nft_asset_select_column {
 }
 /** update columns of table "nft_asset" */
 export declare enum nft_asset_update_column {
-    content_cid = "content_cid",
     inserted_at = "inserted_at",
     ipfs_url = "ipfs_url",
+    metadata_cid = "metadata_cid",
     status = "status",
     status_text = "status_text",
     token_uri = "token_uri",
@@ -6678,21 +7787,21 @@ export declare enum nft_metadata_constraint {
 }
 /** select columns of table "nft_metadata" */
 export declare enum nft_metadata_select_column {
-    content = "content",
-    content_cid = "content_cid",
+    cid = "cid",
     description = "description",
     image_uri_hash = "image_uri_hash",
     inserted_at = "inserted_at",
+    json = "json",
     name = "name",
     updated_at = "updated_at"
 }
 /** update columns of table "nft_metadata" */
 export declare enum nft_metadata_update_column {
-    content = "content",
-    content_cid = "content_cid",
+    cid = "cid",
     description = "description",
     image_uri_hash = "image_uri_hash",
     inserted_at = "inserted_at",
+    json = "json",
     name = "name",
     updated_at = "updated_at"
 }
@@ -6791,15 +7900,15 @@ export declare enum other_nft_resources_constraint {
 }
 /** select columns of table "other_nft_resources" */
 export declare enum other_nft_resources_select_column {
-    content_cid = "content_cid",
     inserted_at = "inserted_at",
+    metadata_cid = "metadata_cid",
     resource_uri_hash = "resource_uri_hash",
     updated_at = "updated_at"
 }
 /** update columns of table "other_nft_resources" */
 export declare enum other_nft_resources_update_column {
-    content_cid = "content_cid",
     inserted_at = "inserted_at",
+    metadata_cid = "metadata_cid",
     resource_uri_hash = "resource_uri_hash",
     updated_at = "updated_at"
 }
@@ -7021,6 +8130,53 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        erc721_import?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import"]
+        ];
+        erc721_import_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_aggregate"]
+        ];
+        erc721_import_by_nft?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        erc721_import_by_nft_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_aggregate"]
+        ];
+        erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -7088,7 +8244,7 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             ValueTypes["nft_metadata_aggregate"]
         ];
         nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         nft_ownership?: [
             {
@@ -7183,7 +8339,7 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             ValueTypes["other_nft_resources_aggregate"]
         ];
         other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         pin?: [
@@ -7253,6 +8409,18 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         content_aggregate: GraphQLTypes["content_aggregate"];
         /** fetch data from the table: "content" using primary key columns */
         content_by_pk?: GraphQLTypes["content"];
+        /** fetch data from the table: "erc721_import" */
+        erc721_import: Array<GraphQLTypes["erc721_import"]>;
+        /** fetch aggregated fields from the table: "erc721_import" */
+        erc721_import_aggregate: GraphQLTypes["erc721_import_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft: Array<GraphQLTypes["erc721_import_by_nft"]>;
+        /** fetch aggregated fields from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft_aggregate: GraphQLTypes["erc721_import_by_nft_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" using primary key columns */
+        erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** fetch data from the table: "erc721_import" using primary key columns */
+        erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -7289,9 +8457,9 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         niftysave_migration_aggregate: GraphQLTypes["niftysave_migration_aggregate"];
         /** fetch data from the table: "niftysave_migration" using primary key columns */
         niftysave_migration_by_pk?: GraphQLTypes["niftysave_migration"];
-        /** fetch data from the table: "other_nft_resources" */
+        /** An array relationship */
         other_nft_resources: Array<GraphQLTypes["other_nft_resources"]>;
-        /** fetch aggregated fields from the table: "other_nft_resources" */
+        /** An aggregate relationship */
         other_nft_resources_aggregate: GraphQLTypes["other_nft_resources_aggregate"];
         /** fetch data from the table: "other_nft_resources" using primary key columns */
         other_nft_resources_by_pk?: GraphQLTypes["other_nft_resources"];
@@ -7336,6 +8504,25 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         delete_content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        delete_erc721_import?: [
+            {
+                where: ValueTypes["erc721_import_bool_exp"];
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        delete_erc721_import_by_nft?: [
+            {
+                where: ValueTypes["erc721_import_by_nft_bool_exp"];
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        delete_erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        delete_erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         delete_nft?: [
             {
                 where: ValueTypes["nft_bool_exp"];
@@ -7361,7 +8548,7 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             ValueTypes["nft_metadata_mutation_response"]
         ];
         delete_nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         delete_nft_ownership?: [
             {
@@ -7400,7 +8587,7 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             ValueTypes["other_nft_resources_mutation_response"]
         ];
         delete_other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         delete_pin?: [
@@ -7495,6 +8682,34 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
                 on_conflict?: ValueTypes["content_on_conflict"] | null;
             },
             ValueTypes["content"]
+        ];
+        insert_erc721_import?: [
+            {
+                objects: ValueTypes["erc721_import_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        insert_erc721_import_by_nft?: [
+            {
+                objects: ValueTypes["erc721_import_by_nft_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_by_nft_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        insert_erc721_import_by_nft_one?: [
+            {
+                object: ValueTypes["erc721_import_by_nft_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_by_nft_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        insert_erc721_import_one?: [
+            {
+                object: ValueTypes["erc721_import_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import"]
         ];
         insert_nft?: [
             {
@@ -7622,17 +8837,6 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             },
             ValueTypes["resource"]
         ];
-        link_nft_asset?: [
-            {
-                args: ValueTypes["link_nft_asset_args"]; /** distinct select on columns */
-                distinct_on?: ValueTypes["nft_asset_select_column"][]; /** limit the number of rows returned */
-                limit?: number | null; /** skip the first n rows. Use only with order_by */
-                offset?: number | null; /** sort the rows by one or more columns */
-                order_by?: ValueTypes["nft_asset_order_by"][]; /** filter the rows returned */
-                where?: ValueTypes["nft_asset_bool_exp"] | null;
-            },
-            ValueTypes["nft_asset"]
-        ];
         link_nft_resource?: [
             {
                 args: ValueTypes["link_nft_resource_args"]; /** distinct select on columns */
@@ -7700,6 +8904,34 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
                 pk_columns: ValueTypes["content_pk_columns_input"];
             },
             ValueTypes["content"]
+        ];
+        update_erc721_import?: [
+            {
+                _set?: ValueTypes["erc721_import_set_input"] | null; /** filter the rows which have to be updated */
+                where: ValueTypes["erc721_import_bool_exp"];
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        update_erc721_import_by_nft?: [
+            {
+                _set?: ValueTypes["erc721_import_by_nft_set_input"] | null; /** filter the rows which have to be updated */
+                where: ValueTypes["erc721_import_by_nft_bool_exp"];
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        update_erc721_import_by_nft_by_pk?: [
+            {
+                _set?: ValueTypes["erc721_import_by_nft_set_input"] | null;
+                pk_columns: ValueTypes["erc721_import_by_nft_pk_columns_input"];
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        update_erc721_import_by_pk?: [
+            {
+                _set?: ValueTypes["erc721_import_set_input"] | null;
+                pk_columns: ValueTypes["erc721_import_pk_columns_input"];
+            },
+            ValueTypes["erc721_import"]
         ];
         update_nft?: [
             {
@@ -7866,6 +9098,14 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         delete_content?: GraphQLTypes["content_mutation_response"];
         /** delete single row from the table: "content" */
         delete_content_by_pk?: GraphQLTypes["content"];
+        /** delete data from the table: "erc721_import" */
+        delete_erc721_import?: GraphQLTypes["erc721_import_mutation_response"];
+        /** delete data from the table: "erc721_import_by_nft" */
+        delete_erc721_import_by_nft?: GraphQLTypes["erc721_import_by_nft_mutation_response"];
+        /** delete single row from the table: "erc721_import_by_nft" */
+        delete_erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** delete single row from the table: "erc721_import" */
+        delete_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** delete data from the table: "nft" */
         delete_nft?: GraphQLTypes["nft_mutation_response"];
         /** delete data from the table: "nft_asset" */
@@ -7920,6 +9160,14 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         insert_content?: GraphQLTypes["content_mutation_response"];
         /** insert a single row into the table: "content" */
         insert_content_one?: GraphQLTypes["content"];
+        /** insert data into the table: "erc721_import" */
+        insert_erc721_import?: GraphQLTypes["erc721_import_mutation_response"];
+        /** insert data into the table: "erc721_import_by_nft" */
+        insert_erc721_import_by_nft?: GraphQLTypes["erc721_import_by_nft_mutation_response"];
+        /** insert a single row into the table: "erc721_import_by_nft" */
+        insert_erc721_import_by_nft_one?: GraphQLTypes["erc721_import_by_nft"];
+        /** insert a single row into the table: "erc721_import" */
+        insert_erc721_import_one?: GraphQLTypes["erc721_import"];
         /** insert data into the table: "nft" */
         insert_nft?: GraphQLTypes["nft_mutation_response"];
         /** insert data into the table: "nft_asset" */
@@ -7956,8 +9204,6 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         insert_resource?: GraphQLTypes["resource_mutation_response"];
         /** insert a single row into the table: "resource" */
         insert_resource_one?: GraphQLTypes["resource"];
-        /** execute VOLATILE function "link_nft_asset" which returns "nft_asset" */
-        link_nft_asset: Array<GraphQLTypes["nft_asset"]>;
         /** execute VOLATILE function "link_nft_resource" which returns "resource" */
         link_nft_resource: Array<GraphQLTypes["resource"]>;
         /** execute VOLATILE function "link_resource_content" which returns "resource" */
@@ -7974,6 +9220,14 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         update_content?: GraphQLTypes["content_mutation_response"];
         /** update single row of the table: "content" */
         update_content_by_pk?: GraphQLTypes["content"];
+        /** update data of the table: "erc721_import" */
+        update_erc721_import?: GraphQLTypes["erc721_import_mutation_response"];
+        /** update data of the table: "erc721_import_by_nft" */
+        update_erc721_import_by_nft?: GraphQLTypes["erc721_import_by_nft_mutation_response"];
+        /** update single row of the table: "erc721_import_by_nft" */
+        update_erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** update single row of the table: "erc721_import" */
+        update_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** update data of the table: "nft" */
         update_nft?: GraphQLTypes["nft_mutation_response"];
         /** update data of the table: "nft_asset" */
@@ -8081,6 +9335,53 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        erc721_import?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import"]
+        ];
+        erc721_import_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_aggregate"]
+        ];
+        erc721_import_by_nft?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        erc721_import_by_nft_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_aggregate"]
+        ];
+        erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -8148,7 +9449,7 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             ValueTypes["nft_metadata_aggregate"]
         ];
         nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         nft_ownership?: [
             {
@@ -8243,7 +9544,7 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             ValueTypes["other_nft_resources_aggregate"]
         ];
         other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         pin?: [
@@ -8313,6 +9614,18 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         content_aggregate: GraphQLTypes["content_aggregate"];
         /** fetch data from the table: "content" using primary key columns */
         content_by_pk?: GraphQLTypes["content"];
+        /** fetch data from the table: "erc721_import" */
+        erc721_import: Array<GraphQLTypes["erc721_import"]>;
+        /** fetch aggregated fields from the table: "erc721_import" */
+        erc721_import_aggregate: GraphQLTypes["erc721_import_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft: Array<GraphQLTypes["erc721_import_by_nft"]>;
+        /** fetch aggregated fields from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft_aggregate: GraphQLTypes["erc721_import_by_nft_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" using primary key columns */
+        erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** fetch data from the table: "erc721_import" using primary key columns */
+        erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -8349,9 +9662,9 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         niftysave_migration_aggregate: GraphQLTypes["niftysave_migration_aggregate"];
         /** fetch data from the table: "niftysave_migration" using primary key columns */
         niftysave_migration_by_pk?: GraphQLTypes["niftysave_migration"];
-        /** fetch data from the table: "other_nft_resources" */
+        /** An array relationship */
         other_nft_resources: Array<GraphQLTypes["other_nft_resources"]>;
-        /** fetch aggregated fields from the table: "other_nft_resources" */
+        /** An aggregate relationship */
         other_nft_resources_aggregate: GraphQLTypes["other_nft_resources_aggregate"];
         /** fetch data from the table: "other_nft_resources" using primary key columns */
         other_nft_resources_by_pk?: GraphQLTypes["other_nft_resources"];
@@ -8440,6 +9753,53 @@ export declare const Chain: (...options: chainOptions) => {
         content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        erc721_import?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import"]
+        ];
+        erc721_import_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_aggregate"]
+        ];
+        erc721_import_by_nft?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        erc721_import_by_nft_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_aggregate"]
+        ];
+        erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -8507,7 +9867,7 @@ export declare const Chain: (...options: chainOptions) => {
             ValueTypes["nft_metadata_aggregate"]
         ];
         nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         nft_ownership?: [
             {
@@ -8602,7 +9962,7 @@ export declare const Chain: (...options: chainOptions) => {
             ValueTypes["other_nft_resources_aggregate"]
         ];
         other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         pin?: [
@@ -8672,6 +10032,18 @@ export declare const Chain: (...options: chainOptions) => {
         content_aggregate: GraphQLTypes["content_aggregate"];
         /** fetch data from the table: "content" using primary key columns */
         content_by_pk?: GraphQLTypes["content"];
+        /** fetch data from the table: "erc721_import" */
+        erc721_import: Array<GraphQLTypes["erc721_import"]>;
+        /** fetch aggregated fields from the table: "erc721_import" */
+        erc721_import_aggregate: GraphQLTypes["erc721_import_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft: Array<GraphQLTypes["erc721_import_by_nft"]>;
+        /** fetch aggregated fields from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft_aggregate: GraphQLTypes["erc721_import_by_nft_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" using primary key columns */
+        erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** fetch data from the table: "erc721_import" using primary key columns */
+        erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -8708,9 +10080,9 @@ export declare const Chain: (...options: chainOptions) => {
         niftysave_migration_aggregate: GraphQLTypes["niftysave_migration_aggregate"];
         /** fetch data from the table: "niftysave_migration" using primary key columns */
         niftysave_migration_by_pk?: GraphQLTypes["niftysave_migration"];
-        /** fetch data from the table: "other_nft_resources" */
+        /** An array relationship */
         other_nft_resources: Array<GraphQLTypes["other_nft_resources"]>;
-        /** fetch aggregated fields from the table: "other_nft_resources" */
+        /** An aggregate relationship */
         other_nft_resources_aggregate: GraphQLTypes["other_nft_resources_aggregate"];
         /** fetch data from the table: "other_nft_resources" using primary key columns */
         other_nft_resources_by_pk?: GraphQLTypes["other_nft_resources"];
@@ -8755,6 +10127,25 @@ export declare const Chain: (...options: chainOptions) => {
         delete_content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        delete_erc721_import?: [
+            {
+                where: ValueTypes["erc721_import_bool_exp"];
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        delete_erc721_import_by_nft?: [
+            {
+                where: ValueTypes["erc721_import_by_nft_bool_exp"];
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        delete_erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        delete_erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         delete_nft?: [
             {
                 where: ValueTypes["nft_bool_exp"];
@@ -8780,7 +10171,7 @@ export declare const Chain: (...options: chainOptions) => {
             ValueTypes["nft_metadata_mutation_response"]
         ];
         delete_nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         delete_nft_ownership?: [
             {
@@ -8819,7 +10210,7 @@ export declare const Chain: (...options: chainOptions) => {
             ValueTypes["other_nft_resources_mutation_response"]
         ];
         delete_other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         delete_pin?: [
@@ -8914,6 +10305,34 @@ export declare const Chain: (...options: chainOptions) => {
                 on_conflict?: ValueTypes["content_on_conflict"] | null;
             },
             ValueTypes["content"]
+        ];
+        insert_erc721_import?: [
+            {
+                objects: ValueTypes["erc721_import_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        insert_erc721_import_by_nft?: [
+            {
+                objects: ValueTypes["erc721_import_by_nft_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_by_nft_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        insert_erc721_import_by_nft_one?: [
+            {
+                object: ValueTypes["erc721_import_by_nft_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_by_nft_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        insert_erc721_import_one?: [
+            {
+                object: ValueTypes["erc721_import_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import"]
         ];
         insert_nft?: [
             {
@@ -9041,17 +10460,6 @@ export declare const Chain: (...options: chainOptions) => {
             },
             ValueTypes["resource"]
         ];
-        link_nft_asset?: [
-            {
-                args: ValueTypes["link_nft_asset_args"]; /** distinct select on columns */
-                distinct_on?: ValueTypes["nft_asset_select_column"][]; /** limit the number of rows returned */
-                limit?: number | null; /** skip the first n rows. Use only with order_by */
-                offset?: number | null; /** sort the rows by one or more columns */
-                order_by?: ValueTypes["nft_asset_order_by"][]; /** filter the rows returned */
-                where?: ValueTypes["nft_asset_bool_exp"] | null;
-            },
-            ValueTypes["nft_asset"]
-        ];
         link_nft_resource?: [
             {
                 args: ValueTypes["link_nft_resource_args"]; /** distinct select on columns */
@@ -9119,6 +10527,34 @@ export declare const Chain: (...options: chainOptions) => {
                 pk_columns: ValueTypes["content_pk_columns_input"];
             },
             ValueTypes["content"]
+        ];
+        update_erc721_import?: [
+            {
+                _set?: ValueTypes["erc721_import_set_input"] | null; /** filter the rows which have to be updated */
+                where: ValueTypes["erc721_import_bool_exp"];
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        update_erc721_import_by_nft?: [
+            {
+                _set?: ValueTypes["erc721_import_by_nft_set_input"] | null; /** filter the rows which have to be updated */
+                where: ValueTypes["erc721_import_by_nft_bool_exp"];
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        update_erc721_import_by_nft_by_pk?: [
+            {
+                _set?: ValueTypes["erc721_import_by_nft_set_input"] | null;
+                pk_columns: ValueTypes["erc721_import_by_nft_pk_columns_input"];
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        update_erc721_import_by_pk?: [
+            {
+                _set?: ValueTypes["erc721_import_set_input"] | null;
+                pk_columns: ValueTypes["erc721_import_pk_columns_input"];
+            },
+            ValueTypes["erc721_import"]
         ];
         update_nft?: [
             {
@@ -9285,6 +10721,14 @@ export declare const Chain: (...options: chainOptions) => {
         delete_content?: GraphQLTypes["content_mutation_response"];
         /** delete single row from the table: "content" */
         delete_content_by_pk?: GraphQLTypes["content"];
+        /** delete data from the table: "erc721_import" */
+        delete_erc721_import?: GraphQLTypes["erc721_import_mutation_response"];
+        /** delete data from the table: "erc721_import_by_nft" */
+        delete_erc721_import_by_nft?: GraphQLTypes["erc721_import_by_nft_mutation_response"];
+        /** delete single row from the table: "erc721_import_by_nft" */
+        delete_erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** delete single row from the table: "erc721_import" */
+        delete_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** delete data from the table: "nft" */
         delete_nft?: GraphQLTypes["nft_mutation_response"];
         /** delete data from the table: "nft_asset" */
@@ -9339,6 +10783,14 @@ export declare const Chain: (...options: chainOptions) => {
         insert_content?: GraphQLTypes["content_mutation_response"];
         /** insert a single row into the table: "content" */
         insert_content_one?: GraphQLTypes["content"];
+        /** insert data into the table: "erc721_import" */
+        insert_erc721_import?: GraphQLTypes["erc721_import_mutation_response"];
+        /** insert data into the table: "erc721_import_by_nft" */
+        insert_erc721_import_by_nft?: GraphQLTypes["erc721_import_by_nft_mutation_response"];
+        /** insert a single row into the table: "erc721_import_by_nft" */
+        insert_erc721_import_by_nft_one?: GraphQLTypes["erc721_import_by_nft"];
+        /** insert a single row into the table: "erc721_import" */
+        insert_erc721_import_one?: GraphQLTypes["erc721_import"];
         /** insert data into the table: "nft" */
         insert_nft?: GraphQLTypes["nft_mutation_response"];
         /** insert data into the table: "nft_asset" */
@@ -9375,8 +10827,6 @@ export declare const Chain: (...options: chainOptions) => {
         insert_resource?: GraphQLTypes["resource_mutation_response"];
         /** insert a single row into the table: "resource" */
         insert_resource_one?: GraphQLTypes["resource"];
-        /** execute VOLATILE function "link_nft_asset" which returns "nft_asset" */
-        link_nft_asset: Array<GraphQLTypes["nft_asset"]>;
         /** execute VOLATILE function "link_nft_resource" which returns "resource" */
         link_nft_resource: Array<GraphQLTypes["resource"]>;
         /** execute VOLATILE function "link_resource_content" which returns "resource" */
@@ -9393,6 +10843,14 @@ export declare const Chain: (...options: chainOptions) => {
         update_content?: GraphQLTypes["content_mutation_response"];
         /** update single row of the table: "content" */
         update_content_by_pk?: GraphQLTypes["content"];
+        /** update data of the table: "erc721_import" */
+        update_erc721_import?: GraphQLTypes["erc721_import_mutation_response"];
+        /** update data of the table: "erc721_import_by_nft" */
+        update_erc721_import_by_nft?: GraphQLTypes["erc721_import_by_nft_mutation_response"];
+        /** update single row of the table: "erc721_import_by_nft" */
+        update_erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** update single row of the table: "erc721_import" */
+        update_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** update data of the table: "nft" */
         update_nft?: GraphQLTypes["nft_mutation_response"];
         /** update data of the table: "nft_asset" */
@@ -9500,6 +10958,53 @@ export declare const Chain: (...options: chainOptions) => {
         content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        erc721_import?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import"]
+        ];
+        erc721_import_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_aggregate"]
+        ];
+        erc721_import_by_nft?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        erc721_import_by_nft_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_aggregate"]
+        ];
+        erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -9567,7 +11072,7 @@ export declare const Chain: (...options: chainOptions) => {
             ValueTypes["nft_metadata_aggregate"]
         ];
         nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         nft_ownership?: [
             {
@@ -9662,7 +11167,7 @@ export declare const Chain: (...options: chainOptions) => {
             ValueTypes["other_nft_resources_aggregate"]
         ];
         other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         pin?: [
@@ -9732,6 +11237,18 @@ export declare const Chain: (...options: chainOptions) => {
         content_aggregate: GraphQLTypes["content_aggregate"];
         /** fetch data from the table: "content" using primary key columns */
         content_by_pk?: GraphQLTypes["content"];
+        /** fetch data from the table: "erc721_import" */
+        erc721_import: Array<GraphQLTypes["erc721_import"]>;
+        /** fetch aggregated fields from the table: "erc721_import" */
+        erc721_import_aggregate: GraphQLTypes["erc721_import_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft: Array<GraphQLTypes["erc721_import_by_nft"]>;
+        /** fetch aggregated fields from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft_aggregate: GraphQLTypes["erc721_import_by_nft_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" using primary key columns */
+        erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** fetch data from the table: "erc721_import" using primary key columns */
+        erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -9768,9 +11285,9 @@ export declare const Chain: (...options: chainOptions) => {
         niftysave_migration_aggregate: GraphQLTypes["niftysave_migration_aggregate"];
         /** fetch data from the table: "niftysave_migration" using primary key columns */
         niftysave_migration_by_pk?: GraphQLTypes["niftysave_migration"];
-        /** fetch data from the table: "other_nft_resources" */
+        /** An array relationship */
         other_nft_resources: Array<GraphQLTypes["other_nft_resources"]>;
-        /** fetch aggregated fields from the table: "other_nft_resources" */
+        /** An aggregate relationship */
         other_nft_resources_aggregate: GraphQLTypes["other_nft_resources_aggregate"];
         /** fetch data from the table: "other_nft_resources" using primary key columns */
         other_nft_resources_by_pk?: GraphQLTypes["other_nft_resources"];
@@ -9864,6 +11381,53 @@ export declare const Selectors: {
         content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        erc721_import?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import"]
+        ];
+        erc721_import_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_aggregate"]
+        ];
+        erc721_import_by_nft?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        erc721_import_by_nft_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_aggregate"]
+        ];
+        erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -9931,7 +11495,7 @@ export declare const Selectors: {
             ValueTypes["nft_metadata_aggregate"]
         ];
         nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         nft_ownership?: [
             {
@@ -10026,7 +11590,7 @@ export declare const Selectors: {
             ValueTypes["other_nft_resources_aggregate"]
         ];
         other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         pin?: [
@@ -10105,6 +11669,25 @@ export declare const Selectors: {
         delete_content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        delete_erc721_import?: [
+            {
+                where: ValueTypes["erc721_import_bool_exp"];
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        delete_erc721_import_by_nft?: [
+            {
+                where: ValueTypes["erc721_import_by_nft_bool_exp"];
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        delete_erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        delete_erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         delete_nft?: [
             {
                 where: ValueTypes["nft_bool_exp"];
@@ -10130,7 +11713,7 @@ export declare const Selectors: {
             ValueTypes["nft_metadata_mutation_response"]
         ];
         delete_nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         delete_nft_ownership?: [
             {
@@ -10169,7 +11752,7 @@ export declare const Selectors: {
             ValueTypes["other_nft_resources_mutation_response"]
         ];
         delete_other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         delete_pin?: [
@@ -10264,6 +11847,34 @@ export declare const Selectors: {
                 on_conflict?: ValueTypes["content_on_conflict"] | null;
             },
             ValueTypes["content"]
+        ];
+        insert_erc721_import?: [
+            {
+                objects: ValueTypes["erc721_import_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        insert_erc721_import_by_nft?: [
+            {
+                objects: ValueTypes["erc721_import_by_nft_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_by_nft_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        insert_erc721_import_by_nft_one?: [
+            {
+                object: ValueTypes["erc721_import_by_nft_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_by_nft_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        insert_erc721_import_one?: [
+            {
+                object: ValueTypes["erc721_import_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import"]
         ];
         insert_nft?: [
             {
@@ -10391,17 +12002,6 @@ export declare const Selectors: {
             },
             ValueTypes["resource"]
         ];
-        link_nft_asset?: [
-            {
-                args: ValueTypes["link_nft_asset_args"]; /** distinct select on columns */
-                distinct_on?: ValueTypes["nft_asset_select_column"][]; /** limit the number of rows returned */
-                limit?: number | null; /** skip the first n rows. Use only with order_by */
-                offset?: number | null; /** sort the rows by one or more columns */
-                order_by?: ValueTypes["nft_asset_order_by"][]; /** filter the rows returned */
-                where?: ValueTypes["nft_asset_bool_exp"] | null;
-            },
-            ValueTypes["nft_asset"]
-        ];
         link_nft_resource?: [
             {
                 args: ValueTypes["link_nft_resource_args"]; /** distinct select on columns */
@@ -10469,6 +12069,34 @@ export declare const Selectors: {
                 pk_columns: ValueTypes["content_pk_columns_input"];
             },
             ValueTypes["content"]
+        ];
+        update_erc721_import?: [
+            {
+                _set?: ValueTypes["erc721_import_set_input"] | null; /** filter the rows which have to be updated */
+                where: ValueTypes["erc721_import_bool_exp"];
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        update_erc721_import_by_nft?: [
+            {
+                _set?: ValueTypes["erc721_import_by_nft_set_input"] | null; /** filter the rows which have to be updated */
+                where: ValueTypes["erc721_import_by_nft_bool_exp"];
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        update_erc721_import_by_nft_by_pk?: [
+            {
+                _set?: ValueTypes["erc721_import_by_nft_set_input"] | null;
+                pk_columns: ValueTypes["erc721_import_by_nft_pk_columns_input"];
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        update_erc721_import_by_pk?: [
+            {
+                _set?: ValueTypes["erc721_import_set_input"] | null;
+                pk_columns: ValueTypes["erc721_import_pk_columns_input"];
+            },
+            ValueTypes["erc721_import"]
         ];
         update_nft?: [
             {
@@ -10692,6 +12320,53 @@ export declare const Selectors: {
         content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        erc721_import?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import"]
+        ];
+        erc721_import_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_aggregate"]
+        ];
+        erc721_import_by_nft?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        erc721_import_by_nft_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_aggregate"]
+        ];
+        erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -10759,7 +12434,7 @@ export declare const Selectors: {
             ValueTypes["nft_metadata_aggregate"]
         ];
         nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         nft_ownership?: [
             {
@@ -10854,7 +12529,7 @@ export declare const Selectors: {
             ValueTypes["other_nft_resources_aggregate"]
         ];
         other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         pin?: [
@@ -10977,6 +12652,53 @@ export declare const Gql: {
         content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        erc721_import?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import"]
+        ];
+        erc721_import_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_aggregate"]
+        ];
+        erc721_import_by_nft?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        erc721_import_by_nft_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_aggregate"]
+        ];
+        erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -11044,7 +12766,7 @@ export declare const Gql: {
             ValueTypes["nft_metadata_aggregate"]
         ];
         nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         nft_ownership?: [
             {
@@ -11139,7 +12861,7 @@ export declare const Gql: {
             ValueTypes["other_nft_resources_aggregate"]
         ];
         other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         pin?: [
@@ -11209,6 +12931,18 @@ export declare const Gql: {
         content_aggregate: GraphQLTypes["content_aggregate"];
         /** fetch data from the table: "content" using primary key columns */
         content_by_pk?: GraphQLTypes["content"];
+        /** fetch data from the table: "erc721_import" */
+        erc721_import: Array<GraphQLTypes["erc721_import"]>;
+        /** fetch aggregated fields from the table: "erc721_import" */
+        erc721_import_aggregate: GraphQLTypes["erc721_import_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft: Array<GraphQLTypes["erc721_import_by_nft"]>;
+        /** fetch aggregated fields from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft_aggregate: GraphQLTypes["erc721_import_by_nft_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" using primary key columns */
+        erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** fetch data from the table: "erc721_import" using primary key columns */
+        erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -11245,9 +12979,9 @@ export declare const Gql: {
         niftysave_migration_aggregate: GraphQLTypes["niftysave_migration_aggregate"];
         /** fetch data from the table: "niftysave_migration" using primary key columns */
         niftysave_migration_by_pk?: GraphQLTypes["niftysave_migration"];
-        /** fetch data from the table: "other_nft_resources" */
+        /** An array relationship */
         other_nft_resources: Array<GraphQLTypes["other_nft_resources"]>;
-        /** fetch aggregated fields from the table: "other_nft_resources" */
+        /** An aggregate relationship */
         other_nft_resources_aggregate: GraphQLTypes["other_nft_resources_aggregate"];
         /** fetch data from the table: "other_nft_resources" using primary key columns */
         other_nft_resources_by_pk?: GraphQLTypes["other_nft_resources"];
@@ -11292,6 +13026,25 @@ export declare const Gql: {
         delete_content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        delete_erc721_import?: [
+            {
+                where: ValueTypes["erc721_import_bool_exp"];
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        delete_erc721_import_by_nft?: [
+            {
+                where: ValueTypes["erc721_import_by_nft_bool_exp"];
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        delete_erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        delete_erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         delete_nft?: [
             {
                 where: ValueTypes["nft_bool_exp"];
@@ -11317,7 +13070,7 @@ export declare const Gql: {
             ValueTypes["nft_metadata_mutation_response"]
         ];
         delete_nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         delete_nft_ownership?: [
             {
@@ -11356,7 +13109,7 @@ export declare const Gql: {
             ValueTypes["other_nft_resources_mutation_response"]
         ];
         delete_other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         delete_pin?: [
@@ -11451,6 +13204,34 @@ export declare const Gql: {
                 on_conflict?: ValueTypes["content_on_conflict"] | null;
             },
             ValueTypes["content"]
+        ];
+        insert_erc721_import?: [
+            {
+                objects: ValueTypes["erc721_import_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        insert_erc721_import_by_nft?: [
+            {
+                objects: ValueTypes["erc721_import_by_nft_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_by_nft_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        insert_erc721_import_by_nft_one?: [
+            {
+                object: ValueTypes["erc721_import_by_nft_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_by_nft_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        insert_erc721_import_one?: [
+            {
+                object: ValueTypes["erc721_import_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_import_on_conflict"] | null;
+            },
+            ValueTypes["erc721_import"]
         ];
         insert_nft?: [
             {
@@ -11578,17 +13359,6 @@ export declare const Gql: {
             },
             ValueTypes["resource"]
         ];
-        link_nft_asset?: [
-            {
-                args: ValueTypes["link_nft_asset_args"]; /** distinct select on columns */
-                distinct_on?: ValueTypes["nft_asset_select_column"][]; /** limit the number of rows returned */
-                limit?: number | null; /** skip the first n rows. Use only with order_by */
-                offset?: number | null; /** sort the rows by one or more columns */
-                order_by?: ValueTypes["nft_asset_order_by"][]; /** filter the rows returned */
-                where?: ValueTypes["nft_asset_bool_exp"] | null;
-            },
-            ValueTypes["nft_asset"]
-        ];
         link_nft_resource?: [
             {
                 args: ValueTypes["link_nft_resource_args"]; /** distinct select on columns */
@@ -11656,6 +13426,34 @@ export declare const Gql: {
                 pk_columns: ValueTypes["content_pk_columns_input"];
             },
             ValueTypes["content"]
+        ];
+        update_erc721_import?: [
+            {
+                _set?: ValueTypes["erc721_import_set_input"] | null; /** filter the rows which have to be updated */
+                where: ValueTypes["erc721_import_bool_exp"];
+            },
+            ValueTypes["erc721_import_mutation_response"]
+        ];
+        update_erc721_import_by_nft?: [
+            {
+                _set?: ValueTypes["erc721_import_by_nft_set_input"] | null; /** filter the rows which have to be updated */
+                where: ValueTypes["erc721_import_by_nft_bool_exp"];
+            },
+            ValueTypes["erc721_import_by_nft_mutation_response"]
+        ];
+        update_erc721_import_by_nft_by_pk?: [
+            {
+                _set?: ValueTypes["erc721_import_by_nft_set_input"] | null;
+                pk_columns: ValueTypes["erc721_import_by_nft_pk_columns_input"];
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        update_erc721_import_by_pk?: [
+            {
+                _set?: ValueTypes["erc721_import_set_input"] | null;
+                pk_columns: ValueTypes["erc721_import_pk_columns_input"];
+            },
+            ValueTypes["erc721_import"]
         ];
         update_nft?: [
             {
@@ -11822,6 +13620,14 @@ export declare const Gql: {
         delete_content?: GraphQLTypes["content_mutation_response"];
         /** delete single row from the table: "content" */
         delete_content_by_pk?: GraphQLTypes["content"];
+        /** delete data from the table: "erc721_import" */
+        delete_erc721_import?: GraphQLTypes["erc721_import_mutation_response"];
+        /** delete data from the table: "erc721_import_by_nft" */
+        delete_erc721_import_by_nft?: GraphQLTypes["erc721_import_by_nft_mutation_response"];
+        /** delete single row from the table: "erc721_import_by_nft" */
+        delete_erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** delete single row from the table: "erc721_import" */
+        delete_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** delete data from the table: "nft" */
         delete_nft?: GraphQLTypes["nft_mutation_response"];
         /** delete data from the table: "nft_asset" */
@@ -11876,6 +13682,14 @@ export declare const Gql: {
         insert_content?: GraphQLTypes["content_mutation_response"];
         /** insert a single row into the table: "content" */
         insert_content_one?: GraphQLTypes["content"];
+        /** insert data into the table: "erc721_import" */
+        insert_erc721_import?: GraphQLTypes["erc721_import_mutation_response"];
+        /** insert data into the table: "erc721_import_by_nft" */
+        insert_erc721_import_by_nft?: GraphQLTypes["erc721_import_by_nft_mutation_response"];
+        /** insert a single row into the table: "erc721_import_by_nft" */
+        insert_erc721_import_by_nft_one?: GraphQLTypes["erc721_import_by_nft"];
+        /** insert a single row into the table: "erc721_import" */
+        insert_erc721_import_one?: GraphQLTypes["erc721_import"];
         /** insert data into the table: "nft" */
         insert_nft?: GraphQLTypes["nft_mutation_response"];
         /** insert data into the table: "nft_asset" */
@@ -11912,8 +13726,6 @@ export declare const Gql: {
         insert_resource?: GraphQLTypes["resource_mutation_response"];
         /** insert a single row into the table: "resource" */
         insert_resource_one?: GraphQLTypes["resource"];
-        /** execute VOLATILE function "link_nft_asset" which returns "nft_asset" */
-        link_nft_asset: Array<GraphQLTypes["nft_asset"]>;
         /** execute VOLATILE function "link_nft_resource" which returns "resource" */
         link_nft_resource: Array<GraphQLTypes["resource"]>;
         /** execute VOLATILE function "link_resource_content" which returns "resource" */
@@ -11930,6 +13742,14 @@ export declare const Gql: {
         update_content?: GraphQLTypes["content_mutation_response"];
         /** update single row of the table: "content" */
         update_content_by_pk?: GraphQLTypes["content"];
+        /** update data of the table: "erc721_import" */
+        update_erc721_import?: GraphQLTypes["erc721_import_mutation_response"];
+        /** update data of the table: "erc721_import_by_nft" */
+        update_erc721_import_by_nft?: GraphQLTypes["erc721_import_by_nft_mutation_response"];
+        /** update single row of the table: "erc721_import_by_nft" */
+        update_erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** update single row of the table: "erc721_import" */
+        update_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** update data of the table: "nft" */
         update_nft?: GraphQLTypes["nft_mutation_response"];
         /** update data of the table: "nft_asset" */
@@ -12037,6 +13857,53 @@ export declare const Gql: {
         content_by_pk?: [{
             cid: string;
         }, ValueTypes["content"]];
+        erc721_import?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import"]
+        ];
+        erc721_import_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_aggregate"]
+        ];
+        erc721_import_by_nft?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft"]
+        ];
+        erc721_import_by_nft_aggregate?: [
+            {
+                distinct_on?: ValueTypes["erc721_import_by_nft_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["erc721_import_by_nft_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["erc721_import_by_nft_bool_exp"] | null;
+            },
+            ValueTypes["erc721_import_by_nft_aggregate"]
+        ];
+        erc721_import_by_nft_by_pk?: [{
+            erc721_import_id: string;
+            nft_id: string;
+        }, ValueTypes["erc721_import_by_nft"]];
+        erc721_import_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_import"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -12104,7 +13971,7 @@ export declare const Gql: {
             ValueTypes["nft_metadata_aggregate"]
         ];
         nft_metadata_by_pk?: [{
-            content_cid: string;
+            cid: string;
         }, ValueTypes["nft_metadata"]];
         nft_ownership?: [
             {
@@ -12199,7 +14066,7 @@ export declare const Gql: {
             ValueTypes["other_nft_resources_aggregate"]
         ];
         other_nft_resources_by_pk?: [{
-            content_cid: string;
+            metadata_cid: string;
             resource_uri_hash: ValueTypes["bytea"];
         }, ValueTypes["other_nft_resources"]];
         pin?: [
@@ -12269,6 +14136,18 @@ export declare const Gql: {
         content_aggregate: GraphQLTypes["content_aggregate"];
         /** fetch data from the table: "content" using primary key columns */
         content_by_pk?: GraphQLTypes["content"];
+        /** fetch data from the table: "erc721_import" */
+        erc721_import: Array<GraphQLTypes["erc721_import"]>;
+        /** fetch aggregated fields from the table: "erc721_import" */
+        erc721_import_aggregate: GraphQLTypes["erc721_import_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft: Array<GraphQLTypes["erc721_import_by_nft"]>;
+        /** fetch aggregated fields from the table: "erc721_import_by_nft" */
+        erc721_import_by_nft_aggregate: GraphQLTypes["erc721_import_by_nft_aggregate"];
+        /** fetch data from the table: "erc721_import_by_nft" using primary key columns */
+        erc721_import_by_nft_by_pk?: GraphQLTypes["erc721_import_by_nft"];
+        /** fetch data from the table: "erc721_import" using primary key columns */
+        erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -12305,9 +14184,9 @@ export declare const Gql: {
         niftysave_migration_aggregate: GraphQLTypes["niftysave_migration_aggregate"];
         /** fetch data from the table: "niftysave_migration" using primary key columns */
         niftysave_migration_by_pk?: GraphQLTypes["niftysave_migration"];
-        /** fetch data from the table: "other_nft_resources" */
+        /** An array relationship */
         other_nft_resources: Array<GraphQLTypes["other_nft_resources"]>;
-        /** fetch aggregated fields from the table: "other_nft_resources" */
+        /** An aggregate relationship */
         other_nft_resources_aggregate: GraphQLTypes["other_nft_resources_aggregate"];
         /** fetch data from the table: "other_nft_resources" using primary key columns */
         other_nft_resources_by_pk?: GraphQLTypes["other_nft_resources"];
