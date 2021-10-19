@@ -64,10 +64,9 @@ export class Token {
   }
 
   /**
-   * Takes token input and encodes creates a new Token instance from it. Where
-   * values are discovered `Blob` (or `File`) objects in the given input, they
-   * are replaced with IPFS URLs (an `ipfs://` prefixed CID with an optional
-   * path).
+   * Takes token input and creates a new Token instance from it. Where values
+   * are discovered `Blob` (or `File`) objects in the given input, they are
+   * replaced with IPFS URLs (an `ipfs://` prefixed CID with an optional path).
    *
    * Optionally a blockstore can be passed to store the DAG that is created. The
    * root CID of the DAG is `token.ipnft`.
