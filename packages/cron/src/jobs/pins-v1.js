@@ -1,43 +1,46 @@
 import debug from 'debug'
+import { DBError } from '../../../api/src/utils/db-client.js'
 
 const log = debug('pins:updatePinStatuses')
 
 /**
+ * @typedef {{
+ *   db: import('../../../api/src/utils/db-client').DBClient
+ *   cluster: import('@nftstorage/ipfs-cluster').Cluster
+ * }} Config
  * @typedef {import('../../../api/src/utils/db-types').definitions} definitions
- * @typedef {Pick<definitions['pin'], 'id'|'status'|'content_cid'|'service'|'updated_at'>} Pin
+ * @typedef {Pick<definitions['pin'], 'id'|'status'|'content_cid'|'service'|'inserted_at'|'updated_at'>} Pin
  * @typedef {import('@supabase/postgrest-js').PostgrestQueryBuilder<Pin>} PinQuery
  */
 
 /**
  * Updates pin status and size by retrieving updated status from cluster.
  *
- * @param {{
- *   db: import('../../../api/src/utils/db-client').DBClient
- *   cluster: import('@nftstorage/ipfs-cluster').Cluster
- * }} config
+ * @param {Config} config
  */
-export async function updatePinStatuses({ db, cluster }) {
-  if (!log.enabled) {
-    console.log('ℹ️ Enable logging by setting DEBUG=pins:updatePinStatuses')
+export async function updatePendingPinStatuses({ db, cluster }) {
+  const countPins = async () => {
+    const { count, error: countError } = await db.client
+      .from('pin')
+      .select('*', { count: 'exact', head: true })
+      .eq('service', 'IpfsCluster')
+      .neq('status', 'Pinned')
+      .neq('status', 'PinError')
+      .range(0, 1)
+    if (countError) {
+      throw new DBError(countError)
+    }
+    if (count == null) {
+      throw new Error('failed to count pins')
+    }
+    return count
   }
 
-  const { count, error: countError } = await db.client
-    .from('pin')
-    .select('*', { count: 'exact', head: true })
-    .eq('service', 'IpfsCluster')
-    .neq('status', 'Pinned')
-    .neq('status', 'PinError')
-    .range(0, 1)
-
-  if (countError) {
-    throw countError
-  }
-
-  log(`🎯 Updating ${count} pin statuses`)
-
-  let offset = 0
-  const limit = 1000
-  while (true) {
+  /**
+   * @param {number} offset
+   * @param {number} limit
+   */
+  const fetchPins = async (offset, limit) => {
     /** @type {PinQuery} */
     const query = db.client.from('pin')
     const { data: pins, error } = await query
@@ -46,15 +49,88 @@ export async function updatePinStatuses({ db, cluster }) {
       .neq('status', 'Pinned')
       .neq('status', 'PinError')
       .range(offset, offset + limit - 1)
-
     if (error) {
-      throw Object.assign(new Error(), error)
+      throw new DBError(error)
     }
-
     if (!pins) {
-      throw new Error('no pins found')
+      throw new Error('failed to fetch pins')
     }
+    return pins
+  }
 
+  await updatePinStatuses({ db, cluster, countPins, fetchPins })
+}
+
+/**
+ * Check on failed pins < 1 month old to see if their status changed from failed
+ * to pinned.
+ *
+ * @param {Config & { after: Date }} config
+ */
+export async function checkFailedPinStatuses({ db, cluster, after }) {
+  const countPins = async () => {
+    const { count, error: countError } = await db.client
+      .from('pin')
+      .select('*', { count: 'exact', head: true })
+      .eq('service', 'IpfsCluster')
+      .eq('status', 'PinError')
+      .gt('inserted_at', after.toISOString())
+      .range(0, 1)
+    if (countError) {
+      throw new DBError(countError)
+    }
+    if (count == null) {
+      throw new Error('failed to count pins')
+    }
+    return count
+  }
+
+  /**
+   * @param {number} offset
+   * @param {number} limit
+   */
+  const fetchPins = async (offset, limit) => {
+    /** @type {PinQuery} */
+    const query = db.client.from('pin')
+    const { data: pins, error } = await query
+      .select('id,status,content_cid,service')
+      .eq('service', 'IpfsCluster')
+      .eq('status', 'PinError')
+      .gt('inserted_at', after.toISOString())
+      .range(offset, offset + limit - 1)
+    if (error) {
+      throw new DBError(error)
+    }
+    if (!pins) {
+      throw new Error('failed to fetch pins')
+    }
+    return pins
+  }
+
+  log(`⏰ Checking pins created after ${after.toISOString()}`)
+  await updatePinStatuses({ db, cluster, countPins, fetchPins })
+}
+
+/**
+ * Updates pin status and size by retrieving updated status from cluster.
+ *
+ * @param {Config & {
+ *   countPins: () => Promise<number>
+ *   fetchPins: (offset:number, limit: number) => Promise<Pin[]>
+ * }} config
+ */
+async function updatePinStatuses({ db, cluster, countPins, fetchPins }) {
+  if (!log.enabled) {
+    console.log('ℹ️ Enable logging by setting DEBUG=pins:updatePinStatuses')
+  }
+
+  const count = await countPins()
+  log(`🎯 Updating ${count} pin statuses`)
+
+  let offset = 0
+  const limit = 1000
+  while (true) {
+    const pins = await fetchPins(offset, limit)
     if (!pins.length) {
       break
     }
