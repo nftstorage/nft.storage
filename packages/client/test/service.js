@@ -18,7 +18,7 @@ const headers = ({ headers }) => ({
 /**
  * @param {Request} request
  */
-const importUpload = async request => {
+const importUpload = async (request) => {
   const contentType = request.headers.get('content-type') || ''
   if (!contentType.includes('application/car')) {
     throw new Error(`unexpected content type: ${contentType}`)
@@ -34,9 +34,7 @@ const importUpload = async request => {
  * @returns {State}
  */
 export const init = (
-  token = Math.random()
-    .toString(32)
-    .slice(2),
+  token = Math.random().toString(32).slice(2),
   store = new Map()
 ) => ({
   AUTH_TOKEN: token,

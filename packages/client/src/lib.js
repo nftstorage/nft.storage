@@ -141,32 +141,33 @@ class NFTStorage {
         ? await TreewalkCarSplitter.fromBlob(car, targetSize, { decoders })
         : new TreewalkCarSplitter(car, targetSize, { decoders })
 
-    const upload = transform(MAX_CONCURRENT_UPLOADS, async function(
-      /** @type {AsyncIterable<Uint8Array>} */ car
-    ) {
-      const carParts = []
-      for await (const part of car) {
-        carParts.push(part)
+    const upload = transform(
+      MAX_CONCURRENT_UPLOADS,
+      async function (/** @type {AsyncIterable<Uint8Array>} */ car) {
+        const carParts = []
+        for await (const part of car) {
+          carParts.push(part)
+        }
+        const carFile = new Blob(carParts, { type: 'application/car' })
+        const cid = await pRetry(
+          async () => {
+            const response = await fetch(url.toString(), {
+              method: 'POST',
+              headers: NFTStorage.auth(token),
+              body: carFile,
+            })
+            const result = await response.json()
+            if (!result.ok) {
+              throw new Error(result.error.message)
+            }
+            return result.value.cid
+          },
+          { retries: maxRetries == null ? MAX_STORE_RETRIES : maxRetries }
+        )
+        onStoredChunk && onStoredChunk(carFile.size)
+        return cid
       }
-      const carFile = new Blob(carParts, { type: 'application/car' })
-      const cid = await pRetry(
-        async () => {
-          const response = await fetch(url.toString(), {
-            method: 'POST',
-            headers: NFTStorage.auth(token),
-            body: carFile,
-          })
-          const result = await response.json()
-          if (!result.ok) {
-            throw new Error(result.error.message)
-          }
-          return result.value.cid
-        },
-        { retries: maxRetries == null ? MAX_STORE_RETRIES : maxRetries }
-      )
-      onStoredChunk && onStoredChunk(carFile.size)
-      return cid
-    })
+    )
 
     let root
     for await (const cid of upload(splitter.cars())) {
@@ -519,8 +520,8 @@ For more context please see ERC-721 specification https://eips.ethereum.org/EIPS
  * @param {Deal[]} deals
  * @returns {Deal[]}
  */
-const decodeDeals = deals =>
-  deals.map(deal => {
+const decodeDeals = (deals) =>
+  deals.map((deal) => {
     const { dealActivation, dealExpiration, lastChanged } = {
       dealExpiration: null,
       dealActivation: null,
@@ -539,6 +540,6 @@ const decodeDeals = deals =>
  * @param {Pin} pin
  * @returns {Pin}
  */
-const decodePin = pin => ({ ...pin, created: new Date(pin.created) })
+const decodePin = (pin) => ({ ...pin, created: new Date(pin.created) })
 
 export { NFTStorage, File, Blob, FormData, toGatewayURL, Token }

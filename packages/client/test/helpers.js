@@ -36,12 +36,12 @@ export async function randomCar(targetSize) {
     blocks.push({ cid, bytes })
     size += bytes.length
   }
-  const rootBytes = dagCbor.encode(blocks.map(b => b.cid))
+  const rootBytes = dagCbor.encode(blocks.map((b) => b.cid))
   const rootHash = await sha256.digest(rootBytes)
   const rootCid = CID.create(1, dagCbor.code, rootHash)
   const { writer, out } = CarWriter.create([rootCid])
   writer.put({ cid: rootCid, bytes: rootBytes })
-  blocks.forEach(b => writer.put(b))
+  blocks.forEach((b) => writer.put(b))
   writer.close()
   return out
 }

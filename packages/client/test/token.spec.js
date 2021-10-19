@@ -22,8 +22,7 @@ describe('token', () => {
     const token = Token.decode(
       {
         ipnft: 'bafyreib75ot3oyo43f7rhdk6xlv7c4mmjwhbjjnugrw3yqjvarpvtzxkoi',
-        url:
-          'ipfs://bafyreib75ot3oyo43f7rhdk6xlv7c4mmjwhbjjnugrw3yqjvarpvtzxkoi',
+        url: 'ipfs://bafyreib75ot3oyo43f7rhdk6xlv7c4mmjwhbjjnugrw3yqjvarpvtzxkoi',
         data: {
           name: 'name',
           description: 'stuff',
