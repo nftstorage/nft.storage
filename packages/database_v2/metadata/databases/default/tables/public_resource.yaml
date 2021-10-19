@@ -11,3 +11,11 @@ object_relationships:
         remote_table:
           name: content
           schema: public
+array_relationships:
+  - name: referrer_metadata
+    using:
+      foreign_key_constraint_on:
+        column: resource_uri_hash
+        table:
+          name: other_nft_resources
+          schema: public

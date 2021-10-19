@@ -2,6 +2,9 @@ table:
   name: other_nft_resources
   schema: public
 object_relationships:
+  - name: metadata
+    using:
+      foreign_key_constraint_on: metadata_cid
   - name: resource
     using:
       manual_configuration:

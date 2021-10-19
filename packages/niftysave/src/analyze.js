@@ -1,7 +1,6 @@
 import * as Cluster from './cluster.js'
 import * as Cursor from './hasura/cursor.js'
 import * as Hasura from './hasura.js'
-import * as IPFS from './ipfs.js'
 import * as IPFSURL from './ipfs-url.js'
 import * as Result from './result.js'
 
@@ -10,10 +9,11 @@ import { fetchResource, timeout } from './net.js'
 
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
-import { printURL } from './util.js'
+import { printURL, iterate } from './util.js'
 import { script } from 'subprogram'
 import { setTimeout as sleep } from './timers.js'
-
+import * as Car from './car.js'
+import { NFTStorage } from 'nft.storage'
 export const main = async () => await spawn(await configure())
 
 /**
@@ -21,6 +21,7 @@ export const main = async () => await spawn(await configure())
  * @property {Hasura.Config} hasura
  * @property {import('./ipfs').Config} ipfs
  * @property {Cluster.Config} cluster
+ * @property {import('nft.storage/src/lib/interface').Service} nftStorage
  * @property {number} budget
  * @property {number} batchSize
  * @property {number} concurrency
@@ -64,7 +65,7 @@ const spawn = async (config) => {
 const readInto = async (writable, config) => {
   const writer = writable.getWriter()
   try {
-    let cursor = Cursor.init(new Date().toISOString())
+    let cursor = Cursor.init(new Date(0).toISOString())
 
     while (true) {
       console.log(
@@ -193,22 +194,27 @@ const analyzer = async (config, inbox) => {
     if (next.done) {
       break
     } else {
-      const result = await analyze(config, next.value)
+      const analysis = await analyze(config, next.value)
       console.log(
-        `💾 (${result.hash}) Update nft assets status to ${result.status}`
+        `💾 (${analysis.hash}) Update nft assets status to ${analysis.status}`
       )
-      await updateAsset(config, result)
-      console.log(`⏭ (${result.hash}) update complete, moving one`)
+      try {
+        await updateAsset(config, analysis)
+        console.log(`⏭ (${analysis.hash}) update complete, moving one`)
+      } catch (error) {
+        console.log('!!!!', analysis)
+        throw error
+      }
     }
   }
 }
 
 /**
- * @typedef {AnalyzeOk|AnalyzeError} AnalyzeResult
+ * @typedef {Failed|Parsed|Linked} Analysis
  *
  * @param {Config} config
  * @param {Asset} asset
- * @returns {Promise<AnalyzeResult>}
+ * @returns {Promise<Analysis>}
  */
 
 const analyze = async (config, asset) => {
@@ -233,7 +239,9 @@ const analyze = async (config, asset) => {
   ipfsURL && console.log(`🚀 (${hash}) Derived IPFS URL ${ipfsURL}`)
 
   console.log(
-    `🌐 (${hash}) Fetching token metadata from ${printURL(ipfsURL || url)}`
+    `🌐 (${hash}) Fetching token metadata from ${printURL(ipfsURL || url)} ${
+      config.fetchTimeout
+    }`
   )
 
   // Use exponentian backoff on network requests and retry several times before
@@ -267,7 +275,7 @@ const analyze = async (config, asset) => {
 
   console.log(`🔬 (${hash}) Parsing token metadata`)
 
-  const metadata = await Result.fromPromise(parseERC721Metadata(content.value))
+  const metadata = await Result.fromPromise(analyzeMetadata(content.value))
   if (!metadata.ok) {
     console.error(`🚨 (${hash}) Parse failed ${metadata.error}`)
 
@@ -276,6 +284,24 @@ const analyze = async (config, asset) => {
       status: 'ContentParseFailed',
       statusText: `${metadata.error}\n${metadata.error.stack}`,
       ipfsURL: ipfsURL,
+    }
+  }
+
+  console.log(`📌 (${hash}) Pin metadata to IPFS`)
+  const car = await Result.fromPromise(
+    NFTStorage.storeCar(config.nftStorage, metadata.value.car)
+  )
+
+  if (!car.ok) {
+    console.error(
+      `🚨 (${hash}) Pinning metadata failed ${car.error}, update status to parsed`
+    )
+    return {
+      hash,
+      status: 'Parsed',
+      statusText: `${car.error}\n${car.error.stack}`,
+      ipfsURL,
+      metadata: metadata.value,
     }
   }
 
@@ -293,41 +319,64 @@ const analyze = async (config, asset) => {
 /**
  * @param {Object} config
  * @param {Hasura.Config} config.hasura
- * @param {AnalyzeResult} state
+ * @param {Analysis} state
  */
-const updateAsset = async (config, state) =>
-  state.status === 'Linked'
-    ? linkAsset(config, state)
-    : failAsset(config, state)
+const updateAsset = async (config, state) => {
+  switch (state.status) {
+    case 'Linked':
+    case 'Parsed':
+      return linkAsset(config, state)
+    default:
+      return failAsset(config, state)
+  }
+}
 
 /**
- * @typedef {Object} AnalyzeOk
+ * @typedef {Object} Linked
  * @property {string} hash
  * @property {'Linked'} status
  * @property {string} statusText
  * @property {URL|null} ipfsURL
  * @property {Metadata} metadata
  *
+ * @typedef {Object} Parsed
+ * @property {string} hash
+ * @property {'Parsed'} status
+ * @property {string} statusText
+ * @property {URL|null} ipfsURL
+ * @property {Metadata} metadata
+ *
+ * @typedef {Object} ContentLinked
+ * @property {'ContentLinked'} status
+ * @property {string} statusText
+ * @property {string} cid
+ *
+ * @typedef {Object} PinRequestFailed
+ * @property {'PinRequestFailed'} status
+ * @property {string} statusText
+ *
  * @param {Object} config
  * @param {Hasura.Config} config.hasura
- * @param {AnalyzeOk} state
+ * @param {Parsed|Linked} state
  */
 const linkAsset = async (
   config,
-  { hash, statusText, ipfsURL, metadata: { cid, content, links } }
+  { hash, status, statusText, ipfsURL, metadata: { cid, dagSize, json, links } }
 ) => {
   const resources = links.map((url) => linkResource(cid, url))
 
-  const { link_nft_asset } = await Hasura.mutation(
+  const { parse_nft_asset } = await Hasura.mutation(
     config.hasura,
     {
-      link_nft_asset: [
+      parse_nft_asset: [
         {
           args: {
+            status,
             token_uri_hash: hash,
             status_text: statusText,
             ipfs_url: ipfsURL ? ipfsURL.href : null,
-            content_cid: cid,
+            metadata_cid: cid,
+            dag_size: dagSize,
             // note need to use variable to workaround
             // https://github.com/graphql-editor/graphql-zeus/issues/144
             metadata: Hasura.$`metadata`,
@@ -342,12 +391,12 @@ const linkAsset = async (
     },
     {
       variables: {
-        metadata: content,
+        metadata: json,
       },
     }
   )
 
-  return link_nft_asset
+  return parse_nft_asset
 }
 
 /**
@@ -370,7 +419,7 @@ const linkResource = (cid, uri) => ({
 })
 
 /**
- * @typedef {Object} AnalyzeError
+ * @typedef {Object} Failed
  * @property {string} hash
  * @property {'URIParseFailed'|'ContentFetchFailed'|'ContentParseFailed'} status
  * @property {string} statusText
@@ -378,7 +427,7 @@ const linkResource = (cid, uri) => ({
  *
  * @param {Object} config
  * @param {Hasura.Config} config.hasura
- * @param {AnalyzeError} state
+ * @param {Failed} state
  */
 const failAsset = async (config, { hash, status, statusText, ipfsURL }) => {
   const { fail_nft_asset } = await Hasura.mutation(config.hasura, {
@@ -404,17 +453,30 @@ const failAsset = async (config, { hash, status, statusText, ipfsURL }) => {
 /**
  * @typedef {Object} Metadata
  * @property {string} cid - CID for the metadata content.
- * @property {Object} content - actual JSON data.
+ * @property {number} dagSize
+ * @property {Object} json - actual JSON data.
  * @property {string[]} links
+ * @property {import('@ipld/car').CarReader} car
  *
  * @param {string} content
  * @returns {Promise<Metadata>}
  */
-const parseERC721Metadata = async (content) => {
+const analyzeMetadata = async (content) => {
   const json = JSON.parse(content)
 
-  const { cid } = await IPFS.importBlob(new Blob([content]))
+  // Note we use original source to keep the formatting so that CID will come
+  // out exactly the same.
+  const { root: cid, size: dagSize, car } = await Car.encodeJSON(json)
+  const links = extractOtherMetadataResources(json)
 
+  return { cid: cid.toString(), dagSize, links, json, car }
+}
+
+/**
+ * @param {object} json
+ * @returns {string[]}
+ */
+const extractOtherMetadataResources = (json) => {
   const urls = new Set()
 
   /** @type {Metadata} */
@@ -425,7 +487,7 @@ const parseERC721Metadata = async (content) => {
     }
   }
 
-  return { cid: cid.toString(), links: [...urls], content: json }
+  return [...urls]
 }
 
 /**
@@ -437,25 +499,6 @@ const tryParseURL = (input) => {
     return new URL(input)
   } catch (error) {
     return null
-  }
-}
-
-/**
- * @param {Object} data
- * @param {PropertyKey[]} [path]
- * @returns {Iterable<[string|number|boolean|null, PropertyKey[]]>}
- */
-const iterate = function* (data, path = []) {
-  if (Array.isArray(data)) {
-    for (const [index, element] of data) {
-      yield* iterate(element, [...path, index])
-    }
-  } else if (data && typeof data === 'object') {
-    for (const [key, value] of Object.entries(data)) {
-      yield* iterate(value, [...path, key])
-    }
-  } else {
-    yield [data, path]
   }
 }
 

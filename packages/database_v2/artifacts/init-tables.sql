@@ -87,19 +87,6 @@ CREATE TYPE nft_asset_status AS ENUM (
     --    ipfs_uri: string|null
     -- }
     'ContentParseFailed',
-    -- Resource that we failed to submit pin request for. If it has `ipfsURI`
-    -- we've send a request to a cluster asking to pin given cid and it may have
-    -- failed. If we could not derive ipfsURI we've tried fetching data and then
-    -- we've send it to ipfs cluster to add to the network and pin, but cluster
-    -- failed. It also maybe that cluster took too long to respond so we've
-    -- aborted request. In any case this indicates some issue with cluster.
-    -- {
-    --    status: 'PinRequestFailed'
-    --    token_uri: string, statusText: string
-    --    status_text: string
-    --    ipfs_uri: string|null
-    --  }
-    'PinRequestFailed',
     -- Asset was fetched, parsed and linked to a corresponding metadata record.
     -- It has `content_cid`  that cluster was asked to pin.
     -- {
@@ -121,7 +108,8 @@ CREATE TYPE pin_status AS ENUM (
 
 CREATE TYPE pin_service AS ENUM (
     'Pinata',
-    'IpfsCluster'
+    'IpfsCluster',
+    'IpfsCluster2'
 );
 
 -- A blochain block identified by a it's hash.
@@ -155,7 +143,6 @@ CREATE TABLE nft (
     -- Timestamp of when nft was minted.
     mint_time TIMESTAMP WITH TIME ZONE NOT NULL,
     -- Current owner of this nft. This changes over time.
-    nft_owner_id TEXT NOT NULL,
 
     -- Time when last this record was updated.
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,

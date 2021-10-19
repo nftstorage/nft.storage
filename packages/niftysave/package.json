@@ -11,6 +11,7 @@
     "ingest": "node ./src/ingest.js",
     "analyze": "node ./src/analyze.js",
     "pin": "node ./src/pin.js",
+    "pin-metadata": "node ./src/pin-metadata.js",
     "migrate-content": "node ./src/migrate/content.js",
     "migrate-erc721-import": "node ./src/migrate/erc721-import.js --batch-size 1",
     "migrate-erc721-import-by-nft": "node ./src/migrate/erc721-import-by-nft.js",
@@ -58,7 +59,8 @@
     "ipld-in-memory": "^8.0.0",
     "ipld-dag-pb": "^0.22.2",
     "ipld": "^0.30.2",
-    "multicodec": "^3.0.1"
+    "multicodec": "^3.0.1",
+    "ipfs-car": "^0.5.8"
   },
   "repository": {
     "type": "git",

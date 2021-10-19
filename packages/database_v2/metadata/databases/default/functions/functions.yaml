@@ -1,6 +1,7 @@
 - '!include public_fail_nft_asset.yaml'
 - '!include public_fail_resource.yaml'
 - '!include public_ingest_erc721_token.yaml'
-- '!include public_link_nft_asset.yaml'
 - '!include public_link_nft_resource.yaml'
 - '!include public_link_resource_content.yaml'
+- '!include public_parse_nft_asset.yaml'
+- '!include public_queue_resource.yaml'
