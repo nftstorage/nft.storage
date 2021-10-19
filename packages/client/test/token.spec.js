@@ -15,7 +15,7 @@ describe('token', () => {
     const form = Token.encode(inputWithImage)
     assert.ok(form instanceof FormData)
     assert.ok(form.has('image'))
-    assert.ok(form.get('meta'), JSON.stringify(input))
+    assert.equal(form.get('meta'), JSON.stringify(input))
   })
 
   it('should decode from /store repsonse object', () => {
