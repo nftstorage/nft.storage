@@ -19,9 +19,11 @@ heroku addons:create heroku-postgresql:premium-4 --app=nft-storage-prod --name=n
 heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging
 # ...run schema SQL from /packages/db/tables.sql
 # ...run schema SQL from /packages/db/cargo-fdw.sql
+# ...run schema SQL from /packages/db/functions.sql
 heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod
 # ...run schema SQL from /packages/db/tables.sql
 # ...run schema SQL from /packages/db/cargo-fdw.sql
+# ...run schema SQL from /packages/db/functions.sql
 
 # PostgREST ####################################################################
 
