@@ -20,8 +20,6 @@ describe('Blockstore CAR Reader', () => {
     const version = 1
     const roots = [block.cid]
     const bs = new MemoryBlockStore()
-    // TODO: remove when merged: https://github.com/web3-storage/ipfs-car/pull/95
-    bs.has = async cid => bs.store.has(cid.toString())
     await bs.put(block.cid, block.bytes)
     const car = new BlockstoreCarReader(version, roots, bs)
     assert.ok(await car.has(block.cid))

@@ -50,7 +50,7 @@
     "@web-std/file": "^1.1.3",
     "@web-std/form-data": "^2.1.1",
     "carbites": "^1.0.6",
-    "ipfs-car": "^0.5.8",
+    "ipfs-car": "^0.5.9",
     "multiformats": "^9.4.10",
     "p-retry": "^4.6.1",
     "streaming-iterables": "^6.0.0"
