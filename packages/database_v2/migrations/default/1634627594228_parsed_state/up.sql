@@ -20,7 +20,8 @@ SELECT metadata_cid,
        inserted_at,
        updated_at
 FROM nft_asset
-WHERE metadata_cid is not NULL;
+WHERE metadata_cid is not NULL --
+ON CONFLICT ON CONSTRAINT content_pkey DO NOTHING;
 
 -- Update all nft_assets to Parsed state
 
