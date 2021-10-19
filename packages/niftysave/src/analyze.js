@@ -9,7 +9,7 @@ import { fetchResource, timeout } from './net.js'
 
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
-import { printURL } from './util.js'
+import { printURL, iterate } from './util.js'
 import { script } from 'subprogram'
 import { setTimeout as sleep } from './timers.js'
 import * as Car from './car.js'
@@ -191,16 +191,20 @@ const analyzer = async (config, inbox) => {
   while (true) {
     console.log('📤 Pull nft asset from the queue')
     const next = await inbox.read()
-    console.log(next)
     if (next.done) {
       break
     } else {
-      const result = await analyze(config, next.value)
+      const analysis = await analyze(config, next.value)
       console.log(
-        `💾 (${result.hash}) Update nft assets status to ${result.status}`
+        `💾 (${analysis.hash}) Update nft assets status to ${analysis.status}`
       )
-      await updateAsset(config, result)
-      console.log(`⏭ (${result.hash}) update complete, moving one`)
+      try {
+        await updateAsset(config, analysis)
+        console.log(`⏭ (${analysis.hash}) update complete, moving one`)
+      } catch (error) {
+        console.log('!!!!', analysis)
+        throw error
+      }
     }
   }
 }
@@ -235,7 +239,9 @@ const analyze = async (config, asset) => {
   ipfsURL && console.log(`🚀 (${hash}) Derived IPFS URL ${ipfsURL}`)
 
   console.log(
-    `🌐 (${hash}) Fetching token metadata from ${printURL(ipfsURL || url)}`
+    `🌐 (${hash}) Fetching token metadata from ${printURL(ipfsURL || url)} ${
+      config.fetchTimeout
+    }`
   )
 
   // Use exponentian backoff on network requests and retry several times before
@@ -281,11 +287,15 @@ const analyze = async (config, asset) => {
     }
   }
 
+  console.log(`📌 (${hash}) Pin metadata to IPFS`)
   const car = await Result.fromPromise(
     NFTStorage.storeCar(config.nftStorage, metadata.value.car)
   )
 
   if (!car.ok) {
+    console.error(
+      `🚨 (${hash}) Pinning metadata failed ${car.error}, update status to parsed`
+    )
     return {
       hash,
       status: 'Parsed',
@@ -351,13 +361,7 @@ const updateAsset = async (config, state) => {
  */
 const linkAsset = async (
   config,
-  {
-    hash,
-    status,
-    statusText,
-    ipfsURL,
-    metadata: { cid, dagSize, content, links },
-  }
+  { hash, status, statusText, ipfsURL, metadata: { cid, dagSize, json, links } }
 ) => {
   const resources = links.map((url) => linkResource(cid, url))
 
@@ -387,7 +391,7 @@ const linkAsset = async (
     },
     {
       variables: {
-        metadata: content,
+        metadata: json,
       },
     }
   )
@@ -450,7 +454,7 @@ const failAsset = async (config, { hash, status, statusText, ipfsURL }) => {
  * @typedef {Object} Metadata
  * @property {string} cid - CID for the metadata content.
  * @property {number} dagSize
- * @property {Object} content - actual JSON data.
+ * @property {Object} json - actual JSON data.
  * @property {string[]} links
  * @property {import('@ipld/car').CarReader} car
  *
@@ -462,12 +466,17 @@ const analyzeMetadata = async (content) => {
 
   // Note we use original source to keep the formatting so that CID will come
   // out exactly the same.
-  const {
-    root: cid,
-    size: dagSize,
-    car,
-  } = await Car.fromBlob(new Blob([JSON.stringify(json)]))
+  const { root: cid, size: dagSize, car } = await Car.encodeJSON(json)
+  const links = extractOtherMetadataResources(json)
 
+  return { cid: cid.toString(), dagSize, links, json, car }
+}
+
+/**
+ * @param {object} json
+ * @returns {string[]}
+ */
+const extractOtherMetadataResources = (json) => {
   const urls = new Set()
 
   /** @type {Metadata} */
@@ -478,7 +487,7 @@ const analyzeMetadata = async (content) => {
     }
   }
 
-  return { cid: cid.toString(), dagSize, links: [...urls], content: json, car }
+  return [...urls]
 }
 
 /**
@@ -490,25 +499,6 @@ const tryParseURL = (input) => {
     return new URL(input)
   } catch (error) {
     return null
-  }
-}
-
-/**
- * @param {Object} data
- * @param {PropertyKey[]} [path]
- * @returns {Iterable<[string|number|boolean|null, PropertyKey[]]>}
- */
-const iterate = function* (data, path = []) {
-  if (Array.isArray(data)) {
-    for (const [index, element] of data) {
-      yield* iterate(element, [...path, index])
-    }
-  } else if (data && typeof data === 'object') {
-    for (const [key, value] of Object.entries(data)) {
-      yield* iterate(value, [...path, key])
-    }
-  } else {
-    yield [data, path]
   }
 }
 

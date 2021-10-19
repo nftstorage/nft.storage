@@ -114,7 +114,7 @@ const readInto = async (writable, config) => {
  * @typedef {Object} ParsedAsset
  * @property {string} token_uri_hash
  * @property {string} updated_at
- * @property {{content?:any}} metadata
+ * @property {{json?:any}} metadata
  */
 /**
  * Fetches batch of parsed nft assets and corresponding metadata from the
@@ -134,7 +134,7 @@ const fetchParsedAssets = async (config, cursor) => {
           status: {
             _eq: 'Linked',
           },
-          content_cid: {
+          metadata_cid: {
             _is_null: false,
           },
           updated_at: {
@@ -148,7 +148,7 @@ const fetchParsedAssets = async (config, cursor) => {
       {
         token_uri_hash: true,
         metadata: {
-          content: [{}, true],
+          json: [{}, true],
         },
         updated_at: true,
       },
@@ -216,13 +216,18 @@ const archive = async (config, asset) => {
 
   // Note we use original source to keep the formatting so that CID will come
   // out exactly the same.
-  const { car } = await Car.fromBlob(new Blob([JSON.stringify(metadata)]))
+  const { car } = await Car.encodeJSON(metadata.json)
 
+  console.log(`📌 (${hash}) Pin metadata to IPFS`)
   const pin = await Result.fromPromise(
     NFTStorage.storeCar(config.nftStorage, car)
   )
 
   if (!pin.ok) {
+    console.error(
+      `🚨 (${hash}) Pinning metadata failed ${pin.error}, set status to parsed`
+    )
+
     return {
       hash,
       status: 'Parsed',
