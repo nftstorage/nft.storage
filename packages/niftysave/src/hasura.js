@@ -51,6 +51,7 @@ class HasuraError extends Error {
    * @typedef {import('../gen/hasura/zeus/index').GraphQLError} GraphQLError
    *
    * @param {GraphQLError} error
+   * @returns {never}
    */
   static throw(error) {
     throw new HasuraError(error)
