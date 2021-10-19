@@ -1167,6 +1167,28 @@ export declare type ValueTypes = {
             },
             ValueTypes["resource"]
         ];
+        parse_nft_asset?: [
+            {
+                args: ValueTypes["parse_nft_asset_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["nft_asset_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["nft_asset_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["nft_asset_bool_exp"] | null;
+            },
+            ValueTypes["nft_asset"]
+        ];
+        queue_resource?: [
+            {
+                args: ValueTypes["queue_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
         update_blockchain_block?: [
             {
                 _inc?: ValueTypes["blockchain_block_inc_input"] | null; /** sets the columns of the filtered rows to the given values */
@@ -2508,6 +2530,15 @@ columns and relationships of "niftysave_migration" */
     };
     /** update columns of table "other_nft_resources" */
     ["other_nft_resources_update_column"]: other_nft_resources_update_column;
+    ["parse_nft_asset_args"]: {
+        dag_size?: ValueTypes["bigint"] | null;
+        ipfs_url?: string | null;
+        metadata?: ValueTypes["jsonb"] | null;
+        metadata_cid?: string | null;
+        status?: ValueTypes["nft_asset_status"] | null;
+        status_text?: string | null;
+        token_uri_hash?: string | null;
+    };
     /** columns and relationships of "pin" */
     ["pin"]: AliasType<{
         /** An object relationship */
@@ -3092,6 +3123,11 @@ columns and relationships of "niftysave_migration" */
         }, ValueTypes["resource"]];
         __typename?: true;
     }>;
+    ["queue_resource_args"]: {
+        content_cid?: string | null;
+        ipfs_url?: string | null;
+        uri?: string | null;
+    };
     /** columns and relationships of "resource" */
     ["resource"]: AliasType<{
         /** An object relationship */
@@ -4130,6 +4166,10 @@ export declare type ModelTypes = {
         link_nft_resource: ModelTypes["resource"][];
         /** execute VOLATILE function "link_resource_content" which returns "resource" */
         link_resource_content: ModelTypes["resource"][];
+        /** execute VOLATILE function "parse_nft_asset" which returns "nft_asset" */
+        parse_nft_asset: ModelTypes["nft_asset"][];
+        /** execute VOLATILE function "queue_resource" which returns "resource" */
+        queue_resource: ModelTypes["resource"][];
         /** update data of the table: "blockchain_block" */
         update_blockchain_block?: ModelTypes["blockchain_block_mutation_response"];
         /** update single row of the table: "blockchain_block" */
@@ -4747,6 +4787,7 @@ columns and relationships of "niftysave_migration" */
     ["other_nft_resources_set_input"]: GraphQLTypes["other_nft_resources_set_input"];
     /** update columns of table "other_nft_resources" */
     ["other_nft_resources_update_column"]: GraphQLTypes["other_nft_resources_update_column"];
+    ["parse_nft_asset_args"]: GraphQLTypes["parse_nft_asset_args"];
     /** columns and relationships of "pin" */
     ["pin"]: {
         /** An object relationship */
@@ -4966,6 +5007,7 @@ columns and relationships of "niftysave_migration" */
         /** fetch data from the table: "resource" using primary key columns */
         resource_by_pk?: ModelTypes["resource"];
     };
+    ["queue_resource_args"]: GraphQLTypes["queue_resource_args"];
     /** columns and relationships of "resource" */
     ["resource"]: {
         /** An object relationship */
@@ -5993,6 +6035,10 @@ export declare type GraphQLTypes = {
         link_nft_resource: Array<GraphQLTypes["resource"]>;
         /** execute VOLATILE function "link_resource_content" which returns "resource" */
         link_resource_content: Array<GraphQLTypes["resource"]>;
+        /** execute VOLATILE function "parse_nft_asset" which returns "nft_asset" */
+        parse_nft_asset: Array<GraphQLTypes["nft_asset"]>;
+        /** execute VOLATILE function "queue_resource" which returns "resource" */
+        queue_resource: Array<GraphQLTypes["resource"]>;
         /** update data of the table: "blockchain_block" */
         update_blockchain_block?: GraphQLTypes["blockchain_block_mutation_response"];
         /** update single row of the table: "blockchain_block" */
@@ -7070,6 +7116,15 @@ columns and relationships of "niftysave_migration" */
     };
     /** update columns of table "other_nft_resources" */
     ["other_nft_resources_update_column"]: other_nft_resources_update_column;
+    ["parse_nft_asset_args"]: {
+        dag_size?: GraphQLTypes["bigint"];
+        ipfs_url?: string;
+        metadata?: GraphQLTypes["jsonb"];
+        metadata_cid?: string;
+        status?: GraphQLTypes["nft_asset_status"];
+        status_text?: string;
+        token_uri_hash?: string;
+    };
     /** columns and relationships of "pin" */
     ["pin"]: {
         __typename: "pin";
@@ -7407,6 +7462,11 @@ columns and relationships of "niftysave_migration" */
         resource_aggregate: GraphQLTypes["resource_aggregate"];
         /** fetch data from the table: "resource" using primary key columns */
         resource_by_pk?: GraphQLTypes["resource"];
+    };
+    ["queue_resource_args"]: {
+        content_cid?: string;
+        ipfs_url?: string;
+        uri?: string;
     };
     /** columns and relationships of "resource" */
     ["resource"]: {
@@ -8859,6 +8919,28 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             },
             ValueTypes["resource"]
         ];
+        parse_nft_asset?: [
+            {
+                args: ValueTypes["parse_nft_asset_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["nft_asset_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["nft_asset_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["nft_asset_bool_exp"] | null;
+            },
+            ValueTypes["nft_asset"]
+        ];
+        queue_resource?: [
+            {
+                args: ValueTypes["queue_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
         update_blockchain_block?: [
             {
                 _inc?: ValueTypes["blockchain_block_inc_input"] | null; /** sets the columns of the filtered rows to the given values */
@@ -9208,6 +9290,10 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         link_nft_resource: Array<GraphQLTypes["resource"]>;
         /** execute VOLATILE function "link_resource_content" which returns "resource" */
         link_resource_content: Array<GraphQLTypes["resource"]>;
+        /** execute VOLATILE function "parse_nft_asset" which returns "nft_asset" */
+        parse_nft_asset: Array<GraphQLTypes["nft_asset"]>;
+        /** execute VOLATILE function "queue_resource" which returns "resource" */
+        queue_resource: Array<GraphQLTypes["resource"]>;
         /** update data of the table: "blockchain_block" */
         update_blockchain_block?: GraphQLTypes["blockchain_block_mutation_response"];
         /** update single row of the table: "blockchain_block" */
@@ -10482,6 +10568,28 @@ export declare const Chain: (...options: chainOptions) => {
             },
             ValueTypes["resource"]
         ];
+        parse_nft_asset?: [
+            {
+                args: ValueTypes["parse_nft_asset_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["nft_asset_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["nft_asset_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["nft_asset_bool_exp"] | null;
+            },
+            ValueTypes["nft_asset"]
+        ];
+        queue_resource?: [
+            {
+                args: ValueTypes["queue_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
         update_blockchain_block?: [
             {
                 _inc?: ValueTypes["blockchain_block_inc_input"] | null; /** sets the columns of the filtered rows to the given values */
@@ -10831,6 +10939,10 @@ export declare const Chain: (...options: chainOptions) => {
         link_nft_resource: Array<GraphQLTypes["resource"]>;
         /** execute VOLATILE function "link_resource_content" which returns "resource" */
         link_resource_content: Array<GraphQLTypes["resource"]>;
+        /** execute VOLATILE function "parse_nft_asset" which returns "nft_asset" */
+        parse_nft_asset: Array<GraphQLTypes["nft_asset"]>;
+        /** execute VOLATILE function "queue_resource" which returns "resource" */
+        queue_resource: Array<GraphQLTypes["resource"]>;
         /** update data of the table: "blockchain_block" */
         update_blockchain_block?: GraphQLTypes["blockchain_block_mutation_response"];
         /** update single row of the table: "blockchain_block" */
@@ -12016,6 +12128,28 @@ export declare const Selectors: {
         link_resource_content?: [
             {
                 args: ValueTypes["link_resource_content_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
+        parse_nft_asset?: [
+            {
+                args: ValueTypes["parse_nft_asset_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["nft_asset_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["nft_asset_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["nft_asset_bool_exp"] | null;
+            },
+            ValueTypes["nft_asset"]
+        ];
+        queue_resource?: [
+            {
+                args: ValueTypes["queue_resource_args"]; /** distinct select on columns */
                 distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
                 limit?: number | null; /** skip the first n rows. Use only with order_by */
                 offset?: number | null; /** sort the rows by one or more columns */
@@ -13381,6 +13515,28 @@ export declare const Gql: {
             },
             ValueTypes["resource"]
         ];
+        parse_nft_asset?: [
+            {
+                args: ValueTypes["parse_nft_asset_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["nft_asset_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["nft_asset_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["nft_asset_bool_exp"] | null;
+            },
+            ValueTypes["nft_asset"]
+        ];
+        queue_resource?: [
+            {
+                args: ValueTypes["queue_resource_args"]; /** distinct select on columns */
+                distinct_on?: ValueTypes["resource_select_column"][]; /** limit the number of rows returned */
+                limit?: number | null; /** skip the first n rows. Use only with order_by */
+                offset?: number | null; /** sort the rows by one or more columns */
+                order_by?: ValueTypes["resource_order_by"][]; /** filter the rows returned */
+                where?: ValueTypes["resource_bool_exp"] | null;
+            },
+            ValueTypes["resource"]
+        ];
         update_blockchain_block?: [
             {
                 _inc?: ValueTypes["blockchain_block_inc_input"] | null; /** sets the columns of the filtered rows to the given values */
@@ -13730,6 +13886,10 @@ export declare const Gql: {
         link_nft_resource: Array<GraphQLTypes["resource"]>;
         /** execute VOLATILE function "link_resource_content" which returns "resource" */
         link_resource_content: Array<GraphQLTypes["resource"]>;
+        /** execute VOLATILE function "parse_nft_asset" which returns "nft_asset" */
+        parse_nft_asset: Array<GraphQLTypes["nft_asset"]>;
+        /** execute VOLATILE function "queue_resource" which returns "resource" */
+        queue_resource: Array<GraphQLTypes["resource"]>;
         /** update data of the table: "blockchain_block" */
         update_blockchain_block?: GraphQLTypes["blockchain_block_mutation_response"];
         /** update single row of the table: "blockchain_block" */

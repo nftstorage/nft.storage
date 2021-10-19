@@ -2505,6 +2505,82 @@ export const AllTypesProps = {
                 required: false
             }
         },
+        parse_nft_asset: {
+            args: {
+                type: "parse_nft_asset_args",
+                array: false,
+                arrayRequired: false,
+                required: true
+            },
+            distinct_on: {
+                type: "nft_asset_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "nft_asset_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "nft_asset_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
+        queue_resource: {
+            args: {
+                type: "queue_resource_args",
+                array: false,
+                arrayRequired: false,
+                required: true
+            },
+            distinct_on: {
+                type: "resource_select_column",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            limit: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            offset: {
+                type: "Int",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            order_by: {
+                type: "resource_order_by",
+                array: true,
+                arrayRequired: false,
+                required: true
+            },
+            where: {
+                type: "resource_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: false
+            }
+        },
         update_blockchain_block: {
             _inc: {
                 type: "blockchain_block_inc_input",
@@ -5617,6 +5693,50 @@ export const AllTypesProps = {
         }
     },
     other_nft_resources_update_column: "enum",
+    parse_nft_asset_args: {
+        dag_size: {
+            type: "bigint",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        ipfs_url: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        metadata: {
+            type: "jsonb",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        metadata_cid: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        status: {
+            type: "nft_asset_status",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        status_text: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        token_uri_hash: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
     pin_aggregate_fields: {
         count: {
             columns: {
@@ -7210,6 +7330,26 @@ export const AllTypesProps = {
                 arrayRequired: false,
                 required: true
             }
+        }
+    },
+    queue_resource_args: {
+        content_cid: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        ipfs_url: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
+        },
+        uri: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: false
         }
     },
     resource: {
@@ -9042,6 +9182,8 @@ export const ReturnTypes = {
         insert_resource_one: "resource",
         link_nft_resource: "resource",
         link_resource_content: "resource",
+        parse_nft_asset: "nft_asset",
+        queue_resource: "resource",
         update_blockchain_block: "blockchain_block_mutation_response",
         update_blockchain_block_by_pk: "blockchain_block",
         update_blockchain_contract: "blockchain_contract_mutation_response",
