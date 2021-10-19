@@ -1,4 +1,0 @@
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- ALTER TABLE nft_metadata ADD
--- FOREIGN KEY (image_uri_hash) REFERENCES resource(uri_hash);

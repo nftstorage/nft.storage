@@ -15,17 +15,17 @@ object_relationships:
         name: resource
         schema: public
 array_relationships:
-- name: nft_assets
-  using:
-    foreign_key_constraint_on:
-      column: metadata_cid
-      table:
-        name: nft_asset
-        schema: public
-- name: other_nft_resources
+- name: other_resources
   using:
     foreign_key_constraint_on:
       column: metadata_cid
       table:
         name: other_nft_resources
+        schema: public
+- name: referrer_nft_assets
+  using:
+    foreign_key_constraint_on:
+      column: metadata_cid
+      table:
+        name: nft_asset
         schema: public

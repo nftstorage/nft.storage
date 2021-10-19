@@ -2,6 +2,15 @@ table:
   name: nft_asset
   schema: public
 object_relationships:
+- name: content
+  using:
+    manual_configuration:
+      column_mapping:
+        metadata_cid: cid
+      insertion_order: null
+      remote_table:
+        name: content
+        schema: public
 - name: metadata
   using:
     manual_configuration:

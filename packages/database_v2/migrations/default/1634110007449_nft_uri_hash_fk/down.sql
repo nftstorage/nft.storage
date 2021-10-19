@@ -1,4 +1,0 @@
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- ALTER TABLE nft ADD
--- FOREIGN KEY (token_uri_hash) REFERENCES nft_asset(token_uri_hash);
