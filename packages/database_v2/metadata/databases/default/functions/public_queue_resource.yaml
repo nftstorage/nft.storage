@@ -1,0 +1,5 @@
+function:
+  name: queue_resource
+  schema: public
+configuration:
+  exposed_as: mutation

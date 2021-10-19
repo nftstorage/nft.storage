@@ -12,7 +12,7 @@ ALTER TABLE other_nft_resources RENAME COLUMN content_cid to metadata_cid;
 DROP FUNCTION link_nft_asset;
 
 
-CREATE FUNCTION queue_resource (--
+CREATE OR REPLACE FUNCTION queue_resource (--
  uri resource.uri % TYPE, --
  ipfs_url resource.ipfs_url % TYPE DEFAULT NULL, --
  content_cid resource.content_cid % TYPE DEFAULT NULL) RETURNS
@@ -37,8 +37,8 @@ BEGIN
 
   RETURN QUERY
     SELECT *
-    FROM nft_asset
-    WHERE nft_asset.token_uri_hash = hash;
+    FROM resource
+    WHERE resource.uri_hash = hash;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -78,7 +78,7 @@ BEGIN
   IF image_uri IS NOT NULL THEN
     SELECT uri_hash
     INTO image_uri_hash
-    FROM queue_resource(uri, status_text);
+    FROM queue_resource(image_uri, status_text);
   END IF;
   
   -- Create metadata content record unless already exists.
