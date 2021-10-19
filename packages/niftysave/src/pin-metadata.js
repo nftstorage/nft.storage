@@ -132,7 +132,7 @@ const fetchParsedAssets = async (config, cursor) => {
       {
         where: {
           status: {
-            _eq: 'Linked',
+            _eq: 'Parsed',
           },
           metadata_cid: {
             _is_null: false,
