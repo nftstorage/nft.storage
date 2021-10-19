@@ -234,7 +234,7 @@ class NFTStorage {
     validateERC1155(input)
     const blockstore = new Blockstore()
     try {
-      const token = await Token.encode(input, blockstore)
+      const token = await Token.Token.fromTokenInput(input, { blockstore })
       onRootCidReady && onRootCidReady(token.ipnft)
       const car = new BlockstoreCarReader(
         1,

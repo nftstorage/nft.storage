@@ -4,7 +4,7 @@ import * as Block from 'multiformats/block'
 import { sha256 } from 'multiformats/hashes/sha2'
 import * as dagCbor from '@ipld/dag-cbor'
 import * as API from './lib/interface.js'
-import { Blob } from './platform.js'
+import { Blob, FormData, Blockstore } from './platform.js'
 import { toGatewayURL, GATEWAY } from './gateway.js'
 
 /**
@@ -61,6 +61,96 @@ export class Token {
    */
   static embed({ data }) {
     return embed(data, { gateway: GATEWAY })
+  }
+
+  /**
+   * Takes token input and encodes it into a Token object. Where values are
+   * discovered `Blob` (or `File`) objects in the given input, they are replaced
+   * with IPFS URLs (an `ipfs://` prefixed CID with an optional path).
+   *
+   * The passed blockstore is used to store the DAG that is created. The root CID
+   * of which is `token.ipnft`.
+   *
+   * @example
+   * ```js
+   * const cat = new File([], 'cat.png')
+   * const kitty = new File([], 'kitty.png')
+   * const token = await Token.fromTokenInput({
+   *   name: 'hello'
+   *   image: cat
+   *   properties: {
+   *     extra: {
+   *       image: kitty
+   *     }
+   *   }
+   * }, blockstore)
+   * ```
+   *
+   * @template {API.TokenInput} T
+   * @param {API.Encoded<T, [[Blob, Blob]]>} input
+   * @param {object} [options]
+   * @param {Blockstore} [options.blockstore]
+   * @returns {Promise<API.Token<T>>}
+   */
+  static async fromTokenInput(input, options = {}) {
+    const blockstore = options.blockstore || new Blockstore()
+    try {
+      const [blobs, meta] = mapValueWith(input, isBlob, encodeBlob, new Map(), [])
+      /** @type {API.Encoded<T, [[Blob, URL]]>} */
+      const data = JSON.parse(JSON.stringify(meta))
+      /** @type {API.Encoded<T, [[Blob, CID]]>} */
+      const dag = JSON.parse(JSON.stringify(meta))
+
+      for (const [dotPath, blob] of blobs.entries()) {
+        /** @type {string|undefined} */
+        // @ts-ignore blob may be a File!
+        const name = blob.name || 'blob'
+        const { root: cid } = await pack({
+          // @ts-ignore
+          input: [{ path: name, content: blob.stream() }],
+          blockstore,
+          wrapWithDirectory: true,
+        })
+
+        const href = new URL(`ipfs://${cid}/${name}`)
+        const path = dotPath.split('.')
+        setIn(data, path, href)
+        setIn(dag, path, cid)
+      }
+
+      const { root: metadataJsonCid } = await pack({
+        // @ts-ignore
+        input: [
+          {
+            path: 'metadata.json',
+            content: new Blob([JSON.stringify(data)]).stream(),
+          },
+        ],
+        blockstore,
+        wrapWithDirectory: false,
+      })
+
+      const block = await Block.encode({
+        value: {
+          ...dag,
+          'metadata.json': metadataJsonCid,
+          type: 'nft',
+        },
+        codec: dagCbor,
+        hasher: sha256,
+      })
+      await blockstore.put(block.cid, block.bytes)
+
+      return new Token(
+        block.cid.toString(),
+        `ipfs://${block.cid}/metadata.json`,
+        data
+      )
+    } finally {
+      if (!options.blockstore) {
+        await blockstore.close()
+      }
+    }
   }
 }
 
@@ -119,18 +209,21 @@ const isEncodedURL = (value, assetPaths, path) =>
   typeof value === 'string' && assetPaths.has(path.join('.'))
 
 /**
- * Takes token input and encodes it into a Token object. Where values are
- * discovered `Blob` (or `File`) objects in the given input, they are replaced
- * with IPFS URLs (an `ipfs://` prefixed CID with an optional path).
- *
- * The passed blockstore is used to store the DAG that is created. The root CID
- * of which is `token.ipnft`.
+ * Takes token input and encodes it into
+ * [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData)
+ * object where form field values are discovered `Blob` (or `File`) objects in
+ * the given token and field keys are `.` joined paths where they were discoverd
+ * in the token. Additionally encoded `FormData` will also have a field
+ * named `meta` containing JSON serialized token with blobs and file values
+ * `null` set to null (this allows backend to injest all of the files from
+ * `multipart/form-data` request and update provided "meta" data with
+ * corresponding file ipfs:// URLs)
  *
  * @example
  * ```js
  * const cat = new File([], 'cat.png')
  * const kitty = new File([], 'kitty.png')
- * const token = await encode({
+ * const form = encode({
  *   name: 'hello'
  *   image: cat
  *   properties: {
@@ -138,66 +231,33 @@ const isEncodedURL = (value, assetPaths, path) =>
  *       image: kitty
  *     }
  *   }
- * }, blockstore)
+ * })
+ * [...form.entries()] //>
+ * // [
+ * //   ['image', cat],
+ * //   ['properties.extra.image', kitty],
+ * //   ['meta', '{"name":"hello",image:null,"properties":{"extra":{"kitty": null}}}']
+ * // ]
  * ```
  *
  * @template {TokenInput} T
  * @param {EncodedBlobBlob<T>} input
- * @param {Blockstore} blockstore
- * @returns {Promise<Token<T>>}
+ * @returns {FormData}
  */
-export const encode = async (input, blockstore) => {
-  const [blobs, meta] = mapValueWith(input, isBlob, encodeBlob, new Map(), [])
-  /** @type {API.Encoded<T, [[Blob, URL]]>} */
-  const data = JSON.parse(JSON.stringify(meta))
-  /** @type {API.Encoded<T, [[Blob, CID]]>} */
-  const dag = JSON.parse(JSON.stringify(meta))
-
-  for (const [dotPath, blob] of blobs.entries()) {
-    /** @type {string|undefined} */
-    // @ts-ignore blob may be a File!
-    const name = blob.name || 'blob'
-    const { root: cid } = await pack({
-      // @ts-ignore
-      input: [{ path: name, content: blob.stream() }],
-      blockstore,
-      wrapWithDirectory: true,
-    })
-
-    const href = new URL(`ipfs://${cid}/${name}`)
-    const path = dotPath.split('.')
-    setIn(data, path, href)
-    setIn(dag, path, cid)
-  }
-
-  const { root: metadataJsonCid } = await pack({
-    // @ts-ignore
-    input: [
-      {
-        path: 'metadata.json',
-        content: new Blob([JSON.stringify(data)]).stream(),
-      },
-    ],
-    blockstore,
-    wrapWithDirectory: false,
-  })
-
-  const block = await Block.encode({
-    value: {
-      ...dag,
-      'metadata.json': metadataJsonCid,
-      type: 'nft',
-    },
-    codec: dagCbor,
-    hasher: sha256,
-  })
-  await blockstore.put(block.cid, block.bytes)
-
-  return new Token(
-    block.cid.toString(),
-    `ipfs://${block.cid}/metadata.json`,
-    data
+ export const encode = (input) => {
+  const [map, meta] = mapValueWith(
+    input,
+    isBlob,
+    encodeBlob,
+    new Map(),
+    []
   )
+  const form = new FormData()
+  for (const [k, v] of map.entries()) {
+    form.set(k, v)
+  }
+  form.set('meta', JSON.stringify(meta))
+  return form
 }
 
 /**
