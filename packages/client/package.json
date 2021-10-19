@@ -36,7 +36,8 @@
     "build:cjs": "rollup --config rollup.config.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && npx codecov",
     "typedoc": "typedoc src/lib.js  --out ../../docs/client",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "prepare": "tsc --build"
   },
   "dependencies": {
     "@web-std/blob": "^2.1.0",
