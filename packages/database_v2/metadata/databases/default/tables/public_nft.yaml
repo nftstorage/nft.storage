@@ -2,17 +2,17 @@ table:
   name: nft
   schema: public
 object_relationships:
-- name: contract
-  using:
-    foreign_key_constraint_on: contract_id
-- name: nft_asset
-  using:
-    foreign_key_constraint_on: token_uri_hash
+  - name: contract
+    using:
+      foreign_key_constraint_on: contract_id
+  - name: nft_asset
+    using:
+      foreign_key_constraint_on: token_uri_hash
 array_relationships:
-- name: referrer_blocks
-  using:
-    foreign_key_constraint_on:
-      column: nft_id
-      table:
-        name: nfts_by_blockchain_blocks
-        schema: public
+  - name: referrer_blocks
+    using:
+      foreign_key_constraint_on:
+        column: nft_id
+        table:
+          name: nfts_by_blockchain_blocks
+          schema: public

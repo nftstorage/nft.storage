@@ -2,10 +2,10 @@ table:
   name: blockchain_block
   schema: public
 array_relationships:
-- name: nfts
-  using:
-    foreign_key_constraint_on:
-      column: blockchain_block_hash
-      table:
-        name: nfts_by_blockchain_blocks
-        schema: public
+  - name: nfts
+    using:
+      foreign_key_constraint_on:
+        column: blockchain_block_hash
+        table:
+          name: nfts_by_blockchain_blocks
+          schema: public
