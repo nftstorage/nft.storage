@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.7.3](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.7.2...api-v2.7.3) (2021-10-20)
+
+
+### Bug Fixes
+
+* disallow delete another users key ([#641](https://www.github.com/ipfs-shipyard/nft.storage/issues/641)) ([f53c223](https://www.github.com/ipfs-shipyard/nft.storage/commit/f53c22318fabc9447f8427eff991220c5b865107))
+* pin list filtering by status ([#640](https://www.github.com/ipfs-shipyard/nft.storage/issues/640)) ([612c824](https://www.github.com/ipfs-shipyard/nft.storage/commit/612c82440ff70ebe29ebd5deec1e4dd4a9d0009d))
+
 ### [2.7.2](https://www.github.com/ipfs-shipyard/nft.storage/compare/api-v2.7.1...api-v2.7.2) (2021-10-15)
 
 
