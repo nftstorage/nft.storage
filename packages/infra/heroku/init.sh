@@ -87,6 +87,14 @@ heroku certs:auto:enable --app=nft-storage-pgrest-prod
 heroku pg:credentials:create nft-storage-staging-0 --name=dagcargo --app=nft-storage-staging
 heroku pg:credentials:create nft-storage-prod-0 --name=dagcargo --app=nft-storage-prod
 
-# Grant privileges to dagcargo user
+# Grant RO privileges to dagcargo user
 heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging < grant-dagcargo.sql
 heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod < grant-dagcargo.sql
+
+# stats ########################################################################
+
+# Add stats user for ad-hoc reporting (only needs production access)
+heroku pg:credentials:create nft-storage-prod-0 --name=stats --app=nft-storage-prod
+
+# Grant RO privileges to stats user
+heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod < grant-stats.sql
