@@ -91,9 +91,9 @@ r.add(
 
 /**
  * Apply Pinning Services API Middleware
- * @param {import('./utils/router.js').Handler<import('./bindings.js').RouteContext>} handler
+ * @param {import('./bindings').Handler} handler
  * @param {import('./middleware/maintenance').Mode} mode
- * @returns {import('./utils/router.js').Handler<import('./bindings.js').RouteContext>}
+ * @returns {import('./bindings').Handler}
  */
 const psa = (handler, mode) => withPsaErrorHandler(withMode(handler, mode))
 
