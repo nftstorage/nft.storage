@@ -43,7 +43,7 @@ describe('DB Client', () => {
       userId: client.userId,
     })
 
-    await client.client.deleteKey(key2.id)
+    await client.client.deleteKey(client.userId, key2.id)
 
     const user = await client.client.getUser(client.githubId)
 

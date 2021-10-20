@@ -368,9 +368,10 @@ export class DBClient {
   /**
    * Delete auth key
    *
+   * @param {number} userId
    * @param {number} id
    */
-  async deleteKey(id) {
+  async deleteKey(userId, id) {
     /** @type {PostgrestQueryBuilder<definitions['auth_key']>} */
     const query = this.client.from('auth_key')
 
@@ -380,7 +381,7 @@ export class DBClient {
         deleted_at: date,
         updated_at: date,
       })
-      .match({ id })
+      .match({ id, user_id: userId })
       .single()
 
     if (error) {

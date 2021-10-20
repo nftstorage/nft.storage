@@ -145,11 +145,11 @@ export const fixtures = {
       batchRootCid: 'bafybeifaow2p3qrzndvr4dzvms7fun3e3bijuwkwrmzou4zupatyennufy'
     },
     {
-      status: 'published',
-      lastChanged: '2021-10-14T22:31:02.522689+00:00',
+      status: 'terminated',
+      lastChanged: '2021-10-15T23:12:39.039922+00:00',
       chainDealID: 2596819,
       datamodelSelector: 'Links/19/Hash/Links/824/Hash/Links/13/Hash',
-      statusText: null,
+      statusText: 'containing sector missed expected sealing epoch 1201027',
       dealActivation: '2021-10-15T22:33:30+00:00',
       dealExpiration: '2023-03-09T22:33:30+00:00',
       miner: 'f010446',
