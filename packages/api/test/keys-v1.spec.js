@@ -106,7 +106,7 @@ describe('V1 - Auth Keys', () => {
     })
   })
 
-  it('should not list deleted a keys', async () => {
+  it('should not list deleted keys', async () => {
     const client = await createClientWithUser()
     const res1 = await fetch(`internal/tokens`, {
       method: 'POST',
@@ -139,5 +139,63 @@ describe('V1 - Auth Keys', () => {
 
     assert.equal(value.length, 2, 'should only have the default key and key1')
     assert.equal(value[1].name, 'test-key-1')
+  })
+
+  it('should not be able to delete another user\'s key', async () => {
+    const client0 = await createClientWithUser()
+    const client1 = await createClientWithUser()
+
+    const resCreate = await fetch(`internal/tokens`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client0.token}` },
+      body: JSON.stringify({ name: 'test-key-1' }),
+    })
+    const key = await resCreate.json()
+    assert.ok(resCreate.ok, 'create key')
+
+    // client1 should NOT be able to delete client0's key
+    const resDelete = await fetch(`internal/tokens`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${client1.token}` },
+      body: JSON.stringify({ id: key.value.id }),
+    })
+    const deleteData = await resDelete.json()
+    assert.ok(!deleteData.ok)
+
+    const resList = await fetch(`internal/tokens`, {
+      headers: { Authorization: `Bearer ${client0.token}` },
+    })
+    const { ok, value } = await resList.json()
+
+    assert.equal(value.length, 2, 'should still have the default key and key1')
+    assert.equal(value[1].name, 'test-key-1')
+  })
+
+  it('should not delete a deleted key', async () => {
+    const client = await createClientWithUser()
+
+    const resCreate = await fetch(`internal/tokens`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: JSON.stringify({ name: 'test-key-1' }),
+    })
+    const key = await resCreate.json()
+    assert.ok(resCreate.ok, 'create key')
+
+    let resDelete = await fetch(`internal/tokens`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: JSON.stringify({ id: key.value.id }),
+    })
+    let deleteData = await resDelete.json()
+    assert.ok(deleteData.ok)
+
+    resDelete = await fetch(`internal/tokens`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: JSON.stringify({ id: key.value.id }),
+    })
+    deleteData = await resDelete.json()
+    assert.ok(!deleteData.ok)
   })
 })
