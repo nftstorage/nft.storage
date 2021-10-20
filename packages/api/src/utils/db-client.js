@@ -382,6 +382,7 @@ export class DBClient {
         updated_at: date,
       })
       .match({ id, user_id: userId })
+      .is('deleted_at', null)
       .single()
 
     if (error) {
