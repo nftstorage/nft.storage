@@ -1,13 +1,13 @@
 import { validate } from '../utils/auth-v1.js'
 import { JSONResponse } from '../utils/json-response.js'
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export const tokensDeleteV1 = async (event, ctx) => {
-  const { user, db } = await validate(event, ctx)
+  const { user } = await validate(event, ctx)
   const body = await event.request.json()
 
   if (body.id) {
-    await db.deleteKey(user.id, body.id)
+    await ctx.db.deleteKey(user.id, body.id)
   } else {
     throw new Error('Token id is required.')
   }

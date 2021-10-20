@@ -4,9 +4,9 @@ import { validate } from '../utils/auth-v1.js'
 import { parseCidPinning } from '../utils/utils.js'
 import { toPinsResponse } from '../utils/db-transforms.js'
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function pinsAddV1(event, ctx) {
-  const { db, user, key } = await validate(event, ctx)
+  const { user, key } = await validate(event, ctx)
 
   /** @type {import('../bindings').PinsAddInput} */
   const pinData = await event.request.json()
@@ -53,7 +53,7 @@ export async function pinsAddV1(event, ctx) {
     metadata: pinData.meta,
   })
 
-  const upload = await db.createUpload({
+  const upload = await ctx.db.createUpload({
     type: 'Remote',
     content_cid: cid.contentCid,
     source_cid: cid.sourceCid,

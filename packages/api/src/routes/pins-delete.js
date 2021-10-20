@@ -3,7 +3,7 @@ import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
 import { validate } from '../utils/auth.js'
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function pinsDelete(event, ctx) {
   const { params } = ctx
   const { user } = await validate(event, ctx)

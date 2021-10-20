@@ -16,9 +16,9 @@ const validator = new Validator({
   },
 })
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function nftListV1(event, ctx) {
-  const { user, db } = await validate(event, ctx)
+  const { user } = await validate(event, ctx)
   const { searchParams } = new URL(event.request.url)
   const options = {
     limit: searchParams.get('limit')
@@ -32,7 +32,7 @@ export async function nftListV1(event, ctx) {
     throw new HTTPError('invalid params', 400)
   }
 
-  const nfts = await db.listUploads(user.id, options)
+  const nfts = await ctx.db.listUploads(user.id, options)
 
   return new JSONResponse({
     ok: true,

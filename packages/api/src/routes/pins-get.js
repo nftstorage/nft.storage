@@ -5,7 +5,7 @@ import * as nfts from '../models/nfts.js'
 import * as pins from '../models/pins.js'
 import * as cluster from '../cluster.js'
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function pinsGet(event, ctx) {
   const { params } = ctx
   const { user } = await validate(event, ctx)

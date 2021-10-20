@@ -15,11 +15,11 @@ const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
  * @typedef {import('@nftstorage/ipfs-cluster').API.StatusResponse} StatusResponse
  */
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function uploadV1(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
-  const { user, key, db } = await validate(event, ctx)
+  const { user, key } = await validate(event, ctx)
 
   /** @type {import('../utils/db-client-types').UploadOutput} */
   let upload
@@ -40,7 +40,7 @@ export async function uploadV1(event, ctx) {
 
     sourceCid = cid
 
-    upload = await db.createUpload({
+    upload = await ctx.db.createUpload({
       user_id: user.id,
       content_cid: cid,
       source_cid: cid,
@@ -80,7 +80,7 @@ export async function uploadV1(event, ctx) {
       ;({ contentCid } = parseCid(cid))
     }
 
-    upload = await db.createUpload({
+    upload = await ctx.db.createUpload({
       mime_type: blob.type,
       type: isCar ? 'Car' : 'Blob',
       content_cid: contentCid,

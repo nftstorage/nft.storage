@@ -1,11 +1,8 @@
 import { Magic } from '@magic-sdk/admin'
-import { secrets, database } from '../constants.js'
+import { secrets } from '../constants.js'
 import { HTTPError, ErrorUserNotFound, ErrorTokenNotFound } from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
-import { DBClient } from './db-client.js'
 export const magic = new Magic(secrets.magic)
-
-const db = new DBClient(database.url, secrets.database)
 
 /**
  * @typedef {import('../models/users').User} User
@@ -15,9 +12,9 @@ const db = new DBClient(database.url, secrets.database)
  * Validate auth
  *
  * @param {FetchEvent} event
- * @param {import('./router.js').RouteContext} ctx
+ * @param {import('../bindings').RouteContext} ctx
  */
-export async function validate(event, { sentry }) {
+export async function validate(event, { sentry, db }) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
   try {
@@ -33,11 +30,7 @@ export async function validate(event, { sentry }) {
       if (user.data) {
         const key = user.data.keys.find((k) => k?.secret === token)
         if (key) {
-          return {
-            user: user.data,
-            key,
-            db,
-          }
+          return { user: user.data, key }
         } else {
           throw new ErrorTokenNotFound()
         }
@@ -54,10 +47,7 @@ export async function validate(event, { sentry }) {
         throw new Error(`DB error: ${JSON.stringify(user.error)}`)
       }
 
-      return {
-        user: user.data,
-        db,
-      }
+      return { user: user.data }
     }
   } catch (/** @type {any}*/ err) {
     console.error(err)
@@ -67,11 +57,11 @@ export async function validate(event, { sentry }) {
 }
 
 /**
- *
  * @param {FetchEvent} event
+ * @param {import('../bindings').RouteContext} ctx
  * @param {any} data
  */
-export async function loginOrRegister(event, data) {
+export async function loginOrRegister(event, ctx, data) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
 
@@ -83,7 +73,7 @@ export async function loginOrRegister(event, data) {
         ? await parseGithub(data.data, metadata)
         : parseMagic(metadata)
 
-    const upsert = await db.upsertUser({
+    const upsert = await ctx.db.upsertUser({
       email: parsed.email,
       github_id: parsed.sub,
       magic_link_id: parsed.issuer,

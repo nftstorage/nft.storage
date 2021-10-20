@@ -2,7 +2,7 @@ import { HTTPError } from '../errors.js'
 
 /**
  * @typedef {'rw' | 'r-' | '--'} Mode
- * @typedef {import('../utils/router.js').Handler} Handler
+ * @typedef {import('../bindings').Handler} Handler
  */
 
 /**

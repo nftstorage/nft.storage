@@ -3,7 +3,7 @@ import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as nftsIndex from '../models/nfts-index.js'
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function pinsList(event, ctx) {
   const { user } = await validate(event, ctx)
   const { searchParams } = new URL(event.request.url)

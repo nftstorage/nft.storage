@@ -4,12 +4,12 @@ import { validate } from '../utils/auth-v1.js'
 import { parseCidPinning } from '../utils/utils.js'
 import { toPinsResponse } from '../utils/db-transforms.js'
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function pinsReplace(event, ctx) {
-  const { db, user, key } = await validate(event, ctx)
+  const { user, key } = await validate(event, ctx)
 
   const existingCid = ctx.params.requestid
-  const existingUpload = await db.getUpload(existingCid, user.id)
+  const existingUpload = await ctx.db.getUpload(existingCid, user.id)
 
   if (!existingUpload) {
     return new JSONResponse(
@@ -75,7 +75,7 @@ export async function pinsReplace(event, ctx) {
     metadata: pinData.meta,
   })
 
-  const upload = await db.createUpload({
+  const upload = await ctx.db.createUpload({
     type: 'Remote',
     content_cid: cid.contentCid,
     source_cid: cid.sourceCid,
@@ -86,7 +86,7 @@ export async function pinsReplace(event, ctx) {
     name: pinData.name,
   })
 
-  await db.deleteUpload(existingCid, user.id)
+  await ctx.db.deleteUpload(existingCid, user.id)
 
   return new JSONResponse(toPinsResponse(upload))
 }

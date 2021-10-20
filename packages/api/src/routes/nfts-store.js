@@ -19,7 +19,7 @@ const log = debug('nft-store')
  * @typedef {import('../bindings').NFT} NFT
  */
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function store(event, ctx) {
   const { user, tokenName } = await validate(event, ctx)
   const form = await event.request.formData()

@@ -9,7 +9,7 @@ import { validate } from '../utils/auth.js'
  * @typedef {import('../bindings').Deal} Deal
  */
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export const status = async (event, ctx) => {
   const { params } = ctx
   const { user } = await validate(event, ctx)
