@@ -120,7 +120,10 @@ wrangler secret put SENTRY_DSN --env USER # Get from Sentry
 wrangler secret put DATABASE_TOKEN --env production # Get from database account
 wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password
 wrangler secret put CLUSTER_SERVICE --env production # Which cluster should be used. Options 'IpfsCluster' or 'IpfsCluster2'
-
+wrangler secret put S3_BUCKET_REGION --env production # e.g us-east-2 (not required for dev)
+wrangler secret put S3_ACCESS_KEY_ID --env production # Get from Amazon S3 (not required for dev)
+wrangler secret put S3_SECRET_ACCESS_KEY_ID --env production # Get from Amazon S3 (not required for dev)
+wrangler secret put S3_BUCKET_NAME --env production # e.g web3.storage-staging-us-east-2 (not required for dev)
 wrangler publish --env production
 ```
 
@@ -149,3 +152,7 @@ When prompted for a value enter one of the following permission combinations:
 - `--` = no reading or writing
 - `r-` = read only mode
 - `rw` = read and write (normal operation)
+
+## S3 Setup
+
+We use [S3](https://aws.amazon.com/s3/) for backup and disaster recovery. For production deployment an account on AWS is required.

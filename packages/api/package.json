@@ -18,6 +18,7 @@
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
   "license": "MIT",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.37.0",
     "@cfworker/json-schema": "^1.8.3",
     "@ipld/car": "^3.1.20",
     "@ipld/dag-cbor": "^6.0.13",
@@ -28,7 +29,8 @@
     "merge-options": "^3.0.4",
     "multiformats": "^9.4.10",
     "regexparam": "^2.0.0",
-    "toucan-js": "^2.4.1"
+    "toucan-js": "^2.4.1",
+    "uint8arrays": "^3.0.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.1.1",

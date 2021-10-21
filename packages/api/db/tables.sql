@@ -144,3 +144,13 @@ CREATE TABLE IF NOT EXISTS migration_event
     data        jsonb,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- URLs of backups of user uploads
+CREATE TABLE IF NOT EXISTS backup
+(
+    id          BIGSERIAL PRIMARY KEY,
+    upload_id   BIGINT NOT NULL REFERENCES public.upload (id),
+    url         TEXT NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    deleted_at  TIMESTAMP WITH TIME ZONE
+);
