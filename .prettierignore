@@ -16,3 +16,4 @@ CHANGELOG.md
 .gitignore
 .editorconfig
 .gitattributes
+**/yarn.lock*
