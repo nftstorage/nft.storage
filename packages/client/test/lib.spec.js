@@ -159,7 +159,11 @@ describe('client', () => {
 
     it('upload CAR with non-default decoder', async () => {
       const client = new NFTStorage({ token, endpoint })
-      const block = await encode({ value: { hello: 'world' }, codec: dagJson, hasher: sha256 })
+      const block = await encode({
+        value: { hello: 'world' },
+        codec: dagJson,
+        hasher: sha256,
+      })
       const { writer, out } = CarWriter.create([block.cid])
       writer.put(block)
       writer.close()

@@ -111,7 +111,11 @@ class NFTStorage {
    * }} [options]
    * @returns {Promise<API.CIDString>}
    */
-  static async storeCar({ endpoint, token }, car, { onStoredChunk, decoders } = {}) {
+  static async storeCar(
+    { endpoint, token },
+    car,
+    { onStoredChunk, decoders } = {}
+  ) {
     const targetSize = MAX_CHUNK_SIZE
     const splitter =
       car instanceof Blob
