@@ -1,5 +1,17 @@
 # Changelog
 
+### [1.0.2](https://www.github.com/nftstorage/nft.storage/compare/migrations-v1.0.1...migrations-v1.0.2) (2021-10-22)
+
+
+### Bug Fixes
+
+* update links to moved repo ([#650](https://www.github.com/nftstorage/nft.storage/issues/650)) ([df94aaa](https://www.github.com/nftstorage/nft.storage/commit/df94aaa8f1ec1a2e7d60a258a90758b2df630c9a))
+
+
+### Changes
+
+* update minor deps ([c5c23a9](https://www.github.com/nftstorage/nft.storage/commit/c5c23a9f8a4bf177d503d9548a2529570a7d431b))
+
 ### [1.0.1](https://www.github.com/nftstorage/nft.storage/compare/migrations-v1.0.0...migrations-v1.0.1) (2021-06-17)
 
 
