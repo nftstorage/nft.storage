@@ -227,7 +227,7 @@ function About() {
 }
 
 function GettingStarted() {
-  const onClickHandler = useCallback((event) => {
+  const onClickHandler = useCallback(event => {
     countly.trackCustomLinkClick(
       countly.events.CTA_LINK_CLICK,
       event.currentTarget,
@@ -360,7 +360,7 @@ console.log(metadata.url)
               For additional example code, check out our{' '}
               <a
                 className="black"
-                href="https://github.com/nftstorage/nft.storage/tree/2bb82aeb23ac139513c1af6615d010579f22a7cc/packages/client/examples/node.js"
+                href="https://github.com/nftstorage/nft.storage/tree/main/packages/client/examples/node.js"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -435,7 +435,7 @@ console.log(metadata.url)
               For additional example code, check out our{' '}
               <a
                 className="black"
-                href="https://github.com/nftstorage/nft.storage/tree/2bb82aeb23ac139513c1af6615d010579f22a7cc/packages/client/examples/browser"
+                href="https://github.com/nftstorage/nft.storage/tree/main/packages/client/examples/browser"
                 target="_blank"
                 rel="noreferrer"
               >
