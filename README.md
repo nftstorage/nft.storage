@@ -2,7 +2,7 @@
 
 Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin.
 
-<a href="https://nft.storage"><img src="https://raw.githubusercontent.com/ipfs-shipyard/nft.storage/main/screenshot.png" alt="nft.storage screenshot" /></a>
+<a href="https://nft.storage"><img src="https://raw.githubusercontent.com/nftstorage/nft.storage/main/screenshot.png" alt="nft.storage screenshot" /></a>
 
 # Table of Contents <!-- omit in toc -->
 
@@ -22,7 +22,7 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin.
 
 The JS client library is the official and supported client to nft.storage. Other libraries listed have been generated from the [OpenAPI schema](https://nft.storage/schema.yml) and are experimental, unsupported and may not work at all!
 
-- [JavaScript](https://github.com/ipfs-shipyard/nft.storage/tree/main/packages/client)
+- [JavaScript](https://github.com/nftstorage/nft.storage/tree/main/packages/client)
 - [Go](https://github.com/nftstorage/go-client) (Generated from OpenAPI schema)
 - [Java](https://github.com/nftstorage/java-client) (Generated from OpenAPI schema)
 - [PHP](https://github.com/nftstorage/php-client) (Generated from OpenAPI schema)
@@ -101,8 +101,8 @@ The most important prefixes you should have in mind are:
 
 # Contributing
 
-Feel free to join in. All welcome. [Open an issue](https://github.com/ipfs-shipyard/nft.storage/issues)!
+Feel free to join in. All welcome. [Open an issue](https://github.com/nftstorage/nft.storage/issues)!
 
 # License
 
-Dual-licensed under [MIT](https://github.com/ipfs-shipyard/nft.storage/blob/main/LICENSE-MIT) + [Apache 2.0](https://github.com/ipfs-shipyard/nft.storage/blob/main/LICENSE-APACHE)
+Dual-licensed under [MIT](https://github.com/nftstorage/nft.storage/blob/main/LICENSE-MIT) + [Apache 2.0](https://github.com/nftstorage/nft.storage/blob/main/LICENSE-APACHE)

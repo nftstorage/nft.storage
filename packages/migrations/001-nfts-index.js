@@ -15,7 +15,7 @@ dotenv.config()
 const FAR_FUTURE = new Date('3000-01-01T00:00:00.000Z').getTime()
 const PAD_LEN = FAR_FUTURE.toString().length
 
-// TODO: can be imported when https://github.com/ipfs-shipyard/nft.storage/pull/65 is merged
+// TODO: can be imported when https://github.com/nftstorage/nft.storage/pull/65 is merged
 function encodeIndexKey({ user, created, cid }) {
   const ts = (FAR_FUTURE - created.getTime()).toString().padStart(PAD_LEN, '0')
   return `${user.sub}:${ts}:${cid}`
