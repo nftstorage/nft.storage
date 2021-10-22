@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.8.2](https://www.github.com/nftstorage/nft.storage/compare/website-v1.8.1...website-v1.8.2) (2021-10-22)
+
+
+### Bug Fixes
+
+* link to head of main branch in repo ([#655](https://www.github.com/nftstorage/nft.storage/issues/655)) ([39a343f](https://www.github.com/nftstorage/nft.storage/commit/39a343fa739b9d79c1ec6591db18f37c2be4b506))
+* update links to moved repo ([#650](https://www.github.com/nftstorage/nft.storage/issues/650)) ([df94aaa](https://www.github.com/nftstorage/nft.storage/commit/df94aaa8f1ec1a2e7d60a258a90758b2df630c9a))
+
 ### [1.8.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.8.0...website-v1.8.1) (2021-10-14)
 
 
