@@ -73,11 +73,11 @@
     "typedoc": "0.21.4",
     "uvu": "0.5.1"
   },
-  "homepage": "https://github.com/ipfs-shipyard/nft.storage/tree/main/packages/client",
-  "bugs": "https://github.com/ipfs-shipyard/nft.storage/issues",
+  "homepage": "https://github.com/nftstorage/nft.storage/tree/main/packages/client",
+  "bugs": "https://github.com/nftstorage/nft.storage/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ipfs-shipyard/nft.storage.git",
+    "url": "https://github.com/nftstorage/nft.storage.git",
     "directory": "packages/client"
   }
 }

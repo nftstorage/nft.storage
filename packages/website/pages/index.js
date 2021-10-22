@@ -113,7 +113,7 @@ function About() {
         </a>
         , or by using{' '}
         <a
-          href="https://github.com/ipfs-shipyard/ipfs-desktop"
+          href="https://github.com/nftstorage/ipfs-desktop"
           className="black"
           target="_blank"
           rel="noopener noreferrer"
@@ -347,7 +347,7 @@ console.log(metadata.url)
             <p className="lh-copy">
               View the{' '}
               <a
-                href="https://ipfs-shipyard.github.io/nft.storage/client/"
+                href="https://nftstorage.github.io/nft.storage/client/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="black"
@@ -360,7 +360,7 @@ console.log(metadata.url)
               For additional example code, check out our{' '}
               <a
                 className="black"
-                href="https://github.com/ipfs-shipyard/nft.storage/tree/2bb82aeb23ac139513c1af6615d010579f22a7cc/packages/client/examples/node.js"
+                href="https://github.com/nftstorage/nft.storage/tree/2bb82aeb23ac139513c1af6615d010579f22a7cc/packages/client/examples/node.js"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -435,7 +435,7 @@ console.log(metadata.url)
               For additional example code, check out our{' '}
               <a
                 className="black"
-                href="https://github.com/ipfs-shipyard/nft.storage/tree/2bb82aeb23ac139513c1af6615d010579f22a7cc/packages/client/examples/browser"
+                href="https://github.com/nftstorage/nft.storage/tree/2bb82aeb23ac139513c1af6615d010579f22a7cc/packages/client/examples/browser"
                 target="_blank"
                 rel="noreferrer"
               >
