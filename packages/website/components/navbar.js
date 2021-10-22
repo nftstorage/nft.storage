@@ -9,7 +9,6 @@ import Button from './button.js'
 import Cross from '../icons/cross'
 import Hamburger from '../icons/hamburger'
 import countly from '../lib/countly'
-
 /**
  * Navbar Component
  *
@@ -24,19 +23,21 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
   const [isMenuOpen, setMenuOpen] = useState(false)
   const { query } = useRouter()
   const version = /** @type {string} */ (query.version)
-
   useResizeObserver(containerRef, () => {
     const shouldGoToSmallVariant = window.innerWidth < 640
-
     if (shouldGoToSmallVariant && !isSmallVariant) {
       setSmallVariant(true)
     }
-
     if (!shouldGoToSmallVariant && isSmallVariant) {
       setSmallVariant(false)
     }
   })
-
+  const trackLogout = useCallback(() => {
+    countly.trackEvent(countly.events.LOGOUT_CLICK, {
+      ui: countly.ui.NAVBAR,
+      action: 'Logout',
+    })
+  }, [])
   const ITEMS = useMemo(
     () => [
       ...(user
@@ -60,12 +61,38 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
       {
         link: {
           pathname: '/',
+          hash: '#about',
+          query: version ? { version } : null,
+        },
+        name: 'About',
+      },
+      {
+        link: {
+          pathname: '/',
           hash: '#docs',
           query: version ? { version } : null,
         },
         name: 'Docs',
-        spacing: isSmallVariant ? '' : 'mr4',
       },
+      ...(isSmallVariant
+        ? user
+          ? [
+              {
+                onClick: logout,
+                name: 'Logout',
+                tracking: trackLogout,
+              },
+            ]
+          : [
+              {
+                link: {
+                  pathname: '/login',
+                  query: version ? { version } : null,
+                },
+                name: 'Login',
+              },
+            ]
+        : []),
     ],
     [user, isSmallVariant, version]
   )
@@ -82,22 +109,18 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
       : document.body.classList.add('overflow-hidden')
     setMenuOpen(!isMenuOpen)
   }, [isMenuOpen])
-
   const onMobileLinkClick = useCallback(
     (event) => {
       onLinkClick(event)
-
       toggleMenu()
     },
     [onLinkClick, toggleMenu]
   )
-
   async function logout() {
     await getMagic().user.logout()
     await queryClient.invalidateQueries('magic-user')
     Router.push({ pathname: '/', query: version ? { version } : null })
   }
-
   return (
     <nav
       className={clsx(
@@ -130,15 +153,15 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
         <div className="flex items-center">
           {!isSmallVariant &&
             ITEMS.map((item, index) => (
-              <div key={`nav-link-${index}`}>
-                <Link href={item.link}>
+              <div key={`nav-link-${index}`} onClick={item.onClick}>
+                <Link href={item.link || ''}>
                   <a
                     key={item.name}
                     className={clsx(
                       'f4 black no-underline underline-hover v-mid',
-                      item.spacing
+                      { mr4: index === ITEMS.length - 1 }
                     )}
-                    onClick={onLinkClick}
+                    onClick={item.tracking ? item.tracking : onLinkClick}
                   >
                     {item.name}
                   </a>
@@ -179,7 +202,6 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
           </div>
         </div>
       </div>
-
       <div
         className={clsx(
           bgColor,
@@ -207,23 +229,28 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
         </div>
         <div className="flex flex-column items-center justify-center text-center pv4 flex-auto">
           {ITEMS.map((item, index) => (
-            <Link href={item.link} key={`menu-nav-link-${index}`}>
-              <a
-                className={clsx(
-                  'f1 v-mid chicagoflf pv3',
-                  item.spacing,
-                  bgColor === 'bg-nsgreen' ? 'black' : 'white'
-                )}
-                onClick={onMobileLinkClick}
-              >
-                {item.name}
-              </a>
-            </Link>
+            <div
+              className="pv3"
+              key={`menu-nav-link-${index}`}
+              onClick={item.onClick}
+            >
+              <Link href={item.link || ''}>
+                <a
+                  className={clsx(
+                    'f1 v-mid chicagoflf',
+                    bgColor === 'bg-nsgreen' ? 'black' : 'white'
+                  )}
+                  onClick={item.tracking ? item.tracking : onMobileLinkClick}
+                >
+                  {item.name}
+                </a>
+              </Link>
+            </div>
           ))}
         </div>
         <div className="flex flex-column items-center mb4">
           <Button className="flex justify-center" onClick={toggleMenu}>
-            <Cross width="48" height="48" fill="currentColor" />
+            <Cross width="24" height="24" fill="currentColor" />
           </Button>
         </div>
       </div>
