@@ -19,14 +19,49 @@ export async function syncNFTs(ctx, task) {
     kvId: ctx.kvNFT,
   })) {
     count++
-    if (!(await ctx.nftStore.has(user.name))) {
-      missing++
-      await ctx.nftStore.put(user.name, {})
-    }
+    // if (!(await ctx.nftStore.has(user.name))) {
+    missing++
+    await ctx.nftStore.put(user.name, {})
+    // }
     task.output = `count: ${count} new: ${missing}`
   }
 
   task.title += ` count: ${count} new: ${missing}`
+}
+
+/**
+ * @param {Context} ctx
+ * @param {Task} task
+ */
+export async function syncNFTsFast(ctx, task) {
+  let cursorInput
+  let counter = 0
+
+  while (true) {
+    const { list_complete, data, cursor } = await got
+      .get(
+        'https://nft-storage-migration.protocol-labs.workers.dev/internal/list-nfts',
+        {
+          searchParams: {
+            cursor: cursorInput,
+          },
+        }
+      )
+      .json()
+
+    if (list_complete) {
+      break
+    } else {
+      cursorInput = cursor
+    }
+
+    for (const key of data) {
+      counter++
+      await ctx.nftStore.put(key, {})
+    }
+
+    task.output = `count: ${counter}`
+  }
 }
 
 /**

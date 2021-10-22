@@ -45,6 +45,7 @@ import {
 } from './middleware/maintenance.js'
 import { withPsaErrorHandler } from './middleware/psa.js'
 import { getUser } from './routes/get-user.js'
+import { listNfts } from './routes/list-nfts.js'
 
 const log = debug('router')
 
@@ -73,7 +74,7 @@ r.add('post', '/login', withMode(login, RO), [postCors])
 r.add(
   'get',
   '/version',
-  (event) => {
+  event => {
     return new JSONResponse({
       version: VERSION,
       commit: COMMITHASH,
@@ -147,6 +148,7 @@ r.add('post', '/internal/tokens', withMode(tokensCreate, RW), [postCors])
 r.add('delete', '/internal/tokens', withMode(tokensDelete, RW), [postCors])
 r.add('get', '/internal/list2', withMode(getNFT, RO), [postCors])
 r.add('get', '/internal/user', withMode(getUser, RO), [postCors])
+r.add('get', '/internal/list-nfts', withMode(listNfts, RO), [postCors])
 
 r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))

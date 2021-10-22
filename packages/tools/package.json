@@ -23,6 +23,7 @@
     "multiformats": "^9.4.8",
     "ora": "^5.4.1",
     "p-queue": "^7.1.0",
+    "pg": "^8.7.1",
     "sade": "^1.7.4"
   },
   "devDependencies": {

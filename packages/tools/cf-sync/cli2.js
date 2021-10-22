@@ -7,10 +7,12 @@ import Cluster from '../utils/cluster.js'
 import Cloudflare from '../utils/cloudflare.js'
 import { DBClient } from '../../api/src/utils/db-client.js'
 import { syncUsers, syncUsersData } from './users.js'
-import { syncNFTs, syncNFTData } from './nft.js'
+import { syncNFTs, syncNFTData, syncNFTsFast } from './nft.js'
 import { validateLocal } from './validation.js'
 import { pushToDB } from './push-to-db.js'
 import { pushEvents } from './push-events.js'
+import { fixDuplicateKeys } from './fix-duplicate-keys.js'
+import { fixMissingCids } from './fix-missing-nfts.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({
@@ -19,17 +21,17 @@ dotenv.config({
 
 const tasks = new Listr(
   [
-    {
-      title: 'Sync users',
-      task: syncUsers,
-    },
-    {
-      title: 'Sync users data',
-      task: syncUsersData,
-    },
+    // {
+    //   title: 'Sync users',
+    //   task: syncUsers,
+    // },
+    // {
+    //   title: 'Sync users data',
+    //   task: syncUsersData,
+    // },
     // {
     //   title: 'Sync nfts',
-    //   task: syncNFTs,
+    //   task: syncNFTsFast,
     // },
     // {
     //   title: 'Sync nfts data',
@@ -39,20 +41,24 @@ const tasks = new Listr(
     //   title: 'Validate nft data structure',
     //   task: validateLocal,
     // },
+    // {
+    //   title: 'Push to DB',
+    //   task: pushToDB,
+    // },
+    // {
+    //   title: 'Push events to DB',
+    //   task: pushEvents,
+    // },
     {
-      title: 'Push to DB',
-      task: pushToDB,
-    },
-    {
-      title: 'Push events to DB',
-      task: pushEvents,
+      title: 'fixMissingCids',
+      task: fixMissingCids,
     },
   ],
-  { renderer: 'default' }
+  { renderer: 'verbose' }
 )
 
 const userStore = new Store(path.join(__dirname, '../../../.local/users'))
-const nftStore = new Store(path.join(__dirname, '../../../.local/nft-meta'))
+const nftStore = new Store(path.join(__dirname, '../../../.local/nft-last1'))
 const cluster = new Cluster(process.env.CLUSTER_TOKEN || '')
 const cf = new Cloudflare({ token: process.env.CF_TOKEN })
 const db = new DBClient(
@@ -77,7 +83,7 @@ tasks
   .then(() => {
     process.exit(0)
   })
-  .catch((err) => {
+  .catch(err => {
     console.error(err)
   })
 

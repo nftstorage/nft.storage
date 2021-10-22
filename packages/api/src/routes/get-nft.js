@@ -14,11 +14,11 @@ export async function getNFT(event, ctx) {
   const parts = key.split(':')
   const cid = parts[parts.length - 1]
 
-  try {
-    CID.parse(cid)
-  } catch (err) {
-    return new JSONResponse({ ok: false, error: `${key} invalid cid` })
-  }
+  // try {
+  //   CID.parse(cid)
+  // } catch (err) {
+  //   return new JSONResponse({ ok: false, error: `${key} invalid cid` })
+  // }
 
   const [pin, nft] = await Promise.all([
     await stores.pins.getWithMetadata(cid),
@@ -26,10 +26,20 @@ export async function getNFT(event, ctx) {
   ])
 
   if (!pin.metadata) {
-    return new JSONResponse({ ok: false, error: `${key} pin not found` })
+    return new JSONResponse({
+      ok: false,
+      error: `${key} pin not found`,
+      nft,
+      pin,
+    })
   }
   if (!nft) {
-    return new JSONResponse({ ok: false, error: `${key} nft not found` })
+    return new JSONResponse({
+      ok: false,
+      error: `${key} nft not found`,
+      nft,
+      pin,
+    })
   }
 
   return new JSONResponse({
