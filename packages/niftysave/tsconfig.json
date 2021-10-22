@@ -73,6 +73,6 @@
   "references": [
     {
       "path": "../client"
-    },
+    }
   ]
 }
