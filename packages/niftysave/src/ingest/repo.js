@@ -29,7 +29,7 @@ import {
  */
 export async function writeScrapedRecords(config, erc721Imports) {
   const records = erc721Imports.map(erc721ImportToNFTEndpoint)
-  const startTime = performance.now()
+  const startTime = Date.now()
   printBatch(records)
   const batchMutation = Object.fromEntries(
     records.map(recordToMutation).entries()
@@ -37,18 +37,18 @@ export async function writeScrapedRecords(config, erc721Imports) {
   const done = await Hasura.mutation(config.hasura, {
     __alias: batchMutation,
   })
-  const stopTime = performance.now()
-  printTiming(startTime, stopTime, records.length)
+
+  printTiming(startTime, records.length)
   return done
 }
 
 /**
  *
  * @param {number} startTime
- * @param {number} stopTime
  * @param {number} recordsAmount
  */
-function printTiming(startTime, stopTime, recordsAmount) {
+function printTiming(startTime, recordsAmount) {
+  const stopTime = Date.now()
   const elapsed = stopTime - startTime
   const perRecord = (elapsed / recordsAmount).toFixed(6)
   console.log(
