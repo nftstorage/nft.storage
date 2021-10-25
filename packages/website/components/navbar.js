@@ -9,6 +9,7 @@ import Button from './button.js'
 import Cross from '../icons/cross'
 import Hamburger from '../icons/hamburger'
 import countly from '../lib/countly'
+
 /**
  * Navbar Component
  *
@@ -16,6 +17,7 @@ import countly from '../lib/countly'
  * @param {string} [props.bgColor]
  * @param {any} [props.user]
  */
+
 export default function Navbar({ bgColor = 'bg-nsorange', user }) {
   const containerRef = useRef(null)
   const queryClient = useQueryClient()
@@ -23,6 +25,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
   const [isMenuOpen, setMenuOpen] = useState(false)
   const { query } = useRouter()
   const version = /** @type {string} */ (query.version)
+
   useResizeObserver(containerRef, () => {
     const shouldGoToSmallVariant = window.innerWidth < 640
     if (shouldGoToSmallVariant && !isSmallVariant) {
@@ -32,12 +35,14 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
       setSmallVariant(false)
     }
   })
+
   const trackLogout = useCallback(() => {
     countly.trackEvent(countly.events.LOGOUT_CLICK, {
       ui: countly.ui.NAVBAR,
       action: 'Logout',
     })
   }, [])
+
   const ITEMS = useMemo(
     () => [
       ...(user
@@ -94,8 +99,9 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
             ]
         : []),
     ],
-    [user, isSmallVariant, version]
+    [user, isSmallVariant, version, logout, trackLogout]
   )
+
   const onLinkClick = useCallback((event) => {
     countly.trackCustomLinkClick(
       countly.events.LINK_CLICK_NAVBAR,
@@ -109,6 +115,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
       : document.body.classList.add('overflow-hidden')
     setMenuOpen(!isMenuOpen)
   }, [isMenuOpen])
+
   const onMobileLinkClick = useCallback(
     (event) => {
       onLinkClick(event)
@@ -116,11 +123,13 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
     },
     [onLinkClick, toggleMenu]
   )
+
   async function logout() {
     await getMagic().user.logout()
     await queryClient.invalidateQueries('magic-user')
     Router.push({ pathname: '/', query: version ? { version } : null })
   }
+
   return (
     <nav
       className={clsx(
