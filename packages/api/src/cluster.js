@@ -12,7 +12,7 @@ const client = new Cluster(cluster.apiUrl, {
 
 /**
  * @param {Blob} data
- * @param {import('@nftstorage/ipfs-cluster').AddParams} options
+ * @param {import('@nftstorage/ipfs-cluster').API.AddParams} options
  */
 export async function add(data, options = {}) {
   const { cid, size, bytes } = await client.add(data, {
@@ -23,6 +23,25 @@ export async function add(data, options = {}) {
     cid,
     size: Number(size),
     bytes: Number(bytes),
+  }
+}
+
+/**
+ * 
+ * @param {Blob} data 
+ * @param {import('@nftstorage/ipfs-cluster').API.AddCarParams} options
+ */
+
+export async function addCar(data, options = {}) {
+  const { cid, size, bytes } = await client.addCAR(data, {
+    metadata: { size: data.size.toString() },
+    ...options
+  })
+
+  return {
+    cid,
+    size: Number(size),
+    bytes: Number(bytes)
   }
 }
 
@@ -66,7 +85,7 @@ export const importAsset = async (file, options = {}) => {
 }
 /**
  * @param {string} cid
- * @param {import("@nftstorage/ipfs-cluster").PinOptions | undefined} [options]
+ * @param {import("@nftstorage/ipfs-cluster").API.PinOptions | undefined} [options]
  */
 export async function pin(cid, options) {
   return client.pin(cid, options)
@@ -120,7 +139,7 @@ export async function dagSize(cid) {
 
 /**
  * Best effort conversion from cluster status to pinning service API status.
- * @param {import('@nftstorage/ipfs-cluster').StatusResponse} status
+ * @param {import('@nftstorage/ipfs-cluster').API.StatusResponse} status
  * @returns {import('./pinata-psa').Status}
  */
 export function toPSAStatus(status) {

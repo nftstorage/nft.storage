@@ -49,16 +49,24 @@ module.exports = {
     const proc = execa('smoke', ['-p', '9094', 'test/mocks/cluster'], {
       preferLocal: true,
     })
-    const stdout = await once(proc.stdout, 'data')
+
+    const stdout = await Promise.race([
+      once(proc.stdout, 'data'),
+      // Make sure that we fail if process crashes. However if it exits without
+      // producing stdout just resolve to ''.
+      proc.then(() => '')
+    ])
+
 
     if (
       stdout.toString().includes('Server started on: http://localhost:9094')
     ) {
-      console.log('⚡️ Mock cluster started.')
+      console.log('⚡️ Mock IPFS Cluster started.')
       await execa(cli, ['db', '--start', '--project', project])
+      console.log('⚡️ Postgres started.')
       await execa(cli, ['db-sql', '--cargo', '--testing'])
+      console.log('⚡️ SQL schema loaded.')
 
-      console.log('⚡️ Mock postgres started.')
       proc.stdout.on('data', (line) => console.log(line.toString()))
       return { proc, project }
     }

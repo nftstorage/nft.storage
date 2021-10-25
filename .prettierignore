@@ -6,6 +6,13 @@ dist
 worker
 site/public
 docs
+packages/niftysave/gen
+packages/api
 CHANGELOG.md
 .next
 .supabase
+.prettierignore
+.gitignore
+.editorconfig
+.gitattributes
+**/yarn.lock*

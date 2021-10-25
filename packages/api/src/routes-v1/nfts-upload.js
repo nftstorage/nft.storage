@@ -12,7 +12,7 @@ const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
 /**
  * @typedef {import('../bindings').NFT} NFT
  * @typedef {import('../bindings').NFTResponse} NFTResponse
- * @typedef {import('@nftstorage/ipfs-cluster').StatusResponse} StatusResponse
+ * @typedef {import('@nftstorage/ipfs-cluster').API.StatusResponse} StatusResponse
  */
 
 /** @type {import('../utils/router.js').Handler} */
@@ -59,16 +59,18 @@ export async function uploadV1(event, ctx) {
       throw new HTTPError('Empty payload', 400)
     }
     const isCar = contentType.includes('application/car')
-    // Ensure car blob.type is set; it is used by the cluster client to set the foramt=car flag on the /add call.
-    const content = isCar ? blob.slice(0, blob.size, 'application/car') : blob
 
-    // cluster returns `bytes` rather than `size` when upload is a CAR.
-    const { cid, size, bytes } = await cluster.add(content, {
+    const addOptions = {
       // When >2.5MB, use local add, because waiting for blocks to be sent to
       // other cluster nodes can take a long time. Replication to other nodes
       // will be done async by bitswap instead.
       local: blob.size > LOCAL_ADD_THRESHOLD,
-    })
+    }
+
+    // cluster returns `bytes` rather than `size` when upload is a CAR.
+    const { cid, size, bytes } = isCar
+      ? await cluster.addCar(blob, addOptions)
+      : await cluster.add(blob, addOptions)
 
     sourceCid = cid
     const dagSize = size || bytes
@@ -79,7 +81,7 @@ export async function uploadV1(event, ctx) {
     }
 
     upload = await db.createUpload({
-      mime_type: content.type,
+      mime_type: blob.type,
       type: isCar ? 'Car' : 'Blob',
       content_cid: contentCid,
       source_cid: cid,

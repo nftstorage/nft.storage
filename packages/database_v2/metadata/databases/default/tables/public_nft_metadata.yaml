@@ -2,22 +2,30 @@ table:
   name: nft_metadata
   schema: public
 object_relationships:
-- name: image
-  using:
-    manual_configuration:
-      column_mapping:
-        image_uri_hash: uri_hash
-      insertion_order: null
-      remote_table:
-        name: resource
-        schema: public
+  - name: content
+    using:
+      foreign_key_constraint_on: cid
+  - name: image
+    using:
+      manual_configuration:
+        column_mapping:
+          image_uri_hash: uri_hash
+        insertion_order: null
+        remote_table:
+          name: resource
+          schema: public
 array_relationships:
-- name: other_resources
-  using:
-    manual_configuration:
-      column_mapping:
-        content_cid: content_cid
-      insertion_order: null
-      remote_table:
-        name: other_nft_resources
-        schema: public
+  - name: other_resources
+    using:
+      foreign_key_constraint_on:
+        column: metadata_cid
+        table:
+          name: other_nft_resources
+          schema: public
+  - name: referrer_nft_assets
+    using:
+      foreign_key_constraint_on:
+        column: metadata_cid
+        table:
+          name: nft_asset
+          schema: public

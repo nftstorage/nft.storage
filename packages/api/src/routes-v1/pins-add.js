@@ -64,9 +64,5 @@ export async function pinsAddV1(event, ctx) {
     name: pinData.name,
   })
 
-  if (upload.content.pin[0].status === 'PinError') {
-    await cluster.recover(upload.content_cid)
-  }
-
   return new JSONResponse(toPinsResponse(upload))
 }

@@ -113,7 +113,7 @@ function About() {
         </a>
         , or by using{' '}
         <a
-          href="https://github.com/ipfs-shipyard/ipfs-desktop"
+          href="https://github.com/nftstorage/ipfs-desktop"
           className="black"
           target="_blank"
           rel="noopener noreferrer"
@@ -347,7 +347,7 @@ console.log(metadata.url)
             <p className="lh-copy">
               View the{' '}
               <a
-                href="https://ipfs-shipyard.github.io/nft.storage/client/"
+                href="https://nftstorage.github.io/nft.storage/client/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="black"
@@ -360,7 +360,7 @@ console.log(metadata.url)
               For additional example code, check out our{' '}
               <a
                 className="black"
-                href="https://github.com/ipfs-shipyard/nft.storage/tree/2bb82aeb23ac139513c1af6615d010579f22a7cc/packages/client/examples/node.js"
+                href="https://github.com/nftstorage/nft.storage/tree/main/packages/client/examples/node.js"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -435,7 +435,7 @@ console.log(metadata.url)
               For additional example code, check out our{' '}
               <a
                 className="black"
-                href="https://github.com/ipfs-shipyard/nft.storage/tree/2bb82aeb23ac139513c1af6615d010579f22a7cc/packages/client/examples/browser"
+                href="https://github.com/nftstorage/nft.storage/tree/main/packages/client/examples/browser"
                 target="_blank"
                 rel="noreferrer"
               >
@@ -497,20 +497,40 @@ function FAQ() {
             What is the long-term vision for NFT.Storage?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
-          NFT.Storage fills the gap for NFT developers <strong>today </strong>
-          who are looking for easy APIs and best practices for storing their NFT
-          data securely and resiliently. In the long-term, NFT.Storage will
-          hopefully decentralize itself out of existence, upgrading today&apos;s
-          implementation into the provably permanent storage solutions of
-          tomorrow.
+        <p className="lh-copy white mb4">
+          NFT.Storage helps NFT developers today who are looking for easy APIs
+          and best practices for storing their NFT data securely and
+          resiliently. Even in the short-term, it is a fairly decentralized
+          solution. Users are able to trustlessly verify that the{' '}
+          <a
+            className="white"
+            href="https://docs.ipfs.io/concepts/content-addressing"
+            target="_blank"
+            rel="noreferrer"
+          >
+            content identifiers
+          </a>{' '}
+          that the service provides corresponds to their data, and that this
+          data is hosted in multiple ways across the IPFS and Filecoin networks
+          (allowing for accessibility across the network and preventing
+          lock-in).
+          <br />
+          Though we believe that there will always be value in some form of the
+          libraries and services NFT.Storage provides, in the long-term the goal
+          is to increasingly decentralize NFT.Storage. This includes, but is not
+          limited to, making it easy for users to deploy and run their own
+          NFT.Storage storage service, as well as relying more directly on the
+          Filecoin network (e.g., storing data directly on the Filecoin network
+          without putting it on a centralized IPFS node first), upgrading
+          {"today's"} NFT.Storage implementation into the provably permanent
+          storage solutions of tomorrow.
         </p>
         <h2 className="chicagoflf white">
           <HashLink id="how-long-will-data-be-stored-on-nftstorage">
             How long will data be stored on NFT.storage?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
+        <p className="lh-copy white mb4">
           Data will be available in IPFS indefinitely as well as stored in
           long-term, redundant Filecoin storage deals with the global community
           of miners. See the{' '}
@@ -524,7 +544,7 @@ function FAQ() {
             Are there any size restrictions for stored NFTs?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
+        <p className="lh-copy white mb4">
           NFT.storage can store NFTs up to <strong>32GB </strong>
           in size! (There was previously a 100MB limit due to Cloudflare workers
           but NFT.storage now supports chunked uploads, allowing files bigger
@@ -535,7 +555,7 @@ function FAQ() {
             Where can I learn more about NFT best practices?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
+        <p className="lh-copy white mb4">
           Visit{' '}
           <a href="https://nftschool.dev" className="white">
             NFT School
@@ -548,7 +568,7 @@ function FAQ() {
             Who can access the data I store on NFT.Storage?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
+        <p className="lh-copy white mb4">
           All data uploaded to NFT.Storage is available to anyone who requests
           it using the correct CID. Do not store any private or sensitive
           information in an unencrypted form using NFT.Storage.
@@ -558,8 +578,8 @@ function FAQ() {
             Can I delete my data on NFT.Storage?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
-          You can delete data from being associated with your account, and they
+        <p className="lh-copy white mb4">
+          You can delete data from being associated with your account, and it
           will no longer appear on the Files page of your account. However, this
           doesn’t prevent nodes in the IPFS decentralized storage network from
           retaining copies of the data indefinitely. Do not use NFT.Storage for
@@ -572,7 +592,7 @@ function FAQ() {
             successfully on NFT.Storage?
           </HashLink>
         </h2>
-        <p className="lh-copy white">
+        <p className="lh-copy white mb4">
           Not necessarily! HTTP gateways are a great way for users who{' '}
           {"aren't"} running their own IPFS nodes to retrieve content from the
           IPFS network. However, they do introduce a centralized point of

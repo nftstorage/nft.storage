@@ -5,7 +5,9 @@ const db = new DBClient(database.url, secrets.database)
 
 export async function getUserMetrics() {
   const query = db.client.from('user')
-  const res = await query.select('*', { head: true, count: 'exact' })
+  const res = await query
+    .select('*', { head: true, count: 'exact' })
+    .range(0, 1)
   if (res.error) {
     throw res.error
   }
@@ -20,6 +22,7 @@ export async function getNftMetrics() {
       const res = await query
         .select('*', { head: true, count: 'exact' })
         .filter('type', 'eq', t)
+        .range(0, 1)
       if (res.error) {
         throw res.error
       }
@@ -41,6 +44,7 @@ export async function getPinMetrics() {
             .select('*', { head: true, count: 'exact' })
             .filter('service', 'eq', service)
             .filter('status', 'eq', status)
+            .range(0, 1)
           if (res.error) {
             throw res.error
           }
@@ -77,22 +81,18 @@ async function exportPromMetrics() {
     '# TYPE nftstorage_users_total counter',
     `nftstorage_users_total ${users.total}`,
 
+    '# HELP nftstorage_uploads_total Total number of uploads by type.',
+    '# TYPE nftstorage_uploads_total counter',
     ...Object.entries(nfts.totals).map(([type, total]) =>
-      [
-        `# HELP nftstorage_uploads_total Total number of ${type} uploads.`,
-        '# TYPE nftstorage_uploads_total counter',
-        `nftstorage_uploads_total{type:"${type}"} ${total}`,
-      ].join('\n')
+      `nftstorage_uploads_total{type="${type}"} ${total}`
     ),
 
+    '# HELP nftstorage_pins_total Total number of pins by service and status.',
+    '# TYPE nftstorage_pins_total counter',
     ...Object.entries(pins.totals).map(([service, totals]) => {
       return Object.entries(totals)
         .map(([status, total]) =>
-          [
-            `# HELP nftstorage_pins_total Total number of ${service} pins that are ${status}.`,
-            '# TYPE nftstorage_pins_total counter',
-            `nftstorage_pins_total{service:"${service}",status:"${status}"} ${total}`,
-          ].join('\n')
+          `nftstorage_pins_total{service="${service}",status="${status}"} ${total}`
         )
         .join('\n')
     }),

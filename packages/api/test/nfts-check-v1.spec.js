@@ -11,7 +11,7 @@ describe('V1 - Check NFT', () => {
       name: 'test-file11',
     })
 
-    const res = await fetch(`v1/check/${cid}`)
+    const res = await fetch(`check/${cid}`)
     const { ok, value } = await res.json()
 
     assert.equal(value.cid, cid)
@@ -27,7 +27,7 @@ describe('V1 - Check NFT', () => {
       name: 'test-file-cid-v0',
     })
 
-    const res = await fetch(`v1/check/${cid}`)
+    const res = await fetch(`check/${cid}`)
     const { ok, value } = await res.json()
     assert.equal(value.cid, cid)
     assert.equal(value.pin.status, 'queued')
@@ -36,7 +36,7 @@ describe('V1 - Check NFT', () => {
 
   it('should error on invalid cid', async () => {
     const cid = 'asdhjkahsdja'
-    const res = await fetch(`v1/check/${cid}`)
+    const res = await fetch(`check/${cid}`)
     const { ok, value, error } = await res.json()
 
     assert.equal(ok, false)
@@ -48,7 +48,7 @@ describe('V1 - Check NFT', () => {
 
   it('should error on not found', async () => {
     const cid = 'bafybeia22kh3smc7p67oa76pcleaxp4u5zatsvcndi3xrqod5vtxq5avpa'
-    const res = await fetch(`v1/check/${cid}`)
+    const res = await fetch(`check/${cid}`)
     const { ok, value, error } = await res.json()
 
     assert.equal(ok, false)

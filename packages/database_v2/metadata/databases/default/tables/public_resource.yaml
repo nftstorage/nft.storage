@@ -2,12 +2,20 @@ table:
   name: resource
   schema: public
 object_relationships:
-- name: content
-  using:
-    manual_configuration:
-      column_mapping:
-        content_cid: cid
-      insertion_order: null
-      remote_table:
-        name: content
-        schema: public
+  - name: content
+    using:
+      manual_configuration:
+        column_mapping:
+          content_cid: cid
+        insertion_order: null
+        remote_table:
+          name: content
+          schema: public
+array_relationships:
+  - name: referrer_metadata
+    using:
+      foreign_key_constraint_on:
+        column: resource_uri_hash
+        table:
+          name: other_nft_resources
+          schema: public

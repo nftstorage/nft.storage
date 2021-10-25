@@ -11,7 +11,7 @@ export const nftDeleteV1 = async (event, ctx) => {
 
   const data = await db.deleteUpload(cid.sourceCid, user.id)
 
-  if (data && data.length > 0) {
+  if (data) {
     return new JSONResponse(
       {
         ok: true,

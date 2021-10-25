@@ -51,6 +51,8 @@ CREATE TABLE IF NOT EXISTS public.user
     updated_at     TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS user_updated_at_idx ON public.user (updated_at);
+
 -- API authentication tokens.
 CREATE TABLE IF NOT EXISTS auth_key
 (
@@ -77,6 +79,8 @@ CREATE TABLE IF NOT EXISTS content
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
+CREATE INDEX IF NOT EXISTS content_updated_at_idx ON content (updated_at);
+
 -- Information for piece of content pinned in IPFS.
 CREATE TABLE IF NOT EXISTS pin
 (
@@ -91,6 +95,8 @@ CREATE TABLE IF NOT EXISTS pin
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     UNIQUE (content_cid, service)
 );
+
+CREATE INDEX IF NOT EXISTS pin_updated_at_idx ON pin (updated_at);
 
 -- An upload created by a user.
 CREATE TABLE IF NOT EXISTS upload
@@ -119,6 +125,18 @@ CREATE TABLE IF NOT EXISTS upload
     meta        jsonb,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    --deleted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+    deleted_at TIMESTAMP WITH TIME ZONE,
     UNIQUE (user_id, source_cid)
+);
+
+CREATE INDEX IF NOT EXISTS upload_updated_at_idx ON upload (updated_at);
+
+-- Temporary table to record events from the live site between KV sync start
+-- and the migration window.
+CREATE TABLE IF NOT EXISTS migration_event
+(
+    id          BIGSERIAL PRIMARY KEY,
+    name        TEXT NOT NULL,
+    data        jsonb,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );

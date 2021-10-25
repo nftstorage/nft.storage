@@ -55,19 +55,22 @@ export async function upload(event, ctx) {
       throw new HTTPError('Empty payload', 400)
     }
     const isCar = contentType.includes('application/car')
-    // Ensure car blob.type is set; it is used by the cluster client to set the foramt=car flag on the /add call.
-    const content = isCar ? blob.slice(0, blob.size, 'application/car') : blob
-    // cluster returns `bytes` rather than `size` when upload is a CAR.
-    const { cid, size, bytes } = await cluster.add(content, {
+    const addOptions = {
       // When >2.5MB, use local add, because waiting for blocks to be sent to
       // other cluster nodes can take a long time. Replication to other nodes
       // will be done async by bitswap instead.
       local: blob.size > LOCAL_ADD_THRESHOLD,
-    })
+    }
+
+    // cluster returns `bytes` rather than `size` when upload is a CAR.
+    const { cid, size, bytes } = isCar
+      ? await cluster.addCar(blob, addOptions)
+      : await cluster.add(blob, addOptions)
+
     nft = {
       cid,
       created,
-      type: content.type,
+      type: blob.type,
       scope: tokenName,
       files: [],
     }

@@ -69,5 +69,10 @@
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   },
   "exclude": ["dist", "template", "gen/hasura/zeus/*.js"],
-  "include": ["src", "gen", "tools", "test", ".repl.js"]
+  "include": ["src", "gen", "tools", "test", ".repl.js"],
+  "references": [
+    {
+      "path": "../client"
+    }
+  ]
 }

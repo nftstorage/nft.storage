@@ -57,7 +57,7 @@ export async function nftStoreV1(event, ctx) {
     hasher: sha256,
   })
   const car = await CAR.encode([block.cid], [block])
-  const { cid, bytes } = await cluster.add(car, {
+  const { cid, bytes } = await cluster.addCar(car, {
     local: car.size > constants.cluster.localAddThreshold,
   })
 

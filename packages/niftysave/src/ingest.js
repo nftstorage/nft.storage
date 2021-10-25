@@ -1,153 +1,182 @@
-import * as Result from './result.js'
-import { configure } from './config.js'
-import { script } from 'subprogram'
+import * as Cursor from './hasura/cursor.js'
 import * as ERC721 from '../gen/erc721/index.js'
-import * as DB from '../gen/db/index.js'
+import * as Hasura from './hasura.js'
+
+import { exponentialBackoff, maxRetries, retry } from './retry.js'
+import { fetchNFTBatch, writeScrapedRecords } from './ingest/repo.js'
+
+import { TransformStream } from './stream.js'
+import { configure } from './config.js'
+import { initIngestCursor } from './ingest/cursor.js'
+import { script } from 'subprogram'
+import { setTimeout as sleep } from 'timers/promises'
+
+/**
+ * @typedef {import('./ingest').ERC721ImportNFT} ERC721ImportNFT
+ * @typedef {import('./ingest').NFTSSubgraphResult} NFTSSubgraphResult
+ */
+
+/**
+ * @typedef { Object } Config
+ * @property { ERC721.Config } config.erc721
+ * @property { Hasura.Config } config.hasura
+ * @property { number } config.ingestRetryThrottle
+ * @property { number } config.ingestHighWatermark
+ * @property { string } config.ingestStartDate
+ * @property { number } config.ingestScraperBatchSize
+ * @property { number } config.ingestScraperRetryLimit
+ * @property { number } config.ingestScraperRetryInterval
+ * @property { number } config.ingestScraperRetryMaxInterval
+ * @property { number } config.ingestWriterBatchSize
+ * @property { number } config.ingestWriterRetryLimit
+ * @property { number } config.ingestWriterRetryInterval
+ * @property { number } config.ingestWriterRetryMaxInterval
+ */
 
 export const main = async () => await spawn(await configure())
 
 /**
- * @typedef {Object} Config
- * @property {number} config.budget - Time budget
- * @property {number} config.batchSize - Number of tokens in each import
- * @property {ERC721.Config} config.erc721
- * @property {DB.Config} config.fauna
+ * Spawn process and create a TransformStream to store and write from.
+ * Storing and writing are independent processes running asynchronously
+ * Backpressure is managed by the Transform Stream's high Watermark.
  *
+ * The TransformStream is 'the inbox'.
  * @param {Config} config
  */
-export const spawn = async config => {
-  const deadline = Date.now() + config.budget
-  console.log('Obtain current cursor')
-  const cursor = await readCursor(config)
-  let { id } = cursor
-  while (deadline - Date.now() > 0) {
-    const result = await importBatch(config, {
-      id,
-      batchSize: config.batchSize,
-    })
-
-    if (result.found < config.batchSize) {
-      console.log('🏁 Finish scanning, not enough tokens were found')
-      return
-    } else {
-      id = result.id
+async function spawn(config) {
+  console.log(`⏲️ Begin Scraping the Ethereum Blockchain.`)
+  /**
+   * @type { TransformStream<ERC721ImportNFT> }
+   */
+  const inbox = new TransformStream(
+    {},
+    {
+      highWaterMark: config.ingestHighWatermark,
     }
-  }
-  console.log('⌛️ Finish scanning, time is up')
-}
-
-/**
- * @param {{ erc721: ERC721.Config, fauna: DB.Config}} config
- * @param {Object} options
- * @param {string} options.id
- * @param {number} options.batchSize
- */
-export const importBatch = async (config, { id, batchSize }) => {
-  console.log(`⛓ Fetch ERC721 tokens from ${id}`)
-  const tokens = await fetchTokens(config, {
-    cursor: id,
-    scanSize: batchSize,
-  })
-  console.log(`💾 Import ${tokens.length} tokens`)
-
-  const result = await importTokens(config, {
-    id,
-    tokens,
-  })
-
-  console.log(
-    `✨ Imported ${result.tokens.data.length} tokens, new cursor is "${result.nextID}"`
   )
 
-  return {
-    found: tokens.length,
-    imported: result.tokens.data.length,
-    id: result.nextID,
+  const reader = readIntoInbox(config, inbox.writable)
+  const writer = writeFromInbox(config, inbox.readable)
+
+  await Promise.all([reader, writer])
+  return undefined
+}
+
+/**
+ * Inserts nft records by batches into the inbox.
+ * @param { Config } config
+ * @param { WritableStream<ERC721ImportNFT>} writeable
+ * @return { Promise<never> }
+ */
+async function readIntoInbox(config, writeable) {
+  const writer = writeable.getWriter()
+
+  let cursor = Cursor.init(await initIngestCursor(config))
+
+  Cursor.print(cursor)
+
+  while (true) {
+    let scrape = []
+    try {
+      /*
+       * Attempt to call subgraph, and make a scrape.
+       * if something goes wrong, we can retry, each time waiting longer.
+       * This is to account for intermittent 'yellow flag' failures, like
+       * network temporary outages.
+       * Eventually after enough failures, we can actually throw
+       */
+      scrape = await retry(
+        async () => await fetchNFTBatch(config, cursor),
+        [
+          maxRetries(config.ingestScraperRetryLimit),
+          exponentialBackoff(
+            config.ingestScraperRetryInterval,
+            config.ingestScraperRetryMaxInterval
+          ),
+        ]
+      )
+      // you scraped successfully, got nothing.
+      // you're caught up. Retry later
+      if (scrape.length == 0) {
+        console.log(
+          `🥂 You're caught up, retry in ${config.ingestRetryThrottle}`
+        )
+        await sleep(config.ingestRetryThrottle)
+      } else {
+        await writer.ready
+        console.log(`📨 Adding ${scrape.length} items into Queue.`)
+        for (const nft of scrape) {
+          writer.write(nft)
+          //Continuously update the in-memory cursor
+          cursor = Cursor.after(cursor, parseInt(nft.mintTime))
+        }
+        //Its useful to see what the cursor is periodically.
+        Cursor.print(cursor)
+      }
+    } catch (err) {
+      console.error(`Something unexpected happened scraping nfts`, err)
+      writer.close()
+      throw err
+    }
   }
 }
 
 /**
- * @param {{fauna: DB.Config}} config
+ * Drains records sequentially from the inbox
+ * @param { Config } config
+ * @param { ReadableStream<ERC721ImportNFT>} readable
+ *
  */
-const readCursor = async ({ fauna }) => {
-  const result = await DB.query(fauna, {
-    cursor: {
-      _id: 1,
-      id: 1,
-    },
-  })
+async function writeFromInbox(config, readable) {
+  const reader = readable.getReader()
+  while (true) {
+    /**
+     * @type ERC721ImportNFT[]
+     */
+    let nextBatch = []
+    try {
+      /**
+       * We will attempt to write several import records that have been scraped.
+       * If the write is a failure, we will retry, to account for intermittent outages
+       * If failure occurs several times and for long enough, we throw an error.
+       * We write from the Transform stream, in specified batches.
+       * this stream should typically never be closed,
+       * unless the writeable end has unexpectely closed due to an error
+       */
 
-  return Result.value(result).cursor
-}
+      //Assemble next batch.
+      while (nextBatch.length < config.ingestWriterBatchSize) {
+        const nextImport = await reader.read()
+        if (nextImport.done) {
+          console.log(
+            `⚠️ The Ingestion Stream was closed while assembling a new batch.`
+          )
+          reader.cancel()
+        } else {
+          nextBatch.push(nextImport.value)
+        }
+      }
 
-/**
- * @param {{fauna: DB.Config}} config
- * @param {Object} input
- * @param {string} input.id
- * @param {import('../gen/erc721/schema').Token[]} input.tokens
- */
-const importTokens = async ({ fauna }, input) => {
-  const result = await DB.mutation(fauna, {
-    importERC721: [
-      {
-        input,
-      },
-      {
-        _id: 1,
-        id: 1,
-        nextID: 1,
-        tokens: [
-          {
-            _size: input.tokens.length,
-          },
-          {
-            data: {
-              _id: 1,
-            },
-          },
-        ],
-      },
-    ],
-  })
-  return Result.value(result).importERC721
-}
+      await retry(
+        async () => await writeScrapedRecords(config, nextBatch),
+        [
+          maxRetries(config.ingestWriterRetryLimit),
+          exponentialBackoff(
+            config.ingestWriterRetryInterval,
+            config.ingestWriterRetryMaxInterval
+          ),
+        ]
+      )
 
-/**
- * @param {{ erc721: ERC721.Config }} config
- * @param {{scanSize:number, cursor:string}} settings
- * @returns {Promise<import('../gen/erc721/schema').Token[]>}
- */
-const fetchTokens = async (config, { cursor, scanSize }) => {
-  const result = await ERC721.query(config.erc721, {
-    tokens: [
-      {
-        first: scanSize,
-        where: {
-          tokenURI_not: '',
-          id_gt: cursor,
-        },
-      },
-      {
-        id: 1,
-        tokenID: 1,
-        tokenURI: 1,
-        mintTime: 1,
-        blockNumber: 1,
-        blockHash: 1,
-        contract: {
-          id: 1,
-          name: 1,
-          symbol: 1,
-          supportsEIP721Metadata: 1,
-        },
-        owner: {
-          id: 1,
-        },
-      },
-    ],
-  })
-
-  return Result.value(result).tokens
+      //Reset the batch after writing.
+      nextBatch = []
+    } catch (err) {
+      console.log('Last NFT Batch', JSON.stringify(nextBatch, null, 2))
+      console.error(`Something went wrong when writing scraped nfts`, err)
+      reader.cancel(err)
+      throw err
+    }
+  }
 }
 
 script({ ...import.meta, main })

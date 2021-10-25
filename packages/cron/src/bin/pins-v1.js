@@ -2,7 +2,7 @@
 
 import dotenv from 'dotenv'
 import fetch from 'node-fetch'
-import { updatePinStatuses } from '../jobs/pins-v1.js'
+import { updatePendingPinStatuses } from '../jobs/pins-v1.js'
 import { getDBClient, getCluster } from '../lib/utils.js'
 
 /** @ts-ignore */
@@ -12,7 +12,7 @@ async function main() {
   const db = getDBClient(process.env)
   const cluster = getCluster(process.env)
 
-  await updatePinStatuses({ db, cluster })
+  await updatePendingPinStatuses({ db, cluster })
 }
 
 dotenv.config()
