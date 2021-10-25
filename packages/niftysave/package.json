@@ -11,6 +11,7 @@
     "ingest": "node ./src/ingest.js",
     "analyze": "node ./src/analyze.js",
     "pin": "node ./src/pin.js",
+    "pin-metadata": "node ./src/pin-metadata.js",
     "migrate-content": "node ./src/migrate/content.js",
     "migrate-erc721-import": "node ./src/migrate/erc721-import.js --batch-size 1",
     "migrate-erc721-import-by-nft": "node ./src/migrate/erc721-import-by-nft.js",
@@ -41,7 +42,7 @@
     "yargs": "^17.2.1"
   },
   "dependencies": {
-    "@nftstorage/ipfs-cluster": "^3.3.0",
+    "@nftstorage/ipfs-cluster": "^3.4.2",
     "@web-std/fetch": "^2.0.3",
     "@web-std/file": "^1.1.0",
     "@web-std/form-data": "^2.1.0",
@@ -51,7 +52,15 @@
     "graphql-typed-client": "1.7.4",
     "multiformats": "^9.4.3",
     "nft.storage": "^3.3.0",
-    "subprogram": "^1.2.0"
+    "subprogram": "^1.2.0",
+    "web-streams-polyfill": "^3.0.2",
+    "ipfs-unixfs-importer": "9.0.3",
+    "multihashing-async": "^2.1.2",
+    "ipld-in-memory": "^8.0.0",
+    "ipld-dag-pb": "^0.22.2",
+    "ipld": "^0.30.2",
+    "multicodec": "^3.0.1",
+    "ipfs-car": "^0.5.8"
   },
   "engines": {
     "node": ">=16.10.0"

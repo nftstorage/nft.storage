@@ -18,10 +18,14 @@ heroku addons:create heroku-postgresql:premium-4 --app=nft-storage-prod --name=n
 # Add schema
 heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging
 # ...run schema SQL from /packages/db/tables.sql
-# ...run schema SQL from /packages/db/cargo-fdw.sql
+# ...run schema SQL from /packages/db/fdw.sql with credentials replaced
+# ...run schema SQL from /packages/db/cargo.sql
+# ...run schema SQL from /packages/db/functions.sql
 heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod
 # ...run schema SQL from /packages/db/tables.sql
-# ...run schema SQL from /packages/db/cargo-fdw.sql
+# ...run schema SQL from /packages/db/fdw.sql with credentials replaced
+# ...run schema SQL from /packages/db/cargo.sql
+# ...run schema SQL from /packages/db/functions.sql
 
 # PostgREST ####################################################################
 
@@ -34,7 +38,7 @@ heroku apps:create nft-storage-pgrest-prod --buildpack https://github.com/PostgR
 
 # Bump dyno sizes
 heroku dyno:resize web=standard-1x --app nft-storage-pgrest-staging
-heroku dyno:resize web=standard-1x --app nft-storage-pgrest-prod
+heroku dyno:resize web=standard-2x --app nft-storage-pgrest-prod
 
 # Create the web_anon, authenticator and nft_storage credentials
 # (Heroku does not allow this to be done in the DB)
@@ -70,10 +74,13 @@ heroku git:remote --app=nft-storage-pgrest-staging
 git push heroku main
 heroku git:remote --app=nft-storage-pgrest-prod
 git push heroku main
+# go back to heroku directory
+cd ..
 
 # Custom domains
 heroku domains:add db-staging.nft.storage --app=nft-storage-pgrest-staging
 heroku domains:add db.nft.storage --app=nft-storage-pgrest-prod
+# DNS records need to be added to cloudflare with the returned DNS target
 
 # SSL certs
 heroku certs:auto:enable --app=nft-storage-pgrest-staging
@@ -85,6 +92,14 @@ heroku certs:auto:enable --app=nft-storage-pgrest-prod
 heroku pg:credentials:create nft-storage-staging-0 --name=dagcargo --app=nft-storage-staging
 heroku pg:credentials:create nft-storage-prod-0 --name=dagcargo --app=nft-storage-prod
 
-# Grant privileges to dagcargo user
+# Grant RO privileges to dagcargo user
 heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging < grant-dagcargo.sql
 heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod < grant-dagcargo.sql
+
+# stats ########################################################################
+
+# Add stats user for ad-hoc reporting (only needs production access)
+heroku pg:credentials:create nft-storage-prod-0 --name=stats --app=nft-storage-prod
+
+# Grant RO privileges to stats user
+heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod < grant-stats.sql

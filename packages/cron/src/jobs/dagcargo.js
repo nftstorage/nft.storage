@@ -13,14 +13,16 @@ export async function refreshMaterializedViews({ pg }) {
     )
   }
 
-  log(`🔁 REFRESH MATERIALIZED VIEW public.deal;`)
-  await pg.query('REFRESH MATERIALIZED VIEW public.deal;')
+  log('🔁 REFRESH MATERIALIZED VIEW CONCURRENTLY public.deal;')
+  await pg.query('REFRESH MATERIALIZED VIEW CONCURRENTLY public.deal;')
 
-  log(`🔁 REFRESH MATERIALIZED VIEW public.aggregate;`)
-  await pg.query('REFRESH MATERIALIZED VIEW public.aggregate;')
+  log('🔁 REFRESH MATERIALIZED VIEW CONCURRENTLY public.aggregate;')
+  await pg.query('REFRESH MATERIALIZED VIEW CONCURRENTLY public.aggregate;')
 
-  log(`🔁 REFRESH MATERIALIZED VIEW public.aggregate_entry;`)
-  await pg.query('REFRESH MATERIALIZED VIEW public.aggregate_entry;')
+  log('🔁 REFRESH MATERIALIZED VIEW CONCURRENTLY public.aggregate_entry;')
+  await pg.query(
+    'REFRESH MATERIALIZED VIEW CONCURRENTLY public.aggregate_entry;'
+  )
 
   log('✅ Done')
 }

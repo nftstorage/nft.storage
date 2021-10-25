@@ -2,12 +2,12 @@ table:
   name: content
   schema: public
 array_relationships:
-- name: pins
-  using:
-    manual_configuration:
-      column_mapping:
-        cid: content_cid
-      insertion_order: null
-      remote_table:
-        name: pin
-        schema: public
+  - name: pins
+    using:
+      manual_configuration:
+        column_mapping:
+          cid: content_cid
+        insertion_order: null
+        remote_table:
+          name: pin
+          schema: public

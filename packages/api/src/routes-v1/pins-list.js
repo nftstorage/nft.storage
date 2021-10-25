@@ -71,7 +71,7 @@ const validator = new Validator({
       type: 'array',
       items: {
         type: 'string',
-        enum: ['queued', 'pinning', 'pinned', 'failed'],
+        enum: ['PinError', 'PinQueued', 'Pinned', 'Pinning'],
       },
     },
   },
@@ -115,8 +115,9 @@ function parseSearchParams(params) {
 
   const statusParam = params.get('status')
   if (statusParam) {
+    // Note: undefined statuses from toDbPinStatus will fail validation below
     out.status = /** @type {ListUploadsOptions["status"]}*/ (
-      statusParam.split(',')
+      statusParam.split(',').map(toDbPinStatus)
     )
   }
 
@@ -164,5 +165,23 @@ function parseSearchParams(params) {
       },
       data: undefined,
     }
+  }
+}
+
+/**
+ * Return the DB pin status name or undefined if unknown.
+ *
+ * @param {string} status
+ */
+function toDbPinStatus(status) {
+  switch (status) {
+    case 'queued':
+      return 'PinQueued'
+    case 'pinning':
+      return 'Pinning'
+    case 'pinned':
+      return 'Pinned'
+    case 'failed':
+      return 'PinError'
   }
 }

@@ -76,12 +76,12 @@ export default function ManageKeys({ user }) {
   }
 
   let keys = []
-  if (version === '1') {
+  if (version === '0') {
+    keys = Object.entries(data || {})
+  } else {
     for (const key of data || []) {
       keys.push([key.name, key.secret, key.id])
     }
-  } else {
-    keys = Object.entries(data || {})
   }
 
   return (
@@ -97,7 +97,7 @@ export default function ManageKeys({ user }) {
               <Button
                 href={{
                   pathname: '/new-key',
-                  query: version ? { version: '1' } : null,
+                  query: version ? { version } : null,
                 }}
                 className="flex-none"
                 id="new-key"
@@ -149,7 +149,7 @@ export default function ManageKeys({ user }) {
                             type="hidden"
                             name="name"
                             id={`token-${t[0]}`}
-                            value={version === '1' ? `${t[2]}` : t[0]}
+                            value={version === '0' ? t[0] : `${t[2]}`}
                           />
                           <Button
                             className="bg-nsorange white"
@@ -161,8 +161,7 @@ export default function ManageKeys({ user }) {
                               ui: countly.ui.TOKENS,
                             }}
                           >
-                            {deleting ===
-                            (version === '1' ? `${t[2]}` + '' : t[0])
+                            {deleting === (version === '0' ? t[0] : `${t[2]}`)
                               ? 'Deleting...'
                               : 'Delete'}
                           </Button>

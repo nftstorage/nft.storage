@@ -12,12 +12,24 @@ import yargs from 'yargs'
  * @property {number} retryLimit
  * @property {number} retryInterval
  * @property {number} retryMaxInterval
+ * @property {number} ingestRetryThrottle
+ * @property {number} ingestHighWatermark
+ * @property {string} ingestStartDate
+ * @property {number} ingestScraperBatchSize
+ * @property {number} ingestScraperRetryLimit
+ * @property {number} ingestScraperRetryInterval
+ * @property {number} ingestScraperRetryMaxInterval
+ * @property {number} ingestWriterBatchSize
+ * @property {number} ingestWriterRetryLimit
+ * @property {number} ingestWriterRetryInterval
+ * @property {number} ingestWriterRetryMaxInterval
  * @property {number} queueSize
  * @property {number} concurrency
  * @property {import('./cluster').Config} cluster
  * @property {import('./ipfs').Config} ipfs
  * @property {Endpoint} erc721
  * @property {Endpoint} hasura
+ * @property {import('nft.storage/src/lib/interface').Service} nftStorage
  * @property {Endpoint & {secret: string}} fauna
  *
  * @returns {Promise<Config>}
@@ -131,6 +143,90 @@ export const configure = async () => {
         default: process.env['HASURA_KEY'],
         demandOption: true,
       },
+      'nftstorage-enpoint': {
+        alias: 'nftStorageEndpoint',
+        type: 'string',
+        default:
+          process.env['NFT_STORAGE_ENDPOINT'] || 'https://api.nft.storage',
+      },
+      'nftstorage-key': {
+        alias: 'nftStorageKey',
+        type: 'string',
+        default: process.env['NFT_STORAGE_KEY'],
+        demandOption: true,
+      },
+      'ingest-retry-throttle': {
+        alias: 'ingestRetryThrottle',
+        type: 'number',
+        default: Number(process.env['INGEST_RETRY_THROTTLE']) || 10 * 1000,
+        description: `The rate(ms) at which the ingestor will recheck to see if there are more blockchain entries when a scrape is performed but notrhing returned`,
+      },
+      'ingest-high-watermark': {
+        alias: 'ingestHighWatermark',
+        type: 'number',
+        default: Number(process.env['INGEST_HIGH_WATERMARK']) || 10000,
+        description: `The max number of records the ingestion buffer will hold in memory. Going below this line will trigger additional scraping`,
+      },
+      'ingest-start-date': {
+        alias: 'ingestStartDate',
+        type: 'string',
+        default: process.env['INGEST_START_DATE'] || '',
+        description: 'A date to start scraping the blockchain from.',
+      },
+      'ingest-scraper-batch-size': {
+        alias: 'ingestScraperBatchSize',
+        type: 'number',
+        default: Number(process.env['INGEST_SCRAPER_BATCH_SIZE']) || 1000,
+        description: `The number of records the ingestor tries to pull of the blockchain per-scrape`,
+      },
+      'ingest-scraper-retry-limit': {
+        type: 'number',
+        default: Number(process.env['INGEST_SCRAPER_RETRY_LIMIT'] || '100'),
+        description:
+          'Max number of retries to perform when scraping the blockchain and an error is encountered (eg. as network is down)',
+      },
+      'ingest-scraper-retry-interval': {
+        type: 'number',
+        default: parseInt(
+          process.env['INGEST_SCRAPER_RETRY_INTERVAL'] || '500'
+        ),
+        description:
+          'Interval to space out retries by when scraping the blockchain',
+      },
+      'ingest-scraper-retry-max-interval': {
+        type: 'number',
+        default: Number(
+          process.env['INGEST_SCRAPER_RETRY_MAX_INTERVAL'] || 'Infinity'
+        ),
+        description:
+          'Max sleep frame between retries when scraping the blockchain',
+      },
+      'ingest-writer-batch-size': {
+        alias: 'ingestWriterBatchSize',
+        type: 'number',
+        default: Number(process.env['INGEST_WRITER_BATCH_SIZE']) || 1000,
+        description: `The number of records the ingestor tries write into the database as a batch`,
+      },
+      'ingest-writer-retry-limit': {
+        type: 'number',
+        default: Number(process.env['INGEST_WRITER_RETRY_LIMIT'] || '50'),
+        description:
+          'Max number of retries to perform when writing scraped records aquired from the blockchain and an error is encountered (eg. as network is down)',
+      },
+      'ingest-writer-retry-interval': {
+        type: 'number',
+        default: parseInt(process.env['INGEST_WRITER_RETRY_INTERVAL'] || '500'),
+        description:
+          'Interval to space out retries by when writing scraped records aquired from the blockchain',
+      },
+      'ingest-writer-retry-max-interval': {
+        type: 'number',
+        default: Number(
+          process.env['INGEST_WRITER_RETRY_MAX_INTERVAL'] || 'Infinity'
+        ),
+        description:
+          'Max sleep frame between retrieswhen writing scraped records aquired from the blockchain',
+      },
     })
     .parse()
 
@@ -146,9 +242,23 @@ export const configure = async () => {
     queueSize: config['queue-size'],
     concurrency: config.concurrency,
 
+    ingestRetryThrottle: config['ingest-retry-throttle'],
+    ingestHighWatermark: config['ingest-high-watermark'],
+    ingestScraperBatchSize: config['ingest-scraper-batch-size'],
+    ingestStartDate: config['ingest-start-date'],
+
+    ingestScraperRetryLimit: config['ingest-scraper-retry-limit'],
+    ingestScraperRetryInterval: config['ingest-scraper-retry-interval'],
+    ingestScraperRetryMaxInterval: config['ingest-scraper-retry-max-interval'],
+
+    ingestWriterBatchSize: config['ingest-writer-batch-size'],
+    ingestWriterRetryLimit: config['ingest-writer-retry-limit'],
+    ingestWriterRetryInterval: config['ingest-writer-retry-interval'],
+    ingestWriterRetryMaxInterval: config['ingest-writer-retry-max-interval'],
+
     cluster: {
       url: new URL(config['cluster-endpoint']),
-      secret: config['cluster-key'],
+      headers: { Authorization: `Basic ${config['cluster-key']}` },
     },
 
     ipfs: {
@@ -173,6 +283,11 @@ export const configure = async () => {
       headers: {
         'x-hasura-admin-secret': config['hasura-key'],
       },
+    },
+
+    nftStorage: {
+      endpoint: new URL(config['nftstorage-enpoint']),
+      token: config['nftstorage-key'],
     },
   }
 }

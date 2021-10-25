@@ -4,6 +4,7 @@ import stores from './scripts/stores.js'
 import { signJWT } from '../src/utils/jwt.js'
 import { SALT } from './scripts/worker-globals.js'
 import { createCar } from './scripts/car.js'
+import { rawClient } from './scripts/helpers.js'
 
 /**
  * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
@@ -47,7 +48,7 @@ describe('/upload', () => {
     const file = new Blob(['hello world!'])
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
-    const res = await fetch('/upload', {
+    const res = await fetch('v0/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body: file,
@@ -71,6 +72,34 @@ describe('/upload', () => {
     )
   })
 
+  it('should record nft:create migration event', async () => {
+    const { token } = await createTestUser()
+
+    const file = new Blob(['test-migration-event-' + Date.now()])
+    const res = await fetch('v0/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: file,
+    })
+
+    assert(res, 'Server responded')
+    assert(res.ok, 'Server response ok')
+    const {
+      ok,
+      value: { cid },
+    } = await res.json()
+    assert(ok, 'Server response payload has `ok` property')
+
+    const { data, error } = await rawClient
+      .from('migration_event')
+      .select('*')
+      .filter('name', 'eq', 'nft:create')
+
+    assert.ok(!error)
+    const eventData = data?.find((d) => d.data.nft.cid === cid)
+    assert(eventData)
+  })
+
   it('should upload a multiple blobs', async () => {
     const { token, issuer } = await createTestUser()
     const body = new FormData()
@@ -79,7 +108,7 @@ describe('/upload', () => {
     const file2 = new Blob(['hello world! 2'])
     body.append('file', file1, 'name1')
     body.append('file', file2, 'name2')
-    const res = await fetch('/upload', {
+    const res = await fetch('v0/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body,
@@ -108,7 +137,7 @@ describe('/upload', () => {
     const file2 = new Blob(['hello world! 2'])
     body.append('file', file1)
     body.append('file', file2)
-    const res = await fetch('/upload', {
+    const res = await fetch('v0/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body,
@@ -137,7 +166,7 @@ describe('/upload', () => {
     const file2 = new Blob(['hello world! 2'])
     body.append('file', new File([file1], 'name1.png'))
     body.append('file', new File([file2], 'name1.png'))
-    const res = await fetch('/upload', {
+    const res = await fetch('v0/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body,
@@ -165,7 +194,7 @@ describe('/upload', () => {
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
     assert.strictEqual(root.toString(), cid, 'car file has correct root')
-    const res = await fetch('/upload', {
+    const res = await fetch('v0/upload', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,

@@ -24,24 +24,24 @@ const Callback = () => {
   useEffect(() => {
     const finishSocialLogin = async () => {
       try {
-        await redirectSocial('1')
+        await redirectSocial('0')
         await queryClient.invalidateQueries('magic-user')
-        router.push({ pathname: '/files', query: { version: '1' } })
+        router.push({ pathname: '/files', query: { version: '0' } })
       } catch (err) {
         console.error(err)
         await queryClient.invalidateQueries('magic-user')
-        router.push({ pathname: '/', query: { version: '1' } })
+        router.push({ pathname: '/', query: { version: '0' } })
       }
     }
     const finishEmailRedirectLogin = async () => {
       try {
-        await redirectMagic('1')
+        await redirectMagic('0')
         await queryClient.invalidateQueries('magic-user')
-        router.push({ pathname: '/files', query: { version: '1' } })
+        router.push({ pathname: '/files', query: { version: '0' } })
       } catch (err) {
         console.error(err)
         await queryClient.invalidateQueries('magic-user')
-        router.push({ pathname: '/', query: { version: '1' } })
+        router.push({ pathname: '/', query: { version: '0' } })
       }
     }
     if (!router.query.provider && router.query.magic_credential) {

@@ -5,7 +5,9 @@ import { CID } from 'multiformats'
 import { pack } from 'ipfs-car/pack'
 import { CarWriter } from '@ipld/car'
 import * as dagCbor from '@ipld/dag-cbor'
+import * as dagJson from '@ipld/dag-json'
 import { garbage } from 'ipld-garbage'
+import { encode } from 'multiformats/block'
 import { sha256 } from 'multiformats/hashes/sha2'
 
 const DWEB_LINK = 'dweb.link'
@@ -153,6 +155,21 @@ describe('client', () => {
       })
       assert.ok(uploadedChunks >= 12)
       assert.equal(cid, expectedCid)
+    })
+
+    it('upload CAR with non-default decoder', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const block = await encode({
+        value: { hello: 'world' },
+        codec: dagJson,
+        hasher: sha256,
+      })
+      const { writer, out } = CarWriter.create([block.cid])
+      writer.put(block)
+      writer.close()
+      const reader = await CarReader.fromIterable(out)
+      const cid = await client.storeCar(reader, { decoders: [dagJson] })
+      assert.equal(cid, block.cid.toString(), 'returned cid matches the CAR')
     })
   })
 

@@ -21,7 +21,7 @@
     "@types/yargs": "^17.0.0"
   },
   "dependencies": {
-    "@nftstorage/ipfs-cluster": "^3.3.1",
+    "@nftstorage/ipfs-cluster": "^3.4.2",
     "@web-std/fetch": "^2.0.3",
     "dotenv": "^10.0.0",
     "faunadb": "^4.3.0",
@@ -30,9 +30,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ipfs-shipyard/nft.storage.git",
+    "url": "https://github.com/nftstorage/nft.storage.git",
     "directory": "database"
   },
-  "homepage": "https://github.com/ipfs-shipyard/nft.storage/tree/main/database",
-  "bugs": "https://github.com/ipfs-shipyard/nft.storage/issues"
+  "homepage": "https://github.com/nftstorage/nft.storage/tree/main/database",
+  "bugs": "https://github.com/nftstorage/nft.storage/issues"
 }

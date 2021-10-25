@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { createClientWithUser, DBTestClient } from './scripts/helpers.js'
+import { createClientWithUser } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import delay from 'delay'
 
@@ -19,7 +19,7 @@ describe('V1 - List NFTs', () => {
     })
 
     await delay(300)
-    const res = await fetch(`v1`, {
+    const res = await fetch('', {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
@@ -48,7 +48,7 @@ describe('V1 - List NFTs', () => {
     })
 
     await delay(300)
-    const res = await fetch(`v1?limit=1`, {
+    const res = await fetch('?limit=1', {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
@@ -72,7 +72,7 @@ describe('V1 - List NFTs', () => {
     })
 
     await delay(300)
-    const res = await fetch(`v1?before=${date}`, {
+    const res = await fetch(`?before=${date}`, {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
@@ -93,7 +93,7 @@ describe('V1 - List NFTs', () => {
     }
 
     await delay(300)
-    const res = await fetch(`v1`, {
+    const res = await fetch('', {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
@@ -117,7 +117,7 @@ describe('V1 - List NFTs', () => {
     const invalidLimits = [-1, 0, 1001, 'not-a-number', 1.138]
 
     for (const limit of invalidLimits) {
-      const res = await fetch(`v1?limit=${limit}`, {
+      const res = await fetch(`?limit=${limit}`, {
         headers: { Authorization: `Bearer ${client.token}` },
       })
       assert.strictEqual(res.status, 400)
@@ -126,5 +126,41 @@ describe('V1 - List NFTs', () => {
       assert.strictEqual(ok, false)
       assert.strictEqual(error.message, 'invalid params')
     }
+  })
+
+  it('should list only active nfts', async () => {
+    const client = await createClientWithUser()
+    const cidv1 = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
+    const cidv0 = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
+    await client.client.createUpload({
+      content_cid: cidv1,
+      source_cid: cidv0,
+      type: 'Blob',
+      user_id: client.userId,
+      dag_size: 100,
+    })
+    await client.client.createUpload({
+      content_cid: cidv1,
+      source_cid: cidv1,
+      type: 'Blob',
+      user_id: client.userId,
+      dag_size: 100,
+    })
+
+    const deleteRsp = await fetch(cidv0, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${client.token}` },
+    })
+    const deleteData = await deleteRsp.json()
+    assert.ok(deleteData.ok)
+
+    const res = await fetch('', {
+      headers: { Authorization: `Bearer ${client.token}` },
+    })
+    const { ok, value } = await res.json()
+
+    assert.ok(ok)
+    assert.equal(value.length, 1)
+    assert.equal(value[0].cid, cidv1)
   })
 })

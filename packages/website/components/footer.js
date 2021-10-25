@@ -52,7 +52,7 @@ export default function Footer() {
         <span className="db db-m dib-ns mv3">
           Need Help?{' '}
           <a
-            href="https://github.com/ipfs-shipyard/nft.storage/issues/new"
+            href="https://github.com/nftstorage/nft.storage/issues/new"
             className="nspink underline-hover no-underline"
             onClick={onLinkClick}
           >

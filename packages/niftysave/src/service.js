@@ -6,7 +6,7 @@ const services = new WeakMap()
  * @param {(config:Config) => Service} start
  * @returns {(config: Config) => Service}
  */
-export const create = start => config => {
+export const create = (start) => (config) => {
   const service = services.get(config)
   if (service) {
     return service
