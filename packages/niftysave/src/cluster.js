@@ -2,8 +2,7 @@ import dotenv from 'dotenv'
 import fetch, { Blob } from '@web-std/fetch'
 import { File } from '@web-std/file'
 import { FormData } from '@web-std/form-data'
-import { Cluster } from '@nftstorage/ipfs-cluster'
-import * as Service from './service.js'
+import * as Cluster from '@nftstorage/ipfs-cluster'
 import * as IPFSURL from './ipfs-url.js'
 
 dotenv.config()
@@ -11,20 +10,9 @@ dotenv.config()
 Object.assign(globalThis, { File, Blob, FormData, fetch })
 
 /**
- * @typedef {Object} Config
- * @property {URL} url
- * @property {string} secret
- * @typedef {Cluster} Service
- *
- * @param {Config} config
- * @returns {Cluster}
+ * @typedef {import('@nftstorage/ipfs-cluster').API.Config} Config
  */
-const connect = (config) =>
-  new Cluster(config.url.href, {
-    headers: { Authorization: `Basic ${config.secret}` },
-  })
 
-const service = Service.create(connect)
 /**
  * Adds blob to the cluster
  *
@@ -36,7 +24,7 @@ const service = Service.create(connect)
  * @param {AbortSignal} [options.signal]
  */
 export const add = async (config, data, { metadata, signal }) => {
-  const { cid, size, bytes } = await service(config).add(data, {
+  const { cid, size, bytes } = await Cluster.add(config, data, {
     signal,
     metadata: {
       size: data.size.toString(),
@@ -73,7 +61,7 @@ export const pin = async (
     ? IPFSURL.formatIPFSPathWithCIDv0(url)
     : IPFSURL.formatIPFSPath(url)
 
-  return await service(config).pin(removeTrailingSlash(path), {
+  return await Cluster.pin(config, removeTrailingSlash(path), {
     signal,
     metadata: {
       user: '@nftstorage/niftysave',

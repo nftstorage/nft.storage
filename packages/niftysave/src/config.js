@@ -258,7 +258,7 @@ export const configure = async () => {
 
     cluster: {
       url: new URL(config['cluster-endpoint']),
-      secret: config['cluster-key'],
+      headers: { Authorization: `Basic ${config['cluster-key']}` },
     },
 
     ipfs: {

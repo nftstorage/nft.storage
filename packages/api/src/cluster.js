@@ -12,7 +12,7 @@ const client = new Cluster(cluster.apiUrl, {
 
 /**
  * @param {Blob} data
- * @param {import('@nftstorage/ipfs-cluster').AddParams} options
+ * @param {import('@nftstorage/ipfs-cluster').API.AddParams} options
  */
 export async function add(data, options = {}) {
   const { cid, size, bytes } = await client.add(data, {
@@ -23,6 +23,25 @@ export async function add(data, options = {}) {
     cid,
     size: Number(size),
     bytes: Number(bytes),
+  }
+}
+
+/**
+ * 
+ * @param {Blob} data 
+ * @param {import('@nftstorage/ipfs-cluster').API.AddCarParams} options
+ */
+
+export async function addCar(data, options = {}) {
+  const { cid, size, bytes } = await client.addCAR(data, {
+    metadata: { size: data.size.toString() },
+    ...options
+  })
+
+  return {
+    cid,
+    size: Number(size),
+    bytes: Number(bytes)
   }
 }
 
