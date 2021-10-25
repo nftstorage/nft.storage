@@ -6,7 +6,7 @@ import * as Hasura from './hasura.js'
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
 import * as Cursor from './hasura/cursor.js'
 import { TransformStream } from './stream.js'
-import { setTimeout as sleep } from './timers.js'
+import { setTimeout as sleep } from 'timers/promises'
 import * as Car from './car.js'
 import { NFTStorage } from 'nft.storage'
 

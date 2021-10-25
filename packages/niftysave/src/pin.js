@@ -12,7 +12,7 @@ import { TransformStream } from './stream.js'
 import { configure } from './config.js'
 import { printURL } from './util.js'
 import { script } from 'subprogram'
-import { setTimeout as sleep } from './timers.js'
+import { setTimeout as sleep } from 'timers/promises'
 
 export const main = async () => await spawn(await configure())
 
