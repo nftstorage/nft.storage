@@ -40,7 +40,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
     await getMagic().user.logout()
     await queryClient.invalidateQueries('magic-user')
     Router.push({ pathname: '/', query: version ? { version } : null })
-  }, [])
+  }, [queryClient, version])
 
   const trackLogout = useCallback(() => {
     countly.trackEvent(countly.events.LOGOUT_CLICK, {
@@ -129,12 +129,6 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
     },
     [onLinkClick, toggleMenu]
   )
-
-  // async function logout() {
-  //   await getMagic().user.logout()
-  //   await queryClient.invalidateQueries('magic-user')
-  //   Router.push({ pathname: '/', query: version ? { version } : null })
-  // }
 
   return (
     <nav
