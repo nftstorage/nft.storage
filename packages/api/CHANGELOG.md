@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.7.4](https://www.github.com/nftstorage/nft.storage/compare/api-v2.7.3...api-v2.7.4) (2021-10-25)
+
+
+### Bug Fixes
+
+* car uploads from store endpoint ([#667](https://www.github.com/nftstorage/nft.storage/issues/667)) ([a65daca](https://www.github.com/nftstorage/nft.storage/commit/a65dacad083a9c68a3ba1b240277948251041164))
+* update links to moved repo ([#650](https://www.github.com/nftstorage/nft.storage/issues/650)) ([df94aaa](https://www.github.com/nftstorage/nft.storage/commit/df94aaa8f1ec1a2e7d60a258a90758b2df630c9a))
+
 ### [2.7.3](https://www.github.com/nftstorage/nft.storage/compare/api-v2.7.2...api-v2.7.3) (2021-10-20)
 
 
