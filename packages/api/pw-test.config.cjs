@@ -49,7 +49,14 @@ module.exports = {
     const proc = execa('smoke', ['-p', '9094', 'test/mocks/cluster'], {
       preferLocal: true,
     })
-    const stdout = await once(proc.stdout, 'data')
+
+    const stdout = await Promise.race([
+      once(proc.stdout, 'data'),
+      // Make sure that we fail if process crashes. However if it exits without
+      // producing stdout just resolve to ''.
+      proc.then(() => '')
+    ])
+
 
     if (
       stdout.toString().includes('Server started on: http://localhost:9094')
