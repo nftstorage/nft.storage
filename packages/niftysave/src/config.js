@@ -14,6 +14,7 @@ import yargs from 'yargs'
  * @property {number} retryMaxInterval
  * @property {number} ingestRetryThrottle
  * @property {number} ingestHighWatermark
+ * @property {string} ingestStartDate
  * @property {number} ingestScraperBatchSize
  * @property {number} ingestScraperRetryLimit
  * @property {number} ingestScraperRetryInterval
@@ -163,8 +164,14 @@ export const configure = async () => {
       'ingest-high-watermark': {
         alias: 'ingestHighWatermark',
         type: 'number',
-        default: Number(process.env['INGEST_HIGH_WATERMARK']) || 500,
+        default: Number(process.env['INGEST_HIGH_WATERMARK']) || 10000,
         description: `The max number of records the ingestion buffer will hold in memory. Going below this line will trigger additional scraping`,
+      },
+      'ingest-start-date': {
+        alias: 'ingestStartDate',
+        type: 'string',
+        default: process.env['INGEST_START_DATE'] || '',
+        description: 'A date to start scraping the blockchain from.',
       },
       'ingest-scraper-batch-size': {
         alias: 'ingestScraperBatchSize',
@@ -197,7 +204,7 @@ export const configure = async () => {
       'ingest-writer-batch-size': {
         alias: 'ingestWriterBatchSize',
         type: 'number',
-        default: Number(process.env['INGEST_WRITER_BATCH_SIZE']) || 500,
+        default: Number(process.env['INGEST_WRITER_BATCH_SIZE']) || 1000,
         description: `The number of records the ingestor tries write into the database as a batch`,
       },
       'ingest-writer-retry-limit': {
@@ -238,6 +245,7 @@ export const configure = async () => {
     ingestRetryThrottle: config['ingest-retry-throttle'],
     ingestHighWatermark: config['ingest-high-watermark'],
     ingestScraperBatchSize: config['ingest-scraper-batch-size'],
+    ingestStartDate: config['ingest-start-date'],
 
     ingestScraperRetryLimit: config['ingest-scraper-retry-limit'],
     ingestScraperRetryInterval: config['ingest-scraper-retry-interval'],

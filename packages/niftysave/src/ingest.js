@@ -22,6 +22,7 @@ import { setTimeout as sleep } from './timers.js'
  * @property { Hasura.Config } config.hasura
  * @property { number } config.ingestRetryThrottle
  * @property { number } config.ingestHighWatermark
+ * @property { string } config.ingestStartDate
  * @property { number } config.ingestScraperBatchSize
  * @property { number } config.ingestScraperRetryLimit
  * @property { number } config.ingestScraperRetryInterval

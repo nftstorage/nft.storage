@@ -3,6 +3,7 @@ import * as Hasura from '../hasura.js'
 /**
  * @typedef { Object } Config
  * @property { Hasura.Config } config.hasura
+ * @property { string } config.ingestStartDate
  */
 
 /**
@@ -14,13 +15,19 @@ import * as Hasura from '../hasura.js'
  * @returns { Promise<number>}
  */
 export async function initIngestCursor(config) {
+  let initDate = new Date().toDateString() //default is to start today
+
+  if (isDate(config.ingestStartDate)) {
+    initDate = new Date(config.ingestStartDate).toDateString()
+  }
+
   const lastNFT = await Hasura.query(config.hasura, {
     nft: [
       {
         limit: 1,
         where: {
           inserted_at: {
-            _gte: new Date(new Date().toDateString()).toISOString(),
+            _gte: new Date(initDate).toISOString(),
           },
         },
         order_by: [
@@ -43,3 +50,11 @@ export async function initIngestCursor(config) {
   const cursor = Math.round(new Date(mint_time).getTime() / 1000)
   return cursor
 }
+
+/**
+ *
+ * @param {string} date
+ * @returns {boolean}
+ */
+var isDate = (date) =>
+  date.length > 0 && new Date(date).toString() !== 'Invalid Date'
