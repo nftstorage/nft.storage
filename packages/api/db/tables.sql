@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS content
 );
 
 CREATE INDEX IF NOT EXISTS content_updated_at_idx ON content (updated_at);
+CREATE INDEX IF NOT EXISTS content_inserted_at_idx ON content (inserted_at);
 
 -- Information for piece of content pinned in IPFS.
 CREATE TABLE IF NOT EXISTS pin
@@ -129,6 +130,7 @@ CREATE TABLE IF NOT EXISTS upload
     UNIQUE (user_id, source_cid)
 );
 
+CREATE INDEX IF NOT EXISTS upload_source_cid_idx ON upload (source_cid);
 CREATE INDEX IF NOT EXISTS upload_updated_at_idx ON upload (updated_at);
 
 -- Temporary table to record events from the live site between KV sync start
