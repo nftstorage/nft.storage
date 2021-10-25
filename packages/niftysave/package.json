@@ -53,7 +53,6 @@
     "multiformats": "^9.4.3",
     "nft.storage": "^3.3.0",
     "subprogram": "^1.2.0",
-    "web-streams-polyfill": "^3.0.2",
     "ipfs-unixfs-importer": "9.0.3",
     "multihashing-async": "^2.1.2",
     "ipld-in-memory": "^8.0.0",
