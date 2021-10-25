@@ -85,7 +85,7 @@ export const importAsset = async (file, options = {}) => {
 }
 /**
  * @param {string} cid
- * @param {import("@nftstorage/ipfs-cluster").PinOptions | undefined} [options]
+ * @param {import("@nftstorage/ipfs-cluster").API.PinOptions | undefined} [options]
  */
 export async function pin(cid, options) {
   return client.pin(cid, options)
@@ -139,7 +139,7 @@ export async function dagSize(cid) {
 
 /**
  * Best effort conversion from cluster status to pinning service API status.
- * @param {import('@nftstorage/ipfs-cluster').StatusResponse} status
+ * @param {import('@nftstorage/ipfs-cluster').API.StatusResponse} status
  * @returns {import('./pinata-psa').Status}
  */
 export function toPSAStatus(status) {

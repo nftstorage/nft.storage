@@ -12,7 +12,7 @@ const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
 /**
  * @typedef {import('../bindings').NFT} NFT
  * @typedef {import('../bindings').NFTResponse} NFTResponse
- * @typedef {import('@nftstorage/ipfs-cluster').StatusResponse} StatusResponse
+ * @typedef {import('@nftstorage/ipfs-cluster').API.StatusResponse} StatusResponse
  */
 
 /** @type {import('../utils/router.js').Handler} */
