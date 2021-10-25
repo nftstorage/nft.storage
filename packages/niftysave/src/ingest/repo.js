@@ -29,13 +29,31 @@ import {
  */
 export async function writeScrapedRecords(config, erc721Imports) {
   const records = erc721Imports.map(erc721ImportToNFTEndpoint)
+  const startTime = performance.now()
   printBatch(records)
   const batchMutation = Object.fromEntries(
     records.map(recordToMutation).entries()
   )
-  return Hasura.mutation(config.hasura, {
+  const done = await Hasura.mutation(config.hasura, {
     __alias: batchMutation,
   })
+  const stopTime = performance.now()
+  printTiming(startTime, stopTime, records.length)
+  return done
+}
+
+/**
+ *
+ * @param {number} startTime
+ * @param {number} stopTime
+ * @param {number} recordsAmount
+ */
+function printTiming(startTime, stopTime, recordsAmount) {
+  const elapsed = stopTime - startTime
+  const perRecord = (elapsed / recordsAmount).toFixed(6)
+  console.log(
+    `📝Completed...\n🧮 ${recordsAmount} records\t⏲️ over ${elapsed}ms\t averaging 🐇 ${perRecord}ms per record`
+  )
 }
 
 /**
@@ -43,9 +61,9 @@ export async function writeScrapedRecords(config, erc721Imports) {
  */
 function printBatch(records) {
   console.log(
-    `✍️\n Writing ${
+    `✍️ Writing ${
       records.length
-    }\n⎾ 🌿 ${records[0]?.mint_time.toUTCString()}\t🏷️ ${
+    } records... \n⎾ 🌿 ${records[0]?.mint_time.toUTCString()}\t🏷️ ${
       records[0]?.id
     }\n⎿ 🌿 ${records[records.length - 1]?.mint_time.toUTCString()}\t🏷️ ${
       records[records.length - 1]?.id
