@@ -86,7 +86,7 @@ async function readIntoInbox(config, writeable) {
        * Eventually after enough failures, we can actually throw
        */
       scrape = await retry(
-        async () => fetchNFTBatch(config, cursor),
+        async () => await fetchNFTBatch(config, cursor),
         [
           maxRetries(config.ingestScraperRetryLimit),
           exponentialBackoff(
