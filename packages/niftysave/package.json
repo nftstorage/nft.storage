@@ -42,7 +42,7 @@
     "yargs": "^17.2.1"
   },
   "dependencies": {
-    "@nftstorage/ipfs-cluster": "^3.4.2",
+    "@nftstorage/ipfs-cluster": "^3.4.3",
     "@web-std/fetch": "^2.0.3",
     "@web-std/file": "^1.1.0",
     "@web-std/form-data": "^2.1.0",
