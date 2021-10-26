@@ -42,7 +42,7 @@ BEGIN
                         name,
                         files,
                         origins,
-                        meta, inserted_at, updated_at)
+                        meta, updated_at, inserted_at)
     values ((data ->> 'user_id')::BIGINT,
             (data ->> 'key_id')::BIGINT,
             data ->> 'content_cid',
@@ -57,7 +57,7 @@ BEGIN
             (data ->> 'inserted_at')::timestamptz)
     ON CONFLICT ( user_id, source_cid )
         DO UPDATE SET deleted_at = null,
-                      updated_at = (data ->> 'inserted_at')::timestamptz,
+                      updated_at = (data ->> 'updated_at')::timestamptz,
                       name       = data ->> 'name',
                       meta       = (data ->> 'meta')::jsonb,
                       origins    = (data ->> 'origins')::jsonb,
