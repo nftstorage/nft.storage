@@ -75,6 +75,10 @@ export async function addDirectory(files, options = {}) {
  */
 export const importAsset = async (file, options = {}) => {
   const result = await client.addDirectory([file], options)
+  // If file path includes a directory e.g. `dir/cat.png` result will contain
+  // three CIDs corresponding to `cat.png` , `dir` and wrapping directory.
+  // thas is why we verify that at least two elements are present but pick the
+  // very last one.
   if (result.length < 2) {
     throw new Error(
       `Expected response with at least two entries, but instead got: ${result.map($ => $.cid)}`
