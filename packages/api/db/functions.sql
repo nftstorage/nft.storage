@@ -9,13 +9,14 @@ CREATE TYPE upload_pin_type AS
     service service_type
 );
 
-CREATE OR REPLACE FUNCTION create_upload(data json) RETURNS setof upload
+CREATE OR REPLACE FUNCTION create_upload(data json) RETURNS void
     LANGUAGE plpgsql
     volatile
     PARALLEL UNSAFE
 AS
 $$
 BEGIN
+    SET LOCAL statement_timeout = '30s';
 
     insert into content (cid, dag_size, updated_at, inserted_at)
     values (data ->> 'content_cid',
@@ -42,7 +43,7 @@ BEGIN
                         name,
                         files,
                         origins,
-                        meta, inserted_at, updated_at)
+                        meta, updated_at, inserted_at)
     values ((data ->> 'user_id')::BIGINT,
             (data ->> 'key_id')::BIGINT,
             data ->> 'content_cid',
@@ -57,24 +58,12 @@ BEGIN
             (data ->> 'inserted_at')::timestamptz)
     ON CONFLICT ( user_id, source_cid )
         DO UPDATE SET deleted_at = null,
-                      updated_at = (data ->> 'inserted_at')::timestamptz,
+                      updated_at = (data ->> 'updated_at')::timestamptz,
                       name       = data ->> 'name',
                       meta       = (data ->> 'meta')::jsonb,
                       origins    = (data ->> 'origins')::jsonb,
                       mime_type  = data ->> 'mime_type',
                       type       = (data ->> 'type')::upload_type;
-
-
-    return query select *
-                 from upload u
-                 where u.user_id = (data ->> 'user_id')::BIGINT
-                   AND u.content_cid = data ->> 'content_cid';
-
-    IF NOT FOUND THEN
-        RAISE EXCEPTION 'No upload found %', data ->> 'content_cid';
-    END IF;
-
-    RETURN;
 
 END
 $$;
