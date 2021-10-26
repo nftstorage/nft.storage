@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.8.2](https://www.github.com/nftstorage/nft.storage/compare/api-v2.8.1...api-v2.8.2) (2021-10-26)
+
+
+### Bug Fixes
+
+* store API for files that contain directories ([#678](https://www.github.com/nftstorage/nft.storage/issues/678)) ([4dc37c6](https://www.github.com/nftstorage/nft.storage/commit/4dc37c698db6f8c7390ea953067e0e891b3856f3))
+
 ### [2.8.1](https://www.github.com/nftstorage/nft.storage/compare/api-v2.8.0...api-v2.8.1) (2021-10-26)
 
 
