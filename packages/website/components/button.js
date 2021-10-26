@@ -22,6 +22,7 @@ import countly from '../lib/countly'
  * @prop {boolean} [disabled]
  * @prop {boolean} [small]
  * @prop {string} [id]
+ * @prop {'dark' | 'light' } [variant]
  * @prop {TrackingProp} [tracking] Tracking data to send to countly on button click
  */
 
@@ -40,7 +41,9 @@ export default function Button({
   children,
   disabled = false,
   small = false,
+  variant = 'light',
   tracking,
+  ...props
 }) {
   const onClickHandler = useCallback(
     (event) => {
@@ -69,6 +72,18 @@ export default function Button({
   )
   const wrapperStyle = { minWidth: small ? '0' : '8rem' }
   const btnStyle = { top: 3, left: 3 }
+
+  let variantClasses = ''
+  switch (variant) {
+    case 'dark':
+      variantClasses = 'bg-black white'
+      break
+
+    case 'light':
+      variantClasses = 'bg-white black'
+      break
+  }
+
   const btn = (
     <button
       type={type}
@@ -83,13 +98,14 @@ export default function Button({
         'chicagoflf',
         'f5',
         { pointer: !disabled },
-        'bg-white',
+        variantClasses,
         className
       )}
       style={btnStyle}
       onClick={onClickHandler}
       disabled={disabled}
       id={id}
+      {...props}
     >
       {children}
     </button>
