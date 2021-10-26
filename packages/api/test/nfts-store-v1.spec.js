@@ -88,7 +88,7 @@ describe('V1 - /store', () => {
     ])
   })
 
-  it.only('should store dir wrapped image', async () => {
+  it('should store dir wrapped image', async () => {
     const { token, userId } = await createTestUser()
 
     const metadata = {
