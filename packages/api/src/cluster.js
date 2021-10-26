@@ -77,7 +77,7 @@ export const importAsset = async (file, options = {}) => {
   const result = await client.addDirectory([file], options)
   if (result.length !== 2) {
     throw new Error(
-      `Expected response with two entries, but got ${result.length} instead`
+      `Expected two CIDs one for file another for the directory, instead got: ${result.map(file => file.cid).join(', ')} when uploading file named ${file.name} with type ${file.type} and size ${file.size}`
     )
   }
   const [, dir] = result
