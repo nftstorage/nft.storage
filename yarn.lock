@@ -533,10 +533,10 @@
   resolved "https://registry.yarnpkg.com/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-11.1.2.tgz#e15824405df137129918205e43cb5e9339589745"
   integrity sha512-e/pIKVdB+tGQYa1cW3sAeHm8gzEri/HYLZHT4WZojrUxgWXqx8pk7S7Xs47uBcFTqBDRvK3EcQpPLf3XdVsDdg==
 
-"@nftstorage/ipfs-cluster@^3.4.2":
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/@nftstorage/ipfs-cluster/-/ipfs-cluster-3.4.2.tgz#b1a36659c66a7acb992eb4ea1032459a8b8ec353"
-  integrity sha512-SH7Z9lzyRr5bUlwCk46ltpGg8nP7kwRqbBakuUkQc1bttcjSlsDUrFCa11LNzeriKJBfE38V0Yxojv/hhRRdNw==
+"@nftstorage/ipfs-cluster@^3.4.3":
+  version "3.4.3"
+  resolved "https://registry.yarnpkg.com/@nftstorage/ipfs-cluster/-/ipfs-cluster-3.4.3.tgz#d29566d062cab187e26694ff337d105e8c2d3228"
+  integrity sha512-SgqXQFpeOy+cR0NCxaNKuXTfCG2j+xGmzEgHDwsQZv/kriHZQPPPUJ8crekKR/Y8IZS59GUmz+vJ+CGQnmoHMg==
 
 "@node-rs/helper@1.2.1":
   version "1.2.1"

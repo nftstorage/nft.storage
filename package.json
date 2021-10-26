@@ -41,5 +41,8 @@
     "graphql": "^15.5.1",
     "prettier": "2.4.0",
     "esbuild": "0.12.21"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }

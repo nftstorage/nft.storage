@@ -1,5 +1,24 @@
 # Changelog
 
+### [2.8.1](https://www.github.com/nftstorage/nft.storage/compare/api-v2.8.0...api-v2.8.1) (2021-10-26)
+
+
+### Changes
+
+* improve error message for [#646](https://www.github.com/nftstorage/nft.storage/issues/646) ([#674](https://www.github.com/nftstorage/nft.storage/issues/674)) ([a556e45](https://www.github.com/nftstorage/nft.storage/commit/a556e45ceae190a9130aeee6cc91269360afc18e))
+
+## [2.8.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.7.4...api-v2.8.0) (2021-10-25)
+
+
+### Features
+
+* indexes for slow queries ([#649](https://www.github.com/nftstorage/nft.storage/issues/649)) ([8862fce](https://www.github.com/nftstorage/nft.storage/commit/8862fce9eb56649ae806ad9919b508e033c0ca02))
+
+
+### Bug Fixes
+
+* **api:** update ipfs-cluster dep to fix auth issue ([43d783e](https://www.github.com/nftstorage/nft.storage/commit/43d783e8d42acf72651bb3c7ae61109b8791aee3))
+
 ### [2.7.4](https://www.github.com/nftstorage/nft.storage/compare/api-v2.7.3...api-v2.7.4) (2021-10-25)
 
 
