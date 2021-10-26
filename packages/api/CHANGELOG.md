@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.8.1](https://www.github.com/nftstorage/nft.storage/compare/api-v2.8.0...api-v2.8.1) (2021-10-26)
+
+
+### Changes
+
+* improve error message for [#646](https://www.github.com/nftstorage/nft.storage/issues/646) ([#674](https://www.github.com/nftstorage/nft.storage/issues/674)) ([a556e45](https://www.github.com/nftstorage/nft.storage/commit/a556e45ceae190a9130aeee6cc91269360afc18e))
+
 ## [2.8.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.7.4...api-v2.8.0) (2021-10-25)
 
 
