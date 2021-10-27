@@ -22,7 +22,7 @@ import { setTimeout as sleep } from 'timers/promises'
  * @property { Hasura.Config } config.hasura
  * @property { number } config.ingestRetryThrottle
  * @property { number } config.ingestHighWatermark
- * @property { string } config.ingestStartDate
+ * @property { string } config.ingestLastUpdatedDate
  * @property { number } config.ingestScraperBatchSize
  * @property { number } config.ingestScraperRetryLimit
  * @property { number } config.ingestScraperRetryInterval
