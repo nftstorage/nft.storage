@@ -8,9 +8,6 @@ import * as Hasura from '../hasura.js'
  * @property { string } config.ingestRangeEndDate
  */
 
-const INGEST_RANGE_MINTTIME_START = '01/01/2020'
-const INGEST_RANGE_MINTTIME_END = '02/01/2020'
-
 /**
  * we want to check our own database and look at
  * the last Id that was written, otherwise just start at the
