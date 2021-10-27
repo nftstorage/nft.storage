@@ -35,7 +35,7 @@ export async function initIngestCursor(config) {
     },
   }
 
-  const hasBinRange = isDate(binEnd) && isDate(binStart)
+  const hasBinRange = checkBinRange(binStart, binEnd)
 
   //detect binning.
   if (isDate(binStart) && !isDate(binEnd)) {
@@ -107,5 +107,13 @@ export async function initIngestCursor(config) {
  * @param {string} date
  * @returns {boolean}
  */
-var isDate = (date) =>
+export const isDate = (date) =>
   date.length > 0 && new Date(date).toString() !== 'Invalid Date'
+
+/**
+ * @param {string} binStart
+ * @param {string} binEnd
+ * @returns {boolean}
+ */
+export const checkBinRange = (binStart, binEnd) =>
+  isDate(binEnd) && isDate(binStart)
