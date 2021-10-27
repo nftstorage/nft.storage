@@ -1,17 +1,26 @@
 /**
- * A client library for the https://nft.storage/ service. It provides a convenient
- * interface for working with the [Raw HTTP API](https://nft.storage/#api-docs)
- * from a web browser or [Node.js](https://nodejs.org/) and comes bundled with
- * TS for out-of-the box type inference and better IntelliSense.
+ * The `nft.storage` package provides a client library for the https://nft.storage/ service,
+ * which offers free long-term storage of NFT media assets and metadata.
+ *
+ * The {@link NFTStorage} class provides a convenient interface for working with the
+ * [Raw HTTP API](https://nft.storage/#api-docs) from a web browser or [Node.js](https://nodejs.org/)
+ * and comes bundled with TypeScript definitions for out-of-the box type inference and better IntelliSense.
+ *
+ * See the {@link NFTStorage | NFTStorage class documentation} for more details and examples.
+ *
+ * This package also exports {@link Blob}, {@link File}, and {@link FormData} types, which
+ * are backed by native browser implementations or API-compatible polyfills on Node.js.
  *
  * @example
+ *
  * ```js
  * import { NFTStorage, File, Blob } from "nft.storage"
  * const client = new NFTStorage({ token: API_TOKEN })
  *
  * const cid = await client.storeBlob(new Blob(['hello world']))
  * ```
- * @module
+ *
+ * @module nft.storage
  */
 
 import { transform } from 'streaming-iterables'
@@ -29,7 +38,34 @@ const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
 /** @typedef {import('multiformats/block').BlockDecoder<any, any>} AnyBlockDecoder */
 
 /**
- * @implements API.Service
+ * @implements API.InstanceAPI
+ *
+ * The NFTStorage class provides a client interface for the
+ * [NFT.Storage HTTP API](https://nft.storage/api-docs/).
+ *
+ * All public methods of the NFTStorage class are available as both static and instance
+ * methods:
+ *
+ * ```js
+ * const token = "MY-AUTH-TOKEN"
+ * const endpoint = new URL('https://api.nft.storage')
+ * const blob = new Blob([someBinaryData])
+ *
+ * // Calling storeBlob as a static method:
+ * let cid = await NFTStorage.storeBlob({ token, endpoint }, blob)
+ *
+ * // is equivalent to creating a new client instance and
+ * // calling the storeBlob method.
+ *
+ * const client = new NFTStorage({ token })
+ * cid = await client.storeBlob(blob)
+ * ```
+ *
+ * Note that you must supply an `endpoint` URL when calling the static method form.
+ * When creating a new instance, the endpoint will default to `https://api.nft.storage`
+ * if not provided.
+ *
+ *
  */
 class NFTStorage {
   /**
@@ -77,7 +113,10 @@ class NFTStorage {
     if (!token) throw new Error('missing token')
     return { Authorization: `Bearer ${token}` }
   }
+
   /**
+   * Static implementation of {@link storeBlob}.
+   *
    * @param {API.Service} service
    * @param {Blob} blob
    * @returns {Promise<API.CIDString>}
@@ -102,13 +141,13 @@ class NFTStorage {
       throw new Error(result.error.message)
     }
   }
+
   /**
+   * Static implementation of {@link storeCar}.
+   *
    * @param {API.Service} service
    * @param {Blob|API.CarReader} car
-   * @param {{
-   *   onStoredChunk?: (size: number) => void
-   *   decoders?: AnyBlockDecoder[]
-   * }} [options]
+   * @param {API.StoreCarOptions} [options]
    * @returns {Promise<API.CIDString>}
    */
   static async storeCar(
@@ -148,7 +187,10 @@ class NFTStorage {
 
     return /** @type {API.CIDString} */ (root)
   }
+
   /**
+   * Static implementation of {@link storeDirectory}
+   *
    * @param {API.Service} service
    * @param {Iterable<File>} files
    * @returns {Promise<API.CIDString>}
@@ -183,6 +225,8 @@ class NFTStorage {
   }
 
   /**
+   * Static implementation of {@link store}.
+   *
    * @template {API.TokenInput} T
    * @param {API.Service} service
    * @param {T} metadata
@@ -211,7 +255,10 @@ class NFTStorage {
       throw new Error(result.error.message)
     }
   }
+
   /**
+   * Static implementation of {@link status}.
+   *
    * @param {API.Service} service
    * @param {string} cid
    * @returns {Promise<API.StatusResult>}
@@ -238,6 +285,8 @@ class NFTStorage {
   }
 
   /**
+   * Static implementation of {@link check}.
+   *
    * @param {API.PublicService} service
    * @param {string} cid
    * @returns {Promise<API.CheckResult>}
@@ -259,6 +308,8 @@ class NFTStorage {
   }
 
   /**
+   * Static implementation of {@link delete}.
+   *
    * @param {API.Service} service
    * @param {string} cid
    * @returns {Promise<void>}
@@ -275,7 +326,8 @@ class NFTStorage {
     }
   }
 
-  // Just a sugar so you don't have to pass around endpoint and token around.
+  // The instance methods below are just a sugar so you don't have to pass around endpoint and token around.
+  // They call through to the static implementations above.
 
   /**
    * Stores a single file and returns the corresponding Content Identifier (CID).
@@ -330,14 +382,7 @@ class NFTStorage {
    * console.assert(cid === expectedCid)
    * ```
    * @param {Blob|API.CarReader} car
-   * @param {object} [options]
-   * @param {(size: number) => void} [options.onStoredChunk] Callback called
-   * after each chunk of data has been uploaded. By default, data is split into
-   * chunks of around 10MB. It is passed the actual chunk size in bytes.
-   * @param {AnyBlockDecoder[]} [options.decoders] Additional IPLD block
-   * decoders. Used to interpret the data in the CAR file and split it into
-   * multiple chunks. Note these are only required if the CAR file was not
-   * encoded using the default encoders: `dag-pb`, `dag-cbor` and `raw`.
+   * @param {API.StoreCarOptions} [options]
    */
   storeCar(car, options) {
     return NFTStorage.storeCar(this, car, options)
@@ -513,7 +558,7 @@ export { NFTStorage, File, Blob, FormData, toGatewayURL }
 
 /**
  * Just to verify API compatibility.
- * @type {API.API}
+ * @type {API.StaticAPI}
  */
 const api = NFTStorage
 void api

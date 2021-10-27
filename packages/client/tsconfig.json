@@ -64,5 +64,9 @@
     "skipLibCheck": true /* Skip type checking of declaration files. */,
     "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
   },
-  "include": ["src", "test"]
+  "include": ["src", "test"],
+  "typedocOptions": {
+    "entryPoints": ["./src/lib.js", "./src/lib/interface.ts"],
+    "out": "../../docs/client"
+  }
 }

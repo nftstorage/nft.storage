@@ -1,10 +1,24 @@
+/**
+ * @module types
+ */
+
 import type { CID } from 'multiformats'
+/**
+ * A Content Identifier for some binary content.
+ *
+ * See https://github.com/multiformats/js-multiformats for details, or
+ * the [IPFS docs](https://docs.ipfs.io/concepts/content-addressing/) for a
+ * conceptual overview of CIDs.
+ */
 export type { CID }
 
 import type { BlockDecoder } from 'multiformats/block'
+/** An interface for decoding blocks of binary data. See https://github.com/multiformats/js-multiformats for details. */
 export type { BlockDecoder }
 
 import type { CarReader } from '@ipld/car/api'
+
+/** An interface for reading CAR data. See https://github.com/ipld/js-car for details. */
 export type { CarReader }
 
 /**
@@ -12,12 +26,22 @@ export type { CarReader }
  */
 export type Tagged<T, Tag> = T & { tag?: Tag }
 
+/**
+ * Service context information used for operations requiring authorization.
+ */
 export interface Service {
+  /** Root URL of service API. */
   endpoint: URL
+
+  /** An authentication token provided by the service at the given endpoint. */
   token: string
 }
 
+/**
+ * Service context information for operations that do not require authorization.
+ */
 export interface PublicService {
+  /** Root URL of service API. */
   endpoint: URL
 }
 
@@ -26,7 +50,13 @@ export interface PublicService {
  */
 export type CIDString = Tagged<string, CID>
 
-export interface API {
+/**
+ * The public interface for the static methods of the NFT.Storage client API. See {@link NFTStorage} for the
+ * implementation.
+ */
+export interface StaticAPI {
+  new (options: { token: string; endpoint?: URL }): InstanceAPI
+
   /**
    * Stores the given token and all resources it references (in the form of a
    * File or a Blob) along with a metadata JSON as specificed in ERC-1155. The
@@ -57,21 +87,7 @@ export interface API {
   storeCar(
     service: Service,
     content: Blob | CarReader,
-    options?: {
-      /**
-       * Callback called after each chunk of data has been uploaded. By default,
-       * data is split into chunks of around 10MB. It is passed the actual chunk
-       * size in bytes.
-       */
-      onStoredChunk?: (size: number) => void
-      /**
-       * Additional IPLD block decoders. Used to interpret the data in the CAR
-       * file and split it into multiple chunks. Note these are only required if
-       * the CAR file was not encoded using the default encoders: `dag-pb`,
-       * `dag-cbor` and `raw`.
-       */
-      decoders?: BlockDecoder<any, any>[]
-    }
+    options?: StoreCarOptions
   ): Promise<CIDString>
   /**
    * Stores a directory of files and returns a CID. Provided files **MUST**
@@ -96,12 +112,93 @@ export interface API {
   check(service: PublicService, cid: string): Promise<CheckResult>
 }
 
+/**
+ * The public API for the instance methods of the NFT.Storage client. See {@link NFTStorage} for the implementation.
+ */
+export interface InstanceAPI {
+  /**
+   * Stores the given token and all resources it references (in the form of a
+   * File or a Blob) along with a metadata JSON as specificed in ERC-1155. The
+   * `token.image` must be either a `File` or a `Blob` instance, which will be
+   * stored and the corresponding content address URL will be saved in the
+   * metadata JSON file under `image` field.
+   *
+   * If `token.properties` contains properties with `File` or `Blob` values,
+   * those also get stored and their URLs will be saved in the metadata JSON
+   * file in their place.
+   *
+   * Note: URLs for `File` objects will retain file names e.g. in case of
+   * `new File([bytes], 'cat.png', { type: 'image/png' })` will be transformed
+   * into a URL that looks like `ipfs://bafy...hash/image/cat.png`. For `Blob`
+   * objects, the URL will not have a file name name or mime type, instead it
+   * will be transformed into a URL that looks like
+   * `ipfs://bafy...hash/image/blob`.
+   */
+  store<T extends TokenInput>(token: T): Promise<Token<T>>
+
+  /**
+   * Stores a single file and returns a corresponding CID.
+   */
+  storeBlob(content: Blob | File): Promise<CIDString>
+  /**
+   * Stores CAR file and returns a corresponding CID.
+   */
+  storeCar(
+    content: Blob | CarReader,
+    options?: StoreCarOptions
+  ): Promise<CIDString>
+  /**
+   * Stores a directory of files and returns a CID. Provided files **MUST**
+   * be within a same directory, otherwise error is raised. E.g. `foo/bar.png`,
+   * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
+   */
+  storeDirectory(files: Iterable<File>): Promise<CIDString>
+  /**
+   * Returns current status of the stored NFT by its CID. Note the NFT must
+   * have previously been stored by this account.
+   */
+  status(cid: string): Promise<StatusResult>
+  /**
+   * Removes stored content by its CID from the service. Please note that
+   * even if content is removed from the service other nodes that have
+   * replicated it might still continue providing it.
+   */
+  delete(cid: string): Promise<void>
+  /**
+   * Check if a CID of an NFT is being stored by nft.storage.
+   */
+  check(cid: string): Promise<CheckResult>
+}
+
+export interface StoreCarOptions {
+  /**
+   * Callback called after each chunk of data has been uploaded. By default,
+   * data is split into chunks of around 10MB. It is passed the actual chunk
+   * size in bytes.
+   */
+  onStoredChunk?: (size: number) => void
+
+  /**
+   * Additional IPLD block decoders. Used to interpret the data in the CAR
+   * file and split it into multiple chunks. Note these are only required if
+   * the CAR file was not encoded using the default encoders: `dag-pb`,
+   * `dag-cbor` and `raw`.
+   */
+  decoders?: BlockDecoder<any, any>[]
+}
+
+/**
+ * Result of {@link API.check}, including the pin status and deal information (if any).
+ */
 export interface CheckResult {
   cid: string
   pin: { status: PinStatus }
   deals: Deal[]
 }
 
+/**
+ * Status information returned by {@link API.status}.
+ */
 export interface StatusResult {
   cid: string
   size: number
@@ -110,6 +207,10 @@ export interface StatusResult {
   created: Date
 }
 
+/**
+ * Information about a deal with a Filecoin storage provider. The type of Deal can be distinguished
+ * using the `status` field.
+ */
 export type Deal =
   | QueuedDeal
   | PendingDeal
@@ -117,6 +218,10 @@ export type Deal =
   | PublishedDeal
   | FinalizedDeal
 
+/**
+ * Base interface for information about a Filecoin storage deal that has progressed
+ * beyond the 'queued' state.
+ */
 export interface DealInfo {
   lastChanged: Date
   /**
@@ -139,6 +244,9 @@ export interface DealInfo {
   batchRootCid: CIDString
 }
 
+/**
+ * Information about a queued Filecoin storage deal.
+ */
 export interface QueuedDeal {
   status: 'queued'
   /**
@@ -147,10 +255,16 @@ export interface QueuedDeal {
   lastChanged: Date
 }
 
+/**
+ * Information about a Filecoin storage deal that has been proposed to a storage provider or accepted for storage.
+ */
 export interface PendingDeal extends DealInfo {
   status: 'proposing' | 'accepted'
 }
 
+/**
+ * Information about a Filecoin storage deal that failed.
+ */
 export interface FailedDeal extends DealInfo {
   status: 'failed'
   /**
@@ -159,6 +273,12 @@ export interface FailedDeal extends DealInfo {
   statusText: string
 }
 
+/**
+ * Information about a Filecoin storage deal that has been published to the Filecoin blockchain.
+ *
+ * Note that the deal term may not yet be active, however the provider has committed to storing the
+ * data for the duration of the deal term once it does become active.
+ */
 export interface PublishedDeal extends DealInfo {
   status: 'published'
   /**
@@ -167,6 +287,9 @@ export interface PublishedDeal extends DealInfo {
   chainDealID: number
 }
 
+/**
+ * Information about an active Filecoin storage deal, or one whose deal term has expired.
+ */
 export interface FinalizedDeal extends DealInfo {
   status: 'active' | 'terminated'
   /**
@@ -187,6 +310,9 @@ export interface FinalizedDeal extends DealInfo {
   dealExpiration: Date
 }
 
+/**
+ * Information about a "pin" to a remote IPFS cluster.
+ */
 export interface Pin {
   // Pinata does not provide this
   // requestid: string
@@ -260,10 +386,20 @@ interface Localization {
   locales: string[]
 }
 
+/**
+ * Information about an ERC-1155 formatted token that's been stored with nft.storage.
+ *
+ * Returned as the result of a successful call to {@link API.store}.
+ */
 export interface Token<T extends TokenInput> {
   /**
-   * CID for the token that encloses all of the files including metadata.json
-   * for the stored token.
+   * CID string that identifies the root of the IPNFT token graph.
+   *
+   * The root of the graph is a dag-cbor object that links to all media
+   * referenced in the NFT metadata, as well as a serialized JSON representation of
+   * the metadata.
+   *
+   * Pinning this root CID recursively will pin all included assets and metadata.
    */
   ipnft: CIDString
 
@@ -294,11 +430,19 @@ export type EncodedURL = Tagged<string, URL>
 
 export type Result<X, T> = { ok: true; value: T } | { ok: false; error: X }
 
+/**
+ * Serialized form of {@link Token}, as returned by the nft.storage API on a succesful
+ * call to the store endpoint.
+ */
 export interface EncodedToken<T extends TokenInput> {
   ipnft: CIDString
   url: EncodedURL
   data: Encoded<T, [[Blob, EncodedURL]]>
 }
+
+/**
+ * Response from nft.storage API's /store endpoint.
+ */
 export type StoreResponse<T extends TokenInput> = Result<
   EncodedError,
   EncodedToken<T>
