@@ -3,11 +3,11 @@ import * as Hasura from '../hasura.js'
 /**
  * @typedef { Object } Config
  * @property { Hasura.Config } config.hasura
- * @property { string } config.ingestStartDate
+ * @property { string } config.ingestLastUpdatedDate
  */
 
-const INGEST_RANGE_START_DATE = '01/01/2020'
-const INGEST_RANGE_END_DATE = '02/01/2020'
+const INGEST_RANGE_MINTTIME_START = '01/01/2020'
+const INGEST_RANGE_MINTTIME_END = '02/01/2020'
 
 /**
  * we want to check our own database and look at
@@ -20,11 +20,11 @@ const INGEST_RANGE_END_DATE = '02/01/2020'
 export async function initIngestCursor(config) {
   let initDate = new Date().toDateString() //default is to start today
 
-  const binStart = INGEST_RANGE_START_DATE
-  const binEnd = INGEST_RANGE_END_DATE
+  const binStart = INGEST_RANGE_MINTTIME_START
+  const binEnd = INGEST_RANGE_MINTTIME_END
 
-  if (isDate(config.ingestStartDate)) {
-    initDate = new Date(config.ingestStartDate).toISOString()
+  if (isDate(config.ingestLastUpdatedDate)) {
+    initDate = new Date(config.ingestLastUpdatedDate).toISOString()
   }
 
   /**
@@ -79,7 +79,15 @@ export async function initIngestCursor(config) {
    * return the epoch { number } in UTC; getTime() always uses UTC
    * ERC721 is in *seconds* JS is in *ms* so /1000
    */
-  const mint_time = lastNFT?.nft[0]?.mint_time || 0
+  let mint_time = lastNFT?.nft[0]?.mint_time || 0
+
+  /**
+   * If there's a bin range, then the 'beginning of time' is actually the binStart, not the epoch.
+   */
+  if (hasBinRange) {
+    mint_time = binStart
+  }
+
   const cursor = Math.round(new Date(mint_time).getTime() / 1000)
   return cursor
 }
