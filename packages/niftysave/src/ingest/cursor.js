@@ -6,6 +6,9 @@ import * as Hasura from '../hasura.js'
  * @property { string } config.ingestStartDate
  */
 
+const INGEST_RANGE_START_DATE = '01/01/2020'
+const INGEST_RANGE_END_DATE = '02/01/2020'
+
 /**
  * we want to check our own database and look at
  * the last Id that was written, otherwise just start at the
@@ -17,28 +20,58 @@ import * as Hasura from '../hasura.js'
 export async function initIngestCursor(config) {
   let initDate = new Date().toDateString() //default is to start today
 
+  const binStart = INGEST_RANGE_START_DATE
+  const binEnd = INGEST_RANGE_END_DATE
+
   if (isDate(config.ingestStartDate)) {
-    initDate = new Date(config.ingestStartDate).toDateString()
+    initDate = new Date(config.ingestStartDate).toISOString()
   }
 
-  const lastNFT = await Hasura.query(config.hasura, {
-    nft: [
+  /**
+   * @type {any}
+   */
+  let where = {
+    inserted_at: {
+      _gte: new Date(initDate).toISOString(),
+    },
+  }
+
+  const hasBinRange = isDate(binEnd) && isDate(binStart)
+
+  //detect binning.
+  if (isDate(binStart) && !isDate(binEnd)) {
+    console.log(
+      `Indicated a range start: ${binStart},
+       but no end,ingestion shall be unbounded.`
+    )
+  } else if (isDate(binEnd) && !isDate(binStart)) {
+    console.log(
+      `Indicated an end to a range: ${binEnd},
+       but did not indicate a start,ingestion shall be unbounded.`
+    )
+  } else if (hasBinRange) {
+    where.mint_time = {
+      _gte: new Date(binStart).toISOString(),
+      _lte: new Date(binEnd).toISOString(),
+    }
+  }
+
+  let query = {
+    limit: 1,
+    where,
+    order_by: [
       {
-        limit: 1,
-        where: {
-          inserted_at: {
-            _gte: new Date(initDate).toISOString(),
-          },
-        },
-        order_by: [
-          {
-            inserted_at: Hasura.schema.order_by.desc,
-          },
-        ],
+        inserted_at: Hasura.schema.order_by.desc,
       },
-      { id: true, inserted_at: true, mint_time: true },
     ],
+  }
+
+  console.log(JSON.stringify(query))
+
+  const lastNFT = await Hasura.query(config.hasura, {
+    nft: [query, { id: true, inserted_at: true, mint_time: true }],
   })
+
   console.log(`🪙 Init NFT\n${JSON.stringify(lastNFT, null, 2)}`)
   /**
    * You need to get the date in the database, or just start at the epoch,
