@@ -49,9 +49,20 @@ export async function initIngestCursor(config) {
        but did not indicate a start,ingestion shall be unbounded.`
     )
   } else if (hasBinRange) {
+    const start = new Date(binStart)
+    const end = new Date(binEnd)
+    const binSizeInSecs = Math.round((end.getTime() - start.getTime()) / 1000)
+    const binSizeinDays = (binSizeInSecs / 86400).toFixed(2)
+    const binSizeInWeeks = (binSizeInSecs / 86400 / 7).toFixed(4)
+
+    console.log(`A time slice was specified from:
+        \n${start.toISOString()} to ${end.toISOString()}
+        \n${binSizeInSecs} seconds\t${binSizeinDays} days\t ${binSizeInWeeks} weeks
+    `)
+
     where.mint_time = {
-      _gte: new Date(binStart).toISOString(),
-      _lte: new Date(binEnd).toISOString(),
+      _gte: start.toISOString(),
+      _lte: end.toISOString(),
     }
   }
 
