@@ -39,6 +39,7 @@ const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
 
 /**
  * @implements API.InstanceAPI
+ * @implements API.Service
  *
  * The NFTStorage class provides a client interface for the
  * [NFT.Storage HTTP API](https://nft.storage/api-docs/).
