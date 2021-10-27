@@ -4,6 +4,8 @@ import * as Hasura from '../hasura.js'
  * @typedef { Object } Config
  * @property { Hasura.Config } config.hasura
  * @property { string } config.ingestLastUpdatedDate
+ * @property { string } config.ingestRangeStartDate
+ * @property { string } config.ingestRangeEndDate
  */
 
 const INGEST_RANGE_MINTTIME_START = '01/01/2020'
@@ -20,8 +22,8 @@ const INGEST_RANGE_MINTTIME_END = '02/01/2020'
 export async function initIngestCursor(config) {
   let initDate = new Date().toDateString() //default is to start today
 
-  const binStart = INGEST_RANGE_MINTTIME_START
-  const binEnd = INGEST_RANGE_MINTTIME_END
+  const binStart = config.ingestRangeStartDate
+  const binEnd = config.ingestRangeEndDate
 
   if (isDate(config.ingestLastUpdatedDate)) {
     initDate = new Date(config.ingestLastUpdatedDate).toISOString()

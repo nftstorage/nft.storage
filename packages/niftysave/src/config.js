@@ -15,6 +15,8 @@ import yargs from 'yargs'
  * @property {number} ingestRetryThrottle
  * @property {number} ingestHighWatermark
  * @property {string} ingestLastUpdatedDate
+ * @property {string} ingestRangeStartDate
+ * @property {string} ingestRangeEndDate
  * @property {number} ingestScraperBatchSize
  * @property {number} ingestScraperRetryLimit
  * @property {number} ingestScraperRetryInterval
@@ -160,6 +162,18 @@ export const configure = async () => {
         default: process.env['INGEST_LAST_UPDATED_DATE'] || '',
         description: `The last known date based on inserted_at to resume scraping from. defaults to 'today'`,
       },
+      'ingest-range-start-date': {
+        alias: 'ingestRangeStartDate',
+        type: 'string',
+        default: process.env['INGEST_RANGE_START_DATE'] || '',
+        description: `The start date, based on mintTime of when to begin scraping a time-slice of the blockchain. Must provide a beginning and end date when time-slicing`,
+      },
+      'ingest-range-end-date': {
+        alias: 'ingestRangeEndDate',
+        type: 'string',
+        default: process.env['INGEST_RANGE_END_DATE'] || '',
+        description: `The end date, based on mintTime of when to begin scraping a time-slice of the blockchain. Must provide a beginning and end date when time-slicing`,
+      },
       'ingest-scraper-batch-size': {
         alias: 'ingestScraperBatchSize',
         type: 'number',
@@ -233,6 +247,9 @@ export const configure = async () => {
     ingestHighWatermark: config['ingest-high-watermark'],
     ingestScraperBatchSize: config['ingest-scraper-batch-size'],
     ingestLastUpdatedDate: config['ingest-last-updated-date'],
+
+    ingestRangeStartDate: config['ingest-range-start-date'],
+    ingestRangeEndDate: config['ingest-range-end-date'],
 
     ingestScraperRetryLimit: config['ingest-scraper-retry-limit'],
     ingestScraperRetryInterval: config['ingest-scraper-retry-interval'],
