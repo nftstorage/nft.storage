@@ -2,12 +2,12 @@ import * as Cursor from './hasura/cursor.js'
 import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
+import { checkBinRange, initIngestCursor } from './ingest/cursor.js'
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
 import { fetchNFTBatch, writeScrapedRecords } from './ingest/repo.js'
 
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
-import { initIngestCursor } from './ingest/cursor.js'
 import { script } from 'subprogram'
 import { setTimeout as sleep } from 'timers/promises'
 
@@ -75,6 +75,15 @@ async function readIntoInbox(config, writeable) {
 
   let cursor = Cursor.init(await initIngestCursor(config))
 
+  const hasBinRange = checkBinRange(
+    config.ingestRangeStartDate,
+    config.ingestRangeEndDate
+  )
+
+  const endBinTimeInSeconds = hasBinRange
+    ? new Date(config.ingestRangeEndDate).getTime() / 1000
+    : 0
+
   Cursor.print(cursor)
 
   while (true) {
@@ -108,6 +117,21 @@ async function readIntoInbox(config, writeable) {
         await writer.ready
         console.log(`📨 Adding ${scrape.length} items into Queue.`)
         for (const nft of scrape) {
+          const endOfTime =
+            endBinTimeInSeconds > 0 &&
+            parseInt(nft.mintTime) > endBinTimeInSeconds
+
+          if (endOfTime) {
+            console.log(
+              `🥂 You've completed the time-slice!
+              \n${nft.id}'s mintTime of occurs later than ${config.ingestRangeEndDate}
+              \nnft.mintTime ${nft.mintTime}\t slice-end(s) ${endBinTimeInSeconds}
+              `
+            )
+            writer.close()
+            throw `Reach end of time-slice at ${config.ingestRangeEndDate}`
+          }
+
           writer.write(nft)
           //Continuously update the in-memory cursor
           cursor = Cursor.after(cursor, parseInt(nft.mintTime))
