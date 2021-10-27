@@ -1,9 +1,0 @@
-CreateIndex({
-  "name": "pin_sorted_by_created",
-  "source": Collection("Pin"),
-  "values": [{
-    "field": ["data", "created"]
-  }, {
-    "field": "ref"
-  }]
-})

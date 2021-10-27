@@ -1,5 +1,0 @@
-CreateCollection({
-  name: 'metadata_assets',
-  data: { gql: {} },
-  history_days: 30,
-})
