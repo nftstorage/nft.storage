@@ -1,5 +1,7 @@
-import { Chain, Selectors, Zeus, $ } from '../gen/hasura/zeus/index.js'
 import * as schema from '../gen/hasura/zeus/index.js'
+
+import { $, Chain, Selectors, Zeus } from '../gen/hasura/zeus/index.js'
+
 import { create } from './service.js'
 import fetch from '@web-std/fetch'
 // @ts-ignore - zeus client expects global fetch.
@@ -65,7 +67,7 @@ class HasuraError extends Error {
   }
   get message() {
     const { error } = this
-    const errors = error.response.errors || []
+    const errors = error.response?.errors || []
 
     return `${error.message}\n${errors
       .map(
