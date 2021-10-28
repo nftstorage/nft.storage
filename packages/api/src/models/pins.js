@@ -6,7 +6,7 @@ import { stores } from '../constants.js'
  * @param {string} cid CID of the pin
  * @returns {Promise<Pin>}
  */
-export const get = async cid => {
+export const get = async (cid) => {
   const { metadata } = await stores.pins.getWithMetadata(cid)
   // @ts-ignore
   return metadata
