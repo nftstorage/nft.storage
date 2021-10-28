@@ -33,7 +33,7 @@ export async function getNftMetrics() {
 }
 
 export async function getPinMetrics() {
-  const services = ['Pinata', 'IpfsCluster']
+  const services = ['Pinata', 'IpfsCluster', 'IpfsCluster2']
   const statuses = ['PinQueued', 'Pinning', 'Pinned', 'PinError']
   const totals = await Promise.all(
     services.map(async (service) => {

@@ -6,7 +6,8 @@ const log = debug('pins:updatePinStatuses')
 /**
  * @typedef {{
  *   db: import('../../../api/src/utils/db-client').DBClient
- *   cluster: import('@nftstorage/ipfs-cluster').Cluster
+ *   cluster1: import('@nftstorage/ipfs-cluster').Cluster
+ *   cluster2: import('@nftstorage/ipfs-cluster').Cluster
  * }} Config
  * @typedef {import('../../../api/src/utils/db-types').definitions} definitions
  * @typedef {Pick<definitions['pin'], 'id'|'status'|'content_cid'|'service'|'inserted_at'|'updated_at'>} Pin
@@ -16,14 +17,14 @@ const log = debug('pins:updatePinStatuses')
 /**
  * Updates pin status and size by retrieving updated status from cluster.
  *
- * @param {Config} config
+ * @param {Config} conf
  */
-export async function updatePendingPinStatuses({ db, cluster }) {
+export async function updatePendingPinStatuses(conf) {
   const countPins = async () => {
-    const { count, error: countError } = await db.client
+    const { count, error: countError } = await conf.db.client
       .from('pin')
       .select('*', { count: 'exact', head: true })
-      .eq('service', 'IpfsCluster')
+      .in('service', ['IpfsCluster', 'IpfsCluster2'])
       .neq('status', 'Pinned')
       .neq('status', 'PinError')
       .range(0, 1)
@@ -42,10 +43,10 @@ export async function updatePendingPinStatuses({ db, cluster }) {
    */
   const fetchPins = async (offset, limit) => {
     /** @type {PinQuery} */
-    const query = db.client.from('pin')
+    const query = conf.db.client.from('pin')
     const { data: pins, error } = await query
       .select('id,status,content_cid,service')
-      .eq('service', 'IpfsCluster')
+      .in('service', ['IpfsCluster', 'IpfsCluster2'])
       .neq('status', 'Pinned')
       .neq('status', 'PinError')
       .range(offset, offset + limit - 1)
@@ -58,7 +59,7 @@ export async function updatePendingPinStatuses({ db, cluster }) {
     return pins
   }
 
-  await updatePinStatuses({ db, cluster, countPins, fetchPins })
+  await updatePinStatuses({ ...conf, countPins, fetchPins })
 }
 
 /**
@@ -67,12 +68,14 @@ export async function updatePendingPinStatuses({ db, cluster }) {
  *
  * @param {Config & { after: Date }} config
  */
-export async function checkFailedPinStatuses({ db, cluster, after }) {
+export async function checkFailedPinStatuses(config) {
+  const { db, after } = config
+
   const countPins = async () => {
     const { count, error: countError } = await db.client
       .from('pin')
       .select('*', { count: 'exact', head: true })
-      .eq('service', 'IpfsCluster')
+      .in('service', ['IpfsCluster', 'IpfsCluster2'])
       .eq('status', 'PinError')
       .gt('inserted_at', after.toISOString())
       .range(0, 1)
@@ -94,7 +97,7 @@ export async function checkFailedPinStatuses({ db, cluster, after }) {
     const query = db.client.from('pin')
     const { data: pins, error } = await query
       .select('id,status,content_cid,service')
-      .eq('service', 'IpfsCluster')
+      .in('service', ['IpfsCluster', 'IpfsCluster2'])
       .eq('status', 'PinError')
       .gt('inserted_at', after.toISOString())
       .range(offset, offset + limit - 1)
@@ -108,7 +111,7 @@ export async function checkFailedPinStatuses({ db, cluster, after }) {
   }
 
   log(`⏰ Checking pins created after ${after.toISOString()}`)
-  await updatePinStatuses({ db, cluster, countPins, fetchPins })
+  await updatePinStatuses({ ...config, countPins, fetchPins })
 }
 
 /**
@@ -119,7 +122,8 @@ export async function checkFailedPinStatuses({ db, cluster, after }) {
  *   fetchPins: (offset:number, limit: number) => Promise<Pin[]>
  * }} config
  */
-async function updatePinStatuses({ db, cluster, countPins, fetchPins }) {
+async function updatePinStatuses(config) {
+  const { countPins, fetchPins, db, cluster1, cluster2 } = config
   if (!log.enabled) {
     console.log('ℹ️ Enable logging by setting DEBUG=pins:updatePinStatuses')
   }
@@ -138,7 +142,20 @@ async function updatePinStatuses({ db, cluster, countPins, fetchPins }) {
     /** @type {Pin[]} */
     const updatedPins = []
     for (const pin of pins) {
-      const statusRes = await cluster.status(pin.content_cid)
+      /** @type {import('@nftstorage/ipfs-cluster/dist/src/interface').StatusResponse} */
+      let statusRes
+
+      switch (pin.service) {
+        case 'IpfsCluster':
+          statusRes = await cluster1.status(pin.content_cid)
+          break
+        case 'IpfsCluster2':
+          statusRes = await cluster2.status(pin.content_cid)
+          break
+        default:
+          throw new Error(`Service ${pin.service} not supported.`)
+      }
+
       const pinInfos = Object.values(statusRes.peerMap)
 
       /** @type {Pin['status']} */

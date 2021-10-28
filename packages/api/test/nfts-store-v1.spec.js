@@ -77,7 +77,7 @@ describe('V1 - /store', () => {
         content_cid:
           'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
         status: 'PinQueued',
-        service: 'IpfsCluster',
+        service: 'IpfsCluster2',
       },
       {
         content_cid:
@@ -142,7 +142,7 @@ describe('V1 - /store', () => {
         content_cid:
           'bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm',
         status: 'PinQueued',
-        service: 'IpfsCluster',
+        service: 'IpfsCluster2',
       },
       {
         content_cid:

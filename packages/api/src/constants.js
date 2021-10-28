@@ -24,12 +24,6 @@ export const cluster = {
     typeof CLUSTER_BASIC_AUTH_TOKEN !== 'undefined'
       ? CLUSTER_BASIC_AUTH_TOKEN
       : '',
-  ipfsProxyApiUrl: CLUSTER_IPFS_PROXY_API_URL,
-  ipfsProxyBasicAuthToken:
-    typeof CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN !== 'undefined'
-      ? CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN
-      : '',
-  addrs: Object.freeze(CLUSTER_ADDRS.split(',').filter(Boolean)),
   /**
    * When >2.5MB, use local add, because waiting for blocks to be sent to
    * other cluster nodes can take a long time. Replication to other nodes

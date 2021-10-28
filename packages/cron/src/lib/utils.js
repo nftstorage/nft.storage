@@ -1,7 +1,6 @@
 import { Cluster } from '@nftstorage/ipfs-cluster'
 import pg from 'pg'
 import { Cloudflare } from '../lib/cloudflare.js'
-import { IPFS } from './ipfs.js'
 import { Pinata } from './pinata.js'
 import { DBClient } from '../../../api/src/utils/db-client.js'
 
@@ -35,10 +34,10 @@ export function getCloudflare(env) {
  * Create a new IPFS Cluster instance from the passed environment variables.
  * @param {Record<string, string|undefined>} env
  */
-export function getCluster(env) {
-  const clusterApiUrl = env.CLUSTER_API_URL
+export function getCluster1(env) {
+  const clusterApiUrl = env.CLUSTER1_API_URL
   if (!clusterApiUrl) throw new Error('missing IPFS Cluster API URL')
-  const basicAuthToken = env.CLUSTER_BASIC_AUTH_TOKEN
+  const basicAuthToken = env.CLUSTER1_BASIC_AUTH_TOKEN
   if (!basicAuthToken) throw new Error('missing IPFS Cluster credentials')
   return new Cluster(clusterApiUrl, {
     headers: { Authorization: `Basic ${basicAuthToken}` },
@@ -46,15 +45,15 @@ export function getCluster(env) {
 }
 
 /**
- * Create a new IPFS client instance from the passed environment variables.
+ * Create a new IPFS Cluster instance from the passed environment variables.
  * @param {Record<string, string|undefined>} env
  */
-export function getClusterIPFSProxy(env) {
-  const ipfsApiUrl = env.CLUSTER_IPFS_PROXY_API_URL
-  if (!ipfsApiUrl) throw new Error('missing IPFS API URL')
-  const basicAuthToken = env.CLUSTER_BASIC_AUTH_TOKEN
+export function getCluster2(env) {
+  const clusterApiUrl = env.CLUSTER2_API_URL
+  if (!clusterApiUrl) throw new Error('missing IPFS Cluster API URL')
+  const basicAuthToken = env.CLUSTER2_BASIC_AUTH_TOKEN
   if (!basicAuthToken) throw new Error('missing IPFS Cluster credentials')
-  return new IPFS(ipfsApiUrl, {
+  return new Cluster(clusterApiUrl, {
     headers: { Authorization: `Basic ${basicAuthToken}` },
   })
 }
