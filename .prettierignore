@@ -7,7 +7,6 @@ worker
 site/public
 docs
 packages/niftysave/gen
-packages/api
 CHANGELOG.md
 .next
 .supabase

@@ -54,9 +54,8 @@ module.exports = {
       once(proc.stdout, 'data'),
       // Make sure that we fail if process crashes. However if it exits without
       // producing stdout just resolve to ''.
-      proc.then(() => '')
+      proc.then(() => ''),
     ])
-
 
     if (
       stdout.toString().includes('Server started on: http://localhost:9094')
