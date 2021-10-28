@@ -75,15 +75,6 @@ async function readIntoInbox(config, writeable) {
 
   let cursor = Cursor.init(await initIngestCursor(config))
 
-  const hasBinRange = checkBinRange(
-    config.ingestRangeStartDate,
-    config.ingestRangeEndDate
-  )
-
-  const endBinTimeInSeconds = hasBinRange
-    ? new Date(config.ingestRangeEndDate).getTime() / 1000
-    : 0
-
   Cursor.print(cursor)
 
   while (true) {
@@ -117,21 +108,6 @@ async function readIntoInbox(config, writeable) {
         await writer.ready
         console.log(`📨 Adding ${scrape.length} items into Queue.`)
         for (const nft of scrape) {
-          const endOfTime =
-            endBinTimeInSeconds > 0 &&
-            parseInt(nft.mintTime) > endBinTimeInSeconds
-
-          if (endOfTime) {
-            console.log(
-              `🥂 You've completed the time-slice!
-              \n${nft.id}'s mintTime of occurs later than ${config.ingestRangeEndDate}
-              \nnft.mintTime ${nft.mintTime}\t slice-end(s) ${endBinTimeInSeconds}
-              `
-            )
-            writer.close()
-            throw `Reach end of time-slice at ${config.ingestRangeEndDate}`
-          }
-
           writer.write(nft)
           //Continuously update the in-memory cursor
           cursor = Cursor.after(cursor, parseInt(nft.mintTime))
@@ -155,11 +131,22 @@ async function readIntoInbox(config, writeable) {
  */
 async function writeFromInbox(config, readable) {
   const reader = readable.getReader()
+
+  const hasBinRange = checkBinRange(
+    config.ingestRangeStartDate,
+    config.ingestRangeEndDate
+  )
+
+  const endBinTimeInSeconds = hasBinRange
+    ? new Date(config.ingestRangeEndDate).getTime() / 1000
+    : 0
+
   while (true) {
     /**
      * @type ERC721ImportNFT[]
      */
     let nextBatch = []
+    let lastNFT = null
     try {
       /**
        * We will attempt to write several import records that have been scraped.
@@ -180,6 +167,7 @@ async function writeFromInbox(config, readable) {
           reader.cancel()
         } else {
           nextBatch.push(nextImport.value)
+          lastNFT = nextImport.value
         }
       }
 
@@ -196,6 +184,20 @@ async function writeFromInbox(config, readable) {
 
       //Reset the batch after writing.
       nextBatch = []
+
+      //check for end of time.
+      const endOfTime =
+        endBinTimeInSeconds &&
+        lastNFT &&
+        parseInt(lastNFT.mintTime) > endBinTimeInSeconds
+
+      if (lastNFT && endOfTime) {
+        printEndOfTime(config, lastNFT)
+        reader.cancel()
+        throw `Reach end of time-slice at ${config.ingestRangeEndDate}`
+      }
+
+      lastNFT = null
     } catch (err) {
       console.log('Last NFT Batch', JSON.stringify(nextBatch, null, 2))
       console.error(`Something went wrong when writing scraped nfts`, err)
@@ -203,6 +205,26 @@ async function writeFromInbox(config, readable) {
       throw err
     }
   }
+}
+/**
+ *
+ * @param {Config} config
+ * @param {ERC721ImportNFT} nft
+ */
+const printEndOfTime = (config, nft) => {
+  const { id, mintTime } = nft
+  const nftDate = new Date(parseInt(mintTime) * 1000)
+  const endOfTimeDate = new Date(config.ingestRangeEndDate)
+  const endOftimeInSeconds =
+    new Date(config.ingestRangeEndDate).getTime() / 1000
+
+  console.log(`
+    \n🥂 You've completed the time-slice [${config.ingestRangeStartDate} to  ${
+    config.ingestRangeEndDate
+  }]!
+    \nNFT (${id})'s mint-time of ${nftDate.toUTCString()} occurs later than ${endOfTimeDate.toUTCString()}
+    \nnft.mintTime ${mintTime}\t slice-end(s) ${endOftimeInSeconds}
+    `)
 }
 
 script({ ...import.meta, main })

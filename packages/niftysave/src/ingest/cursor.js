@@ -29,11 +29,7 @@ export async function initIngestCursor(config) {
   /**
    * @type {any}
    */
-  let where = {
-    inserted_at: {
-      _gte: new Date(initDate).toISOString(),
-    },
-  }
+  let where = {}
 
   const hasBinRange = checkBinRange(binStart, binEnd)
 
@@ -64,6 +60,10 @@ export async function initIngestCursor(config) {
       _gte: start.toISOString(),
       _lte: end.toISOString(),
     }
+  } else {
+    where.inserted_at = {
+      _gte: new Date(initDate).toISOString(),
+    }
   }
 
   let query = {
@@ -71,7 +71,7 @@ export async function initIngestCursor(config) {
     where,
     order_by: [
       {
-        inserted_at: Hasura.schema.order_by.desc,
+        inserted_at: Hasura.schema.order_by.asc,
       },
     ],
   }
