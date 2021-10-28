@@ -141,7 +141,7 @@ describe('V1 - Auth Keys', () => {
     assert.equal(value[1].name, 'test-key-1')
   })
 
-  it('should not be able to delete another user\'s key', async () => {
+  it("should not be able to delete another user's key", async () => {
     const client0 = await createClientWithUser()
     const client1 = await createClientWithUser()
 
