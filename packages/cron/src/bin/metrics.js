@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
+import path from 'path'
+import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 import * as metrics from '../jobs/metrics.js'
 import { getCloudflare } from '../lib/utils.js'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 async function main() {
   const env = process.env.ENV || 'dev'
@@ -16,5 +20,5 @@ async function main() {
   ])
 }
 
-dotenv.config()
+dotenv.config({ path: path.join(__dirname, '../../../../.env') })
 main()

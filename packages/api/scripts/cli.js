@@ -18,7 +18,7 @@ const version = git.short(__dirname)
 const prog = sade('api')
 
 dotenv.config({
-  path: path.join(__dirname, '../.env.local'),
+  path: path.join(__dirname, '../../../.env'),
 })
 
 /** @type {import('esbuild').Plugin} */

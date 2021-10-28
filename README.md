@@ -11,6 +11,7 @@ Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin.
 - [Developer Tools](#developer-tools)
 - [Development](#development)
   - [Getting Started](#getting-started)
+  - [Local environment configuration](#local-environment-configuration)
   - [Running Locally](#running-locally)
   - [Release](#release)
     - [What's a Release PR?](#whats-a-release-pr)
@@ -58,6 +59,60 @@ We use `yarn` in this project and commit the `yarn.lock` file.
    ```
 1. Follow the getting started guides in [`/packages/api`](/packages/api#getting-started) and [`/packages/website`](/packages/website#getting-started).
 1. Run locally by following the instructions below.
+
+## Local environment configuration
+
+In the root folder create a `.env` file with the following:
+
+```ini
+# Cloudflare
+CF_TOKEN=<token>
+CF_ACCOUNT_ID=<account-id>
+
+# IPFS Cluster
+CLUSTER1_API_URL = https://nft.storage.ipfscluster.io/api/
+CLUSTER1_BASIC_AUTH_TOKEN=<token>
+
+CLUSTER2_API_URL = https://nft2.storage.ipfscluster.io/api/
+CLUSTER2_BASIC_AUTH_TOKEN=<token>
+
+# Postgrest API
+DATABASE_URL=http://localhost:3000
+# Create a token, for role "postgres", using secret value PGRST_JWT_SECRET from 'packages/api/db/docker/docker-compose.yml'
+# https://postgrest.org/en/v8.0/tutorials/tut1.html#step-3-sign-a-token
+DATABASE_TOKEN=<token>
+
+PROD_DATABASE_URL=https://db.nft.storage
+PROD_DATABASE_TOKEN=<token>
+
+STAGING_DATABASE_URL=https://db-staging.nft.storage
+STAGING_DATABASE_TOKEN=<token>
+
+# Postgres Database
+DATABASE_CONNECTION=postgresql://postgres:postgres@localhost:5432/postgres
+
+PROD_DATABASE_CONNECTION=<connection-string>
+
+STAGING_DATABASE_CONNECTION=<connection-string>
+
+# Pinata
+PINATA_JWT=<token>
+
+# Sentry.io
+SENTRY_DSN=<dsn>
+SENTRY_TOKEN=<token>
+# Note: tokens can be created here https://sentry.io/settings/account/api/auth-tokens/ and need the following scopes `event:admin` `event:read` `member:read` `org:read` `project:read` `project:releases` `team:read`.
+SENTRY_UPLOAD=false # toggle for sentry source/sourcemaps upload (capture will still work)
+
+# dag cargo
+DAG_CARGO_HOST=<ip>
+DAG_CARGO_DATABASE=<db-name>
+DAG_CARGO_USER=<db-user>
+DAG_CARGO_PASSWORD=<db-password>
+
+```
+
+Production vars should be set in Github Actions secrets.
 
 ## Running Locally
 

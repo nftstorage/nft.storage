@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
+import path from 'path'
+import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 import fetch from 'node-fetch'
 import { checkFailedPinStatuses } from '../jobs/pins-v1.js'
 import { getDBClient, getCluster } from '../lib/utils.js'
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 /** @ts-ignore */
 global.fetch = fetch
 
@@ -19,5 +22,5 @@ async function main() {
   await checkFailedPinStatuses({ db, cluster, after })
 }
 
-dotenv.config()
+dotenv.config({ path: path.join(__dirname, '../../../../.env') })
 main()

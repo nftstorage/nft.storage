@@ -4,7 +4,7 @@ const execa = require('execa')
 const { once } = require('events')
 
 dotenv.config({
-  path: path.join(__dirname, '.env.local'),
+  path: path.join(__dirname, '../../.env'),
 })
 
 const cli = path.join(__dirname, 'scripts/cli.js')
