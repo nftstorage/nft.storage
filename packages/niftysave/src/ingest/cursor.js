@@ -71,12 +71,10 @@ export async function initIngestCursor(config) {
     where,
     order_by: [
       {
-        inserted_at: Hasura.schema.order_by.asc,
+        inserted_at: Hasura.schema.order_by.desc,
       },
     ],
   }
-
-  console.log(JSON.stringify(query))
 
   const lastNFT = await Hasura.query(config.hasura, {
     nft: [query, { id: true, inserted_at: true, mint_time: true }],
@@ -93,8 +91,9 @@ export async function initIngestCursor(config) {
 
   /**
    * If there's a bin range, then the 'beginning of time' is actually the binStart, not the epoch.
+   * In scenarios where we did not find a suitable 'last' record.
    */
-  if (hasBinRange) {
+  if (hasBinRange && !mint_time) {
     mint_time = binStart
   }
 
