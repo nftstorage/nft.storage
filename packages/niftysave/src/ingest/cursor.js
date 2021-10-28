@@ -60,6 +60,9 @@ export async function initIngestCursor(config) {
       _gte: start.toISOString(),
       _lte: end.toISOString(),
     }
+    where.inserted_at = {
+      _gte: new Date(initDate).toISOString(),
+    }
   } else {
     where.inserted_at = {
       _gte: new Date(initDate).toISOString(),
