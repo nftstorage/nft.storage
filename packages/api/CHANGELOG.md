@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.9.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.8.2...api-v2.9.0) (2021-10-29)
+
+
+### Features
+
+* switch to ipfs cluster 2 ([#702](https://www.github.com/nftstorage/nft.storage/issues/702)) ([4c2fd56](https://www.github.com/nftstorage/nft.storage/commit/4c2fd569a6db53ee559f21e0bd6b208b35882dd0))
+
+
+### Bug Fixes
+
+* **api:** fix ts match in the upload function ([#683](https://www.github.com/nftstorage/nft.storage/issues/683)) ([c7bc88b](https://www.github.com/nftstorage/nft.storage/commit/c7bc88b9cb6bebc2e1c21c823d0f7822f8909cac))
+
 ### [2.8.2](https://www.github.com/nftstorage/nft.storage/compare/api-v2.8.1...api-v2.8.2) (2021-10-26)
 
 
