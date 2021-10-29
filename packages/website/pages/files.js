@@ -106,7 +106,7 @@ export default function Files({ user }) {
                   wrapperClassName="mh3 mb3"
                   variant="dark"
                 >
-                  {"Tells us how we're doing"}
+                  {'Tell us how we are doing'}
                 </Button>
               </div>
               <div className="flex mb3 items-center">
