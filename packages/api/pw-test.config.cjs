@@ -61,8 +61,10 @@ module.exports = {
       stdout.toString().includes('Server started on: http://localhost:9094')
     ) {
       console.log('⚡️ Mock IPFS Cluster started.')
+
       await execa(cli, ['db', '--start', '--project', project])
       console.log('⚡️ Postgres started.')
+
       await execa(cli, ['db-sql', '--cargo', '--testing'])
       console.log('⚡️ SQL schema loaded.')
 
@@ -74,9 +76,11 @@ module.exports = {
   },
   afterTests: async (ctx, beforeTests) => {
     console.log('⚡️ Shutting down mock servers.')
+
+    await execa(cli, ['db', '--clean', '--project', beforeTests.project])
+
     /** @type {import('execa').ExecaChildProcess} */
     const proc = beforeTests.proc
     const killed = proc.kill()
-    await execa(cli, ['db', '--clean', '--project', beforeTests.project])
   },
 }
