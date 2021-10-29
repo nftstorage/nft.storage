@@ -6,31 +6,7 @@ The nft.storage public API.
 
 ### Local env vars
 
-Inside the `/packages/api` folder create a file called `.env.local` with the following content.
-
-Note: tokens can be created here https://sentry.io/settings/account/api/auth-tokens/ and need the following scopes `event:admin` `event:read` `member:read` `org:read` `project:read` `project:releases` `team:read`.
-
-```ini
-SENTRY_TOKEN=<sentry user auth token>
-SENTRY_UPLOAD=false # toggle for sentry source/sourcemaps upload (capture will still work)
-
-# PostgREST API URL
-DATABASE_URL=http://localhost:3000
-# Create a token, for role "postgres", using secret value PGRST_JWT_SECRET from '../db/docker/docker-compose.yml'
-# https://postgrest.org/en/v8.0/tutorials/tut1.html#step-3-sign-a-token
-DATABASE_TOKEN=<jwt token>
-
-# Connection string for locally running postgres used in tests
-DATABASE_CONNECTION=postgres://postgres:postgres@127.0.0.1:5432/postgres
-
-# RO dagcargo credentials for fdw in tests
-DAG_CARGO_HOST=<get from password vault>
-DAG_CARGO_USER=<get from password vault>
-DAG_CARGO_PASSWORD=<get from password vault>
-DAG_CARGO_DATABASE=<get from password vault>
-```
-
-Production vars should be set in Github Actions secrets.
+Follow instructions in the root `README.md`.
 
 ### Cloudflare Workers CLI
 
@@ -102,18 +78,15 @@ kv_namespaces = []
 ENV = "dev"
 DEBUG = "*"
 CLUSTER_API_URL = ""
-CLUSTER_IPFS_PROXY_API_URL = ""
-CLUSTER_ADDRS = ""
 DATABASE_URL = "http://localhost:8000"
 ```
 
-Additionally, fill in the `CLUSTER_API_URL` and `CLUSTER_IPFS_PROXY_API_URL` with the localtunnel URLs you obtained when setting up the IPFS Cluster.
+Additionally, fill in the `CLUSTER_API_URL` with the localtunnel URLs you obtained when setting up the IPFS Cluster.
 
 e.g.
 
 ```toml
 CLUSTER_API_URL = "https://USER-cluster-api-nft-storage.loca.lt"
-CLUSTER_IPFS_PROXY_API_URL = "https://USER-ipfs-proxy-api-nft-storage.loca.lt/api/v0/"
 ```
 
 Now run the following to install dependencies and create KV namespaces on Cloudflare:
@@ -121,24 +94,6 @@ Now run the following to install dependencies and create KV namespaces on Cloudf
 ```bash
 cd packages/api
 yarn install
-# dev and preview KVs
-wrangler kv:namespace create USERS --preview --env USER
-# cli output something like: `{ binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" }`
-# but you need to put `{ binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4", id = "7e441603d1bc4d5a87f6cecb959018e4" }` inside the `kv_namespaces`.
-wrangler kv:namespace create NFTS --preview --env USER
-# same as above
-wrangler kv:namespace create NFTS_IDX --preview --env USER
-# same as above
-wrangler kv:namespace create DEALS --preview --env USER
-# same as above
-wrangler kv:namespace create METRICS --preview --env USER
-# same as above
-wrangler kv:namespace create PINS --preview --env USER
-# same as above
-wrangler kv:namespace create FOLLOWUPS --preview --env USER
-# same as above
-wrangler kv:namespace create PINATA_QUEUE --preview --env USER
-# same as above
 ```
 
 Go to `/packages/api/src/constants.js` _uncomment_ the first line and run `wrangler publish --env USER`.
@@ -157,29 +112,15 @@ Go to `/packages/api/src/constants.js` _comment_ the first line and run `wrangle
 #### Production Setup `[env.production]`
 
 ```bash
-# production KVs
-wrangler kv:namespace create USERS --env production
-# Follow the instructions from the cli output
-wrangler kv:namespace create NFTS --env production
-# Follow the instructions from the cli output
-wrangler kv:namespace create NFTS_IDX --env production
-# Follow the instructions from the cli output
-wrangler kv:namespace create DEALS --env production
-# Follow the instructions from the cli output
-wrangler kv:namespace create METRICS --env production
-# Follow the instructions from the cli output
-wrangler kv:namespace create PINS --env production
-# Follow the instructions from the cli output
-wrangler kv:namespace create FOLLOWUPS --env production
-# Follow the instructions from the cli output
-wrangler kv:namespace create PINATA_QUEUE --env production
-# Follow the instructions from the cli output
+# production secrets
 wrangler secret put MAGIC_SECRET_KEY --env production # Get from magic.link account
-wrangler secret put DATABASE_TOKEN --env production # Get from database account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put PINATA_JWT --env production # Get from Pinata
+wrangler secret put SENTRY_DSN --env USER # Get from Sentry
+wrangler secret put DATABASE_TOKEN --env production # Get from database account
 wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password
-wrangler secret put CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password
+wrangler secret put CLUSTER_SERVICE --env production # Which cluster should be used. Options 'IpfsCluster' or 'IpfsCluster2'
+
 wrangler publish --env production
 ```
 

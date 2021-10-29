@@ -4,7 +4,7 @@ const execa = require('execa')
 const { once } = require('events')
 
 dotenv.config({
-  path: path.join(__dirname, '.env.local'),
+  path: path.join(__dirname, '../../.env'),
 })
 
 const cli = path.join(__dirname, 'scripts/cli.js')
@@ -54,16 +54,17 @@ module.exports = {
       once(proc.stdout, 'data'),
       // Make sure that we fail if process crashes. However if it exits without
       // producing stdout just resolve to ''.
-      proc.then(() => '')
+      proc.then(() => ''),
     ])
-
 
     if (
       stdout.toString().includes('Server started on: http://localhost:9094')
     ) {
       console.log('⚡️ Mock IPFS Cluster started.')
+
       await execa(cli, ['db', '--start', '--project', project])
       console.log('⚡️ Postgres started.')
+
       await execa(cli, ['db-sql', '--cargo', '--testing'])
       console.log('⚡️ SQL schema loaded.')
 
@@ -75,9 +76,11 @@ module.exports = {
   },
   afterTests: async (ctx, beforeTests) => {
     console.log('⚡️ Shutting down mock servers.')
+
+    await execa(cli, ['db', '--clean', '--project', beforeTests.project])
+
     /** @type {import('execa').ExecaChildProcess} */
     const proc = beforeTests.proc
     const killed = proc.kill()
-    await execa(cli, ['db', '--clean', '--project', beforeTests.project])
   },
 }

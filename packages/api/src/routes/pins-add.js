@@ -83,7 +83,6 @@ export const obtainPin = async (cid) => {
  * @returns {Promise<import('../models/pins.js').Pin>}
  */
 const retryPin = async (failed) => {
-  await cluster.recover(failed.cid)
   /** @type {import('../models/pins.js').Pin} */
   const pin = { ...failed, status: 'queued' }
   await pins.set(failed.cid, pin)

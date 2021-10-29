@@ -17,10 +17,9 @@ declare global {
   const PINATA_API_URL: string
   const PINATA_PSA_API_URL: string
   const PINATA_JWT: string
+  const CLUSTER_SERVICE: 'IpfsCluster' | 'IpfsCluster2'
   const CLUSTER_API_URL: string
   const CLUSTER_BASIC_AUTH_TOKEN: string
-  const CLUSTER_IPFS_PROXY_API_URL: string
-  const CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN: string
   const CLUSTER_ADDRS: string
   const MAGIC_SECRET_KEY: string
   const DATABASE_URL: string

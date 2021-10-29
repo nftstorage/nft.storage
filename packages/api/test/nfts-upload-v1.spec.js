@@ -234,4 +234,27 @@ describe(' V1 - Upload ', () => {
       'updated_at should be bigger than a date before re-upload request'
     )
   })
+
+  it('should upload to cluster 2', async () => {
+    const file = new Blob(['should upload to cluster 2'], {
+      type: 'application/text',
+    })
+    // expected CID for the above data
+    const cid = 'bafkreicoihdprzusqwmabenu7tsec7xffsaqbdpw4f3eputfcornkiytva'
+    const res = await fetch('upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: file,
+    })
+    const { ok } = await res.json()
+    assert(ok, 'upload created')
+    const { data } = await rawClient
+      .from('upload')
+      .select('*,content(dag_size, pin(status, service, inserted_at))')
+      .match({ source_cid: cid, user_id: client.userId })
+      .filter('content.pin.service', 'in', '(IpfsCluster,IpfsCluster2)')
+      .single()
+
+    assert.equal(data.content.pin[0].service, 'IpfsCluster2')
+  })
 })

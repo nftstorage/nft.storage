@@ -15,6 +15,7 @@ export class DBClient {
     this.client = new PostgrestClient(url, {
       headers: {
         Authorization: `Bearer ${token}`,
+        apikey: `${token}`,
       },
     })
   }
@@ -66,7 +67,7 @@ export class DBClient {
     const defaultPins = [
       {
         status: 'PinQueued',
-        service: 'IpfsCluster',
+        service: 'IpfsCluster2',
       },
       {
         status: 'PinQueued',
@@ -121,7 +122,7 @@ export class DBClient {
       .eq('user_id', userId)
       .is('deleted_at', null)
       // @ts-ignore
-      .filter('content.pin.service', 'eq', 'IpfsCluster')
+      .filter('content.pin.service', 'in', '(IpfsCluster,IpfsCluster2)')
       .single()
 
     if (status === 406 || !upload) {
@@ -149,7 +150,7 @@ export class DBClient {
       .eq('user_id', userId)
       .is('deleted_at', null)
       // @ts-ignore
-      .filter('content.pin.service', 'eq', 'IpfsCluster')
+      .filter('content.pin.service', 'in', '(IpfsCluster,IpfsCluster2)')
       .limit(opts.limit || 10)
       .order('inserted_at', { ascending: false })
 
@@ -255,7 +256,7 @@ export class DBClient {
         pins:pin(status, service, inserted_at)`
       )
       // @ts-ignore
-      .filter('pins.service', 'eq', 'IpfsCluster')
+      .filter('pins.service', 'in', '(IpfsCluster,IpfsCluster2)')
       .eq('cid', cid)
       .single()
 

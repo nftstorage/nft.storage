@@ -27,21 +27,21 @@ export async function add(data, options = {}) {
 }
 
 /**
- * 
- * @param {Blob} data 
+ *
+ * @param {Blob} data
  * @param {import('@nftstorage/ipfs-cluster').API.AddCarParams} options
  */
 
 export async function addCar(data, options = {}) {
   const { cid, size, bytes } = await client.addCAR(data, {
     metadata: { size: data.size.toString() },
-    ...options
+    ...options,
   })
 
   return {
     cid,
     size: Number(size),
-    bytes: Number(bytes)
+    bytes: Number(bytes),
   }
 }
 
@@ -60,7 +60,7 @@ export async function addDirectory(files, options = {}) {
     metadata: { size: size.toString() },
     ...options,
   })
-  return results.map(result => ({
+  return results.map((result) => ({
     cid: result.cid,
     size: Number(result.size),
   }))
@@ -81,7 +81,9 @@ export const importAsset = async (file, options = {}) => {
   // very last one.
   if (result.length < 2) {
     throw new Error(
-      `Expected response with at least two entries, but instead got: ${result.map($ => $.cid)}`
+      `Expected response with at least two entries, but instead got: ${result.map(
+        ($) => $.cid
+      )}`
     )
   }
   const dir = result[result.length - 1]
@@ -95,50 +97,8 @@ export async function pin(cid, options) {
   return client.pin(cid, options)
 }
 
-/**
- * @param {string} cid
- */
-export async function allocation(cid) {
-  return client.allocation(cid)
-}
-
-/**
- * @param {string} cid
- */
-export async function status(cid) {
-  return client.status(cid)
-}
-
-/**
- * @param {string} cid
- */
-export async function recover(cid) {
-  return client.recover(cid)
-}
-
 export function delegates() {
-  return Array.from(cluster.addrs)
-}
-
-/**
- * @param {string} cid
- */
-export async function dagSize(cid) {
-  const url = new URL(
-    `dag/stat?arg=${encodeURIComponent(cid)}&progress=false`,
-    cluster.ipfsProxyApiUrl
-  )
-  const response = await fetch(url.toString(), {
-    headers: { Authorization: `Basic ${cluster.ipfsProxyBasicAuthToken}` },
-  })
-  if (!response.ok) {
-    throw Object.assign(
-      new Error(`${response.status}: ${response.statusText}`),
-      { response }
-    )
-  }
-  const data = await response.json()
-  return parseInt(data.Size)
+  return []
 }
 
 /**
@@ -148,8 +108,8 @@ export async function dagSize(cid) {
  */
 export function toPSAStatus(status) {
   const pinInfos = Object.values(status.peerMap)
-  if (pinInfos.some(i => i.status === 'pinned')) return 'pinned'
-  if (pinInfos.some(i => i.status === 'pinning')) return 'pinning'
-  if (pinInfos.some(i => i.status === 'pin_queued')) return 'queued'
+  if (pinInfos.some((i) => i.status === 'pinned')) return 'pinned'
+  if (pinInfos.some((i) => i.status === 'pinning')) return 'pinning'
+  if (pinInfos.some((i) => i.status === 'pin_queued')) return 'queued'
   return 'failed'
 }

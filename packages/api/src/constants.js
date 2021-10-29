@@ -1,4 +1,4 @@
-// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN, DATABASE_TOKEN
+// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN, DATABASE_TOKEN, CLUSTER_SERVICE
 export const stores = {
   deals: DEALS,
   users: USERS,
@@ -18,18 +18,28 @@ export const secrets = {
   database: DATABASE_TOKEN,
 }
 
+const CLUSTER1 = 'https://nft.storage.ipfscluster.io/api/'
+const CLUSTER2 = 'https://nft2.storage.ipfscluster.io/api/'
+let clusterUrl
+
+switch (CLUSTER_SERVICE) {
+  case 'IpfsCluster':
+    clusterUrl = CLUSTER1
+    break
+  case 'IpfsCluster2':
+    clusterUrl = CLUSTER2
+    break
+  default:
+    clusterUrl = CLUSTER_API_URL
+    break
+}
+
 export const cluster = {
-  apiUrl: CLUSTER_API_URL,
+  apiUrl: clusterUrl,
   basicAuthToken:
     typeof CLUSTER_BASIC_AUTH_TOKEN !== 'undefined'
       ? CLUSTER_BASIC_AUTH_TOKEN
       : '',
-  ipfsProxyApiUrl: CLUSTER_IPFS_PROXY_API_URL,
-  ipfsProxyBasicAuthToken:
-    typeof CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN !== 'undefined'
-      ? CLUSTER_IPFS_PROXY_BASIC_AUTH_TOKEN
-      : '',
-  addrs: Object.freeze(CLUSTER_ADDRS.split(',').filter(Boolean)),
   /**
    * When >2.5MB, use local add, because waiting for blocks to be sent to
    * other cluster nodes can take a long time. Replication to other nodes

@@ -33,7 +33,7 @@ export async function getNftMetrics() {
 }
 
 export async function getPinMetrics() {
-  const services = ['Pinata', 'IpfsCluster']
+  const services = ['Pinata', 'IpfsCluster', 'IpfsCluster2']
   const statuses = ['PinQueued', 'Pinning', 'Pinned', 'PinError']
   const totals = await Promise.all(
     services.map(async (service) => {
@@ -83,16 +83,17 @@ async function exportPromMetrics() {
 
     '# HELP nftstorage_uploads_total Total number of uploads by type.',
     '# TYPE nftstorage_uploads_total counter',
-    ...Object.entries(nfts.totals).map(([type, total]) =>
-      `nftstorage_uploads_total{type="${type}"} ${total}`
+    ...Object.entries(nfts.totals).map(
+      ([type, total]) => `nftstorage_uploads_total{type="${type}"} ${total}`
     ),
 
     '# HELP nftstorage_pins_total Total number of pins by service and status.',
     '# TYPE nftstorage_pins_total counter',
     ...Object.entries(pins.totals).map(([service, totals]) => {
       return Object.entries(totals)
-        .map(([status, total]) =>
-          `nftstorage_pins_total{service="${service}",status="${status}"} ${total}`
+        .map(
+          ([status, total]) =>
+            `nftstorage_pins_total{service="${service}",status="${status}"} ${total}`
         )
         .join('\n')
     }),

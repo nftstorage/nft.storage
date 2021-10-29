@@ -86,10 +86,6 @@ export async function pinsReplace(event, ctx) {
     name: pinData.name,
   })
 
-  if (upload.content.pin[0].status === 'PinError') {
-    await cluster.recover(upload.content_cid)
-  }
-
   await db.deleteUpload(existingCid, user.id)
 
   return new JSONResponse(toPinsResponse(upload))
