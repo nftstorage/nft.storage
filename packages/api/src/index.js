@@ -45,6 +45,7 @@ import {
   setMaintenanceModeGetter,
 } from './middleware/maintenance.js'
 import { withPsaErrorHandler } from './middleware/psa.js'
+import { cluster } from './constants.js'
 
 const log = debug('router')
 
@@ -79,6 +80,7 @@ r.add(
       commit: COMMITHASH,
       branch: BRANCH,
       mode: getMaintenanceMode(),
+      cluster: cluster.apiUrl,
     })
   },
   [postCors]

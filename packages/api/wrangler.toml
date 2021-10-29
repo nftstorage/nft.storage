@@ -1,3 +1,5 @@
+# Development
+
 name = "nft-storage-dev"
 account_id = "fffa4b4363a7e5250af8357087263b3a"
 workers_dev = true
@@ -21,7 +23,6 @@ kv_namespaces = [
 ENV = "dev"
 DEBUG = "*"
 DATABASE_URL = "https://ryoouiwnemjhenyqqlhp.supabase.co/rest/v1"
-CLUSTER_API_URL = "https://nft2.storage.ipfscluster.io/api/"
 
 [build]
 command = "scripts/cli.js build"
@@ -52,7 +53,6 @@ kv_namespaces = [
 ENV = "staging"
 DEBUG = ""
 DATABASE_URL = "https://db-staging.nft.storage"
-CLUSTER_API_URL = "https://nft2.storage.ipfscluster.io/api/"
 
 [env.staging.build]
 command = "scripts/cli.js build --env staging"
@@ -83,7 +83,6 @@ kv_namespaces = [
 ENV = "production"
 DEBUG = ""
 DATABASE_URL = "https://db.nft.storage"
-CLUSTER_API_URL = "https://nft2.storage.ipfscluster.io/api/"
 
 [env.production.build]
 command = "scripts/cli.js build --env production"
@@ -91,6 +90,8 @@ watch_dir = "src"
 
 [env.production.build.upload]
 format = "service-worker"
+
+# Dev accounts
 
 [env.alanshaw]
 name = "nft-storage-alanshaw"
