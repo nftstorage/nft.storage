@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.9.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.8.2...website-v1.9.0) (2021-10-29)
+
+
+### Features
+
+* add user survey ([#658](https://www.github.com/nftstorage/nft.storage/issues/658)) ([cf22e89](https://www.github.com/nftstorage/nft.storage/commit/cf22e89ac602b9744b801e36c5e43e6572713e03))
+* switch to ipfs cluster 2 ([#702](https://www.github.com/nftstorage/nft.storage/issues/702)) ([4c2fd56](https://www.github.com/nftstorage/nft.storage/commit/4c2fd569a6db53ee559f21e0bd6b208b35882dd0))
+* update nav links ([#661](https://www.github.com/nftstorage/nft.storage/issues/661)) ([0211701](https://www.github.com/nftstorage/nft.storage/commit/0211701107ad049f04fbe0db79eb78ec6fe8aba8))
+
+
+### Bug Fixes
+
+* **website:** typo in user survey button ([#704](https://www.github.com/nftstorage/nft.storage/issues/704)) ([e13bccb](https://www.github.com/nftstorage/nft.storage/commit/e13bccbddb2b7191585c1fade03d155cbfc8c444))
+
 ### [1.8.2](https://www.github.com/nftstorage/nft.storage/compare/website-v1.8.1...website-v1.8.2) (2021-10-22)
 
 
