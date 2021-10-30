@@ -44,10 +44,10 @@ export default function TermsOfService() {
         </h2>
         <p className="lh-copy">
           Data will be stored at no cost to the user on IPFS for as long as
-          Protocol Labs, Inc. continues to offer free storage for NFT’s.
-          Data will continue to be persisted ad infinitum <strong>or</strong>{' '}
-          until Protocol Labs decides to conclude the NFT.storage project. Prior
-          to termination, Protocol Labs will provide 90 days notice to users via
+          Protocol Labs, Inc. continues to offer free storage for NFT’s. Data
+          will continue to be persisted ad infinitum <strong>or</strong> until
+          Protocol Labs decides to conclude the NFT.storage project. Prior to
+          termination, Protocol Labs will provide 90 days notice to users via
           email to allow users enough time to make arrangements for storing
           their data by other means.
         </p>

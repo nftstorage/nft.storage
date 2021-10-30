@@ -64,7 +64,7 @@ export async function initIngestCursor(config) {
       _gte: new Date(initDate).toISOString(),
     }
   } else {
-    where.inserted_at = {
+    where.updated_at = {
       _gte: new Date(initDate).toISOString(),
     }
   }
@@ -74,7 +74,7 @@ export async function initIngestCursor(config) {
     where,
     order_by: [
       {
-        inserted_at: Hasura.schema.order_by.desc,
+        updated_at: Hasura.schema.order_by.desc,
       },
     ],
   }
