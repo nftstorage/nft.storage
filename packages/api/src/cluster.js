@@ -27,22 +27,64 @@ export async function add(data, options = {}) {
 }
 
 /**
+ * @param {Blob} b
+ */
+async function sha256(b) {
+  // hash the message
+  const hashBuffer = await crypto.subtle.digest(
+    'SHA-256',
+    await b.arrayBuffer()
+  )
+  // convert ArrayBuffer to Array
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  // convert bytes to hex string
+  const hashHex = hashArray
+    .map((b) => ('00' + b.toString(16)).slice(-2))
+    .join('')
+  return hashHex
+}
+
+/**
  *
  * @param {Blob} data
  * @param {import('@nftstorage/ipfs-cluster').API.AddCarParams} options
  */
 
 export async function addCar(data, options = {}) {
-  const { cid, size, bytes } = await client.addCAR(data, {
-    metadata: { size: data.size.toString() },
-    ...options,
+  const cacheUrl = new URL('https://cluster.com')
+  // Store the URL in cache by prepending the body's hash
+  cacheUrl.pathname = '/addCar' + (await sha256(data))
+  // Convert to a GET to be able to cache
+  const cacheKey = new Request(cacheUrl.toString(), {
+    headers: {
+      'Cache-Control': 'public, max-age=86400',
+    },
+    method: 'GET',
   })
 
-  return {
-    cid,
-    size: Number(size),
-    bytes: Number(bytes),
+  const cache = caches.default
+  // Find the cache key in the cache
+  let response = await cache.match(cacheKey)
+
+  if (!response) {
+    console.log('CACHE MISS')
+    const { cid, size, bytes } = await client.addCAR(data, {
+      metadata: { size: data.size.toString() },
+      ...options,
+    })
+
+    const out = {
+      cid,
+      size: Number(size),
+      bytes: Number(bytes),
+    }
+
+    await cache.put(cacheKey, new Response(JSON.stringify(out)))
+    return out
   }
+  console.log('CACHE HIT')
+
+  return response.json()
 }
 
 /**

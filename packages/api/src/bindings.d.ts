@@ -2,7 +2,7 @@ export {}
 
 import Toucan from 'toucan-js'
 import { Mode } from './middleware/maintenance.js'
-
+import { Timer } from './utils/router.js'
 declare global {
   const SALT: string
   const DEBUG: string
@@ -35,6 +35,7 @@ declare global {
 export interface RouteContext {
   sentry: Toucan
   params: Record<string, string>
+  timer: Timer
 }
 
 export interface Pin {

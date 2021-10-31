@@ -37,7 +37,7 @@ function matchParams(path, result) {
  * The Router handles determines which handler is matched given the
  * conditions present for each request.
  */
-class Router {
+export class Router {
   /**
    * @param {object} [options]
    * @param {BasicHandler} [options.onNotFound]
@@ -140,11 +140,14 @@ class Router {
     this.sentry = getSentry(event)
     const req = event.request
     const [handler, params, postHandlers] = this.resolve(req)
+    /** @type {Response} */
     let rsp
 
+    const timer = new Timer()
+    timer.time('request')
     if (handler) {
       try {
-        rsp = await handler(event, { sentry: this.sentry, params })
+        rsp = await handler(event, { sentry: this.sentry, params, timer })
       } catch (err) {
         // @ts-ignore
         rsp = this.options.onError(req, err, { sentry: this.sentry, params })
@@ -153,7 +156,10 @@ class Router {
       rsp = this.options.onNotFound(req)
     }
 
-    return postHandlers.reduce((r, handler) => handler(req, r), rsp)
+    rsp = postHandlers.reduce((r, handler) => handler(req, r), rsp)
+    timer.timeEnd('request')
+    rsp.headers.set('Server-Timing', timer.out())
+    return rsp
   }
 
   /**
@@ -165,7 +171,6 @@ class Router {
     const url = new URL(event.request.url)
     // Add more if needed for other backends
     const passThrough = [database.url]
-
     // Ignore http requests from the passthrough list above
     if (!passThrough.includes(`${url.protocol}//${url.host}`)) {
       event.respondWith(this.route(event))
@@ -173,4 +178,69 @@ class Router {
   }
 }
 
-export { Router }
+export class Timer {
+  constructor() {
+    this._times = new Map()
+    /**
+     * @type {string[]}
+     */
+    this._order = []
+  }
+
+  /**
+   * @param {any} name
+   * @param {any} [description]
+   */
+  time(name, description) {
+    this._times.set(name, {
+      name: name,
+      description: description,
+      start: Date.now(),
+    })
+    this._order.push(name)
+  }
+
+  /**
+   * @param {any} name
+   */
+  timeEnd(name) {
+    const timeObj = this._times.get(name)
+    if (!timeObj) {
+      return console.warn(`No such name ${name}`)
+    }
+
+    const end = Date.now()
+    const duration = end - timeObj.start
+    const value = duration
+    timeObj.value = value
+    this._times.set(name, {
+      ...timeObj,
+      end,
+      duration,
+    })
+    return timeObj
+  }
+
+  clear() {
+    this._times.clear()
+  }
+
+  keys() {
+    return this._times.keys()
+  }
+
+  out() {
+    const result = []
+    for (const key of this._order) {
+      const { name, duration, description } = this._times.get(key)
+      result.push(
+        description
+          ? `${name};desc="${description}";dur=${duration}`
+          : `${name};dur=${duration}`
+      )
+    }
+
+    console.log(result)
+    return result.join(',')
+  }
+}

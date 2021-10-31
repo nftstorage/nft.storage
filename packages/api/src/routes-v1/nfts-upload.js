@@ -68,10 +68,11 @@ export async function uploadV1(event, ctx) {
     }
 
     // cluster returns `bytes` rather than `size` when upload is a CAR.
+    ctx.timer.time('cluster')
     const { cid, size, bytes } = isCar
       ? await cluster.addCar(blob, addOptions)
       : await cluster.add(blob, addOptions)
-
+    ctx.timer.timeEnd('cluster')
     sourceCid = cid
     const dagSize = size || bytes
 
@@ -80,6 +81,7 @@ export async function uploadV1(event, ctx) {
       ;({ contentCid } = parseCid(cid))
     }
 
+    ctx.timer.time('upload')
     upload = await db.createUpload({
       mime_type: blob.type,
       type: isCar ? 'Car' : 'Blob',
@@ -90,6 +92,7 @@ export async function uploadV1(event, ctx) {
       files: [],
       key_id: key?.id,
     })
+    ctx.timer.timeEnd('upload')
   }
 
   return new JSONResponse({ ok: true, value: toNFTResponse(upload, sourceCid) })
