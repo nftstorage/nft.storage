@@ -5,7 +5,7 @@ import {
   rawClient,
 } from './scripts/helpers.js'
 
-describe('V1 - Auth Keys', () => {
+describe('Auth Keys', () => {
   /** @type{DBTestClient} */
   let client
 

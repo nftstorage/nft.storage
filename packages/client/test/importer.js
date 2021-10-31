@@ -98,7 +98,6 @@ export const importCar = async (content) => {
  */
 export const importDirectory = async (files) => {
   const entries = files.map((file) => ({
-    // @ts-expect-error - webkitRelativePath is not known
     path: file.webkitRelativePath || file.name,
     // file.stream() isn't typed as AsyncIterable.
     content: /** @type {AsyncIterable<Uint8Array>} */ (file.stream()),

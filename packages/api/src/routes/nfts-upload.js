@@ -1,30 +1,30 @@
 import { HTTPError } from '../errors.js'
 import * as cluster from '../cluster.js'
-import * as nfts from '../models/nfts.js'
-import * as pins from '../models/pins.js'
-import * as pinataQueue from '../models/pinata-queue.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth.js'
 import { debug } from '../utils/debug.js'
-import * as constants from '../constants.js'
+import { toNFTResponse } from '../utils/db-transforms.js'
+import { parseCid } from '../utils/utils.js'
 
 const log = debug('nfts-upload')
-const LOCAL_ADD_THRESHOLD = constants.cluster.localAddThreshold
+const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
 
 /**
  * @typedef {import('../bindings').NFT} NFT
+ * @typedef {import('../bindings').NFTResponse} NFTResponse
+ * @typedef {import('@nftstorage/ipfs-cluster').API.StatusResponse} StatusResponse
  */
 
 /** @type {import('../bindings').Handler} */
-export async function upload(event, ctx) {
+export async function uploadV1(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
-  const { user, tokenName } = await validate(event, ctx)
+  const { user, key } = await validate(event, ctx)
+  const { db } = ctx
 
-  /** @type {NFT} */
-  let nft
-  let nftSize = 0
-  const created = new Date().toISOString()
+  /** @type {import('../utils/db-client-types').UploadOutput} */
+  let upload
+  let sourceCid
 
   if (contentType.includes('multipart/form-data')) {
     const form = await event.request.formData()
@@ -38,23 +38,31 @@ export async function upload(event, ctx) {
       local: dirSize > LOCAL_ADD_THRESHOLD,
     })
     const { cid, size } = dir[dir.length - 1]
-    nft = {
-      cid,
-      created,
-      type: 'directory',
-      scope: tokenName,
+
+    sourceCid = cid
+
+    upload = await db.createUpload({
+      user_id: user.id,
+      content_cid: cid,
+      source_cid: cid,
+      key_id: key?.id,
+      dag_size: size,
+      mime_type: contentType,
+      type: 'Multipart',
       files: files.map((f) => ({
         name: f.name,
         type: f.type,
       })),
-    }
-    nftSize = size
+    })
   } else {
     const blob = await event.request.blob()
+    console.log('🚀 ~ file: nfts-upload.js ~ line 58 ~ uploadV1 ~ blob', blob)
     if (blob.size === 0) {
       throw new HTTPError('Empty payload', 400)
     }
     const isCar = contentType.includes('application/car')
+    console.log('🚀 ~ file: nfts-upload.js ~ line 63 ~ uploadV1 ~ isCar', isCar)
+
     const addOptions = {
       // When >2.5MB, use local add, because waiting for blocks to be sent to
       // other cluster nodes can take a long time. Replication to other nodes
@@ -67,40 +75,31 @@ export async function upload(event, ctx) {
       ? await cluster.addCar(blob, addOptions)
       : await cluster.add(blob, addOptions)
 
-    nft = {
+    console.log(
+      '🚀 ~ file: nfts-upload.js ~ line 74 ~ uploadV1 ~ cid, size, bytes',
       cid,
-      created,
-      type: blob.type,
-      scope: tokenName,
+      size,
+      bytes
+    )
+    sourceCid = cid
+    const dagSize = size || bytes
+
+    let contentCid = cid
+    if (isCar) {
+      ;({ contentCid } = parseCid(cid))
+    }
+
+    upload = await db.createUpload({
+      mime_type: blob.type,
+      type: isCar ? 'Car' : 'Blob',
+      content_cid: contentCid,
+      source_cid: cid,
+      dag_size: dagSize,
+      user_id: user.id,
       files: [],
-    }
-    nftSize = size || bytes
+      key_id: key?.id,
+    })
   }
 
-  let pin = await pins.get(nft.cid)
-  if (!pin) {
-    pin = { cid: nft.cid, status: 'queued', size: nftSize, created }
-    await pins.set(nft.cid, pin)
-  }
-
-  const existingNft = await nfts.get({ user, cid: nft.cid })
-  if (existingNft) {
-    /** @type {import('../bindings').NFTResponse} */
-    const res = {
-      ...existingNft,
-      size: pin.size,
-      pin: { ...(existingNft.pin || {}), ...pin },
-      deals: [],
-    }
-    return new JSONResponse({ ok: true, value: res })
-  }
-
-  await nfts.set({ user, cid: nft.cid }, nft, pin)
-
-  /** @type {import('../bindings').NFTResponse} */
-  const res = { ...nft, size: pin.size, pin, deals: [] }
-
-  event.waitUntil(pinataQueue.add(nft.cid, { origins: cluster.delegates() }))
-
-  return new JSONResponse({ ok: true, value: res })
+  return new JSONResponse({ ok: true, value: toNFTResponse(upload, sourceCid) })
 }

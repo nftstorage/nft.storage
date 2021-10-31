@@ -12,8 +12,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^16.7.4",
-    "hasura-cli": "2.0.8",
+    "hasura-cli": "2.0.9",
     "ts-node": "^10.2.1",
-    "typescript": "^4.4.2"
+    "typescript": "^4.4.4"
   }
 }

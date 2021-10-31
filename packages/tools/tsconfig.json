@@ -14,5 +14,5 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "include": ["crons", "cf-sync", "*.js", "*.d.ts", "utils"]
+  "include": ["*.js", "*.d.ts", "utils"]
 }

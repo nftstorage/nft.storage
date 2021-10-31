@@ -1,153 +1,187 @@
-import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
-import * as nftsIndex from '../models/nfts-index.js'
+import { Validator } from '@cfworker/json-schema'
+import { parseCidPinning } from '../utils/utils.js'
+import { toPinsResponse } from '../utils/db-transforms.js'
+
+const DEFAULT_LIMIT = 10
+const MAX_LIMIT = 1000
+
+/**
+ * @typedef {import('../utils/db-client-types').ListUploadsOptions} ListUploadsOptions
+ */
 
 /** @type {import('../bindings').Handler} */
 export async function pinsList(event, ctx) {
-  const { user } = await validate(event, ctx)
+  const { user, db } = await validate(event, ctx)
   const { searchParams } = new URL(event.request.url)
+  const result = parseSearchParams(searchParams)
 
-  let count = 0
-  /** @type import('../pinata-psa').PinStatus[] */
-  const results = []
-  const options = queryToListOptions(searchParams)
-  const limit = options.limit || 10
-  const filter = makeFilter(options)
+  if (result.error) {
+    return new JSONResponse(result.error, { status: 400 })
+  } else {
+    const params = result.data
 
-  for await (const [key, data] of nftsIndex.entries(user.sub)) {
-    if (!filter(key, data)) continue
-    count++
-    results.push({
-      requestid: key.cid,
-      status: data.pinStatus || 'queued',
-      created: key.created || new Date(0).toISOString(),
-      delegates: cluster.delegates(),
-      pin: { cid: key.cid, name: data.name, meta: data.meta },
-    })
-    if (results.length >= limit) {
-      break
+    // Query database
+    const data = await db.listUploads(user.id, params)
+
+    // Not found
+    if (!data || data.length === 0) {
+      return new JSONResponse(
+        {
+          error: {
+            reason: 'NOT_FOUND',
+            details: 'The specified resource was not found',
+          },
+        },
+        { status: 404 }
+      )
     }
+
+    // Aggregate result into proper output
+    let count = 0
+    const results = []
+    for (const upload of data) {
+      if (upload.content.pin.length > 0) {
+        count++
+        results.push(toPinsResponse(upload))
+      }
+    }
+
+    return new JSONResponse({ count, results })
+  }
+}
+
+// Validation Schema
+const validator = new Validator({
+  type: 'object',
+  required: ['status'],
+  properties: {
+    name: { type: 'string' },
+    after: { type: 'string', format: 'date-time' },
+    before: { type: 'string', format: 'date-time' },
+    cid: { type: 'array', items: { type: 'string' } },
+    limit: { type: 'integer', minimum: 1, maximum: MAX_LIMIT },
+    meta: { type: 'object' },
+    match: {
+      type: 'string',
+      enum: ['exact', 'iexact', 'ipartial', 'partial'],
+    },
+    status: {
+      type: 'array',
+      items: {
+        type: 'string',
+        enum: ['PinError', 'PinQueued', 'Pinned', 'Pinning'],
+      },
+    },
+  },
+})
+
+/**
+ *
+ * @param {URLSearchParams} params
+ */
+function parseSearchParams(params) {
+  /** @type {ListUploadsOptions} */
+  const out = {}
+
+  const cidParam = params.get('cid')
+  if (cidParam) {
+    const cids = cidParam.split(',')
+    const cidsV1 = []
+    for (const cid of cids) {
+      const parsed = parseCidPinning(cid)
+      if (parsed) {
+        cidsV1.push(parsed.sourceCid)
+      } else {
+        return {
+          error: { reason: 'INVALID_CID', details: `Invalid cid ${cid}` },
+          data: undefined,
+        }
+      }
+    }
+    out.cid = cidsV1
   }
 
-  return new JSONResponse({ count, results })
+  const nameParam = params.get('name')
+  if (nameParam) {
+    out.name = nameParam
+  }
+
+  const matchParam = params.get('match')
+  if (matchParam) {
+    out.match = /** @type {ListUploadsOptions["match"]} */ (matchParam)
+  }
+
+  const statusParam = params.get('status')
+  if (statusParam) {
+    // Note: undefined statuses from toDbPinStatus will fail validation below
+    out.status = /** @type {ListUploadsOptions["status"]}*/ (
+      statusParam.split(',').map(toDbPinStatus)
+    )
+  }
+
+  const afterParam = params.get('after')
+  if (afterParam) {
+    out.after = afterParam
+  }
+
+  const beforeParam = params.get('before')
+  if (beforeParam) {
+    out.before = beforeParam
+  }
+
+  const limitParam = params.get('limit')
+  if (limitParam) {
+    out.limit = Number(limitParam)
+  } else {
+    out.limit = DEFAULT_LIMIT
+  }
+
+  const metaParam = params.get('meta')
+  if (metaParam) {
+    try {
+      const parsed = JSON.parse(metaParam)
+      out.meta = parsed
+    } catch (err) {
+      return {
+        error: {
+          reason: 'INVALID_META',
+          details: 'Invalid json in the "meta" query parameter.',
+        },
+        data: undefined,
+      }
+    }
+  }
+  const result = validator.validate(out)
+
+  if (result.valid) {
+    return { data: out, error: undefined }
+  } else {
+    return {
+      error: {
+        reason: 'VALIDATION_ERROR',
+        details: result.errors,
+      },
+      data: undefined,
+    }
+  }
 }
 
 /**
- * @param {URLSearchParams} searchParams
- * @returns {import('../pinata-psa').ListOptions}
+ * Return the DB pin status name or undefined if unknown.
+ *
+ * @param {string} status
  */
-function queryToListOptions(searchParams) {
-  const queryObj = Object.fromEntries(searchParams.entries())
-  const cid = queryObj.cid ? queryObj.cid.split(',') : undefined
-  let meta
-  if (queryObj.meta) {
-    meta = JSON.parse(queryObj.meta)
-    if (meta == null || typeof meta !== 'object' || Array.isArray(meta)) {
-      throw new Error('invalid meta')
-    }
-  }
-  const name = queryObj.name
-  /** @type import('../pinata-psa.js').ListOptions['match'] */
-  let match
-  if (queryObj.match) {
-    if (
-      queryObj.match === 'exact' ||
-      queryObj.match === 'iexact' ||
-      queryObj.match === 'partial' ||
-      queryObj.match === 'ipartial'
-    ) {
-      match = queryObj.match
-    } else {
-      throw new Error('invalid match value')
-    }
-  }
-  /** @type import('../pinata-psa.js').Status[] | undefined */
-  let status
-  if (queryObj.status) {
-    status = []
-    for (const s of queryObj.status.split(',')) {
-      if (
-        s !== 'queued' &&
-        s !== 'pinning' &&
-        s !== 'pinned' &&
-        s !== 'failed'
-      ) {
-        throw new Error('invalid status value')
-      }
-      status.push(s)
-    }
-  }
-  const before = queryObj.before ? new Date(queryObj.before) : undefined
-  const after = queryObj.before ? new Date(queryObj.after) : undefined
-
-  let limit
-  if (queryObj.limit) {
-    const parsedLimit = parseInt(queryObj.limit)
-    if (isNaN(parsedLimit)) {
-      throw new Error('invalid limit')
-    }
-    if (parsedLimit < 1 || parsedLimit > 1000) {
-      throw new RangeError('limit out of bounds')
-    }
-    limit = parsedLimit
-  }
-
-  return { cid, meta, name, match, status, before, after, limit }
-}
-
-/**
- * @param {import('../pinata-psa.js').ListOptions} options
- * @returns {(key: import('../models/nfts-index.js').Key, data: import('../models/nfts-index.js').IndexData) => boolean}
- */
-function makeFilter(options) {
-  return (key, data) => {
-    if (options.cid) {
-      if (!options.cid.includes(key.cid)) {
-        return false
-      }
-    }
-    if (options.meta) {
-      const meta = data.meta || {}
-      for (const [k, v] of Object.entries(options.meta)) {
-        if (meta[k] !== v) {
-          return false
-        }
-      }
-    }
-    if (options.name) {
-      const match = options.match || 'exact'
-      const name = data.name || ''
-      if (match === 'exact') {
-        if (options.name !== name) {
-          return false
-        }
-      } else if (match === 'iexact') {
-        if (options.name.toLowerCase() !== name.toLowerCase()) {
-          return false
-        }
-      } else if (match === 'partial') {
-        if (!name.includes(options.name)) {
-          return false
-        }
-      } else if (match === 'ipartial') {
-        if (!name.toLowerCase().includes(options.name.toLowerCase())) {
-          return false
-        }
-      }
-    }
-    if (options.status && !options.status.includes(data.pinStatus)) {
-      return false
-    }
-    if (options.before || options.after) {
-      const created = new Date(key.created).getTime()
-      if (options.before && options.before.getTime() < created) {
-        return false
-      }
-      if (options.after && options.after.getTime() > created) {
-        return false
-      }
-    }
-    return true
+function toDbPinStatus(status) {
+  switch (status) {
+    case 'queued':
+      return 'PinQueued'
+    case 'pinning':
+      return 'Pinning'
+    case 'pinned':
+      return 'Pinned'
+    case 'failed':
+      return 'PinError'
   }
 }

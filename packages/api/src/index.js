@@ -2,41 +2,24 @@ import { Router } from './utils/router.js'
 import { notFound } from './utils/utils.js'
 import { HTTPError } from './errors.js'
 import { cors, postCors } from './routes/cors.js'
+import { JSONResponse } from './utils/json-response.js'
+import { debug } from './utils/debug.js'
+import { metrics as metricsV1 } from './routes/metrics.js'
+import { tokensDeleteV1 } from './routes/tokens-delete.js'
+import { tokensCreateV1 } from './routes/tokens-create.js'
+import { tokensListV1 } from './routes/tokens-list.js'
+import { login } from './routes/login.js'
+import { uploadV1 } from './routes/nfts-upload.js'
 import { check } from './routes/nfts-check.js'
-import { upload } from './routes/nfts-upload.js'
-import { store } from './routes/nfts-store.js'
-import { status } from './routes/nfts-get.js'
-import { remove } from './routes/nfts-delete.js'
-import { list } from './routes/nfts-list.js'
-import { tokensList } from './routes/tokens-list.js'
-import { tokensCreate } from './routes/tokens-create.js'
-import { tokensDelete } from './routes/tokens-delete.js'
+import { nftGet } from './routes/nfts-get.js'
+import { nftDelete } from './routes/nfts-delete.js'
+import { nftList } from './routes/nfts-list.js'
+import { nftStore } from './routes/nfts-store.js'
 import { pinsAdd } from './routes/pins-add.js'
+import { pinsDelete } from './routes/pins-delete.js'
 import { pinsGet } from './routes/pins-get.js'
 import { pinsList } from './routes/pins-list.js'
 import { pinsReplace } from './routes/pins-replace.js'
-import { pinsDelete } from './routes/pins-delete.js'
-import { metrics } from './routes/metrics.js'
-import { login } from './routes/login.js'
-import { JSONResponse } from './utils/json-response.js'
-import { debug } from './utils/debug.js'
-import { getNFT } from './routes/get-nft.js'
-import { metrics as metricsV1 } from './routes-v1/metrics.js'
-import { tokensDeleteV1 } from './routes-v1/tokens-delete.js'
-import { tokensCreateV1 } from './routes-v1/tokens-create.js'
-import { tokensListV1 } from './routes-v1/tokens-list.js'
-import { loginV1 } from './routes-v1/login.js'
-import { uploadV1 } from './routes-v1/nfts-upload.js'
-import { statusV1 } from './routes-v1/nfts-get.js'
-import { checkV1 } from './routes-v1/nfts-check.js'
-import { nftDeleteV1 } from './routes-v1/nfts-delete.js'
-import { nftListV1 } from './routes-v1/nfts-list.js'
-import { nftStoreV1 } from './routes-v1/nfts-store.js'
-import { pinsAddV1 } from './routes-v1/pins-add.js'
-import { pinsDeleteV1 } from './routes-v1/pins-delete.js'
-import { pinsGetV1 } from './routes-v1/pins-get.js'
-import { pinsListV1 } from './routes-v1/pins-list.js'
-import { pinsReplace as pinsReplaceV1 } from './routes-v1/pins-replace.js'
 import {
   withMode,
   READ_ONLY as RO,
@@ -62,14 +45,10 @@ const r = new Router(getContext, {
 })
 
 // Monitoring
-r.add('get', '/v0/metrics', withMode(metrics, RO))
 r.add('get', '/metrics', withMode(metricsV1, RO))
 
 // CORS
 r.add('options', '*', cors)
-
-// Auth
-r.add('post', '/v0/login', withMode(login, RO), [postCors])
 
 // Version
 r.add(
@@ -97,59 +76,42 @@ r.add(
  */
 const psa = (handler, mode) => withPsaErrorHandler(withMode(handler, mode))
 
-// Note: /api/* endpoints are legacy and will eventually be removed.
-r.add('get', '/api/pins', psa(pinsListV1, RO), [postCors])
-r.add('get', '/api/pins/:requestid', psa(pinsGetV1, RO), [postCors])
-r.add('post', '/api/pins', psa(pinsAddV1, RW), [postCors])
-r.add('post', '/api/pins/:requestid', psa(pinsReplaceV1, RW), [postCors])
-r.add('delete', '/api/pins/:requestid', psa(pinsDeleteV1, RW), [postCors])
+// Login
+r.add('post', '/login', withMode(login, RO), [postCors])
 
-r.add('post', '/v0/pins', psa(pinsAdd, RW), [postCors])
-r.add('get', '/v0/pins', psa(pinsList, RO), [postCors])
-r.add('get', '/v0/pins/:requestid', psa(pinsGet, RO), [postCors])
-r.add('post', '/v0/pins/:requestid', psa(pinsReplace, RW), [postCors])
-r.add('delete', '/v0/pins/:requestid', psa(pinsDelete, RW), [postCors])
+// Pinning
+r.add('get', '/pins', psa(pinsList, RO), [postCors])
+r.add('get', '/pins/:requestid', psa(pinsGet, RO), [postCors])
+r.add('post', '/pins', psa(pinsAdd, RW), [postCors])
+r.add('post', '/pins/:requestid', psa(pinsReplace, RW), [postCors])
+r.add('delete', '/pins/:requestid', psa(pinsDelete, RW), [postCors])
 
-// V1 routes
-r.add('post', '/login', withMode(loginV1, RO), [postCors])
-
-r.add('get', '/pins', psa(pinsListV1, RO), [postCors])
-r.add('get', '/pins/:requestid', psa(pinsGetV1, RO), [postCors])
-r.add('post', '/pins', psa(pinsAddV1, RW), [postCors])
-r.add('post', '/pins/:requestid', psa(pinsReplaceV1, RW), [postCors])
-r.add('delete', '/pins/:requestid', psa(pinsDeleteV1, RW), [postCors])
-
-r.add('get', '', withMode(nftListV1, RO), [postCors])
-r.add('get', '/:cid', withMode(statusV1, RO), [postCors])
+// Upload
+r.add('get', '/check/:cid', withMode(check, RO), [postCors])
+r.add('get', '', withMode(nftList, RO), [postCors])
+r.add('get', '/:cid', withMode(nftGet, RO), [postCors])
 r.add('post', '/upload', withMode(uploadV1, RW), [postCors])
-r.add('post', '/store', withMode(nftStoreV1, RW), [postCors])
-r.add('delete', '/:cid', withMode(nftDeleteV1, RW), [postCors])
+r.add('post', '/store', withMode(nftStore, RW), [postCors])
+r.add('delete', '/:cid', withMode(nftDelete, RW), [postCors])
 
-r.add('get', '/check/:cid', withMode(checkV1, RO), [postCors])
-
+// Tokens
 r.add('get', '/internal/tokens', withMode(tokensListV1, RO), [postCors])
 r.add('post', '/internal/tokens', withMode(tokensCreateV1, RW), [postCors])
 r.add('delete', '/internal/tokens', withMode(tokensDeleteV1, RW), [postCors])
 
+// Note: /api/* endpoints are legacy and will eventually be removed.
+r.add('get', '/api/pins', psa(pinsList, RO), [postCors])
+r.add('get', '/api/pins/:requestid', psa(pinsGet, RO), [postCors])
+r.add('post', '/api/pins', psa(pinsAdd, RW), [postCors])
+r.add('post', '/api/pins/:requestid', psa(pinsReplace, RW), [postCors])
+r.add('delete', '/api/pins/:requestid', psa(pinsDelete, RW), [postCors])
+
 // Public API
-r.add('get', '/api', withMode(nftListV1, RO), [postCors])
-r.add('get', '/api/check/:cid', withMode(checkV1, RO), [postCors])
-r.add('get', '/api/:cid', withMode(statusV1, RO), [postCors])
+r.add('get', '/api', withMode(nftList, RO), [postCors])
+r.add('get', '/api/check/:cid', withMode(check, RO), [postCors])
+r.add('get', '/api/:cid', withMode(nftGet, RO), [postCors])
 r.add('post', '/api/upload', withMode(uploadV1, RW), [postCors])
-r.add('delete', '/api/:cid', withMode(nftDeleteV1, RW), [postCors])
-
-r.add('get', '/v0', withMode(list, RO), [postCors])
-r.add('get', '/v0/check/:cid', withMode(check, RO), [postCors])
-r.add('get', '/v0/:cid', withMode(status, RO), [postCors])
-r.add('post', '/v0/upload', withMode(upload, RW), [postCors])
-r.add('post', '/v0/store', withMode(store, RW), [postCors])
-r.add('delete', '/v0/:cid', withMode(remove, RW), [postCors])
-
-// Private API
-r.add('get', '/v0/internal/tokens', withMode(tokensList, RO), [postCors])
-r.add('post', '/v0/internal/tokens', withMode(tokensCreate, RW), [postCors])
-r.add('delete', '/v0/internal/tokens', withMode(tokensDelete, RW), [postCors])
-r.add('get', '/v0/internal/list2', withMode(getNFT, RO), [postCors])
+r.add('delete', '/api/:cid', withMode(nftDelete, RW), [postCors])
 
 r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))

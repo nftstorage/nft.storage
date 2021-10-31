@@ -1,25 +1,42 @@
+import { Validator } from '@cfworker/json-schema'
 import { JSONResponse } from '../utils/json-response.js'
-import * as nfts from '../models/nfts.js'
 import { validate } from '../utils/auth.js'
+import { toNFTResponse } from '../utils/db-transforms.js'
+import { HTTPError } from '../errors.js'
+
+const DEFAULT_LIMIT = 10
+const MAX_LIMIT = 1000
+
+const validator = new Validator({
+  type: 'object',
+  required: ['before', 'limit'],
+  properties: {
+    before: { type: 'string', format: 'date-time' },
+    limit: { type: 'integer', minimum: 1, maximum: MAX_LIMIT },
+  },
+})
 
 /** @type {import('../bindings').Handler} */
-export async function list(event, ctx) {
-  const auth = await validate(event, ctx)
-  const options = {}
+export async function nftList(event, ctx) {
+  const { user } = await validate(event, ctx)
+  const { db } = ctx
   const { searchParams } = new URL(event.request.url)
-
-  const limit = searchParams.get('limit')
-  if (limit) {
-    options.limit = parseInt(limit)
+  const options = {
+    limit: searchParams.get('limit')
+      ? Number(searchParams.get('limit'))
+      : DEFAULT_LIMIT,
+    before: searchParams.get('before') || new Date().toISOString(),
   }
 
-  const before = searchParams.get('before')
-  if (before) {
-    options.before = new Date(before)
+  const result = validator.validate(options)
+  if (!result.valid) {
+    throw new HTTPError('invalid params', 400)
   }
+
+  const nfts = await db.listUploads(user.id, options)
 
   return new JSONResponse({
     ok: true,
-    value: await nfts.list(auth.user.sub, options),
+    value: nfts?.map((n) => toNFTResponse(n)),
   })
 }

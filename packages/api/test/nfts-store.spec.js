@@ -1,49 +1,12 @@
 import assert from 'assert'
 import { CID } from 'multiformats'
-import { clearStores } from './scripts/helpers.js'
-import stores from './scripts/stores.js'
-import { signJWT } from '../src/utils/jwt.js'
-import { SALT } from './scripts/worker-globals.js'
-import * as Token from '../../client/src/token.js'
+// @ts-ignore
+import * as Token from 'nft.storage/src/token.js'
+import { createTestUser, rawClient } from './scripts/helpers.js'
 
-/**
- * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
- */
-async function createTestUser({
-  publicAddress = `0x73573r${Date.now()}`,
-  issuer = `did:eth:${publicAddress}`,
-  name = 'A Tester',
-} = {}) {
-  const token = await signJWT(
-    {
-      sub: issuer,
-      iss: 'nft-storage',
-      iat: Date.now(),
-      name: 'test',
-    },
-    SALT
-  )
-  await stores.users.put(
-    issuer,
-    JSON.stringify({
-      sub: issuer,
-      nickname: 'testymctestface',
-      name,
-      email: 'a.tester@example.org',
-      picture: 'http://example.org/avatar.png',
-      issuer,
-      publicAddress,
-      tokens: { test: token },
-    })
-  )
-  return { token, issuer }
-}
-
-describe('/store', () => {
-  beforeEach(clearStores)
-
+describe('NFT store', () => {
   it('should store image', async () => {
-    const { token, issuer } = await createTestUser()
+    const { token, userId } = await createTestUser()
 
     const trick =
       'ipfs://bafyreiemweb3jxougg7vaovg7wyiohwqszmgwry5xwitw3heepucg6vyd4'
@@ -62,7 +25,7 @@ describe('/store', () => {
     }
     const body = Token.encode(metadata)
 
-    const res = await fetch('v0/store', {
+    const res = await fetch('store', {
       method: 'POST',
       headers: { Authorization: `Bearer ${token}` },
       body,
@@ -72,32 +35,122 @@ describe('/store', () => {
     const { ok, value } = await res.json()
     const result = value
     const cid = CID.parse(result.ipnft)
-    assert.equal(cid.version, 1)
+    assert.strictEqual(cid.version, 1)
 
-    assert.ok(typeof result.url === 'string')
-    assert.ok(result.url.startsWith('ipfs:'))
-
-    assert.equal(result.data.name, 'name')
-    assert.equal(result.data.description, 'stuff')
-    assert.equal(
-      result.data.image,
-      'ipfs://bafybeieb43wq6bqbfmyaawfmq6zuycdq4bo77zph33zxx26wvquth3qxau/cat.png'
+    assert.deepStrictEqual(
+      result,
+      {
+        ipnft: 'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
+        url: 'ipfs://bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i/metadata.json',
+        data: {
+          name: 'name',
+          description: 'stuff',
+          properties: {
+            extra: 'meta',
+            trick:
+              'ipfs://bafyreiemweb3jxougg7vaovg7wyiohwqszmgwry5xwitw3heepucg6vyd4',
+            src: [
+              'ipfs://bafybeifvbzj3rk2unsdhbq6wisbcblekwf2pjpgjmppv6ejplsyyhdn4ym/hello.txt',
+              'ipfs://bafybeibgaiw7jgzvbgjk3xu26scmbzedgywpkfgorrb7bfmu2hvpihzi5i/blob',
+            ],
+          },
+          image:
+            'ipfs://bafybeieb43wq6bqbfmyaawfmq6zuycdq4bo77zph33zxx26wvquth3qxau/cat.png',
+        },
+      },
+      'response structure'
     )
-    assert.equal(result.data.properties.extra, 'meta')
-    assert.equal(result.data.properties.trick, trick)
-    assert.ok(Array.isArray(result.data.properties.src))
-    assert.equal(result.data.properties.src.length, 2)
 
-    const nftData = await stores.nfts.get(`${issuer}:${result.ipnft}`)
-    assert(nftData, 'nft data was stored')
+    const { data, error } = await rawClient
+      .from('upload')
+      .select('*, content(cid, dag_size, pin(content_cid, status, service))')
+      .match({ content_cid: result.ipnft, user_id: userId })
+      .single()
 
-    const pinData = await stores.pins.getWithMetadata(result.ipnft)
-    assert(pinData.metadata, 'pin metadata was stored')
-    assert.strictEqual(
-      // @ts-ignore
-      pinData.metadata.status,
-      'pinned',
-      'pin status is "pinned"'
+    if (error) {
+      throw new Error(JSON.stringify(error))
+    }
+
+    assert.strictEqual(data.type, 'Nft', 'nft type')
+    assert.strictEqual(data.content.dag_size, 324, 'nft size')
+    assert.deepStrictEqual(data.content.pin, [
+      {
+        content_cid:
+          'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
+        status: 'PinQueued',
+        service: 'IpfsCluster2',
+      },
+      {
+        content_cid:
+          'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
+        status: 'PinQueued',
+        service: 'Pinata',
+      },
+    ])
+  })
+
+  it('should store dir wrapped image', async () => {
+    const { token, userId } = await createTestUser()
+
+    const metadata = {
+      name: 'name',
+      description: 'stuff',
+      image: new File(['fake image'], 'dir/cat.png', { type: 'image/png' }),
+    }
+    const body = Token.encode(metadata)
+
+    const res = await fetch('store', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body,
+    })
+    assert(res, 'Server responded')
+    assert(res.ok, 'Server response ok')
+    const { ok, value } = await res.json()
+    const result = value
+    const cid = CID.parse(result.ipnft)
+    assert.strictEqual(cid.version, 1)
+
+    assert.deepStrictEqual(
+      result,
+      {
+        ipnft: 'bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm',
+        url: 'ipfs://bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm/metadata.json',
+        data: {
+          name: 'name',
+          description: 'stuff',
+          image:
+            'ipfs://bafybeieb43wq6bqbfmyaawfmq6zuycdq4bo77zph33zxx26wvquth3qxau/dir/cat.png',
+        },
+      },
+      'response structure'
     )
+
+    const { data, error } = await rawClient
+      .from('upload')
+      .select('*, content(cid, dag_size, pin(content_cid, status, service))')
+      .match({ content_cid: result.ipnft, user_id: userId })
+      .single()
+
+    if (error) {
+      throw new Error(JSON.stringify(error))
+    }
+
+    assert.strictEqual(data.type, 'Nft', 'nft type')
+    assert.strictEqual(data.content.dag_size, 140, 'nft size')
+    assert.deepStrictEqual(data.content.pin, [
+      {
+        content_cid:
+          'bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm',
+        status: 'PinQueued',
+        service: 'IpfsCluster2',
+      },
+      {
+        content_cid:
+          'bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm',
+        status: 'PinQueued',
+        service: 'Pinata',
+      },
+    ])
   })
 })

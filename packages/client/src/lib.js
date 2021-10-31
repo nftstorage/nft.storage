@@ -17,7 +17,6 @@
 import { transform } from 'streaming-iterables'
 import pRetry from 'p-retry'
 import { TreewalkCarSplitter } from 'carbites/treewalk'
-import * as API from './lib/interface.js'
 import * as Token from './token.js'
 import { fetch, File, Blob, FormData } from './platform.js'
 import { toGatewayURL } from './gateway.js'
@@ -26,10 +25,21 @@ const MAX_STORE_RETRIES = 5
 const MAX_CONCURRENT_UPLOADS = 3
 const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
 
-/** @typedef {import('multiformats/block').BlockDecoder<any, any>} AnyBlockDecoder */
+/**
+ * @typedef {import('multiformats/block').BlockDecoder<any, any>} AnyBlockDecoder
+ * @typedef {import('./lib/interface').Service} Service
+ * @typedef {import('./lib/interface.js').CIDString} CIDString
+ * @typedef {import('./lib/interface.js').Deal} Deal
+ * @typedef {import('./lib/interface.js').Pin} Pin
+ */
 
 /**
- * @implements API.Service
+ * @template {import('./lib/interface.js').TokenInput} T
+ * @typedef {import('./lib/interface').Token<T>} TokenType
+ */
+
+/**
+ * @implements Service
  */
 class NFTStorage {
   /**
@@ -78,9 +88,9 @@ class NFTStorage {
     return { Authorization: `Bearer ${token}` }
   }
   /**
-   * @param {API.Service} service
+   * @param {Service} service
    * @param {Blob} blob
-   * @returns {Promise<API.CIDString>}
+   * @returns {Promise<CIDString>}
    */
   static async storeBlob({ endpoint, token }, blob) {
     const url = new URL(`upload/`, endpoint)
@@ -103,13 +113,13 @@ class NFTStorage {
     }
   }
   /**
-   * @param {API.Service} service
-   * @param {Blob|API.CarReader} car
+   * @param {Service} service
+   * @param {Blob|import('./lib/interface.js').CarReader} car
    * @param {{
    *   onStoredChunk?: (size: number) => void
    *   decoders?: AnyBlockDecoder[]
    * }} [options]
-   * @returns {Promise<API.CIDString>}
+   * @returns {Promise<CIDString>}
    */
   static async storeCar(
     { endpoint, token },
@@ -146,12 +156,12 @@ class NFTStorage {
       root = cid
     }
 
-    return /** @type {API.CIDString} */ (root)
+    return /** @type {CIDString} */ (root)
   }
   /**
-   * @param {API.Service} service
+   * @param {Service} service
    * @param {Iterable<File>} files
-   * @returns {Promise<API.CIDString>}
+   * @returns {Promise<CIDString>}
    */
   static async storeDirectory({ endpoint, token }, files) {
     const url = new URL(`upload/`, endpoint)
@@ -183,10 +193,10 @@ class NFTStorage {
   }
 
   /**
-   * @template {API.TokenInput} T
-   * @param {API.Service} service
+   * @template {import('./lib/interface.js').TokenInput} T
+   * @param {Service} service
    * @param {T} metadata
-   * @returns {Promise<API.Token<T>>}
+   * @returns {Promise<TokenType<T>>}
    */
   static async store({ endpoint, token }, metadata) {
     validateERC1155(metadata)
@@ -201,7 +211,7 @@ class NFTStorage {
       body,
     })
 
-    /** @type {API.StoreResponse<T>} */
+    /** @type {import('./lib/interface.js').StoreResponse<T>} */
     const result = await response.json()
 
     if (result.ok === true) {
@@ -212,9 +222,9 @@ class NFTStorage {
     }
   }
   /**
-   * @param {API.Service} service
+   * @param {Service} service
    * @param {string} cid
-   * @returns {Promise<API.StatusResult>}
+   * @returns {Promise<import('./lib/interface.js').StatusResult>}
    */
   static async status({ endpoint, token }, cid) {
     const url = new URL(`${cid}/`, endpoint)
@@ -238,9 +248,9 @@ class NFTStorage {
   }
 
   /**
-   * @param {API.PublicService} service
+   * @param {import('./lib/interface.js').PublicService} service
    * @param {string} cid
-   * @returns {Promise<API.CheckResult>}
+   * @returns {Promise<import('./lib/interface.js').CheckResult>}
    */
   static async check({ endpoint }, cid) {
     const url = new URL(`check/${cid}/`, endpoint)
@@ -259,7 +269,7 @@ class NFTStorage {
   }
 
   /**
-   * @param {API.Service} service
+   * @param {Service} service
    * @param {string} cid
    * @returns {Promise<void>}
    */
@@ -329,7 +339,7 @@ class NFTStorage {
    * const cid = await client.storeCar(car)
    * console.assert(cid === expectedCid)
    * ```
-   * @param {Blob|API.CarReader} car
+   * @param {Blob|import('./lib/interface.js').CarReader} car
    * @param {object} [options]
    * @param {(size: number) => void} [options.onStoredChunk] Callback called
    * after each chunk of data has been uploaded. By default, data is split into
@@ -442,9 +452,9 @@ class NFTStorage {
    * console.log('metadata.json with IPFS gateway URLs:\n', metadata.embed())
    * ```
    *
-   * @template {API.TokenInput} T
+   * @template {import('./lib/interface.js').TokenInput} T
    * @param {T} token
-   * @returns {Promise<API.Token<T>>}
+   * @returns {Promise<TokenType<T>>}
    */
   store(token) {
     return NFTStorage.store(this, token)
@@ -452,7 +462,7 @@ class NFTStorage {
 }
 
 /**
- * @param {API.TokenInput} metadata
+ * @param {import('./lib/interface.js').TokenInput} metadata
  */
 const validateERC1155 = ({ name, description, image, decimals }) => {
   // Just validate that expected fields are present
@@ -482,8 +492,8 @@ For more context please see ERC-721 specification https://eips.ethereum.org/EIPS
 }
 
 /**
- * @param {API.Deal[]} deals
- * @returns {API.Deal[]}
+ * @param {Deal[]} deals
+ * @returns {Deal[]}
  */
 const decodeDeals = (deals) =>
   deals.map((deal) => {
@@ -502,18 +512,9 @@ const decodeDeals = (deals) =>
   })
 
 /**
- * @param {API.Pin} pin
- * @returns {API.Pin}
+ * @param {Pin} pin
+ * @returns {Pin}
  */
 const decodePin = (pin) => ({ ...pin, created: new Date(pin.created) })
 
-const TokenModel = Token.Token
-export { TokenModel as Token }
-export { NFTStorage, File, Blob, FormData, toGatewayURL }
-
-/**
- * Just to verify API compatibility.
- * @type {API.API}
- */
-const api = NFTStorage
-void api
+export { NFTStorage, File, Blob, FormData, toGatewayURL, Token }

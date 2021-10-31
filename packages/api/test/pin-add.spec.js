@@ -5,7 +5,7 @@ import {
   rawClient,
 } from './scripts/helpers.js'
 
-describe(' V1 - Pin add ', () => {
+describe('Pin add ', () => {
   /** @type{DBTestClient} */
   let client
 
