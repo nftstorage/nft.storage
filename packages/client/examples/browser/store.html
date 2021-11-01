@@ -32,9 +32,9 @@
           'Using the nft.storage metadata API to create ERC-1155 compatible metadata.',
         image: fileEl.files[0],
       })
-      log('IPFS URL for the metadata:', metadata.url)
-      log('metadata.json contents:\n', metadata.data)
-      log('metadata.json contents with IPFS gateway URLs:\n', metadata.embed())
+      log({'IPFS URL for the metadata': metadata.url})
+      log({'metadata.json contents': metadata.data})
+      log({'metadata.json contents with IPFS gateway URLs': metadata.embed()})
     } catch (err) {
       console.error(err)
       log(err.message)
