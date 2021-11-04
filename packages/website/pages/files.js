@@ -94,7 +94,6 @@ export default function Files({ user }) {
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
       <main className="bg-nsyellow">
-        {/* test removing button from <When */}
         <div className="flex justify-center">
           <Button
             data-tf-popup="OTxv3w2O"
