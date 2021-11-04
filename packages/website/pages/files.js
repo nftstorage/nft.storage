@@ -94,21 +94,22 @@ export default function Files({ user }) {
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
       <main className="bg-nsyellow">
+        {/* test removing button from <When */}
+        <div className="flex justify-center">
+          <Button
+            data-tf-popup="OTxv3w2O"
+            wrapperClassName="mh3 mb3"
+            variant="dark"
+          >
+            {'Tell us how we are doing'}
+          </Button>
+        </div>
         <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
           <When condition={status === 'loading'}>
             <Loading />
           </When>
           <When condition={status !== 'loading'}>
             <>
-              <div className="flex justify-center">
-                <Button
-                  data-tf-popup="OTxv3w2O"
-                  wrapperClassName="mh3 mb3"
-                  variant="dark"
-                >
-                  {'Tell us how we are doing'}
-                </Button>
-              </div>
               <div className="flex mb3 items-center">
                 <h1 className="chicagoflf mv4 flex-auto">Files</h1>
                 <Button
