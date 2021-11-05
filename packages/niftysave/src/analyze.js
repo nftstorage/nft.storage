@@ -1,3 +1,4 @@
+import * as Car from './car.js'
 import * as Cluster from './cluster.js'
 import * as Cursor from './hasura/cursor.js'
 import * as Hasura from './hasura.js'
@@ -6,14 +7,14 @@ import * as Result from './result.js'
 
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
 import { fetchResource, timeout } from './net.js'
+import { iterate, printURL } from './util.js'
 
+import { NFTStorage } from 'nft.storage'
 import { TransformStream } from './stream.js'
 import { configure } from './config.js'
-import { printURL, iterate } from './util.js'
 import { script } from 'subprogram'
 import { setTimeout as sleep } from 'timers/promises'
-import * as Car from './car.js'
-import { NFTStorage } from 'nft.storage'
+
 export const main = async () => await spawn(await configure())
 
 /**
@@ -30,6 +31,8 @@ export const main = async () => await spawn(await configure())
  * @property {number} retryInterval
  * @property {number} retryLimit
  * @property {number} queueSize
+ * @property {string} analyzerRangeStartDate
+ * @property {string} analyzerRangeEndDate
  *
  * @param {Config} config
  */
@@ -55,6 +58,13 @@ const spawn = async (config) => {
 }
 
 /**
+ * @param {Config} config
+ */
+async function initAnalyzeCursor(config) {
+  return Cursor.init(new Date(0).toISOString())
+}
+
+/**
  * Pulls queued nft assets from the database and queues them into a writer
  * stream. On error will close a stream and release a lock.
  *
@@ -65,7 +75,7 @@ const spawn = async (config) => {
 const readInto = async (writable, config) => {
   const writer = writable.getWriter()
   try {
-    let cursor = Cursor.init(new Date(0).toISOString())
+    let cursor = await initAnalyzeCursor(config)
 
     while (true) {
       console.log(

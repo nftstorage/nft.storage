@@ -500,8 +500,9 @@ function FAQ() {
         <p className="lh-copy white mb4">
           NFT.Storage helps NFT developers today who are looking for easy APIs
           and best practices for storing their NFT data securely and
-          resiliently. Even in the short-term, it is a trustless and decentralized
-          solution. Users are able to cryptographically verify that the{' '}
+          resiliently. Even in the short-term, it is a trustless and
+          decentralized solution. Users are able to cryptographically verify
+          that the{' '}
           <a
             className="white"
             href="https://docs.ipfs.io/concepts/content-addressing"
@@ -512,19 +513,23 @@ function FAQ() {
           </a>{' '}
           that the service provides corresponds to their data, and that this
           data is hosted in multiple ways across the IPFS and Filecoin networks
-          (allowing for accessibility across the network and preventing
-          lock-in, with users also able to pin their data elsewhere to increase redundance).
-          <br /><br />
+          (allowing for accessibility across the network and preventing lock-in,
+          with users also able to pin their data elsewhere to increase
+          redundance).
+          <br />
+          <br />
           Though we believe that there will always be value in some form of the
           libraries and services NFT.Storage provides, in the long-term the goal
-          is to increasingly decentralize NFT.Storage. This includes relying more directly 
-          on the Filecoin network as the protocol continues to evolve. Some examples include 
-          storing data directly on the Filecoin network without putting it on a centralized 
-          IPFS node first and building oracles + DAOs + bridges to ensure n copies of data 
-          on the network (as Filecoin continues to evolve). We also want to make it easy for 
-          users to deploy and run their own NFT.Storage storage service. This, and other 
-          exciting things on the horizon, will help upgrade {' '}{"today's"} NFT.Storage implementation 
-          into the provably permanent storage solutions of tomorrow.
+          is to increasingly decentralize NFT.Storage. This includes relying
+          more directly on the Filecoin network as the protocol continues to
+          evolve. Some examples include storing data directly on the Filecoin
+          network without putting it on a centralized IPFS node first and
+          building oracles + DAOs + bridges to ensure n copies of data on the
+          network (as Filecoin continues to evolve). We also want to make it
+          easy for users to deploy and run their own NFT.Storage storage
+          service. This, and other exciting things on the horizon, will help
+          upgrade {"today's"} NFT.Storage implementation into the provably
+          permanent storage solutions of tomorrow.
         </p>
         <h2 className="chicagoflf white">
           <HashLink id="how-long-will-data-be-stored-on-nftstorage">

@@ -1,5 +1,7 @@
 import * as Hasura from '../hasura.js'
 
+import { checkIsBinRange, isDate } from '../hasura/cursor'
+
 /**
  * @typedef { Object } Config
  * @property { Hasura.Config } config.hasura
@@ -31,7 +33,7 @@ export async function initIngestCursor(config) {
    */
   let where = {}
 
-  const hasBinRange = checkBinRange(binStart, binEnd)
+  const hasBinRange = checkIsBinRange(binStart, binEnd)
 
   //detect binning.
   if (isDate(binStart) && !isDate(binEnd)) {
@@ -103,19 +105,3 @@ export async function initIngestCursor(config) {
   const cursor = Math.round(new Date(mint_time).getTime() / 1000)
   return cursor
 }
-
-/**
- *
- * @param {string} date
- * @returns {boolean}
- */
-export const isDate = (date) =>
-  date.length > 0 && new Date(date).toString() !== 'Invalid Date'
-
-/**
- * @param {string} binStart
- * @param {string} binEnd
- * @returns {boolean}
- */
-export const checkBinRange = (binStart, binEnd) =>
-  isDate(binEnd) && isDate(binStart)
