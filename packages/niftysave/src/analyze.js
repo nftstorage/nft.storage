@@ -61,7 +61,16 @@ const spawn = async (config) => {
  * @param {Config} config
  */
 async function initAnalyzeCursor(config) {
-  return Cursor.init(new Date(0).toISOString())
+  const binStart = config.analyzerRangeStartDate
+  const binEnd = config.analyzerRangeEndDate
+  let beginningOfTime = new Date(0).toISOString()
+  const hasBinRange = Cursor.checkIsBinRange(binStart, binEnd)
+
+  if (hasBinRange) {
+    beginningOfTime = new Date(binStart).toISOString()
+  }
+
+  return Cursor.init(beginningOfTime)
 }
 
 /**
