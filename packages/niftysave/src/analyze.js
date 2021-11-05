@@ -60,14 +60,21 @@ const spawn = async (config) => {
 /**
  * @param {Config} config
  */
-async function initAnalyzeCursor(config) {
+function cursorHasBinRange(config) {
   const binStart = config.analyzerRangeStartDate
   const binEnd = config.analyzerRangeEndDate
+  return Cursor.checkIsBinRange(binStart, binEnd)
+}
+
+/**
+ * @param {Config} config
+ */
+async function initAnalyzeCursor(config) {
   let beginningOfTime = new Date(0).toISOString()
-  const hasBinRange = Cursor.checkIsBinRange(binStart, binEnd)
+  const hasBinRange = cursorHasBinRange(config)
 
   if (hasBinRange) {
-    beginningOfTime = new Date(binStart).toISOString()
+    beginningOfTime = new Date(config.analyzerRangeStartDate).toISOString()
   }
 
   return Cursor.init(beginningOfTime)
@@ -123,13 +130,58 @@ const readInto = async (writable, config) => {
 
         // Update cursor to point to the record after the last one.
         const lastRecord = /** @type {Asset} */ (page[page.length - 1])
+        console.log(
+          `Las Record:\nTOKENURI: ${lastRecord.token_uri}\n$IPFS: ${
+            lastRecord.ipfs_url
+          }\t at: ${new Date(lastRecord.updated_at).toDateString()}`
+        )
         cursor = Cursor.after(cursor, lastRecord.updated_at)
+
+        //for time-slicing, see if we've reached the end of time.
+        if (cursorHasBinRange(config)) {
+          const endBinTimeinMS = new Date(config.analyzerRangeEndDate).getTime()
+          const cursorTimeInMS = new Date(cursor.time).getTime()
+          const endOfTimeReached =
+            endBinTimeinMS && cursorTimeInMS && cursorTimeInMS > endBinTimeinMS
+
+          //and if we have, end the analyzer process
+          if (endOfTimeReached) {
+            printEndOfTime(config, lastRecord, cursor)
+            throw `Reached end of time-slice at ${config.analyzerRangeEndDate}`
+          }
+        }
       }
     }
+  } catch (err) {
+    console.log(err)
+    throw err
   } finally {
     writer.close()
     writer.releaseLock()
   }
+}
+
+/**
+ *
+ * @param {Config} config
+ * @param {Asset} record
+ * @param {Cursor.Cursor<string>} cursor
+ */
+function printEndOfTime(config, record, cursor) {
+  const endOfTimeDate = new Date(config.analyzerRangeEndDate)
+  const cursorDate = new Date(cursor.time)
+  const endOftimeInMS = endOfTimeDate.getTime()
+  const cursorTimeInMS = cursorDate.getTime()
+  const { token_uri, ipfs_url } = record
+  console.log(`
+    \n🥂 You've completed the time-slice [${
+      config.analyzerRangeStartDate
+    } to  ${config.analyzerRangeEndDate}]!
+    \nLast Asset Token URI (${
+      ipfs_url || token_uri
+    })'s \n cursor-time of ${cursorDate.toUTCString()} occurs later than ${endOfTimeDate.toUTCString()}
+    \ncursor.time(ms) ${cursorTimeInMS}\t slice-end(ms) ${endOftimeInMS}
+    `)
 }
 
 /**
