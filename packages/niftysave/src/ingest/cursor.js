@@ -1,6 +1,6 @@
 import * as Hasura from '../hasura.js'
 
-import { checkIsBinRange, isDate } from '../hasura/cursor'
+import { checkIsBinRange, isDate } from '../hasura/cursor.js'
 
 /**
  * @typedef { Object } Config
