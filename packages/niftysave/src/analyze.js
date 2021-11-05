@@ -180,7 +180,7 @@ function printEndOfTime(config, record, cursor) {
     \nLast Asset Token URI (${
       ipfs_url || token_uri
     })'s \n cursor-time of ${cursorDate.toUTCString()} occurs later than ${endOfTimeDate.toUTCString()}
-    \ncursor.time(ms) ${cursorTimeInMS}\t slice-end(ms) ${endOftimeInMS}
+    \ncursor.time (ms) ${cursorTimeInMS}\t slice-end (ms) ${endOftimeInMS}
     `)
 }
 
