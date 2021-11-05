@@ -6,6 +6,7 @@ import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
 import Box from '../components/box.js'
 import Link from 'next/link'
+import { FAQ } from './faq.js'
 /**
  * Static Props
  *
@@ -30,7 +31,14 @@ export default function Home() {
       <main>
         <About />
         <GettingStarted />
-        <FAQ />
+        <article className="bg-nsforest">
+          <div className="mw9 center pa4 pa5-ns">
+            <h1 className="chicagoflf white">
+              <HashLink id="faq">FAQ</HashLink>
+            </h1>
+            <FAQ />
+          </div>
+        </article>
       </main>
     </>
   )
@@ -480,129 +488,6 @@ console.log(metadata.url)
             </pre>
           </Box> */}
         </div>
-      </div>
-    </article>
-  )
-}
-
-function FAQ() {
-  return (
-    <article className="bg-nsforest">
-      <div className="mw9 center pa4 pa5-ns">
-        <h1 className="chicagoflf white">
-          <HashLink id="faq">FAQ</HashLink>
-        </h1>
-        <h2 className="chicagoflf white">
-          <HashLink id="what-is-the-long-term-vision-for-nftstorage">
-            What is the long-term vision for NFT.Storage?
-          </HashLink>
-        </h2>
-        <p className="lh-copy white mb4">
-          NFT.Storage helps NFT developers today who are looking for easy APIs
-          and best practices for storing their NFT data securely and
-          resiliently. Even in the short-term, it is a trustless and decentralized
-          solution. Users are able to cryptographically verify that the{' '}
-          <a
-            className="white"
-            href="https://docs.ipfs.io/concepts/content-addressing"
-            target="_blank"
-            rel="noreferrer"
-          >
-            content identifiers
-          </a>{' '}
-          that the service provides corresponds to their data, and that this
-          data is hosted in multiple ways across the IPFS and Filecoin networks
-          (allowing for accessibility across the network and preventing
-          lock-in, with users also able to pin their data elsewhere to increase redundance).
-          <br /><br />
-          Though we believe that there will always be value in some form of the
-          libraries and services NFT.Storage provides, in the long-term the goal
-          is to increasingly decentralize NFT.Storage. This includes relying more directly 
-          on the Filecoin network as the protocol continues to evolve. Some examples include 
-          storing data directly on the Filecoin network without putting it on a centralized 
-          IPFS node first and building oracles + DAOs + bridges to ensure n copies of data 
-          on the network (as Filecoin continues to evolve). We also want to make it easy for 
-          users to deploy and run their own NFT.Storage storage service. This, and other 
-          exciting things on the horizon, will help upgrade {' '}{"today's"} NFT.Storage implementation 
-          into the provably permanent storage solutions of tomorrow.
-        </p>
-        <h2 className="chicagoflf white">
-          <HashLink id="how-long-will-data-be-stored-on-nftstorage">
-            How long will data be stored on NFT.storage?
-          </HashLink>
-        </h2>
-        <p className="lh-copy white mb4">
-          Data will be available in IPFS indefinitely as well as stored in
-          long-term, redundant Filecoin storage deals with the global community
-          of miners. See the{' '}
-          <Link href="/terms">
-            <a className="white">Terms of Service</a>
-          </Link>{' '}
-          for details.
-        </p>
-        <h2 className="chicagoflf white">
-          <HashLink id="are-there-any-size-restrictions-for-stored-nfts">
-            Are there any size restrictions for stored NFTs?
-          </HashLink>
-        </h2>
-        <p className="lh-copy white mb4">
-          NFT.storage can store NFTs up to <strong>32GB </strong>
-          in size! (There was previously a 100MB limit due to Cloudflare workers
-          but NFT.storage now supports chunked uploads, allowing files bigger
-          than 100MB to be uploaded! 🎉)
-        </p>
-        <h2 className="chicagoflf white">
-          <HashLink id="where-can-i-learn-more-about-nft-best-practices">
-            Where can I learn more about NFT best practices?
-          </HashLink>
-        </h2>
-        <p className="lh-copy white mb4">
-          Visit{' '}
-          <a href="https://nftschool.dev" className="white">
-            NFT School
-          </a>{' '}
-          for information on NFT best practices as well as a variety of helpful
-          tutorials and how-to guides for NFT developers.
-        </p>
-        <h2 className="chicagoflf white">
-          <HashLink id="who-can-access-the-data-i-store-on-nftstorage">
-            Who can access the data I store on NFT.Storage?
-          </HashLink>
-        </h2>
-        <p className="lh-copy white mb4">
-          All data uploaded to NFT.Storage is available to anyone who requests
-          it using the correct CID. Do not store any private or sensitive
-          information in an unencrypted form using NFT.Storage.
-        </p>
-        <h2 className="chicagoflf white">
-          <HashLink id="can-i-delete-my-data-on-nftstorage">
-            Can I delete my data on NFT.Storage?
-          </HashLink>
-        </h2>
-        <p className="lh-copy white mb4">
-          You can delete data from being associated with your account, and it
-          will no longer appear on the Files page of your account. However, this
-          doesn’t prevent nodes in the IPFS decentralized storage network from
-          retaining copies of the data indefinitely. Do not use NFT.Storage for
-          data that may need to be permanently deleted in the future.
-        </p>
-        <h2 className="chicagoflf white">
-          <HashLink id="can-i-delete-my-data-on-nftstorage">
-            I tried using an HTTP gateway to retrieve my content from IPFS but
-            am receiving an HTTP error. Does this mean my content was not stored
-            successfully on NFT.Storage?
-          </HashLink>
-        </h2>
-        <p className="lh-copy white mb4">
-          Not necessarily! HTTP gateways are a great way for users who{' '}
-          {"aren't"} running their own IPFS nodes to retrieve content from the
-          IPFS network. However, they do introduce a centralized point of
-          failure to a user flow. If a given gateway is down, or is under too
-          much load, or is facing other issues, users who are accessing content
-          through that gateway might be unable to access content. In this case,
-          we recommend trying another gateway or running and using your own IPFS
-          node.
-        </p>
       </div>
     </article>
   )
