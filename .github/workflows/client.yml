@@ -28,18 +28,12 @@ jobs:
 
   test:
     name: Test
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node: [16]
-      fail-fast: true
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node }}
-          cache: 'yarn'
+          node-version: '16'
       - uses: bahmutov/npm-install@v1
         with:
           working-directory: packages/client
