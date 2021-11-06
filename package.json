@@ -17,9 +17,7 @@
     "create-migration": "yarn --cwd packages/database create-migration",
     "apply-migrations": "yarn --cwd packages/database apply-migrations"
   },
-  "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
-  },
+  "simple-git-hooks": {},
   "lint-staged": {
     "*.*": "prettier --write ."
   },
