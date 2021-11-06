@@ -28,14 +28,20 @@ jobs:
 
   test:
     name: Test
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [14, 16]
+      fail-fast: true
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '16'
-      - uses: bahmutov/npm-install@v1
+          node-version: ${{ matrix.node }}
+      - run: bahmutov/npm-install@v1
         with:
+          useLockFile: false
           working-directory: packages/client
       - name: Test (ES)
         run: yarn --cwd packages/client test:es
