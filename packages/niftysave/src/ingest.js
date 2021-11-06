@@ -2,12 +2,13 @@ import * as Cursor from './hasura/cursor.js'
 import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
-import { checkBinRange, initIngestCursor } from './ingest/cursor.js'
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
 import { fetchNFTBatch, writeScrapedRecords } from './ingest/repo.js'
 
 import { TransformStream } from './stream.js'
+import { checkIsBinRange } from './hasura/cursor.js'
 import { configure } from './config.js'
+import { initIngestCursor } from './ingest/cursor.js'
 import { script } from 'subprogram'
 import { setTimeout as sleep } from 'timers/promises'
 
@@ -132,7 +133,7 @@ async function readIntoInbox(config, writeable) {
 async function writeFromInbox(config, readable) {
   const reader = readable.getReader()
 
-  const hasBinRange = checkBinRange(
+  const hasBinRange = checkIsBinRange(
     config.ingestRangeStartDate,
     config.ingestRangeEndDate
   )
