@@ -39,8 +39,9 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node }}
-      - uses: bahmutov/npm-install@v1
+      - run: bahmutov/npm-install@v1
         with:
+          useLockFile: false
           working-directory: packages/client
       - name: Test (ES)
         run: yarn --cwd packages/client test:es

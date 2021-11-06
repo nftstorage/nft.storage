@@ -15,8 +15,6 @@ import yargs from 'yargs'
  * @property {number} ingestRetryThrottle
  * @property {number} ingestHighWatermark
  * @property {string} ingestLastUpdatedDate
- * @property {string} ingestRangeStartDate
- * @property {string} ingestRangeEndDate
  * @property {number} ingestScraperBatchSize
  * @property {number} ingestScraperRetryLimit
  * @property {number} ingestScraperRetryInterval
@@ -27,6 +25,12 @@ import yargs from 'yargs'
  * @property {number} ingestWriterRetryMaxInterval
  * @property {number} queueSize
  * @property {number} concurrency
+ * @property {string} ingestRangeStartDate
+ * @property {string} ingestRangeEndDate
+ * @property {string} analyzerRangeStartDate
+ * @property {string} analyzerRangeEndDate
+ * @property {string} pinnerRangeStartDate
+ * @property {string} pinnerRangeEndDate
  * @property {import('./cluster').Config} cluster
  * @property {import('./ipfs').Config} ipfs
  * @property {Endpoint} erc721
@@ -228,6 +232,30 @@ export const configure = async () => {
         description:
           'Max sleep frame between retrieswhen writing scraped records aquired from the blockchain',
       },
+      'analyzer-range-start-date': {
+        alias: 'analyzerRangeStartDate',
+        type: 'string',
+        default: process.env['ANALYZER_RANGE_START_DATE'] || '',
+        description: `The start date, of an analyzer slice. Must provide a beginning and end date when time-slicing`,
+      },
+      'analyzer-range-end-date': {
+        alias: 'analyzerRangeEndDate',
+        type: 'string',
+        default: process.env['ANALYZER_RANGE_END_DATE'] || '',
+        description: `The end date, of an analyzer slice. Must provide a beginning and end date when time-slicing`,
+      },
+      'pinner-range-start-date': {
+        alias: 'pinnerRangeStartDate',
+        type: 'string',
+        default: process.env['PINNER_RANGE_START_DATE'] || '',
+        description: `The start date, of a pinner slice. Must provide a beginning and end date when time-slicing`,
+      },
+      'pinner-range-end-date': {
+        alias: 'pinnerRangeEndDate',
+        type: 'string',
+        default: process.env['PINNER_RANGE_END_DATE'] || '',
+        description: `The end date, of a pinner slice. Must provide a beginning and end date when time-slicing`,
+      },
     })
     .parse()
 
@@ -248,9 +276,6 @@ export const configure = async () => {
     ingestScraperBatchSize: config['ingest-scraper-batch-size'],
     ingestLastUpdatedDate: config['ingest-last-updated-date'],
 
-    ingestRangeStartDate: config['ingest-range-start-date'],
-    ingestRangeEndDate: config['ingest-range-end-date'],
-
     ingestScraperRetryLimit: config['ingest-scraper-retry-limit'],
     ingestScraperRetryInterval: config['ingest-scraper-retry-interval'],
     ingestScraperRetryMaxInterval: config['ingest-scraper-retry-max-interval'],
@@ -259,6 +284,13 @@ export const configure = async () => {
     ingestWriterRetryLimit: config['ingest-writer-retry-limit'],
     ingestWriterRetryInterval: config['ingest-writer-retry-interval'],
     ingestWriterRetryMaxInterval: config['ingest-writer-retry-max-interval'],
+
+    ingestRangeStartDate: config['ingest-range-start-date'],
+    ingestRangeEndDate: config['ingest-range-end-date'],
+    analyzerRangeStartDate: config['analyzer-range-start-date'],
+    analyzerRangeEndDate: config['analyzer-range-end-date'],
+    pinnerRangeStartDate: config['pinner-range-start-date'],
+    pinnerRangeEndDate: config['pinner-range-end-date'],
 
     cluster: {
       url: new URL(config['cluster-endpoint']),
