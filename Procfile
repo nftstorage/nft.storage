@@ -1,24 +1,48 @@
-cron-niftysave-pin: yarn --cwd packages/niftysave pin
-cron-niftysave-pin-metadata: yarn --cwd packages/niftysave pin-metadata
-cron-niftysave-ingest-2018-2: INGEST_RANGE_START_DATE="07/01/2018" INGEST_RANGE_END_DATE="01/01/2019" node ./packages/niftysave/src/ingest.js
-cron-niftysave-ingest-2019-1: INGEST_RANGE_START_DATE="01/01/2019" INGEST_RANGE_END_DATE="07/01/2019" node ./packages/niftysave/src/ingest.js
-cron-niftysave-ingest-2019-2: INGEST_RANGE_START_DATE="07/01/2019" INGEST_RANGE_END_DATE="01/01/2020" node ./packages/niftysave/src/ingest.js
-cron-niftysave-ingest-2020-1: INGEST_RANGE_START_DATE="01/01/2020" INGEST_RANGE_END_DATE="07/01/2020" node ./packages/niftysave/src/ingest.js
-cron-niftysave-ingest-2020-2: INGEST_RANGE_START_DATE="07/01/2020" INGEST_RANGE_END_DATE="01/01/2021" node ./packages/niftysave/src/ingest.js
-cron-niftysave-ingest-2021-1: INGEST_RANGE_START_DATE="01/01/2021" INGEST_RANGE_END_DATE="07/01/2021" node ./packages/niftysave/src/ingest.js
-cron-niftysave-ingest-2021-2: INGEST_RANGE_START_DATE="07/01/2021" INGEST_RANGE_END_DATE="01/01/2022" node ./packages/niftysave/src/ingest.js
+niftycron-pin: yarn --cwd packages/niftysave pin
+niftycron-pin-metadata: yarn --cwd packages/niftysave pin-metadata
 
-cron-niftysave-analyze-2018-2-slow: ANALYZER_RANGE_START_DATE="07/01/2018" ANALYZER_RANGE_END_DATE="01/01/2019" FETCH_RETRY_LIMIT="10" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2019-1-slow: ANALYZER_RANGE_START_DATE="01/01/2019" ANALYZER_RANGE_END_DATE="07/01/2019" FETCH_RETRY_LIMIT="10" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2019-2-slow: ANALYZER_RANGE_START_DATE="07/01/2019" ANALYZER_RANGE_END_DATE="01/01/2020" FETCH_RETRY_LIMIT="10" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2020-1-slow: ANALYZER_RANGE_START_DATE="01/01/2020" ANALYZER_RANGE_END_DATE="07/01/2020" FETCH_RETRY_LIMIT="10" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2020-2-slow: ANALYZER_RANGE_START_DATE="07/01/2020" ANALYZER_RANGE_END_DATE="01/01/2021" FETCH_RETRY_LIMIT="10" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2021-1-slow: ANALYZER_RANGE_START_DATE="01/01/2021" ANALYZER_RANGE_END_DATE="07/01/2021" FETCH_RETRY_LIMIT="10" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2021-2-slow: ANALYZER_RANGE_START_DATE="07/01/2021" ANALYZER_RANGE_END_DATE="01/01/2022" FETCH_RETRY_LIMIT="10" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2018-2-fast: ANALYZER_RANGE_START_DATE="07/01/2018" ANALYZER_RANGE_END_DATE="01/01/2019" FETCH_RETRY_LIMIT="1" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2019-1-fast: ANALYZER_RANGE_START_DATE="01/01/2019" ANALYZER_RANGE_END_DATE="07/01/2019" FETCH_RETRY_LIMIT="1" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2019-2-fast: ANALYZER_RANGE_START_DATE="07/01/2019" ANALYZER_RANGE_END_DATE="01/01/2020" FETCH_RETRY_LIMIT="1" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2020-1-fast: ANALYZER_RANGE_START_DATE="01/01/2020" ANALYZER_RANGE_END_DATE="07/01/2020" FETCH_RETRY_LIMIT="1" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2020-2-fast: ANALYZER_RANGE_START_DATE="07/01/2020" ANALYZER_RANGE_END_DATE="01/01/2021" FETCH_RETRY_LIMIT="1" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2021-1-fast: ANALYZER_RANGE_START_DATE="01/01/2021" ANALYZER_RANGE_END_DATE="07/01/2021" FETCH_RETRY_LIMIT="1" node ./packages/niftysave/src/analyze.js
-cron-niftysave-analyze-2021-2-fast: ANALYZER_RANGE_START_DATE="07/01/2021" ANALYZER_RANGE_END_DATE="01/01/2022" FETCH_RETRY_LIMIT="1" node ./packages/niftysave/src/analyze.js
+niftycron-ingest-2019_01-06: INGEST_RANGE_START_DATE="01/01/2019" INGEST_RANGE_END_DATE="07/01/2019" node ./packages/niftysave/src/ingest.js
+niftycron-ingest-2019_06-12: INGEST_RANGE_START_DATE="07/01/2019" INGEST_RANGE_END_DATE="01/01/2020" node ./packages/niftysave/src/ingest.js
+niftycron-ingest-2020_01-06: INGEST_RANGE_START_DATE="01/01/2020" INGEST_RANGE_END_DATE="07/01/2020" node ./packages/niftysave/src/ingest.js
+niftycron-ingest-2020_06-12: INGEST_RANGE_START_DATE="07/01/2020" INGEST_RANGE_END_DATE="01/01/2021" node ./packages/niftysave/src/ingest.js
+niftycron-ingest-2021_01-06: INGEST_RANGE_START_DATE="01/01/2021" INGEST_RANGE_END_DATE="07/01/2021" node ./packages/niftysave/src/ingest.js
+niftycron-ingest-2021_06-12: INGEST_RANGE_START_DATE="07/01/2021" INGEST_RANGE_END_DATE="01/01/2022" node ./packages/niftysave/src/ingest.js
+
+niftycron-analyze-2019_01-slow: ANALYZER_RANGE_START_DATE="01/01/2019" ANALYZER_RANGE_END_DATE="02/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2019_02-slow: ANALYZER_RANGE_START_DATE="02/01/2019" ANALYZER_RANGE_END_DATE="03/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2019_03-slow: ANALYZER_RANGE_START_DATE="03/01/2019" ANALYZER_RANGE_END_DATE="04/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2019_04-slow: ANALYZER_RANGE_START_DATE="04/01/2019" ANALYZER_RANGE_END_DATE="05/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2019_05-slow: ANALYZER_RANGE_START_DATE="05/01/2019" ANALYZER_RANGE_END_DATE="06/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2019_06-slow: ANALYZER_RANGE_START_DATE="06/01/2019" ANALYZER_RANGE_END_DATE="07/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2019_07-slow: ANALYZER_RANGE_START_DATE="07/01/2019" ANALYZER_RANGE_END_DATE="08/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2019_08-slow: ANALYZER_RANGE_START_DATE="08/01/2019" ANALYZER_RANGE_END_DATE="09/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2019_09-slow: ANALYZER_RANGE_START_DATE="09/01/2019" ANALYZER_RANGE_END_DATE="10/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2019_10-slow: ANALYZER_RANGE_START_DATE="10/01/2019" ANALYZER_RANGE_END_DATE="11/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2019_11-slow: ANALYZER_RANGE_START_DATE="11/01/2019" ANALYZER_RANGE_END_DATE="12/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2019_12-slow: ANALYZER_RANGE_START_DATE="12/01/2019" ANALYZER_RANGE_END_DATE="01/01/2020" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+
+niftycron-analyze-2020_01-slow: ANALYZER_RANGE_START_DATE="01/01/2020" ANALYZER_RANGE_END_DATE="02/01/2020" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2020_02-slow: ANALYZER_RANGE_START_DATE="02/01/2020" ANALYZER_RANGE_END_DATE="03/01/2020" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2020_03-slow: ANALYZER_RANGE_START_DATE="03/01/2020" ANALYZER_RANGE_END_DATE="04/01/2020" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2020_04-slow: ANALYZER_RANGE_START_DATE="04/01/2020" ANALYZER_RANGE_END_DATE="05/01/2020" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2020_05-slow: ANALYZER_RANGE_START_DATE="05/01/2020" ANALYZER_RANGE_END_DATE="06/01/2020" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2020_06-slow: ANALYZER_RANGE_START_DATE="06/01/2020" ANALYZER_RANGE_END_DATE="07/01/2020" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2020_07-slow: ANALYZER_RANGE_START_DATE="07/01/2020" ANALYZER_RANGE_END_DATE="08/01/2020" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2020_08-slow: ANALYZER_RANGE_START_DATE="08/01/2020" ANALYZER_RANGE_END_DATE="09/01/2020" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2020_09-slow: ANALYZER_RANGE_START_DATE="09/01/2020" ANALYZER_RANGE_END_DATE="10/01/2020" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2020_10-slow: ANALYZER_RANGE_START_DATE="10/01/2020" ANALYZER_RANGE_END_DATE="11/01/2020" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2020_11-slow: ANALYZER_RANGE_START_DATE="11/01/2020" ANALYZER_RANGE_END_DATE="12/01/2020" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2020_12-slow: ANALYZER_RANGE_START_DATE="12/01/2020" ANALYZER_RANGE_END_DATE="01/01/2021" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+
+niftycron-analyze-2021_01-slow: ANALYZER_RANGE_START_DATE="01/01/2021" ANALYZER_RANGE_END_DATE="02/01/2021" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2021_02-slow: ANALYZER_RANGE_START_DATE="02/01/2021" ANALYZER_RANGE_END_DATE="03/01/2021" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2021_03-slow: ANALYZER_RANGE_START_DATE="03/01/2021" ANALYZER_RANGE_END_DATE="04/01/2021" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2021_04-slow: ANALYZER_RANGE_START_DATE="04/01/2021" ANALYZER_RANGE_END_DATE="05/01/2021" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2021_05-slow: ANALYZER_RANGE_START_DATE="05/01/2021" ANALYZER_RANGE_END_DATE="06/01/2021" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2021_06-slow: ANALYZER_RANGE_START_DATE="06/01/2021" ANALYZER_RANGE_END_DATE="07/01/2021" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2021_07-slow: ANALYZER_RANGE_START_DATE="07/01/2021" ANALYZER_RANGE_END_DATE="08/01/2021" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2021_08-slow: ANALYZER_RANGE_START_DATE="08/01/2021" ANALYZER_RANGE_END_DATE="09/01/2021" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2021_09-slow: ANALYZER_RANGE_START_DATE="09/01/2021" ANALYZER_RANGE_END_DATE="10/01/2021" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2021_10-slow: ANALYZER_RANGE_START_DATE="10/01/2021" ANALYZER_RANGE_END_DATE="11/01/2021" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2021_11-slow: ANALYZER_RANGE_START_DATE="11/01/2021" ANALYZER_RANGE_END_DATE="12/01/2021" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
+niftycron-analyze-2021_12-slow: ANALYZER_RANGE_START_DATE="12/01/2021" ANALYZER_RANGE_END_DATE="01/01/2022" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
