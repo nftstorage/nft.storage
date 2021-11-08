@@ -28,11 +28,7 @@ const Faq = () => (
   </main>
 )
 
-/**
- * FAQ Content
- *
- */
-export const FAQ = () => (
+export const ShortFaq = () => (
   <>
     <h2 className="chicagoflf white">
       <HashLink id="what-is-the-long-term-vision-for-nftstorage">
@@ -118,6 +114,16 @@ export const FAQ = () => (
       using the correct CID. Do not store any private or sensitive information
       in an unencrypted form using NFT.Storage.
     </p>
+  </>
+)
+
+/**
+ * FAQ Content
+ *
+ */
+const FAQ = () => (
+  <>
+    <ShortFaq />
     <h2 className="chicagoflf white">
       <HashLink id="can-i-delete-my-data-on-nftstorage">
         Can I delete my data on NFT.Storage?
@@ -145,6 +151,12 @@ export const FAQ = () => (
       issues, users who are accessing content through that gateway might be
       unable to access content. In this case, we recommend trying another
       gateway or running and using your own IPFS node.
+      <br />
+      <br />
+      Additionally, if the data was not stored on NFT.Storage, then there might
+      be issues with the IPFS node(s) with a copy of the data providing that
+      data to the gateway. Using NFT.Storage makes sure that the content stored
+      is broadcasted to the network using best practices!
     </p>
     <h2 className="chicagoflf white">
       <HashLink id="how-is-nftstorage-free-to-use">
