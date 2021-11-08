@@ -20,6 +20,8 @@ import { pinsDelete } from './routes/pins-delete.js'
 import { pinsGet } from './routes/pins-get.js'
 import { pinsList } from './routes/pins-list.js'
 import { pinsReplace } from './routes/pins-replace.js'
+import { metaplexUpload } from './routes-v1/metaplex-upload.js'
+
 import {
   withMode,
   READ_ONLY as RO,
@@ -105,6 +107,9 @@ r.add('get', '/api/pins/:requestid', psa(pinsGet, RO), [postCors])
 r.add('post', '/api/pins', psa(pinsAdd, RW), [postCors])
 r.add('post', '/api/pins/:requestid', psa(pinsReplace, RW), [postCors])
 r.add('delete', '/api/pins/:requestid', psa(pinsDelete, RW), [postCors])
+
+// Temporary Metaplex upload route, mapped to metaplex user account.
+r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
 
 // Public API
 r.add('get', '/api', withMode(nftList, RO), [postCors])
