@@ -1,3 +1,5 @@
+import { base58btc } from 'multiformats/bases/base58'
+
 /** @type {Record<string, any>} */
 const algorithms = {
   HS256: {
@@ -5,6 +7,13 @@ const algorithms = {
     hash: {
       name: 'SHA-256',
     },
+  },
+
+  // NODE-ED25519 exists only in the CloudFlare workers runtime API
+  // see: https://developers.cloudflare.com/workers/runtime-apis/web-crypto#footnote%201
+  'NODE-ED25519': {
+    name: 'NODE-ED25519',
+    namedCurve: 'NODE-ED25519',
   },
 }
 
@@ -101,6 +110,119 @@ export async function verifyJWT(token, secret, alg = 'HS256') {
 }
 
 /**
+ * @param {string} token - an encoded JWT token from an x-web3auth header.
+ * @returns {Promise<boolean>} - true if the token contains a valid solana public key and a valid signature from the key.
+ */
+export async function verifyMetaplexJWT(token) {
+  if (!isString(token)) {
+    throw new Error('token must be a string')
+  }
+  var tokenParts = token.split('.')
+
+  if (tokenParts.length !== 3) {
+    return false
+  }
+
+  const header = parseJWTHeader(token)
+  const payload = parseJWT(token)
+
+  if (header.alg !== 'EdDSA') {
+    throw new Error('invalid algorithm for metaplex token')
+  }
+
+  if (header.typ !== 'JWT') {
+    throw new Error('invalid token type')
+  }
+
+  if (!payload.iss) {
+    return false
+  }
+
+  const pubkey = await keyFromDID(payload.iss)
+  const sig = Base64URL.parse(tokenParts[2])
+  const headerPayload = utf8ToUint8Array(tokenParts[0] + '.' + tokenParts[1])
+
+  if (!crypto || !crypto.subtle) {
+    return verifyEd25519SignatureWithJSCrypto(headerPayload, sig, pubkey)
+  }
+
+  try {
+    return await verifyEd25519SignatureWithNativeCrypto(
+      headerPayload,
+      sig,
+      pubkey
+    )
+  } catch (e) {
+    if (e instanceof Error && e.name === 'NotSupportedError') {
+      return await verifyEd25519SignatureWithJSCrypto(
+        headerPayload,
+        sig,
+        pubkey
+      )
+    }
+    throw e
+  }
+}
+
+/**
+ *
+ * @param {Uint8Array} message
+ * @param {Uint8Array} sig
+ * @param {Uint8Array} pubkey
+ * @returns {Promise<boolean>}
+ */
+async function verifyEd25519SignatureWithNativeCrypto(message, sig, pubkey) {
+  console.log()
+  const key = await crypto.subtle.importKey(
+    'raw',
+    pubkey,
+    algorithms['NODE-ED25519'],
+    false,
+    ['verify']
+  )
+
+  return crypto.subtle.verify(algorithms['NODE-ED25519'], key, sig, message)
+}
+
+/**
+ *
+ * @param {Uint8Array} message
+ * @param {Uint8Array} sig
+ * @param {Uint8Array} pubkey
+ * @returns {Promise<boolean>}
+ */
+async function verifyEd25519SignatureWithJSCrypto(message, sig, pubkey) {
+  console.warn(
+    'using tweetnacl for ed25519 - you should not see this message when running in the CloudFlare worker runtime'
+  )
+  const { default: nacl } = await import('tweetnacl')
+  return nacl.sign.detached.verify(message, sig, pubkey)
+}
+
+/**
+ * @param {string} did - a "did:key" formatted DID string
+ * @returns {Promise<Uint8Array>} - the decoded public key
+ * @throws if DID is invalid or does not contain a valid Ed25519 public key
+ */
+async function keyFromDID(did) {
+  const prefix = 'did:key:'
+  if (!did.startsWith(prefix)) {
+    throw new Error('invalid DID')
+  }
+
+  const keyStr = did.slice(prefix.length)
+  const bytes = base58btc.decode(keyStr)
+
+  // check multicodec == ed25519-pub (0xed encoded as a varint)
+  if (bytes[0] !== 0xed || bytes[1] !== 0x01) {
+    throw new Error(
+      'invalid key multicodec. only ed25519-pub keys are supported'
+    )
+  }
+  return bytes.slice(2)
+}
+
+/**
  * @param {any} payload
  * @param {string} secret
  * @param {string} alg
@@ -151,7 +273,23 @@ export async function signJWT(payload, secret, alg = 'HS256') {
  * @param {string} token
  */
 export function decodeJWT(token) {
-  var output = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
+  return decodeBase64UrlToString(token.split('.')[1])
+}
+
+/**
+ * @param {string} token
+ * @returns
+ */
+function decodeJWTHeader(token) {
+  return decodeBase64UrlToString(token.split('.')[0])
+}
+
+/**
+ * @param {string} encoded
+ * @returns {string}
+ */
+function decodeBase64UrlToString(encoded) {
+  var output = encoded.replace(/-/g, '+').replace(/_/g, '/')
   switch (output.length % 4) {
     case 0:
       break
@@ -184,4 +322,13 @@ export function parseJWT(token) {
   // TODO: Handle when decodeJWT fails.
   // TODO: Handle when JSON.parse fails.
   return JSON.parse(decodeJWT(token))
+}
+
+/**
+ * @typedef {{alg: string; typ: string}} JWTHeader
+ * @param {string} token
+ * @returns {JWTHeader}
+ */
+function parseJWTHeader(token) {
+  return JSON.parse(decodeJWTHeader(token))
 }

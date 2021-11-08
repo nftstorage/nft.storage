@@ -1,10 +1,10 @@
-/* global METAPLEX_AUTH_TOKEN */
 import { HTTPError } from '../errors.js'
 import * as cluster from '../cluster.js'
 import { secrets, database } from '../constants.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 import { parseCid } from '../utils/utils.js'
+import { verifyMetaplexJWT, parseJWT } from '../utils/jwt.js'
 import { DBClient, DBError } from '../utils/db-client.js'
 
 /**
@@ -19,16 +19,27 @@ const db = new DBClient(database.url, secrets.database)
 
 /**
  * Temporary CAR only upload endpoint, authenticated with Metaplex JWT.
- * @type {import('../utils/router.js').Handler}
+ * @type {import('../bindings').Handler}
  */
 export async function metaplexUpload(event, ctx) {
   const { headers } = event.request
   const authHeader = headers.get('x-web3auth') || ''
-  // TODO: properly verify auth header
-  // we only support metaplex at this endpoint
-  if (!authHeader.startsWith('Metaplex ')) {
+
+  const match = authHeader.match(/^Metaplex (.*)$/)
+  if (!match) {
+    throw new HTTPError('invalid authorization header: ' + authHeader, 401)
+  }
+
+  const token = match[1]
+  const valid = await verifyMetaplexJWT(token)
+  if (!valid) {
     throw new HTTPError('invalid authorization header', 401)
   }
+
+  // now that we know the sig is valid, use the JWT payload
+  // as metadata to attach to the upload entry in the db
+  /** @type Record<string, any> */
+  const meta = parseJWT(token)
 
   // Get the mapped metaplex user
   const { user, key } = await validate()
@@ -42,6 +53,15 @@ export async function metaplexUpload(event, ctx) {
   const { cid, bytes: dagSize } = await cluster.addCar(blob, { local })
   const { sourceCid, contentCid } = parseCid(cid)
 
+  // confirm that the content cid matches the cid from the signed metadata
+  if (!meta.req || !meta.req.put || typeof meta.req.put.rootCID !== 'string') {
+    throw new HTTPError('invalid token - no root cid in payload', 401)
+  }
+  const signedCid = meta.req.put.rootCID
+  if (signedCid !== sourceCid && signedCid !== contentCid) {
+    throw new HTTPError('invalid token - cid mismatch', 401)
+  }
+
   const upload = await db.createUpload({
     mime_type: blob.type,
     type: 'Car',
@@ -51,7 +71,7 @@ export async function metaplexUpload(event, ctx) {
     user_id: user.id,
     files: [],
     key_id: key.id,
-    meta: JSON.parse(headers.get('x-web3meta') || 'null'),
+    meta,
   })
 
   return new JSONResponse({ ok: true, value: toNFTResponse(upload, sourceCid) })
@@ -64,7 +84,7 @@ async function validate() {
 
   const { error, data } = await db.client
     .from('auth_key')
-    .select('id,user(id)')
+    .select('id,user:auth_key_user_id_fkey(id)')
     .eq('secret', METAPLEX_AUTH_TOKEN)
     .single()
 

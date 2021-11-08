@@ -20,7 +20,7 @@ import { pinsDelete } from './routes/pins-delete.js'
 import { pinsGet } from './routes/pins-get.js'
 import { pinsList } from './routes/pins-list.js'
 import { pinsReplace } from './routes/pins-replace.js'
-import { metaplexUpload } from './routes-v1/metaplex-upload.js'
+import { metaplexUpload } from './routes/metaplex-upload.js'
 
 import {
   withMode,
