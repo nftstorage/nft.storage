@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.10.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.9.0...website-v1.10.0) (2021-11-08)
+
+
+### Features
+
+* clarify language in FAQ and fix typo ([#705](https://www.github.com/nftstorage/nft.storage/issues/705)) ([6bbb310](https://www.github.com/nftstorage/nft.storage/commit/6bbb3102be2bc4effcc4a9d08b70e73d14b3d969))
+
+
+### Bug Fixes
+
+* survey button not opening modal ([#723](https://www.github.com/nftstorage/nft.storage/issues/723)) ([284fcef](https://www.github.com/nftstorage/nft.storage/commit/284fcef360061553eb1d29a4a9d928d7f564d9bd))
+
 ## [1.9.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.8.2...website-v1.9.0) (2021-10-29)
 
 
