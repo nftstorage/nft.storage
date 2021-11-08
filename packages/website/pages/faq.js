@@ -72,7 +72,7 @@ export const FAQ = () => (
     </p>
     <h2 className="chicagoflf white">
       <HashLink id="how-long-will-data-be-stored-on-nftstorage">
-        How long will data be stored on NFT.storage?
+        How long will data be stored on NFT.Storage?
       </HashLink>
     </h2>
     <p className="lh-copy white mb4">
@@ -90,9 +90,9 @@ export const FAQ = () => (
       </HashLink>
     </h2>
     <p className="lh-copy white mb4">
-      NFT.storage can store NFTs up to <strong>32GB </strong>
+      NFT.Storage can store NFTs up to <strong>31GiB </strong>
       in size! (There was previously a 100MB limit due to Cloudflare workers but
-      NFT.storage now supports chunked uploads, allowing files bigger than 100MB
+      NFT.Storage now supports chunked uploads, allowing files bigger than 100MB
       to be uploaded! 🎉)
     </p>
     <h2 className="chicagoflf white">
@@ -148,10 +148,9 @@ export const FAQ = () => (
     </p>
     <h2 className="chicagoflf white">
       <HashLink id="how-is-nftstorage-free-to-use">
-        How is nft.storage free to use?
+        How is NFT.Storage free to use?
       </HashLink>
     </h2>
-    <img src="/images/storage-economics.gif" alt="NFT Storage Economics" />
     <p className="lh-copy white mb4">
       Filecoin storage providers commit their hard drive capacity to the
       Filecoin network, and earn significant block rewards for doing so. This
@@ -159,7 +158,7 @@ export const FAQ = () => (
       incentivizes them to continue committing additional hard disk space to the
       Filecoin network. However, when storage providers are storing data from
       Filecoin users, their likelihood of winning block rewards goes up by a big
-      factor 一 <strong>10x</strong>! Because Nft.Storage participates in
+      factor 一 <strong>10x</strong>! Because NFT.Storage participates in
       the&nbsp;
       <a
         href="https://docs.filecoin.io/store/filecoin-plus/"
@@ -178,7 +177,7 @@ export const FAQ = () => (
       continue to be a powerful incentive. This should be true for a very long
       time 一 for example, it is still the case that block rewards are powerful
       incentives for Bitcoin miners today. While there is some additional
-      infrastructure cost associated with running the Nft.Storage service,&nbsp;
+      infrastructure cost associated with running the NFT.Storage service,&nbsp;
       <a
         href="https://protocol.ai/"
         target="_blank"
