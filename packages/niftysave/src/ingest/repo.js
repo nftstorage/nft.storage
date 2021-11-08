@@ -21,8 +21,28 @@ import {
  */
 
 /**
+ * Enqueue
+ * Persist NFT Records that were imported.
+ * Drains the inbox.
+ * @param { Config } config
+ * @param { ERC721ImportNFT[] } erc721Imports
+ */
+export async function enqueueScrapedRecords(config, erc721Imports) {
+  const records = erc721Imports.map(erc721ImportToNFTEndpoint)
+  const startTime = Date.now()
+
+  printBatch(records)
+
+  const batchMutation = {}
+  const done = await Hasura.mutation(config.hasura, batchMutation)
+
+  printTiming(startTime, records.length)
+  return done
+}
+
+/**
  * WRITE
- * Persist a single NFT Record that was imported.
+ * Persist a batch of NFT Record that was imported.
  * Drains the inbox.
  * @param { Config } config
  * @param { ERC721ImportNFT[] } erc721Imports
@@ -32,7 +52,7 @@ export async function writeScrapedRecords(config, erc721Imports) {
   const startTime = Date.now()
   printBatch(records)
   const batchMutation = Object.fromEntries(
-    records.map(recordToMutation).entries()
+    records.map(recordToIngestErc721TokenMutation).entries()
   )
   const done = await Hasura.mutation(config.hasura, {
     __alias: batchMutation,
@@ -75,7 +95,7 @@ function printBatch(records) {
  * @param {NFTEndpointRecord} record
  * @returns {Hasura.Mutation}
  */
-function recordToMutation(record) {
+function recordToIngestErc721TokenMutation(record) {
   return {
     ingest_erc721_token: [
       {
