@@ -37,6 +37,7 @@ import { pinsDeleteV1 } from './routes-v1/pins-delete.js'
 import { pinsGetV1 } from './routes-v1/pins-get.js'
 import { pinsListV1 } from './routes-v1/pins-list.js'
 import { pinsReplace as pinsReplaceV1 } from './routes-v1/pins-replace.js'
+import { metaplexUpload } from './routes-v1/metaplex-upload.js'
 import {
   withMode,
   READ_ONLY as RO,
@@ -129,6 +130,9 @@ r.add('get', '/check/:cid', withMode(checkV1, RO), [postCors])
 r.add('get', '/internal/tokens', withMode(tokensListV1, RO), [postCors])
 r.add('post', '/internal/tokens', withMode(tokensCreateV1, RW), [postCors])
 r.add('delete', '/internal/tokens', withMode(tokensDeleteV1, RW), [postCors])
+
+// Temporary Metaplex upload route, mapped to metaplex user account.
+r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
 
 // Public API
 r.add('get', '/api', withMode(nftListV1, RO), [postCors])
