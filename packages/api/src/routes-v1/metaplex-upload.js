@@ -5,6 +5,7 @@ import { secrets, database } from '../constants.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 import { parseCid } from '../utils/utils.js'
+import { verifyMetaplexJWT } from '../utils/jwt.js'
 import { DBClient, DBError } from '../utils/db-client.js'
 
 /**
@@ -24,9 +25,15 @@ const db = new DBClient(database.url, secrets.database)
 export async function metaplexUpload(event, ctx) {
   const { headers } = event.request
   const authHeader = headers.get('x-web3auth') || ''
-  // TODO: properly verify auth header
-  // we only support metaplex at this endpoint
-  if (!authHeader.startsWith('Metaplex ')) {
+
+  const match = authHeader.match(/^Metaplex\s+(.*)$/)
+  if (!match || !match.groups) {
+    throw new HTTPError('invalid authorization header', 401)
+  }
+
+  const token = match.groups[1]
+  const valid = await verifyMetaplexJWT(token)
+  if (!valid) {
     throw new HTTPError('invalid authorization header', 401)
   }
 

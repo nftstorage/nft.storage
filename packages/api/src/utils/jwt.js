@@ -1,3 +1,6 @@
+import { base58btc } from 'multiformats/bases/base58'
+import nacl from 'tweetnacl'
+
 /** @type {Record<string, HmacImportParams>} */
 const algorithms = {
   HS256: {
@@ -101,6 +104,57 @@ export async function verifyJWT(token, secret, alg = 'HS256') {
 }
 
 /**
+ * @param {string} token - an encoded JWT token from an x-web3auth header.
+ * @returns {Promise<boolean>} - true if the token contains a valid solana public key and a valid signature from the key.
+ */
+export async function verifyMetaplexJWT(token) {
+  if (!isString(token)) {
+    throw new Error('token must be a string')
+  }
+  var tokenParts = token.split('.')
+
+  if (tokenParts.length !== 3) {
+    return false
+  }
+
+  const header = parseJWTHeader(token)
+  const payload = parseJWT(token)
+
+  if (header.alg !== 'EdDSA') {
+    throw new Error('invalid algorithm for metaplex token')
+  }
+
+  if (header.typ !== 'JWT') {
+    throw new Error('invalid token type')
+  }
+
+  if (!payload.iss) {
+    return false
+  }
+
+  const pubkey = keyFromDID(payload.iss)
+  const sig = Base64URL.parse(tokenParts[2])
+  const headerPayload = utf8ToUint8Array(tokenParts[0] + '.' + tokenParts[1])
+
+  return nacl.sign.detached.verify(headerPayload, sig, pubkey)
+}
+
+/**
+ * @param {string} did - a "did:key" formatted DID string
+ * @returns {Uint8Array} - the decoded public key
+ * @throws if DID is invalid or does not contain a valid Ed25519 public key
+ */
+function keyFromDID(did) {
+  const prefix = 'did:key:z6Mk'
+  if (!did.startsWith(prefix)) {
+    throw new Error('invalid DID for ed25519 public key')
+  }
+
+  const keyStr = did.slice(prefix.length)
+  return base58btc.baseDecode(keyStr)
+}
+
+/**
  * @param {any} payload
  * @param {string} secret
  * @param {string} alg
@@ -151,7 +205,23 @@ export async function signJWT(payload, secret, alg = 'HS256') {
  * @param {string} token
  */
 export function decodeJWT(token) {
-  var output = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
+  return decodeBase64UrlToString(token.split('.')[1])
+}
+
+/**
+ * @param {string} token
+ * @returns
+ */
+function decodeJWTHeader(token) {
+  return decodeBase64UrlToString(token.split('.')[0])
+}
+
+/**
+ * @param {string} encoded
+ * @returns {string}
+ */
+function decodeBase64UrlToString(encoded) {
+  var output = encoded.replace(/-/g, '+').replace(/_/g, '/')
   switch (output.length % 4) {
     case 0:
       break
@@ -184,4 +254,13 @@ export function parseJWT(token) {
   // TODO: Handle when decodeJWT fails.
   // TODO: Handle when JSON.parse fails.
   return JSON.parse(decodeJWT(token))
+}
+
+/**
+ * @typedef {{alg: string; typ: string}} JWTHeader
+ * @param {string} token
+ * @returns {JWTHeader}
+ */
+function parseJWTHeader(token) {
+  return JSON.parse(decodeJWTHeader(token))
 }
