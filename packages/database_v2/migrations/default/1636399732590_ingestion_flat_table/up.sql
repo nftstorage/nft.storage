@@ -1,20 +1,21 @@
 CREATE TABLE IF NOT EXISTS erc721_token_ingestion_queue(
-  id text,
-  token_id text,
-  token_uri text,
-  mint_time timestamp with time zone,
-  contract_id text,
-  contract_name text,
-  contract_symbol text,
+  id TEXT CONSTRAINT erc721_token_ingestion_queue_pkey PRIMARY KEY,
+  token_id TEXT,
+  token_uri TEXT,
+  mint_time TIMESTAMP WITH TIME ZONE,
+  contract_id TEXT,
+  contract_name TEXT,
+  contract_symbol TEXT,
   contract_supports_eip721_metadata boolean,
-  block_hash text,
-  block_number bigint,
-  owner_id text,
-  updated_at timestamp with time zone DEFAULT timezone('utc' :: text, now()),
-  inserted_at timestamp with time zone DEFAULT timezone('utc' :: text, now()),
-  PRIMARY KEY ("id"),
-  UNIQUE("id")
+  block_hash TEXT,
+  block_number BIGINT,
+  owner_id TEXT,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc' :: TEXT, now()),
+  inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc' :: TEXT, now())
 );
 
-ALTER TABLE "public"."erc721_token_ingestion_queue" SET UNLOGGED;
-COMMENT ON TABLE "public"."erc721_token_ingestion_queue" IS E'Unlogged Table for quickly writing records from the Etherium Blockchain'
+
+ALTER TABLE erc721_token_ingestion_queue SET UNLOGGED;
+
+COMMENT ON TABLE erc721_token_ingestion_queue
+IS E'Unlogged Table for quickly writing records from the Etherium Blockchain'

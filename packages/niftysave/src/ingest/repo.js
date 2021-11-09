@@ -39,9 +39,12 @@ export async function enqueueScrapedRecords(config, erc721Imports) {
     insert_erc721_token_ingestion_queue: [
       {
         objects: records,
-        on_conflict: {},
+        on_conflict: {
+          constraint: 'id',
+          update_columns: ['updated_at'],
+        },
       },
-      { __typename: true },
+      { affected_rows: true },
     ],
   })
 

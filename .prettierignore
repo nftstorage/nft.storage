@@ -8,6 +8,7 @@ site/public
 docs
 packages/niftysave/gen
 *.sql
+*.sh
 CHANGELOG.md
 .next
 .supabase
