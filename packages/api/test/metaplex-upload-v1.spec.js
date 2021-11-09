@@ -9,7 +9,7 @@ import { createCar } from './scripts/car.js'
 
 let METAPLEX_AUTH_TOKEN
 
-describe(' V1 - Upload ', () => {
+describe(' V1 - Metaplex Upload ', () => {
   /** @type{DBTestClient} */
   let client
 
@@ -19,7 +19,7 @@ describe(' V1 - Upload ', () => {
     METAPLEX_AUTH_TOKEN = client.token
   })
 
-  it('should upload a single CAR file', async () => {
+  it('should upload a single CAR file with a CID-specific token', async () => {
     const { root, car } = await createCar('hello world car')
     // expected CID for the above data
     const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'

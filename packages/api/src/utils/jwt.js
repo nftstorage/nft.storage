@@ -1,13 +1,19 @@
 import { base58btc } from 'multiformats/bases/base58'
-import nacl from 'tweetnacl'
 
-/** @type {Record<string, HmacImportParams>} */
+/** @type {Record<string, HmacImportParams|EcKeyImportParams>} */
 const algorithms = {
   HS256: {
     name: 'HMAC',
     hash: {
       name: 'SHA-256',
     },
+  },
+
+  // NODE-ED25519 exists only in the CloudFlare workers runtime API
+  // see: https://developers.cloudflare.com/workers/runtime-apis/web-crypto#footnote%201
+  'NODE-ED25519': {
+    name: 'NODE-ED25519',
+    namedCurve: 'NODE-ED25519',
   },
 }
 
@@ -132,26 +138,79 @@ export async function verifyMetaplexJWT(token) {
     return false
   }
 
-  const pubkey = keyFromDID(payload.iss)
+  const pubkey = await keyFromDID(payload.iss)
   const sig = Base64URL.parse(tokenParts[2])
   const headerPayload = utf8ToUint8Array(tokenParts[0] + '.' + tokenParts[1])
 
-  return nacl.sign.detached.verify(headerPayload, sig, pubkey)
+  if (!crypto || !crypto.subtle) {
+    return verifyEd25519SignatureWithJSCrypto(headerPayload, sig, pubkey)
+  }
+
+  try {
+    return verifyEd25519SignatureWithNativeCrypto(headerPayload, sig, pubkey)
+  } catch (e) {
+    if (e instanceof DOMException && e.name === 'NotSupportedError') {
+      return verifyEd25519SignatureWithJSCrypto(headerPayload, sig, pubkey)
+    }
+    throw e
+  }
+}
+
+/**
+ *
+ * @param {Uint8Array} message
+ * @param {Uint8Array} sig
+ * @param {Uint8Array} pubkey
+ * @returns {Promise<boolean>}
+ */
+async function verifyEd25519SignatureWithNativeCrypto(message, sig, pubkey) {
+  const key = await crypto.subtle.importKey(
+    'raw',
+    pubkey,
+    algorithms['NODE-ED25519'],
+    false,
+    ['verify']
+  )
+
+  return crypto.subtle.verify(algorithms['NODE-ED25519'], key, sig, message)
+}
+
+/**
+ *
+ * @param {Uint8Array} message
+ * @param {Uint8Array} sig
+ * @param {Uint8Array} pubkey
+ * @returns {Promise<boolean>}
+ */
+async function verifyEd25519SignatureWithJSCrypto(message, sig, pubkey) {
+  console.warn(
+    'using tweetnacl for ed25519 - you should not see this message when running in the CloudFlare worker runtime'
+  )
+  const { default: nacl } = await import('tweetnacl')
+  return nacl.sign.detached.verify(message, sig, pubkey)
 }
 
 /**
  * @param {string} did - a "did:key" formatted DID string
- * @returns {Uint8Array} - the decoded public key
+ * @returns {Promise<Uint8Array>} - the decoded public key
  * @throws if DID is invalid or does not contain a valid Ed25519 public key
  */
-function keyFromDID(did) {
-  const prefix = 'did:key:z6Mk'
+async function keyFromDID(did) {
+  const prefix = 'did:key:'
   if (!did.startsWith(prefix)) {
-    throw new Error('invalid DID for ed25519 public key')
+    throw new Error('invalid DID')
   }
 
   const keyStr = did.slice(prefix.length)
-  return base58btc.baseDecode(keyStr)
+  const bytes = base58btc.decode(keyStr)
+
+  // check multicodec == ed25519-pub (0xed encoded as a varint)
+  if (bytes[0] !== 0xed || bytes[1] !== 0x01) {
+    throw new Error(
+      'invalid key multicodec. only ed25519-pub keys are supported'
+    )
+  }
+  return bytes.slice(2)
 }
 
 /**
