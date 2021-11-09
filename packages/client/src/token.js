@@ -6,6 +6,7 @@ import * as dagCbor from '@ipld/dag-cbor'
 import * as API from './lib/interface.js'
 import { Blob, FormData, Blockstore } from './platform.js'
 import { toGatewayURL, GATEWAY } from './gateway.js'
+import { BlockstoreCarReader } from './bs-car-reader.js'
 
 /**
  * @typedef {import('./gateway.js').GatewayURLOptions} EmbedOptions
@@ -64,18 +65,16 @@ export class Token {
   }
 
   /**
-   * Takes token input and creates a new Token instance from it. Where values
-   * are discovered `Blob` (or `File`) objects in the given input, they are
-   * replaced with IPFS URLs (an `ipfs://` prefixed CID with an optional path).
-   *
-   * Optionally a blockstore can be passed to store the DAG that is created. The
-   * root CID of the DAG is `token.ipnft`.
+   * Takes token input, encodes it as a DAG, wraps it in a CAR and creates a new
+   * Token instance from it. Where values are discovered `Blob` (or `File`)
+   * objects in the given input, they are replaced with IPFS URLs (an `ipfs://`
+   * prefixed CID with an optional path).
    *
    * @example
    * ```js
    * const cat = new File(['...'], 'cat.png')
    * const kitty = new File(['...'], 'kitty.png')
-   * const token = await Token.fromTokenInput({
+   * const { token, car } = await Token.encode({
    *   name: 'hello'
    *   image: cat
    *   properties: {
@@ -88,74 +87,56 @@ export class Token {
    *
    * @template {API.TokenInput} T
    * @param {API.Encoded<T, [[Blob, Blob]]>} input
-   * @param {object} [options]
-   * @param {Blockstore} [options.blockstore]
-   * @returns {Promise<API.Token<T>>}
+   * @returns {Promise<{ token: API.Token<T>, car: import('./lib/interface.js').CarReader }>}
    */
-  static async fromTokenInput(input, options = {}) {
-    const blockstore = options.blockstore || new Blockstore()
-    try {
-      const [blobs, meta] = mapValueWith(
-        input,
-        isBlob,
-        encodeBlob,
-        new Map(),
-        []
-      )
-      /** @type {API.Encoded<T, [[Blob, URL]]>} */
-      const data = JSON.parse(JSON.stringify(meta))
-      /** @type {API.Encoded<T, [[Blob, CID]]>} */
-      const dag = JSON.parse(JSON.stringify(meta))
+  static async encode(input) {
+    const blockstore = new Blockstore()
+    const [blobs, meta] = mapValueWith(input, isBlob, encodeBlob, new Map(), [])
+    /** @type {API.Encoded<T, [[Blob, URL]]>} */
+    const data = JSON.parse(JSON.stringify(meta))
+    /** @type {API.Encoded<T, [[Blob, CID]]>} */
+    const dag = JSON.parse(JSON.stringify(meta))
 
-      for (const [dotPath, blob] of blobs.entries()) {
-        /** @type {string|undefined} */
-        // @ts-ignore blob may be a File!
-        const name = blob.name || 'blob'
-        const { root: cid } = await pack({
-          // @ts-ignore
-          input: [{ path: name, content: blob.stream() }],
-          blockstore,
-          wrapWithDirectory: true,
-        })
-
-        const href = new URL(`ipfs://${cid}/${name}`)
-        const path = dotPath.split('.')
-        setIn(data, path, href)
-        setIn(dag, path, cid)
-      }
-
-      const { root: metadataJsonCid } = await pack({
-        // @ts-ignore
-        input: [
-          {
-            path: 'metadata.json',
-            content: new Blob([JSON.stringify(data)]).stream(),
-          },
-        ],
+    for (const [dotPath, blob] of blobs.entries()) {
+      /** @type {string|undefined} */
+      // @ts-ignore blob may be a File!
+      const name = blob.name || 'blob'
+      const { root: cid } = await pack({
+        input: [{ path: name, content: blob.stream() }],
         blockstore,
-        wrapWithDirectory: false,
+        wrapWithDirectory: true,
       })
 
-      const block = await Block.encode({
-        value: {
-          ...dag,
-          'metadata.json': metadataJsonCid,
-          type: 'nft',
-        },
-        codec: dagCbor,
-        hasher: sha256,
-      })
-      await blockstore.put(block.cid, block.bytes)
+      const href = new URL(`ipfs://${cid}/${name}`)
+      const path = dotPath.split('.')
+      setIn(data, path, href)
+      setIn(dag, path, cid)
+    }
 
-      return new Token(
+    const { root: metadataJsonCid } = await pack({
+      input: [{ path: 'metadata.json', content: JSON.stringify(data) }],
+      blockstore,
+      wrapWithDirectory: false,
+    })
+
+    const block = await Block.encode({
+      value: {
+        ...dag,
+        'metadata.json': metadataJsonCid,
+        type: 'nft',
+      },
+      codec: dagCbor,
+      hasher: sha256,
+    })
+    await blockstore.put(block.cid, block.bytes)
+
+    return {
+      token: new Token(
         block.cid.toString(),
         `ipfs://${block.cid}/metadata.json`,
         data
-      )
-    } finally {
-      if (!options.blockstore) {
-        await blockstore.close()
-      }
+      ),
+      car: new BlockstoreCarReader(1, [block.cid], blockstore),
     }
   }
 }

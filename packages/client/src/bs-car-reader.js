@@ -30,6 +30,10 @@ export class BlockstoreCarReader {
     return this._version
   }
 
+  get blockstore() {
+    return this._blockstore
+  }
+
   async getRoots() {
     return this._roots
   }

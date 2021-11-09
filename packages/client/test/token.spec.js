@@ -48,7 +48,7 @@ describe('token', () => {
       description: 'stuff',
       image: new Blob(['fake image'], { type: 'image/png' }),
     }
-    const token = await Token.Token.fromTokenInput(input)
+    const { token } = await Token.Token.encode(input)
     assert.equal(
       token.ipnft,
       'bafyreib75ot3oyo43f7rhdk6xlv7c4mmjwhbjjnugrw3yqjvarpvtzxkoi'

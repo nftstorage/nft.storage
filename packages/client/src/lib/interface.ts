@@ -28,6 +28,41 @@ export type CIDString = Tagged<string, CID>
 
 export interface API {
   /**
+   * Encodes the given token and all resources it references (in the form of a
+   * File or a Blob) along with a metadata JSON as specificed in ERC-1155 to a
+   * CAR file. The `token.image` must be either a `File` or a `Blob` instance,
+   * which will be stored and the corresponding content address URL will be
+   * saved in the metadata JSON file under `image` field.
+   *
+   * If `token.properties` contains properties with `File` or `Blob` values,
+   * those also get stored and their URLs will be saved in the metadata JSON
+   * file in their place.
+   *
+   * Note: URLs for `File` objects will retain file names e.g. in case of
+   * `new File([bytes], 'cat.png', { type: 'image/png' })` will be transformed
+   * into a URL that looks like `ipfs://bafy...hash/image/cat.png`. For `Blob`
+   * objects, the URL will not have a file name name or mime type, instead it
+   * will be transformed into a URL that looks like
+   * `ipfs://bafy...hash/image/blob`.
+   */
+  encodeNFT<T extends TokenInput>(
+    input: T
+  ): Promise<{ token: Token<T>; car: CarReader }>
+  /**
+   * Encodes a single file to a CAR file and also returns it's root CID.
+   */
+  encodeBlob(
+    service: Service,
+    content: Blob | File
+  ): Promise<{ cid: CID; car: CarReader }>
+  /**
+   * Encodes a directory of files to a CAR file and also returns the root CID.
+   * Provided files **MUST** be within a same directory, otherwise error is
+   * raised. E.g. `foo/bar.png`, `foo/bla/baz.json` is ok but `foo/bar.png`,
+   * `bla/baz.json` is not.
+   */
+  encodeDirectory(files: Iterable<File>): Promise<{ cid: CID; car: CarReader }>
+  /**
    * Stores the given token and all resources it references (in the form of a
    * File or a Blob) along with a metadata JSON as specificed in ERC-1155. The
    * `token.image` must be either a `File` or a `Blob` instance, which will be
@@ -45,19 +80,11 @@ export interface API {
    * will be transformed into a URL that looks like
    * `ipfs://bafy...hash/image/blob`.
    */
-  store<T extends TokenInput>(
-    service: Service,
-    token: T,
-    options?: MetadataStorerOptions
-  ): Promise<Token<T>>
+  store<T extends TokenInput>(service: Service, token: T): Promise<Token<T>>
   /**
    * Stores a single file and returns a corresponding CID.
    */
-  storeBlob(
-    service: Service,
-    content: Blob | File,
-    options?: BlobStorerOptions
-  ): Promise<CIDString>
+  storeBlob(service: Service, content: Blob | File): Promise<CIDString>
   /**
    * Stores CAR file and returns a corresponding CID.
    */
@@ -71,11 +98,7 @@ export interface API {
    * be within a same directory, otherwise error is raised. E.g. `foo/bar.png`,
    * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
    */
-  storeDirectory(
-    service: Service,
-    files: Iterable<File>,
-    options?: DirectoryStorerOptions
-  ): Promise<CIDString>
+  storeDirectory(service: Service, files: Iterable<File>): Promise<CIDString>
   /**
    * Returns current status of the stored NFT by its CID. Note the NFT must
    * have previously been stored by this account.
@@ -112,19 +135,6 @@ export interface CarStorerOptions {
    */
   decoders?: BlockDecoder<any, any>[]
 }
-
-export interface DagStorerOptions extends CarStorerOptions {
-  /**
-   * Callback called after the data has been assembled into a DAG, but before
-   * any upload requests begin. It is passed the CID of the root node of the
-   * graph.
-   */
-  onRootCidReady?: (cid: CIDString) => void
-}
-
-export interface BlobStorerOptions extends DagStorerOptions {}
-export interface DirectoryStorerOptions extends DagStorerOptions {}
-export interface MetadataStorerOptions extends DagStorerOptions {}
 
 export interface CheckResult {
   cid: string

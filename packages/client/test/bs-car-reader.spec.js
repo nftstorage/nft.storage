@@ -68,4 +68,13 @@ describe('Blockstore CAR Reader', () => {
     assert.ok(cids[0] && cids[0].equals(rootBlock.cid))
     assert.ok(cids[1] && cids[1].equals(block.cid))
   })
+
+  it('should expose blockstore', async () => {
+    const block = await randomBlock()
+    const version = 1
+    const roots = [block.cid]
+    const bs = new MemoryBlockStore()
+    const car = new BlockstoreCarReader(version, roots, bs)
+    assert.ok(bs === car.blockstore)
+  })
 })
