@@ -1,0 +1,9 @@
+{
+  "dockerComposeFile": ["./docker-compose.yml", "./docker-compose.db.yml", "./docker-compose.extend.yml" ],
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [3000, 5432, 9094, 9095, 8787],
+  "remoteUser": "node",
+  "shutdownAction": "stopCompose",
+  "postAttachCommand": "/bin/post-attach.sh",
+}

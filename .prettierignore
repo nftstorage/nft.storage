@@ -16,5 +16,6 @@ CHANGELOG.md
 .gitignore
 .editorconfig
 .gitattributes
+.devcontainer
 **/yarn.lock*
 *.toml

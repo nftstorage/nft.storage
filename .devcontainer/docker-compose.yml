@@ -1,0 +1,87 @@
+# This compose file brings up a local development environment containing
+# instances of all the services that the nft.storage API depends on.
+#
+# Because the API runs in a cloudflare worker, the services it depends on
+# must be exposed to the internet. The various -tunnel services here expose
+# things using [localtunnel](https://github.com/localtunnel/localtunnel)
+# 
+
+
+version: '3.6'
+
+services:
+
+  # a 
+  dev:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - "..:/workspace"
+    environment:
+      DEV_USERNAME: "${USER}"
+    # Runs app on the same network as the database container, allows "forwardPorts" in devcontainer.json function.
+    network_mode: service:db
+
+  # IPFS node used by cluster node
+  ipfs0:
+    image: ipfs/go-ipfs:latest
+#   ports:
+#     - "4001:4001" # ipfs swarm - expose if needed/wanted
+#     - "5001:5001" # ipfs api - expose if needed/wanted
+#     - "8080:8080" # ipfs gateway - expose if needed/wanted
+    volumes:
+      - ./cluster-data/ipfs0:/data/ipfs
+      
+  # An ipfs-cluster node, with proxy api exposed on port 9095
+  cluster0:
+    image: ipfs/ipfs-cluster:latest
+    depends_on:
+      - ipfs0
+    environment:
+      CLUSTER_PEERNAME: cluster0
+      CLUSTER_SECRET: ${CLUSTER_SECRET} # From shell variable if set
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs0/tcp/5001
+      CLUSTER_CRDT_TRUSTEDPEERS: '*' # Trust all peers in Cluster
+      CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9094 # Expose API
+      CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
+      CLUSTER_IPFSPROXY_NODEMULTIADDRESS: /dns4/ipfs0/tcp/5001
+      CLUSTER_IPFSPROXY_LISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9095
+    ports:
+          - "0.0.0.0:9094:9094"
+          - "0.0.0.0:9095:9095"
+    volumes:
+      - ./cluster-data/cluster0:/data/ipfs-cluster
+
+### Tunnels
+
+  cluster-api-tunnel:
+    environment:
+      PORT: "9094"
+      LOCAL_HOST: "cluster0"
+      SUBDOMAIN: "${USER}-cluster-api-${DEV_CLUSTER_PROJECT:-nft-storage}"
+    depends_on:
+      - cluster0
+    build:
+      context: ./localtunnel
+
+  ipfs-api-proxy-tunnel:
+    environment:
+      PORT: "9095"
+      LOCAL_HOST: "cluster0"
+      SUBDOMAIN: "${USER}-ipfs-proxy-api-${DEV_CLUSTER_PROJECT:-nft-storage}" 
+    depends_on:
+      - cluster0
+    build:
+      context: ./localtunnel
+
+
+  postgrest-tunnel:
+    environment:
+      PORT: "3000"
+      LOCAL_HOST: "rest"
+      SUBDOMAIN: "${USER}-postgrest-${DEV_CLUSTER_PROJECT:-nft-storage}"
+    depends_on:
+      - rest
+    build:
+      context: ./localtunnel

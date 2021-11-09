@@ -1,0 +1,8 @@
+version: '3.6'
+
+# use this to override any service definitions for your local env
+# don't check changes to this file into git!
+# you can run git update-index --assume-unchanged .devcontainer/docker-compose.extend.yml
+# to prevent changes from being tracked
+
+services: {}
