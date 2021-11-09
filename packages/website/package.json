@@ -11,13 +11,13 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@magic-ext/oauth": "^0.11.0",
+    "@magic-ext/oauth": "^0.11.1",
     "bytes": "^3.1.0",
     "clsx": "^1.1.1",
     "countly-sdk-web": "^20.11.3",
     "ipfs-car": "0.4.3",
     "isomorphic-form-data": "^2.0.0",
-    "magic-sdk": "^6.2.0",
+    "magic-sdk": "^6.2.1",
     "nft.storage": "^3.3.0",
     "querystring-browser": "^1.0.4",
     "react": "17.0.2",
@@ -28,17 +28,17 @@
     "tachyons": "^4.12.0"
   },
   "devDependencies": {
-    "@sentry/nextjs": "^6.3.5",
+    "@sentry/nextjs": "^6.14.1",
     "@types/bytes": "^3.1.1",
-    "@types/react": "^17.0.4",
+    "@types/react": "^17.0.34",
     "eslint": "^7.0.0",
-    "eslint-config-next": "12.0.1",
+    "eslint-config-next": "12.0.3",
     "eslint-config-prettier": "^8.2.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
-    "next": "^12.0.1",
+    "next": "^12.0.3",
     "typescript": "4.4.4"
   },
   "eslintConfig": {
