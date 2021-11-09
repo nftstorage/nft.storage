@@ -16,6 +16,7 @@ export function getStaticProps() {
   return {
     props: {
       needsUser: false,
+      description: 'NFT.Storage homepage',
     },
   }
 }
@@ -415,10 +416,8 @@ console.log(metadata.url)
                 POST
               </code>{' '}
               request to{' '}
-              <a href="https://api.nft.storage/upload" className="black">
-                api.nft.storage/upload
-              </a>
-              , passing the file data in the request body. e.g.
+              <span className="black underline">api.nft.storage/upload</span>{' '}
+              passing the file data in the request body. e.g.
             </p>
             <pre className="f6 lh-copy bg-nspink pa3 br1 ba b--black code overflow-x-scroll">
               {curlEx}
