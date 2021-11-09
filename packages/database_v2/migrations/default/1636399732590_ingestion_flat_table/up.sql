@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS erc721_token_ingestion_queue(
   owner_id text,
   updated_at timestamp with time zone DEFAULT timezone('utc' :: text, now()),
   inserted_at timestamp with time zone DEFAULT timezone('utc' :: text, now()),
-  PRIMARY KEY ("id")
+  PRIMARY KEY ("id"),
+  UNIQUE("id")
 );
 
 ALTER TABLE "public"."erc721_token_ingestion_queue" SET UNLOGGED;

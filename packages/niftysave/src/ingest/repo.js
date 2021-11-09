@@ -7,6 +7,8 @@ import {
   subgraphTokenToERC721ImportNFT,
 } from './transforms.js'
 
+import { erc721_token_ingestion_queue_select_column } from '../../gen/hasura/zeus/index.js'
+
 /**
  * @typedef {import('./index').ERC721ImportNFT} ERC721ImportNFT
  * @typedef {import('./index').NFTSSubgraphResult} NFTSSubgraphResult
@@ -33,8 +35,15 @@ export async function enqueueScrapedRecords(config, erc721Imports) {
 
   printBatch(records)
 
-  const batchMutation = {}
-  const done = await Hasura.mutation(config.hasura, batchMutation)
+  const done = await Hasura.mutation(config.hasura, {
+    insert_erc721_token_ingestion_queue: [
+      {
+        objects: records,
+        on_conflict: {},
+      },
+      { __typename: true },
+    ],
+  })
 
   printTiming(startTime, records.length)
   return done

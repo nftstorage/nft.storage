@@ -2,8 +2,8 @@ import * as Cursor from './hasura/cursor.js'
 import * as ERC721 from '../gen/erc721/index.js'
 import * as Hasura from './hasura.js'
 
+import { enqueueScrapedRecords, fetchNFTBatch } from './ingest/repo.js'
 import { exponentialBackoff, maxRetries, retry } from './retry.js'
-import { fetchNFTBatch, writeScrapedRecords } from './ingest/repo.js'
 
 import { TransformStream } from './stream.js'
 import { checkIsBinRange } from './hasura/cursor.js'
@@ -173,14 +173,8 @@ async function writeFromInbox(config, readable) {
       }
 
       await retry(
-        async () => await writeScrapedRecords(config, nextBatch),
-        [
-          maxRetries(config.ingestWriterRetryLimit),
-          exponentialBackoff(
-            config.ingestWriterRetryInterval,
-            config.ingestWriterRetryMaxInterval
-          ),
-        ]
+        async () => await enqueueScrapedRecords(config, nextBatch),
+        [maxRetries(1)]
       )
 
       //Reset the batch after writing.
