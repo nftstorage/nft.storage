@@ -37,9 +37,12 @@ export default function Home() {
               <HashLink id="faq">FAQ</HashLink>
             </h1>
             <ShortFaq />
-            <Link href="/faq">
-              <a className="white">More FAQs</a>
-            </Link>
+            <h2 className="chicagoflf white">
+              More FAQs{' '}
+              <Link href="/faq">
+                <a className="white underline">here</a>
+              </Link>
+            </h2>
           </div>
         </article>
       </main>
