@@ -1,4 +1,12 @@
+@font-face {
+  font-family: ChicagoFLF;
+  src: url('/fonts/ChicagoFLF.woff2') format('woff2');
+  font-display: swap;
+}
+
 :root {
+  --nsblack: #000;
+  --white: #fff;
   --nsblue: #47aed7;
   --nsforest: #0a854c;
   --nsgray: #d8dad9;
@@ -10,15 +18,13 @@
   --nspink: #f7cdcf;
   --nsred: #e11e2e;
   --nsyellow: #e2ba36;
+  --nsstitle: ChicagoFLF, sans-serif;
+  --nsmonospace: monospace, monospace;
+  --bradius: 0px;
 }
 
-@font-face {
-  font-family: ChicagoFLF;
-  src: url('/fonts/ChicagoFLF.woff2') format('woff2');
-  font-display: swap;
-}
 .chicagoflf {
-  font-family: ChicagoFLF, sans-serif;
+  font-family: var(--nsstitle);
 }
 
 .bg-nsblue {
