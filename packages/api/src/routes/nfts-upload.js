@@ -4,20 +4,14 @@ import * as raw from 'multiformats/codecs/raw'
 import * as cbor from '@ipld/dag-cbor'
 import * as pb from '@ipld/dag-pb'
 import { Block } from 'multiformats/block'
+import * as constants from '../constants.js'
 import { HTTPError } from '../errors.js'
 import * as cluster from '../cluster.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 
-/**
- * When >2.5MB, use local add, because waiting for blocks to be sent to
- * other cluster nodes can take a long time. Replication to other nodes
- * will be done async by bitswap instead.
- */
-const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
 const MAX_BLOCK_SIZE = 1 << 20 // Maximum permitted block size in bytes (1MiB).
-
 const decoders = [pb, raw, cbor]
 
 /**
@@ -111,7 +105,7 @@ async function uploadCar({ ctx, user, key, car, uploadType = 'Car', mimeType, is
   const stat = await carStat(car)
 
   const [added, backupUrl] = await Promise.all([
-    cluster.addCar(car, { local: car.size > LOCAL_ADD_THRESHOLD }),
+    cluster.addCar(car, { local: car.size > constants.cluster.localAddThreshold }),
     ctx.s3
       ? ctx.s3.backupCar(user.id, stat.rootCid, car)
       : Promise.resolve(null)
@@ -151,7 +145,7 @@ async function uploadCar({ ctx, user, key, car, uploadType = 'Car', mimeType, is
  * @param {Blob} carBlob
  * @returns {Promise<{ size?: number, rootCid: CID }>}
  */
-async function carStat (carBlob) {
+const carStat = async (carBlob) => {
   const carBytes = new Uint8Array(await carBlob.arrayBuffer())
   const blocksIterator = await CarBlockIterator.fromBytes(carBytes)
   const roots = await blocksIterator.getRoots()

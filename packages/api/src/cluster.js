@@ -67,7 +67,6 @@ export async function addDirectory(files, options = {}) {
  * returns CID of the directory back.
  *
  * @param {File} file
- * @returns {Promise<import('nft.storage/src/lib/interface').CIDString>}
  */
 export const importAsset = async (file, options = {}) => {
   const result = await client.addDirectory([file], options)
@@ -83,7 +82,7 @@ export const importAsset = async (file, options = {}) => {
     )
   }
   const dir = result[result.length - 1]
-  return dir.cid
+  return { cid: dir.cid, size: Number(dir.size) }
 }
 /**
  * @param {string} cid
