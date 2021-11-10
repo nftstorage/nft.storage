@@ -1,22 +1,21 @@
 import assert from 'assert'
 import {
-  createClientWithUser,
+  createTestUserWithFixedToken,
   DBTestClient,
   rawClient,
 } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import { createCar } from './scripts/car.js'
 
-let METAPLEX_AUTH_TOKEN
-
 describe(' V1 - Metaplex Upload ', () => {
   /** @type{DBTestClient} */
   let client
 
   before(async () => {
-    client = await createClientWithUser()
-
-    METAPLEX_AUTH_TOKEN = client.token
+    const user = await createTestUserWithFixedToken({
+      token: 'metaplex-test-token',
+    })
+    client = new DBTestClient(user)
   })
 
   it('should upload a single CAR file with a CID-specific token', async () => {

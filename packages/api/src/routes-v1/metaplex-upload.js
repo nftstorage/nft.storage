@@ -1,4 +1,3 @@
-/* global METAPLEX_AUTH_TOKEN */
 import { HTTPError } from '../errors.js'
 import * as cluster from '../cluster.js'
 import { secrets, database } from '../constants.js'
@@ -26,12 +25,12 @@ export async function metaplexUpload(event, ctx) {
   const { headers } = event.request
   const authHeader = headers.get('x-web3auth') || ''
 
-  const match = authHeader.match(/^Metaplex\s+(.*)$/)
-  if (!match || !match.groups) {
-    throw new HTTPError('invalid authorization header', 401)
+  const match = authHeader.match(/^Metaplex (.*)$/)
+  if (!match) {
+    throw new HTTPError('invalid authorization header: ' + authHeader, 401)
   }
 
-  const token = match.groups[1]
+  const token = match[1]
   const valid = await verifyMetaplexJWT(token)
   if (!valid) {
     throw new HTTPError('invalid authorization header', 401)
@@ -71,7 +70,7 @@ async function validate() {
 
   const { error, data } = await db.client
     .from('auth_key')
-    .select('id,user(id)')
+    .select('id,user:auth_key_user_id_fkey(id)')
     .eq('secret', METAPLEX_AUTH_TOKEN)
     .single()
 
