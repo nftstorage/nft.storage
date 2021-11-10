@@ -11,7 +11,7 @@ import { debug } from '../utils/debug.js'
 const merge = mergeOptions.bind({ ignoreUndefined: true })
 const log = debug('pins-add')
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function pinsAdd(event, ctx) {
   const { user, tokenName } = await validate(event, ctx)
   const pinData = await event.request.json()

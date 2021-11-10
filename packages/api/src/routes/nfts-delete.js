@@ -2,7 +2,7 @@ import * as nfts from '../models/nfts.js'
 import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export const remove = async (event, ctx) => {
   const { user } = await validate(event, ctx)
   const { params } = ctx

@@ -2,10 +2,10 @@ import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth-v1.js'
 import { parseCidPinning } from '../utils/utils.js'
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function pinsDeleteV1(event, ctx) {
   const { params } = ctx
-  const { user, db } = await validate(event, ctx)
+  const { user } = await validate(event, ctx)
 
   const cid = parseCidPinning(params.requestid)
   if (!cid) {
@@ -20,7 +20,7 @@ export async function pinsDeleteV1(event, ctx) {
     )
   }
 
-  const data = await db.deleteUpload(cid.sourceCid, user.id)
+  const data = await ctx.db.deleteUpload(cid.sourceCid, user.id)
   if (data) {
     return new JSONResponse(undefined, { status: 202 })
   } else {

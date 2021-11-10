@@ -2,6 +2,7 @@ export {}
 
 import Toucan from 'toucan-js'
 import { Mode } from './middleware/maintenance.js'
+import { DBClient } from './utils/db-client.js'
 
 declare global {
   const SALT: string
@@ -35,7 +36,10 @@ declare global {
 export interface RouteContext {
   sentry: Toucan
   params: Record<string, string>
+  db: DBClient
 }
+
+export type Handler = (event: FetchEvent, ctx: RouteContext) => Promise<Response> | Response
 
 export interface Pin {
   /**

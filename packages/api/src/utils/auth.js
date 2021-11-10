@@ -18,7 +18,7 @@ export const magic = new Magic(secrets.magic)
  * Validate auth
  *
  * @param {FetchEvent} event
- * @param {import('./router.js').RouteContext} ctx
+ * @param {import('../bindings').RouteContext} ctx
  */
 export async function validate(event, { sentry }) {
   const auth = event.request.headers.get('Authorization') || ''

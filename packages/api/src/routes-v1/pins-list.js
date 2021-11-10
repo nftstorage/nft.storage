@@ -11,9 +11,9 @@ const MAX_LIMIT = 1000
  * @typedef {import('../utils/db-client-types').ListUploadsOptions} ListUploadsOptions
  */
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function pinsListV1(event, ctx) {
-  const { user, db } = await validate(event, ctx)
+  const { user } = await validate(event, ctx)
   const { searchParams } = new URL(event.request.url)
   const result = parseSearchParams(searchParams)
 
@@ -23,7 +23,7 @@ export async function pinsListV1(event, ctx) {
     const params = result.data
 
     // Query database
-    const data = await db.listUploads(user.id, params)
+    const data = await ctx.db.listUploads(user.id, params)
 
     // Not found
     if (!data || data.length === 0) {

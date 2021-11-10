@@ -3,9 +3,9 @@ import { JSONResponse } from '../utils/json-response.js'
 import { signJWT } from '../utils/jwt.js'
 import { secrets } from '../constants.js'
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export const tokensCreateV1 = async (event, ctx) => {
-  const { db, user } = await validate(event, ctx)
+  const { user } = await validate(event, ctx)
   const body = await event.request.json()
 
   if (body.name) {
@@ -20,7 +20,7 @@ export const tokensCreateV1 = async (event, ctx) => {
       secrets.salt
     )
 
-    const key = await db.createKey({
+    const key = await ctx.db.createKey({
       name: body.name,
       secret: token,
       userId: user.id,

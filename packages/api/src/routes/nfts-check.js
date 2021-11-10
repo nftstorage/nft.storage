@@ -3,7 +3,7 @@ import { get as getDeals } from '../models/deals.js'
 import * as pins from '../models/pins.js'
 import { HTTPError } from '../errors.js'
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export const check = async (event, { params }) => {
   const { cid } = params
   const [pin, deals] = await Promise.all([pins.get(cid), getDeals(cid)])

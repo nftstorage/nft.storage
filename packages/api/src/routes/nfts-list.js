@@ -2,7 +2,7 @@ import { JSONResponse } from '../utils/json-response.js'
 import * as nfts from '../models/nfts.js'
 import { validate } from '../utils/auth.js'
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function list(event, ctx) {
   const auth = await validate(event, ctx)
   const options = {}
