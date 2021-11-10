@@ -7,6 +7,7 @@
 :root {
   --nsblack: #000;
   --white: #fff;
+  --nsgray: #7d8492;
   --nsblue: #47aed7;
   --nsforest: #0a854c;
   --nsgray: #d8dad9;
@@ -21,6 +22,9 @@
   --nsstitle: ChicagoFLF, sans-serif;
   --nsmonospace: monospace, monospace;
   --bradius: 0px;
+  --bwidth: 1px;
+
+  --btn-ghost-offset: 6px;
 }
 
 .chicagoflf {

@@ -3784,7 +3784,7 @@
 .swagger-ui .orange {
   color: #ff6300;
 }
-.swagger-ui .var(--nsyellow) {
+.swagger-ui .gold {
   color: #ffb700;
 }
 .swagger-ui .yellow {
@@ -3955,7 +3955,7 @@
 .swagger-ui .bg-orange {
   background-color: #ff6300;
 }
-.swagger-ui .bg-var(--nsyellow) {
+.swagger-ui .bg-gold {
   background-color: #ffb700;
 }
 .swagger-ui .bg-yellow {
@@ -4277,8 +4277,8 @@
 .swagger-ui .hover-orange:hover {
   color: #ff6300;
 }
-.swagger-ui .hover-var(--nsyellow):focus,
-.swagger-ui .hover-var(--nsyellow):hover {
+.swagger-ui .gold:focus,
+.swagger-ui .gold:hover {
   color: #ffb700;
 }
 .swagger-ui .hover-yellow:focus,
@@ -4377,8 +4377,8 @@
 .swagger-ui .hover-bg-orange:hover {
   background-color: #ff6300;
 }
-.swagger-ui .hover-bg-var(--nsyellow):focus,
-.swagger-ui .hover-bg-var(--nsyellow):hover {
+.swagger-ui .gold:focus,
+.swagger-ui .gold:hover {
   background-color: #ffb700;
 }
 .swagger-ui .hover-bg-yellow:focus,
@@ -7122,9 +7122,11 @@
   flex: 0.1 2 auto;
   padding: 0;
 }
+
 .swagger-ui .try-out__btn {
   margin-left: 1.25rem;
 }
+
 .swagger-ui .opblock-tag {
   align-items: center;
   border-bottom: 1px solid rgba(59, 65, 81, 0.3);
@@ -7152,7 +7154,7 @@
   color: #3b4151;
   flex: 1;
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 400;
   padding: 0 10px;
 }
@@ -7265,7 +7267,7 @@
   color: #3b4151;
   flex: 1;
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
   margin: 0;
 }
 .swagger-ui .opblock .opblock-summary-method {
@@ -7273,7 +7275,7 @@
   border-radius: 3px;
   color: var(--nswhite);
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 700;
   min-width: 80px;
   padding: 6px 0;
@@ -7307,7 +7309,7 @@
   text-decoration: line-through;
 }
 .swagger-ui .opblock .opblock-summary-operation-id {
-  font-size: 14px;
+  font-size: 1rem;
 }
 .swagger-ui .opblock .opblock-summary-description {
   color: #3b4151;
@@ -7532,7 +7534,7 @@
 .swagger-ui .opblock-title_normal p {
   color: #3b4151;
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
   margin: 0;
 }
 .swagger-ui .opblock-external-docs-wrapper h4 {
@@ -7575,7 +7577,7 @@
 .swagger-ui .response-col_status {
   color: #3b4151;
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
 }
 .swagger-ui .response-col_status .response-undocumented {
   color: #909090;
@@ -7586,7 +7588,7 @@
 .swagger-ui .response-col_links {
   color: #3b4151;
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
   max-width: 40em;
   padding-left: 2em;
 }
@@ -7648,7 +7650,7 @@
   color: var(--nswhite);
   cursor: pointer;
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 600;
   height: 30px;
   padding: 5px;
@@ -7830,18 +7832,28 @@
   color: #555;
   font-weight: 700;
 }
+
+/* Base Button */
 .swagger-ui .btn {
   background: transparent;
-  border: 2px solid grey;
-  border-radius: 4px;
+  border: var(--bwidth) solid var(--nsblack);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  color: #3b4151;
-  font-family: sans-serif;
-  font-size: 14px;
+  color: var(--nsblack);
+  font-family: var(--nsstitle);
+  font-size: 1rem;
   font-weight: 700;
-  padding: 5px 23px;
-  transition: all 0.3s;
+  padding: 0.5rem 1rem;
+  transition: all 300ms ease;
+  box-shadow: var(--btn-ghost-offset) calc(-1 * var(--btn-ghost-offset)) 0px 0px
+      var(--nsblack),
+    var(--btn-ghost-offset) calc(-1 * var(--btn-ghost-offset)) 0px 1px
+      var(--nsgray);
 }
+
+.swagger-ui .btn:hover {
+  box-shadow: -2px -2px 0px 0px var(--nsgray);
+}
+
 .swagger-ui .btn.btn-sm {
   font-size: 12px;
   padding: 4px 23px;
@@ -7850,9 +7862,7 @@
   cursor: not-allowed;
   opacity: 0.3;
 }
-.swagger-ui .btn:hover {
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-}
+
 .swagger-ui .btn.cancel {
   background-color: transparent;
   border-color: var(--nsorange);
@@ -7939,6 +7949,7 @@
 .swagger-ui button {
   cursor: pointer;
 }
+
 .swagger-ui button.invalid {
   -webkit-animation: shake 0.4s 1;
   animation: shake 0.4s 1;
@@ -7985,7 +7996,7 @@
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.25);
   color: #3b4151;
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 700;
   padding: 5px 40px 5px 10px;
 }
@@ -8697,14 +8708,14 @@
   font-size: 12px;
 }
 .swagger-ui .info pre {
-  font-size: 14px;
+  font-size: 1rem;
 }
 .swagger-ui .info li,
 .swagger-ui .info p,
 .swagger-ui .info table {
   color: #3b4151;
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
 }
 .swagger-ui .info h1,
 .swagger-ui .info h2,
@@ -8717,7 +8728,7 @@
 .swagger-ui .info a {
   color: #4990e2;
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
   transition: all 0.4s;
 }
 .swagger-ui .info a:hover {
@@ -8741,7 +8752,7 @@
   margin: 0;
 }
 .swagger-ui .info .title small {
-  background: #7d8492;
+  background: var(--nsgray);
   border-radius: 57px;
   display: inline-block;
   font-size: 10px;
@@ -8752,7 +8763,7 @@
   vertical-align: super;
 }
 .swagger-ui .info .title small.version-stamp {
-  background-color: #89bf04;
+  background-color: var(--nsgreen);
 }
 .swagger-ui .info .title small pre {
   color: var(--nswhite);
@@ -8816,7 +8827,7 @@
 .swagger-ui .scopes h2 {
   color: #3b4151;
   font-family: sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
 }
 .swagger-ui .scopes h2 a {
   color: #4990e2;
@@ -8843,7 +8854,7 @@
 .swagger-ui .errors-wrapper .errors h4 {
   color: #3b4151;
   font-family: monospace;
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 600;
   margin: 0;
 }
@@ -8916,7 +8927,7 @@
   border-radius: 4px;
   color: #9012fe;
   font-family: monospace;
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 600;
   padding: 5px 7px;
 }
