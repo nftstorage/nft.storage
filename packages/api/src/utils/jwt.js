@@ -147,10 +147,18 @@ export async function verifyMetaplexJWT(token) {
   }
 
   try {
-    return verifyEd25519SignatureWithNativeCrypto(headerPayload, sig, pubkey)
+    return await verifyEd25519SignatureWithNativeCrypto(
+      headerPayload,
+      sig,
+      pubkey
+    )
   } catch (e) {
-    if (e instanceof DOMException && e.name === 'NotSupportedError') {
-      return verifyEd25519SignatureWithJSCrypto(headerPayload, sig, pubkey)
+    if (e instanceof Error && e.name === 'NotSupportedError') {
+      return await verifyEd25519SignatureWithJSCrypto(
+        headerPayload,
+        sig,
+        pubkey
+      )
     }
     throw e
   }
@@ -164,6 +172,7 @@ export async function verifyMetaplexJWT(token) {
  * @returns {Promise<boolean>}
  */
 async function verifyEd25519SignatureWithNativeCrypto(message, sig, pubkey) {
+  console.log()
   const key = await crypto.subtle.importKey(
     'raw',
     pubkey,
