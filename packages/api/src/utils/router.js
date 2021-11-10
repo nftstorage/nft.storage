@@ -1,15 +1,21 @@
 import { parse } from 'regexparam'
-import { getSentry } from './debug.js'
-import { database } from '../constants'
+import { database } from '../constants.js'
 
 /**
- * @typedef {import('../bindings').RouteContext} RouteContext
- * @typedef {import('toucan-js').default} Sentry
- * @typedef {(event: FetchEvent, ctx: RouteContext) => Promise<Response> | Response} Handler
+ * @typedef {{ params: Record<string, string> }} BasicRouteContext
  * @typedef {(req: Request) => boolean | Record<string,string>} Condition
  * @typedef {(req: Request) => Response} BasicHandler
- * @typedef {(req: Request, err: Error, ctx: RouteContext) => Response} ErrorHandler
  * @typedef {(req: Request, rsp: Response) => Response} ResponseHandler
+ */
+
+/**
+ * @template {BasicRouteContext} C
+ * @typedef {(event: FetchEvent, ctx: C) => Promise<Response> | Response} Handler
+ */
+
+/**
+ * @template {BasicRouteContext} C
+ * @typedef {(req: Request, err: Error, ctx: C) => Response} ErrorHandler
  */
 
 /**
@@ -36,14 +42,22 @@ function matchParams(path, result) {
 /**
  * The Router handles determines which handler is matched given the
  * conditions present for each request.
+ * 
+ * @template {BasicRouteContext} C
  */
 class Router {
   /**
+   * @param {(e: FetchEvent, params: Record<string, string>) => C} getRouteContext
    * @param {object} [options]
    * @param {BasicHandler} [options.onNotFound]
-   * @param {ErrorHandler} [options.onError]
+   * @param {ErrorHandler<C>} [options.onError]
    */
-  constructor(options) {
+  constructor(getRouteContext, options) {
+    /**
+     * @private
+     */
+    this.getRouteContext = getRouteContext
+
     const defaults = {
       onNotFound() {
         return new Response(null, {
@@ -62,7 +76,7 @@ class Router {
       ...defaults,
       ...options,
     }
-    /** @type {{ conditions: Condition[]; handler: Handler; postHandlers: ResponseHandler[] }[]} */
+    /** @type {{ conditions: Condition[]; handler: Handler<C>; postHandlers: ResponseHandler[] }[]} */
     this.routes = []
   }
 
@@ -82,7 +96,7 @@ class Router {
    *
    * @param {string} method
    * @param {string} route
-   * @param {Handler} handler
+   * @param {Handler<C>} handler
    * @param {Array<ResponseHandler> } [postHandlers]
    */
   add(method, route, handler, postHandlers = []) {
@@ -118,7 +132,7 @@ class Router {
    * true for all conditions (if any).
    *
    * @param {Request} req
-   * @return {[Handler|false, Record<string,string>, ResponseHandler[]]}
+   * @return {[Handler<C>|false, Record<string,string>, ResponseHandler[]]}
    */
   resolve(req) {
     for (let i = 0; i < this.routes.length; i++) {
@@ -137,17 +151,17 @@ class Router {
    * @param {FetchEvent} event
    */
   async route(event) {
-    this.sentry = getSentry(event)
     const req = event.request
     const [handler, params, postHandlers] = this.resolve(req)
+    const ctx = this.getRouteContext(event, params)
     let rsp
 
     if (handler) {
       try {
-        rsp = await handler(event, { sentry: this.sentry, params })
+        rsp = await handler(event, ctx)
       } catch (err) {
         // @ts-ignore
-        rsp = this.options.onError(req, err, { sentry: this.sentry, params })
+        rsp = this.options.onError(req, err, ctx)
       }
     } else {
       rsp = this.options.onNotFound(req)

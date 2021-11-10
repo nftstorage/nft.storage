@@ -3,10 +3,10 @@ import { toPinsResponse } from '../utils/db-transforms.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { parseCidPinning } from '../utils/utils.js'
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function pinsGetV1(event, ctx) {
   const { params } = ctx
-  const { user, db } = await validate(event, ctx)
+  const { user } = await validate(event, ctx)
 
   const cid = parseCidPinning(params.requestid)
   if (!cid) {
@@ -21,7 +21,7 @@ export async function pinsGetV1(event, ctx) {
     )
   }
 
-  const upload = await db.getUpload(cid.sourceCid, user.id)
+  const upload = await ctx.db.getUpload(cid.sourceCid, user.id)
 
   if (!upload) {
     return new JSONResponse(

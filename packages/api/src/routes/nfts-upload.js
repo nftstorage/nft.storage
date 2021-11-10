@@ -15,7 +15,7 @@ const LOCAL_ADD_THRESHOLD = constants.cluster.localAddThreshold
  * @typedef {import('../bindings').NFT} NFT
  */
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function upload(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''

@@ -12,7 +12,7 @@ import { debug } from '../utils/debug.js'
 const merge = mergeOptions.bind({ ignoreUndefined: true })
 const log = debug('pin-replace')
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function pinsReplace(event, ctx) {
   const { params } = ctx
   const { user, tokenName } = await validate(event, ctx)

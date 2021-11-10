@@ -8,12 +8,12 @@ import { toNFTResponse } from '../utils/db-transforms.js'
  * @typedef {import('../bindings').Deal} Deal
  */
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export const statusV1 = async (event, ctx) => {
   const { params } = ctx
-  const { user, db } = await validate(event, ctx)
+  const { user } = await validate(event, ctx)
   const cid = parseCid(params.cid)
-  const nft = await db.getUpload(cid.sourceCid, user.id)
+  const nft = await ctx.db.getUpload(cid.sourceCid, user.id)
   if (nft) {
     return new JSONResponse({
       ok: true,

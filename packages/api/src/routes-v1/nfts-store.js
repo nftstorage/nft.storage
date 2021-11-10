@@ -16,9 +16,9 @@ const log = debug('nft-store')
  * @typedef {import('../bindings').NFT} NFT
  */
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function nftStoreV1(event, ctx) {
-  const { user, key, db } = await validate(event, ctx)
+  const { user, key } = await validate(event, ctx)
   const form = await event.request.formData()
 
   const meta = /** @type {string} */ (form.get('meta'))
@@ -61,7 +61,7 @@ export async function nftStoreV1(event, ctx) {
     local: car.size > constants.cluster.localAddThreshold,
   })
 
-  await db.createUpload({
+  await ctx.db.createUpload({
     type: 'Nft',
     content_cid: cid,
     source_cid: cid,

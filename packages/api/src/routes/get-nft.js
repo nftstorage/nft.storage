@@ -6,7 +6,7 @@ import { CID } from 'multiformats'
  * Special route to get nfts for the migration
  */
 
-/** @type {import('../utils/router.js').Handler} */
+/** @type {import('../bindings').Handler} */
 export async function getNFT(event, ctx) {
   const { searchParams } = new URL(event.request.url)
   const key = searchParams.get('key') || ''
