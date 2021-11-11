@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
+
 import Link from 'next/link'
 import clsx from 'clsx'
-
 import countly from '../lib/countly'
 
 /**
