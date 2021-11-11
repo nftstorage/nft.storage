@@ -8274,18 +8274,21 @@
 .swagger-ui section.models .model-container {
   background: rgba(0, 0, 0, 0.05);
   border-radius: var(--bradius);
-  margin: 0 20px 15px;
+  border: var(--bwidth) solid var(--nsgray-600);
+  margin: 0 1rem 1rem;
   position: relative;
   transition: all 0.5s;
+  padding: 0.25rem 1rem 0.25rem 0.5rem;
 }
+
 .swagger-ui section.models .model-container:hover {
   background: rgba(0, 0, 0, 0.07);
 }
 .swagger-ui section.models .model-container:first-of-type {
-  margin: 20px;
+  margin-top: 1rem;
 }
 .swagger-ui section.models .model-container:last-of-type {
-  margin: 0 20px;
+  margin-bottom: 1rem;
 }
 .swagger-ui section.models .model-container .models-jump-to-path {
   opacity: 0.65;
