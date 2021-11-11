@@ -88,6 +88,10 @@ export default function Files({ user }) {
     setBefores([nfts[nfts.length - 1].created, ...befores])
   }
 
+  function handleFirstClick() {
+    setBefores([''])
+  }
+
   const hasZeroNfts = nfts.length === 0 && befores.length === 1
 
   return (
@@ -197,6 +201,20 @@ export default function Files({ user }) {
                       </tbody>
                     </table>
                     <div className="tc mv3">
+                      <Button
+                        className="black"
+                        wrapperClassName="mh2"
+                        disabled={befores.length === 1}
+                        onClick={handleFirstClick}
+                        id="files-first"
+                        tracking={{
+                          event: countly.events.FILES_NAVIGATION_CLICK,
+                          ui: countly.ui.FILES,
+                          action: 'First',
+                        }}
+                      >
+                        ⇤ First
+                      </Button>
                       <Button
                         className="black"
                         wrapperClassName="mh2"
