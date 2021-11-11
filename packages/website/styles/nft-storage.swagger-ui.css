@@ -30,7 +30,7 @@
 }
 
 .swagger-ui h1 {
-  font-family: var(--nsstitle);
+  font-family: var(--nstitle);
   font-size: 2em;
   margin: 0.67em 0;
 }
@@ -6980,19 +6980,18 @@
   align-items: center;
   border-bottom: 1px solid rgba(59, 65, 81, 0.3);
   cursor: pointer;
+  font-family: var(--nstitle);
   display: flex;
-  padding: 10px 20px 10px 10px;
+  padding: 1rem 1.5rem 1rem 0;
   transition: all 0.2s;
+  color: var(--nsblack);
+  font-size: 24px;
+  margin: 0 0 5px;
 }
 .swagger-ui .opblock-tag:hover {
   background: rgba(0, 0, 0, 0.02);
 }
-.swagger-ui .opblock-tag {
-  color: #3b4151;
-  font-family: sans-serif;
-  font-size: 24px;
-  margin: 0 0 5px;
-}
+
 .swagger-ui .opblock-tag.no-desc span {
   flex: 1;
 }
@@ -7123,7 +7122,7 @@
   background: var(--nsblack);
   border-radius: var(--bradius);
   color: var(--nswhite);
-  font-family: var(--nsstitle);
+  font-family: var(--nstitle);
   letter-spacing: 1.5px;
   font-size: 1rem;
   min-width: 80px;
@@ -7688,7 +7687,7 @@
   border: var(--bwidth) solid var(--nsblack);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   color: var(--nsblack);
-  font-family: var(--nsstitle);
+  font-family: var(--nstitle);
   font-size: 1rem;
   padding: 0.5rem 1rem;
   transition: all 300ms ease;
@@ -8525,9 +8524,9 @@
   margin: 0;
 }
 .swagger-ui .info .title {
-  color: #3b4151;
-  font-family: sans-serif;
-  font-size: 36px;
+  color: var(--nsblack);
+  font-family: var(--nstitle);
+  font-size: 3rem;
   margin: 0;
 }
 .swagger-ui .info .title small {
@@ -8543,6 +8542,7 @@
 }
 .swagger-ui .info .title small.version-stamp {
   background-color: var(--nsgreen);
+  color: var(--nsblack);
 }
 .swagger-ui .info .title small pre {
   color: var(--nswhite);
