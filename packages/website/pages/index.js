@@ -34,16 +34,16 @@ export default function Home() {
         <GettingStarted />
         <article className="bg-nsforest">
           <div className="mw9 center pa4 pa5-ns">
-            <h1 className="chicagoflf white">
-              <HashLink id="faq">FAQ</HashLink>
-            </h1>
-            <ShortFaq />
             <h2 className="chicagoflf white">
+              <HashLink id="faq">FAQ</HashLink>
+            </h2>
+            <ShortFaq />
+            <h3 className="chicagoflf white">
               More FAQs{' '}
               <Link href="/faq">
                 <a className="white underline">here</a>
               </Link>
-            </h2>
+            </h3>
           </div>
         </article>
       </main>
@@ -54,9 +54,9 @@ export default function Home() {
 function About() {
   const storeText = (
     <>
-      <h2 className="chicagoflf">
+      <h3 className="chicagoflf">
         <HashLink id="store">Store</HashLink>
-      </h2>
+      </h3>
       <p className="lh-copy">
         Just upload your data and you&#39;ll receive an IPFS hash of the content
         (a CID) that can be used in <strong>on-chain</strong> NFT data as a
@@ -98,9 +98,9 @@ function About() {
   )
   const retrieveText = (
     <>
-      <h2 className="chicagoflf">
+      <h3 className="chicagoflf">
         <HashLink id="retrieve">Retrieve</HashLink>
-      </h2>
+      </h3>
       <p className="lh-copy">
         NFT data stored by <strong>nft.storage</strong> can be accessed from the
         decentralized IPFS network from <em>any</em> peer that has the content.
@@ -159,9 +159,9 @@ function About() {
   return (
     <article className="bg-nsgreen">
       <div className="mw9 center pa4 pa5-ns">
-        <h1 className="chicagoflf">
+        <h2 className="chicagoflf">
           <HashLink id="about">About</HashLink>
-        </h1>
+        </h2>
         <p className="lh-copy about-text">
           <strong>nft.storage</strong> is a brand new service, built
           specifically for storing <strong>off-chain</strong> NFT data. Data is
@@ -275,9 +275,9 @@ console.log(metadata.url)
   return (
     <article className="bg-yellow">
       <div className="mw9 center pa4 pa5-ns">
-        <h1 className="chicagoflf tc mb5">
+        <h2 className="chicagoflf tc mb5">
           <HashLink id="getting-started">Getting started</HashLink>
-        </h1>
+        </h2>
         <ol className="list tc pl0 mb5">
           <li>
             <Step>1</Step>
@@ -337,9 +337,9 @@ console.log(metadata.url)
             borderColor="nsnavy"
             wrapperClassName="w-100 w-100-m w-50-ns mh0 mh0-m mh3-ns mb4"
           >
-            <h2 className="chicagoflf f5 fw4">
+            <h3 className="chicagoflf f5 fw4">
               <HashLink id="js-client-library">JS Client Library</HashLink>
-            </h2>
+            </h3>
             <p className="lh-copy">
               Install the{' '}
               <a
@@ -397,9 +397,9 @@ console.log(metadata.url)
             borderColor="nspink"
             wrapperClassName="w-100 w-100-m w-50-ns mh0 mh0-m mh3-ns mb4"
           >
-            <h2 className="chicagoflf f5 fw4">
+            <h3 className="chicagoflf f5 fw4">
               <HashLink id="raw-http-request">Raw HTTP Request</HashLink>
-            </h2>
+            </h3>
             <p className="lh-copy">
               Configure your HTTP client and set the{' '}
               <code className="f6 bg-nspink ph2 pv1 br1 ba b--black code">

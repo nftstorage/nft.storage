@@ -21,6 +21,13 @@
   font-family: ChicagoFLF, sans-serif;
 }
 
+h2 {
+  font-size: 2em;
+}
+h3 {
+  font-size: 1.5em;
+}
+
 .bg-nsblue {
   background-color: var(--nsblue);
 }

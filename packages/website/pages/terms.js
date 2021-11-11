@@ -40,9 +40,9 @@ export default function TermsOfService() {
           If you do not agree to all the terms and conditions of this agreement,
           then you may not access the Website or use any services.
         </p>
-        <h2 className="chicagoflf">
+        <h3 className="chicagoflf">
           <HashLink id="storage-term">Storage Term</HashLink>
-        </h2>
+        </h3>
         <p className="lh-copy">
           Data will be stored at no cost to the user on IPFS for as long as
           Protocol Labs, Inc. continues to offer free storage for NFT’s. Data
@@ -53,18 +53,18 @@ export default function TermsOfService() {
           their data by other means.
         </p>
 
-        <h2 className="chicagoflf">
+        <h3 className="chicagoflf">
           <HashLink id="data-limits">Data Limits</HashLink>
-        </h2>
+        </h3>
         <p className="lh-copy">
           The service accepts arbitrary upload sizes up to 30GB per upload.
           Currently, the service has no data upload limit. Protocol Labs may
           amend this term limit at its sole discretion.
         </p>
 
-        <h2 className="chicagoflf">
+        <h3 className="chicagoflf">
           <HashLink id="filecoin-deals">Filecoin Deals</HashLink>
-        </h2>
+        </h3>
         <p className="lh-copy">
           Data stored in{' '}
           <a className="black" href="https://nft.storage">

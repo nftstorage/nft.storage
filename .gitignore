@@ -39,3 +39,6 @@ site/public
 *.http
 .local
 .supabase
+
+public/sitemap.xml
+public/robots.txt

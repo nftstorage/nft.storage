@@ -26,5 +26,10 @@ export function getStaticProps() {
 }
 
 export default function docs() {
-  return <SwaggerUI url="/schema.yml" requestInterceptor={requestHandler} />
+  return (
+    <>
+      <h1 className="chicagoflf black mv4 flex-auto ph3 ph5-ns">API DOCS</h1>
+      <SwaggerUI url="/schema.yml" requestInterceptor={requestHandler} />
+    </>
+  )
 }

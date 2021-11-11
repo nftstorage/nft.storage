@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 4000",
-    "build": "next build && next export",
+    "build": "next build && next-sitemap && next export",
     "start": "next start",
     "test": "eslint './**/*.js' && tsc --build",
     "analyze": "ANALYZE=true next build"

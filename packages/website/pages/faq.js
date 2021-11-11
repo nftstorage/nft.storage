@@ -10,6 +10,7 @@ import Link from 'next/link'
 export const getStaticProps = () => ({
   props: {
     title: 'FAQ - NFT Storage',
+    description: 'NFT.Storage FAQ',
     navBgColor: 'bg-nsforest',
     needsUser: false,
   },
@@ -30,11 +31,11 @@ const Faq = () => (
 
 export const ShortFaq = () => (
   <>
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="what-is-the-long-term-vision-for-nftstorage">
         What is the long-term vision for NFT.Storage?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       NFT.Storage helps NFT developers today who are looking for easy APIs and
       best practices for storing their NFT data securely and resiliently. Even
@@ -66,11 +67,11 @@ export const ShortFaq = () => (
       horizon, will help upgrade {"today's"} NFT.Storage implementation into the
       provably permanent storage solutions of tomorrow.
     </p>
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="how-long-will-data-be-stored-on-nftstorage">
         How long will data be stored on NFT.Storage?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       Data will be available in IPFS indefinitely as well as stored in
       long-term, redundant Filecoin storage deals with the global community of
@@ -80,22 +81,22 @@ export const ShortFaq = () => (
       </Link>{' '}
       for details.
     </p>
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="are-there-any-size-restrictions-for-stored-nfts">
         Are there any size restrictions for stored NFTs?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       NFT.Storage can store NFTs up to <strong>31GiB </strong>
       in size! (There was previously a 100MB limit due to Cloudflare workers but
       NFT.Storage now supports chunked uploads, allowing files bigger than 100MB
       to be uploaded! 🎉)
     </p>
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="where-can-i-learn-more-about-nft-best-practices">
         Where can I learn more about NFT best practices?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       Visit{' '}
       <a href="https://nftschool.dev" className="white">
@@ -104,11 +105,11 @@ export const ShortFaq = () => (
       for information on NFT best practices as well as a variety of helpful
       tutorials and how-to guides for NFT developers.
     </p>
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="who-can-access-the-data-i-store-on-nftstorage">
         Who can access the data I store on NFT.Storage?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       All data uploaded to NFT.Storage is available to anyone who requests it
       using the correct CID. Do not store any private or sensitive information
@@ -124,11 +125,11 @@ export const ShortFaq = () => (
 const FAQ = () => (
   <>
     <ShortFaq />
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="can-i-delete-my-data-on-nftstorage">
         Can I delete my data on NFT.Storage?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       You can delete data from being associated with your account, and it will
       no longer appear on the Files page of your account. However, this doesn’t
@@ -136,13 +137,13 @@ const FAQ = () => (
       copies of the data indefinitely. Do not use NFT.Storage for data that may
       need to be permanently deleted in the future.
     </p>
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="can-i-delete-my-data-on-nftstorage">
         I tried using an HTTP gateway to retrieve my content from IPFS but am
         receiving an HTTP error. Does this mean my content was not stored
         successfully on NFT.Storage?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       Not necessarily! HTTP gateways are a great way for users who {"aren't"}{' '}
       running their own IPFS nodes to retrieve content from the IPFS network.
@@ -158,11 +159,11 @@ const FAQ = () => (
       data to the gateway. Using NFT.Storage makes sure that the content stored
       is broadcasted to the network using best practices!
     </p>
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="how-is-nftstorage-free-to-use">
         How is NFT.Storage free to use?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       Filecoin storage providers commit their hard drive capacity to the
       Filecoin network, and earn significant block rewards for doing so. This
@@ -202,11 +203,11 @@ const FAQ = () => (
       our mission to grow the decentralized storage ecosystem and preserve
       humanity&#39;s information for future generations.
     </p>
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="is-there-a-limit-on-numbers-of-files-in-a-directory">
         Is there a limit on numbers of files in a directory?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       It depends. If you&#39;re using <InlineCode>storeDirectory</InlineCode>{' '}
       from the JS library (i.e. sending a multipart HTTP request) then the
@@ -251,12 +252,12 @@ const FAQ = () => (
       meaning the directory node likely won&#39;t grow beyond the 1MiB block
       limit.
     </p>
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="why-syntax-error-unexpected-token">
         Why am I seeing{' '}
         <InlineCode>SyntaxError: Unexpected token &#39;.&#39;</InlineCode>?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       <strong>Try updating to Node version 14 or later</strong>. We no longer
       offer support for versions prior to v14 (
@@ -274,7 +275,7 @@ const FAQ = () => (
       </a>{' '}
       with an old version of Node.
     </p>
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="why-syntax-error-cannot-use-import-statement-outside-a-module">
         Why am I seeing{' '}
         <InlineCode>
@@ -282,7 +283,7 @@ const FAQ = () => (
         </InlineCode>
         ?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       <strong>Try updating to Node version 14 or later</strong>. This error can
       occur because of having an old version of Node. We no longer offer support
@@ -294,11 +295,11 @@ const FAQ = () => (
       <InlineCode>import</InlineCode> if you are using ESM Modules, otherwise
       you will need to use <InlineCode>require</InlineCode>.
     </p>
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="why-no-support-for-node-pre-14">
         Why don&#39;t you support versions of Node prior to v14?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       We do not support versions of Node prior to v14 because they are not
       considered active{' '}
@@ -321,11 +322,11 @@ const FAQ = () => (
       </a>
       .
     </p>
-    <h2 className="chicagoflf white">
+    <h3 className="chicagoflf white">
       <HashLink id="upload-metadata-with-existing-image-url">
         Upload metadata with existing image url?
       </HashLink>
-    </h2>
+    </h3>
     <p className="lh-copy white mb4">
       We generally try to steer people away from linking to specific HTTP
       gateways, since they can be a single point of failure and may go down or
