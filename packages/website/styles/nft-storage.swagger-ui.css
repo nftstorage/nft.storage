@@ -1,6 +1,9 @@
 .swagger-ui {
-  color: #3b4151;
+  color: var(--nsblack);
   font-family: var(--swagger-font-sanserif);
+  flex-grow: 1;
+  justify-content: flex-start;
+  flex-direction: column;
 }
 .swagger-ui html {
   -ms-text-size-adjust: 100%;
@@ -7841,22 +7844,21 @@
   color: var(--nsblack);
   font-family: var(--nsstitle);
   font-size: 1rem;
-  font-weight: 700;
   padding: 0.5rem 1rem;
   transition: all 300ms ease;
-  box-shadow: var(--btn-ghost-offset) calc(-1 * var(--btn-ghost-offset)) 0px 0px
-      var(--nsblack),
-    var(--btn-ghost-offset) calc(-1 * var(--btn-ghost-offset)) 0px 1px
-      var(--nsgray);
+  box-shadow: var(--btn-ghost-x) var(--btn-ghost-y) 0px 0px var(--nsgray),
+    var(--btn-ghost-x) var(--btn-ghost-y) 0px 1px var(--nsblack);
 }
 
 .swagger-ui .btn:hover {
-  box-shadow: -2px -2px 0px 0px var(--nsgray);
+  box-shadow: var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 0px
+      var(--nsgray),
+    var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 1px var(--nsblack);
 }
 
 .swagger-ui .btn.btn-sm {
-  font-size: 12px;
-  padding: 4px 23px;
+  font-size: 0.8rem;
+  padding: 0.5rem 1rem;
 }
 .swagger-ui .btn[disabled] {
   cursor: not-allowed;
