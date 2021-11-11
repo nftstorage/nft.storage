@@ -7062,7 +7062,7 @@
   border: 1px solid var(--nsblack);
   border-radius: var(--bradius);
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.19);
-  margin: 0 0 15px;
+  margin: 1rem 0;
 }
 .swagger-ui .opblock .tab-header {
   display: flex;
@@ -7141,6 +7141,7 @@
   font-weight: 600;
   padding: 0 10px;
   word-break: break-word;
+  white-space: nowrap;
 }
 @media (max-width: 768px) {
   .swagger-ui .opblock .opblock-summary-operation-id,
@@ -7151,7 +7152,6 @@
 }
 .swagger-ui .opblock .opblock-summary-path {
   flex-shrink: 0;
-  max-width: calc(100% - 110px - 15rem);
 }
 .swagger-ui .opblock .opblock-summary-path__deprecated {
   text-decoration: line-through;
@@ -7170,7 +7170,8 @@
   align-items: center;
   cursor: pointer;
   display: flex;
-  padding: 5px;
+  padding: 0.5rem;
+  display: flex;
 }
 .swagger-ui .opblock .opblock-summary .view-line-link {
   cursor: pointer;
@@ -7512,13 +7513,27 @@
 .swagger-ui .scheme-container {
   background: var(--nswhite);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
-  margin: 0 0 20px;
-  padding: 30px 0;
+  margin: 0 0 1rem;
+  padding: 0 0 2rem 0;
 }
+
 .swagger-ui .scheme-container .schemes {
   align-items: flex-end;
-  display: flex;
+  grid-template-columns: auto 1fr;
+  display: grid;
 }
+
+@media (max-width: 480px) {
+  .swagger-ui .scheme-container .schemes {
+    justify-items: center;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+  .swagger-ui .scheme-container .schemes > .auth-wrapper {
+    margin-top: 1rem;
+  }
+}
+
 .swagger-ui .scheme-container .schemes > label {
   color: var(--nsgray-600);
   display: flex;
@@ -7769,7 +7784,10 @@
   cursor: pointer;
   flex: 1;
   padding: 0;
+  display: grid;
+  grid-template-columns: 100px auto 1fr max-content;
 }
+
 .swagger-ui .model-box-control:focus,
 .swagger-ui .models-control:focus,
 .swagger-ui .opblock-summary-control:focus {
@@ -8512,8 +8530,19 @@
   font-weight: 600;
 }
 .swagger-ui .info {
-  margin: 50px 0;
+  margin: 3rem 0 2rem 0;
 }
+
+@media (max-width: 480px) {
+  .swagger-ui .info {
+    text-align: center;
+  }
+
+  .swagger-ui .info .title {
+    line-height: 4rem;
+  }
+}
+
 .swagger-ui .info.failed-config {
   margin-left: auto;
   margin-right: auto;
@@ -8583,10 +8612,19 @@
   vertical-align: super;
   text-align: center;
 }
+
+@media (max-width: 480px) {
+  .swagger-ui .info .title small {
+    top: 0rem;
+    margin: 0 0 0 1rem;
+  }
+}
+
 .swagger-ui .info .title small.version-stamp {
   background-color: var(--nsgreen);
   color: var(--nsblack);
 }
+
 .swagger-ui .info .title small pre {
   color: var(--nsblack);
   font-family: sans-serif;
