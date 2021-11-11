@@ -7124,12 +7124,12 @@
   border-radius: var(--bradius);
   color: var(--nswhite);
   font-family: var(--nsstitle);
+  letter-spacing: 1.5px;
   font-size: 1rem;
-  font-weight: 700;
   min-width: 80px;
   padding: 6px 0;
   text-align: center;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 0 var(--nsgray);
 }
 .swagger-ui .opblock .opblock-summary-operation-id,
 .swagger-ui .opblock .opblock-summary-path,
@@ -7226,29 +7226,29 @@
 }
 .swagger-ui .opblock.opblock-get {
   background: rgba(97, 175, 254, 0.1);
-  border-color: #61affe;
+  border-color: var(--nsnavy);
 }
 .swagger-ui .opblock.opblock-get .opblock-summary-method {
-  background: #61affe;
+  background: var(--nsnavy);
 }
 .swagger-ui .opblock.opblock-get .opblock-summary {
-  border-color: #61affe;
+  border-color: var(--nsnavy);
 }
 .swagger-ui .opblock.opblock-get .tab-header .tab-item.active h4 span:after {
-  background: #61affe;
+  background: var(--nsnavy);
 }
 .swagger-ui .opblock.opblock-patch {
   background: rgba(80, 227, 194, 0.1);
-  border-color: #50e3c2;
+  border-color: var(--nslime);
 }
 .swagger-ui .opblock.opblock-patch .opblock-summary-method {
-  background: #50e3c2;
+  background: var(--nslime);
 }
 .swagger-ui .opblock.opblock-patch .opblock-summary {
-  border-color: #50e3c2;
+  border-color: var(--nslime);
 }
 .swagger-ui .opblock.opblock-patch .tab-header .tab-item.active h4 span:after {
-  background: #50e3c2;
+  background: var(--nslime);
 }
 .swagger-ui .opblock.opblock-head {
   background: rgba(144, 18, 254, 0.1);
@@ -7969,7 +7969,7 @@
   width: 100%;
 }
 .swagger-ui textarea:focus {
-  border: 2px solid #61affe;
+  border: 2px solid var(--nsnavy);
 }
 .swagger-ui textarea.curl {
   background: #41444e;
