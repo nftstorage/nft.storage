@@ -8531,21 +8531,23 @@
 }
 .swagger-ui .info .title small {
   background: var(--nsgray);
-  border-radius: 57px;
+  border-radius: var(--bradius);
   display: inline-block;
-  font-size: 10px;
-  margin: 0 0 0 5px;
-  padding: 2px 4px;
+  font-size: 1rem;
+  line-height: 1rem;
+  margin: 0 0 0 0.5rem;
+  padding: 0.5rem 0.5rem;
   position: relative;
-  top: -5px;
+  top: -0.5rem;
   vertical-align: super;
+  text-align: center;
 }
 .swagger-ui .info .title small.version-stamp {
   background-color: var(--nsgreen);
   color: var(--nsblack);
 }
 .swagger-ui .info .title small pre {
-  color: var(--nswhite);
+  color: var(--nsblack);
   font-family: sans-serif;
   margin: 0;
   padding: 0;
