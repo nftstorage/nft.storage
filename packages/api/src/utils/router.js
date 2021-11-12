@@ -42,7 +42,7 @@ function matchParams(path, result) {
 /**
  * The Router handles determines which handler is matched given the
  * conditions present for each request.
- * 
+ *
  * @template {BasicRouteContext} C
  */
 class Router {

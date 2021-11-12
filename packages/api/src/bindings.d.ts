@@ -39,7 +39,10 @@ export interface RouteContext {
   db: DBClient
 }
 
-export type Handler = (event: FetchEvent, ctx: RouteContext) => Promise<Response> | Response
+export type Handler = (
+  event: FetchEvent,
+  ctx: RouteContext
+) => Promise<Response> | Response
 
 export interface Pin {
   /**
