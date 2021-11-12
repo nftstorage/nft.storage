@@ -4,13 +4,13 @@ import { HTTPError } from './errors.js'
 import { cors, postCors } from './routes/cors.js'
 import { JSONResponse } from './utils/json-response.js'
 import { debug } from './utils/debug.js'
-import { metrics as metricsV1 } from './routes/metrics.js'
-import { tokensDeleteV1 } from './routes/tokens-delete.js'
-import { tokensCreateV1 } from './routes/tokens-create.js'
-import { tokensListV1 } from './routes/tokens-list.js'
+import { metrics } from './routes/metrics.js'
+import { tokensDelete } from './routes/tokens-delete.js'
+import { tokensCreate } from './routes/tokens-create.js'
+import { tokensList } from './routes/tokens-list.js'
 import { login } from './routes/login.js'
-import { uploadV1 } from './routes/nfts-upload.js'
-import { check } from './routes/nfts-check.js'
+import { nftUpload } from './routes/nfts-upload.js'
+import { nftCheck } from './routes/nfts-check.js'
 import { nftGet } from './routes/nfts-get.js'
 import { nftDelete } from './routes/nfts-delete.js'
 import { nftList } from './routes/nfts-list.js'
@@ -45,7 +45,7 @@ const r = new Router(getContext, {
 })
 
 // Monitoring
-r.add('get', '/metrics', withMode(metricsV1, RO))
+r.add('get', '/metrics', withMode(metrics, RO))
 
 // CORS
 r.add('options', '*', cors)
@@ -54,7 +54,7 @@ r.add('options', '*', cors)
 r.add(
   'get',
   '/version',
-  (event) => {
+  event => {
     return new JSONResponse({
       version: VERSION,
       commit: COMMITHASH,
@@ -87,17 +87,17 @@ r.add('post', '/pins/:requestid', psa(pinsReplace, RW), [postCors])
 r.add('delete', '/pins/:requestid', psa(pinsDelete, RW), [postCors])
 
 // Upload
-r.add('get', '/check/:cid', withMode(check, RO), [postCors])
+r.add('get', '/check/:cid', withMode(nftCheck, RO), [postCors])
 r.add('get', '', withMode(nftList, RO), [postCors])
 r.add('get', '/:cid', withMode(nftGet, RO), [postCors])
-r.add('post', '/upload', withMode(uploadV1, RW), [postCors])
+r.add('post', '/upload', withMode(nftUpload, RW), [postCors])
 r.add('post', '/store', withMode(nftStore, RW), [postCors])
 r.add('delete', '/:cid', withMode(nftDelete, RW), [postCors])
 
 // Tokens
-r.add('get', '/internal/tokens', withMode(tokensListV1, RO), [postCors])
-r.add('post', '/internal/tokens', withMode(tokensCreateV1, RW), [postCors])
-r.add('delete', '/internal/tokens', withMode(tokensDeleteV1, RW), [postCors])
+r.add('get', '/internal/tokens', withMode(tokensList, RO), [postCors])
+r.add('post', '/internal/tokens', withMode(tokensCreate, RW), [postCors])
+r.add('delete', '/internal/tokens', withMode(tokensDelete, RW), [postCors])
 
 // Note: /api/* endpoints are legacy and will eventually be removed.
 r.add('get', '/api/pins', psa(pinsList, RO), [postCors])
@@ -108,9 +108,9 @@ r.add('delete', '/api/pins/:requestid', psa(pinsDelete, RW), [postCors])
 
 // Public API
 r.add('get', '/api', withMode(nftList, RO), [postCors])
-r.add('get', '/api/check/:cid', withMode(check, RO), [postCors])
+r.add('get', '/api/check/:cid', withMode(nftCheck, RO), [postCors])
 r.add('get', '/api/:cid', withMode(nftGet, RO), [postCors])
-r.add('post', '/api/upload', withMode(uploadV1, RW), [postCors])
+r.add('post', '/api/upload', withMode(nftUpload, RW), [postCors])
 r.add('delete', '/api/:cid', withMode(nftDelete, RW), [postCors])
 
 r.add('all', '*', notFound)

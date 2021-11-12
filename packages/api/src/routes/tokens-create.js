@@ -4,7 +4,7 @@ import { signJWT } from '../utils/jwt.js'
 import { secrets } from '../constants.js'
 
 /** @type {import('../bindings').Handler} */
-export const tokensCreateV1 = async (event, ctx) => {
+export const tokensCreate = async (event, ctx) => {
   const { user } = await validate(event, ctx)
   const { db } = ctx
   const body = await event.request.json()

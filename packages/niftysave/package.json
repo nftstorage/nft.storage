@@ -20,7 +20,7 @@
   "devDependencies": {
     "@types/assert": "^1.5.4",
     "@types/mocha": "^9.0.0",
-    "@types/node": "^16.10.2",
+    "@types/node": "^16.11.7",
     "@types/yargs": "^17.0.0",
     "assert": "^2.0.0",
     "c8": "^7.7.1",
@@ -41,7 +41,7 @@
     "ipld-dag-pb": "^0.22.2",
     "ipld-in-memory": "^8.0.0",
     "multicodec": "^3.0.1",
-    "multiformats": "^9.4.3",
+    "multiformats": "^9.4.10",
     "multihashing-async": "^2.1.2",
     "nft.storage": "^3.3.0",
     "subprogram": "^1.2.0",

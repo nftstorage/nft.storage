@@ -16,7 +16,7 @@ const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
  */
 
 /** @type {import('../bindings').Handler} */
-export async function uploadV1(event, ctx) {
+export async function nftUpload(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
   const { user, key } = await validate(event, ctx)
@@ -49,19 +49,17 @@ export async function uploadV1(event, ctx) {
       dag_size: size,
       mime_type: contentType,
       type: 'Multipart',
-      files: files.map((f) => ({
+      files: files.map(f => ({
         name: f.name,
         type: f.type,
       })),
     })
   } else {
     const blob = await event.request.blob()
-    console.log('🚀 ~ file: nfts-upload.js ~ line 58 ~ uploadV1 ~ blob', blob)
     if (blob.size === 0) {
       throw new HTTPError('Empty payload', 400)
     }
     const isCar = contentType.includes('application/car')
-    console.log('🚀 ~ file: nfts-upload.js ~ line 63 ~ uploadV1 ~ isCar', isCar)
 
     const addOptions = {
       // When >2.5MB, use local add, because waiting for blocks to be sent to
@@ -75,12 +73,6 @@ export async function uploadV1(event, ctx) {
       ? await cluster.addCar(blob, addOptions)
       : await cluster.add(blob, addOptions)
 
-    console.log(
-      '🚀 ~ file: nfts-upload.js ~ line 74 ~ uploadV1 ~ cid, size, bytes',
-      cid,
-      size,
-      bytes
-    )
     sourceCid = cid
     const dagSize = size || bytes
 

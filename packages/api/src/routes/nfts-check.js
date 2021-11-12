@@ -8,7 +8,7 @@ import { toCheckNftResponse } from '../utils/db-transforms.js'
 const db = new DBClient(database.url, secrets.database)
 
 /** @type {import('../bindings').Handler} */
-export const check = async (event, { params }) => {
+export const nftCheck = async (event, { params }) => {
   const cid = parseCid(params.cid)
   const content = await db.getContent(cid.contentCid)
 
