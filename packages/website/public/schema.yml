@@ -22,8 +22,7 @@ paths:
 
         The `meta` field must contain a JSON string that conforms to the [ERC-1155 metadata schema](https://eips.ethereum.org/EIPS/eip-1155#metadata).
 
-        Any field inside the `meta` object whose value is set to `null` will be treated as a file reference, 
-        and you must supply a form data field containing the file content as a binary string.
+        Any field(s) inside the `meta` object can be substituted with an ipfs URL to a file(s), by providing a form data field with a name matching a (`.` delimited) property path and value containing the file content (in binary string or plain text depending on file format).
 
         The name of the form data field containing the file content should be the "path" of the JSON field, using `.` to traverse nested
         objects.
@@ -33,16 +32,16 @@ paths:
           ```json
           {
             "name": "Hello",
-            "image": null,
+            "image": undefined,
             "properties": {
-              "videoClip": null
+              "videoClip": undefined
             }
           }
           ```
 
         You must include form fields named `image` and `properties.videoClip` in your request body, with the content of the image and video files as the form field values.
 
-        All form fields other than `meta` must contain binary file data, and the field name must match a key in the `meta` JSON object whose value is `null`.
+        All form fields other than `meta` must contain binary file data, and the field name will be used as a '.' delimited property path for the `meta` object, as described above. If the form field name matches a `meta` property with a non-falsy value, the request will be rejected with an error.
 
         ### Mime Type Recommendations
 
