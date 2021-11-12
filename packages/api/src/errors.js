@@ -60,6 +60,7 @@ export function maybeCapture(err, { sentry, req }) {
   let code = err.code || 'HTTP_ERROR'
   let message = err.message
   let status = err.status || 500
+  const contentType = req.headers.get('Content-Type')
 
   switch (err.code) {
     case ErrorUserNotFound.CODE:
@@ -76,10 +77,9 @@ export function maybeCapture(err, { sentry, req }) {
       message = 'API Key has expired.'
       break
     case MagicErrors.ExpectedBearerString:
-      const contentType = req.headers.get('Content-Type')
-      if (!contentType || contentType === 'text/html') {
-        status = 302
-      } else status = 401
+      !contentType || contentType === 'text/html'
+        ? (status = 302)
+        : (status = 401)
       message =
         'API Key is missing, make sure the `Authorization` header has a value in the following format `Bearer {api key}`.'
       break
