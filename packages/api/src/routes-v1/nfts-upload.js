@@ -5,9 +5,10 @@ import { validate } from '../utils/auth-v1.js'
 import { debug } from '../utils/debug.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 import { parseCid } from '../utils/utils.js'
+import * as constants from '../constants.js'
 
 const log = debug('nfts-upload')
-const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
+const LOCAL_ADD_THRESHOLD = constants.cluster.localAddThreshold
 
 /**
  * @typedef {import('../bindings').NFT} NFT
