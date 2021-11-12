@@ -25,7 +25,7 @@ export default function TermsOfService() {
           <a className="black" href="https://nft.storage">
             NFT.Storage
           </a>{' '}
-          website (the “Website”) and all content, services, and products
+          website (the “Website”) and all content, services (the "Service"), and products
           available at or through the Website. As all data uploaded to {' '}
           <a className="black" href="https://nft.storage">
             NFT.Storage
@@ -53,8 +53,8 @@ export default function TermsOfService() {
           with independent Filecoin Storage Providers. Filecoin storage deals can 
           be renewed by anyone and are non-custodial. Anyone can access information 
           about them (content address, duration, expiration, price, etc.) and 
-          verify that the data is legitimately stored via the Filecoin blockchain. 
-          All Filecoin deals are{' '}
+          provably verify that the data is stored via the Filecoin blockchain. 
+          All Filecoin deals made by the Service are{' '}
           <a className="black" href="https://github.com/filecoin-project/filecoin-plus-client-onboarding">
             Verified Deals
           </a>{' '}
@@ -79,7 +79,7 @@ export default function TermsOfService() {
           <a className="black" href="https://nft.storage">
             NFT.Storage
           </a>{' '} will switch to non-custodial, perpetual renewal 
-          of storage contracts independent of the service to secure the perpetual 
+          of storage contracts independent of the Service to secure the 
           persistence of all NFTs without dependence on any single entity when the 
           tooling becomes available in the Filecoin network (estimated late 2022).
         </p>
@@ -124,9 +124,9 @@ export default function TermsOfService() {
           In a worst-case scenario where {' '}
           <a className="black" href="https://nft.storage">
             NFT.Storage
-          </a>{' '} needs to be terminated, the service 
+          </a>{' '} needs to be terminated, the Service 
           will provide at least 180 days notice to users. Per the Filecoin protocol, all 
-          existing Filecoin deals will continue, independent of the service. In this scenario,
+          existing Filecoin deals will continue, independent of the Service. In this scenario,
           {' '}
           <a className="black" href="https://nft.storage">
             NFT.Storage
@@ -148,7 +148,7 @@ export default function TermsOfService() {
           <HashLink id="data-limits">Data Limits</HashLink>
         </h2>
         <p className="lh-copy">
-          The service accepts arbitrary upload sizes up to 31GiB per upload. Currently, 
+          The Service accepts arbitrary upload sizes up to 31GiB per upload. Currently, 
           accounts do not have a limit to the total data they can upload. {' '}
           <a className="black" href="https://nft.storage">
             NFT.Storage
@@ -165,7 +165,7 @@ export default function TermsOfService() {
           <a className="black" href="https://nft.storage">
             NFT.Storage
           </a>{' '} intends to provide free, perpetual storage for NFTs. All data already 
-          uploaded to the service for free will continue to be persisted on the Filecoin 
+          uploaded to the Service for free will continue to be persisted on the Filecoin 
           network at no cost to the user. When a facility for perpetual, non-custodial 
           storage is available in the Filecoin network (referenced in the Storage Terms),
           other entities might contribute to subsidizing the cost for users.
@@ -177,7 +177,7 @@ export default function TermsOfService() {
           The Website is offered subject to your acceptance without modification of all 
           of the terms and conditions contained herein. If you do not agree to all the 
           terms and conditions of this agreement, then you may not access the Website or 
-          use any services.
+          use any Services.
         </p>
       </div>
     </main>
