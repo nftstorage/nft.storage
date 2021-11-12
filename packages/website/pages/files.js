@@ -203,7 +203,7 @@ export default function Files({ user }) {
                     <div className="tc mv3">
                       <Button
                         className="black"
-                        wrapperClassName="mh2"
+                        wrapperClassName="mh2 mt2"
                         disabled={befores.length === 1}
                         onClick={handleFirstClick}
                         id="files-first"
@@ -217,7 +217,7 @@ export default function Files({ user }) {
                       </Button>
                       <Button
                         className="black"
-                        wrapperClassName="mh2"
+                        wrapperClassName="mh2 mt2"
                         disabled={befores.length === 1}
                         onClick={handlePrevClick}
                         id="files-previous"
@@ -231,7 +231,7 @@ export default function Files({ user }) {
                       </Button>
                       <Button
                         className="black"
-                        wrapperClassName="mh2"
+                        wrapperClassName="mh2 mt2"
                         disabled={nfts.length < limit}
                         onClick={handleNextClick}
                         id="files-next"
