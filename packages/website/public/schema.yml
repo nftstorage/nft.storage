@@ -9,6 +9,63 @@ servers:
 tags:
   - name: NFT Storage
 paths:
+  /store:
+    post:
+      tags:
+        - NFT Storage
+      summary: Store an ERC-1155 compatible NFT
+      description: |
+        Store an [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155)-compatible NFT as 
+        a collection of content-addressed objects connected by IPFS CID links.
+
+        The POST request accepts `multipart/form-data` content, which must contain a form field named `meta`.
+
+        The `meta` field must contain a JSON string that conforms to the [ERC-1155 metadata schema](https://eips.ethereum.org/EIPS/eip-1155#metadata).
+
+        Any field(s) inside the `meta` object can be substituted with an ipfs URL to a file(s), by providing a form data field with a name matching a (`.` delimited) property path and value containing the file content (in binary string or plain text depending on file format).
+
+        The name of the form data field containing the file content should be the "path" of the JSON field, using `.` to traverse nested
+        objects.
+
+        For example, with a `meta` object of the form:
+
+          ```json
+          {
+            "name": "Hello",
+            "image": undefined,
+            "properties": {
+              "videoClip": undefined
+            }
+          }
+          ```
+
+        You must include form fields named `image` and `properties.videoClip` in your request body, with the content of the image and video files as the form field values.
+
+        All form fields other than `meta` must contain binary file data, and the field name will be used as a '.' delimited property path for the `meta` object, as described above. If the form field name matches a `meta` property with a non-falsy value, the request will be rejected with an error.
+
+        ### Mime Type Recommendations
+
+        The ERC-1155 metadata standard specifies that the `image` metadata field should reference a file with a content type of `image/*`.
+        An earlier version of this API enforced this as a requirement, but this proved to be incompatible with some existing systems and the
+        requirement was relaxed, although you may see a warning when using the official JavaScript client.
+
+        We highly recommend that you only use content with an `image/*` content type for your `image` field, and include other content types in the
+        `properties` field as additional references.
+
+      operationId: store
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                meta:
+                  type: string
+              additionalProperties:
+                type: string
+                format: binary
+
   /upload:
     post:
       tags:
@@ -24,7 +81,8 @@ paths:
 
         You can also upload a Content Addressed Archive (CAR) file, by setting the request body as a single CAR Blob/File object and providing the request header `Content-Type: application/car`
         Providing a CAR file allows you to pre-compute the root CID for 1 or more files, ensures that the nft.storage will store and provide your assets with the same CID.
-      operationId: store
+
+      operationId: upload
       requestBody:
         required: true
         content:
@@ -192,7 +250,7 @@ components:
         type:
           type: string
           example: image/jpeg
-          description: MIME type of the upload file or 'directory' when uploading multiple files.
+          description: MIME type of the uploaded file or 'directory' when uploading multiple files.
         scope:
           description: Name of the JWT token used to create this NFT.
           type: string
