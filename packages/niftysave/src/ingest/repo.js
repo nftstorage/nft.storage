@@ -7,8 +7,6 @@ import {
   subgraphTokenToERC721ImportNFT,
 } from './transforms.js'
 
-import { erc721_token_ingestion_queue_select_column } from '../../gen/hasura/zeus/index.js'
-
 /**
  * @typedef {import('./index').ERC721ImportNFT} ERC721ImportNFT
  * @typedef {import('./index').NFTSSubgraphResult} NFTSSubgraphResult
