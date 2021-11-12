@@ -25,8 +25,11 @@ export default function TermsOfService() {
           <a className="black" href="https://nft.storage">
             NFT.Storage
           </a>{' '}
-          website (the “Website”) and all content, services and products
-          available at or through the Website. As all data uploaded to nft.storage will
+          website (the “Website”) and all content, services, and products
+          available at or through the Website. As all data uploaded to {' '}
+          <a className="black" href="https://nft.storage">
+            NFT.Storage
+          </a>{' '} will
           be stored on IPFS, this website incorporates the{' '}
           <a className="black" href="https://discuss.ipfs.io/tos">
             Terms of Service of IPFS.io
@@ -48,9 +51,9 @@ export default function TermsOfService() {
             NFT.Storage
           </a>{' '} is stored in long-term (18 month) deals 
           with independent Filecoin Storage Providers. Filecoin storage deals can 
-          be renewed by anyone, are non-custodial, and anyone can access information 
-          about them (content address, duration and expiration, price, etc.) and 
-          verify the data is legitimately stored via the Filecoin blockchain. 
+          be renewed by anyone and are non-custodial. Anyone can access information 
+          about them (content address, duration, expiration, price, etc.) and 
+          verify that the data is legitimately stored via the Filecoin blockchain. 
           All Filecoin deals are{' '}
           <a className="black" href="https://github.com/filecoin-project/filecoin-plus-client-onboarding">
             Verified Deals
@@ -72,13 +75,13 @@ export default function TermsOfService() {
           <a className="black" href="https://nft.storage">
             NFT.Storage
           </a>{' '} before 
-          expiration. In late 2022, we plan to build tooling to enable the 
-          non-custodial, perpetual renewal of storage contracts independent of 
-          {' '}
+          expiration. {' '}
           <a className="black" href="https://nft.storage">
             NFT.Storage
-          </a>{' '} to secure the perpetual persistence of all NFTs without 
-          dependence on any single entity.
+          </a>{' '} will switch to non-custodial, perpetual renewal 
+          of storage contracts independent of the service to secure the perpetual 
+          persistence of all NFTs without dependence on any single entity when the 
+          tooling becomes available in the Filecoin network (estimated late 2022).
         </p>
         <p className="lh-copy">
           In addition to storing data in Filecoin deals, {' '}
@@ -109,7 +112,8 @@ export default function TermsOfService() {
           <a className="black" href="https://nft.storage">
             NFT.Storage
           </a>{' '} will remove them from the file listing for a user's 
-          account, but nodes on the IPFS network may retain copies of the data indefinitely. 
+          account, but nodes on the IPFS network may retain copies of the data indefinitely
+          and data aggregated into Filecoin deals will persist for the duration of the deal. 
           Users should not use {' '}
           <a className="black" href="https://nft.storage">
             NFT.Storage
@@ -122,17 +126,15 @@ export default function TermsOfService() {
             NFT.Storage
           </a>{' '} needs to be terminated, the service 
           will provide at least 180 days notice to users. Per the Filecoin protocol, all 
-          existing Filecoin deals will continue, independent of {' '}
-          <a className="black" href="https://nft.storage">
-            NFT.Storage
-          </a>{' '}. {' '}
+          existing Filecoin deals will continue, independent of the service. In this scenario,
+          {' '}
           <a className="black" href="https://nft.storage">
             NFT.Storage
           </a>{' '} 
           will do the following to make the transition for its users as seamless as possible: 
           (1) give users an export of all data associated with their account, including 
           the content addresses of this data and information about the Filecoin deals 
-          containing this data, (2) free renewal of Filecoin deals until an automated, 
+          containing this data, (2) provide free renewal of Filecoin deals until an automated, 
           perpetual solution exists, and (3) store a redundant copy of all data on an IPFS 
           storage provider (e.g., pinning service) with a long-term storage arrangement.
         </p>
@@ -164,8 +166,9 @@ export default function TermsOfService() {
             NFT.Storage
           </a>{' '} intends to provide free, perpetual storage for NFTs. All data already 
           uploaded to the service for free will continue to be persisted on the Filecoin 
-          network at no cost to the user until we have built a tool for perpetual, 
-          non-custodial storage (referenced in the Storage Terms).
+          network at no cost to the user. When a facility for perpetual, non-custodial 
+          storage is available in the Filecoin network (referenced in the Storage Terms),
+          other entities might contribute to subsidizing the cost for users.
         </p>
         <h2 className="chicagoflf">
           <HashLink id="acceptance-of-conditions">Acceptance of Conditions</HashLink>
