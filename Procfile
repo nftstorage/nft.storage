@@ -8,6 +8,7 @@ niftycron-ingest-2020_06-12: INGEST_RANGE_START_DATE="07/01/2020" INGEST_RANGE_E
 niftycron-ingest-2021_01-06: INGEST_RANGE_START_DATE="01/01/2021" INGEST_RANGE_END_DATE="07/01/2021" node ./packages/niftysave/src/ingest.js
 niftycron-ingest-2021_06-12: INGEST_RANGE_START_DATE="07/01/2021" INGEST_RANGE_END_DATE="01/01/2022" node ./packages/niftysave/src/ingest.js
 
+niftycron-ingest-queue-2019_01-12: INGEST_RANGE_START_DATE="01/01/2018" INGEST_RANGE_END_DATE="01/01/2019" node ./packages/niftysave/src/ingest-queue.js
 niftycron-ingest-queue-2019_01-06: INGEST_RANGE_START_DATE="01/01/2019" INGEST_RANGE_END_DATE="07/01/2019" node ./packages/niftysave/src/ingest-queue.js
 niftycron-ingest-queue-2019_06-12: INGEST_RANGE_START_DATE="07/01/2019" INGEST_RANGE_END_DATE="01/01/2020" node ./packages/niftysave/src/ingest-queue.js
 niftycron-ingest-queue-2020_01-06: INGEST_RANGE_START_DATE="01/01/2020" INGEST_RANGE_END_DATE="07/01/2020" node ./packages/niftysave/src/ingest-queue.js
