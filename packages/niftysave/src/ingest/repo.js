@@ -40,8 +40,12 @@ export async function enqueueScrapedRecords(config, erc721Imports) {
       {
         objects: records,
         on_conflict: {
-          constraint: 'id',
-          update_columns: ['updated_at'],
+          constraint:
+            Hasura.schema.erc721_token_ingestion_queue_constraint
+              .erc721_token_ingestion_queue_pkey,
+          update_columns: [
+            Hasura.schema.erc721_token_ingestion_queue_update_column.updated_at,
+          ],
         },
       },
       { affected_rows: true },
