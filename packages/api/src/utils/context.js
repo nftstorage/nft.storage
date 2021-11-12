@@ -11,7 +11,7 @@ const db = new DBClient(database.url, secrets.database)
  * @param {Record<string, string>} params Parameters from the URL
  * @returns {import('../bindings').RouteContext}
  */
-export function getContext (event, params) {
+export function getContext(event, params) {
   const sentry = getSentry(event)
   return { params, sentry, db }
 }

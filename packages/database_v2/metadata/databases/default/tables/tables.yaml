@@ -3,6 +3,7 @@
 - '!include public_content.yaml'
 - '!include public_erc721_import.yaml'
 - '!include public_erc721_import_by_nft.yaml'
+- '!include public_erc721_token_ingestion_queue.yaml'
 - '!include public_nft.yaml'
 - '!include public_nft_asset.yaml'
 - '!include public_nft_metadata.yaml'
