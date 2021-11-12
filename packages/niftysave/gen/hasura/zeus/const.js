@@ -1511,6 +1511,7 @@ export const AllTypesProps = {
             required: false
         }
     },
+    erc721_token_ingestion_queue_constraint: "enum",
     erc721_token_ingestion_queue_inc_input: {
         block_number: {
             type: "bigint",
@@ -1599,6 +1600,26 @@ export const AllTypesProps = {
             required: false
         }
     },
+    erc721_token_ingestion_queue_on_conflict: {
+        constraint: {
+            type: "erc721_token_ingestion_queue_constraint",
+            array: false,
+            arrayRequired: false,
+            required: true
+        },
+        update_columns: {
+            type: "erc721_token_ingestion_queue_update_column",
+            array: true,
+            arrayRequired: true,
+            required: true
+        },
+        where: {
+            type: "erc721_token_ingestion_queue_bool_exp",
+            array: false,
+            arrayRequired: false,
+            required: false
+        }
+    },
     erc721_token_ingestion_queue_order_by: {
         block_hash: {
             type: "order_by",
@@ -1677,6 +1698,14 @@ export const AllTypesProps = {
             array: false,
             arrayRequired: false,
             required: false
+        }
+    },
+    erc721_token_ingestion_queue_pk_columns_input: {
+        id: {
+            type: "String",
+            array: false,
+            arrayRequired: false,
+            required: true
         }
     },
     erc721_token_ingestion_queue_select_column: "enum",
@@ -1760,6 +1789,7 @@ export const AllTypesProps = {
             required: false
         }
     },
+    erc721_token_ingestion_queue_update_column: "enum",
     fail_nft_asset_args: {
         ipfs_url: {
             type: "String",
@@ -2121,6 +2151,14 @@ export const AllTypesProps = {
         delete_erc721_token_ingestion_queue: {
             where: {
                 type: "erc721_token_ingestion_queue_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
+        delete_erc721_token_ingestion_queue_by_pk: {
+            id: {
+                type: "String",
                 array: false,
                 arrayRequired: false,
                 required: true
@@ -2554,6 +2592,12 @@ export const AllTypesProps = {
                 array: true,
                 arrayRequired: true,
                 required: true
+            },
+            on_conflict: {
+                type: "erc721_token_ingestion_queue_on_conflict",
+                array: false,
+                arrayRequired: false,
+                required: false
             }
         },
         insert_erc721_token_ingestion_queue_one: {
@@ -2562,6 +2606,12 @@ export const AllTypesProps = {
                 array: false,
                 arrayRequired: false,
                 required: true
+            },
+            on_conflict: {
+                type: "erc721_token_ingestion_queue_on_conflict",
+                array: false,
+                arrayRequired: false,
+                required: false
             }
         },
         insert_nft: {
@@ -3147,6 +3197,26 @@ export const AllTypesProps = {
             },
             where: {
                 type: "erc721_token_ingestion_queue_bool_exp",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
+        update_erc721_token_ingestion_queue_by_pk: {
+            _inc: {
+                type: "erc721_token_ingestion_queue_inc_input",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            _set: {
+                type: "erc721_token_ingestion_queue_set_input",
+                array: false,
+                arrayRequired: false,
+                required: false
+            },
+            pk_columns: {
+                type: "erc721_token_ingestion_queue_pk_columns_input",
                 array: false,
                 arrayRequired: false,
                 required: true
@@ -7148,6 +7218,14 @@ export const AllTypesProps = {
                 required: false
             }
         },
+        erc721_token_ingestion_queue_by_pk: {
+            id: {
+                type: "String",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
         nft: {
             distinct_on: {
                 type: "nft_select_column",
@@ -8710,6 +8788,14 @@ export const AllTypesProps = {
                 required: false
             }
         },
+        erc721_token_ingestion_queue_by_pk: {
+            id: {
+                type: "String",
+                array: false,
+                arrayRequired: false,
+                required: true
+            }
+        },
         nft: {
             distinct_on: {
                 type: "nft_select_column",
@@ -9773,6 +9859,7 @@ export const ReturnTypes = {
         delete_erc721_import_by_nft_by_pk: "erc721_import_by_nft",
         delete_erc721_import_by_pk: "erc721_import",
         delete_erc721_token_ingestion_queue: "erc721_token_ingestion_queue_mutation_response",
+        delete_erc721_token_ingestion_queue_by_pk: "erc721_token_ingestion_queue",
         delete_nft: "nft_mutation_response",
         delete_nft_asset: "nft_asset_mutation_response",
         delete_nft_asset_by_pk: "nft_asset",
@@ -9839,6 +9926,7 @@ export const ReturnTypes = {
         update_erc721_import_by_nft_by_pk: "erc721_import_by_nft",
         update_erc721_import_by_pk: "erc721_import",
         update_erc721_token_ingestion_queue: "erc721_token_ingestion_queue_mutation_response",
+        update_erc721_token_ingestion_queue_by_pk: "erc721_token_ingestion_queue",
         update_nft: "nft_mutation_response",
         update_nft_asset: "nft_asset_mutation_response",
         update_nft_asset_by_pk: "nft_asset",
@@ -10232,6 +10320,7 @@ export const ReturnTypes = {
         erc721_import_by_pk: "erc721_import",
         erc721_token_ingestion_queue: "erc721_token_ingestion_queue",
         erc721_token_ingestion_queue_aggregate: "erc721_token_ingestion_queue_aggregate",
+        erc721_token_ingestion_queue_by_pk: "erc721_token_ingestion_queue",
         nft: "nft",
         nft_aggregate: "nft_aggregate",
         nft_asset: "nft_asset",
@@ -10320,6 +10409,7 @@ export const ReturnTypes = {
         erc721_import_by_pk: "erc721_import",
         erc721_token_ingestion_queue: "erc721_token_ingestion_queue",
         erc721_token_ingestion_queue_aggregate: "erc721_token_ingestion_queue_aggregate",
+        erc721_token_ingestion_queue_by_pk: "erc721_token_ingestion_queue",
         nft: "nft",
         nft_aggregate: "nft_aggregate",
         nft_asset: "nft_asset",

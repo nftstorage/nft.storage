@@ -789,6 +789,8 @@ columns and relationships of "erc721_token_ingestion_queue" */
         token_uri?: ValueTypes["String_comparison_exp"] | null;
         updated_at?: ValueTypes["timestamptz_comparison_exp"] | null;
     };
+    /** unique or primary key constraints on table "erc721_token_ingestion_queue" */
+    ["erc721_token_ingestion_queue_constraint"]: erc721_token_ingestion_queue_constraint;
     /** input type for incrementing numeric columns in table "erc721_token_ingestion_queue" */
     ["erc721_token_ingestion_queue_inc_input"]: {
         block_number?: ValueTypes["bigint"] | null;
@@ -849,6 +851,12 @@ columns and relationships of "erc721_token_ingestion_queue" */
         returning?: ValueTypes["erc721_token_ingestion_queue"];
         __typename?: true;
     }>;
+    /** on conflict condition type for table "erc721_token_ingestion_queue" */
+    ["erc721_token_ingestion_queue_on_conflict"]: {
+        constraint: ValueTypes["erc721_token_ingestion_queue_constraint"];
+        update_columns: ValueTypes["erc721_token_ingestion_queue_update_column"][];
+        where?: ValueTypes["erc721_token_ingestion_queue_bool_exp"] | null;
+    };
     /** Ordering options when selecting data from "erc721_token_ingestion_queue". */
     ["erc721_token_ingestion_queue_order_by"]: {
         block_hash?: ValueTypes["order_by"] | null;
@@ -864,6 +872,10 @@ columns and relationships of "erc721_token_ingestion_queue" */
         token_id?: ValueTypes["order_by"] | null;
         token_uri?: ValueTypes["order_by"] | null;
         updated_at?: ValueTypes["order_by"] | null;
+    };
+    /** primary key columns input for table: erc721_token_ingestion_queue */
+    ["erc721_token_ingestion_queue_pk_columns_input"]: {
+        id: string;
     };
     /** select columns of table "erc721_token_ingestion_queue" */
     ["erc721_token_ingestion_queue_select_column"]: erc721_token_ingestion_queue_select_column;
@@ -903,6 +915,8 @@ columns and relationships of "erc721_token_ingestion_queue" */
         block_number?: true;
         __typename?: true;
     }>;
+    /** update columns of table "erc721_token_ingestion_queue" */
+    ["erc721_token_ingestion_queue_update_column"]: erc721_token_ingestion_queue_update_column;
     /** aggregate var_pop on columns */
     ["erc721_token_ingestion_queue_var_pop_fields"]: AliasType<{
         block_number?: true;
@@ -1034,6 +1048,9 @@ columns and relationships of "erc721_token_ingestion_queue" */
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
+        delete_erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         delete_nft?: [
             {
                 where: ValueTypes["nft_bool_exp"];
@@ -1224,13 +1241,15 @@ columns and relationships of "erc721_token_ingestion_queue" */
         ];
         insert_erc721_token_ingestion_queue?: [
             {
-                objects: ValueTypes["erc721_token_ingestion_queue_insert_input"][];
+                objects: ValueTypes["erc721_token_ingestion_queue_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_token_ingestion_queue_on_conflict"] | null;
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
         insert_erc721_token_ingestion_queue_one?: [
             {
-                object: ValueTypes["erc721_token_ingestion_queue_insert_input"];
+                object: ValueTypes["erc721_token_ingestion_queue_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_token_ingestion_queue_on_conflict"] | null;
             },
             ValueTypes["erc721_token_ingestion_queue"]
         ];
@@ -1485,6 +1504,14 @@ columns and relationships of "erc721_token_ingestion_queue" */
                 where: ValueTypes["erc721_token_ingestion_queue_bool_exp"];
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
+        ];
+        update_erc721_token_ingestion_queue_by_pk?: [
+            {
+                _inc?: ValueTypes["erc721_token_ingestion_queue_inc_input"] | null; /** sets the columns of the filtered rows to the given values */
+                _set?: ValueTypes["erc721_token_ingestion_queue_set_input"] | null;
+                pk_columns: ValueTypes["erc721_token_ingestion_queue_pk_columns_input"];
+            },
+            ValueTypes["erc721_token_ingestion_queue"]
         ];
         update_nft?: [
             {
@@ -3158,6 +3185,9 @@ columns and relationships of "niftysave_migration" */
             },
             ValueTypes["erc721_token_ingestion_queue_aggregate"]
         ];
+        erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -3679,6 +3709,9 @@ columns and relationships of "niftysave_migration" */
             },
             ValueTypes["erc721_token_ingestion_queue_aggregate"]
         ];
+        erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -4313,7 +4346,7 @@ columns and relationships of "erc721_token_ingestion_queue" */
         contract_name?: string;
         contract_supports_eip721_metadata?: boolean;
         contract_symbol?: string;
-        id?: string;
+        id: string;
         inserted_at?: ModelTypes["timestamptz"];
         mint_time?: ModelTypes["timestamptz"];
         owner_id?: string;
@@ -4346,6 +4379,8 @@ columns and relationships of "erc721_token_ingestion_queue" */
     };
     /** Boolean expression to filter rows from the table "erc721_token_ingestion_queue". All fields are combined with a logical 'AND'. */
     ["erc721_token_ingestion_queue_bool_exp"]: GraphQLTypes["erc721_token_ingestion_queue_bool_exp"];
+    /** unique or primary key constraints on table "erc721_token_ingestion_queue" */
+    ["erc721_token_ingestion_queue_constraint"]: GraphQLTypes["erc721_token_ingestion_queue_constraint"];
     /** input type for incrementing numeric columns in table "erc721_token_ingestion_queue" */
     ["erc721_token_ingestion_queue_inc_input"]: GraphQLTypes["erc721_token_ingestion_queue_inc_input"];
     /** input type for inserting data into table "erc721_token_ingestion_queue" */
@@ -4387,8 +4422,12 @@ columns and relationships of "erc721_token_ingestion_queue" */
         /** data from the rows affected by the mutation */
         returning: ModelTypes["erc721_token_ingestion_queue"][];
     };
+    /** on conflict condition type for table "erc721_token_ingestion_queue" */
+    ["erc721_token_ingestion_queue_on_conflict"]: GraphQLTypes["erc721_token_ingestion_queue_on_conflict"];
     /** Ordering options when selecting data from "erc721_token_ingestion_queue". */
     ["erc721_token_ingestion_queue_order_by"]: GraphQLTypes["erc721_token_ingestion_queue_order_by"];
+    /** primary key columns input for table: erc721_token_ingestion_queue */
+    ["erc721_token_ingestion_queue_pk_columns_input"]: GraphQLTypes["erc721_token_ingestion_queue_pk_columns_input"];
     /** select columns of table "erc721_token_ingestion_queue" */
     ["erc721_token_ingestion_queue_select_column"]: GraphQLTypes["erc721_token_ingestion_queue_select_column"];
     /** input type for updating data in table "erc721_token_ingestion_queue" */
@@ -4409,6 +4448,8 @@ columns and relationships of "erc721_token_ingestion_queue" */
     ["erc721_token_ingestion_queue_sum_fields"]: {
         block_number?: ModelTypes["bigint"];
     };
+    /** update columns of table "erc721_token_ingestion_queue" */
+    ["erc721_token_ingestion_queue_update_column"]: GraphQLTypes["erc721_token_ingestion_queue_update_column"];
     /** aggregate var_pop on columns */
     ["erc721_token_ingestion_queue_var_pop_fields"]: {
         block_number?: number;
@@ -4453,6 +4494,8 @@ columns and relationships of "erc721_token_ingestion_queue" */
         delete_erc721_import_by_pk?: ModelTypes["erc721_import"];
         /** delete data from the table: "erc721_token_ingestion_queue" */
         delete_erc721_token_ingestion_queue?: ModelTypes["erc721_token_ingestion_queue_mutation_response"];
+        /** delete single row from the table: "erc721_token_ingestion_queue" */
+        delete_erc721_token_ingestion_queue_by_pk?: ModelTypes["erc721_token_ingestion_queue"];
         /** delete data from the table: "nft" */
         delete_nft?: ModelTypes["nft_mutation_response"];
         /** delete data from the table: "nft_asset" */
@@ -4585,6 +4628,8 @@ columns and relationships of "erc721_token_ingestion_queue" */
         update_erc721_import_by_pk?: ModelTypes["erc721_import"];
         /** update data of the table: "erc721_token_ingestion_queue" */
         update_erc721_token_ingestion_queue?: ModelTypes["erc721_token_ingestion_queue_mutation_response"];
+        /** update single row of the table: "erc721_token_ingestion_queue" */
+        update_erc721_token_ingestion_queue_by_pk?: ModelTypes["erc721_token_ingestion_queue"];
         /** update data of the table: "nft" */
         update_nft?: ModelTypes["nft_mutation_response"];
         /** update data of the table: "nft_asset" */
@@ -5353,6 +5398,8 @@ columns and relationships of "niftysave_migration" */
         erc721_token_ingestion_queue: ModelTypes["erc721_token_ingestion_queue"][];
         /** fetch aggregated fields from the table: "erc721_token_ingestion_queue" */
         erc721_token_ingestion_queue_aggregate: ModelTypes["erc721_token_ingestion_queue_aggregate"];
+        /** fetch data from the table: "erc721_token_ingestion_queue" using primary key columns */
+        erc721_token_ingestion_queue_by_pk?: ModelTypes["erc721_token_ingestion_queue"];
         /** fetch data from the table: "nft" */
         nft: ModelTypes["nft"][];
         /** fetch aggregated fields from the table: "nft" */
@@ -5520,6 +5567,8 @@ columns and relationships of "niftysave_migration" */
         erc721_token_ingestion_queue: ModelTypes["erc721_token_ingestion_queue"][];
         /** fetch aggregated fields from the table: "erc721_token_ingestion_queue" */
         erc721_token_ingestion_queue_aggregate: ModelTypes["erc721_token_ingestion_queue_aggregate"];
+        /** fetch data from the table: "erc721_token_ingestion_queue" using primary key columns */
+        erc721_token_ingestion_queue_by_pk?: ModelTypes["erc721_token_ingestion_queue"];
         /** fetch data from the table: "nft" */
         nft: ModelTypes["nft"][];
         /** fetch aggregated fields from the table: "nft" */
@@ -6265,7 +6314,7 @@ columns and relationships of "erc721_token_ingestion_queue" */
         contract_name?: string;
         contract_supports_eip721_metadata?: boolean;
         contract_symbol?: string;
-        id?: string;
+        id: string;
         inserted_at?: GraphQLTypes["timestamptz"];
         mint_time?: GraphQLTypes["timestamptz"];
         owner_id?: string;
@@ -6318,6 +6367,8 @@ columns and relationships of "erc721_token_ingestion_queue" */
         token_uri?: GraphQLTypes["String_comparison_exp"];
         updated_at?: GraphQLTypes["timestamptz_comparison_exp"];
     };
+    /** unique or primary key constraints on table "erc721_token_ingestion_queue" */
+    ["erc721_token_ingestion_queue_constraint"]: erc721_token_ingestion_queue_constraint;
     /** input type for incrementing numeric columns in table "erc721_token_ingestion_queue" */
     ["erc721_token_ingestion_queue_inc_input"]: {
         block_number?: GraphQLTypes["bigint"];
@@ -6378,6 +6429,12 @@ columns and relationships of "erc721_token_ingestion_queue" */
         /** data from the rows affected by the mutation */
         returning: Array<GraphQLTypes["erc721_token_ingestion_queue"]>;
     };
+    /** on conflict condition type for table "erc721_token_ingestion_queue" */
+    ["erc721_token_ingestion_queue_on_conflict"]: {
+        constraint: GraphQLTypes["erc721_token_ingestion_queue_constraint"];
+        update_columns: Array<GraphQLTypes["erc721_token_ingestion_queue_update_column"]>;
+        where?: GraphQLTypes["erc721_token_ingestion_queue_bool_exp"];
+    };
     /** Ordering options when selecting data from "erc721_token_ingestion_queue". */
     ["erc721_token_ingestion_queue_order_by"]: {
         block_hash?: GraphQLTypes["order_by"];
@@ -6393,6 +6450,10 @@ columns and relationships of "erc721_token_ingestion_queue" */
         token_id?: GraphQLTypes["order_by"];
         token_uri?: GraphQLTypes["order_by"];
         updated_at?: GraphQLTypes["order_by"];
+    };
+    /** primary key columns input for table: erc721_token_ingestion_queue */
+    ["erc721_token_ingestion_queue_pk_columns_input"]: {
+        id: string;
     };
     /** select columns of table "erc721_token_ingestion_queue" */
     ["erc721_token_ingestion_queue_select_column"]: erc721_token_ingestion_queue_select_column;
@@ -6432,6 +6493,8 @@ columns and relationships of "erc721_token_ingestion_queue" */
         __typename: "erc721_token_ingestion_queue_sum_fields";
         block_number?: GraphQLTypes["bigint"];
     };
+    /** update columns of table "erc721_token_ingestion_queue" */
+    ["erc721_token_ingestion_queue_update_column"]: erc721_token_ingestion_queue_update_column;
     /** aggregate var_pop on columns */
     ["erc721_token_ingestion_queue_var_pop_fields"]: {
         __typename: "erc721_token_ingestion_queue_var_pop_fields";
@@ -6534,6 +6597,8 @@ columns and relationships of "erc721_token_ingestion_queue" */
         delete_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** delete data from the table: "erc721_token_ingestion_queue" */
         delete_erc721_token_ingestion_queue?: GraphQLTypes["erc721_token_ingestion_queue_mutation_response"];
+        /** delete single row from the table: "erc721_token_ingestion_queue" */
+        delete_erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** delete data from the table: "nft" */
         delete_nft?: GraphQLTypes["nft_mutation_response"];
         /** delete data from the table: "nft_asset" */
@@ -6666,6 +6731,8 @@ columns and relationships of "erc721_token_ingestion_queue" */
         update_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** update data of the table: "erc721_token_ingestion_queue" */
         update_erc721_token_ingestion_queue?: GraphQLTypes["erc721_token_ingestion_queue_mutation_response"];
+        /** update single row of the table: "erc721_token_ingestion_queue" */
+        update_erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** update data of the table: "nft" */
         update_nft?: GraphQLTypes["nft_mutation_response"];
         /** update data of the table: "nft_asset" */
@@ -8024,6 +8091,8 @@ columns and relationships of "niftysave_migration" */
         erc721_token_ingestion_queue: Array<GraphQLTypes["erc721_token_ingestion_queue"]>;
         /** fetch aggregated fields from the table: "erc721_token_ingestion_queue" */
         erc721_token_ingestion_queue_aggregate: GraphQLTypes["erc721_token_ingestion_queue_aggregate"];
+        /** fetch data from the table: "erc721_token_ingestion_queue" using primary key columns */
+        erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -8267,6 +8336,8 @@ columns and relationships of "niftysave_migration" */
         erc721_token_ingestion_queue: Array<GraphQLTypes["erc721_token_ingestion_queue"]>;
         /** fetch aggregated fields from the table: "erc721_token_ingestion_queue" */
         erc721_token_ingestion_queue_aggregate: GraphQLTypes["erc721_token_ingestion_queue_aggregate"];
+        /** fetch data from the table: "erc721_token_ingestion_queue" using primary key columns */
+        erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -8431,8 +8502,28 @@ export declare enum erc721_import_update_column {
     next_id = "next_id",
     updated_at = "updated_at"
 }
+/** unique or primary key constraints on table "erc721_token_ingestion_queue" */
+export declare enum erc721_token_ingestion_queue_constraint {
+    erc721_token_ingestion_queue_pkey = "erc721_token_ingestion_queue_pkey"
+}
 /** select columns of table "erc721_token_ingestion_queue" */
 export declare enum erc721_token_ingestion_queue_select_column {
+    block_hash = "block_hash",
+    block_number = "block_number",
+    contract_id = "contract_id",
+    contract_name = "contract_name",
+    contract_supports_eip721_metadata = "contract_supports_eip721_metadata",
+    contract_symbol = "contract_symbol",
+    id = "id",
+    inserted_at = "inserted_at",
+    mint_time = "mint_time",
+    owner_id = "owner_id",
+    token_id = "token_id",
+    token_uri = "token_uri",
+    updated_at = "updated_at"
+}
+/** update columns of table "erc721_token_ingestion_queue" */
+export declare enum erc721_token_ingestion_queue_update_column {
     block_hash = "block_hash",
     block_number = "block_number",
     contract_id = "contract_id",
@@ -8893,6 +8984,9 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             },
             ValueTypes["erc721_token_ingestion_queue_aggregate"]
         ];
+        erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -9141,6 +9235,8 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         erc721_token_ingestion_queue: Array<GraphQLTypes["erc721_token_ingestion_queue"]>;
         /** fetch aggregated fields from the table: "erc721_token_ingestion_queue" */
         erc721_token_ingestion_queue_aggregate: GraphQLTypes["erc721_token_ingestion_queue_aggregate"];
+        /** fetch data from the table: "erc721_token_ingestion_queue" using primary key columns */
+        erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -9249,6 +9345,9 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
+        delete_erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         delete_nft?: [
             {
                 where: ValueTypes["nft_bool_exp"];
@@ -9439,13 +9538,15 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         ];
         insert_erc721_token_ingestion_queue?: [
             {
-                objects: ValueTypes["erc721_token_ingestion_queue_insert_input"][];
+                objects: ValueTypes["erc721_token_ingestion_queue_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_token_ingestion_queue_on_conflict"] | null;
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
         insert_erc721_token_ingestion_queue_one?: [
             {
-                object: ValueTypes["erc721_token_ingestion_queue_insert_input"];
+                object: ValueTypes["erc721_token_ingestion_queue_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_token_ingestion_queue_on_conflict"] | null;
             },
             ValueTypes["erc721_token_ingestion_queue"]
         ];
@@ -9701,6 +9802,14 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
+        update_erc721_token_ingestion_queue_by_pk?: [
+            {
+                _inc?: ValueTypes["erc721_token_ingestion_queue_inc_input"] | null; /** sets the columns of the filtered rows to the given values */
+                _set?: ValueTypes["erc721_token_ingestion_queue_set_input"] | null;
+                pk_columns: ValueTypes["erc721_token_ingestion_queue_pk_columns_input"];
+            },
+            ValueTypes["erc721_token_ingestion_queue"]
+        ];
         update_nft?: [
             {
                 _set?: ValueTypes["nft_set_input"] | null; /** filter the rows which have to be updated */
@@ -9876,6 +9985,8 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         delete_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** delete data from the table: "erc721_token_ingestion_queue" */
         delete_erc721_token_ingestion_queue?: GraphQLTypes["erc721_token_ingestion_queue_mutation_response"];
+        /** delete single row from the table: "erc721_token_ingestion_queue" */
+        delete_erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** delete data from the table: "nft" */
         delete_nft?: GraphQLTypes["nft_mutation_response"];
         /** delete data from the table: "nft_asset" */
@@ -10008,6 +10119,8 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         update_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** update data of the table: "erc721_token_ingestion_queue" */
         update_erc721_token_ingestion_queue?: GraphQLTypes["erc721_token_ingestion_queue_mutation_response"];
+        /** update single row of the table: "erc721_token_ingestion_queue" */
+        update_erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** update data of the table: "nft" */
         update_nft?: GraphQLTypes["nft_mutation_response"];
         /** update data of the table: "nft_asset" */
@@ -10182,6 +10295,9 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
             },
             ValueTypes["erc721_token_ingestion_queue_aggregate"]
         ];
+        erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -10430,6 +10546,8 @@ export declare const Thunder: (fn: FetchFunction, subscriptionFn: SubscriptionFu
         erc721_token_ingestion_queue: Array<GraphQLTypes["erc721_token_ingestion_queue"]>;
         /** fetch aggregated fields from the table: "erc721_token_ingestion_queue" */
         erc721_token_ingestion_queue_aggregate: GraphQLTypes["erc721_token_ingestion_queue_aggregate"];
+        /** fetch data from the table: "erc721_token_ingestion_queue" using primary key columns */
+        erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -10624,6 +10742,9 @@ export declare const Chain: (...options: chainOptions) => {
             },
             ValueTypes["erc721_token_ingestion_queue_aggregate"]
         ];
+        erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -10872,6 +10993,8 @@ export declare const Chain: (...options: chainOptions) => {
         erc721_token_ingestion_queue: Array<GraphQLTypes["erc721_token_ingestion_queue"]>;
         /** fetch aggregated fields from the table: "erc721_token_ingestion_queue" */
         erc721_token_ingestion_queue_aggregate: GraphQLTypes["erc721_token_ingestion_queue_aggregate"];
+        /** fetch data from the table: "erc721_token_ingestion_queue" using primary key columns */
+        erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -10980,6 +11103,9 @@ export declare const Chain: (...options: chainOptions) => {
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
+        delete_erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         delete_nft?: [
             {
                 where: ValueTypes["nft_bool_exp"];
@@ -11170,13 +11296,15 @@ export declare const Chain: (...options: chainOptions) => {
         ];
         insert_erc721_token_ingestion_queue?: [
             {
-                objects: ValueTypes["erc721_token_ingestion_queue_insert_input"][];
+                objects: ValueTypes["erc721_token_ingestion_queue_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_token_ingestion_queue_on_conflict"] | null;
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
         insert_erc721_token_ingestion_queue_one?: [
             {
-                object: ValueTypes["erc721_token_ingestion_queue_insert_input"];
+                object: ValueTypes["erc721_token_ingestion_queue_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_token_ingestion_queue_on_conflict"] | null;
             },
             ValueTypes["erc721_token_ingestion_queue"]
         ];
@@ -11432,6 +11560,14 @@ export declare const Chain: (...options: chainOptions) => {
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
+        update_erc721_token_ingestion_queue_by_pk?: [
+            {
+                _inc?: ValueTypes["erc721_token_ingestion_queue_inc_input"] | null; /** sets the columns of the filtered rows to the given values */
+                _set?: ValueTypes["erc721_token_ingestion_queue_set_input"] | null;
+                pk_columns: ValueTypes["erc721_token_ingestion_queue_pk_columns_input"];
+            },
+            ValueTypes["erc721_token_ingestion_queue"]
+        ];
         update_nft?: [
             {
                 _set?: ValueTypes["nft_set_input"] | null; /** filter the rows which have to be updated */
@@ -11607,6 +11743,8 @@ export declare const Chain: (...options: chainOptions) => {
         delete_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** delete data from the table: "erc721_token_ingestion_queue" */
         delete_erc721_token_ingestion_queue?: GraphQLTypes["erc721_token_ingestion_queue_mutation_response"];
+        /** delete single row from the table: "erc721_token_ingestion_queue" */
+        delete_erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** delete data from the table: "nft" */
         delete_nft?: GraphQLTypes["nft_mutation_response"];
         /** delete data from the table: "nft_asset" */
@@ -11739,6 +11877,8 @@ export declare const Chain: (...options: chainOptions) => {
         update_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** update data of the table: "erc721_token_ingestion_queue" */
         update_erc721_token_ingestion_queue?: GraphQLTypes["erc721_token_ingestion_queue_mutation_response"];
+        /** update single row of the table: "erc721_token_ingestion_queue" */
+        update_erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** update data of the table: "nft" */
         update_nft?: GraphQLTypes["nft_mutation_response"];
         /** update data of the table: "nft_asset" */
@@ -11913,6 +12053,9 @@ export declare const Chain: (...options: chainOptions) => {
             },
             ValueTypes["erc721_token_ingestion_queue_aggregate"]
         ];
+        erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -12161,6 +12304,8 @@ export declare const Chain: (...options: chainOptions) => {
         erc721_token_ingestion_queue: Array<GraphQLTypes["erc721_token_ingestion_queue"]>;
         /** fetch aggregated fields from the table: "erc721_token_ingestion_queue" */
         erc721_token_ingestion_queue_aggregate: GraphQLTypes["erc721_token_ingestion_queue_aggregate"];
+        /** fetch data from the table: "erc721_token_ingestion_queue" using primary key columns */
+        erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -12360,6 +12505,9 @@ export declare const Selectors: {
             },
             ValueTypes["erc721_token_ingestion_queue_aggregate"]
         ];
+        erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -12626,6 +12774,9 @@ export declare const Selectors: {
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
+        delete_erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         delete_nft?: [
             {
                 where: ValueTypes["nft_bool_exp"];
@@ -12816,13 +12967,15 @@ export declare const Selectors: {
         ];
         insert_erc721_token_ingestion_queue?: [
             {
-                objects: ValueTypes["erc721_token_ingestion_queue_insert_input"][];
+                objects: ValueTypes["erc721_token_ingestion_queue_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_token_ingestion_queue_on_conflict"] | null;
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
         insert_erc721_token_ingestion_queue_one?: [
             {
-                object: ValueTypes["erc721_token_ingestion_queue_insert_input"];
+                object: ValueTypes["erc721_token_ingestion_queue_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_token_ingestion_queue_on_conflict"] | null;
             },
             ValueTypes["erc721_token_ingestion_queue"]
         ];
@@ -13077,6 +13230,14 @@ export declare const Selectors: {
                 where: ValueTypes["erc721_token_ingestion_queue_bool_exp"];
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
+        ];
+        update_erc721_token_ingestion_queue_by_pk?: [
+            {
+                _inc?: ValueTypes["erc721_token_ingestion_queue_inc_input"] | null; /** sets the columns of the filtered rows to the given values */
+                _set?: ValueTypes["erc721_token_ingestion_queue_set_input"] | null;
+                pk_columns: ValueTypes["erc721_token_ingestion_queue_pk_columns_input"];
+            },
+            ValueTypes["erc721_token_ingestion_queue"]
         ];
         update_nft?: [
             {
@@ -13367,6 +13528,9 @@ export declare const Selectors: {
             },
             ValueTypes["erc721_token_ingestion_queue_aggregate"]
         ];
+        erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -13719,6 +13883,9 @@ export declare const Gql: {
             },
             ValueTypes["erc721_token_ingestion_queue_aggregate"]
         ];
+        erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -13967,6 +14134,8 @@ export declare const Gql: {
         erc721_token_ingestion_queue: Array<GraphQLTypes["erc721_token_ingestion_queue"]>;
         /** fetch aggregated fields from the table: "erc721_token_ingestion_queue" */
         erc721_token_ingestion_queue_aggregate: GraphQLTypes["erc721_token_ingestion_queue_aggregate"];
+        /** fetch data from the table: "erc721_token_ingestion_queue" using primary key columns */
+        erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */
@@ -14075,6 +14244,9 @@ export declare const Gql: {
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
+        delete_erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         delete_nft?: [
             {
                 where: ValueTypes["nft_bool_exp"];
@@ -14265,13 +14437,15 @@ export declare const Gql: {
         ];
         insert_erc721_token_ingestion_queue?: [
             {
-                objects: ValueTypes["erc721_token_ingestion_queue_insert_input"][];
+                objects: ValueTypes["erc721_token_ingestion_queue_insert_input"][]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_token_ingestion_queue_on_conflict"] | null;
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
         insert_erc721_token_ingestion_queue_one?: [
             {
-                object: ValueTypes["erc721_token_ingestion_queue_insert_input"];
+                object: ValueTypes["erc721_token_ingestion_queue_insert_input"]; /** on conflict condition */
+                on_conflict?: ValueTypes["erc721_token_ingestion_queue_on_conflict"] | null;
             },
             ValueTypes["erc721_token_ingestion_queue"]
         ];
@@ -14527,6 +14701,14 @@ export declare const Gql: {
             },
             ValueTypes["erc721_token_ingestion_queue_mutation_response"]
         ];
+        update_erc721_token_ingestion_queue_by_pk?: [
+            {
+                _inc?: ValueTypes["erc721_token_ingestion_queue_inc_input"] | null; /** sets the columns of the filtered rows to the given values */
+                _set?: ValueTypes["erc721_token_ingestion_queue_set_input"] | null;
+                pk_columns: ValueTypes["erc721_token_ingestion_queue_pk_columns_input"];
+            },
+            ValueTypes["erc721_token_ingestion_queue"]
+        ];
         update_nft?: [
             {
                 _set?: ValueTypes["nft_set_input"] | null; /** filter the rows which have to be updated */
@@ -14702,6 +14884,8 @@ export declare const Gql: {
         delete_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** delete data from the table: "erc721_token_ingestion_queue" */
         delete_erc721_token_ingestion_queue?: GraphQLTypes["erc721_token_ingestion_queue_mutation_response"];
+        /** delete single row from the table: "erc721_token_ingestion_queue" */
+        delete_erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** delete data from the table: "nft" */
         delete_nft?: GraphQLTypes["nft_mutation_response"];
         /** delete data from the table: "nft_asset" */
@@ -14834,6 +15018,8 @@ export declare const Gql: {
         update_erc721_import_by_pk?: GraphQLTypes["erc721_import"];
         /** update data of the table: "erc721_token_ingestion_queue" */
         update_erc721_token_ingestion_queue?: GraphQLTypes["erc721_token_ingestion_queue_mutation_response"];
+        /** update single row of the table: "erc721_token_ingestion_queue" */
+        update_erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** update data of the table: "nft" */
         update_nft?: GraphQLTypes["nft_mutation_response"];
         /** update data of the table: "nft_asset" */
@@ -15008,6 +15194,9 @@ export declare const Gql: {
             },
             ValueTypes["erc721_token_ingestion_queue_aggregate"]
         ];
+        erc721_token_ingestion_queue_by_pk?: [{
+            id: string;
+        }, ValueTypes["erc721_token_ingestion_queue"]];
         nft?: [
             {
                 distinct_on?: ValueTypes["nft_select_column"][]; /** limit the number of rows returned */
@@ -15256,6 +15445,8 @@ export declare const Gql: {
         erc721_token_ingestion_queue: Array<GraphQLTypes["erc721_token_ingestion_queue"]>;
         /** fetch aggregated fields from the table: "erc721_token_ingestion_queue" */
         erc721_token_ingestion_queue_aggregate: GraphQLTypes["erc721_token_ingestion_queue_aggregate"];
+        /** fetch data from the table: "erc721_token_ingestion_queue" using primary key columns */
+        erc721_token_ingestion_queue_by_pk?: GraphQLTypes["erc721_token_ingestion_queue"];
         /** fetch data from the table: "nft" */
         nft: Array<GraphQLTypes["nft"]>;
         /** fetch aggregated fields from the table: "nft" */

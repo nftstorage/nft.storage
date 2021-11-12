@@ -110,6 +110,11 @@ export var erc721_import_update_column;
     erc721_import_update_column["next_id"] = "next_id";
     erc721_import_update_column["updated_at"] = "updated_at";
 })(erc721_import_update_column || (erc721_import_update_column = {}));
+/** unique or primary key constraints on table "erc721_token_ingestion_queue" */
+export var erc721_token_ingestion_queue_constraint;
+(function (erc721_token_ingestion_queue_constraint) {
+    erc721_token_ingestion_queue_constraint["erc721_token_ingestion_queue_pkey"] = "erc721_token_ingestion_queue_pkey";
+})(erc721_token_ingestion_queue_constraint || (erc721_token_ingestion_queue_constraint = {}));
 /** select columns of table "erc721_token_ingestion_queue" */
 export var erc721_token_ingestion_queue_select_column;
 (function (erc721_token_ingestion_queue_select_column) {
@@ -127,6 +132,23 @@ export var erc721_token_ingestion_queue_select_column;
     erc721_token_ingestion_queue_select_column["token_uri"] = "token_uri";
     erc721_token_ingestion_queue_select_column["updated_at"] = "updated_at";
 })(erc721_token_ingestion_queue_select_column || (erc721_token_ingestion_queue_select_column = {}));
+/** update columns of table "erc721_token_ingestion_queue" */
+export var erc721_token_ingestion_queue_update_column;
+(function (erc721_token_ingestion_queue_update_column) {
+    erc721_token_ingestion_queue_update_column["block_hash"] = "block_hash";
+    erc721_token_ingestion_queue_update_column["block_number"] = "block_number";
+    erc721_token_ingestion_queue_update_column["contract_id"] = "contract_id";
+    erc721_token_ingestion_queue_update_column["contract_name"] = "contract_name";
+    erc721_token_ingestion_queue_update_column["contract_supports_eip721_metadata"] = "contract_supports_eip721_metadata";
+    erc721_token_ingestion_queue_update_column["contract_symbol"] = "contract_symbol";
+    erc721_token_ingestion_queue_update_column["id"] = "id";
+    erc721_token_ingestion_queue_update_column["inserted_at"] = "inserted_at";
+    erc721_token_ingestion_queue_update_column["mint_time"] = "mint_time";
+    erc721_token_ingestion_queue_update_column["owner_id"] = "owner_id";
+    erc721_token_ingestion_queue_update_column["token_id"] = "token_id";
+    erc721_token_ingestion_queue_update_column["token_uri"] = "token_uri";
+    erc721_token_ingestion_queue_update_column["updated_at"] = "updated_at";
+})(erc721_token_ingestion_queue_update_column || (erc721_token_ingestion_queue_update_column = {}));
 /** unique or primary key constraints on table "nft_asset" */
 export var nft_asset_constraint;
 (function (nft_asset_constraint) {
