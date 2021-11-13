@@ -8,7 +8,7 @@ import { exponentialBackoff, maxRetries, retry } from './retry.js'
 import { TransformStream } from './stream.js'
 import { checkIsBinRange } from './hasura/cursor.js'
 import { configure } from './config.js'
-import { initIngestCursor } from './ingest/cursor.js'
+import { initIngestionQueueCursor } from './ingest/cursor.js'
 import { script } from 'subprogram'
 import { setTimeout as sleep } from 'timers/promises'
 
@@ -74,7 +74,7 @@ async function spawn(config) {
 async function readIntoInbox(config, writeable) {
   const writer = writeable.getWriter()
 
-  let cursor = Cursor.init(await initIngestCursor(config))
+  let cursor = Cursor.init(await initIngestionQueueCursor(config))
 
   Cursor.print(cursor)
 
