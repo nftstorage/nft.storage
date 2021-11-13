@@ -1,5 +1,17 @@
 # Changelog
 
+### [2.9.1](https://www.github.com/nftstorage/nft.storage/compare/api-v2.9.0...api-v2.9.1) (2021-11-13)
+
+
+### Bug Fixes
+
+* cluster local add threshold ([#770](https://www.github.com/nftstorage/nft.storage/issues/770)) ([45a2147](https://www.github.com/nftstorage/nft.storage/commit/45a2147c4f836ef4e508286df1367220f03bb890))
+
+
+### Changes
+
+* get DB client from route context ([#638](https://www.github.com/nftstorage/nft.storage/issues/638)) ([a719fd9](https://www.github.com/nftstorage/nft.storage/commit/a719fd97b0bc1216a170621ac0482b3ee82f69f4))
+
 ## [2.9.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.8.2...api-v2.9.0) (2021-10-29)
 
 
