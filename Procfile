@@ -21,10 +21,18 @@ ingest-queue-2020_03-06: INGEST_RANGE_START_DATE="04/01/2020" INGEST_RANGE_END_D
 ingest-queue-2020_06-09: INGEST_RANGE_START_DATE="07/01/2020" INGEST_RANGE_END_DATE="10/01/2020" node ./packages/niftysave/src/ingest-queue.js
 ingest-queue-2020_09-12: INGEST_RANGE_START_DATE="10/01/2020" INGEST_RANGE_END_DATE="01/01/2021" node ./packages/niftysave/src/ingest-queue.js
 
-ingest-queue-2021_01-03: INGEST_RANGE_START_DATE="01/01/2021" INGEST_RANGE_END_DATE="04/01/2021" node ./packages/niftysave/src/ingest-queue.js
-ingest-queue-2021_03-06: INGEST_RANGE_START_DATE="04/01/2021" INGEST_RANGE_END_DATE="07/01/2021" node ./packages/niftysave/src/ingest-queue.js
-ingest-queue-2021_06-09: INGEST_RANGE_START_DATE="07/01/2021" INGEST_RANGE_END_DATE="10/01/2021" node ./packages/niftysave/src/ingest-queue.js
-ingest-queue-2021_09-12: INGEST_RANGE_START_DATE="10/01/2021" INGEST_RANGE_END_DATE="01/01/2022" node ./packages/niftysave/src/ingest-queue.js
+ingest-queue-2021_01: INGEST_RANGE_START_DATE="01/01/2021" INGEST_RANGE_END_DATE="02/01/2021" node ./packages/niftysave/src/ingest-queue.js
+ingest-queue-2021_02: INGEST_RANGE_START_DATE="02/01/2021" INGEST_RANGE_END_DATE="03/01/2021" node ./packages/niftysave/src/ingest-queue.js
+ingest-queue-2021_03: INGEST_RANGE_START_DATE="03/01/2021" INGEST_RANGE_END_DATE="04/01/2021" node ./packages/niftysave/src/ingest-queue.js
+ingest-queue-2021_04: INGEST_RANGE_START_DATE="04/01/2021" INGEST_RANGE_END_DATE="05/01/2021" node ./packages/niftysave/src/ingest-queue.js
+ingest-queue-2021_05: INGEST_RANGE_START_DATE="05/01/2021" INGEST_RANGE_END_DATE="06/01/2021" node ./packages/niftysave/src/ingest-queue.js
+ingest-queue-2021_06: INGEST_RANGE_START_DATE="06/01/2021" INGEST_RANGE_END_DATE="07/01/2021" node ./packages/niftysave/src/ingest-queue.js
+ingest-queue-2021_07: INGEST_RANGE_START_DATE="07/01/2021" INGEST_RANGE_END_DATE="08/01/2021" node ./packages/niftysave/src/ingest-queue.js
+ingest-queue-2021_08: INGEST_RANGE_START_DATE="08/01/2021" INGEST_RANGE_END_DATE="09/01/2021" node ./packages/niftysave/src/ingest-queue.js
+ingest-queue-2021_09: INGEST_RANGE_START_DATE="09/01/2021" INGEST_RANGE_END_DATE="10/01/2021" node ./packages/niftysave/src/ingest-queue.js
+ingest-queue-2021_10: INGEST_RANGE_START_DATE="10/01/2021" INGEST_RANGE_END_DATE="11/01/2021" node ./packages/niftysave/src/ingest-queue.js
+ingest-queue-2021_11: INGEST_RANGE_START_DATE="11/01/2021" INGEST_RANGE_END_DATE="01/01/2022" node ./packages/niftysave/src/ingest-queue.js
+
 
 analyze-2019_01-slow: ANALYZER_RANGE_START_DATE="01/01/2019" ANALYZER_RANGE_END_DATE="02/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
 analyze-2019_02-slow: ANALYZER_RANGE_START_DATE="02/01/2019" ANALYZER_RANGE_END_DATE="03/01/2019" FETCH_RETRY_LIMIT="5" node ./packages/niftysave/src/analyze.js
