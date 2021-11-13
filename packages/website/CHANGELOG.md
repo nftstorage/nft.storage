@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.11.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.11.0...website-v1.11.1) (2021-11-13)
+
+
+### Changes
+
+* add /store endpoint to API schema ([#693](https://www.github.com/nftstorage/nft.storage/issues/693)) ([82560e3](https://www.github.com/nftstorage/nft.storage/commit/82560e39a083b60d258a0115d9aa5b15a0bfb73f))
+
 ## [1.11.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.10.0...website-v1.11.0) (2021-11-12)
 
 
