@@ -102,26 +102,29 @@ const TOC = () => (
  * @param {Object} props
  * @param {number} [props.limit]
  */
-export const FAQ = ({ limit = faqs.length }) => (
-  <>
-    {faqs.slice(0, limit).map((faq, index) => (
-      <div className="faq-item" key={`faq-item${index}`}>
-        <h2 className="chicagoflf white">
-          <HashLink id={hashify(faq.question)}>
-            {faq.error ? (
-              <>
-                Why am I seeing:&nbsp;<InlineCode>{faq.error}</InlineCode>
-              </>
-            ) : (
-              faq.question
-            )}
-          </HashLink>
-        </h2>
-        <div className="lh-copy white mb4">{faq.content}</div>
-      </div>
-    ))}
-  </>
-)
+export const FAQ = ({ limit = faqs.length }) => {
+  const items = limit ? faqs.slice(0, limit) : faqs
+  return (
+    <>
+      {items.slice(0, limit).map((faq, index) => (
+        <div className="faq-item" key={`faq-item${index}`}>
+          <h2 className="chicagoflf white">
+            <HashLink id={hashify(faq.question)}>
+              {faq.error ? (
+                <>
+                  Why am I seeing:&nbsp;<InlineCode>{faq.error}</InlineCode>
+                </>
+              ) : (
+                faq.question
+              )}
+            </HashLink>
+          </h2>
+          <div className="lh-copy white mb4">{faq.content}</div>
+        </div>
+      ))}
+    </>
+  )
+}
 
 /**
  * FAQ Page
