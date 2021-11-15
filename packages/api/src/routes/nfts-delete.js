@@ -1,18 +1,24 @@
-import * as nfts from '../models/nfts.js'
+import { HTTPError } from '../errors.js'
 import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
+import { parseCid } from '../utils/utils.js'
 
 /** @type {import('../bindings').Handler} */
-export const remove = async (event, ctx) => {
+export const nftDelete = async (event, ctx) => {
   const { user } = await validate(event, ctx)
-  const { params } = ctx
+  const { params, db } = ctx
+  const cid = parseCid(params.cid)
 
-  await nfts.remove({ user, cid: params.cid })
-  // TODO: We need to unpin from pinata as well, however we need to make
-  // no other user has pinned same CID, which makes me wonder if KV store
-  // has eventual or strong consistency. If former we might have problems.
+  const data = await db.deleteUpload(cid.sourceCid, user.id)
 
-  return new JSONResponse({
-    ok: true,
-  })
+  if (data) {
+    return new JSONResponse(
+      {
+        ok: true,
+      },
+      { status: 202 }
+    )
+  } else {
+    throw new HTTPError('NFT not found', 404)
+  }
 }

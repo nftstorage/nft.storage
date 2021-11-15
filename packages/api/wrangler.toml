@@ -1,5 +1,4 @@
 # Development
-
 name = "nft-storage-dev"
 account_id = "fffa4b4363a7e5250af8357087263b3a"
 workers_dev = true
@@ -8,16 +7,6 @@ type = "javascript"
 # Compatibility flags https://github.com/cloudflare/wrangler/pull/2009
 compatibility_date = "2021-08-23"
 compatibility_flags = [ "formdata_parser_supports_files" ]
-kv_namespaces = [
-    { binding = "USERS", preview_id = "7e441603d1bc4d5a87f6cecb959018e4", id = "7e441603d1bc4d5a87f6cecb959018e4" },
-    { binding = "NFTS", preview_id = "f1c35cd1601c452782db6056b2d35f25", id = "f1c35cd1601c452782db6056b2d35f25" },
-    { binding = "NFTS_IDX", preview_id = "82122c8f826c4ffd90608007c8c0c8ad", id = "82122c8f826c4ffd90608007c8c0c8ad" },
-    { binding = "DEALS", preview_id = "ce934a65bf6a44a398980a89daf66a70", id = "ce934a65bf6a44a398980a89daf66a70" },
-    { binding = "METRICS", preview_id = "104469a46696435bb2e7bfa201a36611", id = "104469a46696435bb2e7bfa201a36611" },
-    { binding = "PINS", preview_id = "ccee8222a526468a9101ec8d09ea1158", id = "ccee8222a526468a9101ec8d09ea1158" },
-    { binding = "FOLLOWUPS", preview_id = "19ccf11bc39a43439d4de3e101c2a114", id = "19ccf11bc39a43439d4de3e101c2a114" },
-    { binding = "PINATA_QUEUE", preview_id = "74f119d8eeab46c2a5e9136b420d7609", id = "74f119d8eeab46c2a5e9136b420d7609" }
-]
 
 [vars]
 ENV = "dev"
@@ -32,22 +21,11 @@ watch_dir = "src"
 format = "service-worker"
 
 # Staging
-
 [env.staging]
 name = "nft-storage-staging"
 route = "api-staging.nft.storage/*"
 zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"
 usage_model = "unbound"
-kv_namespaces = [
-    { binding = "USERS", preview_id = "8964654a0a1d4f7586b59db90ef97594", id = "8964654a0a1d4f7586b59db90ef97594" },
-    { binding = "NFTS", preview_id = "21763d3a9ce2465b875a49ae57a5a598", id = "21763d3a9ce2465b875a49ae57a5a598" },
-    { binding = "NFTS_IDX", preview_id = "4d25963cfab14d998d6e08d7ad336f83", id = "4d25963cfab14d998d6e08d7ad336f83" },
-    { binding = "DEALS", preview_id = "ab1ee988b16747149e4dee6b1a07bbd2", id = "ab1ee988b16747149e4dee6b1a07bbd2" },
-    { binding = "METRICS", preview_id = "f80cad90abdf4bf98b41518f1e7a6ea1", id = "f80cad90abdf4bf98b41518f1e7a6ea1" },
-    { binding = "PINS", preview_id = "39151b1207114d4d8bbd0b556079c76c", id = "39151b1207114d4d8bbd0b556079c76c" },
-    { binding = "FOLLOWUPS", preview_id = "e01b79aecb3e4d7db9473030e0714a23", id = "e01b79aecb3e4d7db9473030e0714a23" },
-    { binding = "PINATA_QUEUE", preview_id = "3a21250daa794144b0fdd010d8bf5f8f", id = "3a21250daa794144b0fdd010d8bf5f8f" }
-]
 
 [env.staging.vars]
 ENV = "staging"
@@ -68,16 +46,6 @@ name = "nft-storage"
 route = "api.nft.storage/*"
 zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"
 usage_model = "unbound"
-kv_namespaces = [
-    { binding = "USERS", id = "8a5a55b5d1af49ed8fcfab16e9fa8c41", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" },
-    { binding = "NFTS", id = "9610798d5e5845fa94e4392cc1288ddf", preview_id = "f1c35cd1601c452782db6056b2d35f25" },
-    { binding = "NFTS_IDX", id = "289648236dd74a8e96e5ee4f6581bff9", preview_id = "82122c8f826c4ffd90608007c8c0c8ad" },
-    { binding = "DEALS", id = "9d5815757b04446ab8cfbc99e6296842", preview_id = "ce934a65bf6a44a398980a89daf66a70" },
-    { binding = "METRICS", id = "12c38488fd6047fd8bb4030a8dacb406", preview_id = "104469a46696435bb2e7bfa201a36611" },
-    { binding = "PINS", id = "fd42ed10e9ce4b27aa77ca7b862dd2d8", preview_id = "ccee8222a526468a9101ec8d09ea1158" },
-    { binding = "FOLLOWUPS", id = "e6f35158a06646478f382847f2c40942", preview_id = "19ccf11bc39a43439d4de3e101c2a114" },
-    { binding = "PINATA_QUEUE", id = "45bd367a6ee647e5aebf67860f92a5ee", preview_id = "74f119d8eeab46c2a5e9136b420d7609" }
-]
 
 [env.production.vars]
 ENV = "production"

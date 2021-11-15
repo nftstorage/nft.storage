@@ -1,32 +1,36 @@
-import * as PinataPSA from '../pinata-psa.js'
 import { JSONResponse } from '../utils/json-response.js'
-import * as nfts from '../models/nfts.js'
 import { validate } from '../utils/auth.js'
+import { parseCidPinning } from '../utils/utils.js'
 
 /** @type {import('../bindings').Handler} */
 export async function pinsDelete(event, ctx) {
   const { params } = ctx
-  const { user } = await validate(event, ctx)
-  let cid = params.requestid
-  let nft = await nfts.get({ user, cid })
+  const { user, db } = await validate(event, ctx)
 
-  if (!nft) {
-    // maybe this is an old Pinata pin?
-    const res = await PinataPSA.pinsGet(params.requestid)
-    if (res.ok) {
-      cid = res.value.pin.cid
-      nft = await nfts.get({ user, cid })
-    }
-  }
-
-  if (!nft) {
+  const cid = parseCidPinning(params.requestid)
+  if (!cid) {
     return new JSONResponse(
-      { error: { reason: 'NOT_FOUND', details: 'NFT not found' } },
-      { status: 404 }
+      {
+        error: {
+          reason: 'ERROR_INVALID_REQUEST_ID',
+          details: `Invalid request id: ${params.requestid}`,
+        },
+      },
+      { status: 400 }
     )
   }
 
-  await nfts.remove({ user, cid })
-
-  return new Response()
+  const data = await db.deleteUpload(cid.sourceCid, user.id)
+  if (data) {
+    return new JSONResponse(undefined, { status: 202 })
+  } else {
+    return new JSONResponse(
+      {
+        error: {
+          reason: 'The specified resource was not found',
+        },
+      },
+      { status: 404 }
+    )
+  }
 }

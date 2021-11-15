@@ -1,51 +1,60 @@
 import assert from 'assert'
-import stores from './scripts/stores.js'
-import { clearStores } from './scripts/helpers.js'
+import { createClientWithUser } from './scripts/helpers.js'
+import { fixtures } from './scripts/fixtures.js'
 
-const cid = 'Qmf412jQZiuVUtdgnB36FXFX7xg5V6KEbSJ4dpQuhkLyfD'
-
-describe('/check/{cid}', () => {
-  beforeEach(clearStores)
-
-  it('should retrieve pin and deal information for CID', async () => {
-    /** @type {import('../src/models/pins.js').Pin} */
-    const pin = {
+describe('Check NFT', () => {
+  it('should return proper response for cid v1', async () => {
+    const client = await createClientWithUser()
+    const cid = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
+    await client.addPin({
       cid,
-      status: 'pinned',
-      size: 1234,
-      created: new Date().toISOString(),
-    }
-    await stores.pins.put(cid, '', { metadata: pin })
+      name: 'test-file11',
+    })
 
-    /** @type {import('../src/bindings').Deal[]} */
-    const deals = [
-      {
-        status: 'queued',
-        lastChanged: new Date(),
-        batchRootCid:
-          'bafybeibj7msecu635umufftjqkd2r6gyttd37miq7xjsemhi657vnqqvca',
-        pieceCid:
-          'baga6ea4seaqgcast3vq72ye4wiaa6fgn6oesayck43gttpuntk4sp4llevdkyhy',
-        datamodelSelector: 'Links/256/Hash/Links/14/Hash/Links/0/Hash',
-      },
-    ]
-    await stores.deals.put(cid, JSON.stringify(deals))
-
-    const res = await fetch(`v0/check/${cid}`)
-    assert(res)
-    assert(res.ok)
+    const res = await fetch(`check/${cid}`)
     const { ok, value } = await res.json()
-    assert(ok)
-    assert.deepStrictEqual(value.pin, pin)
-    assert.deepStrictEqual(value.deals, JSON.parse(JSON.stringify(deals)))
+
+    assert.equal(value.cid, cid)
+    assert.equal(value.pin.status, 'queued')
+    assert.deepStrictEqual(value.deals, fixtures.dealsV0andV1)
   })
 
-  it('should error if CID is not found', async () => {
-    const res = await fetch(`v0/check/${cid}`)
-    assert(res)
-    assert.strictEqual(res.status, 404)
-    const { ok, error } = await res.json()
-    assert(!ok)
-    assert.strictEqual(error.message, 'NFT not found')
+  it('should return proper response for cid v0', async () => {
+    const client = await createClientWithUser()
+    const cid = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
+    await client.addPin({
+      cid,
+      name: 'test-file-cid-v0',
+    })
+
+    const res = await fetch(`check/${cid}`)
+    const { ok, value } = await res.json()
+    assert.equal(value.cid, cid)
+    assert.equal(value.pin.status, 'queued')
+    assert.deepStrictEqual(value.deals, fixtures.dealsV0andV1)
+  })
+
+  it('should error on invalid cid', async () => {
+    const cid = 'asdhjkahsdja'
+    const res = await fetch(`check/${cid}`)
+    const { ok, value, error } = await res.json()
+
+    assert.equal(ok, false)
+    assert.deepStrictEqual(error, {
+      code: 'ERROR_INVALID_CID',
+      message: `Invalid CID: ${cid}`,
+    })
+  })
+
+  it('should error on not found', async () => {
+    const cid = 'bafybeia22kh3smc7p67oa76pcleaxp4u5zatsvcndi3xrqod5vtxq5avpa'
+    const res = await fetch(`check/${cid}`)
+    const { ok, value, error } = await res.json()
+
+    assert.equal(ok, false)
+    assert.deepStrictEqual(error, {
+      code: 'HTTP_ERROR',
+      message: `NFT not found`,
+    })
   })
 })

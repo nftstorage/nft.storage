@@ -2,7 +2,7 @@ import assert from 'assert'
 import { createClientWithUser, DBTestClient } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 
-describe('V1 - Get NFT', () => {
+describe('Get NFT', () => {
   /** @type{DBTestClient} */
   let client
 

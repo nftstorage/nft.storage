@@ -1,18 +1,11 @@
 import { Magic } from '@magic-sdk/admin'
-import { secrets } from '../constants.js'
+import { secrets, database } from '../constants.js'
 import { HTTPError, ErrorUserNotFound, ErrorTokenNotFound } from '../errors.js'
-import {
-  createOrUpdate,
-  getUser,
-  matchToken,
-  userSafe,
-} from '../models/users.js'
 import { parseJWT, verifyJWT } from './jwt.js'
+import { DBClient } from './db-client.js'
 export const magic = new Magic(secrets.magic)
 
-/**
- * @typedef {import('../models/users').User} User
- */
+const db = new DBClient(database.url, secrets.database)
 
 /**
  * Validate auth
@@ -23,33 +16,49 @@ export const magic = new Magic(secrets.magic)
 export async function validate(event, { sentry }) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
+  try {
+    // validate access tokens
+    if (await verifyJWT(token, secrets.salt)) {
+      const decoded = parseJWT(token)
 
-  // validate access tokens
-  if (await verifyJWT(token, secrets.salt)) {
-    const decoded = parseJWT(token)
-    const user = await getUser(decoded.sub)
-    if (user) {
-      const tokenName = matchToken(user, token)
-      if (typeof tokenName === 'string') {
-        sentry.setUser(userSafe(user))
-        return { user, tokenName }
+      const user = await db.getUser(decoded.sub)
+      if (user.error) {
+        throw new Error(`DB error: ${JSON.stringify(user.error)}`)
+      }
+
+      if (user.data) {
+        const key = user.data.keys.find((k) => k?.secret === token)
+        if (key) {
+          return {
+            user: user.data,
+            key,
+            db,
+          }
+        } else {
+          throw new ErrorTokenNotFound()
+        }
       } else {
-        throw new ErrorTokenNotFound()
+        throw new Error('Could not find user')
       }
     } else {
-      throw new ErrorUserNotFound()
-    }
-  }
+      // validate magic.link tokens
+      magic.token.validate(token)
+      const [proof, claim] = magic.token.decode(token)
 
-  // validate magic id tokens
-  magic.token.validate(token)
-  const [proof, claim] = magic.token.decode(token)
-  const user = await getUser(claim.iss)
-  if (user) {
-    sentry.setUser(userSafe(user))
-    return { user, tokenName: 'session' }
-  } else {
-    throw new ErrorUserNotFound()
+      const user = await db.getUser(claim.iss)
+      if (user.error) {
+        throw new Error(`DB error: ${JSON.stringify(user.error)}`)
+      }
+
+      return {
+        user: user.data,
+        db,
+      }
+    }
+  } catch (/** @type {any}*/ err) {
+    console.error(err)
+    sentry.captureException(err)
+    throw new ErrorUserNotFound(err.message)
   }
 }
 
@@ -69,8 +78,29 @@ export async function loginOrRegister(event, data) {
       data.type === 'github'
         ? await parseGithub(data.data, metadata)
         : parseMagic(metadata)
-    const user = await createOrUpdate(parsed)
-    return { user: userSafe(user), tokenName: 'session' }
+
+    const upsert = await db.upsertUser({
+      email: parsed.email,
+      github_id: parsed.sub,
+      magic_link_id: parsed.issuer,
+      name: parsed.name,
+      public_address: parsed.publicAddress,
+      picture: parsed.picture,
+      github: parsed.github,
+    })
+
+    if (upsert.error) {
+      // @ts-ignore
+      throw new Error(`DB error: ${JSON.stringify(upsert.error)}`)
+    }
+
+    if (upsert.data === null) {
+      throw new Error('Could not retrieve user from db.')
+    }
+
+    const user = upsert.data[0]
+
+    return { user, tokenName: 'session' }
   } else {
     throw new HTTPError(
       'Login or register failed. Issuer could not be fetched.'
@@ -83,17 +113,12 @@ export async function loginOrRegister(event, data) {
  * `data` should be of type `import('@magic-ext/oauth').OAuthRedirectResult` but these types arent made for webworker env.
  * @param {any} data
  * @param {import('@magic-sdk/admin').MagicUserMetadata} magicMetadata
- * @returns {Promise<User>}
+ * @returns {Promise<import('../bindings.js').User>}
  */
 async function parseGithub(data, magicMetadata) {
   const sub = `github|${data.oauth.userHandle}`
   /** @type {Record<string, string>} */
   let tokens = {}
-
-  const oldUser = await getUser(sub)
-  if (oldUser) {
-    tokens = oldUser.tokens
-  }
 
   return {
     sub: `github|${data.oauth.userHandle}`,
@@ -112,7 +137,7 @@ async function parseGithub(data, magicMetadata) {
 
 /**
  * @param {import('@magic-sdk/admin').MagicUserMetadata} magicMetadata
- * @returns {User}
+ * @returns {import('../bindings.js').User}
  */
 function parseMagic({ issuer, email, publicAddress }) {
   if (!issuer || !email || !publicAddress) {

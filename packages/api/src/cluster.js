@@ -7,10 +7,6 @@ const client = new Cluster(cluster.apiUrl, {
 })
 
 /**
- * @typedef {import('./models/users.js').User} User
- */
-
-/**
  * @param {Blob} data
  * @param {import('@nftstorage/ipfs-cluster').API.AddParams} options
  */
@@ -104,7 +100,6 @@ export function delegates() {
 /**
  * Best effort conversion from cluster status to pinning service API status.
  * @param {import('@nftstorage/ipfs-cluster').API.StatusResponse} status
- * @returns {import('./pinata-psa').Status}
  */
 export function toPSAStatus(status) {
   const pinInfos = Object.values(status.peerMap)

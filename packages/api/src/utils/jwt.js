@@ -1,4 +1,4 @@
-/** @type {Record<string, HmacImportParams>} */
+/** @type {Record<string, any>} */
 const algorithms = {
   HS256: {
     name: 'HMAC',
