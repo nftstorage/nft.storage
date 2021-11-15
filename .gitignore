@@ -30,6 +30,9 @@ yarn-error.log*
 .production.env
 .env
 
+
+.devcontainer/cluster-data
+
 dist
 node_modules
 worker
