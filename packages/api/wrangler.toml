@@ -194,4 +194,4 @@ kv_namespaces = [
 ENV = "dev"
 DEBUG = "*"
 CLUSTER_API_URL = "https://yusef-cluster-api-nft-storage.loca.lt"
-DATABASE_URL = "http://localhost:8000"
+DATABASE_URL = "https://yusef-postgrest-nft-storage.loca.lt"
