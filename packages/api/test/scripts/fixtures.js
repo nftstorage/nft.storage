@@ -358,5 +358,35 @@ export const fixtures = {
       batchRootCid:
         'bafybeib7kskjnu2nxmdhfmffb26y6jqufcvjtevxpkje2v67qchlfgop4q',
     },
+    {
+      status: 'active',
+      lastChanged: '2021-11-14T12:21:28.371318+00:00',
+      chainDealID: 2754143,
+      datamodelSelector: 'Links/19/Hash/Links/46/Hash/Links/0/Hash',
+      statusText:
+        'containing sector active as of 2021-11-14 12:12:30 at epoch 1286185',
+      dealActivation: '2021-11-14T15:43:00+00:00',
+      dealExpiration: '2023-04-08T15:43:00+00:00',
+      miner: 'f01392893',
+      pieceCid:
+        'baga6ea4seaqfanmqerzaiq7udm5wxx3hcmgapukudbadjarzkadudexamn5gwny',
+      batchRootCid:
+        'bafybeiek5gau46j4dxoyty27qtirb3iuoq7aax4l3xt25mfk2igyt35bme',
+    },
+    {
+      status: 'active',
+      lastChanged: '2021-11-14T17:41:01.227571+00:00',
+      chainDealID: 2754196,
+      datamodelSelector: 'Links/19/Hash/Links/46/Hash/Links/0/Hash',
+      statusText:
+        'containing sector active as of 2021-11-14 17:34:30 at epoch 1286829',
+      dealActivation: '2021-11-15T14:43:00+00:00',
+      dealExpiration: '2023-04-09T14:43:00+00:00',
+      miner: 'f01207045',
+      pieceCid:
+        'baga6ea4seaqfanmqerzaiq7udm5wxx3hcmgapukudbadjarzkadudexamn5gwny',
+      batchRootCid:
+        'bafybeiek5gau46j4dxoyty27qtirb3iuoq7aax4l3xt25mfk2igyt35bme',
+    },
   ],
 }
