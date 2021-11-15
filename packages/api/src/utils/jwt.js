@@ -1,6 +1,6 @@
 import { base58btc } from 'multiformats/bases/base58'
 
-/** @type {Record<string, HmacImportParams|EcKeyImportParams>} */
+/** @type {Record<string, any>} */
 const algorithms = {
   HS256: {
     name: 'HMAC',

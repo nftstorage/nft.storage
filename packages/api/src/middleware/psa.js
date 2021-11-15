@@ -5,7 +5,7 @@ import { JSONResponse } from '../utils/json-response.js'
  * Catch an error and respond with a response as required by the PSA spec,
  * logging the actual error with sentry.
  *
- * @typedef {import('../utils/router.js').Handler} Handler
+ * @typedef {import('../bindings').Handler} Handler
  * @param {Handler} handler
  * @returns {Handler}
  */

@@ -1,18 +1,30 @@
-import * as API from './lib/interface.js'
 import { Blob, FormData } from './platform.js'
 import { toGatewayURL, GATEWAY } from './gateway.js'
 
-/** @typedef {import('./gateway.js').GatewayURLOptions} EmbedOptions */
+/**
+ * @typedef {import('./gateway.js').GatewayURLOptions} EmbedOptions
+ * @typedef {import('./lib/interface.js').TokenInput} TokenInput
+ */
 
 /**
- * @template {API.TokenInput} T
- * @implements {API.Token<T>}
+ * @template T
+ * @typedef {import('./lib/interface').Encoded<T, [[Blob, URL]]>} EncodedBlobUrl
+ */
+
+/**
+ * @template G
+ * @typedef {import('./lib/interface').Encoded<G, [[Blob, Blob]]>} EncodedBlobBlob
+ */
+
+/**
+ * @template {import('./lib/interface.js').TokenInput} T
+ * @implements {Token<T>}
  */
 export class Token {
   /**
-   * @param {API.CIDString} ipnft
-   * @param {API.EncodedURL} url
-   * @param {API.Encoded<T, [[Blob, URL]]>} data
+   * @param {import('./lib/interface.js').CIDString} ipnft
+   * @param {import('./lib/interface.js').EncodedURL} url
+   * @param {import('./lib/interface.js').Encoded<T, [[Blob, URL]]>} data
    */
   constructor(ipnft, url, data) {
     /** @readonly */
@@ -29,16 +41,16 @@ export class Token {
     })
   }
   /**
-   * @returns {API.Encoded<T, [[Blob, URL]]>}
+   * @returns {import('./lib/interface.js').Encoded<T, [[Blob, URL]]>}
    */
   embed() {
     return Token.embed(this)
   }
 
   /**
-   * @template {API.TokenInput} T
-   * @param {{data: API.Encoded<T, [[Blob, URL]]>}} token
-   * @returns {API.Encoded<T, [[Blob, URL]]>}
+   * @template {TokenInput} T
+   * @param {{data: import('./lib/interface.js').Encoded<T, [[Blob, URL]]>}} token
+   * @returns {import('./lib/interface.js').Encoded<T, [[Blob, URL]]>}
    */
   static embed({ data }) {
     return embed(data, { gateway: GATEWAY })
@@ -47,16 +59,16 @@ export class Token {
 
 /**
  * @template T
- * @param {API.Encoded<T, [[Blob, URL]]>} input
+ * @param {EncodedBlobUrl<T>} input
  * @param {EmbedOptions} options
- * @returns {API.Encoded<T, [[Blob, URL]]>}
+ * @returns {EncodedBlobUrl<T>}
  */
 export const embed = (input, options) =>
   mapWith(input, isURL, embedURL, options)
 
 /**
- * @template {API.TokenInput} T
- * @param {API.EncodedToken<T>} value
+ * @template {TokenInput} T
+ * @param {import('./lib/interface.js').EncodedToken<T>} value
  * @param {Set<string>} paths - Paths were to expcet EncodedURLs
  * @returns {Token<T>}
  */
@@ -72,7 +84,7 @@ const isURL = (value) => value instanceof URL
 /**
  * @template State
  * @param {State} state
- * @param {API.EncodedURL} url
+ * @param {import('./lib/interface.js').EncodedURL} url
  * @returns {[State, URL]}
  */
 const decodeURL = (state, url) => [state, new URL(url)]
@@ -94,7 +106,7 @@ const isObject = (value) => typeof value === 'object' && value != null
  * @param {any} value
  * @param {Set<string>} assetPaths
  * @param {PropertyKey[]} path
- * @returns {value is API.EncodedURL}
+ * @returns {value is import('./lib/interface.js').EncodedURL}
  */
 const isEncodedURL = (value, assetPaths, path) =>
   typeof value === 'string' && assetPaths.has(path.join('.'))
@@ -131,8 +143,8 @@ const isEncodedURL = (value, assetPaths, path) =>
  * // ]
  * ```
  *
- * @template {API.TokenInput} T
- * @param {API.Encoded<T, [[Blob, Blob]]>} input
+ * @template {TokenInput} T
+ * @param {EncodedBlobBlob<T>} input
  * @returns {FormData}
  */
 export const encode = (input) => {
@@ -171,14 +183,14 @@ const isBlob = (value) => value instanceof Blob
  * was encountered.
  *
  * @template T, I, X, O, State
- * @param {API.Encoded<T, [[I, X]]>} input - Arbitrary input.
+ * @param {import('./lib/interface.js').Encoded<T, [[I, X]]>} input - Arbitrary input.
  * @param {(input:any, state:State, path:PropertyKey[]) => input is X} p - Predicate function to determine
  * which values to swap.
  * @param {(state:State, input:X, path:PropertyKey[]) => [State, O]} f - Function
  * that swaps matching values.
  * @param {State} state - Some additional context you need in the process.
  * likey you'll start with `[]`.
- * @returns {API.Encoded<T, [[I, O]]>}
+ * @returns {import('./lib/interface.js').Encoded<T, [[I, O]]>}
  */
 export const mapWith = (input, p, f, state) => {
   const [, output] = mapValueWith(input, p, f, state, [])
@@ -187,7 +199,7 @@ export const mapWith = (input, p, f, state) => {
 
 /**
  * @template T, I, X, O, State
- * @param {API.Encoded<T, [[I, X]]>} input - Arbitrary input.
+ * @param {import('./lib/interface.js').Encoded<T, [[I, X]]>} input - Arbitrary input.
  * @param {(input:any, state:State, path:PropertyKey[]) => input is X} p - Predicate function to determine
  * which values to swap.
  * @param {(state:State, input:X, path:PropertyKey[]) => [State, O]} f - Function
@@ -195,7 +207,7 @@ export const mapWith = (input, p, f, state) => {
  * @param {State} state - Some additional context you need in the process.
  * @param {PropertyKey[]} path - Path where the value was encountered. Most
  * likey you'll start with `[]`.
- * @returns {[State, API.Encoded<T, [[I, O]]>]}
+ * @returns {[State, import('./lib/interface.js').Encoded<T, [[I, O]]>]}
  */
 const mapValueWith = (input, p, f, state, path) =>
   p(input, state, path)
@@ -210,16 +222,17 @@ const mapValueWith = (input, p, f, state, path) =>
  * Just like `mapWith` except
  *
  * @template State, T, I, X, O
- * @param {API.Encoded<T, [[I, X]]>} input
+ * @param {import('./lib/interface.js').Encoded<T, [[I, X]]>} input
  * @param {(input:any, state:State, path:PropertyKey[]) => input is X} p
  * @param {(state: State, input:X, path:PropertyKey[]) => [State, O]} f
  * @param {State} init
  * @param {PropertyKey[]} path
- * @returns {[State, API.Encoded<T, [[I, O]]>]}
+ * @returns {[State, import('./lib/interface.js').Encoded<T, [[I, O]]>]}
  */
 const mapObjectWith = (input, p, f, init, path) => {
   let state = init
-  const output = /** @type {API.Encoded<T, [[I, O]]>} */ ({})
+  const output =
+    /** @type {import('./lib/interface.js').Encoded<T, [[I, O]]>} */ ({})
   for (const [key, value] of Object.entries(input)) {
     const [next, out] = mapValueWith(value, p, f, state, [...path, key])
     // @ts-ignore
@@ -239,7 +252,7 @@ const mapObjectWith = (input, p, f, init, path) => {
  * @param {(state: State, input:X, path:PropertyKey[]) => [State, O]} f
  * @param {State} init
  * @param {PropertyKey[]} path
- * @returns {[State, API.Encoded<T, [[I, O]]>]}
+ * @returns {[State, import('./lib/interface.js').Encoded<T, [[I, O]]>]}
  */
 const mapArrayWith = (input, p, f, init, path) => {
   const output = /** @type {unknown[]} */ ([])
@@ -251,5 +264,8 @@ const mapArrayWith = (input, p, f, init, path) => {
     state = next
   }
 
-  return [state, /** @type {API.Encoded<T, [[I, O]]>} */ (output)]
+  return [
+    state,
+    /** @type {import('./lib/interface.js').Encoded<T, [[I, O]]>} */ (output),
+  ]
 }

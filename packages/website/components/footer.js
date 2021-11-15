@@ -50,10 +50,21 @@ export default function Footer() {
         </span>
         <Dot />
         <span className="db db-m dib-ns mv3">
-          Need Help?{' '}
+          <Link href="/faq">
+            <a
+              className="nspink no-underline underline-hover v-mid"
+              onClick={onLinkClick}
+            >
+              FAQ
+            </a>
+          </Link>
+        </span>
+        <Dot />
+        <span className="db db-m dib-ns mv3">
+          <span className="v-mid">Need Help? </span>
           <a
             href="https://github.com/nftstorage/nft.storage/issues/new"
-            className="nspink underline-hover no-underline"
+            className="nspink underline-hover no-underline v-mid"
             onClick={onLinkClick}
           >
             Open an Issue
@@ -65,5 +76,5 @@ export default function Footer() {
 }
 
 function Dot() {
-  return <span className="mh2 b dn dn-m dib-ns mv3">•</span>
+  return <span className="mh2 b dn dn-m dib-ns mv3 v-mid">•</span>
 }
