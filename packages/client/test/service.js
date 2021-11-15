@@ -256,7 +256,8 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
         })
       }
     }
-  } catch (error) {
+  } catch (err) {
+    const error = /** @type {Error & {status: number}} */ (err)
     return new Response(
       JSON.stringify({
         ok: false,

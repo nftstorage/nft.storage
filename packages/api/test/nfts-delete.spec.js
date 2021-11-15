@@ -5,7 +5,7 @@ import {
   rawClient,
 } from './scripts/helpers.js'
 
-describe('V1 - Delete NFT', () => {
+describe('Delete NFT', () => {
   /** @type{DBTestClient} */
   let client
 

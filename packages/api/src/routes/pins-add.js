@@ -1,39 +1,40 @@
-import mergeOptions from 'merge-options'
-import { CID } from 'multiformats'
 import { JSONResponse } from '../utils/json-response.js'
-import * as nfts from '../models/nfts.js'
-import * as pins from '../models/pins.js'
-import * as pinataQueue from '../models/pinata-queue.js'
 import * as cluster from '../cluster.js'
 import { validate } from '../utils/auth.js'
-import { debug } from '../utils/debug.js'
-
-const merge = mergeOptions.bind({ ignoreUndefined: true })
-const log = debug('pins-add')
+import { parseCidPinning } from '../utils/utils.js'
+import { toPinsResponse } from '../utils/db-transforms.js'
 
 /** @type {import('../bindings').Handler} */
 export async function pinsAdd(event, ctx) {
-  const { user, tokenName } = await validate(event, ctx)
+  const { db, user, key } = await validate(event, ctx)
+
+  /** @type {import('../bindings').PinsAddInput} */
   const pinData = await event.request.json()
 
-  try {
-    CID.parse(pinData.cid)
-  } catch {
+  // validate CID
+  const cid = parseCidPinning(pinData.cid)
+  if (!cid) {
     return new JSONResponse(
-      { error: { reason: 'INVALID_PIN_DATA', details: 'invalid CID' } },
+      {
+        error: {
+          reason: 'INVALID_PIN_DATA',
+          details: `Invalid request id: ${pinData.cid}`,
+        },
+      },
       { status: 400 }
     )
   }
+
+  // validate name
   if (pinData.name && typeof pinData.name !== 'string') {
     return new JSONResponse(
       { error: { reason: 'INVALID_PIN_DATA', details: 'invalid name' } },
       { status: 400 }
     )
   }
-
-  const name = pinData.name
-
   let meta
+
+  // validate meta
   if (pinData.meta) {
     if (typeof pinData.meta !== 'object' || Array.isArray(pinData.meta)) {
       return new JSONResponse(
@@ -46,106 +47,22 @@ export async function pinsAdd(event, ctx) {
     )
   }
 
-  const pin = await obtainPin(pinData.cid)
+  await cluster.pin(cid.contentCid, {
+    origins: pinData.origins,
+    name: pinData.name,
+    metadata: pinData.meta,
+  })
 
-  const origins = [...(pinData.origins || []), ...cluster.delegates()]
-  event.waitUntil(pinataQueue.add(pinData.cid, { origins }))
+  const upload = await db.createUpload({
+    type: 'Remote',
+    content_cid: cid.contentCid,
+    source_cid: cid.sourceCid,
+    user_id: user.id,
+    key_id: key?.id,
+    origins: pinData.origins,
+    meta: pinData.meta,
+    name: pinData.name,
+  })
 
-  const nft = await obtainNft(user, tokenName, pin, { name, meta })
-
-  /** @type import('../pinata-psa').PinStatus */
-  const pinStatus = {
-    requestid: pin.cid,
-    status: pin.status,
-    created: pin.created,
-    pin: { cid: pin.cid, ...(nft.pin || {}) },
-    delegates: cluster.delegates(),
-  }
-  return new JSONResponse(pinStatus)
-}
-
-/**
- * @param {string} cid
- * @returns {Promise<import('../models/pins.js').Pin>}
- */
-export const obtainPin = async (cid) => {
-  const pin = await pins.get(cid)
-  return pin == null
-    ? createPin(cid)
-    : // if pin is failed, retry
-    pin.status === 'failed'
-    ? retryPin(pin)
-    : pin
-}
-
-/**
- * @param {import('../models/pins.js').Pin} failed
- * @returns {Promise<import('../models/pins.js').Pin>}
- */
-const retryPin = async (failed) => {
-  /** @type {import('../models/pins.js').Pin} */
-  const pin = { ...failed, status: 'queued' }
-  await pins.set(failed.cid, pin)
-  return pin
-}
-
-/**
- * @param {string} cid
- * @returns {Promise<import('../models/pins.js').Pin>}
- */
-const createPin = async (cid) => {
-  const created = new Date().toISOString()
-  /** @type {import('../models/pins.js').Pin} */
-  const pin = { cid, status: 'queued', size: 0, created }
-  await cluster.pin(cid)
-  await pins.set(cid, pin)
-  return pin
-}
-
-/**
- * @param {import('../bindings').User} user
- * @param {string} tokenName
- * @param {import('../models/pins.js').Pin} pin
- * @param {import('../bindings').NFT['pin']} nftPin
- * @returns {Promise<import('../bindings').NFT>}
- */
-export const obtainNft = async (user, tokenName, pin, nftPin) => {
-  const nft = await nfts.get({ user, cid: pin.cid })
-  return nft == null
-    ? createNft(user, tokenName, pin, nftPin)
-    : updateNft(user, nft, pin, nftPin)
-}
-
-/**
- * @param {import('../bindings').User} user
- * @param {string} tokenName
- * @param {import('../models/pins.js').Pin} pin
- * @param {import('../bindings').NFT['pin']} nftPin
- * @returns {Promise<import('../bindings').NFT>}
- */
-const createNft = async (user, tokenName, pin, nftPin) => {
-  /** @type import('../bindings').NFT */
-  const nft = {
-    cid: pin.cid,
-    created: new Date().toISOString(),
-    type: 'remote',
-    scope: tokenName,
-    files: [],
-    pin: nftPin,
-  }
-  await nfts.set({ user, cid: pin.cid }, nft, pin)
-  return nft
-}
-
-/**
- * @param {import('../bindings').User} user
- * @param {import('../bindings').NFT} nft
- * @param {import('../models/pins.js').Pin} pin
- * @param {import('../bindings').NFT['pin']} nftPin
- * @returns {Promise<import('../bindings').NFT>}
- */
-const updateNft = async (user, nft, pin, nftPin) => {
-  nft.pin = merge(nft.pin, nftPin)
-  await nfts.set({ user, cid: nft.cid }, nft, pin)
-  return nft
+  return new JSONResponse(toPinsResponse(upload))
 }

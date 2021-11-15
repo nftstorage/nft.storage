@@ -1,116 +1,58 @@
 import assert from 'assert'
-import { clearStores } from './scripts/helpers.js'
-import stores from './scripts/stores.js'
-import { signJWT } from '../src/utils/jwt.js'
-import { SALT } from './scripts/worker-globals.js'
+import {
+  createClientWithUser,
+  DBTestClient,
+  rawClient,
+} from './scripts/helpers.js'
 import { createCar } from './scripts/car.js'
-import { rawClient } from './scripts/helpers.js'
 
-/**
- * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
- */
-async function createTestUser({
-  publicAddress = `0x73573r${Date.now()}`,
-  issuer = `did:eth:${publicAddress}`,
-  name = 'A Tester',
-} = {}) {
-  const token = await signJWT(
-    {
-      sub: issuer,
-      iss: 'nft-storage',
-      iat: Date.now(),
-      name: 'test',
-    },
-    SALT
-  )
-  await stores.users.put(
-    issuer,
-    JSON.stringify({
-      sub: issuer,
-      nickname: 'testymctestface',
-      name,
-      email: 'a.tester@example.org',
-      picture: 'http://example.org/avatar.png',
-      issuer,
-      publicAddress,
-      tokens: { test: token },
-    })
-  )
-  return { token, issuer }
-}
+describe('NFT Upload ', () => {
+  /** @type{DBTestClient} */
+  let client
 
-describe('/upload', () => {
-  beforeEach(clearStores)
+  before(async () => {
+    client = await createClientWithUser()
+  })
 
   it('should upload a single file', async () => {
-    const { token, issuer } = await createTestUser()
-
-    const file = new Blob(['hello world!'])
+    const file = new Blob(['hello world!'], { type: 'application/text' })
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
-    const res = await fetch('v0/upload', {
+    const res = await fetch('upload', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${client.token}` },
       body: file,
     })
-    assert(res, 'Server responded')
-    assert(res.ok, 'Server response ok')
     const { ok, value } = await res.json()
     assert(ok, 'Server response payload has `ok` property')
     assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
-
-    const nftData = await stores.nfts.get(`${issuer}:${cid}`)
-    assert(nftData, 'nft data was stored')
-
-    const pinData = await stores.pins.getWithMetadata(cid)
-    assert(pinData.metadata, 'pin metadata was stored')
     assert.strictEqual(
-      // @ts-ignore
-      pinData.metadata.status,
-      'queued',
-      'pin status is "queued"'
+      value.type,
+      'application/text',
+      'type should match blob mime-type'
     )
-  })
 
-  it('should record nft:create migration event', async () => {
-    const { token } = await createTestUser()
-
-    const file = new Blob(['test-migration-event-' + Date.now()])
-    const res = await fetch('v0/upload', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: file,
-    })
-
-    assert(res, 'Server responded')
-    assert(res.ok, 'Server response ok')
-    const {
-      ok,
-      value: { cid },
-    } = await res.json()
-    assert(ok, 'Server response payload has `ok` property')
-
-    const { data, error } = await rawClient
-      .from('migration_event')
+    const { data } = await rawClient
+      .from('upload')
       .select('*')
-      .filter('name', 'eq', 'nft:create')
+      .match({ source_cid: cid, user_id: client.userId })
+      .single()
 
-    assert.ok(!error)
-    const eventData = data?.find((d) => d.data.nft.cid === cid)
-    assert(eventData)
+    // @ts-ignore
+    assert.equal(data.source_cid, cid)
+    assert.equal(data.deleted_at, null)
   })
 
   it('should upload a multiple blobs', async () => {
-    const { token, issuer } = await createTestUser()
     const body = new FormData()
 
     const file1 = new Blob(['hello world! 1'])
     const file2 = new Blob(['hello world! 2'])
     body.append('file', file1, 'name1')
     body.append('file', file2, 'name2')
-    const res = await fetch('v0/upload', {
+    const res = await fetch('upload', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${client.token}` },
       body,
     })
     assert(res, 'Server responded')
@@ -130,16 +72,15 @@ describe('/upload', () => {
   })
 
   it('should upload a multiple blobs without name', async () => {
-    const { token, issuer } = await createTestUser()
     const body = new FormData()
 
     const file1 = new Blob(['hello world! 1'])
     const file2 = new Blob(['hello world! 2'])
     body.append('file', file1)
     body.append('file', file2)
-    const res = await fetch('v0/upload', {
+    const res = await fetch('upload', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${client.token}` },
       body,
     })
     assert(res, 'Server responded')
@@ -159,16 +100,15 @@ describe('/upload', () => {
   })
 
   it('should upload a multiple files without name', async () => {
-    const { token, issuer } = await createTestUser()
     const body = new FormData()
 
     const file1 = new Blob(['hello world! 1'])
     const file2 = new Blob(['hello world! 2'])
     body.append('file', new File([file1], 'name1.png'))
     body.append('file', new File([file2], 'name1.png'))
-    const res = await fetch('v0/upload', {
+    const res = await fetch('upload', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${client.token}` },
       body,
     })
     assert(res, 'Server responded')
@@ -188,16 +128,14 @@ describe('/upload', () => {
   })
 
   it('should upload a single CAR file', async () => {
-    const { token, issuer } = await createTestUser()
-
-    const { root, car } = await createCar('hello world!')
+    const { root, car } = await createCar('hello world car')
     // expected CID for the above data
-    const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+    const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
     assert.strictEqual(root.toString(), cid, 'car file has correct root')
-    const res = await fetch('v0/upload', {
+    const res = await fetch('upload', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${client.token}`,
         'Content-Type': 'application/car',
       },
       body: car,
@@ -208,21 +146,115 @@ describe('/upload', () => {
     const { ok, value } = await res.json()
     assert(ok, 'Server response payload has `ok` property')
     assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
-
-    const nftData = await stores.nfts.get(`${issuer}:${cid}`)
-    assert(nftData, 'nft data was stored')
-
-    const pinData = await stores.pins.getWithMetadata(cid)
-    assert(pinData.metadata, 'pin metadata was stored')
-    // ipfs dag stat bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve
-    // Size: 12, NumBlocks: 1
-    // @ts-ignore
-    assert.strictEqual(pinData.metadata.size, 12, 'pin size correct')
     assert.strictEqual(
-      // @ts-ignore
-      pinData.metadata.status,
-      'queued',
-      'pin status is "queued"'
+      value.type,
+      'application/car',
+      'type should match blob mime-type'
     )
+
+    const { data } = await rawClient
+      .from('upload')
+      .select('*, content(*)')
+      .match({ source_cid: cid, user_id: client.userId })
+      .single()
+
+    // @ts-ignore
+    assert.equal(data.source_cid, cid)
+    assert.equal(data.deleted_at, null)
+    assert.equal(data.content.dag_size, 15, 'correct dag size')
+  })
+
+  it('should re-upload same data and update mime-type', async () => {
+    const file = new Blob(['hello world!'], { type: 'application/text' })
+    // expected CID for the above data
+    const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+    const res1 = await fetch('upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: file,
+    })
+    const data1 = await res1.json()
+    assert.equal(data1.value.cid, cid)
+    assert.equal(data1.value.type, 'application/text', 'text')
+
+    const { root, car } = await createCar('hello world!')
+    const res2 = await fetch('upload', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${client.token}`,
+        'Content-Type': 'application/car',
+      },
+      body: car,
+    })
+    const data2 = await res2.json()
+    assert.equal(data2.value.cid, cid)
+    assert.equal(data2.value.type, 'application/car', 'car')
+
+    const { data } = await rawClient
+      .from('upload')
+      .select('*')
+      .match({ source_cid: cid, user_id: client.userId })
+      .single()
+
+    assert.equal(data.type, 'Car', 'type should be Car at the end.')
+  })
+
+  it('should re-upload nft turning a deleted nft into an active nft again', async () => {
+    const file = new Blob(['hello world!'])
+    // expected CID for the above data
+    const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+    const res = await fetch('upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: file,
+    })
+    const { ok, value } = await res.json()
+
+    const deleted = await client.client.deleteUpload(cid, client.userId)
+    assert.notEqual(deleted?.deleted_at, null)
+
+    const testTs = Date.now()
+    const reup = await fetch('upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: file,
+    })
+    const reupRsp = await reup.json()
+    assert.ok(reupRsp.ok)
+
+    const { data } = await rawClient
+      .from('upload')
+      .select('*')
+      .match({ source_cid: cid, user_id: client.userId })
+      .single()
+
+    assert.equal(data.deleted_at, null, 'its active again')
+    assert.ok(
+      new Date(data.updated_at).valueOf() > testTs,
+      'updated_at should be bigger than a date before re-upload request'
+    )
+  })
+
+  it('should upload to cluster 2', async () => {
+    const file = new Blob(['should upload to cluster 2'], {
+      type: 'application/text',
+    })
+    // expected CID for the above data
+    const cid = 'bafkreicoihdprzusqwmabenu7tsec7xffsaqbdpw4f3eputfcornkiytva'
+    const res = await fetch('upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: file,
+    })
+    const { ok } = await res.json()
+    assert(ok, 'upload created')
+    const { data } = await rawClient
+      .from('upload')
+      .select('*,content(dag_size, pin(status, service, inserted_at))')
+      .match({ source_cid: cid, user_id: client.userId })
+      .filter('content.pin.service', 'in', '(IpfsCluster,IpfsCluster2)')
+      .single()
+
+    assert.equal(data.content.pin[0].service, 'IpfsCluster2')
   })
 })

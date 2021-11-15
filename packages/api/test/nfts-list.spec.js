@@ -3,7 +3,7 @@ import { createClientWithUser } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import delay from 'delay'
 
-describe('V1 - List NFTs', () => {
+describe('List NFTs', () => {
   it('should list 2 nfts with no params and validate deals', async () => {
     const client = await createClientWithUser()
     const cid1 = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'

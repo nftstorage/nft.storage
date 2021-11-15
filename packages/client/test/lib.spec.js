@@ -62,9 +62,10 @@ describe('client', () => {
       try {
         await client.storeBlob(blob)
         assert.unreachable('sholud have failed')
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error instanceof Error)
-        assert.match(error, /Unauthorized/)
+        assert.match(error.message, /Unauthorized/)
       }
     })
 
@@ -75,7 +76,8 @@ describe('client', () => {
         await client.storeBlob(new Blob(['blobby']))
         assert.unreachable('should have thrown')
       } catch (err) {
-        assert.is(err.message, 'missing token')
+        const error = /** @type {Error} */ (err)
+        assert.is(error.message, 'missing token')
       }
     })
 
@@ -85,7 +87,8 @@ describe('client', () => {
         await client.storeBlob(new Blob([]))
         assert.unreachable('should have thrown')
       } catch (err) {
-        assert.match(err.message, /provide some content/)
+        const error = /** @type {Error} */ (err)
+        assert.match(error.message, /provide some content/)
       }
     })
   })
@@ -207,9 +210,10 @@ describe('client', () => {
       try {
         await client.storeDirectory([new File([], 'empty.txt')])
         assert.unreachable('should fail if no content is provided')
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error instanceof Error)
-        assert.match(error, /provide some content/i)
+        assert.match(error.message, /provide some content/i)
       }
     })
 
@@ -218,9 +222,10 @@ describe('client', () => {
       try {
         await client.storeDirectory([])
         assert.unreachable('should fail if no content is provided')
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error instanceof Error)
-        assert.match(error, /provide some content/i)
+        assert.match(error.message, /provide some content/i)
       }
     })
 
@@ -229,9 +234,10 @@ describe('client', () => {
       try {
         await client.storeDirectory([new File([], 'empty.txt')])
         assert.unreachable('should fail if no content is provided')
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error instanceof Error)
-        assert.match(error, /provide some content/i)
+        assert.match(error.message, /provide some content/i)
       }
     })
     it('errors without token', async () => {
@@ -241,7 +247,8 @@ describe('client', () => {
         await client.storeDirectory([new File(['file'], 'file.txt')])
         assert.unreachable('should have thrown')
       } catch (err) {
-        assert.is(err.message, 'missing token')
+        const error = /** @type {Error} */ (err)
+        assert.is(error.message, 'missing token')
       }
     })
 
@@ -251,9 +258,10 @@ describe('client', () => {
       try {
         await client.storeDirectory([new File(['wrong token'], 'foo.txt')])
         assert.unreachable('sholud have failed')
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error instanceof Error)
-        assert.match(error, /Unauthorized/)
+        assert.match(error.message, /Unauthorized/)
       }
     })
   })
@@ -265,10 +273,11 @@ describe('client', () => {
         // @ts-expect-error
         await client.store({})
         assert.unreachable('should have failed')
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error instanceof TypeError)
         assert.match(
-          error,
+          error.message,
           /string property `name` identifying the asset is required/
         )
       }
@@ -280,10 +289,11 @@ describe('client', () => {
         // @ts-expect-error
         await client.store({ name: 'name' })
         assert.unreachable('sholud have failed')
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error instanceof TypeError)
         assert.match(
-          error,
+          error.message,
           /string property `description` describing asset is required/
         )
       }
@@ -295,9 +305,10 @@ describe('client', () => {
         // @ts-expect-error
         await client.store({ name: 'name', description: 'stuff' })
         assert.unreachable('sholud have failed')
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error instanceof TypeError)
-        assert.match(error, /property `image` must be a Blob or File/)
+        assert.match(error.message, /property `image` must be a Blob or File/)
       }
     })
 
@@ -345,9 +356,13 @@ describe('client', () => {
           // @ts-expect-error
           decimals: 'foo',
         })
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error instanceof TypeError)
-        assert.match(error, /property `decimals` must be an integer value/)
+        assert.match(
+          error.message,
+          /property `decimals` must be an integer value/
+        )
       }
     })
 
@@ -360,10 +375,11 @@ describe('client', () => {
           description: 'tada',
           image: new Blob([], { type: 'image/png' }),
         })
-        assert.unreachable('sholud have failed')
-      } catch (error) {
+        assert.unreachable('should have failed')
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error instanceof Error)
-        assert.match(error, /Unauthorized/)
+        assert.match(error.message, /Unauthorized/)
       }
     })
 
@@ -418,7 +434,7 @@ describe('client', () => {
         },
       })
 
-      assert.ok(result instanceof Token)
+      assert.ok(result instanceof Token.Token)
 
       const cid = CID.parse(result.ipnft)
       assert.equal(cid.version, 1)
@@ -479,7 +495,7 @@ describe('client', () => {
         ],
       })
 
-      assert.ok(result instanceof Token)
+      assert.ok(result instanceof Token.Token)
 
       const cid = CID.parse(result.ipnft)
       assert.equal(cid.version, 1)
@@ -533,7 +549,8 @@ describe('client', () => {
       try {
         await client.status(cid)
         assert.unreachable('Expected to fail')
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error.message.match(/not found/))
       }
     })
@@ -547,7 +564,8 @@ describe('client', () => {
         )
         assert.unreachable('should have thrown')
       } catch (err) {
-        assert.is(err.message, 'missing token')
+        const error = /** @type {Error} */ (err)
+        assert.is(error.message, 'missing token')
       }
     })
 
@@ -619,7 +637,8 @@ describe('client', () => {
       try {
         await client.status(cid)
         assert.unreachable('should be gone')
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error.message.includes('not found'))
       }
     })
@@ -629,9 +648,10 @@ describe('client', () => {
       try {
         await client.delete('foo')
         assert.unreachable('invalid cid')
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error instanceof Error)
-        assert.match(error, /parse non base32/)
+        assert.match(error.message, /parse non base32/)
       }
     })
 
@@ -646,7 +666,8 @@ describe('client', () => {
         await client.delete(cid)
         assert.unreachable('should have thrown')
       } catch (err) {
-        assert.is(err.message, 'missing token')
+        const error = /** @type {Error} */ (err)
+        assert.is(error.message, 'missing token')
       }
     })
   })
@@ -680,7 +701,8 @@ describe('client', () => {
       try {
         await client.check(cid)
         assert.unreachable('Expected to fail')
-      } catch (error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error.message.match(/not found/))
       }
     })
