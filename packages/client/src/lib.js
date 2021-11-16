@@ -29,7 +29,6 @@ const MAX_CONCURRENT_UPLOADS = 3
 const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
 
 /**
- * @typedef {import('multiformats/block').BlockDecoder<any, any>} AnyBlockDecoder
  * @typedef {import('./lib/interface.js').Service} Service
  * @typedef {import('./lib/interface.js').CIDString} CIDString
  * @typedef {import('./lib/interface.js').Deal} Deal
@@ -92,6 +91,8 @@ class NFTStorage {
   }
 
   /**
+   * Stores a single file and returns it's CID.
+   *
    * @param {Service} service
    * @param {Blob} blob
    * @returns {Promise<CIDString>}
@@ -103,6 +104,8 @@ class NFTStorage {
   }
 
   /**
+   * Stores a CAR file and returns it's root CID.
+   *
    * @param {Service} service
    * @param {Blob|import('./lib/interface.js').CarReader} car
    * @param {import('./lib/interface.js').CarStorerOptions} [options]
@@ -164,6 +167,10 @@ class NFTStorage {
   }
 
   /**
+   * Stores a directory of files and returns a CID. Provided files **MUST**
+   * be within the same directory, otherwise error is raised e.g. `foo/bar.png`,
+   * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
+   *
    * @param {Service} service
    * @param {Iterable<File>} files
    * @returns {Promise<CIDString>}
@@ -175,6 +182,23 @@ class NFTStorage {
   }
 
   /**
+   * Stores the given token and all resources it references (in the form of a
+   * File or a Blob) along with a metadata JSON as specificed in ERC-1155. The
+   * `token.image` must be either a `File` or a `Blob` instance, which will be
+   * stored and the corresponding content address URL will be saved in the
+   * metadata JSON file under `image` field.
+   *
+   * If `token.properties` contains properties with `File` or `Blob` values,
+   * those also get stored and their URLs will be saved in the metadata JSON
+   * file in their place.
+   *
+   * Note: URLs for `File` objects will retain file names e.g. in case of
+   * `new File([bytes], 'cat.png', { type: 'image/png' })` will be transformed
+   * into a URL that looks like `ipfs://bafy...hash/image/cat.png`. For `Blob`
+   * objects, the URL will not have a file name name or mime type, instead it
+   * will be transformed into a URL that looks like
+   * `ipfs://bafy...hash/image/blob`.
+   *
    * @template {import('./lib/interface.js').TokenInput} T
    * @param {Service} service
    * @param {T} metadata
@@ -187,6 +211,9 @@ class NFTStorage {
   }
 
   /**
+   * Returns current status of the stored NFT by its CID. Note the NFT must
+   * have previously been stored by this account.
+   *
    * @param {Service} service
    * @param {string} cid
    * @returns {Promise<import('./lib/interface.js').StatusResult>}
@@ -213,6 +240,8 @@ class NFTStorage {
   }
 
   /**
+   * Check if a CID of an NFT is being stored by NFT.Storage.
+   *
    * @param {import('./lib/interface.js').PublicService} service
    * @param {string} cid
    * @returns {Promise<import('./lib/interface.js').CheckResult>}
@@ -234,6 +263,10 @@ class NFTStorage {
   }
 
   /**
+   * Removes stored content by its CID from this account. Please note that
+   * even if content is removed from the service other nodes that have
+   * replicated it might still continue providing it.
+   *
    * @param {Service} service
    * @param {string} cid
    * @returns {Promise<void>}
@@ -251,6 +284,43 @@ class NFTStorage {
   }
 
   /**
+   * Encodes the given token and all resources it references (in the form of a
+   * File or a Blob) along with a metadata JSON as specificed in ERC-1155 to a
+   * CAR file. The `token.image` must be either a `File` or a `Blob` instance,
+   * which will be stored and the corresponding content address URL will be
+   * saved in the metadata JSON file under `image` field.
+   *
+   * If `token.properties` contains properties with `File` or `Blob` values,
+   * those also get stored and their URLs will be saved in the metadata JSON
+   * file in their place.
+   *
+   * Note: URLs for `File` objects will retain file names e.g. in case of
+   * `new File([bytes], 'cat.png', { type: 'image/png' })` will be transformed
+   * into a URL that looks like `ipfs://bafy...hash/image/cat.png`. For `Blob`
+   * objects, the URL will not have a file name name or mime type, instead it
+   * will be transformed into a URL that looks like
+   * `ipfs://bafy...hash/image/blob`.
+   *
+   * @example
+   * ```js
+   * const { token, car } = await NFTStorage.encodeNFT({
+   *   name: 'nft.storage store test',
+   *   description: 'Test ERC-1155 compatible metadata.',
+   *   image: new File(['<DATA>'], 'pinpie.jpg', { type: 'image/jpg' }),
+   *   properties: {
+   *     custom: 'Custom data can appear here, files are auto uploaded.',
+   *     file: new File(['<DATA>'], 'README.md', { type: 'text/plain' }),
+   *   }
+   * })
+   *
+   * console.log('IPFS URL for the metadata:', token.url)
+   * console.log('metadata.json contents:\n', token.data)
+   * console.log('metadata.json with IPFS gateway URLs:\n', token.embed())
+   *
+   * // Now store the CAR file on NFT.Storage
+   * await client.storeCar(car)
+   * ```
+   *
    * @template {import('./lib/interface.js').TokenInput} T
    * @param {T} input
    */
@@ -260,6 +330,20 @@ class NFTStorage {
   }
 
   /**
+   * Encodes a single file to a CAR file and also returns it's root CID.
+   *
+   * @example
+   * ```js
+   * const content = new Blob(['hello world'])
+   * const { cid, car } = await NFTStorage.encodeBlob(content)
+   *
+   * // Root CID of the file
+   * console.log(cid.toString())
+   *
+   * // Now store the CAR file on NFT.Storage
+   * await client.storeCar(car)
+   * ```
+   *
    * @param {Blob} blob
    * @returns {Promise<{ cid: CID, car: import('./lib/interface.js').CarReader }>}
    */
@@ -272,6 +356,25 @@ class NFTStorage {
   }
 
   /**
+   * Encodes a directory of files to a CAR file and also returns the root CID.
+   * Provided files **MUST** be within the same directory, otherwise error is
+   * raised e.g. `foo/bar.png`, `foo/bla/baz.json` is ok but `foo/bar.png`,
+   * `bla/baz.json` is not.
+   *
+   * @example
+   * ```js
+   * const { cid, car } = await NFTStorage.encodeDirectory([
+   *   new File(['hello world'], 'hello.txt'),
+   *   new File([JSON.stringify({'from': 'incognito'}, null, 2)], 'metadata.json')
+   * ])
+   *
+   * // Root CID of the directory
+   * console.log(cid.toString())
+   *
+   * // Now store the CAR file on NFT.Storage
+   * await client.storeCar(car)
+   * ```
+   *
    * @param {Iterable<File>} files
    * @returns {Promise<{ cid: CID, car: import('./lib/interface.js').CarReader }>}
    */

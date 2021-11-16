@@ -57,8 +57,8 @@ export interface API {
   ): Promise<{ cid: CID; car: CarReader }>
   /**
    * Encodes a directory of files to a CAR file and also returns the root CID.
-   * Provided files **MUST** be within a same directory, otherwise error is
-   * raised. E.g. `foo/bar.png`, `foo/bla/baz.json` is ok but `foo/bar.png`,
+   * Provided files **MUST** be within the same directory, otherwise error is
+   * raised e.g. `foo/bar.png`, `foo/bla/baz.json` is ok but `foo/bar.png`,
    * `bla/baz.json` is not.
    */
   encodeDirectory(files: Iterable<File>): Promise<{ cid: CID; car: CarReader }>
@@ -82,11 +82,11 @@ export interface API {
    */
   store<T extends TokenInput>(service: Service, token: T): Promise<Token<T>>
   /**
-   * Stores a single file and returns a corresponding CID.
+   * Stores a single file and returns it's CID.
    */
   storeBlob(service: Service, content: Blob | File): Promise<CIDString>
   /**
-   * Stores CAR file and returns a corresponding CID.
+   * Stores a CAR file and returns it's root CID.
    */
   storeCar(
     service: Service,
@@ -95,7 +95,7 @@ export interface API {
   ): Promise<CIDString>
   /**
    * Stores a directory of files and returns a CID. Provided files **MUST**
-   * be within a same directory, otherwise error is raised. E.g. `foo/bar.png`,
+   * be within the same directory, otherwise error is raised e.g. `foo/bar.png`,
    * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
    */
   storeDirectory(service: Service, files: Iterable<File>): Promise<CIDString>
@@ -105,13 +105,13 @@ export interface API {
    */
   status(service: Service, cid: string): Promise<StatusResult>
   /**
-   * Removes stored content by its CID from the service. Please note that
+   * Removes stored content by its CID from this account. Please note that
    * even if content is removed from the service other nodes that have
    * replicated it might still continue providing it.
    */
   delete(service: Service, cid: string): Promise<void>
   /**
-   * Check if a CID of an NFT is being stored by nft.storage.
+   * Check if a CID of an NFT is being stored by NFT.Storage.
    */
   check(service: PublicService, cid: string): Promise<CheckResult>
 }
