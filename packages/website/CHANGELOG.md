@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.12.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.11.0...website-v1.12.0) (2021-11-16)
+
+
+### Features
+
+* remove kv code, update deps and improve client docs ([#714](https://www.github.com/nftstorage/nft.storage/issues/714)) ([22c4e50](https://www.github.com/nftstorage/nft.storage/commit/22c4e507c527d20d9a0587bee0380ea3471f45fe))
+
+
+### Changes
+
+* add /store endpoint to API schema ([#693](https://www.github.com/nftstorage/nft.storage/issues/693)) ([82560e3](https://www.github.com/nftstorage/nft.storage/commit/82560e39a083b60d258a0115d9aa5b15a0bfb73f))
+
 ## [1.11.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.10.0...website-v1.11.0) (2021-11-12)
 
 
