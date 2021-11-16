@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS content
     dag_size    BIGINT,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
+) PARTITION BY HASH (cid);
 
 CREATE INDEX IF NOT EXISTS content_updated_at_idx ON content (updated_at);
 CREATE INDEX IF NOT EXISTS content_inserted_at_idx ON content (inserted_at);
@@ -132,7 +132,7 @@ CREATE UNIQUE INDEX content_cid_with_size_idx ON content (cid) INCLUDE (dag_size
 -- Information for piece of content pinned in IPFS.
 CREATE TABLE IF NOT EXISTS pin
 (
-    id          BIGSERIAL PRIMARY KEY,
+    id          BIGSERIAL,
     -- Overall pinning status at this location (may be pinned on multiple nodes).
     status      pin_status_type                                               NOT NULL,
     -- The root CID of the pinned content, normalized as base32 v1.
@@ -141,8 +141,9 @@ CREATE TABLE IF NOT EXISTS pin
     service     service_type                                                  NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    CONSTRAINT pin_pkey PRIMARY KEY (id, content_cid),
     UNIQUE (content_cid, service)
-);
+) PARTITION BY HASH (content_cid);
 
 CREATE INDEX IF NOT EXISTS pin_updated_at_idx ON pin (updated_at);
 CREATE INDEX IF NOT EXISTS pin_composite_service_and_status_idx ON pin (service, status);
@@ -151,7 +152,7 @@ CREATE INDEX IF NOT EXISTS pin_composite_updated_at_and_content_cid_idx ON pin (
 -- An upload created by a user.
 CREATE TABLE IF NOT EXISTS upload
 (
-    id          BIGSERIAL PRIMARY KEY,
+    id          BIGSERIAL,
     user_id     BIGINT                                                        NOT NULL REFERENCES public.user (id),
     -- User authentication token that was used to upload this content.
     -- Note: maybe be null when the user upload through the website.
@@ -176,9 +177,10 @@ CREATE TABLE IF NOT EXISTS upload
     meta        jsonb,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    deleted_at TIMESTAMP WITH TIME ZONE,
-    UNIQUE (user_id, source_cid)
-);
+    deleted_at  TIMESTAMP WITH TIME ZONE,
+    CONSTRAINT upload_pkey PRIMARY KEY (id, content_cid),
+    UNIQUE (user_id, content_cid)
+) PARTITION BY HASH (content_cid);
 
 CREATE INDEX IF NOT EXISTS upload_inserted_at_idx ON upload (inserted_at);
 
