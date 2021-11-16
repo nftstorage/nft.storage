@@ -130,6 +130,7 @@ CREATE TABLE IF NOT EXISTS upload
     UNIQUE (user_id, source_cid)
 );
 
+CREATE INDEX IF NOT EXISTS upload_content_cid_idx ON upload (content_cid);
 CREATE INDEX IF NOT EXISTS upload_source_cid_idx ON upload (source_cid);
 CREATE INDEX IF NOT EXISTS upload_updated_at_idx ON upload (updated_at);
 
