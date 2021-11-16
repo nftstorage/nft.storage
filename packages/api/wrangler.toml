@@ -139,3 +139,27 @@ CLUSTER_API_URL = "https://ze-cluster-api-nft-storage.loca.lt"
 CLUSTER_IPFS_PROXY_API_URL = "https://ze-ipfs-proxy-api-nft-storage.loca.lt"
 CLUSTER_ADDRS = ""
 DATABASE_URL = "http://localhost:8000"
+
+
+[env.yusef]
+name = "nft-storage-yusef"
+account_id = "8c3da25233263bd7a26c0e2e04569ded"
+workers_dev = true
+route = ""
+zone_id = ""
+kv_namespaces = [
+    { binding = "USERS", id = "7c64db9abb8a435cb38d8a92d2673f75", preview_id = "ce921b1ac45340508ade26c560c94a21" },
+    { binding = "NFTS", id = "95f2d3209b86462586ab23d69c4bacb5", preview_id = "c2540411d7b9488eb418713c44524f7e" },
+    { binding = "NFTS_IDX", id = "faef9c13f4a74a6186ddbb58fda7ec7c", preview_id = "8b78eac97643410585fd85feec5cbb16" },
+    { binding = "DEALS", id = "860e99c137e747589b8e63d4712a6301", preview_id = "0f5849117a814fa295c182ca2a52c52a" },
+    { binding = "METRICS", id = "df68b54b96b94286ac4fb212c0bb6787", preview_id = "9d9f414c76f74696a9d7f7e348313161" },
+    { binding = "PINS", id = "41b4a3d7870e465dbf74fe83c2875365", preview_id = "8e8c2fe8a21847f7b6bf7b533b19e659" },
+    { binding = "FOLLOWUPS", id = "a06c23c31bce41bebb8faea4c2814ff5", preview_id = "ff1bd25ad8634592ad226ace093be68f" },
+    { binding = "PINATA_QUEUE", preview_id = "085ef32f2f9f4f49a61480bc96c3c9a6", id = "c9ebfb197ca4448da33166395430e85f" }
+]
+
+[env.yusef.vars]
+ENV = "dev"
+DEBUG = "*"
+CLUSTER_API_URL = "https://yusef-cluster-api-nft-storage.loca.lt"
+DATABASE_URL = "https://yusef-postgrest-nft-storage.loca.lt"
