@@ -24,8 +24,13 @@ import { BlockstoreCarReader } from './bs-car-reader.js'
  */
 
 /**
+ * @template {import('./lib/interface.js').TokenInput} T
+ * @typedef {import('./lib/interface.js').Token<T>} TokenType
+ */
+
+/**
  * @template {TokenInput} T
- * @implements {Token<T>}
+ * @implements {TokenType<T>}
  */
 export class Token {
   /**
@@ -86,7 +91,7 @@ export class Token {
    *
    * @template {TokenInput} T
    * @param {T} input
-   * @returns {Promise<{ token: Token<T>, car: import('./lib/interface.js').CarReader }>}
+   * @returns {Promise<{ token: TokenType<T>, car: import('./lib/interface.js').CarReader }>}
    */
   static async encode(input) {
     const blockstore = new Blockstore()

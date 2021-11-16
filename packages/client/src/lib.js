@@ -33,6 +33,7 @@ const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
  * @typedef {import('./lib/interface.js').CIDString} CIDString
  * @typedef {import('./lib/interface.js').Deal} Deal
  * @typedef {import('./lib/interface.js').Pin} Pin
+ * @typedef {import('./lib/interface.js').CarReader} CarReader
  */
 
 /**
@@ -107,7 +108,7 @@ class NFTStorage {
    * Stores a CAR file and returns it's root CID.
    *
    * @param {Service} service
-   * @param {Blob|import('./lib/interface.js').CarReader} car
+   * @param {Blob|CarReader} car
    * @param {import('./lib/interface.js').CarStorerOptions} [options]
    * @returns {Promise<CIDString>}
    */
@@ -323,10 +324,12 @@ class NFTStorage {
    *
    * @template {import('./lib/interface.js').TokenInput} T
    * @param {T} input
+   * @returns {Promise<{ token: TokenType<T>, car: CarReader }>}
    */
   static async encodeNFT(input) {
     validateERC1155(input)
-    return Token.Token.encode(input)
+    const { token, car } = await Token.Token.encode(input)
+    return { token, car }
   }
 
   /**
@@ -345,7 +348,7 @@ class NFTStorage {
    * ```
    *
    * @param {Blob} blob
-   * @returns {Promise<{ cid: CID, car: import('./lib/interface.js').CarReader }>}
+   * @returns {Promise<{ cid: CID, car: CarReader }>}
    */
   static async encodeBlob(blob) {
     if (blob.size === 0) {
@@ -376,7 +379,7 @@ class NFTStorage {
    * ```
    *
    * @param {Iterable<File>} files
-   * @returns {Promise<{ cid: CID, car: import('./lib/interface.js').CarReader }>}
+   * @returns {Promise<{ cid: CID, car: CarReader }>}
    */
   static async encodeDirectory(files) {
     const input = []
@@ -450,7 +453,7 @@ class NFTStorage {
    * const cid = await client.storeCar(car)
    * console.assert(cid === expectedCid)
    * ```
-   * @param {Blob|import('./lib/interface.js').CarReader} car
+   * @param {Blob|CarReader} car
    * @param {import('./lib/interface.js').CarStorerOptions} [options]
    */
   storeCar(car, options) {
