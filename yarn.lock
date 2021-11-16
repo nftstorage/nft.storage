@@ -5136,7 +5136,7 @@ ipfs-car@0.4.3:
     streaming-iterables "^5.0.4"
     uint8arrays "^2.1.5"
 
-ipfs-car@^0.5.9:
+ipfs-car@^0.5.8, ipfs-car@^0.5.9:
   version "0.5.9"
   resolved "https://registry.yarnpkg.com/ipfs-car/-/ipfs-car-0.5.9.tgz#ffe5e0d7c1e0a14aaa1e193628d9e21d7746d383"
   integrity sha512-81jKWdkFj1XjP23Qu2ts5K4VOZsLySD4V4UH8fQeb1T6ETf5btdm24mhRRuY7hvM/Vq7AMtDc+bDXocO+WouJQ==

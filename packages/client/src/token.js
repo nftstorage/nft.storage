@@ -3,7 +3,6 @@ import { CID } from 'multiformats/cid'
 import * as Block from 'multiformats/block'
 import { sha256 } from 'multiformats/hashes/sha2'
 import * as dagCbor from '@ipld/dag-cbor'
-import * as API from './lib/interface.js'
 import { Blob, FormData, Blockstore } from './platform.js'
 import { toGatewayURL, GATEWAY } from './gateway.js'
 import { BlockstoreCarReader } from './bs-car-reader.js'
@@ -16,12 +15,12 @@ import { BlockstoreCarReader } from './bs-car-reader.js'
 
 /**
  * @template T
- * @typedef {import('./lib/interface').Encoded<T, [[Blob, URL]]>} EncodedBlobUrl
+ * @typedef {import('./lib/interface.js').Encoded<T, [[Blob, URL]]>} EncodedBlobUrl
  */
 
 /**
  * @template G
- * @typedef {import('./lib/interface').Encoded<G, [[Blob, Blob]]>} EncodedBlobBlob
+ * @typedef {import('./lib/interface.js').Encoded<G, [[Blob, Blob]]>} EncodedBlobBlob
  */
 
 /**
@@ -85,16 +84,16 @@ export class Token {
    * })
    * ```
    *
-   * @template {API.TokenInput} T
+   * @template {TokenInput} T
    * @param {T} input
-   * @returns {Promise<{ token: API.Token<T>, car: import('./lib/interface.js').CarReader }>}
+   * @returns {Promise<{ token: Token<T>, car: import('./lib/interface.js').CarReader }>}
    */
   static async encode(input) {
     const blockstore = new Blockstore()
     const [blobs, meta] = mapValueWith(input, isBlob, encodeBlob, new Map(), [])
-    /** @type {API.Encoded<T, [[Blob, URL]]>} */
+    /** @type {EncodedBlobUrl<T>} */
     const data = JSON.parse(JSON.stringify(meta))
-    /** @type {API.Encoded<T, [[Blob, CID]]>} */
+    /** @type {import('./lib/interface.js').Encoded<T, [[Blob, CID]]>} */
     const dag = JSON.parse(JSON.stringify(meta))
 
     for (const [dotPath, blob] of blobs.entries()) {
@@ -152,7 +151,7 @@ export const embed = (input, options) =>
 
 /**
  * @template {TokenInput} T
- * @param {import('./lib/interface').EncodedToken<T>} value
+ * @param {import('./lib/interface.js').EncodedToken<T>} value
  * @param {Set<string>} paths - Paths were to expect EncodedURLs
  * @returns {Token<T>}
  */

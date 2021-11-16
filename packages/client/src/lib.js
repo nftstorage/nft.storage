@@ -30,15 +30,15 @@ const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
 
 /**
  * @typedef {import('multiformats/block').BlockDecoder<any, any>} AnyBlockDecoder
- * @typedef {import('./lib/interface').Service} Service
- * @typedef {import('./lib/interface').CIDString} CIDString
- * @typedef {import('./lib/interface').Deal} Deal
- * @typedef {import('./lib/interface').Pin} Pin
+ * @typedef {import('./lib/interface.js').Service} Service
+ * @typedef {import('./lib/interface.js').CIDString} CIDString
+ * @typedef {import('./lib/interface.js').Deal} Deal
+ * @typedef {import('./lib/interface.js').Pin} Pin
  */
 
 /**
  * @template {import('./lib/interface.js').TokenInput} T
- * @typedef {import('./lib/interface').Token<T>} TokenType
+ * @typedef {import('./lib/interface.js').Token<T>} TokenType
  */
 
 /**
@@ -104,8 +104,8 @@ class NFTStorage {
 
   /**
    * @param {Service} service
-   * @param {Blob|import('./lib/interface').CarReader} car
-   * @param {import('./lib/interface').CarStorerOptions} [options]
+   * @param {Blob|import('./lib/interface.js').CarReader} car
+   * @param {import('./lib/interface.js').CarStorerOptions} [options]
    * @returns {Promise<CIDString>}
    */
   static async storeCar(
@@ -175,7 +175,7 @@ class NFTStorage {
   }
 
   /**
-   * @template {import('./lib/interface').TokenInput} T
+   * @template {import('./lib/interface.js').TokenInput} T
    * @param {Service} service
    * @param {T} input
    * @returns {Promise<TokenType<T>>}
@@ -251,7 +251,7 @@ class NFTStorage {
   }
 
   /**
-   * @template {import('./lib/interface').TokenInput} T
+   * @template {import('./lib/interface.js').TokenInput} T
    * @param {T} input
    */
   static async encodeNFT(input) {
@@ -362,8 +362,8 @@ class NFTStorage {
    * const cid = await client.storeCar(car)
    * console.assert(cid === expectedCid)
    * ```
-   * @param {Blob|import('./lib/interface').CarReader} car
-   * @param {import('./lib/interface').CarStorerOptions} [options]
+   * @param {Blob|import('./lib/interface.js').CarReader} car
+   * @param {import('./lib/interface.js').CarStorerOptions} [options]
    */
   storeCar(car, options) {
     return NFTStorage.storeCar(this, car, options)
@@ -473,7 +473,7 @@ class NFTStorage {
    * console.log('metadata.json with IPFS gateway URLs:\n', metadata.embed())
    * ```
    *
-   * @template {import('./lib/interface').TokenInput} T
+   * @template {import('./lib/interface.js').TokenInput} T
    * @param {T} token
    */
   store(token) {
@@ -482,7 +482,7 @@ class NFTStorage {
 }
 
 /**
- * @template {import('./lib/interface').TokenInput} T
+ * @template {import('./lib/interface.js').TokenInput} T
  * @param {T} metadata
  */
 const validateERC1155 = ({ name, description, image, decimals }) => {
