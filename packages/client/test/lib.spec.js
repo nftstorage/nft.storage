@@ -54,14 +54,15 @@ describe('client', () => {
       assert.equal(status1.created, status2.created, 'dates match')
     })
 
-    it('errors with invalid token', async function () {
+    it('errors with invalid token', async () => {
       const client = new NFTStorage({ token: 'wrong', endpoint })
       const blob = new Blob(['upload twice'])
 
       try {
         await client.storeBlob(blob)
         assert.unreachable('should have failed')
-      } catch (/** @type {any} */ error) {
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
         assert.ok(error instanceof Error)
         assert.match(error.message, /Unauthorized/)
       }
@@ -183,9 +184,10 @@ describe('client', () => {
       try {
         await client.storeCar(carReader, { maxRetries: 0 })
         assert.unreachable('should have thrown')
-      } catch (/** @type {any} */ err) {
-        assert.ok(err instanceof Error)
-        assert.is(err.message, 'throwing an error for tests')
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
+        assert.ok(error instanceof Error)
+        assert.is(error.message, 'throwing an error for tests')
       }
     })
   })
@@ -271,7 +273,7 @@ describe('client', () => {
       const client = new NFTStorage({ token: 'wrong', endpoint })
       try {
         await client.storeDirectory([new File(['wrong token'], 'foo.txt')])
-        assert.unreachable('sholud have failed')
+        assert.unreachable('should have failed')
       } catch (err) {
         const error = /** @type {Error} */ (err)
         assert.ok(error instanceof Error)
@@ -301,8 +303,8 @@ describe('client', () => {
       const client = new NFTStorage({ token, endpoint })
       try {
         // @ts-expect-error
-        const t = await client.store({ name: 'name' })
-        assert.unreachable('sholud have failed')
+        await client.store({ name: 'name' })
+        assert.unreachable('should have failed')
       } catch (err) {
         const error = /** @type {Error} */ (err)
         assert.ok(error instanceof TypeError)
@@ -318,7 +320,7 @@ describe('client', () => {
       try {
         // @ts-expect-error
         await client.store({ name: 'name', description: 'stuff' })
-        assert.unreachable('sholud have failed')
+        assert.unreachable('should have failed')
       } catch (err) {
         const error = /** @type {Error} */ (err)
         assert.ok(error instanceof TypeError)
