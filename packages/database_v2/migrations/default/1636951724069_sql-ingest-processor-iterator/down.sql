@@ -1,1 +1,1 @@
-DROP ROUTINE IF EXISTS process_ingest_queue;
+DROP ROUTINE IF EXISTS get_unprocessed_tokens_in_queue;

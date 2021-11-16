@@ -54,7 +54,7 @@ r.add('options', '*', cors)
 r.add(
   'get',
   '/version',
-  event => {
+  (event) => {
     return new JSONResponse({
       version: VERSION,
       commit: COMMITHASH,
