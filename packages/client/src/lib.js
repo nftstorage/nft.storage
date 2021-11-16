@@ -267,15 +267,8 @@ class NFTStorage {
     if (blob.size === 0) {
       throw new Error('Content size is 0, make sure to provide some content')
     }
-    const blockstore = new Blockstore()
-    const { root: cid } = await pack({
-      // @ts-ignore
-      input: [{ path: 'blob', content: blob.stream() }],
-      blockstore,
-      wrapWithDirectory: false,
-    })
-    const car = new BlockstoreCarReader(1, [cid], blockstore)
-    return { cid, car }
+
+    return packCar([{ path: 'blob', content: blob.stream() }], false)
   }
 
   /**
@@ -296,15 +289,7 @@ class NFTStorage {
       )
     }
 
-    const blockstore = new Blockstore()
-    const { root: cid } = await pack({
-      // @ts-ignore
-      input,
-      blockstore,
-      wrapWithDirectory: true,
-    })
-    const car = new BlockstoreCarReader(1, [cid], blockstore)
-    return { cid, car }
+    return packCar(input, true)
   }
 
   // Just a sugar so you don't have to pass around endpoint and token around.
@@ -510,6 +495,17 @@ For more context please see ERC-721 specification https://eips.ethereum.org/EIPS
   if (typeof decimals !== 'undefined' && typeof decimals !== 'number') {
     throw new TypeError('property `decimals` must be an integer value')
   }
+}
+
+/**
+ * @param {Array<{ path: string, content: import('./platform.js').ReadableStream }>} input
+ * @param {boolean} wrapWithDirectory
+ */
+const packCar = async (input, wrapWithDirectory) => {
+  const blockstore = new Blockstore()
+  const { root: cid } = await pack({ input, blockstore, wrapWithDirectory })
+  const car = new BlockstoreCarReader(1, [cid], blockstore)
+  return { cid, car }
 }
 
 /**
