@@ -177,11 +177,11 @@ class NFTStorage {
   /**
    * @template {import('./lib/interface.js').TokenInput} T
    * @param {Service} service
-   * @param {T} input
+   * @param {T} metadata
    * @returns {Promise<TokenType<T>>}
    */
-  static async store(service, input) {
-    const { token, car } = await NFTStorage.encodeNFT(input)
+  static async store(service, metadata) {
+    const { token, car } = await NFTStorage.encodeNFT(metadata)
     await NFTStorage.storeCar(service, car)
     return token
   }
