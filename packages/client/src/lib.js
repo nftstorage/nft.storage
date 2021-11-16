@@ -324,12 +324,11 @@ class NFTStorage {
    *
    * @template {import('./lib/interface.js').TokenInput} T
    * @param {T} input
-   * @returns {Promise<{ token: TokenType<T>, car: CarReader }>}
+   * @returns {Promise<{ cid: CID, token: TokenType<T>, car: CarReader }>}
    */
   static async encodeNFT(input) {
     validateERC1155(input)
-    const { token, car } = await Token.Token.encode(input)
-    return { token, car }
+    return Token.Token.encode(input)
   }
 
   /**

@@ -91,7 +91,7 @@ export class Token {
    *
    * @template {TokenInput} T
    * @param {T} input
-   * @returns {Promise<{ token: TokenType<T>, car: import('./lib/interface.js').CarReader }>}
+   * @returns {Promise<{ cid: CID, token: TokenType<T>, car: import('./lib/interface.js').CarReader }>}
    */
   static async encode(input) {
     const blockstore = new Blockstore()
@@ -137,6 +137,7 @@ export class Token {
     await blockstore.put(block.cid, block.bytes)
 
     return {
+      cid: block.cid,
       token: new Token(
         block.cid.toString(),
         `ipfs://${block.cid}/metadata.json`,
