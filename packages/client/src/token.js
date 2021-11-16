@@ -1,24 +1,36 @@
-import { Blob, FormData } from './platform.js'
+import { pack } from 'ipfs-car/pack'
+import { CID } from 'multiformats/cid'
+import * as Block from 'multiformats/block'
+import { sha256 } from 'multiformats/hashes/sha2'
+import * as dagCbor from '@ipld/dag-cbor'
+import { Blob, FormData, Blockstore } from './platform.js'
 import { toGatewayURL, GATEWAY } from './gateway.js'
+import { BlockstoreCarReader } from './bs-car-reader.js'
 
 /**
  * @typedef {import('./gateway.js').GatewayURLOptions} EmbedOptions
  * @typedef {import('./lib/interface.js').TokenInput} TokenInput
+ * @typedef {import('ipfs-car/blockstore').Blockstore} Blockstore
  */
 
 /**
  * @template T
- * @typedef {import('./lib/interface').Encoded<T, [[Blob, URL]]>} EncodedBlobUrl
+ * @typedef {import('./lib/interface.js').Encoded<T, [[Blob, URL]]>} EncodedBlobUrl
  */
 
 /**
  * @template G
- * @typedef {import('./lib/interface').Encoded<G, [[Blob, Blob]]>} EncodedBlobBlob
+ * @typedef {import('./lib/interface.js').Encoded<G, [[Blob, Blob]]>} EncodedBlobBlob
  */
 
 /**
  * @template {import('./lib/interface.js').TokenInput} T
- * @implements {Token<T>}
+ * @typedef {import('./lib/interface.js').Token<T>} TokenType
+ */
+
+/**
+ * @template {TokenInput} T
+ * @implements {TokenType<T>}
  */
 export class Token {
   /**
@@ -55,6 +67,85 @@ export class Token {
   static embed({ data }) {
     return embed(data, { gateway: GATEWAY })
   }
+
+  /**
+   * Takes token input, encodes it as a DAG, wraps it in a CAR and creates a new
+   * Token instance from it. Where values are discovered `Blob` (or `File`)
+   * objects in the given input, they are replaced with IPFS URLs (an `ipfs://`
+   * prefixed CID with an optional path).
+   *
+   * @example
+   * ```js
+   * const cat = new File(['...'], 'cat.png')
+   * const kitty = new File(['...'], 'kitty.png')
+   * const { token, car } = await Token.encode({
+   *   name: 'hello'
+   *   image: cat
+   *   properties: {
+   *     extra: {
+   *       image: kitty
+   *     }
+   *   }
+   * })
+   * ```
+   *
+   * @template {TokenInput} T
+   * @param {T} input
+   * @returns {Promise<{ cid: CID, token: TokenType<T>, car: import('./lib/interface.js').CarReader }>}
+   */
+  static async encode(input) {
+    const blockstore = new Blockstore()
+    const [blobs, meta] = mapTokenInputBlobs(input)
+    /** @type {EncodedBlobUrl<T>} */
+    const data = JSON.parse(JSON.stringify(meta))
+    /** @type {import('./lib/interface.js').Encoded<T, [[Blob, CID]]>} */
+    const dag = JSON.parse(JSON.stringify(meta))
+
+    for (const [dotPath, blob] of blobs.entries()) {
+      /** @type {string|undefined} */
+      // @ts-ignore blob may be a File!
+      const name = blob.name || 'blob'
+      /** @type {import('./platform.js').ReadableStream} */
+      const content = blob.stream()
+      const { root: cid } = await pack({
+        input: [{ path: name, content }],
+        blockstore,
+        wrapWithDirectory: true,
+      })
+
+      const href = new URL(`ipfs://${cid}/${name}`)
+      const path = dotPath.split('.')
+      setIn(data, path, href)
+      setIn(dag, path, cid)
+    }
+
+    const { root: metadataJsonCid } = await pack({
+      input: [{ path: 'metadata.json', content: JSON.stringify(data) }],
+      blockstore,
+      wrapWithDirectory: false,
+    })
+
+    const block = await Block.encode({
+      value: {
+        ...dag,
+        'metadata.json': metadataJsonCid,
+        type: 'nft',
+      },
+      codec: dagCbor,
+      hasher: sha256,
+    })
+    await blockstore.put(block.cid, block.bytes)
+
+    return {
+      cid: block.cid,
+      token: new Token(
+        block.cid.toString(),
+        `ipfs://${block.cid}/metadata.json`,
+        data
+      ),
+      car: new BlockstoreCarReader(1, [block.cid], blockstore),
+    }
+  }
 }
 
 /**
@@ -69,7 +160,7 @@ export const embed = (input, options) =>
 /**
  * @template {TokenInput} T
  * @param {import('./lib/interface.js').EncodedToken<T>} value
- * @param {Set<string>} paths - Paths were to expcet EncodedURLs
+ * @param {Set<string>} paths - Paths were to expect EncodedURLs
  * @returns {Token<T>}
  */
 export const decode = ({ ipnft, url, data }, paths) =>
@@ -148,22 +239,20 @@ const isEncodedURL = (value, assetPaths, path) =>
  * @returns {FormData}
  */
 export const encode = (input) => {
-  const [form, meta] = mapValueWith(
-    input,
-    isBlob,
-    encodeBlob,
-    new FormData(),
-    []
-  )
+  const [map, meta] = mapValueWith(input, isBlob, encodeBlob, new Map(), [])
+  const form = new FormData()
+  for (const [k, v] of map.entries()) {
+    form.set(k, v)
+  }
   form.set('meta', JSON.stringify(meta))
   return form
 }
 
 /**
- * @param {FormData} data
+ * @param {Map<string, Blob>} data
  * @param {Blob} blob
  * @param {PropertyKey[]} path
- * @returns {[FormData, void]}
+ * @returns {[Map<string, Blob>, void]}
  */
 const encodeBlob = (data, blob, path) => {
   data.set(path.join('.'), blob)
@@ -175,6 +264,14 @@ const encodeBlob = (data, blob, path) => {
  * @returns {value is Blob}
  */
 const isBlob = (value) => value instanceof Blob
+
+/**
+ * @template {TokenInput} T
+ * @param {EncodedBlobBlob<T>} input
+ */
+const mapTokenInputBlobs = (input) => {
+  return mapValueWith(input, isBlob, encodeBlob, new Map(), [])
+}
 
 /**
  * Substitues values in the given `input` that match `p(value) == true` with
@@ -268,4 +365,31 @@ const mapArrayWith = (input, p, f, init, path) => {
     state,
     /** @type {import('./lib/interface.js').Encoded<T, [[I, O]]>} */ (output),
   ]
+}
+
+/**
+ * Sets a given `value` at the given `path` on a passed `object`.
+ *
+ * @example
+ * ```js
+ * const obj = { a: { b: { c: 1 }}}
+ * setIn(obj, ['a', 'b', 'c'], 5)
+ * obj.a.b.c //> 5
+ * ```
+ *
+ * @template V
+ * @param {any} object
+ * @param {string[]} path
+ * @param {V} value
+ */
+const setIn = (object, path, value) => {
+  const n = path.length - 1
+  let target = object
+  for (let [index, key] of path.entries()) {
+    if (index === n) {
+      target[key] = value
+    } else {
+      target = target[key]
+    }
+  }
 }

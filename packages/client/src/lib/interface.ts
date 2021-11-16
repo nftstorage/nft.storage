@@ -28,6 +28,41 @@ export type CIDString = Tagged<string, CID>
 
 export interface API {
   /**
+   * Encodes the given token and all resources it references (in the form of a
+   * File or a Blob) along with a metadata JSON as specificed in ERC-1155 to a
+   * CAR file. The `token.image` must be either a `File` or a `Blob` instance,
+   * which will be stored and the corresponding content address URL will be
+   * saved in the metadata JSON file under `image` field.
+   *
+   * If `token.properties` contains properties with `File` or `Blob` values,
+   * those also get stored and their URLs will be saved in the metadata JSON
+   * file in their place.
+   *
+   * Note: URLs for `File` objects will retain file names e.g. in case of
+   * `new File([bytes], 'cat.png', { type: 'image/png' })` will be transformed
+   * into a URL that looks like `ipfs://bafy...hash/image/cat.png`. For `Blob`
+   * objects, the URL will not have a file name name or mime type, instead it
+   * will be transformed into a URL that looks like
+   * `ipfs://bafy...hash/image/blob`.
+   */
+  encodeNFT<T extends TokenInput>(
+    input: T
+  ): Promise<{ token: Token<T>; car: CarReader }>
+  /**
+   * Encodes a single file to a CAR file and also returns it's root CID.
+   */
+  encodeBlob(
+    service: Service,
+    content: Blob | File
+  ): Promise<{ cid: CID; car: CarReader }>
+  /**
+   * Encodes a directory of files to a CAR file and also returns the root CID.
+   * Provided files **MUST** be within the same directory, otherwise error is
+   * raised e.g. `foo/bar.png`, `foo/bla/baz.json` is ok but `foo/bar.png`,
+   * `bla/baz.json` is not.
+   */
+  encodeDirectory(files: Iterable<File>): Promise<{ cid: CID; car: CarReader }>
+  /**
    * Stores the given token and all resources it references (in the form of a
    * File or a Blob) along with a metadata JSON as specificed in ERC-1155. The
    * `token.image` must be either a `File` or a `Blob` instance, which will be
@@ -46,36 +81,21 @@ export interface API {
    * `ipfs://bafy...hash/image/blob`.
    */
   store<T extends TokenInput>(service: Service, token: T): Promise<Token<T>>
-
   /**
-   * Stores a single file and returns a corresponding CID.
+   * Stores a single file and returns it's CID.
    */
   storeBlob(service: Service, content: Blob | File): Promise<CIDString>
   /**
-   * Stores CAR file and returns a corresponding CID.
+   * Stores a CAR file and returns it's root CID.
    */
   storeCar(
     service: Service,
     content: Blob | CarReader,
-    options?: {
-      /**
-       * Callback called after each chunk of data has been uploaded. By default,
-       * data is split into chunks of around 10MB. It is passed the actual chunk
-       * size in bytes.
-       */
-      onStoredChunk?: (size: number) => void
-      /**
-       * Additional IPLD block decoders. Used to interpret the data in the CAR
-       * file and split it into multiple chunks. Note these are only required if
-       * the CAR file was not encoded using the default encoders: `dag-pb`,
-       * `dag-cbor` and `raw`.
-       */
-      decoders?: BlockDecoder<any, any>[]
-    }
+    options?: CarStorerOptions
   ): Promise<CIDString>
   /**
    * Stores a directory of files and returns a CID. Provided files **MUST**
-   * be within a same directory, otherwise error is raised. E.g. `foo/bar.png`,
+   * be within the same directory, otherwise error is raised e.g. `foo/bar.png`,
    * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
    */
   storeDirectory(service: Service, files: Iterable<File>): Promise<CIDString>
@@ -85,15 +105,35 @@ export interface API {
    */
   status(service: Service, cid: string): Promise<StatusResult>
   /**
-   * Removes stored content by its CID from the service. Please note that
+   * Removes stored content by its CID from this account. Please note that
    * even if content is removed from the service other nodes that have
    * replicated it might still continue providing it.
    */
   delete(service: Service, cid: string): Promise<void>
   /**
-   * Check if a CID of an NFT is being stored by nft.storage.
+   * Check if a CID of an NFT is being stored by NFT.Storage.
    */
   check(service: PublicService, cid: string): Promise<CheckResult>
+}
+
+export interface CarStorerOptions {
+  /**
+   * Callback called after each chunk of data has been uploaded. By default,
+   * data is split into chunks of around 10MB. It is passed the actual chunk
+   * size in bytes.
+   */
+  onStoredChunk?: (size: number) => void
+  /**
+   * Maximum times to retry a failed upload. Default: 5
+   */
+  maxRetries?: number
+  /**
+   * Additional IPLD block decoders. Used to interpret the data in the CAR
+   * file and split it into multiple chunks. Note these are only required if
+   * the CAR file was not encoded using the default encoders: `dag-pb`,
+   * `dag-cbor` and `raw`.
+   */
+  decoders?: BlockDecoder<any, any>[]
 }
 
 export interface CheckResult {
