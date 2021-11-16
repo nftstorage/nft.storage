@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS pin
     service     service_type                                                  NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    CONSTRAINT pin_pkey PRIMARY KEY (id, content_cid),
+    CONSTRAINT pin_pkey PRIMARY KEY (content_cid, id),
     UNIQUE (content_cid, service)
 ) PARTITION BY HASH (content_cid);
 
@@ -178,9 +178,9 @@ CREATE TABLE IF NOT EXISTS upload
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     deleted_at  TIMESTAMP WITH TIME ZONE,
-    CONSTRAINT upload_pkey PRIMARY KEY (id, content_cid),
-    UNIQUE (user_id, content_cid)
-) PARTITION BY HASH (content_cid);
+    CONSTRAINT upload_pkey PRIMARY KEY (source_cid, id),
+    UNIQUE (user_id, source_cid)
+) PARTITION BY HASH (source_cid);
 
 CREATE INDEX IF NOT EXISTS upload_inserted_at_idx ON upload (inserted_at);
 
