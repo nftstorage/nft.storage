@@ -95,7 +95,7 @@ export class Token {
    */
   static async encode(input) {
     const blockstore = new Blockstore()
-    const [blobs, meta] = mapValueWith(input, isBlob, encodeBlob, new Map(), [])
+    const [blobs, meta] = mapTokenInputBlobs(input)
     /** @type {EncodedBlobUrl<T>} */
     const data = JSON.parse(JSON.stringify(meta))
     /** @type {import('./lib/interface.js').Encoded<T, [[Blob, CID]]>} */
@@ -105,8 +105,10 @@ export class Token {
       /** @type {string|undefined} */
       // @ts-ignore blob may be a File!
       const name = blob.name || 'blob'
+      /** @type {import('./platform.js').ReadableStream} */
+      const content = blob.stream()
       const { root: cid } = await pack({
-        input: [{ path: name, content: blob.stream() }],
+        input: [{ path: name, content }],
         blockstore,
         wrapWithDirectory: true,
       })
@@ -261,6 +263,14 @@ const encodeBlob = (data, blob, path) => {
  * @returns {value is Blob}
  */
 const isBlob = (value) => value instanceof Blob
+
+/**
+ * @template {TokenInput} T
+ * @param {EncodedBlobBlob<T>} input
+ */
+const mapTokenInputBlobs = (input) => {
+  return mapValueWith(input, isBlob, encodeBlob, new Map(), [])
+}
 
 /**
  * Substitues values in the given `input` that match `p(value) == true` with
