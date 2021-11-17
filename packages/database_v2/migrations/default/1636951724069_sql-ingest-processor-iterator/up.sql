@@ -20,7 +20,6 @@ BEGIN
      UPDATE erc721_token_ingestion_queue
      SET last_processed = now()
      WHERE id = r.id;
-     
      PERFORM public.ingest_erc721_token(
       r.id,
       r.token_id,
