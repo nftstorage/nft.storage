@@ -37,7 +37,9 @@ export const main = async () => await spawn(await configure())
  */
 async function spawn(config) {
   console.log(`⏲️ Begin Processing Ingestion Queue.`)
-  //todo call stored procedure after validating it works
+  // TODO: remotely initiate the queue-processor, only if it is not running
+  // and new records have been enqueued
+  console.log(config)
   return undefined
 }
 
