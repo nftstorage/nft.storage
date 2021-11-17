@@ -1,3 +1,4 @@
+DROP FUNCTION IF EXISTS get_unprocessed_tokens_in_queue();
 CREATE OR REPLACE FUNCTION get_unprocessed_tokens_in_queue()
   RETURNS SETOF erc721_token_ingestion_queue
   AS $$
@@ -9,7 +10,7 @@ BEGIN
   IS null;
 END $$ LANGUAGE plpgsql;
 
-DROP FUNCTION IF EXISTS ingest_unprocessed_tokens;
+DROP FUNCTION IF EXISTS ingest_unprocessed_tokens();
 CREATE OR REPLACE FUNCTION ingest_unprocessed_tokens()
   RETURNS void
   AS $$
@@ -38,7 +39,7 @@ BEGIN
   RETURN;
 END $$ LANGUAGE plpgsql;
 
-DROP FUNCTION IF EXISTS nullify_last_processed_ingest_queue;
+DROP FUNCTION IF EXISTS nullify_last_processed_ingest_queue();
 CREATE OR REPLACE FUNCTION nullify_last_processed_ingest_queue()
   RETURNS void
   AS $$
