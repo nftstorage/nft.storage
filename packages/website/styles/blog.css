@@ -1,0 +1,196 @@
+.blog {
+  --card-size: 400px;
+  --dark-gray: #9f9f9f;
+
+  font-family: 'Chivo', sans-serif;
+}
+
+.blog p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-weight: unset;
+  line-height: 1.5;
+}
+.blog p {
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+.blog a {
+  color: unset;
+}
+.blog ul {
+  padding: 0;
+}
+.blog li {
+  list-style-type: none;
+}
+
+.blog .h-card {
+  height: var(--card-size);
+}
+.blog .w-card {
+  width: var(--card-size);
+}
+
+/* margin */
+
+.blog .ma5 {
+  margin: 20px;
+}
+
+.blog .mh2 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.blog .mt5 {
+  margin-bottom: 1.25rem;
+}
+.blog .mt14 {
+  margin-top: 3.5rem;
+}
+
+.blog .mr2 {
+  margin-right: 0.5rem;
+}
+
+.blog .mb2 {
+  margin-bottom: 0.5rem;
+}
+.blog .mb4 {
+  margin-bottom: 1rem;
+}
+.blog .mb5 {
+  margin-bottom: 1.25rem;
+}
+
+/* layout */
+
+.blog .top-1 {
+  top: 0.25rem;
+}
+.blog .top-2 {
+  top: 0.5rem;
+}
+.blog .right-2 {
+  right: 0.5rem;
+}
+.blog .left-1 {
+  left: 0.25rem;
+}
+
+/* max-width */
+
+.blog .mw4 {
+  max-width: 9.375rem;
+}
+.blog .mw6 {
+  max-width: 36rem;
+}
+.blog .mw7 {
+  max-width: 42rem;
+}
+
+/* padding */
+
+.blog .pa5 {
+  padding: 1.25rem;
+}
+.blog .pa8 {
+  padding: 3.175rem;
+}
+
+.blog .pv1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+.blog .pv2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+.blog .pv3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.blog .ph2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.blog .ph8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.blog .pb24 {
+  padding-bottom: 6rem;
+}
+
+/* color */
+
+.blog .dark-gray {
+  color: var(--dark-gray);
+}
+.blog .bg-dark-gray {
+  background-color: var(--dark-gray);
+}
+
+/* font size */
+
+.blog .f3 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+.blog .f2 {
+  font-size: 2.5rem;
+}
+
+/* height */
+
+.blog .h8 {
+  height: 2rem;
+}
+
+.blog .w8 {
+  width: 2rem;
+}
+
+/* react paginate */
+
+.blog .rp-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.blog .page-button {
+  border: 1px solid black;
+  font-size: 14px;
+  padding: 4px 8px;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 6px;
+  cursor: pointer;
+}
+
+.blog .active-page-button {
+  background-color: black;
+  color: white;
+}
+
+.blog .disabled-page-button {
+  color: lightgray;
+  border-color: lightgray;
+  cursor: default;
+}

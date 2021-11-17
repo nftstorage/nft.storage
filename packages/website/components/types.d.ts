@@ -1,3 +1,18 @@
+export interface ArticleMeta {
+  title: string
+  slug: string
+  description: string
+  thumbnail: string
+  date: string
+  author: string
+  tags?: string[]
+}
+
+export interface Article {
+  meta: ArticleMeta
+  content: string
+}
+
 export interface LayoutProps {
   callback?: boolean
   needsUser: boolean
@@ -6,6 +21,7 @@ export interface LayoutProps {
   title?: string
   description?: string
   navBgColor?: string
+  articles?: ArticleMeta[]
 }
 
 export interface LayoutChildrenProps {

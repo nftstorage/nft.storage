@@ -16,6 +16,7 @@
   --nsgray-400: #888888;
   --nsgray-600: #3b4151;
 
+  --nsltblue: #eef7f6;
   --nsblue: #47aed7;
   --nsforest: #0a854c;
   --nsgreen: #d3e7dc;
@@ -42,12 +43,26 @@
   --btn-ghost-y-hover: -2px;
 }
 
+/* fonts */
+
 .chicagoflf {
   font-family: var(--nstitle);
 }
+.chivo {
+  font-family: 'Chivo', sans-serif;
+}
+.chivo-bold {
+  font-family: 'Chivo', sans-serif;
+  font-weight: bold;
+}
+
+/* colors */
 
 .bg-nsblue {
   background-color: var(--nsblue);
+}
+.bg-nsltblue {
+  background-color: var(--nsltblue);
 }
 .bg-nsforest {
   background-color: var(--nsforest);
@@ -92,6 +107,30 @@
   background-color: var(--nsyellow);
 }
 
+/* animation */
+
+.appear-from-bottom {
+  animation: appear-from-bottom 0.3s ease-in-out both;
+}
+
+.disappear-to-bottom {
+  animation: disappear-to-bottom 0.3s ease-in-out both;
+}
+
+/* layout */
+
+.object-cover {
+  object-fit: cover;
+}
+.object-center {
+  object-position: center;
+}
+.justify-evenly {
+  justify-content: space-evenly;
+}
+
+/* misc */
+
 .loading {
   position: absolute;
   top: 50%;
@@ -108,12 +147,20 @@
   pointer-events: none;
 }
 
-.appear-from-bottom {
-  animation: appear-from-bottom 0.3s ease-in-out both;
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }
-
-.disappear-to-bottom {
-  animation: disappear-to-bottom 0.3s ease-in-out both;
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.select-none {
+  user-select: none;
 }
 
 @keyframes appear-from-bottom {

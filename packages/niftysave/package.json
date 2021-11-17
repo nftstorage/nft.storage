@@ -48,7 +48,7 @@
     "yargs": "^17.2.1"
   },
   "engines": {
-    "node": ">=16.10.0"
+    "node": "16.x"
   },
   "repository": {
     "type": "git",
