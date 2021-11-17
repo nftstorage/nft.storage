@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.10.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.9.0...api-v2.10.0) (2021-11-16)
+
+
+### Features
+
+* remove kv code, update deps and improve client docs ([#714](https://www.github.com/nftstorage/nft.storage/issues/714)) ([22c4e50](https://www.github.com/nftstorage/nft.storage/commit/22c4e507c527d20d9a0587bee0380ea3471f45fe))
+
+
+### Bug Fixes
+
+* add content_cid index on upload table ([#788](https://www.github.com/nftstorage/nft.storage/issues/788)) ([5deb30b](https://www.github.com/nftstorage/nft.storage/commit/5deb30b9acb0033747cfd4c0b259f1d33e082129))
+* cluster local add threshold ([#770](https://www.github.com/nftstorage/nft.storage/issues/770)) ([45a2147](https://www.github.com/nftstorage/nft.storage/commit/45a2147c4f836ef4e508286df1367220f03bb890))
+
+
+### Changes
+
+* add local env for yusef to wrangler.toml ([#757](https://www.github.com/nftstorage/nft.storage/issues/757)) ([0911b34](https://www.github.com/nftstorage/nft.storage/commit/0911b34935c645789c8d720cf231e931ee3ff7e0))
+* get DB client from route context ([#638](https://www.github.com/nftstorage/nft.storage/issues/638)) ([a719fd9](https://www.github.com/nftstorage/nft.storage/commit/a719fd97b0bc1216a170621ac0482b3ee82f69f4))
+
 ## [2.9.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.8.2...api-v2.9.0) (2021-10-29)
 
 

@@ -1,35 +1,6 @@
 import { CID } from 'multiformats'
-import { sha256 } from 'multiformats/hashes/sha2'
-import { importCar, importBlob, importDirectory } from './importer.js'
+import { importCar } from './importer.js'
 import { Response, Request } from './mock-server.js'
-import * as CBOR from '@ipld/dag-cbor'
-
-/**
- * Sets a given `value` at the given `path` on a passed `object`.
- *
- * @example
- * ```js
- * const obj = { a: { b: { c: 1 }}}
- * setIn(obj, ['a', 'b', 'c'], 5)
- * obj.a.b.c //> 5
- * ```
- *
- * @template V
- * @param {any} object
- * @param {string[]} path
- * @param {V} value
- */
-export const setIn = (object, path, value) => {
-  const n = path.length - 1
-  let target = object
-  for (let [index, key] of path.entries()) {
-    if (index === n) {
-      target[key] = value
-    } else {
-      target = target[key]
-    }
-  }
-}
 
 /**
  * @param {Request} request
@@ -49,78 +20,11 @@ const headers = ({ headers }) => ({
  */
 const importUpload = async (request) => {
   const contentType = request.headers.get('content-type') || ''
-  if (contentType.includes('multipart/form-data')) {
-    const data = await request.formData()
-    const files = /** @type {File[]} */ (data.getAll('file'))
-    if (files.length === 0) {
-      throw Error('No files were provided')
-    }
-    return await importDirectory(files)
-  } else if (contentType.includes('application/car')) {
-    const content = await request.arrayBuffer()
-    return await importCar(new Uint8Array(content))
-  } else {
-    const content = await request.arrayBuffer()
-    return await importBlob(new Uint8Array(content))
+  if (!contentType.includes('application/car')) {
+    throw new Error(`unexpected content type: ${contentType}`)
   }
-}
-
-/**
- * @param {File} file
- * @returns {Promise<CID>}
- */
-const importAsset = async (file) => {
-  const { cid } = await importDirectory([file])
-  return CID.parse(cid.toString())
-}
-
-/**
- * @param {Request} request
- */
-const importToken = async (request) => {
-  const contentType = request.headers.get('content-type') || ''
-  if (contentType.includes('multipart/form-data')) {
-    const form = await request.formData()
-
-    const data = JSON.parse(/** @type {string} */ (form.get('meta')))
-    const dag = JSON.parse(JSON.stringify(data))
-
-    for (const [name, content] of form.entries()) {
-      if (name !== 'meta') {
-        const file = /** @type {File} */ (content)
-        const cid = await importAsset(file)
-        const href = `ipfs://${cid}/${file.name}`
-        const path = name.split('.')
-        setIn(data, path, href)
-        setIn(dag, path, cid)
-      }
-    }
-
-    const metadata = await importBlob(
-      new TextEncoder().encode(JSON.stringify(data))
-    )
-
-    const bytes = CBOR.encode({
-      ...dag,
-      'metadata.json': metadata.cid,
-      type: 'nft',
-    })
-    const hash = await sha256.digest(bytes)
-    const ipnft = CID.create(1, CBOR.code, hash)
-
-    const result = {
-      ok: true,
-      value: {
-        ipnft: ipnft.toString(),
-        url: `ipfs://${ipnft}/metadata.json`,
-        data,
-      },
-    }
-
-    return result
-  } else {
-    throw Error('/store expects multipart/form-data')
-  }
+  const content = await request.arrayBuffer()
+  return await importCar(new Uint8Array(content))
 }
 
 /**
@@ -182,14 +86,6 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
         }
         const result = { ok: true, value: { cid: cid.toString() } }
 
-        return new Response(JSON.stringify(result), {
-          headers: headers(request),
-        })
-      }
-      case 'POST /store/':
-      case 'POST /store': {
-        authorize()
-        const result = await importToken(request)
         return new Response(JSON.stringify(result), {
           headers: headers(request),
         })
@@ -261,7 +157,7 @@ export const handle = async (request, { store, AUTH_TOKEN }) => {
     return new Response(
       JSON.stringify({
         ok: false,
-        error: { message: error.message },
+        error: { message: error.message || 'failed to handle request' },
       }),
       {
         status: error.status || 500,

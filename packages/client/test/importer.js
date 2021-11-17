@@ -1,85 +1,4 @@
-import pb from 'ipld-dag-pb'
-import multicodec from 'multicodec'
-import Multihash from 'multihashing-async'
-import IPLD from 'ipld'
-// @ts-ignore
-import InMemory from 'ipld-in-memory'
-import { importer } from 'ipfs-unixfs-importer'
 import { CarReader } from '@ipld/car'
-
-const DagPB = pb.util
-
-/** @type {(T:typeof IPLD) => IPLD} */
-const inMemory = InMemory
-const { multihash } = Multihash
-
-/**
- * @typedef {import('ipfs-unixfs-importer').Blockstore} BlockAPI
- * @implements {BlockAPI}
- */
-// @ts-expect-error - must implement has, delete, putMany, getMany, ... methods.
-class Block {
-  /**
-   * @param {Object} [options]
-   * @param {IPLD} [options.ipld]
-   * @param {typeof multihash} [options.mh]
-   */
-  constructor({ ipld = inMemory(IPLD), mh = multihash } = {}) {
-    this.ipld = ipld
-    this.mh = mh
-  }
-  open() {
-    return Promise.resolve()
-  }
-  close() {
-    return Promise.resolve()
-  }
-
-  /**
-   * @param {import('multiformats').CID} cid
-   * @param {Uint8Array} bytes
-   */
-  async put(cid, bytes) {
-    const multihash = this.mh.decode(cid.bytes)
-    const node = DagPB.deserialize(bytes)
-
-    await this.ipld.put(node, multicodec.DAG_PB, {
-      cidVersion: cid.version,
-      hashAlg: multihash.code,
-    })
-
-    // return { cid, data: bytes }
-  }
-  /**
-   * @param {import('multiformats').CID} cid
-   * @param {any} options
-   */
-  async get(cid, options) {
-    // @ts-expect-error - CID is incompatible
-    const node = await this.ipld.get(cid, options)
-    if (node instanceof Uint8Array) {
-      return node
-    } else {
-      return DagPB.serialize(node)
-    }
-  }
-}
-
-/**
- * @param {Uint8Array} content
- */
-export const importBlob = async (content) => {
-  // @ts-expect-error - 'Block' instance is not a valid 'Blockstore'
-  const results = importer([{ content }], new Block(), {
-    onlyHash: true,
-    cidVersion: 1,
-    rawLeaves: true,
-  })
-  for await (const result of results) {
-    return result
-  }
-  throw new Error(`Import failed`)
-}
 
 /**
  * @param {Uint8Array} content
@@ -90,35 +9,12 @@ export const importCar = async (content) => {
   if (!cid) {
     throw new Error(`Import failed`)
   }
+  const rootBlock = await car.get(cid)
+  if (!rootBlock) {
+    throw new Error('missing root block')
+  }
+  if (new TextDecoder().decode(rootBlock.bytes) === 'throw an error') {
+    throw new Error('throwing an error for tests')
+  }
   return { cid }
-}
-
-/**
- * @param {File[]} files
- */
-export const importDirectory = async (files) => {
-  const entries = files.map((file) => ({
-    path: file.webkitRelativePath || file.name,
-    // file.stream() isn't typed as AsyncIterable.
-    content: /** @type {AsyncIterable<Uint8Array>} */ (file.stream()),
-  }))
-
-  // @ts-expect-error - 'Block' instance is not a valid 'Blockstore'
-  const results = importer(entries, new Block(), {
-    onlyHash: true,
-    wrapWithDirectory: true,
-    rawLeaves: true,
-    cidVersion: 1,
-  })
-
-  let last = null
-  for await (const result of results) {
-    last = result
-  }
-
-  if (last != null) {
-    return last
-  } else {
-    throw new Error(`Import failed`)
-  }
 }

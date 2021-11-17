@@ -1,14 +1,14 @@
 import { CarReader } from '@ipld/car'
 import * as assert from 'uvu/assert'
 import { NFTStorage, Blob, File, Token } from 'nft.storage'
-import { CID } from 'multiformats'
+import { CID } from 'multiformats/cid'
+import { sha256 } from 'multiformats/hashes/sha2'
+import * as raw from 'multiformats/codecs/raw'
+import { encode } from 'multiformats/block'
 import { pack } from 'ipfs-car/pack'
 import { CarWriter } from '@ipld/car'
-import * as dagCbor from '@ipld/dag-cbor'
 import * as dagJson from '@ipld/dag-json'
-import { garbage } from 'ipld-garbage'
-import { encode } from 'multiformats/block'
-import { sha256 } from 'multiformats/hashes/sha2'
+import { randomCar } from './helpers.js'
 
 const DWEB_LINK = 'dweb.link'
 
@@ -35,7 +35,6 @@ describe('client', () => {
     it('upload blob', async () => {
       const client = new NFTStorage({ token, endpoint })
       const cid = await client.storeBlob(new Blob(['hello world']))
-      console.log(cid.toString())
       assert.equal(
         cid,
         'bafkreifzjut3te2nhyekklss27nh3k72ysco7y32koao5eei66wof36n5e'
@@ -61,7 +60,7 @@ describe('client', () => {
 
       try {
         await client.storeBlob(blob)
-        assert.unreachable('sholud have failed')
+        assert.unreachable('should have failed')
       } catch (err) {
         const error = /** @type {Error} */ (err)
         assert.ok(error instanceof Error)
@@ -174,6 +173,23 @@ describe('client', () => {
       const cid = await client.storeCar(reader, { decoders: [dagJson] })
       assert.equal(cid, block.cid.toString(), 'returned cid matches the CAR')
     })
+
+    it('handles server error', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const bytes = new TextEncoder().encode('throw an error')
+      const hash = await sha256.digest(bytes)
+      const cid = CID.create(1, raw.code, hash)
+      const carReader = new CarReader(1, [cid], [{ cid, bytes }])
+
+      try {
+        await client.storeCar(carReader, { maxRetries: 0 })
+        assert.unreachable('should have thrown')
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
+        assert.ok(error instanceof Error)
+        assert.is(error.message, 'throwing an error for tests')
+      }
+    })
   })
 
   describe('upload dir', () => {
@@ -240,6 +256,7 @@ describe('client', () => {
         assert.match(error.message, /provide some content/i)
       }
     })
+
     it('errors without token', async () => {
       // @ts-expect-error - expects token option
       const client = new NFTStorage({ endpoint })
@@ -254,10 +271,9 @@ describe('client', () => {
 
     it('errors with invalid token', async () => {
       const client = new NFTStorage({ token: 'wrong', endpoint })
-
       try {
         await client.storeDirectory([new File(['wrong token'], 'foo.txt')])
-        assert.unreachable('sholud have failed')
+        assert.unreachable('should have failed')
       } catch (err) {
         const error = /** @type {Error} */ (err)
         assert.ok(error instanceof Error)
@@ -288,7 +304,7 @@ describe('client', () => {
       try {
         // @ts-expect-error
         await client.store({ name: 'name' })
-        assert.unreachable('sholud have failed')
+        assert.unreachable('should have failed')
       } catch (err) {
         const error = /** @type {Error} */ (err)
         assert.ok(error instanceof TypeError)
@@ -304,7 +320,7 @@ describe('client', () => {
       try {
         // @ts-expect-error
         await client.store({ name: 'name', description: 'stuff' })
-        assert.unreachable('sholud have failed')
+        assert.unreachable('should have failed')
       } catch (err) {
         const error = /** @type {Error} */ (err)
         assert.ok(error instanceof TypeError)
@@ -708,40 +724,3 @@ describe('client', () => {
     })
   })
 })
-
-const MAX_BLOCK_SIZE = 1024 * 1024 * 4
-
-function randomBlockSize() {
-  const max = MAX_BLOCK_SIZE
-  const min = max / 2
-  return Math.random() * (max - min) + min
-}
-
-/**
- * @param {number} targetSize
- * @returns {Promise<AsyncIterable<Uint8Array>>}
- */
-async function randomCar(targetSize) {
-  const blocks = []
-  let size = 0
-  const seen = new Set()
-  while (size < targetSize) {
-    const bytes = dagCbor.encode(
-      garbage(randomBlockSize(), { weights: { CID: 0 } })
-    )
-    const hash = await sha256.digest(bytes)
-    const cid = CID.create(1, dagCbor.code, hash)
-    if (seen.has(cid.toString())) continue
-    seen.add(cid.toString())
-    blocks.push({ cid, bytes })
-    size += bytes.length
-  }
-  const rootBytes = dagCbor.encode(blocks.map((b) => b.cid))
-  const rootHash = await sha256.digest(rootBytes)
-  const rootCid = CID.create(1, dagCbor.code, rootHash)
-  const { writer, out } = CarWriter.create([rootCid])
-  writer.put({ cid: rootCid, bytes: rootBytes })
-  blocks.forEach((b) => writer.put(b))
-  writer.close()
-  return out
-}
