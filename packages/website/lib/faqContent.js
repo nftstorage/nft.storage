@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import InlineCode from '../../components/inline-code'
+import InlineCode from '../components/inline-code'
 
 export default {
   longTermVision: (

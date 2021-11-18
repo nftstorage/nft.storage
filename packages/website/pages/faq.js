@@ -1,7 +1,7 @@
 import Link from 'next/link'
-import HashLink from '../../components/hashlink.js'
-import InlineCode from '../../components/inline-code.js'
-import faqContent from './faqContent.js'
+import HashLink from '../components/hashlink.js'
+import InlineCode from '../components/inline-code.js'
+import faqContent from '../lib/faqContent'
 
 /**
  * @param {string} title
@@ -16,7 +16,7 @@ const hashify = title =>
 /**
  * Static Props
  *
- * @returns {{ props: import('../../components/types.js').LayoutProps}}
+ * @returns {{ props: import('../components/types.js').LayoutProps}}
  */
 export const getStaticProps = () => ({
   props: {
@@ -86,7 +86,7 @@ const faqs = [
 ]
 
 const TOC = () => (
-  <div className="flex flex-column pv1 mw7`">
+  <div className="flex flex-column pv1 mw7">
     <h2 className="chicagoflf white">Table Of Contents</h2>
     {faqs.map((faq, index) => (
       <Link href={`/faq/#${hashify(faq.question)}`} key={`faq-item${index}`}>

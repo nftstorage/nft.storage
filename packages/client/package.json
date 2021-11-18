@@ -1,6 +1,6 @@
 {
   "name": "nft.storage",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "nft.storage client",
   "license": "(Apache-2.0 AND MIT)",
   "type": "module",
@@ -40,7 +40,7 @@
     "build:ts": "tsc --build",
     "build:cjs": "rollup --config rollup.config.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && npx codecov",
-    "typedoc": "typedoc ./src/lib.js  --out ../../docs/client --excludeExternals --internalNamespace _",
+    "typedoc": "typedoc ./src/lib.js ./src/lib/interface.ts  --out ../../docs/client --excludeExternals --internalNamespace _",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
