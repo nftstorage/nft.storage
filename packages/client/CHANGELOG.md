@@ -1,5 +1,12 @@
 # Changelog
 
+### [4.0.1](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v4.0.0...nft.storage-v4.0.1) (2021-11-18)
+
+
+### Bug Fixes
+
+* add interface.ts to fix docs ([#807](https://www.github.com/nftstorage/nft.storage/issues/807)) ([64e4b2d](https://www.github.com/nftstorage/nft.storage/commit/64e4b2d435b7876d4cb937f3e511bd833589a495))
+
 ## [4.0.0](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v3.4.0...nft.storage-v4.0.0) (2021-11-16)
 
 
