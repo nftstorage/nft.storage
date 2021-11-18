@@ -15,30 +15,27 @@ BEGIN
 END $$ LANGUAGE plpgsql;
 
 
-
-
 CREATE OR REPLACE FUNCTION ingest_unprocessed_tokens()
   RETURNS int
   AS $$
 DECLARE
   r record;
-  unprocessed_total integer;
-  batch_size integer :=100;
+  unprocessed_total integer :=0;
+  batch_size integer :=500;
 BEGIN
 
-    SELECT COUNT(*) 
-      FROM erc721_token_ingestion_queue 
-      WHERE last_processed 
+    SELECT COUNT(*)
+      FROM erc721_token_ingestion_queue
+      WHERE last_processed
       IS NULL
       INTO unprocessed_total;
-  
+
     WHILE (unprocessed_total > 0) LOOP
-  
+
     FOR r IN SELECT * FROM get_unprocessed_tokens_in_queue(batch_size) LOOP
          UPDATE erc721_token_ingestion_queue
            SET last_processed = now()
            WHERE id = r.id;
-         
          PERFORM public.ingest_erc721_token(
           r.id,
           r.token_id,
@@ -53,9 +50,8 @@ BEGIN
           r.owner_id,
           r.updated_at
          );
-         
     END LOOP;
-    
+
     unprocessed_total := unprocessed_total - batch_size;
   END LOOP;
   RETURN unprocessed_total;
