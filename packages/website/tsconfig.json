@@ -20,7 +20,7 @@
       "nft.storage": ["../client"]
     }
   },
-  "include": ["lib", "pages", "components"],
+  "include": ["lib", "pages", "components", "pages/blog/index/index.js"],
   "exclude": ["node_modules/", ".next/"],
   "references": [
     {

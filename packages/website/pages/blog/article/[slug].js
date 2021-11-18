@@ -1,15 +1,15 @@
 import fs from 'fs'
 import matter from 'gray-matter'
 import { FiTwitter, FiLinkedin, FiFacebook } from 'react-icons/fi'
-import SocialLink from '../../components/social-link'
-import Tags from '../../components/tags'
-import Markdown from '../../components/markdown'
+import SocialLink from '../../../components/social-link'
+import Tags from '../../../components/tags'
+import Markdown from '../../../components/markdown'
 
 /**
  * Blog Article Page
  *
  * @param {Object} props
- * @param {import('../../components/types').Article} props.article
+ * @param {import('../../../components/types').Article} props.article
  * @returns {JSX.Element}
  */
 const Article = ({ article }) => {

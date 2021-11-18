@@ -12,8 +12,8 @@ import Tags from '../tags'
  * @returns {JSX.Element}
  */
 export const Card = ({ article }) => (
-  <Link href={`/article/${article.slug}`}>
-    <div className="blog-card ba flex flex-column relative pointer bg-nsltblue ma5 h-card w-card">
+  <Link href={`/blog/article/${article.slug}`}>
+    <div className="blog-card ba flex flex-column relative pointer bg-nsltblue ma5 mr3 h-card w-card">
       <div className="ba absolute top-2 right-2 bg-white w-100 h-100">
         <img
           src={article.thumbnail}
@@ -46,8 +46,8 @@ export const Card = ({ article }) => (
  * @returns {JSX.Element}
  */
 export const HighlightCard = ({ article }) => (
-  <div className="blog-highlight-card flex h-card w-100 bt bb">
-    <div className="flex flex-column justify-between bg-nsltblue w-50 pa8">
+  <div className="blog-highlight-card flex h-card w-100 bt bb relative">
+    <div className="highlight-info flex flex-column justify-between bg-nsltblue w-50 pa13">
       <div>
         <div className="mb4">
           {article.tags && <Tags tags={article.tags} />}
@@ -61,7 +61,7 @@ export const HighlightCard = ({ article }) => (
       </div>
       <Button
         href={{
-          pathname: `/article/${article.slug}`,
+          pathname: `/blog/article/${article.slug}`,
         }}
         wrapperClassName="mw4"
         className="mw4 pv3"
@@ -76,7 +76,7 @@ export const HighlightCard = ({ article }) => (
     </div>
     <img
       src={article.thumbnail}
-      className="h-card w-50 object-cover object-center"
+      className="h-card highlight-img w-50 object-cover object-center"
     />
   </div>
 )

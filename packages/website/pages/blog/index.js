@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import fs from 'fs'
 import matter from 'gray-matter'
 import ReactPaginate from 'react-paginate'
-import { Card, HighlightCard } from '../components/blog/cards'
+import { Card, HighlightCard } from '../../components/blog/cards'
+import Tags from '../../components/tags'
+import { allTags } from '../../components/blog/constants'
 
 export async function getStaticProps() {
   const files = fs.readdirSync('all-blogs')
@@ -18,7 +21,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      articles: articles,
+      articles,
       title: 'FAQ - NFT Storage',
       navBgColor: 'bg-nspeach',
       needsUser: false,
@@ -30,14 +33,21 @@ export async function getStaticProps() {
  * Pagination Component
  *
  * @param {Object} props
- * @param {import('../components/types').ArticleMeta[]} props.items
+ * @param {import('../../components/types').ArticleMeta[]} props.items
  * @param {number} props.itemsPerPage
  * @returns {JSX.Element}
  */
 const PaginatedItems = ({ items, itemsPerPage }) => {
-  const [currentItems, setCurrentItems] = useState(null)
+  const [currentItems, setCurrentItems] = useState(items)
   const [pageCount, setPageCount] = useState(0)
   const [itemOffset, setItemOffset] = useState(0)
+
+  console.log('HERE ARE ITEMS')
+
+  useEffect(() => {
+    setCurrentItems(items.slice(0, itemsPerPage))
+    updateOffset(0)
+  }, [items, itemsPerPage])
 
   useEffect(() => {
     const endOffset = itemOffset + itemsPerPage
@@ -48,14 +58,21 @@ const PaginatedItems = ({ items, itemsPerPage }) => {
   }, [itemOffset, itemsPerPage])
 
   /**
+   * @param {number} newPage
+   */
+  const updateOffset = newPage => {
+    const newOffset = (newPage * itemsPerPage) % items.length
+    console.log(
+      `User requested page number ${newPage}, which is offset ${newOffset}`
+    )
+    setItemOffset(newOffset)
+  }
+
+  /**
    * @param {Record<string, any>} event
    */
   const handlePageClick = event => {
-    const newOffset = (event.selected * itemsPerPage) % items.length
-    console.log(
-      `User requested page number ${event.selected}, which is offset ${newOffset}`
-    )
-    setItemOffset(newOffset)
+    updateOffset(event.selected)
   }
 
   return (
@@ -88,10 +105,10 @@ const PaginatedItems = ({ items, itemsPerPage }) => {
  * Blog Cards
  *
  * @param {Object} props
- * @param {import('../components/types').ArticleMeta[]} props.currentItems
+ * @param {import('../../components/types').ArticleMeta[]} props.currentItems
  */
 const Items = ({ currentItems }) => (
-  <div className="flex justify-evenly flex-wrap pt4">
+  <div className="flex justify-evenly flex-wrap pt2">
     {currentItems.map((article, i) => (
       <Card key={i} article={article} />
     ))}
@@ -102,16 +119,60 @@ const Items = ({ currentItems }) => (
  * Blog Page
  *
  * @param {Object} props
- * @param {import('../components/types').ArticleMeta[]} props.articles
+ * @param {import('../../components/types').ArticleMeta[]} props.articles
  */
 const Blog = ({ articles }) => {
-  const first = articles[0]
+  const router = useRouter()
+  const { page } = router.query
   const [, ...rest] = articles
+  const [currentArticles, setCurrentArticles] = useState(rest)
+  const [filters, setFilters] = useState(['all'])
+  const first = articles[0]
+
+  console.log('PAGE IS: ', page)
+
+  useEffect(() => {
+    console.log('filters:', filters)
+    const filtered =
+      filters[0] !== 'all'
+        ? articles.filter(article => {
+            return article.tags?.some(t => filters.includes(t))
+          })
+        : articles
+    setCurrentArticles(filtered)
+  }, [filters])
+
+  /**
+   *
+   * @param {string} tag
+   */
+  const handleTagClick = tag =>
+    setFilters(prev => {
+      if (tag === 'all') return ['all']
+      let newTags = prev.includes(tag)
+        ? prev.filter(t => t.toLowerCase() !== tag)
+        : [...prev, tag.toLowerCase()]
+      newTags = newTags.filter(t => t.toLowerCase() !== 'all')
+      return newTags.length > 0 ? newTags : ['all']
+    })
+
   return (
     <main className="blog bg-nspeach">
       <div className="flex flex-column justify-center">
         <HighlightCard article={first} />
-        <PaginatedItems items={rest} itemsPerPage={9} />
+        <div className="button-tags-container mt4 flex ph13">
+          <Tags
+            tags={allTags.map(tag => {
+              const normTag = tag.toLowerCase()
+              return {
+                label: normTag,
+                onClick: () => handleTagClick(normTag),
+              }
+            })}
+          />
+          {/* current tags: {filters} */}
+        </div>
+        <PaginatedItems items={currentArticles} itemsPerPage={9} />
       </div>
     </main>
   )

@@ -39,8 +39,11 @@ h6 {
 
 /* margin */
 
+.blog .ma2 {
+  margin: 0.5rem;
+}
 .blog .ma5 {
-  margin: 20px;
+  margin: 1.25rem;
 }
 
 .blog .mh2 {
@@ -49,7 +52,7 @@ h6 {
 }
 
 .blog .mt5 {
-  margin-bottom: 1.25rem;
+  margin-top: 1.25rem;
 }
 .blog .mt14 {
   margin-top: 3.5rem;
@@ -57,6 +60,9 @@ h6 {
 
 .blog .mr2 {
   margin-right: 0.5rem;
+}
+.blog .mr3 {
+  margin-right: 0.75rem;
 }
 
 .blog .mb2 {
@@ -101,7 +107,7 @@ h6 {
 .blog .pa5 {
   padding: 1.25rem;
 }
-.blog .pa8 {
+.blog .pa13 {
   padding: 3.175rem;
 }
 
@@ -125,6 +131,10 @@ h6 {
 .blog .ph8 {
   padding-left: 2rem;
   padding-right: 2rem;
+}
+.blog .ph13 {
+  padding-left: 3.175rem;
+  padding-right: 3.175rem;
 }
 
 .blog .pb24 {
@@ -190,7 +200,29 @@ h6 {
 }
 
 .blog .disabled-page-button {
-  color: lightgray;
-  border-color: lightgray;
+  color: var(--dark-gray);
+  border-color: var(--dark-gray);
   cursor: default;
+}
+
+/* responsive */
+
+@media screen and (max-width: 880px) {
+  .blog .highlight-info,
+  .highlight-img {
+    position: absolute;
+    width: 100%;
+  }
+  .blog .highlight-info {
+    height: var(--card-size);
+    z-index: 50;
+    opacity: 0.75;
+  }
+  .blog-tags-buttons {
+    justify-self: center;
+  }
+  .blog .button-tags-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }

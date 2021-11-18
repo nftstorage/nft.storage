@@ -24,6 +24,7 @@ import countly from '../lib/countly'
  * @prop {string} [id]
  * @prop {'dark' | 'light' } [variant]
  * @prop {TrackingProp} [tracking] Tracking data to send to countly on button click
+ * @prop {boolean} [unstyled]
  */
 
 /**
@@ -43,10 +44,11 @@ export default function Button({
   small = false,
   variant = 'light',
   tracking,
+  unstyled,
   ...props
 }) {
   const onClickHandler = useCallback(
-    (event) => {
+    event => {
       tracking &&
         countly.trackEvent(tracking.event || countly.events.CTA_LINK_CLICK, {
           ui: tracking.ui,
@@ -70,8 +72,8 @@ export default function Button({
     { grow: !disabled, 'o-50': disabled },
     wrapperClassName
   )
-  const wrapperStyle = { minWidth: small ? '0' : '8rem' }
-  const btnStyle = { top: 3, left: 3 }
+  const wrapperStyle = unstyled ? {} : { minWidth: small ? '0' : '8rem' }
+  const btnStyle = unstyled ? {} : { top: 3, left: 3 }
 
   let variantClasses = ''
   switch (variant) {
@@ -88,17 +90,10 @@ export default function Button({
     <button
       type={type}
       className={clsx(
-        'button-reset',
-        'relative',
-        'w-100',
-        'ba',
-        'b--black',
-        'pv2',
-        'ph3',
-        'chicagoflf',
-        'f5',
+        !unstyled &&
+          'button-reset relative w-100 ba b--black pv2 ph3 chicagoflf f5',
         { pointer: !disabled },
-        variantClasses,
+        !unstyled && variantClasses,
         className
       )}
       style={btnStyle}
@@ -112,12 +107,18 @@ export default function Button({
   )
   return href ? (
     <Link href={href}>
-      <a className={wrapperClassName} style={wrapperStyle}>
+      <a
+        className={clsx('button-wrapper', !unstyled && wrapperClassName)}
+        style={wrapperStyle}
+      >
         {btn}
       </a>
     </Link>
   ) : (
-    <div className={wrapperClassName} style={wrapperStyle}>
+    <div
+      className={clsx('button-wrapper', !unstyled && wrapperClassName)}
+      style={wrapperStyle}
+    >
       {btn}
     </div>
   )

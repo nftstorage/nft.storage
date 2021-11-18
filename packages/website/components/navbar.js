@@ -92,6 +92,13 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
         },
         name: 'FAQ',
       },
+      {
+        link: {
+          pathname: '/blog',
+          query: version ? { version } : null,
+        },
+        name: 'Blog',
+      },
       ...(isSmallVariant
         ? user
           ? [
@@ -115,7 +122,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
     [user, isSmallVariant, version, logout, trackLogout]
   )
 
-  const onLinkClick = useCallback((event) => {
+  const onLinkClick = useCallback(event => {
     countly.trackCustomLinkClick(
       countly.events.LINK_CLICK_NAVBAR,
       event.currentTarget
@@ -130,7 +137,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
   }, [isMenuOpen])
 
   const onMobileLinkClick = useCallback(
-    (event) => {
+    event => {
       onLinkClick(event)
       toggleMenu()
     },

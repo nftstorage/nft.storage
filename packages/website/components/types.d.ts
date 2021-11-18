@@ -13,6 +13,11 @@ export interface Article {
   content: string
 }
 
+export interface Tag {
+  label: string
+  onClick?: () => void
+}
+
 export interface LayoutProps {
   callback?: boolean
   needsUser: boolean
