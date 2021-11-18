@@ -40,7 +40,7 @@
     "build:ts": "tsc --build",
     "build:cjs": "rollup --config rollup.config.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && npx codecov",
-    "typedoc": "typedoc ./src/lib.js  --out ../../docs/client --excludeExternals --internalNamespace _",
+    "typedoc": "typedoc ./src/lib.js ./src/lib/interface.ts  --out ../../docs/client --excludeExternals --internalNamespace _",
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
