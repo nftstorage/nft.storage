@@ -4,7 +4,13 @@ import { secrets, database } from '../constants.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 import { parseCid } from '../utils/utils.js'
-import { verifyMetaplexJWT, parseJWT } from '../utils/jwt.js'
+import {
+  parseJWTHeader,
+  parseJWT,
+  Base64URL,
+  utf8ToUint8Array,
+} from '../utils/jwt.js'
+import { keyFromDID, verifyEd25519Signature } from '../utils/ed25519.js'
 import { DBClient, DBError } from '../utils/db-client.js'
 
 /**
@@ -97,4 +103,42 @@ async function validate() {
   }
 
   return { user: { id: data.user.id }, key: { id: data.id } }
+}
+
+/**
+ * Verifies a self-signed JWT for a metaplex upload.
+ *
+ * @param {string} token - an encoded JWT token from an x-web3auth header.
+ * @returns {Promise<boolean>} - true if the token contains a valid solana public key and a valid signature from the key.
+ */
+async function verifyMetaplexJWT(token) {
+  if (typeof token !== 'string') {
+    throw new Error('token must be a string')
+  }
+  var tokenParts = token.split('.')
+
+  if (tokenParts.length !== 3) {
+    return false
+  }
+
+  const header = parseJWTHeader(token)
+  const payload = parseJWT(token)
+
+  if (header.alg !== 'EdDSA') {
+    throw new Error('invalid algorithm for metaplex token')
+  }
+
+  if (header.typ !== 'JWT') {
+    throw new Error('invalid token type')
+  }
+
+  if (!payload.iss) {
+    return false
+  }
+
+  const headerPayload = utf8ToUint8Array(tokenParts[0] + '.' + tokenParts[1])
+  const pubkey = await keyFromDID(payload.iss)
+  const sig = Base64URL.parse(tokenParts[2])
+
+  return verifyEd25519Signature(headerPayload, sig, pubkey)
 }
