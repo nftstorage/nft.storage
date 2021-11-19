@@ -91,7 +91,6 @@ export default function TermsOfService() {
           on the IPFS network may retain copies of the data indefinitely and data 
           aggregated into Filecoin deals will persist for the duration of the relevant 
           storage deal.
-        </p>
 
         </p>
       </div>
