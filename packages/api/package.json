@@ -28,8 +28,7 @@
     "merge-options": "^3.0.4",
     "multiformats": "^9.4.10",
     "regexparam": "^2.0.0",
-    "toucan-js": "^2.4.1",
-    "tweetnacl": "^1.0.3"
+    "toucan-js": "^2.4.1"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.1.1",
@@ -53,6 +52,7 @@
     "process": "^0.11.10",
     "readable-stream": "^3.6.0",
     "sade": "^1.7.4",
-    "smoke": "^3.1.1"
+    "smoke": "^3.1.1",
+    "tweetnacl": "^1.0.3"
   }
 }
