@@ -45,7 +45,19 @@ export async function metaplexUpload(event, ctx) {
   // now that we know the sig is valid, use the JWT payload
   // as metadata to attach to the upload entry in the db
   /** @type Record<string, any> */
-  const meta = parseJWT(token)
+  const { iss, req } = parseJWT(token)
+  if (!iss) {
+    throw new HTTPError(
+      'invalid token - required field "iss" not present in payload',
+      401
+    )
+  }
+  if (!req) {
+    throw new HTTPError(
+      'invalid token - required field "req" not present in payload',
+      401
+    )
+  }
 
   // Get the mapped metaplex user
   const { user, key } = await validate()
@@ -60,10 +72,10 @@ export async function metaplexUpload(event, ctx) {
   const { sourceCid, contentCid } = parseCid(cid)
 
   // confirm that the content cid matches the cid from the signed metadata
-  if (!meta.req || !meta.req.put || typeof meta.req.put.rootCID !== 'string') {
+  if (!req.put || typeof req.put.rootCID !== 'string') {
     throw new HTTPError('invalid token - no root cid in payload', 401)
   }
-  const signedCid = meta.req.put.rootCID
+  const signedCid = req.put.rootCID
   if (signedCid !== sourceCid && signedCid !== contentCid) {
     throw new HTTPError('invalid token - cid mismatch', 401)
   }
@@ -77,7 +89,7 @@ export async function metaplexUpload(event, ctx) {
     user_id: user.id,
     files: [],
     key_id: key.id,
-    meta,
+    meta: { iss, req },
   })
 
   return new JSONResponse({ ok: true, value: toNFTResponse(upload, sourceCid) })
