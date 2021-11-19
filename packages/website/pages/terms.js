@@ -30,7 +30,7 @@ export default function TermsOfService() {
           and conditions are entered into by and between you and Protocol Labs, 
           Inc. (“Protocol Labs”). The Website is offered subject to your 
           acceptance without modification of all of the terms and conditions 
-          contained herein. As all data uploaded to nft.storage will
+          contained herein. As all data uploaded to NFT.Storage will
           be stored on IPFS, this website incorporates the{' '}
           <a className="black" href="https://discuss.ipfs.io/tos">
             Terms of Service of IPFS.io
@@ -49,9 +49,9 @@ export default function TermsOfService() {
           The Service is offered for the creation and storage of NFTs. Use of the 
           Service to store other types of data is not permitted. The Service 
           accepts uploads of up to 31GiB in size. Currently, the 
-          Service does not limit users in the total data they can upload. Protocol 
-          Labs may amend this limit at its sole discretion, though any such amendment 
-          will not affect data previously uploaded.
+          Service does not limit users with respect to the total amount of data they 
+          can upload. Protocol Labs may amend this limit at its sole discretion, 
+          though any such amendment will not affect data previously uploaded.
         </p>
 
         <h2 className="chicagoflf">
