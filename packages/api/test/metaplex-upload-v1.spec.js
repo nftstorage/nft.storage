@@ -53,8 +53,6 @@ describe(' V1 - Metaplex Upload ', () => {
       .match({ source_cid: cid, user_id: client.userId })
       .single()
 
-    console.log('upload data', data)
-
     // @ts-ignore
     assert.equal(data.source_cid, cid)
     assert.equal(data.deleted_at, null)
