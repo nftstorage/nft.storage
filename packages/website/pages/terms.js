@@ -87,7 +87,7 @@ export default function TermsOfService() {
           All data uploaded via the Service is available to anyone who requests it using 
           the correct content identifier. Users should not store any private or sensitive 
           information in an unencrypted form using the Service. Deleting files from the 
-          Service will remove them from the file listing for a user's account, but nodes 
+          Service will remove them from the file listing for a user&apos;s account, but nodes 
           on the IPFS network may retain copies of the data indefinitely and data 
           aggregated into Filecoin deals will persist for the duration of the relevant 
           storage deal.
