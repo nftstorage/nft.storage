@@ -23,12 +23,14 @@ export default function TermsOfService() {
         <p className="lh-copy">
           The following terms and conditions govern all use of the{' '}
           <a className="black" href="https://nft.storage">
-            nft.storage
+            NFT.Storage
           </a>{' '}
-          website (the “Website”) and all content, services and products
-          available at or through the Website. The Website is offered subject to
-          your acceptance without modification of all of the terms and
-          conditions contained herein. As all data uploaded to nft.storage will
+          website (the “Website”) and all content, services and products 
+          available at or through the Website (the “Service”). These terms 
+          and conditions are entered into by and between you and Protocol Labs, 
+          Inc. (“Protocol Labs”). The Website is offered subject to your 
+          acceptance without modification of all of the terms and conditions 
+          contained herein. As all data uploaded to nft.storage will
           be stored on IPFS, this website incorporates the{' '}
           <a className="black" href="https://discuss.ipfs.io/tos">
             Terms of Service of IPFS.io
@@ -39,59 +41,58 @@ export default function TermsOfService() {
           If you do not agree to all the terms and conditions of this agreement,
           then you may not access the Website or use any services.
         </p>
-        <h2 className="chicagoflf">
-          <HashLink id="storage-term">Storage Term</HashLink>
-        </h2>
-        <p className="lh-copy">
-          Data will be stored at no cost to the user on IPFS for as long as
-          Protocol Labs, Inc. continues to offer free storage for NFT’s. Data
-          will continue to be persisted ad infinitum <strong>or</strong> until
-          Protocol Labs decides to conclude the NFT.storage project. Prior to
-          termination, Protocol Labs will provide 90 days notice to users via
-          email to allow users enough time to make arrangements for storing
-          their data by other means.
-        </p>
 
         <h2 className="chicagoflf">
           <HashLink id="data-limits">Data Limits</HashLink>
         </h2>
         <p className="lh-copy">
-          The service accepts arbitrary upload sizes up to 30GB per upload.
-          Currently, the service has no data upload limit. Protocol Labs may
-          amend this term limit at its sole discretion.
+          The Service is offered for the creation and storage of NFTs. Use of the 
+          Service to store other types of data is not permitted. The Service 
+          accepts arbitrary upload sizes up to 31GiB per upload. Currently, the 
+          Service does not limit users in the total data they can upload. Protocol 
+          Labs may amend this limit at its sole discretion, though any such amendment 
+          will not affect data previously uploaded.
         </p>
 
         <h2 className="chicagoflf">
-          <HashLink id="filecoin-deals">Filecoin Deals</HashLink>
+          <HashLink id="storage-term">Storage Term</HashLink>
         </h2>
         <p className="lh-copy">
-          Data stored in{' '}
-          <a className="black" href="https://nft.storage">
-            nft.storage
-          </a>{' '}
-          is guaranteed to be available in IPFS. Data may also be stored in
-          Filecoin but the time, duration, and number of deals are not
-          guaranteed.
+          Data stored on the Service is stored on the Filecoin network in 
+          long-term deals with independent Filecoin storage providers, and 
+          may also be stored redundantly by other means to support the 
+          functionality of the Service. Data larger than the upload limit may 
+          not be stored in a Filecoin deal. The time for data to be aggregated 
+          into a Filecoin deal varies, and the number of deals that will support 
+          storage of given data are variable.
         </p>
         <p className="lh-copy">
-          Deals may be made with Filecoin nodes operating on test network(s)
-          (i.e. not mainnet). These deals will be flagged as not being a mainnet
-          deal and will be lost on network resets. Node’s that are stored data
-          are not guaranteed to be accessible and may only be available via
-          private networks for testing purposes.
+          Filecoin deals are public, and anyone can access information about them 
+          (e.g., content address, duration, expiration, price, etc.) and renew or 
+          create new deals storing the underlying data. Data will be stored on the 
+          Service indefinitely through auto-renewal of storage deals or equivalent 
+          means. Protocol Labs will provide the Service at no cost to the user, and 
+          may transfer responsibility for that no-cost service to another party 
+          providing a funding mechanism that equivalently subsidizes data storage. 
+          In the unlikely event of cessation or change in the nature of the Service, 
+          existing Filecoin storage deals will continue until their designated end 
+          date, and Protocol Labs will: (1) provide at least 90 days’ notice to users 
+          before any such service change or cessation, and (2) provide users with the 
+          ability to export all material data associated with their user account, 
+          including the content addresses of NFT-related data and information about 
+          any Filecoin deals containing this data for users who want to continue 
+          storing this data in Filecoin deals.
         </p>
         <p className="lh-copy">
-          It is recommended that you do not rely on Filecoin deals directly and
-          instead you allow{' '}
-          <a className="black" href="https://nft.storage">
-            nft.storage
-          </a>{' '}
-          to make the data available in IPFS. Retrieving data over the IPFS
-          network is the recommended means of accessing{' '}
-          <a className="black" href="https://nft.storage">
-            nft.storage
-          </a>{' '}
-          data.
+          All data uploaded via the Service is available to anyone who requests it using 
+          the correct content identifier. Users should not store any private or sensitive 
+          information in an unencrypted form using the Service. Deleting files from the 
+          Service will remove them from the file listing for a user's account, but nodes 
+          on the IPFS network may retain copies of the data indefinitely and data 
+          aggregated into Filecoin deals will persist for the duration of the relevant 
+          storage deal.
+        </p>
+
         </p>
       </div>
     </main>
