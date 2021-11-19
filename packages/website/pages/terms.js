@@ -48,7 +48,7 @@ export default function TermsOfService() {
         <p className="lh-copy">
           The Service is offered for the creation and storage of NFTs. Use of the 
           Service to store other types of data is not permitted. The Service 
-          accepts arbitrary upload sizes up to 31GiB per upload. Currently, the 
+          accepts uploads of up to 31GiB in size. Currently, the 
           Service does not limit users in the total data they can upload. Protocol 
           Labs may amend this limit at its sole discretion, though any such amendment 
           will not affect data previously uploaded.
