@@ -89,6 +89,10 @@ export async function metaplexUpload(event, ctx) {
     user_id: user.id,
     files: [],
     key_id: key.id,
+    // note: we need to specify the foreign key to use in the select statement below
+    // because there's also a potential join between `auth_key` and `user`
+    // via the `uploads` table.
+
     meta: { iss, req },
   })
 
