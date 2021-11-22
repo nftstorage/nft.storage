@@ -57,7 +57,12 @@ describe(' V1 - Metaplex Upload ', () => {
     assert.equal(data.source_cid, cid)
     assert.equal(data.deleted_at, null)
     assert.equal(data.content.dag_size, 15, 'correct dag size')
-    assert.deepEqual(data.meta, fixture.meta, 'metadata matches jwt payload')
+
+    const expectedMeta = {
+      iss: fixture.meta.iss,
+      req: JSON.stringify(fixture.meta.req),
+    }
+    assert.deepEqual(data.meta, expectedMeta, 'metadata matches jwt payload')
   })
 
   it('should fail if token has an invalid signature', async () => {
