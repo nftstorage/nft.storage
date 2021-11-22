@@ -93,7 +93,7 @@ export async function metaplexUpload(event, ctx) {
     // because there's also a potential join between `auth_key` and `user`
     // via the `uploads` table.
 
-    meta: { iss, req },
+    meta: { iss, req: JSON.stringify(req) },
   })
 
   return new JSONResponse({ ok: true, value: toNFTResponse(upload, sourceCid) })
