@@ -172,6 +172,10 @@ img {
   -moz-user-select: none;
 }
 
+.pointer-default {
+  cursor: default;
+}
+
 @keyframes appear-from-bottom {
   from {
     transform: translateY(100%);

@@ -8,8 +8,9 @@ import { allTags } from '../../components/blog/constants'
 import { usePagination } from '../../lib/usePagination'
 import clsx from 'clsx'
 import Loading from '../../components/loading'
+import Button from '../../components/button'
 
-const BLOG_ITEMS_PER_PAGE = 9
+const BLOG_ITEMS_PER_PAGE = 2
 
 export async function getStaticProps() {
   const files = fs.readdirSync('all-blogs')
@@ -118,19 +119,22 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
    */
   const PagNavButton = ({ page, children, disabled, isActive }) => {
     return (
-      <button
+      <Button
+        unstyled
         key={`pag-nav-item-${page || children}`}
         onClick={!page || isActive ? undefined : () => handlePageClick(page)}
         disabled={disabled}
         className={clsx(
-          'ba b--black ttu h8 ma1',
-          isActive ? 'bg-black nspeach' : 'black bg-transparent',
-          !isActive && !disabled && 'grow'
+          'ba b--black ttu h8 ma1 mnw8 select-none',
+          isActive
+            ? 'bg-black nspeach pointer-default'
+            : 'black bg-transparent',
+          !isActive && !disabled && 'grow pointer',
+          disabled && 'o-50'
         )}
-        style={{ minWidth: '2rem', cursor: isActive ? 'default' : '' }}
       >
         {children}
-      </button>
+      </Button>
     )
   }
 

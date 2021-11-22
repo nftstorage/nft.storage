@@ -24,7 +24,9 @@ export const Tag = ({ tag }) => {
         unstyled
         className={clsx(
           'ph2 pv1 f6 ba b--black ttc mr2 grow',
-          tag.selected ? 'bg-black nspeach' : 'black bg-transparent'
+          tag.selected
+            ? 'bg-black nspeach pointer-default'
+            : 'black bg-transparent pointer'
         )}
       >
         {tag.label}
