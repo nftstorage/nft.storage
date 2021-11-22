@@ -10,7 +10,7 @@ import clsx from 'clsx'
 import Loading from '../../components/loading'
 import Button from '../../components/button'
 
-const BLOG_ITEMS_PER_PAGE = 2
+const BLOG_ITEMS_PER_PAGE = 9
 
 export async function getStaticProps() {
   const files = fs.readdirSync('all-blogs')
