@@ -151,7 +151,7 @@ const bodyOf = (self) => {
       ? null
       : stream instanceof Uint8Array || typeof stream === 'string'
       ? toReadableStream([stream][Symbol.iterator]())
-      : toReadableStream(stream[Symbol.asyncIterator]())
+      : stream
 
   Object.defineProperty(self, 'body', { value: body })
   return body
@@ -259,7 +259,6 @@ export class Service {
   }
 
   /**
-   *
    * @param {http.IncomingMessage} incoming
    * @param {http.ServerResponse} outgoing
    */
@@ -297,6 +296,7 @@ export class Service {
 
 /**
  * @param {http.IncomingMessage} inn
+ * @returns {BodyInit | undefined}
  */
 const toBody = (inn) => {
   switch (inn.method) {
@@ -304,7 +304,7 @@ const toBody = (inn) => {
     case 'GET':
       return undefined
     default:
-      return inn
+      return toReadableStream(inn[Symbol.asyncIterator]())
   }
 }
 
