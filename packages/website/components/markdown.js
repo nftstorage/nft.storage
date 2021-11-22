@@ -11,6 +11,10 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
  */
 const Markdown = ({ content }) => {
   const components = {
+    /**
+     * @param {any} props
+     * todo FIX PROP TYPES
+     */
     code({ inline, className, children, ...props }) {
       const match = /language-(\w+)/.exec(className || '')
 
