@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.0.0](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v4.0.1...nft.storage-v5.0.0) (2021-11-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* update dependencies (#833)
+
+### Changes
+
+* update dependencies ([#833](https://www.github.com/nftstorage/nft.storage/issues/833)) ([27b1adc](https://www.github.com/nftstorage/nft.storage/commit/27b1adc8eb3ced95358c7619d2e4bcd7803128d2))
+
 ### [4.0.1](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v4.0.0...nft.storage-v4.0.1) (2021-11-18)
 
 
