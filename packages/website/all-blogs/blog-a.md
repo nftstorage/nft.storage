@@ -1,18 +1,14 @@
 ---
-title: This is blog A
-description: risus eu lectus a consectetur aliquam nullam enim tellus urna nunc sagittis aenean aliquam ullamcorper consectetur dictumst sit, placerat eget lobortis eget elit nibh blandit scelerisque consectetur condimentum diam tempor. nisl erat semper gravida tempor aliquam suscipit a viverra molestie sit porta cras ultricies, fermentum habitasse sit semper cum eu eget lacus purus viverra cursus porttitor nisi nisl.
-author: Pat Lindsey
-tags:
-  - Events
-  - Updates
+title: this is blog a
+description: This is a blog description in which the blog is described in brief.
+author: Chris File
 thumbnail: https://filecoin.io/uploads/fil-blog-nft-storage-notext-1_hu0f986e6d3668f304753a6341d061b59b_77385_2000x0_resize_q90_linear_2.png
-date: Nov 12, 2021
+date: Nov 11, 2021
 ---
 
 ## Ullamcorper Elit Semper Ultricies Morbi
 
-NFT data stored by nft.storage can be accessed from the decentralized IPFS network from any peer that has the content. CIDs reference immutable content so you can be sure the content you access is the content referenced in the NFT.
-The data can be fetched directly in the browser using Brave, or via a public IPFS gateway, or by using IPFS Desktop or the IPFS command line. This is a link.
+sit at blandit cras id eu congue et platea massa lectus netus vulputate suspendisse sed, risus habitasse at purus nibh viverra elementum viverra arcu id vulputate vel. ipsum tincidunt lorem habitant dis nulla consectetur tincidunt iaculis adipiscing erat enim, ultrices etiam mollis volutpat est vestibulum aliquam lorem elit natoque metus dui est elit. mollis sit tincidunt mauris porttitor pellentesque at nisl pulvinar tortor egestas habitant hac, metus blandit scelerisque in aliquet tellus enim viverra sed eu neque placerat lobortis a. laoreet tempus posuere magna amet nec eget vitae pretium enim magnis, cras sem eget amet id risus pellentesque auctor quis nunc tincidunt tortor massa nisl velit tortor. a volutpat malesuada nisi habitasse id volutpat nibh volutpat suspendisse nunc justo elementum ac nec, elementum pulvinar enim sociis nunc eleifend malesuada platea nunc posuere aliquet ipsum.
 
 ```ts
 function someFunc(thing: string) {
@@ -24,8 +20,6 @@ function someFunc(thing: string) {
 ## Eu Nulla Tincidunt Nulla Pellentesque Sapien
 
 pellentesque eu tellus mauris potenti aliquam varius aliquet ut aliquam est quis condimentum, aliquet tempus eget mauris nisi consectetur ut tortor in purus consectetur mattis lectus. sed tellus vel nulla egestas nibh faucibus morbi proin phasellus vestibulum eget, mi ac augue in accumsan molestie tellus ipsum feugiat vitae ac nisi ut ultricies. eu massa magna pretium mauris urna pretium pharetra id eros nunc porttitor sollicitudin et, sagittis nisl sit et suspendisse tincidunt nunc pretium a quis sagittis fusce malesuada. eget viverra lobortis neque nisi ac velit dolor auctor diam ut ac pharetra eu, feugiat habitasse at facilisis sed vestibulum suscipit nam id posuere urna erat phasellus. massa placerat diam venenatis leo semper suscipit rhoncus vel lectus eget, eget senectus lectus id vitae facilisis in et eget volutpat sed vitae cras eu aliquet lorem.
-
-![alt text for screen readers](https://filecoin.io/uploads/fil-blog-nft-storage-notext-1_hu0f986e6d3668f304753a6341d061b59b_77385_2000x0_resize_q90_linear_2.png 'Text to show on mouseover')
 
 ## A Euismod Magnis Sed Ullamcorper Tempus
 

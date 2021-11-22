@@ -43,6 +43,11 @@
   --btn-ghost-y-hover: -2px;
 }
 
+img {
+  user-select: none;
+  -moz-user-select: none;
+}
+
 /* fonts */
 
 .chicagoflf {
@@ -60,6 +65,9 @@
 
 .bg-nsblue {
   background-color: var(--nsblue);
+}
+.nsltblue {
+  color: var(--nsltblue);
 }
 .bg-nsltblue {
   background-color: var(--nsltblue);
@@ -161,6 +169,7 @@
 }
 .select-none {
   user-select: none;
+  -moz-user-select: none;
 }
 
 @keyframes appear-from-bottom {

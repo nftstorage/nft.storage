@@ -1,4 +1,4 @@
-export interface ArticleMeta {
+export interface PostMeta {
   title: string
   slug: string
   description: string
@@ -8,14 +8,15 @@ export interface ArticleMeta {
   tags?: string[]
 }
 
-export interface Article {
-  meta: ArticleMeta
+export interface Post {
+  meta: PostMeta
   content: string
 }
 
 export interface Tag {
   label: string
   onClick?: () => void
+  selected?: boolean
 }
 
 export interface LayoutProps {
@@ -25,8 +26,10 @@ export interface LayoutProps {
   redirectIfFound?: boolean
   title?: string
   description?: string
+  image?: string
   navBgColor?: string
-  articles?: ArticleMeta[]
+  altLogo?: boolean
+  posts?: PostMeta[]
 }
 
 export interface LayoutChildrenProps {

@@ -10,10 +10,10 @@ import { useUser } from '../lib/user'
 const MaintenanceBanner = () => {
   let maintenanceMessage = ''
 
-  const { data: statusPageData, error: statusPageError } = useQuery(
-    'get-statuspage-summary',
-    () => getStatusPageSummary()
-  )
+  const {
+    data: statusPageData,
+    error: statusPageError,
+  } = useQuery('get-statuspage-summary', () => getStatusPageSummary())
   const scheduledMaintenances =
     statusPageData?.scheduled_maintenances.filter(
       (/** @type {{ status: string; }} */ maintenance) =>
@@ -79,6 +79,8 @@ export default function Layout({
   title = 'NFT Storage - Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin.',
   description = 'NFT Storage is a brand new service, built specifically for storing off-chain NFT data on IPFS and Filecoin.',
   navBgColor = 'bg-nsorange',
+  altLogo = false,
+  image = 'https://nft.storage/images/social.png',
 }) {
   const { user, status } = useUser({
     redirectTo,
@@ -96,10 +98,7 @@ export default function Layout({
         <meta property="og:description" content={description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://nft.storage" />
-        <meta
-          property="og:image"
-          content="https://nft.storage/images/social.png"
-        />
+        <meta property="og:image" content={image} />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@protocollabs" />
@@ -115,7 +114,11 @@ export default function Layout({
       ) : (
         <>
           <MaintenanceBanner />
-          <Navbar bgColor={navBgColor} user={user} />
+          <Navbar
+            bgColor={navBgColor}
+            altLogo={altLogo ? '/images/logo-nft-storage-dark.svg' : undefined}
+            user={user}
+          />
           {children({ user })}
           <Footer />
         </>

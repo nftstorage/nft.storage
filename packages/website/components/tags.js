@@ -22,7 +22,10 @@ export const Tag = ({ tag }) => {
       <Button
         onClick={tag.onClick}
         unstyled
-        className="ph2 pv1 f6 ba ttc mr2 bg-transparent"
+        className={clsx(
+          'ph2 pv1 f6 ba b--black ttc mr2 grow',
+          tag.selected ? 'bg-black nspeach' : 'black bg-transparent'
+        )}
       >
         {tag.label}
       </Button>

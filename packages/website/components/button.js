@@ -90,8 +90,8 @@ export default function Button({
     <button
       type={type}
       className={clsx(
-        !unstyled &&
-          'button-reset relative w-100 ba b--black pv2 ph3 chicagoflf f5',
+        'button-reset select-none',
+        !unstyled && 'relative w-100 ba b--black pv2 ph3 chicagoflf f5',
         { pointer: !disabled },
         !unstyled && variantClasses,
         className

@@ -5,6 +5,20 @@
   font-family: 'Chivo', sans-serif;
 }
 
+.blog button {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.blog button:disabled {
+  color: var(--dark-gray);
+  border-color: var(--dark-gray);
+  cursor: default;
+}
+.blog .hoverable:hover {
+  transform: scale(1.1);
+}
+
 .blog p,
 h1,
 h2,
@@ -56,6 +70,9 @@ h6 {
 }
 .blog .mt14 {
   margin-top: 3.5rem;
+}
+.blog .mt13 {
+  margin-top: 3.375rem;
 }
 
 .blog .mr2 {
@@ -194,17 +211,6 @@ h6 {
   cursor: pointer;
 }
 
-.blog .active-page-button {
-  background-color: black;
-  color: white;
-}
-
-.blog .disabled-page-button {
-  color: var(--dark-gray);
-  border-color: var(--dark-gray);
-  cursor: default;
-}
-
 /* responsive */
 
 @media screen and (max-width: 880px) {
@@ -216,7 +222,8 @@ h6 {
   .blog .highlight-info {
     height: var(--card-size);
     z-index: 50;
-    opacity: 0.75;
+    opacity: 0.92;
+    background-color: var(--nsltblue);
   }
   .blog-tags-buttons {
     justify-self: center;

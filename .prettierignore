@@ -9,6 +9,8 @@ docs
 packages/niftysave/gen
 *.sql
 *.sh
+*.svg
+*.png
 CHANGELOG.md
 .next
 .supabase
