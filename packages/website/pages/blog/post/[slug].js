@@ -63,7 +63,7 @@ const Post = ({ post }) => {
   const linkedinShareLink = new URL(
     'https://www.linkedin.com/sharing/share-offsite'
   )
-  const linkedinParams = { url: 'currentUrl' }
+  const linkedinParams = { url: currentUrl }
 
   return (
     <div className="blog min-vh-100 pb24">
