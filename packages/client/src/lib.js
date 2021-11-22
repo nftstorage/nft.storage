@@ -15,21 +15,34 @@
  */
 
 import { transform } from 'streaming-iterables'
-import pRetry from 'p-retry'
+import pRetry, { AbortError } from 'p-retry'
 import { TreewalkCarSplitter } from 'carbites/treewalk'
-import * as API from './lib/interface.js'
+import { pack } from 'ipfs-car/pack'
+import { CID } from 'multiformats/cid'
 import * as Token from './token.js'
-import { fetch, File, Blob, FormData } from './platform.js'
+import { fetch, File, Blob, FormData, Blockstore } from './platform.js'
 import { toGatewayURL } from './gateway.js'
+import { BlockstoreCarReader } from './bs-car-reader.js'
 
 const MAX_STORE_RETRIES = 5
 const MAX_CONCURRENT_UPLOADS = 3
 const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
 
-/** @typedef {import('multiformats/block').BlockDecoder<any, any>} AnyBlockDecoder */
+/**
+ * @typedef {import('./lib/interface.js').Service} Service
+ * @typedef {import('./lib/interface.js').CIDString} CIDString
+ * @typedef {import('./lib/interface.js').Deal} Deal
+ * @typedef {import('./lib/interface.js').Pin} Pin
+ * @typedef {import('./lib/interface.js').CarReader} CarReader
+ */
 
 /**
- * @implements API.Service
+ * @template {import('./lib/interface.js').TokenInput} T
+ * @typedef {import('./lib/interface.js').Token<T>} TokenType
+ */
+
+/**
+ * @implements Service
  */
 class NFTStorage {
   /**
@@ -77,45 +90,35 @@ class NFTStorage {
     if (!token) throw new Error('missing token')
     return { Authorization: `Bearer ${token}` }
   }
+
   /**
-   * @param {API.Service} service
+   * Stores a single file and returns it's CID.
+   *
+   * @param {Service} service
    * @param {Blob} blob
-   * @returns {Promise<API.CIDString>}
+   * @returns {Promise<CIDString>}
    */
-  static async storeBlob({ endpoint, token }, blob) {
-    const url = new URL(`upload/`, endpoint)
-
-    if (blob.size === 0) {
-      throw new Error('Content size is 0, make sure to provide some content')
-    }
-
-    const request = await fetch(url.toString(), {
-      method: 'POST',
-      headers: NFTStorage.auth(token),
-      body: blob,
-    })
-    const result = await request.json()
-
-    if (result.ok) {
-      return result.value.cid
-    } else {
-      throw new Error(result.error.message)
-    }
+  static async storeBlob(service, blob) {
+    const { cid, car } = await NFTStorage.encodeBlob(blob)
+    await NFTStorage.storeCar(service, car)
+    return cid.toString()
   }
+
   /**
-   * @param {API.Service} service
-   * @param {Blob|API.CarReader} car
-   * @param {{
-   *   onStoredChunk?: (size: number) => void
-   *   decoders?: AnyBlockDecoder[]
-   * }} [options]
-   * @returns {Promise<API.CIDString>}
+   * Stores a CAR file and returns it's root CID.
+   *
+   * @param {Service} service
+   * @param {Blob|CarReader} car
+   * @param {import('./lib/interface.js').CarStorerOptions} [options]
+   * @returns {Promise<CIDString>}
    */
   static async storeCar(
     { endpoint, token },
     car,
-    { onStoredChunk, decoders } = {}
+    { onStoredChunk, maxRetries, decoders } = {}
   ) {
+    const url = new URL('upload/', endpoint)
+    const headers = NFTStorage.auth(token)
     const targetSize = MAX_CHUNK_SIZE
     const splitter =
       car instanceof Blob
@@ -129,15 +132,30 @@ class NFTStorage {
         for await (const part of car) {
           carParts.push(part)
         }
-        const carFile = new Blob(carParts, {
-          type: 'application/car',
-        })
-        const res = await pRetry(
-          () => NFTStorage.storeBlob({ endpoint, token }, carFile),
-          { retries: MAX_STORE_RETRIES }
+        const carFile = new Blob(carParts, { type: 'application/car' })
+        const cid = await pRetry(
+          async () => {
+            const response = await fetch(url.toString(), {
+              method: 'POST',
+              headers,
+              body: carFile,
+            })
+            const result = await response.json()
+            if (!result.ok) {
+              // do not retry if unauthorized - will not succeed
+              if (response.status === 401) {
+                throw new AbortError(result.error.message)
+              }
+              throw new Error(result.error.message)
+            }
+            return result.value.cid
+          },
+          {
+            retries: maxRetries == null ? MAX_STORE_RETRIES : maxRetries,
+          }
         )
         onStoredChunk && onStoredChunk(carFile.size)
-        return res
+        return cid
       }
     )
 
@@ -146,75 +164,60 @@ class NFTStorage {
       root = cid
     }
 
-    return /** @type {API.CIDString} */ (root)
+    return /** @type {CIDString} */ (root)
   }
+
   /**
-   * @param {API.Service} service
+   * Stores a directory of files and returns a CID. Provided files **MUST**
+   * be within the same directory, otherwise error is raised e.g. `foo/bar.png`,
+   * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
+   *
+   * @param {Service} service
    * @param {Iterable<File>} files
-   * @returns {Promise<API.CIDString>}
+   * @returns {Promise<CIDString>}
    */
-  static async storeDirectory({ endpoint, token }, files) {
-    const url = new URL(`upload/`, endpoint)
-    const body = new FormData()
-    let size = 0
-    for (const file of files) {
-      body.append('file', file, file.name)
-      size += file.size
-    }
-
-    if (size === 0) {
-      throw new Error(
-        'Total size of files should exceed 0, make sure to provide some content'
-      )
-    }
-
-    const response = await fetch(url.toString(), {
-      method: 'POST',
-      headers: NFTStorage.auth(token),
-      body,
-    })
-    const result = await response.json()
-
-    if (result.ok) {
-      return result.value.cid
-    } else {
-      throw new Error(result.error.message)
-    }
+  static async storeDirectory(service, files) {
+    const { cid, car } = await NFTStorage.encodeDirectory(files)
+    await NFTStorage.storeCar(service, car)
+    return cid.toString()
   }
 
   /**
-   * @template {API.TokenInput} T
-   * @param {API.Service} service
+   * Stores the given token and all resources it references (in the form of a
+   * File or a Blob) along with a metadata JSON as specificed in ERC-1155. The
+   * `token.image` must be either a `File` or a `Blob` instance, which will be
+   * stored and the corresponding content address URL will be saved in the
+   * metadata JSON file under `image` field.
+   *
+   * If `token.properties` contains properties with `File` or `Blob` values,
+   * those also get stored and their URLs will be saved in the metadata JSON
+   * file in their place.
+   *
+   * Note: URLs for `File` objects will retain file names e.g. in case of
+   * `new File([bytes], 'cat.png', { type: 'image/png' })` will be transformed
+   * into a URL that looks like `ipfs://bafy...hash/image/cat.png`. For `Blob`
+   * objects, the URL will not have a file name name or mime type, instead it
+   * will be transformed into a URL that looks like
+   * `ipfs://bafy...hash/image/blob`.
+   *
+   * @template {import('./lib/interface.js').TokenInput} T
+   * @param {Service} service
    * @param {T} metadata
-   * @returns {Promise<API.Token<T>>}
+   * @returns {Promise<TokenType<T>>}
    */
-  static async store({ endpoint, token }, metadata) {
-    validateERC1155(metadata)
-
-    const url = new URL(`store/`, endpoint)
-    const body = Token.encode(metadata)
-    const paths = new Set(body.keys())
-
-    const response = await fetch(url.toString(), {
-      method: 'POST',
-      headers: NFTStorage.auth(token),
-      body,
-    })
-
-    /** @type {API.StoreResponse<T>} */
-    const result = await response.json()
-
-    if (result.ok === true) {
-      const { value } = result
-      return Token.decode(value, paths)
-    } else {
-      throw new Error(result.error.message)
-    }
+  static async store(service, metadata) {
+    const { token, car } = await NFTStorage.encodeNFT(metadata)
+    await NFTStorage.storeCar(service, car)
+    return token
   }
+
   /**
-   * @param {API.Service} service
+   * Returns current status of the stored NFT by its CID. Note the NFT must
+   * have previously been stored by this account.
+   *
+   * @param {Service} service
    * @param {string} cid
-   * @returns {Promise<API.StatusResult>}
+   * @returns {Promise<import('./lib/interface.js').StatusResult>}
    */
   static async status({ endpoint, token }, cid) {
     const url = new URL(`${cid}/`, endpoint)
@@ -238,9 +241,11 @@ class NFTStorage {
   }
 
   /**
-   * @param {API.PublicService} service
+   * Check if a CID of an NFT is being stored by NFT.Storage.
+   *
+   * @param {import('./lib/interface.js').PublicService} service
    * @param {string} cid
-   * @returns {Promise<API.CheckResult>}
+   * @returns {Promise<import('./lib/interface.js').CheckResult>}
    */
   static async check({ endpoint }, cid) {
     const url = new URL(`check/${cid}/`, endpoint)
@@ -259,7 +264,11 @@ class NFTStorage {
   }
 
   /**
-   * @param {API.Service} service
+   * Removes stored content by its CID from this account. Please note that
+   * even if content is removed from the service other nodes that have
+   * replicated it might still continue providing it.
+   *
+   * @param {Service} service
    * @param {string} cid
    * @returns {Promise<void>}
    */
@@ -273,6 +282,119 @@ class NFTStorage {
     if (!result.ok) {
       throw new Error(result.error.message)
     }
+  }
+
+  /**
+   * Encodes the given token and all resources it references (in the form of a
+   * File or a Blob) along with a metadata JSON as specificed in ERC-1155 to a
+   * CAR file. The `token.image` must be either a `File` or a `Blob` instance,
+   * which will be stored and the corresponding content address URL will be
+   * saved in the metadata JSON file under `image` field.
+   *
+   * If `token.properties` contains properties with `File` or `Blob` values,
+   * those also get stored and their URLs will be saved in the metadata JSON
+   * file in their place.
+   *
+   * Note: URLs for `File` objects will retain file names e.g. in case of
+   * `new File([bytes], 'cat.png', { type: 'image/png' })` will be transformed
+   * into a URL that looks like `ipfs://bafy...hash/image/cat.png`. For `Blob`
+   * objects, the URL will not have a file name name or mime type, instead it
+   * will be transformed into a URL that looks like
+   * `ipfs://bafy...hash/image/blob`.
+   *
+   * @example
+   * ```js
+   * const { token, car } = await NFTStorage.encodeNFT({
+   *   name: 'nft.storage store test',
+   *   description: 'Test ERC-1155 compatible metadata.',
+   *   image: new File(['<DATA>'], 'pinpie.jpg', { type: 'image/jpg' }),
+   *   properties: {
+   *     custom: 'Custom data can appear here, files are auto uploaded.',
+   *     file: new File(['<DATA>'], 'README.md', { type: 'text/plain' }),
+   *   }
+   * })
+   *
+   * console.log('IPFS URL for the metadata:', token.url)
+   * console.log('metadata.json contents:\n', token.data)
+   * console.log('metadata.json with IPFS gateway URLs:\n', token.embed())
+   *
+   * // Now store the CAR file on NFT.Storage
+   * await client.storeCar(car)
+   * ```
+   *
+   * @template {import('./lib/interface.js').TokenInput} T
+   * @param {T} input
+   * @returns {Promise<{ cid: CID, token: TokenType<T>, car: CarReader }>}
+   */
+  static async encodeNFT(input) {
+    validateERC1155(input)
+    return Token.Token.encode(input)
+  }
+
+  /**
+   * Encodes a single file to a CAR file and also returns it's root CID.
+   *
+   * @example
+   * ```js
+   * const content = new Blob(['hello world'])
+   * const { cid, car } = await NFTStorage.encodeBlob(content)
+   *
+   * // Root CID of the file
+   * console.log(cid.toString())
+   *
+   * // Now store the CAR file on NFT.Storage
+   * await client.storeCar(car)
+   * ```
+   *
+   * @param {Blob} blob
+   * @returns {Promise<{ cid: CID, car: CarReader }>}
+   */
+  static async encodeBlob(blob) {
+    if (blob.size === 0) {
+      throw new Error('Content size is 0, make sure to provide some content')
+    }
+
+    return packCar([{ path: 'blob', content: blob.stream() }], false)
+  }
+
+  /**
+   * Encodes a directory of files to a CAR file and also returns the root CID.
+   * Provided files **MUST** be within the same directory, otherwise error is
+   * raised e.g. `foo/bar.png`, `foo/bla/baz.json` is ok but `foo/bar.png`,
+   * `bla/baz.json` is not.
+   *
+   * @example
+   * ```js
+   * const { cid, car } = await NFTStorage.encodeDirectory([
+   *   new File(['hello world'], 'hello.txt'),
+   *   new File([JSON.stringify({'from': 'incognito'}, null, 2)], 'metadata.json')
+   * ])
+   *
+   * // Root CID of the directory
+   * console.log(cid.toString())
+   *
+   * // Now store the CAR file on NFT.Storage
+   * await client.storeCar(car)
+   * ```
+   *
+   * @param {Iterable<File>} files
+   * @returns {Promise<{ cid: CID, car: CarReader }>}
+   */
+  static async encodeDirectory(files) {
+    const input = []
+    let size = 0
+    for (const file of files) {
+      input.push({ path: file.name, content: file.stream() })
+      size += file.size
+    }
+
+    if (size === 0) {
+      throw new Error(
+        'Total size of files should exceed 0, make sure to provide some content'
+      )
+    }
+
+    return packCar(input, true)
   }
 
   // Just a sugar so you don't have to pass around endpoint and token around.
@@ -295,6 +417,7 @@ class NFTStorage {
   storeBlob(blob) {
     return NFTStorage.storeBlob(this, blob)
   }
+
   /**
    * Stores files encoded as a single [Content Addressed Archive
    * (CAR)](https://github.com/ipld/specs/blob/master/block-layer/content-addressable-archives.md).
@@ -329,19 +452,13 @@ class NFTStorage {
    * const cid = await client.storeCar(car)
    * console.assert(cid === expectedCid)
    * ```
-   * @param {Blob|API.CarReader} car
-   * @param {object} [options]
-   * @param {(size: number) => void} [options.onStoredChunk] Callback called
-   * after each chunk of data has been uploaded. By default, data is split into
-   * chunks of around 10MB. It is passed the actual chunk size in bytes.
-   * @param {AnyBlockDecoder[]} [options.decoders] Additional IPLD block
-   * decoders. Used to interpret the data in the CAR file and split it into
-   * multiple chunks. Note these are only required if the CAR file was not
-   * encoded using the default encoders: `dag-pb`, `dag-cbor` and `raw`.
+   * @param {Blob|CarReader} car
+   * @param {import('./lib/interface.js').CarStorerOptions} [options]
    */
   storeCar(car, options) {
     return NFTStorage.storeCar(this, car, options)
   }
+
   /**
    * Stores a directory of files and returns a CID for the directory.
    *
@@ -362,6 +479,7 @@ class NFTStorage {
   storeDirectory(files) {
     return NFTStorage.storeDirectory(this, files)
   }
+
   /**
    * Returns current status of the stored NFT by its CID. Note the NFT must
    * have previously been stored by this account.
@@ -376,6 +494,7 @@ class NFTStorage {
   status(cid) {
     return NFTStorage.status(this, cid)
   }
+
   /**
    * Removes stored content by its CID from the service.
    *
@@ -392,6 +511,7 @@ class NFTStorage {
   delete(cid) {
     return NFTStorage.delete(this, cid)
   }
+
   /**
    * Check if a CID of an NFT is being stored by nft.storage. Throws if the NFT
    * was not found.
@@ -406,6 +526,7 @@ class NFTStorage {
   check(cid) {
     return NFTStorage.check(this, cid)
   }
+
   /**
    * Stores the given token and all resources it references (in the form of a
    * File or a Blob) along with a metadata JSON as specificed in
@@ -442,9 +563,8 @@ class NFTStorage {
    * console.log('metadata.json with IPFS gateway URLs:\n', metadata.embed())
    * ```
    *
-   * @template {API.TokenInput} T
+   * @template {import('./lib/interface.js').TokenInput} T
    * @param {T} token
-   * @returns {Promise<API.Token<T>>}
    */
   store(token) {
     return NFTStorage.store(this, token)
@@ -452,7 +572,8 @@ class NFTStorage {
 }
 
 /**
- * @param {API.TokenInput} metadata
+ * @template {import('./lib/interface.js').TokenInput} T
+ * @param {T} metadata
  */
 const validateERC1155 = ({ name, description, image, decimals }) => {
   // Just validate that expected fields are present
@@ -482,8 +603,19 @@ For more context please see ERC-721 specification https://eips.ethereum.org/EIPS
 }
 
 /**
- * @param {API.Deal[]} deals
- * @returns {API.Deal[]}
+ * @param {Array<{ path: string, content: import('./platform.js').ReadableStream }>} input
+ * @param {boolean} wrapWithDirectory
+ */
+const packCar = async (input, wrapWithDirectory) => {
+  const blockstore = new Blockstore()
+  const { root: cid } = await pack({ input, blockstore, wrapWithDirectory })
+  const car = new BlockstoreCarReader(1, [cid], blockstore)
+  return { cid, car }
+}
+
+/**
+ * @param {Deal[]} deals
+ * @returns {Deal[]}
  */
 const decodeDeals = (deals) =>
   deals.map((deal) => {
@@ -502,18 +634,9 @@ const decodeDeals = (deals) =>
   })
 
 /**
- * @param {API.Pin} pin
- * @returns {API.Pin}
+ * @param {Pin} pin
+ * @returns {Pin}
  */
 const decodePin = (pin) => ({ ...pin, created: new Date(pin.created) })
 
-const TokenModel = Token.Token
-export { TokenModel as Token }
-export { NFTStorage, File, Blob, FormData, toGatewayURL }
-
-/**
- * Just to verify API compatibility.
- * @type {API.API}
- */
-const api = NFTStorage
-void api
+export { NFTStorage, File, Blob, FormData, toGatewayURL, Token }

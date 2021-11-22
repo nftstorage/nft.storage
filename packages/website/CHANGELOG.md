@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.13.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.12.0...website-v1.13.0) (2021-11-19)
+
+
+### Features
+
+* faq-toc ([#777](https://www.github.com/nftstorage/nft.storage/issues/777)) ([365107e](https://www.github.com/nftstorage/nft.storage/commit/365107e3b88e4bbe7bdba5a3f8cafb6a4df57e20))
+* improved pagination for files ([#767](https://www.github.com/nftstorage/nft.storage/issues/767)) ([499fcb5](https://www.github.com/nftstorage/nft.storage/commit/499fcb53956b8932f6c73298b384eb9ef796afae))
+
+
+### Bug Fixes
+
+* better docs for multipart requests ([#820](https://www.github.com/nftstorage/nft.storage/issues/820)) ([d074adb](https://www.github.com/nftstorage/nft.storage/commit/d074adbcb844a9d39bf3b0515882aa7d43102eab))
+* toc-fix ([#809](https://www.github.com/nftstorage/nft.storage/issues/809)) ([ac84a82](https://www.github.com/nftstorage/nft.storage/commit/ac84a82495a74726b1ca535c4cc4f337ad7038f4))
+* update ToS ([#822](https://www.github.com/nftstorage/nft.storage/issues/822)) ([8fa4a3a](https://www.github.com/nftstorage/nft.storage/commit/8fa4a3ae15508607ca54372fdc19f9512942620f))
+
+## [1.12.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.11.0...website-v1.12.0) (2021-11-16)
+
+
+### Features
+
+* remove kv code, update deps and improve client docs ([#714](https://www.github.com/nftstorage/nft.storage/issues/714)) ([22c4e50](https://www.github.com/nftstorage/nft.storage/commit/22c4e507c527d20d9a0587bee0380ea3471f45fe))
+
+
+### Changes
+
+* add /store endpoint to API schema ([#693](https://www.github.com/nftstorage/nft.storage/issues/693)) ([82560e3](https://www.github.com/nftstorage/nft.storage/commit/82560e39a083b60d258a0115d9aa5b15a0bfb73f))
+
 ## [1.11.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.10.0...website-v1.11.0) (2021-11-12)
 
 

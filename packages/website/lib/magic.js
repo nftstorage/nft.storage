@@ -2,8 +2,12 @@ import { Magic } from 'magic-sdk'
 import { OAuthExtension } from '@magic-ext/oauth'
 import constants from './constants'
 
+/**
+ * @typedef {import('@magic-sdk/provider').SDKBase} SDKBase
+ */
+
 const API = constants.API
-/** @type {import('magic-sdk').Magic | null} */
+/** @type {import('@magic-sdk/provider').InstanceWithExtensions<SDKBase, OAuthExtension[]>| null} */
 let magic = null
 
 export function getMagic() {
@@ -81,7 +85,7 @@ export async function loginEmail(email, version) {
 /**
  * Login with social
  *
- * @param {string} provider
+ * @param {import('@magic-ext/oauth').OAuthProvider} provider
  * @param {string} version
  */
 export async function loginSocial(provider, version) {

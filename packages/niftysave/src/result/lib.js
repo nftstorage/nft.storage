@@ -89,14 +89,14 @@ export const value = (result) => {
 export const fromPromise = (promise) => promise.then(ok).catch(error)
 
 /**
- * @template X, T
+ * @template T
  * @param {() => T} fn
- * @returns {Result.Result<X, T>}
  */
 export const fromTry = (fn) => {
   try {
     return ok(fn())
-  } catch (reason) {
+  } catch (err) {
+    const reason = /** @type { globalThis.Error} */ (err)
     return error(reason)
   }
 }

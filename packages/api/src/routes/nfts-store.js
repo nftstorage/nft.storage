@@ -1,8 +1,5 @@
 import { validate } from '../utils/auth.js'
 import { setIn } from '../utils/utils.js'
-import * as nfts from '../models/nfts.js'
-import * as pins from '../models/pins.js'
-import * as pinataQueue from '../models/pinata-queue.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as CBOR from '@ipld/dag-cbor'
 import * as cluster from '../cluster.js'
@@ -20,8 +17,9 @@ const log = debug('nft-store')
  */
 
 /** @type {import('../bindings').Handler} */
-export async function store(event, ctx) {
-  const { user, tokenName } = await validate(event, ctx)
+export async function nftStore(event, ctx) {
+  const { user, key } = await validate(event, ctx)
+  const { db } = ctx
   const form = await event.request.formData()
 
   const meta = /** @type {string} */ (form.get('meta'))
@@ -30,7 +28,10 @@ export async function store(event, ctx) {
 
   const files = []
 
-  for (const [name, content] of form.entries()) {
+  for (const entry of form.entries()) {
+    const [name, content] = /** @type {[key: string, value: string | File]} */ (
+      /** @type {unknown}*/ (entry)
+    )
     if (name !== 'meta') {
       const file = /** @type {File} */ (content)
       const asset = await cluster.importAsset(file, {
@@ -60,32 +61,18 @@ export async function store(event, ctx) {
     hasher: sha256,
   })
   const car = await CAR.encode([block.cid], [block])
-  const { cid, bytes } = await cluster.add(car, {
+  const { cid, bytes } = await cluster.addCar(car, {
     local: car.size > constants.cluster.localAddThreshold,
   })
 
-  // We do want worker to wait for this, but we do not want to
-  // block response waiting on this.
-  event.waitUntil(pinataQueue.add(cid, { origins: cluster.delegates() }))
-
-  const created = new Date().toISOString()
-
-  /** @type {NFT} */
-  const nft = {
-    cid,
-    created,
-    type: 'nft',
-    scope: tokenName,
-    files,
-  }
-
-  let pin = await pins.get(cid)
-  if (!pin || pin.status !== 'pinned') {
-    pin = { cid, status: 'pinned', size: bytes, created }
-    await pins.set(cid, pin)
-  }
-
-  await nfts.set({ user, cid }, nft, pin)
+  await db.createUpload({
+    type: 'Nft',
+    content_cid: cid,
+    source_cid: cid,
+    dag_size: bytes,
+    user_id: user.id,
+    key_id: key?.id,
+  })
 
   const result = {
     ok: true,

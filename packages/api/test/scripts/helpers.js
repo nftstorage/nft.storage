@@ -1,14 +1,7 @@
-import stores from './stores.js'
 import { signJWT } from '../../src/utils/jwt.js'
 import { SALT } from './worker-globals.js'
 import { PostgrestClient, PostgrestQueryBuilder } from '@supabase/postgrest-js'
 import { DBClient } from '../../src/utils/db-client.js'
-
-export async function clearStores() {
-  for (const store of Object.values(stores)) {
-    await store.clear()
-  }
-}
 
 export const rawClient = new PostgrestClient(DATABASE_URL, {
   headers: {

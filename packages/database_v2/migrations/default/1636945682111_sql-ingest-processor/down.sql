@@ -1,0 +1,2 @@
+ALTER TABLE erc721_token_ingestion_queue
+DROP COLUMN last_processed;

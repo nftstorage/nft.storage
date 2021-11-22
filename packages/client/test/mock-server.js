@@ -151,7 +151,7 @@ const bodyOf = (self) => {
       ? null
       : stream instanceof Uint8Array || typeof stream === 'string'
       ? toReadableStream([stream][Symbol.iterator]())
-      : toReadableStream(stream[Symbol.asyncIterator]())
+      : stream
 
   Object.defineProperty(self, 'body', { value: body })
   return body
@@ -259,7 +259,6 @@ export class Service {
   }
 
   /**
-   *
    * @param {http.IncomingMessage} incoming
    * @param {http.ServerResponse} outgoing
    */
@@ -279,13 +278,13 @@ export class Service {
       const headers = Object.fromEntries(response.headers.entries())
       outgoing.writeHead(response.status, headers)
       const body = response.body ? response.body : []
-      // @ts-expect-error - ReadableStream has no async iteration API yet.
       for await (const chunk of body) {
         outgoing.write(chunk)
       }
 
       outgoing.end()
-    } catch (error) {
+    } catch (err) {
+      const error = /**@type {Error &  {status: number}} */ (err)
       if (!outgoing.hasHeader) {
         outgoing.writeHead(error.status || 500)
       }
@@ -297,6 +296,7 @@ export class Service {
 
 /**
  * @param {http.IncomingMessage} inn
+ * @returns {BodyInit | undefined}
  */
 const toBody = (inn) => {
   switch (inn.method) {
@@ -304,7 +304,7 @@ const toBody = (inn) => {
     case 'GET':
       return undefined
     default:
-      return inn
+      return toReadableStream(inn[Symbol.asyncIterator]())
   }
 }
 

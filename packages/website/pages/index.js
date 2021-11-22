@@ -6,7 +6,8 @@ import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
 import Box from '../components/box.js'
 import Link from 'next/link'
-import { ShortFaq } from './faq.js'
+import { FAQ } from './faq'
+
 /**
  * Static Props
  *
@@ -36,7 +37,7 @@ export default function Home() {
             <h1 className="chicagoflf white">
               <HashLink id="faq">FAQ</HashLink>
             </h1>
-            <ShortFaq />
+            <FAQ limit={5} />
             <h2 className="chicagoflf white">
               More FAQs{' '}
               <Link href="/faq">

@@ -1,34 +1,7 @@
 import { Cluster } from '@nftstorage/ipfs-cluster'
 import pg from 'pg'
-import { Cloudflare } from '../lib/cloudflare.js'
 import { Pinata } from './pinata.js'
 import { DBClient } from '../../../api/src/utils/db-client.js'
-
-/**
- * @param {import('./cloudflare').Namespace[]} namespaces
- * @param {string} env
- * @param {string} name
- * @returns {import('./cloudflare').Namespace}
- */
-export function findNs(namespaces, env, name) {
-  const prefix = env === 'production' ? '' : `${env}-`
-  const suffix = env === 'production' ? '' : '_preview'
-  const fqn = `nft-storage-${prefix}${name}${suffix}`
-  const ns = namespaces.find((ns) => ns.title === fqn)
-  if (!ns) throw new Error(`KV namespace ${fqn} not found`)
-  return ns
-}
-
-/**
- * Create a new Cloudflare instance from the passed environment variables.
- * @param {Record<string, string|undefined>} env
- */
-export function getCloudflare(env) {
-  const accountId = env.CF_ACCOUNT
-  const apiToken = env.CF_TOKEN
-  if (!accountId || !apiToken) throw new Error('missing Cloudflare credentials')
-  return new Cloudflare({ accountId, apiToken })
-}
 
 /**
  * Create a new IPFS Cluster instance from the passed environment variables.

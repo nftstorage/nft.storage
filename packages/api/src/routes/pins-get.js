@@ -1,50 +1,34 @@
-import * as PinataPSA from '../pinata-psa.js'
 import { validate } from '../utils/auth.js'
+import { toPinsResponse } from '../utils/db-transforms.js'
 import { JSONResponse } from '../utils/json-response.js'
-import * as nfts from '../models/nfts.js'
-import * as pins from '../models/pins.js'
-import * as cluster from '../cluster.js'
+import { parseCidPinning } from '../utils/utils.js'
 
 /** @type {import('../bindings').Handler} */
 export async function pinsGet(event, ctx) {
   const { params } = ctx
-  const { user } = await validate(event, ctx)
+  const { user, db } = await validate(event, ctx)
 
-  let cid = params.requestid
-  let nft = await nfts.get({ user, cid })
-
-  if (!nft) {
-    // maybe this is an old Pinata pin?
-    const res = await PinataPSA.pinsGet(params.requestid)
-    if (res.ok) {
-      cid = res.value.pin.cid
-      nft = await nfts.get({ user, cid })
-    }
-  }
-
-  if (!nft) {
+  const cid = parseCidPinning(params.requestid)
+  if (!cid) {
     return new JSONResponse(
-      { error: { reason: 'NOT_FOUND', details: 'NFT not found' } },
-      { status: 404 }
+      {
+        error: {
+          reason: 'ERROR_INVALID_REQUEST_ID',
+          details: `Invalid request id: ${params.requestid}`,
+        },
+      },
+      { status: 400 }
     )
   }
 
-  const pin = await pins.get(cid)
-  if (!nft) {
+  const upload = await db.getUpload(cid.sourceCid, user.id)
+
+  if (!upload) {
     return new JSONResponse(
       { error: { reason: 'NOT_FOUND', details: 'pin not found' } },
       { status: 404 }
     )
   }
 
-  /** @type import('../pinata-psa').PinStatus */
-  const pinStatus = {
-    requestid: nft.cid,
-    status: pin.status,
-    created: nft.created,
-    pin: { cid: nft.cid, ...(nft.pin || {}) },
-    delegates: cluster.delegates(),
-  }
-
-  return new JSONResponse(pinStatus)
+  return new JSONResponse(toPinsResponse(upload))
 }
