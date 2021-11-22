@@ -45,12 +45,12 @@
   },
   "dependencies": {
     "@ipld/car": "^3.1.20",
-    "@web-std/blob": "^2.1.2",
-    "@web-std/fetch": "^2.0.3",
-    "@web-std/file": "^1.1.3",
-    "@web-std/form-data": "^2.1.1",
+    "@web-std/blob": "^3.0.1",
+    "@web-std/fetch": "^3.0.0",
+    "@web-std/file": "^3.0.0",
+    "@web-std/form-data": "^3.0.0",
     "carbites": "^1.0.6",
-    "ipfs-car": "^0.5.9",
+    "ipfs-car": "^0.6.0",
     "multiformats": "^9.4.10",
     "p-retry": "^4.6.1",
     "streaming-iterables": "^6.0.0"
