@@ -89,10 +89,6 @@ export async function metaplexUpload(event, ctx) {
     user_id: user.id,
     files: [],
     key_id: key.id,
-    // note: we need to specify the foreign key to use in the select statement below
-    // because there's also a potential join between `auth_key` and `user`
-    // via the `uploads` table.
-
     meta: { iss, req: JSON.stringify(req) },
   })
 
@@ -103,7 +99,9 @@ async function validate() {
   if (typeof METAPLEX_AUTH_TOKEN === 'undefined') {
     throw new Error('missing metaplex auth key')
   }
-
+  // note: we need to specify the foreign key to use in the select statement below
+  // because there's also a potential join between `auth_key` and `user`
+  // via the `uploads` table.
   const { error, data } = await db.client
     .from('auth_key')
     .select('id,user:auth_key_user_id_fkey(id)')
