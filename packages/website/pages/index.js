@@ -45,7 +45,7 @@ const Logo = ({ src }) => (
 const Logos = ({ logos }) => {
   return (
     <div className="marketplace-logos-container center pv4 ph3 ph5-ns">
-      <h2 className="tc mt0 chicagoflf">Trusted By</h2>
+      <h2 className="tc mt0 chicagoflf">Trusted by</h2>
       <div className="marketplace-logo-grid">
         {logos.map((logo) => (
           <Logo key={`marketplace-logo-${logo}`} src={logo} />
