@@ -53,14 +53,14 @@ export class HTTPError extends Error {
  * I'll give you back a HTTPError with a user friendly error message and code.
  *
  * @param {any} err
- * @param {{ sentry: Toucan, req: Request }} ctx
+ * @param {{ sentry: Toucan, req?: Request }} ctx
  * @returns {HTTPError & Coded} A HTTPError with an error code.
  */
 export function maybeCapture(err, { sentry, req }) {
   let code = err.code || 'HTTP_ERROR'
   let message = err.message
   let status = err.status || 500
-  const contentType = req.headers.get('Content-Type')
+  const contentType = req && req.headers.get('Content-Type')
 
   switch (err.code) {
     case ErrorUserNotFound.CODE:

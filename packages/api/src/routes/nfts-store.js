@@ -29,10 +29,9 @@ export async function nftStore(event, ctx) {
   const files = []
 
   for (const entry of form.entries()) {
-    const [
-      name,
-      content,
-    ] /** @type {[key: string, value: string | File]} */ = /** @type {unknown}*/ (entry)
+    const [name, content] = /** @type {[key: string, value: string | File]} */ (
+      /** @type {unknown}*/ (entry)
+    )
     if (name !== 'meta') {
       const file = /** @type {File} */ (content)
       const asset = await cluster.importAsset(file, {
