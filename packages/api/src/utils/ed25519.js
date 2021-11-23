@@ -80,10 +80,10 @@ async function verifyEd25519SignatureWithJSCrypto(message, sig, pubkey) {
  * Extracts an Ed25519 public key from a `did:key` decentralized identifier string.
  *
  * @param {string} did - a "did:key" formatted DID string
- * @returns {Promise<Uint8Array>} - the decoded public key
+ * @returns {Uint8Array} - the decoded public key
  * @throws if DID is invalid or does not contain a valid Ed25519 public key
  */
-export async function keyFromDID(did) {
+export function keyFromDID(did) {
   const prefix = 'did:key:'
   if (!did.startsWith(prefix)) {
     throw new Error('invalid DID')
