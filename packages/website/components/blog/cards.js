@@ -1,6 +1,6 @@
+import Button from '../button'
 import Link from 'next/link'
 import React from 'react'
-import Button from '../button'
 import Tags from '../tags'
 
 // custom styles from /styles/blog.css
@@ -23,6 +23,7 @@ export const Card = ({ post, onClick }) => (
       <div className="ba absolute top-2 right-2 bg-white w-100 h-100">
         <img
           src={post.thumbnail}
+          alt={`Banner for ${post.title}`}
           className="w-100 object-cover object-center"
           style={{ height: '50%' }}
         />
@@ -80,6 +81,7 @@ export const HighlightCard = ({ post, onClick }) => (
     </div>
     <img
       src={post.thumbnail}
+      alt={`Banner for ${post.title}`}
       className="h-card highlight-img w-50 object-cover object-center"
     />
   </div>
