@@ -79,6 +79,21 @@ h6 {
 }
 
 /* layout */
+.blog-body {
+  display: grid;
+  grid-template-rows: 400px 1fr;
+  grid-template-columns: 1fr;
+  grid-gap: 1rem;
+  justify-items: center;
+}
+
+.blog-content {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr;
+  grid-gap: 2rem;
+  padding: 0 2rem;
+}
 
 .blog .top-1 {
   top: 0.25rem;
@@ -121,7 +136,7 @@ h6 {
   margin: 0.25rem;
   min-width: 2rem;
   height: 2rem;
-  cursor: pointer;
+
   transition: background-color 250ms ease, border-color 150ms ease;
 }
 
@@ -142,6 +157,7 @@ h6 {
   background-color: var(--nsorange);
   border-color: var(--nsorange);
   color: var(--nspeach);
+  cursor: pointer;
 }
 
 /* min-width */

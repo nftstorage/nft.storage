@@ -41,6 +41,11 @@
   --btn-ghost-y: -5px;
   --btn-ghost-x-hover: -2px;
   --btn-ghost-y-hover: -2px;
+
+  --card-ghost-x: -9px;
+  --card-ghost-y: -9px;
+  --card-ghost-x-hover: -3px;
+  --card-ghost-y-hover: -3px;
 }
 
 img {
@@ -118,14 +123,14 @@ img {
 /* decorators */
 .hologram {
   border: var(--bwidth) solid var(--nsblack);
-  box-shadow: var(--btn-ghost-x) var(--btn-ghost-y) 0px 0px var(--nsgray),
-    var(--btn-ghost-x) var(--btn-ghost-y) 0px 1px var(--nsblack);
+  box-shadow: var(--card-ghost-x) var(--card-ghost-y) 0px 0px var(--nsltblue),
+    var(--card-ghost-x) var(--card-ghost-y) 0px 1px var(--nsblack);
 }
 
 .hologram.right {
-  box-shadow: calc(var(--btn-ghost-x) * -1) var(--btn-ghost-y) 0px 0px
-      var(--nsgray),
-    calc(var(--btn-ghost-x) * -1) var(--btn-ghost-y) 0px 1px var(--nsblack);
+  box-shadow: calc(var(--card-ghost-x) * -1) var(--card-ghost-y) 0px 0px
+      var(--nsltblue),
+    calc(var(--card-ghost-x) * -1) var(--card-ghost-y) 0px 1px var(--nsblack);
 }
 
 .hologram.interactive {
@@ -134,16 +139,17 @@ img {
 }
 
 .hologram.interactive:hover {
-  box-shadow: var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 0px
-      var(--nsgray),
-    var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 1px var(--nsblack);
+  box-shadow: var(--card-ghost-x-hover) var(--card-ghost-y-hover) 0px 0px
+      var(--nspeach),
+    var(--card-ghost-x-hover) var(--card-ghost-y-hover) 0px 1px
+      var(--nsgray-600);
 }
 
 .hologram.right.interactive:hover {
-  box-shadow: calc(var(--btn-ghost-x-hover) * -1) var(--btn-ghost-y-hover) 0px
-      0px var(--nsgray),
-    calc(var(--btn-ghost-x-hover) * -1) var(--btn-ghost-y-hover) 0px 1px
-      var(--nsblack);
+  box-shadow: calc(var(--card-ghost-x-hover) * -1) var(--card-ghost-y-hover) 0px
+      0px var(--nspeach),
+    calc(var(--card-ghost-x-hover) * -1) var(--card-ghost-y-hover) 0px 1px
+      var(--nsgray-600);
 }
 
 /* animation */

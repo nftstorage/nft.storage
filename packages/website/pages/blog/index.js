@@ -196,6 +196,31 @@ const Items = ({ currentItems, handleClick }) => (
 )
 
 /**
+ *
+ * @param {Object} props
+ * @param {string[]} props.tags
+ * @param {string[]} props.filters
+ * @param {(tag: string) => void} props.handleTagClick
+ * @returns {JSX.Element}
+ */
+function TagsContainer({ tags, filters, handleTagClick }) {
+  return (
+    <div className="button-tags-container pv3 mw9">
+      <Tags
+        tags={tags.map((tag) => {
+          const normTag = tag.toLowerCase()
+          return {
+            label: normTag,
+            onClick: () => handleTagClick(normTag),
+            selected: filters.includes(normTag),
+          }
+        })}
+      />
+    </div>
+  )
+}
+
+/**
  * Blog Page
  *
  * @param {Object} props
@@ -269,47 +294,24 @@ const Blog = ({ posts }) => {
 
   return (
     <main className="blog bg-nspeach w-100 flex flex-auto">
-      <div className="blog-body flex flex-column justify-center flex-auto ">
+      <div className="blog-body w-100">
         <HighlightCard onClick={() => setLoading(true)} post={first} />
-        <TagsContainer
-          filters={filters}
-          handleTagClick={handleTagClick}
-          tags={allTags}
-        />
-        <Paginated
-          key={pageNumber}
-          handleCardClick={() => setLoading(true)}
-          items={currentPosts}
-          pageNumber={pageNumber}
-          setPageNumber={setPageNumber}
-        />
+        <div className="blog-content w-100 mw9">
+          <TagsContainer
+            filters={filters}
+            handleTagClick={handleTagClick}
+            tags={allTags}
+          />
+          <Paginated
+            key={pageNumber}
+            handleCardClick={() => setLoading(true)}
+            items={currentPosts}
+            pageNumber={pageNumber}
+            setPageNumber={setPageNumber}
+          />
+        </div>
       </div>
     </main>
-  )
-}
-
-/**
- *
- * @param {Object} props
- * @param {string[]} props.tags
- * @param {string[]} props.filters
- * @param {(tag: string) => void} props.handleTagClick
- * @returns {JSX.Element}
- */
-function TagsContainer({ tags, filters, handleTagClick }) {
-  return (
-    <div className="button-tags-container pv3 mw9">
-      <Tags
-        tags={tags.map((tag) => {
-          const normTag = tag.toLowerCase()
-          return {
-            label: normTag,
-            onClick: () => handleTagClick(normTag),
-            selected: filters.includes(normTag),
-          }
-        })}
-      />
-    </div>
   )
 }
 
