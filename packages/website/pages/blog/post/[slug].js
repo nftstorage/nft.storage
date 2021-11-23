@@ -71,7 +71,7 @@ const Post = ({ post }) => {
       <div className="post pb24 flex flex-column w-100 items-center">
         <img
           src={post.meta.thumbnail}
-          alt={`Banner for ${post.title}`}
+          alt={`Banner for ${post.meta.title}`}
           className="h-card w-100 object-cover object-center"
         />
         <div className="mt14 mw7 ph8">
