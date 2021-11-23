@@ -104,6 +104,55 @@
   overflow-x: auto;
 }
 
+.about-section {
+  border-top: 1px dashed var(--nsgray-200);
+}
+
+.marketplace-logos-container {
+  max-width: 960px;
+}
+.marketplace-logo-grid {
+  display: grid;
+  width: 100%;
+  grid: auto/repeat(4, 1fr);
+  justify-items: center;
+  align-items: center;
+  row-gap: 20px;
+}
+
+.marketplace-logo {
+  width: 160px;
+  height: 40px;
+  object-fit: contain;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 10px;
+  object-position: center;
+}
+@media screen and (max-width: 900px) {
+  .marketplace-logos-container {
+    max-width: 600px;
+  }
+  .marketplace-logo-grid {
+    grid: auto/repeat(2, 1fr);
+  }
+}
+@media screen and (max-width: 600px) {
+  .marketplace-logos-container {
+    max-width: 100%;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  .marketplace-logo-grid {
+    grid: auto/repeat(1, 1fr);
+  }
+  .marketplace-logo {
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
 .invisible {
   pointer-events: none;
 }

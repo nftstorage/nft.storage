@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-
+import fs from 'fs'
 import countly from '../lib/countly.js'
 import Hero from '../components/hero.js'
 import HashLink from '../components/hashlink.js'
@@ -8,28 +8,60 @@ import Box from '../components/box.js'
 import Link from 'next/link'
 import { FAQ } from './faq'
 
-/**
- * Static Props
- *
- * @returns {{ props: import('../components/types.js').LayoutProps}}
- */
-export function getStaticProps() {
+export async function getStaticProps() {
+  const logos = await fs.readdirSync('public/images/marketplace-logos')
+
   return {
     props: {
       needsUser: false,
+      logos,
     },
   }
 }
 
 /**
- * Home Component
+ * Logo Component
+ * @param {Object} props
+ * @param {string} props.src
+ */
+const Logo = ({ src }) => (
+  <img
+    className="marketplace-logo"
+    src={`images/marketplace-logos/${src}`}
+    alt="Nft.Storage Users"
+  />
+)
+
+/**
+ * Logos Component
+ * @param {Object} props
+ * @param {string[]} props.logos
  *
  */
-export default function Home() {
+const Logos = ({ logos }) => {
+  return (
+    <div className="marketplace-logos-container center pv4 ph3 ph5-ns">
+      <div className="marketplace-logo-grid">
+        {logos.map(logo => (
+          <Logo key={`marketplace-logo-${logo}`} src={logo} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Home Component
+ * @param {Object} props
+ * @param {string[]} props.logos
+ *
+ */
+export default function Home({ logos }) {
   return (
     <>
       <Hero />
-      <main>
+      <main className="bg-nsgreen">
+        <Logos logos={logos} />
         <About />
         <GettingStarted />
         <article className="bg-nsforest">
@@ -157,8 +189,8 @@ function About() {
     </>
   )
   return (
-    <article className="bg-nsgreen">
-      <div className="mw9 center pa4 pa5-ns">
+    <article className="about-section bg-nsgreen">
+      <div className="mw9 center pa4">
         <h1 className="chicagoflf">
           <HashLink id="about">About</HashLink>
         </h1>
