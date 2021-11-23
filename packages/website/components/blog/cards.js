@@ -33,8 +33,8 @@ export const Card = ({ post, onClick }) => (
         </div>
         <p className="line-clamp-2 mb2 f5">{post.description}</p>
         <div className="flex">
-          <span className="dark-gray f6 mr2">{post.author}</span>
-          <span className="dark-gray f6">{post.date}</span>
+          <span className="darker-gray f6 mr2">{post.author}</span>
+          <span className="darker-gray f6">{post.date}</span>
         </div>
       </div>
     </a>
@@ -59,8 +59,8 @@ export const HighlightCard = ({ post, onClick }) => (
         <h1 className="f1 line-clamp-1 chicagoflf">{post.title}</h1>
         <p className="line-clamp-2 mw6 f3 mb2">{post.description}</p>
         <div className="flex mb2">
-          <span className="dark-gray f6 mr2">{post.author}</span>
-          <span className="dark-gray f6">{post.date}</span>
+          <span className="darker-gray f6 mr2">{post.author}</span>
+          <span className="darker-gray f6">{post.date}</span>
         </div>
         <Button
           href={{

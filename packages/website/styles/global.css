@@ -14,7 +14,9 @@
   --nsgray-200: #bbbbbb;
   --nsgray-300: #7d8492;
   --nsgray-400: #888888;
+  --nsgray-500: #666666;
   --nsgray-600: #3b4151;
+  --nsgray-800: #212327;
 
   --nsltblue: #eef7f6;
   --nsblue: #47aed7;
@@ -118,6 +120,10 @@ img {
 }
 .bg-nsyellow {
   background-color: var(--nsyellow);
+}
+
+.darker-gray {
+  color: var(--nsgray-500);
 }
 
 /* decorators */
