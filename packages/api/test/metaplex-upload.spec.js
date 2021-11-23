@@ -60,7 +60,8 @@ describe('Metaplex Upload', () => {
 
     const expectedMeta = {
       iss: fixture.meta.iss,
-      req: JSON.stringify(fixture.meta.req),
+      rootCID: fixture.meta.req.put.rootCID,
+      solanaCluster: fixture.meta.req.put.tags['solana-cluster'],
     }
     assert.deepEqual(data.meta, expectedMeta, 'metadata matches jwt payload')
   })

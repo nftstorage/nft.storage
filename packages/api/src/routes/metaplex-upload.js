@@ -3,7 +3,12 @@ import * as cluster from '../cluster.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 import { parseCid } from '../utils/utils.js'
-import { parseJWTHeader, Base64URL, utf8ToUint8Array } from '../utils/jwt.js'
+import {
+  parseJWTHeader,
+  Base64URL,
+  utf8ToUint8Array,
+  parseJWT,
+} from '../utils/jwt.js'
 import { keyFromDID, verifyEd25519Signature } from '../utils/ed25519.js'
 import { DBError } from '../utils/db-client.js'
 
@@ -116,7 +121,8 @@ async function parseMetaplexJWT(token) {
   }
 
   const header = parseJWTHeader(token)
-  const payload = JSON.parse(tokenParts[1])
+  /** @type {Record<string, any>} */
+  const payload = parseJWT(token)
 
   if (!payload.iss) {
     throw new HTTPError(
@@ -131,7 +137,8 @@ async function parseMetaplexJWT(token) {
   const pubkey = await keyFromDID(iss)
   const sig = Base64URL.parse(tokenParts[2])
 
-  if (!verifyEd25519Signature(headerPayload, sig, pubkey)) {
+  const validSig = await verifyEd25519Signature(headerPayload, sig, pubkey)
+  if (!validSig) {
     throw new HTTPError('invalid token signature', 401)
   }
 
@@ -163,11 +170,14 @@ async function parseMetaplexJWT(token) {
     throw new HTTPError('invalid token - no root cid in payload', 401)
   }
 
-  if (!payload.tags || typeof payload.tags['solana-cluster'] !== 'string') {
+  if (
+    !payload.req.put.tags ||
+    typeof payload.req.put.tags['solana-cluster'] !== 'string'
+  ) {
     throw new HTTPError('invalid token - no "solana-cluster" tag in payload')
   }
 
-  const solanaCluster = payload.tags['solana-cluster']
+  const solanaCluster = payload.req.put.tags['solana-cluster']
   const { contentCid: rootCID } = parseCid(payload.req.put.rootCID)
 
   return {
