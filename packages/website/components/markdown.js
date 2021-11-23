@@ -1,6 +1,6 @@
 import ReactMarkdown from 'react-markdown'
-import { materialLight } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/prism'
 
 /**
  * Tag Component
@@ -20,7 +20,7 @@ const Markdown = ({ content }) => {
 
       return !inline && match ? (
         <SyntaxHighlighter
-          style={materialLight}
+          style={a11yDark}
           PreTag="div"
           language={match[1]}
           {...props}

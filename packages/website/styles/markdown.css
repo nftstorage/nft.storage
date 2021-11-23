@@ -278,12 +278,12 @@
 .markdown-body pre > div {
   padding: 0 !important;
   margin: 0 !important;
-  background: #f6f8fa !important;
+  background: var(--nsgray-800) !important;
 }
 
 .markdown-body pre > div code,
 pre > div code span {
-  background: #f6f8fa !important;
+  background: var(--nsgray-800) !important;
 }
 
 .markdown-body input::-webkit-inner-spin-button,
@@ -493,7 +493,7 @@ pre > div code span {
 }
 
 .markdown-body .pl-mi2 {
-  color: #f6f8fa;
+  color: var(--nsgray-800);
   background-color: #005cc5;
 }
 
@@ -769,7 +769,7 @@ pre > div code span {
 }
 
 .markdown-body table tr:nth-child(2n) {
-  background-color: #f6f8fa;
+  background-color: var(--nsgray-800);
 }
 
 .markdown-body img {
@@ -823,7 +823,7 @@ pre > div code span {
   overflow: auto;
   font-size: 85%;
   line-height: 1.45;
-  background-color: #f6f8fa;
+  background-color: var(--nsgray-800);
   border-radius: 10px;
 }
 
