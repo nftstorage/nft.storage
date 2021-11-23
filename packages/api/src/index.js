@@ -96,6 +96,9 @@ r.add('post', '/upload', withMode(nftUpload, RW), [postCors])
 r.add('post', '/store', withMode(nftStore, RW), [postCors])
 r.add('delete', '/:cid', withMode(nftDelete, RW), [postCors])
 
+// Temporary Metaplex upload route, mapped to metaplex user account.
+r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
+
 // Tokens
 r.add('get', '/internal/tokens', withMode(tokensList, RO), [postCors])
 r.add('post', '/internal/tokens', withMode(tokensCreate, RW), [postCors])
@@ -107,9 +110,6 @@ r.add('get', '/api/pins/:requestid', psa(pinsGet, RO), [postCors])
 r.add('post', '/api/pins', psa(pinsAdd, RW), [postCors])
 r.add('post', '/api/pins/:requestid', psa(pinsReplace, RW), [postCors])
 r.add('delete', '/api/pins/:requestid', psa(pinsDelete, RW), [postCors])
-
-// Temporary Metaplex upload route, mapped to metaplex user account.
-r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
 
 // Public API
 r.add('get', '/api', withMode(nftList, RO), [postCors])
