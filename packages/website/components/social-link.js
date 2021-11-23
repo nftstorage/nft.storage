@@ -14,10 +14,8 @@ const SocialLink = ({ url, Icon, params }) => {
   }
   return (
     <a href={url.href} target="_blank" rel="noreferrer">
-      <div className="social-link ba flex flex-column relative pointer bg-nsltblue mh2 h8 w8 grow">
-        <div className="flex items-center justify-center ba absolute top-1 left-1 bg-white w-100 h-100">
-          <Icon />
-        </div>
+      <div className="social-link hologram interactive ltblue flex items-center justify-center ba bg-white w8 h8 mh2 flex flex-column">
+        <Icon />
       </div>
     </a>
   )
