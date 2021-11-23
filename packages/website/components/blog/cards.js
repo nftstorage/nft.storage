@@ -18,7 +18,7 @@ export const Card = ({ post, onClick }) => (
     {/* 👇 because next/link won't accept onClick */}
     <a
       onClick={onClick}
-      className="blog-card h-card w-card bg-white hologram right interactive"
+      className="blog-card h-card w-card bg-white hologram card right interactive"
     >
       <img
         src={post.thumbnail}
@@ -51,27 +51,30 @@ export const Card = ({ post, onClick }) => (
  */
 export const HighlightCard = ({ post, onClick }) => (
   <div className="blog-highlight-card flex w-100 relative">
-    <div className="highlight-info flex flex-column justify-between bg-nsltblue w-50 pa13">
-      <div>
-        <div className="mb4">{post.tags && <Tags tags={post.tags} />}</div>
+    <div className="highlight-info bg-nsltblue w-50 pa13">
+      <div className="highlight-info-content">
+        <div className="mb4">
+          {post.tags && <Tags tags={post.tags} />}&nbsp;
+        </div>
         <h1 className="chivo-bold f1 line-clamp-1">{post.title}</h1>
         <p className="line-clamp-2 mw6 f3 mb2">{post.description}</p>
-        <div className="flex">
+        <div className="flex mb2">
           <span className="dark-gray f6 mr2">{post.author}</span>
           <span className="dark-gray f6">{post.date}</span>
         </div>
+        <Button
+          href={{
+            pathname: `/blog/post/${post.slug}`,
+          }}
+          unstyled
+          wrapperClassName="relative mw4"
+          className="hologram bg-white interactive ph4 pv3 chicagoflf mt5"
+          id="upload"
+          onClick={onClick}
+        >
+          Read More
+        </Button>
       </div>
-      <Button
-        href={{
-          pathname: `/blog/post/${post.slug}`,
-        }}
-        wrapperClassName="mw4"
-        className="mw4 pv3"
-        id="upload"
-        onClick={onClick}
-      >
-        Read More
-      </Button>
     </div>
     <img
       src={post.thumbnail}

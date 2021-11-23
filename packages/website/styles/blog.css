@@ -116,11 +116,19 @@ h6 {
   min-height: var(--card-size);
 }
 
-.blog .button-tags-container {
-  border-bottom: 1px solid var(--nsblack);
+.blog .highlight-info {
+  display: grid;
+  grid-template-columns: 1fr minmax(300px, 680px);
 }
 
-.blog .highlight-img {
+.blog .highlight-info-content {
+  display: grid;
+  grid-gap: 0.5rem;
+  grid-column: 2;
+}
+
+.blog .button-tags-container {
+  border-bottom: 1px solid var(--nsblack);
 }
 
 .blog .card-grid {
@@ -259,6 +267,12 @@ h6 {
     opacity: 0.92;
     background-color: var(--nsltblue);
     border-bottom: 1px solid var(--nsblack);
+    justify-items: center;
+    text-align: center;
+  }
+  .blog .highlight-info > div {
+    justify-items: center;
+    text-align: center;
   }
   .blog-tags-buttons {
     justify-self: center;

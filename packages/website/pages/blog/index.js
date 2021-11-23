@@ -245,7 +245,7 @@ const Blog = ({ posts }) => {
           })
         : rest
     setCurrentPosts(filtered)
-  }, [filters])
+  }, [filters, posts])
 
   /**
    *
