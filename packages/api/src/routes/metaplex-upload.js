@@ -4,12 +4,7 @@ import { secrets, database } from '../constants.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 import { parseCid } from '../utils/utils.js'
-import {
-  parseJWTHeader,
-  parseJWT,
-  Base64URL,
-  utf8ToUint8Array,
-} from '../utils/jwt.js'
+import { parseJWTHeader, Base64URL, utf8ToUint8Array } from '../utils/jwt.js'
 import { keyFromDID, verifyEd25519Signature } from '../utils/ed25519.js'
 import { DBClient, DBError } from '../utils/db-client.js'
 
@@ -37,27 +32,7 @@ export async function metaplexUpload(event, ctx) {
   }
 
   const token = match[1]
-  const valid = await verifyMetaplexJWT(token)
-  if (!valid) {
-    throw new HTTPError('invalid authorization header', 401)
-  }
-
-  // now that we know the sig is valid, use the JWT payload
-  // as metadata to attach to the upload entry in the db
-  /** @type Record<string, any> */
-  const { iss, req } = parseJWT(token)
-  if (!iss) {
-    throw new HTTPError(
-      'invalid token - required field "iss" not present in payload',
-      401
-    )
-  }
-  if (!req) {
-    throw new HTTPError(
-      'invalid token - required field "req" not present in payload',
-      401
-    )
-  }
+  const meta = await parseMetaplexJWT(token)
 
   // Get the mapped metaplex user
   const { user, key } = await validate()
@@ -72,11 +47,7 @@ export async function metaplexUpload(event, ctx) {
   const { sourceCid, contentCid } = parseCid(cid)
 
   // confirm that the content cid matches the cid from the signed metadata
-  if (!req.put || typeof req.put.rootCID !== 'string') {
-    throw new HTTPError('invalid token - no root cid in payload', 401)
-  }
-  const signedCid = req.put.rootCID
-  if (signedCid !== sourceCid && signedCid !== contentCid) {
+  if (contentCid !== meta.rootCID) {
     throw new HTTPError('invalid token - cid mismatch', 401)
   }
 
@@ -89,7 +60,7 @@ export async function metaplexUpload(event, ctx) {
     user_id: user.id,
     files: [],
     key_id: key.id,
-    meta: { iss, req: JSON.stringify(req) },
+    meta,
   })
 
   return new JSONResponse({ ok: true, value: toNFTResponse(upload, sourceCid) })
@@ -122,37 +93,83 @@ async function validate() {
 /**
  * Verifies a self-signed JWT for a metaplex upload.
  *
+ * @typedef {object} MetaplexMetadata
+ * @property {string} iss the public key of the uploader, as a key:did string
+ * @property {string} rootCID the root CID of the upload, as a CIDv1 string
+ * @property {string} solanaCluster the name of the solana cluster being targetted
+ *
  * @param {string} token - an encoded JWT token from an x-web3auth header.
- * @returns {Promise<boolean>} - true if the token contains a valid solana public key and a valid signature from the key.
+ * @returns {Promise<MetaplexMetadata>} - metadata extracted from token payload.
+ * Rejects with an HTTPError with 401 status if token is invalid or does not contain required payload fields.
  */
-async function verifyMetaplexJWT(token) {
+async function parseMetaplexJWT(token) {
   if (typeof token !== 'string') {
     throw new Error('token must be a string')
   }
   var tokenParts = token.split('.')
 
   if (tokenParts.length !== 3) {
-    return false
+    throw new HTTPError('invalid token', 401)
   }
 
   const header = parseJWTHeader(token)
-  const payload = parseJWT(token)
+  const payload = JSON.parse(tokenParts[1])
+
+  if (!payload.iss) {
+    throw new HTTPError(
+      'invalid token - required field "iss" not present in payload',
+      401
+    )
+  }
+
+  const { iss } = payload
+
+  const headerPayload = utf8ToUint8Array(tokenParts[0] + '.' + tokenParts[1])
+  const pubkey = await keyFromDID(iss)
+  const sig = Base64URL.parse(tokenParts[2])
+
+  if (!verifyEd25519Signature(headerPayload, sig, pubkey)) {
+    throw new HTTPError('invalid token signature', 401)
+  }
+
+  // validate header
 
   if (header.alg !== 'EdDSA') {
-    throw new Error('invalid algorithm for metaplex token')
+    throw new HTTPError('invalid algorithm for metaplex token', 401)
   }
 
   if (header.typ !== 'JWT') {
-    throw new Error('invalid token type')
+    throw new HTTPError('invalid token type', 401)
   }
 
-  if (!payload.iss) {
-    return false
+  if (!payload.req) {
+    throw new HTTPError(
+      'invalid token - required field "req" not present in payload',
+      401
+    )
   }
 
-  const headerPayload = utf8ToUint8Array(tokenParts[0] + '.' + tokenParts[1])
-  const pubkey = await keyFromDID(payload.iss)
-  const sig = Base64URL.parse(tokenParts[2])
+  if (!payload.req.put) {
+    throw new HTTPError(
+      'invalid token - required field "req.put" not present in payload',
+      401
+    )
+  }
 
-  return verifyEd25519Signature(headerPayload, sig, pubkey)
+  if (typeof payload.req.put.rootCID !== 'string') {
+    throw new HTTPError('invalid token - no root cid in payload', 401)
+  }
+
+  if (!payload.tags || typeof payload.tags['solana-cluster'] !== 'string') {
+    throw new HTTPError('invalid token - no "solana-cluster" tag in payload')
+  }
+
+  const solanaCluster = payload.tags['solana-cluster']
+  const { contentCid: rootCID } = parseCid(payload.req.put.rootCID)
+
+  return {
+    iss,
+    rootCID,
+    solanaCluster,
+  }
 }
