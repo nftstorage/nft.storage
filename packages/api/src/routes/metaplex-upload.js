@@ -1,12 +1,11 @@
 import { HTTPError } from '../errors.js'
 import * as cluster from '../cluster.js'
-import { secrets, database } from '../constants.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 import { parseCid } from '../utils/utils.js'
 import { parseJWTHeader, Base64URL, utf8ToUint8Array } from '../utils/jwt.js'
 import { keyFromDID, verifyEd25519Signature } from '../utils/ed25519.js'
-import { DBClient, DBError } from '../utils/db-client.js'
+import { DBError } from '../utils/db-client.js'
 
 /**
  * When >2.5MB, use local add, because waiting for blocks to be sent to
@@ -15,14 +14,12 @@ import { DBClient, DBError } from '../utils/db-client.js'
  */
 const LOCAL_ADD_THRESHOLD = 1024 * 1024 * 2.5
 
-// TODO: remove when https://github.com/nftstorage/nft.storage/pull/638 merged
-const db = new DBClient(database.url, secrets.database)
-
 /**
  * Temporary CAR only upload endpoint, authenticated with Metaplex JWT.
  * @type {import('../bindings').Handler}
  */
 export async function metaplexUpload(event, ctx) {
+  const { db } = ctx
   const { headers } = event.request
   const authHeader = headers.get('x-web3auth') || ''
 
@@ -35,7 +32,7 @@ export async function metaplexUpload(event, ctx) {
   const meta = await parseMetaplexJWT(token)
 
   // Get the mapped metaplex user
-  const { user, key } = await validate()
+  const { user, key } = await validate(db)
 
   const blob = await event.request.blob()
   if (blob.size === 0) {
@@ -66,7 +63,13 @@ export async function metaplexUpload(event, ctx) {
   return new JSONResponse({ ok: true, value: toNFTResponse(upload, sourceCid) })
 }
 
-async function validate() {
+/**
+ * Validates that the account associated with the METAPLEX_AUTH_TOKEN secret exists,
+ * and returns the user id and auth key id.
+ * @param {import('../utils/db-client').DBClient} db
+ * @returns
+ */
+async function validate(db) {
   if (typeof METAPLEX_AUTH_TOKEN === 'undefined') {
     throw new Error('missing metaplex auth key')
   }
