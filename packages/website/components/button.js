@@ -4,6 +4,11 @@ import Link from 'next/link'
 import clsx from 'clsx'
 import countly from '../lib/countly'
 
+const buttonVariants = {
+  dark: 'bg-black white',
+  light: 'bg-white black',
+}
+
 /**
  * @typedef {Object} TrackingProp
  * @prop {string} ui UI section id. One of countly.ui.
@@ -62,7 +67,7 @@ export default function Button({
     [tracking, onClick, href]
   )
 
-  wrapperClassName = clsx(
+  const mergedWrapperClassName = clsx(
     'dib',
     'bg-nsgray',
     'ba',
@@ -73,16 +78,8 @@ export default function Button({
   const wrapperStyle = { minWidth: small ? '0' : '8rem' }
   const btnStyle = { top: 3, left: 3 }
 
-  let variantClasses = ''
-  switch (variant) {
-    case 'dark':
-      variantClasses = 'bg-black white'
-      break
-
-    case 'light':
-      variantClasses = 'bg-white black'
-      break
-  }
+  // variant can never be null, it has an explicit default of light
+  const variantClasses = buttonVariants[variant]
 
   const btn = (
     <button
@@ -112,12 +109,12 @@ export default function Button({
   )
   return href ? (
     <Link href={href}>
-      <a className={wrapperClassName} style={wrapperStyle}>
+      <a className={mergedWrapperClassName} style={wrapperStyle}>
         {btn}
       </a>
     </Link>
   ) : (
-    <div className={wrapperClassName} style={wrapperStyle}>
+    <div className={mergedWrapperClassName} style={wrapperStyle}>
       {btn}
     </div>
   )
