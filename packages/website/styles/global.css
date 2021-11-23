@@ -122,6 +122,7 @@ img {
 
 /* decorators */
 .hologram {
+  text-decoration: none;
   border: var(--bwidth) solid var(--nsblack);
   box-shadow: var(--btn-ghost-x) var(--btn-ghost-y) 0px 0px var(--nsgray),
     var(--btn-ghost-x) var(--btn-ghost-y) 0px 1px var(--nsblack);

@@ -29,7 +29,7 @@ export const Card = ({ post, onClick }) => (
       <div className="pa5 flex flex-column justify-evenly">
         <div className="mb4">{post.tags && <Tags tags={post.tags} />}</div>
         <div className="mb2 overflow-hidden">
-          <h1 className="chivo-bold f3 line-clamp-1">{post.title}</h1>
+          <h1 className="f3 line-clamp-1 chicagoflf">{post.title}</h1>
         </div>
         <p className="line-clamp-2 mb2 f5">{post.description}</p>
         <div className="flex">
@@ -56,7 +56,7 @@ export const HighlightCard = ({ post, onClick }) => (
         <div className="mb4">
           {post.tags && <Tags tags={post.tags} />}&nbsp;
         </div>
-        <h1 className="chivo-bold f1 line-clamp-1">{post.title}</h1>
+        <h1 className="f1 line-clamp-1 chicagoflf">{post.title}</h1>
         <p className="line-clamp-2 mw6 f3 mb2">{post.description}</p>
         <div className="flex mb2">
           <span className="dark-gray f6 mr2">{post.author}</span>

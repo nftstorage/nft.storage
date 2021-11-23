@@ -1,10 +1,11 @@
-import fs from 'fs'
-import matter from 'gray-matter'
-import { FiTwitter, FiLinkedin, FiFacebook } from 'react-icons/fi'
+import { FiFacebook, FiLinkedin, FiTwitter } from 'react-icons/fi'
+import { useEffect, useState } from 'react'
+
+import Markdown from '../../../components/markdown'
 import SocialLink from '../../../components/social-link'
 import Tags from '../../../components/tags'
-import Markdown from '../../../components/markdown'
-import { useEffect, useState } from 'react'
+import fs from 'fs'
+import matter from 'gray-matter'
 
 export async function getStaticProps({ ...ctx }) {
   const { slug } = ctx.params
@@ -70,6 +71,7 @@ const Post = ({ post }) => {
       <div className="post pb24 flex flex-column w-100 items-center">
         <img
           src={post.meta.thumbnail}
+          alt={`Banner for ${post.title}`}
           className="h-card w-100 object-cover object-center"
         />
         <div className="mt14 mw7 ph8">
@@ -94,7 +96,7 @@ const Post = ({ post }) => {
                 />
               </div>
             </div>
-            <h1 className="chivo-bold f2 mb2">{post.meta.title}</h1>
+            <h1 className="chicagoflf f2 mb2">{post.meta.title}</h1>
             <p className="mb5">{post.meta.description}</p>
             <div className="flex mb8">
               <span className="dark-gray f6 mr2">{post.meta.author}</span>
