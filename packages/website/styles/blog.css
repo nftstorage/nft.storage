@@ -155,7 +155,7 @@ h6 {
 
 .blog .btn-secondary:not(.disabled):not(.active):hover {
   background-color: var(--nsorange);
-  border-color: var(--nsorange);
+  border-color: var(--nsred);
   color: var(--nspeach);
   cursor: pointer;
 }

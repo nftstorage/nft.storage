@@ -44,8 +44,8 @@
 
   --card-ghost-x: -9px;
   --card-ghost-y: -9px;
-  --card-ghost-x-hover: -3px;
-  --card-ghost-y-hover: -3px;
+  --card-ghost-x-hover: -5px;
+  --card-ghost-y-hover: -5px;
 }
 
 img {
@@ -140,16 +140,19 @@ img {
 
 .hologram.interactive:hover {
   box-shadow: var(--card-ghost-x-hover) var(--card-ghost-y-hover) 0px 0px
-      var(--nspeach),
-    var(--card-ghost-x-hover) var(--card-ghost-y-hover) 0px 1px
-      var(--nsgray-600);
+      var(--nsorange),
+    var(--card-ghost-x-hover) var(--card-ghost-y-hover) 0px 1px var(--nsblack);
 }
 
 .hologram.right.interactive:hover {
   box-shadow: calc(var(--card-ghost-x-hover) * -1) var(--card-ghost-y-hover) 0px
-      0px var(--nspeach),
+      0px var(--nsorange),
     calc(var(--card-ghost-x-hover) * -1) var(--card-ghost-y-hover) 0px 1px
-      var(--nsgray-600);
+      var(--nsblack),
+    calc(var(--card-ghost-x-hover) * -2) calc(var(--card-ghost-y-hover) * 2) 0px
+      0px var(--nsred),
+    calc(var(--card-ghost-x-hover) * -2) calc(var(--card-ghost-y-hover) * 2) 0px
+      1px var(--nsblack);
 }
 
 /* animation */
