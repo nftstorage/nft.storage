@@ -99,8 +99,8 @@ const Post = ({ post }) => {
             <h1 className="chicagoflf f2 mb2">{post.meta.title}</h1>
             <p className="mb5">{post.meta.description}</p>
             <div className="flex mb8">
-              <span className="dark-gray f6 mr2">{post.meta.author}</span>
-              <span className="dark-gray f6">{post.meta.date}</span>
+              <span className="darker-gray f6 mr2">{post.meta.author}</span>
+              <span className="darker-gray f6">{post.meta.date}</span>
             </div>
           </div>
           <Markdown content={post.content} />

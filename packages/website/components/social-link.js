@@ -13,7 +13,12 @@ const SocialLink = ({ url, Icon, params }) => {
     Object.entries(params).map(([k, v]) => url.searchParams.append(k, v))
   }
   return (
-    <a href={url.href} target="_blank" rel="noreferrer">
+    <a
+      href={url.href}
+      target="_blank"
+      rel="noreferrer"
+      aria-label="social media icon"
+    >
       <div className="social-link hologram interactive ltblue flex items-center justify-center ba bg-white w8 h8 mh2 flex flex-column">
         <Icon />
       </div>
