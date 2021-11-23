@@ -12,6 +12,6 @@
   "license": "(Apache-2.0 AND MIT)",
   "dependencies": {
     "ipfs-car": "^0.5.8",
-    "nft.storage": "^3.3.0"
+    "nft.storage": "^4.0.0"
   }
 }

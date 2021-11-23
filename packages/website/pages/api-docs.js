@@ -1,12 +1,12 @@
 // @ts-ignore
 import SwaggerUI from 'swagger-ui-react'
-import 'swagger-ui-react/swagger-ui.css'
 import { getToken } from '../lib/api'
+
 /**
  *
  * @param {Request} req
  */
-const requestHandler = async (req) => {
+const requestHandler = async req => {
   let token
   try {
     token = await getToken()
@@ -27,9 +27,10 @@ export function getStaticProps() {
 
 export default function docs() {
   return (
-    <>
-      <h1 className="chicagoflf black mv4 flex-auto ph3 ph5-ns">API DOCS</h1>
-      <SwaggerUI url="/schema.yml" requestInterceptor={requestHandler} />
-    </>
+    <SwaggerUI
+      url="/schema.yml"
+      requestInterceptor={requestHandler}
+      className="foo"
+    />
   )
 }

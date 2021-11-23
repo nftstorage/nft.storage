@@ -10,7 +10,7 @@ import {
 
 describe('maintenance middleware', () => {
   it('should throw error when in maintenance', () => {
-    /** @type {import('../src/utils/router.js').Handler} */
+    /** @type {import('../src/bindings').Handler} */
     let handler
     const block = () => {
       // @ts-expect-error not passing params to our test handler
@@ -35,7 +35,7 @@ describe('maintenance middleware', () => {
   })
 
   it('should throw for invalid maintenance mode', () => {
-    /** @type {import('../src/utils/router.js').Handler} */
+    /** @type {import('../src/bindings').Handler} */
     const handler = withMode(() => new Response(), READ_WRITE)
     const block = () => {
       // @ts-expect-error not passing params to our test handler
@@ -43,7 +43,7 @@ describe('maintenance middleware', () => {
     }
 
     const invalidModes = ['', null, undefined, ['r', '-'], 'rwx']
-    invalidModes.forEach((m) => {
+    invalidModes.forEach(m => {
       // @ts-expect-error purposely passing invalid mode
       setMaintenanceModeGetter(() => m)
       assert.throws(block, /invalid maintenance mode/)

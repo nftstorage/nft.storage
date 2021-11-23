@@ -6,7 +6,8 @@ import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
 import Box from '../components/box.js'
 import Link from 'next/link'
-import { ShortFaq } from './faq.js'
+import { FAQ } from './faq'
+
 /**
  * Static Props
  *
@@ -37,7 +38,7 @@ export default function Home() {
             <h2 className="chicagoflf white">
               <HashLink id="faq">FAQ</HashLink>
             </h2>
-            <ShortFaq />
+            <FAQ limit={5} />
             <h3 className="chicagoflf white">
               More FAQs{' '}
               <Link href="/faq">
@@ -242,7 +243,7 @@ function About() {
 }
 
 function GettingStarted() {
-  const onClickHandler = useCallback((event) => {
+  const onClickHandler = useCallback(event => {
     countly.trackCustomLinkClick(
       countly.events.CTA_LINK_CLICK,
       event.currentTarget,

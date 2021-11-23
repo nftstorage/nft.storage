@@ -18,7 +18,8 @@
     "isolatedModules": true,
     "paths": {
       "nft.storage": ["../client"]
-    }
+    },
+    "incremental": true
   },
   "include": ["lib", "pages", "components"],
   "exclude": ["node_modules/", ".next/"],

@@ -1,19 +1,19 @@
-import Head from 'next/head'
 import Footer from './footer.js'
-import Navbar from './navbar.js'
+import Head from 'next/head'
 import Loading from './loading'
-import { useUser } from '../lib/user'
-import { getVersion } from '../lib/api'
+import Navbar from './navbar.js'
 import { getStatusPageSummary } from '../lib/statuspage-api'
+import { getVersion } from '../lib/api'
 import { useQuery } from 'react-query'
+import { useUser } from '../lib/user'
 
 const MaintenanceBanner = () => {
   let maintenanceMessage = ''
 
-  const { data: statusPageData, error: statusPageError } = useQuery(
-    'get-statuspage-summary',
-    () => getStatusPageSummary()
-  )
+  const {
+    data: statusPageData,
+    error: statusPageError,
+  } = useQuery('get-statuspage-summary', () => getStatusPageSummary())
   const scheduledMaintenances =
     statusPageData?.scheduled_maintenances.filter(
       (/** @type {{ status: string; }} */ maintenance) =>
@@ -88,7 +88,7 @@ export default function Layout({
   const shouldWaitForUser = needsUser && status === 'loading'
 
   return (
-    <div className="sans-serif flex flex-column min-vh-100">
+    <div className="nft-storage sans-serif flex flex-column min-vh-100">
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />

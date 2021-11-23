@@ -1,18 +1,7 @@
 // let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN, DATABASE_TOKEN, CLUSTER_SERVICE
-export const stores = {
-  deals: DEALS,
-  users: USERS,
-  nfts: NFTS,
-  nftsIndex: NFTS_IDX,
-  metrics: METRICS,
-  pins: PINS,
-  followups: FOLLOWUPS,
-  pinataQueue: PINATA_QUEUE,
-}
 
 export const secrets = {
   salt: SALT,
-  pinata: PINATA_JWT,
   magic: MAGIC_SECRET_KEY,
   sentry: SENTRY_DSN,
   database: DATABASE_TOKEN,
@@ -47,17 +36,6 @@ export const cluster = {
    */
   // localAddThreshold: 1024 * 1024 * 2.5,
   localAddThreshold: 0,
-}
-
-export const pinata = {
-  apiUrl:
-    typeof PINATA_API_URL !== 'undefined'
-      ? PINATA_API_URL
-      : 'https://api.pinata.cloud',
-  psaApiUrl:
-    typeof PINATA_PSA_API_URL !== 'undefined'
-      ? PINATA_PSA_API_URL
-      : 'https://api.pinata.cloud/psa/',
 }
 
 export const database = {

@@ -7,10 +7,6 @@ const client = new Cluster(cluster.apiUrl, {
 })
 
 /**
- * @typedef {import('./models/users.js').User} User
- */
-
-/**
  * @param {Blob} data
  * @param {import('@nftstorage/ipfs-cluster').API.AddParams} options
  */
@@ -60,7 +56,7 @@ export async function addDirectory(files, options = {}) {
     metadata: { size: size.toString() },
     ...options,
   })
-  return results.map((result) => ({
+  return results.map(result => ({
     cid: result.cid,
     size: Number(result.size),
   }))
@@ -82,7 +78,7 @@ export const importAsset = async (file, options = {}) => {
   if (result.length < 2) {
     throw new Error(
       `Expected response with at least two entries, but instead got: ${result.map(
-        ($) => $.cid
+        $ => $.cid
       )}`
     )
   }
@@ -104,12 +100,11 @@ export function delegates() {
 /**
  * Best effort conversion from cluster status to pinning service API status.
  * @param {import('@nftstorage/ipfs-cluster').API.StatusResponse} status
- * @returns {import('./pinata-psa').Status}
  */
 export function toPSAStatus(status) {
   const pinInfos = Object.values(status.peerMap)
-  if (pinInfos.some((i) => i.status === 'pinned')) return 'pinned'
-  if (pinInfos.some((i) => i.status === 'pinning')) return 'pinning'
-  if (pinInfos.some((i) => i.status === 'pin_queued')) return 'queued'
+  if (pinInfos.some(i => i.status === 'pinned')) return 'pinned'
+  if (pinInfos.some(i => i.status === 'pinning')) return 'pinning'
+  if (pinInfos.some(i => i.status === 'pin_queued')) return 'queued'
   return 'failed'
 }

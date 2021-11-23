@@ -1,5 +1,35 @@
 # Changelog
 
+## [5.0.0](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v4.0.1...nft.storage-v5.0.0) (2021-11-22)
+
+
+### ⚠ BREAKING CHANGES
+
+* update dependencies (#833)
+
+### Changes
+
+* update dependencies ([#833](https://www.github.com/nftstorage/nft.storage/issues/833)) ([27b1adc](https://www.github.com/nftstorage/nft.storage/commit/27b1adc8eb3ced95358c7619d2e4bcd7803128d2))
+
+### [4.0.1](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v4.0.0...nft.storage-v4.0.1) (2021-11-18)
+
+
+### Bug Fixes
+
+* add interface.ts to fix docs ([#807](https://www.github.com/nftstorage/nft.storage/issues/807)) ([64e4b2d](https://www.github.com/nftstorage/nft.storage/commit/64e4b2d435b7876d4cb937f3e511bd833589a495))
+
+## [4.0.0](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v3.4.0...nft.storage-v4.0.0) (2021-11-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* automatic client side CAR chunking for large data (#588)
+
+### Features
+
+* automatic client side CAR chunking for large data ([#588](https://www.github.com/nftstorage/nft.storage/issues/588)) ([437ae4f](https://www.github.com/nftstorage/nft.storage/commit/437ae4f313d800939857a074d28072e30a377cad))
+* remove kv code, update deps and improve client docs ([#714](https://www.github.com/nftstorage/nft.storage/issues/714)) ([22c4e50](https://www.github.com/nftstorage/nft.storage/commit/22c4e507c527d20d9a0587bee0380ea3471f45fe))
+
 ## [3.4.0](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v3.3.0...nft.storage-v3.4.0) (2021-11-08)
 
 

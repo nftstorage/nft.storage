@@ -12,11 +12,8 @@
   },
   "scripts": {
     "start": "run-s start:*",
-    "start:metrics": "node src/bin/metrics.js",
-    "start:pins": "node src/bin/pins.js",
     "start:pins-v1": "node src/bin/pins-v1.js",
     "start:pins-failed": "node src/bin/pins-failed.js",
-    "start:pinata": "node src/bin/pinata.js",
     "start:pinata-v1": "node src/bin/pinata-v1.js",
     "start:dagcargo:views": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo-views.js",
     "start:dagcargo:sizes": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo-sizes.js"
@@ -29,10 +26,10 @@
     "dotenv": "^10.0.0",
     "form-data": "^4.0.0",
     "limiter": "2.0.1",
-    "pg": "^8.7.1",
-    "nft.storage": "^1.3.1",
+    "nft.storage": "^3.3.0",
     "node-fetch": "^2.6.1",
-    "p-retry": "^4.6.1"
+    "p-retry": "^4.6.1",
+    "pg": "^8.7.1"
   },
   "devDependencies": {
     "@types/node-fetch": "^2.5.10",

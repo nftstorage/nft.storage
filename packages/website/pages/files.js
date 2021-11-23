@@ -45,7 +45,7 @@ export default function Files({ user }) {
 
   const { status, data } = useQuery(
     queryKey,
-    (ctx) => getNfts(ctx.queryKey[1], version),
+    ctx => getNfts(ctx.queryKey[1], version),
     {
       enabled: !!user,
     }
@@ -86,6 +86,10 @@ export default function Files({ user }) {
   function handleNextClick() {
     if (nfts.length === 0) return
     setBefores([nfts[nfts.length - 1].created, ...befores])
+  }
+
+  function handleFirstClick() {
+    setBefores([''])
   }
 
   const hasZeroNfts = nfts.length === 0 && befores.length === 1
@@ -152,54 +156,66 @@ export default function Files({ user }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {nfts.map(
-                          (/** @type {any} */ nft, /** @type {number} */ i) => (
-                            <tr className="bb b--black" key={`nft-${i}`}>
-                              <td
-                                className="pa2 br b--black"
-                                title={nft.created}
-                              >
-                                {nft.created.split('T')[0]}
-                              </td>
-                              <td className="pa2 br b--black">
-                                <GatewayLink cid={nft.cid} type={nft.type} />
-                              </td>
-                              <td className="pa2 br b--black mw7">
-                                {bytes(nft.size || 0)}
-                              </td>
-                              <td className="pa2">
-                                <form onSubmit={handleDeleteFile}>
-                                  <input
-                                    type="hidden"
-                                    name="cid"
-                                    value={nft.cid}
-                                  />
-                                  <Button
-                                    className="bg-nsorange white"
-                                    type="submit"
-                                    disabled={Boolean(deleting)}
-                                    id="delete-nft"
-                                    tracking={{
-                                      event: countly.events.FILE_DELETE_CLICK,
-                                      ui: countly.ui.FILES,
-                                      action: 'Delete File',
-                                    }}
-                                  >
-                                    {deleting === nft.cid
-                                      ? 'Deleting...'
-                                      : 'Delete'}
-                                  </Button>
-                                </form>
-                              </td>
-                            </tr>
-                          )
-                        )}
+                        {nfts.map((
+                          /** @type {any} */ nft,
+                          /** @type {number} */ i
+                        ) => (
+                          <tr className="bb b--black" key={`nft-${i}`}>
+                            <td className="pa2 br b--black" title={nft.created}>
+                              {nft.created.split('T')[0]}
+                            </td>
+                            <td className="pa2 br b--black">
+                              <GatewayLink cid={nft.cid} type={nft.type} />
+                            </td>
+                            <td className="pa2 br b--black mw7">
+                              {bytes(nft.size || 0)}
+                            </td>
+                            <td className="pa2">
+                              <form onSubmit={handleDeleteFile}>
+                                <input
+                                  type="hidden"
+                                  name="cid"
+                                  value={nft.cid}
+                                />
+                                <Button
+                                  className="bg-nsorange white"
+                                  type="submit"
+                                  disabled={Boolean(deleting)}
+                                  id="delete-nft"
+                                  tracking={{
+                                    event: countly.events.FILE_DELETE_CLICK,
+                                    ui: countly.ui.FILES,
+                                    action: 'Delete File',
+                                  }}
+                                >
+                                  {deleting === nft.cid
+                                    ? 'Deleting...'
+                                    : 'Delete'}
+                                </Button>
+                              </form>
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                     <div className="tc mv3">
                       <Button
                         className="black"
-                        wrapperClassName="mh2"
+                        wrapperClassName="mh2 mt2"
+                        disabled={befores.length === 1}
+                        onClick={handleFirstClick}
+                        id="files-first"
+                        tracking={{
+                          event: countly.events.FILES_NAVIGATION_CLICK,
+                          ui: countly.ui.FILES,
+                          action: 'First',
+                        }}
+                      >
+                        ⇤ First
+                      </Button>
+                      <Button
+                        className="black"
+                        wrapperClassName="mh2 mt2"
                         disabled={befores.length === 1}
                         onClick={handlePrevClick}
                         id="files-previous"
@@ -213,7 +229,7 @@ export default function Files({ user }) {
                       </Button>
                       <Button
                         className="black"
-                        wrapperClassName="mh2"
+                        wrapperClassName="mh2 mt2"
                         disabled={nfts.length < limit}
                         onClick={handleNextClick}
                         id="files-next"
