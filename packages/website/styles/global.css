@@ -141,7 +141,7 @@ img {
 }
 
 .hologram.interactive {
-  transition: all 300ms ease;
+  transition: all 150ms ease;
   cursor: pointer;
 }
 
