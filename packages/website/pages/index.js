@@ -10,6 +10,10 @@ import { FAQ } from './faq'
 
 export async function getStaticProps() {
   const logos = await fs.readdirSync('public/images/marketplace-logos')
+  // make opensea be the first logo
+  logos.sort((a, b) =>
+    a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
+  )
 
   return {
     props: {
@@ -42,7 +46,7 @@ const Logos = ({ logos }) => {
   return (
     <div className="marketplace-logos-container center pv4 ph3 ph5-ns">
       <div className="marketplace-logo-grid">
-        {logos.map(logo => (
+        {logos.map((logo) => (
           <Logo key={`marketplace-logo-${logo}`} src={logo} />
         ))}
       </div>
@@ -60,7 +64,7 @@ export default function Home({ logos }) {
   return (
     <>
       <Hero />
-      <main className="bg-nsgreen">
+      <main className="bg-nsltblue">
         <Logos logos={logos} />
         <About />
         <GettingStarted />
@@ -274,7 +278,7 @@ function About() {
 }
 
 function GettingStarted() {
-  const onClickHandler = useCallback(event => {
+  const onClickHandler = useCallback((event) => {
     countly.trackCustomLinkClick(
       countly.events.CTA_LINK_CLICK,
       event.currentTarget,
