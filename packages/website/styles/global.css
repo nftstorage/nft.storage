@@ -122,6 +122,12 @@ img {
     var(--btn-ghost-x) var(--btn-ghost-y) 0px 1px var(--nsblack);
 }
 
+.hologram.right {
+  box-shadow: calc(var(--btn-ghost-x) * -1) var(--btn-ghost-y) 0px 0px
+      var(--nsgray),
+    calc(var(--btn-ghost-x) * -1) var(--btn-ghost-y) 0px 1px var(--nsblack);
+}
+
 .hologram.interactive {
   transition: all 300ms ease;
   cursor: pointer;
@@ -131,6 +137,13 @@ img {
   box-shadow: var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 0px
       var(--nsgray),
     var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 1px var(--nsblack);
+}
+
+.hologram.right.interactive:hover {
+  box-shadow: calc(var(--btn-ghost-x-hover) * -1) var(--btn-ghost-y-hover) 0px
+      0px var(--nsgray),
+    calc(var(--btn-ghost-x-hover) * -1) var(--btn-ghost-y-hover) 0px 1px
+      var(--nsblack);
 }
 
 /* animation */

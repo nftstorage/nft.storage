@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
-import fs from 'fs'
-import matter from 'gray-matter'
 import { Card, HighlightCard } from '../../components/blog/cards'
+import { useEffect, useState } from 'react'
+
+import Button from '../../components/button'
+import Loading from '../../components/loading'
 import Tags from '../../components/tags'
 import { allTags } from '../../components/blog/constants'
-import { usePagination } from '../../lib/usePagination'
 import clsx from 'clsx'
-import Loading from '../../components/loading'
-import Button from '../../components/button'
+import fs from 'fs'
+import matter from 'gray-matter'
+import { usePagination } from '../../lib/usePagination'
+import { useRouter } from 'next/router'
 
 const BLOG_ITEMS_PER_PAGE = 9
 
@@ -22,13 +23,14 @@ export async function getStaticProps() {
   /**
    * @param {string} fn
    */
-  const getBirthtime = fn => fs.statSync(`all-blogs/${fn}`).birthtime.getTime()
+  const getBirthtime = (fn) =>
+    fs.statSync(`all-blogs/${fn}`).birthtime.getTime()
 
   files.sort((a, b) => getBirthtime(b) - getBirthtime(a))
 
   const posts = files
     ? files
-        .filter(filename => filename.toLowerCase() !== '.ds_store')
+        .filter((filename) => filename.toLowerCase() !== '.ds_store')
         .map((fn, index) => {
           const content = fs.readFileSync(`all-blogs/${fn}`).toString()
           const info = matter(content)
@@ -74,7 +76,7 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
    * items hook
    * @param {import('../../components/types').PostMeta[]} items
    */
-  const useItems = items => {
+  const useItems = (items) => {
     const [currentItems, setCurrentItems] = useState(items)
 
     useEffect(() => {
@@ -102,7 +104,7 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
   /**
    * @param {number} newPage
    */
-  const handlePageClick = newPage => {
+  const handlePageClick = (newPage) => {
     router.push({
       pathname: '/blog',
       query:
@@ -120,17 +122,14 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
   const PagNavButton = ({ page, children, disabled, isActive }) => {
     return (
       <Button
-        unstyled
+        unstyled={true}
         key={`pag-nav-item-${page || children}`}
         onClick={!page || isActive ? undefined : () => handlePageClick(page)}
         disabled={disabled}
         className={clsx(
-          'ba b--black ttu h8 ma1 mnw8 select-none',
-          isActive
-            ? 'bg-black nspeach pointer-default'
-            : 'black bg-transparent',
-          !isActive && !disabled && 'grow pointer',
-          disabled && 'o-50'
+          'select-none btn-secondary ttu',
+          isActive && 'active',
+          disabled && 'disabled'
         )}
       >
         {children}
@@ -139,7 +138,7 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
   }
 
   const PaginatedNav = () => {
-    const rangeButtons = paginationRange?.map(item => (
+    const rangeButtons = paginationRange?.map((item) => (
       <PagNavButton
         key={`nav-button-${item}`}
         page={typeof item === 'string' ? undefined : item}
@@ -189,7 +188,7 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
  * @param {() => void} props.handleClick
  */
 const Items = ({ currentItems, handleClick }) => (
-  <div className="flex justify-evenly flex-wrap pt2">
+  <div className="card-grid pt2">
     {currentItems.map((post, i) => (
       <Card key={i} post={post} onClick={handleClick} />
     ))}
@@ -216,8 +215,8 @@ const Blog = ({ posts }) => {
     if (!posts) return
     const filtered =
       filters[0] !== 'all'
-        ? posts.filter(post => {
-            return post.tags?.some(t => filters.includes(t.toLowerCase()))
+        ? posts.filter((post) => {
+            return post.tags?.some((t) => filters.includes(t.toLowerCase()))
           })
         : rest
     setCurrentPosts(filtered)
@@ -227,13 +226,13 @@ const Blog = ({ posts }) => {
    *
    * @param {string} tag
    */
-  const handleTagClick = tag => {
-    setFilters(prev => {
+  const handleTagClick = (tag) => {
+    setFilters((prev) => {
       if (tag === 'all') return ['all']
       let newTags = prev.includes(tag)
-        ? prev.filter(t => t.toLowerCase() !== tag)
+        ? prev.filter((t) => t.toLowerCase() !== tag)
         : [...prev, tag.toLowerCase()]
-      newTags = newTags.filter(t => t.toLowerCase() !== 'all')
+      newTags = newTags.filter((t) => t.toLowerCase() !== 'all')
       return newTags.length > 0 ? newTags : ['all']
     })
     if (pageNumber !== 0) {
@@ -270,23 +269,13 @@ const Blog = ({ posts }) => {
 
   return (
     <main className="blog bg-nspeach w-100 flex flex-auto">
-      <div className="flex flex-column justify-center flex-auto">
-        <div className="w-100 bg-black" style={{ height: 1 }} />
+      <div className="blog-body flex flex-column justify-center flex-auto ">
         <HighlightCard onClick={() => setLoading(true)} post={first} />
-        <div className="w-100 bg-black" style={{ height: 1 }} />
-        <div className="button-tags-container pt3 flex flex-column ph13 flex-auto">
-          <Tags
-            tags={allTags.map(tag => {
-              const normTag = tag.toLowerCase()
-              return {
-                label: normTag,
-                onClick: () => handleTagClick(normTag),
-                selected: filters.includes(normTag),
-              }
-            })}
-          />
-          <div className="w-100 bg-black mb3 mt3" style={{ height: 1 }} />
-        </div>
+        <TagsContainer
+          filters={filters}
+          handleTagClick={handleTagClick}
+          tags={allTags}
+        />
         <Paginated
           key={pageNumber}
           handleCardClick={() => setLoading(true)}
@@ -296,6 +285,31 @@ const Blog = ({ posts }) => {
         />
       </div>
     </main>
+  )
+}
+
+/**
+ *
+ * @param {Object} props
+ * @param {string[]} props.tags
+ * @param {string[]} props.filters
+ * @param {(tag: string) => void} props.handleTagClick
+ * @returns {JSX.Element}
+ */
+function TagsContainer({ tags, filters, handleTagClick }) {
+  return (
+    <div className="button-tags-container pv3 mw9">
+      <Tags
+        tags={tags.map((tag) => {
+          const normTag = tag.toLowerCase()
+          return {
+            label: normTag,
+            onClick: () => handleTagClick(normTag),
+            selected: filters.includes(normTag),
+          }
+        })}
+      />
+    </div>
   )
 }
 

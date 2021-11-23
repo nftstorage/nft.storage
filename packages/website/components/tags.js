@@ -1,5 +1,5 @@
-import clsx from 'clsx'
 import Button from './button'
+import clsx from 'clsx'
 
 /**
  * Tag Component
@@ -18,15 +18,13 @@ export const Tag = ({ tag }) => {
   return isString ? (
     inner
   ) : (
-    <div className="ma2">
+    <div className="">
       <Button
         onClick={tag.onClick}
         unstyled
         className={clsx(
-          'ph2 pv1 f6 ba b--black ttc mr2 grow',
-          tag.selected
-            ? 'bg-black nspeach pointer-default'
-            : 'black bg-transparent pointer'
+          'select-none btn-secondary ttc',
+          tag.selected && 'active'
         )}
       >
         {tag.label}

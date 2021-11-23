@@ -48,7 +48,7 @@ export default function Button({
   ...props
 }) {
   const onClickHandler = useCallback(
-    event => {
+    (event) => {
       tracking &&
         countly.trackEvent(tracking.event || countly.events.CTA_LINK_CLICK, {
           ui: tracking.ui,
