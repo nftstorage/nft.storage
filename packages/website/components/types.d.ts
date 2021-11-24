@@ -29,6 +29,7 @@ export interface LayoutProps {
   image?: string
   navBgColor?: string
   altLogo?: boolean
+  withSubscribe?: boolean
   posts?: PostMeta[]
 }
 

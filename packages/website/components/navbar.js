@@ -15,11 +15,17 @@ import countly from '../lib/countly'
  *
  * @param {Object} props
  * @param {string} [props.bgColor]
+ * @param {boolean} [props.withSubscribe]
  * @param {{ src: string, isDark: boolean}} props.logo
  * @param {any} [props.user]
  */
 
-export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
+export default function Navbar({
+  bgColor = 'bg-nsorange',
+  logo,
+  user,
+  withSubscribe,
+}) {
   const containerRef = useRef(null)
   const queryClient = useQueryClient()
   const [isSmallVariant, setSmallVariant] = useState(false)
@@ -227,6 +233,22 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                 Login
               </Button>
             )}
+            {withSubscribe ? (
+              <Button
+                href={{
+                  pathname: '/blog/subscribe',
+                  query: version ? { version } : null,
+                }}
+                id="subscribe"
+                wrapperClassName="ml3"
+                tracking={{
+                  ui: countly.ui.BLOG,
+                  action: 'Subcribe',
+                }}
+              >
+                Subscribe
+              </Button>
+            ) : null}
           </div>
         </div>
       </div>

@@ -49,6 +49,7 @@ export async function getStaticProps() {
       image: featuredImage,
       navBgColor: 'bg-nsltblue',
       altLogo: true,
+      withSubscribe: true,
       needsUser: false,
     },
   }

@@ -30,6 +30,7 @@ export async function getStaticProps({ ...ctx }) {
       description: info.data.description,
       navBgColor: 'bg-nsltblue',
       altLogo: true,
+      withSubscribe: true,
       needsUser: false,
     },
   }
