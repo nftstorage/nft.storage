@@ -116,23 +116,14 @@ h6 {
   min-height: var(--card-size);
 }
 
-.blog .highlight-info {
-  display: grid;
-  grid-template-columns: 1fr minmax(300px, 680px);
-}
-
-.blog .highlight-info-content {
-  display: grid;
-  grid-gap: 0.5rem;
-  grid-column: 2;
-}
-
 .blog .button-tags-container {
   border-bottom: 1px solid var(--nsblack);
 }
 
 .blog .card-grid {
   display: grid;
+  /* compenstate for cards being offset & center */
+  padding-right: 0.6125rem;
   grid-gap: 2rem;
   justify-content: center;
   grid-template-columns: repeat(auto-fill, var(--card-size));
@@ -255,6 +246,7 @@ h6 {
 }
 
 /* responsive */
+
 @media screen and (max-width: 880px) {
   .blog .highlight-info,
   .highlight-img {
@@ -266,19 +258,20 @@ h6 {
     z-index: 50;
     opacity: 0.92;
     background-color: var(--nsltblue);
-    border-bottom: 1px solid var(--nsblack);
-    justify-items: center;
-    text-align: center;
-  }
-  .blog .highlight-info > div {
-    justify-items: center;
-    text-align: center;
+    padding: 4rem 2rem;
   }
   .blog-tags-buttons {
     justify-self: center;
   }
   .blog .button-tags-container {
-    /* padding-left: 1rem;
-    padding-right: 1rem; */
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .blog .blog-card {
+    width: 300px;
+    justify-self: center;
   }
 }

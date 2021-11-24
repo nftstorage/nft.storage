@@ -259,6 +259,12 @@ img {
   cursor: default;
 }
 
+/* height, width */
+
+.w-fit {
+  width: fit-content;
+}
+
 @keyframes appear-from-bottom {
   from {
     transform: translateY(100%);

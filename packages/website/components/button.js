@@ -65,11 +65,8 @@ export default function Button({
   )
 
   wrapperClassName = clsx(
-    'dib',
-    'bg-nsgray',
-    'ba',
-    'b--black',
-    { grow: !disabled, 'o-50': disabled },
+    !unstyled && 'dib bg-nsgray ba b--black',
+    !unstyled && { grow: !disabled, 'o-50': disabled },
     wrapperClassName
   )
   const wrapperStyle = unstyled ? {} : { minWidth: small ? '0' : '8rem' }
@@ -108,7 +105,7 @@ export default function Button({
   return href ? (
     <Link href={href}>
       <a
-        className={clsx('button-wrapper', !unstyled && wrapperClassName)}
+        className={clsx('button-wrapper', wrapperClassName)}
         style={wrapperStyle}
       >
         {btn}
@@ -116,7 +113,7 @@ export default function Button({
     </Link>
   ) : (
     <div
-      className={clsx('button-wrapper', !unstyled && wrapperClassName)}
+      className={clsx('button-wrapper', wrapperClassName)}
       style={wrapperStyle}
     >
       {btn}

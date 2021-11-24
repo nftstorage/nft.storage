@@ -10,10 +10,10 @@ import { useUser } from '../lib/user'
 const MaintenanceBanner = () => {
   let maintenanceMessage = ''
 
-  const {
-    data: statusPageData,
-    error: statusPageError,
-  } = useQuery('get-statuspage-summary', () => getStatusPageSummary())
+  const { data: statusPageData, error: statusPageError } = useQuery(
+    'get-statuspage-summary',
+    () => getStatusPageSummary()
+  )
   const scheduledMaintenances =
     statusPageData?.scheduled_maintenances.filter(
       (/** @type {{ status: string; }} */ maintenance) =>
@@ -114,11 +114,7 @@ export default function Layout({
       ) : (
         <>
           <MaintenanceBanner />
-          <Navbar
-            bgColor={navBgColor}
-            altLogo={altLogo ? '/images/logo-nft-storage-dark.svg' : undefined}
-            user={user}
-          />
+          <Navbar bgColor={navBgColor} altLogo={altLogo} user={user} />
           {children({ user })}
           <Footer />
         </>

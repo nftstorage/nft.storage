@@ -1,9 +1,13 @@
 ---
-title: this is blog q
+title: This is blog q
 description: This is a blog description in which the blog is described in brief.
 author: Chris File
 thumbnail: https://filecoin.io/uploads/fil-blog-nft-storage-notext-1_hu0f986e6d3668f304753a6341d061b59b_77385_2000x0_resize_q90_linear_2.png
 date: Nov 11, 2021
+tags:
+  - events
+  - news
+  - updates
 ---
 
 ## Ullamcorper Elit Semper Ultricies Morbi

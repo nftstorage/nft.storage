@@ -15,7 +15,7 @@ import countly from '../lib/countly'
  *
  * @param {Object} props
  * @param {string} [props.bgColor]
- * @param {string} [props.altLogo]
+ * @param {boolean} props.altLogo
  * @param {any} [props.user]
  */
 
@@ -27,7 +27,9 @@ export default function Navbar({ bgColor = 'bg-nsorange', altLogo, user }) {
   const { query } = useRouter()
   const version = /** @type {string} */ (query.version)
 
-  const logo = altLogo || 'images/logo-nft-storage-sm.png'
+  const logo = altLogo
+    ? '/images/logo-nft-storage-dark.svg'
+    : '/images/logo-nft-storage-sm.png'
 
   useResizeObserver(containerRef, () => {
     const shouldGoToSmallVariant = window.innerWidth < 640
@@ -125,7 +127,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', altLogo, user }) {
     [user, isSmallVariant, version, logout, trackLogout]
   )
 
-  const onLinkClick = useCallback(event => {
+  const onLinkClick = useCallback((event) => {
     countly.trackCustomLinkClick(
       countly.events.LINK_CLICK_NAVBAR,
       event.currentTarget
@@ -140,7 +142,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', altLogo, user }) {
   }, [isMenuOpen])
 
   const onMobileLinkClick = useCallback(
-    event => {
+    (event) => {
       onLinkClick(event)
       toggleMenu()
     },
