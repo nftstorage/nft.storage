@@ -29,6 +29,18 @@ export async function createTestUser({
     SALT
   )
 
+  return createTestUserWithFixedToken({ token, publicAddress, issuer, name })
+}
+
+/**
+ * @param {{publicAddress?: string, issuer?: string, name?: string, token?: string}} userInfo
+ */
+export async function createTestUserWithFixedToken({
+  token = '',
+  publicAddress = `0x73573${Date.now()}`,
+  issuer = `did:eth:${publicAddress}`,
+  name = 'A Tester',
+} = {}) {
   const { data: user, error } = await client
     .upsertUser({
       email: 'a.tester@example.org',
