@@ -7,6 +7,7 @@ export function getStaticProps() {
   return {
     props: {
       title: 'Terms of Service - NFT Storage',
+      description: 'NFT.Storage terms-of-service',
       navBgColor: 'bg-nspeach',
       needsUser: false,
     },
@@ -42,9 +43,9 @@ export default function TermsOfService() {
           then you may not access the Website or use any services.
         </p>
 
-        <h2 className="chicagoflf">
+        <h3 className="chicagoflf">
           <HashLink id="data-limits">Data Limits</HashLink>
-        </h2>
+        </h3>
         <p className="lh-copy">
           The Service is offered for the creation and storage of NFTs. Use of
           the Service to store other types of data is not permitted. The Service

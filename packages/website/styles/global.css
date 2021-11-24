@@ -48,6 +48,9 @@
   --card-ghost-y: -9px;
   --card-ghost-x-hover: -5px;
   --card-ghost-y-hover: -5px;
+
+  --h2-size: 2em;
+  --h3-size: 2em;
 }
 
 img {
@@ -69,6 +72,13 @@ img {
 }
 
 /* colors */
+
+h2 {
+  font-size: var(--h2-size);
+}
+h3 {
+  font-size: var(--h3-size);
+}
 
 .bg-nsblue {
   background-color: var(--nsblue);

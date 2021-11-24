@@ -9,7 +9,7 @@ const algorithms = {
 }
 
 // Adapted from https://chromium.googlesource.com/chromium/blink/+/master/LayoutTests/crypto/subtle/hmac/sign-verify.html
-var Base64URL = {
+export var Base64URL = {
   stringify: function (/** @type {Uint8Array} */ a) {
     // @ts-ignore
     var base64string = btoa(String.fromCharCode.apply(0, a))
@@ -39,7 +39,7 @@ function isString(s) {
 /**
  * @param {string | number | boolean} str
  */
-function utf8ToUint8Array(str) {
+export function utf8ToUint8Array(str) {
   str = btoa(unescape(encodeURIComponent(str)))
   return Base64URL.parse(str)
 }
@@ -151,7 +151,23 @@ export async function signJWT(payload, secret, alg = 'HS256') {
  * @param {string} token
  */
 export function decodeJWT(token) {
-  var output = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')
+  return decodeBase64UrlToString(token.split('.')[1])
+}
+
+/**
+ * @param {string} token
+ * @returns
+ */
+function decodeJWTHeader(token) {
+  return decodeBase64UrlToString(token.split('.')[0])
+}
+
+/**
+ * @param {string} encoded
+ * @returns {string}
+ */
+function decodeBase64UrlToString(encoded) {
+  var output = encoded.replace(/-/g, '+').replace(/_/g, '/')
   switch (output.length % 4) {
     case 0:
       break
@@ -184,4 +200,13 @@ export function parseJWT(token) {
   // TODO: Handle when decodeJWT fails.
   // TODO: Handle when JSON.parse fails.
   return JSON.parse(decodeJWT(token))
+}
+
+/**
+ * @typedef {{alg: string; typ: string}} JWTHeader
+ * @param {string} token
+ * @returns {JWTHeader}
+ */
+export function parseJWTHeader(token) {
+  return JSON.parse(decodeJWTHeader(token))
 }
