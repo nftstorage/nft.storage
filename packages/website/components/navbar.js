@@ -15,21 +15,17 @@ import countly from '../lib/countly'
  *
  * @param {Object} props
  * @param {string} [props.bgColor]
- * @param {boolean} props.altLogo
+ * @param {{ src: string, isDark: boolean}} props.logo
  * @param {any} [props.user]
  */
 
-export default function Navbar({ bgColor = 'bg-nsorange', altLogo, user }) {
+export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   const containerRef = useRef(null)
   const queryClient = useQueryClient()
   const [isSmallVariant, setSmallVariant] = useState(false)
   const [isMenuOpen, setMenuOpen] = useState(false)
   const { query } = useRouter()
   const version = /** @type {string} */ (query.version)
-
-  const logo = altLogo
-    ? '/images/logo-nft-storage-dark.svg'
-    : '/images/logo-nft-storage-sm.png'
 
   useResizeObserver(containerRef, () => {
     const shouldGoToSmallVariant = window.innerWidth < 640
@@ -169,7 +165,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', altLogo, user }) {
         <Link href={{ pathname: '/', query: version ? { version } : null }}>
           <a className="no-underline v-mid" onClick={onLinkClick}>
             <img
-              src={logo}
+              src={logo.src}
               width="160"
               height="79"
               className={clsx(isSmallVariant ? '' : 'mr4', 'v-mid')}
@@ -249,7 +245,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', altLogo, user }) {
           <Link href="/">
             <a className="no-underline v-mid">
               <img
-                src={logo}
+                src={logo.src}
                 width="160"
                 height="79"
                 className={clsx(isSmallVariant ? '' : 'mr4', 'v-mid')}
@@ -270,7 +266,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', altLogo, user }) {
                 <a
                   className={clsx(
                     'f1 v-mid chicagoflf',
-                    altLogo ? 'black' : 'white'
+                    logo.isDark ? 'black' : 'white'
                   )}
                   onClick={item.tracking ? item.tracking : onMobileLinkClick}
                 >

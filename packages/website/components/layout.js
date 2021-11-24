@@ -88,6 +88,12 @@ export default function Layout({
     enabled: needsUser,
   })
   const shouldWaitForUser = needsUser && status === 'loading'
+  const logo = {
+    src: altLogo
+      ? '/images/logo-nft-storage-dark.svg'
+      : '/images/logo-nft-storage-sm.png',
+    isDark: altLogo,
+  }
 
   return (
     <div className="nft-storage sans-serif flex flex-column min-vh-100">
@@ -114,7 +120,7 @@ export default function Layout({
       ) : (
         <>
           <MaintenanceBanner />
-          <Navbar bgColor={navBgColor} altLogo={altLogo} user={user} />
+          <Navbar bgColor={navBgColor} logo={logo} user={user} />
           {children({ user })}
           <Footer />
         </>
