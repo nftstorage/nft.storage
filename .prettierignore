@@ -18,3 +18,4 @@ CHANGELOG.md
 .gitattributes
 **/yarn.lock*
 *.toml
+packages/client/src/lib/interface.ts

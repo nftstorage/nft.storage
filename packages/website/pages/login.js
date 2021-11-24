@@ -9,6 +9,7 @@ export function getStaticProps() {
   return {
     props: {
       title: 'Login - NFT Storage',
+      description: 'Login to NFT.Storage',
       redirectTo: '/files',
       redirectIfFound: true,
     },
@@ -46,8 +47,8 @@ export default function Login() {
     <main className="bg-nsorange w-100 flex-auto">
       <div className="mw9 center pv3 mtauto">
         <form onSubmit={onSubmit} className="tc">
-          <label className="f5 db mb2">
-            <h2>Log in</h2>
+          <label className="f5 db mb2 chicagoflf">
+            <h1>Log in</h1>
           </label>
           <input
             type="email"

@@ -41,6 +41,9 @@
   --btn-ghost-y: -5px;
   --btn-ghost-x-hover: -2px;
   --btn-ghost-y-hover: -2px;
+
+  --h2-size: 2em;
+  --h3-size: 2em;
 }
 
 .chicagoflf {
@@ -50,6 +53,13 @@
 .bg-nsltblue {
   background-color: var(--nsltblue);
 }
+h2 {
+  font-size: var(--h2-size);
+}
+h3 {
+  font-size: var(--h3-size);
+}
+
 .bg-nsblue {
   background-color: var(--nsblue);
 }

@@ -20,6 +20,7 @@ export function getStaticProps() {
   return {
     props: {
       title: 'HTTP API Docs - NFT Storage',
+      description: 'NFT.Storage API docs',
     },
   }
 }
