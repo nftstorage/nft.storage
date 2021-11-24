@@ -59,21 +59,21 @@ class Error {
  * @param {T} value
  * @returns {Result.Result<never, T>}
  */
-export const ok = value => new Ok(value)
+export const ok = (value) => new Ok(value)
 
 /**
  * @template X
  * @param {X} error
  * @returns {Result.Result<X, never>}
  */
-export const error = error => new Error(error)
+export const error = (error) => new Error(error)
 
 /**
  * @template X, T
  * @param {Result.Result<X, T>} result
  * @returns {T}
  */
-export const value = result => {
+export const value = (result) => {
   if (result.ok) {
     return result.value
   } else {
@@ -86,13 +86,13 @@ export const value = result => {
  * @param {Promise<T>} promise
  * @returns {Promise<Result.Result<X, T>>}
  */
-export const fromPromise = promise => promise.then(ok).catch(error)
+export const fromPromise = (promise) => promise.then(ok).catch(error)
 
 /**
  * @template T
  * @param {() => T} fn
  */
-export const fromTry = fn => {
+export const fromTry = (fn) => {
   try {
     return ok(fn())
   } catch (err) {

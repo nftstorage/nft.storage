@@ -6,7 +6,7 @@ import { getToken } from '../lib/api'
  *
  * @param {Request} req
  */
-const requestHandler = async req => {
+const requestHandler = async (req) => {
   let token
   try {
     token = await getToken()

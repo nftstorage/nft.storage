@@ -7,7 +7,7 @@ import faqContent from '../lib/faqContent'
  * @param {string} title
  * @returns {string}
  */
-const hashify = title =>
+const hashify = (title) =>
   title
     .substring(0, title.length - 1)
     .toLowerCase()

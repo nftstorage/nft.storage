@@ -37,6 +37,6 @@ export async function nftList(event, ctx) {
 
   return new JSONResponse({
     ok: true,
-    value: nfts?.map(n => toNFTResponse(n)),
+    value: nfts?.map((n) => toNFTResponse(n)),
   })
 }

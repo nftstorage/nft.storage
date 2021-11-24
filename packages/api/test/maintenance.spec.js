@@ -43,7 +43,7 @@ describe('maintenance middleware', () => {
     }
 
     const invalidModes = ['', null, undefined, ['r', '-'], 'rwx']
-    invalidModes.forEach(m => {
+    invalidModes.forEach((m) => {
       // @ts-expect-error purposely passing invalid mode
       setMaintenanceModeGetter(() => m)
       assert.throws(block, /invalid maintenance mode/)

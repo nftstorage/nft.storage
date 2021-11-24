@@ -18,7 +18,7 @@ export { fetch, Headers }
  * @param {AsyncIterator<string|Uint8Array>|Iterator<string|Uint8Array>} source
  * @returns {ReadableStream<Uint8Array>}
  */
-const toReadableStream = source =>
+const toReadableStream = (source) =>
   new ReadableStream({
     async pull(controller) {
       try {
@@ -89,7 +89,7 @@ const toBytes = async ({ body }) => {
  * @param {Source} source
  * @returns {Promise<ArrayBuffer>}
  */
-const toArrayBuffer = async source => {
+const toArrayBuffer = async (source) => {
   const bytes = await toBytes(source)
   return bytes.buffer
 }
@@ -97,7 +97,7 @@ const toArrayBuffer = async source => {
 /**
  * @param {Source} source
  */
-const toText = async source => {
+const toText = async (source) => {
   const bytes = await toBytes(source)
   return decoder.decode(bytes)
 }
@@ -105,7 +105,7 @@ const toText = async source => {
 /**
  * @param {Source} source
  */
-const toBlob = async source => {
+const toBlob = async (source) => {
   const bytes = await toBytes(source)
   return new Blob([bytes])
 }
@@ -113,7 +113,7 @@ const toBlob = async source => {
 /**
  * @param {Source} source
  */
-const toJSON = async source => {
+const toJSON = async (source) => {
   const text = await toText(source)
   return JSON.parse(text)
 }
@@ -143,7 +143,7 @@ const toFormData = async ({ body, headers }) => {
 /**
  * @param {Request|Response} self
  */
-const bodyOf = self => {
+const bodyOf = (self) => {
   const stream = self._rawStream()
 
   const body =
@@ -247,11 +247,9 @@ export class Service {
     this.onrequest = this.onrequest.bind(this)
   }
   get address() {
-    const {
-      port,
-      address,
-      family,
-    } = /** @type {import('net').AddressInfo} */ (this.server.address())
+    const { port, address, family } = /** @type {import('net').AddressInfo} */ (
+      this.server.address()
+    )
 
     return { port, host: family === 'IPv6' ? `127.0.0.1` : address }
   }
@@ -300,7 +298,7 @@ export class Service {
  * @param {http.IncomingMessage} inn
  * @returns {BodyInit | undefined}
  */
-const toBody = inn => {
+const toBody = (inn) => {
   switch (inn.method) {
     case 'HEAD':
     case 'GET':
@@ -315,7 +313,7 @@ const toBody = inn => {
  * @param {number} [port]
  */
 export const listen = (service, port = 0) =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     service.server.once('listening', () => resolve(service))
     service.server.addListener('request', service.onrequest)
     service.server.listen(port)
@@ -335,6 +333,6 @@ export const activate = async (state, handler) => {
 /**
  * @param {Service<any>} service
  */
-export const deactivate = service => {
+export const deactivate = (service) => {
   service.server.close()
 }

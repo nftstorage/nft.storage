@@ -170,7 +170,7 @@ export const decode = ({ ipnft, url, data }, paths) =>
  * @param {any} value
  * @returns {value is URL}
  */
-const isURL = value => value instanceof URL
+const isURL = (value) => value instanceof URL
 
 /**
  * @template State
@@ -191,7 +191,7 @@ const embedURL = (context, url) => [context, toGatewayURL(url, context)]
  * @param {any} value
  * @returns {value is object}
  */
-const isObject = value => typeof value === 'object' && value != null
+const isObject = (value) => typeof value === 'object' && value != null
 
 /**
  * @param {any} value
@@ -238,7 +238,7 @@ const isEncodedURL = (value, assetPaths, path) =>
  * @param {EncodedBlobBlob<T>} input
  * @returns {FormData}
  */
-export const encode = input => {
+export const encode = (input) => {
   const [map, meta] = mapValueWith(input, isBlob, encodeBlob, new Map(), [])
   const form = new FormData()
   for (const [k, v] of map.entries()) {
@@ -263,13 +263,13 @@ const encodeBlob = (data, blob, path) => {
  * @param {any} value
  * @returns {value is Blob}
  */
-const isBlob = value => value instanceof Blob
+const isBlob = (value) => value instanceof Blob
 
 /**
  * @template {TokenInput} T
  * @param {EncodedBlobBlob<T>} input
  */
-const mapTokenInputBlobs = input => {
+const mapTokenInputBlobs = (input) => {
   return mapValueWith(input, isBlob, encodeBlob, new Map(), [])
 }
 
@@ -328,7 +328,8 @@ const mapValueWith = (input, p, f, state, path) =>
  */
 const mapObjectWith = (input, p, f, init, path) => {
   let state = init
-  const output = /** @type {import('./lib/interface.js').Encoded<T, [[I, O]]>} */ ({})
+  const output =
+    /** @type {import('./lib/interface.js').Encoded<T, [[I, O]]>} */ ({})
   for (const [key, value] of Object.entries(input)) {
     const [next, out] = mapValueWith(value, p, f, state, [...path, key])
     // @ts-ignore

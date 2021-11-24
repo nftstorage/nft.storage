@@ -27,7 +27,7 @@ export async function validate(event, { sentry }) {
       }
 
       if (user.data) {
-        const key = user.data.keys.find(k => k?.secret === token)
+        const key = user.data.keys.find((k) => k?.secret === token)
         if (key) {
           return {
             user: user.data,

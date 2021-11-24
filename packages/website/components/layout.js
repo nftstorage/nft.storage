@@ -10,10 +10,10 @@ import { useUser } from '../lib/user'
 const MaintenanceBanner = () => {
   let maintenanceMessage = ''
 
-  const {
-    data: statusPageData,
-    error: statusPageError,
-  } = useQuery('get-statuspage-summary', () => getStatusPageSummary())
+  const { data: statusPageData, error: statusPageError } = useQuery(
+    'get-statuspage-summary',
+    () => getStatusPageSummary()
+  )
   const scheduledMaintenances =
     statusPageData?.scheduled_maintenances.filter(
       (/** @type {{ status: string; }} */ maintenance) =>
