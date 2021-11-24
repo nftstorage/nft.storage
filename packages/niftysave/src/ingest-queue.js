@@ -88,16 +88,13 @@ async function readIntoInbox(config, writeable) {
        * network temporary outages.
        * Eventually after enough failures, we can actually throw
        */
-      scrape = await retry(
-        async () => await fetchNFTBatch(config, cursor),
-        [
-          maxRetries(config.ingestScraperRetryLimit),
-          exponentialBackoff(
-            config.ingestScraperRetryInterval,
-            config.ingestScraperRetryMaxInterval
-          ),
-        ]
-      )
+      scrape = await retry(async () => await fetchNFTBatch(config, cursor), [
+        maxRetries(config.ingestScraperRetryLimit),
+        exponentialBackoff(
+          config.ingestScraperRetryInterval,
+          config.ingestScraperRetryMaxInterval
+        ),
+      ])
       // you scraped successfully, got nothing.
       // you're caught up. Retry later
       if (scrape.length == 0) {
@@ -172,10 +169,9 @@ async function writeFromInbox(config, readable) {
         }
       }
 
-      await retry(
-        async () => await enqueueScrapedRecords(config, nextBatch),
-        [maxRetries(1)]
-      )
+      await retry(async () => await enqueueScrapedRecords(config, nextBatch), [
+        maxRetries(1),
+      ])
 
       //Reset the batch after writing.
       nextBatch = []

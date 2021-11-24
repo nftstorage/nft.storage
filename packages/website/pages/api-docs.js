@@ -6,7 +6,7 @@ import { getToken } from '../lib/api'
  *
  * @param {Request} req
  */
-const requestHandler = async (req) => {
+const requestHandler = async req => {
   let token
   try {
     token = await getToken()
@@ -20,6 +20,7 @@ export function getStaticProps() {
   return {
     props: {
       title: 'HTTP API Docs - NFT Storage',
+      description: 'NFT.Storage API docs',
     },
   }
 }

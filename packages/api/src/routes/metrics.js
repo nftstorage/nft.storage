@@ -17,7 +17,7 @@ export async function getUserMetrics() {
 export async function getNftMetrics() {
   const types = ['Car', 'Blob', 'Multipart', 'Remote', 'Nft']
   const totals = await Promise.all(
-    types.map(async (t) => {
+    types.map(async t => {
       const query = db.client.from('upload')
       const res = await query
         .select('*', { head: true, count: 'exact' })
@@ -36,9 +36,9 @@ export async function getPinMetrics() {
   const services = ['Pinata', 'IpfsCluster', 'IpfsCluster2']
   const statuses = ['PinQueued', 'Pinning', 'Pinned', 'PinError']
   const totals = await Promise.all(
-    services.map(async (service) => {
+    services.map(async service => {
       const totals = await Promise.all(
-        statuses.map(async (status) => {
+        statuses.map(async status => {
           const query = db.client.from('pin')
           const res = await query
             .select('*', { head: true, count: 'exact' })

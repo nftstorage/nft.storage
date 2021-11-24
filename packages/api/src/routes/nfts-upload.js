@@ -50,7 +50,7 @@ export async function nftUpload(event, ctx) {
       dag_size: size,
       mime_type: contentType,
       type: 'Multipart',
-      files: files.map((f) => ({
+      files: files.map(f => ({
         name: f.name,
         type: f.type,
       })),

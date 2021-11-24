@@ -116,9 +116,9 @@ function parseSearchParams(params) {
   const statusParam = params.get('status')
   if (statusParam) {
     // Note: undefined statuses from toDbPinStatus will fail validation below
-    out.status = /** @type {ListUploadsOptions["status"]}*/ (
-      statusParam.split(',').map(toDbPinStatus)
-    )
+    out.status = /** @type {ListUploadsOptions["status"]}*/ (statusParam
+      .split(',')
+      .map(toDbPinStatus))
   }
 
   const afterParam = params.get('after')

@@ -21,6 +21,7 @@ const hashify = title =>
 export const getStaticProps = () => ({
   props: {
     title: 'FAQ - NFT Storage',
+    description: 'NFT.Storage FAQ',
     navBgColor: 'bg-nsforest',
     needsUser: false,
   },

@@ -45,7 +45,7 @@ export default function Files({ user }) {
 
   const { status, data } = useQuery(
     queryKey,
-    (ctx) => getNfts(ctx.queryKey[1], version),
+    ctx => getNfts(ctx.queryKey[1], version),
     {
       enabled: !!user,
     }
@@ -156,48 +156,46 @@ export default function Files({ user }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {nfts.map(
-                          (/** @type {any} */ nft, /** @type {number} */ i) => (
-                            <tr className="bb b--black" key={`nft-${i}`}>
-                              <td
-                                className="pa2 br b--black"
-                                title={nft.created}
-                              >
-                                {nft.created.split('T')[0]}
-                              </td>
-                              <td className="pa2 br b--black">
-                                <GatewayLink cid={nft.cid} type={nft.type} />
-                              </td>
-                              <td className="pa2 br b--black mw7">
-                                {bytes(nft.size || 0)}
-                              </td>
-                              <td className="pa2">
-                                <form onSubmit={handleDeleteFile}>
-                                  <input
-                                    type="hidden"
-                                    name="cid"
-                                    value={nft.cid}
-                                  />
-                                  <Button
-                                    className="bg-nsorange white"
-                                    type="submit"
-                                    disabled={Boolean(deleting)}
-                                    id="delete-nft"
-                                    tracking={{
-                                      event: countly.events.FILE_DELETE_CLICK,
-                                      ui: countly.ui.FILES,
-                                      action: 'Delete File',
-                                    }}
-                                  >
-                                    {deleting === nft.cid
-                                      ? 'Deleting...'
-                                      : 'Delete'}
-                                  </Button>
-                                </form>
-                              </td>
-                            </tr>
-                          )
-                        )}
+                        {nfts.map((
+                          /** @type {any} */ nft,
+                          /** @type {number} */ i
+                        ) => (
+                          <tr className="bb b--black" key={`nft-${i}`}>
+                            <td className="pa2 br b--black" title={nft.created}>
+                              {nft.created.split('T')[0]}
+                            </td>
+                            <td className="pa2 br b--black">
+                              <GatewayLink cid={nft.cid} type={nft.type} />
+                            </td>
+                            <td className="pa2 br b--black mw7">
+                              {bytes(nft.size || 0)}
+                            </td>
+                            <td className="pa2">
+                              <form onSubmit={handleDeleteFile}>
+                                <input
+                                  type="hidden"
+                                  name="cid"
+                                  value={nft.cid}
+                                />
+                                <Button
+                                  className="bg-nsorange white"
+                                  type="submit"
+                                  disabled={Boolean(deleting)}
+                                  id="delete-nft"
+                                  tracking={{
+                                    event: countly.events.FILE_DELETE_CLICK,
+                                    ui: countly.ui.FILES,
+                                    action: 'Delete File',
+                                  }}
+                                >
+                                  {deleting === nft.cid
+                                    ? 'Deleting...'
+                                    : 'Delete'}
+                                </Button>
+                              </form>
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                     <div className="tc mv3">

@@ -85,7 +85,7 @@ paths:
         ------WebKitFormBoundary5peilISl2YOOweQy
         Content-Disposition: form-data; name="file"; filename="image.png"
         Content-Type: image/png
-        
+
         <data>
         ------WebKitFormBoundary5peilISl2YOOweQy--
         ```

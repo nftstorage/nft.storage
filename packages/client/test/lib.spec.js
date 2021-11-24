@@ -136,7 +136,7 @@ describe('client', () => {
       assert.equal(cid, expectedCid)
     })
 
-    it('upload large CAR with a CarReader', async function () {
+    it('upload large CAR with a CarReader', async function() {
       this.timeout(130e3)
       let uploadedChunks = 0
 
@@ -332,7 +332,7 @@ describe('client', () => {
       const warn = console.warn
       try {
         let warnings = ['']
-        console.warn = (msg) => {
+        console.warn = msg => {
           warnings.push(msg)
         }
 
@@ -551,7 +551,7 @@ describe('client', () => {
     })
 
     afterEach(async () => {
-      await Promise.all(preloaded.map((cid) => client.delete(cid)))
+      await Promise.all(preloaded.map(cid => client.delete(cid)))
     })
 
     it('found', async () => {
@@ -703,7 +703,7 @@ describe('client', () => {
     })
 
     afterEach(async () => {
-      await Promise.all(preloaded.map((cid) => client.delete(cid)))
+      await Promise.all(preloaded.map(cid => client.delete(cid)))
     })
 
     it('found', async () => {

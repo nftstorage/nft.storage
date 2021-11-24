@@ -12,7 +12,7 @@ async function main() {
 
   console.log('Sending file...')
   await storage.storeCar(car, {
-    onStoredChunk: (size) => console.log(`Stored a chunk of ${size} bytes`),
+    onStoredChunk: size => console.log(`Stored a chunk of ${size} bytes`),
   })
 
   console.log('✅ Done')
