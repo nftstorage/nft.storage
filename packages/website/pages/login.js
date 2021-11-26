@@ -53,7 +53,11 @@ export default function Login() {
           <label className="f5 db mb2 chicagoflf">
             <h1>Log in</h1>
           </label>
+          <label id="email-entry-label" htmlFor="email" className="sr-only">
+            Enter Your Email
+          </label>
           <input
+            aria-labelledby="email-entry-label"
             type="email"
             name="email"
             required
