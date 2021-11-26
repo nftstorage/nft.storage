@@ -1,5 +1,7 @@
 .btn {
   display: flex;
+  justify-content: center;
+  margin-top: calc(var(--btn-ghost-y) * -1);
 }
 
 /*Use CSS for button variants*/

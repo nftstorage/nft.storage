@@ -44,9 +44,12 @@ export default function Login() {
     }
   }
   return (
-    <main className="bg-nsorange w-100 flex-auto">
+    <main className="flex-auto bg-nsorange w-100">
       <div className="mw9 center pv3 mtauto">
-        <form onSubmit={onSubmit} className="tc">
+        <form
+          onSubmit={onSubmit}
+          className="flex items-center justify-center flex-column tc"
+        >
           <label className="f5 db mb2 chicagoflf">
             <h1>Log in</h1>
           </label>
@@ -61,7 +64,7 @@ export default function Login() {
           <Button
             type="submit"
             disabled={disabled}
-            wrapperClassName="w5"
+            className="w5 tc"
             tracking={{
               event: countly.events.LOGIN_CLICK,
               ui: countly.ui.LOGIN,
@@ -76,7 +79,7 @@ export default function Login() {
           <h4>Or with</h4>
 
           <Button
-            wrapperClassName="w5"
+            className="w5"
             onClick={() => {
               setIsRedirecting(true)
               loginSocial('github', version)
