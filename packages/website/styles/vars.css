@@ -1,0 +1,42 @@
+:root {
+  --nsblack: #000;
+  --nswhite: #fff;
+
+  --nsgray: #d8dad9;
+  --nsgray-50: #f7f7f7;
+  --nsgray-100: #d8dad9;
+  --nsgray-200: #bbbbbb;
+  --nsgray-300: #7d8492;
+  --nsgray-400: #888888;
+  --nsgray-600: #3b4151;
+
+  --nsltblue: #eef7f6;
+  --nsblue: #47aed7;
+  --nsforest: #0a854c;
+  --nsgreen: #d3e7dc;
+  --nslime: #66fecb;
+  --nsnavy: #336bad;
+  --nsorange: #ee4116;
+  --nsorangred: #d53810;
+  --nspeach: #ffe1c5;
+  --nspink: #f7cdcf;
+  --nsred-100: #feebeb;
+  --nsred: #e11e2e;
+  --nsyellow: #e2ba36;
+
+  --nstitle: ChicagoFLF, sans-serif;
+  --sansserif: -apple-system, BlinkMacSystemFont, 'avenir next', avenir,
+    'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial,
+    sans-serif;
+  --nsmonospace: monospace, monospace;
+  --bradius: 0px;
+  --bwidth: 1px;
+
+  --btn-ghost-x: -4px;
+  --btn-ghost-y: -4px;
+  --btn-ghost-x-hover: -1px;
+  --btn-ghost-y-hover: -1px;
+
+  --h2-size: 2em;
+  --h3-size: 2em;
+}
