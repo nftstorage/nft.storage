@@ -131,7 +131,7 @@ paths:
           $ref: '#/components/responses/unauthorized'
         '403':
           $ref: '#/components/responses/forbidden'
-        '5XX':
+        '500':
           $ref: '#/components/responses/internalServerError'
   /:
     get:
@@ -153,7 +153,7 @@ paths:
           $ref: '#/components/responses/unauthorized'
         '403':
           $ref: '#/components/responses/forbidden'
-        '5XX':
+        '500':
           $ref: '#/components/responses/internalServerError'
   /{cid}:
     get:
@@ -180,7 +180,7 @@ paths:
           $ref: '#/components/responses/unauthorized'
         '403':
           $ref: '#/components/responses/forbidden'
-        '5XX':
+        '500':
           $ref: '#/components/responses/internalServerError'
     delete:
       tags:
@@ -216,7 +216,7 @@ paths:
           $ref: '#/components/responses/unauthorized'
         '403':
           $ref: '#/components/responses/forbidden'
-        '5XX':
+        '500':
           $ref: '#/components/responses/internalServerError'
   /check/{cid}:
     get:
@@ -242,7 +242,7 @@ paths:
                 $ref: '#/components/schemas/CheckResponse'
         '404':
           $ref: '#/components/responses/notFound'
-        '5XX':
+        '500':
           $ref: '#/components/responses/internalServerError'
 
 components:
