@@ -14,17 +14,15 @@
  * @module
  */
 
-import * as Token from './token.js'
-
-import { Blob, Blockstore, File, FormData, fetch } from './platform.js'
+import { transform } from 'streaming-iterables'
 import pRetry, { AbortError } from 'p-retry'
-
-import { BlockstoreCarReader } from './bs-car-reader.js'
-import { CID } from 'multiformats/cid'
 import { TreewalkCarSplitter } from 'carbites/treewalk'
 import { pack } from 'ipfs-car/pack'
+import { CID } from 'multiformats/cid'
+import * as Token from './token.js'
+import { fetch, File, Blob, FormData, Blockstore } from './platform.js'
 import { toGatewayURL } from './gateway.js'
-import { transform } from 'streaming-iterables'
+import { BlockstoreCarReader } from './bs-car-reader.js'
 
 const MAX_STORE_RETRIES = 5
 const MAX_CONCURRENT_UPLOADS = 3
