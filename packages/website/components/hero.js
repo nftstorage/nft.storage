@@ -48,7 +48,7 @@ export default function Hero() {
           />
           <hgroup className="chicagoflf white">
             <h1 className="f4 f2-m f1-ns fw4 mv3">Free Storage for NFTs</h1>
-            <h2 className="f5 fw4 mw7 center mv3 lh-copy">
+            <h2 className="f3 fw4 mw8 center mv3 lh-copy">
               Free decentralized storage and bandwidth for NFTs on{' '}
               <img
                 src="images/logo-ipfs-sm.png"
