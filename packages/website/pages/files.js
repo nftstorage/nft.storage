@@ -148,7 +148,9 @@ export default function Files({ user }) {
                           <th className="pa2 tl bg-nsgray br b--black w-33">
                             Size
                           </th>
-                          <th className="pa2 tc bg-nsgray" />
+                          <th className="pa2 tc bg-nsgray">
+                            <span className="sr-only">File Actions</span>
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
