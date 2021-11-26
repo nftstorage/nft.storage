@@ -229,7 +229,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
         style={{ zIndex: 100 }}
         aria-hidden={isSmallVariant && isMenuOpen}
       >
-        <div className="flex items-center text-center flex-column mt4">
+        <div className="flex flex-column items-center text-center mt4">
           <Link href="/">
             <a className="no-underline v-mid">
               <img
@@ -243,7 +243,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
             </a>
           </Link>
         </div>
-        <div className="flex items-center justify-center flex-auto text-center flex-column pv4">
+        <div className="flex flex-column items-center justify-center text-center pv4 flex-auto">
           {ITEMS.map((item, index) => (
             <div
               className="pv3"
@@ -264,7 +264,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
             </div>
           ))}
         </div>
-        <div className="flex items-center flex-column mb4">
+        <div className="flex flex-column items-center mb4">
           <Button className="flex justify-center" onClick={toggleMenu}>
             <Cross width="24" height="24" fill="currentColor" />
           </Button>

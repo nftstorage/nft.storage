@@ -100,7 +100,5 @@ export default function Button({
     )
   }
 
-  console.log('children', children)
-
   return href ? <Link href={href}>{btn}</Link> : btn
 }
