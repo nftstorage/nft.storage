@@ -34,7 +34,6 @@ import countly from '../lib/countly'
  */
 export default function Button({
   id,
-  wrapperClassName,
   className,
   onClick,
   href,
@@ -64,36 +63,22 @@ export default function Button({
     [tracking, onClick, href]
   )
 
-  wrapperClassName = clsx(
-    !unstyled && 'dib bg-nsgray ba b--black',
-    !unstyled && { grow: !disabled, 'o-50': disabled },
-    wrapperClassName
-  )
-  const wrapperStyle = unstyled ? {} : { minWidth: small ? '0' : '8rem' }
-  const btnStyle = unstyled ? {} : { top: 3, left: 3 }
+  let btnClasses = clsx('btn button-reset select-none', className)
 
-  let variantClasses = ''
-  switch (variant) {
-    case 'dark':
-      variantClasses = 'bg-black white'
-      break
-
-    case 'light':
-      variantClasses = 'bg-white black'
-      break
+  if (!unstyled) {
+    btnClasses = clsx(
+      btnClasses,
+      'pv2 ph3 chicagoflf hologram',
+      small && 'small',
+      disabled ? 'o-60' : 'interactive',
+      variant
+    )
   }
 
   const btn = (
     <button
       type={type}
-      className={clsx(
-        'button-reset select-none',
-        !unstyled && 'relative w-100 ba b--black pv2 ph3 chicagoflf f5',
-        { pointer: !disabled && !unstyled },
-        !unstyled && variantClasses,
-        className
-      )}
-      style={btnStyle}
+      className={btnClasses}
       onClick={onClickHandler}
       disabled={disabled}
       id={id}
@@ -102,21 +87,5 @@ export default function Button({
       {children}
     </button>
   )
-  return href ? (
-    <Link href={href}>
-      <a
-        className={clsx('button-wrapper', wrapperClassName)}
-        style={wrapperStyle}
-      >
-        {btn}
-      </a>
-    </Link>
-  ) : (
-    <div
-      className={clsx('button-wrapper', wrapperClassName)}
-      style={wrapperStyle}
-    >
-      {btn}
-    </div>
-  )
+  return href ? <Link href={href}>{btn}</Link> : btn
 }

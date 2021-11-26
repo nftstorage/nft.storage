@@ -6,4 +6,9 @@
 @import './animations.css';
 @import './logos.css';
 @import './about.css';
+@import './button.css';
 @import './nft-storage.swagger-ui.css';
+
+.grid {
+  display: grid;
+}

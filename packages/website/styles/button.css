@@ -1,0 +1,19 @@
+.btn {
+  display: flex;
+}
+
+/*Use CSS for button variants*/
+
+.btn.dark {
+  color: var(--nswhite);
+  background-color: var(--nsblack);
+}
+
+.btn.light {
+  color: var(--nsblack);
+  background-color: var(--nswhite);
+}
+
+.btn.small {
+  min-width: 8rem;
+}
