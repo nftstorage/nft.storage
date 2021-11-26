@@ -187,6 +187,4 @@ class Router {
   }
 }
 
-const routerExport = { Router }
-
-export default routerExport
+export { Router }
