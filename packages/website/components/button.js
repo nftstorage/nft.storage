@@ -83,6 +83,7 @@ export default function Button({
     disabled: !!disabled,
     role: href ? 'link' : 'button',
   }
+
   let btn = null
 
   if (typeof children === 'string') {
