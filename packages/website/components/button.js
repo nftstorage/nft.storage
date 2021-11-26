@@ -13,8 +13,8 @@ import countly from '../lib/countly'
  *
  * @typedef {Object} ButtonProps
  * @prop {string} [id]
- * @prop {string} [wrapperClassName]
  * @prop {string} [className]
+ * @prop {string} [label]
  * @prop { React.MouseEventHandler<HTMLButtonElement> } [onClick]
  * @prop {string | any} [href]
  * @prop {React.ButtonHTMLAttributes<HTMLButtonElement>["type"]} [type]
@@ -75,17 +75,31 @@ export default function Button({
     )
   }
 
-  const btn = (
-    <button
-      type={type}
-      className={btnClasses}
-      onClick={onClickHandler}
-      disabled={disabled}
-      id={id}
-      {...props}
-    >
-      {children}
-    </button>
-  )
+  const btnProps = {
+    type,
+    id,
+    className: btnClasses,
+    onClick: onClickHandler,
+    disabled: !!disabled,
+    role: href ? 'link' : 'button',
+  }
+  let btn = null
+
+  if (typeof children === 'string') {
+    btn = (
+      <button {...btnProps} {...props}>
+        {children}
+      </button>
+    )
+  } else {
+    btn = (
+      <div {...btnProps} {...props}>
+        {children}
+      </div>
+    )
+  }
+
+  console.log('children', children)
+
   return href ? <Link href={href}>{btn}</Link> : btn
 }

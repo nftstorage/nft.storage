@@ -15,5 +15,5 @@
 }
 
 .btn.small {
-  min-width: 8rem;
+  max-width: 8rem;
 }

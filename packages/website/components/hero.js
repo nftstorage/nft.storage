@@ -72,8 +72,6 @@ export default function Hero() {
           </hgroup>
           <div className="flex justify-center">
             <Button
-              small
-              disabled={true}
               className="mh3 mb3"
               href="#getting-started"
               tracking={{ ui: countly.ui.HOME_HERO, action: 'Get Started' }}
