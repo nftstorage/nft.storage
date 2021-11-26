@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   margin-top: calc(var(--btn-ghost-y) * -1);
+  min-width: 8rem;
 }
 
 /*Use CSS for button variants*/
@@ -22,5 +23,5 @@
 }
 
 .btn.small {
-  max-width: 8rem;
+  min-width: auto;
 }
