@@ -1,5 +1,5 @@
-import { parse } from 'regexparam'
 import { database } from '../constants.js'
+import { parse } from 'regexparam'
 
 /**
  * @typedef {{ params: Record<string, string> }} BasicRouteContext
@@ -187,4 +187,6 @@ class Router {
   }
 }
 
-export { Router }
+const routerExport = { Router }
+
+export default routerExport

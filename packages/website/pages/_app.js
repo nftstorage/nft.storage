@@ -1,6 +1,5 @@
 import 'tachyons/css/tachyons.css'
 import '../styles/global.css'
-import '../styles/nft-storage.swagger-ui.css'
 
 import { QueryClient, QueryClientProvider } from 'react-query'
 

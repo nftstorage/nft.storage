@@ -1,7 +1,7 @@
-import Link from 'next/link'
 import InlineCode from '../components/inline-code'
+import Link from 'next/link'
 
-export default {
+const faqContent = {
   longTermVision: (
     <p>
       NFT.Storage helps NFT developers today who are looking for easy APIs and
@@ -261,3 +261,5 @@ export default {
     </p>
   ),
 }
+
+export default faqContent
