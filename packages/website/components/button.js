@@ -22,7 +22,7 @@ import countly from '../lib/countly'
  * @prop {boolean} [disabled]
  * @prop {boolean} [small]
  * @prop {string} [id]
- * @prop {'dark' | 'light' } [variant]
+ * @prop {'dark' | 'light' | 'caution' } [variant] Extend the visuals in button.css
  * @prop {TrackingProp} [tracking] Tracking data to send to countly on button click
  * @prop {boolean} [unstyled]
  */

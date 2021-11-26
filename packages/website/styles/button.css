@@ -16,6 +16,11 @@
   background-color: var(--nswhite);
 }
 
+.btn.caution {
+  color: var(--nswhite);
+  background-color: var(--nsorange);
+}
+
 .btn.small {
   max-width: 8rem;
 }

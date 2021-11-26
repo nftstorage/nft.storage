@@ -175,9 +175,9 @@ export default function Files({ user }) {
                                     value={nft.cid}
                                   />
                                   <Button
-                                    className="bg-nsorange white"
                                     type="submit"
                                     disabled={Boolean(deleting)}
+                                    variant={'caution'}
                                     id="delete-nft"
                                     tracking={{
                                       event: countly.events.FILE_DELETE_CLICK,
@@ -196,7 +196,7 @@ export default function Files({ user }) {
                         )}
                       </tbody>
                     </table>
-                    <div className="tc mv3">
+                    <div className="flex justify-center tc mv3">
                       <Button
                         className="black mh2 mt2"
                         disabled={befores.length === 1}
