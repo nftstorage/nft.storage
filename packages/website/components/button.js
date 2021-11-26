@@ -4,11 +4,6 @@ import Link from 'next/link'
 import clsx from 'clsx'
 import countly from '../lib/countly'
 
-const buttonVariants = {
-  dark: 'bg-black white',
-  light: 'bg-white black',
-}
-
 /**
  * @typedef {Object} TrackingProp
  * @prop {string} ui UI section id. One of countly.ui.
@@ -29,6 +24,7 @@ const buttonVariants = {
  * @prop {string} [id]
  * @prop {'dark' | 'light' } [variant]
  * @prop {TrackingProp} [tracking] Tracking data to send to countly on button click
+ * @prop {boolean} [unstyled]
  */
 
 /**
@@ -48,6 +44,7 @@ export default function Button({
   small = false,
   variant = 'light',
   tracking,
+  unstyled,
   ...props
 }) {
   const onClickHandler = useCallback(
@@ -67,35 +64,33 @@ export default function Button({
     [tracking, onClick, href]
   )
 
-  const mergedWrapperClassName = clsx(
-    'dib',
-    'bg-nsgray',
-    'ba',
-    'b--black',
-    { grow: !disabled, 'o-50': disabled },
+  wrapperClassName = clsx(
+    !unstyled && 'dib bg-nsgray ba b--black',
+    !unstyled && { grow: !disabled, 'o-50': disabled },
     wrapperClassName
   )
-  const wrapperStyle = { minWidth: small ? '0' : '8rem' }
-  const btnStyle = { top: 3, left: 3 }
+  const wrapperStyle = unstyled ? {} : { minWidth: small ? '0' : '8rem' }
+  const btnStyle = unstyled ? {} : { top: 3, left: 3 }
 
-  // variant can never be null, it has an explicit default of light
-  const variantClasses = buttonVariants[variant]
+  let variantClasses = ''
+  switch (variant) {
+    case 'dark':
+      variantClasses = 'bg-black white'
+      break
+
+    case 'light':
+      variantClasses = 'bg-white black'
+      break
+  }
 
   const btn = (
     <button
       type={type}
       className={clsx(
-        'button-reset',
-        'relative',
-        'w-100',
-        'ba',
-        'b--black',
-        'pv2',
-        'ph3',
-        'chicagoflf',
-        'f5',
-        { pointer: !disabled },
-        variantClasses,
+        'button-reset select-none',
+        !unstyled && 'relative w-100 ba b--black pv2 ph3 chicagoflf f5',
+        { pointer: !disabled && !unstyled },
+        !unstyled && variantClasses,
         className
       )}
       style={btnStyle}
@@ -109,12 +104,18 @@ export default function Button({
   )
   return href ? (
     <Link href={href}>
-      <a className={mergedWrapperClassName} style={wrapperStyle}>
+      <a
+        className={clsx('button-wrapper', wrapperClassName)}
+        style={wrapperStyle}
+      >
         {btn}
       </a>
     </Link>
   ) : (
-    <div className={mergedWrapperClassName} style={wrapperStyle}>
+    <div
+      className={clsx('button-wrapper', wrapperClassName)}
+      style={wrapperStyle}
+    >
       {btn}
     </div>
   )
