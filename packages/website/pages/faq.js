@@ -7,7 +7,7 @@ import faqContent from '../lib/faqContent'
  * @param {string} title
  * @returns {string}
  */
-const hashify = title =>
+const hashify = (title) =>
   title
     .substring(0, title.length - 1)
     .toLowerCase()
@@ -21,6 +21,7 @@ const hashify = title =>
 export const getStaticProps = () => ({
   props: {
     title: 'FAQ - NFT Storage',
+    description: 'NFT.Storage FAQ',
     navBgColor: 'bg-nsforest',
     needsUser: false,
   },

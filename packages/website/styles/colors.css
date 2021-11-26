@@ -1,3 +1,7 @@
+.bg-nsltblue {
+  background-color: var(--nsltblue);
+}
+
 .bg-nsblue {
   background-color: var(--nsblue);
 }

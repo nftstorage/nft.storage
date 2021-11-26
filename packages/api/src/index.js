@@ -20,6 +20,8 @@ import { pinsDelete } from './routes/pins-delete.js'
 import { pinsGet } from './routes/pins-get.js'
 import { pinsList } from './routes/pins-list.js'
 import { pinsReplace } from './routes/pins-replace.js'
+import { metaplexUpload } from './routes/metaplex-upload.js'
+
 import {
   withMode,
   READ_ONLY as RO,
@@ -40,7 +42,7 @@ setMaintenanceModeGetter(getMaintenanceMode)
 const r = new Router(getContext, {
   onError(req, err, { sentry }) {
     log(err)
-    return HTTPError.respond(err, { sentry })
+    return HTTPError.respond(err, { sentry, req })
   },
 })
 
@@ -93,6 +95,9 @@ r.add('get', '/:cid', withMode(nftGet, RO), [postCors])
 r.add('post', '/upload', withMode(nftUpload, RW), [postCors])
 r.add('post', '/store', withMode(nftStore, RW), [postCors])
 r.add('delete', '/:cid', withMode(nftDelete, RW), [postCors])
+
+// Temporary Metaplex upload route, mapped to metaplex user account.
+r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
 
 // Tokens
 r.add('get', '/internal/tokens', withMode(tokensList, RO), [postCors])

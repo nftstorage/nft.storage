@@ -6,6 +6,7 @@ export interface LayoutProps {
   title?: string
   description?: string
   navBgColor?: string
+  logos?: string[]
 }
 
 export interface LayoutChildrenProps {

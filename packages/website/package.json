@@ -1,11 +1,11 @@
 {
   "name": "website",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "nft.storage website",
   "private": true,
   "scripts": {
     "dev": "next dev -p 4000",
-    "build": "next build && next export",
+    "build": "next build && next-sitemap && next export",
     "start": "next start",
     "test": "eslint './**/*.js' && tsc --build",
     "analyze": "ANALYZE=true next build"
@@ -15,6 +15,7 @@
     "bytes": "^3.1.0",
     "clsx": "^1.1.1",
     "countly-sdk-web": "^20.11.3",
+    "fs": "^0.0.1-security",
     "ipfs-car": "0.4.3",
     "isomorphic-form-data": "^2.0.0",
     "magic-sdk": "^6.2.1",

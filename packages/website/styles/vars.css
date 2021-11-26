@@ -10,12 +10,7 @@
   --nsgray-400: #888888;
   --nsgray-600: #3b4151;
 
-  --nstitle: ChicagoFLF, sans-serif;
-  --sansserif: -apple-system, BlinkMacSystemFont, 'avenir next', avenir,
-    'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial,
-    sans-serif;
-  --nsmonospace: monospace, monospace;
-
+  --nsltblue: #eef7f6;
   --nsblue: #47aed7;
   --nsforest: #0a854c;
   --nsgreen: #d3e7dc;
@@ -28,6 +23,11 @@
   --nsred: #e11e2e;
   --nsyellow: #e2ba36;
 
+  --nstitle: ChicagoFLF, sans-serif;
+  --sansserif: -apple-system, BlinkMacSystemFont, 'avenir next', avenir,
+    'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial,
+    sans-serif;
+  --nsmonospace: monospace, monospace;
   --bradius: 0px;
   --bwidth: 1px;
 
@@ -35,4 +35,7 @@
   --btn-ghost-y: -5px;
   --btn-ghost-x-hover: -2px;
   --btn-ghost-y-hover: -2px;
+
+  --h2-size: 2em;
+  --h3-size: 2em;
 }

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.14.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.13.0...website-v1.14.0) (2021-11-24)
+
+
+### Features
+
+* add marketplace logos ([#840](https://www.github.com/nftstorage/nft.storage/issues/840)) ([f02ee96](https://www.github.com/nftstorage/nft.storage/commit/f02ee9648bbb284399b00c0d11e3445166b95bbf))
+* seo optimization ([#765](https://www.github.com/nftstorage/nft.storage/issues/765)) ([d4a650c](https://www.github.com/nftstorage/nft.storage/commit/d4a650c7e8794504f697684018f3849c98357923))
+
 ## [1.13.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.12.0...website-v1.13.0) (2021-11-19)
 
 
