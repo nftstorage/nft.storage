@@ -121,12 +121,7 @@ export default function Layout({
       ) : (
         <>
           <MaintenanceBanner />
-          <Navbar
-            bgColor={navBgColor}
-            logo={logo}
-            user={user}
-            withSubscribe={withSubscribe}
-          />
+          <Navbar bgColor={navBgColor} logo={logo} user={user} />
           {children({ user })}
           <Footer />
         </>

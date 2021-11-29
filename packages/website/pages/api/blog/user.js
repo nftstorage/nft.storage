@@ -12,11 +12,9 @@ export default async (req, res) => {
     apiKey: process.env.MAILCHIMP_API_KEY,
     server: 'us5',
   })
+  const email = typeof req.query.email === 'string' ? req.query.email : ''
   try {
-    const response = await mailchimp.lists.getListMember(
-      LIST_ID,
-      req.query.email
-    )
+    const response = await mailchimp.lists.getListMember(LIST_ID, email)
     res.status(200).json({ response })
   } catch (/** @type {any} */ error) {
     res.status(400).json(error)

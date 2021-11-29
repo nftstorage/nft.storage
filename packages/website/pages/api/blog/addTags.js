@@ -16,6 +16,7 @@ export default async (req, res) => {
 
   try {
     console.log('ADDING TAGS')
+    // @ts-ignore
     const response = await mailchimp.lists.updateListMemberTags(
       LIST_ID,
       email,
