@@ -21,7 +21,7 @@ export function debugJson(obj) {
 
 const sentryOptions = {
   dsn: secrets.sentry,
-  allowedHeaders: ['user-agent'],
+  allowedHeaders: ['user-agent', 'x-client'],
   allowedSearchParams: /(.*)/,
   debug: false,
   environment: ENV,

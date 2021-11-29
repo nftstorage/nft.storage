@@ -88,7 +88,7 @@ class NFTStorage {
    */
   static auth(token) {
     if (!token) throw new Error('missing token')
-    return { Authorization: `Bearer ${token}` }
+    return { Authorization: `Bearer ${token}`, 'X-Client': 'nft.storage/js' }
   }
 
   /**
