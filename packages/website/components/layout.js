@@ -80,7 +80,6 @@ export default function Layout({
   description = 'NFT Storage is a brand new service, built specifically for storing off-chain NFT data on IPFS and Filecoin.',
   navBgColor = 'bg-nsorange',
   altLogo = false,
-  withSubscribe = false,
   image = 'https://nft.storage/images/social.png',
 }) {
   const { user, status } = useUser({
