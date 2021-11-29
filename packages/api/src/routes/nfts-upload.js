@@ -22,7 +22,7 @@ const decoders = [pb, raw, cbor]
  */
 
 /** @type {import('../bindings').Handler} */
-export const nftUpload = async (event, ctx) => {
+export async function nftUpload(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
   const { user, key } = await validate(event, ctx)
@@ -39,7 +39,7 @@ export const nftUpload = async (event, ctx) => {
     const { car } = await packToBlob({
       // @ts-ignore nodejs readable stream type inconsistencies
       input: files.map((f) => ({ path: f.name, content: f.stream() })),
-      wrapWithDirectory: true
+      wrapWithDirectory: true,
     })
 
     upload = await uploadCar({
@@ -50,7 +50,7 @@ export const nftUpload = async (event, ctx) => {
       uploadType: 'Multipart',
       mimeType: 'multipart/form-data',
       files: files.map((f) => ({ name: f.name, type: f.type })),
-      isComplete: true
+      isComplete: true,
     })
   } else {
     const blob = await event.request.blob()
@@ -70,7 +70,7 @@ export const nftUpload = async (event, ctx) => {
     } else {
       const packed = await packToBlob({
         input: blob.stream(),
-        wrapWithDirectory: false
+        wrapWithDirectory: false,
       })
       car = packed.car
     }
@@ -101,14 +101,25 @@ export const nftUpload = async (event, ctx) => {
  * @param {boolean} [params.isComplete]
  * @param {Array<{ name: string; type?: string }>} params.files
  */
-async function uploadCar({ ctx, user, key, car, uploadType = 'Car', mimeType, isComplete = false, files }) {
+async function uploadCar({
+  ctx,
+  user,
+  key,
+  car,
+  uploadType = 'Car',
+  mimeType,
+  isComplete = false,
+  files,
+}) {
   const stat = await carStat(car)
 
   const [added, backupUrl] = await Promise.all([
-    cluster.addCar(car, { local: car.size > constants.cluster.localAddThreshold }),
+    cluster.addCar(car, {
+      local: car.size > constants.cluster.localAddThreshold,
+    }),
     ctx.s3
       ? ctx.s3.backupCar(user.id, stat.rootCid, car)
-      : Promise.resolve(null)
+      : Promise.resolve(null),
   ])
 
   const upload = await ctx.db.createUpload({
@@ -145,7 +156,7 @@ async function uploadCar({ ctx, user, key, car, uploadType = 'Car', mimeType, is
  * @param {Blob} carBlob
  * @returns {Promise<{ size?: number, rootCid: CID }>}
  */
-const carStat = async (carBlob) => {
+async function carStat(carBlob) {
   const carBytes = new Uint8Array(await carBlob.arrayBuffer())
   const blocksIterator = await CarBlockIterator.fromBytes(carBytes)
   const roots = await blocksIterator.getRoots()
@@ -174,13 +185,13 @@ const carStat = async (carBlob) => {
   if (!rawRootBlock) {
     throw new Error('missing root block')
   }
-  const decoder = decoders.find(d => d.code === rootCid.code)
+  const decoder = decoders.find((d) => d.code === rootCid.code)
   let size
   if (decoder) {
     const rootBlock = new Block({
       cid: rootCid,
       bytes: rawRootBlock.bytes,
-      value: decoder.decode(rawRootBlock.bytes)
+      value: decoder.decode(rawRootBlock.bytes),
     })
     const hasLinks = !rootBlock.links()[Symbol.iterator]().next().done
     // if the root block has links, then we should have at least 2 blocks in the CAR
@@ -201,9 +212,12 @@ const carStat = async (carBlob) => {
  * @param {import('@ipld/dag-pb/src/interface').PBNode} pbNode
  * @returns {number} the size of the DAG in bytes
  */
-function cumulativeSize (pbNodeBytes, pbNode) {
+function cumulativeSize(pbNodeBytes, pbNode) {
   // NOTE: Tsize is optional, but all ipfs implementations we know of set it.
   // It's metadata, that could be missing or deliberately set to an incorrect value.
   // This logic is the same as used by go/js-ipfs to display the cumulative size of a dag-pb dag.
-  return pbNodeBytes.byteLength + pbNode.Links.reduce((acc, curr) => acc + (curr.Tsize || 0), 0)
+  return (
+    pbNodeBytes.byteLength +
+    pbNode.Links.reduce((acc, curr) => acc + (curr.Tsize || 0), 0)
+  )
 }
