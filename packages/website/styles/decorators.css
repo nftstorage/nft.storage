@@ -1,0 +1,71 @@
+/* decorators */
+.hologram {
+  text-decoration: none;
+  border: var(--bwidth) solid var(--nsblack);
+  box-shadow: var(--btn-ghost-x) var(--btn-ghost-y) 0px 0px var(--nsgray),
+    var(--btn-ghost-x) var(--btn-ghost-y) 0px 1px var(--nsblack);
+}
+
+.hologram.interactive {
+  transition: all 150ms ease;
+  cursor: pointer;
+}
+
+.hologram.interactive:hover {
+  box-shadow: var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 0px
+      var(--nsltblue),
+    var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 1px var(--nsblack);
+}
+
+.hologram.ltblue {
+  border: var(--bwidth) solid var(--nsblack);
+  box-shadow: var(--btn-ghost-x) var(--btn-ghost-y) 0px 0px var(--nsltblue),
+    var(--btn-ghost-x) var(--btn-ghost-y) 0px 1px var(--nsblack);
+}
+
+.hologram.right {
+  box-shadow: calc(var(--btn-ghost-x) * -1) var(--btn-ghost-y) 0px 0px
+      var(--nsgray),
+    calc(var(--btn-ghost-x) * -1) var(--btn-ghost-y) 0px 1px var(--nsblack);
+}
+
+.hologram.right.interactive:hover {
+  box-shadow: calc(var(--btn-ghost-x-hover) * -1) var(--btn-ghost-y-hover) 0px
+      0px var(--nsorange),
+    calc(var(--btn-ghost-x-hover) * -1) var(--btn-ghost-y-hover) 0px 1px
+      var(--nsblack);
+}
+
+.hologram.card {
+  border: var(--bwidth) solid var(--nsblack);
+  box-shadow: var(--card-ghost-x) var(--card-ghost-y) 0px 0px var(--nsltblue),
+    var(--card-ghost-x) var(--card-ghost-y) 0px 1px var(--nsblack);
+}
+
+.hologram.card.right {
+  box-shadow: calc(var(--card-ghost-x) * -1) var(--card-ghost-y) 0px 0px
+      var(--nsltblue),
+    calc(var(--card-ghost-x) * -1) var(--card-ghost-y) 0px 1px var(--nsblack);
+}
+
+.hologram.card.interactive {
+  transition: all 300ms ease;
+  cursor: pointer;
+}
+
+.hologram.card.interactive:hover {
+  box-shadow: var(--card-ghost-x-hover) var(--card-ghost-y-hover) 0px 0px
+      var(--nsorange),
+    var(--card-ghost-x-hover) var(--card-ghost-y-hover) 0px 1px var(--nsblack);
+}
+
+.hologram.card.right.interactive:hover {
+  box-shadow: calc(var(--card-ghost-x-hover) * -1) var(--card-ghost-y-hover) 0px
+      0px var(--nsorange),
+    calc(var(--card-ghost-x-hover) * -1) var(--card-ghost-y-hover) 0px 1px
+      var(--nsblack),
+    calc(var(--card-ghost-x-hover) * -2) calc(var(--card-ghost-y-hover) * 2) 0px
+      0px var(--nsred),
+    calc(var(--card-ghost-x-hover) * -2) calc(var(--card-ghost-y-hover) * 2) 0px
+      1px var(--nsblack);
+}

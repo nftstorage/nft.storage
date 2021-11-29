@@ -1,6 +1,6 @@
 {
   "name": "website",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "nft.storage website",
   "private": true,
   "scripts": {
@@ -19,10 +19,14 @@
     "clsx": "^1.1.1",
     "countly-sdk-web": "^20.11.3",
     "gray-matter": "^4.0.3",
+    "fs": "^0.0.1-security",
     "ipfs-car": "0.4.3",
     "isomorphic-form-data": "^2.0.0",
     "magic-sdk": "^6.2.1",
     "nft.storage": "^3.3.0",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-import": "^14.0.2",
+    "postcss-preset-env": "^7.0.1",
     "querystring-browser": "^1.0.4",
     "react": "17.0.2",
     "react-dom": "17.0.2",

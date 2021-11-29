@@ -1,0 +1,27 @@
+.btn {
+  display: flex;
+  justify-content: center;
+  margin-top: calc(var(--btn-ghost-y) * -1);
+  min-width: 8rem;
+}
+
+/*Use CSS for button variants*/
+
+.btn.dark {
+  color: var(--nswhite);
+  background-color: var(--nsblack);
+}
+
+.btn.light {
+  color: var(--nsblack);
+  background-color: var(--nswhite);
+}
+
+.btn.caution {
+  color: var(--nswhite);
+  background-color: var(--nsorangred);
+}
+
+.btn.small {
+  min-width: auto;
+}

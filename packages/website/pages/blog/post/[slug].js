@@ -79,7 +79,7 @@ const Post = ({ post }) => {
         <div className="mt14 mw7 ph8">
           <div className="post-meta mb4">
             <div className="flex flex-column mb5 justify-between items-center">
-              <div className="flex justify-between items-center w-100">
+              <div className="flex justify-between items-end w-100">
                 <div className="social-links flex">
                   <SocialLink
                     url={twitterShareLink}
@@ -99,11 +99,10 @@ const Post = ({ post }) => {
                 </div>
                 <Button
                   href={{
-                    pathname: '/blog/subscribe'
+                    pathname: '/blog/subscribe',
                   }}
                   unstyled
-                  wrapperClassName="mw4 relative w-fit"
-                  className="mw4 ph3 interactive hologram bg-white chicagoflf post-subscribe-button"
+                  className="mw4 ph3 interactive hologram bg-white chicagoflf post-subscribe-button items-center"
                   id="post-subscribe"
                   tracking={{
                     ui: countly.ui.BLOG_POST,
@@ -115,7 +114,13 @@ const Post = ({ post }) => {
               </div>
             </div>
             <h1 className="chicagoflf f2 mb2">{post.meta.title}</h1>
-            {post.meta?.tags ? <div className="mb3"><Tags tags={post.meta.tags} /></div> : <div></div>}
+            {post.meta?.tags ? (
+              <div className="mb3">
+                <Tags tags={post.meta.tags} />
+              </div>
+            ) : (
+              <div></div>
+            )}
             <p className="mb5">{post.meta.description}</p>
             <div className="flex mb8">
               <span className="darker-gray f6 mr2">{post.meta.author}</span>

@@ -23,13 +23,14 @@ export async function getStaticProps() {
   /**
    * @param {string} fn
    */
-  const getBirthtime = fn => fs.statSync(`all-blogs/${fn}`).birthtime.getTime()
+  const getBirthtime = (fn) =>
+    fs.statSync(`all-blogs/${fn}`).birthtime.getTime()
 
   files.sort((a, b) => getBirthtime(b) - getBirthtime(a))
 
   const posts = files
     ? files
-        .filter(filename => filename.toLowerCase() !== '.ds_store')
+        .filter((filename) => filename.toLowerCase() !== '.ds_store')
         .map((fn, index) => {
           const content = fs.readFileSync(`all-blogs/${fn}`).toString()
           const info = matter(content)
@@ -75,7 +76,7 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
    * items hook
    * @param {import('../../components/types').PostMeta[]} items
    */
-  const useItems = items => {
+  const useItems = (items) => {
     const [currentItems, setCurrentItems] = useState(items)
 
     useEffect(() => {
@@ -103,7 +104,7 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
   /**
    * @param {number} newPage
    */
-  const handlePageClick = newPage => {
+  const handlePageClick = (newPage) => {
     router.push({
       pathname: '/blog',
       query:
@@ -126,7 +127,7 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
         onClick={!page || isActive ? undefined : () => handlePageClick(page)}
         disabled={disabled}
         className={clsx(
-          'select-none btn-secondary ttu',
+          'select-none btn-secondary ttu items-center',
           isActive && 'active',
           disabled && 'disabled'
         )}
@@ -137,7 +138,7 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
   }
 
   const PaginatedNav = () => {
-    const rangeButtons = paginationRange?.map(item => (
+    const rangeButtons = paginationRange?.map((item) => (
       <PagNavButton
         key={`nav-button-${item}`}
         page={typeof item === 'string' ? undefined : item}
@@ -206,7 +207,7 @@ function TagsContainer({ tags, filters, handleTagClick }) {
   return (
     <div className="button-tags-container pv3 mw9">
       <Tags
-        tags={tags.map(tag => {
+        tags={tags.map((tag) => {
           const normTag = tag.toLowerCase()
           return {
             label: normTag,
@@ -239,8 +240,8 @@ const Blog = ({ posts }) => {
     if (!posts) return
     const filtered =
       filters[0] !== 'all'
-        ? posts.filter(post => {
-            return post.tags?.some(t => filters.includes(t.toLowerCase()))
+        ? posts.filter((post) => {
+            return post.tags?.some((t) => filters.includes(t.toLowerCase()))
           })
         : rest
     setCurrentPosts(filtered)
@@ -250,13 +251,13 @@ const Blog = ({ posts }) => {
    *
    * @param {string} tag
    */
-  const handleTagClick = tag => {
-    setFilters(prev => {
+  const handleTagClick = (tag) => {
+    setFilters((prev) => {
       if (tag === 'all') return ['all']
       let newTags = prev.includes(tag)
-        ? prev.filter(t => t.toLowerCase() !== tag)
+        ? prev.filter((t) => t.toLowerCase() !== tag)
         : [...prev, tag.toLowerCase()]
-      newTags = newTags.filter(t => t.toLowerCase() !== 'all')
+      newTags = newTags.filter((t) => t.toLowerCase() !== 'all')
       return newTags.length > 0 ? newTags : ['all']
     })
     if (pageNumber !== 0) {

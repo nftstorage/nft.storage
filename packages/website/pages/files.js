@@ -99,11 +99,7 @@ export default function Files({ user }) {
       <Script src="//embed.typeform.com/next/embed.js" />
       <main className="bg-nsyellow">
         <div className="flex justify-center">
-          <Button
-            data-tf-popup="OTxv3w2O"
-            wrapperClassName="mh3 mb3"
-            variant="dark"
-          >
+          <Button data-tf-popup="OTxv3w2O" className="mh3 mb3" variant="dark">
             {'Tell us how we are doing'}
           </Button>
         </div>
@@ -113,8 +109,8 @@ export default function Files({ user }) {
           </When>
           <When condition={status !== 'loading'}>
             <>
-              <div className="flex mb3 items-center">
-                <h1 className="chicagoflf mv4 flex-auto">Files</h1>
+              <div className="flex items-center mb3">
+                <h1 className="flex-auto chicagoflf mv4">Files</h1>
                 <Button
                   href={{
                     pathname: '/new-file',
@@ -152,7 +148,9 @@ export default function Files({ user }) {
                           <th className="pa2 tl bg-nsgray br b--black w-33">
                             Size
                           </th>
-                          <th className="pa2 tc bg-nsgray" />
+                          <th className="pa2 tc bg-nsgray">
+                            <span className="sr-only">File Actions</span>
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -179,9 +177,9 @@ export default function Files({ user }) {
                                     value={nft.cid}
                                   />
                                   <Button
-                                    className="bg-nsorange white"
                                     type="submit"
                                     disabled={Boolean(deleting)}
+                                    variant={'caution'}
                                     id="delete-nft"
                                     tracking={{
                                       event: countly.events.FILE_DELETE_CLICK,
@@ -200,10 +198,9 @@ export default function Files({ user }) {
                         )}
                       </tbody>
                     </table>
-                    <div className="tc mv3">
+                    <div className="flex justify-center tc mv3">
                       <Button
-                        className="black"
-                        wrapperClassName="mh2 mt2"
+                        className="black mh2 mt2"
                         disabled={befores.length === 1}
                         onClick={handleFirstClick}
                         id="files-first"
@@ -216,8 +213,7 @@ export default function Files({ user }) {
                         ⇤ First
                       </Button>
                       <Button
-                        className="black"
-                        wrapperClassName="mh2 mt2"
+                        className="black mh2 mt2"
                         disabled={befores.length === 1}
                         onClick={handlePrevClick}
                         id="files-previous"
@@ -230,8 +226,7 @@ export default function Files({ user }) {
                         ← Previous
                       </Button>
                       <Button
-                        className="black"
-                        wrapperClassName="mh2 mt2"
+                        className="black mh2 mt2"
                         disabled={nfts.length < limit}
                         onClick={handleNextClick}
                         id="files-next"

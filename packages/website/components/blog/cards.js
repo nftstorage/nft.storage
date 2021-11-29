@@ -69,7 +69,6 @@ export const HighlightCard = ({ post, onClick }) => (
             pathname: `/blog/post/${post.slug}`,
           }}
           unstyled
-          wrapperClassName="mw4 relative w-fit"
           className="mw4 pv3 ph3 interactive hologram bg-white chicagoflf cta"
           id="read-more"
           onClick={onClick}
@@ -81,8 +80,7 @@ export const HighlightCard = ({ post, onClick }) => (
             pathname: '/blog/subscribe',
           }}
           unstyled
-          wrapperClassName="mw4 relative w-fit ml4"
-          className="mw4 pv3 ph3 interactive hologram bg-white chicagoflf cta"
+          className="mw4 ml4 pv3 ph3 interactive hologram bg-white chicagoflf cta"
           id="card-subscribe"
           tracking={{
             ui: countly.ui.BLOG_CARD,

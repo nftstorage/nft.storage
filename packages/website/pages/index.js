@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-
+import fs from 'fs'
 import countly from '../lib/countly.js'
 import Hero from '../components/hero.js'
 import HashLink from '../components/hashlink.js'
@@ -8,29 +8,66 @@ import Box from '../components/box.js'
 import Link from 'next/link'
 import { FAQ } from './faq'
 
-/**
- * Static Props
- *
- * @returns {{ props: import('../components/types.js').LayoutProps}}
- */
-export function getStaticProps() {
+export async function getStaticProps() {
+  const logos = await fs.readdirSync('public/images/marketplace-logos')
+  // make opensea be the first logo
+  logos.sort((a, b) =>
+    a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
+  )
+
   return {
     props: {
       needsUser: false,
+      logos,
       description: 'NFT.Storage homepage',
     },
   }
 }
 
 /**
- * Home Component
+ * Logo Component
+ * @param {Object} props
+ * @param {string} props.src
+ */
+const Logo = ({ src }) => (
+  <img
+    className="marketplace-logo"
+    src={`images/marketplace-logos/${src}`}
+    alt="Nft.Storage Users"
+  />
+)
+
+/**
+ * Logos Component
+ * @param {Object} props
+ * @param {string[]} props.logos
  *
  */
-export default function Home() {
+const Logos = ({ logos }) => {
+  return (
+    <div className="marketplace-logos-container center pv4 ph3 ph5-ns">
+      <h2 className="tc mt0 chicagoflf">Trusted by</h2>
+      <div className="marketplace-logo-grid">
+        {logos.map((logo) => (
+          <Logo key={`marketplace-logo-${logo}`} src={logo} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Home Component
+ * @param {Object} props
+ * @param {string[]} props.logos
+ *
+ */
+export default function Home({ logos }) {
   return (
     <>
       <Hero />
-      <main>
+      <main className="bg-nsltblue">
+        <Logos logos={logos} />
         <About />
         <GettingStarted />
         <article className="bg-nsforest">
@@ -158,8 +195,8 @@ function About() {
     </>
   )
   return (
-    <article className="bg-nsgreen">
-      <div className="mw9 center pa4 pa5-ns">
+    <article className="about-section bg-nsgreen">
+      <div className="mw9 center pa4">
         <h2 className="chicagoflf">
           <HashLink id="about">About</HashLink>
         </h2>

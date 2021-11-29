@@ -23,7 +23,7 @@ export const Tag = ({ tag }) => {
         onClick={tag.onClick}
         unstyled
         className={clsx(
-          'select-none btn-secondary ttc',
+          'select-none btn-secondary ttc items-center',
           tag.selected && 'active'
         )}
       >

@@ -12,7 +12,7 @@ const crossStyle = {
 export default function Hero() {
   return (
     <div className="bg-nsorange">
-      <div className="center mw9 ba b--black relative">
+      <div className="relative center mw9 ba b--black">
         <GreenBox
           className="dn dn-m db-ns bl br b--black mh5"
           style={crossStyle}
@@ -35,7 +35,7 @@ export default function Hero() {
           </GreenBox>
         </GreenBox>
         <div
-          className="relative relative-m absolute-ns top-0 w-100 ph3 tc"
+          className="relative top-0 relative-m absolute-ns w-100 ph3 tc"
           style={{ height: '100%' }}
         >
           <img
@@ -48,7 +48,7 @@ export default function Hero() {
           />
           <hgroup className="chicagoflf white">
             <h1 className="f4 f2-m f1-ns fw4 mv3">Free Storage for NFTs</h1>
-            <h2 className="f5 fw4 mw7 center mv3 lh-copy">
+            <h2 className="f3 fw4 mw8 center mv3 lh-copy">
               Free decentralized storage and bandwidth for NFTs on{' '}
               <img
                 src="images/logo-ipfs-sm.png"
@@ -70,9 +70,9 @@ export default function Hero() {
               Filecoin.
             </h2>
           </hgroup>
-          <div className="mt3 mb4">
+          <div className="flex justify-center">
             <Button
-              wrapperClassName="mh3 mb3"
+              className="mh3 mb3"
               href="#getting-started"
               tracking={{ ui: countly.ui.HOME_HERO, action: 'Get Started' }}
             >

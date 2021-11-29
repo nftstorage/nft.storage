@@ -125,7 +125,7 @@ export function trackCustomLinkClick(event, target, data = {}) {
 
 export let ready = false
 
-export default {
+const _countly = {
   events,
   ui,
   init,
@@ -134,3 +134,5 @@ export default {
   trackCustomLinkClick,
   ready,
 }
+
+export default _countly

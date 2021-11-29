@@ -1,0 +1,54 @@
+.nsltblue {
+  color: var(--nsltblue);
+}
+.bg-nsltblue {
+  background-color: var(--nsltblue);
+}
+.bg-nsblue {
+  background-color: var(--nsblue);
+}
+.bg-nsforest {
+  background-color: var(--nsforest);
+}
+.nsgray {
+  color: var(--nsgray);
+}
+.darker-gray {
+  color: var(--nsgray-500);
+}
+.bg-nsgray {
+  background-color: var(--nsgray);
+}
+.bg-nsgreen {
+  background-color: var(--nsgreen);
+}
+.bg-nsorange {
+  background-color: var(--nsorange);
+}
+.bg-nslime {
+  background-color: var(--nslime);
+}
+.nsnavy {
+  color: var(--nsnavy);
+}
+.bg-nsnavy {
+  background-color: var(--nsnavy);
+}
+.nspeach {
+  color: var(--nspeach);
+}
+.bg-nspeach {
+  background-color: var(--nspeach);
+}
+.nspink {
+  color: var(--nspink);
+}
+.bg-nspink {
+  background-color: var(--nspink);
+}
+.bg-nsred {
+  background-color: var(--nsred);
+}
+.bg-nsyellow {
+  background-color: var(--nsyellow);
+}

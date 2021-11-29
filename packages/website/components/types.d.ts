@@ -31,6 +31,7 @@ export interface LayoutProps {
   altLogo?: boolean
   withSubscribe?: boolean
   posts?: PostMeta[]
+  logos?: string[]
 }
 
 export interface LayoutChildrenProps {
