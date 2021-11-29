@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.14.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.14.0...website-v1.14.1) (2021-11-29)
+
+
+### Bug Fixes
+
+* status 5XX is not a valid status code ([#846](https://www.github.com/nftstorage/nft.storage/issues/846)) ([65c4486](https://www.github.com/nftstorage/nft.storage/commit/65c4486ab4ea89ce63d3924f7c5b3aeaa16c5f3b))
+
 ## [1.14.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.13.0...website-v1.14.0) (2021-11-24)
 
 
