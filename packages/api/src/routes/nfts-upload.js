@@ -18,7 +18,6 @@ const decoders = [pb, raw, cbor]
  * @typedef {import('../bindings').NFT} NFT
  * @typedef {import('../bindings').NFTResponse} NFTResponse
  * @typedef {import('@nftstorage/ipfs-cluster').API.StatusResponse} StatusResponse
- * @typedef {import('multiformats').CID} CID
  */
 
 /** @type {import('../bindings').Handler} */
@@ -154,7 +153,7 @@ async function uploadCar({
  * The DAG size will be returned ONLY IF the root node is dag-pb.
  *
  * @param {Blob} carBlob
- * @returns {Promise<{ size?: number, rootCid: CID }>}
+ * @returns {Promise<{ size?: number, rootCid: import('multiformats').CID }>}
  */
 async function carStat(carBlob) {
   const carBytes = new Uint8Array(await carBlob.arrayBuffer())
