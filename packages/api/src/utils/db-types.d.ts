@@ -190,6 +190,102 @@ export interface paths {
       }
     }
   }
+  '/backup': {
+    get: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.backup.id']
+          upload_id?: parameters['rowFilter.backup.upload_id']
+          url?: parameters['rowFilter.backup.url']
+          inserted_at?: parameters['rowFilter.backup.inserted_at']
+          /** Filtering Columns */
+          select?: parameters['select']
+          /** Ordering */
+          order?: parameters['order']
+          /** Limiting and Pagination */
+          offset?: parameters['offset']
+          /** Limiting and Pagination */
+          limit?: parameters['limit']
+        }
+        header: {
+          /** Limiting and Pagination */
+          Range?: parameters['range']
+          /** Limiting and Pagination */
+          'Range-Unit'?: parameters['rangeUnit']
+          /** Preference */
+          Prefer?: parameters['preferCount']
+        }
+      }
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions['backup'][]
+        }
+        /** Partial Content */
+        206: unknown
+      }
+    }
+    post: {
+      parameters: {
+        body: {
+          /** backup */
+          backup?: definitions['backup']
+        }
+        query: {
+          /** Filtering Columns */
+          select?: parameters['select']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** Created */
+        201: unknown
+      }
+    }
+    delete: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.backup.id']
+          upload_id?: parameters['rowFilter.backup.upload_id']
+          url?: parameters['rowFilter.backup.url']
+          inserted_at?: parameters['rowFilter.backup.inserted_at']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+    patch: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.backup.id']
+          upload_id?: parameters['rowFilter.backup.upload_id']
+          url?: parameters['rowFilter.backup.url']
+          inserted_at?: parameters['rowFilter.backup.inserted_at']
+        }
+        body: {
+          /** backup */
+          backup?: definitions['backup']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+  }
   '/content': {
     get: {
       parameters: {
@@ -894,6 +990,20 @@ export interface definitions {
     updated_at: string
     deleted_at?: string
   }
+  backup: {
+    /**
+     * Note:
+     * This is a Primary Key.<pk/>
+     */
+    id: number
+    /**
+     * Note:
+     * This is a Foreign Key to `upload.id`.<fk table='upload' column='id'/>
+     */
+    upload_id: number
+    url: string
+    inserted_at: string
+  }
   content: {
     /**
      * Note:
@@ -1039,6 +1149,12 @@ export interface parameters {
   'rowFilter.auth_key.inserted_at': string
   'rowFilter.auth_key.updated_at': string
   'rowFilter.auth_key.deleted_at': string
+  /** backup */
+  'body.backup': definitions['backup']
+  'rowFilter.backup.id': string
+  'rowFilter.backup.upload_id': string
+  'rowFilter.backup.url': string
+  'rowFilter.backup.inserted_at': string
   /** content */
   'body.content': definitions['content']
   'rowFilter.content.cid': string

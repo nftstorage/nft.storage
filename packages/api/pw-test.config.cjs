@@ -46,41 +46,55 @@ module.exports = {
   },
   beforeTests: async () => {
     const project = `nft-storage-db-${Date.now()}`
-    const proc = execa('smoke', ['-p', '9094', 'test/mocks/cluster'], {
-      preferLocal: true,
-    })
 
-    const stdout = await Promise.race([
-      once(proc.stdout, 'data'),
-      // Make sure that we fail if process crashes. However if it exits without
-      // producing stdout just resolve to ''.
-      proc.then(() => ''),
-    ])
+    const mockServers = [
+      await startMockServer('IPFS Cluster', 9094, 'test/mocks/cluster'),
+      await startMockServer('AWS S3', 9095, 'test/mocks/aws-s3'),
+    ]
 
-    if (
-      stdout.toString().includes('Server started on: http://localhost:9094')
-    ) {
-      console.log('⚡️ Mock IPFS Cluster started.')
+    await execa(cli, ['db', '--start', '--project', project])
+    console.log('⚡️ Postgres started.')
 
-      await execa(cli, ['db', '--start', '--project', project])
-      console.log('⚡️ Postgres started.')
+    await execa(cli, ['db-sql', '--cargo', '--testing'])
+    console.log('⚡️ SQL schema loaded.')
 
-      await execa(cli, ['db-sql', '--cargo', '--testing'])
-      console.log('⚡️ SQL schema loaded.')
-
-      proc.stdout.on('data', (line) => console.log(line.toString()))
-      return { proc, project }
-    }
-
-    throw new Error('Could not start smoke server')
+    return { mockServers, project }
   },
   afterTests: async (ctx, beforeTests) => {
     console.log('⚡️ Shutting down mock servers.')
 
     await execa(cli, ['db', '--clean', '--project', beforeTests.project])
 
-    /** @type {import('execa').ExecaChildProcess} */
-    const proc = beforeTests.proc
-    const killed = proc.kill()
+    beforeTests.mockServers.forEach(({ proc }) => proc.kill())
   },
+}
+
+/**
+ * @param {string} name
+ * @param {number} port
+ * @param {string} handlerPath
+ * @returns {Promise<{ proc: execa.ExecaChildProcess<string> }>}
+ */
+async function startMockServer(name, port, handlerPath) {
+  const proc = execa('smoke', ['-p', port, handlerPath], {
+    preferLocal: true,
+  })
+
+  const stdout = await Promise.race([
+    once(proc.stdout, 'data'),
+    // Make sure that we fail if process crashes. However if it exits without
+    // producing stdout just resolve to ''.
+    proc.then(() => ''),
+  ])
+
+  proc.stdout.on('data', (line) => console.log(line.toString()))
+  proc.stderr.on('data', (line) => console.error(line.toString()))
+
+  const startMsg = `Server started on: http://localhost:${port}`
+  if (!stdout.toString().includes(startMsg)) {
+    throw new Error(`Failed to start ${name} mock server`)
+  }
+
+  console.log(`⚡️ Mock ${name} started.`)
+  return { proc }
 }
