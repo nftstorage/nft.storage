@@ -34,7 +34,8 @@ export const cluster = {
    * other cluster nodes can take a long time. Replication to other nodes
    * will be done async by bitswap instead.
    */
-  localAddThreshold: 1024 * 1024 * 2.5,
+  // localAddThreshold: 1024 * 1024 * 2.5,
+  localAddThreshold: 0,
 }
 
 export const database = {
@@ -47,6 +48,7 @@ export const s3 = {
   endpoint: typeof S3_ENDPOINT !== 'undefined' ? S3_ENDPOINT : '',
   region: typeof S3_REGION !== 'undefined' ? S3_REGION : '',
   accessKeyId: typeof S3_ACCESS_KEY_ID !== 'undefined' ? S3_ACCESS_KEY_ID : '',
-  secretAccessKey: typeof S3_SECRET_ACCESS_KEY !== 'undefined' ? S3_SECRET_ACCESS_KEY : '',
+  secretAccessKey:
+    typeof S3_SECRET_ACCESS_KEY !== 'undefined' ? S3_SECRET_ACCESS_KEY : '',
   bucketName: typeof S3_BUCKET_NAME !== 'undefined' ? S3_BUCKET_NAME : '',
 }
