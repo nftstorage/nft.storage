@@ -1,6 +1,9 @@
-import { S3Client as AwsS3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+// @ts-ignore missing types
+import { S3Client as AwsS3Client } from '@aws-sdk/client-s3/dist-es/S3Client.js'
+// @ts-ignore missing types
+import { PutObjectCommand } from '@aws-sdk/client-s3/dist-es/commands/PutObjectCommand.js'
 import { sha256 } from 'multiformats/hashes/sha2'
-import { toString } from 'uint8arrays'
+import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 
 export class S3Client {
   /**
@@ -18,12 +21,13 @@ export class S3Client {
     if (!bucketName) throw new Error('missing bucket name')
     /**
      * @private
+     * @type {import('@aws-sdk/client-s3').S3Client}
      */
     this._s3 = new AwsS3Client({
       endpoint: options.endpoint,
       forcePathStyle: !!options.endpoint, // Force path if endpoint provided
       region,
-      credentials: { accessKeyId, secretAccessKey }
+      credentials: { accessKeyId, secretAccessKey },
     })
     /**
      * @private
@@ -43,13 +47,18 @@ export class S3Client {
    * @param {import('multiformats').CID} rootCid
    * @param {Blob} car
    */
-  async backupCar (userId, rootCid, car) {
+  async backupCar(userId, rootCid, car) {
     const buf = await car.arrayBuffer()
     const dataHash = await sha256.digest(new Uint8Array(buf))
-    const key = `raw/${rootCid}/${userId}/${toString(dataHash.bytes, 'base32')}.car`
+    const key = `raw/${rootCid}/${userId}/${uint8ArrayToString(
+      dataHash.bytes,
+      'base32'
+    )}.car`
     const bucket = this._bucketName
     const cmdParams = { Bucket: bucket, Key: key, Body: car }
-    await this._s3.send(new PutObjectCommand(cmdParams))
-    return new URL(key, this._baseUrl)
+    /** @type {import('@aws-sdk/client-s3').PutObjectCommand} */
+    const cmd = new PutObjectCommand(cmdParams)
+    await this._s3.send(cmd)
+    return new URL(key, this._baseUrl.toString())
   }
 }
