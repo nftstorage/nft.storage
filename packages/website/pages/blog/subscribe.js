@@ -76,7 +76,7 @@ export default function Subcribe({ user }) {
   return (
     <main className="bg-nsltblue w-100 flex-auto">
       <div className="mw9 center pv3 mtauto">
-        <form onSubmit={onSubmit} className="tc">
+        <form onSubmit={onSubmit} className="tc flex flex-column items-center">
           <label className="f5 db mb2 chicagoflf">
             <h1>Subscribe</h1>
           </label>
@@ -88,7 +88,7 @@ export default function Subcribe({ user }) {
             onChange={(e) => setEmail(e.target.value)}
             disabled={status === 'pending' || !!user?.email}
             value={user?.email || email}
-            className="input-reset ba b--black pa2 mb2 w5 center db"
+            className="input-reset ba b--black pa2 mb3 w5 center db"
           />
 
           <Button
@@ -99,6 +99,7 @@ export default function Subcribe({ user }) {
               ui: countly.ui.BLOG_SUBSCRIBE,
               action: 'Subscribe',
             }}
+            className="w5"
           >
             Subscribe
           </Button>
