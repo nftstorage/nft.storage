@@ -135,16 +135,6 @@ CREATE INDEX IF NOT EXISTS upload_content_cid_idx ON upload (content_cid);
 CREATE INDEX IF NOT EXISTS upload_source_cid_idx ON upload (source_cid);
 CREATE INDEX IF NOT EXISTS upload_updated_at_idx ON upload (updated_at);
 
--- Temporary table to record events from the live site between KV sync start
--- and the migration window.
-CREATE TABLE IF NOT EXISTS migration_event
-(
-    id          BIGSERIAL PRIMARY KEY,
-    name        TEXT NOT NULL,
-    data        jsonb,
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
-
 -- URLs of backups of user uploads
 CREATE TABLE IF NOT EXISTS backup
 (
@@ -153,3 +143,5 @@ CREATE TABLE IF NOT EXISTS backup
     url         TEXT NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+CREATE INDEX IF NOT EXISTS backup_upload_id_idx ON upload (source_cid);
