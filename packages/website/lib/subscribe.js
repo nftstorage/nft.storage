@@ -2,8 +2,8 @@
  *
  * @param {string} email
  */
-export const subscribe = async email => {
-  const res = await fetch('/api/blog/subscribe', {
+export const subscribe = async (email) => {
+  const res = await fetch('/api/subscribe', {
     method: 'POST',
     body: JSON.stringify({
       email,
@@ -23,8 +23,8 @@ export const subscribe = async email => {
  *
  * @param {string} email
  */
-export const getInfo = async email => {
-  const res = await fetch(`/api/blog/user/?email=${email}`, {
+export const getInfo = async (email) => {
+  const res = await fetch(`/api/user/?email=${email}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -41,8 +41,8 @@ export const getInfo = async email => {
  *
  * @param {string} email
  */
-export const addTags = async email => {
-  const res = await fetch('/api/blog/addTags', {
+export const addTags = async (email) => {
+  const res = await fetch('/api/addTags', {
     method: 'POST',
     body: JSON.stringify({
       email,
