@@ -37,6 +37,13 @@ h6 {
   width: var(--card-size);
 }
 
+.blog .cta {
+  width: 130px;
+}
+.blog .post-subscribe-button {
+  height: 30px;
+}
+
 /* margin */
 
 .blog .ma2 {

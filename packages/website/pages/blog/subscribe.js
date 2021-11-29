@@ -43,15 +43,16 @@ export default function Subcribe({ user }) {
     setDisabled(true)
     // try to subscribe user
     try {
-      const res = await subscribe(userMail)
-      console.log(res)
+      await subscribe(userMail)
       setStatus('success')
     } catch (/** @type {any} */ err) {
+      // if user already exists we will try to add blog-subscriber tag
       if (err.message === 'exists') {
-        // mailchimp api always returns null from add-tags enpoint
         // so... try to add the new tag
         await addTags(userMail)
-        // check to see if user is subscribed and has right tag
+        // endpoint for adding tags returns null no matter what
+        // so impossible to tell if successful
+        // so check to see if user is subscribed(to audience) and has blog-subscriber tag
         try {
           const user = await getInfo(userMail)
           if (
@@ -61,8 +62,7 @@ export default function Subcribe({ user }) {
                 tag.name === 'nft_storage_blog_subscriber'
             )
           )
-            console.log(user.response.tags)
-          setStatus('success')
+            setStatus('success')
         } catch (/** @type {any} */ error) {
           console.log('ERROR SUBSCRIBING USER: ', error.message)
           setDisabled(false)

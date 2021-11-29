@@ -6,6 +6,8 @@ import SocialLink from '../../../components/social-link'
 import Tags from '../../../components/tags'
 import fs from 'fs'
 import matter from 'gray-matter'
+import Button from '../../../components/button'
+import countly from '../../../lib/countly'
 
 export async function getStaticProps({ ...ctx }) {
   const { slug } = ctx.params
@@ -30,7 +32,6 @@ export async function getStaticProps({ ...ctx }) {
       description: info.data.description,
       navBgColor: 'bg-nsltblue',
       altLogo: true,
-      withSubscribe: true,
       needsUser: false,
     },
   }
@@ -77,27 +78,44 @@ const Post = ({ post }) => {
         />
         <div className="mt14 mw7 ph8">
           <div className="post-meta mb4">
-            <div className="flex mb5 justify-between items-center">
-              {post.meta?.tags ? <Tags tags={post.meta.tags} /> : <div></div>}
-              <div className="flex">
-                <SocialLink
-                  url={twitterShareLink}
-                  params={twitterParams}
-                  Icon={FiTwitter}
-                />
-                <SocialLink
-                  url={facebookShareLink}
-                  Icon={FiFacebook}
-                  params={facebookParams}
-                />
-                <SocialLink
-                  url={linkedinShareLink}
-                  params={linkedinParams}
-                  Icon={FiLinkedin}
-                />
+            <div className="flex flex-column mb5 justify-between items-center">
+              <div className="flex justify-between items-center w-100">
+                <div className="social-links flex">
+                  <SocialLink
+                    url={twitterShareLink}
+                    params={twitterParams}
+                    Icon={FiTwitter}
+                  />
+                  <SocialLink
+                    url={facebookShareLink}
+                    Icon={FiFacebook}
+                    params={facebookParams}
+                  />
+                  <SocialLink
+                    url={linkedinShareLink}
+                    params={linkedinParams}
+                    Icon={FiLinkedin}
+                  />
+                </div>
+                <Button
+                  href={{
+                    pathname: '/blog/subscribe'
+                  }}
+                  unstyled
+                  wrapperClassName="mw4 relative w-fit"
+                  className="mw4 ph3 interactive hologram bg-white chicagoflf post-subscribe-button"
+                  id="post-subscribe"
+                  tracking={{
+                    ui: countly.ui.BLOG_POST,
+                    action: 'Subcribe',
+                  }}
+                >
+                  Subscribe
+                </Button>
               </div>
             </div>
             <h1 className="chicagoflf f2 mb2">{post.meta.title}</h1>
+            {post.meta?.tags ? <div className="mb3"><Tags tags={post.meta.tags} /></div> : <div></div>}
             <p className="mb5">{post.meta.description}</p>
             <div className="flex mb8">
               <span className="darker-gray f6 mr2">{post.meta.author}</span>
