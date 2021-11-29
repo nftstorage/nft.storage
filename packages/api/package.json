@@ -26,6 +26,7 @@
     "@nftstorage/ipfs-cluster": "^3.4.3",
     "@supabase/postgrest-js": "^0.34.1",
     "debug": "^4.3.2",
+    "ipfs-car": "^0.6.0",
     "merge-options": "^3.0.4",
     "multiformats": "^9.4.10",
     "regexparam": "^2.0.0",
