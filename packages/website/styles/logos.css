@@ -8,6 +8,7 @@
   justify-items: center;
   align-items: center;
   row-gap: 20px;
+  padding-bottom: 0.5rem;
 }
 
 .marketplace-logo {
@@ -18,6 +19,8 @@
   border-radius: 4px;
   padding: 10px;
   object-position: center;
+  -webkit-user-select: none;
+  user-select: none;
 }
 @media screen and (max-width: 900px) {
   .marketplace-logo {
