@@ -3,7 +3,6 @@ import { notFound } from './utils/utils.js'
 import { HTTPError } from './errors.js'
 import { cors, postCors } from './routes/cors.js'
 import { JSONResponse } from './utils/json-response.js'
-import { debug } from './utils/debug.js'
 import { metrics } from './routes/metrics.js'
 import { tokensDelete } from './routes/tokens-delete.js'
 import { tokensCreate } from './routes/tokens-create.js'
@@ -33,8 +32,6 @@ import {
 import { withPsaErrorHandler } from './middleware/psa.js'
 import { cluster } from './constants.js'
 import { getContext } from './utils/context.js'
-
-const log = debug('router')
 
 const getMaintenanceMode = () =>
   typeof MAINTENANCE_MODE !== 'undefined' ? MAINTENANCE_MODE : DEFAULT_MODE

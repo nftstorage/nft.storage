@@ -3,6 +3,7 @@ export {}
 import Toucan from 'toucan-js'
 import { Mode } from './middleware/maintenance.js'
 import { DBClient } from './utils/db-client.js'
+import { Logging } from './utils/logs.js'
 
 declare global {
   const SALT: string
@@ -14,6 +15,7 @@ declare global {
   const DATABASE_URL: string
   const DATABASE_TOKEN: string
   const MAILCHIMP_API_KEY: string
+  const LOGTAIL_TOKEN: string
   const ENV: 'dev' | 'staging' | 'production'
   const SENTRY_DSN: string
   const BRANCH: string
@@ -24,9 +26,9 @@ declare global {
 }
 
 export interface RouteContext {
-  sentry: Toucan
   params: Record<string, string>
   db: DBClient
+  log: Logging
 }
 
 export type Handler = (
