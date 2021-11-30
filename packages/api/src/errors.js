@@ -1,4 +1,3 @@
-import Toucan from 'toucan-js'
 import { ErrorCode as MagicErrors } from '@magic-sdk/admin'
 import { JSONResponse } from './utils/json-response.js'
 import { DBError } from './utils/db-client.js'
@@ -55,7 +54,6 @@ export function maybeCapture(err, { log }) {
   let code = err.code || 'HTTP_ERROR'
   let message = err.message
   let status = err.status || 500
-  const contentType = req && req.headers.get('Content-Type')
 
   switch (err.code) {
     case ErrorUserNotFound.CODE:
@@ -64,7 +62,7 @@ export function maybeCapture(err, { log }) {
       break
     case DBError.CODE:
       message = 'Database error'
-      sentry.captureException(err)
+      log.error(err)
       break
     // Magic SDK errors
     case MagicErrors.TokenExpired:
@@ -87,19 +85,19 @@ export function maybeCapture(err, { log }) {
       status = 401
       code = 'AUTH_ERROR'
       message = 'Authentication failed.'
-      sentry.captureException(err)
+      log.error(err)
       break
     case MagicErrors.ServiceError:
       status = 500
       code = 'SERVER_ERROR'
-      sentry.captureException(err)
+      log.error(err)
       break
     default:
       // catch all server errors
       if (status >= 500) {
         code = err.name
         message = err.message
-        sentry.captureException(err)
+        log.error(err)
       }
       break
   }

@@ -26,6 +26,10 @@ export async function validate(event, { log, db }) {
       if (user.data) {
         const key = user.data.keys.find((k) => k?.secret === token)
         if (key) {
+          log.setUser({
+            email: user.data.email,
+            id: user.data.magic_link_id,
+          })
           return {
             user: user.data,
             key,
@@ -47,14 +51,18 @@ export async function validate(event, { log, db }) {
         throw new Error(`DB error: ${JSON.stringify(user.error)}`)
       }
 
+      log.setUser({
+        email: user.data.email,
+        id: user.data.magic_link_id,
+      })
+
       return {
         user: user.data,
         db,
       }
     }
   } catch (/** @type {any}*/ err) {
-    console.error(err)
-    sentry.captureException(err)
+    log.error(err)
     throw new ErrorUserNotFound(err.message)
   }
 }

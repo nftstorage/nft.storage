@@ -7902,6 +7902,7 @@ node-fetch@^2.6.0, node-fetch@^2.6.1, node-fetch@^2.6.5:
 
 "node-fetch@https://registry.npmjs.org/@achingbrain/node-fetch/-/node-fetch-2.6.7.tgz":
   version "2.6.7"
+  uid "1b5d62978f2ed07b99444f64f0df39f960a6d34d"
   resolved "https://registry.npmjs.org/@achingbrain/node-fetch/-/node-fetch-2.6.7.tgz#1b5d62978f2ed07b99444f64f0df39f960a6d34d"
 
 node-gyp-build@^4.2.0, node-gyp-build@^4.3.0:

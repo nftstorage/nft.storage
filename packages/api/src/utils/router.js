@@ -155,6 +155,9 @@ class Router {
     const ctx = this.getRouteContext(event, params)
     let rsp
 
+    ctx.log.info('request')
+    ctx.log.time('request')
+
     if (handler) {
       try {
         rsp = await handler(event, ctx)
@@ -166,7 +169,10 @@ class Router {
       rsp = this.options.onNotFound(req)
     }
 
-    return postHandlers.reduce((r, handler) => handler(req, r), rsp)
+    const out = postHandlers.reduce((r, handler) => handler(req, r), rsp)
+
+    ctx.log.timeEnd('request')
+    return ctx.log.end(out)
   }
 
   /**
