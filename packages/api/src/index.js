@@ -38,9 +38,8 @@ const getMaintenanceMode = () =>
 setMaintenanceModeGetter(getMaintenanceMode)
 
 const r = new Router(getContext, {
-  onError(req, err, { sentry }) {
-    log(err)
-    return HTTPError.respond(err, { sentry, req })
+  onError(req, err, ctx) {
+    return HTTPError.respond(err, ctx)
   },
 })
 

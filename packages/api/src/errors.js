@@ -27,24 +27,19 @@ export class HTTPError extends Error {
 
   /**
    * @param {Error & {status?: number;code?: string;}} err
-   * @param {{sentry: Toucan, req: Request}} ctx
+   * @param {import('./bindings.js').RouteContext} ctx
    */
-  static respond(err, { sentry, req }) {
-    const { message, code, status } = maybeCapture(err, { sentry, req })
-    return status === 302
-      ? new Response(null, {
-          status: 302,
-          headers: { location: 'https://nft.storage/api-docs/' },
-        })
-      : new JSONResponse(
-          {
-            ok: false,
-            error: { code, message },
-          },
-          {
-            status,
-          }
-        )
+  static respond(err, ctx) {
+    const { message, code, status } = maybeCapture(err, ctx)
+    return new JSONResponse(
+      {
+        ok: false,
+        error: { code, message },
+      },
+      {
+        status,
+      }
+    )
   }
 }
 
@@ -53,10 +48,10 @@ export class HTTPError extends Error {
  * I'll give you back a HTTPError with a user friendly error message and code.
  *
  * @param {any} err
- * @param {{ sentry: Toucan, req?: Request }} ctx
+ * @param {import('./bindings.js').RouteContext} ctx
  * @returns {HTTPError & Coded} A HTTPError with an error code.
  */
-export function maybeCapture(err, { sentry, req }) {
+export function maybeCapture(err, { log }) {
   let code = err.code || 'HTTP_ERROR'
   let message = err.message
   let status = err.status || 500
@@ -77,9 +72,7 @@ export function maybeCapture(err, { sentry, req }) {
       message = 'API Key has expired.'
       break
     case MagicErrors.ExpectedBearerString:
-      !contentType || contentType === 'text/html'
-        ? (status = 302)
-        : (status = 401)
+      status = 401
       message =
         'API Key is missing, make sure the `Authorization` header has a value in the following format `Bearer {api key}`.'
       break

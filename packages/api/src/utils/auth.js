@@ -1,11 +1,8 @@
 import { Magic } from '@magic-sdk/admin'
-import { secrets, database } from '../constants.js'
+import { secrets } from '../constants.js'
 import { HTTPError, ErrorUserNotFound, ErrorTokenNotFound } from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
-import { DBClient } from './db-client.js'
 export const magic = new Magic(secrets.magic)
-
-const db = new DBClient(database.url, secrets.database)
 
 /**
  * Validate auth
@@ -13,7 +10,7 @@ const db = new DBClient(database.url, secrets.database)
  * @param {FetchEvent} event
  * @param {import('../bindings').RouteContext} ctx
  */
-export async function validate(event, { sentry }) {
+export async function validate(event, { log, db }) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
   try {
@@ -66,8 +63,9 @@ export async function validate(event, { sentry }) {
  *
  * @param {FetchEvent} event
  * @param {any} data
+ * @param {import('../bindings').RouteContext} ctx
  */
-export async function loginOrRegister(event, data) {
+export async function loginOrRegister(event, data, { db }) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
 

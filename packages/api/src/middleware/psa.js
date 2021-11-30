@@ -14,7 +14,7 @@ export function withPsaErrorHandler(handler) {
     try {
       return await handler(event, ctx)
     } catch (err) {
-      const { status } = maybeCapture(err, { sentry: ctx.sentry })
+      const { status } = maybeCapture(err, ctx)
       return new JSONResponse(
         {
           error: {
