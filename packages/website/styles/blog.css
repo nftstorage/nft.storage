@@ -31,8 +31,16 @@ h6 {
 }
 
 .blog .h-card {
-  height: var(--card-size);
+  max-height: var(--card-size);
 }
+
+@media screen and (max-width: 880px) {
+  .blog .h-card {
+    max-height: auto;
+    height: var(--card-size);
+  }
+}
+
 .blog .w-card {
   width: var(--card-size);
 }
@@ -121,6 +129,18 @@ h6 {
   border-top: 1px solid var(--nsblack);
   border-bottom: 1px solid var(--nsblack);
   min-height: var(--card-size);
+  background: var(--nsltblue);
+  background: linear-gradient(
+    90deg,
+    var(--nsltblue),
+    var(--nsltblue) 51%,
+    var(--nsorange) 51%,
+    var(--nsorange) 100%
+  );
+}
+
+.blog .highlight-info {
+  padding: 2.5rem;
 }
 
 .blog .button-tags-container {
@@ -266,6 +286,7 @@ h6 {
     opacity: 0.92;
     background-color: var(--nsltblue);
     padding: 4rem 2rem;
+    border-bottom: 1px solid var(--nsblack);
   }
   .blog-tags-buttons {
     justify-self: center;
