@@ -1,0 +1,51 @@
+.marketplace-logos-container {
+  max-width: 960px;
+}
+.marketplace-logo-grid {
+  display: grid;
+  width: 100%;
+  grid: auto/repeat(6, 1fr);
+  justify-items: center;
+  align-items: center;
+  row-gap: 20px;
+  padding-bottom: 0.5rem;
+}
+
+.marketplace-logo {
+  width: 100px;
+  height: 40px;
+  object-fit: contain;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  padding: 10px;
+  object-position: center;
+  -webkit-user-select: none;
+  user-select: none;
+}
+@media screen and (max-width: 900px) {
+  .marketplace-logo {
+    width: 75px;
+  }
+}
+@media screen and (max-width: 750px) {
+  .marketplace-logos-container {
+    max-width: 400px;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  .marketplace-logo-grid {
+    grid: auto/repeat(3, 1fr);
+  }
+}
+@media screen and (max-width: 374px) {
+  .marketplace-logos-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  .marketplace-logo-grid {
+    grid: auto/repeat(3, 1fr);
+  }
+  .marketplace-logo {
+    width: 50px;
+  }
+}

@@ -13,8 +13,8 @@ import countly from '../lib/countly'
  *
  * @typedef {Object} ButtonProps
  * @prop {string} [id]
- * @prop {string} [wrapperClassName]
  * @prop {string} [className]
+ * @prop {string} [label]
  * @prop { React.MouseEventHandler<HTMLButtonElement> } [onClick]
  * @prop {string | any} [href]
  * @prop {React.ButtonHTMLAttributes<HTMLButtonElement>["type"]} [type]
@@ -22,8 +22,9 @@ import countly from '../lib/countly'
  * @prop {boolean} [disabled]
  * @prop {boolean} [small]
  * @prop {string} [id]
- * @prop {'dark' | 'light' } [variant]
+ * @prop {'dark' | 'light' | 'caution' } [variant] Extend the visuals in button.css
  * @prop {TrackingProp} [tracking] Tracking data to send to countly on button click
+ * @prop {boolean} [unstyled]
  */
 
 /**
@@ -33,7 +34,6 @@ import countly from '../lib/countly'
  */
 export default function Button({
   id,
-  wrapperClassName,
   className,
   onClick,
   href,
@@ -43,6 +43,7 @@ export default function Button({
   small = false,
   variant = 'light',
   tracking,
+  unstyled,
   ...props
 }) {
   const onClickHandler = useCallback(
@@ -62,63 +63,42 @@ export default function Button({
     [tracking, onClick, href]
   )
 
-  wrapperClassName = clsx(
-    'dib',
-    'bg-nsgray',
-    'ba',
-    'b--black',
-    { grow: !disabled, 'o-50': disabled },
-    wrapperClassName
-  )
-  const wrapperStyle = { minWidth: small ? '0' : '8rem' }
-  const btnStyle = { top: 3, left: 3 }
+  let btnClasses = clsx('btn button-reset select-none', className)
 
-  let variantClasses = ''
-  switch (variant) {
-    case 'dark':
-      variantClasses = 'bg-black white'
-      break
-
-    case 'light':
-      variantClasses = 'bg-white black'
-      break
+  if (!unstyled) {
+    btnClasses = clsx(
+      btnClasses,
+      'pv2 ph3 chicagoflf hologram',
+      small && 'small',
+      disabled ? 'o-60' : 'interactive',
+      variant
+    )
   }
 
-  const btn = (
-    <button
-      type={type}
-      className={clsx(
-        'button-reset',
-        'relative',
-        'w-100',
-        'ba',
-        'b--black',
-        'pv2',
-        'ph3',
-        'chicagoflf',
-        'f5',
-        { pointer: !disabled },
-        variantClasses,
-        className
-      )}
-      style={btnStyle}
-      onClick={onClickHandler}
-      disabled={disabled}
-      id={id}
-      {...props}
-    >
-      {children}
-    </button>
-  )
-  return href ? (
-    <Link href={href}>
-      <a className={wrapperClassName} style={wrapperStyle}>
-        {btn}
-      </a>
-    </Link>
-  ) : (
-    <div className={wrapperClassName} style={wrapperStyle}>
-      {btn}
-    </div>
-  )
+  const btnProps = {
+    type,
+    id,
+    className: btnClasses,
+    onClick: onClickHandler,
+    disabled: !!disabled,
+    role: href ? 'link' : 'button',
+  }
+
+  let btn = null
+
+  if (typeof children === 'string') {
+    btn = (
+      <button {...btnProps} {...props}>
+        {children}
+      </button>
+    )
+  } else {
+    btn = (
+      <div {...btnProps} {...props}>
+        {children}
+      </div>
+    )
+  }
+
+  return href ? <Link href={href}>{btn}</Link> : btn
 }

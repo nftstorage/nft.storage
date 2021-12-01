@@ -1,0 +1,25 @@
+.store-and-retrieve-desktop {
+  display: block;
+}
+
+.store-and-retrieve-mobile {
+  display: none;
+}
+
+.about-text {
+  max-width: 32rem;
+}
+
+@media screen and (max-width: 75em) {
+  .store-and-retrieve-desktop {
+    display: none;
+  }
+
+  .store-and-retrieve-mobile {
+    display: block;
+  }
+
+  .about-text {
+    max-width: none;
+  }
+}

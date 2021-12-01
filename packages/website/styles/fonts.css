@@ -1,0 +1,16 @@
+@font-face {
+  font-family: ChicagoFLF;
+  src: url('/fonts/ChicagoFLF.woff2') format('woff2');
+  font-display: swap;
+}
+
+.chicagoflf {
+  font-family: var(--nstitle);
+}
+
+h2 {
+  font-size: var(--h2-size);
+}
+h3 {
+  font-size: var(--h3-size);
+}
