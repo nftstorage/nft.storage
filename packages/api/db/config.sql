@@ -1,1 +1,1 @@
-SET max_parallel_workers_per_gather TO 8;
+SET max_parallel_workers_per_gather TO 4;
