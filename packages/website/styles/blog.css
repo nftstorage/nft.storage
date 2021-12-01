@@ -303,3 +303,29 @@ h6 {
     justify-self: center;
   }
 }
+
+.highlight-card-text {
+  display: grid;
+  grid-template-rows: 35px auto auto 1rem;
+  grid-gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.highlight-card-text .title {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 3.25rem;
+  font-size: 2.5rem;
+}
+
+.highlight-card-text .description {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+@media screen and (max-width: 880px) {
+}

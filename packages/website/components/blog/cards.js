@@ -1,8 +1,8 @@
+import Button from '../button'
 import Link from 'next/link'
 import React from 'react'
-import countly from '../../lib/countly'
-import Button from '../button'
 import Tags from '../tags'
+import countly from '../../lib/countly'
 
 // custom styles from /styles/blog.css
 
@@ -31,9 +31,13 @@ export const Card = ({ post, onClick }) => (
       <div className="flex pa5 flex-column justify-evenly">
         <div className="mb4">{post.tags && <Tags tags={post.tags} />}</div>
         <div className="overflow-hidden mb2">
-          <h1 className="chivo-bold f3 line-clamp-1">{post.title}</h1>
+          <h1 className="chicagoflf f3 line-clamp-1" title={post.title}>
+            {post.title}
+          </h1>
         </div>
-        <p className="line-clamp-2 mb2 f5">{post.description}</p>
+        <p className="line-clamp-2 mb2 f5" title={post.description}>
+          {post.description}
+        </p>
         <div className="flex">
           <span className="darker-gray f6 mr2">{post.author}</span>
           <span className="darker-gray f6">{post.date}</span>
@@ -55,10 +59,14 @@ export const HighlightCard = ({ post, onClick }) => (
   <div className="flex justify-center blog-highlight-card h-card w-100">
     <div className="relative flex w-100 mw9">
       <div className="flex justify-between highlight-info flex-column w-50">
-        <div>
+        <div className="highlight-card-text">
           <div className="mb4">{post.tags && <Tags tags={post.tags} />}</div>
-          <h1 className="chivo-bold f1 line-clamp-1">{post.title}</h1>
-          <p className="line-clamp-2 mw6 f3 mb2">{post.description}</p>
+          <h1 className="chicagoflf f1 title" title={post.title}>
+            {post.title}
+          </h1>
+          <p className="mw6 f3 mb2 description" title={post.description}>
+            {post.description}
+          </p>
           <div className="flex">
             <span className="dark-gray f6 mr2">{post.author}</span>
             <span className="dark-gray f6">{post.date}</span>
