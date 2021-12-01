@@ -121,6 +121,7 @@ export default function Subcribe({ user }) {
         <p>You are subscribed to the Mailing List.</p>
         <br />
         <Button
+          title="Return to the blog"
           onClick={() => {
             router.push('/blog')
           }}
