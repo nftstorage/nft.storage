@@ -26,7 +26,7 @@ And did we mention? It’s free!
 
 > “NFTs are part of humanity’s cultural legacy - and designing their data for long-term accessibility is crucial. Content addressing and distributed storage networks ensure that [digital artwork](https://www.wsj.com/articles/beeple-nft-fetches-record-breaking-69-million-in-christies-sale-11615477732?mod=article_inline), [basketball cards](https://dappradar.com/blog/50-million-in-sales-makes-nba-top-shot-largest-nft-market), and [virtual real estate](https://decrypt.co/57092/biggest-ever-nft-sale-made-as-single-axie-land-goes-for-1-5-million) are guaranteed to stay secure and available long-term. NFT.Storage makes it completely frictionless to mint NFTs following best practices through resilient persistence on IPFS and Filecoin.”
 >
-> [Mikeal Rogers](https://twitter.com/mikeal), Engineering Manager at Protocol Labs.
+> -- [Mikeal Rogers](https://twitter.com/mikeal), Engineering Manager at Protocol Labs.
 
 Right now, the vast majority of NFTs and related metadata are static images. The PFP projects and 1-of-1s that have kicked off the global fervor for NFTs (and will continue to play critical roles) will be joined by immensely complex NFTs. AR/VR, multimedia assets, and gaming will all require unique and logic-heavy NFT frameworks, with metadata larger and vastly more complex than what’s typically captured in today’s NFTs. This all portends the need for a storage network that scales with these emerging requirements from the NFT space. And Filecoin is built to support those needs.
 

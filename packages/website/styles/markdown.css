@@ -248,6 +248,17 @@
   padding-left: 0;
   margin-top: 0;
   margin-bottom: 0;
+  padding-left: 1em;
+}
+
+.markdown-body ul > li {
+  list-style-type: disc;
+  margin: 0.5rem 0;
+}
+
+.markdown-body ol > li {
+  list-style-type: decimal;
+  margin: 0.5rem 0;
 }
 
 .markdown-body ol ol,
@@ -318,7 +329,7 @@ pre > div code span {
 }
 
 .markdown-body .bg-white {
-  background-color: #fff !important;
+  background-color: var(--nswhite);
 }
 
 .markdown-body .bg-gray-light {
