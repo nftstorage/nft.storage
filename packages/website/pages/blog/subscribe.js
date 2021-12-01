@@ -89,7 +89,7 @@ export default function Subcribe({ user }) {
         Enter Your Email
       </label>
       <input
-        aria-labeled-by="email-entry-label"
+        aria-labelledby="email-entry-label"
         type="email"
         name="email"
         required
