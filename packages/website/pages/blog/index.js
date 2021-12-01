@@ -236,8 +236,6 @@ const Blog = ({ posts }) => {
 
   const router = useRouter()
 
-  console.log(posts)
-
   useEffect(() => {
     if (!posts) return
     const filtered =
