@@ -26,30 +26,26 @@ export async function dbSqlCmd(opts) {
 
   // read all the SQL files
   const configSql = fs.readFileSync(
-    path.join(__dirname, '../../postgres/config.sql'),
-    {
-      encoding: 'utf-8',
-    }
+    path.join(__dirname, '../../db/config.sql'),
+    'utf-8'
   )
-  const tables = fs.readFileSync(path.join(__dirname, '../../db/tables.sql'), {
-    encoding: 'utf-8',
-  })
+  const tables = fs.readFileSync(
+    path.join(__dirname, '../../db/tables.sql'),
+    'utf-8'
+  )
   const functions = fs.readFileSync(
     path.join(__dirname, '../../db/functions.sql'),
-    {
-      encoding: 'utf-8',
-    }
+    'utf-8'
   )
-  const reset = fs.readFileSync(path.join(__dirname, '../../db/reset.sql'), {
-    encoding: 'utf-8',
-  })
-  let cargo = fs.readFileSync(path.join(__dirname, '../../db/cargo.sql'), {
-    encoding: 'utf-8',
-  })
-
-  let fdw = fs.readFileSync(path.join(__dirname, '../../db/fdw.sql'), {
-    encoding: 'utf-8',
-  })
+  const reset = fs.readFileSync(
+    path.join(__dirname, '../../db/reset.sql'),
+    'utf-8'
+  )
+  let cargo = fs.readFileSync(
+    path.join(__dirname, '../../db/cargo.sql'),
+    'utf-8'
+  )
+  let fdw = fs.readFileSync(path.join(__dirname, '../../db/fdw.sql'), 'utf-8')
 
   // Replace secrets in the FDW sql file
   fdw = fdw.replace(":'DAG_CARGO_HOST'", `'${process.env.DAG_CARGO_HOST}'`)
