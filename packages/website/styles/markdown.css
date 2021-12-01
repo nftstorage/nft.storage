@@ -239,6 +239,8 @@
 
 .markdown-body blockquote {
   margin: 0;
+  padding: 0 1em;
+  border-left: 0.25em solid var(--nsltblue);
 }
 
 .markdown-body ol,
