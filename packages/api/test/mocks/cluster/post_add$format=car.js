@@ -8,15 +8,17 @@ const { CarReader } = require('@ipld/car')
 module.exports = async ({ query, files }) => {
   const car = await CarReader.fromBytes(files[0].buffer)
   const roots = await car.getRoots()
-  // @ts-ignore
-  const { cid, bytes } = await car.get(roots[0])
+  let dagSize = 0
+  for await (const block of car.blocks()) {
+    dagSize += block.bytes.length
+  }
   const result = {
     cid: {
-      '/': cid.toString(),
+      '/': String(roots[0]),
     },
     name: files[0].originalname,
     // car uploads may not be unixfs, so get a bytes property instead of `size` https://github.com/ipfs/ipfs-cluster/issues/1362
-    bytes: bytes.length,
+    bytes: dagSize,
   }
   return {
     statusCode: 200,
