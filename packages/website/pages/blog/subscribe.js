@@ -38,12 +38,18 @@ export default function Subcribe({ user }) {
   const onSubmit = async (e) => {
     e.preventDefault()
     const userMail = user?.email || email
+
+    if (status === 'pending' || !userMail) return
+
     setStatus('pending')
-    if (errorMsg) setErrorMsg('')
+    if (errorMsg) {
+      setErrorMsg('You could not subscribe to the list')
+    }
     setDisabled(true)
     // try to subscribe user
     try {
       await subscribe(userMail)
+
       setStatus('success')
     } catch (/** @type {any} */ err) {
       // if user already exists we will try to add blog-subscriber tag
@@ -73,41 +79,52 @@ export default function Subcribe({ user }) {
     }
   }
 
-  return (
-    <main className="bg-nsltblue w-100 flex-auto">
-      <div className="mw9 center pv3 mtauto">
-        <form onSubmit={onSubmit} className="tc flex flex-column items-center">
-          <label className="f5 db mb2 chicagoflf">
-            <h1>Subscribe</h1>
-          </label>
-          <input
-            type="email"
-            name="email"
-            required
-            placeholder="Enter your email"
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={status === 'pending' || !!user?.email}
-            value={user?.email || email}
-            className="input-reset ba b--black pa2 mb3 w5 center db"
-          />
+  let content = (
+    <form onSubmit={onSubmit} className="flex items-center tc flex-column">
+      <label className="f5 db mb2 chicagoflf">
+        <h1>Subscribe</h1>
+      </label>
+      <input
+        type="email"
+        name="email"
+        required
+        placeholder="Enter your email"
+        onChange={(e) => setEmail(e.target.value)}
+        disabled={status === 'pending' || !!user?.email}
+        value={user?.email || email}
+        className="input-reset ba b--black pa2 mb3 w5 center db"
+      />
 
-          <Button
-            disabled={disabled}
-            type="submit"
-            tracking={{
-              event: countly.events.BLOG_SUBSCRIBE_CLICK,
-              ui: countly.ui.BLOG_SUBSCRIBE,
-              action: 'Subscribe',
-            }}
-            className="w5"
-          >
-            Subscribe
-          </Button>
-          <br />
-          {errorMsg && <p className="error">{errorMsg}</p>}
-          {status === 'success' && <p>Subscribed!</p>}
-        </form>
+      <Button
+        disabled={disabled}
+        type="submit"
+        title="Subscribe to the Mailing List"
+        tracking={{
+          event: countly.events.BLOG_SUBSCRIBE_CLICK,
+          ui: countly.ui.BLOG_SUBSCRIBE,
+          action: 'Subscribe',
+        }}
+        className="w5"
+      >
+        Subscribe
+      </Button>
+      <br />
+      {errorMsg && <p className="error">{errorMsg}</p>}
+    </form>
+  )
+
+  if (status === 'success') {
+    content = (
+      <div>
+        <p>Subscribed!</p>
+        <Button></Button>
       </div>
+    )
+  }
+
+  return (
+    <main className="flex-auto bg-nsltblue w-100">
+      <div className="mw9 center pv3 mtauto">{content}</div>
     </main>
   )
 }
