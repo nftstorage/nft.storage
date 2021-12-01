@@ -23,28 +23,34 @@ Or yarn
 yarn add nft.storage
 ```
 
-### Usage
+## Usage
 
 First, obtain an API token from https://nft.storage and use it in place of `API_TOKEN` below:
 
 ```js
 import { NFTStorage, File } from 'nft.storage'
-const client = new NFTStorage({ token: API_TOKEN })
+const client = new NFTStorage({ token: 'API_TOKEN' })
 
-const metadata = await client.store({
-  name: 'Pinpie',
-  description: 'Pin is not delicious beef!',
-  image: new File(
-    [
-      /* data */
-    ],
-    'pinpie.jpg',
-    { type: 'image/jpg' }
-  ),
-})
-console.log(metadata.url)
-// ipfs://bafyreib4pff766vhpbxbhjbqqnsh5emeznvujayjj4z2iu533cprgbz23m/metadata.json
+async function main () {
+  const metadata = await client.store({
+    name: 'Pinpie',
+    description: 'Pin is not delicious beef!',
+    image: new File(
+      [
+        /* data */
+      ],
+      'pinpie.jpg',
+      { type: 'image/jpg' }
+    ),
+  })
+  console.log(metadata.url)
+  // ipfs://bafyreib4pff766vhpbxbhjbqqnsh5emeznvujayjj4z2iu533cprgbz23m/metadata.json
+}
+
+main()
 ```
+
+The client uses ESM modules. If running from Node.js, either name your script `index.mjs` or use `npm init` to create a new `package.json` file in your project directory and add `"type": "module",` to it.
 
 For more examples please see the [API documentation](https://nftstorage.github.io/nft.storage/client/) or the [examples directory in the project repository][examples directory], which contains sample projects for both [browsers][examples.browser] and [Node.js][examples.node].
 
