@@ -38,6 +38,11 @@
   --btn-ghost-x-hover: -1px;
   --btn-ghost-y-hover: -1px;
 
+  --card-ghost-x: -6px;
+  --card-ghost-y: -6px;
+  --card-ghost-x-hover: -3px;
+  --card-ghost-y-hover: -3px;
+
   --h2-size: 2em;
   --h3-size: 2em;
 }
