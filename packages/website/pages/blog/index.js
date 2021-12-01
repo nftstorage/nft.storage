@@ -163,11 +163,11 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
     )
   }
   return (
-    <div className="pb24 flex-auto">
+    <div className="flex-auto pb24">
       {currentItems.length > 0 ? (
         <Items currentItems={currentItems} handleClick={handleCardClick} />
       ) : (
-        <div className="flex h-100 pt4 flex-auto justify-center items-center">
+        <div className="flex items-center justify-center flex-auto h-100 pt4">
           No items to show
         </div>
       )}
@@ -236,13 +236,15 @@ const Blog = ({ posts }) => {
 
   const router = useRouter()
 
+  console.log(posts)
+
   useEffect(() => {
     if (!posts) return
     const filtered =
       filters[0] !== 'all'
-        ? posts.filter((post) => {
-            return post.tags?.some((t) => filters.includes(t.toLowerCase()))
-          })
+        ? posts.filter((post) =>
+            post.tags?.some((t) => filters.includes(t.toLowerCase()))
+          )
         : rest
     setCurrentPosts(filtered)
   }, [filters, posts])
@@ -293,7 +295,7 @@ const Blog = ({ posts }) => {
   if (posts.length === 0) return <Backdrop>There are no blogs yet 😞</Backdrop>
 
   return (
-    <main className="blog bg-nspeach w-100 flex flex-auto">
+    <main className="flex flex-auto blog bg-nspeach w-100">
       <div className="blog-body w-100">
         <HighlightCard onClick={() => setLoading(true)} post={first} />
         <div className="blog-content w-100 mw9">
