@@ -25,6 +25,12 @@ export async function dbSqlCmd(opts) {
   })
 
   // read all the SQL files
+  const configSql = fs.readFileSync(
+    path.join(__dirname, '../../postgres/config.sql'),
+    {
+      encoding: 'utf-8',
+    }
+  )
   const tables = fs.readFileSync(path.join(__dirname, '../../db/tables.sql'), {
     encoding: 'utf-8',
   })
@@ -71,6 +77,7 @@ export async function dbSqlCmd(opts) {
     await client.query(reset)
   }
 
+  await client.query(configSql)
   await client.query(tables)
 
   if (opts.cargo) {
