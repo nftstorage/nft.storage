@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Button from '../../components/button.js'
 import countly from '../../lib/countly.js'
 import { addTags, getInfo, subscribe } from '../../lib/subscribe.js'
-
+import { useRouter } from 'next/router'
 export function getStaticProps() {
   return {
     props: {
@@ -21,6 +21,7 @@ export function getStaticProps() {
  * @returns
  */
 export default function Subcribe({ user }) {
+  const router = useRouter()
   const [status, setStatus] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const [disabled, setDisabled] = useState(false)
@@ -115,9 +116,17 @@ export default function Subcribe({ user }) {
 
   if (status === 'success') {
     content = (
-      <div>
-        <p>Subscribed!</p>
-        <Button></Button>
+      <div className="flex items-center tc flex-column">
+        <h1 className="chicagoflf">Success!</h1>
+        <p>You are subscribed to the Mailing List.</p>
+        <br />
+        <Button
+          onClick={() => {
+            router.push('/blog')
+          }}
+        >
+          Go Back to Reading
+        </Button>
       </div>
     )
   }
