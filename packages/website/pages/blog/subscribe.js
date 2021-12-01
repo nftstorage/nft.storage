@@ -85,7 +85,11 @@ export default function Subcribe({ user }) {
       <label className="f5 db mb2 chicagoflf">
         <h1>Subscribe</h1>
       </label>
+      <label id="email-entry-label" htmlFor="email" className="sr-only">
+        Enter Your Email
+      </label>
       <input
+        aria-labeled-by="email-entry-label"
         type="email"
         name="email"
         required
