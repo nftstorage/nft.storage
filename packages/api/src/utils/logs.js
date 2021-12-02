@@ -45,7 +45,7 @@ export class Logging {
     this.metadata = {
       user: {
         email: 'N/A',
-        id: 'N/A',
+        id: 0,
       },
       request: {
         url: request.url,
@@ -68,13 +68,13 @@ export class Logging {
    *
    * @param {Object} user
    * @param {string} user.email
-   * @param {string} [user.id]
+   * @param {number} [user.id]
    */
   setUser(user) {
-    this.metadata.user.id = user.id || 'N/A'
+    this.metadata.user.id = user.id || 0
     this.metadata.user.email = user.email
     this.opts.sentry.setUser({
-      id: user.id,
+      id: `${user.id}`,
       email: user.email,
     })
   }
@@ -104,8 +104,6 @@ export class Logging {
    */
   _add(body) {
     this.logEventsBatch.push(body)
-
-    return true
   }
 
   async postBatch() {

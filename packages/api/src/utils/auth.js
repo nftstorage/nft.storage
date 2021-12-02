@@ -28,7 +28,7 @@ export async function validate(event, { log, db }) {
         if (key) {
           log.setUser({
             email: user.data.email,
-            id: user.data.magic_link_id,
+            id: user.data.id,
           })
           return {
             user: user.data,
@@ -53,7 +53,7 @@ export async function validate(event, { log, db }) {
 
       log.setUser({
         email: user.data.email,
-        id: user.data.magic_link_id,
+        id: user.data.id,
       })
 
       return {
