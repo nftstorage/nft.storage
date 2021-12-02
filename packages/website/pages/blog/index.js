@@ -168,7 +168,8 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
         <Items currentItems={currentItems} handleClick={handleCardClick} />
       ) : (
         <div className="flex items-center justify-center flex-auto h-100 pt4">
-          No items to show
+          {console.log(items.length)}
+          More blogs coming soon
         </div>
       )}
       {items.length > BLOG_ITEMS_PER_PAGE && (

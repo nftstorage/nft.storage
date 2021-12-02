@@ -74,7 +74,7 @@ const Post = ({ post }) => {
         <img
           src={post.meta.thumbnail}
           alt={`Banner for ${post.meta.title}`}
-          className="h-card w-100 object-cover object-center"
+          className="h-card w-100 object-cover object-top"
         />
         <div className="mt14 mw7 ph8">
           <div className="post-meta mb4">
@@ -113,7 +113,7 @@ const Post = ({ post }) => {
                 </Button>
               </div>
             </div>
-            <h1 className="chicagoflf f2 mb2">{post.meta.title}</h1>
+            <h1 className="chicagoflf f2 mb7 mt2">{post.meta.title}</h1>
             {post.meta?.tags ? (
               <div className="mb3">
                 <Tags tags={post.meta.tags} />
@@ -121,8 +121,8 @@ const Post = ({ post }) => {
             ) : (
               <div></div>
             )}
-            <p className="mb5">{post.meta.description}</p>
-            <div className="flex mb8">
+            <p className="mb2">{post.meta.description}</p>
+            <div className="flex mb7">
               <span className="darker-gray f6 mr2">{post.meta.author}</span>
               <span className="darker-gray f6">{post.meta.date}</span>
             </div>

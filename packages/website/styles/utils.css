@@ -20,6 +20,9 @@
 .object-center {
   object-position: center;
 }
+.object-top {
+  object-position: top;
+}
 .justify-evenly {
   justify-content: space-evenly;
 }

@@ -92,6 +92,12 @@ h6 {
 .blog .mb5 {
   margin-bottom: 1.25rem;
 }
+.blog .mb6 {
+  margin-bottom: 1.5rem;
+}
+.blog .mb7 {
+  margin-bottom: 2rem;
+}
 
 /* layout */
 .blog-body {
