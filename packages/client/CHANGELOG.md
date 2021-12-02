@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.1.0](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v5.0.0...nft.storage-v5.1.0) (2021-12-02)
+
+
+### Features
+
+* add marketplace logos ([#840](https://www.github.com/nftstorage/nft.storage/issues/840)) ([f02ee96](https://www.github.com/nftstorage/nft.storage/commit/f02ee9648bbb284399b00c0d11e3445166b95bbf))
+* add X-Client header ([#849](https://www.github.com/nftstorage/nft.storage/issues/849)) ([e8f7bed](https://www.github.com/nftstorage/nft.storage/commit/e8f7bed8953a6894421f1a72105d7775b4e72f2e))
+* seo optimization ([#765](https://www.github.com/nftstorage/nft.storage/issues/765)) ([d4a650c](https://www.github.com/nftstorage/nft.storage/commit/d4a650c7e8794504f697684018f3849c98357923))
+
+
+### Bug Fixes
+
+* add prebuilt bundle ([#878](https://www.github.com/nftstorage/nft.storage/issues/878)) ([b673479](https://www.github.com/nftstorage/nft.storage/commit/b673479f0e0874fb7fc46aa728dd77ef3cbc717e))
+
 ## [5.0.0](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v4.0.1...nft.storage-v5.0.0) (2021-11-22)
 
 
