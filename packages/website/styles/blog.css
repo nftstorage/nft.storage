@@ -130,13 +130,6 @@ h6 {
   border-bottom: 1px solid var(--nsblack);
   min-height: var(--card-size);
   background: var(--nsltblue);
-  background: linear-gradient(
-    90deg,
-    var(--nsltblue),
-    var(--nsltblue) 51%,
-    var(--nsorange) 51%,
-    var(--nsorange) 100%
-  );
 }
 
 .blog .highlight-info {
@@ -273,7 +266,6 @@ h6 {
 }
 
 /* responsive */
-
 @media screen and (max-width: 880px) {
   .blog .highlight-info,
   .highlight-img {
@@ -285,7 +277,7 @@ h6 {
     z-index: 50;
     opacity: 0.92;
     background-color: var(--nsltblue);
-    padding: 4rem 2rem;
+    padding: 2rem;
     border-bottom: 1px solid var(--nsblack);
   }
   .blog-tags-buttons {
@@ -328,4 +320,27 @@ h6 {
 }
 
 @media screen and (max-width: 880px) {
+  .highlight-card-text .title {
+    font-size: 2.5rem;
+    line-height: 3rem;
+    -webkit-line-clamp: 3;
+  }
+
+  .highlight-card-text .description {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .highlight-card-text .title {
+    font-size: 1.5rem;
+    line-height: 2.5rem;
+    -webkit-line-clamp: 3;
+  }
+
+  .highlight-card-text .description {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
 }
