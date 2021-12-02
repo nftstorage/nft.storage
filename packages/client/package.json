@@ -39,6 +39,7 @@
     "build": "run-s build:*",
     "build:ts": "tsc --build",
     "build:cjs": "rollup --config rollup.config.js",
+    "build:esm": "rollup --config rollup.esm.config.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && npx codecov",
     "typedoc": "typedoc ./src/lib.js ./src/lib/interface.ts  --out ../../docs/client --excludeExternals --internalNamespace _",
     "prepublishOnly": "npm run build"
@@ -58,6 +59,9 @@
   "devDependencies": {
     "@ipld/dag-cbor": "^6.0.13",
     "@ipld/dag-json": "^8.0.3",
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
     "@ssttevee/multipart-parser": "0.1.9",
     "@types/mocha": "^9.0.0",
     "hundreds": "0.0.9",
@@ -74,6 +78,7 @@
     "playwright-test": "^7.2.1",
     "rollup": "2.50.1",
     "rollup-plugin-multi-input": "1.3.1",
+    "rollup-plugin-terser": "^7.0.2",
     "typedoc": "0.22.7",
     "typedoc-plugin-mdn-links": "^1.0.4",
     "typedoc-plugin-missing-exports": "^0.22.3",
