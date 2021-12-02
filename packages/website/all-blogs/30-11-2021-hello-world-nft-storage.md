@@ -2,7 +2,7 @@
 title: Storing the World’s Most Valuable Virtual Assets with NFT.Storage
 description: The metaverse is here. Where is it all being stored?
 author: David Choi
-thumbnail: https://filecoin.io/uploads/fil-blog-nft-storage-notext-1_hu0f986e6d3668f304753a6341d061b59b_77385_2000x0_resize_q90_linear_2.png
+thumbnail: https://user-images.githubusercontent.com/87873179/144324736-3f09a98e-f5aa-4199-a874-13583bf31951.jpg
 date: Nov 30, 2021
 tags:
   - nft

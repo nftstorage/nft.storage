@@ -68,8 +68,8 @@ export const HighlightCard = ({ post, onClick }) => (
             {post.description}
           </p>
           <div className="flex">
-            <span className="dark-gray f6 mr2">{post.author}</span>
-            <span className="dark-gray f6">{post.date}</span>
+            <span className="darker-gray f6 mr2">{post.author}</span>
+            <span className="darker-gray f6">{post.date}</span>
           </div>
         </div>
         <div className="flex highlight-card-buttons">
