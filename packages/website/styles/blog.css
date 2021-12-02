@@ -109,6 +109,12 @@ h6 {
   grid-gap: 2rem;
   padding: 0 2rem;
 }
+/* Large Screens */
+@media screen and (min-width: 98.5rem) {
+  .blog-content {
+    padding: 0;
+  }
+}
 
 .blog .top-1 {
   top: 0.25rem;
@@ -134,6 +140,13 @@ h6 {
 
 .blog .highlight-info {
   padding: 2.5rem;
+}
+
+/* Large Screens */
+@media screen and (min-width: 98.5rem) {
+  .blog .highlight-info {
+    padding-left: 0;
+  }
 }
 
 .blog .button-tags-container {
