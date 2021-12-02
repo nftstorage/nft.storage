@@ -138,10 +138,13 @@ h6 {
 /*Components*/
 
 .blog .blog-highlight-card {
-  border-top: 1px solid var(--nsblack);
-  border-bottom: 1px solid var(--nsblack);
   min-height: var(--card-size);
   background: var(--nsltblue);
+}
+
+.blog-highlight-info-container {
+  border-top: 1px solid var(--nsblack);
+  border-bottom: 1px solid var(--nsblack);
 }
 
 .blog .highlight-info {

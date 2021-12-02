@@ -57,7 +57,7 @@ export const Card = ({ post, onClick }) => (
  */
 export const HighlightCard = ({ post, onClick }) => (
   <div className="flex justify-center blog-highlight-card h-card w-100">
-    <div className="relative flex w-100 mw9">
+    <div className="relative flex w-100 mw9 blog-highlight-info-container">
       <div className="flex justify-between highlight-info flex-column w-50">
         <div className="highlight-card-text">
           <div className="mb4">{post.tags && <Tags tags={post.tags} />}</div>
@@ -72,7 +72,7 @@ export const HighlightCard = ({ post, onClick }) => (
             <span className="darker-gray f6">{post.date}</span>
           </div>
         </div>
-        <div className="flex highlight-card-buttons">
+        <div className="flex highlight-card-buttons ml2">
           <Button
             href={{
               pathname: `/blog/post/${post.slug}`,
