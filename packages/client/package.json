@@ -1,6 +1,6 @@
 {
   "name": "nft.storage",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "description": "A client library for the https://nft.storage/ service. It provides a convenient interface for working with the HTTP API from a web browser or Node.js",
   "license": "(Apache-2.0 AND MIT)",
   "type": "module",
