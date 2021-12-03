@@ -1,5 +1,12 @@
 # Changelog
 
+### [5.1.2](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v5.1.1...nft.storage-v5.1.2) (2021-12-03)
+
+
+### Bug Fixes
+
+* include bundle in npm files ([#889](https://www.github.com/nftstorage/nft.storage/issues/889)) ([994f133](https://www.github.com/nftstorage/nft.storage/commit/994f133b75856cc4045de91723827e345fa26f9f))
+
 ### [5.1.1](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v5.1.0...nft.storage-v5.1.1) (2021-12-03)
 
 
