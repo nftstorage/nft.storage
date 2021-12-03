@@ -9,7 +9,8 @@
   "main": "./dist/src/lib.cjs",
   "files": [
     "src",
-    "dist/src"
+    "dist/src",
+    "dist/bundle*"
   ],
   "exports": {
     ".": {
