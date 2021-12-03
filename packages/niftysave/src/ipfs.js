@@ -85,7 +85,7 @@ const { multihash } = Multihash
  * @typedef {import('ipfs-unixfs-importer').Blockstore} BlockAPI
  * @implements {BlockAPI}
  */
-// @ts-expect-error - must implement has, delete, putMany, getMany, ... methods.
+// @ts-expect-error - must implement has, delete, putMany, getMany, ... methods
 class Block {
   /**
    * @param {Object} [options]
@@ -106,6 +106,7 @@ class Block {
   /**
    * @param {import('multiformats').CID} cid
    * @param {Uint8Array} bytes
+   * @returns { Promise<void> }
    */
   async put(cid, bytes) {
     const multihash = this.mh.decode(cid.bytes)
@@ -115,12 +116,12 @@ class Block {
       cidVersion: cid.version,
       hashAlg: multihash.code,
     })
-
-    // return { cid, data: bytes }
   }
+
   /**
    * @param {import('multiformats').CID} cid
    * @param {any} options
+   * @returns { Promise<Uint8Array> }
    */
   async get(cid, options) {
     // @ts-expect-error - CID is incompatible

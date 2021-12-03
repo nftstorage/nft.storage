@@ -39,7 +39,7 @@
     "ipld-in-memory": "^8.0.0",
     "mocha": "^9.1.3",
     "multicodec": "^3.0.1",
-    "multiformats": "^9.5.2",
+    "multiformats": "^9.4.10",
     "multihashing-async": "^2.1.4",
     "nft.storage": "^5.1.0",
     "subprogram": "^1.2.0",
