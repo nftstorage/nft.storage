@@ -52,6 +52,11 @@ paths:
         We highly recommend that you only use content with an `image/*` content type for your `image` field, and include other content types in the
         `properties` field as additional references.
 
+        ### Size limitations
+
+        The store endpoint is restricted to a total request body size of 100MiB, which includes the metadata and all attached files. To store larger files, you
+        can use the upload endpoint with chunked CAR files.
+
       operationId: store
       requestBody:
         required: true
@@ -93,6 +98,27 @@ paths:
         ### Content Addressed Archive (CAR) files
         You can also upload a CAR file, by setting the request body as a single CAR Blob/File object and providing the request header `Content-Type: application/car`
         Providing a CAR file allows you to pre-compute the root CID for 1 or more files, ensures that NFT.Storage will store and provide your assets with the same CID.
+
+        ### Size limitations
+        Each request to the upload endpoint is limited to a total request body size of 100MiB.
+        However, you can upload files larger than 100MiB by packing them into a CAR file and splitting the CAR
+        into chunks of less than 100MiB. This strategy is used by the JavaScript client library to support uploads of large files.
+
+        The simplest method of splitting CAR files is with the [carbites cli tool](https://github.com/nftstorage/carbites):
+
+        ```
+        npm i -g carbites-cli
+
+        # Split a big CAR into many smaller CARs
+        carbites split big.car --size 100MB --strategy treewalk
+        ```
+
+        Note that you MUST use the `treewalk` strategy, so that all the chunked CARs have the same root CID.
+        Once all the CAR chunks have been uploaded, the CARs will be combined, made available via IPFS,
+        and queued for storage on Filecoin.
+
+        For more about working with CARs, see https://docs.web3.storage/how-tos/work-with-car-files
+
       operationId: upload
       requestBody:
         required: true
