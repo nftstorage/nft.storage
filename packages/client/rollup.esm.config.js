@@ -18,6 +18,7 @@ export default {
   plugins: [
     commonjs(),
     resolve({
+      preferBuiltins: false,
       browser: true,
     }),
     json(),
