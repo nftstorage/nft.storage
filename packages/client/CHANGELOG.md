@@ -1,5 +1,12 @@
 # Changelog
 
+### [5.1.3](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v5.1.2...nft.storage-v5.1.3) (2021-12-03)
+
+
+### Bug Fixes
+
+* do not prefer node.js builtins ([#891](https://www.github.com/nftstorage/nft.storage/issues/891)) ([84c110a](https://www.github.com/nftstorage/nft.storage/commit/84c110ac26f954d1770220e279fbe308b32fa92b))
+
 ### [5.1.2](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v5.1.1...nft.storage-v5.1.2) (2021-12-03)
 
 
