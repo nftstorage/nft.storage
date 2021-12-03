@@ -1,5 +1,12 @@
 # Changelog
 
+### [5.1.1](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v5.1.0...nft.storage-v5.1.1) (2021-12-03)
+
+
+### Bug Fixes
+
+* deploy generated client docs to gh-pages branch ([#887](https://www.github.com/nftstorage/nft.storage/issues/887)) ([5b32e4a](https://www.github.com/nftstorage/nft.storage/commit/5b32e4a76b066f0d863a1b294a3151627b8a8447))
+
 ## [5.1.0](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v5.0.0...nft.storage-v5.1.0) (2021-12-02)
 
 
