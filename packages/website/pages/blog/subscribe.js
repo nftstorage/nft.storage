@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import Button from '../../components/button.js'
 import countly from '../../lib/countly.js'
-import { addTags, getInfo, subscribe } from '../../lib/subscribe.js'
+import { subscribe } from '../../lib/subscribe.js'
 import { useRouter } from 'next/router'
+
 export function getStaticProps() {
   return {
     props: {
@@ -36,7 +37,7 @@ export default function Subcribe({ user }) {
   /**
    * @param {import('react').ChangeEvent<HTMLFormElement>} e
    */
-  const onSubmit = async (e) => {
+  const onSubmit = async e => {
     e.preventDefault()
     const userMail = user?.email || email
 
@@ -50,33 +51,13 @@ export default function Subcribe({ user }) {
     // try to subscribe user
     try {
       await subscribe(userMail)
-
+      console.log('SUCCESS! ')
       setStatus('success')
-    } catch (/** @type {any} */ err) {
-      // if user already exists we will try to add blog-subscriber tag
-      if (err.message === 'exists') {
-        // so... try to add the new tag
-        await addTags(userMail)
-        // endpoint for adding tags returns null no matter what
-        // so impossible to tell if successful
-        // so check to see if user is subscribed(to audience) and has blog-subscriber tag
-        try {
-          const user = await getInfo(userMail)
-          if (
-            user.response.status === 'subscribed' &&
-            user.response.tags.some(
-              (/** @type {any} */ tag) =>
-                tag.name === 'nft_storage_blog_subscriber'
-            )
-          )
-            setStatus('success')
-        } catch (/** @type {any} */ error) {
-          console.log('ERROR SUBSCRIBING USER: ', error.message)
-          setDisabled(false)
-          setStatus('error')
-          setErrorMsg('Something went wrong. Please try again later.')
-        }
-      }
+    } catch (/** @type {any} */ error) {
+      console.error('ERROR SUBSCRIBING USER: ', error.message)
+      setDisabled(false)
+      setStatus('error')
+      setErrorMsg('Something went wrong. Please try again later.')
     }
   }
 
@@ -94,7 +75,7 @@ export default function Subcribe({ user }) {
         name="email"
         required
         placeholder="Enter your email"
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={e => setEmail(e.target.value)}
         disabled={status === 'pending' || !!user?.email}
         value={user?.email || email}
         className="input-reset ba b--black pa2 mb3 w5 center db"
