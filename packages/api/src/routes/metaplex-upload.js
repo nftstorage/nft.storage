@@ -11,6 +11,10 @@ import {
 } from '../utils/jwt.js'
 import { keyFromDID, verifyEd25519Signature } from '../utils/ed25519.js'
 import { DBError } from '../utils/db-client.js'
+import {
+  ErrorMetaplexTokenNotFound,
+  ErrorInvalidMetaplexToken,
+} from '../errors.js'
 
 /**
  * When >2.5MB, use local add, because waiting for blocks to be sent to
@@ -30,7 +34,7 @@ export async function metaplexUpload(event, ctx) {
 
   const match = authHeader.match(/^Metaplex (.*)$/)
   if (!match) {
-    throw new HTTPError('invalid authorization header: ' + authHeader, 401)
+    throw new ErrorMetaplexTokenNotFound()
   }
 
   const token = match[1]
@@ -50,7 +54,7 @@ export async function metaplexUpload(event, ctx) {
 
   // confirm that the content cid matches the cid from the signed metadata
   if (contentCid !== meta.rootCID) {
-    throw new HTTPError('invalid token - cid mismatch', 401)
+    throw new ErrorInvalidMetaplexToken('CID in token does not match content')
   }
 
   const upload = await db.createUpload({
@@ -112,12 +116,12 @@ async function validate(db) {
  */
 async function parseMetaplexJWT(token) {
   if (typeof token !== 'string') {
-    throw new Error('token must be a string')
+    throw new ErrorInvalidMetaplexToken('token must be a string')
   }
   var tokenParts = token.split('.')
 
   if (tokenParts.length !== 3) {
-    throw new HTTPError('invalid token', 401)
+    throw new ErrorInvalidMetaplexToken('token must be a signed JWT')
   }
 
   const header = parseJWTHeader(token)
@@ -125,9 +129,8 @@ async function parseMetaplexJWT(token) {
   const payload = parseJWT(token)
 
   if (!payload.iss) {
-    throw new HTTPError(
-      'invalid token - required field "iss" not present in payload',
-      401
+    throw new ErrorInvalidMetaplexToken(
+      'required field "iss" not present in payload'
     )
   }
 
@@ -139,42 +142,42 @@ async function parseMetaplexJWT(token) {
 
   const validSig = await verifyEd25519Signature(headerPayload, sig, pubkey)
   if (!validSig) {
-    throw new HTTPError('invalid token signature', 401)
+    throw new ErrorInvalidMetaplexToken('invalid signature')
   }
 
   // validate header
 
   if (header.alg !== 'EdDSA') {
-    throw new HTTPError('invalid algorithm for metaplex token', 401)
+    throw new ErrorInvalidMetaplexToken('invalid signing algorithm')
   }
 
   if (header.typ !== 'JWT') {
-    throw new HTTPError('invalid token type', 401)
+    throw new ErrorInvalidMetaplexToken('invalid token type')
   }
 
   if (!payload.req) {
-    throw new HTTPError(
-      'invalid token - required field "req" not present in payload',
-      401
+    throw new ErrorInvalidMetaplexToken(
+      'required field "req" not present in payload'
     )
   }
 
   if (!payload.req.put) {
-    throw new HTTPError(
-      'invalid token - required field "req.put" not present in payload',
-      401
+    throw new ErrorInvalidMetaplexToken(
+      'required field "req.put" not present in payload'
     )
   }
 
   if (typeof payload.req.put.rootCID !== 'string') {
-    throw new HTTPError('invalid token - no root cid in payload', 401)
+    throw new ErrorInvalidMetaplexToken('root CID not present in payload')
   }
 
   if (
     !payload.req.put.tags ||
     typeof payload.req.put.tags['solana-cluster'] !== 'string'
   ) {
-    throw new HTTPError('invalid token - no "solana-cluster" tag in payload')
+    throw new ErrorInvalidMetaplexToken(
+      '"solana-cluster" tag not present in payload'
+    )
   }
 
   const solanaCluster = payload.req.put.tags['solana-cluster']
