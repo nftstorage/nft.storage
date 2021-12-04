@@ -123,7 +123,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
     [user, isSmallVariant, version, logout, trackLogout]
   )
 
-  const onLinkClick = useCallback(event => {
+  const onLinkClick = useCallback((event) => {
     countly.trackCustomLinkClick(
       countly.events.LINK_CLICK_NAVBAR,
       event.currentTarget
@@ -138,7 +138,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   }, [isMenuOpen])
 
   const onMobileLinkClick = useCallback(
-    event => {
+    (event) => {
       onLinkClick(event)
       toggleMenu()
     },

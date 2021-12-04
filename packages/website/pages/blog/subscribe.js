@@ -37,7 +37,7 @@ export default function Subcribe({ user }) {
   /**
    * @param {import('react').ChangeEvent<HTMLFormElement>} e
    */
-  const onSubmit = async e => {
+  const onSubmit = async (e) => {
     e.preventDefault()
     const userMail = user?.email || email
 
@@ -75,7 +75,7 @@ export default function Subcribe({ user }) {
         name="email"
         required
         placeholder="Enter your email"
-        onChange={e => setEmail(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
         disabled={status === 'pending' || !!user?.email}
         value={user?.email || email}
         className="input-reset ba b--black pa2 mb3 w5 center db"

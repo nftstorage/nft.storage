@@ -18,7 +18,7 @@ export async function dbSqlCmd(opts) {
     'DAG_CARGO_USER',
     'DAG_CARGO_PASSWORD',
     'DATABASE_CONNECTION',
-  ].forEach(v => {
+  ].forEach((v) => {
     if (!process.env[v]) {
       throw new Error(`missing environment variable ${v}`)
     }
