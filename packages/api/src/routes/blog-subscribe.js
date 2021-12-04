@@ -1,6 +1,5 @@
 import { JSONResponse } from '../utils/json-response.js'
 import btoa from 'btoa'
-import fetch from 'node-fetch'
 
 const SERVER_PREFIX = 'us5'
 const LIST_ID = '64f6e3fd11'
@@ -15,7 +14,7 @@ const headers = {
 /**
  *  @param {string} email
  */
-export const getMailChimpUser = async email => {
+export const getMailChimpUser = async (email) => {
   const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${LIST_ID}/members/${email}`
   return await fetch(url, {
     method: 'GET',
@@ -26,7 +25,7 @@ export const getMailChimpUser = async email => {
 /**
  *  @param {string} email
  */
-export const addSubscriber = async email => {
+export const addSubscriber = async (email) => {
   const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${LIST_ID}/members/`
   const body = JSON.stringify({
     email_address: email,
@@ -44,7 +43,7 @@ export const addSubscriber = async email => {
 /**
  *  @param {string} email
  */
-const updateSubscriber = async email => {
+const updateSubscriber = async (email) => {
   const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${LIST_ID}/members/${email}/tags`
   const body = JSON.stringify({
     tags: [{ name: 'nft_storage_blog_subscriber', status: 'active' }],
@@ -61,11 +60,11 @@ const updateSubscriber = async email => {
  * @param {any} mailChimpUser
  * @returns {boolean}
  */
-const shouldUpdateMailChimpUser = mailChimpUser =>
+const shouldUpdateMailChimpUser = (mailChimpUser) =>
   mailChimpUser?.statusText === 'OK'
 
 /** @type {import('../bindings').Handler} */
-export const blogSubscribe = async event => {
+export const blogSubscribe = async (event) => {
   console.log('HERE IS PROCESS.ENV, ', process.env)
   const body = await event.request.json()
   try {
