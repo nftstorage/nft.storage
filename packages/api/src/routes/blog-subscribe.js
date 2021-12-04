@@ -1,10 +1,9 @@
 import { JSONResponse } from '../utils/json-response.js'
-import btoa from 'btoa'
 
 const SERVER_PREFIX = 'us5'
 const LIST_ID = '64f6e3fd11'
-const API_KEY = process.env.MAILCHIMP_API_KEY
-const TOKEN = btoa(`:${API_KEY}`)
+const API_KEY = MAILCHIMP_API_KEY
+const TOKEN = Buffer.from(`:${API_KEY}`).toString('base64')
 
 const headers = {
   'Content-Type': 'application/json; charset=UTF-8',
@@ -15,11 +14,14 @@ const headers = {
  *  @param {string} email
  */
 export const getMailChimpUser = async (email) => {
-  const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${LIST_ID}/members/${email}`
-  return await fetch(url, {
+  const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${LIST_ID}/members/${encodeURIComponent(
+    email
+  )}`
+  const mailChimpUser = await fetch(url, {
     method: 'GET',
     headers,
   })
+  return mailChimpUser
 }
 
 /**
@@ -44,7 +46,9 @@ export const addSubscriber = async (email) => {
  *  @param {string} email
  */
 const updateSubscriber = async (email) => {
-  const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${LIST_ID}/members/${email}/tags`
+  const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${LIST_ID}/members/${encodeURIComponent(
+    email
+  )}/tags`
   const body = JSON.stringify({
     tags: [{ name: 'nft_storage_blog_subscriber', status: 'active' }],
   })
@@ -65,10 +69,10 @@ const shouldUpdateMailChimpUser = (mailChimpUser) =>
 
 /** @type {import('../bindings').Handler} */
 export const blogSubscribe = async (event) => {
-  console.log('HERE IS PROCESS.ENV, ', process.env)
   const body = await event.request.json()
   try {
     const mailChimpUser = await getMailChimpUser(body.email)
+    console.log('USER: ', JSON.stringify(mailChimpUser))
     const response = shouldUpdateMailChimpUser(mailChimpUser)
       ? await updateSubscriber(body.email)
       : await addSubscriber(body.email)
@@ -79,7 +83,7 @@ export const blogSubscribe = async (event) => {
     })
   } catch (/** @type {any} */ error) {
     console.error('ping: ', error)
-    throw new Error(error)
+    throw Error(error)
   }
 }
 

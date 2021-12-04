@@ -25,9 +25,12 @@ class MyDocument extends Document {
             crossOrigin="true"
           ></link>
           <link
-            href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;700&display=swap"
-            rel="stylesheet"
-          />
+            rel="preload"
+            href="/fonts/chivo-reg.woff2"
+            as="font"
+            type="font/woff2"
+            crossOrigin="true"
+          ></link>
           <meta name="theme-color" content="#F5C32C" />
         </Head>
         <body>

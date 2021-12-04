@@ -7,8 +7,11 @@ const API = constants.API
  * @param {string} email
  * @param {string} [version]
  */
+
 export const subscribe = async (email, version = '') => {
-  const loginURL = version ? `/v${version}/blogSubscribe` : '/blogSubscribe'
+  const loginURL = version
+    ? `/v${version}/internal/blogSubscribe`
+    : '/internal/blogSubscribe'
   const res = await fetch(API + loginURL, {
     method: 'POST',
     body: JSON.stringify({
