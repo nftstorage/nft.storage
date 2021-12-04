@@ -13,15 +13,15 @@ const headers = {
 /**
  *  @param {string} email
  */
-export const getMailChimpUser = async (email) => {
+export const isChimpUser = async (email) => {
   const url = `https://${SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${LIST_ID}/members/${encodeURIComponent(
     email
   )}`
-  const mailChimpUser = await fetch(url, {
+  const res = await fetch(url, {
     method: 'GET',
     headers,
   })
-  return mailChimpUser
+  return res.statusText === 'OK'
 }
 
 /**
@@ -60,20 +60,11 @@ const updateSubscriber = async (email) => {
   })
 }
 
-/**
- * @param {any} mailChimpUser
- * @returns {boolean}
- */
-const shouldUpdateMailChimpUser = (mailChimpUser) =>
-  mailChimpUser?.statusText === 'OK'
-
 /** @type {import('../bindings').Handler} */
 export const blogSubscribe = async (event) => {
   const body = await event.request.json()
   try {
-    const mailChimpUser = await getMailChimpUser(body.email)
-    console.log('USER: ', JSON.stringify(mailChimpUser))
-    const response = shouldUpdateMailChimpUser(mailChimpUser)
+    const response = (await isChimpUser(body.email))
       ? await updateSubscriber(body.email)
       : await addSubscriber(body.email)
 
@@ -82,7 +73,7 @@ export const blogSubscribe = async (event) => {
       value: response,
     })
   } catch (/** @type {any} */ error) {
-    console.error('ping: ', error)
+    console.error(error)
     throw Error(error)
   }
 }
