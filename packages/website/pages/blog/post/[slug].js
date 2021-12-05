@@ -1,7 +1,7 @@
 import { FiFacebook, FiLinkedin, FiTwitter } from 'react-icons/fi'
 import { useEffect, useState } from 'react'
-
-import Markdown from '../../../components/markdown'
+import { serialize } from 'next-mdx-remote/serialize'
+import { MDXRemote } from 'next-mdx-remote'
 import SocialLink from '../../../components/social-link'
 import Tags from '../../../components/tags'
 import fs from 'fs'
@@ -12,24 +12,24 @@ import countly from '../../../lib/countly'
 export async function getStaticProps({ ...ctx }) {
   const { slug } = ctx.params
 
-  const content = fs.readFileSync(`all-blogs/${slug}.md`).toString()
+  const fileText = fs.readFileSync(`all-blogs/${slug}.mdx`).toString()
 
-  const info = matter(content)
+  const { data, content } = matter(fileText)
 
   const post = {
     meta: {
-      ...info.data,
+      ...data,
       slug,
     },
-    content: info.content,
+    content: await serialize(content),
   }
 
   return {
     props: {
       post: post,
-      title: info.data.title,
-      image: info.data.thumbnail,
-      description: info.data.description,
+      title: data.title,
+      image: data.thumbnail,
+      description: data.description,
       navBgColor: 'bg-nsltblue',
       altLogo: true,
       needsUser: false,
@@ -127,7 +127,7 @@ const Post = ({ post }) => {
               <span className="darker-gray f6">{post.meta.date}</span>
             </div>
           </div>
-          <Markdown content={post.content} />
+          <MDXRemote {...post.content} />
         </div>
       </div>
     </div>

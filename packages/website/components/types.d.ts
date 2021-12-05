@@ -1,3 +1,5 @@
+import { MDXRemoteSerializeResult } from 'next-mdx-remote'
+
 export interface PostMeta {
   title: string
   slug: string
@@ -10,7 +12,7 @@ export interface PostMeta {
 
 export interface Post {
   meta: PostMeta
-  content: string
+  content: MDXRemoteSerializeResult<Record<string, unknown>>
 }
 
 export interface Tag {
