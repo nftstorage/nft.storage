@@ -13,9 +13,18 @@
 
   async function main() {
     const store = new NFTStorage({ token })
-    const data = 'Hello nft.storage!'
-    const cid = await store.storeBlob(new Blob([data]))
-    log({ data, cid })
+    const data = new Blob(['Hello nft.storage!'])
+    const { car, cid: expectedCid } = await NFTStorage.encodeBlob(data)
+    console.log({ expectedCid: expectedCid.toString() })
+
+    // send the CAR to nft.storage, the returned CID will match the one we created above.
+    const cid = await store.storeCar(car)
+
+    // verify the service is storing the CID we expect
+    const cidsMatch = expectedCid.toString() === cid
+    log({ data, cid, expectedCid, cidsMatch })
+
+    // check that the CID is pinned
     const status = await store.status(cid)
     log(status)
   }
