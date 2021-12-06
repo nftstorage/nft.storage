@@ -8,10 +8,10 @@
 </form>
 <pre id="out"></pre>
 <script type="module">
-  import { NFTStorage } from 'https://cdn.skypack.dev/nft.storage'
+  import { NFTStorage } from 'https://cdn.jsdelivr.net/npm/nft.storage/dist/bundle.esm.min.js'
 
-  const endpoint = 'https://api.nft.storage' // the default
-  const token = 'API_KEY' // your API key from https://nft.storage/manage
+  const token =
+    new URLSearchParams(window.location.search).get('key') || 'API_KEY' // your API key from https://nft.storage/manage
 
   function log(msg) {
     msg = JSON.stringify(msg, null, 2)
@@ -24,7 +24,7 @@
     if (!nameEl.value) return log('Missing name')
     const fileEl = document.querySelector('input[type="file"]')
     if (!fileEl.files.length) return log('No files selected')
-    const storage = new NFTStorage({ endpoint, token })
+    const storage = new NFTStorage({ token })
     try {
       const metadata = await storage.store({
         name: nameEl.value,

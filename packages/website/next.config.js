@@ -1,5 +1,14 @@
 const { withSentryConfig } = require('@sentry/nextjs')
+const git = require('git-rev-sync')
+const fs = require('fs')
+const path = require('path')
 
+const shortHash = git.short(__dirname)
+const pkg = JSON.parse(
+  fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8')
+)
+const env = process.env.NEXT_PUBLIC_ENV
+const release = `${pkg.name}@${pkg.version}-${env}+${shortHash}`
 const nextConfig = {
   trailingSlash: true,
   reactStrictMode: true,
@@ -10,9 +19,11 @@ const nextConfig = {
   },
 }
 
-const SentryWebpackPluginOptions = {
+module.exports = withSentryConfig(nextConfig, {
   debug: false,
   silent: true,
-}
-
-module.exports = withSentryConfig(nextConfig, SentryWebpackPluginOptions)
+  setCommits: { auto: true, ignoreEmpty: true, ignoreMissing: true },
+  release,
+  dist: shortHash,
+  deploy: { env },
+})
