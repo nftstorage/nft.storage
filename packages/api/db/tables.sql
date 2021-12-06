@@ -145,3 +145,14 @@ CREATE TABLE IF NOT EXISTS metric
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+-- URLs of backups of user uploads
+CREATE TABLE IF NOT EXISTS backup
+(
+    id          BIGSERIAL PRIMARY KEY,
+    upload_id   BIGINT NOT NULL REFERENCES public.upload (id),
+    url         TEXT NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS backup_upload_id_idx ON upload (source_cid);

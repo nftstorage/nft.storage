@@ -440,6 +440,22 @@ export class DBClient {
 
     return data[0].value
   }
+
+  /**
+   * @param {number} uploadId Identifier of the upload this backup is for.
+   * @param {URL} url URL to use for accessing the backup data.
+   */
+  async createBackup(uploadId, url) {
+    /** @type {PostgrestQueryBuilder<definitions['backup']>} */
+    const query = this.client.from('backup')
+    const { error } = await query.insert({
+      upload_id: uploadId,
+      url: url.toString(),
+    })
+    if (error) {
+      throw new DBError(error)
+    }
+  }
 }
 
 export class DBError extends Error {
