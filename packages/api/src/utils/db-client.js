@@ -101,6 +101,9 @@ export class DBClient {
       data: {
         ...data,
         pins: data.pins || defaultPins,
+        backup_urls: data.backup_urls
+          ? data.backup_urls.map((u) => u.toString())
+          : [],
         inserted_at: data.inserted_at || now,
         updated_at: data.updated_at || now,
       },
@@ -439,22 +442,6 @@ export class DBClient {
     }
 
     return data[0].value
-  }
-
-  /**
-   * @param {number} uploadId Identifier of the upload this backup is for.
-   * @param {URL} url URL to use for accessing the backup data.
-   */
-  async createBackup(uploadId, url) {
-    /** @type {PostgrestQueryBuilder<definitions['backup']>} */
-    const query = this.client.from('backup')
-    const { error } = await query.insert({
-      upload_id: uploadId,
-      url: url.toString(),
-    })
-    if (error) {
-      throw new DBError(error)
-    }
   }
 }
 

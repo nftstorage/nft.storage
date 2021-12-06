@@ -45,6 +45,7 @@ export interface CreateUploadInput {
   origins?: string[]
   meta?: Record<string, string>
   name?: string
+  backup_urls?: URL[]
   inserted_at?: definitions['upload']['inserted_at']
   updated_at?: definitions['upload']['updated_at']
   pins?: Pick<definitions['pin'], 'service' | 'status'>[]

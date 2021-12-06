@@ -54,7 +54,7 @@ export async function nftUpload(event, ctx) {
   } else {
     const blob = await event.request.blob()
     if (blob.size === 0) {
-      throw new HTTPError('Empty payload', 400)
+      throw new HTTPError('empty payload', 400)
     }
     const isCar = contentType.includes('application/car')
     const uploadType = isCar ? 'Car' : 'Blob'
@@ -90,34 +90,48 @@ export async function nftUpload(event, ctx) {
 }
 
 /**
- * @param {object} params
- * @param {import('../bindings').RouteContext} params.ctx
- * @param {import('../utils/db-client-types').UserOutput} params.user
- * @param {import('../utils/db-client-types').UserOutputKey} [params.key]
- * @param {Blob} params.car
- * @param {import('../utils/db-types').definitions['upload']['type']} [params.uploadType]
- * @param {string} params.mimeType
- * @param {boolean} [params.isComplete]
- * @param {Array<{ name: string; type?: string }>} params.files
+ * @typedef {{
+ *   ctx: import('../bindings').RouteContext
+ *   user: Pick<import('../utils/db-client-types').UserOutput, 'id'>
+ *   key?: Pick<import('../utils/db-client-types').UserOutputKey, 'id'>
+ *   car: Blob
+ *   uploadType?: import('../utils/db-types').definitions['upload']['type']
+ *   mimeType: string
+ *   isComplete?: boolean
+ *   files: Array<{ name: string; type?: string }>
+ *   meta?: Record<string, string>
+ * }} UploadCarInput
+ * @param {UploadCarInput} params
  */
-async function uploadCar({
-  ctx,
-  user,
-  key,
-  car,
-  uploadType = 'Car',
-  mimeType,
-  isComplete = false,
-  files,
-}) {
-  const stat = await carStat(car)
+export async function uploadCar(params) {
+  const stat = await carStat(params.car)
+  return uploadCarWithStat(params, stat)
+}
 
+/**
+ * @param {UploadCarInput} data
+ * @param {CarStat} stat
+ */
+export async function uploadCarWithStat(
+  {
+    ctx,
+    user,
+    key,
+    car,
+    uploadType = 'Car',
+    mimeType,
+    isComplete = false,
+    files,
+    meta,
+  },
+  stat
+) {
   const [added, backupUrl] = await Promise.all([
     cluster.addCar(car, {
       local: car.size > constants.cluster.localAddThreshold,
     }),
-    ctx.s3
-      ? ctx.s3.backupCar(user.id, stat.rootCid, car)
+    ctx.backup
+      ? ctx.backup.backupCar(user.id, stat.rootCid, car)
       : Promise.resolve(null),
   ])
 
@@ -129,12 +143,10 @@ async function uploadCar({
     dag_size: isComplete ? added.bytes : stat.size,
     user_id: user.id,
     files,
+    meta,
     key_id: key?.id,
+    backup_urls: backupUrl ? [backupUrl] : [],
   })
-
-  if (backupUrl) {
-    await ctx.db.createBackup(upload.id, backupUrl)
-  }
 
   return upload
 }
@@ -152,10 +164,12 @@ async function uploadCar({
  *
  * The DAG size will be returned ONLY IF the root node is dag-pb.
  *
+ * @typedef {import('multiformats').CID} CID
+ * @typedef {{ size?: number, rootCid: CID }} CarStat
  * @param {Blob} carBlob
- * @returns {Promise<{ size?: number, rootCid: import('multiformats').CID }>}
+ * @returns {Promise<CarStat>}
  */
-async function carStat(carBlob) {
+export async function carStat(carBlob) {
   const carBytes = new Uint8Array(await carBlob.arrayBuffer())
   const blocksIterator = await CarBlockIterator.fromBytes(carBytes)
   const roots = await blocksIterator.getRoots()

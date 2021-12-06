@@ -51,5 +51,5 @@ export function getContext(event, params) {
     debug: isDebug,
     sentry,
   })
-  return { params, db, s3, log }
+  return { params, db, backup: s3, log }
 }

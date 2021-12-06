@@ -5,6 +5,10 @@ import { PutObjectCommand } from '@aws-sdk/client-s3/dist-es/commands/PutObjectC
 import { sha256 } from 'multiformats/hashes/sha2'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 
+/**
+ * @typedef {import('../bindings').BackupClient} BackupClient
+ * @implements {BackupClient}
+ */
 export class S3Client {
   /**
    * @param {string} region

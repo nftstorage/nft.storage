@@ -36,7 +36,7 @@ export interface RouteContext {
   params: Record<string, string>
   db: DBClient
   log: Logging
-  s3?: S3Client
+  backup?: BackupClient
 }
 
 export type Handler = (
@@ -152,4 +152,14 @@ export interface PinsResponse {
     origins: string[]
   }
   delegates: string[]
+}
+
+/**
+ * A client to a service that backups up a CAR file.
+ */
+export interface BackupClient {
+  /**
+   * Uploads the CAR file to the service and returns the URL.
+   */
+  backupCar(userId: number, rootCid: CID, car: Blob): Promise<URL>
 }
