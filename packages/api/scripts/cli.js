@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import path from 'path'
 import dotenv from 'dotenv'
+import fs from 'fs'
 import sade from 'sade'
 import { fileURLToPath } from 'url'
 import { build } from 'esbuild'
@@ -14,12 +15,15 @@ import { dbTypesCmd } from './cmds/db-types.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(__dirname)
-const version = git.short(__dirname)
 const prog = sade('api')
 
 dotenv.config({
-  path: path.join(__dirname, '../../../.env'),
+  path: path.join(__dirname, '..', '..', '..', '.env'),
 })
+
+const pkg = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8')
+)
 
 /** @type {import('esbuild').Plugin} */
 const PluginAlias = {
@@ -41,8 +45,11 @@ prog
   .command('build')
   .describe('Build the worker.')
   .option('--env', 'Environment', 'dev')
-  .action(async (opts) => {
+  .action(async opts => {
     try {
+      const version = `${pkg.name}@${pkg.version}-${opts.env}+${git.short(
+        __dirname
+      )}`
       await build({
         entryPoints: [path.join(__dirname, '../src/index.js')],
         bundle: true,
@@ -57,7 +64,7 @@ prog
           global: 'globalThis',
         },
         minify: opts.env === 'dev' ? false : true,
-        sourcemap: 'external',
+        sourcemap: true,
       })
 
       // Sentry release and sourcemap upload
@@ -66,9 +73,15 @@ prog
           authToken: process.env.SENTRY_TOKEN,
           org: 'protocol-labs-it',
           project: 'api',
+          dist: git.short(__dirname),
         })
 
         await cli.releases.new(version)
+        await cli.releases.setCommits(version, {
+          auto: true,
+          ignoreEmpty: true,
+          ignoreMissing: true,
+        })
         await cli.releases.uploadSourceMaps(version, {
           include: ['./dist'],
           urlPrefix: '/',
