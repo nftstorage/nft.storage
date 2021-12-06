@@ -39,7 +39,7 @@ export default function Subcribe({ user }) {
    */
   const onSubmit = async (e) => {
     e.preventDefault()
-    const userMail = user?.email || email
+    const userMail = email || user?.email
 
     if (status === 'pending' || !userMail) return
 

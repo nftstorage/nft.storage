@@ -21,16 +21,14 @@ export async function getStaticProps() {
   // we can create a "featured" flag if we want and feature blogs that way
 
   /**
-   * @param {string} fn
+   * @param {string} date
    */
-  const getBirthtime = (fn) =>
-    fs.statSync(`all-blogs/${fn}`).birthtime.getTime()
 
-  files.sort((a, b) => getBirthtime(b) - getBirthtime(a))
+  files.sort().reverse()
 
   const posts = files
     ? files
-        .filter((filename) => filename.toLowerCase() !== '.ds_store')
+        .filter((filename) => !filename.startsWith('.'))
         .map((fn, index) => {
           const content = fs.readFileSync(`all-blogs/${fn}`).toString()
           const info = matter(content)
@@ -168,7 +166,6 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
         <Items currentItems={currentItems} handleClick={handleCardClick} />
       ) : (
         <div className="flex items-center justify-center flex-auto h-100 pt4">
-          {console.log(items.length)}
           More blogs coming soon
         </div>
       )}

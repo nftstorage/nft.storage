@@ -18,7 +18,7 @@ export const Tag = ({ tag }) => {
   return isString ? (
     inner
   ) : (
-    <div className="">
+    <div>
       <Button
         onClick={tag.onClick}
         unstyled

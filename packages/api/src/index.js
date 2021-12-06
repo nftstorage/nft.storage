@@ -106,7 +106,7 @@ r.add('post', '/internal/tokens', withMode(tokensCreate, RW), [postCors])
 r.add('delete', '/internal/tokens', withMode(tokensDelete, RW), [postCors])
 
 // Blog
-r.add('post', '/internal/blogSubscribe', withMode(blogSubscribe, RW), [
+r.add('post', '/internal/blog/subscribe', withMode(blogSubscribe, RW), [
   postCors,
 ])
 

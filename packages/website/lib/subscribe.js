@@ -10,8 +10,8 @@ const API = constants.API
 
 export const subscribe = async (email, version = '') => {
   const loginURL = version
-    ? `/v${version}/internal/blogSubscribe`
-    : '/internal/blogSubscribe'
+    ? `/v${version}/internal/blog/subscribe`
+    : '/internal/blog/subscribe'
   const res = await fetch(API + loginURL, {
     method: 'POST',
     body: JSON.stringify({
