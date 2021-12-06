@@ -1,0 +1,31 @@
+{
+  "name": "gateway-nft-storage",
+  "version": "0.0.0",
+  "description": "IPFS gateway for nft.storage",
+  "private": true,
+  "type": "module",
+  "module": "./dist/index.mjs",
+  "scripts": {
+    "build": "node scripts/cli.js build",
+    "dev": "miniflare --watch --debug",
+    "deploy": "wrangler publish --env production",
+    "pretest": "npm run build ",
+    "test": "npm-run-all -p -r mock:ipfs.io test:worker",
+    "test:worker": "ava --verbose test/*.spec.js",
+    "mock:ipfs.io": "smoke -p 9081 test/mocks/ipfs.io"
+  },
+  "dependencies": {
+    "multiformats": "^9.5.2"
+  },
+  "devDependencies": {
+    "ava": "^3.15.0",
+    "esbuild": "^0.14.2",
+    "git-rev-sync": "^3.0.1",
+    "miniflare": "^2.0.0-rc.2",
+    "npm-run-all": "^4.1.5",
+    "sade": "^1.7.4",
+    "smoke": "^3.1.1"
+  },
+  "author": "Vasco Santos <santos.vasco10@gmail.com>",
+  "license": "(Apache-2.0 AND MIT)"
+}

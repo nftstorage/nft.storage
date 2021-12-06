@@ -1,0 +1,41 @@
+# gateway.nft.storage wrangler config.
+name = "gateway-nft-storage"
+
+# `javascript` means our we'll send pre-built javascript code. 
+#  ...as opposed to `webpack` where wrangler builds our code for us.
+type = "javascript"
+
+account_id = ""
+watch_dir = "src"
+compatibility_date = "2021-12-03"
+
+[build]
+command = "npm run build"
+[build.upload]
+format = "modules"
+dir = "dist"
+main = "index.mjs"
+
+# PROD!
+[env.production]
+# name = "gateway-nft-storage-production"
+account_id = "fffa4b4363a7e5250af8357087263b3a" # Protocol Labs CF account
+zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"    # nft.storage zone
+route = "*gateway.nft.storage/*"
+vars = { IPFS_GATEWAY = "https://ipfs.io" }
+
+[env.staging]
+# name = "gateway-nft-storage-staging"
+account_id = "fffa4b4363a7e5250af8357087263b3a" # Protocol Labs CF account
+zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"    # nft.storage zone
+route = "*gateway-staging.nft.storage/*"
+vars = { IPFS_GATEWAY = "https://ipfs.io" }
+
+[env.test]
+workers_dev = true
+vars = { IPFS_GATEWAY = "http://localhost:9081" }
+
+[env.vsantos]
+workers_dev = true
+account_id = "7ec0b7cf2ec201b2580374e53ba5f37b"
+vars = { IPFS_GATEWAY = "https://ipfs.io" }

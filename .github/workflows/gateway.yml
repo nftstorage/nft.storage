@@ -1,0 +1,41 @@
+name: Gateway
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/gateway/**'
+      - '.github/workflows/gateway.yml'
+  pull_request:
+    paths:
+      - 'packages/gateway/**'
+      - '.github/workflows/gateway.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - uses: bahmutov/npm-install@v1
+      - run: npx playwright install-deps
+      - run: yarn test:gateway
+  deploy-staging:
+    name: Deploy Staging
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - uses: bahmutov/npm-install@v1
+      - name: Publish app
+        uses: cloudflare/wrangler-action@1.3.0
+        with:
+          apiToken: ${{secrets.CF_API_TOKEN }}
+          workingDirectory: 'packages/gateway'
+          environment: 'staging'
