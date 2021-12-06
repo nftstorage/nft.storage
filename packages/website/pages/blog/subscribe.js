@@ -76,7 +76,7 @@ export default function Subcribe({ user }) {
         required
         placeholder="Enter your email"
         onChange={(e) => setEmail(e.target.value)}
-        disabled={status === 'pending' || !!user?.email}
+        disabled={status === 'pending'}
         value={user?.email || email}
         className="input-reset ba b--black pa2 mb3 w5 center db"
       />
