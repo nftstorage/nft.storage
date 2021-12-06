@@ -18,11 +18,11 @@ const require = createRequire(__dirname)
 const prog = sade('api')
 
 dotenv.config({
-  path: path.join(__dirname, '../../../.env'),
+  path: path.join(__dirname, '..', '..', '..', '.env'),
 })
 
 const pkg = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../package.json'), 'utf8')
+  fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8')
 )
 
 /** @type {import('esbuild').Plugin} */
