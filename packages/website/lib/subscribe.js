@@ -5,25 +5,18 @@ const API = constants.API
 /**
  *
  * @param {string} email
- * @param {string} [version]
  */
 
-export const subscribe = async (email, version = '') => {
-  const loginURL = version
-    ? `/v${version}/internal/blog/subscribe`
-    : '/internal/blog/subscribe'
-  const res = await fetch(API + loginURL, {
+export const subscribe = async (email) => {
+  const subscribeURL = '/internal/blog/subscribe'
+  const res = await fetch(API + subscribeURL, {
     method: 'POST',
     body: JSON.stringify({
       email,
     }),
   })
   const body = await res.json()
-  if (body.ok) {
-    return body.value
-  } else {
-    if (JSON.parse(body.response.text).title === 'Member Exists')
-      throw new Error('exists')
+  if (!body.ok) {
     throw new Error(body.error)
   }
 }
