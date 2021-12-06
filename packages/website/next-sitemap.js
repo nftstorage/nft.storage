@@ -6,6 +6,7 @@ const routes = [
   { loc: '/login', priority: 0.8 },
   { loc: '/terms', priority: 0.8 },
   { loc: '/callback', exclude: true },
+  { loc: '/callback-v0', exclude: true },
   { loc: '/files', exclude: true },
   { loc: '/manage', exclude: true },
   { loc: '/new-file', exclude: true },
