@@ -52,6 +52,7 @@ const Logos = ({ logos }) => {
           <Logo key={`marketplace-logo-${logo}`} src={logo} />
         ))}
       </div>
+      <p className="tc chicagoflf">and more!</p>
     </div>
   )
 }
@@ -97,40 +98,38 @@ function About() {
       </h3>
       <p className="lh-copy">
         Just upload your data and you&#39;ll receive an IPFS hash of the content
-        (a CID) that can be used in <strong>on-chain</strong> NFT data as a
-        pointer to the content.
+        (a &quot;CID,&quot; or content address) that you can use to make an IPFS
+        URL (<code>ipfs://&lt;cid&gt;</code>). Use this IPFS URL in your NFT
+        data to refer to <strong>off-chain</strong> data (e.g., the metadata
+        field in your NFT, the image field in your metadata) as a pointer to the
+        content.
       </p>
       <p className="lh-copy">
-        Filecoin provides long term storage for the data ensuring that even if{' '}
-        <strong>nft.storage</strong> is attacked or taken down the NFT data
-        persists!
+        Filecoin provides long-term storage for the data ensuring that even if
+        NFT. Storage is attacked or taken down the NFT data persists! And
+        NFT.Storage will continue to decentralize itself out of the picture
+        moving forward (e.g., making perpetual storage completely smart
+        contract-based utilizing future tools like the Filecoin Virtual
+        Machine).
       </p>
       <p className="lh-copy">
-        Optionally, you can provide additional redundancy by running your own
-        IPFS node and{' '}
+        If you’re looking to be in full control of your data and its
+        availability, you can redundantly store it on a{' '}
         <a
+          href="https://docs.ipfs.io/how-to/work-with-pinning-services/"
           className="black"
-          href="https://docs.ipfs.io/concepts/persistence/#pinning-in-context"
-          target="_blank"
-          rel="noreferrer"
         >
-          pinning
-        </a>{' '}
-        the CIDs of content uploaded to NFT.Storage.
-      </p>
-      <p className="lh-copy">
-        Alternately, you can use an{' '}
+          pinning service
+        </a>
+        ,{' '}
         <a
+          href="https://docs.ipfs.io/install/ipfs-desktop/#windows"
           className="black"
-          href="https://docs.ipfs.io/concepts/persistence/#pinning-services"
-          target="_blank"
-          rel="noreferrer"
         >
-          additional pinning service
+          locally
         </a>{' '}
-        for redundancy (NFT.Storage already does this when it backs things up to
-        Pinata). Doing this is not necessary, but might be of interest for users
-        looking to be in full control of their data and its availability.
+        or on a cloud provider like S3, or on other decentralized storage
+        networks like Arweave or Storj.
       </p>
     </>
   )
@@ -140,7 +139,7 @@ function About() {
         <HashLink id="retrieve">Retrieve</HashLink>
       </h3>
       <p className="lh-copy">
-        NFT data stored by <strong>nft.storage</strong> can be accessed from the
+        NFT data stored by <strong>NFT.Storage</strong> can be accessed from the
         decentralized IPFS network from <em>any</em> peer that has the content.
         CIDs reference <strong>immutable</strong> content so you can be sure the
         content you access is the content referenced in the NFT.
@@ -201,19 +200,56 @@ function About() {
           <HashLink id="about">About</HashLink>
         </h2>
         <p className="lh-copy about-text">
-          <strong>nft.storage</strong> is a brand new service, built
-          specifically for storing <strong>off-chain</strong> NFT data. Data is
-          stored <em>decentralized</em> on{' '}
+          <strong>NFT.Storage</strong> is a storage service, built for{' '}
+          <strong>off-chain</strong> NFT data (like metadata, images, and other
+          assets) for up to 31GiB in size. Data is stored using{' '}
           <a href="https://ipfs.io" className="black">
             IPFS
-          </a>{' '}
-          and{' '}
+          </a>
+          , meaning the URL referencing the data (that starts with{' '}
+          <code>ipfs://</code>) is a unique identifier for the data (i.e., a{' '}
+          <a
+            href="https://nftschool.dev/concepts/content-addressing"
+            className="black"
+          >
+            content address
+          </a>
+          ).
+        </p>
+        <p className="lh-copy about-text">
+          IPFS URIs can be used in NFT smart contracts and metadata to ensure
+          the NFT forever actually refers to the intended data (eliminating
+          things like rug pulls). IPFS is a standard used by many different
+          storage services to track and retrieve data via their content
+          addresses. As long as at least one copy of the data exists on the IPFS
+          network, you’ll be able to retrieve it. NFT.Storage stores many copies
+          of uploaded data in two ways: in managed infrastructure running IPFS,
+          and decentralized on{' '}
           <a href="https://filecoin.io" className="black">
             Filecoin
           </a>
-          , and are referenced using content-addressed IPFS URIs that can be
-          used in your smart contract without fear of the data being referenced
-          changing.
+          .
+        </p>
+        <p className="lh-copy about-text">
+          One of the amazing things about IPFS is that, once data is on the
+          network, it’s easy to redundantly store it on any other
+          IPFS-compatible storage solution. Have your own preference? Once data
+          is uploaded to NFT.Storage, feel free to store it on a{' '}
+          <a
+            href="https://docs.ipfs.io/how-to/work-with-pinning-services/"
+            className="black"
+          >
+            pinning service
+          </a>
+          ,{' '}
+          <a
+            href="https://docs.ipfs.io/install/ipfs-desktop/#windows"
+            className="black"
+          >
+            locally
+          </a>{' '}
+          or on a cloud provider like S3, or on other decentralized storage
+          networks like Arweave or Storj.
         </p>
         <p className="lh-copy about-text">
           To learn more about the importance of content addressing, check out
@@ -232,7 +268,7 @@ function About() {
             <div className="tc mv4">
               <img
                 src="images/diagram-store.png"
-                alt="diagram of storage with nft.storage"
+                alt="diagram of storage with NFT.Storage"
                 width="1152"
                 height="1650"
                 style={{ maxWidth: '576px', height: 'auto', width: '100%' }}
@@ -244,7 +280,7 @@ function About() {
             <div className="tc mv4">
               <img
                 src="images/diagram-retrieve.png"
-                alt="diagram of retrieval with nft.storage"
+                alt="diagram of retrieval with NFT.Storage"
                 width="1262"
                 height="1260"
                 style={{ maxWidth: '631px', height: 'auto', width: '100%' }}
@@ -257,7 +293,7 @@ function About() {
             <img
               src="images/diagram-store-and-retrieve.png"
               srcSet="images/diagram-store-and-retrieve@2x.png 2x"
-              alt="diagram of storage and retrieval with nft.storage"
+              alt="diagram of storage and retrieval with NFT.Storage"
               width="1177"
               style={{ width: '1177px', height: 'auto', maxWidth: '90%' }}
             />
@@ -291,6 +327,7 @@ function GettingStarted() {
   }, [])
 
   const jsEx = `import { NFTStorage, File } from 'nft.storage'
+import { pack } from 'ipfs-car/pack';
 
 const apiKey = 'YOUR_API_KEY'
 const client = new NFTStorage({ token: apiKey })
@@ -325,7 +362,7 @@ console.log(metadata.url)
                   className="no-underline underline-hover nsnavy"
                   onClick={onClickHandler}
                 >
-                  Register an nft.storage account
+                  Register an NFT.Storage account
                 </a>
               </Link>{' '}
               so that you can create API access keys.
@@ -391,7 +428,7 @@ console.log(metadata.url)
               :
             </p>
             <pre className="f6 lh-copy white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll">
-              npm install nft.storage
+              npm install NFT.Storage
             </pre>
             <p className="lh-copy">Use the client in Node.js or the browser:</p>
             <pre className="f6 lh-copy white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll">
