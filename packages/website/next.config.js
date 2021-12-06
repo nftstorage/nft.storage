@@ -7,7 +7,7 @@ const pkg = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8')
 )
 const env = process.env.NEXT_PUBLIC_ENV
-const gitNew = new Git(__dirname)
+const gitNew = new Git(path.join(__dirname, '../..'))
 const shortHash = gitNew.commitHash(true)
 const release = `${pkg.name}@${pkg.version}-${env}+${shortHash}`
 const nextConfig = {
