@@ -44,7 +44,6 @@ export class Logging {
     }
     this.metadata = {
       user: {
-        email: 'N/A',
         id: 0,
       },
       request: {
@@ -67,15 +66,12 @@ export class Logging {
    * Set user
    *
    * @param {Object} user
-   * @param {string} user.email
    * @param {number} [user.id]
    */
   setUser(user) {
     this.metadata.user.id = user.id || 0
-    this.metadata.user.email = user.email
     this.opts.sentry.setUser({
       id: `${user.id}`,
-      email: user.email,
     })
   }
 
@@ -107,25 +103,27 @@ export class Logging {
   }
 
   async postBatch() {
-    const batchInFlight = [...this.logEventsBatch]
-    this.logEventsBatch = []
-    const rHost = batchInFlight[0].metadata.request.headers.host
-    const body = JSON.stringify(batchInFlight)
-    const request = {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${this.opts?.token}`,
-        'Content-Type': 'application/json',
-        'User-Agent': `Cloudflare Worker via ${rHost}`,
-      },
-      body,
-    }
-    const resp = await fetch(logtailApiURL, request)
-    if (this.opts?.debug) {
-      console.info(
-        `[${this._date()}] `,
-        `${batchInFlight.length} Logs pushed with status ${resp.status}.`
-      )
+    if (this.logEventsBatch.length > 0) {
+      const batchInFlight = [...this.logEventsBatch]
+      this.logEventsBatch = []
+      const rHost = batchInFlight[0].metadata.request.headers.host
+      const body = JSON.stringify(batchInFlight)
+      const request = {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.opts?.token}`,
+          'Content-Type': 'application/json',
+          'User-Agent': `Cloudflare Worker via ${rHost}`,
+        },
+        body,
+      }
+      const resp = await fetch(logtailApiURL, request)
+      if (this.opts?.debug) {
+        console.info(
+          `[${this._date()}] `,
+          `${batchInFlight.length} Logs pushed with status ${resp.status}.`
+        )
+      }
     }
   }
 

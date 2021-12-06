@@ -155,7 +155,6 @@ class Router {
     const ctx = this.getRouteContext(event, params)
     let rsp
 
-    ctx.log.info('request')
     ctx.log.time('request')
 
     if (handler) {

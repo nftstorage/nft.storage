@@ -27,7 +27,6 @@ export async function validate(event, { log, db }) {
         const key = user.data.keys.find((k) => k?.secret === token)
         if (key) {
           log.setUser({
-            email: user.data.email,
             id: user.data.id,
           })
           return {
@@ -52,7 +51,6 @@ export async function validate(event, { log, db }) {
       }
 
       log.setUser({
-        email: user.data.email,
         id: user.data.id,
       })
 
