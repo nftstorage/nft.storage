@@ -51,10 +51,9 @@ export default function Subcribe({ user }) {
     // try to subscribe user
     try {
       await subscribe(userMail)
-      console.log('SUCCESS! ')
       setStatus('success')
     } catch (/** @type {any} */ error) {
-      console.error('ERROR SUBSCRIBING USER: ', error.message)
+      console.error('ERROR SUBSCRIBING USER: ', error)
       setDisabled(false)
       setStatus('error')
       setErrorMsg('Something went wrong. Please try again later.')

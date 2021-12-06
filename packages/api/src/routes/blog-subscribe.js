@@ -70,7 +70,6 @@ export const blogSubscribe = async (event) => {
       : await addSubscriber(body.email)
     return new JSONResponse({
       ok: true,
-      value: response,
     })
   } catch (/** @type {any} */ error) {
     throw Error(error)

@@ -613,14 +613,6 @@
   resolved "https://registry.yarnpkg.com/@magic-sdk/types/-/types-5.2.0.tgz#99eb5562fa373689142317eff4a7d9f4fca3a445"
   integrity sha512-nIYAUmeNRBCw+EuvBfDnp+ZBBfim+4jFUlRfLm59aEd1AE0OYnyjEVxWNyvuXJkJxTX7sLxQsqzfhZMAb8RI6Q==
 
-"@mailchimp/mailchimp_marketing@^3.0.72":
-  version "3.0.72"
-  resolved "https://registry.yarnpkg.com/@mailchimp/mailchimp_marketing/-/mailchimp_marketing-3.0.72.tgz#8a007bfb4ed1c3acf380915f4ba0e6364d342cf5"
-  integrity sha512-/yjLP1IrKBlzfIT8lF8+xW8pZ4QseWwqQVOp895A0Rph8oGXHIfWw121h5qzIaMUIziWWqx+1+Hr/5LHAMsiFw==
-  dependencies:
-    dotenv "^8.2.0"
-    superagent "3.8.1"
-
 "@mdx-js/mdx@^1.6.22":
   version "1.6.22"
   resolved "https://registry.yarnpkg.com/@mdx-js/mdx/-/mdx-1.6.22.tgz#8a723157bf90e78f17dc0f27995398e6c731f1ba"
@@ -1241,11 +1233,6 @@
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9"
   integrity sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==
 
-"@types/mailchimp__mailchimp_marketing@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@types/mailchimp__mailchimp_marketing/-/mailchimp__mailchimp_marketing-3.0.2.tgz#8702a169102036ed23893ce0440421777429cedf"
-  integrity sha512-Bga+s0YRg/8yVR6zhQX6RsUFeI3d1FLu4F2i2lUBB7r2gKo3s2LQBvEVpB/IxEKtrx4Tf/nS9+spYc2tOGVLFg==
-
 "@types/mdast@^3.0.0":
   version "3.0.10"
   resolved "https://registry.yarnpkg.com/@types/mdast/-/mdast-3.0.10.tgz#4724244a82a4598884cbbe9bcfd73dff927ee8af"
@@ -1342,14 +1329,7 @@
   resolved "https://registry.yarnpkg.com/@types/qs/-/qs-6.9.7.tgz#63bb7d067db107cc1e457c303bc25d511febf6cb"
   integrity sha512-FGa1F62FT09qcrueBA6qYTrJPVDzah9a+493+o2PCXsesWHIn27G98TsSMs3WPNbZIEj4+VJf6saSFpvD+3Zsw==
 
-"@types/react-syntax-highlighter@^13.5.2":
-  version "13.5.2"
-  resolved "https://registry.yarnpkg.com/@types/react-syntax-highlighter/-/react-syntax-highlighter-13.5.2.tgz#357cc03581dc434c57c3b31f70e0eecdbf7b3ab0"
-  integrity sha512-sRZoKZBGKaE7CzMvTTgz+0x/aVR58ZYUTfB7HN76vC+yQnvo1FWtzNARBt0fGqcLGEVakEzMu/CtPzssmanu8Q==
-  dependencies:
-    "@types/react" "*"
-
-"@types/react@*", "@types/react@^17.0.34":
+"@types/react@^17.0.34":
   version "17.0.37"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.37.tgz#6884d0aa402605935c397ae689deed115caad959"
   integrity sha512-2FS1oTqBGcH/s0E+CjrCCR9+JMpsu9b69RTFO+40ua43ZqP5MmQ4iUde/dMjWR909KxZwmOQIFq6AV6NjEG5xg==
@@ -2797,11 +2777,6 @@ commondir@^1.0.1:
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
   integrity sha1-3dgA2gxmEnOTzKWVDqloo6rxJTs=
 
-component-emitter@^1.2.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/component-emitter/-/component-emitter-1.3.0.tgz#16e4070fba8ae29b679f2215853ee181ab2eabc0"
-  integrity sha512-Rd3se6QB+sO1TwqZjscQrurpEPIfO0/yYnSin6Q/rD3mOutHvUrCAhJub3r90uNb+SESBuE0QYoB90YdfatsRg==
-
 concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
@@ -2873,7 +2848,7 @@ cookie@0.4.1, cookie@^0.4.1, cookie@~0.4.1:
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.4.1.tgz#afd713fe26ebd21ba95ceb61f9a8116e50a537d1"
   integrity sha512-ZwrFkGJxUR3EIoXtO+yVE69Eb7KlixbaeAWfBQB9vVsNn/o+Yw69gBWSSDK825hQNdN+wF8zELf3dFNl/kxkUA==
 
-cookiejar@^2.1.0, cookiejar@^2.1.1:
+cookiejar@^2.1.1:
   version "2.1.3"
   resolved "https://registry.yarnpkg.com/cookiejar/-/cookiejar-2.1.3.tgz#fc7a6216e408e74414b90230050842dacda75acc"
   integrity sha512-JxbCBUdrfr6AQjOXrxoTvAMJO4HBTUIlBzslcJPAz+/KT8yk53fXun51u+RenNYvad/+Vc2DIz5o9UxlCDymFQ==
@@ -3164,7 +3139,7 @@ debug@4.3.2:
   dependencies:
     ms "2.1.2"
 
-debug@^3.0.1, debug@^3.1.0, debug@^3.2.7:
+debug@^3.0.1, debug@^3.2.7:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.7.tgz#72580b7e9145fb39b6676f9c5e5fb100b934179a"
   integrity sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ==
@@ -3443,11 +3418,6 @@ dotenv@^10.0.0:
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
   integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
-
-dotenv@^8.2.0:
-  version "8.6.0"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.6.0.tgz#061af664d19f7f4d8fc6e4ff9b584ce237adcb8b"
-  integrity sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==
 
 dotignore@^0.1.2:
   version "0.1.2"
@@ -4636,7 +4606,7 @@ form-data-encoder@^1.4.3:
   resolved "https://registry.yarnpkg.com/form-data-encoder/-/form-data-encoder-1.7.1.tgz#ac80660e4f87ee0d3d3c3638b7da8278ddb8ec96"
   integrity sha512-EFRDrsMm/kyqbTQocNvRXMLjc7Es2Vk+IQFx/YW7hkUH1eBl4J1fqiP34l74Yt0pFLCNpc06fkbVk00008mzjg==
 
-form-data@^2.3.1, form-data@^2.3.2:
+form-data@^2.3.2:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/form-data/-/form-data-2.5.1.tgz#f2cbec57b5e59e23716e128fe44d4e5dd23895f4"
   integrity sha512-m21N3WOmEEURgk6B9GLOE4RuWOFf28Lhh9qGYeNlGq4VDXUlJy2th2slBNU8Gp8EzloYZOibZJ7t5ecIrFSjVA==
@@ -4675,11 +4645,6 @@ formdata-node@^4.0.0:
   dependencies:
     node-domexception "1.0.0"
     web-streams-polyfill "4.0.0-beta.1"
-
-formidable@^1.1.1:
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/formidable/-/formidable-1.2.6.tgz#d2a51d60162bbc9b4a055d8457a7c75315d1a168"
-  integrity sha512-KcpbcpuLNOwrEjnbpMC0gS+X8ciDoZE1kkqzat4a8vrprf+s9pKNQ/QIwWfbfs4ltgmFl3MD177SNTkve3BwGQ==
 
 forwarded@0.2.0:
   version "0.2.0"
@@ -7447,7 +7412,7 @@ merge2@^1.3.0, merge2@^1.4.1:
   resolved "https://registry.yarnpkg.com/merge2/-/merge2-1.4.1.tgz#4368892f885e907455a6fd7dc55c0c9d404990ae"
   integrity sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==
 
-methods@^1.1.1, methods@~1.1.2:
+methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
   integrity sha1-VSmk1nZUE07cxSZmVoNbD4Ua/O4=
@@ -7485,7 +7450,7 @@ mime-types@^2.1.12, mime-types@^2.1.27, mime-types@~2.1.24:
   dependencies:
     mime-db "1.51.0"
 
-mime@1.6.0, mime@^1.4.1:
+mime@1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/mime/-/mime-1.6.0.tgz#32cd9e5c64553bd58d19a568af452acff04981b1"
   integrity sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==
@@ -9180,7 +9145,7 @@ qs@6.7.0:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
   integrity sha512-VCdBRNFTX1fyE7Nb6FYoURo/SPe62QCaAyzJvUjwRaIsc+NePBEniHlvxFmmX56+HZphIGtV0XeCirBtpDrTyQ==
 
-qs@^6.5.1, qs@^6.9.1, qs@^6.9.4:
+qs@^6.9.1, qs@^6.9.4:
   version "6.10.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.10.2.tgz#c1431bea37fc5b24c5bdbafa20f16bdf2a4b9ffe"
   integrity sha512-mSIdjzqznWgfd4pMii7sHtaYF8rx8861hBO80SraY5GT0XQibWZWJSid0avzHGkDIZLImux2S5mXO0Hfct2QCw==
@@ -9501,7 +9466,7 @@ readable-stream@1.1.x:
     isarray "0.0.1"
     string_decoder "~0.10.x"
 
-readable-stream@^2.0.2, readable-stream@^2.0.5, readable-stream@^2.0.6, readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.6:
+readable-stream@^2.0.2, readable-stream@^2.0.6, readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.6:
   version "2.3.7"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.7.tgz#1eca1cf711aef814c04f62252a36a62f6cb23b57"
   integrity sha512-Ebho8K4jIbHAxnuxi7o42OrZgF/ZTNcsZj6nRKyUmkhLFq8CHItp/fy6hQZuZmP/n3yZ9VBUbp4zz/mX8hmYPw==
@@ -10701,22 +10666,6 @@ subscriptions-transport-ws@^0.9.16:
     iterall "^1.2.1"
     symbol-observable "^1.0.4"
     ws "^5.2.0 || ^6.0.0 || ^7.0.0"
-
-superagent@3.8.1:
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/superagent/-/superagent-3.8.1.tgz#2571fd921f3fcdba43ac68c3b35c91951532701f"
-  integrity sha512-VMBFLYgFuRdfeNQSMLbxGSLfmXL/xc+OO+BZp41Za/NRDBet/BNbkRJrYzCUu0u4GU0i/ml2dtT8b9qgkw9z6Q==
-  dependencies:
-    component-emitter "^1.2.0"
-    cookiejar "^2.1.0"
-    debug "^3.1.0"
-    extend "^3.0.0"
-    form-data "^2.3.1"
-    formidable "^1.1.1"
-    methods "^1.1.1"
-    mime "^1.4.1"
-    qs "^6.5.1"
-    readable-stream "^2.0.5"
 
 supports-color@8.1.1, supports-color@^8.0.0:
   version "8.1.1"
