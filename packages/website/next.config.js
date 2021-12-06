@@ -1,14 +1,16 @@
 const { withSentryConfig } = require('@sentry/nextjs')
+const git = require('git-rev-sync')
 const fs = require('fs')
 const path = require('path')
-const { Git } = require('@nice-labs/git-rev')
 
+const shortHash =
+  process.env.CF_PAGES === '1'
+    ? process.env.CF_PAGES_COMMIT_SHA.substr(0, 7)
+    : git.short(__dirname)
 const pkg = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8')
 )
 const env = process.env.NEXT_PUBLIC_ENV
-const gitNew = new Git(path.join(__dirname, '../..'))
-const shortHash = gitNew.commitHash(true)
 const release = `${pkg.name}@${pkg.version}-${env}+${shortHash}`
 const nextConfig = {
   trailingSlash: true,
@@ -19,6 +21,7 @@ const nextConfig = {
     }
   },
 }
+
 module.exports = withSentryConfig(nextConfig, {
   debug: false,
   silent: true,
