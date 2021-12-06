@@ -23,6 +23,7 @@ AS
 $$
 DECLARE
   upload_id BIGINT;
+  backup_url TEXT;
 BEGIN
     SET LOCAL statement_timeout = '30s';
 
