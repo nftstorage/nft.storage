@@ -631,6 +631,11 @@
   resolved "https://registry.yarnpkg.com/@nftstorage/ipfs-cluster/-/ipfs-cluster-3.4.3.tgz#d29566d062cab187e26694ff337d105e8c2d3228"
   integrity sha512-SgqXQFpeOy+cR0NCxaNKuXTfCG2j+xGmzEgHDwsQZv/kriHZQPPPUJ8crekKR/Y8IZS59GUmz+vJ+CGQnmoHMg==
 
+"@nice-labs/git-rev@^3.5.0":
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/@nice-labs/git-rev/-/git-rev-3.5.0.tgz#997edfb9d1831dd5d6593512c46fb3064c30ea0c"
+  integrity sha512-Ea0kEEqm3Du1JfNL6SiUHyO9BwctA+eY9GFHYxegb8S0rjaXMUGFWo99ONfPBkN3wjpG0z9sw96x+jLGePraEw==
+
 "@node-rs/helper@1.2.1":
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/@node-rs/helper/-/helper-1.2.1.tgz#e079b05f21ff4329d82c4e1f71c0290e4ecdc70c"
@@ -1243,7 +1248,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/retry@^0.12.0", "@types/retry@^0.12.1":
+"@types/retry@^0.12.0":
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/@types/retry/-/retry-0.12.1.tgz#d8f1c0d0dc23afad6dc16a9e993a0865774b4065"
   integrity sha512-xoDlM2S4ortawSWORYqsdU+2rxdh4LRW9ytc3zmT37RIKQh6IHyKwwtKhKis9ah8ol07DCkZxPt8BBvPjC6v4g==
@@ -7573,6 +7578,7 @@ node-fetch@^2.6.0, node-fetch@^2.6.1, node-fetch@^2.6.5:
 
 "node-fetch@https://registry.npmjs.org/@achingbrain/node-fetch/-/node-fetch-2.6.7.tgz":
   version "2.6.7"
+  uid "1b5d62978f2ed07b99444f64f0df39f960a6d34d"
   resolved "https://registry.npmjs.org/@achingbrain/node-fetch/-/node-fetch-2.6.7.tgz#1b5d62978f2ed07b99444f64f0df39f960a6d34d"
 
 node-gyp-build@^4.2.0, node-gyp-build@^4.3.0:
@@ -8011,14 +8017,6 @@ p-retry@^4.6.1:
   integrity sha512-e2xXGNhZOZ0lfgR9kL34iGlU8N/KO0xZnQxVEwdeOvpqNDQfdnxIYizvWtK8RglUa3bGqI8g0R/BdfzLMxRkiA==
   dependencies:
     "@types/retry" "^0.12.0"
-    retry "^0.13.1"
-
-p-retry@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/p-retry/-/p-retry-5.0.0.tgz#012d6e2d4a8774d151d15ac7ecdd98b63d65bbef"
-  integrity sha512-swGFiU6Y1Q3rBikAGHpaT0FHSbiO9H04fSsJRKVtWyEQMAe2Sb1uXeBcqE/RlZqt2prlq4W2HA/+MZAt3V2NkQ==
-  dependencies:
-    "@types/retry" "^0.12.1"
     retry "^0.13.1"
 
 p-timeout@^3.2.0:

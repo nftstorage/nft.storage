@@ -45,7 +45,7 @@ prog
   .command('build')
   .describe('Build the worker.')
   .option('--env', 'Environment', 'dev')
-  .action(async (opts) => {
+  .action(async opts => {
     try {
       const version = `${pkg.name}@${pkg.version}-${opts.env}+${git.short(
         __dirname
@@ -80,6 +80,7 @@ prog
         await cli.releases.setCommits(version, {
           auto: true,
           ignoreEmpty: true,
+          ignoreMissing: true,
         })
         await cli.releases.uploadSourceMaps(version, {
           include: ['./dist'],
