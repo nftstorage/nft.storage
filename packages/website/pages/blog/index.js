@@ -94,6 +94,7 @@ const Paginated = ({ items, pageNumber, setPageNumber }) => {
   useEffect(() => {
     const newPage = typeof page === 'string' ? parseInt(page) : 1
     setPageNumber(newPage - 1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
 
   /**
@@ -238,6 +239,7 @@ const Blog = ({ posts }) => {
           )
         : rest
     setCurrentPosts(filtered)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, posts])
 
   /**
