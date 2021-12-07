@@ -192,7 +192,7 @@ export class Logging {
     }
 
     if (this.opts?.debug) {
-      console[level](`[${dt}] `, log.message)
+      console[level](`[${dt}] `, log.message, context)
     }
     this._add(log)
   }

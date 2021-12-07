@@ -47,7 +47,6 @@ export class DBClient {
     id,
     magic_link_id,
     github_id,
-    email,
     keys:auth_key_user_id_fkey(user_id,id,name,secret)
     `
       )
