@@ -7,7 +7,12 @@
 }
 
 .about-text {
-  max-width: 32rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  text-align: center;
+  padding-bottom: 2rem;
 }
 
 @media screen and (max-width: 75em) {
@@ -21,5 +26,7 @@
 
   .about-text {
     max-width: none;
+    text-align: left;
+    padding: 0;
   }
 }

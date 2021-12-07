@@ -52,7 +52,7 @@ const Logos = ({ logos }) => {
           <Logo key={`marketplace-logo-${logo}`} src={logo} />
         ))}
       </div>
-      <p className="tc chicagoflf">and more!</p>
+      <p className="tc chicagoflf">and 10,000+ other users!</p>
     </div>
   )
 }
@@ -106,11 +106,19 @@ function About() {
       </p>
       <p className="lh-copy">
         Filecoin provides long-term storage for the data ensuring that even if
-        NFT. Storage is attacked or taken down the NFT data persists! And
+        NFT.Storage is attacked or taken down the NFT data persists! And
         NFT.Storage will continue to decentralize itself out of the picture
         moving forward (e.g., making perpetual storage completely smart
-        contract-based utilizing future tools like the Filecoin Virtual
-        Machine).
+        contract-based utilizing future tools like the{' '}
+        <a
+          className="black"
+          href="https://filecoin.io/blog/posts/introducing-the-filecoin-virtual-machine/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Filecoin Virtual Machine
+        </a>
+        ).
       </p>
       <p className="lh-copy">
         If you’re looking to be in full control of your data and its
@@ -118,6 +126,8 @@ function About() {
         <a
           href="https://docs.ipfs.io/how-to/work-with-pinning-services/"
           className="black"
+          target="_blank"
+          rel="noreferrer"
         >
           pinning service
         </a>
@@ -125,6 +135,8 @@ function About() {
         <a
           href="https://docs.ipfs.io/install/ipfs-desktop/#windows"
           className="black"
+          target="_blank"
+          rel="noreferrer"
         >
           locally
         </a>{' '}
@@ -196,72 +208,80 @@ function About() {
   return (
     <article className="about-section bg-nsgreen">
       <div className="mw9 center pa4">
-        <h2 className="chicagoflf">
-          <HashLink id="about">About</HashLink>
-        </h2>
-        <p className="lh-copy about-text">
-          <strong>NFT.Storage</strong> is a storage service, built for{' '}
-          <strong>off-chain</strong> NFT data (like metadata, images, and other
-          assets) for up to 31GiB in size. Data is stored using{' '}
-          <a href="https://ipfs.io" className="black">
-            IPFS
-          </a>
-          , meaning the URL referencing the data (that starts with{' '}
-          <code>ipfs://</code>) is a unique identifier for the data (i.e., a{' '}
-          <a
-            href="https://nftschool.dev/concepts/content-addressing"
-            className="black"
-          >
-            content address
-          </a>
-          ).
-        </p>
-        <p className="lh-copy about-text">
-          IPFS URIs can be used in NFT smart contracts and metadata to ensure
-          the NFT forever actually refers to the intended data (eliminating
-          things like rug pulls). IPFS is a standard used by many different
-          storage services to track and retrieve data via their content
-          addresses. As long as at least one copy of the data exists on the IPFS
-          network, you’ll be able to retrieve it. NFT.Storage stores many copies
-          of uploaded data in two ways: in managed infrastructure running IPFS,
-          and decentralized on{' '}
-          <a href="https://filecoin.io" className="black">
-            Filecoin
-          </a>
-          .
-        </p>
-        <p className="lh-copy about-text">
-          One of the amazing things about IPFS is that, once data is on the
-          network, it’s easy to redundantly store it on any other
-          IPFS-compatible storage solution. Have your own preference? Once data
-          is uploaded to NFT.Storage, feel free to store it on a{' '}
-          <a
-            href="https://docs.ipfs.io/how-to/work-with-pinning-services/"
-            className="black"
-          >
-            pinning service
-          </a>
-          ,{' '}
-          <a
-            href="https://docs.ipfs.io/install/ipfs-desktop/#windows"
-            className="black"
-          >
-            locally
-          </a>{' '}
-          or on a cloud provider like S3, or on other decentralized storage
-          networks like Arweave or Storj.
-        </p>
-        <p className="lh-copy about-text">
-          To learn more about the importance of content addressing, check out
-          this page on{' '}
-          <a
-            href="https://nftschool.dev/concepts/content-addressing/"
-            className="black"
-          >
-            NFT School
-          </a>
-          .
-        </p>
+        <div className="tc about-text mw9">
+          <h2 className="chicagoflf">
+            <HashLink id="about">About</HashLink>
+          </h2>
+          <p className="lh-copy">
+            <strong>NFT.Storage</strong> is a long-term storage service designed
+            for <strong>off-chain</strong> NFT data (like metadata, images, and
+            other assets) for up to 31GiB in size. Data is content addressed
+            using{' '}
+            <a
+              href="https://ipfs.io"
+              className="black"
+              target="_blank"
+              rel="noreferrer"
+            >
+              IPFS
+            </a>{' '}
+            , meaning the URL referencing the data (that starts with{' '}
+            <code>ipfs://</code>) is a unique identifier for the data (i.e., a{' '}
+            <a
+              href="https://nftschool.dev/concepts/content-addressing"
+              className="black"
+              target="_blank"
+              rel="noreferrer"
+            >
+              content address
+            </a>
+            ). IPFS URIs can be used in NFT smart contracts and metadata to
+            ensure the NFT forever actually refers to the intended data
+            (eliminating things like rug pulls).
+          </p>
+          <p className="lh-copy">
+            Many copies of uploaded data are stored on the public IPFS network
+            in two primary ways: in dedicated IPFS servers managed by
+            NFT.Storage, and decentralized on{' '}
+            <a
+              href="https://filecoin.io"
+              className="black"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Filecoin
+            </a>
+            . IPFS is a standard used by many different storage services to
+            track and retrieve data via their content addresses. As long as at
+            least one copy of the data exists on the IPFS network, you’ll be
+            able to retrieve it.
+          </p>
+          <p className="lh-copy">
+            One of the amazing things about IPFS is that, once data is on the
+            network, it’s easy to redundantly store it on any other
+            IPFS-compatible storage solution. Have your own preference? Once
+            data is uploaded to NFT.Storage, feel free to store it on a{' '}
+            <a
+              href="https://docs.ipfs.io/how-to/work-with-pinning-services/"
+              className="black"
+              target="_blank"
+              rel="noreferrer"
+            >
+              pinning service
+            </a>
+            ,{' '}
+            <a
+              href="https://docs.ipfs.io/install/ipfs-desktop/#windows"
+              className="black"
+              target="_blank"
+              rel="noreferrer"
+            >
+              locally
+            </a>{' '}
+            or on a cloud provider like S3, or on other decentralized storage
+            networks like Arweave or Storj.
+          </p>
+        </div>
         <div className="store-and-retrieve-mobile">
           <div>
             {storeText}
