@@ -2,6 +2,7 @@
 
 import sade from 'sade'
 import Cloudflare from './utils/cloudflare.js'
+import got from 'got'
 import { itFind as find } from './utils/common.js'
 
 const cli = sade('nft-cli')
@@ -82,5 +83,22 @@ cli
       }
     }
   )
+
+cli
+  .command('heartbeat', 'Ping opsgenie heartbeat')
+  .option('--token', 'Opsgenie Token')
+  .option('--name', 'Heartbeat Name')
+  .action(async (opts) => {
+    try {
+      await got(`https://api.opsgenie.com/v2/heartbeats/${opts.name}/ping`, {
+        headers: {
+          Authorization: `GenieKey ${opts.token}`,
+        },
+      })
+    } catch (err) {
+      console.error(err)
+      process.exit(1)
+    }
+  })
 
 cli.parse(process.argv)
