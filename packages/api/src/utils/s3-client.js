@@ -17,6 +17,7 @@ export class S3Client {
    * @param {string} bucketName
    * @param {object} [options]
    * @param {string} [options.endpoint]
+   * @param {string} [options.appName]
    */
   constructor(region, accessKeyId, secretAccessKey, bucketName, options = {}) {
     if (!region) throw new Error('missing region')
@@ -43,10 +44,14 @@ export class S3Client {
      * @private
      */
     this._bucketName = bucketName
+    /**
+     * @private
+     */
+    this._appName = options.appName || 'app'
   }
 
   /**
-   * Backup given CAR file keyed by /raw/${rootCid}/${userId}/${carHash}.car
+   * Backup given CAR file keyed by /raw/${rootCid}/${appName}${userId}/${carHash}.car
    * @param {number} userId
    * @param {import('multiformats').CID} rootCid
    * @param {Blob} car
@@ -55,7 +60,7 @@ export class S3Client {
   async backupCar(userId, rootCid, car, structure = 'Unknown') {
     const buf = await car.arrayBuffer()
     const dataHash = await sha256.digest(new Uint8Array(buf))
-    const key = `raw/${rootCid}/${userId}/${uint8ArrayToString(
+    const key = `raw/${rootCid}/${this._appName}${userId}/${uint8ArrayToString(
       dataHash.bytes,
       'base32'
     )}.car`

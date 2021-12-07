@@ -13,7 +13,7 @@ const s3 = s3Config.accessKeyId
       s3Config.accessKeyId,
       s3Config.secretAccessKey,
       s3Config.bucketName,
-      { endpoint: s3Config.endpoint }
+      { endpoint: s3Config.endpoint, appName: 'nft' }
     )
   : undefined
 
