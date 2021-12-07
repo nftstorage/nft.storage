@@ -26,7 +26,7 @@ export default function Subcribe({ user }) {
   const [status, setStatus] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   const [disabled, setDisabled] = useState(false)
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(user?.email || '')
 
   useEffect(() => setStatus(''), [email])
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function Subcribe({ user }) {
    */
   const onSubmit = async (e) => {
     e.preventDefault()
-    const userMail = email || user?.email
+    const userMail = email
 
     if (status === 'pending' || !userMail) return
 
@@ -76,7 +76,7 @@ export default function Subcribe({ user }) {
         placeholder="Enter your email"
         onChange={(e) => setEmail(e.target.value)}
         disabled={status === 'pending'}
-        value={user?.email || email}
+        value={email}
         className="input-reset ba b--black pa2 mb3 w5 center db"
       />
 
