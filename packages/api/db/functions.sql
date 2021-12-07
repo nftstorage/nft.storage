@@ -77,12 +77,9 @@ BEGIN
 
     FOREACH backup_url IN ARRAY json_arr_to_text_arr(data -> 'backup_urls')
     LOOP
-        INSERT INTO backup (upload_id,
-                            url,
-                            inserted_at)
-        VALUES (upload_id,
-                backup_url,
-                (data ->> 'inserted_at')::TIMESTAMPTZ);
+        INSERT INTO backup (upload_id, url, inserted_at)
+        VALUES (upload_id, backup_url, (data ->> 'inserted_at')::TIMESTAMPTZ)
+        ON CONFLICT (url) DO NOTHING;
     END LOOP;
 END
 $$;
