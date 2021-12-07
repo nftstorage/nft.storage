@@ -24,13 +24,6 @@ class MyDocument extends Document {
             type="font/woff2"
             crossOrigin="true"
           ></link>
-          <link
-            rel="preload"
-            href="/fonts/chivo-reg.woff2"
-            as="font"
-            type="font/woff2"
-            crossOrigin="true"
-          ></link>
           <meta name="theme-color" content="#F5C32C" />
         </Head>
         <body>

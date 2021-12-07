@@ -4,18 +4,8 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: Chivo;
-  src: url('/fonts/chivo-reg.woff2') format('woff2');
-  font-display: swap;
-}
-
 .chicagoflf {
   font-family: var(--nstitle);
-}
-
-.chivo {
-  font-family: 'Chivo', sans-serif;
 }
 
 h2 {

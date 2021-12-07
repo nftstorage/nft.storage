@@ -1,8 +1,6 @@
 .blog {
   --card-size: 400px;
   --dark-gray: #9f9f9f;
-
-  font-family: 'Chivo', sans-serif;
 }
 
 .blog p,
