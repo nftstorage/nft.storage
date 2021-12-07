@@ -48,7 +48,7 @@ const Post = ({ post }) => {
   const SHARE_TEXT = 'Store NFTs for free!'
   // localhost will not work as currentUrl with fb or linkedin
   const [currentUrl, setCurrentUrl] = useState('')
-  useEffect(() => setCurrentUrl(window.location.href))
+  useEffect(() => setCurrentUrl(window.location.href), [])
   const twitterShareLink = new URL(`https://twitter.com/intent/tweet`)
   const twitterParams = {
     url: currentUrl,
