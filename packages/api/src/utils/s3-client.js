@@ -51,6 +51,25 @@ export class S3Client {
   }
 
   /**
+   * Get a base32 encoded sha256 hash of the user ID, prefixed with appName to
+   * avoid collisions.
+   * @param {string} userId
+   */
+  async _getUserHash(userId) {
+    const data = new TextEncoder().encode(`${this._appName}${userId}`)
+    return await this._getDataHash(data)
+  }
+
+  /**
+   * Gets a base32 encoded sha256 hash of the passed data.
+   * @param {Uint8Array} data
+   */
+  async _getDataHash(data) {
+    const dataHash = await sha256.digest(new Uint8Array(data))
+    return uint8ArrayToString(dataHash.bytes, 'base32')
+  }
+
+  /**
    * Backup given CAR file keyed by /raw/${rootCid}/${appName}${userId}/${carHash}.car
    * @param {number} userId
    * @param {import('multiformats').CID} rootCid
@@ -59,11 +78,9 @@ export class S3Client {
    */
   async backupCar(userId, rootCid, car, structure = 'Unknown') {
     const buf = await car.arrayBuffer()
-    const dataHash = await sha256.digest(new Uint8Array(buf))
-    const key = `raw/${rootCid}/${this._appName}${userId}/${uint8ArrayToString(
-      dataHash.bytes,
-      'base32'
-    )}.car`
+    const dataHash = await this._getDataHash(new Uint8Array(buf))
+    const userHash = await this._getUserHash(userId.toString())
+    const key = `raw/${rootCid}/${userHash}/${dataHash}.car`
     const bucket = this._bucketName
     const cmdParams = {
       Bucket: bucket,
