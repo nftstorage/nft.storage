@@ -21,6 +21,7 @@ import { pinsGet } from './routes/pins-get.js'
 import { pinsList } from './routes/pins-list.js'
 import { pinsReplace } from './routes/pins-replace.js'
 import { metaplexUpload } from './routes/metaplex-upload.js'
+import { blogSubscribe } from './routes/blog-subscribe.js'
 
 import {
   withMode,
@@ -103,6 +104,9 @@ r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
 r.add('get', '/internal/tokens', withMode(tokensList, RO), [postCors])
 r.add('post', '/internal/tokens', withMode(tokensCreate, RW), [postCors])
 r.add('delete', '/internal/tokens', withMode(tokensDelete, RW), [postCors])
+
+// Blog
+r.add('post', '/internal/blog/subscribe', blogSubscribe, [postCors])
 
 // Note: /api/* endpoints are legacy and will eventually be removed.
 r.add('get', '/api/pins', psa(pinsList, RO), [postCors])

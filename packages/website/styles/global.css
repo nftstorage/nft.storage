@@ -7,8 +7,15 @@
 @import './logos.css';
 @import './about.css';
 @import './button.css';
+@import './blog.css';
+@import './markdown.css';
 @import './nft-storage.swagger-ui.css';
 
 .grid {
   display: grid;
+}
+
+img {
+  user-select: none;
+  -moz-user-select: none;
 }

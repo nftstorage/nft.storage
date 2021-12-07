@@ -45,7 +45,7 @@ prog
   .command('build')
   .describe('Build the worker.')
   .option('--env', 'Environment', 'dev')
-  .action(async opts => {
+  .action(async (opts) => {
     try {
       const version = `${pkg.name}@${pkg.version}-${opts.env}+${git.short(
         __dirname

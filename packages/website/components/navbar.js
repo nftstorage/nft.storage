@@ -15,10 +15,11 @@ import countly from '../lib/countly'
  *
  * @param {Object} props
  * @param {string} [props.bgColor]
+ * @param {{ src: string, isDark: boolean}} props.logo
  * @param {any} [props.user]
  */
 
-export default function Navbar({ bgColor = 'bg-nsorange', user }) {
+export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   const containerRef = useRef(null)
   const queryClient = useQueryClient()
   const [isSmallVariant, setSmallVariant] = useState(false)
@@ -92,6 +93,13 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
         },
         name: 'FAQ',
       },
+      {
+        link: {
+          pathname: '/blog',
+          query: version ? { version } : null,
+        },
+        name: 'Blog',
+      },
       ...(isSmallVariant
         ? user
           ? [
@@ -157,7 +165,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
         <Link href={{ pathname: '/', query: version ? { version } : null }}>
           <a className="no-underline v-mid" onClick={onLinkClick}>
             <img
-              src="/images/logo-nft.storage-sm.png"
+              src={logo.src}
               width="160"
               height="79"
               className={clsx(isSmallVariant ? '' : 'mr4', 'v-mid')}
@@ -169,7 +177,11 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
         <div className="flex items-center">
           {!isSmallVariant &&
             ITEMS.map((item, index) => (
-              <div key={`nav-link-${index}`} onClick={item.onClick}>
+              <div
+                className="select-none"
+                key={`nav-link-${index}`}
+                onClick={item.onClick}
+              >
                 <Link href={item.link || ''}>
                   <a
                     key={item.name}
@@ -233,7 +245,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
           <Link href="/">
             <a className="no-underline v-mid">
               <img
-                src="/images/logo-nft.storage-sm.png"
+                src={logo.src}
                 width="160"
                 height="79"
                 className={clsx(isSmallVariant ? '' : 'mr4', 'v-mid')}
@@ -254,7 +266,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
                 <a
                   className={clsx(
                     'f1 v-mid chicagoflf',
-                    bgColor === 'bg-nsgreen' ? 'black' : 'white'
+                    logo.isDark ? 'black' : 'white'
                   )}
                   onClick={item.tracking ? item.tracking : onMobileLinkClick}
                 >

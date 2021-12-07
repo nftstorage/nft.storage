@@ -13,6 +13,7 @@ declare global {
   const MAGIC_SECRET_KEY: string
   const DATABASE_URL: string
   const DATABASE_TOKEN: string
+  const MAILCHIMP_API_KEY: string
   const ENV: 'dev' | 'staging' | 'production'
   const SENTRY_DSN: string
   const BRANCH: string

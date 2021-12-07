@@ -31,7 +31,7 @@ First, obtain an API token from https://nft.storage and use it in place of `API_
 import { NFTStorage, File } from 'nft.storage'
 const client = new NFTStorage({ token: 'API_TOKEN' })
 
-async function main () {
+async function main() {
   const metadata = await client.store({
     name: 'Pinpie',
     description: 'Pin is not delicious beef!',
