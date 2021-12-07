@@ -12,7 +12,7 @@ import countly from '../../../lib/countly'
 export async function getStaticProps({ ...ctx }) {
   const { slug } = ctx.params
 
-  const fileText = fs.readFileSync(`all-blogs/${slug}.mdx`).toString()
+  const fileText = fs.readFileSync(`posts/${slug}.mdx`).toString()
 
   const { data, content } = matter(fileText)
 
@@ -135,7 +135,7 @@ const Post = ({ post }) => {
 }
 
 export async function getStaticPaths() {
-  const files = fs.readdirSync('all-blogs')
+  const files = fs.readdirSync('posts')
   const paths = files.map((file) => ({
     params: {
       slug: file.split('.')[0],

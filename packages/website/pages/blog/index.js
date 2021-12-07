@@ -14,7 +14,7 @@ import { useRouter } from 'next/router'
 const BLOG_ITEMS_PER_PAGE = 9
 
 export async function getStaticProps() {
-  const files = fs.readdirSync('all-blogs')
+  const files = fs.readdirSync('posts')
 
   let featuredImage = null
 
@@ -30,7 +30,7 @@ export async function getStaticProps() {
     ? files
         .filter((filename) => !filename.startsWith('.'))
         .map((fn, index) => {
-          const content = fs.readFileSync(`all-blogs/${fn}`).toString()
+          const content = fs.readFileSync(`posts/${fn}`).toString()
           const info = matter(content)
           if (index === 0) featuredImage = info.data.thumbnail
           return {
