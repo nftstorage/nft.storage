@@ -2,10 +2,10 @@ The contents of this repository are Copyright (c) corresponding authors and
 contributors, licensed under the `Permissive License Stack` meaning either of:
 
 - Apache-2.0 Software License: https://www.apache.org/licenses/LICENSE-2.0
-  ([...4tr2kfsq](https://gateway.ipfs.io/ipfs/bafkreiankqxazcae4onkp436wag2lj3ccso4nawxqkkfckd6cg4tr2kfsq))
+  ([...4tr2kfsq](https://dweb.link/ipfs/bafkreiankqxazcae4onkp436wag2lj3ccso4nawxqkkfckd6cg4tr2kfsq))
 
 - MIT Software License: https://opensource.org/licenses/MIT
-  ([...vljevcba](https://gateway.ipfs.io/ipfs/bafkreiepofszg4gfe2gzuhojmksgemsub2h4uy2gewdnr35kswvljevcba))
+  ([...vljevcba](https://dweb.link/ipfs/bafkreiepofszg4gfe2gzuhojmksgemsub2h4uy2gewdnr35kswvljevcba))
 
 You may not use the contents of this repository except in compliance
 with one of the listed Licenses. For an extended clarification of the
