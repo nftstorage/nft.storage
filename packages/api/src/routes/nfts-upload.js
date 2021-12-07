@@ -201,19 +201,24 @@ export async function carStat(carBlob) {
   const decoder = decoders.find((d) => d.code === rootCid.code)
   let size
   if (decoder) {
-    const rootBlock = new Block({
-      cid: rootCid,
-      bytes: rawRootBlock.bytes,
-      value: decoder.decode(rawRootBlock.bytes),
-    })
-    const hasLinks = !rootBlock.links()[Symbol.iterator]().next().done
-    // if the root block has links, then we should have at least 2 blocks in the CAR
-    if (hasLinks && blocks < 2) {
-      throw new Error('CAR must contain at least one non-root block')
-    }
-    // get the size of the full dag for this root, even if we only have a partial CAR.
-    if (rootBlock.cid.code === pb.code) {
-      size = cumulativeSize(rootBlock.bytes, rootBlock.value)
+    // if there's only 1 block (the root block) and it's a raw node, we know the size.
+    if (blocks === 1 && rootCid.code === raw.code) {
+      size = rawRootBlock.bytes.byteLength
+    } else {
+      const rootBlock = new Block({
+        cid: rootCid,
+        bytes: rawRootBlock.bytes,
+        value: decoder.decode(rawRootBlock.bytes),
+      })
+      const hasLinks = !rootBlock.links()[Symbol.iterator]().next().done
+      // if the root block has links, then we should have at least 2 blocks in the CAR
+      if (hasLinks && blocks < 2) {
+        throw new Error('CAR must contain at least one non-root block')
+      }
+      // get the size of the full dag for this root, even if we only have a partial CAR.
+      if (rootBlock.cid.code === pb.code) {
+        size = cumulativeSize(rootBlock.bytes, rootBlock.value)
+      }
     }
   }
   return { rootCid, size }
