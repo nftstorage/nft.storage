@@ -11,17 +11,12 @@ import countly from '../../lib/countly'
  *
  * @param {Object} props
  * @param {import('../types').PostMeta} props.post
- * @param {() => void} props.onClick
  * @returns {JSX.Element}
  */
 
-export const Card = ({ post, onClick }) => (
+export const Card = ({ post }) => (
   <Link href={`/blog/post/${post.slug}`}>
-    {/* 👇 because next/link won't accept onClick */}
-    <a
-      onClick={onClick}
-      className="bg-white blog-card h-card w-card hologram card right interactive"
-    >
+    <a className="bg-white blog-card h-card w-card hologram card right interactive pointer">
       <img
         src={post.thumbnail}
         alt={`Banner for ${post.title}`}
@@ -52,10 +47,9 @@ export const Card = ({ post, onClick }) => (
  *
  * @param {Object} props
  * @param {import('../types').PostMeta} props.post
- * @param {() => void} props.onClick
  * @returns {JSX.Element}
  */
-export const HighlightCard = ({ post, onClick }) => (
+export const HighlightCard = ({ post }) => (
   <div className="flex justify-center blog-highlight-card h-card w-100">
     <div className="relative flex w-100 mw9 blog-highlight-info-container">
       <div className="flex justify-between highlight-info flex-column w-50">
@@ -80,7 +74,6 @@ export const HighlightCard = ({ post, onClick }) => (
             unstyled
             className="bg-white mw4 pv3 ph3 interactive hologram chicagoflf cta"
             id="read-more"
-            onClick={onClick}
           >
             Read More
           </Button>

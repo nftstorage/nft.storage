@@ -1,8 +1,6 @@
 import { Card, HighlightCard } from '../../components/blog/cards'
 import { useEffect, useState } from 'react'
-
 import Button from '../../components/button'
-import Loading from '../../components/loading'
 import Tags from '../../components/tags'
 import { allTags } from '../../components/blog/constants'
 import clsx from 'clsx'
@@ -59,11 +57,10 @@ export async function getStaticProps() {
  * @param {import('../../components/types').PostMeta[]} props.items
  * @param {number} props.pageNumber
  * @param {(pageNumber: number) => void} props.setPageNumber
- * @param {() => void} props.handleCardClick
  * @param {string[]} [props.filters]
  * @returns {JSX.Element}
  */
-const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
+const Paginated = ({ items, pageNumber, setPageNumber }) => {
   const paginationRange = usePagination({
     totalCount: items.length,
     pageSize: BLOG_ITEMS_PER_PAGE,
@@ -163,7 +160,7 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
   return (
     <div className="flex-auto pb24">
       {currentItems.length > 0 ? (
-        <Items currentItems={currentItems} handleClick={handleCardClick} />
+        <Items currentItems={currentItems} />
       ) : (
         <div className="flex items-center justify-center flex-auto h-100 pt4">
           More blogs coming soon
@@ -183,12 +180,11 @@ const Paginated = ({ items, pageNumber, setPageNumber, handleCardClick }) => {
  *
  * @param {Object} props
  * @param {import('../../components/types').PostMeta[]} props.currentItems
- * @param {() => void} props.handleClick
  */
-const Items = ({ currentItems, handleClick }) => (
+const Items = ({ currentItems }) => (
   <div className="card-grid pt2">
     {currentItems.map((post, i) => (
-      <Card key={i} post={post} onClick={handleClick} />
+      <Card key={i} post={post} />
     ))}
   </div>
 )
@@ -229,7 +225,6 @@ const Blog = ({ posts }) => {
   const [currentPosts, setCurrentPosts] = useState(rest)
   const [pageNumber, setPageNumber] = useState(0)
   const [filters, setFilters] = useState(['all'])
-  const [loading, setLoading] = useState(false)
   const first = posts[0]
 
   const router = useRouter()
@@ -281,19 +276,12 @@ const Blog = ({ posts }) => {
     </div>
   )
 
-  if (loading)
-    return (
-      <Backdrop abs>
-        <Loading />
-      </Backdrop>
-    )
-
   if (posts.length === 0) return <Backdrop>There are no blogs yet 😞</Backdrop>
 
   return (
     <main className="flex flex-auto blog bg-nspeach w-100">
       <div className="blog-body w-100">
-        <HighlightCard onClick={() => setLoading(true)} post={first} />
+        <HighlightCard post={first} />
         <div className="blog-content w-100 mw9">
           <TagsContainer
             filters={filters}
@@ -302,7 +290,6 @@ const Blog = ({ posts }) => {
           />
           <Paginated
             key={pageNumber}
-            handleCardClick={() => setLoading(true)}
             items={currentPosts}
             pageNumber={pageNumber}
             setPageNumber={setPageNumber}
