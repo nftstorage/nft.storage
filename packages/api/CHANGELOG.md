@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.11.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.10.0...api-v2.11.0) (2021-12-07)
+
+
+### Features
+
+* add marketplace logos ([#840](https://www.github.com/nftstorage/nft.storage/issues/840)) ([f02ee96](https://www.github.com/nftstorage/nft.storage/commit/f02ee9648bbb284399b00c0d11e3445166b95bbf))
+* add metaplex upload route ([#743](https://www.github.com/nftstorage/nft.storage/issues/743)) ([160b6a1](https://www.github.com/nftstorage/nft.storage/commit/160b6a178328c0d9fa9d1b04f6c8a7bccc132901))
+* add pin composite pinned at idx ([#789](https://www.github.com/nftstorage/nft.storage/issues/789)) ([a2f4f71](https://www.github.com/nftstorage/nft.storage/commit/a2f4f71738a21567767d4f3daf0f1eceae088320))
+* add X-Client header ([#849](https://www.github.com/nftstorage/nft.storage/issues/849)) ([e8f7bed](https://www.github.com/nftstorage/nft.storage/commit/e8f7bed8953a6894421f1a72105d7775b4e72f2e))
+* blog ([#838](https://www.github.com/nftstorage/nft.storage/issues/838)) ([ad1aa99](https://www.github.com/nftstorage/nft.storage/commit/ad1aa99733f7faf00128e20ee481eef89043631b))
+* improve sentry github integration ([#900](https://www.github.com/nftstorage/nft.storage/issues/900)) ([51921ff](https://www.github.com/nftstorage/nft.storage/commit/51921ffb3e203e528550194d4af7ead068954f5f))
+* seo optimization ([#765](https://www.github.com/nftstorage/nft.storage/issues/765)) ([d4a650c](https://www.github.com/nftstorage/nft.storage/commit/d4a650c7e8794504f697684018f3849c98357923))
+
+
+### Bug Fixes
+
+* postgres set max parallel workers per gather to 8 ([#863](https://www.github.com/nftstorage/nft.storage/issues/863)) ([2d7cc61](https://www.github.com/nftstorage/nft.storage/commit/2d7cc61a1da3d707b544c5b6bbd85317bd74c40b))
+* remove temporary migration table ([#848](https://www.github.com/nftstorage/nft.storage/issues/848)) ([49d799b](https://www.github.com/nftstorage/nft.storage/commit/49d799b457b324935c63cff11e047b00064b530a))
+* use custom error types for metaplex errors ([#895](https://www.github.com/nftstorage/nft.storage/issues/895)) ([32d3362](https://www.github.com/nftstorage/nft.storage/commit/32d3362ba84e922bd2bf38fa985a169c01af83e2))
+
+
+### Changes
+
+* update licences to dual mit and apache ([#909](https://www.github.com/nftstorage/nft.storage/issues/909)) ([307a8e2](https://www.github.com/nftstorage/nft.storage/commit/307a8e20526bef0f3ac516eb60fcd4fd82a0d65e))
+
 ## [2.10.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.9.0...api-v2.10.0) (2021-11-16)
 
 
