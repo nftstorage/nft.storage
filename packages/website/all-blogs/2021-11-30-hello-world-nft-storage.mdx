@@ -33,20 +33,20 @@ Right now, the vast majority of NFTs and related metadata are static images. The
 
 ## NFT.Storage: a Proven Solution
 
-NFT.Storage isn’t a new service for Web3 developers. NFT.Storage launched in April, 2021. Since launch, the tool has grown into a core building block for NFT developers, providing the easiest method to ensure content persistence for virtual assets. Some highlight since launch:
+NFT.Storage isn’t a new service for Web3 developers. NFT.Storage launched in April, 2021. Since launch, the tool has grown into a core building block for NFT developers, providing the easiest method to ensure content persistence for virtual assets. Highlights since launch include:
 
-- Over 10,000 users
-- Over 14.5M uploads of NFT data (including entire NFTs, metadata, and other assets) for 20+ TiB data
+- Over 11,000 users
+- Over 15M uploads of NFT data (including entire NFTs, metadata, and other assets) for 20+ TiB data
 - These numbers are driven by anyone from individual artists to large marketplaces, with NFT.Storage as the chosen decentralized storage provider for leading NFT companies like OpenSea, MakersPlace, Holaplex, MagicEden, Galaxy, Jigstack, and more
 
 ## How it Works
 
-With NFT.Storage, developers can use a few lines of code to ensure their NFTs — or the NFTs minted and launched on their platforms — are addressed through IPFS and stored on Filecoin. The result is a vibrant, decentralized, open, and secure NFT ecosystem in which NFTs are ensured to have:
+With NFT.Storage, developers can use a few lines of code to ensure their NFTs — or the NFTs minted and launched on their platforms — are addressed through IPFS and stored on Filecoin. The result is a vibrant, decentralized, open, and secure NFT ecosystem in which NFTs have:
 
 1. **Content Addressing**: Once users upload data on NFT.Storage, they receive an IPFS hash of the content, known as a [CID](https://docs.ipfs.io/concepts/content-addressing/#content-addressing-and-cids). CIDs are unique fingerprints of the data, universal addresses that can be used to reference the content regardless of how and where it is stored. Since CIDs are generated from the content itself, using CID-based URIs to reference NFT data (e.g., metadata URL in NFT transaction, image and asset URLs in metadata) prevents problems like fragile links and [“rug pulls”](https://cointelegraph.com/news/opensea-collector-pulls-the-rug-on-nfts-to-highlight-arbitrary-value).
 2. **Provable Storage**: NFT.Storage uses Filecoin for long-term decentralized data storage - brokering storage and retrieval deals to preserve NFT data long-term. Filecoin provides a permanence layer using cryptographic proofs to ensure the durability and persistence of the NFT data over time. And as upgrades like the [Filecoin Virtual Machine](https://filecoin.io/blog/posts/introducing-the-filecoin-virtual-machine/) are introduced in the near future, this permanence will not just be provable, but fully decentralized with smart contract-based solutions like data DAOs that existing NFT.Storage users will benefit from, with no extra work!
 3. **Resilient Retrieval**: This data stored via IPFS and Filecoin can be fetched directly in the browser via any public IPFS gateway or using your own IPFS node. It’s easy to verify the data you’ve retrieved corresponds to the CID, so any retrieval option is a good one - trust is taken out of the equation!
-4. **Universal Persistence**: Since the IPFS network is open and CIDs are a universal standard, data stored on NFT.Storage is easy to persist to other IPFS-compatible storage solutions. Optionally, you can redundantly store data on [IPFS pinning services](https://docs.ipfs.io/how-to/work-with-pinning-services/) like Pinata and Infura, other decentralized storage networks like [Arweave](https://github.com/imerkle/arweave-ipfs) and [Storj](https://github.com/storj-thirdparty/connector-ipfs), or even centralized infrastructure providers like AWS - the choice is yours.
+4. **Interoperable Persistence**: Since the IPFS network is open and CIDs are a universal standard, data stored on NFT.Storage is easy to persist to other IPFS-compatible storage solutions. Optionally, you can redundantly store data on [IPFS pinning services](https://docs.ipfs.io/how-to/work-with-pinning-services/) like Pinata and Infura, other decentralized storage networks like [Arweave](https://github.com/imerkle/arweave-ipfs) and [Storj](https://github.com/storj-thirdparty/connector-ipfs), or even centralized infrastructure providers like AWS - the choice is yours.
 
 ## Starting with NFT.Storage
 
