@@ -61,8 +61,7 @@
   -webkit-text-size-adjust: 100%;
   line-height: 1.5;
   color: #24292e;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial,
-    sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  font-family: var(--sansserif);
   font-size: 16px;
   line-height: 1.5;
   word-wrap: break-word;
@@ -103,7 +102,8 @@
 .post kbd,
 .post pre {
   font-family: monospace, monospace;
-  font-size: 1em;
+  font-family: var(--nsmonospace);
+  font-size: 12px;
 }
 
 .post hr {
@@ -204,7 +204,7 @@
   margin-top: 0;
   margin-bottom: 0;
   font-family: 'ChicagoFLF', sans-serif;
-  font-weight: bold;
+  font-weight: var(--nstitle);
   margin-bottom: 0.75em;
 }
 
@@ -275,12 +275,6 @@
 
 .post dd {
   margin-left: 0;
-}
-
-.post code,
-.post pre {
-  font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
-  font-size: 12px;
 }
 
 .post pre {
@@ -766,7 +760,7 @@ pre > div code span {
 }
 
 .post table th {
-  font-family: sans-serif;
+  font-family: var(--sansserif);
   font-weight: bold;
 }
 

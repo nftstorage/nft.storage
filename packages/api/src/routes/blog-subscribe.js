@@ -64,16 +64,12 @@ const updateSubscriber = async (email) => {
 /** @type {import('../bindings').Handler} */
 export const blogSubscribe = async (event) => {
   const body = await event.request.json()
-  try {
-    const response = (await isChimpUser(body.email))
-      ? await updateSubscriber(body.email)
-      : await addSubscriber(body.email)
-    return new JSONResponse({
-      ok: true,
-    })
-  } catch (/** @type {any} */ error) {
-    throw Error(error)
-  }
+  ;(await isChimpUser(body.email))
+    ? await updateSubscriber(body.email)
+    : await addSubscriber(body.email)
+  return new JSONResponse({
+    ok: true,
+  })
 }
 
 export default blogSubscribe

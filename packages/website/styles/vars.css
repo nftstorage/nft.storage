@@ -29,7 +29,7 @@
   --sansserif: -apple-system, BlinkMacSystemFont, 'avenir next', avenir,
     'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial,
     sans-serif;
-  --nsmonospace: monospace, monospace;
+  --nsmonospace: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
   --bradius: 0px;
   --bwidth: 1px;
 

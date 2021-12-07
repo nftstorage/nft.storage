@@ -106,9 +106,7 @@ r.add('post', '/internal/tokens', withMode(tokensCreate, RW), [postCors])
 r.add('delete', '/internal/tokens', withMode(tokensDelete, RW), [postCors])
 
 // Blog
-r.add('post', '/internal/blog/subscribe', withMode(blogSubscribe, RW), [
-  postCors,
-])
+r.add('post', '/internal/blog/subscribe', blogSubscribe, [postCors])
 
 // Note: /api/* endpoints are legacy and will eventually be removed.
 r.add('get', '/api/pins', psa(pinsList, RO), [postCors])
