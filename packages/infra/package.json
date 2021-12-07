@@ -4,5 +4,5 @@
   "description": "Infrastructure scripts",
   "private": true,
   "author": "Alan Shaw",
-  "license": "(Apache-2.0 AND MIT)"
+  "license": "(Apache-2.0 OR MIT)"
 }

@@ -146,3 +146,27 @@ export class ErrorInvalidCid extends Error {
   }
 }
 ErrorInvalidCid.CODE = 'ERROR_INVALID_CID'
+
+export class ErrorMetaplexTokenNotFound extends Error {
+  constructor(msg = 'Metaplex token not found.') {
+    super(msg)
+    this.name = 'MetaplexTokenNotFound'
+    this.status = 401
+    this.code = ErrorMetaplexTokenNotFound.CODE
+  }
+}
+ErrorMetaplexTokenNotFound.CODE = 'ERROR_METAPLEX_TOKEN_NOT_FOUND'
+
+export class ErrorInvalidMetaplexToken extends Error {
+  /**
+   * @param {string} reason
+   */
+  constructor(reason) {
+    super(`Invalid metaplex token: ${reason}`)
+    this.name = 'InvalidMetaplexToken'
+    this.status = 401
+    this.code = ErrorInvalidMetaplexToken.CODE
+  }
+}
+
+ErrorInvalidMetaplexToken.CODE = 'ERROR_INVALID_METAPLEX_TOKEN'

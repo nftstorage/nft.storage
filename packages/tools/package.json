@@ -9,7 +9,7 @@
     "test": "tsc"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
-  "license": "MIT",
+  "license": "(Apache-2.0 OR MIT)",
   "dependencies": {
     "got": "^11.8.2",
     "sade": "^1.7.4"

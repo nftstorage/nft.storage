@@ -1,15 +1,16 @@
 {
   "name": "nft.storage",
-  "version": "5.1.0",
-  "description": "nft.storage client",
-  "license": "(Apache-2.0 AND MIT)",
+  "version": "5.1.3",
+  "description": "A client library for the https://nft.storage/ service. It provides a convenient interface for working with the HTTP API from a web browser or Node.js",
+  "license": "(Apache-2.0 OR MIT)",
   "type": "module",
   "types": "./dist/src/lib.d.ts",
   "module": "./src/lib.js",
   "main": "./dist/src/lib.cjs",
   "files": [
     "src",
-    "dist/src"
+    "dist/src",
+    "dist/bundle*"
   ],
   "exports": {
     ".": {

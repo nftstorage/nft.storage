@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - main
-name: release
+name: Release
 jobs:
   changeFinder:
     runs-on: ubuntu-latest
@@ -100,11 +100,13 @@ jobs:
         run: yarn build:client:docs
       - name: Client - Publish documentation
         if: ${{ steps.tag-release.outputs.release_created && matrix.package == 'client' }}
-        uses: EndBug/add-and-commit@v7
+        uses: JamesIves/github-pages-deploy-action@4.1.7
         with:
-          author_name: documentation-generator
-          add: docs/client
-          message: 'chore: generate client docs ${{ steps.tag-release.outputs.tag_name }} #${{ steps.tag-release.outputs.pr }}'
+          git-config-name: documentation-generator
+          branch: gh-pages
+          folder: docs/client
+          target-folder: client
+          commit-message: 'chore: generate client docs ${{ steps.tag-release.outputs.tag_name }} #${{ steps.tag-release.outputs.pr }}'
       - name: API - Deploy
         if: ${{ steps.tag-release.outputs.release_created && matrix.package == 'api' }}
         uses: cloudflare/wrangler-action@1.3.0

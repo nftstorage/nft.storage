@@ -16,7 +16,17 @@
     "generate:erc721-source": "generate-graphql-client --post --endpoint https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph --output ./gen/erc721 && cp template/graphql/* gen/erc721 && tsc ./gen/erc721/schema.ts --moduleResolution node --target esnext --esModuleInterop",
     "generate:hasura": "./scripts/generate-hasura.sh"
   },
-  "license": "(Apache-2.0 AND MIT)",
+  "license": "(Apache-2.0 OR MIT)",
+  "devDependencies": {
+    "@types/assert": "^1.5.4",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.11.7",
+    "@types/yargs": "^17.0.0",
+    "assert": "^2.0.0",
+    "c8": "^7.7.1",
+    "graphql-zeus": "git://github.com/gozala/graphql-zeus.git#fork/niftysave",
+    "mocha": "^9.1.0"
+  },
   "dependencies": {
     "@nftstorage/ipfs-cluster": "^3.4.3",
     "@types/assert": "^1.5.6",
