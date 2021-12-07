@@ -3,6 +3,7 @@
   "version": "1.14.0",
   "description": "nft.storage website",
   "private": true,
+  "license": "(Apache-2.0 OR MIT)",
   "scripts": {
     "dev": "next dev -p 4000",
     "build": "next build && next-sitemap && next export",
