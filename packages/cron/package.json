@@ -19,7 +19,7 @@
     "start:dagcargo:sizes": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo-sizes.js"
   },
   "author": "Alan Shaw",
-  "license": "(Apache-2.0 AND MIT)",
+  "license": "(Apache-2.0 OR MIT)",
   "dependencies": {
     "@nftstorage/ipfs-cluster": "^3.4.3",
     "debug": "^4.3.2",
