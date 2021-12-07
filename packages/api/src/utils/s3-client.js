@@ -65,12 +65,12 @@ export class S3Client {
    * @param {Uint8Array} data
    */
   async _getDataHash(data) {
-    const dataHash = await sha256.digest(new Uint8Array(data))
-    return uint8ArrayToString(dataHash.bytes, 'base32')
+    const hash = await sha256.digest(new Uint8Array(data))
+    return uint8ArrayToString(hash.bytes, 'base32')
   }
 
   /**
-   * Backup given CAR file keyed by /raw/${rootCid}/${appName}${userId}/${carHash}.car
+   * Backup given CAR file keyed by /raw/${rootCid}/${userHash}/${carHash}.car
    * @param {number} userId
    * @param {import('multiformats').CID} rootCid
    * @param {Blob} car

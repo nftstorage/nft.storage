@@ -287,11 +287,21 @@ describe('NFT Upload ', () => {
       .single()
     assert(backup) // should have a backup for this upload
 
+    /**
+     * @param {Uint8Array} data
+     */
+    const getHash = async (data) => {
+      const hash = await sha256.digest(new Uint8Array(data))
+      return uint8ArrayToString(hash.bytes, 'base32')
+    }
+
     // construct the expected backup URL
     const carBuf = await car.arrayBuffer()
-    const hash = await sha256.digest(new Uint8Array(carBuf))
-    const hashStr = uint8ArrayToString(hash.bytes, 'base32')
-    const backupUrl = `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft${client.userId}/${hashStr}.car`
+    const carHash = await getHash(new Uint8Array(carBuf))
+    const userHash = await getHash(
+      new TextEncoder().encode(`nft${client.userId}`)
+    )
+    const backupUrl = `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/${userHash}/${carHash}.car`
 
     assert.equal(backup.url, backupUrl)
   })
