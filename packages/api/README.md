@@ -105,6 +105,7 @@ wrangler secret put SALT --env USER # open `https://csprng.xyz/v1/api` in the br
 wrangler secret put PINATA_JWT --env USER # Get from Pinata
 wrangler secret put SENTRY_DSN --env USER # Get from Sentry
 wrangler secret put DATABASE_TOKEN --env USER # Get from database postgrest
+wrangler secret put MAILCHIMP_API_KEY --env USER
 ```
 
 Go to `/packages/api/src/constants.js` _comment_ the first line and run `wrangler publish --env USER`.
