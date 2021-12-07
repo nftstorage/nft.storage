@@ -50,8 +50,9 @@ export class S3Client {
    * @param {number} userId
    * @param {import('multiformats').CID} rootCid
    * @param {Blob} car
+   * @param {import('../bindings').DagStructure} [structure]
    */
-  async backupCar(userId, rootCid, car) {
+  async backupCar(userId, rootCid, car, structure = 'Unknown') {
     const buf = await car.arrayBuffer()
     const dataHash = await sha256.digest(new Uint8Array(buf))
     const key = `raw/${rootCid}/${userId}/${uint8ArrayToString(
@@ -59,7 +60,12 @@ export class S3Client {
       'base32'
     )}.car`
     const bucket = this._bucketName
-    const cmdParams = { Bucket: bucket, Key: key, Body: car }
+    const cmdParams = {
+      Bucket: bucket,
+      Key: key,
+      Body: car,
+      Metadata: { structure },
+    }
     /** @type {import('@aws-sdk/client-s3').PutObjectCommand} */
     const cmd = new PutObjectCommand(cmdParams)
     await this._s3.send(cmd)

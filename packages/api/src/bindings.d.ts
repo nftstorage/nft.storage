@@ -155,11 +155,23 @@ export interface PinsResponse {
 }
 
 /**
+ * The known structural completeness of a given DAG. "Unknown" structure means
+ * it could be a partial or it could be a complete DAG i.e. we haven't walked
+ * the graph to verify if we have all the blocks or not.
+ */
+export type DagStructure = 'Unknown' | 'Partial' | 'Complete'
+
+/**
  * A client to a service that backups up a CAR file.
  */
 export interface BackupClient {
   /**
    * Uploads the CAR file to the service and returns the URL.
    */
-  backupCar(userId: number, rootCid: CID, car: Blob): Promise<URL>
+  backupCar(
+    userId: number,
+    rootCid: CID,
+    car: Blob,
+    structure?: DagStructure
+  ): Promise<URL>
 }
