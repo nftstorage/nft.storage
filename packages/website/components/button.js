@@ -15,7 +15,6 @@ import countly from '../lib/countly'
  * @prop {string} [id]
  * @prop {string} [className]
  * @prop {string} [label]
- * @prop {string} [title]
  * @prop { React.MouseEventHandler<HTMLButtonElement> } [onClick]
  * @prop {string | any} [href]
  * @prop {React.ButtonHTMLAttributes<HTMLButtonElement>["type"]} [type]
@@ -45,7 +44,6 @@ export default function Button({
   variant = 'light',
   tracking,
   unstyled,
-  title = '',
   ...props
 }) {
   const onClickHandler = useCallback(
@@ -85,15 +83,11 @@ export default function Button({
   }
 
   const optionalProps = {}
-
-  if (title) {
-    optionalProps.title = title
-  }
+  optionalProps.role = href ? 'link' : 'button'
 
   let btn = null
 
   if (typeof children === 'string') {
-    optionalProps.role = href ? 'link' : 'button'
     optionalProps.type = type
     btn = (
       <button {...btnProps} {...optionalProps} {...props}>

@@ -158,12 +158,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
       <div className="flex items-center justify-between ph3 ph5-ns pv3 center mw9">
         {isSmallVariant && (
           <div className="flex align-middle">
-            <Button
-              onClick={toggleMenu}
-              small
-              className="flex-column"
-              title="mobile hamburger menu"
-            >
+            <Button onClick={toggleMenu} small className="flex-column">
               <Hamburger className="w1 m2" aria-label="Toggle Navbar" />
             </Button>
           </div>
