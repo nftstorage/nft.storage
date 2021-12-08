@@ -152,9 +152,6 @@ export default function NewFile() {
                 the exact same root CID as defined in the CAR file.
               </p>
             </details>
-            <details>
-              <p className="pl3 mt2 lh-copy">WIP PR stuff</p>
-            </details>
             <div className="mv3">
               <Button
                 className="bg-nslime"
@@ -205,6 +202,26 @@ export default function NewFile() {
             </>
           </Alert>
         </When>
+        <div>
+          <div>
+            <h4>🌍 Public data</h4>
+            <p>
+              All data uploaded to Nft.Storage is available to anyone who
+              requests it using the correct CID. Do not store any private or
+              sensitive information in an unencrypted form using Nft.Storage.
+            </p>
+          </div>
+          <div>
+            <h4>♾️ Permanent data</h4>
+            <p>
+              Deleting files from the Nft.Storage site’s Files page will remove
+              them from the file listing for your account, but that doesn’t
+              prevent nodes on the decentralized storage network from retaining
+              copies of the data indefinitely. Do not use Nft.Storage for data
+              that may need to be permanently deleted in the future.
+            </p>
+          </div>
+        </div>
       </div>
     </main>
   )
