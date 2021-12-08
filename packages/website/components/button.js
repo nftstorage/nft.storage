@@ -78,26 +78,31 @@ export default function Button({
   }
 
   const btnProps = {
-    type,
     id,
-    title,
     className: btnClasses,
     onClick: onClickHandler,
     disabled: !!disabled,
-    role: href ? 'link' : 'button',
+  }
+
+  const optionalProps = {}
+
+  if (title) {
+    optionalProps.title = title
   }
 
   let btn = null
 
   if (typeof children === 'string') {
+    optionalProps.role = href ? 'link' : 'button'
+    optionalProps.type = type
     btn = (
-      <button {...btnProps} {...props}>
+      <button {...btnProps} {...optionalProps} {...props}>
         {children}
       </button>
     )
   } else {
     btn = (
-      <div {...btnProps} {...props}>
+      <div {...btnProps} {...optionalProps} {...props}>
         {children}
       </div>
     )
