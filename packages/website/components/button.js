@@ -15,7 +15,6 @@ import countly from '../lib/countly'
  * @prop {string} [id]
  * @prop {string} [className]
  * @prop {string} [label]
- * @prop {string} [title]
  * @prop { React.MouseEventHandler<HTMLButtonElement> } [onClick]
  * @prop {string | any} [href]
  * @prop {React.ButtonHTMLAttributes<HTMLButtonElement>["type"]} [type]
@@ -23,6 +22,7 @@ import countly from '../lib/countly'
  * @prop {boolean} [disabled]
  * @prop {boolean} [small]
  * @prop {string} [id]
+ * @prop {string} [title]
  * @prop {'dark' | 'light' | 'caution' } [variant] Extend the visuals in button.css
  * @prop {TrackingProp} [tracking] Tracking data to send to countly on button click
  * @prop {boolean} [unstyled]
@@ -45,7 +45,6 @@ export default function Button({
   variant = 'light',
   tracking,
   unstyled,
-  title = '',
   ...props
 }) {
   const onClickHandler = useCallback(
@@ -78,26 +77,27 @@ export default function Button({
   }
 
   const btnProps = {
-    type,
     id,
-    title,
     className: btnClasses,
     onClick: onClickHandler,
     disabled: !!disabled,
-    role: href ? 'link' : 'button',
   }
+
+  const optionalProps = {}
+  optionalProps.role = href ? 'link' : 'button'
 
   let btn = null
 
   if (typeof children === 'string') {
+    optionalProps.type = type
     btn = (
-      <button {...btnProps} {...props}>
+      <button {...btnProps} {...optionalProps} {...props}>
         {children}
       </button>
     )
   } else {
     btn = (
-      <div {...btnProps} {...props}>
+      <div {...btnProps} {...optionalProps} {...props}>
         {children}
       </div>
     )
