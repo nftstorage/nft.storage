@@ -121,8 +121,8 @@ function About() {
         ).
       </p>
       <p className="lh-copy">
-        If you’re looking to be in full control of your data and its
-        availability, you can redundantly store it on a{' '}
+        If you want to maximize redundancy, you can easily persist uploads on other 
+        IPFS-compatible storage solutions like a{' '}
         <a
           href="https://docs.ipfs.io/how-to/work-with-pinning-services/"
           className="black"
