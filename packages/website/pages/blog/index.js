@@ -234,7 +234,6 @@ const Blog = ({ posts }) => {
     if (!posts) return
 
     const shouldFilterPosts = filters[0] !== 'all'
-
     const _posts = shouldFilterPosts
       ? posts.filter((post) =>
           post.tags?.some((t) => filters.includes(t.toLowerCase()))
