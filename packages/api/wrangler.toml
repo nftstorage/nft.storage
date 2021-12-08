@@ -163,3 +163,13 @@ ENV = "dev"
 DEBUG = "*"
 CLUSTER_API_URL = "https://yusef-cluster-api-nft-storage.loca.lt"
 DATABASE_URL = "https://yusef-postgrest-nft-storage.loca.lt"
+
+[env.redaphid]
+workers_dev = true
+account_id = "2f1143f469f762af4ef2336ec13f85b7"
+
+[env.redaphid.vars]
+ENV = "dev"
+DEBUG = "*"
+CLUSTER_API_URL = "https://redaphid-cluster-api-nft-storage.loca.lt/"
+DATABASE_URL = "https://redaphid-postgrest-nft-storage.loca.lt"
