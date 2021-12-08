@@ -23,6 +23,11 @@
     var(--btn-ghost-x) var(--btn-ghost-y) 0px 1px var(--nsblack);
 }
 
+.hologram.caution {
+  box-shadow: var(--btn-ghost-x) var(--btn-ghost-y) 0px 0px var(--nsgray-50),
+    var(--btn-ghost-x) var(--btn-ghost-y) 0px 1px var(--nsblack);
+}
+
 .hologram.right {
   box-shadow: calc(var(--btn-ghost-x) * -1) var(--btn-ghost-y) 0px 0px
       var(--nsgray),
