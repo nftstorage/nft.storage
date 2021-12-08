@@ -1,4 +1,3 @@
-import Toucan from 'toucan-js'
 import { ErrorCode as MagicErrors } from '@magic-sdk/admin'
 import { JSONResponse } from './utils/json-response.js'
 import { DBError } from './utils/db-client.js'
@@ -27,24 +26,19 @@ export class HTTPError extends Error {
 
   /**
    * @param {Error & {status?: number;code?: string;}} err
-   * @param {{sentry: Toucan, req: Request}} ctx
+   * @param {import('./bindings.js').RouteContext} ctx
    */
-  static respond(err, { sentry, req }) {
-    const { message, code, status } = maybeCapture(err, { sentry, req })
-    return status === 302
-      ? new Response(null, {
-          status: 302,
-          headers: { location: 'https://nft.storage/api-docs/' },
-        })
-      : new JSONResponse(
-          {
-            ok: false,
-            error: { code, message },
-          },
-          {
-            status,
-          }
-        )
+  static respond(err, ctx) {
+    const { message, code, status } = maybeCapture(err, ctx)
+    return new JSONResponse(
+      {
+        ok: false,
+        error: { code, message },
+      },
+      {
+        status,
+      }
+    )
   }
 }
 
@@ -53,14 +47,13 @@ export class HTTPError extends Error {
  * I'll give you back a HTTPError with a user friendly error message and code.
  *
  * @param {any} err
- * @param {{ sentry: Toucan, req?: Request }} ctx
+ * @param {import('./bindings.js').RouteContext} ctx
  * @returns {HTTPError & Coded} A HTTPError with an error code.
  */
-export function maybeCapture(err, { sentry, req }) {
+export function maybeCapture(err, { log }) {
   let code = err.code || 'HTTP_ERROR'
   let message = err.message
   let status = err.status || 500
-  const contentType = req && req.headers.get('Content-Type')
 
   switch (err.code) {
     case ErrorUserNotFound.CODE:
@@ -69,7 +62,7 @@ export function maybeCapture(err, { sentry, req }) {
       break
     case DBError.CODE:
       message = 'Database error'
-      sentry.captureException(err)
+      log.error(err)
       break
     // Magic SDK errors
     case MagicErrors.TokenExpired:
@@ -77,9 +70,7 @@ export function maybeCapture(err, { sentry, req }) {
       message = 'API Key has expired.'
       break
     case MagicErrors.ExpectedBearerString:
-      !contentType || contentType === 'text/html'
-        ? (status = 302)
-        : (status = 401)
+      status = 401
       message =
         'API Key is missing, make sure the `Authorization` header has a value in the following format `Bearer {api key}`.'
       break
@@ -94,19 +85,19 @@ export function maybeCapture(err, { sentry, req }) {
       status = 401
       code = 'AUTH_ERROR'
       message = 'Authentication failed.'
-      sentry.captureException(err)
+      log.error(err)
       break
     case MagicErrors.ServiceError:
       status = 500
       code = 'SERVER_ERROR'
-      sentry.captureException(err)
+      log.error(err)
       break
     default:
       // catch all server errors
       if (status >= 500) {
         code = err.name
         message = err.message
-        sentry.captureException(err)
+        log.error(err)
       }
       break
   }

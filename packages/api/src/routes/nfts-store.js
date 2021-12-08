@@ -7,10 +7,7 @@ import { CID } from 'multiformats'
 import { sha256 } from 'multiformats/hashes/sha2'
 import * as Block from 'multiformats/block'
 import * as CAR from '../utils/car.js'
-import { debug } from '../utils/debug.js'
 import * as constants from '../constants.js'
-
-const log = debug('nft-store')
 
 /**
  * @typedef {import('../bindings').NFT} NFT

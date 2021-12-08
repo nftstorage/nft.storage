@@ -1,8 +1,23 @@
+import Toucan from 'toucan-js'
 import { DBClient } from './db-client.js'
-import { getSentry } from './debug.js'
-import { secrets, database } from '../constants.js'
+import { secrets, database, isDebug } from '../constants.js'
+import { Logging } from './logs.js'
+import pkg from '../../package.json'
 
 const db = new DBClient(database.url, secrets.database)
+
+const sentryOptions = {
+  dsn: secrets.sentry,
+  allowedHeaders: ['user-agent', 'x-client'],
+  allowedSearchParams: /(.*)/,
+  debug: false,
+  environment: ENV,
+  rewriteFrames: {
+    root: '/',
+  },
+  release: VERSION,
+  pkg,
+}
 
 /**
  * Obtains a route context object.
@@ -12,6 +27,14 @@ const db = new DBClient(database.url, secrets.database)
  * @returns {import('../bindings').RouteContext}
  */
 export function getContext(event, params) {
-  const sentry = getSentry(event)
-  return { params, sentry, db }
+  const sentry = new Toucan({
+    event,
+    ...sentryOptions,
+  })
+  const log = new Logging(event, {
+    token: secrets.logtail,
+    debug: isDebug,
+    sentry,
+  })
+  return { params, db, log }
 }

@@ -10,7 +10,7 @@ compatibility_flags = [ "formdata_parser_supports_files" ]
 
 [vars]
 ENV = "dev"
-DEBUG = "*"
+DEBUG = "true"
 DATABASE_URL = "https://ryoouiwnemjhenyqqlhp.supabase.co/rest/v1"
 
 [build]
@@ -29,7 +29,7 @@ usage_model = "unbound"
 
 [env.staging.vars]
 ENV = "staging"
-DEBUG = ""
+DEBUG = "true"
 DATABASE_URL = "https://db-staging.nft.storage"
 
 [env.staging.build]
@@ -49,7 +49,7 @@ usage_model = "unbound"
 
 [env.production.vars]
 ENV = "production"
-DEBUG = ""
+DEBUG = "false"
 DATABASE_URL = "https://db.nft.storage"
 
 [env.production.build]
