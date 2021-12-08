@@ -293,7 +293,7 @@ export class DBClient {
       cids,
     })
     if (rsp.error) {
-      return {}
+      throw new DBError(rsp.error)
     }
 
     /** @type {Record<string, import('./../bindings').Deal[]>} */
