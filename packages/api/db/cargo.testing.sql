@@ -1,6 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS cargo;
 
 -- This is a copy of the dagcargo schema for testing purposes.
+-- https://github.com/nftstorage/dagcargo/blob/master/maint/pg_schema.sql
 
 CREATE TABLE IF NOT EXISTS cargo.aggregate_entries (
   aggregate_cid TEXT NOT NULL,
