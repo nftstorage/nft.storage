@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
-import { If, Then, Else, When } from 'react-if'
-import Button from '../components/button.js'
+import { Else, If, Then, When } from 'react-if'
 import { deleteToken, getTokens } from '../lib/api'
-import countly from '../lib/countly.js'
+import { useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from 'react-query'
+
+import Button from '../components/button.js'
 import Loading from '../components/loading.js'
+import countly from '../lib/countly.js'
 import { useRouter } from 'next/router'
 
 /**
@@ -93,8 +94,8 @@ export default function ManageKeys({ user }) {
             <Loading></Loading>
           </Then>
           <Else>
-            <div className="flex mb3 items-center">
-              <h1 className="chicagoflf mv4 flex-auto">API Keys</h1>
+            <div className="flex items-center mb3">
+              <h1 className="flex-auto chicagoflf mv4">API Keys</h1>
               <Button
                 href={{
                   pathname: '/new-key',
@@ -155,6 +156,7 @@ export default function ManageKeys({ user }) {
                           <Button
                             className="bg-nsorange white"
                             type="submit"
+                            variant="caution"
                             disabled={Boolean(deleting)}
                             id={`delete-key-${t[0]}`}
                             tracking={{
