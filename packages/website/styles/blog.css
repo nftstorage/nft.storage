@@ -149,6 +149,14 @@ h6 {
   padding: 2.5rem;
 }
 
+.blog .highlight-info a {
+  text-decoration: none;
+}
+
+.blog .highlight-info a:hover {
+  text-decoration: underline;
+}
+
 /* Large Screens */
 @media screen and (min-width: 98.5rem) {
   .blog .highlight-info {

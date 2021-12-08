@@ -55,8 +55,14 @@ export const HighlightCard = ({ post }) => (
       <div className="flex justify-between highlight-info flex-column w-50">
         <div className="highlight-card-text">
           <div className="mb4">{post.tags && <Tags tags={post.tags} />}</div>
-          <h1 className="chicagoflf f1 title" title={post.title}>
-            {post.title}
+          <h1 className="chicagoflf f1 title" title={`Read ${post.title}`}>
+            <Link
+              href={{
+                pathname: `/blog/post/${post.slug}`,
+              }}
+            >
+              <a className="interactive">{post.title}</a>
+            </Link>
           </h1>
           <p className="mw6 f3 mb2 description" title={post.description}>
             {post.description}
