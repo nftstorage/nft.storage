@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.15.0...website-v1.16.0) (2021-12-08)
+
+
+### Features
+
+* blog cleanups ([#916](https://www.github.com/nftstorage/nft.storage/issues/916)) ([0b05651](https://www.github.com/nftstorage/nft.storage/commit/0b056511f77c58df9d30b7ccf129aa3e9d036a5d))
+
 ## [1.15.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.14.0...website-v1.15.0) (2021-12-07)
 
 
