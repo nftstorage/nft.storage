@@ -1,14 +1,15 @@
-import { useMemo, useRef, useState, useCallback } from 'react'
 import Router, { useRouter } from 'next/router'
-import clsx from 'clsx'
-import Link from 'next/link'
-import { useQueryClient } from 'react-query'
-import { getMagic } from '../lib/magic.js'
-import { useResizeObserver } from '../hooks/resize-observer'
+import { useCallback, useMemo, useRef, useState } from 'react'
+
 import Button from './button.js'
 import Cross from '../icons/cross'
 import Hamburger from '../icons/hamburger'
+import Link from 'next/link'
+import clsx from 'clsx'
 import countly from '../lib/countly'
+import { getMagic } from '../lib/magic.js'
+import { useQueryClient } from 'react-query'
+import { useResizeObserver } from '../hooks/resize-observer'
 
 /**
  * Navbar Component
