@@ -154,7 +154,6 @@ export default function ManageKeys({ user }) {
                             value={version === '0' ? t[0] : `${t[2]}`}
                           />
                           <Button
-                            className="bg-nsorange white"
                             type="submit"
                             variant="caution"
                             disabled={Boolean(deleting)}
