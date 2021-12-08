@@ -1,5 +1,6 @@
 import { Card, HighlightCard } from '../../components/blog/cards'
 import { useEffect, useState } from 'react'
+
 import Button from '../../components/button'
 import Tags from '../../components/tags'
 import { allTags } from '../../components/blog/constants'
@@ -222,8 +223,7 @@ function TagsContainer({ tags, filters, handleTagClick }) {
  * @param {import('../../components/types').PostMeta[] | []} props.posts
  */
 const Blog = ({ posts }) => {
-  const [, ...rest] = posts
-  const [currentPosts, setCurrentPosts] = useState(rest)
+  const [currentPosts, setCurrentPosts] = useState(posts)
   const [pageNumber, setPageNumber] = useState(0)
   const [filters, setFilters] = useState(['all'])
   const first = posts[0]
@@ -232,13 +232,16 @@ const Blog = ({ posts }) => {
 
   useEffect(() => {
     if (!posts) return
-    const filtered =
-      filters[0] !== 'all'
-        ? posts.filter((post) =>
-            post.tags?.some((t) => filters.includes(t.toLowerCase()))
-          )
-        : rest
-    setCurrentPosts(filtered)
+
+    const shouldFilterPosts = filters[0] !== 'all'
+
+    const _posts = shouldFilterPosts
+      ? posts.filter((post) =>
+          post.tags?.some((t) => filters.includes(t.toLowerCase()))
+        )
+      : posts
+
+    setCurrentPosts(_posts)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, posts])
 

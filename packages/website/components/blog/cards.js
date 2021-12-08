@@ -64,7 +64,7 @@ export const HighlightCard = ({ post }) => (
                 pathname: `/blog/post/${post.slug}`,
               }}
             >
-              <a className="interactive">{post.title}</a>
+              <a>{post.title}</a>
             </Link>
           </h1>
           <p className="mw6 f3 mb2 description" title={post.description}>
