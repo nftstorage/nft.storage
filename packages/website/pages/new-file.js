@@ -152,6 +152,9 @@ export default function NewFile() {
                 the exact same root CID as defined in the CAR file.
               </p>
             </details>
+            <details>
+              <p className="pl3 mt2 lh-copy">WIP PR stuff</p>
+            </details>
             <div className="mv3">
               <Button
                 className="bg-nslime"
