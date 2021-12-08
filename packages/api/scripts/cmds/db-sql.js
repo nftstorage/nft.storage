@@ -11,63 +11,30 @@ const { Client } = pg
  * @param {{ reset?: boolean; cargo?: boolean; testing?: boolean; }} opts
  */
 export async function dbSqlCmd(opts) {
-  // Check required env vars are present
-  ;[
-    'DAG_CARGO_HOST',
-    'DAG_CARGO_DATABASE',
-    'DAG_CARGO_USER',
-    'DAG_CARGO_PASSWORD',
-    'DATABASE_CONNECTION',
-  ].forEach((v) => {
-    if (!process.env[v]) {
-      throw new Error(`missing environment variable ${v}`)
-    }
-  })
+  if (opts.cargo && !opts.testing) {
+    expectEnv('DAG_CARGO_HOST')
+    expectEnv('DAG_CARGO_DATABASE')
+    expectEnv('DAG_CARGO_USER')
+    expectEnv('DAG_CARGO_PASSWORD')
+  }
+  expectEnv('DATABASE_CONNECTION')
 
-  // read all the SQL files
-  const configSql = fs.readFileSync(
-    path.join(__dirname, '../../db/config.sql'),
-    'utf-8'
-  )
-  const tables = fs.readFileSync(
-    path.join(__dirname, '../../db/tables.sql'),
-    'utf-8'
-  )
-  const functions = fs.readFileSync(
-    path.join(__dirname, '../../db/functions.sql'),
-    'utf-8'
-  )
-  const reset = fs.readFileSync(
-    path.join(__dirname, '../../db/reset.sql'),
-    'utf-8'
-  )
-  let cargo = fs.readFileSync(
-    path.join(__dirname, '../../db/cargo.sql'),
-    'utf-8'
-  )
-  let fdw = fs.readFileSync(path.join(__dirname, '../../db/fdw.sql'), 'utf-8')
+  const { env } = process
+  const configSql = loadSql('config.sql')
+  const tables = loadSql('tables.sql')
+  const functions = loadSql('functions.sql')
+  const reset = loadSql('reset.sql')
+  const cargo = loadSql('cargo.sql')
+  const cargoTesting = loadSql('cargo.testing.sql')
+  const fdw = loadSql('fdw.sql')
+    // Replace secrets in the FDW sql file
+    .replace(":'DAG_CARGO_HOST'", `'${env.DAG_CARGO_HOST}'`)
+    .replace(":'DAG_CARGO_DATABASE'", `'${env.DAG_CARGO_DATABASE}'`)
+    .replace(":'DAG_CARGO_USER'", `'${env.DAG_CARGO_USER}'`)
+    .replace(":'DAG_CARGO_PASSWORD'", `'${env.DAG_CARGO_PASSWORD}'`)
+    .replace(':NFT_STORAGE_USER', env.NFT_STORAGE_USER || 'CURRENT_USER')
 
-  // Replace secrets in the FDW sql file
-  fdw = fdw.replace(":'DAG_CARGO_HOST'", `'${process.env.DAG_CARGO_HOST}'`)
-  fdw = fdw.replace(
-    ":'DAG_CARGO_DATABASE'",
-    `'${process.env.DAG_CARGO_DATABASE}'`
-  )
-  fdw = fdw.replace(":'DAG_CARGO_USER'", `'${process.env.DAG_CARGO_USER}'`)
-  fdw = fdw.replace(
-    ":'DAG_CARGO_PASSWORD'",
-    `'${process.env.DAG_CARGO_PASSWORD}'`
-  )
-
-  const connectionString = process.env.DATABASE_CONNECTION
-  const client = await retry(
-    async () => {
-      const c = new Client({ connectionString })
-      await c.connect()
-      return c
-    },
-    { minTimeout: 100 }
-  )
+  const client = await getDbClient(env.DATABASE_CONNECTION)
 
   if (opts.reset) {
     await client.query(reset)
@@ -78,27 +45,43 @@ export async function dbSqlCmd(opts) {
 
   if (opts.cargo) {
     if (opts.testing) {
-      cargo = cargo.replace(
-        `
--- Create materialized view from cargo "aggregate_entries" table
-CREATE MATERIALIZED VIEW public.aggregate_entry
-AS
-SELECT *
-FROM cargo.aggregate_entries;`,
-        `
-CREATE MATERIALIZED VIEW public.aggregate_entry
-AS
-SELECT *
-FROM cargo.aggregate_entries 
-WHERE cid_v1 in ('bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e');
-`
-      )
+      await client.query(cargoTesting)
+    } else {
+      await client.query(fdw)
+      await client.query(cargo)
     }
-
-    await client.query(fdw)
-    await client.query(cargo)
   }
 
   await client.query(functions)
   await client.end()
+}
+
+/**
+ * @param {string|undefined} connectionString
+ */
+function getDbClient(connectionString) {
+  return retry(
+    async () => {
+      const c = new Client({ connectionString })
+      await c.connect()
+      return c
+    },
+    { minTimeout: 100 }
+  )
+}
+
+/**
+ * @param {string} name
+ */
+function expectEnv(name) {
+  if (!process.env[name]) {
+    throw new Error(`missing environment variable: ${name}`)
+  }
+}
+
+/**
+ * @param {string} file
+ */
+function loadSql(file) {
+  return fs.readFileSync(path.join(__dirname, '..', '..', 'db', file), 'utf8')
 }

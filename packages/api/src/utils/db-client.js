@@ -282,7 +282,9 @@ export class DBClient {
   }
 
   /**
-   * Get deals for multiple cids
+   * Get deals for multiple cids. This function is error tolerant as it uses
+   * the dagcargo FDW. It will return an empty object if any error is
+   * encountered fetching the data.
    *
    * @param {string[]} cids
    */
@@ -291,7 +293,7 @@ export class DBClient {
       cids,
     })
     if (rsp.error) {
-      throw new DBError(rsp.error)
+      return {}
     }
 
     /** @type {Record<string, import('./../bindings').Deal[]>} */
