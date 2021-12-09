@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.16.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.16.0...website-v1.16.1) (2021-12-09)
+
+
+### Bug Fixes
+
+* make delete API key a button ([#925](https://www.github.com/nftstorage/nft.storage/issues/925)) ([039969c](https://www.github.com/nftstorage/nft.storage/commit/039969ca273bd93332b870c8315b02f900f91dbe))
+
 ## [1.16.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.15.0...website-v1.16.0) (2021-12-08)
 
 
