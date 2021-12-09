@@ -202,7 +202,7 @@ export default function NewFile() {
             </>
           </Alert>
         </When>
-        <div>
+        <div className="center mv4 mw8">
           <div>
             <h4>🌍 Public data</h4>
             <p>
