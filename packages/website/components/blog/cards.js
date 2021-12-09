@@ -80,8 +80,7 @@ export const HighlightCard = ({ post }) => (
             href={{
               pathname: `/blog/post/${post.slug}`,
             }}
-            unstyled
-            className="bg-white mw4 pv3 ph3 interactive hologram chicagoflf cta"
+            className="mw4 pv3 ph3 cta"
             id="read-more"
           >
             Read More
@@ -90,8 +89,7 @@ export const HighlightCard = ({ post }) => (
             href={{
               pathname: '/blog/subscribe',
             }}
-            unstyled
-            className="bg-white mw4 ml4 pv3 ph3 interactive hologram chicagoflf cta"
+            className="mw4 ml4 pv3 cta"
             id="card-subscribe"
             tracking={{
               ui: countly.ui.BLOG_CARD,

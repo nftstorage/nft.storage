@@ -101,8 +101,7 @@ const Post = ({ post }) => {
                   href={{
                     pathname: '/blog/subscribe',
                   }}
-                  unstyled
-                  className="mw4 ph3 interactive hologram bg-white chicagoflf post-subscribe-button items-center"
+                  className="post-subscribe-button items-center"
                   id="post-subscribe"
                   tracking={{
                     ui: countly.ui.BLOG_POST,
