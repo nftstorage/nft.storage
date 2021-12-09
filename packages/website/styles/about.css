@@ -22,7 +22,8 @@
 
 .two-column-collapsible > div {
   width: 50%;
-  padding: 0 2rem;
+  padding-right: 1rem;
+  margin-bottom: 2rem;
 }
 
 @media screen and (max-width: 75em) {
@@ -48,6 +49,5 @@
 
   .two-column-collapsible > div {
     width: 100%;
-    padding: 0;
   }
 }
