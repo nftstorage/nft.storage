@@ -202,9 +202,9 @@ export default function NewFile() {
             </>
           </Alert>
         </When>
-        <div className="center mv4 mw8">
+        <div className="center mw7 pa4">
           <div>
-            <h4>🌍 Public data</h4>
+            <h3>🌍 Public data</h3>
             <p>
               All data uploaded to Nft.Storage is available to anyone who
               requests it using the correct CID. Do not store any private or
@@ -212,13 +212,14 @@ export default function NewFile() {
             </p>
           </div>
           <div>
-            <h4>♾️ Permanent data</h4>
+            <h3>♾️ Permanent data</h3>
             <p>
-              Deleting files from the Nft.Storage site’s Files page will remove
-              them from the file listing for your account, but that doesn’t
-              prevent nodes on the decentralized storage network from retaining
-              copies of the data indefinitely. Do not use Nft.Storage for data
-              that may need to be permanently deleted in the future.
+              Deleting files from the Nft.Storage site’s{' '}
+              <Link href="/files">Files</Link> page will remove them from the
+              file listing for your account, but that doesn’t prevent nodes on
+              the decentralized storage network from retaining copies of the
+              data indefinitely. Do not use Nft.Storage for data that may need
+              to be permanently deleted in the future.
             </p>
           </div>
         </div>
