@@ -4,7 +4,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 import fetch from 'node-fetch'
-import { checkFailedPinStatuses } from '../jobs/pins-v1.js'
+import { checkFailedPinStatuses } from '../jobs/pins.js'
 import { getDBClient, getCluster1, getCluster2 } from '../lib/utils.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
