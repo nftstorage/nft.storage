@@ -246,7 +246,7 @@ function About() {
                   Filecoin
                 </a>
                 . Since IPFS is a standard used by many different storage
-                services, it’s easy to redundantly store data uploaded to
+                services, it&apos;s easy to redundantly store data uploaded to
                 NFT.Storage on any other IPFS-compatible storage solution from{' '}
                 <a
                   href="https://docs.ipfs.io/how-to/work-with-pinning-services/"
@@ -254,7 +254,7 @@ function About() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  pinning service
+                  pinning services
                 </a>
                 , to your{' '}
                 <a
@@ -264,8 +264,8 @@ function About() {
                   rel="noreferrer"
                 >
                   local IPFS node
-                </a>{' '}
-                to other decentralized networks like Arweave or Storj).
+                </a>
+                , to other decentralized networks like Arweave or Storj.
               </p>
             </div>
           </div>
