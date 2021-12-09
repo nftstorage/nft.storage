@@ -1,5 +1,17 @@
 # Changelog
 
+### [2.11.1](https://www.github.com/nftstorage/nft.storage/compare/api-v2.11.0...api-v2.11.1) (2021-12-09)
+
+
+### Bug Fixes
+
+* remove dagcargo materialized views ([#922](https://www.github.com/nftstorage/nft.storage/issues/922)) ([3fe698f](https://www.github.com/nftstorage/nft.storage/commit/3fe698f9579c7f3eaa5c12ee68621953dca9f62e))
+
+
+### Changes
+
+* wrangler.toml setup for dev env ([#897](https://www.github.com/nftstorage/nft.storage/issues/897)) ([9968274](https://www.github.com/nftstorage/nft.storage/commit/9968274a98959ac508f65a0a04026c8cf1adf43e))
+
 ## [2.11.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.10.0...api-v2.11.0) (2021-12-07)
 
 
