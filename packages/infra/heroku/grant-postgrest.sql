@@ -15,4 +15,4 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE ON TABLES
 -- allow select on all tables in the cargo schema currently
 GRANT SELECT ON ALL TABLES IN SCHEMA cargo TO nft_storage;
 -- allow select on new tables that are created in the cargo schema in the future
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO nft_storage;
+ALTER DEFAULT PRIVILEGES IN SCHEMA cargo GRANT SELECT ON TABLES TO nft_storage;
