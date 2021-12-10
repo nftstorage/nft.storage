@@ -7,7 +7,23 @@
 }
 
 .about-text {
-  max-width: 32rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: center;
+  padding-bottom: 2rem;
+}
+
+.two-column-collapsible {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.two-column-collapsible > div {
+  width: 50%;
+  padding-right: 1rem;
+  margin-bottom: 2rem;
 }
 
 @media screen and (max-width: 75em) {
@@ -21,5 +37,17 @@
 
   .about-text {
     max-width: none;
+    text-align: left;
+    padding: 0;
+  }
+
+  .two-column-collapsible {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .two-column-collapsible > div {
+    width: 100%;
   }
 }
