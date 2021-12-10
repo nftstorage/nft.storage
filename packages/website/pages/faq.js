@@ -84,10 +84,6 @@ const faqs = [
     question: 'Upload metadata with existing image url?',
     content: faqContent.httpUrls,
   },
-  {
-    question: "do @redaphid's changes make it to the CI deploy?",
-    content: faqContent.httpUrls,
-  },
 ]
 
 const TOC = () => (
