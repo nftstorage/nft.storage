@@ -8,6 +8,7 @@
   --nsgray-200: #bbbbbb;
   --nsgray-300: #7d8492;
   --nsgray-400: #888888;
+  --nsgray-500: #666666;
   --nsgray-600: #3b4151;
 
   --nsltblue: #eef7f6;
@@ -28,7 +29,7 @@
   --sansserif: -apple-system, BlinkMacSystemFont, 'avenir next', avenir,
     'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial,
     sans-serif;
-  --nsmonospace: monospace, monospace;
+  --nsmonospace: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
   --bradius: 0px;
   --bwidth: 1px;
 
@@ -37,6 +38,14 @@
   --btn-ghost-x-hover: -1px;
   --btn-ghost-y-hover: -1px;
 
+  --card-ghost-x: -9px;
+  --card-ghost-y: -9px;
+  --card-ghost-x-hover: -5px;
+  --card-ghost-y-hover: -5px;
+
   --h2-size: 2em;
   --h3-size: 2em;
+  --h4-size: 1.75em;
+  --h5-size: 1.5em;
+  --h6-size: 1.25em;
 }

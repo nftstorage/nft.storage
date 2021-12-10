@@ -1,24 +1,26 @@
-import { useMemo, useRef, useState, useCallback } from 'react'
 import Router, { useRouter } from 'next/router'
-import clsx from 'clsx'
-import Link from 'next/link'
-import { useQueryClient } from 'react-query'
-import { getMagic } from '../lib/magic.js'
-import { useResizeObserver } from '../hooks/resize-observer'
+import { useCallback, useMemo, useRef, useState } from 'react'
+
 import Button from './button.js'
 import Cross from '../icons/cross'
 import Hamburger from '../icons/hamburger'
+import Link from 'next/link'
+import clsx from 'clsx'
 import countly from '../lib/countly'
+import { getMagic } from '../lib/magic.js'
+import { useQueryClient } from 'react-query'
+import { useResizeObserver } from '../hooks/resize-observer'
 
 /**
  * Navbar Component
  *
  * @param {Object} props
  * @param {string} [props.bgColor]
+ * @param {{ src: string, isDark: boolean}} props.logo
  * @param {any} [props.user]
  */
 
-export default function Navbar({ bgColor = 'bg-nsorange', user }) {
+export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   const containerRef = useRef(null)
   const queryClient = useQueryClient()
   const [isSmallVariant, setSmallVariant] = useState(false)
@@ -92,6 +94,13 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
         },
         name: 'FAQ',
       },
+      {
+        link: {
+          pathname: '/blog',
+          query: version ? { version } : null,
+        },
+        name: 'Blog',
+      },
       ...(isSmallVariant
         ? user
           ? [
@@ -149,7 +158,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
       <div className="flex items-center justify-between ph3 ph5-ns pv3 center mw9">
         {isSmallVariant && (
           <div className="flex align-middle">
-            <Button onClick={toggleMenu} small>
+            <Button onClick={toggleMenu} small className="flex-column">
               <Hamburger className="w1 m2" aria-label="Toggle Navbar" />
             </Button>
           </div>
@@ -157,7 +166,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
         <Link href={{ pathname: '/', query: version ? { version } : null }}>
           <a className="no-underline v-mid" onClick={onLinkClick}>
             <img
-              src="/images/logo-nft.storage-sm.png"
+              src={logo.src}
               width="160"
               height="79"
               className={clsx(isSmallVariant ? '' : 'mr4', 'v-mid')}
@@ -169,7 +178,11 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
         <div className="flex items-center">
           {!isSmallVariant &&
             ITEMS.map((item, index) => (
-              <div key={`nav-link-${index}`} onClick={item.onClick}>
+              <div
+                className="select-none"
+                key={`nav-link-${index}`}
+                onClick={item.onClick}
+              >
                 <Link href={item.link || ''}>
                   <a
                     key={item.name}
@@ -233,7 +246,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
           <Link href="/">
             <a className="no-underline v-mid">
               <img
-                src="/images/logo-nft.storage-sm.png"
+                src={logo.src}
                 width="160"
                 height="79"
                 className={clsx(isSmallVariant ? '' : 'mr4', 'v-mid')}
@@ -254,7 +267,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', user }) {
                 <a
                   className={clsx(
                     'f1 v-mid chicagoflf',
-                    bgColor === 'bg-nsgreen' ? 'black' : 'white'
+                    logo.isDark ? 'black' : 'white'
                   )}
                   onClick={item.tracking ? item.tracking : onMobileLinkClick}
                 >

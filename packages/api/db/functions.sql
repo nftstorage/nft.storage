@@ -99,9 +99,9 @@ SELECT COALESCE(de.status, 'queued') as status,
        a.piece_cid                   as pieceCid,
        ae.aggregate_cid              as batchRootCid,
        ae.cid_v1                     as contentCid
-FROM public.aggregate_entry ae
-         join public.aggregate a using (aggregate_cid)
-         LEFT JOIN public.deal de USING (aggregate_cid)
+FROM cargo.aggregate_entries ae
+         JOIN cargo.aggregates a USING (aggregate_cid)
+         LEFT JOIN cargo.deals de USING (aggregate_cid)
 WHERE ae.cid_v1 = ANY (cids)
 ORDER BY de.entry_last_updated
 $$;

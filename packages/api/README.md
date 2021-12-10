@@ -105,6 +105,8 @@ wrangler secret put SALT --env USER # open `https://csprng.xyz/v1/api` in the br
 wrangler secret put PINATA_JWT --env USER # Get from Pinata
 wrangler secret put SENTRY_DSN --env USER # Get from Sentry
 wrangler secret put DATABASE_TOKEN --env USER # Get from database postgrest
+wrangler secret put MAILCHIMP_API_KEY --env USER # Get from mailchimp
+wrangler secret put LOGTAIL_TOKEN --env USER # Get from Logtail
 ```
 
 Go to `/packages/api/src/constants.js` _comment_ the first line and run `wrangler publish --env USER`.
@@ -120,6 +122,8 @@ wrangler secret put SENTRY_DSN --env USER # Get from Sentry
 wrangler secret put DATABASE_TOKEN --env production # Get from database account
 wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password
 wrangler secret put CLUSTER_SERVICE --env production # Which cluster should be used. Options 'IpfsCluster' or 'IpfsCluster2'
+wrangler secret put MAILCHIMP_API_KEY --env production # Get from mailchimp
+wrangler secret put LOGTAIL_TOKEN --env production # Get from Logtail
 
 wrangler publish --env production
 ```

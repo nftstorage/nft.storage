@@ -1,5 +1,39 @@
 # Changelog
 
+### [1.16.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.16.0...website-v1.16.1) (2021-12-09)
+
+
+### Bug Fixes
+
+* make delete API key a button ([#925](https://www.github.com/nftstorage/nft.storage/issues/925)) ([039969c](https://www.github.com/nftstorage/nft.storage/commit/039969ca273bd93332b870c8315b02f900f91dbe))
+
+## [1.16.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.15.0...website-v1.16.0) (2021-12-08)
+
+
+### Features
+
+* blog cleanups ([#916](https://www.github.com/nftstorage/nft.storage/issues/916)) ([0b05651](https://www.github.com/nftstorage/nft.storage/commit/0b056511f77c58df9d30b7ccf129aa3e9d036a5d))
+
+## [1.15.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.14.0...website-v1.15.0) (2021-12-07)
+
+
+### Features
+
+* blog ([#838](https://www.github.com/nftstorage/nft.storage/issues/838)) ([ad1aa99](https://www.github.com/nftstorage/nft.storage/commit/ad1aa99733f7faf00128e20ee481eef89043631b))
+* improve sentry github integration ([#900](https://www.github.com/nftstorage/nft.storage/issues/900)) ([51921ff](https://www.github.com/nftstorage/nft.storage/commit/51921ffb3e203e528550194d4af7ead068954f5f))
+* marketplace-logo-update; add new logo, style tweaks ([#853](https://www.github.com/nftstorage/nft.storage/issues/853)) ([69a07a7](https://www.github.com/nftstorage/nft.storage/commit/69a07a763729abaad71e9ee4dfa6e3a96c479568))
+
+
+### Bug Fixes
+
+* status 5XX is not a valid status code ([#846](https://www.github.com/nftstorage/nft.storage/issues/846)) ([65c4486](https://www.github.com/nftstorage/nft.storage/commit/65c4486ab4ea89ce63d3924f7c5b3aeaa16c5f3b))
+
+
+### Changes
+
+* add info about size limits to http api docs ([#874](https://www.github.com/nftstorage/nft.storage/issues/874)) ([d58af97](https://www.github.com/nftstorage/nft.storage/commit/d58af972d29b66e373d784f68fce39d460388150))
+* update licences to dual mit and apache ([#909](https://www.github.com/nftstorage/nft.storage/issues/909)) ([307a8e2](https://www.github.com/nftstorage/nft.storage/commit/307a8e20526bef0f3ac516eb60fcd4fd82a0d65e))
+
 ## [1.14.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.13.0...website-v1.14.0) (2021-11-24)
 
 

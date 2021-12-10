@@ -1,6 +1,6 @@
 import { signJWT } from '../../src/utils/jwt.js'
 import { SALT } from './worker-globals.js'
-import { PostgrestClient, PostgrestQueryBuilder } from '@supabase/postgrest-js'
+import { PostgrestClient } from '@supabase/postgrest-js'
 import { DBClient } from '../../src/utils/db-client.js'
 
 export const rawClient = new PostgrestClient(DATABASE_URL, {

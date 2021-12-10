@@ -202,6 +202,30 @@ export default function NewFile() {
             </>
           </Alert>
         </When>
+        <section className="center mw7 pa4">
+          <section>
+            <h3 className="notification-header">🌍 Public data</h3>
+            <p>
+              All data uploaded to Nft.Storage is available to anyone who
+              requests it using the correct CID. Do not store any private or
+              sensitive information in an unencrypted form using Nft.Storage.
+            </p>
+          </section>
+          <section>
+            <h3 className="notification-header">♾️ Permanent data</h3>
+            <p>
+              Deleting files from the Nft.Storage site’s{' '}
+              <Link href="/files">
+                <a className="black no-underline underline-hover">Files</a>
+              </Link>{' '}
+              page will remove them from the file listing for your account, but
+              that doesn’t prevent nodes on the decentralized storage network
+              from retaining copies of the data indefinitely. Do not use
+              Nft.Storage for data that may need to be permanently deleted in
+              the future.
+            </p>
+          </section>
+        </section>
       </div>
     </main>
   )

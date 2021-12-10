@@ -1,10 +1,12 @@
-// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN, DATABASE_TOKEN, CLUSTER_SERVICE
+// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN, DATABASE_TOKEN, CLUSTER_SERVICE, LOGTAIL_TOKEN, MAILCHIMP_API_KEY
 
 export const secrets = {
   salt: SALT,
   magic: MAGIC_SECRET_KEY,
   sentry: SENTRY_DSN,
   database: DATABASE_TOKEN,
+  mailchimp: MAILCHIMP_API_KEY,
+  logtail: LOGTAIL_TOKEN,
 }
 
 const CLUSTER1 = 'https://nft.storage.ipfscluster.io/api/'

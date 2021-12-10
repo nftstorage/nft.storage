@@ -6,16 +6,15 @@ import { database } from '../constants.js'
  * @typedef {(req: Request) => boolean | Record<string,string>} Condition
  * @typedef {(req: Request) => Response} BasicHandler
  * @typedef {(req: Request, rsp: Response) => Response} ResponseHandler
+ * @typedef {import('../bindings').RouteContext} RouteContext
  */
 
 /**
- * @template {BasicRouteContext} C
- * @typedef {(event: FetchEvent, ctx: C) => Promise<Response> | Response} Handler
+ * @typedef {(event: FetchEvent, ctx: RouteContext) => Promise<Response> | Response} Handler
  */
 
 /**
- * @template {BasicRouteContext} C
- * @typedef {(req: Request, err: Error, ctx: C) => Response} ErrorHandler
+ * @typedef {(req: Request, err: Error, ctx: RouteContext) => Response} ErrorHandler
  */
 
 /**
@@ -43,14 +42,14 @@ function matchParams(path, result) {
  * The Router handles determines which handler is matched given the
  * conditions present for each request.
  *
- * @template {BasicRouteContext} C
+ * @template {RouteContext} C
  */
 class Router {
   /**
-   * @param {(e: FetchEvent, params: Record<string, string>) => C} getRouteContext
+   * @param {(e: FetchEvent, params: Record<string, string>) => RouteContext} getRouteContext
    * @param {object} [options]
    * @param {BasicHandler} [options.onNotFound]
-   * @param {ErrorHandler<C>} [options.onError]
+   * @param {ErrorHandler} [options.onError]
    */
   constructor(getRouteContext, options) {
     /**
@@ -76,7 +75,7 @@ class Router {
       ...defaults,
       ...options,
     }
-    /** @type {{ conditions: Condition[]; handler: Handler<C>; postHandlers: ResponseHandler[] }[]} */
+    /** @type {{ conditions: Condition[]; handler: Handler; postHandlers: ResponseHandler[] }[]} */
     this.routes = []
   }
 
@@ -96,7 +95,7 @@ class Router {
    *
    * @param {string} method
    * @param {string} route
-   * @param {Handler<C>} handler
+   * @param {Handler} handler
    * @param {Array<ResponseHandler> } [postHandlers]
    */
   add(method, route, handler, postHandlers = []) {
@@ -132,7 +131,7 @@ class Router {
    * true for all conditions (if any).
    *
    * @param {Request} req
-   * @return {[Handler<C>|false, Record<string,string>, ResponseHandler[]]}
+   * @return {[Handler|false, Record<string,string>, ResponseHandler[]]}
    */
   resolve(req) {
     for (let i = 0; i < this.routes.length; i++) {
@@ -156,6 +155,8 @@ class Router {
     const ctx = this.getRouteContext(event, params)
     let rsp
 
+    ctx.log.time('request')
+
     if (handler) {
       try {
         rsp = await handler(event, ctx)
@@ -167,7 +168,10 @@ class Router {
       rsp = this.options.onNotFound(req)
     }
 
-    return postHandlers.reduce((r, handler) => handler(req, r), rsp)
+    const out = postHandlers.reduce((r, handler) => handler(req, r), rsp)
+
+    ctx.log.timeEnd('request')
+    return ctx.log.end(out)
   }
 
   /**

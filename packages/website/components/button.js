@@ -22,6 +22,7 @@ import countly from '../lib/countly'
  * @prop {boolean} [disabled]
  * @prop {boolean} [small]
  * @prop {string} [id]
+ * @prop {string} [title]
  * @prop {'dark' | 'light' | 'caution' } [variant] Extend the visuals in button.css
  * @prop {TrackingProp} [tracking] Tracking data to send to countly on button click
  * @prop {boolean} [unstyled]
@@ -76,25 +77,27 @@ export default function Button({
   }
 
   const btnProps = {
-    type,
     id,
     className: btnClasses,
     onClick: onClickHandler,
     disabled: !!disabled,
-    role: href ? 'link' : 'button',
   }
+
+  const optionalProps = {}
+  optionalProps.role = href ? 'link' : 'button'
 
   let btn = null
 
   if (typeof children === 'string') {
+    optionalProps.type = type
     btn = (
-      <button {...btnProps} {...props}>
+      <button {...btnProps} {...optionalProps} {...props}>
         {children}
       </button>
     )
   } else {
     btn = (
-      <div {...btnProps} {...props}>
+      <div {...btnProps} {...optionalProps} {...props}>
         {children}
       </div>
     )

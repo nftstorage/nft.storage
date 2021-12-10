@@ -1,7 +1,9 @@
+.nsltblue {
+  color: var(--nsltblue);
+}
 .bg-nsltblue {
   background-color: var(--nsltblue);
 }
-
 .bg-nsblue {
   background-color: var(--nsblue);
 }
@@ -10,6 +12,9 @@
 }
 .nsgray {
   color: var(--nsgray);
+}
+.darker-gray {
+  color: var(--nsgray-500);
 }
 .bg-nsgray {
   background-color: var(--nsgray);

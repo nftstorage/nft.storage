@@ -79,6 +79,8 @@ export default function Layout({
   title = 'NFT.Storage - Free decentralized storage and bandwidth for NFTs on IPFS & Filecoin.',
   description = 'NFT Storage is a brand new service, built specifically for storing off-chain NFT data on IPFS and Filecoin.',
   navBgColor = 'bg-nsorange',
+  altLogo = false,
+  image = 'https://nft.storage/images/social.png',
 }) {
   const { user, status } = useUser({
     redirectTo,
@@ -86,6 +88,12 @@ export default function Layout({
     enabled: needsUser,
   })
   const shouldWaitForUser = needsUser && status === 'loading'
+  const logo = {
+    src: altLogo
+      ? '/images/logo-nft-storage-dark.svg'
+      : '/images/logo-nft-storage-sm.png',
+    isDark: altLogo,
+  }
 
   return (
     <div className="nft-storage sans-serif flex flex-column min-vh-100">
@@ -96,10 +104,7 @@ export default function Layout({
         <meta property="og:description" content={description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://nft.storage" />
-        <meta
-          property="og:image"
-          content="https://nft.storage/images/social.png"
-        />
+        <meta property="og:image" content={image} />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@protocollabs" />
@@ -115,7 +120,7 @@ export default function Layout({
       ) : (
         <>
           <MaintenanceBanner />
-          <Navbar bgColor={navBgColor} user={user} />
+          <Navbar bgColor={navBgColor} logo={logo} user={user} />
           {children({ user })}
           <Footer />
         </>

@@ -13,6 +13,54 @@
   width: 100%;
   overflow-x: auto;
 }
+
+.object-cover {
+  object-fit: cover;
+}
+.object-center {
+  object-position: center;
+}
+.object-top {
+  object-position: top;
+}
+.justify-evenly {
+  justify-content: space-evenly;
+}
+
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.select-none {
+  user-select: none;
+  -moz-user-select: none;
+}
+
+.pointer-default {
+  cursor: default;
+}
+
+.w-fit {
+  width: fit-content;
+}
+
 /*Screenreader Only utility*/
 .sr-only {
   position: absolute;
