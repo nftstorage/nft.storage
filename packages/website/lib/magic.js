@@ -55,7 +55,7 @@ export async function isLoggedIn() {
     return {
       ...meta, // we dont actually need the user info
     }
-  } catch (err) {
+  } catch {
     // do nothing
   }
 }
