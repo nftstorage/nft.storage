@@ -15,6 +15,7 @@ import {
   ErrorMetaplexTokenNotFound,
   ErrorInvalidMetaplexToken,
 } from '../errors.js'
+import { secrets } from '../constants.js'
 
 /**
  * When >2.5MB, use local add, because waiting for blocks to be sent to
@@ -79,7 +80,7 @@ export async function metaplexUpload(event, ctx) {
  * @returns
  */
 async function validate(db) {
-  if (typeof METAPLEX_AUTH_TOKEN === 'undefined') {
+  if (!secrets.metaplexAuth) {
     throw new Error('missing metaplex auth key')
   }
   // note: we need to specify the foreign key to use in the select statement below
@@ -88,7 +89,7 @@ async function validate(db) {
   const { error, data } = await db.client
     .from('auth_key')
     .select('id,user:auth_key_user_id_fkey(id)')
-    .eq('secret', METAPLEX_AUTH_TOKEN)
+    .eq('secret', secrets.metaplexAuth)
     .single()
 
   if (error) {
