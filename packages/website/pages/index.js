@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { FAQ } from './faq'
 
 export async function getStaticProps() {
-  const logos = await fs.readdirSync('public/images/marketplace-logos')
+  const logos = fs.readdirSync('public/images/marketplace-logos')
   // make opensea be the first logo
   logos.sort((a, b) =>
     a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
@@ -17,7 +17,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      needsUser: false,
+      needsUser: true,
       logos,
       description: 'NFT.Storage homepage',
     },
@@ -48,7 +48,7 @@ const Logos = ({ logos }) => {
     <div className="marketplace-logos-container center pv4 ph3 ph5-ns">
       <h2 className="tc mt0 chicagoflf">Trusted by</h2>
       <div className="marketplace-logo-grid">
-        {logos.map((logo) => (
+        {logos.map(logo => (
           <Logo key={`marketplace-logo-${logo}`} src={logo} />
         ))}
       </div>
@@ -314,7 +314,7 @@ function About() {
 }
 
 function GettingStarted() {
-  const onClickHandler = useCallback((event) => {
+  const onClickHandler = useCallback(event => {
     countly.trackCustomLinkClick(
       countly.events.CTA_LINK_CLICK,
       event.currentTarget,

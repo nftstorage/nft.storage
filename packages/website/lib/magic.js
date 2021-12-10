@@ -50,14 +50,13 @@ export async function login(token, type = 'magic', data = {}, version = '') {
 }
 
 export async function isLoggedIn() {
-  const isLoggedIn = await getMagic().user.isLoggedIn()
-  if (isLoggedIn) {
+  try {
     const meta = await getMagic().user.getMetadata()
     return {
       ...meta, // we dont actually need the user info
     }
-  } else {
-    return undefined
+  } catch (err) {
+    // do nothing
   }
 }
 
@@ -120,7 +119,6 @@ export async function redirectMagic(version = '') {
  * @param {string} [version]
  */
 export async function redirectSocial(version = '') {
-  // @ts-ignore - TODO fix Magic extension types
   const result = await getMagic().oauth.getRedirectResult()
   try {
     const data = await login(result.magic.idToken, 'github', result, version)

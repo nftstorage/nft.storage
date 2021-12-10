@@ -15,7 +15,11 @@ import * as Sentry from '@sentry/nextjs'
  */
 export function useUser({ redirectTo, redirectIfFound, enabled } = {}) {
   const router = useRouter()
-  const { status, data, error, isFetching } = useQuery('magic-user', isLoggedIn)
+  const { status, data, error, isFetching } = useQuery(
+    'magic-user',
+    isLoggedIn,
+    { enabled }
+  )
   const user = data
   const hasUser = Boolean(user)
   if (user) {
