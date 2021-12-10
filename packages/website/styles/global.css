@@ -10,6 +10,7 @@
 @import './blog.css';
 @import './markdown.css';
 @import './nft-storage.swagger-ui.css';
+@import './nav.css';
 
 .grid {
   display: grid;
