@@ -121,8 +121,8 @@ function About() {
         ).
       </p>
       <p className="lh-copy">
-        If you want to maximize redundancy, you can easily persist uploads on
-        other IPFS-compatible storage solutions like a{' '}
+        Have additional preferences on where to store your data? Pin your data
+        to any storage solution running a{' '}
         <a
           href="https://docs.ipfs.io/how-to/work-with-pinning-services/"
           className="black"
@@ -131,17 +131,7 @@ function About() {
         >
           pinning service
         </a>
-        ,{' '}
-        <a
-          href="https://docs.ipfs.io/install/ipfs-desktop/#windows"
-          className="black"
-          target="_blank"
-          rel="noreferrer"
-        >
-          locally
-        </a>{' '}
-        or on a cloud provider like S3, or on other decentralized storage
-        networks like Arweave or Storj.
+        .
       </p>
     </>
   )
