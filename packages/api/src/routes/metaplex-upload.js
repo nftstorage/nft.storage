@@ -110,6 +110,8 @@ async function validate(db) {
  * @property {string} iss the public key of the uploader, as a key:did string
  * @property {string} rootCID the root CID of the upload, as a CIDv1 string
  * @property {string} solanaCluster the name of the solana cluster being targetted
+ * @property {string} mintingAgent string identifying the "user agent" that prepared the upload
+ * @property {string} [agentVersion] optional string identifying which version of the `mintingAgent` was used
  *
  * @param {string} token - an encoded JWT token from an x-web3auth header.
  * @returns {Promise<MetaplexMetadata>} - metadata extracted from token payload.
@@ -147,7 +149,6 @@ async function parseMetaplexJWT(token) {
   }
 
   // validate header
-
   if (header.alg !== 'EdDSA') {
     throw new ErrorInvalidMetaplexToken('invalid signing algorithm')
   }
@@ -172,21 +173,39 @@ async function parseMetaplexJWT(token) {
     throw new ErrorInvalidMetaplexToken('root CID not present in payload')
   }
 
-  if (
-    !payload.req.put.tags ||
-    typeof payload.req.put.tags['solana-cluster'] !== 'string'
-  ) {
+  if (!payload.req.put.tags) {
+    throw new ErrorInvalidMetaplexToken('tags not present in payload')
+  }
+
+  // Temporarily accept old kebab-case name for solanaCluster tag.
+  const solanaCluster =
+    payload.req.put.tags.solanaCluster || payload.req.put.tags['solana-cluster']
+  if (typeof solanaCluster !== 'string') {
     throw new ErrorInvalidMetaplexToken(
-      '"solana-cluster" tag not present in payload'
+      '"solanaCluster" tag not present in payload'
     )
   }
 
-  const solanaCluster = payload.req.put.tags['solana-cluster']
+  const { mintingAgent, agentVersion } = payload.req.put.tags
+  if (typeof mintingAgent !== 'string') {
+    throw new ErrorInvalidMetaplexToken(
+      '"mintingAgent" tag not present in payload'
+    )
+  }
+
+  if (agentVersion && typeof agentVersion !== 'string') {
+    throw new ErrorInvalidMetaplexToken(
+      '"agentVersion" tag must have a string value if present'
+    )
+  }
+
   const { contentCid: rootCID } = parseCid(payload.req.put.rootCID)
 
   return {
     iss,
     rootCID,
     solanaCluster,
+    mintingAgent,
+    agentVersion,
   }
 }

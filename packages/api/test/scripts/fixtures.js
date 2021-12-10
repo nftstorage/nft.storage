@@ -25,12 +25,17 @@ export const fixtures = {
           put: {
             rootCID:
               'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy',
-            tags: { chain: 'solana', 'solana-cluster': 'devnet' },
+            tags: {
+              chain: 'solana',
+              solanaCluster: 'devnet',
+              mintingAgent: 'metaplex-auth/cli',
+              agentVersion: '0.2.3',
+            },
           },
         },
       },
       token:
-        'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkaWQ6a2V5Ono2TWtoNzROR0JTcVFHcWVLYTJ3VnVKeVJKMVpKd1BuZ0hQZzlWNkRZMnFuVm5BNSIsInJlcSI6eyJwdXQiOnsicm9vdENJRCI6ImJhZmtyZWlmZXFqb3J3eW1kbWg3N2FyczZ0YnJ0bm83NGdudHNkY3ZxdmN5Y3VjaWRlYmlyaTJlN3F5IiwidGFncyI6eyJjaGFpbiI6InNvbGFuYSIsInNvbGFuYS1jbHVzdGVyIjoiZGV2bmV0In19fX0.V84TeeEbxHa78di8VONueLjPwk_VpFeWvPs70gIvNmedsUnsfG9DPRSi2FLv3wo3vc1PdjdGnvj0ql9dY6hHCA',
+        'eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkaWQ6a2V5Ono2TWtoNzROR0JTcVFHcWVLYTJ3VnVKeVJKMVpKd1BuZ0hQZzlWNkRZMnFuVm5BNSIsInJlcSI6eyJwdXQiOnsicm9vdENJRCI6ImJhZmtyZWlmZXFqb3J3eW1kbWg3N2FyczZ0YnJ0bm83NGdudHNkY3ZxdmN5Y3VjaWRlYmlyaTJlN3F5IiwidGFncyI6eyJjaGFpbiI6InNvbGFuYSIsInNvbGFuYUNsdXN0ZXIiOiJkZXZuZXQiLCJtaW50aW5nQWdlbnQiOiJtZXRhcGxleC1hdXRoL2NsaSIsImFnZW50VmVyc2lvbiI6IjAuMi4zIn19fX0.03fldV7VjGWnqgVQDj3HypOztOwiZsW3hIic4t1z5Ei00Q6336srZS6EyXsQHXez8sWIDHGBnMWPLqb6aGr3AA',
     },
   },
 }
