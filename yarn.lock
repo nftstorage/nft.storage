@@ -522,13 +522,13 @@
     cborg "^1.5.4"
     multiformats "^9.5.4"
 
-"@ipld/dag-json@^8.0.3":
-  version "8.0.6"
-  resolved "https://registry.yarnpkg.com/@ipld/dag-json/-/dag-json-8.0.6.tgz#282dc522090e3aa9a22cdb3d3866d57be6b57986"
-  integrity sha512-7F51armLe32koSnaHwy2oLjFhvfnB/NT5qBqLJAd9aJVIJMDcKjTL1jbwkSXolDqP9wat6yEsPc6ZWtbQLq/Lw==
+"@ipld/dag-json@8.0.4":
+  version "8.0.4"
+  resolved "https://registry.yarnpkg.com/@ipld/dag-json/-/dag-json-8.0.4.tgz#f6020f8942b9a428c15c7f0097df6f0d895fed61"
+  integrity sha512-6ZnULTMLdWLBlwk40rh3jO9eVEosDk/2VgnFUuny0pGsrcg2XB1ODc7F+imUvb4bnSIcCVYHa3e+6sUDY/eKVQ==
   dependencies:
-    cborg "^1.5.4"
-    multiformats "^9.5.4"
+    cborg "^1.4.0"
+    multiformats "^9.0.0"
 
 "@ipld/dag-pb@^2.0.2", "@ipld/dag-pb@^2.1.1":
   version "2.1.15"
@@ -2492,7 +2492,7 @@ catering@^2.0.0, catering@^2.1.0:
   dependencies:
     queue-tick "^1.0.0"
 
-cborg@^1.0.4, cborg@^1.5.4:
+cborg@^1.0.4, cborg@^1.4.0, cborg@^1.5.4:
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/cborg/-/cborg-1.5.4.tgz#a28f7e18c3f92a83a66f0b460457bd27e5067e7a"
   integrity sha512-vEvwpEjwXCqc75eMA/+5cWAkAYzDgzdHTLGrZNsIIjFEbenOhVnGNpvr/nYkwQUOx4350nsMkS0QbcpozfWHuA==
