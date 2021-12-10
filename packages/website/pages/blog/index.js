@@ -119,12 +119,12 @@ const Paginated = ({ items, pageNumber, setPageNumber }) => {
   const PagNavButton = ({ page, children, disabled, isActive }) => {
     return (
       <Button
-        unstyled={true}
         key={`pag-nav-item-${page || children}`}
         onClick={!page || isActive ? undefined : () => handlePageClick(page)}
         disabled={disabled}
+        variant="tag"
         className={clsx(
-          'select-none btn-secondary ttu items-center',
+          'btn-secondary ttu items-center',
           isActive && 'active',
           disabled && 'disabled'
         )}

@@ -23,7 +23,7 @@ import countly from '../lib/countly'
  * @prop {boolean} [small]
  * @prop {string} [id]
  * @prop {string} [title]
- * @prop {'dark' | 'light' | 'caution' } [variant] Extend the visuals in button.css
+ * @prop {'dark' | 'light' | 'caution' | 'tag' } [variant] Extend the visuals in button.css
  * @prop {TrackingProp} [tracking] Tracking data to send to countly on button click
  * @prop {boolean} [unstyled]
  */
@@ -64,12 +64,13 @@ export default function Button({
     [tracking, onClick, href]
   )
 
-  let btnClasses = clsx('btn button-reset select-none', className)
+  let btnClasses = clsx('btn button-reset select-none black', className)
 
   if (!unstyled) {
     btnClasses = clsx(
       btnClasses,
-      'pv2 ph3 chicagoflf hologram',
+      'pv2 ph3',
+      variant !== 'tag' && 'hologram chicagoflf',
       small && 'small',
       disabled ? 'o-60' : 'interactive',
       variant
