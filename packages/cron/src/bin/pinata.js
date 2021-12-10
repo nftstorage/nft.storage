@@ -3,7 +3,7 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
-import { pinToPinata } from '../jobs/pinata-v1.js'
+import { pinToPinata } from '../jobs/pinata.js'
 import { getDBClient, getPinata } from '../lib/utils.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))

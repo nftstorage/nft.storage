@@ -1,4 +1,4 @@
-name: Cron Pins v1
+name: Cron Pins
 
 on:
   schedule:
