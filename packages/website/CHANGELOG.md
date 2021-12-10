@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.17.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.16.1...website-v1.17.0) (2021-12-10)
+
+
+### Features
+
+* Update Copy: warnings and info for file uploads ([#927](https://www.github.com/nftstorage/nft.storage/issues/927)) ([76e4f1d](https://www.github.com/nftstorage/nft.storage/commit/76e4f1de66b140e4d3bd368b6c95bed52f17a274))
+
+
+### Bug Fixes
+
+* fix button text color ([#933](https://www.github.com/nftstorage/nft.storage/issues/933)) ([a51913a](https://www.github.com/nftstorage/nft.storage/commit/a51913a59d5a7757a65a8a7896bd53a603b1bb6a))
+
+
+### Changes
+
+* update copy based on dchoi's feedback ([#907](https://www.github.com/nftstorage/nft.storage/issues/907)) ([dbf21b8](https://www.github.com/nftstorage/nft.storage/commit/dbf21b83baf2f37c99e3acc8f9f0c7cf38cebf47))
+
 ### [1.16.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.16.0...website-v1.16.1) (2021-12-09)
 
 
