@@ -10,10 +10,12 @@ const BLOCK_TIMEOUT = 1000 * 60 * 3 // timeout if we don't receive a block after
 const REPORT_INTERVAL = 1000 * 60 // log download progress every minute
 
 /**
+ * Download a CAR for the passed CID from the given IPFS nodes.
+ *
  * @param {import('multiformats').CID} cid
  * @param {[]string} fromAddrs
  */
-export async function* fetch(cid, fromAddrs) {
+export async function* downloadCar(cid, fromAddrs) {
   const log = debug(`backup:fetch:${cid}`)
   const repoPath = path.join(os.tmpdir(), `.ipfs${cid}`)
 
