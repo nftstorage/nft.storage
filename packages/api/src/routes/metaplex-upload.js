@@ -177,9 +177,7 @@ async function parseMetaplexJWT(token) {
     throw new ErrorInvalidMetaplexToken('tags not present in payload')
   }
 
-  // Temporarily accept old kebab-case name for solanaCluster tag.
-  const solanaCluster =
-    payload.req.put.tags.solanaCluster || payload.req.put.tags['solana-cluster']
+  const solanaCluster = payload.req.put.tags.solanaCluster
   if (typeof solanaCluster !== 'string') {
     throw new ErrorInvalidMetaplexToken(
       '"solanaCluster" tag not present in payload'
