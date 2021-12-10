@@ -1,8 +1,18 @@
-import countly from 'countly-sdk-web'
-
-const config = {
-  key: process.env.NEXT_PUBLIC_COUNTLY_KEY,
-  url: process.env.NEXT_PUBLIC_COUNTLY_URL,
+let Countly = {}
+// @ts-ignore
+Countly.q = Countly.q || []
+if (typeof window !== 'undefined') {
+  // @ts-ignore
+  Countly = window.Countly || {}
+  Countly.q = Countly.q || []
+  Countly.debug = false
+  Countly.app_key = process.env.NEXT_PUBLIC_COUNTLY_KEY
+  Countly.url = process.env.NEXT_PUBLIC_COUNTLY_UR
+  Countly.q.push(['track_sessions'])
+  Countly.q.push(['track_pageview'])
+  Countly.q.push(['track_clicks'])
+  Countly.q.push(['track_scrolls'])
+  Countly.q.push(['track_links'])
 }
 
 /** @constant */
@@ -40,53 +50,22 @@ export const ui = {
 }
 
 /**
- * Initialize countly analytics object
- */
-export function init() {
-  if (typeof window === 'undefined') {
-    return
-  }
-
-  if (ready) {
-    return
-  }
-
-  if (!config.key || !config.url) {
-    console.warn('[lib/countly]', 'Countly config not found.')
-
-    return
-  }
-
-  countly.init({ app_key: config.key, url: config.url, debug: false })
-
-  countly.track_sessions()
-  countly.track_pageview()
-  countly.track_clicks()
-  countly.track_links()
-  countly.track_scrolls()
-
-  ready = true
-}
-
-/**
  * Track an event to countly with custom data
  *
  * @param {string} event Event name to be sent to countly.
  * @param {Object} [segmentation] Custom data object to be used as segmentation data in countly.
  */
 export function trackEvent(event, segmentation = {}) {
-  if (!ready) {
-    init()
-  }
-
-  ready &&
-    countly.add_event({
+  Countly.q.push([
+    'add_event',
+    {
       key: event,
       segmentation: {
         path: location.pathname,
         ...segmentation,
       },
-    })
+    },
+  ])
 }
 
 /**
@@ -95,11 +74,7 @@ export function trackEvent(event, segmentation = {}) {
  * @param {string} [path] Page route to track. Defaults to window.location.pathname if not provided.
  */
 export function trackPageView(path) {
-  if (!ready) {
-    init()
-  }
-
-  ready && countly.track_pageview(path)
+  Countly.q.push(['track_pageview', path])
 }
 
 /**
@@ -109,30 +84,21 @@ export function trackPageView(path) {
  * @param {Object} data Extra data to be sent to countly
  */
 export function trackCustomLinkClick(event, target, data = {}) {
-  if (!ready) {
-    init()
-  }
-
-  ready &&
-    trackEvent(event, {
-      link: target.href.includes(location.origin)
-        ? new URL(target.href).pathname + (new URL(target.href).hash || '')
-        : target.href,
-      text: target.innerText,
-      ...data,
-    })
+  trackEvent(event, {
+    link: target.href.includes(location.origin)
+      ? new URL(target.href).pathname + (new URL(target.href).hash || '')
+      : target.href,
+    text: target.innerText,
+    ...data,
+  })
 }
-
-export let ready = false
 
 const _countly = {
   events,
   ui,
-  init,
   trackEvent,
   trackPageView,
   trackCustomLinkClick,
-  ready,
 }
 
 export default _countly
