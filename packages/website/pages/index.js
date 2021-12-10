@@ -307,8 +307,8 @@ function About() {
             />
           </div>
           <div className="absolute top-0 w-100 h-100 flex justify-between">
-            <div className="flex-auto" style={{ maxWidth: '30%' }}>
-              <div className="pt6 pr4">{storeText}</div>
+            <div className="flex-auto" style={{ maxWidth: '35%' }}>
+              <div className="pt6">{storeText}</div>
             </div>
             <div
               className="flex-auto flex items-center w-50"
