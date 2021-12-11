@@ -44,9 +44,9 @@ https://github.com/nftstorage/nft.storage-tools
 
 # Development
 
-_psst: want to do some frontend work done without an environment?_ Well I'm testing this right now, and will tell you about it if it works
-
 Instructions for developers working on the nft.storage API and website.
+
+_psst: want to do some frontend work done without an environment? check out [this guide](packages/website/README.md#no-environment-guide)_
 
 ## Getting Started
 
