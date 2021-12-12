@@ -27,4 +27,4 @@ jobs:
           PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
           PROD_DATABASE_TOKEN: ${{ secrets.PROD_DATABASE_TOKEN }}
           PINATA_JWT: ${{ secrets.PINATA_JWT }}
-        run: yarn --cwd packages/cron start:pinata-v1
+        run: yarn --cwd packages/cron start:pinata
