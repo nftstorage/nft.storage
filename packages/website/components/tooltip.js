@@ -20,7 +20,7 @@ const Tooltip = ({
   <RCTooltip
     placement={placement}
     overlay={<div className="bg-white p2 f6 flex">{overlay}</div>}
-    overlayInnerStyle={{ borderColor: '#fc6553' }}
+    overlayInnerStyle={{ borderColor: '#ee4116' }}
     destroyTooltipOnHide={destroyTooltipOnHide}
     overlayClassName={overlayClassName}
     {...props}

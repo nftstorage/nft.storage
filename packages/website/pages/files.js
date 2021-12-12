@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from 'react-query'
+import { VscQuestion } from 'react-icons/vsc'
 import bytes from 'bytes'
 import { NFTStorage } from 'nft.storage'
 import Button from '../components/button.js'
@@ -95,12 +96,6 @@ export default function Files({ user }) {
 
   const hasZeroNfts = nfts.length === 0 && befores.length === 1
 
-  const QuestionMark = () => (
-    <div className="relative flex items-center justify-center ml3 f1 red cursor-pointer">
-      <div className="absolute ba b--black w4 h4" />?
-    </div>
-  )
-
   /**
    * @param {any} nft
    */
@@ -146,7 +141,7 @@ export default function Files({ user }) {
             overlay={<span>{message}</span>}
             overlayClassName="table-tooltip"
           >
-            {QuestionMark()}
+            <VscQuestion size={14} />
           </Tooltip>
         </span>
       )
@@ -167,7 +162,7 @@ export default function Files({ user }) {
             }
             overlayClassName="table-tooltip"
           >
-            {QuestionMark()}
+            <VscQuestion size={14} />
           </Tooltip>
         </span>
       )
