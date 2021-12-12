@@ -31,7 +31,7 @@ jobs:
           CLUSTER1_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER1_BASIC_AUTH_TOKEN }}
           CLUSTER2_API_URL: ${{ secrets.CLUSTER2_API_URL }}
           CLUSTER2_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER2_BASIC_AUTH_TOKEN }}
-        run: yarn --cwd packages/cron start:pins-v1
+        run: yarn --cwd packages/cron start:pins
       - name: Heartbeat
         if: ${{ success() }}
         run: ./packages/tools/cli.js heartbeat --token ${{ secrets.OPSGENIE_KEY }} --name cron-nft-pins
