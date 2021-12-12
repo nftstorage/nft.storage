@@ -134,14 +134,17 @@ export default function Files({ user }) {
         queuedDeals.length > 1 ? 's' : ''
       }. Filecoin deals will be active within 48 hours of upload.`
       deals.push(
-        <span className="flex justify-center" key={nft.cid + '-pending'}>
+        <span
+          className="flex justify-center items-center"
+          key={nft.cid + '-pending'}
+        >
           {`${deals.length ? ', ' : ''}${queuedDeals.length} pending`}
           <Tooltip
             placement="top"
             overlay={<span>{message}</span>}
             overlayClassName="table-tooltip"
           >
-            <VscQuestion size={14} />
+            <VscQuestion size={16} className="ml2" />
           </Tooltip>
         </span>
       )
@@ -149,7 +152,7 @@ export default function Files({ user }) {
 
     if (!nft.deals.length) {
       deals.push(
-        <span className="flex justify-center" key="queuing">
+        <span className="flex justify-center items-center" key="queuing">
           Queuing
           <Tooltip
             placement="top"
@@ -162,7 +165,7 @@ export default function Files({ user }) {
             }
             overlayClassName="table-tooltip"
           >
-            <VscQuestion size={14} />
+            <VscQuestion size={16} className="ml2" />
           </Tooltip>
         </span>
       )
