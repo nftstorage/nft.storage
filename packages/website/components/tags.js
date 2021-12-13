@@ -21,9 +21,9 @@ export const Tag = ({ tag }) => {
     <div>
       <Button
         onClick={tag.onClick}
-        unstyled
+        variant="tag"
         className={clsx(
-          'select-none btn-secondary ttc items-center',
+          'btn-secondary ttc items-center',
           tag.selected && 'active'
         )}
       >

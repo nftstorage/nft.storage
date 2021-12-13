@@ -12,7 +12,7 @@
     "build:website": "yarn --cwd packages/website build",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "clean": "rimraf node_modules yarn.lock packages/*/{yarn.lock,package-lock.json,.next,out,coverage,.nyc_output,worker,dist,node_modules}",
+    "clean": "rm -rf node_modules yarn.lock packages/*/{yarn.lock,package-lock.json,.next,out,coverage,.nyc_output,worker,dist,node_modules}",
     "setup-database": "yarn --cwd packages/database setup",
     "create-migration": "yarn --cwd packages/database create-migration",
     "apply-migrations": "yarn --cwd packages/database apply-migrations"

@@ -1,16 +1,21 @@
 import * as IPFSURL from './ipfs-url.js'
-import { importer } from 'ipfs-unixfs-importer'
-import Multihash from 'multihashing-async'
+
+import IPLD from 'ipld'
 // @ts-expect-error - has no type defs
 import InMemory from 'ipld-in-memory'
-import pb from 'ipld-dag-pb'
-import IPLD from 'ipld'
+import Multihash from 'multihashing-async'
+import { importer } from 'ipfs-unixfs-importer'
 import multicodec from 'multicodec'
+import pb from 'ipld-dag-pb'
 
 /**
  * @typedef {Object} Config
  * @property {URL} url
  * @property {string} secret
+ */
+
+/**
+ * @typedef { import('ipfs-unixfs-importer').ImportResult } ImportResult
  */
 
 /**
@@ -50,7 +55,7 @@ export const cat = async (config, url, { v0 = false, signal } = {}) => {
 /**
  * @typedef {import('multiformats').CID} CID
  * @param {Blob} content
- * @returns {Promise<{cid:CID, size:number}>}
+ * @returns {Promise<ImportResult>}
  */
 export const importBlob = async (content) => {
   const buffer = await content.arrayBuffer()
@@ -80,7 +85,7 @@ const { multihash } = Multihash
  * @typedef {import('ipfs-unixfs-importer').Blockstore} BlockAPI
  * @implements {BlockAPI}
  */
-// @ts-expect-error - must implement has, delete, putMany, getMany, ... methods.
+// @ts-expect-error - must implement has, delete, putMany, getMany, ... methods
 class Block {
   /**
    * @param {Object} [options]
@@ -101,6 +106,7 @@ class Block {
   /**
    * @param {import('multiformats').CID} cid
    * @param {Uint8Array} bytes
+   * @returns { Promise<void> }
    */
   async put(cid, bytes) {
     const multihash = this.mh.decode(cid.bytes)
@@ -110,12 +116,12 @@ class Block {
       cidVersion: cid.version,
       hashAlg: multihash.code,
     })
-
-    // return { cid, data: bytes }
   }
+
   /**
    * @param {import('multiformats').CID} cid
    * @param {any} options
+   * @returns { Promise<Uint8Array> }
    */
   async get(cid, options) {
     // @ts-expect-error - CID is incompatible

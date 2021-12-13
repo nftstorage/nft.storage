@@ -4,10 +4,11 @@
 .marketplace-logo-grid {
   display: grid;
   width: 100%;
-  grid: auto/repeat(6, 1fr);
+  grid: auto/repeat(7, 1fr);
   justify-items: center;
   align-items: center;
   row-gap: 20px;
+  column-gap: 30px;
   padding-bottom: 0.5rem;
 }
 

@@ -1,18 +1,17 @@
-name: Cron Pins v1
+name: Cron Pinata Sync
 
 on:
   schedule:
-    - cron: '30 * * * *'
+    - cron: '40 */6 * * *'
   workflow_dispatch:
 
 jobs:
   update:
-    name: Update pin statuses and size
+    name: Sync with Pinata
     runs-on: ubuntu-latest
     strategy:
       matrix:
         env: ['staging', 'production']
-    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -27,11 +26,5 @@ jobs:
           STAGING_DATABASE_TOKEN: ${{ secrets.STAGING_DATABASE_TOKEN }}
           PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
           PROD_DATABASE_TOKEN: ${{ secrets.PROD_DATABASE_TOKEN }}
-          CLUSTER1_API_URL: ${{ secrets.CLUSTER1_API_URL }}
-          CLUSTER1_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER1_BASIC_AUTH_TOKEN }}
-          CLUSTER2_API_URL: ${{ secrets.CLUSTER2_API_URL }}
-          CLUSTER2_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER2_BASIC_AUTH_TOKEN }}
-        run: yarn --cwd packages/cron start:pins-v1
-      - name: Heartbeat
-        if: ${{ success() }}
-        run: ./packages/tools/cli.js heartbeat --token ${{ secrets.OPSGENIE_KEY }} --name cron-nft-pins
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}
+        run: yarn --cwd packages/cron start:pinata
