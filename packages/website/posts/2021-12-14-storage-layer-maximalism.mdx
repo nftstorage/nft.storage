@@ -13,16 +13,15 @@ tags:
 
 # Storage Layer Maximalism
 
-NFTs continue to grow mainstream adoption, and as we push into new frontiers (Videos, GameFi, Metaverse) it’s critical that we take a keen eye to ensuring digital assets are created in a way ready to stand the test of time. In this post, we’ll make the case for **storage layer maximalism** and why every NFT needs a CID.
+Non-fungible tokens (NFTs) are becoming mainstream, and as new frontiers are explored (e.g., Videos, GameFi, Metaverse) it’s critical that digital assets are created in a way resilient to failures on any storage layer. In this post, we’ll make the case for ***storage layer maximalism*** (redundancy across many storage layers and protocols) and why every NFT needs a content-identifier (CID).
 
 ## What exactly is an NFT?
 
+**If you’re familiar with how NFTs workwhat's happening under the hood, skip this section - this is just to get everyone up to speed.**
 
-**If you’re familiar with what's happening under the hood, skip this section - this is just to get everyone up to speed.**
+Many people describe an NFT asIf you ask the average person what an NFT is, they’ll probably tell you it's a picture (or video or something) that “lives on the blockchain”. Because it “lives on the blockchain”, you get all these cool properties (Provenance! Automatic royalties! User ownership!) - which has birthed a whole movement in digital creation.
 
-If you ask the average person what an NFT is, they’ll probably tell you it's a picture (or video or something) that “lives on the blockchain”. Because it “lives on the blockchain”, you get all these cool properties (Provenance! Automatic royalties! User ownership!) - which has birthed a whole movement in digital creation.
-
-But if you dig in a bit, you’ll quickly realize that there’s a bit more nuance in both how an NFT is structured and how your data is being stored. While the NFT (the actual token) lives on the blockchain - all the stuff (the information that shows up on NFT marketplaces, the image, other associated files - all commonly referred to as the metadata) associated with the NFT is usually referenced by external links[^1]. 
+But dig in a bit, and you’ll quickly realize that there’s a bit more nuance in both how an NFT is structured and how your data is being stored. While the NFT (the actual token) lives on the blockchain - all the stuff (i.e., the information that shows up on NFT marketplaces, the image, other associated files - all commonly referred to as the metadata) associated with the NFT is usually referenced by external links[^1]. 
 
 ![ERC-721 spec](/images/blog-2/erc-721.png)
 <p style={{ textAlign: 'center', fontStyle: 'italic', marginBottom: 20 }}>
@@ -39,32 +38,29 @@ While your NFT (the thing on the blockchain) may not disappear - we need to secu
 
 ## Challenges with Ensuring NFT Metadata Doesn’t Break
 
-As anyone who has been on the internet for a bit is aware, the web is a (surprisingly) fragile place:
-Links can point at dead content (404s)
-Domains can be sold, and the same link resolves to some unexpected new content
-Malicious content can be placed at the other end of a link
-… the list goes on. 
+The web is a (surprisingly) fragile place:
+- Links can point at dead content (404 errors)
+- Domains can be sold, and the same link resolves to some unexpected new content at different points in time
+- Malicious content can be placed at the other end of a link
+- … the list goes on. 
 
 While this is an annoying problem when browsing the web, it becomes substantially more important when the link you’re relying on ties your million dollar (if not tens of millions) NFT to its associated JPEG. Especially for artists, marketplaces, and other developers enabling NFTs to be created - it's critical to ensure that these new digital creations are future-proofed.
 
-
 You can split the risks NFT metadata face into two (related) challenges: 
 
-
-*Linking*: How do we make sure the link our NFT uses actually points at the thing we want it to represent (aka my NFT is linked to its content, not someone else’s server)?
-*Existence*: How do we make sure the link our NFT uses always resolves to the content we expect it to (aka prevent our jpegs from disappearing)?
+*Linking*: How do we make sure the link our NFT uses directly points at the thing we want it to represent (i.e., my NFT is linked to its content, not someone else’s server)?
+*Existence*: How do we make sure the link our NFT uses always resolves the content we expect it to (i.e., prevent our jpegs from disappearing)?
 
 
 ## Solving the linking problem
 
-For the first challenge, we need to rethink how we use links. Traditionally, when we talk about links we’re normally talking about HTTP URLs - the type of URL that’s likely sitting in your browser as you read this. 
+For the first challenge, we need to rethink how we use links. Traditionally, when we talk about links we’re talking about HTTP URLs - the type of URL that’s likely sitting in your browser as you read this.
 
 HTTP URLs are location addressed - meaning the link itself is routing you to a specific location, and you’re trusting that:
-This is the location that you were expecting to go to
-The thing you find at that location is the thing you were looking for
+1. This is the location that you were expecting to go to
+2. The thing you find at that location is the thing you were looking for
 
-A simple analogy might help make this clearer:
-Imagine we were talking about “To Kill A Mockingbird” and you were interested in getting a copy of it. In the way that HTTP URLs work, sharing this book with you would be like describing to you where you could find it (“Come to NYC, at these cross streets you’ll find a library, 3rd bookshelf in - 2 books from the right is the one you want). Naturally, many things can go wrong (you could get blocked from coming to NYC, the library could burn down, a different book could be in the same location you were told to go to, etc). 
+A simple analogy might help make this clearer. Imagine we were talking about “To Kill A Mockingbird” and you were interested in getting a copy of it. In the way that HTTP URLs work, sharing this book with you would be like describing to you where you could find it (“Come to NYC, at these cross streets you’ll find a library, 3rd bookshelf in - two books from the right is the one you want). Naturally, many things can go wrong (you could get blocked from coming to NYC, the library could burn down, a different book could be in the same location you were told to go to, etc). 
 
 For NFTs, this is obviously not ideal - with HTTP links you’re relying on someone to make sure that (1) and (2) are true - and if that someone goes away you might be in trouble.
 
@@ -92,9 +88,9 @@ However, IPFS **only** solves the problem of making sure we can ask for (and ver
 ## Solving the existence problem
 
 There are a few approaches people typically take to ensuring persistence - depending on your belief in individual teams and projects, you may be more or less willing to use traditional infrastructure vs. decentralized storage. Specifically for NFTs, here are some of the more commonly used approaches: 
-Pinning providers (e.g. [Pinata](https://pinata.cloud), [Infura](http://infura.io)): These are traditional businesses that run IPFS nodes as a service. Pinning providers offer custom features and tune performance to ensure high quality experiences.
-[Filecoin](http://filecoin.io): Offers hypercheap, deal-based, decentralized storage. Filecoin uses cryptographic proofs, incentives, and penalties across a decentralized network of storage providers to offer deterministic storage. A full chain of custody (from time of storage as well as “health checks” during the lifecycle of a deal) is recorded on-chain, with economic incentives to help subsidize cost, and economic penalties to ensure storage providers keep data online. Filecoin relies on higher order systems (e.g. smart contracts) to enable “permanent” deals. Today, Filecoin stores ~35,000 TiB of data.
-[Arweave](http://arweave.org): Offers a pay-once-store-forever model for decentralized storage. The mechanism is backed by an endowment (with 1/6th the AR tokens) that receives payments from users. Ongoing emissions from the endowment are used to reward miners who win hashing competitions (where odds are improved by storing “rare” pieces of data on the network). While nodes can drop off the network with no penalty, the rational strategy for miners is to store as much data as they can. Today, Arweave stores ~34 TiB of data. 
+- Pinning providers (e.g. [Pinata](https://pinata.cloud), [Infura](http://infura.io)): These are traditional businesses that run IPFS nodes as a service. Pinning providers offer custom features and tune performance to ensure high quality experiences.
+- [Filecoin](http://filecoin.io): Offers hypercheap, deal-based, decentralized storage. Filecoin uses cryptographic proofs, incentives, and penalties across a decentralized network of storage providers to offer deterministic storage. A full chain of custody (from time of storage as well as “health checks” during the lifecycle of a deal) is recorded on-chain, with economic incentives to help subsidize cost, and economic penalties to ensure storage providers keep data online. Filecoin relies on higher order systems (e.g. smart contracts) to enable “permanent” deals. Today, Filecoin stores ~22,000 TiB of data.
+- [Arweave](http://arweave.org): Offers a pay-once-store-forever model for decentralized storage. The mechanism is backed by an endowment (with 1/6th the AR tokens) that receives payments from users. Ongoing emissions from the endowment are used to reward miners who win hashing competitions (where odds are improved by storing “rare” pieces of data on the network). While nodes can drop off the network with no penalty, the rational strategy for miners is to store as much data as they can. Today, Arweave stores ~34 TiB of data. 
 
 Various folks will make their case for their favored approach - but given the nacency of decentralized protocols it's critical to ensure that downstream assumptions (about another protocol’s economic model, resiliency) do not jeopardize the existence of an NFT. Most storage protocols are at best a few years old. When folks are committing millions (or tens of millions) of dollars it's necessary to plan for even the worst case scenarios - including the possibility that any individual protocol or service may fail or go offline.
 
@@ -102,11 +98,11 @@ Various folks will make their case for their favored approach - but given the na
 Given the NFT itself can’t be mutated, its critical that **how** the data is stored is uncoupled from **where** its stored  - if there’s even a **fraction of a chance** you believe one solution might fail, its worth considering using an IPFS URL + a CID as the canonical reference inside your NFTs metadata and then pursuing multiple storage paths in parallel. 
 
 Thankfully, regardless of your favored approach - it’s relatively straightforward to become a **storage layer maximalist**: 
-Services like [NFT.Storage](https://nft.storage) and [Estuary](https://estuary.tech) will push your content to IPFS and Filecoin
-Services like [IPFS2Arweave](https://ipfs2arweave.com/) and [Arweave-IPFS](https://github.com/imerkle/arweave-ipfs) can persist content on Arweave
-Services like [Pinata](https://pinata.cloud) and [Infura](https://infura.io) will allow you to pin CIDs on hosted services
-You can even take matters into your own hands with the [IPFS Desktop App](https://docs.ipfs.io/install/ipfs-desktop/)
-… many more
+- Services like [NFT.Storage](https://nft.storage) and [Estuary](https://estuary.tech) will push your content to IPFS and Filecoin
+- Services like [IPFS2Arweave](https://ipfs2arweave.com/) and [Arweave-IPFS](https://github.com/imerkle/arweave-ipfs) can persist content on Arweave
+- Services like [Pinata](https://pinata.cloud) and [Infura](https://infura.io) will allow you to pin CIDs on hosted services
+- You can even take matters into your own hands with the [IPFS Desktop App](https://docs.ipfs.io/install/ipfs-desktop/)
+- … many more
 
 
 With NFT.Storage, we aim to make adding resiliency to NFTs as simple as possible. For developers, you can easily use NFT.storage (for free!) during your minting process to pin your content in IPFS **and** push your content to Filecoin (with HTTP-free URLs). Use NFT.Storage as a primary service, or as a complement to your existing solutions - our goal is to ensure no NFTs ever go offline. 
