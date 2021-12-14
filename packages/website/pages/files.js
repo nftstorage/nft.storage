@@ -197,7 +197,7 @@ export default function Files({ user }) {
                     </table>
                     <div className="flex flex-wrap justify-center tc mv3">
                       <Button
-                        className="mh2"
+                        className="mh2 mb2"
                         disabled={befores.length === 1}
                         onClick={handleFirstClick}
                         id="files-first"
@@ -210,7 +210,7 @@ export default function Files({ user }) {
                         ⇤ First
                       </Button>
                       <Button
-                        className="mh2"
+                        className="mh2 mb2"
                         disabled={befores.length === 1}
                         onClick={handlePrevClick}
                         id="files-previous"
@@ -223,7 +223,7 @@ export default function Files({ user }) {
                         ← Previous
                       </Button>
                       <Button
-                        className="mh2"
+                        className="mh2 mb2"
                         disabled={nfts.length < limit}
                         onClick={handleNextClick}
                         id="files-next"
