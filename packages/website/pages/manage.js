@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from 'react-query'
 
 import Button from '../components/button.js'
-import Footer from '../components/footer'
 import Loading from '../components/loading.js'
 import countly from '../lib/countly.js'
 import { useRouter } from 'next/router'
