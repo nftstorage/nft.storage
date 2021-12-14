@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   rest:
-    image: postgrest/postgrest:v8.0.0
+    image: postgrest/postgrest:v9.0.0
     depends_on:
       - db
     restart: always
