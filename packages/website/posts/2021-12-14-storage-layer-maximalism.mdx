@@ -24,12 +24,12 @@ Many people describe an NFT asIf you ask the average person what an NFT is, they
 But dig in a bit, and you’ll quickly realize that there’s a bit more nuance in both how an NFT is structured and how your data is being stored. While the NFT (the actual token) lives on the blockchain - all the stuff (i.e., the information that shows up on NFT marketplaces, the image, other associated files - all commonly referred to as the metadata) associated with the NFT is usually referenced by external links[^1]. 
 
 ![ERC-721 spec](/images/blog-2/erc-721.png)
-<p style={{ textAlign: 'center', fontStyle: 'italic', marginBottom: 20 }}>
+<p style={{ textAlign: 'center', fontStyle: 'italic', marginBottom: 20, fontSize: 14 }}>
   Above is the ERC-721 spec for NFTs. The TokenURI field contains a link to your metadata blob (seen below).
 </p>
 
 ![ERC-721 spec](/images/blog-2/img-link.png)
-<p style={{ textAlign: 'center', fontStyle: 'italic', marginBottom: 20 }}>
+<p style={{ textAlign: 'center', fontStyle: 'italic', marginBottom: 20, fontSize: 14 }}>
 This (above) is your metadata blob. It contains a link to your image (highlighted).
 </p>
 
@@ -65,7 +65,7 @@ A simple analogy might help make this clearer. Imagine we were talking about “
 For NFTs, this is obviously not ideal - with HTTP links you’re relying on someone to make sure that (1) and (2) are true - and if that someone goes away you might be in trouble.
 
 ![point nft at a thing not a location](/images/blog-2/thing-not-location.png)
-<p style={{ textAlign: 'center', fontStyle: 'italic', marginBottom: 20 }}>
+<p style={{ textAlign: 'center', fontStyle: 'italic', marginBottom: 20, fontSize: 14 }}>
   Your NFT should point at a thing, not point at a location.
 </p>
 
@@ -77,7 +77,7 @@ Imagine if instead of telling you **where** to go to find “To Kill A Mockingbi
 
 
 ![nyan cat example](/images/blog-2/nyan.png)
-<p style={{ textAlign: 'center', fontStyle: 'italic', marginBottom: 20 }}>
+<p style={{ textAlign: 'center', fontStyle: 'italic', marginBottom: 20, fontSize: 14 }}>
   Example of a computer asking for the CID of Nyan Cat, and getting served Nyan Cat from multiple sources.
 </p>
 
