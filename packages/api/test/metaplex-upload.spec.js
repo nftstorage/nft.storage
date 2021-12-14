@@ -69,7 +69,7 @@ describe('Metaplex Upload', () => {
   })
 
   it('should support payloads without mintingAgent tag', async () => {
-    const { root, car } = await createCar('hello again')
+    const { root, car } = await createCar('hello world car')
     // expected CID for the above data
     const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
     assert.strictEqual(root.toString(), cid, 'car file has correct root')
