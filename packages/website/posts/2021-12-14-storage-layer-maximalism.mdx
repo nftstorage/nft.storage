@@ -13,13 +13,13 @@ tags:
 
 # Storage Layer Maximalism
 
-Non-fungible tokens (NFTs) are becoming mainstream, and as new frontiers are explored (e.g., Videos, GameFi, Metaverse) it’s critical that digital assets are created in a way resilient to failures on any storage layer. In this post, we’ll make the case for ***storage layer maximalism*** (redundancy across many storage layers and protocols) and why every NFT needs a content-identifier (CID).
+Non-fungible tokens (NFTs) are becoming mainstream, and as new frontiers are explored (e.g., Videos, GameFi, Metaverse) it’s critical that digital assets are created in a way resilient to failures on any storage layer. In this post, we’ll make the case for **storage layer maximalism** (redundancy across many storage layers and protocols) and why every NFT needs a content-identifier (CID).
 
 ## What exactly is an NFT?
 
-**If you’re familiar with how NFTs work what's happening under the hood, skip this section - this is just to get everyone up to speed.**
+*If you’re familiar with how NFTs work, skip this section - this is just to get everyone up to speed.*
 
-Many people describe an NFT asIf you ask the average person what an NFT is, they’ll probably tell you it's a picture (or video or something) that “lives on the blockchain”. Because it “lives on the blockchain”, you get all these cool properties (Provenance! Automatic royalties! User ownership!) - which has birthed a whole movement in digital creation.
+Many people describe an NFT as a picture (or video or something) that “lives on the blockchain”. Because it “lives on the blockchain”, you get all these cool properties (Provenance! Automatic royalties! User ownership!) - which has birthed a whole movement in digital creation.
 
 But dig in a bit, and you’ll quickly realize that there’s a bit more nuance in both how an NFT is structured and how your data is being stored. While the NFT (the actual token) lives on the blockchain - all the stuff (i.e., the information that shows up on NFT marketplaces, the image, other associated files - all commonly referred to as the metadata) associated with the NFT is usually referenced by external links[^1]. 
 
@@ -48,8 +48,8 @@ While this is an annoying problem when browsing the web, it becomes substantiall
 
 You can split the risks NFT metadata face into two (related) challenges: 
 
-*Linking*: How do we make sure the link our NFT uses directly points at the thing we want it to represent (i.e., my NFT is linked to its content, not someone else’s server)?
-*Existence*: How do we make sure the link our NFT uses always resolves the content we expect it to (i.e., prevent our jpegs from disappearing)?
+- *Linking*: How do we make sure the link our NFT uses directly points at the thing we want it to represent (i.e., my NFT is linked to its content, not someone else’s server)?
+- *Existence*: How do we make sure the link our NFT uses always resolves the content we expect it to (i.e., prevent our jpegs from disappearing)?
 
 
 ## Solving the linking problem
