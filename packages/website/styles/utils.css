@@ -8,11 +8,6 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.table-responsive {
-  display: block;
-  width: 100%;
-  overflow-x: auto;
-}
 
 .object-cover {
   object-fit: cover;

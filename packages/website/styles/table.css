@@ -1,0 +1,88 @@
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table-responsive table {
+  table-layout: fixed;
+}
+
+.table-responsive table tr td,
+.table-responsive table tr th {
+  display: block;
+  text-align: left;
+  padding: 0.5rem 1rem;
+}
+
+.table-responsive table tr th {
+  display: none;
+}
+
+.table-responsive table tr td:first-child,
+.table-responsive table tr th:first-child {
+  padding: 0.5rem 1rem 0.25rem 1rem;
+}
+
+.table-responsive table tr td[data-label] {
+  text-align: right;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.table-responsive table tr td[data-label]::before {
+  content: attr(data-label);
+  float: left;
+  font-weight: 700;
+  margin-right: 2rem;
+  font-size: 17px;
+}
+
+.table-responsive td.wrap-cell {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+.table-responsive td.shrink-cell {
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+}
+
+/* 832px */
+@media screen and (min-width: 52em) {
+  .table-responsive td.shrink-cell {
+    width: 1%;
+    display: table-cell;
+  }
+
+  .table-responsive table tr td[data-label] {
+    text-align: left;
+    border-bottom: none;
+  }
+  .table-responsive table tr td[data-label]::before {
+    content: '';
+    float: left;
+  }
+
+  .table-responsive table tr th {
+    display: table;
+  }
+
+  .table-responsive table {
+    table-layout: auto;
+  }
+
+  .table-responsive table tr td,
+  .table-responsive table tr th,
+  .table-responsive table tr td:first-child,
+  .table-responsive table tr th:first-child {
+    display: table-cell;
+    padding: 0.5rem;
+  }
+
+  .table-responsive table td,
+  .table-responsive table th {
+    border-right: 1px solid var(--nsblack);
+  }
+}
