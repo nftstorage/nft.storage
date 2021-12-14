@@ -1,8 +1,4 @@
-import * as IPFS from 'ipfs-core'
 import debug from 'debug'
-import os from 'os'
-import path from 'path'
-import fs from 'fs'
 import * as raw from 'multiformats/codecs/raw'
 import * as pb from '@ipld/dag-pb'
 
@@ -10,28 +6,34 @@ const BLOCK_TIMEOUT = 1000 * 60 * 3 // timeout if we don't receive a block after
 const REPORT_INTERVAL = 1000 * 60 // log download progress every minute
 
 /**
+ * @param {() => Promise<import('ipfs-core').IPFS>} getIpfs
+ */
+export function exportCar(getIpfs) {
+  /**
+   * @param {AsyncIterable<import('./bindings').BackupCandidate>} source
+   * @returns {AsyncIterableIterator<import('./bindings').BackupContent>}
+   */
+  return async function* (source) {
+    for await (const candidate of source) {
+      const ipfs = await getIpfs()
+      yield { ...candidate, content: exportOne(ipfs, candidate) }
+    }
+  }
+}
+
+/**
  * Download a CAR for the passed CID from the given IPFS nodes.
  *
- * @param {import('multiformats').CID} cid
- * @param {[]string} fromAddrs
+ * @param {import('ipfs-core').IPFS} ipfs
+ * @param {import('./bindings').BackupCandidate} candidate
  */
-export async function* downloadCar(cid, fromAddrs) {
-  const log = debug(`backup:fetch:${cid}`)
-  const repoPath = path.join(os.tmpdir(), `.ipfs${cid}`)
-
-  log(`fetching ${cid} into ${repoPath} from nodes`, fromAddrs)
-
-  const ipfs = await IPFS.create({
-    init: { emptyRepo: true },
-    preload: { enabled: false },
-    repo: repoPath,
-    config: { Bootstrap: fromAddrs },
-  })
-
+async function* exportOne(ipfs, { sourceCid }) {
+  const log = debug(`backup:export:${sourceCid}`)
   let reportInterval
   try {
+    log('determining size...')
     let bytesReceived = 0
-    const bytesTotal = getSize(cid)
+    const bytesTotal = getSize(sourceCid)
     log(bytesTotal == null ? 'unknown size' : `${bytesTotal} bytes`)
 
     reportInterval = setInterval(() => {
@@ -41,7 +43,7 @@ export async function* downloadCar(cid, fromAddrs) {
     const controller = new AbortController()
     let timeoutId = setTimeout(() => controller.abort(), BLOCK_TIMEOUT)
 
-    for await (const chunk of ipfs.dag.export(cid)) {
+    for await (const chunk of ipfs.dag.export(sourceCid)) {
       clearTimeout(timeoutId)
       bytesReceived += chunk.byteLength
       yield chunk
@@ -50,16 +52,6 @@ export async function* downloadCar(cid, fromAddrs) {
     log('done')
   } finally {
     clearInterval(reportInterval)
-    try {
-      await ipfs.stop()
-    } catch (err) {
-      log('failed to stop IPFS:', err)
-    }
-    try {
-      await fs.promises.rmdir(repoPath, { recursive: true })
-    } catch (err) {
-      log(`failed to clean repo: ${repoPath}`, err)
-    }
   }
 }
 
@@ -68,7 +60,7 @@ export async function* downloadCar(cid, fromAddrs) {
  * @param {import('multiformats').CID} cid
  * @returns {number | undefined}
  */
-function getSize(ipfs, cid) {
+async function getSize(ipfs, cid) {
   if (cid.code === raw.code) {
     const block = await ipfs.block.get(cid, { timeout: BLOCK_TIMEOUT })
     return block.byteLength

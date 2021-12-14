@@ -14,7 +14,11 @@
     "@ipld/dag-pb": "^2.1.15",
     "debug": "^4.3.3",
     "ipfs-core": "^0.12.2",
+    "it-pipe": "^1.1.0",
     "multiformats": "^9.5.4",
     "pg": "^8.7.1"
+  },
+  "devDependencies": {
+    "standard": "^16.0.4"
   }
 }
