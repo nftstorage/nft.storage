@@ -6,6 +6,7 @@
 
 .table-responsive table {
   table-layout: fixed;
+  border-collapse: collapse;
 }
 
 .table-responsive table tr td,
@@ -17,6 +18,15 @@
 
 .table-responsive table tr th {
   display: none;
+}
+
+.table-responsive table tr {
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.table-responsive table tbody tr {
+  border: 1px solid var(--nsblack);
 }
 
 .table-responsive table tr td:first-child,
@@ -45,12 +55,24 @@
 
 .table-responsive td.shrink-cell {
   white-space: nowrap;
+}
+
+.table-responsive td.center-cell {
   display: flex;
   justify-content: center;
 }
 
 /* 832px */
 @media screen and (min-width: 52em) {
+  .table-responsive table {
+    table-layout: auto;
+    border: 1px solid var(--nsblack);
+  }
+
+  .table-responsive table thead tr {
+    border-bottom: 1px solid var(--nsblack);
+  }
+
   .table-responsive td.shrink-cell {
     width: 1%;
     display: table-cell;
@@ -69,8 +91,9 @@
     display: table;
   }
 
-  .table-responsive table {
-    table-layout: auto;
+  .table-responsive table tr {
+    margin-bottom: 0;
+    display: table-row;
   }
 
   .table-responsive table tr td,

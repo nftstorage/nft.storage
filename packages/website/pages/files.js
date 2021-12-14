@@ -138,9 +138,9 @@ export default function Files({ user }) {
                 </When>
                 <When condition={!hasZeroNfts}>
                   <>
-                    <table className="bg-white ba w-100 collapse">
+                    <table className="w-100 collapse">
                       <thead>
-                        <tr className="bb bg-nsgray">
+                        <tr className="bg-nsgray">
                           <th className="">Date</th>
                           <th className="">CID</th>
                           <th className="">Size</th>
@@ -152,7 +152,7 @@ export default function Files({ user }) {
                       <tbody>
                         {nfts.map(
                           (/** @type {any} */ nft, /** @type {number} */ i) => (
-                            <tr className="bb" key={`nft-${i}`}>
+                            <tr className="bg-white bb" key={`nft-${i}`}>
                               <td
                                 data-label="Date"
                                 className=""
@@ -166,7 +166,7 @@ export default function Files({ user }) {
                               <td data-label="Size" className="">
                                 {bytes(nft.size || 0)}
                               </td>
-                              <td className="shrink-cell">
+                              <td className="shrink-cell center-cell">
                                 <form onSubmit={handleDeleteFile}>
                                   <input
                                     type="hidden"
