@@ -1,14 +1,15 @@
-import { useState } from 'react'
+import { API, getNfts, getToken } from '../lib/api.js'
 import { useQuery, useQueryClient } from 'react-query'
-import bytes from 'bytes'
-import { NFTStorage } from 'nft.storage'
+
 import Button from '../components/button.js'
 import Loading from '../components/loading'
-import { getNfts, getToken, API } from '../lib/api.js'
-import countly from '../lib/countly.js'
-import { When } from 'react-if'
-import { useRouter } from 'next/router'
+import { NFTStorage } from 'nft.storage'
 import Script from 'next/script'
+import { When } from 'react-if'
+import bytes from 'bytes'
+import countly from '../lib/countly.js'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 /**
  * Static Props
@@ -50,6 +51,7 @@ export default function Files({ user }) {
       enabled: !!user,
     }
   )
+
   /** @type {any[]} */
   const nfts = data || []
 
@@ -98,7 +100,7 @@ export default function Files({ user }) {
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
       <main className="bg-nsyellow">
-        <div className="flex justify-center">
+        <div className="flex justify-center pt4">
           <Button data-tf-popup="OTxv3w2O" className="mh3 mb3" variant="dark">
             {'Tell us how we are doing'}
           </Button>
@@ -136,19 +138,13 @@ export default function Files({ user }) {
                 </When>
                 <When condition={!hasZeroNfts}>
                   <>
-                    <table className="bg-white ba b--black w-100 collapse">
+                    <table className="w-100 collapse">
                       <thead>
-                        <tr className="bb b--black">
-                          <th className="pa2 tl bg-nsgray br b--black w-33">
-                            Date
-                          </th>
-                          <th className="pa2 tl bg-nsgray br b--black w-33">
-                            CID
-                          </th>
-                          <th className="pa2 tl bg-nsgray br b--black w-33">
-                            Size
-                          </th>
-                          <th className="pa2 tc bg-nsgray">
+                        <tr className="bg-nsgray">
+                          <th className="">Date</th>
+                          <th className="">CID</th>
+                          <th className="">Size</th>
+                          <th className="">
                             <span className="sr-only">File Actions</span>
                           </th>
                         </tr>
@@ -156,20 +152,21 @@ export default function Files({ user }) {
                       <tbody>
                         {nfts.map(
                           (/** @type {any} */ nft, /** @type {number} */ i) => (
-                            <tr className="bb b--black" key={`nft-${i}`}>
+                            <tr className="bg-white bb" key={`nft-${i}`}>
                               <td
-                                className="pa2 br b--black"
+                                data-label="Date"
+                                className=""
                                 title={nft.created}
                               >
                                 {nft.created.split('T')[0]}
                               </td>
-                              <td className="pa2 br b--black">
+                              <td data-label="CID" className="wrap-cell">
                                 <GatewayLink cid={nft.cid} type={nft.type} />
                               </td>
-                              <td className="pa2 br b--black mw7">
+                              <td data-label="Size" className="">
                                 {bytes(nft.size || 0)}
                               </td>
-                              <td className="pa2">
+                              <td className="shrink-cell center-cell">
                                 <form onSubmit={handleDeleteFile}>
                                   <input
                                     type="hidden"
@@ -198,9 +195,9 @@ export default function Files({ user }) {
                         )}
                       </tbody>
                     </table>
-                    <div className="flex justify-center tc mv3">
+                    <div className="flex flex-wrap justify-center tc mv3">
                       <Button
-                        className="black mh2 mt2"
+                        className="mh2 mb2"
                         disabled={befores.length === 1}
                         onClick={handleFirstClick}
                         id="files-first"
@@ -213,7 +210,7 @@ export default function Files({ user }) {
                         ⇤ First
                       </Button>
                       <Button
-                        className="black mh2 mt2"
+                        className="mh2 mb2"
                         disabled={befores.length === 1}
                         onClick={handlePrevClick}
                         id="files-previous"
@@ -226,7 +223,7 @@ export default function Files({ user }) {
                         ← Previous
                       </Button>
                       <Button
-                        className="black mh2 mt2"
+                        className="mh2 mb2"
                         disabled={nfts.length < limit}
                         onClick={handleNextClick}
                         id="files-next"

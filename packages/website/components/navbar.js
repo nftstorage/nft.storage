@@ -9,7 +9,6 @@ import clsx from 'clsx'
 import countly from '../lib/countly'
 import { getMagic } from '../lib/magic.js'
 import { useQueryClient } from 'react-query'
-import { useResizeObserver } from '../hooks/resize-observer'
 
 /**
  * Navbar Component
@@ -23,20 +22,9 @@ import { useResizeObserver } from '../hooks/resize-observer'
 export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   const containerRef = useRef(null)
   const queryClient = useQueryClient()
-  const [isSmallVariant, setSmallVariant] = useState(false)
   const [isMenuOpen, setMenuOpen] = useState(false)
   const { query } = useRouter()
   const version = /** @type {string} */ (query.version)
-
-  useResizeObserver(containerRef, () => {
-    const shouldGoToSmallVariant = window.innerWidth < 640
-    if (shouldGoToSmallVariant && !isSmallVariant) {
-      setSmallVariant(true)
-    }
-    if (!shouldGoToSmallVariant && isSmallVariant) {
-      setSmallVariant(false)
-    }
-  })
 
   const logout = useCallback(async () => {
     await getMagic().user.logout()
@@ -101,27 +89,27 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
         },
         name: 'Blog',
       },
-      ...(isSmallVariant
-        ? user
-          ? [
-              {
-                onClick: logout,
-                name: 'Logout',
-                tracking: trackLogout,
+      ...(user
+        ? [
+            {
+              onClick: logout,
+              name: 'Logout',
+              tracking: trackLogout,
+              mobileOnly: true,
+            },
+          ]
+        : [
+            {
+              link: {
+                pathname: '/login',
+                query: version ? { version } : null,
               },
-            ]
-          : [
-              {
-                link: {
-                  pathname: '/login',
-                  query: version ? { version } : null,
-                },
-                name: 'Login',
-              },
-            ]
-        : []),
+              name: 'Login',
+              mobileOnly: true,
+            },
+          ]),
     ],
-    [user, isSmallVariant, version, logout, trackLogout]
+    [user, version, logout, trackLogout]
   )
 
   const onLinkClick = useCallback((event) => {
@@ -147,59 +135,53 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   )
 
   return (
-    <nav
-      className={clsx(
-        bgColor,
-        'w-100 z-50',
-        isSmallVariant ? 'sticky top-0' : ''
-      )}
-      ref={containerRef}
-    >
+    <nav className={clsx(bgColor, 'w-100 z-50 navbar')} ref={containerRef}>
       <div className="flex items-center justify-between ph3 ph5-ns pv3 center mw9">
-        {isSmallVariant && (
-          <div className="flex align-middle">
-            <Button onClick={toggleMenu} small className="flex-column">
-              <Hamburger className="w1 m2" aria-label="Toggle Navbar" />
-            </Button>
-          </div>
-        )}
+        <div className="hamburger flex align-middle">
+          <Button onClick={toggleMenu} small className="flex-column">
+            <Hamburger className="w1 m2" aria-label="Toggle Navbar" />
+          </Button>
+        </div>
         <Link href={{ pathname: '/', query: version ? { version } : null }}>
           <a className="no-underline v-mid" onClick={onLinkClick}>
             <img
               src={logo.src}
               width="160"
               height="79"
-              className={clsx(isSmallVariant ? '' : 'mr4', 'v-mid')}
+              className="nav-logo"
               style={{ maxWidth: '80px', height: 'auto' }}
               alt="NFT Storage Logo"
             />
           </a>
         </Link>
         <div className="flex items-center">
-          {!isSmallVariant &&
-            ITEMS.map((item, index) => (
-              <div
-                className="select-none"
-                key={`nav-link-${index}`}
-                onClick={item.onClick}
-              >
-                <Link href={item.link || ''}>
-                  <a
-                    key={item.name}
-                    className={clsx(
-                      'f4 black no-underline underline-hover v-mid',
-                      { mr4: index === ITEMS.length - 1 }
-                    )}
-                    onClick={item.tracking ? item.tracking : onLinkClick}
-                  >
-                    {item.name}
-                  </a>
-                </Link>
-                {index !== ITEMS.length - 1 && (
-                  <span className="mh2 v-mid b black">•</span>
-                )}
-              </div>
-            ))}
+          <div className="desktop-nav-items mr4">
+            {ITEMS.map((item, index) =>
+              item.mobileOnly ? null : (
+                <div
+                  className="select-none"
+                  key={`nav-link-${index}`}
+                  onClick={item.onClick}
+                >
+                  <Link href={item.link || ''}>
+                    <a
+                      key={item.name}
+                      className={clsx(
+                        'f4 black no-underline underline-hover v-mid',
+                        { mr4: index === ITEMS.length - 1 }
+                      )}
+                      onClick={item.tracking ? item.tracking : onLinkClick}
+                    >
+                      {item.name}
+                    </a>
+                  </Link>
+                  {index !== ITEMS.length - 2 && (
+                    <span className="mh2 v-mid b black">•</span>
+                  )}
+                </div>
+              )
+            )}
+          </div>
           <div className="mb1">
             {user ? (
               <Button
@@ -234,13 +216,11 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
       <div
         className={clsx(
           bgColor,
-          'transition-all duration-300 fixed top-0 left-0 bottom-0 shadow-4 p6 w-100',
-          isSmallVariant && isMenuOpen
-            ? 'flex flex-column justify-center opacity-100'
-            : 'o-0 invisible'
+          'mobile-nav transition-all duration-300 fixed top-0 left-0 bottom-0 shadow-4 p6 w-100',
+          isMenuOpen ? 'flex opacity-100' : 'o-0 invisible'
         )}
         style={{ zIndex: 100 }}
-        aria-hidden={isSmallVariant && isMenuOpen}
+        aria-hidden={isMenuOpen}
       >
         <div className="flex flex-column items-center text-center mt4">
           <Link href="/">
@@ -249,24 +229,24 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                 src={logo.src}
                 width="160"
                 height="79"
-                className={clsx(isSmallVariant ? '' : 'mr4', 'v-mid')}
+                className="mobile-nav-logo"
                 style={{ maxWidth: '80px', height: 'auto' }}
                 alt="NFT Storage Logo"
               />
             </a>
           </Link>
         </div>
-        <div className="flex flex-column items-center justify-center text-center pv4 flex-auto">
+        <div className="mobile-nav-items flex flex-column items-center justify-center text-center pv4 flex-auto">
           {ITEMS.map((item, index) => (
             <div
-              className="pv3"
+              className="mobile-nav-item"
               key={`menu-nav-link-${index}`}
               onClick={item.onClick}
             >
               <Link href={item.link || ''}>
                 <a
                   className={clsx(
-                    'f1 v-mid chicagoflf',
+                    'mobile-nav-link v-mid chicagoflf',
                     logo.isDark ? 'black' : 'white'
                   )}
                   onClick={item.tracking ? item.tracking : onMobileLinkClick}
