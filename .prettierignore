@@ -21,3 +21,4 @@ CHANGELOG.md
 **/yarn.lock*
 *.toml
 packages/client/src/lib/interface.ts
+*.mdx
