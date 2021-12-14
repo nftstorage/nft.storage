@@ -24,8 +24,7 @@ describe('Metaplex Upload', () => {
     const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
     assert.strictEqual(root.toString(), cid, 'car file has correct root')
 
-    // @ts-ignore
-    const fixture = fixtures.metaplexAuth[cid]
+    const fixture = fixtures.metaplexAuth.v1[cid]
     assert.notEqual(fixture, null, 'no fixture for cid ' + cid)
 
     const res = await fetch('metaplex/upload', {
