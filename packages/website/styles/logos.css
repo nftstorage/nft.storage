@@ -4,9 +4,7 @@
 .marketplace-logo-grid {
   display: grid;
   width: 100%;
-  grid: auto/repeat(7, 1fr);
-  justify-items: center;
-  align-items: center;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
   row-gap: 20px;
   column-gap: 30px;
   padding-bottom: 0.5rem;
