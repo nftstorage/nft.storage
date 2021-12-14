@@ -10,7 +10,11 @@ const pkg = JSON.parse(
 const env = process.env.NEXT_PUBLIC_ENV
 const release = `${pkg.name}@${pkg.version}-${env}+${shortHash}`
 
-const nextConfig = {
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
+const nextConfig = withBundleAnalyzer({
   trailingSlash: true,
   reactStrictMode: true,
   exportPathMap: async function() {
@@ -18,7 +22,7 @@ const nextConfig = {
       '/ipfs-404.html': { page: '/404' },
     }
   },
-}
+})
 
 const config =
   env === 'dev'
