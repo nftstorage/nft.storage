@@ -272,8 +272,8 @@ const faqContent = {
       <br />
       <InlineCode>
         Uncaught SyntaxError: The requested module
-        '/-/ipfs-core-utils@v0.10.5-qUdqS0pJ7xHVq6EQnGSz/dist=es2019,mode=imports/unoptimized/src/files/normalise-input/index.js'
-        does not provide an export named 'normaliseInput'
+        &quot;/-/ipfs-core-utils@v0.10.5-qUdqS0pJ7xHVq6EQnGSz/dist=es2019,mode=imports/unoptimized/src/files/normalise-input/index.js&quot;
+        does not provide an export named &quot;normaliseInput&quot;
       </InlineCode>
     </p>
   ),

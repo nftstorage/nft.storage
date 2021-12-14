@@ -9,6 +9,7 @@
     "build": "next build && next-sitemap && next export",
     "start": "next start",
     "test": "eslint './**/*.js' && tsc --build",
+    "lint:fix": "eslint './**/*.js' --fix-dry-run",
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
