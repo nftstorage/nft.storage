@@ -1,9 +1,7 @@
-import pg from 'pg'
-
 /**
- * @param {pg.Client} db
+ * @param {import('pg').Client} db
  */
-export function recordBackups(db) {
+export function registerBackup (db) {
   /**
    * @param {AsyncIterable<import('./bindings').BackupInfo} source
    */

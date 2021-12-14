@@ -8,42 +8,41 @@ const REPORT_INTERVAL = 1000 * 60 // log download progress every minute
 /**
  * @param {() => Promise<import('ipfs-core').IPFS>} getIpfs
  */
-export function exportCar(getIpfs) {
+export function exportCar (ipfs) {
   /**
    * @param {AsyncIterable<import('./bindings').BackupCandidate>} source
    * @returns {AsyncIterableIterator<import('./bindings').BackupContent>}
    */
-  return async function* (source) {
+  return async function * (source) {
     for await (const candidate of source) {
-      const ipfs = await getIpfs()
-      yield { ...candidate, content: exportOne(ipfs, candidate) }
+      yield { ...candidate, content: exportDag(ipfs, candidate.sourceCid) }
     }
   }
 }
 
 /**
- * Download a CAR for the passed CID from the given IPFS nodes.
+ * Export a CAR for the passed CID.
  *
  * @param {import('ipfs-core').IPFS} ipfs
- * @param {import('./bindings').BackupCandidate} candidate
+ * @param {import('multiformats').CID} cid
  */
-async function* exportOne(ipfs, { sourceCid }) {
-  const log = debug(`backup:export:${sourceCid}`)
+async function * exportDag (ipfs, cid) {
+  const log = debug(`backup:export:${cid}`)
   let reportInterval
   try {
     log('determining size...')
     let bytesReceived = 0
-    const bytesTotal = getSize(sourceCid)
+    const bytesTotal = getSize(cid)
     log(bytesTotal == null ? 'unknown size' : `${bytesTotal} bytes`)
 
     reportInterval = setInterval(() => {
       log(`received ${bytesReceived} of ${bytesTotal || 'unknown'} bytes`)
     }, REPORT_INTERVAL)
 
-    const controller = new AbortController()
+    const controller = new AbortController() // eslint-disable-line
     let timeoutId = setTimeout(() => controller.abort(), BLOCK_TIMEOUT)
 
-    for await (const chunk of ipfs.dag.export(sourceCid)) {
+    for await (const chunk of ipfs.dag.export(cid)) {
       clearTimeout(timeoutId)
       bytesReceived += chunk.byteLength
       yield chunk
@@ -60,7 +59,7 @@ async function* exportOne(ipfs, { sourceCid }) {
  * @param {import('multiformats').CID} cid
  * @returns {number | undefined}
  */
-async function getSize(ipfs, cid) {
+async function getSize (ipfs, cid) {
   if (cid.code === raw.code) {
     const block = await ipfs.block.get(cid, { timeout: BLOCK_TIMEOUT })
     return block.byteLength

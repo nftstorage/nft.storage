@@ -6,12 +6,15 @@ A tool to backup all data for disaster recovery.
 
 Drop a `.env` file in the project root and populate:
 
-```
+```sh
 DATABASE_CONNECTION=postgres://postgres:postgres@127.0.0.1:5432/postgres
-IPFS_ADDRS=...
+IPFS_ADDRS=<value>
+S3_REGION=<value>
+S3_ACCESS_KEY_ID=<value>
+S3_SECRET_ACCESS_KEY=<value>
 ```
 
-Replace `DATABASE_CONNECTION` with the database you want to read from/write to and `IPFS_ADDRS` with the multiaddrs of nodes where content can be found.
+Replace `DATABASE_CONNECTION` with the database you want to read from/write to, `IPFS_ADDRS` with the multiaddrs of nodes where content can be found and `S3_*` with the relevant S3 bucket details.
 
 Start the backup:
 

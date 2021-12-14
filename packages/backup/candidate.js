@@ -1,4 +1,3 @@
-import pg from 'pg'
 import debug from 'debug'
 import { CID } from 'multiformats'
 
@@ -17,11 +16,11 @@ ORDER BY inserted_at ASC
 /**
  * Fetch a list of CIDs that need to be backed up.
  *
- * @param {pg.Client} db Postgres client.
+ * @param {import('pg').Client} db Postgres client.
  * @param {Date} [startDate]
  * @returns {AsyncIterableIterator<import('./bindings').BackupCandidate>}
  */
-export async function* getCandidate(db, startDate = new Date(0)) {
+export async function * getCandidate (db, startDate = new Date(0)) {
   let offset = 0
   const limit = 10000
   let total = 0
@@ -30,7 +29,7 @@ export async function* getCandidate(db, startDate = new Date(0)) {
     const { rows: uploads, rowCount } = await db.query(GET_UPLOADS, [
       startDate.toISOString(),
       offset,
-      limit,
+      limit
     ])
     if (!uploads.length) break
 
@@ -38,8 +37,8 @@ export async function* getCandidate(db, startDate = new Date(0)) {
     for (const upload of uploads) {
       yield {
         sourceCid: CID.parse(upload.source_cid),
-        userId: upload.user_id,
-        uploadId: upload.id,
+        userId: String(upload.user_id),
+        uploadId: String(upload.id)
       }
     }
 
