@@ -177,7 +177,9 @@ async function parseMetaplexJWT(token) {
     throw new ErrorInvalidMetaplexToken('tags not present in payload')
   }
 
-  const solanaCluster = payload.req.put.tags.solanaCluster
+  // temporarily support old kebab-case tag name
+  const solanaCluster =
+    payload.req.put.tags.solanaCluster || payload.req.put.tags['solana-cluster']
   if (typeof solanaCluster !== 'string') {
     throw new ErrorInvalidMetaplexToken(
       '"solanaCluster" tag not present in payload'
@@ -185,9 +187,9 @@ async function parseMetaplexJWT(token) {
   }
 
   const { mintingAgent, agentVersion } = payload.req.put.tags
-  if (typeof mintingAgent !== 'string') {
+  if (mintingAgent && typeof mintingAgent !== 'string') {
     throw new ErrorInvalidMetaplexToken(
-      '"mintingAgent" tag not present in payload'
+      '"mintingAgent" tag must have a string value if present'
     )
   }
 
@@ -203,7 +205,7 @@ async function parseMetaplexJWT(token) {
     iss,
     rootCID,
     solanaCluster,
-    mintingAgent,
+    mintingAgent: mintingAgent || 'unknown',
     agentVersion,
   }
 }
