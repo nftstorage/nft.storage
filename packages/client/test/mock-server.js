@@ -278,6 +278,7 @@ export class Service {
       const headers = Object.fromEntries(response.headers.entries())
       outgoing.writeHead(response.status, headers)
       const body = response.body ? response.body : []
+      // @ts-ignore
       for await (const chunk of body) {
         outgoing.write(chunk)
       }
