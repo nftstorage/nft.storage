@@ -113,7 +113,6 @@ describe('Metaplex Upload', () => {
       rootCID: fixture.meta.req.put.rootCID,
       solanaCluster: fixture.meta.req.put.tags['solana-cluster'],
       mintingAgent: 'unknown',
-      agentVersion: undefined,
     }
     assert.deepEqual(data.meta, expectedMeta, 'metadata matches jwt payload')
   })
