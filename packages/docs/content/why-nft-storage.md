@@ -1,5 +1,6 @@
 ---
 title: Why NFT.Storage?
+sidebar_position: 2
 ---
 
 > [NFT.Storage](http://NFT.Storage) makes it easy to follow NFT best-practices, maximizing the value of NFTs you're minting and minimizing the overhead of maintaining the NFTs for NFT minters and owners
