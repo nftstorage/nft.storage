@@ -176,11 +176,10 @@ export default function NewFile() {
                 <Link href="/#js-client-library">
                   <a className="black">JS Client Library</a>
                 </Link>
-                ,{' '}
+                or
                 <Link href="/#raw-http-request">
                   <a className="black">Raw HTTP Requests</a>
-                </Link>{' '}
-                .
+                </Link>
               </p>
             </div>
           </form>
