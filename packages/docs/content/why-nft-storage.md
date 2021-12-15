@@ -1,3 +1,7 @@
+---
+title: Why NFT.Storage?
+---
+
 > [NFT.Storage](http://NFT.Storage) makes it easy to follow NFT best-practices, maximizing the value of NFTs you're minting and minimizing the overhead of maintaining the NFTs for NFT minters and owners
 
 One of the powerful features of NFTs is that they can reference off-chain data, saving you the cost of storing your images, videos, and other large NFT data on-chain. An example of this is with the ERC-1155 standard, which defines places where you should reference data off-chain via URIs:
@@ -43,7 +47,7 @@ There are other ways to get data onto IPFS and help ensure that data stays up (e
 
 Filecoin's unique combination of verifiable proof of storage and open market protocols allow for solutions that can ensure persistence through smart contract interactions, for example, creating "data DAOs" that auto-renew storage deals on any time scale from days to centuries. Using NFT.Storage today positions you to take advantage of these future upgrades with no extra work from your end!
 
-## Quick-start
+## Quickstart
 
 **Ready to get started using NFT.Storage right now?** Get up and running in minutes by following this quickstart guide. In this guide, we'll walk through the following steps:
 
@@ -60,30 +64,35 @@ You can also use the [HTTP API][reference-http-api] directly using any programmi
 
 <!-- TODO(yusef): link to generated clients (python, etc) -->
 
-> When using the HTTP API, make sure to read about [CAR files][concepts-car-files] to learn how to support large uploads!
+:::tip
+When using the HTTP API, make sure to read about [CAR files][concepts-car-files] to learn how to support large uploads!
+:::
 
 ### Create an account
 
 For this guide, you'll need an NFT.Storage account to get your API token and manage your stored data. You can sign up **for free** using your email address or GitHub.
 
-<!--tabs-->
-#### Email
-##### Sign up using email
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+<TabItem value="email" label="Sign up using email">
 
 1. Go to [nft.storage/login](https://nft.storage/login) to get started.
 1. Enter your email address.
 1. Check your inbox for a verification email from NFT.Storage, and click the **Log in** button in the email.
 1. You're all set!
 
-#### GitHub
-##### Sign up using GitHub
+</TabItem>
+<TabItem value="github" label="Sign up using GitHub">
 
 1. Go to [nft.storage/login](https://nft.storage/login) to get started.
 1. Click **GitHub** on the Login screen.
 1. **Authorize** Web3.Storage when asked by GitHub.
 1. You're all set!
 
-<!--/tabs-->
+</TabItem>
+</Tabs>
 
 ### Uploading a file using the website
 
