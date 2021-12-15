@@ -30,7 +30,7 @@ usage_model = "unbound"
 [env.staging.vars]
 ENV = "staging"
 DEBUG = "true"
-DATABASE_URL = "https://db-staging.nft.storage"
+DATABASE_URL = "https://nft-storage-pgrest-staging.herokuapp.com"
 
 [env.staging.build]
 command = "scripts/cli.js build --env staging"
@@ -50,7 +50,7 @@ usage_model = "unbound"
 [env.production.vars]
 ENV = "production"
 DEBUG = "false"
-DATABASE_URL = "https://db.nft.storage"
+DATABASE_URL = "https://nft-storage-pgrest-prod.herokuapp.com"
 
 [env.production.build]
 command = "scripts/cli.js build --env production"
