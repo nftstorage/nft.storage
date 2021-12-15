@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.18.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.18.0...website-v1.18.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* blog-share ([#978](https://www.github.com/nftstorage/nft.storage/issues/978)) ([218142b](https://www.github.com/nftstorage/nft.storage/commit/218142b6a49ed14d97ac52dd6456cdd908624068))
+
 ## [1.18.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.17.0...website-v1.18.0) (2021-12-14)
 
 
