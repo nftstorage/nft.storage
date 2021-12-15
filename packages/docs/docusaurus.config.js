@@ -40,23 +40,17 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'NFT.Storage Docs',
+        title: 'NFT.Storage',
         logo: {
           alt: 'NFT.Storage Logo',
           src: 'img/logo.svg',
         },
         items: [
           {
-            type: 'doc',
-            docId: 'why-nft-storage',
-            position: 'left',
-            label: 'Why NFT.Storage?',
-          },
-          {
             href: 'https://github.com/nftstorage/nft.storage',
             label: 'GitHub',
             position: 'right',
-          },
+          }
         ],
       },
       footer: {
@@ -76,15 +70,15 @@ const config = {
             items: [
               {
                 label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                href: 'https://stackoverflow.com/questions/tagged/nft.storage',
               },
               {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
+                label: 'Slack',
+                href: 'https://filecoinproject.slack.com',
               },
               {
                 label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
+                href: 'https://twitter.com/nft_storage',
               },
             ],
           },
@@ -93,16 +87,16 @@ const config = {
             items: [
               {
                 label: 'Blog',
-                to: '/blog',
+                href: 'https://nft.storage/blog',
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                href: 'https://github.com/nftstorage/nft.storage',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Made with 💛 by Protocol Labs.`,
       },
       prism: {
         theme: lightCodeTheme,
