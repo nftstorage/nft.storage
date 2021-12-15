@@ -175,8 +175,8 @@ export default function NewFile() {
                 You can also upload files using the{' '}
                 <Link href="/#js-client-library">
                   <a className="black">JS Client Library</a>
-                </Link>
-                or
+                </Link>{' '}
+                or{' '}
                 <Link href="/#raw-http-request">
                   <a className="black">Raw HTTP Requests</a>
                 </Link>
