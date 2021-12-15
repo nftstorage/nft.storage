@@ -6,16 +6,18 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG=backup:* node bin/start.js",
+    "start": "NODE_TLS_REJECT_UNAUTHORIZED=0 DEBUG=backup:* node bin/start.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Alan Shaw",
   "license": "(Apache-2.0 OR MIT)",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.44.0",
+    "@aws-sdk/lib-storage": "^3.44.0",
     "@ipld/dag-pb": "^2.1.15",
     "debug": "^4.3.3",
     "dotenv": "^10.0.0",
+    "format-number": "^3.0.0",
     "ipfs-core": "^0.12.2",
     "it-pipe": "^1.1.0",
     "multiformats": "^9.5.4",

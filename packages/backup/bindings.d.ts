@@ -6,8 +6,9 @@ import { CID } from 'multiformats'
 export interface BackupCandidate {
   uploadId: string
   sourceCid: CID
+  contentCid: CID
   userId: string
-  origin: 'nft.storage' | 'web3.storage'
+  app: 'nft.storage' | 'web3.storage'
 }
 
 /**
@@ -15,13 +16,6 @@ export interface BackupCandidate {
  */
 export interface BackupContent extends BackupCandidate {
   content: AsyncIterable<Uint8Array>
-}
-
-/**
- * Information about a user upload paired with local file path.
- */
-export interface LocalBackup extends BackupCandidate {
-  filePath: string
 }
 
 /**
