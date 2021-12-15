@@ -180,10 +180,6 @@ export default function NewFile() {
                 <Link href="/#raw-http-request">
                   <a className="black">Raw HTTP Requests</a>
                 </Link>{' '}
-                or via the{' '}
-                <Link href="/#configure-as-a-remote-pinning-service">
-                  <a className="black">Remote Pinning Service API</a>
-                </Link>
                 .
               </p>
             </div>
