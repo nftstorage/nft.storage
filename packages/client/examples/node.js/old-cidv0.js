@@ -3,8 +3,12 @@
  * _without raw leaf nodes_.
  *
  * The client does not support this _directly_, but you can create a CAR file
- * with a DAG that does _not_ have raw leaf nodes using the ipfs-car module and
- * then pass the result to the `storeCar` method of the client.
+ * with a DAG that does _not_ have raw leaf nodes using the ipfs-car module,
+ * pass the result to the `storeCar` method of the client and then downgrade the
+ * v1 CID to a v0 CID.
+ *
+ * ⚠️ Note that in the files listing returned from the API the v1 CID will be
+ * referenced.
  */
 import { NFTStorage, Blob } from 'nft.storage'
 import { packToBlob } from 'ipfs-car/pack/blob'
@@ -32,6 +36,7 @@ async function storeBlobV0() {
   // downgrade the CID to v0
   const cidV0 = root.toV0()
   console.log({ cid: cidV0.toString() })
+  // { cid: 'QmcLaoGJd1rAF1i7Q5Q4YknSuoC6eyFRFBaNXVRyANn1tA' }
 
   // the v0 CID can even be used in the /check API
   const status = await storage.check(cidV0)
