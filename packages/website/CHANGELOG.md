@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.18.2](https://www.github.com/nftstorage/nft.storage/compare/website-v1.18.1...website-v1.18.2) (2021-12-16)
+
+
+### Changes
+
+* Updated faq to address skypack and webpack 4 issue ([#974](https://www.github.com/nftstorage/nft.storage/issues/974)) ([c76a673](https://www.github.com/nftstorage/nft.storage/commit/c76a67313677c0f8b66d1975d79d6a4bc81815f0))
+
 ### [1.18.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.18.0...website-v1.18.1) (2021-12-15)
 
 
