@@ -260,6 +260,23 @@ const faqContent = {
       gateway URLs instead.
     </p>
   ),
+  webpack4: (
+    <p className="lh-copy white mb4">
+      We are working on a long-term solution but for now, you can import the
+      prebuilt bundle directly in Then browser from{' '}
+      <InlineCode>
+        https://cdn.jsdelivr.net/npm/nft.storage@v5.1.3/dist/bundle.esm.min.js
+      </InlineCode>
+      <br />
+      You may also see this error in relation to the issue:
+      <br />
+      <InlineCode>
+        Uncaught SyntaxError: The requested module
+        &quot;/-/ipfs-core-utils@v0.10.5-qUdqS0pJ7xHVq6EQnGSz/dist=es2019,mode=imports/unoptimized/src/files/normalise-input/index.js&quot;
+        does not provide an export named &quot;normaliseInput&quot;
+      </InlineCode>
+    </p>
+  ),
 }
 
 export default faqContent

@@ -84,6 +84,10 @@ const faqs = [
     question: 'Upload metadata with existing image url?',
     content: faqContent.httpUrls,
   },
+  {
+    question: 'Skypack issues or Webpack 4 not bundling?',
+    content: faqContent.webpack4,
+  },
 ]
 
 const TOC = () => (
