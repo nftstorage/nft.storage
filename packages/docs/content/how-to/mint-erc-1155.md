@@ -1,4 +1,6 @@
-# How to mint an NFT with NFT.Storage using ERC-1155 compliant metadata
+---
+title: Store and mint NFTs using ERC-1155 metadata standards
+---
 
 <!-- TODO: introduce & define ERC-1155, explain that it works for ERC-721 also -->
 

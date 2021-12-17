@@ -1,4 +1,6 @@
-# How to mint an NFT with NFT.Storage using hand-rolled metadata
+---
+title: Store and mint NFTs using custom metadata
+---
 
 If your metadata conforms to the popular ERC-721 or ERC-1155 standards, you can [upload all your NFT assets and prepare your metadata all in one HTTP request](./mint-erc-1155.md). 
 
