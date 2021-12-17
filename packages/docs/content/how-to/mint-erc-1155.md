@@ -11,10 +11,6 @@ Using NFT.Storage, you can:
 
 ...all in one HTTP request!
 
-:::info Check your metadata URI
-It's important to make sure the metadata URL you use when minting your NFT is a properly formatted IPFS URL (i.e., `ipfs://bafy...`). This way, any IPFS-compatible browser can retrieve the right data directly using this URL, and your NFT follows this universal standard. Click [here](https://docs.ipfs.io/how-to/address-ipfs-on-web/) to read more about IPFS URLs.
-:::
-
 Here's an example on how to do this to mint your own NFT!
 
 <!-- docusaurus tabs imports -->
@@ -126,7 +122,7 @@ storeExampleNFT()
 </TabItem>
 <TabItem value="http" label="HTTP API">
 
-To store ERC-1155 NFT metadata and assets using the HTTP API, send a `POST` request to the `/store` endpoint, with a body containing `multipart/form-data` content.
+To store ERC-1155 NFT metadata and assets using the [HTTP API][reference-http], send a `POST` request to the `/store` endpoint, with a body containing `multipart/form-data` content.
 
 :::info Check your file sizes
 The `/store` endpoint supports a total request size of 100Mib, including all metadata, images and other asset files. If you need to store larger files and are unable to use the JavaScript client, see the [guide to CAR files][guide-car-files] to see how to chunk large files for upload.
@@ -134,7 +130,7 @@ The `/store` endpoint supports a total request size of 100Mib, including all met
 
 Inside the form data, you must have a field named `meta`, which contains your ERC-1155 compatible metadata as a JSON string.
 
-Any field inside the meta object can be substituted with an ipfs URL to a file(, by providing a form data field with a name matching a (`.` delimited) property path and value containing the file content (in binary string or plain text depending on file format).
+Any field inside the meta object can be substituted with an IPFS URL to a file, by providing a form data field with a name matching a (`.` delimited) property path and value containing the file content (in binary string or plain text depending on file format).
 
 The name of the form data field containing the file content should be the "path" of the JSON field, using `.` to traverse nested objects.
 
@@ -150,7 +146,7 @@ For example, with a `meta` object of the form:
 }
 ```
 
-You must include form fields named image and properties.videoClip in your request body, with the content of the image and video files as the form field values.
+You must include form fields named `image` and `properties.videoClip` in your request body, with the content of the image and video files as the form field values.
 
 Here's an example that uses CURL to upload an image and its metadata.
 
@@ -166,23 +162,82 @@ curl --request POST -F image=@image.jpg -F meta='{"image":null,"name":"Storing t
 
 ## Minting your NFT
 
+Once you have the IPFS URI for your metadata, you're ready to mint an NFT!
+
+The details of how to mint an NFT will depend on which blockchain you're using, as well as the amount of control you want to have over the minting
+
+:::info Check your metadata URI
+It's important to make sure the metadata URL you use when minting your NFT is a properly formatted IPFS URL (i.e., `ipfs://bafy...`). This way, any IPFS-compatible browser can retrieve the right data directly using this URL, and your NFT follows this universal standard. Click [here](https://docs.ipfs.io/how-to/address-ipfs-on-web/) to read more about IPFS URLs.
+:::
+
+
 <Tabs>
-<TabItem value="marketplace" label="Using an NFT marketplace">
+<TabItem value="contract" label="Writing an NFT smart contract">
 
-TODO: OpenSea example
+[Ethereum](https://ethereum.org) was the "birthplace" of NFTs and is still one of the most popular platforms for NFT marketplaces and creators.
+
+The most widely-used and well-supported standards are [ERC-721](https://eips.ethereum.org/EIPS/eip-721) and [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155). Adopting one of these interfaces will give your NFTs broad support by wallets and other NFT apps "out of the box" without requiring any special coordination or effort on your part.
+
+Both ERC standards define methods for retrieving the URI associated with a token. In ERC-721, the method is called `tokenURI`, while ERC-1155 uses `uri` instead. 
+
+Generally speaking, you'll mint a new token by calling a smart contract function that assigns a new token ID and sets the metadata URI. The exact name of this function may differ from contract to contract, and if you're writing your own contract you can call it whatever you like.
+
+Here's the example contract from the [OpenZeppelin ERC-721 guide](https://docs.openzeppelin.com/contracts/4.x/erc721), using their excellent base contracts:
+
+```solidity
+// contracts/GameItem.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+contract GameItem is ERC721URIStorage {
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
+
+    constructor() ERC721("GameItem", "ITM") {}
+
+    function awardItem(address player, string memory tokenURI)
+        public
+        returns (uint256)
+    {
+        _tokenIds.increment();
+
+        uint256 newItemId = _tokenIds.current();
+        _mint(player, newItemId);
+        _setTokenURI(newItemId, tokenURI);
+
+        return newItemId;
+    }
+}
+```
+
+Here, the minting function is called `awardItem`, and it both creates a new token and assigns it to the `player` address. 
+
+The second parameter is `tokenURI`, which sets the value that is returned by the contract's `tokenURI` method. This is where you can put the IPFS URI for your NFT metadata.
+
+Once a token has been minted, anyone can call the `tokenURI` method (defined in the base contract) and find the URI for any token. Using the URI, the caller can fetch the metadata, images, and other assets that define the NFT using the peer-to-peer IPFS network or an HTTP gateway.
+
+We've only scratched the surface of what's possible with NFTs on Ethereum. Here are a few resources that can help with the next steps:
+
+- [Building a minting service](https://nftschool.dev/tutorial/minting-service/), a step-by-step tutorial from [NFT School](https://nftschool.dev)
+- [OpenSea's ERC-721 tutorial](https://docs.opensea.io/docs/getting-started)
+- [How to mint an NFT with IPFS](https://docs.ipfs.io/how-to/mint-nfts-with-ipfs/) and [Best practices for storing NFT data with IPFS](https://docs.ipfs.io/how-to/best-practices-for-nft-data/) from the [IPFS documentation site](https://docs.ipfs.io).
 
 </TabItem>
-<TabItem value="contract" label="Writing your own minting contract">
 
-TODO:
-- describe high-level minting process
-- link to NFT school minting example & flow tutorial
-- link to minty how-to on IPFS docs
-
-</TabItem>
 </Tabs>
 
+:::tip
+You can find more in-depth examples at [NFT School](https://nftschool.dev)!
+:::
+
+
+
+
 [guide-car-files]: ../concepts/car-files.md
+[reference-http]: https://nft.storage/api-docs/
 [reference-erc-1155-schema]: https://eips.ethereum.org/EIPS/eip-1155#metadata
 [mdn-file]: https://developer.mozilla.org/en-US/docs/Web/API/File
 [mdn-blob]: https://developer.mozilla.org/en-US/docs/Web/API/Blob
