@@ -19,10 +19,15 @@ grant anon              to authenticator;
 grant authenticated     to authenticator;
 grant service_role      to authenticator;
 
-grant usage                     on schema public to postgres, anon, authenticated, service_role;
-alter default privileges in schema public grant all on tables to postgres, anon, authenticated, service_role;
-alter default privileges in schema public grant all on functions to postgres, anon, authenticated, service_role;
-alter default privileges in schema public grant all on sequences to postgres, anon, authenticated, service_role;
+
+-- Create cargo schema
+create schema if not exists cargo;
+
+-- Grant privileges
+grant usage                     on schema public, cargo to postgres, anon, authenticated, service_role;
+alter default privileges in schema public, cargo grant all on tables to postgres, anon, authenticated, service_role;
+alter default privileges in schema public, cargo grant all on functions to postgres, anon, authenticated, service_role;
+alter default privileges in schema public, cargo grant all on sequences to postgres, anon, authenticated, service_role;
 
 -- Create an event trigger function
 CREATE OR REPLACE FUNCTION public.pgrst_watch() RETURNS event_trigger
