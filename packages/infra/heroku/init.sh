@@ -60,22 +60,22 @@ heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging < grant-postgrest
 heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod < grant-postgrest.sql
 
 # Attach databases to apps
-heroku addons:attach nft-storage-prod-0 --app=nft-storage-prod
-heroku addons:attach nft-storage-replica-0 --app=nft-storage-prod
-heroku addons:attach nft-storage-staging-0 --app=nft-storage-staging
+heroku addons:attach nft-storage-prod-0 --app=nft-storage-pgrest-prod
+heroku addons:attach nft-storage-replica-0 --app=nft-storage-pgrest-prod
+heroku addons:attach nft-storage-staging-0 --app=nft-storage-pgrest-staging
 
 # PGREST config vars
 heroku config:set DB_ANON_ROLE=web_anon --app=nft-storage-pgrest-prod
 heroku config:set DB_POOL=450 --app=nft-storage-pgrest-prod
 heroku config:set DB_SCHEMA=public --app=nft-storage-pgrest-prod
 heroku config:set JWT_SECRET=secret --app=nft-storage-pgrest-prod # Obtain secret from 1password vault!
-heroku config:set POSTGREST_VER=9.0.0--app=nft-storage-pgrest-prod
+heroku config:set POSTGREST_VER=9.0.0 --app=nft-storage-pgrest-prod
 
 heroku config:set DB_ANON_ROLE=web_anon --app=nft-storage-pgrest-staging
 heroku config:set DB_POOL=450 --app=nft-storage-pgrest-staging
 heroku config:set DB_SCHEMA=public --app=nft-storage-pgrest-staging
 heroku config:set JWT_SECRET=secret --app=nft-storage-pgrest-staging # Obtain secret from 1password vault!
-heroku config:set POSTGREST_VER=9.0.0--app=nft-storage-pgrest-staging
+heroku config:set POSTGREST_VER=9.0.0 --app=nft-storage-pgrest-staging
 
 # Deploy
 cd postgrest/
