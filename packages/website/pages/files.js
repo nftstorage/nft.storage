@@ -4,6 +4,7 @@ import { VscQuestion } from 'react-icons/vsc'
 import Button from '../components/button.js'
 import Tooltip from '../components/tooltip.js'
 import Loading from '../components/loading'
+import { MOCK_FILES } from '../lib/mock_files'
 import { NFTStorage } from 'nft.storage'
 import Script from 'next/script'
 import { When } from 'react-if'
@@ -45,6 +46,9 @@ export default function Files({ user }) {
   /** @type {[string, { before: string, limit: number }]} */
   const queryKey = ['get-nfts', queryParams]
 
+  let isDev
+  if (!!globalThis.window && location.host === 'localhost:4000') isDev = true
+
   const { status, data } = useQuery(
     queryKey,
     (ctx) => getNfts(ctx.queryKey[1], version),
@@ -54,7 +58,7 @@ export default function Files({ user }) {
   )
 
   /** @type {any[]} */
-  const nfts = data || []
+  const nfts = isDev ? MOCK_FILES : data || []
 
   /**
    * @param {import('react').ChangeEvent<HTMLFormElement>} e
@@ -182,6 +186,7 @@ export default function Files({ user }) {
         <td data-label="CID" className="wrap-cell">
           <GatewayLink cid={nft.cid} type={nft.type} />
         </td>
+        <td data-label="Pin Status"></td>
         <td data-label="Deals" className="">
           {deals}
         </td>
@@ -257,6 +262,25 @@ export default function Files({ user }) {
                         <tr className="bg-nsgray">
                           <th className="">Date</th>
                           <th className="">CID</th>
+                          <th className="">
+                            Pin Status
+                            <Tooltip
+                              placement="top"
+                              overlay={
+                                <span>
+                                  Reports the status of a file or piece of data
+                                  stored on Web3.Storage&apos;s IPFS Cluster.
+                                  Status might not be fully up-to-date. Data is
+                                  still available even when still in Queuing
+                                  state.
+                                </span>
+                              }
+                              overlayClassName="table-tooltip"
+                            >
+                              <VscQuestion size={16} className="ml2" />
+                            </Tooltip>
+                          </th>
+                          <th className="">Storage Providers</th>
                           <th className="">Size</th>
                           <th className="">
                             <span className="sr-only">File Actions</span>
