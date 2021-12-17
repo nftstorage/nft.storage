@@ -159,7 +159,6 @@ export default function Files({ user }) {
         <span className="queuing flex items-center" key="queuing">
           Queuing
           <Tooltip
-            placement="center"
             overlay={
               <span>
                 The content from this upload is being aggregated for storage on
