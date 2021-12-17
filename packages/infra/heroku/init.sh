@@ -34,8 +34,8 @@ heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod
 # Create PostgREST staging and production apps and connect them to staging/production DBs
 # https://elements.heroku.com/buildpacks/postgrest/postgrest-heroku
 # (App name has 30 char limit)
-heroku apps:create nft-storage-pgrest-staging --buildpack https://github.com/PostgREST/postgrest-heroku --team=web3-storage
-heroku apps:create nft-storage-pgrest-prod --buildpack https://github.com/PostgREST/postgrest-heroku --team=web3-storage
+heroku apps:create nft-storage-pgrest-staging --buildpack https://github.com/hugomrdias/postgrest-heroku --team=web3-storage
+heroku apps:create nft-storage-pgrest-prod --buildpack https://github.com/hugomrdias/postgrest-heroku --team=web3-storage
 # heroku git:remote -a nft-storage-pgrest-staging
 
 # Bump dyno sizes
@@ -59,12 +59,23 @@ heroku pg:credentials:create nft-storage-prod-0 --name=nft_storage --app=nft-sto
 heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging < grant-postgrest.sql
 heroku pg:psql nft-storage-prod-0 --app=nft-storage-prod < grant-postgrest.sql
 
-# Configure the DB_URI and JWT_SECRET for PostgREST
-heroku config:set DB_URI=$(heroku config:get DATABASE_URL --app=nft-storage-staging) --app=nft-storage-pgrest-staging
-heroku config:set DB_URI=$(heroku config:get DATABASE_URL --app=nft-storage-prod) --app=nft-storage-pgrest-prod
-# Obtain secret from 1password vault!
-heroku config:set JWT_SECRET="supersecret" --app=nft-storage-pgrest-staging
-heroku config:set JWT_SECRET="supersecret" --app=nft-storage-pgrest-prod
+# Attach databases to apps
+heroku addons:attach nft-storage-prod-0 --app=nft-storage-pgrest-prod
+heroku addons:attach nft-storage-replica-0 --app=nft-storage-pgrest-prod
+heroku addons:attach nft-storage-staging-0 --app=nft-storage-pgrest-staging
+
+# PGREST config vars
+heroku config:set DB_ANON_ROLE=web_anon --app=nft-storage-pgrest-prod
+heroku config:set DB_POOL=450 --app=nft-storage-pgrest-prod
+heroku config:set DB_SCHEMA=public --app=nft-storage-pgrest-prod
+heroku config:set JWT_SECRET=secret --app=nft-storage-pgrest-prod # Obtain secret from 1password vault!
+heroku config:set POSTGREST_VER=9.0.0 --app=nft-storage-pgrest-prod
+
+heroku config:set DB_ANON_ROLE=web_anon --app=nft-storage-pgrest-staging
+heroku config:set DB_POOL=450 --app=nft-storage-pgrest-staging
+heroku config:set DB_SCHEMA=public --app=nft-storage-pgrest-staging
+heroku config:set JWT_SECRET=secret --app=nft-storage-pgrest-staging # Obtain secret from 1password vault!
+heroku config:set POSTGREST_VER=9.0.0 --app=nft-storage-pgrest-staging
 
 # Deploy
 cd postgrest/
@@ -72,8 +83,8 @@ git init
 git add -A
 git commit -m "chore: configure postgrest"
 
-heroku git:remote --app=nft-storage-pgrest-staging
-git push heroku main
+heroku git:remote --app=nft-storage-pgrest-staging --remote staging
+git push staging main
 heroku git:remote --app=nft-storage-pgrest-prod
 git push heroku main
 # go back to heroku directory

@@ -50,31 +50,35 @@ module.exports = {
       preferLocal: true,
     })
 
-    const stdout = await Promise.race([
-      once(proc.stdout, 'data'),
-      // Make sure that we fail if process crashes. However if it exits without
-      // producing stdout just resolve to ''.
-      proc.then(() => ''),
-    ])
+    if (proc.stdout) {
+      const stdout = await Promise.race([
+        once(proc.stdout, 'data'),
+        // Make sure that we fail if process crashes. However if it exits without
+        // producing stdout just resolve to ''.
+        proc.then(() => ''),
+      ])
 
-    if (
-      stdout.toString().includes('Server started on: http://localhost:9094')
-    ) {
-      console.log('⚡️ Mock IPFS Cluster started.')
+      if (
+        stdout.toString().includes('Server started on: http://localhost:9094')
+      ) {
+        console.log('⚡️ Mock IPFS Cluster started.')
 
-      await execa(cli, ['db', '--start', '--project', project])
-      console.log('⚡️ Postgres started.')
+        await execa(cli, ['db', '--start', '--project', project])
+        console.log('⚡️ Postgres started.')
 
-      await execa(cli, ['db-sql', '--cargo', '--testing'])
-      console.log('⚡️ SQL schema loaded.')
+        await execa(cli, ['db-sql', '--cargo', '--testing'])
+        console.log('⚡️ SQL schema loaded.')
 
-      proc.stdout.on('data', (line) => console.log(line.toString()))
-      return { proc, project }
+        proc.stdout.on('data', (line) => console.log(line.toString()))
+        return { proc, project }
+      } else {
+        throw new Error('Could not start smoke server')
+      }
+    } else {
+      throw new Error('Could not start smoke server')
     }
-
-    throw new Error('Could not start smoke server')
   },
-  afterTests: async (ctx, beforeTests) => {
+  afterTests: async (ctx, /** @type{any} */ beforeTests) => {
     console.log('⚡️ Shutting down mock servers.')
 
     await execa(cli, ['db', '--clean', '--project', beforeTests.project])
