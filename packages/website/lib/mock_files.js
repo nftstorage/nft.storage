@@ -1,5 +1,20 @@
 export const MOCK_FILES = [
   {
+    cid: 'bafybeic3a6txgjsavv57lvfud67y7zvz2eq2acp3wzbk5tey4xy72zvuyu',
+    created: '2021-12-17T17:27:24.605+00:00',
+    type: 'application/car',
+    scope: 'session',
+    files: [],
+    size: 3328510,
+    pin: {
+      cid: 'bafybeic3a6txgjsavv57lvfud67y7zvz2eq2acp3wzbk5tey4xy72zvuyu',
+      created: '2021-12-17T17:27:24.605+00:00',
+      size: 3328510,
+      status: 'queued',
+    },
+    deals: [],
+  },
+  {
     cid: 'bafkreibe235afeycijr36lc5r3xjw7lrucbzilmx4eewv5666dlas2hxia',
     created: '2021-12-11T14:26:23.205+00:00',
     type: 'application/car',

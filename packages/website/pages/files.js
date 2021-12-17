@@ -141,10 +141,7 @@ export default function Files({ user }) {
         queuedDeals.length > 1 ? 's' : ''
       }. Filecoin deals will be active within 48 hours of upload.`
       deals.push(
-        <span
-          className="flex justify-center items-center"
-          key={nft.cid + '-pending'}
-        >
+        <span key={nft.cid + '-pending'}>
           {`${deals.length ? ', ' : ''}${queuedDeals.length} pending`}
           <Tooltip
             placement="top"
@@ -159,10 +156,10 @@ export default function Files({ user }) {
 
     if (!nft.deals.length) {
       deals.push(
-        <span className="flex justify-center items-center" key="queuing">
+        <span className="queuing flex items-center" key="queuing">
           Queuing
           <Tooltip
-            placement="top"
+            placement="center"
             overlay={
               <span>
                 The content from this upload is being aggregated for storage on
@@ -172,7 +169,7 @@ export default function Files({ user }) {
             }
             overlayClassName="table-tooltip"
           >
-            <VscQuestion size={16} className="ml2" />
+            <VscQuestion size={16} className="ml2 flex self-end" />
           </Tooltip>
         </span>
       )
@@ -186,9 +183,11 @@ export default function Files({ user }) {
         <td data-label="CID" className="wrap-cell">
           <GatewayLink cid={nft.cid} type={nft.type} />
         </td>
-        <td data-label="Pin Status">{nft.pin.status}</td>
+        <td data-label="Pin Status">
+          {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
+        </td>
         <td data-label="Deals" className="">
-          {deals}
+          <div>{deals}</div>
         </td>
         <td data-label="Size" className="">
           {bytes(nft.size || 0)}
