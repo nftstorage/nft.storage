@@ -1,5 +1,25 @@
 # Changelog
 
+## [5.2.0](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v5.1.3...nft.storage-v5.2.0) (2021-12-17)
+
+
+### Features
+
+* blog ([#838](https://www.github.com/nftstorage/nft.storage/issues/838)) ([ad1aa99](https://www.github.com/nftstorage/nft.storage/commit/ad1aa99733f7faf00128e20ee481eef89043631b))
+* update examples ([#894](https://www.github.com/nftstorage/nft.storage/issues/894)) ([8387be3](https://www.github.com/nftstorage/nft.storage/commit/8387be3cae6b9de66bfd43ac5df6868e190dfc9f))
+
+
+### Bug Fixes
+
+* increase website token ttl and update deps ([#943](https://www.github.com/nftstorage/nft.storage/issues/943)) ([35a3031](https://www.github.com/nftstorage/nft.storage/commit/35a303145c81e006820ee9cd7de6404bf7a9a86f))
+* make @ipld/dag-cbor a dependency of nft.storage ([#992](https://www.github.com/nftstorage/nft.storage/issues/992)) ([1ec0b92](https://www.github.com/nftstorage/nft.storage/commit/1ec0b92111c70740863f59a2fa1250964c5a1cb8))
+* update niftysave deps and lock ipld/jd-dag-json to 8.0.4 ([#881](https://www.github.com/nftstorage/nft.storage/issues/881)) ([af7524f](https://www.github.com/nftstorage/nft.storage/commit/af7524fbf1240b804bbbe356afb90ec4d2bd86b1))
+
+
+### Changes
+
+* update licences to dual mit and apache ([#909](https://www.github.com/nftstorage/nft.storage/issues/909)) ([307a8e2](https://www.github.com/nftstorage/nft.storage/commit/307a8e20526bef0f3ac516eb60fcd4fd82a0d65e))
+
 ### [5.1.3](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v5.1.2...nft.storage-v5.1.3) (2021-12-03)
 
 
