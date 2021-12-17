@@ -186,7 +186,7 @@ export default function Files({ user }) {
         <td data-label="CID" className="wrap-cell">
           <GatewayLink cid={nft.cid} type={nft.type} />
         </td>
-        <td data-label="Pin Status"></td>
+        <td data-label="Pin Status">{nft.pin.status}</td>
         <td data-label="Deals" className="">
           {deals}
         </td>
@@ -262,24 +262,7 @@ export default function Files({ user }) {
                         <tr className="bg-nsgray">
                           <th className="">Date</th>
                           <th className="">CID</th>
-                          <th className="">
-                            Pin Status
-                            <Tooltip
-                              placement="top"
-                              overlay={
-                                <span>
-                                  Reports the status of a file or piece of data
-                                  stored on Web3.Storage&apos;s IPFS Cluster.
-                                  Status might not be fully up-to-date. Data is
-                                  still available even when still in Queuing
-                                  state.
-                                </span>
-                              }
-                              overlayClassName="table-tooltip"
-                            >
-                              <VscQuestion size={16} className="ml2" />
-                            </Tooltip>
-                          </th>
+                          <th className="">Pin Status</th>
                           <th className="">Storage Providers</th>
                           <th className="">Size</th>
                           <th className="">
