@@ -175,16 +175,11 @@ export default function NewFile() {
                 You can also upload files using the{' '}
                 <Link href="/#js-client-library">
                   <a className="black">JS Client Library</a>
-                </Link>
-                ,{' '}
+                </Link>{' '}
+                or{' '}
                 <Link href="/#raw-http-request">
                   <a className="black">Raw HTTP Requests</a>
-                </Link>{' '}
-                or via the{' '}
-                <Link href="/#configure-as-a-remote-pinning-service">
-                  <a className="black">Remote Pinning Service API</a>
                 </Link>
-                .
               </p>
             </div>
           </form>

@@ -1,0 +1,114 @@
+/* Mobile/defaults */
+
+/*escape hatch- this is the scroll-based fallback for any uncanny sizes*/
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
+
+/*Base Table*/
+.table-responsive table {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+/*Row and Cell styles*/
+.table-responsive table tr td,
+.table-responsive table tr th {
+  display: block;
+  text-align: left;
+  padding: 0.5rem 1rem;
+}
+.table-responsive table tr th {
+  display: none;
+}
+.table-responsive table tr {
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.table-responsive table tbody tr {
+  border: 1px solid var(--nsblack);
+}
+
+/*Stacked layout top children need more top-space*/
+.table-responsive table tr td:first-child,
+.table-responsive table tr th:first-child {
+  padding: 0.5rem 1rem 0.25rem 1rem;
+}
+
+/*[data-label] will make a left-hand based on this prop in stacked mode*/
+.table-responsive table tr td[data-label] {
+  text-align: right;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.table-responsive table tr td[data-label]::before {
+  content: attr(data-label);
+  float: left;
+  font-weight: 700;
+  margin-right: 2rem;
+  font-size: 17px;
+}
+
+/*Utilities for special cells*/
+/*Cell has long content and should wrap at small sizes.*/
+.table-responsive td.wrap-cell {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+/*Cell shinks to content (eg. a button in a cell)*/
+.table-responsive td.shrink-cell {
+  white-space: nowrap;
+}
+
+/*Content centers in stacked layout*/
+.table-responsive td.center-cell {
+  display: flex;
+  justify-content: center;
+}
+
+/* 832px */
+@media screen and (min-width: 52em) {
+  /*Additive styles at full size*/
+  .table-responsive table {
+    table-layout: auto;
+    border: 1px solid var(--nsblack);
+  }
+  .table-responsive table thead tr {
+    border-bottom: 1px solid var(--nsblack);
+  }
+
+  /*Re-tabilify the table at fullsize*/
+  .table-responsive table tr {
+    margin-bottom: 0;
+    display: table-row;
+  }
+  .table-responsive table tr td,
+  .table-responsive table tr th,
+  .table-responsive table tr td:first-child,
+  .table-responsive table tr th:first-child {
+    display: table-cell;
+    padding: 0.5rem;
+  }
+  .table-responsive table td,
+  .table-responsive table th {
+    border-right: 1px solid var(--nsblack);
+  }
+
+  /*Undo mobile-labels*/
+  .table-responsive table tr td[data-label] {
+    text-align: left;
+    border-bottom: none;
+  }
+  .table-responsive table tr td[data-label]::before {
+    content: '';
+    float: left;
+  }
+
+  /*Utilities at full-size*/
+  .table-responsive td.shrink-cell {
+    width: 1%;
+    display: table-cell;
+  }
+}

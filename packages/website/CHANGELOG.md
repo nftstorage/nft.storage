@@ -1,5 +1,28 @@
 # Changelog
 
+### [1.18.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.18.0...website-v1.18.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* blog-share ([#978](https://www.github.com/nftstorage/nft.storage/issues/978)) ([218142b](https://www.github.com/nftstorage/nft.storage/commit/218142b6a49ed14d97ac52dd6456cdd908624068))
+
+## [1.18.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.17.0...website-v1.18.0) (2021-12-14)
+
+
+### Features
+
+* storage layer maximalism blog post ([#955](https://www.github.com/nftstorage/nft.storage/issues/955)) ([37232cf](https://www.github.com/nftstorage/nft.storage/commit/37232cf67d387d90f195d57414a3f24f39ef6025))
+
+
+### Bug Fixes
+
+* Add Makersplace logo to homepage + make Holaplex logo transparent ([#934](https://www.github.com/nftstorage/nft.storage/issues/934)) ([da7af46](https://www.github.com/nftstorage/nft.storage/commit/da7af468c98d88d34cb56c4322f5d13d212ecedf))
+* document a way to do frontend dev if your environment is not set up. ([#951](https://www.github.com/nftstorage/nft.storage/issues/951)) ([549b481](https://www.github.com/nftstorage/nft.storage/commit/549b481b9e66f6975bb2220edeedf74fe25acc48))
+* increase website token ttl and update deps ([#943](https://www.github.com/nftstorage/nft.storage/issues/943)) ([35a3031](https://www.github.com/nftstorage/nft.storage/commit/35a303145c81e006820ee9cd7de6404bf7a9a86f))
+* layout  ([#942](https://www.github.com/nftstorage/nft.storage/issues/942)) ([8ec1752](https://www.github.com/nftstorage/nft.storage/commit/8ec17522fd0205e04390f20cb08ebbfd72906536))
+* load countly async and update swagger ([#946](https://www.github.com/nftstorage/nft.storage/issues/946)) ([34e862a](https://www.github.com/nftstorage/nft.storage/commit/34e862a99072b0371da10d8c2ef4610592a834c4))
+
 ## [1.17.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.16.1...website-v1.17.0) (2021-12-10)
 
 

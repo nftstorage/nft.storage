@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { FAQ } from './faq'
 
 export async function getStaticProps() {
-  const logos = await fs.readdirSync('public/images/marketplace-logos')
+  const logos = fs.readdirSync('public/images/marketplace-logos')
   // make opensea be the first logo
   logos.sort((a, b) =>
     a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
@@ -17,7 +17,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      needsUser: false,
+      needsUser: true,
       logos,
       description: 'NFT.Storage homepage',
     },

@@ -1,16 +1,16 @@
-import { useState } from 'react'
+import { API, getNfts, getToken } from '../lib/api.js'
 import { useQuery, useQueryClient } from 'react-query'
 import { VscQuestion } from 'react-icons/vsc'
-import bytes from 'bytes'
-import { NFTStorage } from 'nft.storage'
 import Button from '../components/button.js'
 import Tooltip from '../components/tooltip.js'
 import Loading from '../components/loading'
-import { getNfts, getToken, API } from '../lib/api.js'
-import countly from '../lib/countly.js'
-import { When } from 'react-if'
-import { useRouter } from 'next/router'
+import { NFTStorage } from 'nft.storage'
 import Script from 'next/script'
+import { When } from 'react-if'
+import bytes from 'bytes'
+import countly from '../lib/countly.js'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 /**
  * Static Props
@@ -47,11 +47,12 @@ export default function Files({ user }) {
 
   const { status, data } = useQuery(
     queryKey,
-    ctx => getNfts(ctx.queryKey[1], version),
+    (ctx) => getNfts(ctx.queryKey[1], version),
     {
       enabled: !!user,
     }
   )
+
   /** @type {any[]} */
   const nfts = data || []
 
@@ -103,26 +104,28 @@ export default function Files({ user }) {
     // to do, add actual types
     const deals = nft.deals
       .filter((/** @type {any} */ d) => d.status !== 'queued')
-      .map((
-        /** @type {any} */ deal,
-        /** @type {number} */ i,
-        /** @type {any[]} */ deals
-      ) => {
-        const url = `https://filfox.info/en/deal/${deal.chainDealId}`
-        return (
-          <span key={deal.chainDealId} title={deal.status}>
-            <a
-              className="underline"
-              href={url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {deal.miner}
-            </a>
-            {i === deals.length - 1 ? '' : ', '}
-          </span>
-        )
-      })
+      .map(
+        (
+          /** @type {any} */ deal,
+          /** @type {number} */ i,
+          /** @type {any[]} */ deals
+        ) => {
+          const url = `https://filfox.info/en/deal/${deal.chainDealId}`
+          return (
+            <span key={deal.chainDealId} title={deal.status}>
+              <a
+                className="underline"
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {deal.miner}
+              </a>
+              {i === deals.length - 1 ? '' : ', '}
+            </span>
+          )
+        }
+      )
 
     const queuedDeals = nft.deals.filter(
       (/** @type {any} */ d) => d.status === 'queued'
@@ -172,16 +175,20 @@ export default function Files({ user }) {
     }
 
     return (
-      <tr className="bb b--black">
-        <td className="pa2 br b--black" title={nft.created}>
+      <tr className="bg-white bb">
+        <td data-label="Date" className="" title={nft.created}>
           {nft.created.split('T')[0]}
         </td>
-        <td className="pa2 br b--black">
+        <td data-label="CID" className="wrap-cell">
           <GatewayLink cid={nft.cid} type={nft.type} />
         </td>
-        <td className="pa2 br b--black">{deals}</td>
-        <td className="pa2 br b--black mw7">{bytes(nft.size || 0)}</td>
-        <td className="pa2">
+        <td data-label="Deals" className="">
+          {deals}
+        </td>
+        <td data-label="Size" className="">
+          {bytes(nft.size || 0)}
+        </td>
+        <td className="shrink-cell center-cell">
           <form onSubmit={handleDeleteFile}>
             <input type="hidden" name="cid" value={nft.cid} />
             <Button
@@ -207,7 +214,7 @@ export default function Files({ user }) {
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
       <main className="bg-nsyellow">
-        <div className="flex justify-center">
+        <div className="flex justify-center pt4">
           <Button data-tf-popup="OTxv3w2O" className="mh3 mb3" variant="dark">
             {'Tell us how we are doing'}
           </Button>
@@ -245,38 +252,28 @@ export default function Files({ user }) {
                 </When>
                 <When condition={!hasZeroNfts}>
                   <>
-                    <table className="bg-white ba b--black w-100 collapse">
+                    <table className="w-100 collapse">
                       <thead>
-                        <tr className="bb b--black">
-                          <th className="pa2 tl bg-nsgray br b--black w-33">
-                            Date
-                          </th>
-                          <th className="pa2 tl bg-nsgray br b--black w-33">
-                            CID
-                          </th>
-                          <th className="pa2 tl bg-nsgray br b--black w-33">
-                            Storage Providers
-                          </th>
-                          <th className="pa2 tl bg-nsgray br b--black w-33">
-                            Size
-                          </th>
-                          <th className="pa2 tc bg-nsgray">
+                        <tr className="bg-nsgray">
+                          <th className="">Date</th>
+                          <th className="">CID</th>
+                          <th className="">Size</th>
+                          <th className="">
                             <span className="sr-only">File Actions</span>
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        {nfts.map((
-                          /** @type {any} */ nft,
-                          /** @type {number} */ i
-                        ) => (
-                          <TableItem nft={nft} key={`nft-${i}`} />
-                        ))}
+                        {nfts.map(
+                          (/** @type {any} */ nft, /** @type {number} */ i) => (
+                            <TableItem nft={nft} key={`nft-${i}`} />
+                          )
+                        )}
                       </tbody>
                     </table>
-                    <div className="flex justify-center tc mv3">
+                    <div className="flex flex-wrap justify-center tc mv3">
                       <Button
-                        className="black mh2 mt2"
+                        className="mh2 mb2"
                         disabled={befores.length === 1}
                         onClick={handleFirstClick}
                         id="files-first"
@@ -289,7 +286,7 @@ export default function Files({ user }) {
                         ⇤ First
                       </Button>
                       <Button
-                        className="black mh2 mt2"
+                        className="mh2 mb2"
                         disabled={befores.length === 1}
                         onClick={handlePrevClick}
                         id="files-previous"
@@ -302,7 +299,7 @@ export default function Files({ user }) {
                         ← Previous
                       </Button>
                       <Button
-                        className="black mh2 mt2"
+                        className="mh2 mb2"
                         disabled={nfts.length < limit}
                         onClick={handleNextClick}
                         id="files-next"

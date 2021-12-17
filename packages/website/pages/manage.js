@@ -78,6 +78,7 @@ export default function ManageKeys({ user }) {
   }
 
   let keys = []
+
   if (version === '0') {
     keys = Object.entries(data || {})
   } else {
@@ -109,70 +110,79 @@ export default function ManageKeys({ user }) {
               </Button>
             </div>
             <When condition={keys.length > 0}>
-              <table className="bg-white ba b--black w-100 collapse mb4">
-                <thead>
-                  <tr className="bb b--black">
-                    <th className="pa2 tl bg-nsgray br b--black w-50">Name</th>
-                    <th className="pa2 tl bg-nsgray br b--black w-50">Key</th>
-                    <th colSpan={2} className="pa2 tc bg-nsgray" />
-                  </tr>
-                </thead>
-                <tbody>
-                  {keys.map((t, k) => (
-                    <tr className="bb b--black" key={k}>
-                      <td className="pa2 br b--black">{t[0]}</td>
-                      <td className="pa2 br b--black mw7">
-                        <input
-                          disabled
-                          className="w-100 h2"
-                          type="text"
-                          id={`value-${t[0]}`}
-                          value={t[1]}
-                        />
-                      </td>
-                      <td className="flex flex-wrap pa2">
-                        <form data-value={t[1]} onSubmit={handleCopyToken}>
-                          <Button
-                            className="bg-white black"
-                            type="submit"
-                            id="copy-key"
-                            tracking={{
-                              event: countly.events.TOKEN_COPY,
-                              ui: countly.ui.TOKENS,
-                            }}
-                          >
-                            {copied === t[1] ? 'Copied!' : 'Copy'}
-                          </Button>
-                        </form>
-                      </td>
-                      <td className="pa2">
-                        <form onSubmit={handleDeleteToken}>
-                          <input
-                            type="hidden"
-                            name="name"
-                            id={`token-${t[0]}`}
-                            value={version === '0' ? t[0] : `${t[2]}`}
-                          />
-                          <Button
-                            type="submit"
-                            variant="caution"
-                            disabled={Boolean(deleting)}
-                            id={`delete-key-${t[0]}`}
-                            tracking={{
-                              event: countly.events.TOKEN_DELETE,
-                              ui: countly.ui.TOKENS,
-                            }}
-                          >
-                            {deleting === (version === '0' ? t[0] : `${t[2]}`)
-                              ? 'Deleting...'
-                              : 'Delete'}
-                          </Button>
-                        </form>
-                      </td>
+              <div className="table-responsive">
+                <table className="w-100 mb4">
+                  <thead>
+                    <tr className="bg-nsgray">
+                      <th>Name</th>
+                      <th>Key</th>
+                      <th />
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {keys.map((t, k) => (
+                      <tr className="bg-white bb" key={k}>
+                        <td className="shrink-cell" data-label="Name">
+                          {t[0]}
+                        </td>
+                        <td data-label="Key">
+                          <input
+                            disabled
+                            className="h2 w-100 mt1"
+                            type="text"
+                            id={`value-${t[0]}`}
+                            value={t[1]}
+                          />
+                        </td>
+                        <td className="shrink-cell center-cell">
+                          <div className="flex">
+                            <form
+                              data-value={t[1]}
+                              onSubmit={handleCopyToken}
+                              className="mr2"
+                            >
+                              <Button
+                                className="bg-white black"
+                                type="submit"
+                                id="copy-key"
+                                tracking={{
+                                  event: countly.events.TOKEN_COPY,
+                                  ui: countly.ui.TOKENS,
+                                }}
+                              >
+                                {copied === t[1] ? 'Copied!' : 'Copy'}
+                              </Button>
+                            </form>
+                            <form onSubmit={handleDeleteToken}>
+                              <input
+                                type="hidden"
+                                name="name"
+                                id={`token-${t[0]}`}
+                                value={version === '0' ? t[0] : `${t[2]}`}
+                              />
+                              <Button
+                                type="submit"
+                                variant="caution"
+                                disabled={Boolean(deleting)}
+                                id={`delete-key-${t[0]}`}
+                                tracking={{
+                                  event: countly.events.TOKEN_DELETE,
+                                  ui: countly.ui.TOKENS,
+                                }}
+                              >
+                                {deleting ===
+                                (version === '0' ? t[0] : `${t[2]}`)
+                                  ? 'Deleting...'
+                                  : 'Delete'}
+                              </Button>
+                            </form>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </When>
             <When condition={keys.length === 0}>
               <p className="tc mv5">

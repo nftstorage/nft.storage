@@ -46,6 +46,8 @@ https://github.com/nftstorage/nft.storage-tools
 
 Instructions for developers working on the nft.storage API and website.
 
+_psst: want to do some frontend work done without an environment? check out [this guide](packages/website/README.md#no-environment-guide)_
+
 ## Getting Started
 
 We use `yarn` in this project and commit the `yarn.lock` file.
