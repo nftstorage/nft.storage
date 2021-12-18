@@ -173,12 +173,9 @@ export default function Files({ user }) {
                                   })
                                 }
                                 title="Copy cid to Clipboard"
-                                className="border-0 bg-transparent mr-1"
+                                className="transparent mr1 icon-button"
                               >
-                                <Copy
-                                  tabIndex={-1}
-                                  className="h-4 w-4 outline-0"
-                                />
+                                <Copy tabIndex={-1} />
                               </button>
                               <GatewayLink cid={nft.cid} type={nft.type} />
                             </td>

@@ -25,3 +25,12 @@
 .btn.small {
   min-width: auto;
 }
+
+.btn.transparent {
+  border: 0;
+  background-color: transparent;
+}
+
+.btn.icon-button svg {
+  outline: 0;
+}
