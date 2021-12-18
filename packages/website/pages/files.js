@@ -10,6 +10,8 @@ import bytes from 'bytes'
 import countly from '../lib/countly.js'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import Copy from '../icons/copy'
+import copy from 'copy-to-clipboard'
 
 /**
  * Static Props
@@ -58,6 +60,7 @@ export default function Files({ user }) {
   /**
    * @param {import('react').ChangeEvent<HTMLFormElement>} e
    */
+
   async function handleDeleteFile(e) {
     e.preventDefault()
     const data = new FormData(e.target)
@@ -161,6 +164,12 @@ export default function Files({ user }) {
                                 {nft.created.split('T')[0]}
                               </td>
                               <td data-label="CID" className="wrap-cell">
+                                <button
+                                  onClick={() => copy(nft.cid)}
+                                  title="Copy cid to Clipboard"
+                                >
+                                  <Copy height={16} width={16} tabIndex={-1} />
+                                </button>
                                 <GatewayLink cid={nft.cid} type={nft.type} />
                               </td>
                               <td data-label="Size" className="">
