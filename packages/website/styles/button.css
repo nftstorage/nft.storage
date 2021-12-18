@@ -26,11 +26,13 @@
   min-width: auto;
 }
 
-.btn.transparent {
+.icon-button.transparent {
   border: 0;
   background-color: transparent;
 }
 
-.btn.icon-button svg {
+.icon-button svg {
   outline: 0;
+  height: 1rem;
+  width: 1rem;
 }

@@ -173,7 +173,7 @@ export default function Files({ user }) {
                                   })
                                 }
                                 title="Copy cid to Clipboard"
-                                className="transparent mr1 icon-button"
+                                className="icon-button transparent mr1"
                               >
                                 <Copy tabIndex={-1} />
                               </button>
