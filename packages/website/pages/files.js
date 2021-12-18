@@ -167,7 +167,11 @@ export default function Files({ user }) {
                             </td>
                             <td data-label="CID" className="wrap-cell">
                               <button
-                                onClick={() => copy(nft.cid)}
+                                onClick={() =>
+                                  copy(nft.cid, {
+                                    message: 'CID copied to clipboard!',
+                                  })
+                                }
                                 title="Copy cid to Clipboard"
                                 style={{ all: 'unset', marginRight: '0.2rem' }}
                               >
