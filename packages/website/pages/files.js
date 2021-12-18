@@ -173,7 +173,7 @@ export default function Files({ user }) {
                                   })
                                 }
                                 title="Copy cid to Clipboard"
-                                style={{ all: 'unset', marginRight: '0.2rem' }}
+                                className="border-0 bg-transparent mr-1"
                               >
                                 <Copy
                                   tabIndex={-1}
