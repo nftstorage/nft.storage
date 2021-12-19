@@ -14,7 +14,7 @@ import clsx from 'clsx'
  * @param {CopyButtonProps} props
  */
 function CopyButton({ text, title, popupContent, ...props }) {
-  const [tool, setToolActive] = useState(false)
+  const [popup, setPopupActive] = useState(false)
   /** @type [any, null | any] */
   const [timer, setTimer] = useState(null)
 
@@ -24,10 +24,10 @@ function CopyButton({ text, title, popupContent, ...props }) {
     }
   }, [timer])
 
-  function handleToolTip() {
-    setToolActive(true)
+  function handlePopup() {
+    setPopupActive(true)
     const newTimer = setTimeout(() => {
-      setToolActive(false)
+      setPopupActive(false)
     }, 1500)
 
     setTimer(newTimer)
@@ -35,7 +35,7 @@ function CopyButton({ text, title, popupContent, ...props }) {
 
   function handleCopy() {
     text && copyToClipboard(text)
-    handleToolTip()
+    handlePopup()
   }
 
   return (
@@ -47,9 +47,9 @@ function CopyButton({ text, title, popupContent, ...props }) {
     >
       <span
         data-content={popupContent}
-        className={clsx('tool', { active: tool })}
+        className={clsx('popup', { active: popup })}
       />
-      {tool && (
+      {popup && (
         <span className="sr-only" aria-live="assertive">
           {popupContent}
         </span>
