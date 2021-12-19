@@ -49,6 +49,11 @@ function CopyButton({ text, title, popupContent, ...props }) {
         data-content={popupContent}
         className={clsx('tool', { active: tool })}
       />
+      {tool && (
+        <span className="sr-only" aria-live="assertive">
+          {popupContent}
+        </span>
+      )}
       <Copy tab-index={-1} />
     </button>
   )
