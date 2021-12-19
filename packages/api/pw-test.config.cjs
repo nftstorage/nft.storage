@@ -47,30 +47,24 @@ module.exports = {
     },
   },
   beforeTests: async () => {
-    const project = `nft-storage-db-${Date.now()}`
+    const mock = await startMockServer('AWS S3', 9095, 'test/mocks/aws-s3')
 
-    const mockServers = [
-      await startMockServer('IPFS Cluster', 9094, 'test/mocks/cluster'),
-      await startMockServer('AWS S3', 9095, 'test/mocks/aws-s3'),
-    ]
+    await execa(cli, ['db', '--start'])
+    console.log('⚡️ Cluster and Postgres started.')
 
-    await execa(cli, ['db', '--start', '--project', project])
-    console.log('⚡️ Postgres started.')
-
-    await execa(cli, ['db-sql', '--cargo', '--testing'])
+    await execa(cli, ['db-sql', '--cargo', '--testing', '--reset'])
     console.log('⚡️ SQL schema loaded.')
 
-    return { mockServers, project }
+    return { mock }
   },
   afterTests: async (
     ctx,
-    /** @type {{ project: string, mockServers: ProcessObject[] }} */ beforeTests
+    /** @type {{  mock: ProcessObject }} */ beforeTests
   ) => {
     console.log('⚡️ Shutting down mock servers.')
 
-    await execa(cli, ['db', '--clean', '--project', beforeTests.project])
-
-    beforeTests.mockServers.forEach(({ proc }) => proc.kill())
+    beforeTests.mock.proc.kill()
+    await execa(cli, ['db', '--clean'])
   },
 }
 

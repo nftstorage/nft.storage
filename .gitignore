@@ -42,3 +42,4 @@ site/public
 
 public/sitemap.xml
 public/robots.txt
+packages/api/db/docker/compose

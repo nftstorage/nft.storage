@@ -26,3 +26,29 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_PORT: 5432
+  ipfs0:
+    container_name: ipfs0
+    image: ipfs/go-ipfs:latest
+    volumes:
+      - ./compose/ipfs0:/data/ipfs
+
+  cluster0:
+    container_name: cluster0
+    image: ipfs/ipfs-cluster:latest
+    depends_on:
+      - ipfs0
+    environment:
+      CLUSTER_PEERNAME: cluster0
+      CLUSTER_SECRET: ${CLUSTER_SECRET} # From shell variable if set
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs0/tcp/5001
+      CLUSTER_CRDT_TRUSTEDPEERS: '*' # Trust all peers in Cluster
+      CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9094 # Expose API
+      # cant use auth because cluster validates tokens in preflight calls
+      # CLUSTER_RESTAPI_BASICAUTHCREDENTIALS: test:test
+      CLUSTER_RESTAPI_CORSALLOWEDMETHODS: GET,POST,OPTIONS
+      CLUSTER_RESTAPI_CORSALLOWEDHEADERS: authorization
+      CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
+    ports:
+      - '127.0.0.1:9094:9094'
+    volumes:
+      - ./compose/cluster0:/data/ipfs-cluster

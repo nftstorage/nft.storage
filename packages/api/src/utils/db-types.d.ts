@@ -309,102 +309,6 @@ export interface paths {
       }
     }
   }
-  '/metric': {
-    get: {
-      parameters: {
-        query: {
-          name?: parameters['rowFilter.metric.name']
-          value?: parameters['rowFilter.metric.value']
-          inserted_at?: parameters['rowFilter.metric.inserted_at']
-          updated_at?: parameters['rowFilter.metric.updated_at']
-          /** Filtering Columns */
-          select?: parameters['select']
-          /** Ordering */
-          order?: parameters['order']
-          /** Limiting and Pagination */
-          offset?: parameters['offset']
-          /** Limiting and Pagination */
-          limit?: parameters['limit']
-        }
-        header: {
-          /** Limiting and Pagination */
-          Range?: parameters['range']
-          /** Limiting and Pagination */
-          'Range-Unit'?: parameters['rangeUnit']
-          /** Preference */
-          Prefer?: parameters['preferCount']
-        }
-      }
-      responses: {
-        /** OK */
-        200: {
-          schema: definitions['metric'][]
-        }
-        /** Partial Content */
-        206: unknown
-      }
-    }
-    post: {
-      parameters: {
-        body: {
-          /** metric */
-          metric?: definitions['metric']
-        }
-        query: {
-          /** Filtering Columns */
-          select?: parameters['select']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** Created */
-        201: unknown
-      }
-    }
-    delete: {
-      parameters: {
-        query: {
-          name?: parameters['rowFilter.metric.name']
-          value?: parameters['rowFilter.metric.value']
-          inserted_at?: parameters['rowFilter.metric.inserted_at']
-          updated_at?: parameters['rowFilter.metric.updated_at']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** No Content */
-        204: never
-      }
-    }
-    patch: {
-      parameters: {
-        query: {
-          name?: parameters['rowFilter.metric.name']
-          value?: parameters['rowFilter.metric.value']
-          inserted_at?: parameters['rowFilter.metric.inserted_at']
-          updated_at?: parameters['rowFilter.metric.updated_at']
-        }
-        body: {
-          /** metric */
-          metric?: definitions['metric']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** No Content */
-        204: never
-      }
-    }
-  }
   '/pin': {
     get: {
       parameters: {
@@ -747,13 +651,11 @@ export interface paths {
       }
     }
   }
-  '/rpc/create_upload': {
+  '/rpc/pgrst_watch': {
     post: {
       parameters: {
         body: {
-          args: {
-            data: string
-          }
+          args: { [key: string]: unknown }
         }
         header: {
           /** Preference */
@@ -843,16 +745,6 @@ export interface definitions {
      */
     cid: string
     dag_size?: number
-    inserted_at: string
-    updated_at: string
-  }
-  metric: {
-    /**
-     * Note:
-     * This is a Primary Key.<pk/>
-     */
-    name: string
-    value: number
     inserted_at: string
     updated_at: string
   }
@@ -964,12 +856,6 @@ export interface parameters {
   'rowFilter.content.dag_size': string
   'rowFilter.content.inserted_at': string
   'rowFilter.content.updated_at': string
-  /** metric */
-  'body.metric': definitions['metric']
-  'rowFilter.metric.name': string
-  'rowFilter.metric.value': string
-  'rowFilter.metric.inserted_at': string
-  'rowFilter.metric.updated_at': string
   /** pin */
   'body.pin': definitions['pin']
   'rowFilter.pin.id': string
