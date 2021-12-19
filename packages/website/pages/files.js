@@ -10,8 +10,7 @@ import bytes from 'bytes'
 import countly from '../lib/countly.js'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import Copy from '../icons/copy'
-import copy from 'copy-to-clipboard'
+import CopyButton from '../components/copyButton'
 
 /**
  * Static Props
@@ -166,17 +165,11 @@ export default function Files({ user }) {
                               {nft.created.split('T')[0]}
                             </td>
                             <td data-label="CID" className="wrap-cell">
-                              <button
-                                onClick={() =>
-                                  copy(nft.cid, {
-                                    message: 'CID copied to clipboard!',
-                                  })
-                                }
+                              <CopyButton
                                 title="Copy cid to Clipboard"
-                                className="icon-button transparent mr1"
-                              >
-                                <Copy tab-index={-1} />
-                              </button>
+                                text={nft.cid}
+                                popupContent={'CID has been copied!!'}
+                              />
                               <GatewayLink cid={nft.cid} type={nft.type} />
                             </td>
                             <td data-label="Size" className="">
