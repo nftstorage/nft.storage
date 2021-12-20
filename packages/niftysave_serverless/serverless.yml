@@ -7,10 +7,10 @@ useDotenv: true
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   lambdaHashingVersion: 20201221
 functions:
   timeSlicer:
-    handler: timePartitioner.commandService
-  ingestSlice:
-    handler: ingest.run
+    handler: management/timePartitioner.commandService
+  testFunction:
+    handler: services/foobarbaz.exampleFunction

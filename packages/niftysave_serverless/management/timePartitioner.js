@@ -1,7 +1,8 @@
 'use strict'
 const aws = require('aws-sdk')
 
-module.exports.commandService = async (event, context) => {
+//takes a service name, range, and invokes it
+module.exports.invokeTimeboundedService = async (event, context) => {
   return {
     statusCode: 200,
     body: JSON.stringify(
@@ -14,3 +15,14 @@ module.exports.commandService = async (event, context) => {
     ),
   }
 }
+
+// takes in time range and number of slices
+// return list of slices
+module.exports.calculateSlices = async (event, context) => {}
+
+// start time (bin)
+// end time (bin)
+// # of lambdas at once
+// slice size
+// high water mark per lambda
+module.exports.commandService = async (event, context) => {}
