@@ -9,5 +9,7 @@ provider:
   runtime: nodejs12.x
   lambdaHashingVersion: 20201221
 functions:
-  rateHandler:
-    handler: handler.run
+  timeSlicer:
+    handler: timePartitioner.commandService
+  ingestSlice:
+    handler: ingest.run

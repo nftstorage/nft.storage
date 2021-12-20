@@ -1,7 +1,17 @@
 {
-  "name": "niftysave",
+  "name": "niftysave-serverless",
   "version": "1.0.0",
-  "description": "Example of creating a function that runs as a cron job using the serverless `schedule` event",
+  "description": "Niftysave serverless",
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/aws-sdk": "0.0.42",
+    "@types/node": "^7.0.5",
+    "tslint": "^5.5.0",
+    "tslint-config-standard": "^6.0.1",
+    "typescript": "^2.4.2"
+  },
+  "dependencies": {
+    "uuid": "^3.1.0"
+  }
 }
