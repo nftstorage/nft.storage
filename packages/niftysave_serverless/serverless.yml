@@ -3,6 +3,7 @@ app: niftysave
 service: niftysave
 
 frameworkVersion: '2 || 3'
+useDotenv: true
 
 provider:
   name: aws
