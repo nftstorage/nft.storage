@@ -4,49 +4,29 @@
 .marketplace-logo-grid {
   display: grid;
   width: 100%;
-  grid: auto/repeat(7, 1fr);
-  justify-items: center;
-  align-items: center;
-  row-gap: 20px;
-  column-gap: 30px;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
   padding-bottom: 0.5rem;
+  padding: 20px;
+  justify-content: center;
+}
+
+@media screen and (min-width: 481px) {
+  .marketplace-logo-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
 }
 
 .marketplace-logo {
-  width: 100px;
-  height: 40px;
+  width: 100%;
+  height: 80px;
   object-fit: contain;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 4px;
-  padding: 10px;
+  padding: 12px 20px;
   object-position: center;
   -webkit-user-select: none;
   user-select: none;
-}
-@media screen and (max-width: 900px) {
-  .marketplace-logo {
-    width: 75px;
-  }
-}
-@media screen and (max-width: 750px) {
-  .marketplace-logos-container {
-    max-width: 400px;
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-  .marketplace-logo-grid {
-    grid: auto/repeat(3, 1fr);
-  }
-}
-@media screen and (max-width: 374px) {
-  .marketplace-logos-container {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-  .marketplace-logo-grid {
-    grid: auto/repeat(3, 1fr);
-  }
-  .marketplace-logo {
-    width: 50px;
-  }
+  box-sizing: border-box;
+  margin: 0 auto;
 }
