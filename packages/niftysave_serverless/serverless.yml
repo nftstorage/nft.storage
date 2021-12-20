@@ -1,0 +1,13 @@
+org: jessetrigram
+app: niftysave
+service: niftysave
+
+frameworkVersion: '2 || 3'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+functions:
+  rateHandler:
+    handler: handler.run
