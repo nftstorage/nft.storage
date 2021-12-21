@@ -7,7 +7,7 @@ import {
 import { fixtures } from './scripts/fixtures.js'
 import { createCar } from './scripts/car.js'
 
-describe.skip('Metaplex Upload', () => {
+describe('Metaplex Upload', () => {
   /** @type{DBTestClient} */
   let client
 
@@ -18,7 +18,7 @@ describe.skip('Metaplex Upload', () => {
     client = new DBTestClient(user)
   })
 
-  it('should upload a single CAR file with a CID-specific token', async () => {
+  it.skip('should upload a single CAR file with a CID-specific token', async () => {
     const { root, car } = await createCar('hello world car')
     // expected CID for the above data
     const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
