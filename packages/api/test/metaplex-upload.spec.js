@@ -86,13 +86,14 @@ describe('Metaplex Upload', () => {
       body: car,
     })
 
+    console.log(await res.text())
     assert(res, 'Server responded')
     // assert(res.ok, 'Server response ok')
-    const { ok, value } = await res.json()
-    console.log(
-      '🚀 ~ file: metaplex-upload.spec.js ~ line 42 ~ it.only ~ value',
-      value
-    )
+    // const { ok, value } = await res.json()
+    // console.log(
+    //   '🚀 ~ file: metaplex-upload.spec.js ~ line 42 ~ it.only ~ value',
+    //   value
+    // )
     // assert(ok, 'Server response payload has `ok` property')
     assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
     assert.strictEqual(
