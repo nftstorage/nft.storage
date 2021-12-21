@@ -18,7 +18,7 @@ describe('NFT Upload ', () => {
     client = await createClientWithUser()
   })
 
-  it('should upload a single file', async () => {
+  it.only('should upload a single file', async () => {
     const file = new Blob(['hello world!'], { type: 'application/text' })
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
