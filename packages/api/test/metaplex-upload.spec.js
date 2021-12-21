@@ -7,7 +7,7 @@ import {
 import { fixtures } from './scripts/fixtures.js'
 import { createCar } from './scripts/car.js'
 
-describe('Metaplex Upload', () => {
+describe.skip('Metaplex Upload', () => {
   /** @type{DBTestClient} */
   let client
 
