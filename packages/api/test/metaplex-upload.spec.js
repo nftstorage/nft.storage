@@ -18,7 +18,7 @@ describe('Metaplex Upload', () => {
     client = new DBTestClient(user)
   })
 
-  it.only('should upload a single CAR file with a CID-specific token', async () => {
+  it('should upload a single CAR file with a CID-specific token', async () => {
     const { root, car } = await createCar('hello world car')
     // expected CID for the above data
     const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
