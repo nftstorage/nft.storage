@@ -14,3 +14,5 @@ functions:
     handler: management/timePartitioner.commandService
   testFunction:
     handler: services/foobarbaz.exampleFunction
+  subfunction:
+    handler: services/foobarbaz.exampleSubfunction
