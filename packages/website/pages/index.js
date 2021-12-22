@@ -4,9 +4,7 @@ import countly from '../lib/countly.js'
 import Hero from '../components/hero.js'
 import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
-import Box from '../components/box.js'
 import Link from 'next/link'
-import { FAQ } from './faq'
 
 export async function getStaticProps() {
   const logos = fs.readdirSync('public/images/marketplace-logos')
@@ -71,20 +69,6 @@ export default function Home({ logos }) {
         <Logos logos={logos} />
         <About />
         <GettingStarted />
-        <article className="bg-nsforest">
-          <div className="mw9 center pa4 pa5-ns">
-            <h2 className="chicagoflf white">
-              <HashLink id="faq">FAQ</HashLink>
-            </h2>
-            <FAQ limit={5} />
-            <h3 className="chicagoflf white">
-              More FAQs{' '}
-              <Link href="/faq">
-                <a className="white underline">here</a>
-              </Link>
-            </h3>
-          </div>
-        </article>
       </main>
     </>
   )
@@ -324,27 +308,6 @@ function GettingStarted() {
     )
   }, [])
 
-  const jsEx = `import { NFTStorage, File } from 'nft.storage'
-import { pack } from 'ipfs-car/pack';
-
-const apiKey = 'YOUR_API_KEY'
-const client = new NFTStorage({ token: apiKey })
-
-const metadata = await client.store({
-  name: 'Pinpie',
-  description: 'Pin is not delicious beef!',
-  image: new File([/* data */], 'pinpie.jpg', { type: 'image/jpg' })
-})
-console.log(metadata.url)
-// ipfs://bafyreib4pff766vhpbxbhjbqqnsh5emeznvujayjj4z2iu533cprgbz23m/metadata.json`
-
-  const curlEx = `curl -X POST --data-binary @art.jpg -H 'Authorization: Bearer YOUR_API_KEY' https://api.nft.storage/upload`
-
-  const uploadResp = `{
-  "ok": true,
-  "value": { "cid": "bafy..." }
-}`
-
   return (
     <article className="bg-yellow">
       <div className="mw9 center pa4 pa5-ns">
@@ -401,171 +364,6 @@ console.log(metadata.url)
             </p>
           </li>
         </ol>
-        <div
-          id="docs"
-          className="db-m flex-ns justify-center center mw9 mw-none-m mw-none-ns mh-3"
-        >
-          <Box
-            bgColor="nspeach"
-            borderColor="nsnavy"
-            wrapperClassName="w-100 w-100-m w-50-ns mh0 mh0-m mh3-ns mb4"
-          >
-            <h3 className="chicagoflf f5 fw4">
-              <HashLink id="js-client-library">JS Client Library</HashLink>
-            </h3>
-            <p className="lh-copy">
-              Install the{' '}
-              <a
-                href="https://npmjs.org/package/nft.storage"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="black"
-              >
-                JS library
-              </a>
-              :
-            </p>
-            <pre className="f6 lh-copy white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll">
-              npm install nft.storage
-            </pre>
-            <p className="lh-copy">Use the client in Node.js or the browser:</p>
-            <pre className="f6 lh-copy white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll">
-              {jsEx}
-            </pre>
-            <p className="lh-copy">
-              View the{' '}
-              <a
-                href="https://nftstorage.github.io/nft.storage/client/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="black"
-              >
-                full library reference docs
-              </a>
-              .
-            </p>
-            <p className="lh-copy">
-              For additional example code, check out our{' '}
-              <a
-                className="black"
-                href="https://github.com/nftstorage/nft.storage/tree/main/packages/client/examples/node.js"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub repo
-              </a>{' '}
-              and{' '}
-              <a
-                className="black"
-                href="https://nftschool.dev/tutorial/end-to-end-experience/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                NFT School.
-              </a>
-            </p>
-          </Box>
-          <Box
-            bgColor="nspeach"
-            borderColor="nspink"
-            wrapperClassName="w-100 w-100-m w-50-ns mh0 mh0-m mh3-ns mb4"
-          >
-            <h3 className="chicagoflf f5 fw4">
-              <HashLink id="raw-http-request">Raw HTTP Request</HashLink>
-            </h3>
-            <p className="lh-copy">
-              Configure your HTTP client and set the{' '}
-              <code className="f6 bg-nspink ph2 pv1 br1 ba b--black code">
-                Authorization
-              </code>{' '}
-              header:
-            </p>
-            <pre className="f6 lh-copy bg-nspink pa3 br1 ba b--black code overflow-x-scroll">
-              &quot;Authorization&quot;: &quot;Bearer YOUR_API_KEY&quot;
-            </pre>
-            <p className="lh-copy">
-              Submit a HTTP{' '}
-              <code className="f6 bg-nspink ph2 pv1 br1 ba b--black code">
-                POST
-              </code>{' '}
-              request to{' '}
-              <span className="black underline">api.nft.storage/upload</span>{' '}
-              passing the file data in the request body. e.g.
-            </p>
-            <pre className="f6 lh-copy bg-nspink pa3 br1 ba b--black code overflow-x-scroll">
-              {curlEx}
-            </pre>
-            <p className="lh-copy">
-              Successful requests will receive a HTTP{' '}
-              <code className="f6 bg-nspink ph2 pv1 br1 ba b--black code">
-                200
-              </code>{' '}
-              status and{' '}
-              <code className="f6 bg-nspink ph2 pv1 br1 ba b--black code">
-                application/json
-              </code>{' '}
-              response like:
-            </p>
-            <pre className="f6 lh-copy bg-nspink pa3 br1 ba b--black code overflow-x-scroll">
-              {uploadResp}
-            </pre>
-            <p className="lh-copy">
-              Check the{' '}
-              <Link href="/api-docs">
-                <a className="black">API Docs</a>
-              </Link>{' '}
-              for information on uploading multiple files and the other
-              available endpoints.
-            </p>
-            <p className="lh-copy">
-              For additional example code, check out our{' '}
-              <a
-                className="black"
-                href="https://github.com/nftstorage/nft.storage/tree/main/packages/client/examples/browser"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub repo
-              </a>
-              .
-            </p>
-          </Box>
-          {/* <Box
-            bgColor="nspeach"
-            borderColor="nsred"
-            wrapperClassName="w-100 w-100-m w-33-ns mh0 mh0-m mh3-ns mb4"
-          >
-            <h2 className="chicagoflf f5 fw4">
-              <HashLink id="configure-as-a-remote-pinning-service">
-                Configure as a Remote Pinning Service
-              </HashLink>
-            </h2>
-            <p className="lh-copy">
-              You can use <strong>nft.storage</strong> as a{' '}
-              <a
-                href="https://ipfs.github.io/pinning-services-api-spec"
-                className="black"
-              >
-                remote pinning service
-              </a>{' '}
-              in IPFS.
-            </p>
-            <pre className="f6 lh-copy white bg-nsred pa3 br1 ba b--black code overflow-x-scroll">
-              ipfs pin remote service add nft-storage https://api.nft.storage
-              YOUR_API_KEY
-            </pre>
-            <p className="lh-copy">
-              Use the{' '}
-              <code className="f6 white bg-nsred ph2 pv1 br1 ba b--black code">
-                --help
-              </code>{' '}
-              option for information on other remote pinning service commands:
-            </p>
-            <pre className="f6 lh-copy white bg-nsred pa3 br1 ba b--black code overflow-x-scroll">
-              ipfs pin remote --help
-            </pre>
-          </Box> */}
-        </div>
       </div>
     </article>
   )
