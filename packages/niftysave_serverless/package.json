@@ -4,6 +4,10 @@
   "description": "Niftysave serverless",
   "author": "",
   "license": "MIT",
+  "scripts": {
+    "tsc": "npx tsc --build",
+    "test": "npx jest --coverage"
+  },
   "dependencies": {
     "aws-sdk": "^2.1047.0",
     "uuid": "^3.1.0"
