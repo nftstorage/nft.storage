@@ -26,10 +26,6 @@ jobs:
           DATABASE_URL: http://localhost:3000
           DATABASE_TOKEN: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYwMzk2ODgzNCwiZXhwIjoyNTUwNjUzNjM0LCJyb2xlIjoic2VydmljZV9yb2xlIn0.necIJaiP7X2T2QjGeV-FhpkizcNTX8HjDDBAxpgQTEI
           DATABASE_CONNECTION: postgresql://postgres:postgres@localhost:5432/postgres
-          # DAG_CARGO_HOST: ${{secrets.DAG_CARGO_HOST}}
-          # DAG_CARGO_DATABASE: ${{secrets.DAG_CARGO_DATABASE}}
-          # DAG_CARGO_USER: ${{secrets.DAG_CARGO_USER}}
-          # DAG_CARGO_PASSWORD: ${{secrets.DAG_CARGO_PASSWORD}}
   deploy-dev:
     name: Deploy Dev
     if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'

@@ -2,23 +2,18 @@
 
 The nft.storage public API.
 
-## Getting Started
-
-### Local env vars
-
-Follow instructions in the root `README.md`.
-
 ## Usage
+
+Make sure you already did step 1 and 2 from these [instructions](/#getting-started).
 
 ### Running Locally
 
 ```bash
 cd packages/api
-yarn install
 yarn dev
 ```
 
-The database is pre populated with a single mock user. You can start making request with this auth key:
+The database is pre populated with a single mock user. You can start making requests with this auth key:
 
 ```text
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDY1MDA3QTczOWFiN0FDNWM1MzcxNjEyNDliODEyNTBFNDllMjg1M0MiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYzOTc1NDczNjYzOCwibmFtZSI6Im1haW4ifQ.wKwJIRXXHsgwVp8mOQp6r3_F4Lz5lnoAkgVP8wqwA_Y
