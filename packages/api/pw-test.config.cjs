@@ -1,6 +1,7 @@
 const path = require('path')
 const dotenv = require('dotenv')
 const execa = require('execa')
+const delay = require('delay')
 
 /** @typedef {{ proc: execa.ExecaChildProcess<string> }} ProcessObject */
 
@@ -54,6 +55,7 @@ module.exports = {
     await execa(cli, ['db-sql', '--cargo', '--testing', '--reset'])
     console.log('⚡️ SQL schema loaded.')
 
+    await delay(2000)
     return { mock }
   },
   afterTests: async (
