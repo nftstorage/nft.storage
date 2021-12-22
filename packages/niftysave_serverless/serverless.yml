@@ -16,3 +16,5 @@ functions:
     handler: services/foobarbaz.exampleFunction
   subfunction:
     handler: services/foobarbaz.exampleSubfunction
+  jestTest:
+    handler: services/foobarbaz.jestTest

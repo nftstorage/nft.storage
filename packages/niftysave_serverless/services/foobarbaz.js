@@ -34,3 +34,7 @@ module.exports.exampleSubfunction = async (event, context) => {
     elapsed: timeElapsed,
   }
 }
+
+module.exports.jestTest = async (event, context) => {
+  return 3
+}
