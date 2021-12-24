@@ -426,7 +426,7 @@ console.log(metadata.url)
               :
             </p>
             <pre className="f6 lh-copy white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll">
-              npm install NFT.Storage
+              npm install nft.storage
             </pre>
             <p className="lh-copy">Use the client in Node.js or the browser:</p>
             <pre className="f6 lh-copy white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll">
