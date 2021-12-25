@@ -14,7 +14,7 @@ const lambda = new aws.Lambda()
 function invokeAsync(eventData) {
   const _params = {
     FunctionName: 'exampleSubfunction',
-    InvocationType: 'DryRun',
+    InvocationType: 'Event',
     Payload: JSON.stringify(eventData),
   }
   return new Promise((resolve, reject) => {
@@ -29,6 +29,8 @@ function invokeAsync(eventData) {
 }
 
 module.exports.exampleFunction = async (event, context) => {
+  console.log(context)
+
   return new Promise(async (resolve, reject) => {
     const timerStart = Date.now()
 
