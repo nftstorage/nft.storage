@@ -6,10 +6,12 @@
   "license": "MIT",
   "scripts": {
     "tsc": "npx tsc --build",
-    "test": "npx jest --coverage"
+    "test": "npx jest --coverage",
+    "test-subfunctions": "npx serverless invoke local -f exampleFunction"
   },
   "dependencies": {
     "aws-sdk": "^2.1047.0",
+    "serverless": "^2.69.1",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
@@ -17,6 +19,7 @@
     "@types/jest": "^27.0.3",
     "@types/node": "^14.0.0",
     "jest": "^27.4.5",
+    "serverless-dotenv-plugin": "^3.10.0",
     "serverless-jest-plugin": "^0.4.0",
     "tslint": "^5.5.0",
     "tslint-config-standard": "^6.0.1",

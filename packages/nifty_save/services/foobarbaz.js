@@ -5,34 +5,62 @@ const invocationSize = 100
 
 const { sleep } = require('../management/timers')
 const aws = require('aws-sdk')
+const { Lambda } = require('aws-sdk')
+const lambda = new aws.Lambda()
+/**
+ *
+ * @param {any} eventData
+ */
+function invokeAsync(eventData) {
+  const _params = {
+    FunctionName: 'exampleSubfunction',
+    InvocationType: 'DryRun',
+    Payload: JSON.stringify(eventData),
+  }
+  return new Promise((resolve, reject) => {
+    lambda.invoke(_params, (err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
+}
 
 module.exports.exampleFunction = async (event, context) => {
-  const lambda = new aws.Lambda()
-  const params = {
-    FunctionName: 'subfunction',
-    InvocationType: 'Event',
-    Payload: JSON.stringify(event),
-    Qualifier: context.functionVersion,
-  }
+  return new Promise(async (resolve, reject) => {
+    const timerStart = Date.now()
 
-  lambda.invoke(params, context.done)
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: `Success! You Slept for ${timeElapsed}ms`,
-    }),
-  }
+    await invokeAsync({
+      foo: 'baz',
+    })
+
+    const timeElapsed = Date.now() - timerStart
+
+    resolve({
+      statusCode: 200,
+      body: JSON.stringify({
+        message: `Success! You Slept for ${timeElapsed}ms`,
+      }),
+    })
+  })
 }
 
 module.exports.exampleSubfunction = async (event, context) => {
-  const beforeSleep = Date.now()
-  await sleep(100)
-  console.log(context)
-  const timeElapsed = Date.now() - beforeSleep
-  return {
-    number: event.index || 0,
-    elapsed: timeElapsed,
-  }
+  return new Promise(async (resolve, reject) => {
+    const beforeSleep = Date.now()
+    await sleep(500)
+    console.log('subfun event')
+    console.log(event)
+    console.log('subfun context')
+    console.log(context)
+    const timeElapsed = Date.now() - beforeSleep
+    resolve({
+      number: event.index || 0,
+      elapsed: timeElapsed,
+    })
+  })
 }
 
 module.exports.jestTest = async (event, context) => {
