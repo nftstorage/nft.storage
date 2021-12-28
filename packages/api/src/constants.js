@@ -46,3 +46,10 @@ export const database = {
 }
 
 export const isDebug = DEBUG === 'true'
+
+/**
+ * The list of user IDs that are allowed to use the Pinning Service API. By
+ * default ["*"] - meaning anyone can use it.
+ */
+export const psaAllow =
+  typeof PSA_ALLOW !== 'undefined' ? PSA_ALLOW.split(',') : ['*']
