@@ -32,7 +32,8 @@ export function withPsaErrorHandler(handler) {
 }
 
 /**
- * Verify that the authenticated request is for a user who is authorized to pin.
+ * Verify that the authenticated request is for a user who is authorized to use
+ * the Pinning Service API.
  *
  * @param {Handler} handler
  * @returns {Handler}
