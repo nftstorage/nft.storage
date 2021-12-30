@@ -9,4 +9,4 @@
 // cursor - where you currently are in time (can be mintTime)
 // needs to be ble to restart in the right place.
 
-module.exports.run = function (event, context) {}
+module.exports.run = function(event, context) {}

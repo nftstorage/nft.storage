@@ -10,6 +10,7 @@
     "test-subfunctions": "npx serverless invoke local -f exampleFunction"
   },
   "dependencies": {
+    "@aws-sdk/client-sqs": "^3.45.0",
     "aws-sdk": "^2.1047.0",
     "serverless": "^2.69.1",
     "uuid": "^3.1.0"

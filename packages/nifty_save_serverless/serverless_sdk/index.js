@@ -531,7 +531,8 @@
               ('ReactNative' !== navigator.product &&
                 'NativeScript' !== navigator.product &&
                 'NS' !== navigator.product)) &&
-            'undefined' != typeof window && 'undefined' != typeof document
+            'undefined' != typeof window &&
+            'undefined' != typeof document
           )
         },
         forEach: l,
@@ -922,7 +923,8 @@
             return (
               void 0 !== this._readableState &&
               void 0 !== this._writableState &&
-              this._readableState.destroyed && this._writableState.destroyed
+              this._readableState.destroyed &&
+              this._writableState.destroyed
             )
           },
           set: function(e) {
@@ -1193,7 +1195,8 @@
             return (
               void 0 !== this._readableState &&
               void 0 !== this._writableState &&
-              this._readableState.destroyed && this._writableState.destroyed
+              this._readableState.destroyed &&
+              this._writableState.destroyed
             )
           },
           set: function(e) {
@@ -1265,7 +1268,8 @@
             return (
               void 0 !== this._readableState &&
               void 0 !== this._writableState &&
-              this._readableState.destroyed && this._writableState.destroyed
+              this._readableState.destroyed &&
+              this._writableState.destroyed
             )
           },
           set: function(e) {
@@ -2527,14 +2531,15 @@
     function(e, t, n) {
       ;(function(e) {
         var r
-        /**
-         * @license
-         * Lodash <https://lodash.com/>
-         * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
-         * Released under MIT license <https://lodash.com/license>
-         * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
-         * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-         */ ;(function() {
+          /**
+           * @license
+           * Lodash <https://lodash.com/>
+           * Copyright OpenJS Foundation and other contributors <https://openjsf.org/>
+           * Released under MIT license <https://lodash.com/license>
+           * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+           * Copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+           */
+        ;(function() {
           var i = 'Expected a function',
             o = '__lodash_placeholder__',
             s = [
@@ -5131,7 +5136,9 @@
                   null != e &&
                   !Xs(e)
                 ) ||
-                H.test(e) || !q.test(e) || (null != t && e in de(t))
+                H.test(e) ||
+                !q.test(e) ||
+                (null != t && e in de(t))
               )
             }
             function lo(e) {
@@ -8103,7 +8110,7 @@
         (t.exceedsLimit = (e, n, r = 1, i) =>
           !1 !== i &&
           !(!t.isInteger(e) || !t.isInteger(n)) &&
-            (Number(n) - Number(e)) / Number(r) >= i),
+          (Number(n) - Number(e)) / Number(r) >= i),
         (t.escapeNode = (e, t = 0, n) => {
           let r = e.nodes[t]
           r &&
@@ -8113,7 +8120,8 @@
         }),
         (t.encloseBrace = e =>
           'brace' === e.type &&
-          (e.commas >> (0 + e.ranges)) >> 0 == 0 && ((e.invalid = !0), !0)),
+          (e.commas >> (0 + e.ranges)) >> 0 == 0 &&
+          ((e.invalid = !0), !0)),
         (t.isInvalidBrace = e =>
           'brace' === e.type &&
           (!(!0 !== e.invalid && !e.dollar) ||
@@ -8124,7 +8132,8 @@
         (t.isOpenOrClose = e =>
           'open' === e.type ||
           'close' === e.type ||
-          !0 === e.open || !0 === e.close),
+          !0 === e.open ||
+          !0 === e.close),
         (t.reduce = e =>
           e.reduce(
             (e, t) => (
@@ -20092,9 +20101,9 @@
           return (
             !!this.sourcesContent &&
             this.sourcesContent.length >= this._sources.size() &&
-              !this.sourcesContent.some(function(e) {
-                return null == e
-              })
+            !this.sourcesContent.some(function(e) {
+              return null == e
+            })
           )
         }),
         (c.prototype.sourceContentFor = function(e, t) {
@@ -21260,7 +21269,7 @@
             'resource',
             'httpMethod',
           ].every(t => t in e) &&
-            'aws.apigateway.http'
+          'aws.apigateway.http'
         )
       }
     },
@@ -21278,7 +21287,7 @@
               'version',
             ].every(t => t in e) || '2.0' !== e.version
           ) &&
-            'aws.apigatewayv2.http'
+          'aws.apigatewayv2.http'
         )
       }
     },
@@ -24045,7 +24054,7 @@
                         ('.' === e[0] &&
                           S.hostname.substr(S.hostname.length - e.length) ===
                             e) ||
-                          S.hostname === e)
+                        S.hostname === e)
                     )
                   })
               if (
@@ -26862,7 +26871,7 @@
               this._queue.idle() &&
               this._statQueue.idle()
             ) &&
-              (this._finalize(), !0)
+            (this._finalize(), !0)
           )
         }),
         (h.prototype._moduleAppend = function(e, t, n) {
@@ -29421,10 +29430,10 @@
           return (
             !e ||
             'ENOSYS' === e.code ||
-              !(
-                (process.getuid && 0 === process.getuid()) ||
-                ('EINVAL' !== e.code && 'EPERM' !== e.code)
-              )
+            !(
+              (process.getuid && 0 === process.getuid()) ||
+              ('EINVAL' !== e.code && 'EPERM' !== e.code)
+            )
           )
         }
         ;(e.read = (function(t) {
@@ -33611,8 +33620,8 @@
           '' !== e &&
           (!(!1 !== t.caseSensitiveMatch && !e.includes('\\')) ||
             !!(s.test(e) || a.test(e) || u.test(e)) ||
-              !(!1 === t.extglob || !c.test(e)) ||
-                !(!1 === t.braceExpansion || !l.test(e)))
+            !(!1 === t.extglob || !c.test(e)) ||
+            !(!1 === t.braceExpansion || !l.test(e)))
         )
       }
       function p(e) {
@@ -36382,17 +36391,15 @@
           }
         }
         _getPatternSegments(e) {
-          return r.pattern
-            .getPatternParts(e, this._micromatchOptions)
-            .map(e =>
-              r.pattern.isDynamicPattern(e, this._settings)
-                ? {
-                    dynamic: !0,
-                    pattern: e,
-                    patternRe: r.pattern.makeRe(e, this._micromatchOptions),
-                  }
-                : { dynamic: !1, pattern: e }
-            )
+          return r.pattern.getPatternParts(e, this._micromatchOptions).map(e =>
+            r.pattern.isDynamicPattern(e, this._settings)
+              ? {
+                  dynamic: !0,
+                  pattern: e,
+                  patternRe: r.pattern.makeRe(e, this._micromatchOptions),
+                }
+              : { dynamic: !1, pattern: e }
+          )
         }
         _splitSegmentsIntoSections(e) {
           return r.array.splitWhen(
