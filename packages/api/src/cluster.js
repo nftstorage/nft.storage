@@ -48,7 +48,8 @@ export async function addDirectory(files, options = {}) {
   const size = files.reduce((total, f) => total + f.size, 0)
   if (size === 0) {
     throw new HTTPError(
-      'Content added contains 0 bytes. Please make sure that files are encoded correctly'
+      'Content added contains 0 bytes. Please make sure that files are encoded correctly',
+      400
     )
   }
 
