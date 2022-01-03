@@ -1,12 +1,9 @@
-import MyStack from './MyStack'
-
+import NiftySaveStack from './NiftySaveStack'
 export default function main(app) {
   // Set default runtime for all functions
   app.setDefaultFunctionProps({
     runtime: 'nodejs14.x',
   })
 
-  new MyStack(app, 'my-stack')
-
-  // Add more stacks
+  new NiftySaveStack(app, 'niftysave-stack')
 }
