@@ -10,6 +10,7 @@ import bytes from 'bytes'
 import countly from '../lib/countly.js'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import CopyButton from '../components/copyButton'
 
 /**
  * Static Props
@@ -46,7 +47,7 @@ export default function Files({ user }) {
 
   const { status, data } = useQuery(
     queryKey,
-    (ctx) => getNfts(ctx.queryKey[1], version),
+    ctx => getNfts(ctx.queryKey[1], version),
     {
       enabled: !!user,
     }
@@ -58,6 +59,7 @@ export default function Files({ user }) {
   /**
    * @param {import('react').ChangeEvent<HTMLFormElement>} e
    */
+
   async function handleDeleteFile(e) {
     e.preventDefault()
     const data = new FormData(e.target)
@@ -150,49 +152,55 @@ export default function Files({ user }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {nfts.map(
-                          (/** @type {any} */ nft, /** @type {number} */ i) => (
-                            <tr className="bg-white bb" key={`nft-${i}`}>
-                              <td
-                                data-label="Date"
-                                className=""
-                                title={nft.created}
-                              >
-                                {nft.created.split('T')[0]}
-                              </td>
-                              <td data-label="CID" className="wrap-cell">
-                                <GatewayLink cid={nft.cid} type={nft.type} />
-                              </td>
-                              <td data-label="Size" className="">
-                                {bytes(nft.size || 0)}
-                              </td>
-                              <td className="shrink-cell center-cell">
-                                <form onSubmit={handleDeleteFile}>
-                                  <input
-                                    type="hidden"
-                                    name="cid"
-                                    value={nft.cid}
-                                  />
-                                  <Button
-                                    type="submit"
-                                    disabled={Boolean(deleting)}
-                                    variant={'caution'}
-                                    id="delete-nft"
-                                    tracking={{
-                                      event: countly.events.FILE_DELETE_CLICK,
-                                      ui: countly.ui.FILES,
-                                      action: 'Delete File',
-                                    }}
-                                  >
-                                    {deleting === nft.cid
-                                      ? 'Deleting...'
-                                      : 'Delete'}
-                                  </Button>
-                                </form>
-                              </td>
-                            </tr>
-                          )
-                        )}
+                        {nfts.map((
+                          /** @type {any} */ nft,
+                          /** @type {number} */ i
+                        ) => (
+                          <tr className="bg-white bb" key={`nft-${i}`}>
+                            <td
+                              data-label="Date"
+                              className=""
+                              title={nft.created}
+                            >
+                              {nft.created.split('T')[0]}
+                            </td>
+                            <td data-label="CID" className="wrap-cell">
+                              <CopyButton
+                                title="Copy cid to Clipboard"
+                                text={nft.cid}
+                                popupContent={'CID has been copied!!'}
+                              />
+                              <GatewayLink cid={nft.cid} type={nft.type} />
+                            </td>
+                            <td data-label="Size" className="">
+                              {bytes(nft.size || 0)}
+                            </td>
+                            <td className="shrink-cell center-cell">
+                              <form onSubmit={handleDeleteFile}>
+                                <input
+                                  type="hidden"
+                                  name="cid"
+                                  value={nft.cid}
+                                />
+                                <Button
+                                  type="submit"
+                                  disabled={Boolean(deleting)}
+                                  variant={'caution'}
+                                  id="delete-nft"
+                                  tracking={{
+                                    event: countly.events.FILE_DELETE_CLICK,
+                                    ui: countly.ui.FILES,
+                                    action: 'Delete File',
+                                  }}
+                                >
+                                  {deleting === nft.cid
+                                    ? 'Deleting...'
+                                    : 'Delete'}
+                                </Button>
+                              </form>
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                     <div className="flex flex-wrap justify-center tc mv3">
