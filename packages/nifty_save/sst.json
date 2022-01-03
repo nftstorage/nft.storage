@@ -1,5 +1,5 @@
 {
-  "name": "nifty_save",
+  "name": "nifty-save",
   "region": "us-east-1",
   "main": "stacks/index.js"
 }
