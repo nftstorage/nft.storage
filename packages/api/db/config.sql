@@ -8,4 +8,3 @@ ALTER DATABASE postgres SET jit = on;
 ALTER DATABASE postgres SET idle_in_transaction_session_timeout = '1min';
 ALTER DATABASE postgres SET lock_timeout TO '1min';
 ALTER DATABASE postgres SET statement_timeout TO '30s';
-ALTER DATABASE postgres SET max_parallel_workers_per_gather TO 4;
