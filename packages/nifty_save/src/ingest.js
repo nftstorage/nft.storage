@@ -1,50 +1,93 @@
 import AWS from 'aws-sdk'
-import { sleep } from './timers'
-
+import ajv from 'ajv'
+import httpErrorHandler from '@middy/http-error-handler'
+import jsonBodyParser from '@middy/http-json-body-parser'
+import main from '../stacks'
+import middy from '@middy/core'
+import validator from '@middy/validator'
 const bus = new AWS.EventBridge()
-
-const SLEEP_TIME = 500
 
 //takes range => bazillion slices
 
 //range -> slices (list) -> SQS -> event bridge -> child lambda (scrape) -> SQS (consumer -> db)
-export async function parentLambda(event) {
-  const timerStart = Date.now()
-  await sleep(SLEEP_TIME)
-  putSliceRangeEvent({})
-  // put a lot of em'
-  const timeElapsed = Date.now() - timerStart
+const ingestRangeFromSourceHandler = async (event, context, err) => {
+  console.log(event, context, err)
+  if (err) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify(err, null, 2),
+    }
+  }
+
+  const { rangeStartTime, rangeEndTime, sourceName, timesliceSize } =
+    event?.body || {}
+
+  const slices = 6
+
+  console.log({ rangeStartTime, rangeEndTime, sourceName, timesliceSize })
+
+  putSliceRangeEvent({ rangeStartTime, rangeEndTime, sourceName })
   return {
     statusCode: 200,
-    body: JSON.stringify({ message: `Parent Lambda called: ${timeElapsed}ms` }),
+    body: JSON.stringify({
+      message: `Created ${slices} time Slices from ${rangeStartTime} to ${rangeEndTime}`,
+    }),
   }
 }
 
-export async function ingestHealth(event) {
+const ingestRangeFromSourceSchema = {
+  type: 'object',
+  properties: {
+    body: {
+      rangeStartTime: { type: 'date' },
+      rangeEndTime: { type: 'date' },
+      sourceName: { type: 'string' },
+      timesliceSize: { type: 'number' },
+    },
+  },
+  required: ['rangeStartTime', 'rangeEndTime', 'sourceName', 'timesliceSize'],
+}
+
+export const ingestRangeFromSource = middy(ingestRangeFromSourceHandler).use([
+  jsonBodyParser(),
+  validator({
+    inputSchema: ingestRangeFromSourceSchema,
+    ajvOptions: {
+      strict: false,
+    },
+  }),
+  httpErrorHandler(),
+])
+
+export async function ingestTimeSlice(event) {
+  console.log(event)
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: `Child Lambda called`,
+    }),
+  }
+}
+
+export async function ingestHealth() {
   return {
     statusCode: 200,
     body: JSON.stringify({ message: 'Ingest is healthy' }),
   }
 }
 
-export async function childLambda(event) {
-  const timerStart = Date.now()
-  console.log(event)
-  const timeElapsed = Date.now() - timerStart
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: `Child Lambda called: ${timeElapsed}ms`,
-    }),
-  }
-}
-
-function putSliceRangeEvent() {
+function putSliceRangeEvent({ rangeStartTime, rangeEndTime, sourceName }) {
+  console.log({ rangeStartTime, rangeEndTime, sourceName })
   const params = {
     Entries: [
       {
         DetailType: 'A test event to see if child lambdas invoke',
-        Detail: JSON.stringify({ foo: 'bar' }),
+        Detail: JSON.stringify({
+          foo: 'bar',
+          rangeStartTime,
+          rangeEndTime,
+          sourceName,
+        }),
         Source: 'injest.range_to_slices',
         EventBusName: process.env.busArn,
       },

@@ -34,7 +34,7 @@ export default class NiftySaveStack extends sst.Stack {
         },
       },
       routes: {
-        'POST /ingest/parent': 'src/ingest.parentLambda',
+        'POST /ingest/source': 'src/ingest.ingestRangeFromSource',
         'GET /ingest/health': 'src/ingest.ingestHealth',
         $default: 'src/default.defaultResponse',
       },
