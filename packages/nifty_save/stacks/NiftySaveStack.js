@@ -8,17 +8,31 @@ export default class NiftySaveStack extends sst.Stack {
     super(scope, id, props)
 
     //configure the event bus
-    this.bus = new sst.EventBus(this, 'Bus')
+    const bus = new sst.EventBus(this, 'Bus')
 
     //Ingest
-
-    this.bus.addRules(this, {
+    bus.addRules(this, {
       ingestRangeToSlices: {
-        eventPattern: { source: ['injest.range_to_slices'] },
-        targets: ['src/ingest.ingestTimeSlice'],
+        eventPattern: { source: ['ingest.range_to_slices'] },
+        targets: ['src/ingest.timeSliceCall'],
       },
     })
 
+    // Create Queue
+    const queue = new sst.Queue(this, 'Queue', {
+      consumer: {
+        consumerProps: {
+          batchSize: 10,
+        },
+        function: {
+          handler: 'src/ingest.ingestTimeSlice',
+          environment: {
+            busArn: bus.eventBusArn,
+          },
+          permissions: [bus],
+        },
+      },
+    })
     //Analyze
 
     //Pin
@@ -26,11 +40,12 @@ export default class NiftySaveStack extends sst.Stack {
     //Verify
 
     //api
-    this.api = new sst.Api(this, 'Api', {
+    const api = new sst.Api(this, 'Api', {
       defaultFunctionProps: {
         // Pass in the queue to our API
         environment: {
-          busArn: this.bus.eventBusArn,
+          queueUrl: queue.sqsQueue.queueUrl,
+          busArn: bus.eventBusArn,
         },
       },
       routes: {
@@ -40,10 +55,11 @@ export default class NiftySaveStack extends sst.Stack {
       },
     })
 
-    this.api.attachPermissions([this.bus])
+    api.attachPermissions([bus, queue])
+    //     queue.attachPermissions([this.bus]);
 
     this.addOutputs({
-      ApiEndpoint: this.api.url,
+      ApiEndpoint: api.url,
     })
   }
 }
