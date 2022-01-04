@@ -11,6 +11,9 @@ const bus = new AWS.EventBridge()
 //takes range => bazillion slices
 
 //range -> slices (list) -> SQS -> event bridge -> child lambda (scrape) -> SQS (consumer -> db)
+
+//test curl
+//curl -X POST https://tbsul0n1i5.execute-api.us-east-1.amazonaws.com/ingest/source -d '{ "timesliceSize": 100000, "rangeStartTime": "2018-6-1", "rangeEndTime": "2018-6-2" }' -H "Content-Type: application/json"
 const ingestRangeFromSourceHandler = async (event, context, err) => {
   console.log(event, context, err)
   if (err) {
