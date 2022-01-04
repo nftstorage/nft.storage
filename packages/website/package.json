@@ -16,6 +16,7 @@
     "@magic-ext/oauth": "^0.11.2",
     "bytes": "^3.1.0",
     "clsx": "^1.1.1",
+    "copy-to-clipboard": "^3.3.1",
     "gray-matter": "^4.0.3",
     "ipfs-car": "0.4.3",
     "magic-sdk": "^6.2.1",
