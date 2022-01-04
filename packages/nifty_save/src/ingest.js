@@ -1,10 +1,11 @@
 import AWS from 'aws-sdk'
-import ajv from 'ajv'
+import { checkIsBinRange } from './dates'
 import httpErrorHandler from '@middy/http-error-handler'
 import jsonBodyParser from '@middy/http-json-body-parser'
-import main from '../stacks'
 import middy from '@middy/core'
+import { sleep } from './timers'
 import validator from '@middy/validator'
+
 const bus = new AWS.EventBridge()
 
 //takes range => bazillion slices
@@ -22,15 +23,35 @@ const ingestRangeFromSourceHandler = async (event, context, err) => {
   const { rangeStartTime, rangeEndTime, sourceName, timesliceSize } =
     event?.body || {}
 
-  const slices = 6
-
   console.log({ rangeStartTime, rangeEndTime, sourceName, timesliceSize })
 
-  putSliceRangeEvent({ rangeStartTime, rangeEndTime, sourceName })
+  const isBinRange = checkIsBinRange(rangeStartTime, rangeEndTime)
+
+  if (!isBinRange) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: `${rangeStartTime} to ${rangeEndTime} is not a Time Range`,
+      }),
+    }
+  }
+
+  const startTime = new Date(rangeStartTime)
+  const endTime = new Date(rangeEndTime)
+  const totalSlices = Math.floor((endTime - startTime) / timesliceSize)
+
+  for (var i = 0; i < totalSlices; i++) {
+    putSliceRangeEvent({
+      rangeStartTime: i * timesliceSize,
+      rangeEndTime: (i + 1) * timesliceSize,
+      sourceName: 'foo',
+    })
+  }
+
   return {
     statusCode: 200,
     body: JSON.stringify({
-      message: `Created ${slices} time Slices from ${rangeStartTime} to ${rangeEndTime}`,
+      message: `Created ${totalSlices} time Slices from ${rangeStartTime} to ${rangeEndTime}`,
     }),
   }
 }
@@ -39,13 +60,13 @@ const ingestRangeFromSourceSchema = {
   type: 'object',
   properties: {
     body: {
-      rangeStartTime: { type: 'date' },
-      rangeEndTime: { type: 'date' },
-      sourceName: { type: 'string' },
-      timesliceSize: { type: 'number' },
+      type: 'object',
+      properties: {
+        timesliceSize: { type: 'number' },
+      },
+      required: ['timesliceSize', 'rangeStartTime', 'rangeEndTime'],
     },
   },
-  required: ['rangeStartTime', 'rangeEndTime', 'sourceName', 'timesliceSize'],
 }
 
 export const ingestRangeFromSource = middy(ingestRangeFromSourceHandler).use([
@@ -60,11 +81,13 @@ export const ingestRangeFromSource = middy(ingestRangeFromSourceHandler).use([
 ])
 
 export async function ingestTimeSlice(event) {
-  console.log(event)
+  const sleepTime = Math.floor(Math.random() * 5000) + 10000
+  await sleep(sleepTime)
+  console.log(JSON.stringify(event.detail))
   return {
     statusCode: 200,
     body: JSON.stringify({
-      message: `Child Lambda called`,
+      message: `Child Lambda called ${sleepTime}`,
     }),
   }
 }
@@ -77,13 +100,11 @@ export async function ingestHealth() {
 }
 
 function putSliceRangeEvent({ rangeStartTime, rangeEndTime, sourceName }) {
-  console.log({ rangeStartTime, rangeEndTime, sourceName })
   const params = {
     Entries: [
       {
         DetailType: 'A test event to see if child lambdas invoke',
         Detail: JSON.stringify({
-          foo: 'bar',
           rangeStartTime,
           rangeEndTime,
           sourceName,

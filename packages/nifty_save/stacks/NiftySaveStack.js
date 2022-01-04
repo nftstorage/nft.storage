@@ -15,7 +15,7 @@ export default class NiftySaveStack extends sst.Stack {
     this.bus.addRules(this, {
       ingestRangeToSlices: {
         eventPattern: { source: ['injest.range_to_slices'] },
-        targets: ['src/ingest.childLambda'],
+        targets: ['src/ingest.ingestTimeSlice'],
       },
     })
 
