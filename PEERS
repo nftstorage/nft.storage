@@ -1,0 +1,47 @@
+# A list of known IPFS peers that are hosting content uploaded to NFT.Storage.
+#
+# YOU DO NOT NEED THIS LIST. All peers that provide content on IPFS are
+# discoverable via the DHT. IPFS transfers content P2P from multiple sources
+# including other peers that recently acquired the content.
+#
+# Note: this list may be incorrect, may change, or become out of date at any
+# time without notice.
+
+# IpfsCluster3
+
+# nft3-storage-am6-1
+/ip4/145.40.96.233/tcp/4001/p2p/12D3KooWEGeZ19Q79NdzS6CJBoCwFZwujqi5hoK8BtRcLa48fJdu
+# nft3-storage-am6-2
+/ip4/147.75.87.85/tcp/4001/p2p/12D3KooWBnmsaeNRP6SCdNbhzaNHihQQBPDhmDvjVGsR1EbswncV
+# nft3-storage-dc13-1
+/ip4/136.144.57.203/tcp/4001/p2p/12D3KooWDLYiAdzUdM7iJHhWu5KjmCN62aWd7brQEQGRWbv8QcVb
+# nft3-storage-dc13-2
+/ip4/145.40.69.29/tcp/4001/p2p/12D3KooWFZmGztVoo2K1BcAoDEUmnp7zWFhaK5LcRHJ8R735T3eY
+# nft3-storage-sv15-1
+/ip4/139.178.70.235/tcp/4001/p2p/12D3KooWRJpsEsBtJ1TNik2zgdirqD4KFq5V4ar2vKCrEXUqFXPP
+# nft3-storage-sv15-2
+/ip4/145.40.67.89/tcp/4001/p2p/12D3KooWNxUGEN1SzRuwkJdbMDnHEVViXkRQEFCSuHRTdjFvD5uw
+
+# IpfsCluster2
+
+# nft2-storage-dc13-1
+/ip4/145.40.69.133/tcp/4001/p2p/12D3KooWMZmMp9QwmfJdq3aXXstMbTCCB3FTWv9SNLdQGqyPMdUw
+# nft2-storage-dc13-2
+/ip4/145.40.69.171/tcp/4001/p2p/12D3KooWCpu8Nk4wmoXSsVeVSVzVHmrwBnEoC9jpcVpeWP7n67Bt
+# nft2-storage-sv15-1
+/ip4/145.40.90.235/tcp/4001/p2p/12D3KooWGx5pFFG7W2EG8N6FFwRLh34nHcCLMzoBSMSSpHcJYN7G
+# nft2-storage-sv15-2
+/ip4/139.178.69.135/tcp/4001/p2p/12D3KooWQsVxhA43ZjGNUDfF9EEiNYxb1PVEgCBMNj87E9cg92vT
+# nft2-storage-am6-1
+/ip4/147.75.32.99/tcp/4001/p2p/12D3KooWMSrRXHgbBTsNGfxG1E44fLB6nJ5wpjavXj4VGwXKuz9X
+# nft2-storage-am6-2
+/ip4/147.75.86.227/tcp/4001/p2p/12D3KooWE48wcXK7brQY1Hw7LhjF3xdiFegLnCAibqDtyrgdxNgn
+
+# IpfsCluster
+
+# nft-storage-sv15
+/ip4/136.144.55.33/tcp/4001/p2p/12D3KooWSGCJYbM6uCvCF7cGWSitXSJTgEb7zjVCaxDyYNASTa8i
+# nft-storage-dc13
+/ip4/136.144.57.127/tcp/4001/p2p/12D3KooWJbARcvvEEF4AAqvAEaVYRkEUNPC3Rv3joebqfPh4LaKq
+# nft-storage-am6
+/ip4/147.75.87.249/tcp/4001/p2p/12D3KooWNcshtC1XTbPxew2kq3utG2rRGLeMN8y5vSfAMTJMV7fE
