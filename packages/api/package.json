@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "2.11.1",
+  "version": "2.11.2",
   "description": "NFT Storage API",
   "private": true,
   "type": "module",
