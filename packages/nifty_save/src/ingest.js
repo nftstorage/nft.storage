@@ -47,7 +47,7 @@ const ingestRangeFromSourceHandler = async (event, context, err) => {
     putSliceRangeEvent({
       rangeStartTime: i * timesliceSize,
       rangeEndTime: (i + 1) * timesliceSize,
-      sourceName: 'foo',
+      sourceName: sourceName || 'TheGraph',
     })
   }
 
@@ -84,9 +84,8 @@ export const ingestRangeFromSource = middy(ingestRangeFromSourceHandler).use([
 ])
 
 export async function ingestTimeSlice(event) {
-  const sleepTime = Math.floor(Math.random() * 5000) + 10000
+  const sleepTime = Math.floor(Math.random() * 10000) + 100
   await sleep(sleepTime)
-  console.log(JSON.stringify(event.detail))
   return {
     statusCode: 200,
     body: JSON.stringify({
