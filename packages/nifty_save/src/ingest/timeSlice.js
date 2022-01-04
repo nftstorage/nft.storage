@@ -20,6 +20,8 @@ export async function ingestTimeSlice(event) {
   const entries = actualMessages.map(messageToEntry)
   await bus.putEvents({ Entries: entries }).promise()
 
+  await sleep(1500)
+
   return {
     statusCode: 200,
     body: JSON.stringify({

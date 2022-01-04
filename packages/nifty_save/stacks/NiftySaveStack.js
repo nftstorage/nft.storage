@@ -1,9 +1,8 @@
+import { Duration } from '@aws-cdk/core'
+import { Schedule } from '@aws-cdk/aws-events'
 import * as sst from '@serverless-stack/resources'
 
 export default class NiftySaveStack extends sst.Stack {
-  //public refernce to the bus
-  bus
-
   constructor(scope, id, props) {
     super(scope, id, props)
 
@@ -49,6 +48,7 @@ export default class NiftySaveStack extends sst.Stack {
         },
       },
       routes: {
+        'POST /ingest/purge': 'src/ingest.purgeQueue',
         'POST /ingest/source': 'src/ingest.ingestRangeFromSource',
         'GET /ingest/health': 'src/ingest.ingestHealth',
         $default: 'src/default.defaultResponse',

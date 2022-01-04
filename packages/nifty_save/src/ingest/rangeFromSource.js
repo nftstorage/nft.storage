@@ -21,15 +21,10 @@ function putSliceRangeEvent({
   index,
 }) {
   return {
-    //     DetailType: 'A test event to see if child lambdas invoke',
-    //     Detail: JSON.stringify({
     rangeStartTime,
     rangeEndTime,
     sourceName,
     index,
-    //     }),
-    //     Source: 'injest.range_to_slices',
-    //     EventBusName: process.env.busArn,
   }
 }
 
@@ -61,7 +56,6 @@ const ingestRangeFromSourceHandler = async (event, context, err) => {
   const startTime = new Date(rangeStartTime).getTime()
   const endTime = new Date(rangeEndTime).getTime()
   const totalSlices = Math.floor((endTime - startTime) / timesliceSize)
-
   const slices = []
 
   for (var i = 0; i < totalSlices; i++) {
@@ -83,8 +77,6 @@ const ingestRangeFromSourceHandler = async (event, context, err) => {
   }
 
   await Promise.all(slices)
-
-  //   slices.map(x => bus.putEvents({Entries: [ x ]}))
 
   return {
     statusCode: 200,
