@@ -49,9 +49,7 @@ const faqContent = {
   nftSizeRestrictions: (
     <p className="lh-copy white mb4">
       NFT.Storage can store NFTs up to <strong>31GiB </strong>
-      in size! (There was previously a 100MB limit due to Cloudflare workers but
-      NFT.Storage now supports chunked uploads, allowing files bigger than 100MB
-      to be uploaded! 🎉)
+      in size!
     </p>
   ),
   nftBestPractices: (
