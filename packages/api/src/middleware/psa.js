@@ -18,15 +18,13 @@ export function withPsaErrorHandler(handler) {
       return await handler(event, ctx)
     } catch (err) {
       const { status } = maybeCapture(err, ctx)
-      return new JSONResponse(
-        {
-          error: {
-            reason: 'INTERNAL_SERVER_ERROR',
-            details: 'An unexpected error occurred.',
-          },
-        },
-        { status }
-      )
+      let reason = 'INTERNAL_SERVER_ERROR'
+      let details = 'An unexpected error occurred.'
+      if (err instanceof ErrorPinningUnauthorized) {
+        reason = 'UNAUTHORIZED'
+        details = err.message
+      }
+      return new JSONResponse({ error: { reason, details } }, { status })
     }
   }
 }
