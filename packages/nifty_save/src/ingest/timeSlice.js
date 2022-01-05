@@ -1,6 +1,6 @@
+import AWS from 'aws-sdk'
 import { sleep } from '../timers'
 
-import AWS from 'aws-sdk'
 const bus = new AWS.EventBridge()
 
 function messageToEntry(msg) {
@@ -13,14 +13,14 @@ function messageToEntry(msg) {
 }
 
 export async function ingestTimeSlice(event) {
-  const actualMessages = event.Records.map((x) => JSON.parse(x.body))
+  const actualMessages = event.Records.map(x => JSON.parse(x.body))
 
   const msg = `count ${event.Records.length} index ${actualMessages[0].index}`
 
   const entries = actualMessages.map(messageToEntry)
   await bus.putEvents({ Entries: entries }).promise()
 
-  await sleep(1500)
+  await sleep(500)
 
   return {
     statusCode: 200,
