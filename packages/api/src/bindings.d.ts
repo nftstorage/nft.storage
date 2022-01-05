@@ -23,6 +23,7 @@ declare global {
   const COMMITHASH: string
   const MAINTENANCE_MODE: Mode
   const METAPLEX_AUTH_TOKEN: string
+  const PSA_ALLOW: string
 }
 
 export interface RouteContext {
