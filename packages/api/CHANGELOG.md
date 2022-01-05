@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.12.1](https://www.github.com/nftstorage/nft.storage/compare/api-v2.12.0...api-v2.12.1) (2022-01-05)
+
+
+### Bug Fixes
+
+* clarify var type ([#1034](https://www.github.com/nftstorage/nft.storage/issues/1034)) ([6065882](https://www.github.com/nftstorage/nft.storage/commit/606588295519f208f494b2b3a4601b6c49f864e0))
+
 ## [2.12.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.11.1...api-v2.12.0) (2022-01-05)
 
 
