@@ -81,7 +81,7 @@ const faqs = [
     content: faqContent.nodeSupport,
   },
   {
-    question: 'Upload metadata with existing image url?',
+    question: 'How can I upload metadata with an existing HTTP image url?',
     content: faqContent.httpUrls,
   },
   {
