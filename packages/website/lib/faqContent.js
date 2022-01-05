@@ -49,9 +49,7 @@ const faqContent = {
   nftSizeRestrictions: (
     <p className="lh-copy white mb4">
       NFT.Storage can store NFTs up to <strong>31GiB </strong>
-      in size! (There was previously a 100MB limit due to Cloudflare workers but
-      NFT.Storage now supports chunked uploads, allowing files bigger than 100MB
-      to be uploaded! 🎉)
+      in size!
     </p>
   ),
   nftBestPractices: (
@@ -140,48 +138,13 @@ const faqContent = {
   ),
   filesLimit: (
     <p className="lh-copy white mb4">
-      It depends. If you&#39;re using <InlineCode>storeDirectory</InlineCode>{' '}
-      from the JS library (i.e. sending a multipart HTTP request) then the
-      request will be limited by 100MB so you&#39;ll only be able to send as
-      many files as can fit in that limit. This will be fixed in the future (
-      <a
-        href="https://github.com/nftstorage/nft.storage/issues/220"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="white"
-      >
-        see here
-      </a>
-      ). If you have lots of tiny tiny files, then you may end up causing the
-      IPFS node to create a directory that is bigger than the maximum block size
-      that libp2p is willing to transfer (although it&#39;s not clear if that is
-      even possible within the 100MB request limit). This could happen because
-      go-ipfs doesn&#39;t currently shard directories (but this is planned by
-      default for v0.11). If you use the <InlineCode>storeCar</InlineCode>{' '}
-      method from the JS library (i.e. sending multiple split CAR files) then it{' '}
-      <em>should be</em> effectively unlimited if you use&nbsp;
-      <InlineCode>
-        <a
-          href="https://www.npmjs.com/package/ipfs-car"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="black"
-        >
-          ipfs-car
-        </a>
-      </InlineCode>{' '}
-      to create the CAR file since <InlineCode>ipfs-car</InlineCode> uses the
-      default <InlineCode>shardSplitThreshold: 1000</InlineCode> from{' '}
-      <a
-        href="https://www.npmjs.com/package/ipfs-unixfs-importer"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="white"
-      >
-        unixfs-importer
-      </a>{' '}
-      meaning the directory node likely won&#39;t grow beyond the 1MiB block
-      limit.
+      There are no limits enforced by the service, other than the 31GiB upload, 
+      limit. However, if your directory is large or has a lot of files,
+      you might have some difficulty uploading it due to memory issues (especially
+      if you are uploading to the website via your browser or the directory size is
+      larger than your device&#39;s memory) or connection issues.
+      If this is the case for you, we recommend splitting up your directory into smaller
+      directories.
     </p>
   ),
   unexpectedToken: (
