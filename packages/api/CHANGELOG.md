@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.12.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.11.1...api-v2.12.0) (2022-01-05)
+
+
+### Features
+
+* psa allowlist ([#1013](https://www.github.com/nftstorage/nft.storage/issues/1013)) ([26c1539](https://www.github.com/nftstorage/nft.storage/commit/26c153911e8a62dbaeb00613d32a78aa5a26af9c))
+
+
+### Bug Fixes
+
+* error code for empty multipart data ([#1009](https://www.github.com/nftstorage/nft.storage/issues/1009)) ([ba7d70b](https://www.github.com/nftstorage/nft.storage/commit/ba7d70ba01537b5840bb06a8f0187478d7eac70b))
+* error message for unauthorized PSA user ([#1031](https://www.github.com/nftstorage/nft.storage/issues/1031)) ([20c121d](https://www.github.com/nftstorage/nft.storage/commit/20c121dda58c33485a146f0618931efc70b64927))
+
+
+### Changes
+
+* add METAPLEX_AUTH_TOKEN to constants.js ([#924](https://www.github.com/nftstorage/nft.storage/issues/924)) ([35cfc16](https://www.github.com/nftstorage/nft.storage/commit/35cfc1621f8ff0db642736cbb0a82228d3a8d5ed))
+* **api:** update postgrest docker image to v9.0.0 ([#970](https://www.github.com/nftstorage/nft.storage/issues/970)) ([6101535](https://www.github.com/nftstorage/nft.storage/commit/6101535aba5ce1953c085f72d7520154da843b4f))
+* update pgrest to v9 ([#984](https://www.github.com/nftstorage/nft.storage/issues/984)) ([8fc8c45](https://www.github.com/nftstorage/nft.storage/commit/8fc8c4554763b0f921d3dbcacbe4961c9b656aae))
+
 ### [2.11.1](https://www.github.com/nftstorage/nft.storage/compare/api-v2.11.0...api-v2.11.1) (2021-12-09)
 
 
