@@ -18,7 +18,7 @@ paths:
         Store an [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155)-compatible NFT as 
         a collection of content-addressed objects connected by IPFS CID links.
 
-        The POST request accepts `multipart/form-data` content, which must contain a form field named `meta`.
+        The POST request accepts `multipart/form-data` content restricted to a body size of 100MB (see "Size limitations" below for more information). The request must contain a form field named `meta`.
 
         The `meta` field must contain a JSON string that conforms to the [ERC-1155 metadata schema](https://eips.ethereum.org/EIPS/eip-1155#metadata).
 
@@ -54,8 +54,8 @@ paths:
 
         ### Size limitations
 
-        The store endpoint is restricted to a total request body size of 100MiB, which includes the metadata and all attached files. To store larger files, you
-        can use the upload endpoint with chunked CAR files.
+        The store endpoint is restricted to a total request body size of 100MB, which includes the metadata and all attached files. To store larger files, you
+        can use the /upload endpoint with chunked CAR files (see "/upload").
 
       operationId: store
       requestBody:
@@ -79,6 +79,7 @@ paths:
       description: |
         Store a file with nft.storage.
         You can upload either a single file or multiple files in a directory.
+        Each request to /upload is restricted to a body size of 100MB, though this does not mean you cannot upload larger files (see "Size limitations" below).
 
         ### Single file
         Send the POST request with `Blob`/`File` data as the request body.
@@ -100,9 +101,9 @@ paths:
         Providing a CAR file allows you to pre-compute the root CID for 1 or more files, ensures that NFT.Storage will store and provide your assets with the same CID.
 
         ### Size limitations
-        Each request to the upload endpoint is limited to a total request body size of 100MiB.
-        However, you can upload files larger than 100MiB by packing them into a CAR file and splitting the CAR
-        into chunks of less than 100MiB. This strategy is used by the JavaScript client library to support uploads of large files.
+        Each request to the upload endpoint is limited to a total request body size of 100MB.
+        However, you can upload files larger than 100MB by packing them into a CAR file and splitting the CAR
+        into chunks of less than 100MB. This strategy is used by the JavaScript client library to support uploads of large files.
 
         The simplest method of splitting CAR files is with the [carbites cli tool](https://github.com/nftstorage/carbites):
 

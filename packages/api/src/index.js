@@ -29,7 +29,7 @@ import {
   DEFAULT_MODE,
   setMaintenanceModeGetter,
 } from './middleware/maintenance.js'
-import { withPsaErrorHandler } from './middleware/psa.js'
+import { withPsaErrorHandler, withPinningAuthorized } from './middleware/psa.js'
 import { cluster } from './constants.js'
 import { getContext } from './utils/context.js'
 
@@ -73,7 +73,8 @@ r.add(
  * @param {import('./middleware/maintenance').Mode} mode
  * @returns {import('./bindings').Handler}
  */
-const psa = (handler, mode) => withPsaErrorHandler(withMode(handler, mode))
+const psa = (handler, mode) =>
+  withPsaErrorHandler(withPinningAuthorized(withMode(handler, mode)))
 
 // Login
 r.add('post', '/login', withMode(login, RO), [postCors])
