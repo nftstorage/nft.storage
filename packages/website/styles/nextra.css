@@ -1,0 +1,11 @@
+.nextra-container nav {
+  display: none;
+}
+
+.nextra-container .fixed {
+  position: initial;
+}
+
+.docs-container h1 {
+  font-size: 3rem;
+}
