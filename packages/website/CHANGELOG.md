@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.19.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.19.0...website-v1.19.1) (2022-01-06)
+
+
+### Bug Fixes
+
+* image positioning and use high-res for new blog entry ([#1042](https://www.github.com/nftstorage/nft.storage/issues/1042)) ([5d94026](https://www.github.com/nftstorage/nft.storage/commit/5d9402682ec05d4d35a00cde97c4b13575011acd))
+
 ## [1.19.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.18.1...website-v1.19.0) (2022-01-06)
 
 
