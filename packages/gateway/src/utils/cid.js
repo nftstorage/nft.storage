@@ -5,15 +5,15 @@ import { InvalidIpfsPathError, InvalidUrlError } from '../errors.js'
 /**
  * Parse subdomain URL and return cid
  *
- * @param {string} url
+ * @param {URL} url
  */
 export function getCidFromSubdomainUrl(url) {
   // Replace "ipfs-staging" by "ipfs" if needed
-  const nUrl = url.replace('ipfs-staging', 'ipfs')
+  const nUrl = url.hostname.replace('ipfs-staging', 'ipfs')
   const splitUrl = nUrl.split('.ipfs.')
 
   if (!splitUrl.length) {
-    throw new InvalidUrlError(url)
+    throw new InvalidUrlError(url.hostname)
   }
 
   return normalizeCid(splitUrl[0])

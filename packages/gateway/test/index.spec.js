@@ -1,8 +1,6 @@
 import test from 'ava'
 import { Miniflare } from 'miniflare'
 
-import { InvalidIpfsPathError } from '../src/errors.js'
-
 test.beforeEach((t) => {
   // Create a new Miniflare environment for each test
   const mf = new Miniflare({
@@ -31,12 +29,8 @@ test('Fails when invalid cid is provided', async (t) => {
   )
   t.is(response.status, 400)
 
-  const jsonResponse = await response.json()
-  t.is(jsonResponse.code, InvalidIpfsPathError.CODE)
-  t.is(
-    jsonResponse.message,
-    `invalid ipfs path: invalid path "/ipfs/${invalidCid}/"`
-  )
+  const textResponse = await response.text()
+  t.is(textResponse, `invalid ipfs path: invalid path "/ipfs/${invalidCid}/"`)
 })
 
 test('Gets content', async (t) => {

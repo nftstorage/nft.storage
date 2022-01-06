@@ -9,7 +9,7 @@
     "build": "node scripts/cli.js build",
     "dev": "miniflare --watch --debug",
     "deploy": "wrangler publish --env production",
-    "pretest": "npm run build ",
+    "pretest": "npm run build",
     "test": "npm-run-all -p -r mock:ipfs.io test:worker",
     "test:worker": "ava --verbose test/*.spec.js",
     "mock:ipfs.io": "smoke -p 9081 test/mocks/ipfs.io"
@@ -27,5 +27,5 @@
     "smoke": "^3.1.1"
   },
   "author": "Vasco Santos <santos.vasco10@gmail.com>",
-  "license": "(Apache-2.0 AND MIT)"
+  "license": "Apache-2.0 OR MIT"
 }

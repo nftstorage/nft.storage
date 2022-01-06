@@ -22,9 +22,9 @@ One time set up of your cloudflare worker subdomain for dev:
   ```
 
 - `npm run publish` - Publish the worker under your env. An alias for `wrangler publish --env $(whoami)`
-- `npm start` - Run the worker in dev mode. An alias for `wrangler dev --env $(whoami)
+- `npm start` - Run the worker in dev mode. An alias for `wrangler dev --env $(whoami)`
 
-You only need to `npm start` for subsequent runs. PR your env config to the wrangler.toml, to celebrate 🎉
+You only need to `npm start` for subsequent runs. PR your env config to the `wrangler.toml` to celebrate 🎉
 
 ## API
 

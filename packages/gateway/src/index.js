@@ -15,9 +15,9 @@ import { getCidFromSubdomainUrl } from './utils/cid.js'
 async function handleRequest(request, env) {
   const publicGatewayUrl = new URL('ipfs', env.IPFS_GATEWAY)
   const url = new URL(request.url)
-  const cid = getCidFromSubdomainUrl(url.hostname)
+  const cid = getCidFromSubdomainUrl(url)
   const response = await fetch(
-    `${publicGatewayUrl.toString()}/${cid}${url.pathname || ''}`
+    `${publicGatewayUrl}/${cid}${url.pathname || ''}`
   )
 
   // forward gateway response

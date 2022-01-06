@@ -18,27 +18,22 @@ prog
   .describe('Build the worker.')
   .option('--env', 'Environment', 'dev')
   .action(async (opts) => {
-    try {
-      const version = `${pkg.name}@${pkg.version}-${opts.env}+${git.short(
-        __dirname
-      )}`
+    const version = `${pkg.name}@${pkg.version}-${opts.env}+${git.short(
+      __dirname
+    )}`
 
-      await build({
-        entryPoints: [path.join(__dirname, '../src/index.js')],
-        bundle: true,
-        format: 'esm',
-        outfile: 'dist/index.mjs',
-        legalComments: 'external',
-        define: {
-          global: 'globalThis',
-        },
-        minify: opts.env === 'dev' ? false : true,
-        sourcemap: true,
-      })
-    } catch (err) {
-      console.error(err)
-      process.exit(1)
-    }
+    await build({
+      entryPoints: [path.join(__dirname, '../src/index.js')],
+      bundle: true,
+      format: 'esm',
+      outfile: 'dist/index.mjs',
+      legalComments: 'external',
+      define: {
+        global: 'globalThis',
+      },
+      minify: opts.env === 'dev' ? false : true,
+      sourcemap: true,
+    })
   })
 
 prog.parse(process.argv)
