@@ -1,5 +1,3 @@
-import { Duration } from '@aws-cdk/core'
-import { Schedule } from '@aws-cdk/aws-events'
 import * as sst from '@serverless-stack/resources'
 
 export default class NiftySaveStack extends sst.Stack {
@@ -48,9 +46,11 @@ export default class NiftySaveStack extends sst.Stack {
         },
       },
       routes: {
-        'POST /ingest/purge': 'src/ingest.purgeQueue',
-        'POST /ingest/source': 'src/ingest.ingestRangeFromSource',
         'GET /ingest/health': 'src/ingest.ingestHealth',
+        'POST /ingest/slice-queue/purge': 'src/ingest.purgeQueue',
+        'POST /ingest/slice-queue/fill': 'src/ingest.ingestRangeFromSource',
+        'POST /ingest/subgraph/fetch': 'src/ingest.fetchSubgraphNFTS',
+
         $default: 'src/default.defaultResponse',
       },
     })

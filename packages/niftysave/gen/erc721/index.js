@@ -1,7 +1,8 @@
-import { createClient } from './createClient.js'
-import * as schema from './schema.js'
-import * as Service from '../../src/service.js'
 import * as Result from '../../src/result.js'
+import * as Service from '../../src/service.js'
+import * as schema from './schema.js'
+
+import { createClient } from './createClient.js'
 /**
  * @typedef {Object} Config
  * @property {URL} url
