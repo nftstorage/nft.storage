@@ -3,7 +3,7 @@ title: Retrieve NFT data from IPFS
 ---
 
 
-
+# Retrieve NFT data from IPFS
 - For individual users retrieving data from IPFS
     - Run your own node
     - Use Brave

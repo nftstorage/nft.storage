@@ -2,6 +2,9 @@
 title: Architecture considerations
 ---
 
+
+# Architecture considerations
+
 When building tools and services that interact with NFT.Storage, there are a few things to keep in mind as you plan your project. This page collects some common patterns for interacting with NFT.Storage, including how to authenticate requests on behalf of your platform's users.
 
 ## Authentication and authorization
