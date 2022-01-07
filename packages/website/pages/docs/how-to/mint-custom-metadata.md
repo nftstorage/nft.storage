@@ -32,8 +32,6 @@ It's important to note that `storeDirectory` returns the CID of the directory li
 
 For example, storing an image named `pinpie.jpg` using `storeDirectory` might return the CID `bafybeiajdopsmspomlrpaohtzo5sdnpknbolqjpde6huzrsejqmvijrcea`. If you [view this CID on an HTTP gateway](https://bafybeiajdopsmspomlrpaohtzo5sdnpknbolqjpde6huzrsejqmvijrcea.ipfs.dweb.link), you should see a directory listing page with a link to the file `pinpie.jpg`.
 
-![Screenshot of IPFS directory listing containing a file named 'pinpie.jpg'](../images/gateway-dir-listing.png)
-
 To link to the image, you'll need to add `/pinpie.jpg` to the CID to create a valid IPFS URI:
 
 ```
