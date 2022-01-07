@@ -3,6 +3,8 @@ title: Decentralized storage
 description: Learn about decentralized storage works and how it's key to NFT.Storage.
 ---
 
+
+
 # Decentralized storage in brief
 
 NFT.Storage relies on _decentralized storage_ to store your files for free on the network. **Decentralized storage is a technique for storing data that, instead of traditional servers, uses a distributed network with many participants providing storage capacity.** This model inherently builds in redundancy that provides resilience against failure and attacks, as well as enhanced performance due to the geographical localization offered by a large network of distributed storage providers. While you don't need to understand decentralized storage to be able to incorporate NFT.Storage in your apps and services, if you're curious about what's going on under the hood, read on.

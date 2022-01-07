@@ -1,8 +1,11 @@
 ---
 title: Why NFT.Storage?
 ---
-import 'nextra-theme-docs/style.css'
 
+import './docs.module.css'
+
+
+# Why NFT.Storage?
 > [NFT.Storage](http://NFT.Storage) makes it easy to follow NFT best-practices, maximizing the value of NFTs you're minting and minimizing the overhead of maintaining the NFTs for NFT minters and owners
 
 One of the powerful features of NFTs is that they can reference off-chain data, saving you the cost of storing your images, videos, and other large NFT data on-chain. An example of this is with the ERC-1155 standard, which defines places where you should reference data off-chain via URIs:

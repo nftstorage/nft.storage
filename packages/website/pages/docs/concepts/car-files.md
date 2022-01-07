@@ -4,8 +4,9 @@ sidebar_label: Work with Content Archives
 description: Learn how to work with Content Archives of IPLD data.
 ---
 
-'import Tabs from '@theme/Tabs';'
-'import TabItem from '@theme/TabItem';'
+
+
+# Working with Content Archives
 
 When you upload files to NFT.Storage using the [client library][reference-client-library], your data is converted into a graph of data structures, which are then packed into a format called a Content Archive (CAR) before being sent to the NFT.Storage service. 
 
@@ -152,38 +153,37 @@ The main tool available for splitting and joining CARs is called `carbites`, whi
 
 This section will demonstrate a few ways to split CARs in a way that's acceptable to the NFT.Storage service, using the command line tool, as well as programmatically using the `carbites` libraries in JavaScript and Go.
 
-<Tabs>
-<TabItem default value="carbites-cli" label="Using the carbites-cli tool">
+## Using the carbites-cli tool"
 
-  The JavaScript [carbites library][github-carbites-js] includes a package called `carbites-cli` that can split and join CARs from the command line. You'll need a recent version of [Node.js](https://nodejs.org) installed, preferably the latest stable version.
+The JavaScript [carbites library][github-carbites-js] includes a package called `carbites-cli` that can split and join CARs from the command line. You'll need a recent version of [Node.js](https://nodejs.org) installed, preferably the latest stable version.
 
-  You can install the tool globally with `npm`:
+You can install the tool globally with `npm`:
 
-  ```shell with-output
-  npm install -g carbites-cli
-  ```
+```shell with-output
+npm install -g carbites-cli
+```
 
-  ```
-  added 71 packages, and audited 72 packages in 846ms
-  20 packages are looking for funding
-    run `npm fund` for details
-  found 0 vulnerabilities
-  ```
+```
+added 71 packages, and audited 72 packages in 846ms
+20 packages are looking for funding
+  run `npm fund` for details
+found 0 vulnerabilities
+```
 
-  This will add a `carbites` command to your shell's environment:
+This will add a `carbites` command to your shell's environment:
 
-  ```shell with-output
-  carbites --help
-  ```
+```shell with-output
+carbites --help
+```
 
-  ```
-    CLI tool for splitting a single CAR into multiple CARs from the comfort of your terminal.
-    Usage
-      $ carbites <command>
-      Commands
-        split
-        join
-  ```
+```
+  CLI tool for splitting a single CAR into multiple CARs from the comfort of your terminal.
+  Usage
+    $ carbites <command>
+    Commands
+      split
+      join
+```
 
 :::tip Running with npx
   You can run the `carbites` command without installing it globally using the `npx` command, which is included with Node.js:
@@ -239,10 +239,7 @@ This section will demonstrate a few ways to split CARs in a way that's acceptabl
   ```shell
   carbites join my-video-*.car --output my-video-joined.car
   ```
-
-</TabItem>
-<TabItem value="carbites-js-lib" label="Using JavaScript code">
-
+## Using JavaScript code
   The [carbites library][github-carbites-js] provides an interface for splitting CARs that can be invoked from your application code.
 
 :::tip You probably don't need this!
@@ -284,10 +281,7 @@ This section will demonstrate a few ways to split CARs in a way that's acceptabl
     }
   }
   ```
-
-</TabItem>
-<TabItem value="go-carbites-lib" label="Using Go code">
-
+## Using Go code
   The [go-carbites](https://github.com/alanshaw/go-carbites) module can be used to split large CARs from your Go applications.
 
   Install the module with `go get`:
@@ -330,9 +324,6 @@ func main() {
   ```
 
   You can also use [`NewTreewalkSplitterFromPath`](https://pkg.go.dev/github.com/alanshaw/go-carbites#NewTreewalkSplitterFromPath), which takes a local file path instead of an `io.Reader`.
-
-</TabItem>
-</Tabs>
 
 ## Advanced IPLD formats
 
