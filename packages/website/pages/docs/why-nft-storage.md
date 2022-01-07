@@ -2,8 +2,6 @@
 title: Why NFT.Storage?
 ---
 
-import './docs.module.css'
-
 
 # Why NFT.Storage?
 > [NFT.Storage](http://NFT.Storage) makes it easy to follow NFT best-practices, maximizing the value of NFTs you're minting and minimizing the overhead of maintaining the NFTs for NFT minters and owners
@@ -94,7 +92,7 @@ Once you're logged in, you can get started with NFT.Storage right away by upload
 1. Click **Files** to go to your [NFT.Storage file listing page](https://nft.storage/files/). 
 1. Click the **Upload** button to go to the [File upload page](https://nft.storage/new-file/).
 1. Click the **Choose File** button to select a file from your device:
-    ![Screenshot of new file page showing "Choose File" button](./images/new-file.png)
+    ![Screenshot of new file page showing "Choose File" button](/images/new-file.png)
 1. If you're uploading a [CAR file][concepts-car-files], tick the **is CAR?** check box.
 1. Click the **Upload** button to store your file!
 
