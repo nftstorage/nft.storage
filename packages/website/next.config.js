@@ -29,10 +29,12 @@ const withNextra = require('nextra')({
   themeConfig: './theme.config.js',
 })
 
+const configWithDocs = withNextra({ ...nextConfig })
+
 const config =
   env === 'dev'
-    ? withNextra({ ...nextConfig })
-    : withSentryConfig(nextConfig, {
+    ? configWithDocs
+    : withSentryConfig(configWithDocs, {
         debug: false,
         silent: true,
         setCommits: { auto: true, ignoreEmpty: true, ignoreMissing: true },
