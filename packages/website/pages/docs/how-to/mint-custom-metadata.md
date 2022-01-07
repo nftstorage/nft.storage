@@ -1,8 +1,10 @@
 ---
 title: Store and mint NFTs using custom metadata
 ---
-import 'nextra-theme-docs/style.css'
 
+
+
+# Store and mint NFTs using custom metadata
 If your metadata conforms to the popular ERC-721 or ERC-1155 standards, you can [upload all your NFT assets and prepare your metadata all in one HTTP request](./mint-erc-1155.md). 
 
 If you want to customize your metadata in a way that's not compatible with ERC-1155, or if you know you'll be using the same off-chain assets in many NFTs, you can store your files separately and get their IPFS URIs. You can then use these IPFS URIs and put them into a JSON file however you'd like to create your metadata. This metadata can then be stored, resulting in an IPFS URI that you can store in your token's on-chain record.
@@ -17,13 +19,7 @@ Here's an example on how to do this to mint your own NFT!
 
 Before you can create the blockchain record for your NFT, you'll need to store all of the off-chain resources that comprise the NFT "package". Once everything has been stored, you can use the IPFS URI for the metadata to link from the on-chain token to everything else.
 
-<!-- docusaurus tabs imports -->
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-<Tabs>
-<TabItem value="js" label="JavaScript">
-
+## JavaScript
 ### Storing asset files
 
 The [JavaScript client library][reference-js-client] provides three methods that you can use to store arbitrary files for your NFT assets and metadata.
@@ -56,10 +52,7 @@ In some cases you may also want to include HTTP gateway URLs, but it's best to a
 
 Once the metadata is ready, you can serialize it to a file (usually in JSON format), and upload it using `storeBlob` or `storeDirectory`. That will give you a CID you can use to link to the metadata from your on-chain NFT record.
 
-</TabItem>
-
-<TabItem value="http" label="HTTP API">
-
+## HTTP API
 ### Storing asset files
 
 The [HTTP API][reference-http-api] provides a `/upload` endpoint that accepts one or more files and stores them with NFT.Storage.
@@ -154,16 +147,11 @@ Once the metadata is ready, you can serialize it to a file (usually in JSON form
 
 You can use the CID from your metadata upload to link from your on-chain record to the metadata on IPFS.
 
-</TabItem>
-</Tabs>
-
-
 :::info Need to use CIDv0?
 There are two versions of IPFS Content Identifiers (CIDs) in use today. The legacy "CIDv0" format is more compact, but it lacks several important features of CIDv1 and is generally discouraged for new projects.
 
 If you need to work with a system that only supports CIDv0 (for example, because of a hard size constraint in a smart contract), you can prepare a CAR file containing IPFS objects that are compatible with CIDv0. The NFT.Storage APIs will still return a CIDv1 result, but this can be converted to CIDv0 using the CID tooling for your programming language.
 
-<!-- TODO: update link after PR is merged (link to example source code) -->
 See [this pull request](https://github.com/nftstorage/nft.storage/pull/991) for an example.
 :::
 
@@ -172,7 +160,6 @@ See [this pull request](https://github.com/nftstorage/nft.storage/pull/991) for 
 
 Coming soon...
 
-<!-- TODO: add minting example. Maybe extract from NFT school Flow tutorial? -->
 
 [guide-car-files]: ../concepts/car-files.md
 

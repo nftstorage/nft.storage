@@ -1,8 +1,9 @@
 ---
 title: Store and mint NFTs using ERC-1155 metadata standards
 ---
-import 'nextra-theme-docs/style.css'
 
+
+# Store and mint NFTs using ERC-1155 metadata standards
 Using NFT.Storage, you can: 
 
 - Store all your NFT's images and assets
