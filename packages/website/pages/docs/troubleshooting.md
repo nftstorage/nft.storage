@@ -2,7 +2,7 @@
 title: Troubleshooting
 ---
 
-import 'nextra-theme-docs/style.css'
+
 
 # Troubleshooting
 

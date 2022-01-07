@@ -1,7 +1,7 @@
 ---
 title: Welcome
 ---
-import 'nextra-theme-docs/style.css'
+
 
 # Quickstart
 

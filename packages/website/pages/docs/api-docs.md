@@ -2,7 +2,7 @@
 title: Nft.Storage Client
 ---
 
-import 'nextra-theme-docs/style.css'
+
 # Nft.Storage Client
 
 ![ci][ci.icon]
@@ -60,7 +60,7 @@ The client uses ESM modules. If running from Node.js, either name your script `i
 Run the script:
 
 ```sh
-node index.mjs # or index.js
+node index.mjs // or index.js
 ```
 
 For more examples please see the [API documentation](https://nftstorage.github.io/nft.storage/client/) or the [examples directory in the project repository][examples directory], which contains sample projects for both [browsers][examples.browser] and [Node.js][examples.node].
