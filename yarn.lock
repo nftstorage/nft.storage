@@ -5424,6 +5424,20 @@
     hoist-non-react-statics "^3.3.2"
     tslib "^1.9.3"
 
+"@sentry/serverless@^6.16.1":
+  version "6.16.1"
+  resolved "https://registry.yarnpkg.com/@sentry/serverless/-/serverless-6.16.1.tgz#21bab60569ab89d739de9fb49bf958e2fee4bb97"
+  integrity sha512-WLBF9QclIoYRsqRbYo/AjElPN7e7J9Xz7LLQ3fsB35Hsr5YjcDj2rw7Q2pDKnCkRIZpj6N+TvAeOHaVv3Z0Qmg==
+  dependencies:
+    "@sentry/minimal" "6.16.1"
+    "@sentry/node" "6.16.1"
+    "@sentry/tracing" "6.16.1"
+    "@sentry/types" "6.16.1"
+    "@sentry/utils" "6.16.1"
+    "@types/aws-lambda" "^8.10.62"
+    "@types/express" "^4.17.2"
+    tslib "^1.9.3"
+
 "@sentry/tracing@6.16.1":
   version "6.16.1"
   resolved "https://registry.yarnpkg.com/@sentry/tracing/-/tracing-6.16.1.tgz#32fba3e07748e9a955055afd559a65996acb7d71"
@@ -5923,7 +5937,7 @@
   resolved "https://registry.yarnpkg.com/@types/assert/-/assert-1.5.6.tgz#a8b5a94ce5fb8f4ba65fdc37fc9507609114189e"
   integrity sha512-Y7gDJiIqb9qKUHfBQYOWGngUpLORtirAVPuj/CWJrU2C6ZM4/y3XLwuwfGMF8s7QzW746LQZx23m0+1FSgjfug==
 
-"@types/aws-lambda@^8.10.89":
+"@types/aws-lambda@^8.10.62", "@types/aws-lambda@^8.10.89":
   version "8.10.89"
   resolved "https://registry.yarnpkg.com/@types/aws-lambda/-/aws-lambda-8.10.89.tgz#22617ecc1eef9571abebb50c947553362da6051b"
   integrity sha512-jwtSuEZj4rY4R2pAEOXi+RutS8RWbwMzoGlRVukdyOpnfqA/XPkAf8QoGWmg4o/UaNpQ8Mj0Xhkp5SZ1t/Zq4Q==
@@ -6109,7 +6123,7 @@
     "@types/qs" "*"
     "@types/range-parser" "*"
 
-"@types/express@*", "@types/express@^4.17.12":
+"@types/express@*", "@types/express@^4.17.12", "@types/express@^4.17.2":
   version "4.17.13"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.13.tgz#a76e2995728999bab51a33fabce1d705a3709034"
   integrity sha512-6bSZTPaTIACxn48l50SR+axgrqm6qXFIxrdAKaG6PaJk3+zuUr35hBlgT7vOmJcum+OEaIBLtHV/qloEAFITeA==

@@ -7,6 +7,7 @@ export default function main(app) {
   }))
 
   const stack = new NiftySaveStack(app, 'niftysave-stack')
+  console.log(stack.scope)
   stack.addDefaultFunctionEnv({
     SENTRY_DSN: process.env.SENTRY_DSN,
     SENTRY_TRACES_SAMPLE_RATE: '1.0',

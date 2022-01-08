@@ -1,16 +1,10 @@
 import * as sst from '@serverless-stack/resources'
 
-// import { LayerVersion } from '@aws-cdk/aws-lambda'
+import { LayerVersion } from '@aws-cdk/aws-lambda'
 
 export default class NiftySaveStack extends sst.Stack {
   constructor(scope, id, props) {
     super(scope, id, props)
-
-    // const sentry = LayerVersion.fromLayerVersionArn(
-    //   this,
-    //   'SentryLayer',
-    //   `arn:aws:lambda:${scope.region}:943013980633:layer:SentryNodeServerlessSDK:34`
-    // )
 
     //configure the event bus
     const bus = new sst.EventBus(this, 'Bus')
@@ -69,5 +63,19 @@ export default class NiftySaveStack extends sst.Stack {
     this.addOutputs({
       ApiEndpoint: api.url,
     })
+
+    if (!scope.local) {
+      const sentry = LayerVersion.fromLayerVersionArn(
+        this,
+        'SentryLayer',
+        process.ENV.SENTRY_STACK_ARN
+      )
+
+      this.addDefaultFunctionEnv({
+        SENTRY_DSN: process.env.SENTRY_DSN,
+        SENTRY_TRACES_SAMPLE_RATE: '0.5',
+        NODE_OPTIONS: '-r @sentry/serverless/dist/awslambda-auto',
+      })
+    }
   }
 }
