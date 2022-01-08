@@ -74,7 +74,7 @@ const Post = ({ post }) => {
         <img
           src={post.meta.thumbnail}
           alt={`Banner for ${post.meta.title}`}
-          className="h-card w-100 object-cover object-top"
+          className="h-card object-cover object-center"
         />
         <div className="mt14 mw7 ph8">
           <div className="post-meta mb4">
