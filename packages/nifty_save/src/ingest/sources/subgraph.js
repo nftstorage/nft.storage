@@ -81,7 +81,7 @@ export async function fetchNFTs() {
   await sleep(500)
   return {
     statusCode: 200,
-    body: JSON.stringify({ message: 'called Fetch NFTS form subgraph folder' }),
+    body: JSON.stringify({ message: 'called Fetch NFTS from subgraph folder' }),
   }
 }
 
