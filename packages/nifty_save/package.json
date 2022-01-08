@@ -7,7 +7,8 @@
     "start": "sst start",
     "build": "sst build",
     "deploy": "sst deploy",
-    "remove": "sst remove"
+    "remove": "sst remove",
+    "reset": "sst remove && sst build && sst deploy"
   },
   "eslintConfig": {
     "extends": [

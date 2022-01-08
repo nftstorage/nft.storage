@@ -68,8 +68,10 @@ export default class NiftySaveStack extends sst.Stack {
       const sentry = LayerVersion.fromLayerVersionArn(
         this,
         'SentryLayer',
-        process.ENV.SENTRY_STACK_ARN
+        `arn:aws:lambda:${scope.region}:943013980633:layer:SentryNodeServerlessSDK:40`
       )
+
+      this.addDefaultFunctionLayers([sentry])
 
       this.addDefaultFunctionEnv({
         SENTRY_DSN: process.env.SENTRY_DSN,
