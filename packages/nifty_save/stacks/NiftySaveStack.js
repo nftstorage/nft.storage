@@ -18,7 +18,7 @@ export default class NiftySaveStack extends sst.Stack {
     })
 
     // Create Queue
-    const queue = new sst.Queue(this, 'Queue', {
+    const sliceCommandQueue = new sst.Queue(this, 'SliceCommandQueue', {
       consumer: {
         consumerProps: {
           batchSize: 10,
@@ -32,6 +32,9 @@ export default class NiftySaveStack extends sst.Stack {
         },
       },
     })
+
+    const fetchedRecordQueue = new sst.Queue(this, 'FetchedRecordQueue', {})
+
     //Analyze
 
     //Pin
@@ -43,13 +46,13 @@ export default class NiftySaveStack extends sst.Stack {
       defaultFunctionProps: {
         // Pass in the queue to our API
         environment: {
-          queueUrl: queue.sqsQueue.queueUrl,
+          sliceCommandQueueUrl: sliceCommandQueue.sqsQueue.queueUrl,
           busArn: bus.eventBusArn,
         },
       },
       routes: {
         'GET /ingest/health': 'src/ingest.ingestHealth',
-        'POST /ingest/slice-queue/purge': 'src/ingest.purgeQueue',
+        'POST /ingest/slice-queue/purge': 'src/ingest.purgeSliceCommandQueue',
         'POST /ingest/slice-queue/fill': 'src/ingest.ingestRangeFromSource',
         'POST /ingest/subgraph/fetch': 'src/ingest.fetchSubgraphNFTS',
 
@@ -57,7 +60,7 @@ export default class NiftySaveStack extends sst.Stack {
       },
     })
 
-    api.attachPermissions([bus, queue])
+    api.attachPermissions([bus, sliceCommandQueue])
     //     queue.attachPermissions([this.bus]);
 
     this.addOutputs({

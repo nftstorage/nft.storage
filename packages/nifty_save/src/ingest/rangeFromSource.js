@@ -1,8 +1,7 @@
-import { checkIsBinRange } from '../dates'
-
-import { ingestRangeFromSourceSchema } from '../validators'
-import baseMiddleware from '../baseMiddleware'
 import AWS from 'aws-sdk'
+import baseMiddleware from '../baseMiddleware'
+import { checkIsBinRange } from '../dates'
+import { ingestRangeFromSourceSchema } from '../validators'
 
 const bus = new AWS.EventBridge()
 const sqs = new AWS.SQS()
@@ -69,7 +68,7 @@ const ingestRangeFromSourceHandler = async (event, context, err) => {
     slices.push(
       sqs
         .sendMessage({
-          QueueUrl: process.env.queueUrl,
+          QueueUrl: process.env.sliceCommandQueueUrl,
           MessageBody: JSON.stringify(event),
         })
         .promise()
