@@ -14,9 +14,9 @@ const COUNT_PINS =
 
 const UPDATE_METRIC = `
 INSERT INTO metric (name, value, updated_at)
-     VALUES ($1, $2, NOW())
+     VALUES ($1, $2, TIMEZONE('utc', NOW()))
 ON CONFLICT (name) DO UPDATE
-        SET value = $2, updated_at = NOW()
+        SET value = $2, updated_at = TIMEZONE('utc', NOW())
 `
 
 const UPLOAD_TYPES = ['Car', 'Blob', 'Multipart', 'Remote', 'Nft']
