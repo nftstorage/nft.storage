@@ -47,13 +47,17 @@ export default class NiftySaveStack extends sst.Stack {
         // Pass in the queue to our API
         environment: {
           sliceCommandQueueUrl: sliceCommandQueue.sqsQueue.queueUrl,
+          fetchedRecordQueueUrl: fetchedRecordQueue.sqsQueue.queueUrl,
           busArn: bus.eventBusArn,
         },
       },
       routes: {
         'GET /ingest/health': 'src/ingest.ingestHealth',
+
         'POST /ingest/slice-queue/purge': 'src/ingest.purgeSliceCommandQueue',
         'POST /ingest/slice-queue/fill': 'src/ingest.fillIngestTimeSliceQueue',
+
+        'POST /ingest/records/purge': 'src/ingest.purgeFetchedRecordqueue',
         'POST /ingest/subgraph/fetch': 'src/ingest.fetchSubgraphNFTS',
 
         $default: 'src/default.defaultResponse',

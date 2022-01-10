@@ -1,4 +1,5 @@
 import { Cursor } from '../../cursor'
+import { CustomResourceProviderRuntime } from '@aws-cdk/core'
 import fetch from 'node-fetch'
 import { sleep } from '../../timers'
 
@@ -35,6 +36,7 @@ export async function fetchNFTs(event, context) {
   const { detail } = event
 
   const cursor = new Cursor(detail.rangeStartTime / 1000)
+
   const results = await fetch(SUBGRAPH_URL, {
     method: 'POST',
     headers: {
@@ -47,6 +49,10 @@ export async function fetchNFTs(event, context) {
   })
 
   let nftBatch = await results.json()
+
+  for (const nft of nftBatch) {
+    cursor.advanceOffset(nft.mintTime)
+  }
 
   console.log(nftBatch)
 

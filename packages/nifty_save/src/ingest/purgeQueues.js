@@ -6,6 +6,14 @@ export async function purgeSliceCommandQueue() {
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ message: 'purging' }),
+    body: JSON.stringify({ message: 'Purged the Slice Command Queue' }),
+  }
+}
+
+export async function purgeFetchedRecordqueue() {
+  await sqs.purgeQueue({ QueueUrl: process.env.fetchedRecordQueueUrl })
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ message: 'Purged Fetched Record Queue' }),
   }
 }
