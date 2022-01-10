@@ -1,12 +1,16 @@
 import { checkIsBinRange, dateInSeconds, isDate } from '../../dates'
 
+import AWS from 'aws-sdk'
 import { Cursor } from '../../cursor'
 import fetch from 'node-fetch'
+import { fillTimeSliceCommandQueueSchema } from '../../validators'
 import { sleep } from '../../timers'
+
+const sqs = new AWS.SQS()
 
 //https://thegraph.com/hosted-service/subgraph/nftstorage/eip721-subgraph
 
-const INGEST_BATCH_SIZE = 1000
+const INGEST_BATCH_SIZE = 10
 const SUBGRAPH_URL =
   'https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph'
 
@@ -93,7 +97,10 @@ export async function fetchNFTs(event, context) {
     }
   }
 
+  console.log(nftBatch)
+
   for (const nft of nftBatch) {
+    console.log(nft)
     cursor.advanceOffset(nft.mintTime)
   }
 
