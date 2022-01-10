@@ -78,10 +78,12 @@ export async function fetchNFTBatch(config, cursor) {
   }
 }
 
-export async function fetchNFTs() {
+export async function fetchNFTs(event, context) {
   await sleep(500)
 
-  const cursor = new Cursor()
+  const { detail } = event
+
+  const cursor = new Cursor(detail.rangeStartTime)
 
   return {
     statusCode: 200,

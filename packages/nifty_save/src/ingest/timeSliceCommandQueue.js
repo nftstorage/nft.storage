@@ -13,16 +13,11 @@ const sqs = new AWS.SQS()
 //test curl
 //curl -X POST https://tbsul0n1i5.execute-api.us-east-1.amazonaws.com/ingest/source -d '{ "timesliceSize": 100000, "rangeStartTime": "2018-6-1", "rangeEndTime": "2018-6-2" }' -H "Content-Type: application/json"
 
-function putSliceRangeEvent({
-  rangeStartTime,
-  rangeEndTime,
-  sourceName,
-  index,
-}) {
+function putSliceRangeEvent({ rangeStartTime, rangeEndTime, source, index }) {
   return {
     rangeStartTime,
     rangeEndTime,
-    sourceName,
+    source,
     index,
   }
 }
@@ -36,10 +31,10 @@ const fillHandler = async (event, context, err) => {
     }
   }
 
-  const { rangeStartTime, rangeEndTime, sourceName, timesliceSize } =
+  const { rangeStartTime, rangeEndTime, source, timesliceSize } =
     event?.body || {}
 
-  console.log({ rangeStartTime, rangeEndTime, sourceName, timesliceSize })
+  console.log({ rangeStartTime, rangeEndTime, source, timesliceSize })
 
   const isBinRange = checkIsBinRange(rangeStartTime, rangeEndTime)
 
@@ -56,16 +51,15 @@ const fillHandler = async (event, context, err) => {
   const endTime = new Date(rangeEndTime).getTime()
   const totalSlices = Math.floor((endTime - startTime) / timesliceSize)
   const slices = []
-  const _sourceName = sourceName || 'the-graph'
 
   for (var i = 0; i < totalSlices; i++) {
     const rangeStartTime = i * timesliceSize + startTime
     const rangeEndTime = (i + 1) * timesliceSize + startTime
     const event = putSliceRangeEvent({
-      rangeStartTime: rangeStartTime,
-      rangeEndTime: rangeEndTime,
-      sourceName: _sourceName,
-      index: `${_sourceName}_${rangeStartTime}`,
+      rangeStartTime,
+      rangeEndTime,
+      source,
+      index: `${source}_${rangeStartTime}`,
     })
 
     slices.push(
