@@ -21,7 +21,7 @@ export default class NiftySaveStack extends sst.Stack {
     const sliceCommandQueue = new sst.Queue(this, 'SliceCommandQueue', {
       consumer: {
         consumerProps: {
-          batchSize: 1,
+          batchSize: 10,
         },
         function: {
           handler: 'src/ingest.fanOutTimeSlice',

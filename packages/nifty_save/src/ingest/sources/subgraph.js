@@ -1,5 +1,6 @@
+import { checkIsBinRange, dateInSeconds, isDate } from '../../dates'
+
 import { Cursor } from '../../cursor'
-import { CustomResourceProviderRuntime } from '@aws-cdk/core'
 import fetch from 'node-fetch'
 import { sleep } from '../../timers'
 
@@ -20,10 +21,16 @@ function makeTheGraphQuery(time, offset) {
   {
     id
     tokenID
+    mintTime
+    tokenURI
+    blockNumber
+    blockHash
     contract {
         id
+        name
+        symbol
+        supportsEIP721Metadata
     }
-    tokenID
     owner {
         id
     }
@@ -35,7 +42,34 @@ function makeTheGraphQuery(time, offset) {
 export async function fetchNFTs(event, context) {
   const { detail } = event
 
-  const cursor = new Cursor(detail.rangeStartTime / 1000)
+  const { rangeStartTime, rangeEndTime } = detail
+
+  //Divice by 1000 because the-graph's smallest resolution is 1s
+
+  const hasBinRange = checkIsBinRange(rangeStartTime, rangeEndTime)
+
+  if (!hasBinRange) {
+    console.table({
+      rangeStartTime,
+      rangeEndTime,
+      startIsDate: isDate(rangeStartTime),
+      endIsDate: isDate(rangeEndTime),
+    })
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: `Invalid Bin Range: ${rangeStartTime} to ${rangeEndTime}`,
+      }),
+    }
+  }
+
+  const startOfTime = dateInSeconds(rangeStartTime)
+  const endOfTime = dateInSeconds(rangeEndTime)
+
+  const cursor = new Cursor(startOfTime)
+
+  let nftBatch = []
 
   const results = await fetch(SUBGRAPH_URL, {
     method: 'POST',
@@ -48,7 +82,16 @@ export async function fetchNFTs(event, context) {
     }),
   })
 
-  let nftBatch = await results.json()
+  nftBatch = await results.json()
+
+  if (nftBatch.length === 0) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: `📤 Scraped ${nftBatch.length} nfts from Subgraph.`,
+      }),
+    }
+  }
 
   for (const nft of nftBatch) {
     cursor.advanceOffset(nft.mintTime)
