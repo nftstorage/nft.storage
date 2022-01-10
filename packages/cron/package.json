@@ -28,6 +28,7 @@
     "nft.storage": "^3.3.0",
     "node-fetch": "^2.6.1",
     "p-retry": "^4.6.1",
+    "p-settle": "^5.0.0",
     "pg": "^8.7.1"
   },
   "devDependencies": {

@@ -1,0 +1,30 @@
+name: Cron Metrics
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    name: Calculate metrics
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: ['staging', 'production']
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - uses: bahmutov/npm-install@v1
+      - name: Run job
+        env:
+          DEBUG: '*'
+          ENV: ${{ matrix.env }}
+          STAGING_DATABASE_CONNECTION: ${{ secrets.STAGING_DATABASE_CONNECTION }}
+          STAGING_RO_DATABASE_CONNECTION: ${{ secrets.STAGING_DATABASE_CONNECTION }} # no replica for staging
+          PROD_DATABASE_CONNECTION: ${{ secrets.PROD_DATABASE_CONNECTION }}
+          PROD_RO_DATABASE_CONNECTION: ${{ secrets.PROD_RO_DATABASE_CONNECTION }}
+        run: yarn --cwd packages/cron start:metrics
