@@ -394,16 +394,22 @@ export class DBClient {
   }
 
   /**
-   * @param {string} name Arbitrary event identifier.
-   * @param {any} [data] Information about the event.
+   * @param {string} name
    */
-  async addMigrationEvent(name, data) {
-    /** @type {PostgrestQueryBuilder<definitions['migration_event']>} */
-    const query = this.client.from('migration_event')
-    const { error } = await query.insert({ name, data })
+  async getMetric(name) {
+    /** @type {PostgrestQueryBuilder<definitions['metric']>} */
+    const query = this.client.from('metric')
+    const { data, error } = await query.select('value').eq('name', name)
+
     if (error) {
       throw new DBError(error)
     }
+
+    if (!data || !data.length) {
+      return undefined
+    }
+
+    return data[0].value
   }
 }
 

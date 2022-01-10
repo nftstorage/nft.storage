@@ -83,7 +83,7 @@ async function getPinsCount(pg, service, status) {
   if (!rows.length)
     throw new Error(`no rows returned counting ${service} ${status} pins`)
   return {
-    name: `uploads_${service.toLowerCase()}_${status.toLowerCase()}_total`,
+    name: `pins_${service.toLowerCase()}_${status.toLowerCase()}_total`,
     value: rows[0].total,
   }
 }
