@@ -13,7 +13,7 @@ export default class NiftySaveStack extends sst.Stack {
     bus.addRules(this, {
       ingestRangeToSlices: {
         eventPattern: { source: ['ingest.range_to_slices'] },
-        targets: ['src/ingest.timeSliceCall'],
+        targets: ['src/ingest.executeTimeSlice'],
       },
     })
 
@@ -21,10 +21,10 @@ export default class NiftySaveStack extends sst.Stack {
     const sliceCommandQueue = new sst.Queue(this, 'SliceCommandQueue', {
       consumer: {
         consumerProps: {
-          batchSize: 10,
+          batchSize: 1,
         },
         function: {
-          handler: 'src/ingest.ingestTimeSlice',
+          handler: 'src/ingest.fanOutTimeSlice',
           environment: {
             busArn: bus.eventBusArn,
           },
@@ -53,7 +53,7 @@ export default class NiftySaveStack extends sst.Stack {
       routes: {
         'GET /ingest/health': 'src/ingest.ingestHealth',
         'POST /ingest/slice-queue/purge': 'src/ingest.purgeSliceCommandQueue',
-        'POST /ingest/slice-queue/fill': 'src/ingest.ingestRangeFromSource',
+        'POST /ingest/slice-queue/fill': 'src/ingest.fillIngestTimeSliceQueue',
         'POST /ingest/subgraph/fetch': 'src/ingest.fetchSubgraphNFTS',
 
         $default: 'src/default.defaultResponse',

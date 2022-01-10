@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk'
 import baseMiddleware from '../baseMiddleware'
 import { checkIsBinRange } from '../dates'
-import { ingestRangeFromSourceSchema } from '../validators'
+import { fillTimeSliceCommandQueueSchema } from '../validators'
 
 const bus = new AWS.EventBridge()
 const sqs = new AWS.SQS()
@@ -27,7 +27,7 @@ function putSliceRangeEvent({
   }
 }
 
-const ingestRangeFromSourceHandler = async (event, context, err) => {
+const fillHandler = async (event, context, err) => {
   console.log(event, context, err)
   if (err) {
     return {
@@ -56,13 +56,16 @@ const ingestRangeFromSourceHandler = async (event, context, err) => {
   const endTime = new Date(rangeEndTime).getTime()
   const totalSlices = Math.floor((endTime - startTime) / timesliceSize)
   const slices = []
+  const _sourceName = sourceName || 'the-graph'
 
   for (var i = 0; i < totalSlices; i++) {
+    const rangeStartTime = i * timesliceSize + startTime
+    const rangeEndTime = (i + 1) * timesliceSize + startTime
     const event = putSliceRangeEvent({
-      rangeStartTime: i * timesliceSize,
-      rangeEndTime: (i + 1) * timesliceSize,
-      sourceName: 'foo',
-      index: i,
+      rangeStartTime: rangeStartTime,
+      rangeEndTime: rangeEndTime,
+      sourceName: _sourceName,
+      index: `${_sourceName}_${rangeStartTime}`,
     })
 
     slices.push(
@@ -85,7 +88,4 @@ const ingestRangeFromSourceHandler = async (event, context, err) => {
   }
 }
 
-export const ingestRangeFromSource = baseMiddleware(
-  ingestRangeFromSourceHandler,
-  ingestRangeFromSourceSchema
-)
+export const fill = baseMiddleware(fillHandler, fillTimeSliceCommandQueueSchema)

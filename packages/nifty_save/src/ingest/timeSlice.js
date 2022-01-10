@@ -12,7 +12,7 @@ function messageToEntry(msg) {
   }
 }
 
-export async function ingestTimeSlice(event) {
+export async function fanOut(event) {
   const actualMessages = event.Records.map(x => JSON.parse(x.body))
 
   const msg = `count ${event.Records.length} index ${actualMessages[0].index}`
@@ -26,6 +26,17 @@ export async function ingestTimeSlice(event) {
     statusCode: 200,
     body: JSON.stringify({
       message: 'time slice fan out called ' + msg,
+    }),
+  }
+}
+
+export async function execute(event) {
+  const foo = event.detail
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: 'slice after: ' + foo.index,
     }),
   }
 }

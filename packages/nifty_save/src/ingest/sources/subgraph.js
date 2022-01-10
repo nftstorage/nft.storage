@@ -1,3 +1,4 @@
+import { Cursor } from '../../cursor'
 import fetch from 'node-fetch'
 import { sleep } from '../../timers'
 
@@ -79,6 +80,9 @@ export async function fetchNFTBatch(config, cursor) {
 
 export async function fetchNFTs() {
   await sleep(500)
+
+  const cursor = new Cursor()
+
   return {
     statusCode: 200,
     body: JSON.stringify({ message: 'called Fetch NFTS from subgraph folder' }),

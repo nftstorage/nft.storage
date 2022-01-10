@@ -1,19 +1,6 @@
 import Ajv from 'ajv'
 const ajv = new Ajv({ strict: false })
 
-const ingestRangeFromSourceSchemaDef = {
-  type: 'object',
-  properties: {
-    body: {
-      type: 'object',
-      properties: {
-        timesliceSize: { type: 'number' },
-      },
-      required: ['timesliceSize', 'rangeStartTime', 'rangeEndTime'],
-    },
-  },
-}
-
 // const lambdaInputSchemaDef = {
 //   type: 'object',
 //   properties: {
@@ -39,7 +26,15 @@ const ingestRangeFromSourceSchemaDef = {
 //   required: ['detail', 'detailType'],
 // };
 
-export const ingestRangeFromSourceSchema = ajv.compile(
-  ingestRangeFromSourceSchemaDef
-)
-// export const lambda2InputSchema = ajv.compile(lambda2InputSchemaDef);
+export const fillTimeSliceCommandQueueSchema = ajv.compile({
+  type: 'object',
+  properties: {
+    body: {
+      type: 'object',
+      properties: {
+        timesliceSize: { type: 'number' },
+      },
+      required: ['timesliceSize', 'rangeStartTime', 'rangeEndTime'],
+    },
+  },
+})

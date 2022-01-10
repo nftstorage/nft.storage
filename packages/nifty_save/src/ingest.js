@@ -1,7 +1,10 @@
-export { ingestRangeFromSource } from './ingest/rangeFromSource'
+export { fill as fillIngestTimeSliceQueue } from './ingest/timeSliceCommandQueue'
 export { ingestHealth } from './ingest/health'
-export { ingestTimeSlice } from './ingest/timeSlice'
-export { timeSliceCall } from './ingest/timeSliceCall'
+export {
+  fanOut as fanOutTimeSlice,
+  execute as executeTimeSlice,
+} from './ingest/timeSlice'
+
 export { purgeSliceCommandQueue } from './ingest/purgeQueues'
 
 export { fetchNFTs as fetchSubgraphNFTS } from './ingest/sources/subgraph'
