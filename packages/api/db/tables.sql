@@ -134,3 +134,12 @@ CREATE TABLE IF NOT EXISTS upload
 CREATE INDEX IF NOT EXISTS upload_content_cid_idx ON upload (content_cid);
 CREATE INDEX IF NOT EXISTS upload_source_cid_idx ON upload (source_cid);
 CREATE INDEX IF NOT EXISTS upload_updated_at_idx ON upload (updated_at);
+
+-- Metric contains the current values of collected metrics.
+CREATE TABLE IF NOT EXISTS metric
+(
+    name TEXT PRIMARY KEY,
+    value BIGINT NOT NULL,
+    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);

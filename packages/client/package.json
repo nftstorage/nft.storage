@@ -1,6 +1,6 @@
 {
   "name": "nft.storage",
-  "version": "5.1.3",
+  "version": "5.2.0",
   "description": "A client library for the https://nft.storage/ service. It provides a convenient interface for working with the HTTP API from a web browser or Node.js",
   "license": "(Apache-2.0 OR MIT)",
   "type": "module",
@@ -59,7 +59,7 @@
     "streaming-iterables": "^6.0.0"
   },
   "devDependencies": {
-    "@ipld/dag-json": "8.0.4",
+    "@ipld/dag-json": "^8.0.4",
     "@rollup/plugin-commonjs": "^19.0.0",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.0",

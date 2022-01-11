@@ -1,5 +1,34 @@
 # Changelog
 
+### [1.19.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.19.0...website-v1.19.1) (2022-01-06)
+
+
+### Bug Fixes
+
+* image positioning and use high-res for new blog entry ([#1042](https://www.github.com/nftstorage/nft.storage/issues/1042)) ([5d94026](https://www.github.com/nftstorage/nft.storage/commit/5d9402682ec05d4d35a00cde97c4b13575011acd))
+
+## [1.19.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.18.1...website-v1.19.0) (2022-01-06)
+
+
+### Features
+
+* add copy icon to files for copying cid ([#997](https://www.github.com/nftstorage/nft.storage/issues/997)) ([2ef229a](https://www.github.com/nftstorage/nft.storage/commit/2ef229a0a14da9d6e3bccfaedf210d7eb0e912e6))
+* Add NFTPort logo to website ([#973](https://www.github.com/nftstorage/nft.storage/issues/973)) ([1443d8f](https://www.github.com/nftstorage/nft.storage/commit/1443d8f5e8f5a34a27c83ba5037ef2baafb602af))
+* mikeal modern finance blog post ([#1033](https://www.github.com/nftstorage/nft.storage/issues/1033)) ([64a6a58](https://www.github.com/nftstorage/nft.storage/commit/64a6a58f0c56f8e010955f473f1927d2bdea1338))
+* Remove link to Pinning Service API doc ([9aa13e5](https://www.github.com/nftstorage/nft.storage/commit/9aa13e558fc4b0913612212df52e7d28d11cdfef))
+* Remove link to Pinning Service API doc ([#988](https://www.github.com/nftstorage/nft.storage/issues/988)) ([9aa13e5](https://www.github.com/nftstorage/nft.storage/commit/9aa13e558fc4b0913612212df52e7d28d11cdfef))
+
+
+### Bug Fixes
+
+* install instructions ([#1008](https://www.github.com/nftstorage/nft.storage/issues/1008)) ([a64678e](https://www.github.com/nftstorage/nft.storage/commit/a64678e88df11428a13b7f6152b854a9e50b80a0))
+* remove confusing language about 100MB uploads ([#1032](https://www.github.com/nftstorage/nft.storage/issues/1032)) ([a2a5d7d](https://www.github.com/nftstorage/nft.storage/commit/a2a5d7d87c966461ddd7fd46c89802735c30885e))
+
+
+### Changes
+
+* Updated faq to address skypack and webpack 4 issue ([#974](https://www.github.com/nftstorage/nft.storage/issues/974)) ([c76a673](https://www.github.com/nftstorage/nft.storage/commit/c76a67313677c0f8b66d1975d79d6a4bc81815f0))
+
 ### [1.18.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.18.0...website-v1.18.1) (2021-12-15)
 
 

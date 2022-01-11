@@ -1,5 +1,40 @@
 # Changelog
 
+### [2.12.2](https://www.github.com/nftstorage/nft.storage/compare/api-v2.12.1...api-v2.12.2) (2022-01-11)
+
+
+### Bug Fixes
+
+* metrics ([#1051](https://www.github.com/nftstorage/nft.storage/issues/1051)) ([cda9619](https://www.github.com/nftstorage/nft.storage/commit/cda9619d9dcdd26a449d20d78fec769d7ec20c28))
+* value when metric is missing in db ([#1058](https://www.github.com/nftstorage/nft.storage/issues/1058)) ([e0f0490](https://www.github.com/nftstorage/nft.storage/commit/e0f049049efa4dc9d2bf2b9720cec119b917cb1c))
+
+### [2.12.1](https://www.github.com/nftstorage/nft.storage/compare/api-v2.12.0...api-v2.12.1) (2022-01-05)
+
+
+### Bug Fixes
+
+* clarify var type ([#1034](https://www.github.com/nftstorage/nft.storage/issues/1034)) ([6065882](https://www.github.com/nftstorage/nft.storage/commit/606588295519f208f494b2b3a4601b6c49f864e0))
+
+## [2.12.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.11.1...api-v2.12.0) (2022-01-05)
+
+
+### Features
+
+* psa allowlist ([#1013](https://www.github.com/nftstorage/nft.storage/issues/1013)) ([26c1539](https://www.github.com/nftstorage/nft.storage/commit/26c153911e8a62dbaeb00613d32a78aa5a26af9c))
+
+
+### Bug Fixes
+
+* error code for empty multipart data ([#1009](https://www.github.com/nftstorage/nft.storage/issues/1009)) ([ba7d70b](https://www.github.com/nftstorage/nft.storage/commit/ba7d70ba01537b5840bb06a8f0187478d7eac70b))
+* error message for unauthorized PSA user ([#1031](https://www.github.com/nftstorage/nft.storage/issues/1031)) ([20c121d](https://www.github.com/nftstorage/nft.storage/commit/20c121dda58c33485a146f0618931efc70b64927))
+
+
+### Changes
+
+* add METAPLEX_AUTH_TOKEN to constants.js ([#924](https://www.github.com/nftstorage/nft.storage/issues/924)) ([35cfc16](https://www.github.com/nftstorage/nft.storage/commit/35cfc1621f8ff0db642736cbb0a82228d3a8d5ed))
+* **api:** update postgrest docker image to v9.0.0 ([#970](https://www.github.com/nftstorage/nft.storage/issues/970)) ([6101535](https://www.github.com/nftstorage/nft.storage/commit/6101535aba5ce1953c085f72d7520154da843b4f))
+* update pgrest to v9 ([#984](https://www.github.com/nftstorage/nft.storage/issues/984)) ([8fc8c45](https://www.github.com/nftstorage/nft.storage/commit/8fc8c4554763b0f921d3dbcacbe4961c9b656aae))
+
 ### [2.11.1](https://www.github.com/nftstorage/nft.storage/compare/api-v2.11.0...api-v2.11.1) (2021-12-09)
 
 

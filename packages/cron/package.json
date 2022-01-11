@@ -15,7 +15,8 @@
     "start:pins": "node src/bin/pins.js",
     "start:pins-failed": "node src/bin/pins-failed.js",
     "start:pinata": "node src/bin/pinata.js",
-    "start:dagcargo:sizes": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo-sizes.js"
+    "start:dagcargo:sizes": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo-sizes.js",
+    "start:metrics": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/metrics.js"
   },
   "author": "Alan Shaw",
   "license": "(Apache-2.0 OR MIT)",
@@ -28,6 +29,7 @@
     "nft.storage": "^3.3.0",
     "node-fetch": "^2.6.1",
     "p-retry": "^4.6.1",
+    "p-settle": "^5.0.0",
     "pg": "^8.7.1"
   },
   "devDependencies": {
