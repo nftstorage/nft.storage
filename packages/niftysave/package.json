@@ -24,7 +24,6 @@
     "@types/yargs": "^17.0.0",
     "assert": "^2.0.0",
     "c8": "^7.7.1",
-    "graphql-zeus": "git://github.com/gozala/graphql-zeus.git#fork/niftysave",
     "mocha": "^9.1.0"
   },
   "dependencies": {
@@ -41,7 +40,7 @@
     "c8": "^7.10.0",
     "dotenv": "^10.0.0",
     "graphql-typed-client": "1.7.4",
-    "graphql-zeus": "git://github.com/gozala/graphql-zeus.git#fork/niftysave",
+    "graphql-zeus": "https://github.com/gozala/graphql-zeus.git#fork/niftysave",
     "ipfs-car": "^0.6.0",
     "ipfs-unixfs-importer": "9.0.6",
     "ipld": "^0.30.2",
