@@ -4,6 +4,13 @@ import { PostgrestClient, PostgrestQueryBuilder } from '@supabase/postgrest-js'
  * @typedef {import('./db-types').definitions} definitions
  */
 
+/** @type {Array<definitions['upload']['type']>} */
+export const UPLOAD_TYPES = ['Car', 'Blob', 'Multipart', 'Remote', 'Nft']
+/** @type {Array<definitions['pin']['service']>} */
+export const PIN_SERVICES = ['IpfsCluster2', 'IpfsCluster', 'Pinata']
+/** @type {Array<definitions['pin']['status']>} */
+export const PIN_STATUSES = ['PinQueued', 'Pinning', 'Pinned', 'PinError']
+
 export class DBClient {
   /**
    * DB client constructor
@@ -394,16 +401,22 @@ export class DBClient {
   }
 
   /**
-   * @param {string} name Arbitrary event identifier.
-   * @param {any} [data] Information about the event.
+   * @param {string} name
    */
-  async addMigrationEvent(name, data) {
-    /** @type {PostgrestQueryBuilder<definitions['migration_event']>} */
-    const query = this.client.from('migration_event')
-    const { error } = await query.insert({ name, data })
+  async getMetric(name) {
+    /** @type {PostgrestQueryBuilder<definitions['metric']>} */
+    const query = this.client.from('metric')
+    const { data, error } = await query.select('value').eq('name', name)
+
     if (error) {
       throw new DBError(error)
     }
+
+    if (!data || !data.length) {
+      return undefined
+    }
+
+    return data[0].value
   }
 }
 
