@@ -4,6 +4,13 @@ import { PostgrestClient, PostgrestQueryBuilder } from '@supabase/postgrest-js'
  * @typedef {import('./db-types').definitions} definitions
  */
 
+/** @type {Array<definitions['upload']['type']>} */
+export const UPLOAD_TYPES = ['Car', 'Blob', 'Multipart', 'Remote', 'Nft']
+/** @type {Array<definitions['pin']['service']>} */
+export const PIN_SERVICES = ['IpfsCluster2', 'IpfsCluster', 'Pinata']
+/** @type {Array<definitions['pin']['status']>} */
+export const PIN_STATUSES = ['PinQueued', 'Pinning', 'Pinned', 'PinError']
+
 export class DBClient {
   /**
    * DB client constructor

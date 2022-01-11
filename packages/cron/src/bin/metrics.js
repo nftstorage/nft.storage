@@ -9,16 +9,16 @@ import { getPg } from '../lib/utils.js'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 async function main() {
-  const pg = getPg(process.env, 'rw')
+  const rwPg = getPg(process.env, 'rw')
   const roPg = getPg(process.env, 'ro')
 
-  await pg.connect()
+  await rwPg.connect()
   await roPg.connect()
 
   try {
-    await updateMetrics({ pg, roPg })
+    await updateMetrics({ rwPg, roPg })
   } finally {
-    await pg.end()
+    await rwPg.end()
     await roPg.end()
   }
 }

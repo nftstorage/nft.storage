@@ -1,6 +1,4 @@
-const UPLOAD_TYPES = ['Car', 'Blob', 'Multipart', 'Remote', 'Nft']
-const PIN_SERVICES = ['IpfsCluster2', 'IpfsCluster', 'Pinata']
-const PIN_STATUSES = ['PinQueued', 'Pinning', 'Pinned', 'PinError']
+import { UPLOAD_TYPES, PIN_SERVICES, PIN_STATUSES } from '../utils/db-client.js'
 
 /**
  * TODO: basic auth
