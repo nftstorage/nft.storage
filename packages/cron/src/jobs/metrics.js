@@ -24,7 +24,7 @@ const PIN_SERVICES = ['IpfsCluster2', 'IpfsCluster', 'Pinata']
 const PIN_STATUSES = ['PinQueued', 'Pinning', 'Pinned', 'PinError']
 
 /**
- * Calculate metrics and update their current values in the DB.
+ * Calculate metrics from RO DB and update their current values in the RW DB.
  *
  * @param {{ pg: Client, roPg: Client }} config
  */
