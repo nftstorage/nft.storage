@@ -25,7 +25,7 @@ ON CONFLICT (name) DO UPDATE
 `
 
 /**
- * Calculate metrics and update their current values in the DB.
+ * Calculate metrics from RO DB and update their current values in the RW DB.
  *
  * @param {{ rwPg: Client, roPg: Client }} config
  */
