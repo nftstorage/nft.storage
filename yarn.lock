@@ -7857,9 +7857,9 @@ graphql-typed-client@1.7.4:
     subscriptions-transport-ws "^0.9.16"
     ws "^6.1.4"
 
-"graphql-zeus@git://github.com/gozala/graphql-zeus.git#fork/niftysave":
+"graphql-zeus@https://github.com/gozala/graphql-zeus.git#fork/niftysave":
   version "3.2.3"
-  resolved "git://github.com/gozala/graphql-zeus.git#54b1fe2be99f25ece3a2f5874c15b624fb4c8287"
+  resolved "https://github.com/gozala/graphql-zeus.git#54b1fe2be99f25ece3a2f5874c15b624fb4c8287"
   dependencies:
     cross-fetch "^3.0.4"
     graphql "^15.4.0"
