@@ -39,7 +39,7 @@ async function exportPromMetrics(db) {
   return [
     '# HELP nftstorage_users_total Total users registered.',
     '# TYPE nftstorage_users_total counter',
-    `nftstorage_users_total ${usersTotal}`,
+    `nftstorage_users_total ${usersTotal || 0}`,
 
     '# HELP nftstorage_uploads_total Total number of uploads by type.',
     '# TYPE nftstorage_uploads_total counter',
