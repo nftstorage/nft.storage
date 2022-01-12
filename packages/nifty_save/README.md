@@ -14,11 +14,21 @@ Take these steps in the AWS console
 2. Go to the Users Tab on the side, you'll see a users list. You need permissions to 'Add user' here
 3. Click add users, you're going to pick a name for this user, something like `ns-yourname-dev`. This name will prepend every lambda function with this conventionally, so its unique to you like `username-projectname-functionname`. When you're developing locally you're actually running _these_ functions, not totally simulating an environment.
 4. Click `Proramatic Access` (not AWS management console access). This will give you an access key ID and secret Access key. You'll need these.
-5. You'll select Attach existing policies directly, and The correctly grained policy.
-6. TODO: update this readme with the tags we want users to use.
+5. You'll select Attach existing policies directly, and The **TODO:** correctly grained policy.
+6. **TODO**: update this readme with the tags we want users to use.
 7. On the review page click 'Create User' if it all looks correct.
-8. Now you should see an Access key ID and a secret key. You need these to provision your dev env, then close.
+8. Now you should see an Access key ID and a secret key. You need these to provision your dev .env, then close.
 9. Check the userlist. Your new user should be in there now.
+
+If you get stuck [check out this page](https://serverless-stack.com/chapters/create-an-iam-user.html), its helpful here.
+
+### 3. Install the AWS CLI
+
+Now we need to _install and configure_ the AWS CLI. This is because SST is a thin layer on top of the AWS CDK and basically will use this account we just made in the AWS dashboard to be performing actions, like updating the lambdas and SQS queues and so on as we develop.
+
+1. Install: If you're on osx you can use homebrew or pip. I was able to use pip with no problems on Windows as well. There's [full install instructions here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html). You may need to make updates to your PATH, like any command line tool. Make sure you have it working, try `aws --version`. Should see something like `aws-cli/1.22.26 Python/3.6.0 Windows/10 botocore/1.23.26` id everything is ok.
+
+2. Configure: run `aws configure`. Put in your Access Key Id and Secret Acces Key. Just hit enter on the region/default output. Now when you run aws cli commands, its using this account you just made.
 
 # Getting Started with Serverless Stack (SST)
 
