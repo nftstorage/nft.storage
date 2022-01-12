@@ -14,7 +14,7 @@ title: Nft.Storage Client
 
 A client library for the https://nft.storage/ service. It provides a convenient interface for working with the [Raw HTTP API][] from a web browser or [Node.js][] and comes bundled with TS for out-of-the box type inference and better IntelliSense.
 
-## Install
+### Install
 
 Install the package using npm
 
@@ -28,7 +28,7 @@ Or yarn
 yarn add nft.storage
 ```
 
-## Usage
+### Usage
 
 First, obtain an API token from https://nft.storage and use it in place of `API_TOKEN` below:
 

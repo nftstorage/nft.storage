@@ -15,12 +15,12 @@ It's important to make sure you are using a properly formatted IPFS URL (i.e., `
 
 Here's an example on how to do this to mint your own NFT!
 
-## Uploading your images, assets, and metadata
+### Uploading your images, assets, and metadata
 
 Before you can create the blockchain record for your NFT, you'll need to store all of the off-chain resources that comprise the NFT "package". Once everything has been stored, you can use the IPFS URI for the metadata to link from the on-chain token to everything else.
 
-## JavaScript
-### Storing asset files
+### JavaScript
+#### Storing asset files
 
 The [JavaScript client library][reference-js-client] provides three methods that you can use to store arbitrary files for your NFT assets and metadata.
 
@@ -40,7 +40,7 @@ ipfs://bafybeiajdopsmspomlrpaohtzo5sdnpknbolqjpde6huzrsejqmvijrcea/pinpie.jpg
 
 The final method for storing arbitrary data is [`storeCar`][reference-js-storecar], which stores data that has been packaged into the IPFS Content Archive format. This method gives you precise control over how the IPFS object graph is structured and may be a good fit if you already have data in IPFS. See the [CAR file guide][guide-car-files] to learn how to work with CARs and prepare them for upload.
 
-### Preparing your metadata
+#### Preparing your metadata
 
 Once you have all of your assets stored, you can update your metadata to include IPFS URIs to the images and other files that are part of your NFT.
 
@@ -50,8 +50,8 @@ In some cases you may also want to include HTTP gateway URLs, but it's best to a
 
 Once the metadata is ready, you can serialize it to a file (usually in JSON format), and upload it using `storeBlob` or `storeDirectory`. That will give you a CID you can use to link to the metadata from your on-chain NFT record.
 
-## HTTP API
-### Storing asset files
+### HTTP API
+#### Storing asset files
 
 The [HTTP API][reference-http-api] provides a `/upload` endpoint that accepts one or more files and stores them with NFT.Storage.
 
@@ -59,7 +59,7 @@ The [HTTP API][reference-http-api] provides a `/upload` endpoint that accepts on
 The `/upload` endpoint can accept up to 100 MiB in each HTTP request. If your files are larger than 100 MiB, see the section below on [CAR files](#car-files), which can be used to split uploads between several HTTP requests.
 :::
 
-#### Single file
+###### Single file
 
 To upload a single file, send a `POST` request to `/upload` with the binary file data as the request body. The `Content-Type` header should be set to a type that's appropriate for the content, for example, `image/jpeg`.
 
@@ -106,7 +106,7 @@ You should get a response similar to this one:
 }
 ```
 
-#### Multiple files
+###### Multiple files
 
 To upload multiple files, send a `POST` request to `/upload` containing multi-part [`FormData`][mdn-formdata] in the request body. The `Content-Type` header must be set to `multipart/form-data`. 
 
@@ -125,7 +125,7 @@ Content-Type: image/png
 
 The `------WebKitFormBoundary5peilISl2YOOweQy` tokens in the example above set the boundary of each "part" within the form data. In most cases, this will be set automatically by whatever request library or API is preparing the form data body. If you're preparing multi-part requests manually, see [RFC7578](https://datatracker.ietf.org/doc/html/rfc7578).
 
-#### CAR files
+###### CAR files
 
 The `/upload` endpoint has some special support for IPFS Content Archives (CARs) that can be used to upload files larger than the 100 MiB single-request limit. 
 
@@ -133,7 +133,7 @@ Uploading CAR files works just like uploading a single file. Send a `POST` reque
 
 To upload files larger than 100 MiB, you can pack them into a CAR file and split the CAR into chunks, uploading each chunk in a separate HTTP request. See the [CAR file guide][guide-car-files] to learn more.
 
-### Preparing your metadata
+#### Preparing your metadata
 
 Once you have all of your assets stored, you can update your metadata to include IPFS URIs to the images and other files that are part of your NFT.
 
@@ -154,7 +154,7 @@ See [this pull request](https://github.com/nftstorage/nft.storage/pull/991) for 
 :::
 
 
-## Minting your NFT
+### Minting your NFT
 
 Coming soon...
 
