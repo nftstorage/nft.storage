@@ -14,6 +14,7 @@ export async function dbTypesCmd() {
 
   try {
     await dbSqlCmd({ cargo: true, testing: true })
+    await delay(2000)
     const url = `${process.env.DATABASE_URL}/?apikey=${process.env.DATABASE_TOKEN}`
     await execa(
       'openapi-typescript',

@@ -4,6 +4,13 @@ import { PostgrestClient, PostgrestQueryBuilder } from '@supabase/postgrest-js'
  * @typedef {import('./db-types').definitions} definitions
  */
 
+/** @type {Array<definitions['upload']['type']>} */
+export const UPLOAD_TYPES = ['Car', 'Blob', 'Multipart', 'Remote', 'Nft']
+/** @type {Array<definitions['pin']['service']>} */
+export const PIN_SERVICES = ['IpfsCluster2', 'IpfsCluster', 'Pinata']
+/** @type {Array<definitions['pin']['status']>} */
+export const PIN_STATUSES = ['PinQueued', 'Pinning', 'Pinned', 'PinError']
+
 export class DBClient {
   /**
    * DB client constructor
@@ -112,11 +119,7 @@ export class DBClient {
   async getUpload(cid, userId) {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').UploadOutput>} */
     const query = this.client.from('upload')
-    const {
-      data: upload,
-      error,
-      status,
-    } = await query
+    const { data: upload, error, status } = await query
       .select(this.uploadQuery)
       .eq('source_cid', cid)
       .eq('user_id', userId)
@@ -192,11 +195,11 @@ export class DBClient {
       throw new DBError(error)
     }
 
-    const cids = uploads?.map((u) => u.content_cid)
+    const cids = uploads?.map(u => u.content_cid)
 
     const deals = await this.getDealsForCids(cids)
 
-    return uploads?.map((u) => {
+    return uploads?.map(u => {
       return {
         ...u,
         deals: deals[u.content_cid] || [],
@@ -242,11 +245,7 @@ export class DBClient {
   async getContent(cid) {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').ContentOutput>} */
     const query = this.client.from('content')
-    const {
-      data: content,
-      error,
-      status,
-    } = await query
+    const { data: content, error, status } = await query
       .select(
         `
         cid,
@@ -394,16 +393,22 @@ export class DBClient {
   }
 
   /**
-   * @param {string} name Arbitrary event identifier.
-   * @param {any} [data] Information about the event.
+   * @param {string} name
    */
-  async addMigrationEvent(name, data) {
-    /** @type {PostgrestQueryBuilder<definitions['migration_event']>} */
-    const query = this.client.from('migration_event')
-    const { error } = await query.insert({ name, data })
+  async getMetric(name) {
+    /** @type {PostgrestQueryBuilder<definitions['metric']>} */
+    const query = this.client.from('metric')
+    const { data, error } = await query.select('value').eq('name', name)
+
     if (error) {
       throw new DBError(error)
     }
+
+    if (!data || !data.length) {
+      return undefined
+    }
+
+    return data[0].value
   }
 }
 

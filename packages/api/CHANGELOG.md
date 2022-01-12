@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.12.2](https://www.github.com/nftstorage/nft.storage/compare/api-v2.12.1...api-v2.12.2) (2022-01-11)
+
+
+### Bug Fixes
+
+* metrics ([#1051](https://www.github.com/nftstorage/nft.storage/issues/1051)) ([cda9619](https://www.github.com/nftstorage/nft.storage/commit/cda9619d9dcdd26a449d20d78fec769d7ec20c28))
+* value when metric is missing in db ([#1058](https://www.github.com/nftstorage/nft.storage/issues/1058)) ([e0f0490](https://www.github.com/nftstorage/nft.storage/commit/e0f049049efa4dc9d2bf2b9720cec119b917cb1c))
+
 ### [2.12.1](https://www.github.com/nftstorage/nft.storage/compare/api-v2.12.0...api-v2.12.1) (2022-01-05)
 
 
