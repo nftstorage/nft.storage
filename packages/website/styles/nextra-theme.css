@@ -818,6 +818,7 @@
     border-right-width: 1px;
   }
 }
+
 .nextra-container .sidebar ul ul {
   position: relative;
   margin-left: 1.25rem;
@@ -1465,16 +1466,4 @@
     margin-left: -6rem;
     margin-right: -6rem;
   }
-}
-
-.nextra-container nav {
-  display: none;
-}
-
-.nextra-container .fixed {
-  position: initial;
-}
-
-.docs-container h1 {
-  font-size: 3rem;
 }
