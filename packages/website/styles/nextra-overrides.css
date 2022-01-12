@@ -11,3 +11,21 @@
 .docs-container h1 {
   font-size: 3rem;
 }
+
+.nextra-container h1,
+.nextra-container h2,
+.nextra-container h3,
+.nextra-container h4,
+.nextra-container h5,
+.nextra-container h6 {
+  font-family: var(--nstitle);
+}
+
+.nextra-container .sidebar li {
+  font-family: var(--nstitle);
+}
+
+.nextra-container p,
+.nextra-container .docs-container ul li {
+  font-family: var(--sansserif);
+}

@@ -41,7 +41,7 @@ When you upload a file to NFT.Storage, you get the CID of that file in return. T
 
 You can monitor this activity for files you upload to NFT.Storage by [calling `check()`](https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#check) and providing a file's CID. This will return a list of deals that have been made at the time of query. Here's how you might include this call in your JavaScript project:
 
-```javascript
+```js
 const cid = 'bafybeiggzq4ryi7hscq5hzvzcnk4urnxt3asp37dhgvnjilf7exskximla'
 
 // check status based on CID
