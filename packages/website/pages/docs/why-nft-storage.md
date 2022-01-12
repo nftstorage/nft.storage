@@ -13,7 +13,7 @@ One of the powerful features of NFTs is that they can reference off-chain data, 
 - Other data: The standard defines the `properties` field in the metadata, which includes another JSON object that allows the user to define custom fields, which often reference URLs that point to other off-chain data (e.g., videos)
 
 
-## Pitfalls with using HTTP URIs
+### Pitfalls with using HTTP URIs
 
 However, when minting an NFT, you need to be really careful about what kind of URI you use. Using HTTP URLs makes your NFT less valuable, since they reference a specific location on the Web. With an NFT that has HTTP URLs, potential buyers might be thinking:
 
@@ -22,7 +22,7 @@ However, when minting an NFT, you need to be really careful about what kind of U
 
 Since NFT ownership might frequently switch hands, the NFT owner and the HTTP server maintainer are often not going to be the same, which can create unclear or unbalanced incentives for keeping NFT data available in perpetuity.
 
-## [NFT.Storage](http://NFT.Storage) to the rescue
+### [NFT.Storage](http://NFT.Storage) to the rescue
 
 This is why [NFT.Storage](http://NFT.Storage) gives you [IPFS](https://ipfs.io/) URIs rather than HTTP URLs. IPFS URIs are unique identifiers of the underlying data based on cryptographic hashes of the data itself, rather than the location where the data sits today. That way, you can easily prove that a piece of data is actually a part of your NFT! Further, as long as a copy exists somewhere on the IPFS network (on a public IPFS node, on Filecoin, even on your own computer running an IPFS node), you can download a copy of that data.
 
@@ -48,7 +48,7 @@ There are other ways to get data onto IPFS and help ensure that data stays up (e
 
 Filecoin's unique combination of verifiable proof of storage and open market protocols allow for solutions that can ensure persistence through smart contract interactions, for example, creating "data DAOs" that auto-renew storage deals on any time scale from days to centuries. Using NFT.Storage today positions you to take advantage of these future upgrades with no extra work from your end!
 
-## Quickstart
+### Quickstart
 
 **Ready to get started using NFT.Storage right now?** Get up and running in minutes by following this quickstart guide. In this guide, we'll walk through the following steps:
 
@@ -68,7 +68,7 @@ You can also use the [HTTP API][reference-http-api] directly using any programmi
 When using the HTTP API, make sure to read about [CAR files][concepts-car-files] to learn how to support large uploads!
 :::
 
-### Create an account
+#### Create an account
 
 For this guide, you'll need an NFT.Storage account to get your API token and manage your stored data. You can sign up **for free** using your email address or GitHub.
 
@@ -85,7 +85,7 @@ Sign up using GitHub
 1. **Authorize** Web3.Storage when asked by GitHub.
 1. You're all set!
 
-### Uploading a file using the website
+#### Uploading a file using the website
 
 Once you're logged in, you can get started with NFT.Storage right away by uploading files using the website.
 
@@ -98,7 +98,7 @@ Once you're logged in, you can get started with NFT.Storage right away by upload
 
 Once the upload is complete, you'll be able to view your file in the [file listing page](https://nft.storage/files/).
 
-### Get an API Token
+#### Get an API Token
 
 It only takes a few moments to get a free API token from NFT.Storage. This token enables you to interact with the NFT.Storage service without using the main website, enabling you to incorporate files stored using NFT.Storage directly into your applications and services.
 
@@ -112,7 +112,7 @@ Do not share your API token with anyone else. This key is specific to your accou
 :::
 
 
-### Using the JavaScript API
+#### Using the JavaScript API
 
 
 [reference-http-api]: https://nft.storage/api-docs/
