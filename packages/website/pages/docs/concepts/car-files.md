@@ -121,7 +121,7 @@ The [`@ipld/car` package](https://github.com/ipld/js-car) contains the main Java
 
 Here's a simple example of loading a CAR file from a Node.js stream and storing it with NFT.Storage:
 
-```javascript
+```js
 import { createReadStream } from 'fs'
 import { CarReader } from '@ipld/car'
 
@@ -254,13 +254,13 @@ carbites --help
 
   And import the `TreewalkCarSplitter` class into your code:
 
-  ```javascript
+  ```js
   import { TreewalkCarSplitter } from 'carbites/treewalk'
   ```
 
   You can create a `TreewalkCarSplitter` by passing in a `CarReader` and a `targetSize` in bytes for the output cars. See the section on [@ipld/car](#ipld-car) for more information on `CarReader`. For now, we'll assume that the `loadLargeCar` function returns a `CarReader`, and we'll use the `TreewalkCarSplitter` to create split CARs:
 
-  ```javascript
+  ```js
   import { TreewalkCarSplitter } from 'carbites/treewalk'
   async function splitCars() {
     const largeCar = await loadLargeCar()
