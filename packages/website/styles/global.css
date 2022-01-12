@@ -10,7 +10,8 @@
 @import './blog.css';
 @import './markdown.css';
 @import './nft-storage.swagger-ui.css';
-@import './nextra.css';
+@import './nextra-theme.css';
+@import './nextra-overrides.css';
 @import './nav.css';
 @import './table.css';
 
