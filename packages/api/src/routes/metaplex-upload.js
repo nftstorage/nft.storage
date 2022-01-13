@@ -177,35 +177,90 @@ async function parseMetaplexJWT(token) {
     throw new ErrorInvalidMetaplexToken('tags not present in payload')
   }
 
-  // temporarily support old kebab-case tag name
-  const solanaCluster =
-    payload.req.put.tags.solanaCluster || payload.req.put.tags['solana-cluster']
-  if (typeof solanaCluster !== 'string') {
-    throw new ErrorInvalidMetaplexToken(
-      '"solanaCluster" tag not present in payload'
-    )
-  }
-
-  const { mintingAgent, agentVersion } = payload.req.put.tags
-  if (mintingAgent && typeof mintingAgent !== 'string') {
-    throw new ErrorInvalidMetaplexToken(
-      '"mintingAgent" tag must have a string value if present'
-    )
-  }
-
-  if (agentVersion && typeof agentVersion !== 'string') {
-    throw new ErrorInvalidMetaplexToken(
-      '"agentVersion" tag must have a string value if present'
-    )
-  }
-
   const { contentCid: rootCID } = parseCid(payload.req.put.rootCID)
+  const { solanaCluster, mintingAgent, agentVersion } = parsePutRequestTags(
+    payload.req.put.tags
+  )
 
   return {
     iss,
     rootCID,
     solanaCluster,
-    mintingAgent: mintingAgent || 'unknown',
+    mintingAgent,
     agentVersion,
   }
+}
+
+/**
+ * Extracts the info we care about from the tags attached to a put CAR request.
+ *
+ * @typedef {object} PutRequestTags
+ * @property {string} solanaCluster
+ * @property {string} mintingAgent
+ * @property {string} [agentVersion]
+ *
+ * @param {Record<string, string>} tags
+ * @returns {PutRequestTags}
+ */
+function parsePutRequestTags(tags) {
+  // temporarily support old kebab-case tag name for solanaCluster tag
+  const solanaCluster = requiredTag(tags, 'solanaCluster', 'solana-cluster')
+  const mintingAgent = tagWithDefault(tags, 'mintingAgent', 'unknown')
+  const agentVersion = stringOrNothing(tags, 'agentVersion')
+
+  return { solanaCluster, mintingAgent, agentVersion }
+}
+
+/**
+ * Returns the value of the tag with a given name, throwing if it's not present or has a
+ * non-string value.
+ *
+ * @param {Record<string, string>} tags a string map of tag names to values
+ * @param {string} name the name of the tag we want
+ * @param {string} [alternateName] an alternate name to try (only if preferred name is not present)
+ *
+ * @returns {string} the tag value
+ * @throws {ErrorInvalidMetaplexToken} if no tag with the given name exists in tags object, or if a tag exists with a non-string value
+ */
+function requiredTag(tags, name, alternateName) {
+  let value = stringOrNothing(tags, name)
+  if (value == null && alternateName) {
+    value = stringOrNothing(tags, alternateName)
+  }
+
+  if (value == null) {
+    throw new ErrorInvalidMetaplexToken(`"${name}" tag not present in payload`)
+  }
+  return value
+}
+
+/**
+ * What has it got in its pocketses?
+ * Just a getter that makes sure tag values are actually strings, if they're present at all.
+ *
+ * @param {Record<string, string>} tags a string map of tag names to values
+ * @param {string} name the name of the tag we want
+ *
+ * @returns {string|undefined} the tag value, if it exists
+ * @throws {ErrorInvalidMetaplexToken} if a tag value is present but has a non-string value
+ */
+function stringOrNothing(tags, name) {
+  if (name in tags && typeof tags[name] !== 'string') {
+    throw new ErrorInvalidMetaplexToken(
+      `"${name}" tag must have a string value if present`
+    )
+  }
+  return tags[name]
+}
+
+/**
+ * Returns the value of the given tag, or a default if the tag is missing.
+ *
+ * @param {Record<string, string>} tags a string map of tag names to values
+ * @param {string} name the name of the tag we want
+ * @param {string} defaultValue a default value to return if the tag is not present
+ * @throws {ErrorInvalidMetaplexToken} if a tag value is present but has a non-string value
+ */
+function tagWithDefault(tags, name, defaultValue) {
+  return stringOrNothing(tags, name) || defaultValue
 }
