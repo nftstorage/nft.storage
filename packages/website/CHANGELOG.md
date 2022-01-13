@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.19.2](https://www.github.com/nftstorage/nft.storage/compare/website-v1.19.1...website-v1.19.2) (2022-01-13)
+
+
+### Bug Fixes
+
+* typo in FAQ ([#1069](https://www.github.com/nftstorage/nft.storage/issues/1069)) ([5883988](https://www.github.com/nftstorage/nft.storage/commit/58839884465f3ca9ad4e0d95345edbfdf7d48751))
+
 ### [1.19.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.19.0...website-v1.19.1) (2022-01-06)
 
 
