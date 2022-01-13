@@ -88,6 +88,9 @@ export async function fetchNFTs(event, context) {
 
   nftBatch = await results.json()
 
+  //TODO: better unhappy path, DLQ
+  nftBatch = nftBatch?.data?.tokens || nftBatch
+
   if (nftBatch.length === 0) {
     return {
       statusCode: 200,
@@ -97,13 +100,19 @@ export async function fetchNFTs(event, context) {
     }
   }
 
-  console.log(nftBatch)
-
   for (const nft of nftBatch) {
     console.log(nft)
+    sqs.sendMessage({
+      QueueUrl: process.env.fetchedRecordQueueUrl,
+      MessageBody: JSON.stringify(nft),
+    })
     cursor.advanceOffset(nft.mintTime)
   }
 
+  console.table({
+    time: cursor.time,
+    offset: cursor.offset,
+  })
   console.log(nftBatch)
 
   return {

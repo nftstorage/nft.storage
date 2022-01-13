@@ -15,7 +15,7 @@ function messageToEntry(msg) {
 }
 
 export async function fanOut(event) {
-  const actualMessages = event.Records.map(x => JSON.parse(x.body))
+  const actualMessages = event.Records.map((x) => JSON.parse(x.body))
 
   const msg = `count ${event.Records.length} index ${actualMessages[0].index}`
 
