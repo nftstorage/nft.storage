@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.12.3](https://www.github.com/nftstorage/nft.storage/compare/api-v2.12.2...api-v2.12.3) (2022-01-13)
+
+
+### Bug Fixes
+
+* cleanup unused kv namespaces from wrangler config ([#1066](https://www.github.com/nftstorage/nft.storage/issues/1066)) ([fcd5f27](https://www.github.com/nftstorage/nft.storage/commit/fcd5f274f6a0417bb25da7112ac469ba90d5b8b9))
+
 ### [2.12.2](https://www.github.com/nftstorage/nft.storage/compare/api-v2.12.1...api-v2.12.2) (2022-01-11)
 
 
