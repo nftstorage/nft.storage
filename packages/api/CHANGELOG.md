@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.13.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.12.2...api-v2.13.0) (2022-01-13)
+
+
+### Features
+
+* **api:** add mintingAgent tag to metaplex token ([#948](https://www.github.com/nftstorage/nft.storage/issues/948)) ([74d5122](https://www.github.com/nftstorage/nft.storage/commit/74d5122183900e3cf60303f39a59f6a82ba299c9))
+
+
+### Bug Fixes
+
+* cleanup unused kv namespaces from wrangler config ([#1066](https://www.github.com/nftstorage/nft.storage/issues/1066)) ([fcd5f27](https://www.github.com/nftstorage/nft.storage/commit/fcd5f274f6a0417bb25da7112ac469ba90d5b8b9))
+
 ### [2.12.2](https://www.github.com/nftstorage/nft.storage/compare/api-v2.12.1...api-v2.12.2) (2022-01-11)
 
 
