@@ -1,22 +1,9 @@
-export class InvalidIpfsPathError extends Error {
-  /**
-   * @param {string} cid
-   */
-  constructor(cid) {
-    super(`invalid ipfs path: invalid path "/ipfs/${cid}/"`)
-    this.name = 'InvalidIpfsPathError'
-    this.status = 400
-    this.code = InvalidIpfsPathError.CODE
-  }
-}
-InvalidIpfsPathError.CODE = 'ERROR_INVALID_IPFS_PATH'
-
 export class InvalidUrlError extends Error {
   /**
-   * @param {string} url
+   * @param {string} message
    */
-  constructor(url) {
-    super(`invalid url: ${url}`)
+  constructor(message = 'invalid URL') {
+    super(message)
     this.name = 'InvalidUrlError'
     this.status = 400
     this.code = InvalidUrlError.CODE

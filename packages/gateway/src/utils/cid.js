@@ -1,6 +1,6 @@
 import { CID } from 'multiformats/cid'
 
-import { InvalidIpfsPathError, InvalidUrlError } from '../errors.js'
+import { InvalidUrlError } from '../errors.js'
 
 /**
  * Parse subdomain URL and return cid
@@ -9,14 +9,18 @@ import { InvalidIpfsPathError, InvalidUrlError } from '../errors.js'
  */
 export function getCidFromSubdomainUrl(url) {
   // Replace "ipfs-staging" by "ipfs" if needed
-  const nUrl = url.hostname.replace('ipfs-staging', 'ipfs')
-  const splitUrl = nUrl.split('.ipfs.')
+  const host = url.hostname.replace('ipfs-staging', 'ipfs')
+  const splitHost = host.split('.ipfs.')
 
-  if (!splitUrl.length) {
+  if (!splitHost.length) {
     throw new InvalidUrlError(url.hostname)
   }
 
-  return normalizeCid(splitUrl[0])
+  try {
+    return normalizeCid(splitHost[0])
+  } catch (err) {
+    throw new InvalidUrlError(`invalid CID: ${splitHost[0]}: ${err.message}`)
+  }
 }
 
 /**
@@ -25,10 +29,6 @@ export function getCidFromSubdomainUrl(url) {
  * @param {string} cid
  */
 export function normalizeCid(cid) {
-  try {
-    const c = CID.parse(cid)
-    return c.toV1().toString()
-  } catch (err) {
-    throw new InvalidIpfsPathError(cid)
-  }
+  const c = CID.parse(cid)
+  return c.toV1().toString()
 }

@@ -30,7 +30,7 @@ test('Fails when invalid cid is provided', async (t) => {
   t.is(response.status, 400)
 
   const textResponse = await response.text()
-  t.is(textResponse, `invalid ipfs path: invalid path "/ipfs/${invalidCid}/"`)
+  t.is(textResponse, `invalid CID: ${invalidCid}: Unexpected end of data`)
 })
 
 test('Gets content', async (t) => {
