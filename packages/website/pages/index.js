@@ -314,7 +314,7 @@ function About() {
 }
 
 function GettingStarted() {
-  const onClickHandler = useCallback((event) => {
+  const onClickHandler = useCallback(event => {
     countly.trackCustomLinkClick(
       countly.events.CTA_LINK_CLICK,
       event.currentTarget,

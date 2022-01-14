@@ -20,7 +20,7 @@ const queryClient = new QueryClient({
  */
 export default function App({ Component, pageProps }) {
   useEffect(() => {
-    Router.events.on('routeChangeComplete', (route) => {
+    Router.events.on('routeChangeComplete', route => {
       countly.trackPageView(route)
     })
   }, [])
