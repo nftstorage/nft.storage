@@ -15,9 +15,11 @@
     "mock:ipfs.io": "smoke -p 9081 test/mocks/ipfs.io"
   },
   "dependencies": {
-    "multiformats": "^9.5.2"
+    "multiformats": "^9.5.2",
+    "toucan-js": "^2.5.0"
   },
   "devDependencies": {
+    "@sentry/cli": "^1.71.0",
     "ava": "^3.15.0",
     "esbuild": "^0.14.2",
     "git-rev-sync": "^3.0.1",
