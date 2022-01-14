@@ -4,7 +4,7 @@ sidebar_label: Work with Content Archives
 description: Learn how to work with Content Archives of IPLD data.
 ---
 
-
+import Callout from 'nextra-theme-docs/callout';
 
 # Working with Content Archives
 
