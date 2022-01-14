@@ -120,7 +120,7 @@ export default function Files({ user }) {
           return (
             <span key={deal.chainDealId} title={deal.status}>
               <a
-                className="underline"
+                className="underline black"
                 href={url}
                 target="_blank"
                 rel="noreferrer"
@@ -143,12 +143,16 @@ export default function Files({ user }) {
         queuedDeals.length > 1 ? 's' : ''
       }. Filecoin deals will be active within 48 hours of upload.`
       deals.push(
-        <span key={nft.cid + '-pending'}>
+        <span
+          key={nft.cid + '-pending'}
+          aria-describedby="queued-deals-tooltip"
+        >
           {`${deals.length ? ', ' : ''}${queuedDeals.length} pending`}
           <Tooltip
             placement="top"
             overlay={<span>{message}</span>}
             overlayClassName="table-tooltip"
+            id="queued-deals-tooltip"
           >
             <VscQuestion size={16} className="ml2" />
           </Tooltip>
@@ -158,7 +162,11 @@ export default function Files({ user }) {
 
     if (!nft.deals.length) {
       deals.push(
-        <span className="queuing flex items-center" key="queuing">
+        <span
+          className="queuing flex items-center"
+          key="queuing"
+          aria-describedby="all-deals-queued-tooltip"
+        >
           Queuing
           <Tooltip
             overlay={
@@ -169,6 +177,7 @@ export default function Files({ user }) {
               </span>
             }
             overlayClassName="table-tooltip"
+            id="all-deals-queued-tooltip"
           >
             <VscQuestion size={16} className="ml2 flex self-end" />
           </Tooltip>

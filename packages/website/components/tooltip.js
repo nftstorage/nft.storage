@@ -5,6 +5,7 @@ import 'rc-tooltip/assets/bootstrap_white.css'
  * @param {Object} props
  * @param {JSX.Element} props.children
  * @param {JSX.Element} props.overlay
+ * @param {string} props.id
  * @param {string} [props.placement]
  * @param {boolean} [props.destroyTooltipOnHide]
  * @param {string} [props.overlayClassName]
@@ -13,6 +14,7 @@ const Tooltip = ({
   children,
   placement = 'top',
   overlay,
+  id,
   destroyTooltipOnHide,
   overlayClassName = '',
   ...props
@@ -23,6 +25,7 @@ const Tooltip = ({
     overlayInnerStyle={{ borderColor: '#ee4116' }}
     destroyTooltipOnHide={destroyTooltipOnHide}
     overlayClassName={overlayClassName}
+    id={id}
     {...props}
   >
     {children}
