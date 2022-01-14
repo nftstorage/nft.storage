@@ -21,6 +21,12 @@ One time set up of your cloudflare worker subdomain for dev:
   account_id = "<what does the `wrangler whoami` say>"
   ```
 
+- Add secrets
+
+  ```sh
+    wrangler secret put SENTRY_DSN --env $(whoami) # Get from Sentry (not required for dev)
+  ```
+
 - `npm run publish` - Publish the worker under your env. An alias for `wrangler publish --env $(whoami)`
 - `npm start` - Run the worker in dev mode. An alias for `wrangler dev --env $(whoami)`
 

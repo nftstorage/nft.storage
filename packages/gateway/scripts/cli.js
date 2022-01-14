@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url'
 import sade from 'sade'
 import { build } from 'esbuild'
 import git from 'git-rev-sync'
+import Sentry from '@sentry/cli'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pkg = JSON.parse(
@@ -29,11 +30,40 @@ prog
       outfile: 'dist/index.mjs',
       legalComments: 'external',
       define: {
+        VERSION: JSON.stringify(version),
+        COMMITHASH: JSON.stringify(git.long(__dirname)),
+        BRANCH: JSON.stringify(git.branch(__dirname)),
+        ENV: opts.env || 'dev',
         global: 'globalThis',
       },
       minify: opts.env === 'dev' ? false : true,
       sourcemap: true,
     })
+
+    // Sentry release and sourcemap upload
+    if (process.env.SENTRY_UPLOAD === 'true') {
+      const cli = new Sentry(undefined, {
+        authToken: process.env.SENTRY_TOKEN,
+        org: 'protocol-labs-it',
+        project: 'nft-gateway',
+        dist: git.short(__dirname),
+      })
+
+      await cli.releases.new(version)
+      await cli.releases.setCommits(version, {
+        auto: true,
+        ignoreEmpty: true,
+        ignoreMissing: true,
+      })
+      await cli.releases.uploadSourceMaps(version, {
+        include: ['./dist'],
+        urlPrefix: '/',
+      })
+      await cli.releases.finalize(version)
+      await cli.releases.newDeploy(version, {
+        env: opts.env,
+      })
+    }
   })
 
 prog.parse(process.argv)

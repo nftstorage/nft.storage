@@ -35,6 +35,8 @@ jobs:
       - uses: bahmutov/npm-install@v1
       - name: Publish app
         uses: cloudflare/wrangler-action@1.3.0
+        env:
+          SENTRY_TOKEN: ${{secrets.SENTRY_TOKEN}}
         with:
           apiToken: ${{secrets.CF_API_TOKEN }}
           workingDirectory: 'packages/gateway'
