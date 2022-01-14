@@ -2,6 +2,7 @@
 title: Why NFT.Storage?
 ---
 
+import Callout from 'nextra-theme-docs/callout';
 
 # Why NFT.Storage?
 > [NFT.Storage](http://NFT.Storage) makes it easy to follow NFT best-practices, maximizing the value of NFTs you're minting and minimizing the overhead of maintaining the NFTs for NFT minters and owners
@@ -64,9 +65,11 @@ Filecoin's unique combination of verifiable proof of storage and open market pro
 You can also use the [HTTP API][reference-http-api] directly using any programming language or tooling that can send HTTP requests.
 
 
-:::tip
+<Callout emoji="💡">
+
 When using the HTTP API, make sure to read about [CAR files][concepts-car-files] to learn how to support large uploads!
-:::
+
+</Callout>
 
 #### Create an account
 
@@ -107,9 +110,13 @@ It only takes a few moments to get a free API token from NFT.Storage. This token
 1. Enter a descriptive name for your API token and click **Create**.
 1. Make a note of the **Token** field somewhere secure where you know you won't lose it. You can click **Copy** to copy your new API token to your clipboard.
 
-:::warning Keep your API token private 
+<Callout type="warning" emoji="⚠️"> 
+
+**Keep your API token private**
+
 Do not share your API token with anyone else. This key is specific to your account.
-:::
+
+</Callout>
 
 
 #### Using the JavaScript API

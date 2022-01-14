@@ -2,6 +2,7 @@
 title: Store and mint NFTs using ERC-1155 metadata standards
 ---
 
+import Callout from 'nextra-theme-docs/callout';
 
 # Store and mint NFTs using ERC-1155 metadata standards
 Using NFT.Storage, you can: 
@@ -24,9 +25,13 @@ Below are examples of storing NFT assets and metadata using JavaScript and the H
 
 This method expects the metadata to conform to the [ERC-1155 metadata schema][reference-erc-1155-schema]. This standard is backwards compatible with ERC-721 metadata and is generally well supported by various wallets and marketplaces.
 
-:::tip Not using ERC-1155?
+<Callout emoji="💡">
+
+**Not using ERC-1155?**
+
 If your metadata doesn't fit the ERC-1155 standard, learn how to [mint using custom metadata](./mint-custom-metadata.md) instead!
-:::
+
+</Callout>
 
 When adding custom properties, we recommend that you put them in the `properties` object, rather than at the top level. However, if you're minting for a specific marketplace, you should consult their documentation and follow their recommendations.
 
@@ -118,9 +123,13 @@ storeExampleNFT()
 
 To store ERC-1155 NFT metadata and assets using the [HTTP API][reference-http], send a `POST` request to the `/store` endpoint, with a body containing `multipart/form-data` content.
 
-:::info Check your file sizes
+<Callout emoji="💡">
+
+**Check your file sizes**
+
 The `/store` endpoint supports a total request size of 100Mib, including all metadata, images and other asset files. If you need to store larger files and are unable to use the JavaScript client, see the [guide to CAR files][guide-car-files] to see how to chunk large files for upload.
-:::
+
+</Callout>
 
 Inside the form data, you must have a field named `meta`, which contains your ERC-1155 compatible metadata as a JSON string.
 
@@ -157,9 +166,13 @@ Once you have the IPFS URI for your metadata, you're ready to mint an NFT!
 
 The details of how to mint an NFT will depend on which blockchain you're using, as well as the amount of control you want to have over the minting
 
-:::info Check your metadata URI
+<Callout emoji="💡">
+
+**Check your metadata URI**
+
 It's important to make sure the metadata URL you use when minting your NFT is a properly formatted IPFS URL (i.e., `ipfs://bafy...`). This way, any IPFS-compatible browser can retrieve the right data directly using this URL, and your NFT follows this universal standard. Click [here](https://docs.ipfs.io/how-to/address-ipfs-on-web/) to read more about IPFS URLs.
-:::
+
+</Callout>
 
 
 #### Writing an NFT smart contract
@@ -216,9 +229,11 @@ We've only scratched the surface of what's possible with NFTs on Ethereum. Here 
 
 
 
-:::tip
+<Callout emoji="💡">
+
 You can find more in-depth examples at [NFT School](https://nftschool.dev)!
-:::
+
+</Callout>
 
 
 
