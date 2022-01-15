@@ -358,8 +358,19 @@ function GatewayLink({ cid, type }) {
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
 
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="black">
-      {cid}
-    </a>
+    <CopyButton
+      title="Copy cid to Clipboard"
+      text={href}
+      popupContent={'CID has been copied!!'}
+    >
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="black"
+      >
+        Copy URL
+      </a>
+    </CopyButton>
   )
 }
