@@ -1,4 +1,5 @@
 # Development
+
 name = "nft-storage-dev"
 account_id = "fffa4b4363a7e5250af8357087263b3a"
 workers_dev = true
@@ -21,6 +22,7 @@ watch_dir = "src"
 format = "service-worker"
 
 # Staging
+
 [env.staging]
 name = "nft-storage-staging"
 route = "api-staging.nft.storage/*"
@@ -67,16 +69,6 @@ account_id = "4fe12d085474d33bdcfd8e9bed4d8f95"
 workers_dev = true
 route = ""
 zone_id = ""
-kv_namespaces = [
-    { binding = "USERS", preview_id = "3dfa88660d0d4863a5f6b83781160637", id = "3dfa88660d0d4863a5f6b83781160637" },
-    { binding = "NFTS", preview_id = "c8fd3b56aa284e1395169c681a04fc91", id = "c8fd3b56aa284e1395169c681a04fc91" },
-    { binding = "NFTS_IDX", preview_id = "59c33b953d40498a91f7b4ba5a747c24", id = "59c33b953d40498a91f7b4ba5a747c24" },
-    { binding = "DEALS", preview_id = "e8bdcf6793554671ba98cfc7eaf4a225", id = "e8bdcf6793554671ba98cfc7eaf4a225" },
-    { binding = "METRICS", preview_id = "9f28491818d742a2b1363449fe39d6b7", id = "9f28491818d742a2b1363449fe39d6b7" },
-    { binding = "PINS", preview_id = "21a950c30fe64f4c97f4257c8f4b45ae", id = "21a950c30fe64f4c97f4257c8f4b45ae" },
-    { binding = "FOLLOWUPS", preview_id = "50c7fad96e6f403aaf9527e12adf42b7", id = "50c7fad96e6f403aaf9527e12adf42b7" },
-    { binding = "PINATA_QUEUE", preview_id = "d5b0b953a6df45419aa5c00f15a02221", id = "d5b0b953a6df45419aa5c00f15a02221" }
-]
 
 [env.alanshaw.vars]
 ENV = "dev"
@@ -93,16 +85,6 @@ workers_dev = true
 usage_model="bundled"
 route = ""
 zone_id = ""
-kv_namespaces = [
-    { binding = "USERS", preview_id = "1146fee7831747b4ae89e929c2b6f38a", id = "1146fee7831747b4ae89e929c2b6f38a" },
-    { binding = "NFTS", preview_id = "c385d94d0a9d4e9ebb32d7f2f40c30cb", id = "c385d94d0a9d4e9ebb32d7f2f40c30cb" },
-    { binding = "NFTS_IDX", preview_id = "c79875c960264135a56142fe9cb7173b", id = "c79875c960264135a56142fe9cb7173b" },
-    { binding = "DEALS", preview_id = "3bb8f28d78d34e128fe7158744de0b1d", id = "3bb8f28d78d34e128fe7158744de0b1d" },
-    { binding = "METRICS", preview_id = "75582d2965a746e89b925d1e2c50d810", id = "75582d2965a746e89b925d1e2c50d810" },
-    { binding = "PINS", preview_id = "088514a6c5124eb9a71de0146243bafa", id = "088514a6c5124eb9a71de0146243bafa" },
-    { binding = "FOLLOWUPS", preview_id = "d1ba66882ae240f0814d843a67ee8db3", id = "d1ba66882ae240f0814d843a67ee8db3" },
-    { binding = "PINATA_QUEUE", preview_id = "6c2cd05b986c4a998675484e3a253cf1", id = "6c2cd05b986c4a998675484e3a253cf1" }
-]
 
 [env.gozala.vars]
 ENV = "dev"
@@ -120,17 +102,6 @@ workers_dev = true
 usage_model = ""
 route = ""
 zone_id = ""
-kv_namespaces = [
-    { binding = "USERS", preview_id = "ae5de1d8a7b24a7380bcf152d0a34405", id = "ae5de1d8a7b24a7380bcf152d0a34405" },
-    { binding = "NFTS", preview_id = "e151334b3ca14ba381a5eec9c0143e94", id = "e151334b3ca14ba381a5eec9c0143e94" },
-    { binding = "NFTS_IDX", preview_id = "8eb6bf97cfa243ab9bebe5dcb61233dc", id = "8eb6bf97cfa243ab9bebe5dcb61233dc" },
-    { binding = "DEALS", preview_id = "653d8a2c419843f18b9092fb2cc090dd", id = "653d8a2c419843f18b9092fb2cc090dd" },
-    { binding = "METRICS", preview_id = "dae53a615e7741d2a5d89a601e5b4c8d", id = "dae53a615e7741d2a5d89a601e5b4c8d" },
-    { binding = "PINS", preview_id = "a2fe6ea3f15d42deb208d482be50cc01", id = "a2fe6ea3f15d42deb208d482be50cc01" },
-    { binding = "FOLLOWUPS", preview_id = "6b8fd71bbbd241428585a91fb540519d", id = "6b8fd71bbbd241428585a91fb540519d" },
-    { binding = "PINATA_QUEUE", preview_id = "fba21c792337417e85296320a0ae58e4", id = "fba21c792337417e85296320a0ae58e4" }
-]
-
 
 [env.ze.vars]
 ENV = "dev"
@@ -140,23 +111,12 @@ CLUSTER_IPFS_PROXY_API_URL = "https://ze-ipfs-proxy-api-nft-storage.loca.lt"
 CLUSTER_ADDRS = ""
 DATABASE_URL = "http://localhost:8000"
 
-
 [env.yusef]
 name = "nft-storage-yusef"
 account_id = "8c3da25233263bd7a26c0e2e04569ded"
 workers_dev = true
 route = ""
 zone_id = ""
-kv_namespaces = [
-    { binding = "USERS", id = "7c64db9abb8a435cb38d8a92d2673f75", preview_id = "ce921b1ac45340508ade26c560c94a21" },
-    { binding = "NFTS", id = "95f2d3209b86462586ab23d69c4bacb5", preview_id = "c2540411d7b9488eb418713c44524f7e" },
-    { binding = "NFTS_IDX", id = "faef9c13f4a74a6186ddbb58fda7ec7c", preview_id = "8b78eac97643410585fd85feec5cbb16" },
-    { binding = "DEALS", id = "860e99c137e747589b8e63d4712a6301", preview_id = "0f5849117a814fa295c182ca2a52c52a" },
-    { binding = "METRICS", id = "df68b54b96b94286ac4fb212c0bb6787", preview_id = "9d9f414c76f74696a9d7f7e348313161" },
-    { binding = "PINS", id = "41b4a3d7870e465dbf74fe83c2875365", preview_id = "8e8c2fe8a21847f7b6bf7b533b19e659" },
-    { binding = "FOLLOWUPS", id = "a06c23c31bce41bebb8faea4c2814ff5", preview_id = "ff1bd25ad8634592ad226ace093be68f" },
-    { binding = "PINATA_QUEUE", preview_id = "085ef32f2f9f4f49a61480bc96c3c9a6", id = "c9ebfb197ca4448da33166395430e85f" }
-]
 
 [env.yusef.vars]
 ENV = "dev"

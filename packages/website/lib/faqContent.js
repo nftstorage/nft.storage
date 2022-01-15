@@ -138,12 +138,12 @@ const faqContent = {
   ),
   filesLimit: (
     <p className="lh-copy white mb4">
-      There are no limits enforced by the service, other than the 31GiB upload, 
-      limit. However, if your directory is large or has a lot of files,
-      you might have some difficulty uploading it due to memory issues (especially
-      if you are uploading to the website via your browser or the directory size is
-      larger than your device&#39;s memory) or connection issues.
-      If this is the case for you, we recommend splitting up your directory into smaller
+      There are no limits enforced by the service, other than the 31GiB upload,
+      limit. However, if your directory is large or has a lot of files, you
+      might have some difficulty uploading it due to memory issues (especially
+      if you are uploading to the website via your browser or the directory size
+      is larger than your device&#39;s memory) or connection issues. If this is
+      the case for you, we recommend splitting up your directory into smaller
       directories.
     </p>
   ),
@@ -226,7 +226,7 @@ const faqContent = {
   webpack4: (
     <p className="lh-copy white mb4">
       We are working on a long-term solution but for now, you can import the
-      prebuilt bundle directly in Then browser from{' '}
+      prebuilt bundle directly in the browser from{' '}
       <InlineCode>
         https://cdn.jsdelivr.net/npm/nft.storage@v5.1.3/dist/bundle.esm.min.js
       </InlineCode>
