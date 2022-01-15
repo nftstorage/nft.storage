@@ -41,10 +41,11 @@ function CopyButton({ text, title, popupContent, children, ...props }) {
 
   return (
     <>
+      {children}
       <button
         onClick={handleCopy}
         title={title}
-        className="icon-button transparent mr1"
+        className="icon-button transparent ml1"
         {...props}
       >
         <span
@@ -58,7 +59,6 @@ function CopyButton({ text, title, popupContent, children, ...props }) {
         )}
         <Copy tab-index={-1} />
       </button>
-      {children}
     </>
   )
 }

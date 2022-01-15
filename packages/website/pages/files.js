@@ -359,17 +359,17 @@ function GatewayLink({ cid, type }) {
 
   return (
     <CopyButton
-      title="Copy cid to Clipboard"
+      title="Copy IPFS Url to Clipboard"
       text={href}
-      popupContent={'CID has been copied!!'}
+      popupContent={'IPFS Url has been copied!'}
     >
       <a
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="black"
+        className="chicagoflf black"
       >
-        Copy URL
+        URL:
       </a>
     </CopyButton>
   )
