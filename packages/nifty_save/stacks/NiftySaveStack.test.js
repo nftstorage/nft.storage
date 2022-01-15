@@ -7,7 +7,7 @@ import {
   haveResourceLike,
 } from '@aws-cdk/assert'
 
-import NiftySaveStack from '../stacks/NiftySaveStack'
+import NiftySaveStack from './NiftySaveStack'
 
 //CFN resource types
 //https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
@@ -18,8 +18,11 @@ test('Test Niftysave Stack - Global', () => {
   const stack = new NiftySaveStack(app, 'niftysave-stack')
 
   // THEN
+
   expect(stack).to(haveResource('AWS::Lambda::Function'))
+
   expect(stack).to(haveResource('AWS::ApiGatewayV2::Api'))
+
   expect(stack).to(haveResource('AWS::Events::EventBus'))
 })
 
