@@ -4,7 +4,12 @@ import React from 'react'
  * @param {any} props
  */
 const Copy = (props) => (
-  <svg viewBox="0 0 11 11" {...props} xmlns="http://www.w3.org/2000/svg">
+  <svg
+    viewBox="0 0 11 11"
+    fill="none"
+    {...props}
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path
       d="M1 1H8V8H1V1Z"
       stroke="black"
