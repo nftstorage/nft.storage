@@ -4,7 +4,7 @@ sidebar_label: Work with Content Archives
 description: Learn how to work with Content Archives of IPLD data.
 ---
 
-
+import Callout from 'nextra-theme-docs/callout';
 
 # Working with Content Archives
 
@@ -185,7 +185,8 @@ carbites --help
       join
 ```
 
-:::tip Running with npx
+<Callout emoji="💡">
+
   You can run the `carbites` command without installing it globally using the `npx` command, which is included with Node.js:
 
   ```shell
@@ -201,7 +202,8 @@ carbites --help
   ```
 
   After that, you can use `npx carbites-cli` instead of `carbites` for any of the commands below!
-:::
+
+</Callout>
 
   ###### Splitting CARs
 
@@ -242,9 +244,13 @@ carbites --help
 ### Using JavaScript code
   The [carbites library][github-carbites-js] provides an interface for splitting CARs that can be invoked from your application code.
 
-:::tip You probably don't need this!
+<Callout emoji="💡">
+
+  **You probably don't need this!**
+
   If you're using JavaScript, you can [use the NFT.Storage client][howto-store] to upload your data and let the client take care of CAR splitting for you. If you're sure you want to split CARs from JavaScript yourself, read on!
-:::
+
+</Callout>
 
   To split CARs from your JavaScript code, install the `carbites` package:
 

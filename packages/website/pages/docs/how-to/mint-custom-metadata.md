@@ -2,16 +2,20 @@
 title: Store and mint NFTs using custom metadata
 ---
 
-
+import Callout from 'nextra-theme-docs/callout';
 
 # Store and mint NFTs using custom metadata
 If your metadata conforms to the popular ERC-721 or ERC-1155 standards, you can [upload all your NFT assets and prepare your metadata all in one HTTP request](./mint-erc-1155.md). 
 
 If you want to customize your metadata in a way that's not compatible with ERC-1155, or if you know you'll be using the same off-chain assets in many NFTs, you can store your files separately and get their IPFS URIs. You can then use these IPFS URIs and put them into a JSON file however you'd like to create your metadata. This metadata can then be stored, resulting in an IPFS URI that you can store in your token's on-chain record.
 
-:::info Check your metadata URI
+<Callout emoji="💡">
+
+**Check your metadata URI**
+
 It's important to make sure you are using a properly formatted IPFS URL (i.e., `ipfs://bafy...`) for the metadata URL you use when minting your NFT, as well as the URLs referenced within the metadata. This way, any IPFS-compatible browser can retrieve the right data directly using these URLs, and your NFT follows this universal standard. Click [here](https://docs.ipfs.io/how-to/address-ipfs-on-web/) to read more about IPFS URLs.
-:::
+
+</Callout>
 
 Here's an example on how to do this to mint your own NFT!
 
@@ -55,9 +59,13 @@ Once the metadata is ready, you can serialize it to a file (usually in JSON form
 
 The [HTTP API][reference-http-api] provides a `/upload` endpoint that accepts one or more files and stores them with NFT.Storage.
 
-:::info Size limits
+<Callout emoji="💡">
+
+**Size limits**
+
 The `/upload` endpoint can accept up to 100 MiB in each HTTP request. If your files are larger than 100 MiB, see the section below on [CAR files](#car-files), which can be used to split uploads between several HTTP requests.
-:::
+
+</Callout>
 
 ###### Single file
 
@@ -145,13 +153,16 @@ Once the metadata is ready, you can serialize it to a file (usually in JSON form
 
 You can use the CID from your metadata upload to link from your on-chain record to the metadata on IPFS.
 
-:::info Need to use CIDv0?
+<Callout emoji="❓">
+
+<h5>Need to use CIDv0?</h5>
 There are two versions of IPFS Content Identifiers (CIDs) in use today. The legacy "CIDv0" format is more compact, but it lacks several important features of CIDv1 and is generally discouraged for new projects.
 
 If you need to work with a system that only supports CIDv0 (for example, because of a hard size constraint in a smart contract), you can prepare a CAR file containing IPFS objects that are compatible with CIDv0. The NFT.Storage APIs will still return a CIDv1 result, but this can be converted to CIDv0 using the CID tooling for your programming language.
 
 See [this pull request](https://github.com/nftstorage/nft.storage/pull/991) for an example.
-:::
+
+</Callout>
 
 
 ### Minting your NFT
