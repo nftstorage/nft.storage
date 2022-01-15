@@ -8,12 +8,13 @@ import clsx from 'clsx'
  * @prop {string | undefined} [text]
  * @prop {string} [title]
  * @prop {string} [popupContent]
+ * @prop {Node[]} [children[]]
  */
 
 /**
  * @param {CopyButtonProps} props
  */
-function CopyButton({ text, title, popupContent, ...props }) {
+function CopyButton({ text, title, popupContent, children, ...props }) {
   const [popup, setPopupActive] = useState(false)
   /** @type [any, null | any] */
   const [timer, setTimer] = useState(null)
@@ -55,6 +56,7 @@ function CopyButton({ text, title, popupContent, ...props }) {
         </span>
       )}
       <Copy tab-index={-1} />
+      {children}
     </button>
   )
 }

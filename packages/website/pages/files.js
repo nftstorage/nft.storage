@@ -195,7 +195,9 @@ export default function Files({ user }) {
             title="Copy cid to Clipboard"
             text={nft.cid}
             popupContent={'CID has been copied!!'}
-          />
+          >
+            <p className="chicagoflf">Copy CID</p>
+          </CopyButton>
           <GatewayLink cid={nft.cid} type={nft.type} />
         </td>
         <td data-label="Pin Status" className="nowrap">
