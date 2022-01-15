@@ -40,24 +40,26 @@ function CopyButton({ text, title, popupContent, children, ...props }) {
   }
 
   return (
-    <button
-      onClick={handleCopy}
-      title={title}
-      className="icon-button transparent mr1"
-      {...props}
-    >
-      <span
-        data-content={popupContent}
-        className={clsx('popup', { active: popup })}
-      />
-      {popup && (
-        <span className="sr-only" aria-live="assertive">
-          {popupContent}
-        </span>
-      )}
-      <Copy tab-index={-1} />
+    <>
+      <button
+        onClick={handleCopy}
+        title={title}
+        className="icon-button transparent mr1"
+        {...props}
+      >
+        <span
+          data-content={popupContent}
+          className={clsx('popup', { active: popup })}
+        />
+        {popup && (
+          <span className="sr-only" aria-live="assertive">
+            {popupContent}
+          </span>
+        )}
+        <Copy tab-index={-1} />
+      </button>
       {children}
-    </button>
+    </>
   )
 }
 
