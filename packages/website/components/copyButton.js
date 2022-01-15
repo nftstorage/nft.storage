@@ -8,7 +8,7 @@ import clsx from 'clsx'
  * @prop {string | undefined} [text]
  * @prop {string} [title]
  * @prop {string} [popupContent]
- * @prop {Node[]} [children[]]
+ * @prop {JSX.Element} [children]
  */
 
 /**
