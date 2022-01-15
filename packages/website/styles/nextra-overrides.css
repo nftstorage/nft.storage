@@ -6,6 +6,7 @@
 
 .nextra-container .fixed {
   position: initial;
+  height: 100% !important;
 }
 
 .docs-container h1 {
