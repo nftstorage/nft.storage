@@ -59,7 +59,7 @@ export async function pinToPinata({ db, pinata }) {
       break
     }
 
-    /** @type {PinUpdate[]} */
+    /** @type {Pin[]} */
     const updatedPins = []
     for (const pin of pins) {
       try {

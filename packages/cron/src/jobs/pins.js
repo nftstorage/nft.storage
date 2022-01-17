@@ -8,6 +8,7 @@ const log = debug('pins:updatePinStatuses')
  *   db: import('../../../api/src/utils/db-client').DBClient
  *   cluster1: import('@nftstorage/ipfs-cluster').Cluster
  *   cluster2: import('@nftstorage/ipfs-cluster').Cluster
+ *   cluster3: import('@nftstorage/ipfs-cluster').Cluster
  * }} Config
  * @typedef {import('../../../api/src/utils/db-types').definitions} definitions
  * @typedef {Pick<definitions['pin'], 'id'|'status'|'content_cid'|'service'|'inserted_at'|'updated_at'>} Pin
@@ -24,7 +25,7 @@ export async function updatePendingPinStatuses(conf) {
     const { count, error: countError } = await conf.db.client
       .from('pin')
       .select('*', { count: 'exact', head: true })
-      .in('service', ['IpfsCluster', 'IpfsCluster2'])
+      .in('service', ['IpfsCluster', 'IpfsCluster2', 'IpfsCluster3'])
       .neq('status', 'Pinned')
       .neq('status', 'PinError')
       .range(0, 1)
@@ -75,7 +76,7 @@ export async function checkFailedPinStatuses(config) {
     const { count, error: countError } = await db.client
       .from('pin')
       .select('*', { count: 'exact', head: true })
-      .in('service', ['IpfsCluster', 'IpfsCluster2'])
+      .in('service', ['IpfsCluster', 'IpfsCluster2', 'IpfsCluster3'])
       .eq('status', 'PinError')
       .gt('inserted_at', after.toISOString())
       .range(0, 1)
@@ -97,7 +98,7 @@ export async function checkFailedPinStatuses(config) {
     const query = db.client.from('pin')
     const { data: pins, error } = await query
       .select('id,status,content_cid,service')
-      .in('service', ['IpfsCluster', 'IpfsCluster2'])
+      .in('service', ['IpfsCluster', 'IpfsCluster2', 'IpfsCluster3'])
       .eq('status', 'PinError')
       .gt('inserted_at', after.toISOString())
       .range(offset, offset + limit - 1)
@@ -123,7 +124,7 @@ export async function checkFailedPinStatuses(config) {
  * }} config
  */
 async function updatePinStatuses(config) {
-  const { countPins, fetchPins, db, cluster1, cluster2 } = config
+  const { countPins, fetchPins, db, cluster1, cluster2, cluster3 } = config
   if (!log.enabled) {
     console.log('ℹ️ Enable logging by setting DEBUG=pins:updatePinStatuses')
   }
@@ -151,6 +152,9 @@ async function updatePinStatuses(config) {
           break
         case 'IpfsCluster2':
           statusRes = await cluster2.status(pin.content_cid)
+          break
+        case 'IpfsCluster3':
+          statusRes = await cluster3.status(pin.content_cid)
           break
         default:
           throw new Error(`Service ${pin.service} not supported.`)

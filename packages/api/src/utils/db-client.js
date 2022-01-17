@@ -7,7 +7,12 @@ import { PostgrestClient, PostgrestQueryBuilder } from '@supabase/postgrest-js'
 /** @type {Array<definitions['upload']['type']>} */
 export const UPLOAD_TYPES = ['Car', 'Blob', 'Multipart', 'Remote', 'Nft']
 /** @type {Array<definitions['pin']['service']>} */
-export const PIN_SERVICES = ['IpfsCluster2', 'IpfsCluster', 'Pinata']
+export const PIN_SERVICES = [
+  'IpfsCluster3',
+  'IpfsCluster2',
+  'IpfsCluster',
+  'Pinata',
+]
 /** @type {Array<definitions['pin']['status']>} */
 export const PIN_STATUSES = ['PinQueued', 'Pinning', 'Pinned', 'PinError']
 
@@ -119,7 +124,11 @@ export class DBClient {
   async getUpload(cid, userId) {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').UploadOutput>} */
     const query = this.client.from('upload')
-    const { data: upload, error, status } = await query
+    const {
+      data: upload,
+      error,
+      status,
+    } = await query
       .select(this.uploadQuery)
       .eq('source_cid', cid)
       .eq('user_id', userId)
@@ -203,11 +212,11 @@ export class DBClient {
       throw new DBError(error)
     }
 
-    const cids = uploads?.map(u => u.content_cid)
+    const cids = uploads?.map((u) => u.content_cid)
 
     const deals = await this.getDealsForCids(cids)
 
-    return uploads?.map(u => {
+    return uploads?.map((u) => {
       return {
         ...u,
         deals: deals[u.content_cid] || [],
@@ -253,7 +262,11 @@ export class DBClient {
   async getContent(cid) {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').ContentOutput>} */
     const query = this.client.from('content')
-    const { data: content, error, status } = await query
+    const {
+      data: content,
+      error,
+      status,
+    } = await query
       .select(
         `
         cid,
