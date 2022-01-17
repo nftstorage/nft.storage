@@ -1,23 +1,11 @@
 import test from 'ava'
-import { Miniflare } from 'miniflare'
+
+import { getMiniflare } from './utils.js'
 
 test.beforeEach((t) => {
   // Create a new Miniflare environment for each test
-  const mf = new Miniflare({
-    // Autoload configuration from `.env`, `package.json` and `wrangler.toml`
-    envPath: true,
-    packagePath: true,
-    wranglerConfigPath: true,
-    // We don't want to rebuild our worker for each test, we're already doing
-    // it once before we run all tests in package.json, so disable it here.
-    // This will override the option in wrangler.toml.
-    buildCommand: undefined,
-    wranglerConfigEnv: 'test',
-    modules: true,
-  })
-
   t.context = {
-    mf,
+    mf: getMiniflare(),
   }
 })
 
@@ -38,16 +26,16 @@ test('Gets content', async (t) => {
   const { mf } = t.context
 
   const response = await mf.dispatchFetch(
-    'https://bafkreidchi5c4c3kwr5rpkvvwnjz3lh44xi2y2lnbldehwmpplgynigidm.ipfs.localhost:8787'
+    'https://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq.ipfs.localhost:8787'
   )
-  t.is(await response.text(), 'Hello gateway.nft.storage!')
+  t.is(await response.text(), 'Hello nft.storage! 😎')
 })
 
 test('Gets content with path', async (t) => {
   const { mf } = t.context
 
   const response = await mf.dispatchFetch(
-    'https://bafkreidchi5c4c3kwr5rpkvvwnjz3lh44xi2y2lnbldehwmpplgynigidm.ipfs.localhost:8787/path'
+    'https://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq.ipfs.localhost:8787/path'
   )
   t.is(await response.text(), 'Hello gateway.nft.storage resource!')
 })
