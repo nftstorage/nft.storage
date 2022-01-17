@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.13.2](https://www.github.com/nftstorage/nft.storage/compare/api-v2.13.1...api-v2.13.2) (2022-01-17)
+
+
+### Bug Fixes
+
+* remove cluster proxy instructions ([#1093](https://www.github.com/nftstorage/nft.storage/issues/1093)) ([718a5f0](https://www.github.com/nftstorage/nft.storage/commit/718a5f0f288d48d2bd55e592cd5650782f971825))
+
 ### [2.13.1](https://www.github.com/nftstorage/nft.storage/compare/api-v2.13.0...api-v2.13.1) (2022-01-17)
 
 
