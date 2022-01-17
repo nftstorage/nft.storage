@@ -12,6 +12,7 @@ export const secrets = {
 
 const CLUSTER1 = 'https://nft.storage.ipfscluster.io/api/'
 const CLUSTER2 = 'https://nft2.storage.ipfscluster.io/api/'
+const CLUSTER3 = 'https://nft3.storage.ipfscluster.io/api/'
 let clusterUrl
 
 switch (CLUSTER_SERVICE) {
@@ -20,6 +21,9 @@ switch (CLUSTER_SERVICE) {
     break
   case 'IpfsCluster2':
     clusterUrl = CLUSTER2
+    break
+  case 'IpfsCluster3':
+    clusterUrl = CLUSTER3
     break
   default:
     clusterUrl = CLUSTER_API_URL

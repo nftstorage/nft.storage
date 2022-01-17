@@ -41,7 +41,8 @@ describe('NFT store', () => {
       result,
       {
         ipnft: 'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
-        url: 'ipfs://bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i/metadata.json',
+        url:
+          'ipfs://bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i/metadata.json',
         data: {
           name: 'name',
           description: 'stuff',
@@ -78,7 +79,7 @@ describe('NFT store', () => {
         content_cid:
           'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
         status: 'PinQueued',
-        service: 'IpfsCluster2',
+        service: 'IpfsCluster3',
       },
       {
         content_cid:
@@ -115,7 +116,8 @@ describe('NFT store', () => {
       result,
       {
         ipnft: 'bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm',
-        url: 'ipfs://bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm/metadata.json',
+        url:
+          'ipfs://bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm/metadata.json',
         data: {
           name: 'name',
           description: 'stuff',
@@ -143,7 +145,7 @@ describe('NFT store', () => {
         content_cid:
           'bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm',
         status: 'PinQueued',
-        service: 'IpfsCluster2',
+        service: 'IpfsCluster3',
       },
       {
         content_cid:

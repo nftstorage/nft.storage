@@ -758,7 +758,7 @@ export interface definitions {
      * This is a Foreign Key to `content.cid`.<fk table='content' column='cid'/>
      */
     content_cid: string
-    service: 'Pinata' | 'IpfsCluster' | 'IpfsCluster2'
+    service: 'Pinata' | 'IpfsCluster' | 'IpfsCluster2' | 'IpfsCluster3'
     inserted_at: string
     updated_at: string
   }

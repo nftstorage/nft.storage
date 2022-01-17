@@ -121,7 +121,7 @@ wrangler secret put PINATA_JWT --env production # Get from Pinata
 wrangler secret put SENTRY_DSN --env USER # Get from Sentry
 wrangler secret put DATABASE_TOKEN --env production # Get from database account
 wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password
-wrangler secret put CLUSTER_SERVICE --env production # Which cluster should be used. Options 'IpfsCluster' or 'IpfsCluster2'
+wrangler secret put CLUSTER_SERVICE --env production # Which cluster should be used. Options 'IpfsCluster' / 'IpfsCluster2' / 'IpfsCluster3'
 wrangler secret put MAILCHIMP_API_KEY --env production # Get from mailchimp
 wrangler secret put LOGTAIL_TOKEN --env production # Get from Logtail
 wrangler secret put PSA_ALLOW --env production # CSV user ID list, get from 1password vault

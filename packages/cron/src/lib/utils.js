@@ -32,6 +32,20 @@ export function getCluster2(env) {
 }
 
 /**
+ * Create a new IPFS Cluster instance from the passed environment variables.
+ * @param {Record<string, string|undefined>} env
+ */
+export function getCluster3(env) {
+  const clusterApiUrl = env.CLUSTER3_API_URL
+  if (!clusterApiUrl) throw new Error('missing IPFS Cluster API URL')
+  const basicAuthToken = env.CLUSTER3_BASIC_AUTH_TOKEN
+  if (!basicAuthToken) throw new Error('missing IPFS Cluster credentials')
+  return new Cluster(clusterApiUrl, {
+    headers: { Authorization: `Basic ${basicAuthToken}` },
+  })
+}
+
+/**
  * Create a new IPFS client instance from the passed environment variables.
  * @param {Record<string, string|undefined>} env
  */
