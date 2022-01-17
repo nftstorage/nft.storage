@@ -49,7 +49,7 @@ export class DBClient {
    *
    * @param {string} id
    */
-  getUser(id) {
+  async getUser(id) {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').UserOutput>} */
     const query = this.client.from('user')
 
@@ -66,7 +66,16 @@ export class DBClient {
       // @ts-ignore
       .filter('keys.deleted_at', 'is', null)
 
-    return select.single()
+    const { data, error, status } = await select.single()
+
+    if (status === 406 || !data) {
+      return
+    }
+    if (error) {
+      throw new DBError(error)
+    }
+
+    return data
   }
 
   /**
