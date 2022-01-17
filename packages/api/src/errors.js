@@ -59,6 +59,7 @@ export function maybeCapture(err, { log }) {
     case ErrorUserNotFound.CODE:
     case ErrorTokenNotFound.CODE:
     case ErrorInvalidCid.CODE:
+    case ErrorMaintenance.CODE:
       break
     case DBError.CODE:
       message = 'Database error'
@@ -172,3 +173,14 @@ export class ErrorPinningUnauthorized extends HTTPError {
   }
 }
 ErrorPinningUnauthorized.CODE = 'ERROR_PINNING_UNAUTHORIZED'
+
+export class ErrorMaintenance extends HTTPError {
+  constructor(
+    msg = 'API undergoing maintenance, check https://status.nft.storage for more info'
+  ) {
+    super(msg, 503)
+    this.name = 'Maintenance'
+    this.code = ErrorMaintenance.CODE
+  }
+}
+ErrorMaintenance.CODE = 'ERROR_MAINTENANCE'

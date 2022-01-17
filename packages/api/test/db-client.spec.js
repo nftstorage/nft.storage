@@ -47,10 +47,10 @@ describe('DB Client', () => {
 
     const user = await client.client.getUser(client.githubId)
 
-    if (!user.data) {
+    if (!user) {
       throw new Error('no user data')
     }
-    const keys = user.data.keys
+    const keys = user.keys
     assert.equal(keys.length, 2)
     assert.equal(keys[1].name, 'key1')
   })

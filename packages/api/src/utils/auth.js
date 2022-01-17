@@ -13,55 +13,47 @@ export const magic = new Magic(secrets.magic)
 export async function validate(event, { log, db }) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
-  try {
-    // validate access tokens
-    if (await verifyJWT(token, secrets.salt)) {
-      const decoded = parseJWT(token)
 
-      const user = await db.getUser(decoded.sub)
-      if (user.error) {
-        throw new Error(`DB error: ${JSON.stringify(user.error)}`)
-      }
+  // validate access tokens
+  if (await verifyJWT(token, secrets.salt)) {
+    const decoded = parseJWT(token)
+    const user = await db.getUser(decoded.sub)
 
-      if (user.data) {
-        const key = user.data.keys.find((k) => k?.secret === token)
-        if (key) {
-          log.setUser({
-            id: user.data.id,
-          })
-          return {
-            user: user.data,
-            key,
-            db,
-          }
-        } else {
-          throw new ErrorTokenNotFound()
+    if (user) {
+      const key = user.keys.find((k) => k?.secret === token)
+      if (key) {
+        log.setUser({
+          id: user.id,
+        })
+        return {
+          user: user,
+          key,
+          db,
         }
       } else {
-        throw new Error('Could not find user')
+        throw new ErrorTokenNotFound()
       }
     } else {
-      // validate magic.link tokens
-      magic.token.validate(token)
-      const [proof, claim] = magic.token.decode(token)
+      throw new ErrorUserNotFound()
+    }
+  } else {
+    // validate magic.link tokens
+    magic.token.validate(token)
+    const [proof, claim] = magic.token.decode(token)
 
-      const user = await db.getUser(claim.iss)
-      if (user.error) {
-        throw new Error(`DB error: ${JSON.stringify(user.error)}`)
-      }
-
+    const user = await db.getUser(claim.iss)
+    if (user) {
       log.setUser({
-        id: user.data.id,
+        id: user.id,
       })
 
       return {
-        user: user.data,
+        user,
         db,
       }
+    } else {
+      throw new ErrorUserNotFound()
     }
-  } catch (/** @type {any}*/ err) {
-    log.error(err)
-    throw new ErrorUserNotFound(err.message)
   }
 }
 
