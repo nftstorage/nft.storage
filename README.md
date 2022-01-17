@@ -78,6 +78,9 @@ CLUSTER1_BASIC_AUTH_TOKEN=<token>
 CLUSTER2_API_URL = https://nft2.storage.ipfscluster.io/api/
 CLUSTER2_BASIC_AUTH_TOKEN=<token>
 
+CLUSTER3_API_URL = https://nft3.storage.ipfscluster.io/api/
+CLUSTER3_BASIC_AUTH_TOKEN=<token>
+
 # Postgrest API
 DATABASE_URL=http://localhost:3000
 # Create a token, for role "postgres", using secret value PGRST_JWT_SECRET from 'packages/api/db/docker/docker-compose.yml'
