@@ -48,7 +48,7 @@ export async function validate(event, { log, db }) {
       })
 
       return {
-        user: user,
+        user,
         db,
       }
     } else {
