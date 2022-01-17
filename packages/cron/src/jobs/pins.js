@@ -148,7 +148,7 @@ async function updatePinStatuses(config) {
 
       switch (pin.service) {
         case 'IpfsCluster':
-          statusRes = await cluster1.status(pin.content_cid)
+          statusRes = await cluster3.status(pin.content_cid)
           break
         case 'IpfsCluster2':
           statusRes = await cluster2.status(pin.content_cid)
