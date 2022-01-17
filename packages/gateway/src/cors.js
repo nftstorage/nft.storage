@@ -1,6 +1,21 @@
 /* eslint-env serviceworker */
 
 /**
+ * @param {import('itty-router').RouteHandler} handler
+ * @returns {import('itty-router').RouteHandler}
+ */
+export function withCorsHeaders(handler) {
+  /**
+   * @param {Request} request
+   * @returns {Promise<Response>}
+   */
+  return async (request, ...rest) => {
+    const response = await handler(request, ...rest)
+    return addCorsHeaders(request, response)
+  }
+}
+
+/**
  * @param {Request} request
  * @param {Response} response
  * @returns {Response}

@@ -1,45 +1,41 @@
-import { addCorsHeaders } from './cors.js'
+/* eslint-env serviceworker */
+
+import { Router } from 'itty-router'
+
+import { gatewayGet } from './gateway.js'
+import { metricsGet } from './metrics.js'
+
+// Export Durable Object namespace from the root module.
+export { Metrics13 } from './durable-objects/metrics.js'
+export { CidsTracker0 } from './durable-objects/cids.js'
+
+import { addCorsHeaders, withCorsHeaders } from './cors.js'
 import { errorHandler } from './error-handler.js'
-import { getCidFromSubdomainUrl } from './utils/cid.js'
+import { envAll } from './env.js'
 
-/**
- * @typedef {Object} Env
- * @property {string} IPFS_GATEWAY
- * @property {string} VERSION
- * @property {string} ENV
- * @property {string} [SENTRY_DSN]
- */
+const router = Router()
 
-/**
- * Handle gateway request
- * @param {Request} request
- * @param {Env} env
- */
-async function handleRequest(request, env) {
-  const publicGatewayUrl = new URL('ipfs', env.IPFS_GATEWAY)
-  const url = new URL(request.url)
-  const cid = getCidFromSubdomainUrl(url)
-  const response = await fetch(
-    `${publicGatewayUrl}/${cid}${url.pathname || ''}`
-  )
-
-  // forward gateway response
-  return addCorsHeaders(request, response)
-}
+router
+  .all('*', envAll)
+  .get('/metrics', withCorsHeaders(metricsGet))
+  .get('*', withCorsHeaders(gatewayGet))
 
 /**
  * @param {Error} error
  * @param {Request} request
- * @param {Env} env
+ * @param {import('./env').Env} env
  */
 function serverError(error, request, env) {
-  return addCorsHeaders(request, errorHandler(error, request, env))
+  return addCorsHeaders(request, errorHandler(error, env))
 }
 
+// https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent
+/** @typedef {{ waitUntil(p: Promise): void }} Ctx */
+
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     try {
-      return await handleRequest(request, env)
+      return await router.handle(request, env, ctx)
     } catch (error) {
       return serverError(error, request, env)
     }
