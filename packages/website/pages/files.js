@@ -116,9 +116,9 @@ export default function Files({ user }) {
           /** @type {number} */ i,
           /** @type {any[]} */ deals
         ) => {
-          const url = `https://filfox.info/en/deal/${deal.chainDealId}`
+          const url = `https://filfox.info/en/deal/${deal.chainDealID}`
           return (
-            <span key={deal.chainDealId} title={deal.status}>
+            <span key={deal.chainDealID} title={deal.status}>
               <a
                 className="underline black"
                 href={url}
