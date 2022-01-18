@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.20.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.20.0...website-v1.20.1) (2022-01-18)
+
+
+### Bug Fixes
+
+* quick fix for typeo ([#1109](https://www.github.com/nftstorage/nft.storage/issues/1109)) ([dcb49ca](https://www.github.com/nftstorage/nft.storage/commit/dcb49cac253405bdbc0c0c841258a6b51d929841))
+
 ## [1.20.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.19.1...website-v1.20.0) (2022-01-18)
 
 
