@@ -11,7 +11,7 @@
     "lt:postgrest": "npx localtunnel --port 3000 --subdomain \"$(whoami)-postgrest-nft-storage\"",
     "deploy": "wrangler publish --env production",
     "dev": "wrangler dev",
-    "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js --debug",
+    "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js",
     "db-types": "./scripts/cli.js db-types"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",

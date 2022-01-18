@@ -22,7 +22,7 @@ CREATE OR REPLACE FUNCTION create_upload(data json) RETURNS void
 AS
 $$
 DECLARE
-  upload_id BIGINT;
+  inserted_upload_id BIGINT;
   backup_url TEXT;
 BEGIN
     SET LOCAL statement_timeout = '30s';
@@ -73,12 +73,12 @@ BEGIN
                       origins    = (data ->> 'origins')::jsonb,
                       mime_type  = data ->> 'mime_type',
                       type       = (data ->> 'type')::upload_type
-    RETURNING id INTO upload_id;
+    RETURNING id INTO inserted_upload_id;
 
     FOREACH backup_url IN ARRAY json_arr_to_text_arr(data -> 'backup_urls')
     LOOP
         INSERT INTO backup (upload_id, url, inserted_at)
-        VALUES (upload_id, backup_url, (data ->> 'inserted_at')::TIMESTAMPTZ)
+        VALUES (inserted_upload_id, backup_url, (data ->> 'inserted_at')::TIMESTAMPTZ)
         ON CONFLICT (upload_id, url) DO NOTHING;
     END LOOP;
 END
