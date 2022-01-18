@@ -187,7 +187,7 @@ export default function Files({ user }) {
 
     return (
       <tr className="bg-white bb">
-        <td data-label="Date" className="" title={nft.created}>
+        <td data-label="Date" className="nowrap" title={nft.created}>
           {nft.created.split('T')[0]}
         </td>
         <td data-label="CID" className="wrap-cell">
@@ -198,13 +198,13 @@ export default function Files({ user }) {
           />
           <GatewayLink cid={nft.cid} type={nft.type} />
         </td>
-        <td data-label="Pin Status">
+        <td data-label="Pin Status" className="nowrap">
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
         </td>
         <td data-label="Deals" className="">
           <div>{deals}</div>
         </td>
-        <td data-label="Size" className="">
+        <td data-label="Size" className="nowrap">
           {bytes(nft.size || 0)}
         </td>
         <td className="shrink-cell center-cell">
