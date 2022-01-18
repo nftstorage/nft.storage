@@ -24,7 +24,7 @@ zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"    # nft.storage zone
 route = "*gateway.nft.storage/*"
 
 [env.production.vars]
-IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]"
+bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 DEBUG = "false"
 ENV = "production"
 
@@ -44,7 +44,7 @@ DEBUG = "true"
 ENV = "staging"
 
 [env.staging.durable_objects]
-bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 
 # Test!
 [env.test]
@@ -56,7 +56,7 @@ DEBUG = "true"
 ENV = "test"
 
 [env.test.durable_objects]
-bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 
 # Dev!
 [env.vsantos]
@@ -67,7 +67,7 @@ account_id = "7ec0b7cf2ec201b2580374e53ba5f37b"
 IPFS_GATEWAYS = "[\"https://ipfs.io\"]"
 
 [env.vsantos.durable_objects]
-bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 
 [[migrations]]
 tag = "v1" # Should be unique for each entry
@@ -118,3 +118,7 @@ deleted_classes = ["Metrics11"]
 tag = "v13" # Should be unique for each entry
 new_classes = ["Metrics13"]
 deleted_classes = ["Metrics12"]
+[[migrations]]
+tag = "v14" # Should be unique for each entry
+new_classes = ["GatewayMetrics0", "GenericMetrics0"]
+deleted_classes = ["Metrics13"]
