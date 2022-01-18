@@ -68,6 +68,10 @@
   justify-content: center;
 }
 
+.table-responsive .queuing {
+  justify-content: flex-end;
+}
+
 /* 832px */
 @media screen and (min-width: 52em) {
   /*Additive styles at full size*/
@@ -110,5 +114,9 @@
   .table-responsive td.shrink-cell {
     width: 1%;
     display: table-cell;
+  }
+
+  .table-responsive .queuing {
+    justify-content: flex-start;
   }
 }
