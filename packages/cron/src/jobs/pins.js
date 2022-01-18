@@ -1,7 +1,9 @@
 import debug from 'debug'
+import { consume, transform, pipeline } from 'streaming-iterables'
 import { DBError } from '../../../api/src/utils/db-client.js'
 
 const log = debug('pins:updatePinStatuses')
+const CONCURRENCY = 5
 
 /**
  * @typedef {{
@@ -124,7 +126,7 @@ export async function checkFailedPinStatuses(config) {
  * }} config
  */
 async function updatePinStatuses(config) {
-  const { countPins, fetchPins, db, cluster1, cluster2, cluster3 } = config
+  const { countPins, fetchPins, db, cluster2, cluster3 } = config
   if (!log.enabled) {
     console.log('ℹ️ Enable logging by setting DEBUG=pins:updatePinStatuses')
   }
@@ -132,72 +134,78 @@ async function updatePinStatuses(config) {
   const count = await countPins()
   log(`🎯 Updating ${count} pin statuses`)
 
-  let offset = 0
-  const limit = 1000
-  while (true) {
-    const pins = await fetchPins(offset, limit)
-    if (!pins.length) {
-      break
-    }
+  await pipeline(
+    async function* () {
+      let offset = 0
+      const limit = 1000
+      while (true) {
+        log(`🐶 fetching pins ${offset} -> ${offset + limit} of ${count}`)
+        const pins = await fetchPins(offset, limit)
+        if (!pins.length) {
+          return
+        }
+        yield pins
+        offset += limit
+      }
+    },
+    transform(CONCURRENCY, async (pins) => {
+      /** @type {Pin[]} */
+      const updatedPins = []
+      for (const pin of pins) {
+        /** @type {import('@nftstorage/ipfs-cluster/dist/src/interface').StatusResponse} */
+        let statusRes
 
-    /** @type {Pin[]} */
-    const updatedPins = []
-    for (const pin of pins) {
-      /** @type {import('@nftstorage/ipfs-cluster/dist/src/interface').StatusResponse} */
-      let statusRes
+        switch (pin.service) {
+          case 'IpfsCluster':
+            statusRes = await cluster3.status(pin.content_cid)
+            break
+          case 'IpfsCluster2':
+            statusRes = await cluster2.status(pin.content_cid)
+            break
+          case 'IpfsCluster3':
+            statusRes = await cluster3.status(pin.content_cid)
+            break
+          default:
+            throw new Error(`Service ${pin.service} not supported.`)
+        }
 
-      switch (pin.service) {
-        case 'IpfsCluster':
-          statusRes = await cluster3.status(pin.content_cid)
-          break
-        case 'IpfsCluster2':
-          statusRes = await cluster2.status(pin.content_cid)
-          break
-        case 'IpfsCluster3':
-          statusRes = await cluster3.status(pin.content_cid)
-          break
-        default:
-          throw new Error(`Service ${pin.service} not supported.`)
+        const pinInfos = Object.values(statusRes.peerMap)
+
+        /** @type {Pin['status']} */
+        let status = 'PinError'
+        if (pinInfos.some((i) => i.status === 'pinned')) {
+          status = 'Pinned'
+        } else if (pinInfos.some((i) => i.status === 'pinning')) {
+          status = 'Pinning'
+        } else if (pinInfos.some((i) => i.status === 'pin_queued')) {
+          status = 'PinQueued'
+        }
+
+        if (status !== pin.status) {
+          log(`📌 ${pin.content_cid} ${pin.status} => ${status}`)
+          updatedPins.push({
+            ...pin,
+            status,
+            updated_at: new Date().toISOString(),
+          })
+        }
       }
 
-      const pinInfos = Object.values(statusRes.peerMap)
+      if (updatedPins.length) {
+        // bulk upsert
+        const { error: updateError } = await db.client
+          .from('pin')
+          .upsert(updatedPins, { count: 'exact', returning: 'minimal' })
 
-      /** @type {Pin['status']} */
-      let status = 'PinError'
-      if (pinInfos.some((i) => i.status === 'pinned')) {
-        status = 'Pinned'
-      } else if (pinInfos.some((i) => i.status === 'pinning')) {
-        status = 'Pinning'
-      } else if (pinInfos.some((i) => i.status === 'pin_queued')) {
-        status = 'PinQueued'
+        if (updateError) {
+          throw Object.assign(new Error(), updateError)
+        }
       }
 
-      if (status !== pin.status) {
-        log(`📌 ${pin.content_cid} ${pin.status} => ${status}`)
-        updatedPins.push({
-          ...pin,
-          status,
-          updated_at: new Date().toISOString(),
-        })
-      }
-    }
-
-    if (updatedPins.length) {
-      // bulk upsert
-      const { error: updateError } = await db.client
-        .from('pin')
-        .upsert(updatedPins, { count: 'exact', returning: 'minimal' })
-
-      if (updateError) {
-        throw Object.assign(new Error(), updateError)
-      }
-    }
-
-    log(`🗂 ${pins.length} processed, ${updatedPins.length} updated`)
-    log(`ℹ️ ${offset + pins.length} of ${count} processed in total`)
-
-    offset += limit
-  }
+      log(`🗂 ${pins.length} processed, ${updatedPins.length} updated`)
+    }),
+    consume
+  )
 
   log('✅ Done')
 }
