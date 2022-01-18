@@ -18,6 +18,7 @@
   "dependencies": {
     "itty-router": "^2.4.5",
     "multiformats": "^9.5.2",
+    "nanoid": "^3.1.30",
     "p-any": "^4.0.0",
     "p-settle": "^5.0.0",
     "toucan-js": "^2.5.0"

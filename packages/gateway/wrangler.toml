@@ -16,38 +16,55 @@ format = "modules"
 dir = "dist"
 main = "index.mjs"
 
-[durable_objects]
-bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
-
 # PROD!
 [env.production]
 # name = "gateway-nft-storage-production"
 account_id = "fffa4b4363a7e5250af8357087263b3a" # Protocol Labs CF account
 zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"    # nft.storage zone
 route = "*gateway.nft.storage/*"
-vars = { IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]", ENV = "production" }
 
+[env.production.vars]
+IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]"
+DEBUG = "false"
+ENV = "production"
+
+[env.production.durable_objects]
+bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+
+# Staging!
 [env.staging]
 # name = "gateway-nft-storage-staging"
 account_id = "fffa4b4363a7e5250af8357087263b3a" # Protocol Labs CF account
 zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"    # nft.storage zone
 route = "*gateway-staging.nft.storage/*"
-vars = { IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]", ENV = "staging" }
+
+[env.staging.vars]
+IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]"
+DEBUG = "true"
+ENV = "staging"
 
 [env.staging.durable_objects]
 bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 
+# Test!
 [env.test]
 workers_dev = true
-vars = { IPFS_GATEWAYS = "[\"http://localhost:9081\", \"http://localhost:9082\"]", ENV = "test" }
+
+[env.test.vars]
+IPFS_GATEWAYS = "[\"http://localhost:9081\", \"http://localhost:9082\"]"
+DEBUG = "true"
+ENV = "test"
 
 [env.test.durable_objects]
 bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 
+# Dev!
 [env.vsantos]
 workers_dev = true
 account_id = "7ec0b7cf2ec201b2580374e53ba5f37b"
-vars = { IPFS_GATEWAYS = "[\"https://ipfs.io\"]" }
+
+[env.vsantos.vars]
+IPFS_GATEWAYS = "[\"https://ipfs.io\"]"
 
 [env.vsantos.durable_objects]
 bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
