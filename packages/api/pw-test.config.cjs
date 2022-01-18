@@ -3,6 +3,8 @@ const dotenv = require('dotenv')
 const execa = require('execa')
 const { once } = require('events')
 
+/** @typedef {{ proc: execa.ExecaChildProcess<string> }} ProcessObject */
+
 dotenv.config({
   path: path.join(__dirname, '../../.env'),
 })
@@ -60,7 +62,10 @@ module.exports = {
 
     return { mockServers, project }
   },
-  afterTests: async (ctx, /** @type{any} */ beforeTests) => {
+  afterTests: async (
+    ctx,
+    /** @type {{ project: string, mockServers: ProcessObject[] }} */ beforeTests
+  ) => {
     console.log('⚡️ Shutting down mock servers.')
 
     await execa(cli, ['db', '--clean', '--project', beforeTests.project])
@@ -73,12 +78,15 @@ module.exports = {
  * @param {string} name
  * @param {number} port
  * @param {string} handlerPath
- * @returns {Promise<{ proc: execa.ExecaChildProcess<string> }>}
+ * @returns {Promise<ProcessObject>}
  */
 async function startMockServer(name, port, handlerPath) {
-  const proc = execa('smoke', ['-p', port, handlerPath], {
+  const proc = execa('smoke', ['-p', String(port), handlerPath], {
     preferLocal: true,
   })
+  if (!proc.stdout || !proc.stderr) {
+    throw new Error('missing process stdio stream(s)')
+  }
 
   const stdout = await Promise.race([
     once(proc.stdout, 'data'),
