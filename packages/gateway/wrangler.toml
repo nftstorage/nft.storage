@@ -51,7 +51,7 @@ bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics1"}, {name = "
 workers_dev = true
 
 [env.test.vars]
-IPFS_GATEWAYS = "[\"http://localhost:9081\", \"http://localhost:9082\"]"
+IPFS_GATEWAYS = "[\"http://127.0.0.1:9081\", \"http://localhost:9082\", \"http://localhost:9083\"]"
 DEBUG = "true"
 ENV = "test"
 

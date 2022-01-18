@@ -11,7 +11,7 @@ module.exports = async ({ params }) => {
       body: 'Hello nft.storage! 😎',
     }
   } else if (
-    cid === 'bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapouppq'
+    cid === 'bafkreibxkbyybantsznyvlq2bhf24u4gew7pj6erjgduqp4mvqv54qjng4'
   ) {
     return {
       statusCode: 200,
