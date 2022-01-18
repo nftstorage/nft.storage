@@ -79,7 +79,7 @@ BEGIN
     LOOP
         INSERT INTO backup (upload_id, url, inserted_at)
         VALUES (upload_id, backup_url, (data ->> 'inserted_at')::TIMESTAMPTZ)
-        ON CONFLICT (url) DO NOTHING;
+        ON CONFLICT (upload_id, url) DO NOTHING;
     END LOOP;
 END
 $$;

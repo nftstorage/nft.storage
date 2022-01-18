@@ -72,7 +72,7 @@ zone_id = ""
 
 [env.alanshaw.vars]
 ENV = "dev"
-DEBUG = "*"
+DEBUG = "true"
 CLUSTER_API_URL = "https://alan-cluster-api-nft-storage.loca.lt"
 CLUSTER_ADDRS = ""
 DATABASE_URL = "https://alan-postgrest-nft-storage.loca.lt"
@@ -87,7 +87,7 @@ zone_id = ""
 
 [env.gozala.vars]
 ENV = "dev"
-DEBUG = "*"
+DEBUG = "true"
 CLUSTER_API_URL = "https://nft.storage.ipfscluster.io/api/"
 CLUSTER_ADDRS = ""
 DATABASE_URL = "http://localhost:8000"
@@ -103,7 +103,7 @@ zone_id = ""
 
 [env.ze.vars]
 ENV = "dev"
-DEBUG = "*"
+DEBUG = "true"
 CLUSTER_API_URL = "https://ze-cluster-api-nft-storage.loca.lt"
 CLUSTER_ADDRS = ""
 DATABASE_URL = "http://localhost:8000"
@@ -117,7 +117,7 @@ zone_id = ""
 
 [env.yusef.vars]
 ENV = "dev"
-DEBUG = "*"
+DEBUG = "true"
 CLUSTER_API_URL = "https://yusef-cluster-api-nft-storage.loca.lt"
 DATABASE_URL = "https://yusef-postgrest-nft-storage.loca.lt"
 
@@ -127,6 +127,6 @@ account_id = "2f1143f469f762af4ef2336ec13f85b7"
 
 [env.redaphid.vars]
 ENV = "dev"
-DEBUG = "*"
+DEBUG = "true"
 CLUSTER_API_URL = "https://redaphid-cluster-api-nft-storage.loca.lt/"
 DATABASE_URL = "https://redaphid-postgrest-nft-storage.loca.lt"

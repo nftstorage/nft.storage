@@ -1,5 +1,5 @@
 export const SALT = 'supersecret'
-export const DEBUG = '*'
+export const DEBUG = 'true'
 export const CLUSTER_API_URL = 'http://localhost:9094'
 export const CLUSTER_BASIC_AUTH_TOKEN = 'test'
 export const CLUSTER_SERVICE = ''
