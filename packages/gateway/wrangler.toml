@@ -1,0 +1,103 @@
+# gateway.nft.storage wrangler config.
+name = "gateway-nft-storage"
+
+# `javascript` means our we'll send pre-built javascript code. 
+#  ...as opposed to `webpack` where wrangler builds our code for us.
+type = "javascript"
+
+account_id = ""
+watch_dir = "src"
+compatibility_date = "2021-12-03"
+
+[build]
+command = "npm run build"
+[build.upload]
+format = "modules"
+dir = "dist"
+main = "index.mjs"
+
+[durable_objects]
+bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+
+# PROD!
+[env.production]
+# name = "gateway-nft-storage-production"
+account_id = "fffa4b4363a7e5250af8357087263b3a" # Protocol Labs CF account
+zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"    # nft.storage zone
+route = "*gateway.nft.storage/*"
+vars = { IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]", ENV = "production" }
+
+[env.staging]
+# name = "gateway-nft-storage-staging"
+account_id = "fffa4b4363a7e5250af8357087263b3a" # Protocol Labs CF account
+zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"    # nft.storage zone
+route = "*gateway-staging.nft.storage/*"
+vars = { IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]", ENV = "staging" }
+
+[env.staging.durable_objects]
+bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+
+[env.test]
+workers_dev = true
+vars = { IPFS_GATEWAYS = "[\"http://localhost:9081\", \"http://localhost:9082\"]", ENV = "test" }
+
+[env.test.durable_objects]
+bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+
+[env.vsantos]
+workers_dev = true
+account_id = "7ec0b7cf2ec201b2580374e53ba5f37b"
+vars = { IPFS_GATEWAYS = "[\"https://ipfs.io\"]" }
+
+[env.vsantos.durable_objects]
+bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+
+[[migrations]]
+tag = "v1" # Should be unique for each entry
+new_classes = ["Metrics"]
+[[migrations]]
+tag = "v2" # Should be unique for each entry
+new_classes = ["Metrics2"]
+[[migrations]]
+tag = "v3" # Should be unique for each entry
+new_classes = ["Metrics3"]
+[[migrations]]
+tag = "v4" # Should be unique for each entry
+new_classes = ["Metrics4"]
+deleted_classes = ["Metrics", "Metrics2", "Metrics3"]
+[[migrations]]
+tag = "v5" # Should be unique for each entry
+new_classes = ["Metrics5"]
+deleted_classes = ["Metrics4"]
+[[migrations]]
+tag = "v6" # Should be unique for each entry
+new_classes = ["Metrics6"]
+deleted_classes = ["Metrics5"]
+[[migrations]]
+tag = "v7" # Should be unique for each entry
+new_classes = ["Metrics7", "Cids0"]
+deleted_classes = ["Metrics6"]
+[[migrations]]
+tag = "v8" # Should be unique for each entry
+new_classes = ["Metrics8", "Cids1"]
+deleted_classes = ["Metrics7", "Cids0"]
+[[migrations]]
+tag = "v9" # Should be unique for each entry
+new_classes = ["Metrics9", "CidsTracker0"]
+deleted_classes = ["Metrics8", "Cids1"]
+[[migrations]]
+tag = "v10" # Should be unique for each entry
+new_classes = ["Metrics10"]
+deleted_classes = ["Metrics9"]
+[[migrations]]
+tag = "v11" # Should be unique for each entry
+new_classes = ["Metrics11"]
+deleted_classes = ["Metrics10"]
+[[migrations]]
+tag = "v12" # Should be unique for each entry
+new_classes = ["Metrics12"]
+deleted_classes = ["Metrics11"]
+[[migrations]]
+tag = "v13" # Should be unique for each entry
+new_classes = ["Metrics13"]
+deleted_classes = ["Metrics12"]

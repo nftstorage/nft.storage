@@ -26,30 +26,14 @@ The nft.storage site talks to IPFS Cluster. You need to run a cluster locally an
 
 Follow the quickstart guide to get an IPFS Cluster up and running: https://cluster.ipfs.io/documentation/quickstart/
 
-Expose the IPFS Proxy by opening the `docker-compose.yml` file and add:
-
-```yaml
-CLUSTER_IPFSPROXY_NODEMULTIADDRESS: /dns4/ipfs0/tcp/5001
-CLUSTER_IPFSPROXY_LISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9095
-```
-
-...to the `cluster0` _environment_ and add:
-
-```yaml
-- '127.0.0.1:9095:9095'
-```
-
-...to the `cluster0` _ports_. Then restart for the changes to take effect.
-
-Install [localtunnel](https://localtunnel.me/) and expose the IPFS Cluster HTTP API and IPFS Proxy API (replacing "USER" with your name):
+Install [localtunnel](https://localtunnel.me/) and expose the IPFS Cluster HTTP API (replacing "USER" with your name):
 
 ```
 npm install -g localtunnel
 lt --port 9094 --subdomain USER-cluster-api-nft-storage
-lt --port 9095 --subdomain USER-ipfs-proxy-api-nft-storage
 ```
 
-These two URLs should be used for `CLUSTER_API_URL` and `CLUSTER_IPFS_PROXY_API_URL` in the `wrangler.toml` (see below).
+These two URLs should be used for `CLUSTER_API_URL` in the `wrangler.toml` (see below).
 
 There is an npm script you can use to quickly establish these tunnels during development:
 
@@ -121,7 +105,7 @@ wrangler secret put PINATA_JWT --env production # Get from Pinata
 wrangler secret put SENTRY_DSN --env USER # Get from Sentry
 wrangler secret put DATABASE_TOKEN --env production # Get from database account
 wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password
-wrangler secret put CLUSTER_SERVICE --env production # Which cluster should be used. Options 'IpfsCluster' or 'IpfsCluster2'
+wrangler secret put CLUSTER_SERVICE --env production # Which cluster should be used. Options 'IpfsCluster' / 'IpfsCluster2' / 'IpfsCluster3'
 wrangler secret put MAILCHIMP_API_KEY --env production # Get from mailchimp
 wrangler secret put LOGTAIL_TOKEN --env production # Get from Logtail
 wrangler secret put PSA_ALLOW --env production # CSV user ID list, get from 1password vault

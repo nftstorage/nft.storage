@@ -1,13 +1,16 @@
 import debug from 'debug'
+import { consume, transform, pipeline } from 'streaming-iterables'
 import { DBError } from '../../../api/src/utils/db-client.js'
 
 const log = debug('pins:updatePinStatuses')
+const CONCURRENCY = 5
 
 /**
  * @typedef {{
  *   db: import('../../../api/src/utils/db-client').DBClient
  *   cluster1: import('@nftstorage/ipfs-cluster').Cluster
  *   cluster2: import('@nftstorage/ipfs-cluster').Cluster
+ *   cluster3: import('@nftstorage/ipfs-cluster').Cluster
  * }} Config
  * @typedef {import('../../../api/src/utils/db-types').definitions} definitions
  * @typedef {Pick<definitions['pin'], 'id'|'status'|'content_cid'|'service'|'inserted_at'|'updated_at'>} Pin
@@ -24,7 +27,7 @@ export async function updatePendingPinStatuses(conf) {
     const { count, error: countError } = await conf.db.client
       .from('pin')
       .select('*', { count: 'exact', head: true })
-      .in('service', ['IpfsCluster', 'IpfsCluster2'])
+      .in('service', ['IpfsCluster', 'IpfsCluster2', 'IpfsCluster3'])
       .neq('status', 'Pinned')
       .neq('status', 'PinError')
       .range(0, 1)
@@ -75,7 +78,7 @@ export async function checkFailedPinStatuses(config) {
     const { count, error: countError } = await db.client
       .from('pin')
       .select('*', { count: 'exact', head: true })
-      .in('service', ['IpfsCluster', 'IpfsCluster2'])
+      .in('service', ['IpfsCluster', 'IpfsCluster2', 'IpfsCluster3'])
       .eq('status', 'PinError')
       .gt('inserted_at', after.toISOString())
       .range(0, 1)
@@ -97,7 +100,7 @@ export async function checkFailedPinStatuses(config) {
     const query = db.client.from('pin')
     const { data: pins, error } = await query
       .select('id,status,content_cid,service')
-      .in('service', ['IpfsCluster', 'IpfsCluster2'])
+      .in('service', ['IpfsCluster', 'IpfsCluster2', 'IpfsCluster3'])
       .eq('status', 'PinError')
       .gt('inserted_at', after.toISOString())
       .range(offset, offset + limit - 1)
@@ -123,7 +126,7 @@ export async function checkFailedPinStatuses(config) {
  * }} config
  */
 async function updatePinStatuses(config) {
-  const { countPins, fetchPins, db, cluster1, cluster2 } = config
+  const { countPins, fetchPins, db, cluster2, cluster3 } = config
   if (!log.enabled) {
     console.log('ℹ️ Enable logging by setting DEBUG=pins:updatePinStatuses')
   }
@@ -131,69 +134,78 @@ async function updatePinStatuses(config) {
   const count = await countPins()
   log(`🎯 Updating ${count} pin statuses`)
 
-  let offset = 0
-  const limit = 1000
-  while (true) {
-    const pins = await fetchPins(offset, limit)
-    if (!pins.length) {
-      break
-    }
+  await pipeline(
+    async function* () {
+      let offset = 0
+      const limit = 1000
+      while (true) {
+        log(`🐶 fetching pins ${offset} -> ${offset + limit} of ${count}`)
+        const pins = await fetchPins(offset, limit)
+        if (!pins.length) {
+          return
+        }
+        yield pins
+        offset += limit
+      }
+    },
+    transform(CONCURRENCY, async (pins) => {
+      /** @type {Pin[]} */
+      const updatedPins = []
+      for (const pin of pins) {
+        /** @type {import('@nftstorage/ipfs-cluster/dist/src/interface').StatusResponse} */
+        let statusRes
 
-    /** @type {Pin[]} */
-    const updatedPins = []
-    for (const pin of pins) {
-      /** @type {import('@nftstorage/ipfs-cluster/dist/src/interface').StatusResponse} */
-      let statusRes
+        switch (pin.service) {
+          case 'IpfsCluster':
+            statusRes = await cluster3.status(pin.content_cid)
+            break
+          case 'IpfsCluster2':
+            statusRes = await cluster2.status(pin.content_cid)
+            break
+          case 'IpfsCluster3':
+            statusRes = await cluster3.status(pin.content_cid)
+            break
+          default:
+            throw new Error(`Service ${pin.service} not supported.`)
+        }
 
-      switch (pin.service) {
-        case 'IpfsCluster':
-          statusRes = await cluster1.status(pin.content_cid)
-          break
-        case 'IpfsCluster2':
-          statusRes = await cluster2.status(pin.content_cid)
-          break
-        default:
-          throw new Error(`Service ${pin.service} not supported.`)
+        const pinInfos = Object.values(statusRes.peerMap)
+
+        /** @type {Pin['status']} */
+        let status = 'PinError'
+        if (pinInfos.some((i) => i.status === 'pinned')) {
+          status = 'Pinned'
+        } else if (pinInfos.some((i) => i.status === 'pinning')) {
+          status = 'Pinning'
+        } else if (pinInfos.some((i) => i.status === 'pin_queued')) {
+          status = 'PinQueued'
+        }
+
+        if (status !== pin.status) {
+          log(`📌 ${pin.content_cid} ${pin.status} => ${status}`)
+          updatedPins.push({
+            ...pin,
+            status,
+            updated_at: new Date().toISOString(),
+          })
+        }
       }
 
-      const pinInfos = Object.values(statusRes.peerMap)
+      if (updatedPins.length) {
+        // bulk upsert
+        const { error: updateError } = await db.client
+          .from('pin')
+          .upsert(updatedPins, { count: 'exact', returning: 'minimal' })
 
-      /** @type {Pin['status']} */
-      let status = 'PinError'
-      if (pinInfos.some((i) => i.status === 'pinned')) {
-        status = 'Pinned'
-      } else if (pinInfos.some((i) => i.status === 'pinning')) {
-        status = 'Pinning'
-      } else if (pinInfos.some((i) => i.status === 'pin_queued')) {
-        status = 'PinQueued'
+        if (updateError) {
+          throw Object.assign(new Error(), updateError)
+        }
       }
 
-      if (status !== pin.status) {
-        log(`📌 ${pin.content_cid} ${pin.status} => ${status}`)
-        updatedPins.push({
-          ...pin,
-          status,
-          updated_at: new Date().toISOString(),
-        })
-      }
-    }
-
-    if (updatedPins.length) {
-      // bulk upsert
-      const { error: updateError } = await db.client
-        .from('pin')
-        .upsert(updatedPins, { count: 'exact', returning: 'minimal' })
-
-      if (updateError) {
-        throw Object.assign(new Error(), updateError)
-      }
-    }
-
-    log(`🗂 ${pins.length} processed, ${updatedPins.length} updated`)
-    log(`ℹ️ ${offset + pins.length} of ${count} processed in total`)
-
-    offset += limit
-  }
+      log(`🗂 ${pins.length} processed, ${updatedPins.length} updated`)
+    }),
+    consume
+  )
 
   log('✅ Done')
 }

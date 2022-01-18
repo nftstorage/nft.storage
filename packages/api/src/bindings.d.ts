@@ -8,7 +8,7 @@ import { Logging } from './utils/logs.js'
 declare global {
   const SALT: string
   const DEBUG: string
-  const CLUSTER_SERVICE: 'IpfsCluster' | 'IpfsCluster2'
+  const CLUSTER_SERVICE: 'IpfsCluster' | 'IpfsCluster2' | 'IpfsCluster3'
   const CLUSTER_API_URL: string
   const CLUSTER_BASIC_AUTH_TOKEN: string
   const MAGIC_SECRET_KEY: string

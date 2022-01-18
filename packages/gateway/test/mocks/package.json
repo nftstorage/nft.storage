@@ -1,0 +1,5 @@
+{
+  "name": "mocks",
+  "version": "1.0.0",
+  "description": "just here to fix cjs loading"
+}

@@ -1,4 +1,4 @@
-import { HTTPError } from '../errors.js'
+import { ErrorMaintenance, HTTPError } from '../errors.js'
 
 /**
  * @typedef {'rw' | 'r-' | '--'} Mode
@@ -92,6 +92,5 @@ function modeBits(m) {
  * @returns {never}
  */
 function maintenanceHandler() {
-  const url = 'https://status.nft.storage'
-  throw new Error(`API undergoing maintenance, check ${url} for more info`)
+  throw new ErrorMaintenance()
 }

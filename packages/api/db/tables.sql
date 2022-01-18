@@ -18,7 +18,9 @@ CREATE TYPE service_type AS ENUM (
     -- The original NFT.Storage cluster.
     'IpfsCluster',
     -- The current cluster, originally commissioned for niftysave.
-    'IpfsCluster2'
+    'IpfsCluster2',
+    -- New cluster with flatfs and better DHT
+    'IpfsCluster3'
     );
 
 -- Upload type is the type of received upload data.
