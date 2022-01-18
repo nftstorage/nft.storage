@@ -4,7 +4,6 @@ import Toucan from 'toucan-js'
 import { Mode } from './middleware/maintenance.js'
 import { DBClient } from './utils/db-client.js'
 import { Logging } from './utils/logs.js'
-import { S3Client } from './utils/s3-client.js'
 
 declare global {
   const SALT: string
