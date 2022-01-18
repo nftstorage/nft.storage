@@ -56,22 +56,28 @@ export async function nftUpload(event, ctx) {
     if (blob.size === 0) {
       throw new HTTPError('empty payload', 400)
     }
-    const isCar = contentType.includes('application/car')
-    const uploadType = isCar ? 'Car' : 'Blob'
-    // If this upload is a CAR file it is not necessarily complete. i.e. it may
-    // be a chunked CAR.
-    const structure = isCar ? 'Unknown' : 'Complete'
 
+    const isCar = contentType.includes('application/car')
+    /** @type {'Car'|'Blob'} */
+    let uploadType
+    /** @type {import('../bindings').DagStructure} */
+    let structure
     /** @type {Blob} */
     let car
+
     if (isCar) {
       car = blob
+      uploadType = 'Car'
+      // If a CAR file, it is not necessarily complete. i.e. it may be chunked.
+      structure = 'Unknown'
     } else {
       const packed = await packToBlob({
         input: blob.stream(),
         wrapWithDirectory: false,
       })
       car = packed.car
+      uploadType = 'Blob'
+      structure = 'Complete'
     }
 
     upload = await uploadCar({
