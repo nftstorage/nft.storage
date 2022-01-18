@@ -1,14 +1,14 @@
 import Toucan from 'toucan-js'
 import { DBClient } from './db-client.js'
-import { S3Client } from './s3-client.js'
+import { S3BackupClient } from './s3-backup-client.js'
 import { secrets, database, isDebug, s3 as s3Config } from '../constants.js'
 import { Logging } from './logs.js'
 import pkg from '../../package.json'
 
 const db = new DBClient(database.url, secrets.database)
 
-const s3 = s3Config.accessKeyId
-  ? new S3Client(
+const backup = s3Config.accessKeyId
+  ? new S3BackupClient(
       s3Config.region,
       s3Config.accessKeyId,
       s3Config.secretAccessKey,
@@ -17,7 +17,7 @@ const s3 = s3Config.accessKeyId
     )
   : undefined
 
-if (!s3) {
+if (!backup) {
   console.warn('⚠️ AWS S3 backups disabled')
 }
 
@@ -51,5 +51,5 @@ export function getContext(event, params) {
     debug: isDebug,
     sentry,
   })
-  return { params, db, backup: s3, log }
+  return { params, db, backup, log }
 }

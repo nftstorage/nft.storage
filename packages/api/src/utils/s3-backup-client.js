@@ -1,5 +1,5 @@
 // @ts-ignore missing types
-import { S3Client as AwsS3Client } from '@aws-sdk/client-s3/dist-es/S3Client.js'
+import { S3Client } from '@aws-sdk/client-s3/dist-es/S3Client.js'
 // @ts-ignore missing types
 import { PutObjectCommand } from '@aws-sdk/client-s3/dist-es/commands/PutObjectCommand.js'
 import { sha256 } from 'multiformats/hashes/sha2'
@@ -9,7 +9,7 @@ import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
  * @typedef {import('../bindings').BackupClient} BackupClient
  * @implements {BackupClient}
  */
-export class S3Client {
+export class S3BackupClient {
   /**
    * @param {string} region
    * @param {string} accessKeyId
@@ -28,7 +28,7 @@ export class S3Client {
      * @private
      * @type {import('@aws-sdk/client-s3').S3Client}
      */
-    this._s3 = new AwsS3Client({
+    this._s3 = new S3Client({
       endpoint: options.endpoint,
       forcePathStyle: !!options.endpoint, // Force path if endpoint provided
       region,
