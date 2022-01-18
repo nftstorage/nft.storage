@@ -191,19 +191,20 @@ export default function Files({ user }) {
           {nft.created.split('T')[0]}
         </td>
         <td data-label="CID" className="wrap-cell">
+          <p className="black">{nft.cid}</p>
           <CopyButton
             title="Copy cid to Clipboard"
             text={nft.cid}
             popupContent={'CID has been copied!!'}
           >
-            <p className="chicagoflf">Copy CID</p>
+            <p className="dib chicagoflf">CID</p>
           </CopyButton>
           <GatewayLink cid={nft.cid} type={nft.type} />
         </td>
         <td data-label="Pin Status" className="nowrap">
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
         </td>
-        <td data-label="Deals" className="">
+        <td data-label="Deals">
           <div>{deals}</div>
         </td>
         <td data-label="Size" className="nowrap">
