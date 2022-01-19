@@ -1,12 +1,11 @@
 /* eslint-env serviceworker, browser */
 
 import pAny from 'p-any'
+import pMap from 'p-map'
 import pSettle from 'p-settle'
 
 import { getCidFromSubdomainUrl } from './utils/cid.js'
-
-const METRICS_ID = 'metrics'
-const CIDS_TRACKER_ID = 'cids'
+import { CIDS_TRACKER_ID, GENERIC_METRICS_ID } from './constants.js'
 
 /**
  * @typedef {Object} GatewayResponse
@@ -26,7 +25,7 @@ export async function gatewayGet(request, env, ctx) {
   const reqUrl = new URL(request.url)
   const cid = getCidFromSubdomainUrl(reqUrl)
 
-  const gatewayReqs = env.ipfsGateways.map(async (url, index) => {
+  const gatewayReqs = env.ipfsGateways.map(async (url) => {
     const ipfsUrl = new URL('ipfs', url)
     const controller = new AbortController()
     const startTs = Date.now()
@@ -52,30 +51,43 @@ export async function gatewayGet(request, env, ctx) {
   })
 
   try {
-    const { response, url } = await pAny(gatewayReqs)
+    const winnerGwResponse = await pAny(gatewayReqs)
 
     ctx.waitUntil(
       (async () => {
+        // Store Winner metrics
+        await Promise.all([
+          updateGatewayMetrics(request, env, winnerGwResponse, true),
+          updateGenericMetrics(request, env, winnerGwResponse),
+        ])
+
+        // Wait for remaining responses
         const responses = await pSettle(gatewayReqs)
         const successFullResponses = responses.filter(
           (r) => r.value?.response?.ok
         )
 
         await Promise.all([
-          updateMetrics(request, env, responses, url),
+          // Filter out winner and update remaining gateway metrics
+          pMap(
+            responses.filter((r) => r.value?.url !== winnerGwResponse.url),
+            (r) => updateGatewayMetrics(request, env, r.value, false)
+          ),
           updateCidsTracker(request, env, successFullResponses, cid),
         ])
       })()
     )
 
-    // forward gateway response
-    return response
+    // forward winner gateway response
+    return winnerGwResponse.response
   } catch (err) {
     ctx.waitUntil(
       (async () => {
         // Update metrics as all requests failed
         const responses = await pSettle(gatewayReqs)
-        await updateMetrics(request, env, responses)
+        await pMap(responses, (r) =>
+          updateGatewayMetrics(request, env, r.value, false)
+        )
       })()
     )
 
@@ -86,20 +98,44 @@ export async function gatewayGet(request, env, ctx) {
 /**
  * @param {Request} request
  * @param {import('./env').Env} env
- * @param {pSettle.PromiseResult<GatewayResponse>[]} responses
- * @param {string} [fasterUrl]
+ * @param {GatewayResponse} gwResponse
  */
-async function updateMetrics(request, env, responses, fasterUrl) {
-  const id = env.metricsDurable.idFromName(METRICS_ID)
-  const stub = env.metricsDurable.get(id)
+async function updateGenericMetrics(request, env, gwResponse) {
+  // Get durable object for gateway
+  const id = env.genericMetricsDurable.idFromName(GENERIC_METRICS_ID)
+  const stub = env.genericMetricsDurable.get(id)
 
-  /** @type {import('./durable-objects/metrics').ResponseStats[]} */
-  const responseStats = responses.map((r) => ({
-    ok: r?.value?.response?.ok,
-    url: r?.value?.url,
-    responseTime: r?.value?.responseTime,
-    faster: fasterUrl === r?.value?.url,
-  }))
+  /** @type {import('./durable-objects/gateway-metrics').ResponseStats} */
+  const responseStats = {
+    ok: gwResponse.response.ok,
+    responseTime: gwResponse.responseTime,
+  }
+
+  await stub.fetch(_getUpdateRequestUrl(request, responseStats))
+}
+
+/**
+ * @param {Request} request
+ * @param {import('./env').Env} env
+ * @param {GatewayResponse} gwResponse
+ * @param {boolean} [isWinner = false]
+ */
+async function updateGatewayMetrics(
+  request,
+  env,
+  gwResponse,
+  isWinner = false
+) {
+  // Get durable object for gateway
+  const id = env.gatewayMetricsDurable.idFromName(gwResponse.url)
+  const stub = env.gatewayMetricsDurable.get(id)
+
+  /** @type {import('./durable-objects/gateway-metrics').ResponseStats} */
+  const responseStats = {
+    ok: gwResponse.response.ok,
+    responseTime: gwResponse.responseTime,
+    winner: isWinner,
+  }
 
   await stub.fetch(_getUpdateRequestUrl(request, responseStats))
 }

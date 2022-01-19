@@ -14,12 +14,14 @@ import { Logging } from './logs.js'
  * @property {string} [SENTRY_DSN]
  * @property {string} [LOGTAIL_TOKEN]
  * @property {number} [REQUEST_TIMEOUT]
- * @property {Object} METRICS
+ * @property {Object} GATEWAYMETRICS
+ * @property {Object} GENERICMETRICS
  * @property {Object} CIDSTRACKER
  *
  * @typedef {Object} EnvTransformed
  * @property {Array<string>} ipfsGateways
- * @property {Object} metricsDurable
+ * @property {Object} gatewayMetricsDurable
+ * @property {Object} genericMetricsDurable
  * @property {Object} cidsTrackerDurable
  * @property {number} REQUEST_TIMEOUT
  * @property {Toucan} [sentry]
@@ -36,7 +38,8 @@ import { Logging } from './logs.js'
 export function envAll(request, env, ctx) {
   env.sentry = getSentry(request, env)
   env.ipfsGateways = JSON.parse(env.IPFS_GATEWAYS)
-  env.metricsDurable = env.METRICS
+  env.gatewayMetricsDurable = env.GATEWAYMETRICS
+  env.genericMetricsDurable = env.GENERICMETRICS
   env.cidsTrackerDurable = env.CIDSTRACKER
   env.REQUEST_TIMEOUT = env.REQUEST_TIMEOUT || 20000
   env.log = new Logging(request, env, ctx)
