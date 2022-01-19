@@ -28,7 +28,7 @@ services:
       POSTGRES_PORT: 5432
   ipfs0:
     container_name: ipfs0
-    image: ipfs/go-ipfs:latest
+    image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
     volumes:
       - ./compose/ipfs0:/data/ipfs
 
