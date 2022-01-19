@@ -24,12 +24,12 @@ zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"    # nft.storage zone
 route = "*gateway.nft.storage/*"
 
 [env.production.vars]
-bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]"
 DEBUG = "false"
 ENV = "production"
 
 [env.production.durable_objects]
-bindings = [{name = "METRICS", class_name = "Metrics13"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 
 # Staging!
 [env.staging]
