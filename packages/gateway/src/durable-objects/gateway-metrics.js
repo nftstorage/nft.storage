@@ -12,7 +12,7 @@
  * @property {boolean} [winner]
  */
 
-const GATEWAT_METRICS_ID = 'gateway_metrics'
+const GATEWAY_METRICS_ID = 'gateway_metrics'
 
 /**
  * Durable Object for keeping Metrics state of a gateway.
@@ -26,7 +26,7 @@ export class GatewayMetrics0 {
       // Get state and initialize if not existing
       /** @type {GatewayMetrics} */
       this.gatewayMetrics =
-        (await this.state.storage.get(GATEWAT_METRICS_ID)) ||
+        (await this.state.storage.get(GATEWAY_METRICS_ID)) ||
         createMetricsTracker()
     })
   }
@@ -41,7 +41,7 @@ export class GatewayMetrics0 {
         // Updated Metrics
         this._updateMetrics(data)
         // Save updated Metrics
-        await this.state.storage.put(GATEWAT_METRICS_ID, this.gatewayMetrics)
+        await this.state.storage.put(GATEWAY_METRICS_ID, this.gatewayMetrics)
         return new Response()
       case '/metrics':
         return new Response(JSON.stringify(this.gatewayMetrics))
