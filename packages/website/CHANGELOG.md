@@ -1,5 +1,24 @@
 # Changelog
 
+### [1.20.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.20.0...website-v1.20.1) (2022-01-18)
+
+
+### Bug Fixes
+
+* quick fix for typeo ([#1109](https://www.github.com/nftstorage/nft.storage/issues/1109)) ([dcb49ca](https://www.github.com/nftstorage/nft.storage/commit/dcb49cac253405bdbc0c0c841258a6b51d929841))
+
+## [1.20.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.19.1...website-v1.20.0) (2022-01-18)
+
+
+### Features
+
+* deals-ui ([#959](https://www.github.com/nftstorage/nft.storage/issues/959)) ([a97f7a6](https://www.github.com/nftstorage/nft.storage/commit/a97f7a66beab0766f559c2d8fcbde440e9683f0a))
+
+
+### Bug Fixes
+
+* typo in FAQ ([#1069](https://www.github.com/nftstorage/nft.storage/issues/1069)) ([5883988](https://www.github.com/nftstorage/nft.storage/commit/58839884465f3ca9ad4e0d95345edbfdf7d48751))
+
 ### [1.19.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.19.0...website-v1.19.1) (2022-01-06)
 
 

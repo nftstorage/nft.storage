@@ -78,7 +78,7 @@ describe('NFT store', () => {
         content_cid:
           'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
         status: 'PinQueued',
-        service: 'IpfsCluster2',
+        service: 'IpfsCluster3',
       },
       {
         content_cid:
@@ -143,7 +143,7 @@ describe('NFT store', () => {
         content_cid:
           'bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm',
         status: 'PinQueued',
-        service: 'IpfsCluster2',
+        service: 'IpfsCluster3',
       },
       {
         content_cid:

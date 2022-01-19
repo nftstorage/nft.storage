@@ -32,6 +32,12 @@ One time set up of your cloudflare worker subdomain for dev:
 
 You only need to `npm start` for subsequent runs. PR your env config to the `wrangler.toml` to celebrate 🎉
 
-## API
+## High level architecture
 
-TODO
+![High level Architecture](./gateway.nft.storage.jpg)
+
+The IPFS gateway for nft.storage is not "another gateway", but a caching layer for NFT’s that sits on top of existing IPFS public gateways.
+
+## Persistence
+
+Several metrics per gateway are persisted to track the performance of each public gateway over time. Moreover, the list of gateways that have previously fetched successfully a given CID are also persisted.

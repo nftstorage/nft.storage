@@ -252,9 +252,13 @@ describe('NFT Upload ', () => {
       .from('upload')
       .select('*,content(dag_size, pin(status, service, inserted_at))')
       .match({ source_cid: cid, user_id: client.userId })
-      .filter('content.pin.service', 'in', '(IpfsCluster,IpfsCluster2)')
+      .filter(
+        'content.pin.service',
+        'in',
+        '(IpfsCluster,IpfsCluster2,IpfsCluster3)'
+      )
       .single()
 
-    assert.equal(data.content.pin[0].service, 'IpfsCluster2')
+    assert.equal(data.content.pin[0].service, 'IpfsCluster3')
   })
 })
