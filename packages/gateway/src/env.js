@@ -42,7 +42,9 @@ export function envAll(request, env, ctx) {
   env.genericMetricsDurable = env.GENERICMETRICS
   env.cidsTrackerDurable = env.CIDSTRACKER
   env.REQUEST_TIMEOUT = env.REQUEST_TIMEOUT || 20000
+
   env.log = new Logging(request, env, ctx)
+  env.log.time('request')
 }
 
 /**
