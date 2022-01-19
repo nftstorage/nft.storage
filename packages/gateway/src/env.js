@@ -1,13 +1,18 @@
 import Toucan from 'toucan-js'
 import pkg from '../package.json'
+import { Logging } from './logs.js'
 
 // TODO: Get Durable object typedef
 /**
  * @typedef {Object} EnvInput
  * @property {string} IPFS_GATEWAYS
  * @property {string} VERSION
+ * @property {string} COMMITHASH
+ * @property {string} BRANCH
+ * @property {string} DEBUG
  * @property {string} ENV
  * @property {string} [SENTRY_DSN]
+ * @property {string} [LOGTAIL_TOKEN]
  * @property {number} [REQUEST_TIMEOUT]
  * @property {Object} METRICS
  * @property {Object} CIDSTRACKER
@@ -18,6 +23,7 @@ import pkg from '../package.json'
  * @property {Object} cidsTrackerDurable
  * @property {number} REQUEST_TIMEOUT
  * @property {Toucan} [sentry]
+ * @property {Logging} [log]
  *
  * @typedef {EnvInput & EnvTransformed} Env
  */
@@ -25,13 +31,15 @@ import pkg from '../package.json'
 /**
  * @param {Request} request
  * @param {Env} env
+ * @param {import('./').Ctx} ctx
  */
-export function envAll(request, env) {
+export function envAll(request, env, ctx) {
   env.sentry = getSentry(request, env)
   env.ipfsGateways = JSON.parse(env.IPFS_GATEWAYS)
   env.metricsDurable = env.METRICS
   env.cidsTrackerDurable = env.CIDSTRACKER
   env.REQUEST_TIMEOUT = env.REQUEST_TIMEOUT || 20000
+  env.log = new Logging(request, env, ctx)
 }
 
 /**
