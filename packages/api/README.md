@@ -4,7 +4,7 @@ The nft.storage public API.
 
 ## Usage
 
-Make sure you already did step 1 and 2 from these [instructions](/#getting-started).
+Make sure you already did step 1 and 2 from these [root instructions](/#getting-started).
 
 ### Running Locally
 

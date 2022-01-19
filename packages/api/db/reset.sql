@@ -11,6 +11,3 @@ DROP TABLE IF EXISTS cargo.aggregate_entries;
 DROP TABLE IF EXISTS cargo.aggregates;
 DROP TABLE IF EXISTS cargo.deals;
 DROP SERVER IF EXISTS dag_cargo_server CASCADE;
--- DROP MATERIALIZED VIEW IF EXISTS public.aggregate_entry CASCADE;
--- DROP MATERIALIZED VIEW IF EXISTS public.deal CASCADE;
--- DROP MATERIALIZED VIEW IF EXISTS public.aggregate CASCADE;
