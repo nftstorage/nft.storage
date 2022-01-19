@@ -88,6 +88,10 @@ export class Logging {
   }
 
   async postBatch() {
+    if (!this.env.LOGTAIL_TOKEN) {
+      return
+    }
+
     if (this.logEventsBatch.length > 0) {
       const batchInFlight = [...this.logEventsBatch]
       this.logEventsBatch = []

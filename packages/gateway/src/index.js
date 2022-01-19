@@ -36,9 +36,12 @@ function serverError(error, request, env) {
 export default {
   async fetch(request, env, ctx) {
     try {
-      return await router.handle(request, env, ctx)
+      const res = await router.handle(request, env, ctx)
+      env.log.timeEnd('request')
+      return env.log.end(res)
     } catch (error) {
-      return serverError(error, request, env)
+      env.log.timeEnd('request')
+      return env.log.end(serverError(error, request, env))
     }
   },
 }
