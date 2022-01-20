@@ -29,7 +29,7 @@ This method expects the metadata to conform to the [ERC-1155 metadata schema][re
 
 **Not using ERC-1155?**
 
-If your metadata doesn't fit the ERC-1155 standard, learn how to [mint using custom metadata](./mint-custom-metadata.md) instead!
+If your metadata doesn't fit the ERC-1155 standard, learn how to [mint using custom metadata](../mint-custom-metadata/) instead!
 
 </Callout>
 
@@ -238,7 +238,7 @@ You can find more in-depth examples at [NFT School](https://nftschool.dev)!
 
 
 
-[guide-car-files]: ../concepts/car-files.md
+[guide-car-files]: ./concepts/car-files/
 [reference-http]: https://nft.storage/api-docs/
 [reference-erc-1155-schema]: https://eips.ethereum.org/EIPS/eip-1155#metadata
 [mdn-file]: https://developer.mozilla.org/en-US/docs/Web/API/File

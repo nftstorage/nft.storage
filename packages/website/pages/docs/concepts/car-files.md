@@ -12,9 +12,9 @@ When you upload files to NFT.Storage using the [client library][reference-client
 
 For many use cases, you never need to know about this process, as the conversion happens behind the scenes when using the client library.  However, if you're using the [HTTP API][reference-http-api], or if you want more control over the structure of the IPFS data graph, you may want to work with Content Archives directly.
 
-This how-to guide will explain [the basics of Content Archives](#what-is-a-content-archive) and [how they're used by the NFT.Storage API](#car-files-and-nft-storage).
+This how-to guide will explain the basics of Content Archives and how they're used by the NFT.Storage API.
 
-We'll also see several methods of creating and manipulating Content Archives using [command line tools](#command-line-tools) and an overview of the [libraries](#libraries-for-application-developers) you can use in your application's code.
+We'll also see several methods of creating and manipulating Content Archives using command line tools and an overview of the libraries you can use in your application's code.
 
 ### What is a Content Archive?
 
@@ -22,7 +22,7 @@ The [Content Archive format][car-spec] is a way of packaging up [content address
 
 The type of data stored in CARs is defined by [IPLD](https://ipld.io), or InterPlanetary Linked Data. IPLD is a specification and set of implementations for structured data types that can link to each other using a hash-based Content Identifier (CID). Data linked in this way forms a Directed Acyclic Graph, or DAG, and you'll likely see a few references to DAGs in the documentation for IPLD and IPFS.
 
-IPFS files are one example of IPLD data, but IPLD can also be used to access data from Ethereum, Git, and other hash-addressed systems. You can also use IPLD as a general purpose format for your structured data, sort of like a Web3-flavored JSON. See [Advanced IPLD formats](#advanced-ipld-formats) below for more information.
+IPFS files are one example of IPLD data, but IPLD can also be used to access data from Ethereum, Git, and other hash-addressed systems. You can also use IPLD as a general purpose format for your structured data, sort of like a Web3-flavored JSON. See Advanced IPLD formats below for more information.
 
 ### CARs and NFT.Storage
 
@@ -109,13 +109,13 @@ There are two JavaScript packages available for manipulating CARs inside your ap
 
 ###### ipfs-car
 
-The `ipfs-car` package includes library functions for packing and unpacking files into CARs, using the IPFS UnixFs data model. The library includes the same functionality as the `ipfs-car` command line utility [described above](#ipfs-car).
+The `ipfs-car` package includes library functions for packing and unpacking files into CARs, using the IPFS UnixFs data model. The library includes the same functionality as the `ipfs-car` command line utility described above.
 
 See the [ipfs-car README](https://github.com/web3-storage/ipfs-car#api) for API documentation and usage examples.
 
 ###### @ipld/car
 
-The [`@ipld/car` package](https://github.com/ipld/js-car) contains the main JavaScript implementation of the CAR specification and is used by `ipfs-car` under the hood. If you want to store non-file data using [advanced IPLD formats](#advanced-ipld-formats), you should use `@ipld/car` directly.
+The [`@ipld/car` package](https://github.com/ipld/js-car) contains the main JavaScript implementation of the CAR specification and is used by `ipfs-car` under the hood. If you want to store non-file data using advanced IPLD formats, you should use `@ipld/car` directly.
 
 `@ipld/car` also provides the `CarReader` interface used by the NFT.Storage client's [`storeCar` method](https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#storeCar).
 
@@ -264,7 +264,7 @@ carbites --help
   import { TreewalkCarSplitter } from 'carbites/treewalk'
   ```
 
-  You can create a `TreewalkCarSplitter` by passing in a `CarReader` and a `targetSize` in bytes for the output cars. See the section on [@ipld/car](#ipld-car) for more information on `CarReader`. For now, we'll assume that the `loadLargeCar` function returns a `CarReader`, and we'll use the `TreewalkCarSplitter` to create split CARs:
+  You can create a `TreewalkCarSplitter` by passing in a `CarReader` and a `targetSize` in bytes for the output cars. See the section on @ipld/car for more information on `CarReader`. For now, we'll assume that the `loadLargeCar` function returns a `CarReader`, and we'll use the `TreewalkCarSplitter` to create split CARs:
 
   ```js
   import { TreewalkCarSplitter } from 'carbites/treewalk'
