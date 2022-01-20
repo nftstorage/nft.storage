@@ -17,7 +17,7 @@ const GATEWAY_METRICS_ID = 'gateway_metrics'
 /**
  * Durable Object for keeping Metrics state of a gateway.
  */
-export class GatewayMetrics0 {
+export class GatewayMetrics1 {
   constructor(state) {
     this.state = state
 
@@ -74,15 +74,20 @@ export class GatewayMetrics0 {
       ...this.gatewayMetrics.responseTimeHistogram,
     }
 
-    const histogramCandidate =
-      histogram.find((h) => stats.responseTime <= h) ||
-      histogram[histogram.length - 1]
-    gwHistogram[histogramCandidate] += 1
+    // Get all the histogram buckets where the response time is smaller
+    const histogramCandidates = histogram.filter((h) => stats.responseTime < h)
+    histogramCandidates.forEach((candidate) => {
+      gwHistogram[candidate] += 1
+    })
+
     this.gatewayMetrics.responseTimeHistogram = gwHistogram
   }
 }
 
-export const histogram = [300, 500, 750, 1000, 1500, 2000, 3000, 5000, 10000]
+// We will count occurences per bucket where response time is less or equal than bucket value
+export const histogram = [
+  300, 500, 750, 1000, 1500, 2000, 3000, 5000, 10000, 20000,
+]
 
 function createMetricsTracker() {
   const h = histogram.map((h) => [h, 0])
