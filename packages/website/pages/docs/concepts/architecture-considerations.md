@@ -20,7 +20,7 @@ There are currently a few ways to provide access to NFT.Storage from your fronte
 
 1. If you have a backend service, you can proxy upload requests through an endpoint that attaches your API key to the request after performing your own authentication.
 1. Encourage your end users to sign up for a free NFT.Storage account, and prompt them for their API key. You can store the key in the browser's local storage or another durable location for future use and attach it to requests to the NFT.Storage service.
-1. If you're minting on the Solana blockchain, see the section about [Solana wallet authentication](#solana-wallet-authentication) to see if it fits your use case.
+1. If you're minting on the Solana blockchain, see the section about Solana wallet authentication to see if it fits your use case.
 
 ### Solana wallet authentication
 
@@ -28,7 +28,7 @@ The [metaplex-auth](https://github.com/nftstorage/metaplex-auth) library provide
 
 While originally designed for [Metaplex](https://www.metaplex.com/), the authentication system will work for any Solana program. Just set the `mintingAgent` option to the name of your platform or tool when using the library.
 
-The auth mechanism works by packaging your upload into a [CAR file](./car-files.md) and calculating the root CID, which is included in a signed token payload. As a result, each upload will require a signature from the user's private key or wallet. If you want to upload several NFTs at once, you may be able reduce user friction by packaging them into one CAR, so that only one signature is required. See the [guide to CAR files](./car-files.md) for more on working with CARs.
+The auth mechanism works by packaging your upload into a [CAR file](../car-files/) and calculating the root CID, which is included in a signed token payload. As a result, each upload will require a signature from the user's private key or wallet. If you want to upload several NFTs at once, you may be able reduce user friction by packaging them into one CAR, so that only one signature is required. See the [guide to CAR files](../car-files/) for more on working with CARs.
 
 Although the library is written in TypeScript, you don't need to use TypeScript or JavaScript to take advantage of the auth mechanism, provided you're willing to write a little bit of code to generate the proper token.
 
