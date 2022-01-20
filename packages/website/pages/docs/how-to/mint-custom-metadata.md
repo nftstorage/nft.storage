@@ -5,7 +5,7 @@ title: Store and mint NFTs using custom metadata
 import Callout from 'nextra-theme-docs/callout';
 
 # Store and mint NFTs using custom metadata
-If your metadata conforms to the popular ERC-721 or ERC-1155 standards, you can [upload all your NFT assets and prepare your metadata all in one HTTP request](./mint-erc-1155.md). 
+If your metadata conforms to the popular ERC-721 or ERC-1155 standards, you can [upload all your NFT assets and prepare your metadata all in one HTTP request](../mint-erc-1155/). 
 
 If you want to customize your metadata in a way that's not compatible with ERC-1155, or if you know you'll be using the same off-chain assets in many NFTs, you can store your files separately and get their IPFS URIs. You can then use these IPFS URIs and put them into a JSON file however you'd like to create your metadata. This metadata can then be stored, resulting in an IPFS URI that you can store in your token's on-chain record.
 
@@ -63,7 +63,7 @@ The [HTTP API][reference-http-api] provides a `/upload` endpoint that accepts on
 
 **Size limits**
 
-The `/upload` endpoint can accept up to 100 MiB in each HTTP request. If your files are larger than 100 MiB, see the section below on [CAR files](#car-files), which can be used to split uploads between several HTTP requests.
+The `/upload` endpoint can accept up to 100 MiB in each HTTP request. If your files are larger than 100 MiB, see the section below on CAR files, which can be used to split uploads between several HTTP requests.
 
 </Callout>
 
@@ -170,7 +170,7 @@ See [this pull request](https://github.com/nftstorage/nft.storage/pull/991) for 
 Coming soon...
 
 
-[guide-car-files]: ../concepts/car-files.md
+[guide-car-files]: ../../concepts/car-files/
 
 [reference-http-api]: https://nft.storage/api-docs/
 [reference-js-client]: https://nftstorage.github.io/nft.storage/client
