@@ -14,7 +14,7 @@ export function getMiniflare() {
     modules: true,
     durableObjects: {
       GATEWAYMETRICS: 'GatewayMetrics0',
-      GENERICMETRICS: 'GenericMetrics0',
+      GENERICMETRICS: 'GenericMetrics1',
       CIDSTRACKER: 'CidsTracker0',
     },
   })

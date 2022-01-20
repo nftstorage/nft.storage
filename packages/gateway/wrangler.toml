@@ -122,3 +122,7 @@ deleted_classes = ["Metrics12"]
 tag = "v14" # Should be unique for each entry
 new_classes = ["GatewayMetrics0", "GenericMetrics0"]
 deleted_classes = ["Metrics13"]
+[[migrations]]
+tag = "v15" # Should be unique for each entry
+new_classes = ["GenericMetrics1"]
+deleted_classes = ["GenericMetrics0"]

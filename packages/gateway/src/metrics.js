@@ -7,9 +7,10 @@ import { histogram } from './durable-objects/gateway-metrics.js'
 
 /**
  * @typedef {import('./durable-objects/gateway-metrics').GatewayMetrics} GatewayMetrics
+ * @typedef {import('./durable-objects/generic-metrics').GenericMetrics} GenericMetrics
  *
  * @typedef MetricsDurable
- * @property {number} totalWinnerResponseTime
+ * @property {GenericMetrics} genericMetrics
  * @property {Record<string,GatewayMetrics>} ipfsGateways
  */
 
@@ -31,15 +32,16 @@ export async function metricsGet(request, env, ctx) {
   // }
   let res
 
-  const [totalWinnerResponseTime, ipfsGateways] = await Promise.all([
+  const [genericMetrics, ipfsGateways] = await Promise.all([
     (async () => {
       const id = env.genericMetricsDurable.idFromName(GENERIC_METRICS_ID)
       const stub = env.genericMetricsDurable.get(id)
 
       const stubResponse = await stub.fetch(request)
-      const totalWinnerResponseTime = await stubResponse.text()
+      /** @type {GenericMetrics} */
+      const genericMetrics = await stubResponse.json()
 
-      return totalWinnerResponseTime
+      return genericMetrics
     })(),
     pMap(env.ipfsGateways, async (gw) => {
       const id = env.gatewayMetricsDurable.idFromName(gw)
@@ -58,7 +60,7 @@ export async function metricsGet(request, env, ctx) {
 
   /** @type {MetricsDurable} */
   const metricsCollected = {
-    totalWinnerResponseTime,
+    genericMetrics,
     ipfsGateways: ipfsGateways.reduce(
       (obj, item) => Object.assign(obj, { [item.gw]: item.gwMetrics }),
       {}
@@ -66,6 +68,12 @@ export async function metricsGet(request, env, ctx) {
   }
 
   const metrics = [
+    `# HELP nftstorage_gateway_total_winner_response_time Total requests performed.`,
+    `# TYPE nftstorage_gateway_total_winner_response_time counter`,
+    `nftstorage_gateway_total_winner_response_time{env="${env.ENV}"} ${metricsCollected.genericMetrics.totalWinnerResponseTime}`,
+    `# HELP nftstorage_gateway_total_winner_successful_requests Total successful requests.`,
+    `# TYPE nftstorage_gateway_total_winner_successful_requests counter`,
+    `nftstorage_gateway_total_winner_successful_requests{env="${env.ENV}"} ${metricsCollected.genericMetrics.totalWinnerSuccessfulRequests}`,
     `# HELP nftstorage_gateway_total_response_time Average response time.`,
     `# TYPE nftstorage_gateway_total_response_time gauge`,
     ...env.ipfsGateways.map(
@@ -74,9 +82,6 @@ export async function metricsGet(request, env, ctx) {
           env.ENV
         }"} ${metricsCollected.ipfsGateways[gw].totalResponseTime || 0}`
     ),
-    `# HELP nftstorage_gateway_total_fastest_response_time Total requests performed.`,
-    `# TYPE nftstorage_gateway_total_fastest_response_time counter`,
-    `nftstorage_gateway_total_fastest_response_time{env="${env.ENV}"} ${metricsCollected.totalWinnerResponseTime}`,
     `# HELP nftstorage_gateway_total_requests Total requests performed.`,
     `# TYPE nftstorage_gateway_total_requests counter`,
     ...env.ipfsGateways.map(
