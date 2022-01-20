@@ -8,12 +8,13 @@ import clsx from 'clsx'
  * @prop {string | undefined} [text]
  * @prop {string} [title]
  * @prop {string} [popupContent]
+ * @prop {JSX.Element} [children]
  */
 
 /**
  * @param {CopyButtonProps} props
  */
-function CopyButton({ text, title, popupContent, ...props }) {
+function CopyButton({ text, title, popupContent, children, ...props }) {
   const [popup, setPopupActive] = useState(false)
   /** @type [any, null | any] */
   const [timer, setTimer] = useState(null)
@@ -39,23 +40,26 @@ function CopyButton({ text, title, popupContent, ...props }) {
   }
 
   return (
-    <button
-      onClick={handleCopy}
-      title={title}
-      className="icon-button transparent mr1"
-      {...props}
-    >
-      <span
-        data-content={popupContent}
-        className={clsx('popup', { active: popup })}
-      />
-      {popup && (
-        <span className="sr-only" aria-live="assertive">
-          {popupContent}
-        </span>
-      )}
-      <Copy tab-index={-1} />
-    </button>
+    <>
+      {children}
+      <button
+        onClick={handleCopy}
+        title={title}
+        className="icon-button transparent v-mid mr2"
+        {...props}
+      >
+        <span
+          data-content={popupContent}
+          className={clsx('popup', { active: popup })}
+        />
+        {popup && (
+          <span className="sr-only" aria-live="assertive">
+            {popupContent}
+          </span>
+        )}
+        <Copy tab-index={-1} />
+      </button>
+    </>
   )
 }
 
