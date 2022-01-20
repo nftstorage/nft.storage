@@ -46,7 +46,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
  * @param {{ init?: boolean; project: string; start?: boolean; stop?: boolean; clean?: boolean; }} opts
  */
 export async function dbCmd(opts) {
-  const composePath = path.join(__dirname, '../../db/docker/docker-compose.yml')
+  const composePath = path.join(__dirname, '../../docker/docker-compose.yml')
 
   if (opts.init) {
     await execa('docker-compose', [
