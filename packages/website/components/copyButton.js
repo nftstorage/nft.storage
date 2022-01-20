@@ -45,7 +45,7 @@ function CopyButton({ text, title, popupContent, children, ...props }) {
       <button
         onClick={handleCopy}
         title={title}
-        className="icon-button transparent v-mid ml1"
+        className="icon-button transparent v-mid mr2"
         {...props}
       >
         <span
