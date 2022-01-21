@@ -37,7 +37,15 @@ export default class NiftySaveStack extends sst.Stack {
 
     //Analyze
 
+    const analyzerIntakeQueue = new sst.Queue(this, 'AnalyzerIntakeQueue', {})
+
     //Pin
+
+    const postPinningIntakeQueue = new sst.Queue(
+      this,
+      'PostPinningIntakeQueue',
+      {}
+    )
 
     //Verify
 
