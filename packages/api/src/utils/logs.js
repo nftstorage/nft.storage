@@ -184,16 +184,19 @@ export class Logging {
         message: message.message,
       }
       this.opts.sentry.captureException(message)
+      if (this.opts?.debug) {
+        console[level](`[${dt}] `, message.stack, context)
+      }
     } else {
       log = {
         ...log,
         message,
       }
+      if (this.opts?.debug) {
+        console[level](`[${dt}] `, message, context)
+      }
     }
 
-    if (this.opts?.debug) {
-      console[level](`[${dt}] `, log.message, context)
-    }
     this._add(log)
   }
 
@@ -261,7 +264,7 @@ export class Logging {
     })
 
     if (this.opts?.debug) {
-      console.log(`[${this._date()}] `, `name: ${duration} ms`)
+      console.log(`[${this._date()}] `, `${name}: ${duration} ms`)
     }
     return timeObj
   }

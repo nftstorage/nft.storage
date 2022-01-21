@@ -12,10 +12,13 @@ export type UpsertUserInput = Pick<
   | 'github'
 >
 
+export type UserOutputKey = Pick<
+  definitions['auth_key'],
+  'user_id' | 'id' | 'name' | 'secret'
+>
+
 export type UserOutput = definitions['user'] & {
-  keys: Array<
-    Pick<definitions['auth_key'], 'user_id' | 'id' | 'name' | 'secret'>
-  >
+  keys: Array<UserOutputKey>
 }
 
 export type UploadOutput = definitions['upload'] & {
@@ -42,6 +45,7 @@ export interface CreateUploadInput {
   origins?: string[]
   meta?: Record<string, string>
   name?: string
+  backup_urls?: URL[]
   inserted_at?: definitions['upload']['inserted_at']
   updated_at?: definitions['upload']['updated_at']
   pins?: Pick<definitions['pin'], 'service' | 'status'>[]

@@ -7,27 +7,29 @@ export const secrets = {
   database: DATABASE_TOKEN,
   mailchimp: MAILCHIMP_API_KEY,
   logtail: LOGTAIL_TOKEN,
-  metaplexAuth: METAPLEX_AUTH_TOKEN,
+  metaplexAuth:
+    typeof METAPLEX_AUTH_TOKEN !== 'undefined'
+      ? METAPLEX_AUTH_TOKEN
+      : undefined,
 }
 
 const CLUSTER1 = 'https://nft.storage.ipfscluster.io/api/'
 const CLUSTER2 = 'https://nft2.storage.ipfscluster.io/api/'
 const CLUSTER3 = 'https://nft3.storage.ipfscluster.io/api/'
-let clusterUrl
 
-switch (CLUSTER_SERVICE) {
-  case 'IpfsCluster':
+let clusterUrl
+if (typeof CLUSTER_SERVICE !== 'undefined' && CLUSTER_SERVICE) {
+  if (CLUSTER_SERVICE === 'IpfsCluster') {
     clusterUrl = CLUSTER1
-    break
-  case 'IpfsCluster2':
+  } else if (CLUSTER_SERVICE === 'IpfsCluster2') {
     clusterUrl = CLUSTER2
-    break
-  case 'IpfsCluster3':
+  } else if (CLUSTER_SERVICE === 'IpfsCluster3') {
     clusterUrl = CLUSTER3
-    break
-  default:
-    clusterUrl = CLUSTER_API_URL
-    break
+  } else {
+    throw new Error(`unknown cluster service: ${CLUSTER_SERVICE}`)
+  }
+} else {
+  clusterUrl = CLUSTER_API_URL
 }
 
 export const cluster = {
@@ -57,3 +59,12 @@ export const isDebug = DEBUG === 'true'
  */
 export const psaAllow =
   typeof PSA_ALLOW !== 'undefined' ? PSA_ALLOW.split(',') : ['*']
+
+export const s3 = {
+  endpoint: typeof S3_ENDPOINT !== 'undefined' ? S3_ENDPOINT : '',
+  region: typeof S3_REGION !== 'undefined' ? S3_REGION : '',
+  accessKeyId: typeof S3_ACCESS_KEY_ID !== 'undefined' ? S3_ACCESS_KEY_ID : '',
+  secretAccessKey:
+    typeof S3_SECRET_ACCESS_KEY !== 'undefined' ? S3_SECRET_ACCESS_KEY : '',
+  bucketName: typeof S3_BUCKET_NAME !== 'undefined' ? S3_BUCKET_NAME : '',
+}

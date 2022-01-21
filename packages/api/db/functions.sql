@@ -1,5 +1,6 @@
 DROP FUNCTION IF EXISTS create_upload;
 DROP FUNCTION IF EXISTS find_deals_by_content_cids;
+DROP FUNCTION IF EXISTS json_arr_to_text_arr;
 
 DROP TYPE IF EXISTS upload_pin_type;
 
@@ -9,12 +10,20 @@ CREATE TYPE upload_pin_type AS
     service service_type
 );
 
+-- transform a JSON array property into an array of SQL text elements
+CREATE OR REPLACE FUNCTION json_arr_to_text_arr(_json json)
+  RETURNS text[] LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
+  'SELECT ARRAY(SELECT json_array_elements_text(_json))';
+
 CREATE OR REPLACE FUNCTION create_upload(data json) RETURNS void
     LANGUAGE plpgsql
     volatile
     PARALLEL UNSAFE
 AS
 $$
+DECLARE
+  inserted_upload_id BIGINT;
+  backup_url TEXT;
 BEGIN
     SET LOCAL statement_timeout = '30s';
 
@@ -63,8 +72,15 @@ BEGIN
                       meta       = (data ->> 'meta')::jsonb,
                       origins    = (data ->> 'origins')::jsonb,
                       mime_type  = data ->> 'mime_type',
-                      type       = (data ->> 'type')::upload_type;
+                      type       = (data ->> 'type')::upload_type
+    RETURNING id INTO inserted_upload_id;
 
+    FOREACH backup_url IN ARRAY json_arr_to_text_arr(data -> 'backup_urls')
+    LOOP
+        INSERT INTO backup (upload_id, url, inserted_at)
+        VALUES (inserted_upload_id, backup_url, (data ->> 'inserted_at')::TIMESTAMPTZ)
+        ON CONFLICT (upload_id, url) DO NOTHING;
+    END LOOP;
 END
 $$;
 
