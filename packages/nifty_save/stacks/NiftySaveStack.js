@@ -56,6 +56,8 @@ export default class NiftySaveStack extends sst.Stack {
         environment: {
           sliceCommandQueueUrl: sliceCommandQueue.sqsQueue.queueUrl,
           fetchedRecordQueueUrl: fetchedRecordQueue.sqsQueue.queueUrl,
+          analyzerIntakeQueueUrl: analyzerIntakeQueue.sqsQueue.queueUrl,
+          postPinningIntakeQueue: postPinningIntakeQueue.sqsQueue.queueUrl,
           busArn: bus.eventBusArn,
         },
       },
