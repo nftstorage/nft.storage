@@ -109,6 +109,7 @@ wrangler secret put CLUSTER_SERVICE --env production # Which cluster should be u
 wrangler secret put MAILCHIMP_API_KEY --env production # Get from mailchimp
 wrangler secret put LOGTAIL_TOKEN --env production # Get from Logtail
 wrangler secret put PSA_ALLOW --env production # CSV user ID list, get from 1password vault
+wrangler secret put METAPLEX_AUTH_TOKEN --env production # User ID meteplex endpoint should use (not required for dev)
 wrangler secret put S3_REGION --env production # e.g us-east-2 (not required for dev)
 wrangler secret put S3_ACCESS_KEY_ID --env production # Get from Amazon S3 (not required for dev)
 wrangler secret put S3_SECRET_ACCESS_KEY --env production # Get from Amazon S3 (not required for dev)

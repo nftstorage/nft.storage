@@ -7,27 +7,29 @@ export const secrets = {
   database: DATABASE_TOKEN,
   mailchimp: MAILCHIMP_API_KEY,
   logtail: LOGTAIL_TOKEN,
-  metaplexAuth: METAPLEX_AUTH_TOKEN,
+  metaplexAuth:
+    typeof METAPLEX_AUTH_TOKEN !== 'undefined'
+      ? METAPLEX_AUTH_TOKEN
+      : undefined,
 }
 
 const CLUSTER1 = 'https://nft.storage.ipfscluster.io/api/'
 const CLUSTER2 = 'https://nft2.storage.ipfscluster.io/api/'
 const CLUSTER3 = 'https://nft3.storage.ipfscluster.io/api/'
-let clusterUrl
 
-switch (CLUSTER_SERVICE) {
-  case 'IpfsCluster':
+let clusterUrl
+if (typeof CLUSTER_SERVICE !== 'undefined' && CLUSTER_SERVICE) {
+  if (CLUSTER_SERVICE === 'IpfsCluster') {
     clusterUrl = CLUSTER1
-    break
-  case 'IpfsCluster2':
+  } else if (CLUSTER_SERVICE === 'IpfsCluster2') {
     clusterUrl = CLUSTER2
-    break
-  case 'IpfsCluster3':
+  } else if (CLUSTER_SERVICE === 'IpfsCluster3') {
     clusterUrl = CLUSTER3
-    break
-  default:
-    clusterUrl = CLUSTER_API_URL
-    break
+  } else {
+    throw new Error(`unknown cluster service: ${CLUSTER_SERVICE}`)
+  }
+} else {
+  clusterUrl = CLUSTER_API_URL
 }
 
 export const cluster = {
