@@ -25,55 +25,58 @@ export async function gatewayGet(request, env, ctx) {
   const reqUrl = new URL(request.url)
   const cid = getCidFromSubdomainUrl(reqUrl)
 
-  const gatewayReqs = env.ipfsGateways.map(async (url) => {
-    const ipfsUrl = new URL('ipfs', url)
-    const controller = new AbortController()
-    const startTs = Date.now()
-    const timer = setTimeout(() => controller.abort(), env.REQUEST_TIMEOUT)
-
-    let response
-    try {
-      response = await fetch(
-        `${ipfsUrl.toString()}/${cid}${reqUrl.pathname || ''}`,
-        { signal: controller.signal }
-      )
-    } finally {
-      clearTimeout(timer)
-    }
-
-    /** @type {GatewayResponse} */
-    const gwResponse = {
-      response,
-      url,
-      responseTime: Date.now() - startTs,
-    }
-    return gwResponse
-  })
+  const gatewayReqs = env.ipfsGateways.map((gwUrl) =>
+    _gatewayFetch(gwUrl, cid, {
+      pathname: reqUrl.pathname,
+      timeout: env.REQUEST_TIMEOUT,
+    })
+  )
 
   try {
-    const winnerGwResponse = await pAny(gatewayReqs)
+    /** @type {GatewayResponse} */
+    let winnerGwResponse = await pAny(gatewayReqs)
+
+    const failedGws = []
+
+    // Wait until we have a winner ok response, or all failed
+    while (
+      !winnerGwResponse.response.ok &&
+      gatewayReqs.filter((p) => !p.isFulfilled).length
+    ) {
+      failedGws.push(winnerGwResponse.url)
+
+      // TODO: Is it rate limited?
+      // how can we "suspend" this gateway for a bit? Maybe track this in a Durable Object?
+
+      winnerGwResponse = await pAny(
+        gatewayReqs.filter((p) => !failedGws.find((gwUrl) => gwUrl === p.gwUrl))
+      )
+    }
+
+    async function settleGatewayRequests() {
+      // Wait for remaining responses
+      const responses = await pSettle(gatewayReqs)
+      const successFullResponses = responses.filter(
+        (r) => r.value?.response?.ok
+      )
+
+      await Promise.all([
+        // Filter out winner and update remaining gateway metrics
+        pMap(
+          // TODO: only filter out if winner is success...
+          responses.filter((r) => r.value?.url !== winnerGwResponse.url),
+          (r) => updateGatewayMetrics(request, env, r.value, false)
+        ),
+        updateCidsTracker(request, env, successFullResponses, cid),
+      ])
+    }
 
     ctx.waitUntil(
       (async () => {
-        // Store Winner metrics
         await Promise.all([
-          updateGatewayMetrics(request, env, winnerGwResponse, true),
-          updateGenericMetrics(request, env, winnerGwResponse),
-        ])
-
-        // Wait for remaining responses
-        const responses = await pSettle(gatewayReqs)
-        const successFullResponses = responses.filter(
-          (r) => r.value?.response?.ok
-        )
-
-        await Promise.all([
-          // Filter out winner and update remaining gateway metrics
-          pMap(
-            responses.filter((r) => r.value?.url !== winnerGwResponse.url),
-            (r) => updateGatewayMetrics(request, env, r.value, false)
-          ),
-          updateCidsTracker(request, env, successFullResponses, cid),
+          winnerGwResponse.response.ok &&
+            storeWinnerGwResponse(request, env, winnerGwResponse),
+          settleGatewayRequests(),
         ])
       })()
     )
@@ -93,6 +96,62 @@ export async function gatewayGet(request, env, ctx) {
 
     throw err
   }
+}
+
+/**
+ * Store metrics for winner gateway response
+ *
+ * @param {Request} request
+ * @param {import('./env').Env} env
+ * @param {GatewayResponse} winnerGwResponse
+ */
+async function storeWinnerGwResponse(request, env, winnerGwResponse) {
+  await Promise.all([
+    updateGatewayMetrics(request, env, winnerGwResponse, true),
+    updateGenericMetrics(request, env, winnerGwResponse),
+  ])
+}
+
+/**
+ * Fetches given CID from given IPFS gateway URL.
+ *
+ * @param {string} gwUrl
+ * @param {string} cid
+ * @param {Object} [options]
+ * @param {string} [options.pathname]
+ * @param {number} [options.timeout]
+ * @return {GatewayResponsePromise}
+ */
+function _gatewayFetch(gwUrl, cid, { pathname = '', timeout = 20000 } = {}) {
+  const gatewayResponsePromise = new GatewayResponsePromise(async (resolve) => {
+    const ipfsUrl = new URL('ipfs', gwUrl)
+    const controller = new AbortController()
+    const startTs = Date.now()
+    const timer = setTimeout(() => controller.abort(), timeout)
+
+    let response
+    try {
+      response = await fetch(`${ipfsUrl.toString()}/${cid}${pathname}`, {
+        signal: controller.signal,
+      })
+    } finally {
+      clearTimeout(timer)
+    }
+
+    /** @type {GatewayResponse} */
+    const gwResponse = {
+      response,
+      url: gwUrl,
+      responseTime: Date.now() - startTs,
+    }
+    resolve(gwResponse)
+  }, gwUrl)
+
+  gatewayResponsePromise.then(() => {
+    gatewayResponsePromise.isFulfilled = true
+  })
+
+  return gatewayResponsePromise
 }
 
 /**
@@ -178,4 +237,12 @@ function _getUpdateRequestUrl(request, data) {
     method: 'PUT',
     body: JSON.stringify(data),
   })
+}
+
+class GatewayResponsePromise extends Promise {
+  constructor(promiseFn, gwUrl) {
+    super(promiseFn)
+    this.gwUrl = gwUrl
+    this.isFulfilled = false
+  }
 }
