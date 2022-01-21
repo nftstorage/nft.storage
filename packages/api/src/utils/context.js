@@ -1,10 +1,25 @@
 import Toucan from 'toucan-js'
 import { DBClient } from './db-client.js'
-import { secrets, database, isDebug } from '../constants.js'
+import { S3BackupClient } from './s3-backup-client.js'
+import { secrets, database, isDebug, s3 as s3Config } from '../constants.js'
 import { Logging } from './logs.js'
 import pkg from '../../package.json'
 
 const db = new DBClient(database.url, secrets.database)
+
+const backup = s3Config.accessKeyId
+  ? new S3BackupClient(
+      s3Config.region,
+      s3Config.accessKeyId,
+      s3Config.secretAccessKey,
+      s3Config.bucketName,
+      { endpoint: s3Config.endpoint, appName: 'nft' }
+    )
+  : undefined
+
+if (!backup) {
+  console.warn('⚠️ AWS S3 backups disabled')
+}
 
 const sentryOptions = {
   dsn: secrets.sentry,
@@ -36,5 +51,5 @@ export function getContext(event, params) {
     debug: isDebug,
     sentry,
   })
-  return { params, db, log }
+  return { params, db, backup, log }
 }

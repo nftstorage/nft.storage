@@ -1,10 +1,14 @@
 import assert from 'assert'
+import { packToBlob } from 'ipfs-car/pack/blob'
+import { sha256 } from 'multiformats/hashes/sha2'
+import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import {
   createClientWithUser,
   DBTestClient,
   rawClient,
 } from './scripts/helpers.js'
 import { createCar } from './scripts/car.js'
+import { S3_ENDPOINT, S3_BUCKET_NAME } from './scripts/worker-globals.js'
 
 describe('NFT Upload ', () => {
   /** @type{DBTestClient} */
@@ -43,7 +47,7 @@ describe('NFT Upload ', () => {
     assert.equal(data.deleted_at, null)
   })
 
-  it('should upload a multiple blobs', async () => {
+  it('should upload multiple blobs', async () => {
     const body = new FormData()
 
     const file1 = new Blob(['hello world! 1'])
@@ -71,7 +75,7 @@ describe('NFT Upload ', () => {
     )
   })
 
-  it('should upload a multiple blobs without name', async () => {
+  it('should upload multiple blobs without name', async () => {
     const body = new FormData()
 
     const file1 = new Blob(['hello world! 1'])
@@ -91,7 +95,7 @@ describe('NFT Upload ', () => {
       { name: 'blob', type: 'application/octet-stream' },
     ])
     assert.ok(value.type === 'directory', 'should be directory')
-    assert.equal(value.size, 66, 'should have correct size')
+    assert.equal(value.size, 80, 'should have correct size')
     assert.strictEqual(
       value.cid,
       'bafybeiaowg4ssqzemwgdlisgphib54clq62arief7ssabov5r3pbfh7vje',
@@ -99,13 +103,13 @@ describe('NFT Upload ', () => {
     )
   })
 
-  it('should upload a multiple files without name', async () => {
+  it('should upload multiple files with name', async () => {
     const body = new FormData()
 
     const file1 = new Blob(['hello world! 1'])
     const file2 = new Blob(['hello world! 2'])
     body.append('file', new File([file1], 'name1.png'))
-    body.append('file', new File([file2], 'name1.png'))
+    body.append('file', new File([file2], 'name2.png'))
     const res = await fetch('upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
@@ -116,13 +120,13 @@ describe('NFT Upload ', () => {
     const { ok, value } = await res.json()
     assert.deepStrictEqual(value.files, [
       { name: 'name1.png', type: 'application/octet-stream' },
-      { name: 'name1.png', type: 'application/octet-stream' },
+      { name: 'name2.png', type: 'application/octet-stream' },
     ])
     assert.ok(value.type === 'directory', 'should be directory')
-    assert.equal(value.size, 71, 'should have correct size')
+    assert.equal(value.size, 138, 'should have correct size')
     assert.strictEqual(
       value.cid,
-      'bafybeibl5yizqtzdnhflscdmzjy7t6undnn7zhvhryhbfknneu364w62pe',
+      'bafybeieoib3k2cy2x7nlmsfpid3fhnhlewib7ekatui4i27qfio6vutmzm',
       'Server responded with expected CID'
     )
   })
@@ -260,5 +264,42 @@ describe('NFT Upload ', () => {
       .single()
 
     assert.equal(data.content.pin[0].service, 'IpfsCluster3')
+  })
+
+  it('should create S3 backup', async () => {
+    const { root, car } = await packToBlob({ input: 'S3 backup' })
+    const res = await fetch('upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: car,
+    })
+
+    const { value } = await res.json()
+    assert.equal(root.toString(), value.cid)
+
+    const upload = await client.client.getUpload(value.cid, client.userId)
+    assert(upload)
+
+    const { data: backup } = await rawClient
+      .from('backup')
+      .select('*')
+      .match({ upload_id: upload.id })
+      .single()
+    assert(backup) // should have a backup for this upload
+
+    /**
+     * @param {Uint8Array} data
+     */
+    const getHash = async (data) => {
+      const hash = await sha256.digest(new Uint8Array(data))
+      return uint8ArrayToString(hash.bytes, 'base32')
+    }
+
+    // construct the expected backup URL
+    const carBuf = await car.arrayBuffer()
+    const carHash = await getHash(new Uint8Array(carBuf))
+    const backupUrl = `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${client.userId}/${carHash}.car`
+
+    assert.equal(backup.url, backupUrl)
   })
 })

@@ -101,6 +101,9 @@ export class DBClient {
       data: {
         ...data,
         pins: data.pins || defaultPins,
+        backup_urls: data.backup_urls
+          ? data.backup_urls.map((u) => u.toString())
+          : [],
         inserted_at: data.inserted_at || now,
         updated_at: data.updated_at || now,
       },

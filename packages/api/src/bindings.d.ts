@@ -24,12 +24,18 @@ declare global {
   const MAINTENANCE_MODE: Mode
   const METAPLEX_AUTH_TOKEN: string
   const PSA_ALLOW: string
+  const S3_ENDPOINT: string
+  const S3_REGION: string
+  const S3_ACCESS_KEY_ID: string
+  const S3_SECRET_ACCESS_KEY: string
+  const S3_BUCKET_NAME: string
 }
 
 export interface RouteContext {
   params: Record<string, string>
   db: DBClient
   log: Logging
+  backup?: BackupClient
 }
 
 export type Handler = (
@@ -145,4 +151,26 @@ export interface PinsResponse {
     origins: string[]
   }
   delegates: string[]
+}
+
+/**
+ * The known structural completeness of a given DAG. "Unknown" structure means
+ * it could be a partial or it could be a complete DAG i.e. we haven't walked
+ * the graph to verify if we have all the blocks or not.
+ */
+export type DagStructure = 'Unknown' | 'Partial' | 'Complete'
+
+/**
+ * A client to a service that backups up a CAR file.
+ */
+export interface BackupClient {
+  /**
+   * Uploads the CAR file to the service and returns the URL.
+   */
+  backupCar(
+    userId: number,
+    rootCid: CID,
+    car: Blob,
+    structure?: DagStructure
+  ): Promise<URL>
 }
