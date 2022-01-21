@@ -190,18 +190,20 @@ export default function Files({ user }) {
         <td data-label="Date" className="nowrap" title={nft.created}>
           {nft.created.split('T')[0]}
         </td>
-        <td data-label="CID" className="wrap-cell">
+        <td data-label="CID" className="nowrap">
           <CopyButton
             title="Copy cid to Clipboard"
             text={nft.cid}
             popupContent={'CID has been copied!!'}
-          />
+          >
+            <p className="dib black">{nft.cid}</p>
+          </CopyButton>
           <GatewayLink cid={nft.cid} type={nft.type} />
         </td>
         <td data-label="Pin Status" className="nowrap">
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
         </td>
-        <td data-label="Deals" className="">
+        <td data-label="Deals">
           <div>{deals}</div>
         </td>
         <td data-label="Size" className="nowrap">
@@ -352,12 +354,23 @@ export default function Files({ user }) {
 function GatewayLink({ cid, type }) {
   const gatewayLink = cid.startsWith('Qm')
     ? `https://ipfs.io/ipfs/${cid}`
-    : `https://${cid}.ipfs.dweb.link`
+    : `ipfs://${cid}`
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
 
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="black">
-      {cid}
-    </a>
+    <CopyButton
+      title="Copy IPFS Url to Clipboard"
+      text={href}
+      popupContent={'IPFS Url has been copied!'}
+    >
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="chicagoflf black"
+      >
+        URL:
+      </a>
+    </CopyButton>
   )
 }

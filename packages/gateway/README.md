@@ -25,6 +25,7 @@ One time set up of your cloudflare worker subdomain for dev:
 
   ```sh
     wrangler secret put SENTRY_DSN --env $(whoami) # Get from Sentry (not required for dev)
+    wrangler secret put LOGTAIL_TOKEN --env $(whoami) # Get from Logtail
   ```
 
 - `npm run publish` - Publish the worker under your env. An alias for `wrangler publish --env $(whoami)`

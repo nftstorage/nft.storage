@@ -130,3 +130,17 @@ ENV = "dev"
 DEBUG = "*"
 CLUSTER_API_URL = "https://redaphid-cluster-api-nft-storage.loca.lt/"
 DATABASE_URL = "https://redaphid-postgrest-nft-storage.loca.lt"
+
+[env.vsantos]
+name = "nft-storage-vsantos"
+account_id = "7ec0b7cf2ec201b2580374e53ba5f37b"
+workers_dev = true
+route = ""
+zone_id = ""
+
+[env.vsantos.vars]
+ENV = "dev"
+DEBUG = "*"
+CLUSTER_API_URL = "https://vascosantos-cluster-api-nft-storage.loca.lt"
+CLUSTER_ADDRS = ""
+DATABASE_URL = "https://vascosantos-postgrest-nft-storage.loca.lt"

@@ -6,7 +6,8 @@ import { gatewayGet } from './gateway.js'
 import { metricsGet } from './metrics.js'
 
 // Export Durable Object namespace from the root module.
-export { Metrics13 } from './durable-objects/metrics.js'
+export { GatewayMetrics0 } from './durable-objects/gateway-metrics.js'
+export { GenericMetrics0 } from './durable-objects/generic-metrics.js'
 export { CidsTracker0 } from './durable-objects/cids.js'
 
 import { addCorsHeaders, withCorsHeaders } from './cors.js'
@@ -35,9 +36,12 @@ function serverError(error, request, env) {
 export default {
   async fetch(request, env, ctx) {
     try {
-      return await router.handle(request, env, ctx)
+      const res = await router.handle(request, env, ctx)
+      env.log.timeEnd('request')
+      return env.log.end(res)
     } catch (error) {
-      return serverError(error, request, env)
+      env.log.timeEnd('request')
+      return env.log.end(serverError(error, request, env))
     }
   },
 }

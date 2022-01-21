@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.21.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.20.1...website-v1.21.0) (2022-01-21)
+
+
+### Features
+
+* decentralizing nft.storage blog post ([#1127](https://www.github.com/nftstorage/nft.storage/issues/1127)) ([0efe527](https://www.github.com/nftstorage/nft.storage/commit/0efe52723d6d9ef0cdae55c5be2f8ead75b93cf8))
+* making changes to the copy options per new designs ([#1085](https://www.github.com/nftstorage/nft.storage/issues/1085)) ([96acff7](https://www.github.com/nftstorage/nft.storage/commit/96acff75687463b97f76866d53fb563487f7b509))
+
 ### [1.20.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.20.0...website-v1.20.1) (2022-01-18)
 
 
