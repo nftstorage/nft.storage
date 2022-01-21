@@ -13,7 +13,7 @@ export async function getToken() {
   const now = Date.now() / 1000
 
   const loggedIn = await getIsLoggedIn()
-  if (loggedIn) return token
+  if (loggedIn) return token || ''
 
   if (token === undefined || now - created > LIFESPAN - 10) {
     token = await magic.user.getIdToken({ lifespan: LIFESPAN })
@@ -30,7 +30,7 @@ export async function getIsLoggedIn() {
       Authorization: 'Bearer ' + token,
     },
   })
-  return loggedIn.ok
+  return loggedIn.ok || false
 }
 
 /**

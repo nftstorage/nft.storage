@@ -21,6 +21,7 @@ import { pinsList } from './routes/pins-list.js'
 import { pinsReplace } from './routes/pins-replace.js'
 import { metaplexUpload } from './routes/metaplex-upload.js'
 import { blogSubscribe } from './routes/blog-subscribe.js'
+import { userGet } from './routes/user-get.js'
 
 import {
   withMode,
@@ -78,6 +79,7 @@ const psa = (handler, mode) =>
 
 // Login
 r.add('post', '/login', withMode(login, RO), [postCors])
+r.add('get', '/login', withMode(userGet, RO), [postCors])
 
 // Pinning
 r.add('get', '/pins', psa(pinsList, RO), [postCors])
