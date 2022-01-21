@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.22.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.21.1...website-v1.22.0) (2022-01-21)
+
+
+### Features
+
+* quickly fix twitter display ([#1138](https://www.github.com/nftstorage/nft.storage/issues/1138)) ([4d1beeb](https://www.github.com/nftstorage/nft.storage/commit/4d1beeb3c00a6a39c49c086f6d189f5bb19d9e1e))
+
+
+### Bug Fixes
+
+* decentralizing nft.s content fixes ([#1140](https://www.github.com/nftstorage/nft.storage/issues/1140)) ([6c4799a](https://www.github.com/nftstorage/nft.storage/commit/6c4799ade4f4a9243de9cdcfa33597523e390029))
+
 ### [1.21.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.21.0...website-v1.21.1) (2022-01-21)
 
 
