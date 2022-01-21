@@ -298,10 +298,7 @@ describe('NFT Upload ', () => {
     // construct the expected backup URL
     const carBuf = await car.arrayBuffer()
     const carHash = await getHash(new Uint8Array(carBuf))
-    const userHash = await getHash(
-      new TextEncoder().encode(`nft${client.userId}`)
-    )
-    const backupUrl = `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/${userHash}/${carHash}.car`
+    const backupUrl = `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${client.userId}/${carHash}.car`
 
     assert.equal(backup.url, backupUrl)
   })
