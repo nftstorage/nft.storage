@@ -11,8 +11,7 @@ const sqs = new AWS.SQS()
 //https://thegraph.com/hosted-service/subgraph/nftstorage/eip721-subgraph
 
 const INGEST_BATCH_SIZE = 10
-const SUBGRAPH_URL =
-  'https://api.thegraph.com/subgraphs/name/nftstorage/eip721-subgraph'
+const SUBGRAPH_URL = process.env.SUBGRAPH_URL
 
 function makeTheGraphQuery(time, offset) {
   return `

@@ -1,5 +1,7 @@
 import * as sst from '@serverless-stack/resources'
 
+import { Table, TableFieldType } from '@serverless-stack/resources'
+
 import { LayerVersion } from '@aws-cdk/aws-lambda'
 
 export default class NiftySaveStack extends sst.Stack {
@@ -33,7 +35,35 @@ export default class NiftySaveStack extends sst.Stack {
       },
     })
 
-    const fetchedRecordQueue = new sst.Queue(this, 'FetchedRecordQueue', {})
+    const fetchedRecordQueue = new sst.Queue(this, 'FetchedRecordQueue', {
+      consumer: {
+        consumerProps: {
+          batchSize: 10,
+        },
+        function: {
+          handler: 'src/ingest.storeFetchedRecord',
+        },
+      },
+    })
+
+    const fetchedRecordTable = new Table(this, 'Fetched Records', {
+      fields: {
+        id: TableFieldType.STRING,
+        token_id: TableFieldType.STRING,
+        token_uri: TableFieldType.STRING,
+        mint_time: TableFieldType.STRING,
+        contract_name: TableFieldType.STRING,
+        contract_symbol: TableFieldType.STRING,
+        contract_supports_eip721_metadata: TableFieldType.BINARY,
+        block_hash: TableFieldType.STRING,
+        block_number: TableFieldType.NUMBER,
+        owner_id: TableFieldType.STRING,
+        updated_at: TableFieldType.STRING,
+        inserted_at: TableFieldType.STRING,
+        last_processed: TableFieldType.STRING,
+      },
+      primaryIndex: { partitionKey: 'id', sortKey: 'token_id' },
+    })
 
     //Analyze
 

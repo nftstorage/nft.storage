@@ -5,6 +5,8 @@ export {
   execute as executeTimeSlice,
 } from './ingest/timeSlice'
 
+export { store as storeFetchedRecord } from './ingest/fetchedRecord'
+
 export { purgeSliceCommandQueue } from './ingest/purgeQueues'
 
 export { fetchNFTs as fetchSubgraphNFTS } from './ingest/sources/subgraph'
