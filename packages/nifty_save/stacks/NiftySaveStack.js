@@ -46,7 +46,7 @@ export default class NiftySaveStack extends sst.Stack {
       },
     })
 
-    const fetchedRecordTable = new Table(this, 'Fetched Records', {
+    const fetchedRecordTable = new Table(this, 'FetchedRecords', {
       fields: {
         id: TableFieldType.STRING,
         token_id: TableFieldType.STRING,
@@ -66,11 +66,9 @@ export default class NiftySaveStack extends sst.Stack {
     })
 
     //Analyze
-
     const analyzerIntakeQueue = new sst.Queue(this, 'AnalyzerIntakeQueue', {})
 
     //Pin
-
     const postPinningIntakeQueue = new sst.Queue(
       this,
       'PostPinningIntakeQueue',
