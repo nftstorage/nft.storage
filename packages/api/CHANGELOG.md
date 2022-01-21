@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.14.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.13.2...api-v2.14.0) (2022-01-21)
+
+
+### Features
+
+* s3 backups ([#899](https://www.github.com/nftstorage/nft.storage/issues/899)) ([60f17c0](https://www.github.com/nftstorage/nft.storage/commit/60f17c00e21f42e0aae20153ddfdbdeb27f95f4b))
+
+
+### Bug Fixes
+
+* catch more errors ([#1095](https://www.github.com/nftstorage/nft.storage/issues/1095)) ([2943beb](https://www.github.com/nftstorage/nft.storage/commit/2943beb29d011c6d3c5e046107ab14690cb274d1))
+* pin composite index not for pinned only status ([#1117](https://www.github.com/nftstorage/nft.storage/issues/1117)) ([0bc1c22](https://www.github.com/nftstorage/nft.storage/commit/0bc1c22647d5370449e0ec21db63ded9efe32053))
+
+
+### Changes
+
+* add vasco env ([#1116](https://www.github.com/nftstorage/nft.storage/issues/1116)) ([c2ab44b](https://www.github.com/nftstorage/nft.storage/commit/c2ab44b301a6bcb4d40951662f060bdd5a2056f3))
+
 ### [2.13.2](https://www.github.com/nftstorage/nft.storage/compare/api-v2.13.1...api-v2.13.2) (2022-01-17)
 
 
