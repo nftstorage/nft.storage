@@ -29,7 +29,7 @@ DEBUG = "false"
 ENV = "production"
 
 [env.production.durable_objects]
-bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics1"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 
 # Staging!
 [env.staging]
@@ -44,7 +44,7 @@ DEBUG = "true"
 ENV = "staging"
 
 [env.staging.durable_objects]
-bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics1"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 
 # Test!
 [env.test]
@@ -56,7 +56,7 @@ DEBUG = "true"
 ENV = "test"
 
 [env.test.durable_objects]
-bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics1"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 
 # Dev!
 [env.vsantos]
@@ -67,7 +67,7 @@ account_id = "7ec0b7cf2ec201b2580374e53ba5f37b"
 IPFS_GATEWAYS = "[\"https://ipfs.io\"]"
 
 [env.vsantos.durable_objects]
-bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
+bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"}, {name = "GENERICMETRICS", class_name = "GenericMetrics1"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 
 [[migrations]]
 tag = "v1" # Should be unique for each entry
@@ -122,3 +122,7 @@ deleted_classes = ["Metrics12"]
 tag = "v14" # Should be unique for each entry
 new_classes = ["GatewayMetrics0", "GenericMetrics0"]
 deleted_classes = ["Metrics13"]
+[[migrations]]
+tag = "v15" # Should be unique for each entry
+new_classes = ["GenericMetrics1"]
+deleted_classes = ["GenericMetrics0"]

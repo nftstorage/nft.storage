@@ -17,7 +17,13 @@ test('Gets Metrics content when empty state', async (t) => {
   const metricsResponse = await response.text()
 
   t.is(
-    metricsResponse.includes('nftstorage_gateway_total_fastest_response_time'),
+    metricsResponse.includes('nftstorage_gateway_total_winner_response_time'),
+    true
+  )
+  t.is(
+    metricsResponse.includes(
+      'nftstorage_gateway_total_winner_successful_requests'
+    ),
     true
   )
   gateways.forEach((gw) => {

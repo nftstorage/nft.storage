@@ -7,7 +7,7 @@ import { metricsGet } from './metrics.js'
 
 // Export Durable Object namespace from the root module.
 export { GatewayMetrics0 } from './durable-objects/gateway-metrics.js'
-export { GenericMetrics0 } from './durable-objects/generic-metrics.js'
+export { GenericMetrics1 } from './durable-objects/generic-metrics.js'
 export { CidsTracker0 } from './durable-objects/cids.js'
 
 import { addCorsHeaders, withCorsHeaders } from './cors.js'
