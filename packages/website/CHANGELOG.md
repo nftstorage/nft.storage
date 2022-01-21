@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.21.1](https://www.github.com/nftstorage/nft.storage/compare/website-v1.21.0...website-v1.21.1) (2022-01-21)
+
+
+### Bug Fixes
+
+* decentralizing nft.s storage price deets ([#1132](https://www.github.com/nftstorage/nft.storage/issues/1132)) ([2e7cc6a](https://www.github.com/nftstorage/nft.storage/commit/2e7cc6a771a9f0acdcb3bc285ae4ae5b8e6d0637))
+
 ## [1.21.0](https://www.github.com/nftstorage/nft.storage/compare/website-v1.20.1...website-v1.21.0) (2022-01-21)
 
 
