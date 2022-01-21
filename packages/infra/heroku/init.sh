@@ -9,14 +9,14 @@ heroku apps:create nft-storage-staging --team=web3-storage
 heroku apps:create nft-storage-prod --team=web3-storage
 
 # Add PostgreSQL databases
-heroku addons:create heroku-postgresql:premium-4 --app=nft-storage-staging --name=nft-storage-staging-0
+heroku addons:create heroku-postgresql:premium-4 --app=nft-storage-pgrest-staging --name=nft-storage-staging-0
 heroku addons:create heroku-postgresql:premium-4 --app=nft-storage-prod --name=nft-storage-prod-0
 
 # Add replica
 heroku addons:create heroku-postgresql:premium-4 --app=nft-storage-prod --name=nft-storage-replica-0 --follow $(heroku config:get DATABASE_URL --app=nft-storage-prod)
 
 # Add schema
-heroku pg:psql nft-storage-staging-0 --app=nft-storage-staging
+heroku pg:psql nft-storage-staging-0 --app=nft-storage-pgrest-staging
 # ...run schema SQL from /packages/api/db/config.sql
 # ...run schema SQL from /packages/api/db/tables.sql
 # ...run schema SQL from /packages/api/db/fdw.sql with credentials replaced

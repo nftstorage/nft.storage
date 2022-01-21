@@ -100,7 +100,8 @@ CREATE TABLE IF NOT EXISTS pin
 );
 
 CREATE INDEX IF NOT EXISTS pin_updated_at_idx ON pin (updated_at);
-CREATE INDEX IF NOT EXISTS pin_composite_pinned_at_idx ON pin (content_cid, updated_at) WHERE status = 'Pinned';
+CREATE INDEX IF NOT EXISTS pin_composite_service_and_status_idx ON pin (service, status);
+CREATE INDEX IF NOT EXISTS pin_composite_updated_at_and_content_cid_idx ON pin (updated_at, content_cid);
 
 -- An upload created by a user.
 CREATE TABLE IF NOT EXISTS upload
@@ -136,6 +137,7 @@ CREATE TABLE IF NOT EXISTS upload
 CREATE INDEX IF NOT EXISTS upload_content_cid_idx ON upload (content_cid);
 CREATE INDEX IF NOT EXISTS upload_source_cid_idx ON upload (source_cid);
 CREATE INDEX IF NOT EXISTS upload_updated_at_idx ON upload (updated_at);
+CREATE INDEX IF NOT EXISTS upload_type_idx ON upload (type);
 
 -- Metric contains the current values of collected metrics.
 CREATE TABLE IF NOT EXISTS metric

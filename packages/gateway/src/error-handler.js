@@ -8,7 +8,7 @@ export function errorHandler(err, env) {
   const status = err.status || 500
 
   if (env.sentry && status >= 500) {
-    env.sentry.captureException(err)
+    env.log.error(err)
   }
 
   return new Response(err.message || 'Server Error', { status })

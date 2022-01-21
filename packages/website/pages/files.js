@@ -1,8 +1,10 @@
 import { API, getNfts, getToken } from '../lib/api.js'
 import { useQuery, useQueryClient } from 'react-query'
-
+import { VscQuestion } from 'react-icons/vsc'
 import Button from '../components/button.js'
+import Tooltip from '../components/tooltip.js'
 import Loading from '../components/loading'
+import { MOCK_FILES } from '../lib/mock_files'
 import { NFTStorage } from 'nft.storage'
 import Script from 'next/script'
 import { When } from 'react-if'
@@ -45,16 +47,19 @@ export default function Files({ user }) {
   /** @type {[string, { before: string, limit: number }]} */
   const queryKey = ['get-nfts', queryParams]
 
+  let isDev
+  if (!!globalThis.window && location.host === 'localhost:4000') isDev = true
+
   const { status, data } = useQuery(
     queryKey,
-    ctx => getNfts(ctx.queryKey[1], version),
+    (ctx) => getNfts(ctx.queryKey[1], version),
     {
       enabled: !!user,
     }
   )
 
   /** @type {any[]} */
-  const nfts = data || []
+  const nfts = isDev ? MOCK_FILES : data || []
 
   /**
    * @param {import('react').ChangeEvent<HTMLFormElement>} e
@@ -97,6 +102,134 @@ export default function Files({ user }) {
   }
 
   const hasZeroNfts = nfts.length === 0 && befores.length === 1
+
+  /**
+   * @param {any} nft
+   */
+  const TableItem = ({ nft }) => {
+    // to do, add actual types
+    const deals = nft.deals
+      .filter((/** @type {any} */ d) => d.status !== 'queued')
+      .map(
+        (
+          /** @type {any} */ deal,
+          /** @type {number} */ i,
+          /** @type {any[]} */ deals
+        ) => {
+          const url = `https://filfox.info/en/deal/${deal.chainDealID}`
+          return (
+            <span key={deal.chainDealID} title={deal.status}>
+              <a
+                className="underline black"
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {deal.miner}
+              </a>
+              {i === deals.length - 1 ? '' : ', '}
+            </span>
+          )
+        }
+      )
+
+    const queuedDeals = nft.deals.filter(
+      (/** @type {any} */ d) => d.status === 'queued'
+    )
+    if (queuedDeals.length) {
+      const message = `The content from this upload has been aggregated for storage on Filecoin and is queued for deals with ${
+        queuedDeals.length
+      } storage provider${
+        queuedDeals.length > 1 ? 's' : ''
+      }. Filecoin deals will be active within 48 hours of upload.`
+      deals.push(
+        <span
+          key={nft.cid + '-pending'}
+          aria-describedby="queued-deals-tooltip"
+        >
+          {`${deals.length ? ', ' : ''}${queuedDeals.length} pending`}
+          <Tooltip
+            placement="top"
+            overlay={<span>{message}</span>}
+            overlayClassName="table-tooltip"
+            id="queued-deals-tooltip"
+          >
+            <VscQuestion size={16} className="ml2" />
+          </Tooltip>
+        </span>
+      )
+    }
+
+    if (!nft.deals.length) {
+      deals.push(
+        <span
+          className="queuing flex items-center"
+          key="queuing"
+          aria-describedby="all-deals-queued-tooltip"
+        >
+          Queuing
+          <Tooltip
+            overlay={
+              <span>
+                The content from this upload is being aggregated for storage on
+                Filecoin. Filecoin deals will be active within 48 hours of
+                upload.
+              </span>
+            }
+            overlayClassName="table-tooltip"
+            id="all-deals-queued-tooltip"
+          >
+            <VscQuestion size={16} className="ml2 flex self-end" />
+          </Tooltip>
+        </span>
+      )
+    }
+
+    return (
+      <tr className="bg-white bb">
+        <td data-label="Date" className="nowrap" title={nft.created}>
+          {nft.created.split('T')[0]}
+        </td>
+        <td data-label="CID" className="nowrap">
+          <CopyButton
+            title="Copy cid to Clipboard"
+            text={nft.cid}
+            popupContent={'CID has been copied!!'}
+          >
+            <p className="dib black">{nft.cid}</p>
+          </CopyButton>
+          <GatewayLink cid={nft.cid} type={nft.type} />
+        </td>
+        <td data-label="Pin Status" className="nowrap">
+          {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
+        </td>
+        <td data-label="Deals">
+          <div>{deals}</div>
+        </td>
+        <td data-label="Size" className="nowrap">
+          {bytes(nft.size || 0)}
+        </td>
+        <td className="shrink-cell center-cell">
+          <form onSubmit={handleDeleteFile}>
+            <input type="hidden" name="cid" value={nft.cid} />
+            <Button
+              type="submit"
+              disabled={Boolean(deleting)}
+              variant={'caution'}
+              id="delete-nft"
+              tracking={{
+                event: countly.events.FILE_DELETE_CLICK,
+                ui: countly.ui.FILES,
+                action: 'Delete File',
+              }}
+            >
+              {deleting === nft.cid ? 'Deleting...' : 'Delete'}
+            </Button>
+          </form>
+        </td>
+      </tr>
+    )
+  }
 
   return (
     <>
@@ -145,6 +278,8 @@ export default function Files({ user }) {
                         <tr className="bg-nsgray">
                           <th className="">Date</th>
                           <th className="">CID</th>
+                          <th className="">Pin Status</th>
+                          <th className="">Storage Providers</th>
                           <th className="">Size</th>
                           <th className="">
                             <span className="sr-only">File Actions</span>
@@ -152,55 +287,11 @@ export default function Files({ user }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {nfts.map((
-                          /** @type {any} */ nft,
-                          /** @type {number} */ i
-                        ) => (
-                          <tr className="bg-white bb" key={`nft-${i}`}>
-                            <td
-                              data-label="Date"
-                              className=""
-                              title={nft.created}
-                            >
-                              {nft.created.split('T')[0]}
-                            </td>
-                            <td data-label="CID" className="wrap-cell">
-                              <CopyButton
-                                title="Copy cid to Clipboard"
-                                text={nft.cid}
-                                popupContent={'CID has been copied!!'}
-                              />
-                              <GatewayLink cid={nft.cid} type={nft.type} />
-                            </td>
-                            <td data-label="Size" className="">
-                              {bytes(nft.size || 0)}
-                            </td>
-                            <td className="shrink-cell center-cell">
-                              <form onSubmit={handleDeleteFile}>
-                                <input
-                                  type="hidden"
-                                  name="cid"
-                                  value={nft.cid}
-                                />
-                                <Button
-                                  type="submit"
-                                  disabled={Boolean(deleting)}
-                                  variant={'caution'}
-                                  id="delete-nft"
-                                  tracking={{
-                                    event: countly.events.FILE_DELETE_CLICK,
-                                    ui: countly.ui.FILES,
-                                    action: 'Delete File',
-                                  }}
-                                >
-                                  {deleting === nft.cid
-                                    ? 'Deleting...'
-                                    : 'Delete'}
-                                </Button>
-                              </form>
-                            </td>
-                          </tr>
-                        ))}
+                        {nfts.map(
+                          (/** @type {any} */ nft, /** @type {number} */ i) => (
+                            <TableItem nft={nft} key={`nft-${i}`} />
+                          )
+                        )}
                       </tbody>
                     </table>
                     <div className="flex flex-wrap justify-center tc mv3">
@@ -263,12 +354,23 @@ export default function Files({ user }) {
 function GatewayLink({ cid, type }) {
   const gatewayLink = cid.startsWith('Qm')
     ? `https://ipfs.io/ipfs/${cid}`
-    : `https://${cid}.ipfs.dweb.link`
+    : `ipfs://${cid}`
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
 
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="black">
-      {cid}
-    </a>
+    <CopyButton
+      title="Copy IPFS Url to Clipboard"
+      text={href}
+      popupContent={'IPFS Url has been copied!'}
+    >
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="chicagoflf black"
+      >
+        URL:
+      </a>
+    </CopyButton>
   )
 }
