@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.22.2](https://github.com/nftstorage/nft.storage/compare/website-v1.22.1...website-v1.22.2) (2022-01-24)
+
+
+### Bug Fixes
+
+* **website:** fix new release pr title ([c3d0d99](https://github.com/nftstorage/nft.storage/commit/c3d0d995e5101142991bfd81204bc3d8a331584d))
+
 ### [1.22.1](https://github.com/nftstorage/nft.storage/compare/website-v1.22.0...website-v1.22.1) (2022-01-24)
 
 
