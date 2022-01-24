@@ -140,6 +140,9 @@ class NFTStorage {
               headers,
               body: carFile,
             })
+            if (response.status === 429) {
+              throw new Error('rate limited')
+            }
             const result = await response.json()
             if (!result.ok) {
               // do not retry if unauthorized - will not succeed
@@ -225,6 +228,9 @@ class NFTStorage {
       method: 'GET',
       headers: NFTStorage.auth(token),
     })
+    if (response.status === 429) {
+      throw new Error('rate limited')
+    }
     const result = await response.json()
 
     if (result.ok) {
@@ -250,6 +256,9 @@ class NFTStorage {
   static async check({ endpoint }, cid) {
     const url = new URL(`check/${cid}/`, endpoint)
     const response = await fetch(url.toString())
+    if (response.status === 429) {
+      throw new Error('rate limited')
+    }
     const result = await response.json()
 
     if (result.ok) {
@@ -278,6 +287,9 @@ class NFTStorage {
       method: 'DELETE',
       headers: NFTStorage.auth(token),
     })
+    if (response.status === 429) {
+      throw new Error('rate limited')
+    }
     const result = await response.json()
     if (!result.ok) {
       throw new Error(result.error.message)
