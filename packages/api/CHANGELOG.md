@@ -1,5 +1,13 @@
 # Changelog
 
+### [2.14.1](https://github.com/nftstorage/nft.storage/compare/api-v2.14.0...api-v2.14.1) (2022-01-24)
+
+
+### Bug Fixes
+
+* **api:** remove release workflow ([db7609b](https://github.com/nftstorage/nft.storage/commit/db7609bc014b10a3a3a42150a614e753e72c504b))
+* test the ci release ([2908d04](https://github.com/nftstorage/nft.storage/commit/2908d04e18c23a7c0c912433fc3445a26e0e6df4))
+
 ## [2.14.0](https://www.github.com/nftstorage/nft.storage/compare/api-v2.13.2...api-v2.14.0) (2022-01-21)
 
 
