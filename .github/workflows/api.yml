@@ -79,7 +79,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
           monorepo-tags: true
-          package-name: API
+          package-name: api
       - uses: actions/checkout@v2
         if: ${{ steps.tag-release.outputs.releases_created }}
       - uses: actions/setup-node@v2
