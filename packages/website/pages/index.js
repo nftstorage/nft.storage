@@ -78,7 +78,7 @@ export default function Home({ logos }) {
             </h2>
             <FAQ limit={5} />
             <h3 className="chicagoflf white">
-              More FAQs{' '}
+              More FAQ{' '}
               <Link href="/faq">
                 <a className="white underline">here</a>
               </Link>
@@ -314,7 +314,7 @@ function About() {
 }
 
 function GettingStarted() {
-  const onClickHandler = useCallback(event => {
+  const onClickHandler = useCallback((event) => {
     countly.trackCustomLinkClick(
       countly.events.CTA_LINK_CLICK,
       event.currentTarget,
