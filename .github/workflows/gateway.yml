@@ -41,3 +41,35 @@ jobs:
           apiToken: ${{secrets.CF_API_TOKEN }}
           workingDirectory: 'packages/gateway'
           environment: 'staging'
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v3
+        id: tag-release
+        with:
+          path: packages/gateway
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
+          monorepo-tags: true
+          package-name: gateway
+      - uses: actions/checkout@v2
+        if: ${{ steps.tag-release.outputs.releases_created }}
+      - uses: actions/setup-node@v2
+        if: ${{ steps.tag-release.outputs.releases_created }}
+        with:
+          node-version: '16'
+          registry-url: https://registry.npmjs.org/
+      - uses: bahmutov/npm-install@v1
+        if: ${{ steps.tag-release.outputs.releases_created }}
+      - name: Deploy
+        if: ${{ steps.tag-release.outputs.releases_created }}
+        uses: cloudflare/wrangler-action@1.3.0
+        env:
+          SENTRY_TOKEN: ${{ secrets.SENTRY_TOKEN }}
+          SENTRY_UPLOAD: ${{ secrets.SENTRY_UPLOAD }}
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          workingDirectory: 'packages/gateway'
+          environment: 'production'
