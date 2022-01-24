@@ -34,24 +34,9 @@ export async function gatewayGet(request, env, ctx) {
 
   try {
     /** @type {GatewayResponse} */
-    let winnerGwResponse = await pAny(gatewayReqs)
-
-    const failedGws = []
-
-    // Wait until we have a winner ok response, or all failed
-    while (
-      !winnerGwResponse.response.ok &&
-      gatewayReqs.filter((p) => !p.isFulfilled).length
-    ) {
-      failedGws.push(winnerGwResponse.url)
-
-      // TODO: Is it rate limited?
-      // how can we "suspend" this gateway for a bit? Maybe track this in a Durable Object?
-
-      winnerGwResponse = await pAny(
-        gatewayReqs.filter((p) => !failedGws.find((gwUrl) => gwUrl === p.gwUrl))
-      )
-    }
+    const winnerGwResponse = await pAny(gatewayReqs, {
+      filter: (res) => res.response.ok,
+    })
 
     async function settleGatewayRequests() {
       // Wait for remaining responses
@@ -63,7 +48,6 @@ export async function gatewayGet(request, env, ctx) {
       await Promise.all([
         // Filter out winner and update remaining gateway metrics
         pMap(
-          // TODO: only filter out if winner is success...
           responses.filter((r) => r.value?.url !== winnerGwResponse.url),
           (r) => updateGatewayMetrics(request, env, r.value, false)
         ),
@@ -74,8 +58,7 @@ export async function gatewayGet(request, env, ctx) {
     ctx.waitUntil(
       (async () => {
         await Promise.all([
-          winnerGwResponse.response.ok &&
-            storeWinnerGwResponse(request, env, winnerGwResponse),
+          storeWinnerGwResponse(request, env, winnerGwResponse),
           settleGatewayRequests(),
         ])
       })()
@@ -120,38 +103,36 @@ async function storeWinnerGwResponse(request, env, winnerGwResponse) {
  * @param {Object} [options]
  * @param {string} [options.pathname]
  * @param {number} [options.timeout]
- * @return {GatewayResponsePromise}
  */
-function _gatewayFetch(gwUrl, cid, { pathname = '', timeout = 20000 } = {}) {
-  const gatewayResponsePromise = new GatewayResponsePromise(async (resolve) => {
-    const ipfsUrl = new URL('ipfs', gwUrl)
-    const controller = new AbortController()
-    const startTs = Date.now()
-    const timer = setTimeout(() => controller.abort(), timeout)
+async function _gatewayFetch(
+  gwUrl,
+  cid,
+  { pathname = '', timeout = 20000 } = {}
+) {
+  const ipfsUrl = new URL('ipfs', gwUrl)
+  const controller = new AbortController()
+  const startTs = Date.now()
+  const timer = setTimeout(() => controller.abort(), timeout)
 
-    let response
-    try {
-      response = await fetch(`${ipfsUrl.toString()}/${cid}${pathname}`, {
-        signal: controller.signal,
-      })
-    } finally {
-      clearTimeout(timer)
-    }
+  let response
+  try {
+    response = await fetch(`${ipfsUrl.toString()}/${cid}${pathname}`, {
+      signal: controller.signal,
+    })
+  } finally {
+    clearTimeout(timer)
+  }
 
-    /** @type {GatewayResponse} */
-    const gwResponse = {
-      response,
-      url: gwUrl,
-      responseTime: Date.now() - startTs,
-    }
-    resolve(gwResponse)
-  }, gwUrl)
+  // TODO: Is it rate limited?
+  // how can we "suspend" this gateway for a bit? Maybe track this in a Durable Object?
 
-  gatewayResponsePromise.then(() => {
-    gatewayResponsePromise.isFulfilled = true
-  })
-
-  return gatewayResponsePromise
+  /** @type {GatewayResponse} */
+  const gwResponse = {
+    response,
+    url: gwUrl,
+    responseTime: Date.now() - startTs,
+  }
+  return gwResponse
 }
 
 /**
@@ -237,12 +218,4 @@ function _getUpdateRequestUrl(request, data) {
     method: 'PUT',
     body: JSON.stringify(data),
   })
-}
-
-class GatewayResponsePromise extends Promise {
-  constructor(promiseFn, gwUrl) {
-    super(promiseFn)
-    this.gwUrl = gwUrl
-    this.isFulfilled = false
-  }
 }
