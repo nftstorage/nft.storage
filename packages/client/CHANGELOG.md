@@ -1,5 +1,13 @@
 # Changelog
 
+### [5.2.2](https://github.com/nftstorage/nft.storage/compare/client-v5.2.1...client-v5.2.2) (2022-01-24)
+
+
+### Bug Fixes
+
+* **client:** test new release ci ([f26c739](https://github.com/nftstorage/nft.storage/commit/f26c739c39104904152010b8aad5da4914e361c9))
+* **website:** remove type ([94fe5e5](https://github.com/nftstorage/nft.storage/commit/94fe5e50fc581d4ac9062630258934458cb91728))
+
 ### [5.2.1](https://www.github.com/nftstorage/nft.storage/compare/nft.storage-v5.2.0...nft.storage-v5.2.1) (2022-01-06)
 
 
