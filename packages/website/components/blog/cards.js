@@ -16,17 +16,16 @@ import countly from '../../lib/countly'
 
 export const Card = ({ post }) => (
   <Link href={`/blog/post/${post.slug}`}>
-    <a className="bg-white blog-card h-card w-card hologram card right interactive pointer">
+    <a className="bg-white blog-card w-card hologram card right interactive pointer">
       <img
         src={post.thumbnail}
         alt={`Banner for ${post.title}`}
-        className="object-cover object-center w-100"
-        style={{ height: '50%' }}
+        className="object-cover object-center w-100 card-thumb"
       />
-      <div className="flex pa5 flex-column justify-evenly">
-        <div className="mb4">{post.tags && <Tags tags={post.tags} />}</div>
+      <div className="pa5 flex flex-column flex-auto">
+        <div className="mb2">{post.tags && <Tags tags={post.tags} />}</div>
         <div className="overflow-hidden mb2">
-          <h1 className="chicagoflf f3 line-clamp-1" title={post.title}>
+          <h1 className="chicagoflf f4" title={post.title}>
             {post.title}
           </h1>
         </div>
@@ -55,7 +54,7 @@ export const HighlightCard = ({ post }) => (
       <div className="flex justify-between highlight-info flex-column w-50">
         <div className="highlight-card-container">
           <div className="highlight-card-text">
-            <div className="mb4">{post.tags && <Tags tags={post.tags} />}</div>
+            <div className="mb3">{post.tags && <Tags tags={post.tags} />}</div>
             <h1
               className="chicagoflf f1 title"
               title={`Read More about"${post.title}"`}
