@@ -50,7 +50,7 @@ async function main() {
 main()
 ```
 
-The client uses ESM modules. If running from Node.js, either name your script `index.mjs` or name it `index.js` _and_ use `npm init` to create a new `package.json` file in your project directory, adding `"type": "module",` to it .
+The client uses ESM modules. If running from Node.js, either name your script `index.mjs` or name it `index.js` _and_ use `npm init` to create a new `package.json` file in your project directory, adding `"type": "module",` to it.
 
 Run the script:
 
