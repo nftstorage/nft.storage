@@ -78,7 +78,7 @@ export default function Home({ logos }) {
             </h2>
             <FAQ limit={5} />
             <h3 className="chicagoflf white">
-              More FAQ{' '}
+              More FAQs{' '}
               <Link href="/faq">
                 <a className="white underline">here</a>
               </Link>

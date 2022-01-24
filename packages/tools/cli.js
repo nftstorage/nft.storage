@@ -55,7 +55,7 @@ cli
           (/** @type {any} */ i) => {
             const lastRelease =
               i.deployment_trigger.metadata.commit_message.startsWith(
-                'chore: release'
+                'chore(main): release'
               )
             return i.environment === 'production' && !lastRelease
           }
