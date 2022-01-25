@@ -46,7 +46,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
  * @param {{ init?: boolean; project: string; start?: boolean; stop?: boolean; clean?: boolean; }} opts
  */
 export async function dbCmd(opts) {
-  const composePath = path.join(__dirname, '../../db/docker/docker-compose.yml')
+  const composePath = path.join(__dirname, '../../docker/docker-compose.yml')
 
   if (opts.init) {
     await execa('docker-compose', [
@@ -70,7 +70,7 @@ export async function dbCmd(opts) {
 
   if (opts.start) {
     if ((await isPortReachable(5432)) || (await isPortReachable(3000))) {
-      throw new Error('Another docker project already running. ')
+      console.error('⚠️ Docker project is already running.')
     }
     await execa('docker-compose', [
       '--file',

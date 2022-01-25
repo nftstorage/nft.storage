@@ -1,7 +1,8 @@
 export const SALT = 'supersecret'
 export const DEBUG = 'true'
 export const CLUSTER_API_URL = 'http://localhost:9094'
-export const CLUSTER_BASIC_AUTH_TOKEN = 'test'
+// will be used with we can active auth in cluster base64 of test:test
+export const CLUSTER_BASIC_AUTH_TOKEN = 'dGVzdDp0ZXN0'
 export const CLUSTER_SERVICE = ''
 export const MAGIC_SECRET_KEY = 'test'
 export const ENV = 'test'
