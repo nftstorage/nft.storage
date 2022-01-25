@@ -2,6 +2,7 @@ const path = require('path')
 const dotenv = require('dotenv')
 const execa = require('execa')
 const delay = require('delay')
+const { once } = require('events')
 
 /** @typedef {{ proc: execa.ExecaChildProcess<string> }} ProcessObject */
 
