@@ -125,8 +125,9 @@ CREATE TABLE IF NOT EXISTS upload
     -- User provided multiaddrs of origins of this upload (used by the pinning
     -- service API).
     origins     jsonb,
-    -- Custom metadata provided by the user (currently only available via the
-    -- pinning service API).
+    -- Custom metadata. Currently used in 2 places:
+    -- 1. Pinning Service API user provided `Record<string, string>`.
+    -- 2. Metaplex endpoint `/metaplex/upload` to store details of the Metaplex user.
     meta        jsonb,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
