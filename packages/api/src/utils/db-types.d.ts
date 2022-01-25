@@ -747,6 +747,26 @@ export interface paths {
       }
     }
   }
+  '/rpc/json_arr_to_text_arr': {
+    post: {
+      parameters: {
+        body: {
+          args: {
+            /** Format: json */
+            _json: string
+          }
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferParams']
+        }
+      }
+      responses: {
+        /** OK */
+        200: unknown
+      }
+    }
+  }
   '/rpc/create_upload': {
     post: {
       parameters: {
@@ -839,16 +859,23 @@ export interface definitions {
   }
   backup: {
     /**
-     * Note:
+     * Format: bigint
+     * @description Note:
      * This is a Primary Key.<pk/>
      */
     id: number
     /**
-     * Note:
+     * Format: bigint
+     * @description Note:
      * This is a Foreign Key to `upload.id`.<fk table='upload' column='id'/>
      */
     upload_id: number
+    /** Format: text */
     url: string
+    /**
+     * Format: timestamp with time zone
+     * @default timezone('utc'::text, now())
+     */
     inserted_at: string
   }
   content: {
@@ -1045,13 +1072,17 @@ export interface parameters {
   'rowFilter.auth_key.updated_at': string
   /** Format: timestamp with time zone */
   'rowFilter.auth_key.deleted_at': string
-  /** backup */
+  /** @description backup */
   'body.backup': definitions['backup']
+  /** Format: bigint */
   'rowFilter.backup.id': string
+  /** Format: bigint */
   'rowFilter.backup.upload_id': string
+  /** Format: text */
   'rowFilter.backup.url': string
+  /** Format: timestamp with time zone */
   'rowFilter.backup.inserted_at': string
-  /** content */
+  /** @description content */
   'body.content': definitions['content']
   /** Format: text */
   'rowFilter.content.cid': string
