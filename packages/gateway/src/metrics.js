@@ -119,6 +119,10 @@ export async function metricsGet(request, env, ctx) {
         )
         .join('\n')
     }),
+    ...env.ipfsGateways.map(
+      (gw) =>
+        `nftstorage_gateway_requests_per_time{gateway="${gw}",le="+Inf",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalSuccessfulRequests}`
+    ),
   ].join('\n')
 
   res = new Response(metrics, {
