@@ -8,7 +8,7 @@ Make sure you already did step 1 and 2 from these [root instructions](/#getting-
 
 ### Running Locally
 
-Install docker and make sure that you have at least 8GB alocated.
+Install docker and make sure that you have at least 8GB of RAM allocated.
 
 ```bash
 cd packages/api
