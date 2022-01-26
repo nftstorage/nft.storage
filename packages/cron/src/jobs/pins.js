@@ -33,7 +33,7 @@ export async function updatePendingPinStatuses(config) {
    */
   const countPins = async () => {
     const { rows } = await config.pg.query(COUNT_PENDING_PINS)
-    if (!rows.length) throw new Error('no rows returned counting users')
+    if (!rows.length) throw new Error('no rows returned counting pins')
     return rows[0].count
   }
 
@@ -67,7 +67,7 @@ export async function checkFailedPinStatuses(config) {
    */
   const countPins = async () => {
     const { rows } = await pg.query(COUNT_FAILED_PINS, [after.toISOString()])
-    if (!rows.length) throw new Error('no rows returned counting users')
+    if (!rows.length) throw new Error('no rows returned counting pins')
     return rows[0].count
   }
 
