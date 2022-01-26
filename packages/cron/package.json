@@ -12,8 +12,8 @@
   },
   "scripts": {
     "start": "run-s start:*",
-    "start:pins": "node src/bin/pins.js",
-    "start:pins-failed": "node src/bin/pins-failed.js",
+    "start:pins": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/pins.js",
+    "start:pins-failed": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/pins-failed.js",
     "start:pinata": "node src/bin/pinata.js",
     "start:dagcargo:sizes": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo-sizes.js",
     "start:metrics": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/metrics.js"
