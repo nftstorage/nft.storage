@@ -8,6 +8,8 @@ Make sure you already did step 1 and 2 from these [root instructions](/#getting-
 
 ### Running Locally
 
+Install docker and make sure that you have at least 8GB alocated.
+
 ```bash
 cd packages/api
 yarn dev
@@ -17,6 +19,14 @@ The database is pre populated with a single mock user. You can start making requ
 
 ```text
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDY1MDA3QTczOWFiN0FDNWM1MzcxNjEyNDliODEyNTBFNDllMjg1M0MiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYzOTc1NDczNjYzOCwibmFtZSI6Im1haW4ifQ.wKwJIRXXHsgwVp8mOQp6r3_F4Lz5lnoAkgVP8wqwA_Y
+```
+
+### Clean/Reset docker
+
+In the case you need to clean up docker after failed tests or debugging session you can just run the command below.
+
+```bash
+yarn clean
 ```
 
 ## Manual deploy to Cloudflare
