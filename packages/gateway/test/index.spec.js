@@ -28,6 +28,7 @@ test('Gets content', async (t) => {
   const response = await mf.dispatchFetch(
     'https://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq.ipfs.localhost:8787'
   )
+  await response.waitUntil()
   t.is(await response.text(), 'Hello nft.storage! 😎')
 })
 
@@ -35,7 +36,7 @@ test('Gets content with path', async (t) => {
   const { mf } = t.context
 
   const response = await mf.dispatchFetch(
-    'https://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq.ipfs.localhost:8787/path'
+    'https://bafybeih74zqc6kamjpruyra4e4pblnwdpickrvk4hvturisbtveghflovq.ipfs.localhost:8787/path'
   )
   t.is(await response.text(), 'Hello gateway.nft.storage resource!')
 })

@@ -14,7 +14,7 @@ test('Sets gateways that resolved cid', async (t) => {
   const { mf } = t.context
   const cid = 'bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq'
 
-  const p = await mf.dispatchFetch(`http://${cid}.ipfs.localhost:8787`)
+  const p = await mf.dispatchFetch(`https://${cid}.ipfs.localhost:8787`)
   await p.waitUntil()
 
   const ns = await mf.getDurableObjectNamespace(getCIDsTracker())
@@ -32,10 +32,10 @@ test('Sets gateways that resolved cid', async (t) => {
 
 test('Only sets gateways that resolved cid successfully', async (t) => {
   const { mf } = t.context
-  const cid = 'bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapopppq'
+  const cid = 'bafkreihbjbbccwxn7hzv5hun5pxuswide7q3lhjvfbvmd7r3kf2sodybgi'
 
-  // gateways[1] fails
-  const p = await mf.dispatchFetch(`http://${cid}.ipfs.localhost:8787`)
+  // gateways[2] fails
+  const p = await mf.dispatchFetch(`https://${cid}.ipfs.localhost:8787`)
   await p.waitUntil()
 
   const ns = await mf.getDurableObjectNamespace(getCIDsTracker())
@@ -47,5 +47,6 @@ test('Only sets gateways that resolved cid successfully', async (t) => {
 
   t.falsy(gateways.length === gatewaysWithCid.length)
   t.truthy(gatewaysWithCid.includes(gateways[0]))
-  t.falsy(gatewaysWithCid.includes(gateways[1]))
+  t.truthy(gatewaysWithCid.includes(gateways[1]))
+  t.falsy(gatewaysWithCid.includes(gateways[2]))
 })
