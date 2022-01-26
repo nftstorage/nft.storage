@@ -53,6 +53,30 @@ For other options, see the sections below on [using HTTP gateways](#using-ipfs-h
 See [IPFS addresses on the Web][ipfs-docs-web-addresses] in the IPFS docs for more details on the different ways to link to IPFS data.
 </Callout>
 
+### Finding the IPFS address for your NFT's metadata
+
+Before you can retrieve your off-chain NFT metadata, you need to know where to find it. With IPFS, that means finding the [IPFS address](#understanding-ipfs-addresses) for your token's metadata which is recorded in the blockchain entry for the token.
+
+You can often find this information on NFT marketplaces and other NFT explorer sites. For example, OpenSea's `Details` view includes a link to an NFT's "Frozen" metadata that's been stored on IPFS:
+
+![Screenshot of OpenSea web ui showing a metadata link for an NFT](/images/opensea-nft-details.png).
+
+In the example above, the metadata link is https://ipfs.io/ipfs/bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi, which is an IPFS gateway URL that uses the public gateway at `https://ipfs.io`.
+
+You might see a different gateway host instead of `ipfs.io`, or a different kind of [IPFS address](#understanding-ipfs-addresses) depending on how your NFT was created and which platform you're using to view it. That's totally fine! All we need is the Content Identifier (CID), which is the random-looking string after `/ipfs` in the example above.
+
+If your marketplace or wallet doesn't display the original metadata URI, you can try using a block explorer to consult the blockchain directly. The details of this will depend on which blockchain platform and smart contract standard your NFT was minted with. 
+
+Below is an example of calling the `uri()` function on a [Polygon](https://polygon.technology/) contract that conforms to [ERC-1155][erc-1155]:
+
+![Screenshot of polygonscan block explorer showing a call to the `uri` contract function](/images/block-explorer-read-token-uri.png).
+
+Now that you have your metadata address, you can download a copy [using an HTTP gateway](#using-ipfs-http-gateways) or [IPFS on your computer](#running-ipfs-on-your-computer).
+
+<Callout emoji="❗">
+Don't forget to look inside the metadata! NFT metadata usually contains links to other resources, especially in the `image` field. Take a look inside and check for other [IPFS addresses](#understanding-ipfs-addresses) so you can download the linked data too!
+</Callout>
+
 ### Using IPFS HTTP gateways
 
 Above we saw some examples of [IPFS addresses](#understanding-ipfs-addresses) that use the `ipfs://` URL prefix.
@@ -90,13 +114,43 @@ One of the great things about IPFS is that it allows anyone to provide a copy of
 
 By contrast, a broken HTTP link is broken forever, unless the owner of the original domain name decides to fix it. Even if you had a perfect backup of the off-chain NFT data, you wouldn't be able to fix the link between the on-chain NFT record and the off-chain data without controlling the original domain name.
 
-{
-  /*
-  TODO: how to download a car using
-  - IPFS cli: `ipfs dag export`
-  - HTTP req to public gateway: `curl https://dweb.link/api/v0/dag/export?arg=<cid> --output filename.car`
-  */
-}
+Making an archival copy of an NFT consists of three steps:
+
+1. Find the IPFS address for your NFT's metadata
+
+The first step is to [find the IPFS address of the NFT's metadata](#finding-the-ipfs-address-of-your-nfts-metadata). 
+
+2. Download an IPFS Content Archive (CAR) using the metadata address
+
+Find the CID portion of the address you found in step 1. For example, if your NFT has the URI `ipfs://bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi`, you just need the `bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi` part. See [Understanding IPFS addresses](#understanding-ipfs-addresses) for more about CIDs.
+
+Using the CID, you can download an IPFS Content Archive file (CAR), which contains the data exactly as it was encoded for storage on IPFS and Filecoin. This is important, because the same file can produce multiple different CIDs, depending on how it was encoded when adding to IPFS. By downloading a CAR, you preserve all the original CIDs and make it possible to re-provide the data in exactly the format it was in when the NFT was minted.
+
+If you have [IPFS running on your computer](#running-ipfs-on-your-computer), you can use the `ipfs` command line tool to export a CAR:
+
+```bash
+ipfs dag export YOUR_CID > FILENAME.car
+```
+
+Replace `YOUR_CID` with the CID you found above, and `FILENAME` with whatever you want to call the archive file. This should create a new file containing all of the data referenced by the CID.
+
+If you're not running IPFS, some remote HTTP gateways allow you to make requests against the IPFS API. For example, you can use the gateway at `dweb.link` to export a CAR using the `curl` command:
+
+```bash
+curl -X POST 'https://dweb.link/api/v0/dag/export?arg=YOUR_CID' --output FILENAME.car
+```
+
+Replace `YOUR_CID` with the CID you found above, and `FILENAME` with whatever you want to call the archive file. This should output the same CAR file as if you ran the `ipfs dag export` command locally.
+
+3. Examine the metadata for any additional IPFS links and download CARs for each.
+
+Now that you've made an archive for the NFT metadata, there's one last step. Your NFT metadata may contain links to other data stored on IPFS, for example, images or video files. 
+
+You can extract the metadata from the CAR you just made with the [ipfs-car tool](https://www.npmjs.com/package/ipfs-car), or just open the metadata address on an [HTTP gateway](#using-ipfs-http-gateways) to view it as a JSON text file.
+
+Look for any additional [IPFS addresses](#understanding-ipfs-addresses) and make a note of their CIDs.
+
+For each CID in the metadata, repeat the previous step to create a CAR file and save it alongside the CAR for the metadata.
 
 ## For platforms and marketplaces
 
@@ -131,3 +185,5 @@ Another potential optimization is to store redundant copies of your NFT data on 
 [concepts-decentralized-storage]: ../concepts/decentralized-storage.md
 [brave-ipfs]: https://brave.com/ipfs-support/
 [public-gateway-checker]: https://ipfs.github.io/public-gateway-checker/
+[erc-721]: https://eips.ethereum.org/EIPS/eip-721
+[erc-1155]: https://eips.ethereum.org/EIPS/eip-1155
