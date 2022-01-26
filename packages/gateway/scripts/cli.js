@@ -112,17 +112,14 @@ async function ipfsCmd({ start, stop }) {
     await Promise.all([
       // bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq
       client.add('Hello nft.storage! 😎', {
-        chunker: 'size-1048576',
         rawLeaves: true,
       }),
       // bafkreibxkbyybantsznyvlq2bhf24u4gew7pj6erjgduqp4mvqv54qjng4
       client.add('Hello nft.storage! 😎😎', {
-        chunker: 'size-1048576',
         rawLeaves: true,
       }),
       // bafkreihbjbbccwxn7hzv5hun5pxuswide7q3lhjvfbvmd7r3kf2sodybgi
       client.add('Hello nft.storage! 😎😎😎', {
-        chunker: 'size-1048576',
         rawLeaves: true,
       }),
     ])
@@ -131,7 +128,6 @@ async function ipfsCmd({ start, stop }) {
     for await (const _ of client.addAll(
       globSource(path.join(__dirname, '../test/fixtures/directory'), '**/*'),
       {
-        chunker: 'size-1048576',
         rawLeaves: true,
         wrapWithDirectory: true,
         cidVersion: 1,
