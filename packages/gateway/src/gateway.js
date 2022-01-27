@@ -91,7 +91,7 @@ export async function gatewayGet(request, env, ctx) {
 async function storeWinnerGwResponse(request, env, winnerGwResponse) {
   await Promise.all([
     updateGatewayMetrics(request, env, winnerGwResponse, true),
-    updateGenericMetrics(request, env, winnerGwResponse),
+    updateSummaryMetrics(request, env, winnerGwResponse),
   ])
 }
 
@@ -140,7 +140,7 @@ async function _gatewayFetch(
  * @param {import('./env').Env} env
  * @param {GatewayResponse} gwResponse
  */
-async function updateGenericMetrics(request, env, gwResponse) {
+async function updateSummaryMetrics(request, env, gwResponse) {
   // Get durable object for gateway
   const id = env.genericMetricsDurable.idFromName(GENERIC_METRICS_ID)
   const stub = env.genericMetricsDurable.get(id)
