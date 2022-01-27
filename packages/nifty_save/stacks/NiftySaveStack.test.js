@@ -31,6 +31,6 @@ test('NiftySave Stack - Injest', () => {
   // WHEN
   const stack = new NiftySaveStack(app, 'niftysave-stack')
   expect(stack).to(haveResource('AWS::Lambda::Function'))
-  expect(stack).to(countResources('AWS::SQS::Queue', 2))
+  expect(stack).to(countResources('AWS::SQS::Queue', 4))
   expect(stack).to(haveResource('AWS::Events::EventBus'))
 })

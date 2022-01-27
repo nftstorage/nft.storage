@@ -46,7 +46,7 @@ export default class NiftySaveStack extends sst.Stack {
       },
     })
 
-    const fetchedRecordTable = new Table(this, 'FetchedRecords', {
+    const fetchedRecordsTable = new Table(this, 'FetchedRecords', {
       fields: {
         id: TableFieldType.STRING,
         token_id: TableFieldType.STRING,
@@ -86,6 +86,7 @@ export default class NiftySaveStack extends sst.Stack {
           fetchedRecordQueueUrl: fetchedRecordQueue.sqsQueue.queueUrl,
           analyzerIntakeQueueUrl: analyzerIntakeQueue.sqsQueue.queueUrl,
           postPinningIntakeQueue: postPinningIntakeQueue.sqsQueue.queueUrl,
+          fetchedRecordsTableName: fetchedRecordsTable.dynamodbTable.tableName,
           busArn: bus.eventBusArn,
         },
       },
@@ -120,6 +121,8 @@ export default class NiftySaveStack extends sst.Stack {
 
       this.addDefaultFunctionEnv({
         SENTRY_DSN: process.env.SENTRY_DSN,
+        SUBGRAPH_URL: process.env.SUBGRAPH_URL,
+        HASURA_URL: process.env.HASURA_URL,
         SENTRY_TRACES_SAMPLE_RATE: '0.5',
         NODE_OPTIONS: '-r @sentry/serverless/dist/awslambda-auto',
       })

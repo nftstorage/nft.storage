@@ -11,7 +11,6 @@ const sqs = new AWS.SQS()
 //https://thegraph.com/hosted-service/subgraph/nftstorage/eip721-subgraph
 
 const INGEST_BATCH_SIZE = 10
-const SUBGRAPH_URL = process.env.SUBGRAPH_URL
 
 function makeTheGraphQuery(time, offset) {
   return `
@@ -43,6 +42,7 @@ function makeTheGraphQuery(time, offset) {
 }
 
 export async function fetchNFTs(event, context) {
+  const SUBGRAPH_URL = process.env.SUBGRAPH_URL
   const { detail } = event
 
   const { rangeStartTime, rangeEndTime } = detail
@@ -73,7 +73,7 @@ export async function fetchNFTs(event, context) {
   const cursor = new Cursor(startOfTime)
 
   let nftBatch = []
-
+  console.log(SUBGRAPH_URL)
   const results = await fetch(SUBGRAPH_URL, {
     method: 'POST',
     headers: {
