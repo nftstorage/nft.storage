@@ -13,6 +13,7 @@ import countly from '../lib/countly.js'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import CopyButton from '../components/copyButton'
+import { Popover, ArrowContainer } from 'react-tiny-popover'
 
 /**
  * Static Props
@@ -46,6 +47,7 @@ export default function Files({ user }) {
   const queryParams = { before: befores[0], limit }
   /** @type {[string, { before: string, limit: number }]} */
   const queryKey = ['get-nfts', queryParams]
+  const [isActionMenuOpen, setIsActionMenuOpen] = useState('')
 
   let isDev
   if (!!globalThis.window && location.host === 'localhost:4000') isDev = true
@@ -198,7 +200,6 @@ export default function Files({ user }) {
           >
             <p className="dib black">{nft.cid}</p>
           </CopyButton>
-          <GatewayLink cid={nft.cid} type={nft.type} />
         </td>
         <td data-label="Pin Status" className="nowrap">
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
@@ -210,22 +211,69 @@ export default function Files({ user }) {
           {bytes(nft.size || 0)}
         </td>
         <td className="shrink-cell center-cell">
-          <form onSubmit={handleDeleteFile}>
-            <input type="hidden" name="cid" value={nft.cid} />
-            <Button
-              type="submit"
-              disabled={Boolean(deleting)}
-              variant={'caution'}
-              id="delete-nft"
-              tracking={{
-                event: countly.events.FILE_DELETE_CLICK,
-                ui: countly.ui.FILES,
-                action: 'Delete File',
-              }}
+          <Popover
+            isOpen={isActionMenuOpen === nft.cid}
+            onClickOutside={(e) => {
+              console.log(e)
+              if (e.currentTarget !== null) {
+                if (
+                  e.target instanceof Element &&
+                  e.target.getAttribute('data-cid')
+                ) {
+                  const cid = e.target.getAttribute('data-cid')
+                  setIsActionMenuOpen(cid || '')
+                } else {
+                  setIsActionMenuOpen('')
+                }
+              }
+            }}
+            positions={['bottom', 'left', 'top', 'right']} // preferred positions by priority
+            padding={2}
+            content={({ position, childRect, popoverRect }) => (
+              <ArrowContainer
+                position={position}
+                childRect={childRect}
+                popoverRect={popoverRect}
+                arrowColor={'black'}
+                arrowSize={6}
+                className="popover-arrow-container"
+                arrowClassName="popover-arrow"
+              >
+                <div className="actions-menu">
+                  <GatewayLink cid={nft.cid} type={nft.type} />
+                  <CopyGatewayLink cid={nft.cid} type={nft.type} />
+                  <CopyCID cid={nft.cid} type={nft.type} />
+                  <form onSubmit={handleDeleteFile}>
+                    <input type="hidden" name="cid" value={nft.cid} />
+                    <Button
+                      type="submit"
+                      disabled={Boolean(deleting)}
+                      className="caution"
+                      hologram={false}
+                      id="delete-nft"
+                      tracking={{
+                        event: countly.events.FILE_DELETE_CLICK,
+                        ui: countly.ui.FILES,
+                        action: 'Delete File',
+                      }}
+                    >
+                      {deleting === nft.cid ? 'Deleting...' : 'Delete File'}
+                    </Button>
+                  </form>
+                </div>
+              </ArrowContainer>
+            )}
+          >
+            <button
+              onClick={() => setIsActionMenuOpen(nft.cid)}
+              className={`${
+                isActionMenuOpen === nft.cid ? 'actions-trigger--active' : ''
+              } btn small actions-trigger`}
+              data-cid={nft.cid}
             >
-              {deleting === nft.cid ? 'Deleting...' : 'Delete'}
-            </Button>
-          </form>
+              Actions
+            </button>
+          </Popover>
         </td>
       </tr>
     )
@@ -358,19 +406,44 @@ function GatewayLink({ cid, type }) {
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
 
   return (
+    <a title="View IPFS Url" href={href} target="_blank">
+      View
+    </a>
+  )
+}
+
+/**
+ * Copy Gateway Link Component
+ *
+ * @param {{cid: string, type?: string}} props
+ */
+function CopyGatewayLink({ cid, type }) {
+  const gatewayLink = cid.startsWith('Qm')
+    ? `https://ipfs.io/ipfs/${cid}`
+    : `ipfs://${cid}`
+  const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
+
+  return (
     <CopyButton
       title="Copy IPFS Url to Clipboard"
       text={href}
       popupContent={'IPFS Url has been copied!'}
+      asLink={true}
     >
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="chicagoflf black"
-      >
-        URL:
-      </a>
+      <>Copy IPFS Url</>
+    </CopyButton>
+  )
+}
+
+/**
+ * CID Copy Component
+ *
+ * @param {{cid: string, type?: string}} props
+ */
+function CopyCID({ cid, type }) {
+  return (
+    <CopyButton text={cid} popupContent={'CID has been copied!'} asLink={true}>
+      <>Copy CID</>
     </CopyButton>
   )
 }
