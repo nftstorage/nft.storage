@@ -9,11 +9,14 @@
     "build": "node scripts/cli.js build",
     "dev": "miniflare --watch --debug",
     "deploy": "wrangler publish --env production",
-    "pretest": "npm run build",
+    "pretest": "npm run build && npm run docker:ipfs:start",
     "test": "npm-run-all -p -r mock:ipfs.io mock:cf-ipfs.com test:worker",
     "test:worker": "ava --verbose test/*.spec.js",
-    "mock:ipfs.io": "smoke -p 9081 test/mocks/ipfs.io",
-    "mock:cf-ipfs.com": "smoke -p 9082 test/mocks/cf-ipfs.com"
+    "posttest": "npm run docker:ipfs:stop",
+    "docker:ipfs:start": "node scripts/cli.js ipfs --start",
+    "docker:ipfs:stop": "node scripts/cli.js ipfs --stop",
+    "mock:ipfs.io": "smoke -p 9082 test/mocks/ipfs.io",
+    "mock:cf-ipfs.com": "smoke -p 9083 test/mocks/cf-ipfs.com"
   },
   "dependencies": {
     "itty-router": "^2.4.5",
@@ -27,11 +30,16 @@
   "devDependencies": {
     "@sentry/cli": "^1.71.0",
     "ava": "^3.15.0",
+    "delay": "^5.0.0",
     "esbuild": "^0.14.2",
+    "execa": "^6.0.0",
     "git-rev-sync": "^3.0.1",
+    "ipfs-http-client": "^55.0.0",
+    "ipfs-utils": "^9.0.4",
     "miniflare": "^2.0.0-rc.2",
     "npm-run-all": "^4.1.5",
     "p-retry": "^5.0.0",
+    "p-wait-for": "^4.1.0",
     "sade": "^1.7.4",
     "smoke": "^3.1.1"
   },

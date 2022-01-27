@@ -27,10 +27,8 @@ jobs:
         env:
           DEBUG: '*'
           ENV: ${{ matrix.env }}
-          STAGING_DATABASE_URL: ${{ secrets.STAGING_DATABASE_URL }}
-          STAGING_DATABASE_TOKEN: ${{ secrets.STAGING_DATABASE_TOKEN }}
-          PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
-          PROD_DATABASE_TOKEN: ${{ secrets.PROD_DATABASE_TOKEN }}
+          STAGING_DATABASE_CONNECTION: ${{ secrets.STAGING_DATABASE_CONNECTION }}
+          PROD_DATABASE_CONNECTION: ${{ secrets.PROD_DATABASE_CONNECTION }}
           CLUSTER1_API_URL: ${{ secrets.CLUSTER1_API_URL }}
           CLUSTER1_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER1_BASIC_AUTH_TOKEN }}
           CLUSTER2_API_URL: ${{ secrets.CLUSTER2_API_URL }}
