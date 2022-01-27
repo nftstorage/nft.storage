@@ -1,7 +1,6 @@
 /* eslint-env serviceworker, browser */
 
 import pAny from 'p-any'
-import pMap from 'p-map'
 import pSettle from 'p-settle'
 
 import { getCidFromSubdomainUrl } from './utils/cid.js'
@@ -47,10 +46,9 @@ export async function gatewayGet(request, env, ctx) {
 
       await Promise.all([
         // Filter out winner and update remaining gateway metrics
-        pMap(
-          responses.filter((r) => r.value?.url !== winnerGwResponse.url),
-          (r) => updateGatewayMetrics(request, env, r.value, false)
-        ),
+        ...responses
+          .filter((r) => r.value?.url !== winnerGwResponse.url)
+          .map((r) => updateGatewayMetrics(request, env, r.value, false)),
         updateCidsTracker(request, env, successFullResponses, cid),
       ])
     }
@@ -71,8 +69,10 @@ export async function gatewayGet(request, env, ctx) {
       (async () => {
         // Update metrics as all requests failed
         const responses = await pSettle(gatewayReqs)
-        await pMap(responses, (r) =>
-          updateGatewayMetrics(request, env, r.value, false)
+        await Promise.all(
+          responses.map((r) =>
+            updateGatewayMetrics(request, env, r.value, false)
+          )
         )
       })()
     )
