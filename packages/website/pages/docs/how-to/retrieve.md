@@ -6,17 +6,18 @@ title: Retrieve NFT data from IPFS
 
 import Callout from 'nextra-theme-docs/callout';
 
-In this guide, you'll learn several methods for retrieving NFT data that's been stored with NFT.Storage.
+In this guide, you'll learn several methods for retrieving NFT data that's been stored with NFT.Storage. 
 
 All data stored using NFT.Storage is made available for retrieval via [IPFS](https://ipfs.io), the InterPlanetary File System. IPFS is a distributed, peer-to-peer network for storing and sharing content-addressed data. 
-
-This guide will show a few approaches to fetching data from IPFS, broadly split up into [advice for end users and NFT collectors](#for-individuals-and-nft-collectors) and [recommendations for platforms and marketplaces](#for-platforms-and-marketplaces).
-
-## For individuals and NFT collectors
 
 If you've collected an NFT that uses IPFS, this guide can help you understand [how IPFS addresses work](#understanding-ipfs-addresses) and how to view your data [using HTTP gateways](#using-ipfs-http-gateways) or [native IPFS tools](#running-ipfs-on-your-computer).
 
 You can also find out how to [make archival copies](#making-archival-copies-of-your-nft-data) of your NFT data using IPFS tools.
+
+<Callout emoji="💡">
+If you're building a platform or marketplace that needs to fetch NFT data on behalf of your end users, please see
+the [architecture considerations guide][concepts-arch-retrieve]
+</Callout>
 
 ### Understanding IPFS addresses
 
@@ -101,6 +102,8 @@ You can turn any `ipfs://` URL into a gateway URL by [choosing a gateway][public
 
 If you want to interact with the IPFS peer-to-peer network directly, you can [install IPFS][ipfs-docs-install] on your computer.
 
+
+
 { /* TODO: add IPFS Desktop examples once we sort out the dag-cbor story
      see: https://github.com/ipfs/ipfs-desktop/issues/1962
   */ }
@@ -152,37 +155,12 @@ Look for any additional [IPFS addresses](#understanding-ipfs-addresses) and make
 
 For each CID in the metadata, repeat the previous step to create a CAR file and save it alongside the CAR for the metadata.
 
-## For platforms and marketplaces
-
-For NFT platforms that need to retrieve NFT data on behalf of others, there are a few things you can do to ensure a quality user experience.
-
-When displaying an NFT that uses IPFS to link to off-chain data, you have several options for retrieval. 
-
-### HTTP gateways
-
-IPFS is built around a peer-to-peer content sharing protocol that allows any computer to provide content to anyone that requests it. This provides [many benefits][concepts-decentralized-storage], but not all computing environments can fully support the peer-to-peer networking paradigm. 
-
-While some browsers like [Brave](https://brave.com) offer [native IPFS support][brave-ipfs], other browsers are restricted to HTTP and its related protocols, which makes engaging directly with the peer-to-peer protocol more difficult.
-
-As a platform operator, you can support all browsers by using an IPFS gateway to serve NFTs to your users via HTTP. Because NFT.Storage and other services following [best practices for NFT data on IPFS][ipfs-docs-nft-best-practices] use `ipfs://` URLs instead of `https://`, your web application should support re-writing IPFS URLs to target the gateway of your choice.
-
-See the section on [HTTP gateway URLs](https://docs.ipfs.io/how-to/best-practices-for-nft-data/#http-gateway-url) in the [best practices documentation][ipfs-docs-nft-best-practices] to learn about the structure of gateway URLs and how to create them from an `ipfs://` URL.
-
-#### Gateways and centralization
-
-It's important to note that gateways are a [point of centralization](https://docs.ipfs.io/concepts/ipfs-gateway/#centralization) that is under the control of the gateway operator. This is one reason why we strongly recommend storing gateway-agnostic `ipfs://` URLs in NFT metadata and especially in on-chain records, so that links aren't "tied" to a single provider.
-
-As a platform operator, you can direct users to any IPFS gateway, including [public gateways][public-gateway-checker] run by [Protocol Labs](https://protocol.ai) and other organizations in the IPFS ecosystem.
-
-Because public gateways are a shared resource, you may prefer to [run your own dedicated gateway](https://blog.stacktical.com/ipfs/gateway/dapp/2019/09/21/ipfs-server-google-cloud-platform.html) to provide a more consistent user experience. Thanks to the flexibility of content addressing, you can direct your platforms users to your own gateway in your application layer. Anyone not using your platform will still be able to fetch the data from any public gateway, but your users will get improved latency and reliability.
-
-Another potential optimization is to store redundant copies of your NFT data on a traditional storage service and deliver them via HTTP. This side-steps the IPFS retrieval entirely and may be more performant in some cases, but you'll need to do some bookkeeping to keep track of the HTTP locations of each piece of data. When pursuing this option, we strongly recommend exposing the original `ipfs://` URLs to your users, so that they have multiple options for retrieval and aren't dependent on your custom HTTP service.
 
 [ipfs-docs-concepts-cid]: https://docs.ipfs.io/concepts/content-addressing
 [ipfs-docs-install]: https://docs.ipfs.io/install/
 [ipfs-docs-nft-best-practices]: https://docs.ipfs.io/how-to/best-practices-for-nft-data/
 [ipfs-docs-web-addresses]: https://docs.ipfs.io/how-to/address-ipfs-on-web/
-[concepts-decentralized-storage]: ../concepts/decentralized-storage.md
+[concepts-arch-retrieve]: ../../concepts/architecture-considerations/#retrieving-data-for-end-users
 [brave-ipfs]: https://brave.com/ipfs-support/
 [public-gateway-checker]: https://ipfs.github.io/public-gateway-checker/
 [erc-721]: https://eips.ethereum.org/EIPS/eip-721
