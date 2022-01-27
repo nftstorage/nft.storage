@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import { getMiniflare } from './utils.js'
 
 test.beforeEach((t) => {
