@@ -19,7 +19,7 @@ If you're building a platform or marketplace that needs to fetch NFT data on beh
 the [architecture considerations guide][concepts-arch-retrieve]
 </Callout>
 
-### Understanding IPFS addresses
+## Understanding IPFS addresses
 
 IPFS uses a technique called [content addressing][ipfs-docs-concepts-cid] to uniquely identify each piece of data with a short string of characters called a Content ID (CID).
 
@@ -54,7 +54,7 @@ For other options, see the sections below on [using HTTP gateways](#using-ipfs-h
 See [IPFS addresses on the Web][ipfs-docs-web-addresses] in the IPFS docs for more details on the different ways to link to IPFS data.
 </Callout>
 
-### Finding the IPFS address for your NFT's metadata
+## Finding the IPFS address for your NFT's metadata
 
 Before you can retrieve your off-chain NFT metadata, you need to know where to find it. With IPFS, that means finding the [IPFS address](#understanding-ipfs-addresses) for your token's metadata which is recorded in the blockchain entry for the token.
 
@@ -78,7 +78,7 @@ Now that you have your metadata address, you can download a copy [using an HTTP 
 Don't forget to look inside the metadata! NFT metadata usually contains links to other resources, especially in the `image` field. Take a look inside and check for other [IPFS addresses](#understanding-ipfs-addresses) so you can download the linked data too!
 </Callout>
 
-### Using IPFS HTTP gateways
+## Using IPFS HTTP gateways
 
 Above we saw some examples of [IPFS addresses](#understanding-ipfs-addresses) that use the `ipfs://` URL prefix.
 
@@ -98,18 +98,26 @@ These are gateway URLs, which link to IPFS data using an HTTP gateway provider. 
 
 You can turn any `ipfs://` URL into a gateway URL by [choosing a gateway][public-gateway-checker] and replacing the `ipfs://` prefix with `https://<gateway-host>/ipfs/`. For example, to use the gateway at `dweb.link`, you could create the URL https://dweb.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif. Clicking that link should take you to an image served by the gateway host.
 
-### Running IPFS on your computer
+## Running IPFS on your computer
 
 If you want to interact with the IPFS peer-to-peer network directly, you can [install IPFS][ipfs-docs-install] on your computer.
 
+Once you have the `ipfs` command installed, you can download any IPFS data to your computer with the `ipfs get` command.
+
+Running `ipfs get <cid>` (replacing `<cid>` with the CID for your content) will download a copy of the referenced data to your local computer. 
+
+You can also include a **path** after the CID, just as you can with IPFS URLs. So for example, `ipfs get bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif` will download the file `amazing.gif`.
+
+While `ipfs get` is great for viewing your files, you can also add them to your local IPFS "repository", so that other users on the IPFS network can fetch the data directly from your computer. To do so, use the `ipfs pin add` command to tell your local IPFS node to fetch and "pin" the content:
+
+```bash
+ipfs pin add bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy
+```
+
+See the [IPFS pinning documentation][ipfs-docs-pinning] for more about pinning IPFS content.
 
 
-{ /* TODO: add IPFS Desktop examples once we sort out the dag-cbor story
-     see: https://github.com/ipfs/ipfs-desktop/issues/1962
-  */ }
-
-
-### Making archival copies of your NFT data
+## Making archival copies of your NFT data
 
 You can safeguard the data associated with your NFTs by downloading your collection to your own devices. This puts the data into your control and ensures that you're not dependent on any third party (including NFT.Storage!) for the longevity of your NFTs.
 
@@ -160,6 +168,7 @@ For each CID in the metadata, repeat the previous step to create a CAR file and 
 [ipfs-docs-install]: https://docs.ipfs.io/install/
 [ipfs-docs-nft-best-practices]: https://docs.ipfs.io/how-to/best-practices-for-nft-data/
 [ipfs-docs-web-addresses]: https://docs.ipfs.io/how-to/address-ipfs-on-web/
+[ipfs-docs-pinning]: https://docs.ipfs.io/how-to/pin-files/
 [concepts-arch-retrieve]: ../../concepts/architecture-considerations/#retrieving-data-for-end-users
 [brave-ipfs]: https://brave.com/ipfs-support/
 [public-gateway-checker]: https://ipfs.github.io/public-gateway-checker/
