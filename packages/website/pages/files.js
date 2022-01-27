@@ -198,7 +198,14 @@ export default function Files({ user }) {
             text={nft.cid}
             popupContent={'CID has been copied!!'}
           >
-            <p className="dib black">{nft.cid}</p>
+            <a
+              href={`https://ipfs.io/ipfs/${nft.cid}`}
+              className="underline black"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {nft.cid}
+            </a>
           </CopyButton>
         </td>
         <td data-label="Pin Status" className="nowrap">
@@ -406,7 +413,7 @@ function GatewayLink({ cid, type }) {
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
 
   return (
-    <a title="View IPFS Url" href={href} target="_blank">
+    <a title="View IPFS Url" href={href} target="_blank" rel="noreferrer">
       View
     </a>
   )
@@ -440,7 +447,7 @@ function CopyGatewayLink({ cid, type }) {
  *
  * @param {{cid: string, type?: string}} props
  */
-function CopyCID({ cid, type }) {
+function CopyCID({ cid }) {
   return (
     <CopyButton text={cid} popupContent={'CID has been copied!'} asLink={true}>
       <>Copy CID</>
