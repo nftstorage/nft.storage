@@ -18,9 +18,10 @@ main = "index.mjs"
 
 [durable_objects]
 bindings = [
-  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics1"},
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics2"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics1"},
-  {name = "CIDSTRACKER", class_name = "CidsTracker0"}
+  {name = "CIDSTRACKER", class_name = "CidsTracker0"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"}
 ]
 
 # PROD!
@@ -133,3 +134,7 @@ deleted_classes = ["GenericMetrics1"]
 tag = "v18" # Should be unique for each entry
 new_classes = ["SummaryMetrics1"]
 deleted_classes = ["SummaryMetrics0"]
+[[migrations]]
+tag = "v19" # Should be unique for each entry
+new_classes = ["GatewayRateLimits0", "GatewayMetrics2"]
+deleted_classes = ["GatewayMetrics1"]

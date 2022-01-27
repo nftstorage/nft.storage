@@ -1,7 +1,7 @@
 /* eslint-env serviceworker, browser */
 /* global Response caches */
 
-import pAny from 'p-any'
+import pAny, { AggregateError } from 'p-any'
 import pSettle from 'p-settle'
 
 import { getCidFromSubdomainUrl } from './utils/cid.js'
@@ -9,20 +9,24 @@ import {
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
   CF_CACHE_MAX_OBJECT_SIZE,
+  RATE_LIMIT_ERROR_CODE,
 } from './constants.js'
 
 /**
  * @typedef {Object} GatewayResponse
- * @property {Response} response
+ * @property {Response} [response]
  * @property {string} url
- * @property {number} responseTime
+ * @property {number} [responseTime]
+ * @property {boolean} [rateLimitPrevented]
+ *
+ * @typedef {import('./env').Env} Env
  */
 
 /**
  * Handle gateway request
  *
  * @param {Request} request
- * @param {import('./env').Env} env
+ * @param {Env} env
  * @param {import('./index').Ctx} ctx
  */
 export async function gatewayGet(request, env, ctx) {
@@ -37,10 +41,11 @@ export async function gatewayGet(request, env, ctx) {
 
   const reqUrl = new URL(request.url)
   const cid = getCidFromSubdomainUrl(reqUrl)
+  const pathname = reqUrl.pathname
 
   const gatewayReqs = env.ipfsGateways.map((gwUrl) =>
-    _gatewayFetch(gwUrl, cid, {
-      pathname: reqUrl.pathname,
+    _gatewayFetch(gwUrl, cid, request, env, {
+      pathname,
       timeout: env.REQUEST_TIMEOUT,
     })
   )
@@ -48,7 +53,7 @@ export async function gatewayGet(request, env, ctx) {
   try {
     /** @type {GatewayResponse} */
     const winnerGwResponse = await pAny(gatewayReqs, {
-      filter: (res) => res.response.ok,
+      filter: (res) => res.response?.ok,
     })
 
     async function settleGatewayRequests() {
@@ -86,17 +91,35 @@ export async function gatewayGet(request, env, ctx) {
     // forward winner gateway response
     return winnerGwResponse.response
   } catch (err) {
+    let responses
+    // We can already settle requests if Aggregate Error, as all promises were already rejected
+    if (err instanceof AggregateError) {
+      responses = await pSettle(gatewayReqs)
+    }
+
     ctx.waitUntil(
       (async () => {
         // Update metrics as all requests failed
-        const responses = await pSettle(gatewayReqs)
+        const gatewayResponses = responses || (await pSettle(gatewayReqs))
         await Promise.all(
-          responses.map((r) =>
+          gatewayResponses.map((r) =>
             updateGatewayMetrics(request, env, r.value, false)
           )
         )
       })()
     )
+
+    // Redirect if all failed and at least one gateway was rate limited
+    if (responses) {
+      const wasRateLimited = responses.find(
+        (r) => r.value?.response?.status === RATE_LIMIT_ERROR_CODE
+      )
+
+      if (wasRateLimited) {
+        const ipfsUrl = new URL('ipfs', env.IPFS_GATEWAYS[0])
+        return Response.redirect(`${ipfsUrl.toString()}/${cid}${pathname}`, 302)
+      }
+    }
 
     throw err
   }
@@ -106,7 +129,7 @@ export async function gatewayGet(request, env, ctx) {
  * Store metrics for winner gateway response
  *
  * @param {Request} request
- * @param {import('./env').Env} env
+ * @param {Env} env
  * @param {GatewayResponse} winnerGwResponse
  */
 async function storeWinnerGwResponse(request, env, winnerGwResponse) {
@@ -121,6 +144,8 @@ async function storeWinnerGwResponse(request, env, winnerGwResponse) {
  *
  * @param {string} gwUrl
  * @param {string} cid
+ * @param {Request} request
+ * @param {Env} env
  * @param {Object} [options]
  * @param {string} [options.pathname]
  * @param {number} [options.timeout]
@@ -128,8 +153,20 @@ async function storeWinnerGwResponse(request, env, winnerGwResponse) {
 async function _gatewayFetch(
   gwUrl,
   cid,
+  request,
+  env,
   { pathname = '', timeout = 20000 } = {}
 ) {
+  // Block before hitting rate limit if needed
+  const { shouldBlock } = await getGatewayRateLimitState(request, env, gwUrl)
+
+  if (shouldBlock) {
+    return {
+      url: gwUrl,
+      rateLimitPrevented: true,
+    }
+  }
+
   const ipfsUrl = new URL('ipfs', gwUrl)
   const controller = new AbortController()
   const startTs = Date.now()
@@ -143,9 +180,6 @@ async function _gatewayFetch(
   } finally {
     clearTimeout(timer)
   }
-
-  // TODO: Is it rate limited?
-  // how can we "suspend" this gateway for a bit? Maybe track this in a Durable Object?
 
   /** @type {GatewayResponse} */
   const gwResponse = {
@@ -174,6 +208,25 @@ async function updateSummaryCacheMetrics(request, env, response) {
   await stub.fetch(
     _getDurableRequestUrl(request, 'metrics/cache', contentLengthStats)
   )
+}
+
+/**
+ * @param {Request} request
+ * @param {import('./env').Env} env
+ * @param {string} gwUrl
+ */
+async function getGatewayRateLimitState(request, env, gwUrl) {
+  // Get durable object for gateway rate limits
+  const id = env.gatewayRateLimitsDurable.idFromName(gwUrl)
+  const stub = env.gatewayRateLimitsDurable.get(id)
+
+  const stubResponse = await stub.fetch(
+    _getDurableRequestUrl(request, 'request')
+  )
+
+  /** @type {import('./durable-objects/gateway-rate-limits').RateLimitResponse} */
+  const rateLimitResponse = await stubResponse.json()
+  return rateLimitResponse
 }
 
 /**
@@ -215,9 +268,11 @@ async function updateGatewayMetrics(
 
   /** @type {import('./durable-objects/gateway-metrics').ResponseStats} */
   const responseStats = {
-    ok: gwResponse.response.ok,
+    ok: gwResponse.response?.ok || false,
     responseTime: gwResponse.responseTime,
     winner: isWinner,
+    rateLimitPrevented: gwResponse.rateLimitPrevented,
+    rateLimitErrored: gwResponse.response?.status === RATE_LIMIT_ERROR_CODE,
   }
 
   await stub.fetch(_getDurableRequestUrl(request, 'update', responseStats))
@@ -247,7 +302,7 @@ async function updateCidsTracker(request, env, responses, cid) {
  *
  * @param {Request} request
  * @param {string} route
- * @param {Object} [data]
+ * @param {any} [data]
  */
 function _getDurableRequestUrl(request, route, data) {
   const reqUrl = new URL(

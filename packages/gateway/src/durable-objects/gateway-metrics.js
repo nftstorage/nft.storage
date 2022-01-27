@@ -4,12 +4,16 @@
  * @property {number} totalSuccessfulRequests total number of successful requests
  * @property {number} totalFailedRequests total number of requests failed
  * @property {number} totalWinnerRequests number of performed requests where winner
+ * @property {number} totalRateLimitedErroredRequests number of performed requests prevented from rate limiting
+ * @property {number} totalRateLimitedPreventedRequests number of performed requests prevented from rate limiting
  * @property {Record<string, number>} responseTimeHistogram
  *
  * @typedef {Object} ResponseStats
  * @property {boolean} ok request was successful
  * @property {number} [responseTime] number of milliseconds to get response
- * @property {boolean} [winner]
+ * @property {boolean} [winner] response was from winner gateway
+ * @property {boolean} [rateLimitPrevented] response not obtained as request did not happen to prevent rate limit blockage
+ * @property {boolean} [rateLimitErrored] rate limit was not prevented, but worker was still rate limited
  */
 
 const GATEWAY_METRICS_ID = 'gateway_metrics'
@@ -17,7 +21,7 @@ const GATEWAY_METRICS_ID = 'gateway_metrics'
 /**
  * Durable Object for keeping Metrics state of a gateway.
  */
-export class GatewayMetrics1 {
+export class GatewayMetrics2 {
   constructor(state) {
     this.state = state
 
@@ -57,6 +61,14 @@ export class GatewayMetrics1 {
     if (!stats.ok) {
       // Update failed request count
       this.gatewayMetrics.totalFailedRequests += 1
+
+      // Update rate limit prevented requests
+      if (stats.rateLimitPrevented) {
+        this.gatewayMetrics.totalRateLimitedPreventedRequests += 1
+      } else if (stats.rateLimitErrored) {
+        this.gatewayMetrics.totalRateLimitedErroredRequests += 1
+      }
+
       return
     }
 
@@ -97,6 +109,8 @@ function createMetricsTracker() {
     totalSuccessfulRequests: 0,
     totalFailedRequests: 0,
     totalWinnerRequests: 0,
+    totalRateLimitedErroredRequests: 0,
+    totalRateLimitedPreventedRequests: 0,
     responseTimeHistogram: Object.fromEntries(h),
   }
 }
