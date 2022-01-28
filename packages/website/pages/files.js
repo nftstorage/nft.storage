@@ -410,8 +410,8 @@ function GatewayLink({ cid, type }) {
   const gatewayLink = cid.startsWith('Qm')
     ? `https://ipfs.io/ipfs/${cid}`
     : `ipfs://${cid}`
-  const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
-
+  // const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
+  const href = `https://ipfs.io/ipfs/${cid}`
   return (
     <a title="View IPFS Url" href={href} target="_blank" rel="noreferrer">
       View
