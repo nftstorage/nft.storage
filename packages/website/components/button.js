@@ -21,6 +21,7 @@ import countly from '../lib/countly'
  * @prop {React.ReactChildren | string | React.ReactElement} children
  * @prop {boolean} [disabled]
  * @prop {boolean} [small]
+ * @prop {boolean} [hologram]
  * @prop {string} [id]
  * @prop {string} [title]
  * @prop {'dark' | 'light' | 'caution' | 'tag' } [variant] Extend the visuals in button.css
@@ -43,6 +44,7 @@ export default function Button({
   disabled = false,
   small = false,
   variant = 'light',
+  hologram = true,
   tracking,
   unstyled,
   ...props
@@ -70,7 +72,7 @@ export default function Button({
     btnClasses = clsx(
       btnClasses,
       'pv2 ph3',
-      variant !== 'tag' && 'hologram chicagoflf',
+      variant !== 'tag' && hologram && 'hologram chicagoflf',
       small && 'small',
       disabled ? 'o-60' : 'interactive',
       variant

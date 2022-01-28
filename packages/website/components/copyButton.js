@@ -7,6 +7,7 @@ import clsx from 'clsx'
  * @typedef {Object} CopyButtonProps
  * @prop {string | undefined} [text]
  * @prop {string} [title]
+ * @prop {boolean} [asLink]
  * @prop {string} [popupContent]
  * @prop {JSX.Element} [children]
  */
@@ -14,7 +15,14 @@ import clsx from 'clsx'
 /**
  * @param {CopyButtonProps} props
  */
-function CopyButton({ text, title, popupContent, children, ...props }) {
+function CopyButton({
+  text,
+  title,
+  asLink = false,
+  popupContent,
+  children,
+  ...props
+}) {
   const [popup, setPopupActive] = useState(false)
   /** @type [any, null | any] */
   const [timer, setTimer] = useState(null)
@@ -39,7 +47,11 @@ function CopyButton({ text, title, popupContent, children, ...props }) {
     handlePopup()
   }
 
-  return (
+  const btnHtml = asLink ? (
+    <button onClick={handleCopy} title={title} {...props}>
+      {popup ? popupContent : children}
+    </button>
+  ) : (
     <>
       {children}
       <button
@@ -61,6 +73,8 @@ function CopyButton({ text, title, popupContent, children, ...props }) {
       </button>
     </>
   )
+
+  return btnHtml
 }
 
 export default CopyButton
