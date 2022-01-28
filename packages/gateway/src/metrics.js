@@ -2,15 +2,15 @@
 
 import pMap from 'p-map'
 
-import { METRICS_CACHE_MAX_AGE, GENERIC_METRICS_ID } from './constants.js'
+import { METRICS_CACHE_MAX_AGE, SUMMARY_METRICS_ID } from './constants.js'
 import { histogram } from './durable-objects/gateway-metrics.js'
 
 /**
  * @typedef {import('./durable-objects/gateway-metrics').GatewayMetrics} GatewayMetrics
- * @typedef {import('./durable-objects/generic-metrics').GenericMetrics} GenericMetrics
+ * @typedef {import('./durable-objects/summary-metrics').SummaryMetrics} SummaryMetrics
  *
  * @typedef MetricsDurable
- * @property {GenericMetrics} genericMetrics
+ * @property {SummaryMetrics} summaryMetrics
  * @property {Record<string,GatewayMetrics>} ipfsGateways
  */
 
@@ -32,16 +32,16 @@ export async function metricsGet(request, env, ctx) {
   // }
   let res
 
-  const [genericMetrics, ipfsGateways] = await Promise.all([
+  const [summaryMetrics, ipfsGateways] = await Promise.all([
     (async () => {
-      const id = env.genericMetricsDurable.idFromName(GENERIC_METRICS_ID)
-      const stub = env.genericMetricsDurable.get(id)
+      const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
+      const stub = env.summaryMetricsDurable.get(id)
 
       const stubResponse = await stub.fetch(request)
-      /** @type {GenericMetrics} */
-      const genericMetrics = await stubResponse.json()
+      /** @type {SummaryMetrics} */
+      const summaryMetrics = await stubResponse.json()
 
-      return genericMetrics
+      return summaryMetrics
     })(),
     pMap(env.ipfsGateways, async (gw) => {
       const id = env.gatewayMetricsDurable.idFromName(gw)
@@ -60,7 +60,7 @@ export async function metricsGet(request, env, ctx) {
 
   /** @type {MetricsDurable} */
   const metricsCollected = {
-    genericMetrics,
+    summaryMetrics,
     ipfsGateways: ipfsGateways.reduce(
       (obj, item) => Object.assign(obj, { [item.gw]: item.gwMetrics }),
       {}
@@ -68,12 +68,15 @@ export async function metricsGet(request, env, ctx) {
   }
 
   const metrics = [
+    `# HELP nftstorage_gateway_total_cached_responses Total cached responses returned.`,
+    `# TYPE nftstorage_gateway_total_cached_responses counter`,
+    `nftstorage_gateway_total_cached_responses{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalCachedResponses}`,
     `# HELP nftstorage_gateway_total_winner_response_time Total requests performed.`,
     `# TYPE nftstorage_gateway_total_winner_response_time counter`,
-    `nftstorage_gateway_total_winner_response_time{env="${env.ENV}"} ${metricsCollected.genericMetrics.totalWinnerResponseTime}`,
+    `nftstorage_gateway_total_winner_response_time{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalWinnerResponseTime}`,
     `# HELP nftstorage_gateway_total_winner_successful_requests Total successful requests.`,
     `# TYPE nftstorage_gateway_total_winner_successful_requests counter`,
-    `nftstorage_gateway_total_winner_successful_requests{env="${env.ENV}"} ${metricsCollected.genericMetrics.totalWinnerSuccessfulRequests}`,
+    `nftstorage_gateway_total_winner_successful_requests{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalWinnerSuccessfulRequests}`,
     `# HELP nftstorage_gateway_total_response_time Average response time.`,
     `# TYPE nftstorage_gateway_total_response_time gauge`,
     ...env.ipfsGateways.map(

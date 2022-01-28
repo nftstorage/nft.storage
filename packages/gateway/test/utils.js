@@ -12,11 +12,6 @@ export function getMiniflare() {
     buildCommand: undefined,
     wranglerConfigEnv: 'test',
     modules: true,
-    durableObjects: {
-      GATEWAYMETRICS: 'GatewayMetrics1',
-      GENERICMETRICS: 'GenericMetrics1',
-      CIDSTRACKER: 'CidsTracker0',
-    },
   })
 }
 

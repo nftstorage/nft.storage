@@ -1,10 +1,11 @@
 /* eslint-env serviceworker, browser */
+/* global Response caches */
 
 import pAny from 'p-any'
 import pSettle from 'p-settle'
 
 import { getCidFromSubdomainUrl } from './utils/cid.js'
-import { CIDS_TRACKER_ID, GENERIC_METRICS_ID } from './constants.js'
+import { CIDS_TRACKER_ID, SUMMARY_METRICS_ID } from './constants.js'
 
 /**
  * @typedef {Object} GatewayResponse
@@ -21,6 +22,15 @@ import { CIDS_TRACKER_ID, GENERIC_METRICS_ID } from './constants.js'
  * @param {import('./index').Ctx} ctx
  */
 export async function gatewayGet(request, env, ctx) {
+  const cache = caches.default
+  let res = await cache.match(request.url)
+
+  if (res) {
+    // Update cache metrics in background
+    ctx.waitUntil(updateSummaryCacheMetrics(request, env))
+    return res
+  }
+
   const reqUrl = new URL(request.url)
   const cid = getCidFromSubdomainUrl(reqUrl)
 
@@ -58,6 +68,8 @@ export async function gatewayGet(request, env, ctx) {
         await Promise.all([
           storeWinnerGwResponse(request, env, winnerGwResponse),
           settleGatewayRequests(),
+          // Cache request URL in Cloudflare CDN
+          cache.put(request.url, winnerGwResponse.response.clone()),
         ])
       })()
     )
@@ -91,7 +103,7 @@ export async function gatewayGet(request, env, ctx) {
 async function storeWinnerGwResponse(request, env, winnerGwResponse) {
   await Promise.all([
     updateGatewayMetrics(request, env, winnerGwResponse, true),
-    updateSummaryMetrics(request, env, winnerGwResponse),
+    updateSummaryWinnerMetrics(request, env, winnerGwResponse),
   ])
 }
 
@@ -138,12 +150,24 @@ async function _gatewayFetch(
 /**
  * @param {Request} request
  * @param {import('./env').Env} env
+ */
+async function updateSummaryCacheMetrics(request, env) {
+  // Get durable object for gateway
+  const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
+  const stub = env.summaryMetricsDurable.get(id)
+
+  await stub.fetch(_getDurableRequestUrl(request, 'metrics/cache'))
+}
+
+/**
+ * @param {Request} request
+ * @param {import('./env').Env} env
  * @param {GatewayResponse} gwResponse
  */
-async function updateSummaryMetrics(request, env, gwResponse) {
+async function updateSummaryWinnerMetrics(request, env, gwResponse) {
   // Get durable object for gateway
-  const id = env.genericMetricsDurable.idFromName(GENERIC_METRICS_ID)
-  const stub = env.genericMetricsDurable.get(id)
+  const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
+  const stub = env.summaryMetricsDurable.get(id)
 
   /** @type {import('./durable-objects/gateway-metrics').ResponseStats} */
   const responseStats = {
@@ -151,7 +175,9 @@ async function updateSummaryMetrics(request, env, gwResponse) {
     responseTime: gwResponse.responseTime,
   }
 
-  await stub.fetch(_getUpdateRequestUrl(request, responseStats))
+  await stub.fetch(
+    _getDurableRequestUrl(request, 'metrics/winner', responseStats)
+  )
 }
 
 /**
@@ -177,7 +203,7 @@ async function updateGatewayMetrics(
     winner: isWinner,
   }
 
-  await stub.fetch(_getUpdateRequestUrl(request, responseStats))
+  await stub.fetch(_getDurableRequestUrl(request, 'update', responseStats))
 }
 
 /**
@@ -196,18 +222,19 @@ async function updateCidsTracker(request, env, responses, cid) {
     urls: responses.filter((r) => r.isFulfilled).map((r) => r?.value?.url),
   }
 
-  await stub.fetch(_getUpdateRequestUrl(request, updateRequest))
+  await stub.fetch(_getDurableRequestUrl(request, 'update', updateRequest))
 }
 
 /**
  * Get a Request to update a durable object
  *
  * @param {Request} request
- * @param {Object} data
+ * @param {string} route
+ * @param {Object} [data]
  */
-function _getUpdateRequestUrl(request, data) {
+function _getDurableRequestUrl(request, route, data) {
   const reqUrl = new URL(
-    'update',
+    route,
     request.url.startsWith('http') ? request.url : `http://${request.url}`
   )
   const headers = new Headers()
@@ -216,6 +243,6 @@ function _getUpdateRequestUrl(request, data) {
   return new Request(reqUrl.toString(), {
     headers,
     method: 'PUT',
-    body: JSON.stringify(data),
+    body: data && JSON.stringify(data),
   })
 }
