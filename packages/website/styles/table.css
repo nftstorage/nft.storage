@@ -83,6 +83,25 @@
     text-overflow: ellipsis;
     overflow: hidden;
   }
+  .table-responsive table tr td.nowrap .truncate + .icon-button {
+    padding-right: 0;
+  }
+
+  .table-responsive table tr td.nowrap .popup.active::after {
+    height: 12px;
+    left: inherit;
+    right: 10px;
+    top: -4px;
+    display: flex;
+    align-items: center;
+    border: 1px solid;
+    margin-left: 0;
+    animation: none;
+    width: auto;
+    font-size: 0.9rem !important;
+    padding: 5px 15px;
+    transform: none;
+  }
 }
 
 /* 832px */
