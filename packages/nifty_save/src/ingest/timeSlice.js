@@ -1,8 +1,14 @@
+import {
+  dataSources,
+  getDataSourceStrategy as getDataSource,
+} from './sources/registry'
+
 import AWS from 'aws-sdk'
 import { sleep } from '../timers'
-import { registry as sourcesRegistry } from './sources/registry'
 
 const bus = new AWS.EventBridge()
+
+const sqs = new AWS.SQS()
 
 function messageToEntry(msg) {
   console.log(msg)
@@ -34,24 +40,37 @@ export async function fanOut(event) {
 export async function execute(event, context) {
   const { detail } = event
 
-  if (!sourcesRegistry[detail.source]) {
+  const datasource = getDataSource(detail.source)
+
+  if (!datasource) {
     return {
       statusCode: 422,
       body: JSON.stringify({
         message: `${
           detail.source
-        } did not exist in list of possible sources: [${Object.keys(
-          sourcesRegistry
-        ).join(' | ')}]`,
+        } did not exist in list of possible sources: [${dataSources
+          .map((s) => s.id)
+          .join(' | ')}]`,
       }),
     }
   }
 
-  const fetchNFTs = sourcesRegistry[detail.source]
+  const fetchNFTs = datasource.fetch
 
-  const nfts = await fetchNFTs(event, context)
+  const results = await fetchNFTs(event, context)
 
-  console.table(nfts)
+  if ((results.statusCode == 200) & results.data) {
+    const data = results.data.map(datasource.tranformIn)
+    const numberOfItems = data.length
+
+    for (var i = 0; i < numberOfItems; i++) {
+      console.log(i, data[i])
+      // sqs.sendMessage({
+      //   QueueUrl: process.env.fetchedRecordQueueUrl,
+      //   MessageBody: JSON.stringify(data[i])
+      // })
+    }
+  }
 
   return {
     statusCode: 200,

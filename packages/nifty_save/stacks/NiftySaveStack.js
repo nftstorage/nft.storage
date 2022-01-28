@@ -1,6 +1,6 @@
 import * as sst from '@serverless-stack/resources'
 
-import { Table, TableFieldType } from '@serverless-stack/resources'
+import { Function, Table, TableFieldType } from '@serverless-stack/resources'
 
 import { LayerVersion } from '@aws-cdk/aws-lambda'
 
@@ -46,7 +46,7 @@ export default class NiftySaveStack extends sst.Stack {
       },
     })
 
-    const fetchedRecordsTable = new Table(this, 'FetchedRecords', {
+    const fetchedRecordsTable = new Table(this, 'FetchedRecordsTable', {
       fields: {
         id: TableFieldType.STRING,
         token_id: TableFieldType.STRING,
@@ -99,6 +99,8 @@ export default class NiftySaveStack extends sst.Stack {
         'POST /ingest/records/purge': 'src/ingest.purgeFetchedRecordqueue',
         'POST /ingest/subgraph/fetch': 'src/ingest.fetchSubgraphNFTS',
 
+        'POST /ingest/timeslice/execute': 'src/ingest.executeTimeSlice',
+
         $default: 'src/default.defaultResponse',
       },
     })
@@ -110,22 +112,28 @@ export default class NiftySaveStack extends sst.Stack {
       ApiEndpoint: api.url,
     })
 
+    let lambdaEnvVars = {}
+    let functionLayers = []
+
+    //Decorate with prod only.
     if (!scope.local) {
       const sentry = LayerVersion.fromLayerVersionArn(
         this,
         'SentryLayer',
         `arn:aws:lambda:${scope.region}:943013980633:layer:SentryNodeServerlessSDK:40`
       )
-
-      this.addDefaultFunctionLayers([sentry])
-
-      this.addDefaultFunctionEnv({
-        SENTRY_DSN: process.env.SENTRY_DSN,
-        SUBGRAPH_URL: process.env.SUBGRAPH_URL,
-        HASURA_URL: process.env.HASURA_URL,
-        SENTRY_TRACES_SAMPLE_RATE: '0.5',
-        NODE_OPTIONS: '-r @sentry/serverless/dist/awslambda-auto',
-      })
+      functionLayers = [...functionLayers, sentry]
+      lambdaEnvVars = {
+        ...lambdaEnvVars,
+        ...{
+          SENTRY_DSN: process.env.SENTRY_DSN,
+          SENTRY_TRACES_SAMPLE_RATE: '0.5',
+          NODE_OPTIONS: '-r @sentry/serverless/dist/awslambda-auto',
+        },
+      }
     }
+
+    this.addDefaultFunctionLayers(functionLayers)
+    this.addDefaultFunctionEnv(lambdaEnvVars)
   }
 }

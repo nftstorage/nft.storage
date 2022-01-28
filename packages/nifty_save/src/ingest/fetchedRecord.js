@@ -1,6 +1,5 @@
 import AWS from 'aws-sdk'
 import { sleep } from '../timers'
-import { registry as sourcesRegistry } from './sources/registry'
 
 const bus = new AWS.EventBridge()
 
