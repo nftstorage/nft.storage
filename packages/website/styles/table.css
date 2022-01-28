@@ -72,6 +72,19 @@
   justify-content: flex-end;
 }
 
+@media screen and (max-width: 52em) {
+  .table-responsive table tr td.nowrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .table-responsive table tr td.nowrap .truncate {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
+
 /* 832px */
 @media screen and (min-width: 52em) {
   /*Additive styles at full size*/

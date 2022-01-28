@@ -196,7 +196,14 @@ export default function Files({ user }) {
             text={nft.cid}
             popupContent={'CID has been copied!!'}
           >
-            <p className="dib black">{nft.cid}</p>
+            <a
+              href={`https://ipfs.io/ipfs/${nft.cid}`}
+              className="underline black truncate"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {nft.cid}
+            </a>
           </CopyButton>
           <GatewayLink cid={nft.cid} type={nft.type} />
         </td>
