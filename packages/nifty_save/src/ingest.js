@@ -7,6 +7,9 @@ export {
 
 export { store as storeFetchedRecord } from './ingest/fetchedRecord'
 
-export { purgeSliceCommandQueue } from './ingest/purgeQueues'
+export {
+  purgeSliceCommandQueue,
+  purgeFetchedRecordqueue,
+} from './ingest/purgeQueues'
 
 export { fetchNFTs as fetchSubgraphNFTS } from './ingest/sources/subgraph'

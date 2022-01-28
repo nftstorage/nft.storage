@@ -64,11 +64,10 @@ export async function execute(event, context) {
     const numberOfItems = data.length
 
     for (var i = 0; i < numberOfItems; i++) {
-      console.log(i, data[i])
-      // sqs.sendMessage({
-      //   QueueUrl: process.env.fetchedRecordQueueUrl,
-      //   MessageBody: JSON.stringify(data[i])
-      // })
+      sqs.sendMessage({
+        QueueUrl: process.env.fetchedRecordQueueUrl,
+        MessageBody: JSON.stringify(data[i]),
+      })
     }
   }
 

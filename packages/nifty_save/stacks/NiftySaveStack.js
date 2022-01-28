@@ -105,7 +105,7 @@ export default class NiftySaveStack extends sst.Stack {
       },
     })
 
-    api.attachPermissions([bus, sliceCommandQueue])
+    api.attachPermissions([bus, sliceCommandQueue, fetchedRecordQueue])
     //     queue.attachPermissions([this.bus]);
 
     this.addOutputs({

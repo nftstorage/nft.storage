@@ -11,7 +11,10 @@ export async function purgeSliceCommandQueue() {
 }
 
 export async function purgeFetchedRecordqueue() {
-  await sqs.purgeQueue({ QueueUrl: process.env.fetchedRecordQueueUrl })
+  await sqs
+    .purgeQueue({ QueueUrl: process.env.fetchedRecordQueueUrl })
+    .promise()
+
   return {
     statusCode: 200,
     body: JSON.stringify({ message: 'Purged Fetched Record Queue' }),
