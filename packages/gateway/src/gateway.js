@@ -156,7 +156,7 @@ async function updateSummaryCacheMetrics(request, env) {
   const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
   const stub = env.summaryMetricsDurable.get(id)
 
-  await stub.fetch(_getDurableRequestUrl(request, 'cache-update'))
+  await stub.fetch(_getDurableRequestUrl(request, 'metrics/cache'))
 }
 
 /**
@@ -176,7 +176,7 @@ async function updateSummaryWinnerMetrics(request, env, gwResponse) {
   }
 
   await stub.fetch(
-    _getDurableRequestUrl(request, 'winner-update', responseStats)
+    _getDurableRequestUrl(request, 'metrics/winner', responseStats)
   )
 }
 

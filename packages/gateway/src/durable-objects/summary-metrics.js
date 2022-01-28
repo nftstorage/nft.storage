@@ -2,7 +2,7 @@
  * @typedef {Object} SummaryMetrics
  * @property {number} totalWinnerResponseTime total response time of the requests
  * @property {number} totalWinnerSuccessfulRequests total number of successful requests
- * @property {number} totalcachedResponses total number of cached responses
+ * @property {number} totalCachedResponses total number of cached responses
  */
 
 // Key to track total time for winner gateway to respond
@@ -28,7 +28,7 @@ export class SummaryMetrics0 {
       this.totalWinnerSuccessfulRequests =
         (await this.state.storage.get(TOTAL_WINNER_SUCCESSFUL_REQUESTS_ID)) || 0
       // Total cached requests
-      this.totalcachedResponses =
+      this.totalCachedResponses =
         (await this.state.storage.get(TOTAL_CACHED_RESPONSES_ID)) || 0
     })
   }
@@ -37,8 +37,26 @@ export class SummaryMetrics0 {
   async fetch(request) {
     // Apply requested action.
     let url = new URL(request.url)
+
+    // GET
+    if (request.method === 'GET') {
+      switch (url.pathname) {
+        case '/metrics':
+          return new Response(
+            JSON.stringify({
+              totalWinnerResponseTime: this.totalWinnerResponseTime,
+              totalWinnerSuccessfulRequests: this.totalWinnerSuccessfulRequests,
+              totalCachedResponses: this.totalCachedResponses,
+            })
+          )
+        default:
+          return new Response('Not found', { status: 404 })
+      }
+    }
+
+    // POST
     switch (url.pathname) {
-      case '/winner-update':
+      case '/metrics/winner':
         const data = await request.json()
         // Updated Metrics
         this.totalWinnerResponseTime += data.responseTime
@@ -55,23 +73,15 @@ export class SummaryMetrics0 {
           ),
         ])
         return new Response()
-      case '/cache-update':
+      case '/metrics/cache':
         // Update metrics
-        this.totalcachedResponses += 1
+        this.totalCachedResponses += 1
         // Sabe updated metrics
         await this.state.storage.put(
           TOTAL_CACHED_RESPONSES_ID,
-          this.totalcachedResponses
+          this.totalCachedResponses
         )
         return new Response()
-      case '/metrics':
-        return new Response(
-          JSON.stringify({
-            totalWinnerResponseTime: this.totalWinnerResponseTime,
-            totalWinnerSuccessfulRequests: this.totalWinnerSuccessfulRequests,
-            totalcachedResponses: this.totalcachedResponses,
-          })
-        )
       default:
         return new Response('Not found', { status: 404 })
     }
