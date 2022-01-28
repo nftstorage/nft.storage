@@ -1,5 +1,4 @@
 import test from 'ava'
-import delay from 'delay'
 
 import { gateways } from './constants.js'
 import { getMiniflare } from './utils.js'

@@ -1,5 +1,5 @@
 /**
- * @typedef {Object} GenericMetrics
+ * @typedef {Object} SummaryMetrics
  * @property {number} totalWinnerResponseTime total response time of the requests
  * @property {number} totalWinnerSuccessfulRequests total number of successful requests
  * @property {number} totalcachedResponses total number of cached responses
@@ -15,7 +15,7 @@ const TOTAL_CACHED_RESPONSES_ID = 'totalCachedResponses'
 /**
  * Durable Object for keeping generic Metrics of gateway.nft.storage
  */
-export class GenericMetrics1 {
+export class SummaryMetrics0 {
   constructor(state) {
     this.state = state
 

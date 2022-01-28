@@ -5,7 +5,7 @@ import pAny from 'p-any'
 import pSettle from 'p-settle'
 
 import { getCidFromSubdomainUrl } from './utils/cid.js'
-import { CIDS_TRACKER_ID, GENERIC_METRICS_ID } from './constants.js'
+import { CIDS_TRACKER_ID, SUMMARY_METRICS_ID } from './constants.js'
 
 /**
  * @typedef {Object} GatewayResponse
@@ -153,8 +153,8 @@ async function _gatewayFetch(
  */
 async function updateSummaryCacheMetrics(request, env) {
   // Get durable object for gateway
-  const id = env.genericMetricsDurable.idFromName(GENERIC_METRICS_ID)
-  const stub = env.genericMetricsDurable.get(id)
+  const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
+  const stub = env.summaryMetricsDurable.get(id)
 
   await stub.fetch(_getDurableRequestUrl(request, 'cache-update'))
 }
@@ -166,8 +166,8 @@ async function updateSummaryCacheMetrics(request, env) {
  */
 async function updateSummaryWinnerMetrics(request, env, gwResponse) {
   // Get durable object for gateway
-  const id = env.genericMetricsDurable.idFromName(GENERIC_METRICS_ID)
-  const stub = env.genericMetricsDurable.get(id)
+  const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
+  const stub = env.summaryMetricsDurable.get(id)
 
   /** @type {import('./durable-objects/gateway-metrics').ResponseStats} */
   const responseStats = {
