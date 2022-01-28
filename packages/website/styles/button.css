@@ -5,6 +5,10 @@
   min-width: 8rem;
 }
 
+.btn.small {
+  min-width: 0;
+}
+
 /*Use CSS for button variants*/
 
 .btn.dark {
