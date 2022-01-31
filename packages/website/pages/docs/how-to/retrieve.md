@@ -78,7 +78,7 @@ Now that you have your metadata address, you can download a copy [using an HTTP 
 Don't forget to look inside the metadata! NFT metadata usually contains links to other resources, especially in the `image` field. Take a look inside and check for other [IPFS addresses](#understanding-ipfs-addresses) so you can download the linked data too!
 </Callout>
 
-## Using IPFS HTTP gateways
+## Option: Retrieve using IPFS HTTP gateways
 
 Above we saw some examples of [IPFS addresses](#understanding-ipfs-addresses) that use the `ipfs://` URL prefix.
 
@@ -98,7 +98,7 @@ These are gateway URLs, which link to IPFS data using an HTTP gateway provider. 
 
 You can turn any `ipfs://` URL into a gateway URL by [choosing a gateway][public-gateway-checker] and replacing the `ipfs://` prefix with `https://<gateway-host>/ipfs/`. For example, to use the gateway at `dweb.link`, you could create the URL https://dweb.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif. Clicking that link should take you to an image served by the gateway host.
 
-## Running IPFS on your computer
+## Option: Running IPFS on your computer
 
 If you want to interact with the IPFS peer-to-peer network directly, you can [install IPFS][ipfs-docs-install] on your computer.
 

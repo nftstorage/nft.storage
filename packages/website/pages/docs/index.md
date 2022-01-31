@@ -75,9 +75,51 @@ Do not share your API token with anyone else. This key is specific to your accou
 
 ### Using the JavaScript API
 
-{/* TODO(yusef): add simple node upload example */}
+If you're building apps with JavaScript or TypeScript, the NFT.Storage [JavaScript client][js-client] makes it simple to upload files and create ERC-1155 compatible NFT metadata.
 
+The client library uses the familiar [web File API][mdn-file] and includes a `File` implementation for Node.js. Below is a small example that reads in the path to a file from the command line and stores the file with NFT.Storage.
+
+You'll need [Node.js](https://nodejs.org) version 16 or later for this example. 
+
+1. Make a new JavaScript project.
+
+Create a new directory and use `npm` to create a new project:
+
+```bash
+mkdir nft-storage-quickstart
+cd nft-storage-quickstart
+npm init
+```
+
+NPM will ask a few questions about your project and create a `package.json` file.
+
+2. Add the `nft.storage` client to your project dependencies.
+
+Install the latest version of the `nft.storage` package:
+
+```bash
+npm install nft.storage
+```
+
+3. Create a file called `upload.mjs` and open it with your code editor.
+
+Here's all the code we need to upload a file to NFT.Storage:
+
+```js
+import fs from 'fs'
+import { NFTStorage, File } from 'nft.storage'
+
+
+
+async function fileFromPath(filePath) {
+    const content = await fs.promises.readFile(filePath)
+    return new File([content], filePath)
+}
+```
 
 [reference-http-api]: https://nft.storage/api-docs/
 [concepts-car-files]: ./concepts/car-files/
+[js-client]: ./client/lib.md
+
+[mdn-file]: https://developer.mozilla.org/en-US/docs/Web/API/File
 
