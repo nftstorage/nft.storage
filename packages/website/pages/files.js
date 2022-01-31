@@ -200,7 +200,7 @@ export default function Files({ user }) {
           >
             <a
               href={`https://ipfs.io/ipfs/${nft.cid}`}
-              className="underline black"
+              className="underline black truncate"
               target="_blank"
               rel="noreferrer"
             >
