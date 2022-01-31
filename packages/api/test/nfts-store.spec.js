@@ -114,13 +114,13 @@ describe('NFT store', () => {
     assert.deepStrictEqual(
       result,
       {
-        ipnft: 'bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm',
-        url: 'ipfs://bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm/metadata.json',
+        ipnft: 'bafyreibubvuqeh5lm2ccose7uq54wweeajtjuhcj4pciogeq2lhbw2a23y',
+        url: 'ipfs://bafyreibubvuqeh5lm2ccose7uq54wweeajtjuhcj4pciogeq2lhbw2a23y/metadata.json',
         data: {
           name: 'name',
           description: 'stuff',
           image:
-            'ipfs://bafybeieb43wq6bqbfmyaawfmq6zuycdq4bo77zph33zxx26wvquth3qxau/dir/cat.png',
+            'ipfs://bafybeidrqmyoaymfhiidikdmsr6ybqyfzi2ejhjzyrfvuv2ykkuzdqkci4/dir/cat.png',
         },
       },
       'response structure'
@@ -141,13 +141,13 @@ describe('NFT store', () => {
     assert.deepStrictEqual(data.content.pin, [
       {
         content_cid:
-          'bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm',
+          'bafyreibubvuqeh5lm2ccose7uq54wweeajtjuhcj4pciogeq2lhbw2a23y',
         status: 'PinQueued',
         service: 'IpfsCluster3',
       },
       {
         content_cid:
-          'bafyreihihnpztkkjaegm2cldghihv4otaa23v2lf6uhmbm2avoolgkfynm',
+          'bafyreibubvuqeh5lm2ccose7uq54wweeajtjuhcj4pciogeq2lhbw2a23y',
         status: 'PinQueued',
         service: 'Pinata',
       },

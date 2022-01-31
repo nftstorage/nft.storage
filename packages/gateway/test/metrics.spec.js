@@ -17,7 +17,13 @@ test('Gets Metrics content when empty state', async (t) => {
   const metricsResponse = await response.text()
 
   t.is(
-    metricsResponse.includes('nftstorage_gateway_total_fastest_response_time'),
+    metricsResponse.includes('nftstorage_gateway_total_winner_response_time'),
+    true
+  )
+  t.is(
+    metricsResponse.includes(
+      'nftstorage_gateway_total_winner_successful_requests'
+    ),
     true
   )
   gateways.forEach((gw) => {
@@ -83,10 +89,10 @@ test('Gets Metrics from faster gateway', async (t) => {
   // Trigger two requests for a CID where gateways[0] is faster
   const p = await Promise.all([
     mf.dispatchFetch(
-      'http://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapouppq.ipfs.localhost:8787'
+      'http://bafkreibxkbyybantsznyvlq2bhf24u4gew7pj6erjgduqp4mvqv54qjng4.ipfs.localhost:8787'
     ),
     mf.dispatchFetch(
-      'http://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapouppq.ipfs.localhost:8787'
+      'http://bafkreibxkbyybantsznyvlq2bhf24u4gew7pj6erjgduqp4mvqv54qjng4.ipfs.localhost:8787'
     ),
   ])
 
@@ -103,16 +109,10 @@ test('Gets Metrics from faster gateway', async (t) => {
     )
   })
 
-  // gateways[0] is always faster
+  // gateways[0] or gateways[1] are always faster
   t.is(
     metricsResponse.includes(
-      `_total_faster_requests{gateway="${gateways[0]}",env="test"} 2`
-    ),
-    true
-  )
-  t.is(
-    metricsResponse.includes(
-      `_total_faster_requests{gateway="${gateways[1]}",env="test"} 0`
+      `_total_faster_requests{gateway="${gateways[2]}",env="test"} 0`
     ),
     true
   )
@@ -124,10 +124,10 @@ test('Counts failures', async (t) => {
   // Trigger two requests for a CID where gateways[1] fails
   const p = await Promise.all([
     mf.dispatchFetch(
-      'http://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapopppq.ipfs.localhost:8787'
+      'http://bafkreihbjbbccwxn7hzv5hun5pxuswide7q3lhjvfbvmd7r3kf2sodybgi.ipfs.localhost:8787'
     ),
     mf.dispatchFetch(
-      'http://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapopppq.ipfs.localhost:8787'
+      'http://bafkreihbjbbccwxn7hzv5hun5pxuswide7q3lhjvfbvmd7r3kf2sodybgi.ipfs.localhost:8787'
     ),
   ])
 
@@ -139,13 +139,13 @@ test('Counts failures', async (t) => {
 
   t.is(
     metricsResponse.includes(
-      `_total_requests{gateway="${gateways[1]}",env="test"} 2`
+      `_total_requests{gateway="${gateways[2]}",env="test"} 2`
     ),
     true
   )
   t.is(
     metricsResponse.includes(
-      `_total_failed_requests{gateway="${gateways[1]}",env="test"} 2`
+      `_total_failed_requests{gateway="${gateways[2]}",env="test"} 2`
     ),
     true
   )

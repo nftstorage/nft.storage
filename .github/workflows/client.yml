@@ -5,11 +5,13 @@ on:
       - main
     paths:
       - 'packages/client/**'
+      - '.github/workflows/client.yml'
   pull_request:
     branches:
       - main
     paths:
       - 'packages/client/**'
+      - '.github/workflows/client.yml'
 
 jobs:
   check:
@@ -43,3 +45,46 @@ jobs:
         run: yarn --cwd packages/client test:cjs
       - name: Coverage
         run: yarn --cwd packages/client coverage
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs:
+      - check
+      - test
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v3
+        id: tag-release
+        with:
+          path: packages/client
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
+          monorepo-tags: true
+          package-name: client
+      - uses: actions/checkout@v2
+        if: ${{ steps.tag-release.outputs.releases_created }}
+      - uses: actions/setup-node@v2
+        if: ${{ steps.tag-release.outputs.releases_created }}
+        with:
+          node-version: '16'
+          registry-url: https://registry.npmjs.org/
+      - uses: bahmutov/npm-install@v1
+        if: ${{ steps.tag-release.outputs.releases_created }}
+      - name: NPM Publish
+        if: ${{ steps.tag-release.outputs.releases_created }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+        run: |
+          cd packages/client
+          npm publish --access=public
+      - name: Generate documentation
+        if: ${{ steps.tag-release.outputs.releases_created }}
+        run: yarn build:client:docs
+      - name: Publish documentation
+        if: ${{ steps.tag-release.outputs.releases_created }}
+        uses: JamesIves/github-pages-deploy-action@4.1.7
+        with:
+          git-config-name: documentation-generator
+          branch: gh-pages
+          folder: docs/client
+          target-folder: client
+          commit-message: 'chore: generate client docs ${{ steps.tag-release.outputs.tag_name }} #${{ steps.tag-release.outputs.pr }}'

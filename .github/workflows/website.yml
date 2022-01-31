@@ -22,3 +22,28 @@ jobs:
           node-version: 16
       - uses: bahmutov/npm-install@v1
       - run: yarn test:website
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v3
+        id: tag-release
+        with:
+          path: packages/website
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
+          monorepo-tags: true
+          package-name: website
+      - uses: actions/checkout@v2
+        if: ${{ steps.tag-release.outputs.releases_created }}
+      - uses: actions/setup-node@v2
+        if: ${{ steps.tag-release.outputs.releases_created }}
+        with:
+          node-version: '16'
+          registry-url: https://registry.npmjs.org/
+      - uses: bahmutov/npm-install@v1
+        if: ${{ steps.tag-release.outputs.releases_created }}
+      - name: Website - Deploy
+        if: ${{ steps.tag-release.outputs.releases_created }}
+        run: ./packages/tools/cli.js deploy-website --email ${{ secrets.CF_EMAIL }} --key ${{secrets.CF_KEY}} --zone ${{ secrets.CF_ZONE }} --account ${{secrets.CF_ACCOUNT}}

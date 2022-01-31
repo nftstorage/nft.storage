@@ -1,11 +1,11 @@
 /* eslint-env serviceworker, browser */
+/* global Response caches */
 
 import pAny from 'p-any'
-import pMap from 'p-map'
 import pSettle from 'p-settle'
 
 import { getCidFromSubdomainUrl } from './utils/cid.js'
-import { CIDS_TRACKER_ID, GENERIC_METRICS_ID } from './constants.js'
+import { CIDS_TRACKER_ID, SUMMARY_METRICS_ID } from './constants.js'
 
 /**
  * @typedef {Object} GatewayResponse
@@ -22,58 +22,54 @@ import { CIDS_TRACKER_ID, GENERIC_METRICS_ID } from './constants.js'
  * @param {import('./index').Ctx} ctx
  */
 export async function gatewayGet(request, env, ctx) {
+  const cache = caches.default
+  let res = await cache.match(request.url)
+
+  if (res) {
+    // Update cache metrics in background
+    ctx.waitUntil(updateSummaryCacheMetrics(request, env))
+    return res
+  }
+
   const reqUrl = new URL(request.url)
   const cid = getCidFromSubdomainUrl(reqUrl)
 
-  const gatewayReqs = env.ipfsGateways.map(async (url) => {
-    const ipfsUrl = new URL('ipfs', url)
-    const controller = new AbortController()
-    const startTs = Date.now()
-    const timer = setTimeout(() => controller.abort(), env.REQUEST_TIMEOUT)
-
-    let response
-    try {
-      response = await fetch(
-        `${ipfsUrl.toString()}/${cid}${reqUrl.pathname || ''}`,
-        { signal: controller.signal }
-      )
-    } finally {
-      clearTimeout(timer)
-    }
-
-    /** @type {GatewayResponse} */
-    const gwResponse = {
-      response,
-      url,
-      responseTime: Date.now() - startTs,
-    }
-    return gwResponse
-  })
+  const gatewayReqs = env.ipfsGateways.map((gwUrl) =>
+    _gatewayFetch(gwUrl, cid, {
+      pathname: reqUrl.pathname,
+      timeout: env.REQUEST_TIMEOUT,
+    })
+  )
 
   try {
-    const winnerGwResponse = await pAny(gatewayReqs)
+    /** @type {GatewayResponse} */
+    const winnerGwResponse = await pAny(gatewayReqs, {
+      filter: (res) => res.response.ok,
+    })
+
+    async function settleGatewayRequests() {
+      // Wait for remaining responses
+      const responses = await pSettle(gatewayReqs)
+      const successFullResponses = responses.filter(
+        (r) => r.value?.response?.ok
+      )
+
+      await Promise.all([
+        // Filter out winner and update remaining gateway metrics
+        ...responses
+          .filter((r) => r.value?.url !== winnerGwResponse.url)
+          .map((r) => updateGatewayMetrics(request, env, r.value, false)),
+        updateCidsTracker(request, env, successFullResponses, cid),
+      ])
+    }
 
     ctx.waitUntil(
       (async () => {
-        // Store Winner metrics
         await Promise.all([
-          updateGatewayMetrics(request, env, winnerGwResponse, true),
-          updateGenericMetrics(request, env, winnerGwResponse),
-        ])
-
-        // Wait for remaining responses
-        const responses = await pSettle(gatewayReqs)
-        const successFullResponses = responses.filter(
-          (r) => r.value?.response?.ok
-        )
-
-        await Promise.all([
-          // Filter out winner and update remaining gateway metrics
-          pMap(
-            responses.filter((r) => r.value?.url !== winnerGwResponse.url),
-            (r) => updateGatewayMetrics(request, env, r.value, false)
-          ),
-          updateCidsTracker(request, env, successFullResponses, cid),
+          storeWinnerGwResponse(request, env, winnerGwResponse),
+          settleGatewayRequests(),
+          // Cache request URL in Cloudflare CDN
+          cache.put(request.url, winnerGwResponse.response.clone()),
         ])
       })()
     )
@@ -85,8 +81,10 @@ export async function gatewayGet(request, env, ctx) {
       (async () => {
         // Update metrics as all requests failed
         const responses = await pSettle(gatewayReqs)
-        await pMap(responses, (r) =>
-          updateGatewayMetrics(request, env, r.value, false)
+        await Promise.all(
+          responses.map((r) =>
+            updateGatewayMetrics(request, env, r.value, false)
+          )
         )
       })()
     )
@@ -96,14 +94,80 @@ export async function gatewayGet(request, env, ctx) {
 }
 
 /**
+ * Store metrics for winner gateway response
+ *
+ * @param {Request} request
+ * @param {import('./env').Env} env
+ * @param {GatewayResponse} winnerGwResponse
+ */
+async function storeWinnerGwResponse(request, env, winnerGwResponse) {
+  await Promise.all([
+    updateGatewayMetrics(request, env, winnerGwResponse, true),
+    updateSummaryWinnerMetrics(request, env, winnerGwResponse),
+  ])
+}
+
+/**
+ * Fetches given CID from given IPFS gateway URL.
+ *
+ * @param {string} gwUrl
+ * @param {string} cid
+ * @param {Object} [options]
+ * @param {string} [options.pathname]
+ * @param {number} [options.timeout]
+ */
+async function _gatewayFetch(
+  gwUrl,
+  cid,
+  { pathname = '', timeout = 20000 } = {}
+) {
+  const ipfsUrl = new URL('ipfs', gwUrl)
+  const controller = new AbortController()
+  const startTs = Date.now()
+  const timer = setTimeout(() => controller.abort(), timeout)
+
+  let response
+  try {
+    response = await fetch(`${ipfsUrl.toString()}/${cid}${pathname}`, {
+      signal: controller.signal,
+    })
+  } finally {
+    clearTimeout(timer)
+  }
+
+  // TODO: Is it rate limited?
+  // how can we "suspend" this gateway for a bit? Maybe track this in a Durable Object?
+
+  /** @type {GatewayResponse} */
+  const gwResponse = {
+    response,
+    url: gwUrl,
+    responseTime: Date.now() - startTs,
+  }
+  return gwResponse
+}
+
+/**
+ * @param {Request} request
+ * @param {import('./env').Env} env
+ */
+async function updateSummaryCacheMetrics(request, env) {
+  // Get durable object for gateway
+  const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
+  const stub = env.summaryMetricsDurable.get(id)
+
+  await stub.fetch(_getDurableRequestUrl(request, 'metrics/cache'))
+}
+
+/**
  * @param {Request} request
  * @param {import('./env').Env} env
  * @param {GatewayResponse} gwResponse
  */
-async function updateGenericMetrics(request, env, gwResponse) {
+async function updateSummaryWinnerMetrics(request, env, gwResponse) {
   // Get durable object for gateway
-  const id = env.genericMetricsDurable.idFromName(GENERIC_METRICS_ID)
-  const stub = env.genericMetricsDurable.get(id)
+  const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
+  const stub = env.summaryMetricsDurable.get(id)
 
   /** @type {import('./durable-objects/gateway-metrics').ResponseStats} */
   const responseStats = {
@@ -111,7 +175,9 @@ async function updateGenericMetrics(request, env, gwResponse) {
     responseTime: gwResponse.responseTime,
   }
 
-  await stub.fetch(_getUpdateRequestUrl(request, responseStats))
+  await stub.fetch(
+    _getDurableRequestUrl(request, 'metrics/winner', responseStats)
+  )
 }
 
 /**
@@ -137,7 +203,7 @@ async function updateGatewayMetrics(
     winner: isWinner,
   }
 
-  await stub.fetch(_getUpdateRequestUrl(request, responseStats))
+  await stub.fetch(_getDurableRequestUrl(request, 'update', responseStats))
 }
 
 /**
@@ -156,18 +222,19 @@ async function updateCidsTracker(request, env, responses, cid) {
     urls: responses.filter((r) => r.isFulfilled).map((r) => r?.value?.url),
   }
 
-  await stub.fetch(_getUpdateRequestUrl(request, updateRequest))
+  await stub.fetch(_getDurableRequestUrl(request, 'update', updateRequest))
 }
 
 /**
  * Get a Request to update a durable object
  *
  * @param {Request} request
- * @param {Object} data
+ * @param {string} route
+ * @param {Object} [data]
  */
-function _getUpdateRequestUrl(request, data) {
+function _getDurableRequestUrl(request, route, data) {
   const reqUrl = new URL(
-    'update',
+    route,
     request.url.startsWith('http') ? request.url : `http://${request.url}`
   )
   const headers = new Headers()
@@ -176,6 +243,6 @@ function _getUpdateRequestUrl(request, data) {
   return new Request(reqUrl.toString(), {
     headers,
     method: 'PUT',
-    body: JSON.stringify(data),
+    body: data && JSON.stringify(data),
   })
 }

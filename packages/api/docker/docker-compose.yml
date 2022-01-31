@@ -1,0 +1,53 @@
+version: '3.6'
+services:
+  rest:
+    image: postgrest/postgrest:v9.0.0
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - 3000:3000/tcp
+    environment:
+      PGRST_DB_URI: postgres://postgres:postgres@db:5432/postgres
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: postgres
+      PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+  db:
+    build:
+      context: ./postgres
+    ports:
+      - 5432:5432
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_PORT: 5432
+  ipfs0:
+    container_name: ipfs0
+    image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
+    volumes:
+      - ./compose/ipfs0:/data/ipfs
+
+  cluster0:
+    container_name: cluster0
+    image: ipfs/ipfs-cluster:latest
+    depends_on:
+      - ipfs0
+    environment:
+      CLUSTER_PEERNAME: cluster0
+      CLUSTER_SECRET: ${CLUSTER_SECRET} # From shell variable if set
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs0/tcp/5001
+      CLUSTER_CRDT_TRUSTEDPEERS: '*' # Trust all peers in Cluster
+      CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9094 # Expose API
+      CLUSTER_RESTAPI_BASICAUTHCREDENTIALS: test:test
+      CLUSTER_RESTAPI_CORSALLOWEDMETHODS: GET,POST,OPTIONS
+      CLUSTER_RESTAPI_CORSALLOWEDHEADERS: authorization
+      CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
+    ports:
+      - '127.0.0.1:9094:9094'
+    volumes:
+      - ./compose/cluster0:/data/ipfs-cluster

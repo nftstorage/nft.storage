@@ -34,10 +34,7 @@ if (typeof CLUSTER_SERVICE !== 'undefined' && CLUSTER_SERVICE) {
 
 export const cluster = {
   apiUrl: clusterUrl,
-  basicAuthToken:
-    typeof CLUSTER_BASIC_AUTH_TOKEN !== 'undefined'
-      ? CLUSTER_BASIC_AUTH_TOKEN
-      : '',
+  basicAuthToken: CLUSTER_BASIC_AUTH_TOKEN,
   /**
    * When >2.5MB, use local add, because waiting for blocks to be sent to
    * other cluster nodes can take a long time. Replication to other nodes

@@ -11,7 +11,9 @@ import clsx from 'clsx'
 export const Tag = ({ tag }) => {
   const isString = typeof tag === 'string'
   const inner = (
-    <span className={clsx('ph2 pv1 f6 ba ttc mr2', isString && 'select-none')}>
+    <span
+      className={clsx('ph2 pv1 f6 ba ttc mr1 mb1', isString && 'select-none')}
+    >
       {isString ? tag : tag.label}
     </span>
   )
