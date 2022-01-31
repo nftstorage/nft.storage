@@ -125,6 +125,10 @@ One of the great things about IPFS is that it allows anyone to provide a copy of
 
 By contrast, a broken HTTP link is broken forever, unless the owner of the original domain name decides to fix it. Even if you had a perfect backup of the off-chain NFT data, you wouldn't be able to fix the link between the on-chain NFT record and the off-chain data without controlling the original domain name.
 
+<Callout emoji="💡">
+As more NFT platforms adopt IPFS and Filecoin, we expect wallets and other tools to add easy, "one click" archive downloads to simplify this process. If that's important to you, ask the makers of your favorite wallets and marketplaces to add archive support!
+</Callout>
+
 Making an archival copy of an NFT consists of three steps:
 
 1. Find the IPFS address for your NFT's metadata
