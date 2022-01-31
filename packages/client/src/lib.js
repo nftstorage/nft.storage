@@ -104,7 +104,7 @@ class NFTStorage {
     let cidString
 
     try {
-      const { cid, car } = await NFTStorage.encodeBlob(blob, blockstore)
+      const { cid, car } = await NFTStorage.encodeBlob(blob, { blockstore })
       await NFTStorage.storeCar(service, car)
       cidString = cid.toString()
     } finally {
@@ -191,7 +191,9 @@ class NFTStorage {
     let cidString
 
     try {
-      const { cid, car } = await NFTStorage.encodeDirectory(files, blockstore)
+      const { cid, car } = await NFTStorage.encodeDirectory(files, {
+        blockstore,
+      })
       await NFTStorage.storeCar(service, car)
       cidString = cid.toString()
     } finally {
@@ -366,18 +368,18 @@ class NFTStorage {
    * ```
    *
    * @param {Blob} blob
-   * @param {BlockstoreI} blockstore
+   * @param {object} [options]
+   * @param {BlockstoreI} [options.blockstore]
    * @returns {Promise<{ cid: CID, car: CarReader }>}
    */
-  static async encodeBlob(blob, blockstore) {
+  static async encodeBlob(blob, { blockstore } = {}) {
     if (blob.size === 0) {
       throw new Error('Content size is 0, make sure to provide some content')
     }
-    return packCar(
-      [{ path: 'blob', content: blob.stream() }],
+    return packCar([{ path: 'blob', content: blob.stream() }], {
       blockstore,
-      false
-    )
+      wrapWithDirectory: false,
+    })
   }
 
   /**
@@ -401,10 +403,11 @@ class NFTStorage {
    * ```
    *
    * @param {Iterable<File>} files
-   * @param {BlockstoreI} blockstore
+   * @param {object} [options]
+   * @param {BlockstoreI} [options.blockstore]
    * @returns {Promise<{ cid: CID, car: CarReader }>}
    */
-  static async encodeDirectory(files, blockstore) {
+  static async encodeDirectory(files, { blockstore } = {}) {
     const input = []
     let size = 0
     for (const file of files) {
@@ -418,7 +421,10 @@ class NFTStorage {
       )
     }
 
-    return packCar(input, blockstore, true)
+    return packCar(input, {
+      blockstore,
+      wrapWithDirectory: true,
+    })
   }
 
   // Just a sugar so you don't have to pass around endpoint and token around.
@@ -628,10 +634,13 @@ For more context please see ERC-721 specification https://eips.ethereum.org/EIPS
 
 /**
  * @param {Array<{ path: string, content: import('./platform.js').ReadableStream }>} input
- * @param {BlockstoreI} blockstore
- * @param {boolean} wrapWithDirectory
+ * @param {object} [options]
+ * @param {BlockstoreI} [options.blockstore]
+ * @param {boolean} [options.wrapWithDirectory]
  */
-const packCar = async (input, blockstore, wrapWithDirectory) => {
+const packCar = async (input, { blockstore, wrapWithDirectory } = {}) => {
+  /* c8 ignore next 1 */
+  blockstore = blockstore || new Blockstore()
   const { root: cid } = await pack({ input, blockstore, wrapWithDirectory })
   const car = new BlockstoreCarReader(1, [cid], blockstore)
   return { cid, car }
