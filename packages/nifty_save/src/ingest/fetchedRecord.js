@@ -12,6 +12,7 @@ function messageToRecord(msg) {
 }
 
 export async function store(event) {
+  console.log(`Store fetched records called`)
   const actualMessages = event.Records.map((x) => JSON.parse(x.body))
   const records = actualMessages.map(messageToRecord)
 

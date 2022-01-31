@@ -59,18 +59,6 @@ export async function execute(event, context) {
 
   const results = await fetchNFTs(event, context)
 
-  if ((results.statusCode == 200) & results.data) {
-    const data = results.data.map(datasource.tranformIn)
-    const numberOfItems = data.length
-
-    for (var i = 0; i < numberOfItems; i++) {
-      sqs.sendMessage({
-        QueueUrl: process.env.fetchedRecordQueueUrl,
-        MessageBody: JSON.stringify(data[i]),
-      })
-    }
-  }
-
   return {
     statusCode: 200,
     body: JSON.stringify({

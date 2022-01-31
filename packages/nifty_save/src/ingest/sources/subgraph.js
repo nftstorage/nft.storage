@@ -98,8 +98,8 @@ export async function fetchNFTs(event, context) {
     }
   }
 
+  //TODO: handle paging better here.
   for (const nft of nftBatch) {
-    console.log(nft)
     sqs.sendMessage({
       QueueUrl: process.env.fetchedRecordQueueUrl,
       MessageBody: JSON.stringify(nft),
@@ -111,13 +111,18 @@ export async function fetchNFTs(event, context) {
     time: cursor.time,
     offset: cursor.offset,
   })
-  console.log(nftBatch)
+
+  const queueAttrs = await sqs.getQueueAttributes({
+    QueueUrl: process.env.fetchedRecordQueueUrl,
+    AttributeNames: ['ApproximateNumberOfMessages'],
+  })
 
   return {
     statusCode: 200,
     body: JSON.stringify({
       message: `📤 Scraped ${nftBatch.length} nfts from Subgraph.`,
-      data: nftBatch,
+      //data: nftBatch,
+      //   queueSize: queueAttrs,
     }),
   }
 }
