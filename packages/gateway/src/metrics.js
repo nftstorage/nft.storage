@@ -109,17 +109,17 @@ export async function metricsGet(request, env, ctx) {
       (gw) =>
         `nftgateway_failed_requests_total{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalFailedRequests}`
     ),
-    `# HELP nftstorage_gateway_total_rate_limited_prevented_requests Total failed requests.`,
-    `# TYPE nftstorage_gateway_total_rate_limited_prevented_requests counter`,
+    `# HELP nftgateway_rate_limited_prevented_requests_total Total rate limited prevented requests per gateway.`,
+    `# TYPE nftgateway_rate_limited_prevented_requests_total counter`,
     ...env.ipfsGateways.map(
       (gw) =>
-        `nftstorage_gateway_total_rate_limited_prevented_requests{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalRateLimitedPreventedRequests}`
+        `nftgateway_rate_limited_prevented_requests_total{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalRateLimitedPreventedRequests}`
     ),
-    `# HELP nftstorage_gateway_total_rate_limited_errored_requests Total failed requests.`,
-    `# TYPE nftstorage_gateway_total_rate_limited_errored_requests counter`,
+    `# HELP nftgateway_rate_limited_errored_requests_total Total rate limited errored requests per gateway.`,
+    `# TYPE nftgateway_rate_limited_errored_requests_total counter`,
     ...env.ipfsGateways.map(
       (gw) =>
-        `nftstorage_gateway_total_rate_limited_errored_requests{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalRateLimitedErroredRequests}`
+        `nftgateway_rate_limited_errored_requests_total{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalRateLimitedErroredRequests}`
     ),
     `# HELP nftstorage_gateway_total_faster_requests Total requests with faster response.`,
     `# TYPE nftstorage_gateway_total_faster_requests counter`,
