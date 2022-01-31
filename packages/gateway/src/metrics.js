@@ -68,9 +68,9 @@ export async function metricsGet(request, env, ctx) {
   }
 
   const metrics = [
-    `# HELP nftstorage_gateway_total_cache_hit_responses Total cached responses returned.`,
-    `# TYPE nftstorage_gateway_total_cache_hit_responses counter`,
-    `nftstorage_gateway_total_cache_hit_responses{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalCachedResponses}`,
+    `# HELP nftgateway_cache_hit_responses_total Total cached responses returned.`,
+    `# TYPE nftgateway_cache_hit_responses_total counter`,
+    `nftgateway_cache_hit_responses_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalCachedResponses}`,
     `# HELP nftgateway_winner_requests_total Total winner requests.`,
     `# TYPE nftgateway_winner_requests_total counter`,
     `nftgateway_winner_requests_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalWinnerSuccessfulRequests}`,
