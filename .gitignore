@@ -30,6 +30,9 @@ yarn-error.log*
 .production.env
 .env
 
+*.bak
+tmp/
+
 dist
 node_modules
 worker
@@ -42,4 +45,5 @@ site/public
 
 public/sitemap.xml
 public/robots.txt
-packages/api/docker/compose*.bak/
+packages/api/docker/compose
+
