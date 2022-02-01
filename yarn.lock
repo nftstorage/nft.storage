@@ -11702,7 +11702,7 @@ mini-css-extract-plugin@^1.6.0:
     schema-utils "^3.0.0"
     webpack-sources "^1.1.0"
 
-miniflare@^2.0.0-rc.2, miniflare@^2.0.0-rc.3:
+miniflare@^2.0.0-rc.3, miniflare@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/miniflare/-/miniflare-2.2.0.tgz#a791d236fb4188477fb226d4f1a5316ae11d67eb"
   integrity sha512-azOKDz9RfyWfDZY4u1k+GaaRuBApfgrRoz99sK/U7ngm0pxL0YRNuHPFSHwezAxw1Oz+KQpwtPClCE0zs7Rqgg==
