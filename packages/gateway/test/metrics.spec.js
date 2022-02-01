@@ -21,6 +21,13 @@ test('Gets Metrics content when empty state', async (t) => {
     true
   )
   t.is(metricsResponse.includes('nftgateway_winner_requests_total'), true)
+  t.is(metricsResponse.includes(`_responses_content_length_total{le=`), true)
+  t.is(
+    metricsResponse.includes(
+      `_responses_content_length_bytes_total{env="test"} 0`
+    ),
+    true
+  )
   gateways.forEach((gw) => {
     t.is(
       metricsResponse.includes(`_requests_total{gateway="${gw}",env="test"} 0`),
@@ -69,6 +76,26 @@ test('Gets Metrics content', async (t) => {
 
   const response = await mf.dispatchFetch('http://localhost:8787/metrics')
   const metricsResponse = await response.text()
+
+  // content length of responses is 23
+  t.is(
+    metricsResponse.includes(
+      `_responses_content_length_total{le="5",env="test"} 0`
+    ),
+    true
+  )
+  t.is(
+    metricsResponse.includes(
+      `_responses_content_length_total{le="25",env="test"} 2`
+    ),
+    true
+  )
+  t.is(
+    metricsResponse.includes(
+      `_responses_content_length_bytes_total{env="test"} 46`
+    ),
+    true
+  )
 
   gateways.forEach((gw) => {
     t.is(
