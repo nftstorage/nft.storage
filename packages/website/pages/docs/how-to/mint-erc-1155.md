@@ -17,7 +17,7 @@ Using NFT.Storage, you can:
 Here's an example on how to do this to mint your own NFT!
 
 
-### Uploading your images, assets, and metadata
+## Uploading your images, assets, and metadata
 
 Before you can create the blockchain record for your NFT, you'll need to store all of the off-chain resources that comprise the NFT "package". Once everything has been stored, you can use the IPFS URI for the metadata to link from the on-chain token to everything else.
 
@@ -160,7 +160,7 @@ curl --request POST -F image=@image.jpg -F meta='{"image":null,"name":"Storing t
 ```
 
 
-### Minting your NFT
+## Minting your NFT
 
 Once you have the IPFS URI for your metadata, you're ready to mint an NFT!
 
@@ -175,7 +175,7 @@ It's important to make sure the metadata URL you use when minting your NFT is a 
 </Callout>
 
 
-#### Writing an NFT smart contract
+### Writing an NFT smart contract
 [Ethereum](https://ethereum.org) was the "birthplace" of NFTs and is still one of the most popular platforms for NFT marketplaces and creators.
 
 The most widely-used and well-supported standards are [ERC-721](https://eips.ethereum.org/EIPS/eip-721) and [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155). Adopting one of these interfaces will give your NFTs broad support by wallets and other NFT apps "out of the box" without requiring any special coordination or effort on your part.

@@ -2,6 +2,7 @@
 title: Architecture considerations
 ---
 
+
 # Architecture considerations
 
 When building tools and services that interact with NFT.Storage, there are a few things to keep in mind as you plan your project. This page collects some common patterns for interacting with NFT.Storage, including how to authenticate requests on behalf of your platform's users.
@@ -10,7 +11,7 @@ When building tools and services that interact with NFT.Storage, there are a few
 
 There are currently two methods of authenticating uploads to NFT.Storage, and which you choose will depend on the blockchain platform you'll be targeting, as well as your goals and overall service architecture.
 
-#### API Keys
+### API Keys
 
 The most common way to authenticate is using an **API Key**, which can be generated on your [account management page](https://nft.storage/manage/) on the NFT.Storage website. Once you've generated a key, you can use it to authenticate the [JavaScript client][reference-js-client] or attach the key to an `Authentication` header in requests to the [HTTP API][reference-http].
 

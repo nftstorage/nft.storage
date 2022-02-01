@@ -10,9 +10,9 @@ In this guide, you'll learn several methods for retrieving NFT data that's been 
 
 All data stored using NFT.Storage is made available for retrieval via [IPFS](https://ipfs.io), the InterPlanetary File System. IPFS is a distributed, peer-to-peer network for storing and sharing content-addressed data. 
 
-If you've collected an NFT that uses IPFS, this guide can help you understand how IPFS addresses work and how to view your data using HTTP gateways or native IPFS tools.
+If you've collected an NFT that uses IPFS, this guide can help you understand [how IPFS addresses work](#understanding-ipfs-addresses) and how to view your data [using HTTP gateways](#using-ipfs-http-gateways) or [native IPFS tools](#running-ipfs-on-your-computer).
 
-You can also find out how to make archival copies of your NFT data using IPFS tools.
+You can also find out how to [make archival copies](#making-archival-copies-of-your-nft-data) of your NFT data using IPFS tools.
 
 <Callout emoji="💡">
 If you're building a platform or marketplace that needs to fetch NFT data on behalf of your end users, please see
@@ -48,7 +48,7 @@ Here the `/amazing.gif` path points to an image file that's "inside" the IPFS di
 URLs with the `ipfs://` prefix can be used directly with a browser that supports IPFS like [Brave](https://brave.com). Once you've [configured IPFS support][brave-ipfs], you can just paste an `ipfs://` URL into your address bar and see content in your browser.
 
 
-For other options, see the sections below on using HTTP gateways and running IPFS locally.
+For other options, see the sections below on [using HTTP gateways](#using-ipfs-http-gateways) and [running IPFS locally](#running-ipfs-on-your-computer).
 
 <Callout emoji="💡">
 See [IPFS addresses on the Web][ipfs-docs-web-addresses] in the IPFS docs for more details on the different ways to link to IPFS data.
@@ -56,7 +56,7 @@ See [IPFS addresses on the Web][ipfs-docs-web-addresses] in the IPFS docs for mo
 
 ## Finding the IPFS address for your NFT's metadata
 
-Before you can retrieve your off-chain NFT metadata, you need to know where to find it. With IPFS, that means finding the IPFS address for your token's metadata which is recorded in the blockchain entry for the token.
+Before you can retrieve your off-chain NFT metadata, you need to know where to find it. With IPFS, that means finding the [IPFS address](#understanding-ipfs-addresses) for your token's metadata which is recorded in the blockchain entry for the token.
 
 You can often find this information on NFT marketplaces and other NFT explorer sites. For example, OpenSea's `Details` view includes a link to an NFT's "Frozen" metadata that's been stored on IPFS:
 
@@ -72,7 +72,7 @@ Below is an example of calling the `uri()` function on a [Polygon](https://polyg
 
 ![Screenshot of polygonscan block explorer showing a call to the `uri` contract function](/images/block-explorer-read-token-uri.png).
 
-Now that you have your metadata address, you can download a copy using an HTTP gateway or IPFS on your computer.
+Now that you have your metadata address, you can download a copy [using an HTTP gateway](#using-ipfs-http-gateways) or [IPFS on your computer](#running-ipfs-on-your-computer).
 
 <Callout emoji="❗">
 Don't forget to look inside the metadata! NFT metadata usually contains links to other resources, especially in the `image` field. Take a look inside and check for other [IPFS addresses](#understanding-ipfs-addresses) so you can download the linked data too!
@@ -80,7 +80,7 @@ Don't forget to look inside the metadata! NFT metadata usually contains links to
 
 ## Option: Retrieve using IPFS HTTP gateways
 
-Above we saw some examples of IPFS addresses that use the `ipfs://` URL prefix.
+Above we saw some examples of [IPFS addresses](#understanding-ipfs-addresses) that use the `ipfs://` URL prefix.
 
 You might also see HTTP links to IPFS content that look like this:
 
@@ -133,15 +133,15 @@ Making an archival copy of an NFT consists of three steps:
 
 1. Find the IPFS address for your NFT's metadata
 
-The first step is to find the IPFS address of the NFT's metadata as described above. 
+The first step is to [find the IPFS address of the NFT's metadata](#finding-the-ipfs-address-of-your-nfts-metadata). 
 
 2. Download an IPFS Content Archive (CAR) using the metadata address
 
-Find the CID portion of the address you found in step 1. For example, if your NFT has the URI `ipfs://bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi`, you just need the `bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi` part. See **Understanding IPFS addresses** above for more about CIDs.
+Find the CID portion of the address you found in step 1. For example, if your NFT has the URI `ipfs://bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi`, you just need the `bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi` part. See [Understanding IPFS addresses](#understanding-ipfs-addresses) for more about CIDs.
 
 Using the CID, you can download an IPFS Content Archive file (CAR), which contains the data exactly as it was encoded for storage on IPFS and Filecoin. This is important, because the same file can produce multiple different CIDs, depending on how it was encoded when adding to IPFS. By downloading a CAR, you preserve all the original CIDs and make it possible to re-provide the data in exactly the format it was in when the NFT was minted.
 
-If you have IPFS running on your computer, you can use the `ipfs` command line tool to export a CAR:
+If you have [IPFS running on your computer](#running-ipfs-on-your-computer), you can use the `ipfs` command line tool to export a CAR:
 
 ```bash
 ipfs dag export YOUR_CID > FILENAME.car
@@ -161,9 +161,9 @@ Replace `YOUR_CID` with the CID you found above, and `FILENAME` with whatever yo
 
 Now that you've made an archive for the NFT metadata, there's one last step. Your NFT metadata may contain links to other data stored on IPFS, for example, images or video files. 
 
-You can extract the metadata from the CAR you just made with the [ipfs-car tool](https://www.npmjs.com/package/ipfs-car), or just open the metadata address on an HTTP gateway to view it as a JSON text file.
+You can extract the metadata from the CAR you just made with the [ipfs-car tool](https://www.npmjs.com/package/ipfs-car), or just open the metadata address on an [HTTP gateway](#using-ipfs-http-gateways) to view it as a JSON text file.
 
-Look for any additional IPFS addresses and make a note of their CIDs.
+Look for any additional [IPFS addresses](#understanding-ipfs-addresses) and make a note of their CIDs.
 
 For each CID in the metadata, repeat the previous step to create a CAR file and save it alongside the CAR for the metadata.
 
@@ -173,7 +173,7 @@ For each CID in the metadata, repeat the previous step to create a CAR file and 
 [ipfs-docs-nft-best-practices]: https://docs.ipfs.io/how-to/best-practices-for-nft-data/
 [ipfs-docs-web-addresses]: https://docs.ipfs.io/how-to/address-ipfs-on-web/
 [ipfs-docs-pinning]: https://docs.ipfs.io/how-to/pin-files/
-[concepts-arch-retrieve]: ../../concepts/architecture-considerations/
+[concepts-arch-retrieve]: ../../concepts/architecture-considerations/#retrieving-data-for-end-users
 [brave-ipfs]: https://brave.com/ipfs-support/
 [public-gateway-checker]: https://ipfs.github.io/public-gateway-checker/
 [erc-721]: https://eips.ethereum.org/EIPS/eip-721

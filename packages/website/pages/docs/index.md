@@ -8,10 +8,10 @@ import Callout from 'nextra-theme-docs/callout';
 
 **Ready to get started using NFT.Storage right now?** Get up and running in minutes by following this quickstart guide. In this guide, we'll walk through the following steps:
 
-1. Creating an NFT.Storage account
-1. Uploading a file via the website
-1. Getting a free API token
-1. Using the JavaScript API
+1. [Creating an NFT.Storage account](#create-an-account)
+1. [Uploading a file via the website](#uploading-a-file-using-the-website)
+1. [Getting a free API token](#get-an-api-token)
+1. [Using the JavaScript API](#using-the-javascript-api)
 
 **This guide uses Node.js since it's the fastest way to get started using the Web3.Storage JavaScript client programmatically**, but don't worry if Node isn't your favorite runtime environment — or if you'd rather not do any coding at all. You can also use NFT.Storage in the following ways:
 - Using the JavaScript client in web browsers.
