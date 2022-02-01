@@ -16,6 +16,13 @@ format = "modules"
 dir = "dist"
 main = "index.mjs"
 
+[durable_objects]
+bindings = [
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics1"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
+  {name = "CIDSTRACKER", class_name = "CidsTracker0"}
+]
+
 # PROD!
 [env.production]
 # name = "gateway-nft-storage-production"
@@ -27,9 +34,6 @@ route = "*gateway.nft.storage/*"
 IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]"
 DEBUG = "false"
 ENV = "production"
-
-[env.production.durable_objects]
-bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics1"}, {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 
 # Staging!
 [env.staging]
@@ -43,9 +47,6 @@ IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-st
 DEBUG = "true"
 ENV = "staging"
 
-[env.staging.durable_objects]
-bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics1"}, {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
-
 # Test!
 [env.test]
 workers_dev = true
@@ -55,9 +56,6 @@ IPFS_GATEWAYS = "[\"http://127.0.0.1:9081\", \"http://localhost:9082\", \"http:/
 DEBUG = "true"
 ENV = "test"
 
-[env.test.durable_objects]
-bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics1"}, {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
-
 # Dev!
 [env.vsantos]
 workers_dev = true
@@ -65,9 +63,6 @@ account_id = "7ec0b7cf2ec201b2580374e53ba5f37b"
 
 [env.vsantos.vars]
 IPFS_GATEWAYS = "[\"https://ipfs.io\"]"
-
-[env.vsantos.durable_objects]
-bindings = [{name = "GATEWAYMETRICS", class_name = "GatewayMetrics1"}, {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"}, {name = "CIDSTRACKER", class_name = "CidsTracker0"}]
 
 [[migrations]]
 tag = "v1" # Should be unique for each entry
