@@ -5,11 +5,12 @@ export class JSONResponse extends Response {
    * @param {ResponseInitializerDict} [init]
    */
   constructor(body, init = {}) {
-    const headers = {
+    super(JSON.stringify(body), {
+      ...init,
       headers: {
         'content-type': 'application/json;charset=UTF-8',
+        ...init.headers,
       },
-    }
-    super(JSON.stringify(body), { ...init, ...headers })
+    })
   }
 }
