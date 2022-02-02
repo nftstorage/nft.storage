@@ -17,40 +17,35 @@ test('Gets Metrics content when empty state', async (t) => {
   const metricsResponse = await response.text()
 
   t.is(
-    metricsResponse.includes('nftstorage_gateway_total_winner_response_time'),
+    metricsResponse.includes('nftgateway_winner_response_time_seconds_total'),
     true
   )
-  t.is(
-    metricsResponse.includes(
-      'nftstorage_gateway_total_winner_successful_requests'
-    ),
-    true
-  )
+  t.is(metricsResponse.includes('nftgateway_winner_requests_total'), true)
   gateways.forEach((gw) => {
     t.is(
-      metricsResponse.includes(`_total_requests{gateway="${gw}",env="test"} 0`),
+      metricsResponse.includes(`_requests_total{gateway="${gw}",env="test"} 0`),
       true
     )
     t.is(
       metricsResponse.includes(
-        `_total_response_time{gateway="${gw}",env="test"}`
+        `_response_time_seconds_total{gateway="${gw}",env="test"}`
       ),
       true
     )
     t.is(
       metricsResponse.includes(
-        `_total_failed_requests{gateway="${gw}",env="test"} 0`
+        `_failed_requests_total{gateway="${gw}",env="test"} 0`
       ),
       true
     )
     t.is(
       metricsResponse.includes(
-        `_total_faster_requests{gateway="${gw}",env="test"} 0`
+        `_winner_requests_total{gateway="${gw}",env="test"} 0`
       ),
       true
     )
     t.is(
-      metricsResponse.includes(`_requests_per_time{gateway="${gw}",le=`),
+      metricsResponse.includes(`requests_per_time_total{gateway="${gw}",le=`),
       true
     )
   })
@@ -77,7 +72,7 @@ test('Gets Metrics content', async (t) => {
 
   gateways.forEach((gw) => {
     t.is(
-      metricsResponse.includes(`_total_requests{gateway="${gw}",env="test"} 2`),
+      metricsResponse.includes(`_requests_total{gateway="${gw}",env="test"} 2`),
       true
     )
   })
@@ -104,7 +99,7 @@ test('Gets Metrics from faster gateway', async (t) => {
 
   gateways.forEach((gw) => {
     t.is(
-      metricsResponse.includes(`_total_requests{gateway="${gw}",env="test"} 2`),
+      metricsResponse.includes(`_requests_total{gateway="${gw}",env="test"} 2`),
       true
     )
   })
@@ -112,7 +107,7 @@ test('Gets Metrics from faster gateway', async (t) => {
   // gateways[0] or gateways[1] are always faster
   t.is(
     metricsResponse.includes(
-      `_total_faster_requests{gateway="${gateways[2]}",env="test"} 0`
+      `_winner_requests_total{gateway="${gateways[2]}",env="test"} 0`
     ),
     true
   )
@@ -139,13 +134,13 @@ test('Counts failures', async (t) => {
 
   t.is(
     metricsResponse.includes(
-      `_total_requests{gateway="${gateways[2]}",env="test"} 2`
+      `_requests_total{gateway="${gateways[2]}",env="test"} 2`
     ),
     true
   )
   t.is(
     metricsResponse.includes(
-      `_total_failed_requests{gateway="${gateways[2]}",env="test"} 2`
+      `_failed_requests_total{gateway="${gateways[2]}",env="test"} 2`
     ),
     true
   )

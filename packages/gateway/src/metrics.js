@@ -68,63 +68,65 @@ export async function metricsGet(request, env, ctx) {
   }
 
   const metrics = [
-    `# HELP nftstorage_gateway_total_cached_responses Total cached responses returned.`,
-    `# TYPE nftstorage_gateway_total_cached_responses counter`,
-    `nftstorage_gateway_total_cached_responses{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalCachedResponses}`,
-    `# HELP nftstorage_gateway_total_winner_response_time Total requests performed.`,
-    `# TYPE nftstorage_gateway_total_winner_response_time counter`,
-    `nftstorage_gateway_total_winner_response_time{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalWinnerResponseTime}`,
-    `# HELP nftstorage_gateway_total_winner_successful_requests Total successful requests.`,
-    `# TYPE nftstorage_gateway_total_winner_successful_requests counter`,
-    `nftstorage_gateway_total_winner_successful_requests{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalWinnerSuccessfulRequests}`,
-    `# HELP nftstorage_gateway_total_response_time Average response time.`,
-    `# TYPE nftstorage_gateway_total_response_time gauge`,
+    `# HELP nftgateway_cache_hit_responses_total Total cached responses returned.`,
+    `# TYPE nftgateway_cache_hit_responses_total counter`,
+    `nftgateway_cache_hit_responses_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalCachedResponses}`,
+    `# HELP nftgateway_winner_requests_total Total winner requests.`,
+    `# TYPE nftgateway_winner_requests_total counter`,
+    `nftgateway_winner_requests_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalWinnerSuccessfulRequests}`,
+    `# HELP nftgateway_winner_response_time_seconds_total Accumulated winner response time.`,
+    `# TYPE nftgateway_winner_response_time_seconds_total summary`,
+    `nftgateway_winner_response_time_seconds_total{env="${env.ENV}"} ${msToS(
+      metricsCollected.summaryMetrics.totalWinnerResponseTime
+    )}`,
+    `# HELP nftgateway_response_time_seconds_total Accumulated response time of each gateway.`,
+    `# TYPE nftgateway_response_time_seconds_total summary`,
     ...env.ipfsGateways.map(
       (gw) =>
-        `nftstorage_gateway_total_response_time{gateway="${gw}",env="${
+        `nftgateway_response_time_seconds_total{gateway="${gw}",env="${
           env.ENV
-        }"} ${metricsCollected.ipfsGateways[gw].totalResponseTime || 0}`
+        }"} ${msToS(metricsCollected.ipfsGateways[gw].totalResponseTime) || 0}`
     ),
-    `# HELP nftstorage_gateway_total_requests Total requests performed.`,
-    `# TYPE nftstorage_gateway_total_requests counter`,
+    `# HELP nftgateway_requests_total Total requests performed to each gateway.`,
+    `# TYPE nftgateway_requests_total counter`,
     ...env.ipfsGateways.map(
       (gw) =>
-        `nftstorage_gateway_total_requests{gateway="${gw}",env="${env.ENV}"} ${
+        `nftgateway_requests_total{gateway="${gw}",env="${env.ENV}"} ${
           metricsCollected.ipfsGateways[gw].totalSuccessfulRequests +
           metricsCollected.ipfsGateways[gw].totalFailedRequests
         }`
     ),
-    `# HELP nftstorage_gateway_total_successful_requests Total successful requests.`,
-    `# TYPE nftstorage_gateway_total_successful_requests counter`,
+    `# HELP nftgateway_successful_requests_total Total successful requests performed to each gateway.`,
+    `# TYPE nftgateway_successful_requests_total counter`,
     ...env.ipfsGateways.map(
       (gw) =>
-        `nftstorage_gateway_total_successful_requests{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalSuccessfulRequests}`
+        `nftgateway_successful_requests_total{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalSuccessfulRequests}`
     ),
-    `# HELP nftstorage_gateway_total_failed_requests Total failed requests.`,
-    `# TYPE nftstorage_gateway_total_failed_requests counter`,
+    `# HELP nftgateway_failed_requests_total Total failed requests performed to each gateway.`,
+    `# TYPE nftgateway_failed_requests_total counter`,
     ...env.ipfsGateways.map(
       (gw) =>
-        `nftstorage_gateway_total_failed_requests{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalFailedRequests}`
+        `nftgateway_failed_requests_total{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalFailedRequests}`
     ),
-    `# HELP nftstorage_gateway_total_faster_requests Total requests with faster response.`,
-    `# TYPE nftstorage_gateway_total_faster_requests counter`,
+    `# HELP nftgateway_winner_requests_total Total requests with winner response to each gateway.`,
+    `# TYPE nftgateway_winner_requests_total counter`,
     ...env.ipfsGateways.map(
       (gw) =>
-        `nftstorage_gateway_total_faster_requests{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalWinnerRequests}`
+        `nftgateway_winner_requests_total{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalWinnerRequests}`
     ),
-    `# HELP nftstorage_gateway_requests_per_time`,
-    `# TYPE nftstorage_gateway_requests_per_time histogram`,
+    `# HELP nftgateway_requests_per_time_total`,
+    `# TYPE nftgateway_requests_per_time_total histogram for total of requests per response time bucket`,
     ...histogram.map((t) => {
       return env.ipfsGateways
         .map(
           (gw) =>
-            `nftstorage_gateway_requests_per_time{gateway="${gw}",le="${t}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].responseTimeHistogram[t]}`
+            `nftgateway_requests_per_time_total{gateway="${gw}",le="${t}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].responseTimeHistogram[t]}`
         )
         .join('\n')
     }),
     ...env.ipfsGateways.map(
       (gw) =>
-        `nftstorage_gateway_requests_per_time{gateway="${gw}",le="+Inf",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalSuccessfulRequests}`
+        `nftgateway_requests_per_time_total{gateway="${gw}",le="+Inf",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalSuccessfulRequests}`
     ),
   ].join('\n')
 
@@ -137,4 +139,12 @@ export async function metricsGet(request, env, ctx) {
   // ctx.waitUntil(cache.put(request, res.clone()))
 
   return res
+}
+
+/**
+ * Convert milliseconds to seconds.
+ * @param {number} ms
+ */
+function msToS(ms) {
+  return ms / 1000
 }
