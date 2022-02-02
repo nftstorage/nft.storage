@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.23.0](https://github.com/nftstorage/nft.storage/compare/website-v1.22.2...website-v1.23.0) (2022-01-31)
+
+
+### Features
+
+* 2022 roadmap blog post ([#1188](https://github.com/nftstorage/nft.storage/issues/1188)) ([6f233b7](https://github.com/nftstorage/nft.storage/commit/6f233b74adcb2b97dcc02b89d8641f7b045e8ca1))
+
+
+### Bug Fixes
+
+* issue 1152 cid truncation ([#1187](https://github.com/nftstorage/nft.storage/issues/1187)) ([0587fef](https://github.com/nftstorage/nft.storage/commit/0587fef480ecfb8b377444c8b0a3f47b2ca5a9f6))
+* rename blog post file with correct date ([8d663cd](https://github.com/nftstorage/nft.storage/commit/8d663cd5ca501c39638533e74098535577d79843))
+* update size and alignment of cards while allowing height to expand ([#1159](https://github.com/nftstorage/nft.storage/issues/1159)) ([d27cbbc](https://github.com/nftstorage/nft.storage/commit/d27cbbc8cc3e62ad194635f185ff096a69fe1e1f))
+
 ### [1.22.2](https://github.com/nftstorage/nft.storage/compare/website-v1.22.1...website-v1.22.2) (2022-01-24)
 
 
