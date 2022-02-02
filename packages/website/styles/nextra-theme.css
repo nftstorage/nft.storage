@@ -13,10 +13,6 @@
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
     sans-serif, Apple Color Emoji, Segoe UI Emoji;
 }
-.nextra-container hr {
-  height: 0;
-  color: inherit;
-}
 .nextra-container abbr[title] {
   -webkit-text-decoration: underline dotted;
   text-decoration: underline dotted;
@@ -152,9 +148,6 @@
   box-sizing: border-box;
   border: 0 solid;
 }
-.nextra-container hr {
-  border-top-width: 1px;
-}
 .nextra-container img {
   border-style: solid;
 }
@@ -196,8 +189,10 @@
   font-weight: inherit;
 }
 .nextra-container a {
-  color: inherit;
-  text-decoration: inherit;
+  --tw-text-opacity: 1;
+  color: rgba(0, 0, 0, var(--tw-text-opacity));
+  text-decoration: underline;
+  text-underline-position: under;
 }
 .nextra-container button,
 .nextra-container input,
@@ -225,11 +220,18 @@
 .nextra-container video {
   display: block;
   vertical-align: middle;
+  margin: 1.5rem 0;
 }
 .nextra-container img,
 .nextra-container video {
   max-width: 100%;
   height: auto;
+}
+.nextra-container .icons {
+  margin: 1rem 0;
+}
+.nextra-container .icons img {
+  margin: 0;
 }
 .nextra-container [hidden] {
   display: none;
@@ -290,7 +292,7 @@
 .nextra-container h1 {
   margin-top: 0.5rem;
   font-size: 2.25rem;
-  line-height: 2.5rem;
+  line-height: 1.25;
   font-weight: 700;
   letter-spacing: -0.015em;
 }
@@ -300,7 +302,6 @@
   line-height: 2.25rem;
   font-weight: 600;
   letter-spacing: -0.015em;
-  border-bottom-width: 1px;
   padding-bottom: 0.25rem;
 }
 .nextra-container .dark h2 {
@@ -334,23 +335,20 @@
   font-weight: 600;
   letter-spacing: -0.015em;
 }
-.nextra-container a {
-  --tw-text-opacity: 1;
-  color: rgba(66, 153, 225, var(--tw-text-opacity));
-  text-decoration: underline;
-  text-underline-position: under;
-}
 .nextra-container p {
   line-height: 1.75rem;
 }
 .nextra-container .table-container:not(:first-child),
 .nextra-container blockquote:not(:first-child),
 .nextra-container p:not(:first-child) {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
 }
 .nextra-container hr {
   margin-top: 2rem;
   margin-bottom: 2rem;
+  border-color: rgb(189, 189, 189);
+  border-top-width: 1px;
+  height: 0;
 }
 .nextra-container .dark hr {
   --tw-border-opacity: 1;
@@ -902,6 +900,7 @@
 }
 .nextra-container article li {
   margin-top: 0.5rem;
+  line-height: 1.5;
 }
 .nextra-container article ol {
   margin-left: 1.5rem;

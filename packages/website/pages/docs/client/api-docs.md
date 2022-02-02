@@ -5,12 +5,14 @@ title: Nft.Storage Client
 
 # Nft.Storage Client
 
-![ci][ci.icon]
-[![package][version.icon]][package.url]
-[![styled with prettier][prettier.icon]][prettier.url]
-[![size][size.icon]][size.url]
-[![deps][deps.icon]][deps.url]
-[![codecov][cov.icon]][cov.url]
+<div className="icons">
+  ![ci][ci.icon]
+  [![package][version.icon]][package.url]
+  [![styled with prettier][prettier.icon]][prettier.url]
+  [![size][size.icon]][size.url]
+  [![deps][deps.icon]][deps.url]
+  [![codecov][cov.icon]][cov.url]
+</div>
 
 A client library for the https://nft.storage/ service. It provides a convenient interface for working with the [Raw HTTP API][] from a web browser or [Node.js][] and comes bundled with TS for out-of-the box type inference and better IntelliSense.
 
