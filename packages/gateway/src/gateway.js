@@ -9,7 +9,7 @@ import {
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
   CF_CACHE_MAX_OBJECT_SIZE,
-  RATE_LIMIT_ERROR_CODE,
+  RATE_LIMIT_HTTP_ERROR_CODE,
 } from './constants.js'
 
 /**
@@ -17,7 +17,7 @@ import {
  * @property {Response} [response]
  * @property {string} url
  * @property {number} [responseTime]
- * @property {boolean} [rateLimitPrevented]
+ * @property {number} [requestPreventedCode]
  *
  * @typedef {import('./env').Env} Env
  */
@@ -112,7 +112,7 @@ export async function gatewayGet(request, env, ctx) {
     // Redirect if all failed and at least one gateway was rate limited
     if (responses) {
       const wasRateLimited = responses.find(
-        (r) => r.value?.response?.status === RATE_LIMIT_ERROR_CODE
+        (r) => r.value?.response?.status === RATE_LIMIT_HTTP_ERROR_CODE
       )
 
       if (wasRateLimited) {
@@ -161,9 +161,10 @@ async function _gatewayFetch(
   const { shouldBlock } = await getGatewayRateLimitState(request, env, gwUrl)
 
   if (shouldBlock) {
+    /** @type {GatewayResponse} */
     return {
       url: gwUrl,
-      rateLimitPrevented: true,
+      requestPreventedCode: RATE_LIMIT_HTTP_ERROR_CODE,
     }
   }
 
@@ -240,14 +241,12 @@ async function updateSummaryWinnerMetrics(request, env, gwResponse) {
   const stub = env.summaryMetricsDurable.get(id)
 
   /** @type {import('./durable-objects/summary-metrics').ResponseWinnerStats} */
-  const responseStats = {
+  const fetchStats = {
     responseTime: gwResponse.responseTime,
     contentLength: Number(gwResponse.response.headers.get('content-length')),
   }
 
-  await stub.fetch(
-    _getDurableRequestUrl(request, 'metrics/winner', responseStats)
-  )
+  await stub.fetch(_getDurableRequestUrl(request, 'metrics/winner', fetchStats))
 }
 
 /**
@@ -266,22 +265,21 @@ async function updateGatewayMetrics(
   const id = env.gatewayMetricsDurable.idFromName(gwResponse.url)
   const stub = env.gatewayMetricsDurable.get(id)
 
-  /** @type {import('./durable-objects/gateway-metrics').ResponseStats} */
-  const responseStats = {
-    ok: gwResponse.response?.ok || false,
-    responseTime: gwResponse.responseTime,
+  /** @type {import('./durable-objects/gateway-metrics').FetchStats} */
+  const fetchStats = {
+    status: gwResponse.response?.status,
     winner: isWinner,
-    rateLimitPrevented: gwResponse.rateLimitPrevented,
-    rateLimitErrored: gwResponse.response?.status === RATE_LIMIT_ERROR_CODE,
+    responseTime: gwResponse.responseTime,
+    requestPreventedCode: gwResponse.requestPreventedCode,
   }
 
-  await stub.fetch(_getDurableRequestUrl(request, 'update', responseStats))
+  await stub.fetch(_getDurableRequestUrl(request, 'update', fetchStats))
 }
 
 /**
  * @param {Request} request
  * @param {import('./env').Env} env
- * @param {pSettle.PromiseResult<GatewayResponse>[]} responses
+ * @param {import('p-settle').PromiseResult<GatewayResponse>[]} responses
  * @param {string} cid
  */
 async function updateCidsTracker(request, env, responses, cid) {

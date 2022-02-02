@@ -180,4 +180,10 @@ test('Counts failures', async (t) => {
     ),
     true
   )
+  t.is(
+    metricsResponse.includes(
+      `_failed_requests_by_status_total{gateway="${gateways[2]}",env="test",status="524"} 2`
+    ),
+    true
+  )
 })

@@ -28,6 +28,7 @@ test('Receives falsy on should block when not on high load', async (t) => {
 
 test('Receives should block when load reaches the RATE_LIMIT_REQUESTS', async (t) => {
   const { mf } = t.context
+  const cid = 'bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq'
 
   const ns = await mf.getDurableObjectNamespace(getGatewayRateLimitsName())
   const id = ns.idFromName(gateways[0])
@@ -42,4 +43,17 @@ test('Receives should block when load reaches the RATE_LIMIT_REQUESTS', async (t
 
   const rateLimitResponse = await doRes.json()
   t.truthy(rateLimitResponse.shouldBlock)
+
+  const p = await mf.dispatchFetch(`https://${cid}.ipfs.localhost:8787`)
+  await p.waitUntil()
+
+  const response = await mf.dispatchFetch('http://localhost:8787/metrics')
+  const metricsResponse = await response.text()
+
+  t.is(
+    metricsResponse.includes(
+      `_prevented_requests_by_reason_total{gateway="${gateways[0]}",env="test",reason="429"} 1`
+    ),
+    true
+  )
 })

@@ -1,19 +1,16 @@
 /**
  * @typedef {Object} GatewayMetrics
  * @property {number} totalResponseTime total response time of the requests
- * @property {number} totalSuccessfulRequests total number of successful requests
- * @property {number} totalFailedRequests total number of requests failed
  * @property {number} totalWinnerRequests number of performed requests where winner
- * @property {number} totalRateLimitedErroredRequests number of performed requests that errored with rate limit code without being prevented
- * @property {number} totalRateLimitedPreventedRequests number of requests not sent to upstream gateway as it would exceed the rate limit
+ * @property {Record<string, number>} totalResponsesByStatus total responses received indexed by status code
+ * @property {Record<string, number>} totalRequestsPreventedByReason total requests not sent to upstream gateway indexed by reason code
  * @property {Record<string, number>} responseTimeHistogram
  *
- * @typedef {Object} ResponseStats
- * @property {boolean} ok request was successful
+ * @typedef {Object} FetchStats
+ * @property {number} status http response status
  * @property {number} [responseTime] number of milliseconds to get response
  * @property {boolean} [winner] response was from winner gateway
- * @property {boolean} [rateLimitPrevented] request not sent to upstream gateway as it would exceed the rate limit
- * @property {boolean} [rateLimitErrored] request errored with rate limit code without being prevented
+ * @property {number} [requestPreventedCode] request not sent to upstream gateway reason code
  */
 
 const GATEWAY_METRICS_ID = 'gateway_metrics'
@@ -55,25 +52,27 @@ export class GatewayMetrics2 {
   }
 
   /**
-   * @param {ResponseStats} stats
+   * @param {FetchStats} stats
    */
   _updateMetrics(stats) {
-    if (!stats.ok) {
-      // Update failed request count
-      this.gatewayMetrics.totalFailedRequests += 1
-
-      // Update rate limit prevented requests
-      if (stats.rateLimitPrevented) {
-        this.gatewayMetrics.totalRateLimitedPreventedRequests += 1
-      } else if (stats.rateLimitErrored) {
-        this.gatewayMetrics.totalRateLimitedErroredRequests += 1
-      }
-
+    // Update prevent requests if request was prevented
+    if (stats.requestPreventedCode) {
+      const totalPreventedForReason =
+        this.gatewayMetrics.totalRequestsPreventedByReason[
+          stats.requestPreventedCode
+        ] || 0
+      this.gatewayMetrics.totalRequestsPreventedByReason[
+        stats.requestPreventedCode
+      ] = totalPreventedForReason + 1
       return
     }
 
-    // Update request count and response time sum
-    this.gatewayMetrics.totalSuccessfulRequests += 1
+    // Update response by status
+    const totalResponsesForStatus =
+      this.gatewayMetrics.totalResponsesByStatus[stats.status] || 0
+    this.gatewayMetrics.totalResponsesByStatus[stats.status] =
+      totalResponsesForStatus + 1
+
     this.gatewayMetrics.totalResponseTime += stats.responseTime
 
     // Update faster count if appropriate
@@ -104,13 +103,14 @@ export const histogram = [
 function createMetricsTracker() {
   const h = histogram.map((h) => [h, 0])
 
-  return {
+  /** @type {GatewayMetrics} */
+  const m = {
     totalResponseTime: 0,
-    totalSuccessfulRequests: 0,
-    totalFailedRequests: 0,
     totalWinnerRequests: 0,
-    totalRateLimitedErroredRequests: 0,
-    totalRateLimitedPreventedRequests: 0,
+    totalResponsesByStatus: {},
+    totalRequestsPreventedByReason: {},
     responseTimeHistogram: Object.fromEntries(h),
   }
+
+  return m
 }
