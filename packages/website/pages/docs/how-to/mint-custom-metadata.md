@@ -3,6 +3,7 @@ title: Store and mint NFTs using custom metadata
 ---
 
 import Callout from 'nextra-theme-docs/callout';
+import { Tabs, TabItem } from 'components/mdx/tabs';
 
 # Store and mint NFTs using custom metadata
 If your metadata conforms to the popular ERC-721 or ERC-1155 standards, you can [upload all your NFT assets and prepare your metadata all in one HTTP request](../mint-erc-1155/). 
@@ -23,8 +24,10 @@ Here's an example on how to do this to mint your own NFT!
 
 Before you can create the blockchain record for your NFT, you'll need to store all of the off-chain resources that comprise the NFT "package". Once everything has been stored, you can use the IPFS URI for the metadata to link from the on-chain token to everything else.
 
-## JavaScript
-### Storing asset files
+#### Storing asset files
+
+<Tabs>
+<TabItem value="js" label="JavaScript">
 
 The [JavaScript client library][reference-js-client] provides three methods that you can use to store arbitrary files for your NFT assets and metadata.
 
@@ -44,18 +47,8 @@ ipfs://bafybeiajdopsmspomlrpaohtzo5sdnpknbolqjpde6huzrsejqmvijrcea/pinpie.jpg
 
 The final method for storing arbitrary data is [`storeCar`][reference-js-storecar], which stores data that has been packaged into the IPFS Content Archive format. This method gives you precise control over how the IPFS object graph is structured and may be a good fit if you already have data in IPFS. See the [CAR file guide][guide-car-files] to learn how to work with CARs and prepare them for upload.
 
-### Preparing your metadata
-
-Once you have all of your assets stored, you can update your metadata to include IPFS URIs to the images and other files that are part of your NFT.
-
-For each file that you uploaded, prepare an IPFS URI of the form `ipfs://<CID>` for files stored with `storeBlob`, or `ipfs://<DirectoryCID>/<filename>` for files stored with `storeDirectory`. 
-
-In some cases you may also want to include HTTP gateway URLs, but it's best to add those as an optimization or fallback for compatibility with browsers or wallets that don't support IPFS natively. See [the IPFS documentation about web addresses](https://docs.ipfs.io/how-to/address-ipfs-on-web/) for more details on IPFS URIs and the tradeoffs involved in using HTTP gateways.
-
-Once the metadata is ready, you can serialize it to a file (usually in JSON format), and upload it using `storeBlob` or `storeDirectory`. That will give you a CID you can use to link to the metadata from your on-chain NFT record.
-
-## HTTP API
-### Storing asset files
+</TabItem>
+<TabItem value="http" label="HTTP API">
 
 The [HTTP API][reference-http-api] provides a `/upload` endpoint that accepts one or more files and stores them with NFT.Storage.
 
@@ -141,7 +134,10 @@ Uploading CAR files works just like uploading a single file. Send a `POST` reque
 
 To upload files larger than 100 MiB, you can pack them into a CAR file and split the CAR into chunks, uploading each chunk in a separate HTTP request. See the [CAR file guide][guide-car-files] to learn more.
 
-### Preparing your metadata
+</TabItem>
+</Tabs>
+
+#### Preparing your metadata
 
 Once you have all of your assets stored, you can update your metadata to include IPFS URIs to the images and other files that are part of your NFT.
 
