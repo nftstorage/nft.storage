@@ -75,9 +75,157 @@ Do not share your API token with anyone else. This key is specific to your accou
 
 ### Using the JavaScript API
 
-{/* TODO(yusef): add simple node upload example */}
+If you're building apps with JavaScript or TypeScript, the NFT.Storage [JavaScript client][js-client] makes it simple to upload files and create ERC-1155 compatible NFT metadata.
 
+The client library uses the familiar [web File API][mdn-file] and includes a `File` implementation for Node.js. Below is a small example that reads in the path to a file from the command line and stores the file with NFT.Storage.
+
+You'll need [Node.js](https://nodejs.org) version 16 or later for this example. 
+
+1. Make a new JavaScript project.
+
+Create a new directory and use `npm` to create a new project:
+
+```bash
+mkdir nft-storage-quickstart
+cd nft-storage-quickstart
+npm init
+```
+
+NPM will ask a few questions about your project and create a `package.json` file.
+
+2. Add the `nft.storage` client to your project dependencies.
+
+Install the latest version of the `nft.storage` package:
+
+```bash
+npm install nft.storage
+```
+
+While we're at it, add the `mime` package, which will help us guess the file type for a given filename.
+
+```bash
+npm install mime
+```
+
+3. Create a file called `upload.mjs` and open it with your code editor.
+
+Below is the code we need to upload an image with ERC-1155 compatible NFT metadata.
+
+Paste in the code below and read through it. Feel free to remove the comments - they're just there to highlight what's going on.
+
+<Callout emoji="⚠️">
+Make sure you replace the value of the `NFT_STORAGE_KEY` variable with your NFT.Storage API token. 
+
+In a real app, you should read the token from an environment variable or config file that's not checked into source control!
+</Callout>
+
+```js
+// Import the NFTStorage class and File constructor from the 'nft.storage' package
+import { NFTStorage, File } from 'nft.storage'
+
+// The 'mime' npm package helps us set the correct file type on our File objects
+import mime from 'mime'
+
+// The 'fs' builtin module on Node.js provides access to the file system
+import fs from 'fs'
+
+// The 'path' module provides helpers for manipulating filesystem paths
+import path from 'path'
+
+// Paste your NFT.Storage API key into the quotes:
+const NFT_STORAGE_KEY = 'REPLACE_ME_WITH_YOUR_KEY'
+
+/**
+  * Reads an image file from `imagePath` and stores an NFT with the given name and description.
+  * @param {string} imagePath the path to an image file
+  * @param {string} name a name for the NFT
+  * @param {string} description a text description for the NFT
+  */
+async function storeNFT(imagePath, name, description) {
+    // load the file from disk
+    const image = await fileFromPath(imagePath)
+
+    // create a new NFTStorage client using our API key
+    const nftstorage = new NFTStorage({ token: NFT_STORAGE_KEY })
+
+    // call client.store, passing in the image & metadata
+    return nftstorage.store({
+        image,
+        name,
+        description,
+    })
+}
+
+/**
+  * A helper to read a file from a location on disk and return a File object.
+  * Note that this reads the entire file into memory and should not be used for
+  * very large files. 
+  * @param {string} filePath the path to a file to store
+  * @returns {File} a File object containing the file content
+  */
+async function fileFromPath(filePath) {
+    const content = await fs.promises.readFile(filePath)
+    const type = mime.getType(filePath)
+    return new File([content], path.basename(filePath), { type })
+}
+
+
+/**
+ * The main entry point for the script that checks the command line arguments and
+ * calls storeNFT.
+ * 
+ * To simplify the example, we don't do any fancy command line parsing. Just three
+ * positional arguments for imagePath, name, and description
+ */
+async function main() {
+    const args = process.argv.slice(2)
+    if (args.length !== 3) {
+        console.error(`usage: ${process.argv[0]} ${process.argv[1]} <image-path> <name> <description>`)
+        process.exit(1)
+    }
+
+    const [imagePath, name, description] = args
+    const result = await storeNFT(imagePath, name, description)
+    console.log(result)
+}
+
+// Don't forget to actually call the main function!
+// We can't `await` things at the top level, so this adds
+// a .catch() to grab any errors and print them to the console.
+main()
+  .catch(err => {
+      console.error(err)
+      process.exit(1)
+  })
+```
+
+4. Run your script with node
+
+You should now be able to run the script and give it the path to an image file. You'll also need to supply a name and a description for the NFT.
+
+In the example below, we'll assume there's a file called `token.png` in the same directory as the script. If your file is elsewhere, replace `token.png` with the path to your image.
+
+```bash
+node upload.mjs token.png 'A name for my token' 'A longer description for the token...'
+```
+
+Notice the quotes around `'A name for my token'` and `'A longer description for the token...'`. This causes the command line shell to treat the quoted text as a single argument instead of one for each word. Since our script is expecting exactly three arguments, you'll need to quote the name and description if there are spaces in them.
+
+You should see something like this when you're finished:
+
+```
+Token {
+  ipnft: 'bafyreifrkkhbwkf3fibwhbzcmpqnmh3b4t5t4ig7qdtymkdoatcycwe6n4',
+  url: 'ipfs://bafyreifrkkhbwkf3fibwhbzcmpqnmh3b4t5t4ig7qdtymkdoatcycwe6n4/metadata.json'
+}
+```
+
+The `url` is an IPFS url that can be viewed with [Brave](https://brave.com) and other IPFS-aware tools and browsers. For other ways to access your token data, see our [guide to retrieving NFT data][howto-retrieve].
 
 [reference-http-api]: https://nft.storage/api-docs/
 [concepts-car-files]: ./concepts/car-files/
+[howto-retrieve]: ./how-to/retrieve/
+[js-client]: ./client/lib.md
+
+[mdn-file]: https://developer.mozilla.org/en-US/docs/Web/API/File
 
