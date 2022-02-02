@@ -198,10 +198,22 @@
   border: 1px solid #000;
   padding: 6px 10px;
   cursor: pointer;
+  color: #000;
 }
 
 .actions-trigger:focus,
 .actions-trigger--active {
   background-color: #000;
   color: #fff;
+}
+
+.rc-tooltip.table-tooltip {
+  opacity: 1;
+  max-width: 40ch;
+}
+
+.rc-tooltip.table-tooltip .rc-tooltip-content {
+  border-radius: 0;
+  border: 1px solid #000;
+  font-family: var(--sansserif);
 }
