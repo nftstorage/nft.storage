@@ -8,7 +8,7 @@ import { getCidFromSubdomainUrl } from './utils/cid.js'
 import {
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
-  CLOUDFLARE_MAX_OBJECT_SIZE,
+  CF_CACHE_MAX_OBJECT_SIZE,
 } from './constants.js'
 
 /**
@@ -76,8 +76,8 @@ export async function gatewayGet(request, env, ctx) {
         await Promise.all([
           storeWinnerGwResponse(request, env, winnerGwResponse),
           settleGatewayRequests(),
-          // Cache request URL in Cloudflare CDN if smaller than CLOUDFLARE_MAX_OBJECT_SIZE
-          contentLengthMb < CLOUDFLARE_MAX_OBJECT_SIZE &&
+          // Cache request URL in Cloudflare CDN if smaller than CF_CACHE_MAX_OBJECT_SIZE
+          contentLengthMb <= CF_CACHE_MAX_OBJECT_SIZE &&
             cache.put(request.url, winnerGwResponse.response.clone()),
         ])
       })()
