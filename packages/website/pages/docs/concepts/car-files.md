@@ -12,19 +12,19 @@ When you upload files to NFT.Storage using the [client library][reference-client
 
 For many use cases, you never need to know about this process, as the conversion happens behind the scenes when using the client library.  However, if you're using the [HTTP API][reference-http-api], or if you want more control over the structure of the IPFS data graph, you may want to work with Content Archives directly.
 
-This how-to guide will explain the basics of Content Archives and how they're used by the NFT.Storage API.
+This how-to guide will explain [the basics of Content Archives](#what-is-a-content-archive) and [how they're used by the NFT.Storage API](#car-files-and-nft-storage).
 
-We'll also see several methods of creating and manipulating Content Archives using command line tools and an overview of the libraries you can use in your application's code.
+We'll also see several methods of creating and manipulating Content Archives using [command line tools](#command-line-tools) and an overview of the [libraries](#libraries-for-application-developers) you can use in your application's code.
 
-### What is a Content Archive?
+## What is a Content Archive?
 
 The [Content Archive format][car-spec] is a way of packaging up [content addressed data][concepts-content-addressing] into archive files that can be easily stored and transferred. You can think of them like [TAR files][wikipedia-tar] that are designed for storing collections of content addressed data.
 
 The type of data stored in CARs is defined by [IPLD](https://ipld.io), or InterPlanetary Linked Data. IPLD is a specification and set of implementations for structured data types that can link to each other using a hash-based Content Identifier (CID). Data linked in this way forms a Directed Acyclic Graph, or DAG, and you'll likely see a few references to DAGs in the documentation for IPLD and IPFS.
 
-IPFS files are one example of IPLD data, but IPLD can also be used to access data from Ethereum, Git, and other hash-addressed systems. You can also use IPLD as a general purpose format for your structured data, sort of like a Web3-flavored JSON. See Advanced IPLD formats below for more information.
+IPFS files are one example of IPLD data, but IPLD can also be used to access data from Ethereum, Git, and other hash-addressed systems. You can also use IPLD as a general purpose format for your structured data, sort of like a Web3-flavored JSON. See [Advanced IPLD formats](#advanced-ipld-formats) below for more information.
 
-### CARs and NFT.Storage
+## CARs and NFT.Storage
 
 When the NFT.Storage client packs up regular files into a CAR to store on IPFS, the CAR contains data encoded in the same format used by IPFS when importing files using the command line or other IPFS APIs.
 
@@ -36,11 +36,11 @@ First, formatting everything on the client allows us to calculate the root Conte
 
 Another reason to use CARs is to support large files, which would otherwise hit size limits on the NFT.Storage backend platform. The data in a CAR is already chunked into small blocks, which makes CARs easy to split into small pieces that can be uploaded in batches.
 
-### Command line tools
+## Command line tools
 
 There are a few ways to create and interact with CAR files from the command line.
 
-#### ipfs-car
+### ipfs-car
 
 The [ipfs-car][github-ipfs-car] JavaScript package includes a command-line tool for easily creating, unpacking, and verifying CAR files.
 
@@ -78,7 +78,7 @@ ipfs-car --list path/to/my.car
 
 For more usage information, run `ipfs-car --help`.
 
-#### go-ipfs
+### go-ipfs
 
 [`go-ipfs`](https://docs.ipfs.io/install/command-line/) is the reference implementation of the IPFS protocol. Among many other features, `go-ipfs` supports exporting any IPFS object graph into a CAR file and importing data from CAR files into your local IPFS repository.
 
@@ -101,21 +101,21 @@ To add the contents of a CAR file to your local IPFS repository, you can use `ip
 ipfs dag import path/to/input.car
 ```
 
-### Libraries for application developers
+## Libraries for application developers
 
-#### JavaScript
+### JavaScript
 
 There are two JavaScript packages available for manipulating CARs inside your application.
 
-###### ipfs-car
+#### ipfs-car
 
 The `ipfs-car` package includes library functions for packing and unpacking files into CARs, using the IPFS UnixFs data model. The library includes the same functionality as the `ipfs-car` command line utility described above.
 
 See the [ipfs-car README](https://github.com/web3-storage/ipfs-car#api) for API documentation and usage examples.
 
-###### @ipld/car
+#### @ipld/car
 
-The [`@ipld/car` package](https://github.com/ipld/js-car) contains the main JavaScript implementation of the CAR specification and is used by `ipfs-car` under the hood. If you want to store non-file data using advanced IPLD formats, you should use `@ipld/car` directly.
+The [`@ipld/car` package](https://github.com/ipld/js-car) contains the main JavaScript implementation of the CAR specification and is used by `ipfs-car` under the hood. If you want to store non-file data using [advanced IPLD formats](#advanced-ipld-formats), you should use `@ipld/car` directly.
 
 `@ipld/car` also provides the `CarReader` interface used by the NFT.Storage client's [`storeCar` method](https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#storeCar).
 
@@ -139,13 +139,13 @@ async function storeCarFile(filename) {
 
 The `CarReader` type shown above will read the entire contents of the CAR into memory, which may cause issues with large files. On Node.js, you can use [`CarIndexedReader`](https://github.com/ipld/js-car#carindexedreader), which reads CAR data from disk directly and uses less memory than `CarReader`.
 
-#### Go
+### Go
 
 The [`go-car` module](https://github.com/ipld/go-car) provides the main Golang implementation of the CAR specification. We recommend using the `v2` module version, which supports the latest version of the CAR spec.
 
 See the [API reference documentation](https://pkg.go.dev/github.com/ipld/go-car/v2) for more information.
 
-### Splitting CARs for upload to NFT.Storage
+## Splitting CARs for upload to NFT.Storage
 
 The NFT.Storage [HTTP API][reference-http-api] accepts CAR uploads up to 100 MB in size, but the JavaScript client uses the HTTP API to upload files of _any_ size. The client manages to do this by splitting CARs into chunks of less than 100 MB each and uploading each chunk separately.
 
@@ -153,7 +153,7 @@ The main tool available for splitting and joining CARs is called `carbites`, whi
 
 This section will demonstrate a few ways to split CARs in a way that's acceptable to the NFT.Storage service, using the command line tool, as well as programmatically using the `carbites` libraries in JavaScript and Go.
 
-### Using the carbites-cli tool"
+## Using the carbites-cli tool"
 
 The JavaScript [carbites library][github-carbites-js] includes a package called `carbites-cli` that can split and join CARs from the command line. You'll need a recent version of [Node.js](https://nodejs.org) installed, preferably the latest stable version.
 
@@ -205,7 +205,7 @@ carbites --help
 
 </Callout>
 
-  ###### Splitting CARs
+  #### Splitting CARs
 
   The `carbites split` command takes a CAR file as input and splits it into multiple smaller CARs. 
 
@@ -234,14 +234,14 @@ carbites --help
   -rw-r--r--  1 user  staff   455M Sep 15 13:52 my-video.car
   ```
 
-  ###### Joining CARs
+  #### Joining CARs
 
   To combine CARs that have been previously split, you can use the `carbites join` command:
 
   ```shell
   carbites join my-video-*.car --output my-video-joined.car
   ```
-### Using JavaScript code
+## Using JavaScript code
   The [carbites library][github-carbites-js] provides an interface for splitting CARs that can be invoked from your application code.
 
 <Callout emoji="💡">
@@ -287,7 +287,7 @@ carbites --help
     }
   }
   ```
-### Using Go code
+## Using Go code
   The [go-carbites](https://github.com/alanshaw/go-carbites) module can be used to split large CARs from your Go applications.
 
   Install the module with `go get`:
@@ -331,7 +331,7 @@ func main() {
 
   You can also use [`NewTreewalkSplitterFromPath`](https://pkg.go.dev/github.com/alanshaw/go-carbites#NewTreewalkSplitterFromPath), which takes a local file path instead of an `io.Reader`.
 
-### Advanced IPLD formats
+## Advanced IPLD formats
 
 IPLD can also be used as a general purpose data format like JSON. In fact, you can use JSON directly as IPLD just by using a special convention for linking to other IPLD objects. This convention is defined in the [`dag-json` "codec"](https://ipld.io/docs/codecs/known/dag-json/).
 
