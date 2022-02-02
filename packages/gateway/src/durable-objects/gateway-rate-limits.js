@@ -76,25 +76,25 @@ const MINUTE = 1000 * 60
 function getRateLimitingCharacteristics(gatewayUrl) {
   switch (gatewayUrl) {
     case 'https://ipfs.io':
-      return Object.freeze({
+      return {
         RATE_LIMIT_REQUESTS: 800,
         RATE_LIMIT_TIMEFRAME: MINUTE,
-      })
+      }
     case 'https://cf-ipfs.com':
-      return Object.freeze({
+      return {
         RATE_LIMIT_REQUESTS: 100,
         RATE_LIMIT_TIMEFRAME: MINUTE,
-      })
+      }
     case 'https://nft-storage.mypinata.cloud/':
-      return Object.freeze({
+      return {
         RATE_LIMIT_REQUESTS: 200,
         RATE_LIMIT_TIMEFRAME: MINUTE,
-      })
+      }
     // Default to 100
     default:
-      return Object.freeze({
+      return {
         RATE_LIMIT_REQUESTS: 100,
         RATE_LIMIT_TIMEFRAME: MINUTE,
-      })
+      }
   }
 }

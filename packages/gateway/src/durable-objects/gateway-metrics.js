@@ -4,16 +4,16 @@
  * @property {number} totalSuccessfulRequests total number of successful requests
  * @property {number} totalFailedRequests total number of requests failed
  * @property {number} totalWinnerRequests number of performed requests where winner
- * @property {number} totalRateLimitedErroredRequests number of performed requests prevented from rate limiting
- * @property {number} totalRateLimitedPreventedRequests number of performed requests prevented from rate limiting
+ * @property {number} totalRateLimitedErroredRequests number of performed requests that errored with rate limit code without being prevented
+ * @property {number} totalRateLimitedPreventedRequests number of requests not sent to upstream gateway as it would exceed the rate limit
  * @property {Record<string, number>} responseTimeHistogram
  *
  * @typedef {Object} ResponseStats
  * @property {boolean} ok request was successful
  * @property {number} [responseTime] number of milliseconds to get response
  * @property {boolean} [winner] response was from winner gateway
- * @property {boolean} [rateLimitPrevented] response not obtained as request did not happen to prevent rate limit blockage
- * @property {boolean} [rateLimitErrored] rate limit was not prevented, but worker was still rate limited
+ * @property {boolean} [rateLimitPrevented] request not sent to upstream gateway as it would exceed the rate limit
+ * @property {boolean} [rateLimitErrored] request errored with rate limit code without being prevented
  */
 
 const GATEWAY_METRICS_ID = 'gateway_metrics'
