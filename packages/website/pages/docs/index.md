@@ -13,7 +13,7 @@ import Callout from 'nextra-theme-docs/callout';
 1. [Getting a free API token](#get-an-api-token)
 1. [Using the JavaScript API](#using-the-javascript-api)
 
-**This guide uses Node.js since it's the fastest way to get started using the Web3.Storage JavaScript client programmatically**, but don't worry if Node isn't your favorite runtime environment — or if you'd rather not do any coding at all. You can also use NFT.Storage in the following ways:
+**This guide uses Node.js since it's the fastest way to get started using the NFT.Storage JavaScript client programmatically**, but don't worry if Node isn't your favorite runtime environment — or if you'd rather not do any coding at all. You can also use NFT.Storage in the following ways:
 - Using the JavaScript client in web browsers.
 - Upload and retrieve files directly from your [Files page](https://nft.storage/files/) on the NFT.Storage website.
 
