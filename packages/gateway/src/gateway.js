@@ -197,8 +197,11 @@ function _getHeadersForGateway(gwUrl, request) {
     return {}
   }
 
+  const existingProxies = request.headers['X-Forwarded-For']
+    ? `, ${request.headers['X-Forwarded-For']}`
+    : ''
   return {
-    'X-Forwarded-For': request.headers['cf-connecting-ip'],
+    'X-Forwarded-For': `${request.headers['cf-connecting-ip']}${existingProxies}`,
   }
 }
 
