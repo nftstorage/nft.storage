@@ -173,6 +173,7 @@ async function gatewayFetch(
   try {
     response = await fetch(`${ipfsUrl.toString()}/${cid}${pathname}`, {
       signal: controller.signal,
+      headers: _getHeadersForGateway(gwUrl, request),
     })
   } finally {
     clearTimeout(timer)
@@ -185,6 +186,20 @@ async function gatewayFetch(
     responseTime: Date.now() - startTs,
   }
   return gwResponse
+}
+
+/**
+ * @param {string} gwUrl
+ * @param {Request} request
+ */
+function _getHeadersForGateway(gwUrl, request) {
+  if (gwUrl !== 'https://ipfs.io') {
+    return {}
+  }
+
+  return {
+    'X-Forwarded-For': request.headers['cf-connecting-ip'],
+  }
 }
 
 /**
@@ -203,7 +218,7 @@ async function updateSummaryCacheMetrics(request, env, response) {
   }
 
   await stub.fetch(
-    _getDurableRequestUrl(request, 'metrics/cache', contentLengthStats)
+    getDurableRequestUrl(request, 'metrics/cache', contentLengthStats)
   )
 }
 
