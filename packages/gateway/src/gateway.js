@@ -180,15 +180,14 @@ async function gatewayFetch(
   env,
   { pathname = '', timeout = 20000 } = {}
 ) {
-  // Block before hitting rate limit if needed
-  const { shouldBlock } = await getGatewayRateLimitState(request, env, gwUrl)
-
-  if (shouldBlock) {
+  // Block requests if needed
+  const reason = await shouldPreventRequest(request, env, gwUrl)
+  if (reason) {
     /** @type {GatewayResponse} */
     return {
       url: gwUrl,
       aborted: true,
-      reason: REQUEST_PREVENTED_RATE_LIMIT_CODE,
+      reason,
     }
   }
 
@@ -223,6 +222,19 @@ async function gatewayFetch(
     responseTime: Date.now() - startTs,
   }
   return gwResponse
+}
+
+async function shouldPreventRequest(request, env, gwUrl) {
+  // We don't need to prevent requests to ipfs.io gateway
+  if (gwUrl === 'https://ipfs.io') {
+    return undefined
+  }
+
+  // Block before hitting rate limit if needed
+  const { shouldBlock } = await getGatewayRateLimitState(request, env, gwUrl)
+  if (shouldBlock) {
+    return REQUEST_PREVENTED_RATE_LIMIT_CODE
+  }
 }
 
 /**
