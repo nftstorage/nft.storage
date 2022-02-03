@@ -173,7 +173,7 @@ async function gatewayFetch(
   try {
     response = await fetch(`${ipfsUrl.toString()}/${cid}${pathname}`, {
       signal: controller.signal,
-      headers: _getHeadersForGateway(gwUrl, request),
+      headers: getHeaders(request),
     })
   } finally {
     clearTimeout(timer)
@@ -189,14 +189,9 @@ async function gatewayFetch(
 }
 
 /**
- * @param {string} gwUrl
  * @param {Request} request
  */
-function _getHeadersForGateway(gwUrl, request) {
-  if (gwUrl !== 'https://ipfs.io') {
-    return {}
-  }
-
+function getHeaders(request) {
   const existingProxies = request.headers['X-Forwarded-For']
     ? `, ${request.headers['X-Forwarded-For']}`
     : ''
