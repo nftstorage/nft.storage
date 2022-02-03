@@ -101,7 +101,7 @@ export default class NiftySaveStack extends sst.Stack {
 
         'POST /ingest/timeslice/execute': 'src/ingest.executeTimeSlice',
 
-        'POST ingest/fetchedRecord/store': 'src/ingest.storeFetchedRecord',
+        'POST /ingest/fetchedRecord/store': 'src/ingest.storeFetchedRecord',
 
         $default: 'src/default.defaultResponse',
       },
