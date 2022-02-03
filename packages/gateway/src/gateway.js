@@ -173,6 +173,7 @@ async function gatewayFetch(
   try {
     response = await fetch(`${ipfsUrl.toString()}/${cid}${pathname}`, {
       signal: controller.signal,
+      headers: getHeaders(request),
     })
   } finally {
     clearTimeout(timer)
@@ -185,6 +186,18 @@ async function gatewayFetch(
     responseTime: Date.now() - startTs,
   }
   return gwResponse
+}
+
+/**
+ * @param {Request} request
+ */
+function getHeaders(request) {
+  const existingProxies = request.headers['X-Forwarded-For']
+    ? `, ${request.headers['X-Forwarded-For']}`
+    : ''
+  return {
+    'X-Forwarded-For': `${request.headers['cf-connecting-ip']}${existingProxies}`,
+  }
 }
 
 /**
@@ -203,7 +216,7 @@ async function updateSummaryCacheMetrics(request, env, response) {
   }
 
   await stub.fetch(
-    _getDurableRequestUrl(request, 'metrics/cache', contentLengthStats)
+    getDurableRequestUrl(request, 'metrics/cache', contentLengthStats)
   )
 }
 
