@@ -5,7 +5,11 @@ import pAny from 'p-any'
 import pSettle from 'p-settle'
 
 import { getCidFromSubdomainUrl } from './utils/cid.js'
-import { CIDS_TRACKER_ID, SUMMARY_METRICS_ID } from './constants.js'
+import {
+  CIDS_TRACKER_ID,
+  SUMMARY_METRICS_ID,
+  CF_CACHE_MAX_OBJECT_SIZE,
+} from './constants.js'
 
 /**
  * @typedef {Object} GatewayResponse
@@ -65,11 +69,16 @@ export async function gatewayGet(request, env, ctx) {
 
     ctx.waitUntil(
       (async () => {
+        const contentLengthMb = Number(
+          winnerGwResponse.response.headers.get('content-length')
+        )
+
         await Promise.all([
           storeWinnerGwResponse(request, env, winnerGwResponse),
           settleGatewayRequests(),
-          // Cache request URL in Cloudflare CDN
-          cache.put(request.url, winnerGwResponse.response.clone()),
+          // Cache request URL in Cloudflare CDN if smaller than CF_CACHE_MAX_OBJECT_SIZE
+          contentLengthMb <= CF_CACHE_MAX_OBJECT_SIZE &&
+            cache.put(request.url, winnerGwResponse.response.clone()),
         ])
       })()
     )
