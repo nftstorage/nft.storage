@@ -48,4 +48,7 @@
   --h4-size: 1.75em;
   --h5-size: 1.5em;
   --h6-size: 1.25em;
+
+  --tab-active-color: var(--nsorange);
+  --tab-hover-bgcolor: var(--nsgray-50);
 }

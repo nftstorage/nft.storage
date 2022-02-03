@@ -4,6 +4,8 @@ title: Welcome
 
 import Callout from 'nextra-theme-docs/callout';
 
+import { Tabs, TabItem } from 'components/mdx/tabs';
+
 # Quickstart
 
 **Ready to get started using NFT.Storage right now?** Get up and running in minutes by following this quickstart guide. In this guide, we'll walk through the following steps:
@@ -29,18 +31,20 @@ When using the HTTP API, make sure to read about [CAR files][concepts-car-files]
 
 For this guide, you'll need an NFT.Storage account to get your API token and manage your stored data. You can sign up **for free** using your email address or GitHub.
 
-Signup Using Email
+<Tabs>
+<TabItem value="email" label="Sign up using Email">
 1. Go to [nft.storage/login](https://nft.storage/login) to get started.
 1. Enter your email address.
 1. Check your inbox for a verification email from NFT.Storage, and click the **Log in** button in the email.
 1. You're all set!
-
-Signup Using Github
+</TabItem>
+<TabItem value="github" label="Sign up using Github">
 1. Go to [nft.storage/login](https://nft.storage/login) to get started.
 1. Click **GitHub** on the Login screen.
 1. **Authorize** Web3.Storage when asked by GitHub.
 1. You're all set!
-
+</TabItem>
+</Tabs>
 
 ### Uploading a file using the website
 

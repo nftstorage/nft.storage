@@ -3,6 +3,7 @@ title: Store and mint NFTs using ERC-1155 metadata standards
 ---
 
 import Callout from 'nextra-theme-docs/callout';
+import { Tabs, TabItem } from 'components/mdx/tabs';
 
 # Store and mint NFTs using ERC-1155 metadata standards
 Using NFT.Storage, you can: 
@@ -67,6 +68,9 @@ Although wallets and other clients won't understand the meaning of our custom fi
 Speaking of the `image`, if you look closely at the metadata above, you might notice that the `image` field is set to `null`. This is because the method for including images and other files with your request is a little different depending on whether you're using the JavaScript client or the HTTP API. See the tab that matches your platform to see how to prepare your request.
 
 
+<Tabs>
+<TabItem value="js" label="JavaScript">
+
 The JavaScript client's [`store(token)` method](https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#store) takes a single `token` argument, which contains the metadata for your NFT as a JavaScript object.
 
 Inside the `token` object, the `image` field must be set to a [`File`][mdn-file] or [`Blob`][mdn-blob] object, which should contain image data in a "web-friendly" format, for example, PNG or JPEG.
@@ -75,7 +79,7 @@ You can include additional files by adding an entry to the `properties` field wh
 
 Here's an example:
 
-```
+```javascript
 import { NFTStorage } from 'nft.storage'
 
 // read the API key from an environment variable. You'll need to set this before running the example!
@@ -121,6 +125,9 @@ async function storeExampleNFT() {
 storeExampleNFT()
 ```
 
+</TabItem>
+<TabItem value="http" label="HTTP API">
+
 To store ERC-1155 NFT metadata and assets using the [HTTP API][reference-http], send a `POST` request to the `/store` endpoint, with a body containing `multipart/form-data` content.
 
 <Callout emoji="💡">
@@ -139,7 +146,7 @@ The name of the form data field containing the file content should be the "path"
 
 For example, with a `meta` object of the form:
 
-```
+```json
 {
   "name": "Hello",
   "image": null,
@@ -155,10 +162,11 @@ Here's an example that uses CURL to upload an image and its metadata.
 
 It assumes that you have a file named `image.jpg` in your local directory. If not, you can download [this one](https://user-images.githubusercontent.com/87873179/144324736-3f09a98e-f5aa-4199-a874-13583bf31951.jpg) and save it as `image.jpg`
 
-```
+```bash
 curl --request POST -F image=@image.jpg -F meta='{"image":null,"name":"Storing the Worlds Most Valuable Virtual Assets with NFT.Storage","description":"The metaverse is here. Where is it all being stored?","properties":{"type":"blog-post","origins":{"http":"https://nft.storage/blog/post/2021-11-30-hello-world-nft-storage/","ipfs":"ipfs://bafybeieh4gpvatp32iqaacs6xqxqitla4drrkyyzq6dshqqsilkk3fqmti/blog/post/2021-11-30-hello-world-nft-storage/"},"authors":[{"name":"David Choi"}],"content":{"text/markdown":"The last year has witnessed the explosion of NFTs onto the world’s mainstage. From fine art to collectibles to music and media, NFTs are quickly demonstrating just how quickly grassroots Web3 communities can grow, and perhaps how much closer we are to mass adoption than we may have previously thought. <... remaining content omitted ...>"}}}'
 ```
-
+</TabItem>
+</Tabs>
 
 ## Minting your NFT
 

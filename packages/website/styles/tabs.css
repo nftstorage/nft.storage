@@ -1,0 +1,22 @@
+.tabs__item {
+  cursor: pointer;
+  display: inline-block;
+  padding: 1rem;
+  border-bottom: 3px solid transparent;
+  font-size: x-large;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.tabs__item:hover {
+  background-color: var(--tab-hover-bgcolor);
+}
+
+.tabs__item--active {
+  color: var(--tab-active-color);
+  border-bottom: 3px solid var(--tab-active-color);
+}
+
+.tabs__content {
+  margin-top: 1rem;
+}

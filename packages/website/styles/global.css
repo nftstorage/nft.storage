@@ -14,6 +14,7 @@
 @import './nextra-overrides.css';
 @import './nav.css';
 @import './table.css';
+@import './tabs.css';
 
 .grid {
   display: grid;
