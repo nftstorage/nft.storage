@@ -4,6 +4,7 @@ import pMap from 'p-map'
 
 import { METRICS_CACHE_MAX_AGE, SUMMARY_METRICS_ID } from './constants.js'
 import { histogram } from './durable-objects/gateway-metrics.js'
+import { contentLengthHistogram } from './durable-objects/summary-metrics.js'
 
 /**
  * @typedef {import('./durable-objects/gateway-metrics').GatewayMetrics} GatewayMetrics
@@ -128,6 +129,19 @@ export async function metricsGet(request, env, ctx) {
       (gw) =>
         `nftgateway_requests_per_time_total{gateway="${gw}",le="+Inf",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalSuccessfulRequests}`
     ),
+    `# HELP nftgateway_responses_content_length_total`,
+    `# TYPE nftgateway_responses_content_length_total content length delivered histogram`,
+    ...contentLengthHistogram.map(
+      (t) =>
+        `nftgateway_responses_content_length_total{le="${t}",env="${env.ENV}"} ${metricsCollected.summaryMetrics.contentLengthHistogram[t]}`
+    ),
+    `nftgateway_responses_content_length_total{le="+Inf",env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalWinnerSuccessfulRequests}`,
+    `# HELP nftgateway_responses_content_length_bytes_total`,
+    `# TYPE nftgateway_responses_content_length_bytes_total content length of delivered cached responses`,
+    `nftgateway_responses_content_length_bytes_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalContentLengthBytes}`,
+    `# HELP nftgateway_cached_responses_content_length_bytes_total`,
+    `# TYPE nftgateway_cached_responses_content_length_bytes_total content length of delivered cached responses`,
+    `nftgateway_cached_responses_content_length_bytes_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalCachedContentLengthBytes}`,
   ].join('\n')
 
   res = new Response(metrics, {
