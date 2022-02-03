@@ -18,7 +18,7 @@ const GATEWAY_METRICS_ID = 'gateway_metrics'
 /**
  * Durable Object for keeping Metrics state of a gateway.
  */
-export class GatewayMetrics2 {
+export class GatewayMetrics0 {
   constructor(state) {
     this.state = state
 

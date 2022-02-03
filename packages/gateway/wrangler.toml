@@ -18,8 +18,8 @@ main = "index.mjs"
 
 [durable_objects]
 bindings = [
-  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics2"},
-  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics1"},
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
   {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"}
 ]
@@ -36,6 +36,14 @@ IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-st
 DEBUG = "false"
 ENV = "production"
 
+[env.production.durable_objects]
+bindings = [
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
+  {name = "CIDSTRACKER", class_name = "CidsTracker0"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"}
+]
+
 # Staging!
 [env.staging]
 # name = "gateway-nft-storage-staging"
@@ -48,6 +56,14 @@ IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-st
 DEBUG = "true"
 ENV = "staging"
 
+[env.staging.durable_objects]
+bindings = [
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
+  {name = "CIDSTRACKER", class_name = "CidsTracker0"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"}
+]
+
 # Test!
 [env.test]
 workers_dev = true
@@ -57,6 +73,14 @@ IPFS_GATEWAYS = "[\"http://127.0.0.1:9081\", \"http://localhost:9082\", \"http:/
 DEBUG = "true"
 ENV = "test"
 
+[env.test.durable_objects]
+bindings = [
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
+  {name = "CIDSTRACKER", class_name = "CidsTracker0"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"}
+]
+
 # Dev!
 [env.vsantos]
 workers_dev = true
@@ -65,76 +89,14 @@ account_id = "7ec0b7cf2ec201b2580374e53ba5f37b"
 [env.vsantos.vars]
 IPFS_GATEWAYS = "[\"https://ipfs.io\"]"
 
+[env.vsantos.durable_objects]
+bindings = [
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
+  {name = "CIDSTRACKER", class_name = "CidsTracker0"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"}
+]
+
 [[migrations]]
 tag = "v1" # Should be unique for each entry
-new_classes = ["Metrics"]
-[[migrations]]
-tag = "v2" # Should be unique for each entry
-new_classes = ["Metrics2"]
-[[migrations]]
-tag = "v3" # Should be unique for each entry
-new_classes = ["Metrics3"]
-[[migrations]]
-tag = "v4" # Should be unique for each entry
-new_classes = ["Metrics4"]
-deleted_classes = ["Metrics", "Metrics2", "Metrics3"]
-[[migrations]]
-tag = "v5" # Should be unique for each entry
-new_classes = ["Metrics5"]
-deleted_classes = ["Metrics4"]
-[[migrations]]
-tag = "v6" # Should be unique for each entry
-new_classes = ["Metrics6"]
-deleted_classes = ["Metrics5"]
-[[migrations]]
-tag = "v7" # Should be unique for each entry
-new_classes = ["Metrics7", "Cids0"]
-deleted_classes = ["Metrics6"]
-[[migrations]]
-tag = "v8" # Should be unique for each entry
-new_classes = ["Metrics8", "Cids1"]
-deleted_classes = ["Metrics7", "Cids0"]
-[[migrations]]
-tag = "v9" # Should be unique for each entry
-new_classes = ["Metrics9", "CidsTracker0"]
-deleted_classes = ["Metrics8", "Cids1"]
-[[migrations]]
-tag = "v10" # Should be unique for each entry
-new_classes = ["Metrics10"]
-deleted_classes = ["Metrics9"]
-[[migrations]]
-tag = "v11" # Should be unique for each entry
-new_classes = ["Metrics11"]
-deleted_classes = ["Metrics10"]
-[[migrations]]
-tag = "v12" # Should be unique for each entry
-new_classes = ["Metrics12"]
-deleted_classes = ["Metrics11"]
-[[migrations]]
-tag = "v13" # Should be unique for each entry
-new_classes = ["Metrics13"]
-deleted_classes = ["Metrics12"]
-[[migrations]]
-tag = "v14" # Should be unique for each entry
-new_classes = ["GatewayMetrics0", "GenericMetrics0"]
-deleted_classes = ["Metrics13"]
-[[migrations]]
-tag = "v15" # Should be unique for each entry
-new_classes = ["GenericMetrics1"]
-deleted_classes = ["GenericMetrics0"]
-[[migrations]]
-tag = "v16" # Should be unique for each entry
-new_classes = ["GatewayMetrics1"]
-deleted_classes = ["GatewayMetrics0"]
-[[migrations]]
-tag = "v17" # Should be unique for each entry
-new_classes = ["SummaryMetrics0"]
-deleted_classes = ["GenericMetrics1"]
-[[migrations]]
-tag = "v18" # Should be unique for each entry
-new_classes = ["SummaryMetrics1"]
-deleted_classes = ["SummaryMetrics0"]
-[[migrations]]
-tag = "v19" # Should be unique for each entry
-new_classes = ["GatewayRateLimits0", "GatewayMetrics2"]
-deleted_classes = ["GatewayMetrics1"]
+new_classes = ["GatewayMetrics0", "SummaryMetrics0", "CidsTracker0", "GatewayRateLimits0"]

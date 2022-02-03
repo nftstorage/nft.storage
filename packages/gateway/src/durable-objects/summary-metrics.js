@@ -31,7 +31,7 @@ const CONTENT_LENGTH_HISTOGRAM_ID = 'contentLengthHistogram'
 /**
  * Durable Object for keeping generic Metrics of gateway.nft.storage
  */
-export class SummaryMetrics1 {
+export class SummaryMetrics0 {
   constructor(state) {
     this.state = state
 
