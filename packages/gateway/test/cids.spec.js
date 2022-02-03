@@ -1,7 +1,7 @@
 import test from 'ava'
 
 import { gateways } from './constants.js'
-import { getMiniflare, getCIDsTracker } from './utils.js'
+import { getMiniflare, getCIDsTrackerName } from './utils.js'
 
 test.beforeEach((t) => {
   // Create a new Miniflare environment for each test
@@ -17,7 +17,7 @@ test('Sets gateways that resolved cid', async (t) => {
   const p = await mf.dispatchFetch(`https://${cid}.ipfs.localhost:8787`)
   await p.waitUntil()
 
-  const ns = await mf.getDurableObjectNamespace(getCIDsTracker())
+  const ns = await mf.getDurableObjectNamespace(getCIDsTrackerName())
   const id = ns.idFromName('cids')
   const stub = ns.get(id)
   const doRes = await stub.fetch(`http://localhost:8787/status/${cid}`)
@@ -38,7 +38,7 @@ test('Only sets gateways that resolved cid successfully', async (t) => {
   const p = await mf.dispatchFetch(`https://${cid}.ipfs.localhost:8787`)
   await p.waitUntil()
 
-  const ns = await mf.getDurableObjectNamespace(getCIDsTracker())
+  const ns = await mf.getDurableObjectNamespace(getCIDsTrackerName())
   const id = ns.idFromName('cids')
   const stub = ns.get(id)
   const doRes = await stub.fetch(`http://localhost:8787/status/${cid}`)

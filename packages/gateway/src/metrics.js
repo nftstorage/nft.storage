@@ -2,7 +2,11 @@
 
 import pMap from 'p-map'
 
-import { METRICS_CACHE_MAX_AGE, SUMMARY_METRICS_ID } from './constants.js'
+import {
+  METRICS_CACHE_MAX_AGE,
+  SUMMARY_METRICS_ID,
+  HTTP_STATUS_SUCCESS,
+} from './constants.js'
 import { histogram } from './durable-objects/gateway-metrics.js'
 import { contentLengthHistogram } from './durable-objects/summary-metrics.js'
 
@@ -68,6 +72,13 @@ export async function metricsGet(request, env, ctx) {
     ),
   }
 
+  const totalResponsesPerGateway = []
+  env.ipfsGateways.forEach((gw) => {
+    totalResponsesPerGateway[gw] = Object.values(
+      metricsCollected.ipfsGateways[gw].totalResponsesByStatus
+    ).reduce((acc, v) => acc + v, 0)
+  })
+
   const metrics = [
     `# HELP nftgateway_cache_hit_responses_total Total cached responses returned.`,
     `# TYPE nftgateway_cache_hit_responses_total counter`,
@@ -92,23 +103,79 @@ export async function metricsGet(request, env, ctx) {
     `# TYPE nftgateway_requests_total counter`,
     ...env.ipfsGateways.map(
       (gw) =>
-        `nftgateway_requests_total{gateway="${gw}",env="${env.ENV}"} ${
-          metricsCollected.ipfsGateways[gw].totalSuccessfulRequests +
-          metricsCollected.ipfsGateways[gw].totalFailedRequests
-        }`
+        `nftgateway_requests_total{gateway="${gw}",env="${env.ENV}"} ${totalResponsesPerGateway[gw]}`
     ),
     `# HELP nftgateway_successful_requests_total Total successful requests performed to each gateway.`,
     `# TYPE nftgateway_successful_requests_total counter`,
     ...env.ipfsGateways.map(
       (gw) =>
-        `nftgateway_successful_requests_total{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalSuccessfulRequests}`
+        `nftgateway_successful_requests_total{gateway="${gw}",env="${
+          env.ENV
+        }"} ${
+          metricsCollected.ipfsGateways[gw].totalResponsesByStatus[
+            HTTP_STATUS_SUCCESS
+          ] || 0
+        }`
     ),
     `# HELP nftgateway_failed_requests_total Total failed requests performed to each gateway.`,
     `# TYPE nftgateway_failed_requests_total counter`,
     ...env.ipfsGateways.map(
       (gw) =>
-        `nftgateway_failed_requests_total{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalFailedRequests}`
+        `nftgateway_failed_requests_total{gateway="${gw}",env="${env.ENV}"} ${
+          totalResponsesPerGateway[gw] -
+          (metricsCollected.ipfsGateways[gw].totalResponsesByStatus[
+            HTTP_STATUS_SUCCESS
+          ] || 0)
+        }`
     ),
+    `# HELP nftgateway_requests_by_status_total Total requests by status code performed to each gateway.`,
+    `# TYPE nftgateway_requests_by_status_total counter`,
+    ...env.ipfsGateways
+      .map((gw) => {
+        return Object.keys(
+          metricsCollected.ipfsGateways[gw].totalResponsesByStatus
+        )
+          .filter(
+            (s) => metricsCollected.ipfsGateways[gw].totalResponsesByStatus[s]
+          )
+          .map(
+            (status) =>
+              `nftgateway_requests_by_status_total{gateway="${gw}",env="${
+                env.ENV
+              }",status="${status}"} ${
+                metricsCollected.ipfsGateways[gw].totalResponsesByStatus[
+                  status
+                ] || 0
+              }`
+          )
+          .join('\n')
+      })
+      .filter((e) => !!e),
+    `# HELP nftgateway_prevented_requests_by_reason_total Total prevented requests by reason code performed to each gateway.`,
+    `# TYPE nftgateway_prevented_requests_by_reason_total counter`,
+    ...env.ipfsGateways
+      .map((gw) => {
+        return Object.keys(
+          metricsCollected.ipfsGateways[gw].totalRequestsPreventedByReason
+        )
+          .filter(
+            (reason) =>
+              metricsCollected.ipfsGateways[gw].totalRequestsPreventedByReason[
+                reason
+              ]
+          )
+          .map(
+            (reason) =>
+              `nftgateway_prevented_requests_by_reason_total{gateway="${gw}",env="${
+                env.ENV
+              }",reason="${reason}"} ${
+                metricsCollected.ipfsGateways[gw]
+                  .totalRequestsPreventedByReason[reason] || 0
+              }`
+          )
+          .join('\n')
+      })
+      .filter((e) => !!e),
     `# HELP nftgateway_winner_requests_total Total requests with winner response to each gateway.`,
     `# TYPE nftgateway_winner_requests_total counter`,
     ...env.ipfsGateways.map(
@@ -127,7 +194,13 @@ export async function metricsGet(request, env, ctx) {
     }),
     ...env.ipfsGateways.map(
       (gw) =>
-        `nftgateway_requests_per_time_total{gateway="${gw}",le="+Inf",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalSuccessfulRequests}`
+        `nftgateway_requests_per_time_total{gateway="${gw}",le="+Inf",env="${
+          env.ENV
+        }"} ${
+          metricsCollected.ipfsGateways[gw].totalResponsesByStatus[
+            HTTP_STATUS_SUCCESS
+          ] || 0
+        }`
     ),
     `# HELP nftgateway_responses_content_length_total`,
     `# TYPE nftgateway_responses_content_length_total content length delivered histogram`,

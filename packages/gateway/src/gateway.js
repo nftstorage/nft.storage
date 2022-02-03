@@ -9,20 +9,25 @@ import {
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
   CF_CACHE_MAX_OBJECT_SIZE,
+  HTTP_STATUS_RATE_LIMITED,
+  REQUEST_PREVENTED_RATE_LIMIT_CODE,
 } from './constants.js'
 
 /**
  * @typedef {Object} GatewayResponse
- * @property {Response} response
+ * @property {Response} [response]
  * @property {string} url
- * @property {number} responseTime
+ * @property {number} [responseTime]
+ * @property {string} [requestPreventedCode]
+ *
+ * @typedef {import('./env').Env} Env
  */
 
 /**
  * Handle gateway request
  *
  * @param {Request} request
- * @param {import('./env').Env} env
+ * @param {Env} env
  * @param {import('./index').Ctx} ctx
  */
 export async function gatewayGet(request, env, ctx) {
@@ -37,10 +42,11 @@ export async function gatewayGet(request, env, ctx) {
 
   const reqUrl = new URL(request.url)
   const cid = getCidFromSubdomainUrl(reqUrl)
+  const pathname = reqUrl.pathname
 
   const gatewayReqs = env.ipfsGateways.map((gwUrl) =>
-    _gatewayFetch(gwUrl, cid, {
-      pathname: reqUrl.pathname,
+    gatewayFetch(gwUrl, cid, request, env, {
+      pathname,
       timeout: env.REQUEST_TIMEOUT,
     })
   )
@@ -48,7 +54,7 @@ export async function gatewayGet(request, env, ctx) {
   try {
     /** @type {GatewayResponse} */
     const winnerGwResponse = await pAny(gatewayReqs, {
-      filter: (res) => res.response.ok,
+      filter: (res) => res.response?.ok,
     })
 
     async function settleGatewayRequests() {
@@ -86,10 +92,11 @@ export async function gatewayGet(request, env, ctx) {
     // forward winner gateway response
     return winnerGwResponse.response
   } catch (err) {
+    const responses = await pSettle(gatewayReqs)
+
     ctx.waitUntil(
       (async () => {
         // Update metrics as all requests failed
-        const responses = await pSettle(gatewayReqs)
         await Promise.all(
           responses.map((r) =>
             updateGatewayMetrics(request, env, r.value, false)
@@ -97,6 +104,18 @@ export async function gatewayGet(request, env, ctx) {
         )
       })()
     )
+
+    // Redirect if all failed with rate limited error
+    const wasRateLimited = responses.every(
+      (r) =>
+        r.value?.response?.status === HTTP_STATUS_RATE_LIMITED ||
+        r.value?.requestPreventedCode === REQUEST_PREVENTED_RATE_LIMIT_CODE
+    )
+
+    if (!wasRateLimited) {
+      const ipfsUrl = new URL('ipfs', env.IPFS_GATEWAYS[0])
+      return Response.redirect(`${ipfsUrl.toString()}/${cid}${pathname}`, 302)
+    }
 
     throw err
   }
@@ -106,7 +125,7 @@ export async function gatewayGet(request, env, ctx) {
  * Store metrics for winner gateway response
  *
  * @param {Request} request
- * @param {import('./env').Env} env
+ * @param {Env} env
  * @param {GatewayResponse} winnerGwResponse
  */
 async function storeWinnerGwResponse(request, env, winnerGwResponse) {
@@ -121,15 +140,30 @@ async function storeWinnerGwResponse(request, env, winnerGwResponse) {
  *
  * @param {string} gwUrl
  * @param {string} cid
+ * @param {Request} request
+ * @param {Env} env
  * @param {Object} [options]
  * @param {string} [options.pathname]
  * @param {number} [options.timeout]
  */
-async function _gatewayFetch(
+async function gatewayFetch(
   gwUrl,
   cid,
+  request,
+  env,
   { pathname = '', timeout = 20000 } = {}
 ) {
+  // Block before hitting rate limit if needed
+  const { shouldBlock } = await getGatewayRateLimitState(request, env, gwUrl)
+
+  if (shouldBlock) {
+    /** @type {GatewayResponse} */
+    return {
+      url: gwUrl,
+      requestPreventedCode: REQUEST_PREVENTED_RATE_LIMIT_CODE,
+    }
+  }
+
   const ipfsUrl = new URL('ipfs', gwUrl)
   const controller = new AbortController()
   const startTs = Date.now()
@@ -143,9 +177,6 @@ async function _gatewayFetch(
   } finally {
     clearTimeout(timer)
   }
-
-  // TODO: Is it rate limited?
-  // how can we "suspend" this gateway for a bit? Maybe track this in a Durable Object?
 
   /** @type {GatewayResponse} */
   const gwResponse = {
@@ -179,6 +210,25 @@ async function updateSummaryCacheMetrics(request, env, response) {
 /**
  * @param {Request} request
  * @param {import('./env').Env} env
+ * @param {string} gwUrl
+ */
+async function getGatewayRateLimitState(request, env, gwUrl) {
+  // Get durable object for gateway rate limits
+  const id = env.gatewayRateLimitsDurable.idFromName(gwUrl)
+  const stub = env.gatewayRateLimitsDurable.get(id)
+
+  const stubResponse = await stub.fetch(
+    getDurableRequestUrl(request, 'request')
+  )
+
+  /** @type {import('./durable-objects/gateway-rate-limits').RateLimitResponse} */
+  const rateLimitResponse = await stubResponse.json()
+  return rateLimitResponse
+}
+
+/**
+ * @param {Request} request
+ * @param {import('./env').Env} env
  * @param {GatewayResponse} gwResponse
  */
 async function updateSummaryWinnerMetrics(request, env, gwResponse) {
@@ -187,14 +237,12 @@ async function updateSummaryWinnerMetrics(request, env, gwResponse) {
   const stub = env.summaryMetricsDurable.get(id)
 
   /** @type {import('./durable-objects/summary-metrics').ResponseWinnerStats} */
-  const responseStats = {
+  const fetchStats = {
     responseTime: gwResponse.responseTime,
     contentLength: Number(gwResponse.response.headers.get('content-length')),
   }
 
-  await stub.fetch(
-    _getDurableRequestUrl(request, 'metrics/winner', responseStats)
-  )
+  await stub.fetch(getDurableRequestUrl(request, 'metrics/winner', fetchStats))
 }
 
 /**
@@ -213,20 +261,21 @@ async function updateGatewayMetrics(
   const id = env.gatewayMetricsDurable.idFromName(gwResponse.url)
   const stub = env.gatewayMetricsDurable.get(id)
 
-  /** @type {import('./durable-objects/gateway-metrics').ResponseStats} */
-  const responseStats = {
-    ok: gwResponse.response.ok,
-    responseTime: gwResponse.responseTime,
+  /** @type {import('./durable-objects/gateway-metrics').FetchStats} */
+  const fetchStats = {
+    status: gwResponse.response?.status,
     winner: isWinner,
+    responseTime: gwResponse.responseTime,
+    requestPreventedCode: gwResponse.requestPreventedCode,
   }
 
-  await stub.fetch(_getDurableRequestUrl(request, 'update', responseStats))
+  await stub.fetch(getDurableRequestUrl(request, 'update', fetchStats))
 }
 
 /**
  * @param {Request} request
  * @param {import('./env').Env} env
- * @param {pSettle.PromiseResult<GatewayResponse>[]} responses
+ * @param {import('p-settle').PromiseResult<GatewayResponse>[]} responses
  * @param {string} cid
  */
 async function updateCidsTracker(request, env, responses, cid) {
@@ -239,7 +288,7 @@ async function updateCidsTracker(request, env, responses, cid) {
     urls: responses.filter((r) => r.isFulfilled).map((r) => r?.value?.url),
   }
 
-  await stub.fetch(_getDurableRequestUrl(request, 'update', updateRequest))
+  await stub.fetch(getDurableRequestUrl(request, 'update', updateRequest))
 }
 
 /**
@@ -247,9 +296,9 @@ async function updateCidsTracker(request, env, responses, cid) {
  *
  * @param {Request} request
  * @param {string} route
- * @param {Object} [data]
+ * @param {any} [data]
  */
-function _getDurableRequestUrl(request, route, data) {
+function getDurableRequestUrl(request, route, data) {
   const reqUrl = new URL(
     route,
     request.url.startsWith('http') ? request.url : `http://${request.url}`
