@@ -190,7 +190,7 @@
 }
 .nextra-container a {
   --tw-text-opacity: 1;
-  color: rgba(0, 0, 0, var(--tw-text-opacity));
+  color: rgba(51, 107, 173, var(--tw-text-opacity));
   text-decoration: underline;
   text-underline-position: under;
 }
