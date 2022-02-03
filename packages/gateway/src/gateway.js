@@ -34,12 +34,15 @@ import {
  * @param {import('./index').Ctx} ctx
  */
 export async function gatewayGet(request, env, ctx) {
+  const startTs = Date.now()
   const cache = caches.default
   let res = await cache.match(request.url)
 
   if (res) {
     // Update cache metrics in background
-    ctx.waitUntil(updateSummaryCacheMetrics(request, env, res))
+    const responseTime = Date.now() - startTs
+
+    ctx.waitUntil(updateSummaryCacheMetrics(request, env, res, responseTime))
     return res
   }
 
@@ -222,15 +225,17 @@ function getHeaders(request) {
  * @param {Request} request
  * @param {import('./env').Env} env
  * @param {Response} response
+ * @param {number} responseTime
  */
-async function updateSummaryCacheMetrics(request, env, response) {
+async function updateSummaryCacheMetrics(request, env, response, responseTime) {
   // Get durable object for gateway
   const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
   const stub = env.summaryMetricsDurable.get(id)
 
-  /** @type {import('./durable-objects/summary-metrics').ContentLengthStats} */
+  /** @type {import('./durable-objects/summary-metrics').FetchStats} */
   const contentLengthStats = {
     contentLength: Number(response.headers.get('content-length')),
+    responseTime,
   }
 
   await stub.fetch(
@@ -267,7 +272,7 @@ async function updateSummaryWinnerMetrics(request, env, gwResponse) {
   const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
   const stub = env.summaryMetricsDurable.get(id)
 
-  /** @type {import('./durable-objects/summary-metrics').ResponseWinnerStats} */
+  /** @type {import('./durable-objects/summary-metrics').FetchStats} */
   const fetchStats = {
     responseTime: gwResponse.responseTime,
     contentLength: Number(gwResponse.response.headers.get('content-length')),

@@ -17,10 +17,25 @@ test('Gets Metrics content when empty state', async (t) => {
   const metricsResponse = await response.text()
 
   t.is(
+    metricsResponse.includes(
+      'nftgateway_summary_responses_total{env="test"} 0'
+    ),
+    true
+  )
+  t.is(
+    metricsResponse.includes(
+      'nftgateway_cache_hit_responses_total{env="test"} 0'
+    ),
+    true
+  )
+  t.is(
+    metricsResponse.includes('nftgateway_winner_requests_total{env="test"} 0'),
+    true
+  )
+  t.is(
     metricsResponse.includes('nftgateway_winner_response_time_seconds_total'),
     true
   )
-  t.is(metricsResponse.includes('nftgateway_winner_requests_total'), true)
   t.is(metricsResponse.includes(`_responses_content_length_total{le=`), true)
   t.is(
     metricsResponse.includes(
@@ -132,6 +147,8 @@ test('Gets Metrics from faster gateway', async (t) => {
 
   const response = await mf.dispatchFetch('http://localhost:8787/metrics')
   const metricsResponse = await response.text()
+
+  console.log(metricsResponse)
 
   gateways.forEach((gw) => {
     t.is(
