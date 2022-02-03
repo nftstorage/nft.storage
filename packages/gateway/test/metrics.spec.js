@@ -61,7 +61,23 @@ test('Gets Metrics content when empty state', async (t) => {
 test('Gets Metrics content', async (t) => {
   const { mf } = t.context
 
-  // Trigger two requests
+  let response = await mf.dispatchFetch('http://localhost:8787/metrics')
+  let metricsResponse = await response.text()
+
+  t.is(
+    metricsResponse.includes(
+      `_responses_content_length_total{le="524288",env="test"} 0`
+    ),
+    true
+  )
+  t.is(
+    metricsResponse.includes(
+      `_responses_content_length_bytes_total{env="test"} 0`
+    ),
+    true
+  )
+
+  // Trigger two requests with content length of 23 each
   const p = await Promise.all([
     mf.dispatchFetch(
       'http://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq.ipfs.localhost:8787'
@@ -74,19 +90,12 @@ test('Gets Metrics content', async (t) => {
   // Wait for waitUntil
   await Promise.all(p.map((p) => p.waitUntil()))
 
-  const response = await mf.dispatchFetch('http://localhost:8787/metrics')
-  const metricsResponse = await response.text()
+  response = await mf.dispatchFetch('http://localhost:8787/metrics')
+  metricsResponse = await response.text()
 
-  // content length of responses is 23
   t.is(
     metricsResponse.includes(
-      `_responses_content_length_total{le="5",env="test"} 0`
-    ),
-    true
-  )
-  t.is(
-    metricsResponse.includes(
-      `_responses_content_length_total{le="25",env="test"} 2`
+      `_responses_content_length_total{le="524288",env="test"} 2`
     ),
     true
   )

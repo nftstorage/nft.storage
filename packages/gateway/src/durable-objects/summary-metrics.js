@@ -3,8 +3,8 @@
  * @property {number} totalWinnerResponseTime total response time of the requests
  * @property {number} totalWinnerSuccessfulRequests total number of successful requests
  * @property {number} totalCachedResponses total number of cached responses
- * @property {number} totalContentLengthBytes total content length of responses
- * @property {number} totalCachedContentLengthBytes total content length of cached responses
+ * @property {BigInt} totalContentLengthBytes total content length of responses
+ * @property {BigInt} totalCachedContentLengthBytes total content length of cached responses
  * @property {Record<string, number>} contentLengthHistogram
  *
  * @typedef {Object} ResponseWinnerStats
@@ -48,11 +48,12 @@ export class SummaryMetrics1 {
         (await this.state.storage.get(TOTAL_CACHED_RESPONSES_ID)) || 0
       // Total content length responses
       this.totalContentLengthBytes =
-        (await this.state.storage.get(TOTAL_CONTENT_LENGTH_BYTES_ID)) || 0
+        (await this.state.storage.get(TOTAL_CONTENT_LENGTH_BYTES_ID)) ||
+        BigInt(0)
       // Total cached content length responses
       this.totalCachedContentLengthBytes =
         (await this.state.storage.get(TOTAL_CACHED_CONTENT_LENGTH_BYTES_ID)) ||
-        0
+        BigInt(0)
       // Content length histogram
       this.contentLengthHistogram =
         (await this.state.storage.get(CONTENT_LENGTH_HISTOGRAM_ID)) ||
@@ -74,8 +75,9 @@ export class SummaryMetrics1 {
               totalWinnerResponseTime: this.totalWinnerResponseTime,
               totalWinnerSuccessfulRequests: this.totalWinnerSuccessfulRequests,
               totalCachedResponses: this.totalCachedResponses,
-              totalContentLengthBytes: this.totalContentLengthBytes,
-              totalCachedContentLengthBytes: this.totalCachedContentLengthBytes,
+              totalContentLengthBytes: this.totalContentLengthBytes.toString(),
+              totalCachedContentLengthBytes:
+                this.totalCachedContentLengthBytes.toString(),
               contentLengthHistogram: this.contentLengthHistogram,
             })
           )
@@ -108,7 +110,7 @@ export class SummaryMetrics1 {
   async _updatedCacheMetrics(stats) {
     // Update metrics
     this.totalCachedResponses += 1
-    this.totalCachedContentLengthBytes += stats.contentLength
+    this.totalCachedContentLengthBytes += BigInt(stats.contentLength)
     this._updateContentLengthMetrics(stats)
     // Sabe updated metrics
     await Promise.all([
@@ -164,7 +166,7 @@ export class SummaryMetrics1 {
    * @param {ContentLengthStats} stats
    */
   _updateContentLengthMetrics(stats) {
-    this.totalContentLengthBytes += stats.contentLength
+    this.totalContentLengthBytes += BigInt(stats.contentLength)
 
     // Update histogram
     const tmpHistogram = {
@@ -191,4 +193,4 @@ function createHistogramObject() {
 // We will count occurences per bucket where content size is less or equal than bucket value
 export const contentLengthHistogram = [
   0.5, 1, 2, 5, 25, 50, 100, 500, 1000, 5000, 10000, 15000, 20000, 30000, 32000,
-]
+].map((v) => v * Math.pow(1024, 2))
