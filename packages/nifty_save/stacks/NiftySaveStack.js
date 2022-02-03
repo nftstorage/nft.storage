@@ -27,16 +27,7 @@ export default class NiftySaveStack extends sst.Stack {
       },
     })
 
-    const fetchedRecordQueue = new sst.Queue(this, 'FetchedRecordQueue', {
-      consumer: {
-        consumerProps: {
-          batchSize: 10,
-        },
-        function: {
-          handler: 'src/ingest.storeFetchedRecord',
-        },
-      },
-    })
+    const fetchedRecordQueue = new sst.Queue(this, 'FetchedRecordQueue')
 
     //Ingest
     bus.addRules(this, {
@@ -74,6 +65,16 @@ export default class NiftySaveStack extends sst.Stack {
         last_processed: TableFieldType.STRING,
       },
       primaryIndex: { partitionKey: 'id', sortKey: 'token_id' },
+    })
+
+    fetchedRecordQueue.addConsumer(this, {
+      function: {
+        handler: 'src/ingest.storeFetchedRecord',
+        environment: {
+          fetchedRecordsTableName: fetchedRecordsTable.dynamodbTable.tableName,
+        },
+        permissions: [fetchedRecordsTable],
+      },
     })
 
     //Analyze

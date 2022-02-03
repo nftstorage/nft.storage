@@ -18,9 +18,7 @@ test('Test Niftysave Stack - Global', () => {
   // THEN
 
   expect(stack).to(haveResource('AWS::Lambda::Function'))
-
   expect(stack).to(haveResource('AWS::ApiGatewayV2::Api'))
-
   expect(stack).to(haveResource('AWS::Events::EventBus'))
 })
 
