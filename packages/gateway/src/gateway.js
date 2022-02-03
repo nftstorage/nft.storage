@@ -106,17 +106,15 @@ export async function gatewayGet(request, env, ctx) {
     )
 
     // Redirect if all failed with rate limited error
-    if (responses) {
-      const wasRateLimited = responses.every(
-        (r) =>
-          r.value?.response?.status === HTTP_STATUS_RATE_LIMITED ||
-          r.value?.requestPreventedCode === REQUEST_PREVENTED_RATE_LIMIT_CODE
-      )
+    const wasRateLimited = responses.every(
+      (r) =>
+        r.value?.response?.status === HTTP_STATUS_RATE_LIMITED ||
+        r.value?.requestPreventedCode === REQUEST_PREVENTED_RATE_LIMIT_CODE
+    )
 
-      if (!wasRateLimited) {
-        const ipfsUrl = new URL('ipfs', env.IPFS_GATEWAYS[0])
-        return Response.redirect(`${ipfsUrl.toString()}/${cid}${pathname}`, 302)
-      }
+    if (!wasRateLimited) {
+      const ipfsUrl = new URL('ipfs', env.IPFS_GATEWAYS[0])
+      return Response.redirect(`${ipfsUrl.toString()}/${cid}${pathname}`, 302)
     }
 
     throw err
