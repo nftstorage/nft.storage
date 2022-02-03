@@ -148,8 +148,6 @@ test('Gets Metrics from faster gateway', async (t) => {
   const response = await mf.dispatchFetch('http://localhost:8787/metrics')
   const metricsResponse = await response.text()
 
-  console.log(metricsResponse)
-
   gateways.forEach((gw) => {
     t.is(
       metricsResponse.includes(`_requests_total{gateway="${gw}",env="test"} 2`),
