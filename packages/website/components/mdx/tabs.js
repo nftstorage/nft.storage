@@ -69,11 +69,10 @@ export function Tabs(props) {
   /**
    * @param {React.FocusEvent<HTMLLIElement> | React.MouseEvent<HTMLLIElement>} e
    */
-  const handleTabChange = (e) => {
-    const newTab = e.currentTarget
-    const newTabIndex = tabRefs.indexOf(newTab)
+  const handleTabChange = ({ currentTarget }) => {
+    const newTabIndex = tabRefs.indexOf(currentTarget)
     if (newTabIndex < 0) {
-      return // or throw?
+      return
     }
     const newValue = values[newTabIndex].value
     if (newValue !== selectedValue) {
