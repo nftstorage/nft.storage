@@ -108,8 +108,8 @@ export async function metricsGet(request, env, ctx) {
     `nftgateway_winner_response_time_seconds_total{env="${env.ENV}"} ${msToS(
       metricsCollected.summaryMetrics.totalWinnerResponseTime
     )}`,
-    `# HELP nftgateway_summary_responses_per_time_total`,
-    `# TYPE nftgateway_summary_responses_per_time_total histogram for total of responses per response time bucket`,
+    `# HELP nftgateway_summary_responses_per_time_total total of responses per response time bucket`,
+    `# TYPE nftgateway_summary_responses_per_time_total histogram`,
     ...responseTimeHistogram.map(
       (t) =>
         `nftgateway_summary_responses_per_time_total{le="${msToS(t)}",env="${
