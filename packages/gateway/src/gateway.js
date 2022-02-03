@@ -1,7 +1,7 @@
 /* eslint-env serviceworker, browser */
 /* global Response caches */
 
-import pAny, { AggregateError } from 'p-any'
+import pAny from 'p-any'
 import pSettle from 'p-settle'
 
 import { getCidFromSubdomainUrl } from './utils/cid.js'
@@ -9,7 +9,8 @@ import {
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
   CF_CACHE_MAX_OBJECT_SIZE,
-  RATE_LIMIT_HTTP_ERROR_CODE,
+  HTTP_STATUS_RATE_LIMITED,
+  REQUEST_PREVENTED_RATE_LIMIT_CODE,
 } from './constants.js'
 
 /**
@@ -17,7 +18,7 @@ import {
  * @property {Response} [response]
  * @property {string} url
  * @property {number} [responseTime]
- * @property {number} [requestPreventedCode]
+ * @property {string} [requestPreventedCode]
  *
  * @typedef {import('./env').Env} Env
  */
@@ -44,7 +45,7 @@ export async function gatewayGet(request, env, ctx) {
   const pathname = reqUrl.pathname
 
   const gatewayReqs = env.ipfsGateways.map((gwUrl) =>
-    _gatewayFetch(gwUrl, cid, request, env, {
+    gatewayFetch(gwUrl, cid, request, env, {
       pathname,
       timeout: env.REQUEST_TIMEOUT,
     })
@@ -91,31 +92,28 @@ export async function gatewayGet(request, env, ctx) {
     // forward winner gateway response
     return winnerGwResponse.response
   } catch (err) {
-    let responses
-    // We can already settle requests if Aggregate Error, as all promises were already rejected
-    if (err instanceof AggregateError) {
-      responses = await pSettle(gatewayReqs)
-    }
+    const responses = await pSettle(gatewayReqs)
 
     ctx.waitUntil(
       (async () => {
         // Update metrics as all requests failed
-        const gatewayResponses = responses || (await pSettle(gatewayReqs))
         await Promise.all(
-          gatewayResponses.map((r) =>
+          responses.map((r) =>
             updateGatewayMetrics(request, env, r.value, false)
           )
         )
       })()
     )
 
-    // Redirect if all failed and at least one gateway was rate limited
+    // Redirect if all failed with rate limited error
     if (responses) {
-      const wasRateLimited = responses.find(
-        (r) => r.value?.response?.status === RATE_LIMIT_HTTP_ERROR_CODE
+      const wasRateLimited = responses.every(
+        (r) =>
+          r.value?.response?.status === HTTP_STATUS_RATE_LIMITED ||
+          r.value?.requestPreventedCode === REQUEST_PREVENTED_RATE_LIMIT_CODE
       )
 
-      if (wasRateLimited) {
+      if (!wasRateLimited) {
         const ipfsUrl = new URL('ipfs', env.IPFS_GATEWAYS[0])
         return Response.redirect(`${ipfsUrl.toString()}/${cid}${pathname}`, 302)
       }
@@ -150,7 +148,7 @@ async function storeWinnerGwResponse(request, env, winnerGwResponse) {
  * @param {string} [options.pathname]
  * @param {number} [options.timeout]
  */
-async function _gatewayFetch(
+async function gatewayFetch(
   gwUrl,
   cid,
   request,
@@ -164,7 +162,7 @@ async function _gatewayFetch(
     /** @type {GatewayResponse} */
     return {
       url: gwUrl,
-      requestPreventedCode: RATE_LIMIT_HTTP_ERROR_CODE,
+      requestPreventedCode: REQUEST_PREVENTED_RATE_LIMIT_CODE,
     }
   }
 
@@ -222,7 +220,7 @@ async function getGatewayRateLimitState(request, env, gwUrl) {
   const stub = env.gatewayRateLimitsDurable.get(id)
 
   const stubResponse = await stub.fetch(
-    _getDurableRequestUrl(request, 'request')
+    getDurableRequestUrl(request, 'request')
   )
 
   /** @type {import('./durable-objects/gateway-rate-limits').RateLimitResponse} */
@@ -246,7 +244,7 @@ async function updateSummaryWinnerMetrics(request, env, gwResponse) {
     contentLength: Number(gwResponse.response.headers.get('content-length')),
   }
 
-  await stub.fetch(_getDurableRequestUrl(request, 'metrics/winner', fetchStats))
+  await stub.fetch(getDurableRequestUrl(request, 'metrics/winner', fetchStats))
 }
 
 /**
@@ -273,7 +271,7 @@ async function updateGatewayMetrics(
     requestPreventedCode: gwResponse.requestPreventedCode,
   }
 
-  await stub.fetch(_getDurableRequestUrl(request, 'update', fetchStats))
+  await stub.fetch(getDurableRequestUrl(request, 'update', fetchStats))
 }
 
 /**
@@ -292,7 +290,7 @@ async function updateCidsTracker(request, env, responses, cid) {
     urls: responses.filter((r) => r.isFulfilled).map((r) => r?.value?.url),
   }
 
-  await stub.fetch(_getDurableRequestUrl(request, 'update', updateRequest))
+  await stub.fetch(getDurableRequestUrl(request, 'update', updateRequest))
 }
 
 /**
@@ -302,7 +300,7 @@ async function updateCidsTracker(request, env, responses, cid) {
  * @param {string} route
  * @param {any} [data]
  */
-function _getDurableRequestUrl(request, route, data) {
+function getDurableRequestUrl(request, route, data) {
   const reqUrl = new URL(
     route,
     request.url.startsWith('http') ? request.url : `http://${request.url}`

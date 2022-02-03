@@ -52,7 +52,7 @@ test('Receives should block when load reaches the RATE_LIMIT_REQUESTS', async (t
 
   t.is(
     metricsResponse.includes(
-      `_prevented_requests_by_reason_total{gateway="${gateways[0]}",env="test",reason="429"} 1`
+      `_prevented_requests_by_reason_total{gateway="${gateways[0]}",env="test",reason="RATE_LIMIT"} 1`
     ),
     true
   )

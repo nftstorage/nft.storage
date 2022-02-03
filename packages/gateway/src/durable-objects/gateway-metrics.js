@@ -10,7 +10,7 @@
  * @property {number} status http response status
  * @property {number} [responseTime] number of milliseconds to get response
  * @property {boolean} [winner] response was from winner gateway
- * @property {number} [requestPreventedCode] request not sent to upstream gateway reason code
+ * @property {string} [requestPreventedCode] request not sent to upstream gateway reason code
  */
 
 const GATEWAY_METRICS_ID = 'gateway_metrics'

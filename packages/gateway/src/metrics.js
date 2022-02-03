@@ -5,7 +5,7 @@ import pMap from 'p-map'
 import {
   METRICS_CACHE_MAX_AGE,
   SUMMARY_METRICS_ID,
-  HTTP_SUCCESS_CODE,
+  HTTP_STATUS_SUCCESS,
 } from './constants.js'
 import { histogram } from './durable-objects/gateway-metrics.js'
 import { contentLengthHistogram } from './durable-objects/summary-metrics.js'
@@ -113,7 +113,7 @@ export async function metricsGet(request, env, ctx) {
           env.ENV
         }"} ${
           metricsCollected.ipfsGateways[gw].totalResponsesByStatus[
-            HTTP_SUCCESS_CODE
+            HTTP_STATUS_SUCCESS
           ] || 0
         }`
     ),
@@ -124,25 +124,23 @@ export async function metricsGet(request, env, ctx) {
         `nftgateway_failed_requests_total{gateway="${gw}",env="${env.ENV}"} ${
           totalResponsesPerGateway[gw] -
           (metricsCollected.ipfsGateways[gw].totalResponsesByStatus[
-            HTTP_SUCCESS_CODE
+            HTTP_STATUS_SUCCESS
           ] || 0)
         }`
     ),
-    `# HELP nftgateway_failed_requests_by_status_total Total failed requests by status code performed to each gateway.`,
-    `# TYPE nftgateway_failed_requests_by_status_total counter`,
+    `# HELP nftgateway_requests_by_status_total Total requests by status code performed to each gateway.`,
+    `# TYPE nftgateway_requests_by_status_total counter`,
     ...env.ipfsGateways
       .map((gw) => {
         return Object.keys(
           metricsCollected.ipfsGateways[gw].totalResponsesByStatus
         )
           .filter(
-            (s) =>
-              s !== HTTP_SUCCESS_CODE.toString() &&
-              metricsCollected.ipfsGateways[gw].totalResponsesByStatus[s]
+            (s) => metricsCollected.ipfsGateways[gw].totalResponsesByStatus[s]
           )
           .map(
             (status) =>
-              `nftgateway_failed_requests_by_status_total{gateway="${gw}",env="${
+              `nftgateway_requests_by_status_total{gateway="${gw}",env="${
                 env.ENV
               }",status="${status}"} ${
                 metricsCollected.ipfsGateways[gw].totalResponsesByStatus[
@@ -200,7 +198,7 @@ export async function metricsGet(request, env, ctx) {
           env.ENV
         }"} ${
           metricsCollected.ipfsGateways[gw].totalResponsesByStatus[
-            HTTP_SUCCESS_CODE
+            HTTP_STATUS_SUCCESS
           ] || 0
         }`
     ),
