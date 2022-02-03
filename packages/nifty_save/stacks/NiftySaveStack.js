@@ -2,7 +2,7 @@ import * as sst from '@serverless-stack/resources'
 
 import { Function, Table, TableFieldType } from '@serverless-stack/resources'
 
-import { LayerVersion } from '@aws-cdk/aws-lambda'
+import { LayerVersion } from 'aws-cdk-lib/aws-lambda'
 
 export default class NiftySaveStack extends sst.Stack {
   constructor(scope, id, props) {
@@ -42,7 +42,17 @@ export default class NiftySaveStack extends sst.Stack {
     bus.addRules(this, {
       ingestRangeToSlices: {
         eventPattern: { source: ['ingest.range_to_slices'] },
-        targets: ['src/ingest.executeTimeSlice'],
+        targets: [
+          {
+            function: {
+              handler: 'src/ingest.executeTimeSlice',
+              environment: {
+                fetchedRecordQueueUrl: fetchedRecordQueue.sqsQueue.queueUrl,
+              },
+              permissions: [fetchedRecordQueue],
+            },
+          },
+        ],
       },
     })
 

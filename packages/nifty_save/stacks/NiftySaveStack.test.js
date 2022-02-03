@@ -1,13 +1,11 @@
 import * as sst from '@serverless-stack/resources'
 
-import {
-  countResources,
-  expect,
-  haveResource,
-  haveResourceLike,
-} from '@aws-cdk/assert'
-
 import NiftySaveStack from './NiftySaveStack'
+import { Template } from 'aws-cdk-lib/assertions'
+
+const template = Template.fromStack(NiftySaveStack)
+
+const { countResources, expect, haveResource } = template
 
 //CFN resource types
 //https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html

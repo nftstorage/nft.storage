@@ -21,7 +21,7 @@ function messageToEntry(msg) {
 }
 
 export async function fanOut(event) {
-  const actualMessages = event.Records.map((x) => JSON.parse(x.body))
+  const actualMessages = event.Records.map(x => JSON.parse(x.body))
 
   const msg = `count ${event.Records.length} index ${actualMessages[0].index}`
 
@@ -49,13 +49,18 @@ export async function execute(event, context) {
         message: `${
           detail.source
         } did not exist in list of possible sources: [${dataSources
-          .map((s) => s.id)
+          .map(s => s.id)
           .join(' | ')}]`,
       }),
     }
   }
 
   const fetchNFTs = datasource.fetch
+
+  console.log(
+    'fetchedRecordQueueUrl (execute)',
+    process.env.fetchedRecordQueueUrl
+  )
 
   const results = await fetchNFTs(event, context)
 

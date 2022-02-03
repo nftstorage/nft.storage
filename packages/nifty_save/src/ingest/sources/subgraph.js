@@ -48,6 +48,10 @@ export async function fetchNFTs(event, context) {
 
   const { rangeStartTime, rangeEndTime } = detail
 
+  console.log(
+    'fetchedRecordQueueUrl (fetchNFTs)',
+    process.env.fetchedRecordQueueUrl
+  )
   const fetchedRecordQueueUrl = process.env.fetchedRecordQueueUrl
 
   //Divice by 1000 because the-graph's smallest resolution is 1s
@@ -71,6 +75,7 @@ export async function fetchNFTs(event, context) {
   }
 
   if (!fetchedRecordQueueUrl) {
+    console.log(`No target Queue, got ${fetchedRecordQueueUrl}`)
     return {
       statusCode: 200,
       body: JSON.stringify({
@@ -113,7 +118,6 @@ export async function fetchNFTs(event, context) {
 
   //TODO: handle paging better here.
   for (const nft of transformedInNftBatch) {
-    console.log('fetchedRecordQueueUrl', process.env.fetchedRecordQueueUrl)
     sqs
       .sendMessage({
         QueueUrl: process.env.fetchedRecordQueueUrl,
