@@ -27,6 +27,11 @@
       "browser": "./src/token.js",
       "require": "./dist/src/token.cjs",
       "node": "./src/token.js"
+    },
+    "./dist/bundle.esm.min.js": {
+      "browser": "./dist/bundle.esm.min.js",
+      "require": "./dist/bundle.esm.min.js",
+      "node": "./dist/bundle.esm.min.js"
     }
   },
   "browser": {
