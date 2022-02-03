@@ -98,19 +98,22 @@ export async function fetchNFTs(event, context) {
     }
   }
 
+  const transformedInNftBatch = nftBatch.map(tranformIn)
+
   //TODO: handle paging better here.
-  for (const nft of nftBatch) {
-    sqs.sendMessage({
-      QueueUrl: process.env.fetchedRecordQueueUrl,
-      MessageBody: JSON.stringify(nft),
-    })
+  for (const nft of transformedInNftBatch) {
+    console.log(JSON.stringify(nft, null, 2))
+    // await sqs.sendMessage({
+    //   QueueUrl: process.env.fetchedRecordQueueUrl,
+    //   MessageBody: JSON.stringify(nft),
+    // })
     cursor.advanceOffset(nft.mintTime)
   }
 
-  console.table({
-    time: cursor.time,
-    offset: cursor.offset,
-  })
+  //   console.table({
+  //     time: cursor.time,
+  //     offset: cursor.offset,
+  //   })
 
   const queueAttrs = await sqs.getQueueAttributes({
     QueueUrl: process.env.fetchedRecordQueueUrl,
@@ -139,21 +142,30 @@ export function tranformIn(token) {
     contract,
     owner,
   } = token
+
+  if (!id) {
+    //TODO: Explode beautifully.
+    //validate more.
+    console.error('blow up here')
+  }
+
+  const now = new Date().toString()
+
   return {
-    id,
-    tokenID: tokenID.toString() || '',
-    mintTime: mintTime.toString() || '',
-    tokenURI: tokenURI.toString(),
-    blockNumber,
-    blockHash,
-    contract: {
-      id: contract.id || '',
-      name: contract.name || '',
-      symbol: contract.symbol || '',
-      supportsEIP721Metadata: contract.supportsEIP721Metadata,
-    },
-    owner: {
-      id: owner.id,
-    },
+    id: id.toString(),
+    token_id: tokenID.toString() || '',
+    token_uri: tokenURI.toString() || '',
+    mint_time: mintTime.toString() || '',
+    block_hash: blockHash.toString() || '',
+    block_number: parseInt(blockNumber),
+    contract_id: contract?.id || '',
+    contract_name: contract?.name || '',
+    contract_symbol: contract?.symbol || '',
+    contract_supports_eip721_metadata:
+      contract?.supportsEIP721Metadata || false,
+    owner_id: owner?.id || '',
+    updated_at: now,
+    inserted_at: now,
+    last_processed: now,
   }
 }

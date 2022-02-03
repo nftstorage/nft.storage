@@ -13,7 +13,12 @@ export const dataSources = [
   },
   {
     id: 'nftport-eth',
-    fetch: () => fetchNFTPortNFts,
+    fetch: fetchNFTPortNFts,
+    tranformIn: (x) => x,
+  },
+  {
+    id: 'nftport-polygon',
+    fetch: fetchNFTPortNFts,
     tranformIn: (x) => x,
   },
 ]

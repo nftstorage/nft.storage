@@ -52,6 +52,7 @@ export default class NiftySaveStack extends sst.Stack {
         token_id: TableFieldType.STRING,
         token_uri: TableFieldType.STRING,
         mint_time: TableFieldType.STRING,
+        contract_id: TableFieldType.STRING,
         contract_name: TableFieldType.STRING,
         contract_symbol: TableFieldType.STRING,
         contract_supports_eip721_metadata: TableFieldType.BINARY,

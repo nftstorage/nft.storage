@@ -3,7 +3,6 @@ import baseMiddleware from '../baseMiddleware'
 import { checkIsBinRange } from '../dates'
 import { fillTimeSliceCommandQueueSchema } from '../validators'
 
-const bus = new AWS.EventBridge()
 const sqs = new AWS.SQS()
 
 //takes range => bazillion slices
@@ -23,7 +22,7 @@ function putSliceRangeEvent({ rangeStartTime, rangeEndTime, source, index }) {
 }
 
 const fillHandler = async (event, context, err) => {
-  console.log(event, context, err)
+  //console.log(event, context, err)
   if (err) {
     return {
       statusCode: 500,
@@ -34,7 +33,7 @@ const fillHandler = async (event, context, err) => {
   const { rangeStartTime, rangeEndTime, source, timesliceSize } =
     event?.body || {}
 
-  console.log({ rangeStartTime, rangeEndTime, source, timesliceSize })
+  //console.log({ rangeStartTime, rangeEndTime, source, timesliceSize })
 
   const isBinRange = checkIsBinRange(rangeStartTime, rangeEndTime)
 
