@@ -48,6 +48,8 @@ export async function fetchNFTs(event, context) {
 
   const { rangeStartTime, rangeEndTime } = detail
 
+  const fetchedRecordQueueUrl = process.env.fetchedRecordQueueUrl
+
   //Divice by 1000 because the-graph's smallest resolution is 1s
 
   const hasBinRange = checkIsBinRange(rangeStartTime, rangeEndTime)
@@ -64,6 +66,15 @@ export async function fetchNFTs(event, context) {
       statusCode: 200,
       body: JSON.stringify({
         message: `Invalid Bin Range: ${rangeStartTime} to ${rangeEndTime}`,
+      }),
+    }
+  }
+
+  if (!fetchedRecordQueueUrl) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: `No target Queue, got ${fetchedRecordQueueUrl}`,
       }),
     }
   }
@@ -102,11 +113,14 @@ export async function fetchNFTs(event, context) {
 
   //TODO: handle paging better here.
   for (const nft of transformedInNftBatch) {
-    console.log(JSON.stringify(nft, null, 2))
-    // await sqs.sendMessage({
-    //   QueueUrl: process.env.fetchedRecordQueueUrl,
-    //   MessageBody: JSON.stringify(nft),
-    // })
+    console.log('fetchedRecordQueueUrl', process.env.fetchedRecordQueueUrl)
+    sqs
+      .sendMessage({
+        QueueUrl: process.env.fetchedRecordQueueUrl,
+        MessageBody: JSON.stringify(nft),
+      })
+      .promise()
+
     cursor.advanceOffset(nft.mintTime)
   }
 
@@ -119,6 +133,8 @@ export async function fetchNFTs(event, context) {
     QueueUrl: process.env.fetchedRecordQueueUrl,
     AttributeNames: ['ApproximateNumberOfMessages'],
   })
+
+  console.log(queueAttrs)
 
   return {
     statusCode: 200,

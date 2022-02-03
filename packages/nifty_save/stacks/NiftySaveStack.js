@@ -11,14 +11,6 @@ export default class NiftySaveStack extends sst.Stack {
     //configure the event bus
     const bus = new sst.EventBus(this, 'Bus')
 
-    //Ingest
-    bus.addRules(this, {
-      ingestRangeToSlices: {
-        eventPattern: { source: ['ingest.range_to_slices'] },
-        targets: ['src/ingest.executeTimeSlice'],
-      },
-    })
-
     // Create Queue
     const sliceCommandQueue = new sst.Queue(this, 'SliceCommandQueue', {
       consumer: {
@@ -43,6 +35,14 @@ export default class NiftySaveStack extends sst.Stack {
         function: {
           handler: 'src/ingest.storeFetchedRecord',
         },
+      },
+    })
+
+    //Ingest
+    bus.addRules(this, {
+      ingestRangeToSlices: {
+        eventPattern: { source: ['ingest.range_to_slices'] },
+        targets: ['src/ingest.executeTimeSlice'],
       },
     })
 
