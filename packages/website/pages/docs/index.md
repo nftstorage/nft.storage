@@ -229,7 +229,7 @@ The `url` is an IPFS url that can be viewed with [Brave](https://brave.com) and 
 [reference-http-api]: https://nft.storage/api-docs/
 [concepts-car-files]: ./concepts/car-files/
 [howto-retrieve]: ./how-to/retrieve/
-[js-client]: ./client/lib.md
+[js-client]: https://www.npmjs.com/package/nft.storage
 
 [mdn-file]: https://developer.mozilla.org/en-US/docs/Web/API/File
 
