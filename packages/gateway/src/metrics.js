@@ -5,6 +5,7 @@ import pMap from 'p-map'
 import {
   METRICS_CACHE_MAX_AGE,
   SUMMARY_METRICS_ID,
+  REDIRECT_COUNTER_METRICS_ID,
   HTTP_STATUS_SUCCESS,
 } from './constants.js'
 import { responseTimeHistogram } from './utils/histogram.js'
@@ -17,6 +18,7 @@ import { contentLengthHistogram } from './durable-objects/summary-metrics.js'
  * @typedef MetricsDurable
  * @property {SummaryMetrics} summaryMetrics
  * @property {Record<string,GatewayMetrics>} ipfsGateways
+ * @property {number} gatewayRedirectCount
  */
 
 /**
@@ -37,31 +39,43 @@ export async function metricsGet(request, env, ctx) {
   // }
   let res
 
-  const [summaryMetrics, ipfsGateways] = await Promise.all([
-    (async () => {
-      const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
-      const stub = env.summaryMetricsDurable.get(id)
+  const [summaryMetrics, ipfsGateways, gatewayRedirectCount] =
+    await Promise.all([
+      (async () => {
+        const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
+        const stub = env.summaryMetricsDurable.get(id)
 
-      const stubResponse = await stub.fetch(request)
-      /** @type {SummaryMetrics} */
-      const summaryMetrics = await stubResponse.json()
+        const stubResponse = await stub.fetch(request)
+        /** @type {SummaryMetrics} */
+        const summaryMetrics = await stubResponse.json()
 
-      return summaryMetrics
-    })(),
-    pMap(env.ipfsGateways, async (gw) => {
-      const id = env.gatewayMetricsDurable.idFromName(gw)
-      const stub = env.gatewayMetricsDurable.get(id)
+        return summaryMetrics
+      })(),
+      pMap(env.ipfsGateways, async (gw) => {
+        const id = env.gatewayMetricsDurable.idFromName(gw)
+        const stub = env.gatewayMetricsDurable.get(id)
 
-      const stubResponse = await stub.fetch(request)
-      /** @type {GatewayMetrics} */
-      const gwMetrics = await stubResponse.json()
+        const stubResponse = await stub.fetch(request)
+        /** @type {GatewayMetrics} */
+        const gwMetrics = await stubResponse.json()
 
-      return {
-        gwMetrics,
-        gw,
-      }
-    }),
-  ])
+        return {
+          gwMetrics,
+          gw,
+        }
+      }),
+      (async () => {
+        const id = env.gatewayRedirectCounter.idFromName(
+          REDIRECT_COUNTER_METRICS_ID
+        )
+        const stub = env.gatewayRedirectCounter.get(id)
+
+        const stubResponse = await stub.fetch(request)
+        const { gatewayRedirectCount } = await stubResponse.json()
+
+        return gatewayRedirectCount
+      })(),
+    ])
 
   /** @type {MetricsDurable} */
   const metricsCollected = {
@@ -70,6 +84,7 @@ export async function metricsGet(request, env, ctx) {
       (obj, item) => Object.assign(obj, { [item.gw]: item.gwMetrics }),
       {}
     ),
+    gatewayRedirectCount,
   }
 
   const totalResponsesPerGateway = []
@@ -248,6 +263,9 @@ export async function metricsGet(request, env, ctx) {
     `# HELP nftgateway_cached_responses_content_length_bytes_total Accumulated content length of delivered cached responses`,
     `# TYPE nftgateway_cached_responses_content_length_bytes_total summary`,
     `nftgateway_cached_responses_content_length_bytes_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalCachedContentLengthBytes}`,
+    `# HELP nftgateway_redirect_total Total redirects to gateway.`,
+    `# TYPE nftgateway_redirect_total counter`,
+    `nftgateway_redirect_total{env="${env.ENV}"} ${metricsCollected.gatewayRedirectCount}`,
   ].join('\n')
 
   res = new Response(metrics, {
