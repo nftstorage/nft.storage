@@ -175,7 +175,7 @@ To see an example of NFT.Storage being used with custom metadata, take a look at
 
 Although in many cases the most convenient way to [retrieve NFT data from IPFS][howto-retrieve] may involve using an IPFS HTTP gateway, you should avoid storing HTTP gateway links in a smart contract or other blockchain record.
 
-Instead, store the `ipfs://` URI, which doesn't depend on a single gateway provider. You can rewrite this URL into a gateway link at the "last mile" when displaying the NFT on the web. This ensures that the blockchain link is always valid as long as any IPFS peer is providing the data, and doesn't tie your NFT to any specific gateway host.
+Instead, store the `ipfs://` URI, which doesn't depend on a single gateway provider. You can rewrite this URL into a gateway link at the "last mile" when displaying the NFT on the web. This ensures that the blockchain link is always valid as long as any IPFS peer is providing the data, and doesn't tie your NFT to any specific gateway host or the Domain Name System itself.
 
 If you do include HTTP links, use them _in addition_ to IPFS URIs, as an optimization or fallback. Wherever possible, the IPFS URI should be the canonical link, or "source of truth".
 

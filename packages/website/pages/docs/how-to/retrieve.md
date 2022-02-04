@@ -39,14 +39,12 @@ This is just a CID with an `ipfs://` prefix added to make it easy to identify as
 
 Some IPFS addresses also have a **path** component following the CID, like this:
 
-```
+
 ipfs://bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif
-```
 
 Here the `/amazing.gif` path points to an image file that's "inside" the IPFS directory with the CID `bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy`. 
 
-URLs with the `ipfs://` prefix can be used directly with a browser that supports IPFS like [Brave](https://brave.com). Once you've [configured IPFS support][brave-ipfs], you can just paste an `ipfs://` URL into your address bar and see content in your browser.
-
+URLs with the `ipfs://` prefix can be used directly with a browser that supports IPFS like [Brave](https://brave.com) or [Opera](https://www.opera.com/). Once you've [configured IPFS support][brave-ipfs], you can just click the link above to see content in your browser.
 
 For other options, see the sections below on [using HTTP gateways](#using-ipfs-http-gateways) and [running IPFS locally](#running-ipfs-on-your-computer).
 

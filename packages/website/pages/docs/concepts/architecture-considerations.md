@@ -53,9 +53,9 @@ When displaying an NFT that uses IPFS to link to off-chain data, you have severa
 
 IPFS is built around a peer-to-peer content sharing protocol that allows any computer to provide content to anyone that requests it. This provides [many benefits][concepts-decentralized-storage], but not all computing environments can fully support the peer-to-peer networking paradigm.
 
-While some browsers like [Brave](https://brave.com) offer [native IPFS support][brave-ipfs], other browsers are restricted to HTTP and its related protocols, which makes engaging directly with the peer-to-peer protocol more difficult.
+While some browsers like [Brave](https://brave.com) and [Opera](https://opera.com) offer [native IPFS support][brave-ipfs], other browsers are restricted to HTTP and its related protocols, which makes engaging directly with the peer-to-peer protocol more difficult.
 
-As a platform operator, you can support all browsers by using an IPFS gateway to serve NFTs to your users via HTTP. Because NFT.Storage and other services following [best practices for NFT data on IPFS][ipfs-docs-nft-best-practices] use `ipfs://` URLs instead of `https://`, your web application should support re-writing IPFS URLs to target the gateway of your choice.
+As a platform operator, you can support all browsers by using an IPFS gateway to serve NFTs to your users via HTTP. Because NFT.Storage and other services following [best practices for NFT data on IPFS][ipfs-docs-nft-best-practices] use `ipfs://` URLs instead of `https://`, your web application should support re-writing IPFS URLs to target the gateway of your choice. As more browsers adopt native `ipfs://` support, you can transition your frontend code to use them directly instead of sending users to gateways.
 
 See the section on [HTTP gateway URLs](https://docs.ipfs.io/how-to/best-practices-for-nft-data/#http-gateway-url) in the [best practices documentation][ipfs-docs-nft-best-practices] to learn about the structure of gateway URLs and how to create them from an `ipfs://` URL.
 
