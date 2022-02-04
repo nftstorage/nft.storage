@@ -8,9 +8,9 @@ import {
   ipfsTokenURI_1,
 } from '../../fixtures/tokenURIs'
 
-import { detectTokenURIFormat } from '../../src/analyzer/metadata'
+import { detectTokenURIFormat } from '../../../src/analyzer/metadata'
 
-test('MEtadata - Can Detect Format', () => {
+test('Metadata - Can Detect Format', () => {
   expect(detectTokenURIFormat(httpsTokenURI_1)).toBe('HTTPS')
   expect(detectTokenURIFormat(ipfsTokenURI_1)).toBe('IPFS')
   expect(detectTokenURIFormat(inlineJSONBase64_1)).toBe('BASE64')

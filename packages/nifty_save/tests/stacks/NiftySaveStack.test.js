@@ -11,8 +11,6 @@ test('Test Niftysave Stack - Global', () => {
   const stack = new NiftySaveStack(app, 'niftysave-stack')
   const template = Template.fromStack(stack)
 
-  console.log(template)
-
   template.hasResource('AWS::Lambda::Function', {})
   template.hasResource('AWS::ApiGatewayV2::Api', {})
   template.hasResource('AWS::Events::EventBus', {})

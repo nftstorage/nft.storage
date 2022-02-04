@@ -8,6 +8,6 @@ export async function parse() {
   return {}
 }
 
-export async function detectTokenURIFormat(tokenURI) {
+export function detectTokenURIFormat(tokenURI) {
   return 'UNKNOWN_FORMAT'
 }
