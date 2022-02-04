@@ -1,4 +1,4 @@
-import { sleep } from './timers'
+import { sleep } from '../../src/timers'
 
 jest.useFakeTimers()
 jest.spyOn(global, 'setTimeout')

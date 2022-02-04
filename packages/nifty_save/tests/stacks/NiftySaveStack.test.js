@@ -1,6 +1,6 @@
 import * as sst from '@serverless-stack/resources'
 
-import NiftySaveStack from './NiftySaveStack'
+import NiftySaveStack from '../../stacks/NiftySaveStack'
 import { Template } from 'aws-cdk-lib/assertions'
 
 //CFN resource types

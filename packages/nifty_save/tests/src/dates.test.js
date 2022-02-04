@@ -1,4 +1,4 @@
-import { checkIsBinRange, dateInSeconds, isDate } from './dates'
+import { checkIsBinRange, dateInSeconds, isDate } from '../../src/dates'
 
 test('Detects Date Correctly', () => {
   const check = isDate('2020-2-1')
