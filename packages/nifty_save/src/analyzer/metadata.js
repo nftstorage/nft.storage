@@ -7,3 +7,7 @@ export async function fetchMetadata() {
 export async function parse() {
   return {}
 }
+
+export async function detectTokenURIFormat(tokenURI) {
+  return 'UNKNOWN_FORMAT'
+}
