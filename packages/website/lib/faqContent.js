@@ -48,8 +48,11 @@ const faqContent = {
   ),
   nftSizeRestrictions: (
     <p className="lh-copy white mb4">
-      NFT.Storage can store NFTs up to <strong>31GiB </strong>
-      in size!
+      NFT.Storage accepts storage requests up to <strong>31GiB</strong> in size! Each upload can include a single file or a directory of files. (If you are using the HTTP API, you'll need to do some manual splitting for files over 100MB. See the{' '}
+      <Link href="/api-docs">
+        <a className="white">HTTP API docs</a>
+      </Link>{' '}
+      for details.)
     </p>
   ),
   nftBestPractices: (
