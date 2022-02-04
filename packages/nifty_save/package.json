@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "test": "sst test",
-    "start": "sst start",
+    "start": "sst start --outputs-file=cdk.json",
     "build": "sst build",
+    "synth": "npx cdk synth --json",
     "deploy": "sst deploy",
     "remove": "sst remove",
     "reset": "sst remove && sst build && sst deploy"
@@ -21,8 +22,8 @@
     "@middy/http-json-body-parser": "^2.5.4",
     "@middy/validator": "^2.5.4",
     "@sentry/serverless": "^6.16.1",
-    "@serverless-stack/cli": "0.59.1",
-    "@serverless-stack/resources": "0.59.1",
+    "@serverless-stack/cli": "0.61.0",
+    "@serverless-stack/resources": "0.61.0",
     "@types/aws-lambda": "^8.10.89",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
     "ajv": "^8.8.2",

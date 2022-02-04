@@ -3,7 +3,11 @@ import * as sst from '@serverless-stack/resources'
 import NiftySaveStack from './NiftySaveStack'
 import { Template } from 'aws-cdk-lib/assertions'
 
+console.log(Template)
+
 const template = Template.fromStack(NiftySaveStack)
+
+console.log(template)
 
 const { countResources, expect, haveResource } = template
 
