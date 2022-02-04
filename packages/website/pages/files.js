@@ -105,7 +105,7 @@ export default function Files({ user }) {
   }
 
   /**
-   * @param {import('react').ChangeEvent<HTMLFormElement>} e
+   * @param {import('react').ChangeEvent<HTMLInputElement>} e
    */
   function handleWebViewerToggle(e) {
     setUseWebViewer(e.target.checked)
