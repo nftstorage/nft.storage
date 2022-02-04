@@ -4,7 +4,6 @@
  * @returns {boolean}
  */
 export const isDate = (date) => {
-  console.log(date)
   let _date = date
   //TODO: differntiate betwenn weird dates and nums differntly
   const asTime = parseInt(date)

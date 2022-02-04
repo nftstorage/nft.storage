@@ -1,7 +1,5 @@
 import { checkIsBinRange, dateInSeconds, isDate } from './dates'
 
-import { textChangeRangeIsUnchanged } from 'typescript'
-
 test('Detects Date Correctly', () => {
   const check = isDate('2020-2-1')
   expect(check).toBe(true)
