@@ -24,11 +24,12 @@ export const dataSources = [
 ]
 
 export const getDataSourceStrategy = (id) => {
-  return dataSources.reduce((acc, source) => {
-    if (acc == null) {
-      return source.id === id ? source : null
-    } else {
-      return acc
-    }
-  }, null)
+  return dataSources.find((x) => x.id == id) || null
+  //   return dataSources.reduce((acc, source) => {
+  //     if (acc == null) {
+  //       return source.id === id ? source : null
+  //     } else {
+  //       return acc
+  //     }
+  //   }, null)
 }

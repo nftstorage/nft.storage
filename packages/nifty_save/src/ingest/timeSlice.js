@@ -11,7 +11,6 @@ const bus = new AWS.EventBridge()
 const sqs = new AWS.SQS()
 
 function messageToEntry(msg) {
-  console.log(msg)
   return {
     DetailType: 'Time Slice of NFTs To fetch, derived from a larger range',
     Detail: JSON.stringify(msg),
@@ -21,7 +20,7 @@ function messageToEntry(msg) {
 }
 
 export async function fanOut(event) {
-  const actualMessages = event.Records.map(x => JSON.parse(x.body))
+  const actualMessages = event.Records.map((x) => JSON.parse(x.body))
 
   const msg = `count ${event.Records.length} index ${actualMessages[0].index}`
 
@@ -40,6 +39,7 @@ export async function fanOut(event) {
 export async function execute(event, context) {
   const { detail } = event
 
+  console.log('executing fror detail, source', detail.source)
   const datasource = getDataSource(detail.source)
 
   if (!datasource) {
@@ -49,7 +49,7 @@ export async function execute(event, context) {
         message: `${
           detail.source
         } did not exist in list of possible sources: [${dataSources
-          .map(s => s.id)
+          .map((s) => s.id)
           .join(' | ')}]`,
       }),
     }

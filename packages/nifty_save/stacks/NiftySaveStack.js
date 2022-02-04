@@ -78,14 +78,102 @@ export default class NiftySaveStack extends sst.Stack {
     })
 
     //Analyze
-    const analyzerIntakeQueue = new sst.Queue(this, 'AnalyzerIntakeQueue', {})
+    //     const analyzerIntakeQueue = new sst.Queue(this, 'AnalyzerIntakeQueue', {})
 
     //Pin
-    const postPinningIntakeQueue = new sst.Queue(
-      this,
-      'PostPinningIntakeQueue',
-      {}
-    )
+    //     const postPinningIntakeQueue = new sst.Queue(
+    //       this,
+    //       'PostPinningIntakeQueue',
+    //       {}
+    //     )
+
+    //     const analyzerBus = new sst.EventBus(this, 'analyzerBus')
+    const dataWarehouseQueue = new sst.Queue(this, 'DataWarehouseQueue')
+
+    bus.addRules(this, {
+      stepAnalyze: {
+        eventPattern: { source: ['temp_steps.test'] },
+        targets: [
+          {
+            function: {
+              handler: 'src/temp_steps.analyze',
+              environment: { busArn: bus.eventBusArn },
+              permissions: [bus],
+            },
+          },
+        ],
+      },
+      getMetaData: {
+        eventPattern: { source: ['temp_steps.analyze'] },
+        targets: [
+          {
+            function: {
+              handler: 'src/temp_steps.getMetaData',
+              environment: { busArn: bus.eventBusArn },
+              permissions: [bus],
+            },
+          },
+        ],
+      },
+      pinMetaData: {
+        eventPattern: { source: ['temp_steps.getMetaData'] },
+        targets: [
+          {
+            function: {
+              handler: 'src/temp_steps.pinMetaData',
+              environment: { busArn: bus.eventBusArn },
+              permissions: [bus],
+            },
+          },
+        ],
+      },
+      getContent: {
+        eventPattern: { source: ['temp_steps.pinMetaData'] },
+        targets: [
+          {
+            function: {
+              handler: 'src/temp_steps.getContent',
+              environment: { busArn: bus.eventBusArn },
+              permissions: [bus],
+            },
+          },
+        ],
+      },
+      pinContent: {
+        eventPattern: { source: ['temp_steps.getContent'] },
+        targets: [
+          {
+            function: {
+              handler: 'src/temp_steps.pinContent',
+              environment: {
+                busArn: bus.eventBusArn,
+                dataWarehouseQueue: dataWarehouseQueue.sqsQueue.queueUrl,
+              },
+              permissions: [bus, dataWarehouseQueue],
+            },
+          },
+        ],
+      },
+    })
+
+    const fakeDataWarehouseTable = new Table(this, 'FakeDataWarehouseTable', {
+      fields: {
+        id: TableFieldType.STRING,
+        token_id: TableFieldType.STRING,
+      },
+      primaryIndex: { partitionKey: 'id', sortKey: 'token_id' },
+    })
+
+    dataWarehouseQueue.addConsumer(this, {
+      function: {
+        handler: 'src/temp_steps.storeInDataWarehouse',
+        environment: {
+          fakeDataWarehouseTable:
+            fakeDataWarehouseTable.dynamodbTable.tableName,
+        },
+        permissions: [fakeDataWarehouseTable],
+      },
+    })
 
     //Verify
 
@@ -96,8 +184,8 @@ export default class NiftySaveStack extends sst.Stack {
         environment: {
           sliceCommandQueueUrl: sliceCommandQueue.sqsQueue.queueUrl,
           fetchedRecordQueueUrl: fetchedRecordQueue.sqsQueue.queueUrl,
-          analyzerIntakeQueueUrl: analyzerIntakeQueue.sqsQueue.queueUrl,
-          postPinningIntakeQueue: postPinningIntakeQueue.sqsQueue.queueUrl,
+          //           analyzerIntakeQueueUrl: analyzerIntakeQueue.sqsQueue.queueUrl,
+          //           postPinningIntakeQueue: postPinningIntakeQueue.sqsQueue.queueUrl,
           fetchedRecordsTableName: fetchedRecordsTable.dynamodbTable.tableName,
           busArn: bus.eventBusArn,
         },
@@ -114,6 +202,7 @@ export default class NiftySaveStack extends sst.Stack {
         'POST /ingest/timeslice/execute': 'src/ingest.executeTimeSlice',
 
         'POST /ingest/fetchedRecord/store': 'src/ingest.storeFetchedRecord',
+        'POST /temp_steps/test': 'src/temp_steps.test',
 
         $default: 'src/default.defaultResponse',
       },
@@ -146,7 +235,7 @@ export default class NiftySaveStack extends sst.Stack {
       }
     }
 
-    this.addDefaultFunctionLayers(functionLayers)
-    this.addDefaultFunctionEnv(lambdaEnvVars)
+    //     this.addDefaultFunctionLayers(functionLayers)
+    //     this.addDefaultFunctionEnv(lambdaEnvVars)
   }
 }
