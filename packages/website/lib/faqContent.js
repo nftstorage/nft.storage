@@ -52,7 +52,7 @@ const faqContent = {
       <Link href="/api-docs">
         <a className="white">HTTP API docs</a>
       </Link>{' '}
-      for details.)
+      for details.) Currently, the rate limit is 1,000 requests per IP per hour.
     </p>
   ),
   nftBestPractices: (
