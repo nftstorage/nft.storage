@@ -1,9 +1,5 @@
 import AWS from 'aws-sdk'
 
-export async function fetchMetadata() {
-  return {}
-}
-
 export async function parse() {
   return {}
 }
@@ -39,4 +35,19 @@ export function detectTokenURIFormat(tokenURI) {
   }
 
   return 'UNKNOWN_FORMAT'
+}
+
+export function cleanJSON(tokenURI) {
+  const data = tokenURI.replace(`${dataPrefix}${jsonPrefix},`, '')
+  return JSON.parse(decodeURI(data))
+}
+
+export async function tokenUriToJSON(tokenURI) {
+  let tokenURIFormat = detectTokenURIFormat(tokenURI)
+
+  if (tokenURIFormat === 'JSON') {
+    return cleanJSON(tokenURI)
+  }
+
+  return tokenURI
 }
