@@ -48,6 +48,7 @@ export default function Files({ user }) {
   /** @type {[string, { before: string, limit: number }]} */
   const queryKey = ['get-nfts', queryParams]
   const [isActionMenuOpen, setIsActionMenuOpen] = useState('')
+  const [useWebViewer, setUseWebViewer] = useState(false)
 
   let isDev
   if (!!globalThis.window && location.host === 'localhost:4000') isDev = true
@@ -103,6 +104,13 @@ export default function Files({ user }) {
     setBefores([''])
   }
 
+  /**
+   * @param {import('react').ChangeEvent<HTMLFormElement>} e
+   */
+  function handleWebViewerToggle(e) {
+    setUseWebViewer(e.target.checked)
+  }
+
   const hasZeroNfts = nfts.length === 0 && befores.length === 1
 
   /**
@@ -110,34 +118,38 @@ export default function Files({ user }) {
    */
   const TableItem = ({ nft }) => {
     // to do, add actual types
-    const deals = nft.deals
-      .filter((/** @type {any} */ d) => d.status !== 'queued')
-      .map(
-        (
-          /** @type {any} */ deal,
-          /** @type {number} */ i,
-          /** @type {any[]} */ deals
-        ) => {
-          const url = `https://filfox.info/en/deal/${deal.chainDealID}`
-          return (
-            <span key={deal.chainDealID} title={deal.status}>
-              <a
-                className="underline black"
-                href={url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {deal.miner}
-              </a>
-              {i === deals.length - 1 ? '' : ', '}
-            </span>
-          )
-        }
-      )
+    const deals =
+      (nft.deals &&
+        nft.deals
+          .filter((/** @type {any} */ d) => d.status !== 'queued')
+          .map(
+            (
+              /** @type {any} */ deal,
+              /** @type {number} */ i,
+              /** @type {any[]} */ deals
+            ) => {
+              const url = `https://filfox.info/en/deal/${deal.chainDealID}`
+              return (
+                <span key={deal.chainDealID} title={deal.status}>
+                  <a
+                    className="underline black"
+                    href={url}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {deal.miner}
+                  </a>
+                  {i === deals.length - 1 ? '' : ', '}
+                </span>
+              )
+            }
+          )) ||
+      []
 
-    const queuedDeals = nft.deals.filter(
-      (/** @type {any} */ d) => d.status === 'queued'
-    )
+    const queuedDeals =
+      (nft.deals &&
+        nft.deals.filter((/** @type {any} */ d) => d.status === 'queued')) ||
+      []
     if (queuedDeals.length) {
       const message = `The content from this upload has been aggregated for storage on Filecoin and is queued for deals with ${
         queuedDeals.length
@@ -162,7 +174,7 @@ export default function Files({ user }) {
       )
     }
 
-    if (!nft.deals.length) {
+    if (!nft.deals || !nft.deals.length) {
       deals.push(
         <span
           className="queuing flex items-center"
@@ -221,7 +233,6 @@ export default function Files({ user }) {
           <Popover
             isOpen={isActionMenuOpen === nft.cid}
             onClickOutside={(e) => {
-              console.log(e)
               if (e.currentTarget !== null) {
                 if (
                   e.target instanceof Element &&
@@ -247,8 +258,16 @@ export default function Files({ user }) {
                 arrowClassName="popover-arrow"
               >
                 <div className="actions-menu">
-                  <GatewayLink cid={nft.cid} type={nft.type} />
-                  <CopyGatewayLink cid={nft.cid} type={nft.type} />
+                  <GatewayLink
+                    cid={nft.cid}
+                    type={nft.type}
+                    useWebViewer={useWebViewer}
+                  />
+                  <CopyGatewayLink
+                    cid={nft.cid}
+                    type={nft.type}
+                    useWebViewer={useWebViewer}
+                  />
                   <CopyCID cid={nft.cid} type={nft.type} />
                   <form onSubmit={handleDeleteFile}>
                     <input type="hidden" name="cid" value={nft.cid} />
@@ -302,7 +321,19 @@ export default function Files({ user }) {
           <When condition={status !== 'loading'}>
             <>
               <div className="flex items-center mb3">
-                <h1 className="flex-auto chicagoflf mv4">Files</h1>
+                <div className="flex-auto chicagoflf mv3">
+                  <h1>Files</h1>
+                  <label className="webViewer-toggle mt1">
+                    <input
+                      type="checkbox"
+                      name="toggleWebViewer"
+                      className="mr1"
+                      onChange={(e) => handleWebViewerToggle(e)}
+                    />
+                    Use IPFS web viewer instead of IPFS applications where
+                    applicable
+                  </label>
+                </div>
                 <Button
                   href={{
                     pathname: '/new-file',
@@ -404,17 +435,19 @@ export default function Files({ user }) {
 /**
  * Gateway Link Component
  *
- * @param {{cid: string, type?: string}} props
+ * @param {{cid: string, type?: string, useWebViewer?: boolean}} props
  */
-function GatewayLink({ cid }) {
-  // const gatewayLink = cid.startsWith('Qm')
-  //   ? `https://ipfs.io/ipfs/${cid}`
-  //   : `ipfs://${cid}`
-  // const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
-  const href = `https://ipfs.io/ipfs/${cid}`
+function GatewayLink({ cid, type, useWebViewer }) {
+  const gatewayLink =
+    cid.startsWith('Qm') || useWebViewer
+      ? `https://ipfs.io/ipfs/${cid}`
+      : `ipfs://${cid}`
+  const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
+  const btnLabel = type === 'nft' ? 'View Metadata' : 'View URL'
+  const btnTitle = type === 'nft' ? 'View Metadata JSON' : 'View URL'
   return (
-    <a title="View IPFS Url" href={href} target="_blank" rel="noreferrer">
-      View
+    <a title={btnTitle} href={href} target="_blank" rel="noreferrer">
+      {btnLabel}
     </a>
   )
 }
@@ -422,19 +455,20 @@ function GatewayLink({ cid }) {
 /**
  * Copy Gateway Link Component
  *
- * @param {{cid: string, type?: string}} props
+ * @param {{cid: string, type?: string, useWebViewer?: boolean}} props
  */
-function CopyGatewayLink({ cid, type }) {
-  const gatewayLink = cid.startsWith('Qm')
-    ? `https://ipfs.io/ipfs/${cid}`
-    : `ipfs://${cid}`
+function CopyGatewayLink({ cid, type, useWebViewer }) {
+  const gatewayLink =
+    cid.startsWith('Qm') || useWebViewer
+      ? `https://ipfs.io/ipfs/${cid}`
+      : `ipfs://${cid}`
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
 
   return (
     <CopyButton
-      title="Copy IPFS Url to Clipboard"
+      title="Copy IPFS URL to Clipboard"
       text={href}
-      popupContent={'IPFS Url has been copied!'}
+      popupContent={'IPFS URL has been copied!'}
       asLink={true}
     >
       <>Copy IPFS Url</>
@@ -449,7 +483,12 @@ function CopyGatewayLink({ cid, type }) {
  */
 function CopyCID({ cid }) {
   return (
-    <CopyButton text={cid} popupContent={'CID has been copied!'} asLink={true}>
+    <CopyButton
+      title="Copy CID to Clipboard"
+      text={cid}
+      popupContent={'CID has been copied!'}
+      asLink={true}
+    >
       <>Copy CID</>
     </CopyButton>
   )

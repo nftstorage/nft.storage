@@ -205,3 +205,10 @@
   background-color: #000;
   color: #fff;
 }
+
+.webViewer-toggle {
+  font-size: 0.8rem;
+  padding-right: 2rem;
+  display: flex;
+  align-items: flex-start;
+}
