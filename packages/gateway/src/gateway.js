@@ -2,10 +2,13 @@
 /* global Response caches */
 
 import pAny from 'p-any'
+import { FilterError } from 'p-some'
 import pSettle from 'p-settle'
 
+import { TimeoutError } from './errors.js'
 import { getCidFromSubdomainUrl } from './utils/cid.js'
 import {
+  ABORT_ERR_CODE,
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
   CF_CACHE_MAX_OBJECT_SIZE,
@@ -112,9 +115,24 @@ export async function gatewayGet(request, env, ctx) {
         r.value?.requestPreventedCode === REQUEST_PREVENTED_RATE_LIMIT_CODE
     )
 
-    if (!wasRateLimited) {
+    if (wasRateLimited) {
       const ipfsUrl = new URL('ipfs', env.IPFS_GATEWAYS[0])
       return Response.redirect(`${ipfsUrl.toString()}/${cid}${pathname}`, 302)
+    }
+
+    // Return the error response from gateway, error is not from nft.storage Gateway
+    if (err instanceof FilterError) {
+      const candidateResponse = responses.find((r) => r.value?.response)
+
+      // Return first response with upstream error
+      if (candidateResponse) {
+        return candidateResponse.value?.response
+      }
+
+      // Gateway timeout
+      if (responses[0].reason?.code === ABORT_ERR_CODE) {
+        throw new TimeoutError()
+      }
     }
 
     throw err
