@@ -182,8 +182,8 @@ export async function metricsGet(request, env, ctx) {
       (gw) =>
         `nftgateway_winner_requests_total{gateway="${gw}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].totalWinnerRequests}`
     ),
-    `# HELP nftgateway_requests_per_time_total`,
-    `# TYPE nftgateway_requests_per_time_total histogram for total of requests per response time bucket`,
+    `# HELP nftgateway_requests_per_time_total total of requests per response time bucket`,
+    `# TYPE nftgateway_requests_per_time_total histogram`,
     ...histogram.map((t) => {
       return env.ipfsGateways
         .map(
@@ -202,18 +202,18 @@ export async function metricsGet(request, env, ctx) {
           ] || 0
         }`
     ),
-    `# HELP nftgateway_responses_content_length_total`,
-    `# TYPE nftgateway_responses_content_length_total content length delivered histogram`,
+    `# HELP nftgateway_responses_content_length_total Total of requests per content length delivered bucket`,
+    `# TYPE nftgateway_responses_content_length_total histogram`,
     ...contentLengthHistogram.map(
       (t) =>
         `nftgateway_responses_content_length_total{le="${t}",env="${env.ENV}"} ${metricsCollected.summaryMetrics.contentLengthHistogram[t]}`
     ),
     `nftgateway_responses_content_length_total{le="+Inf",env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalWinnerSuccessfulRequests}`,
-    `# HELP nftgateway_responses_content_length_bytes_total`,
-    `# TYPE nftgateway_responses_content_length_bytes_total content length of delivered cached responses`,
+    `# HELP nftgateway_responses_content_length_bytes_total Accumulated content length of delivered cached responses`,
+    `# TYPE nftgateway_responses_content_length_bytes_total summary`,
     `nftgateway_responses_content_length_bytes_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalContentLengthBytes}`,
-    `# HELP nftgateway_cached_responses_content_length_bytes_total`,
-    `# TYPE nftgateway_cached_responses_content_length_bytes_total content length of delivered cached responses`,
+    `# HELP nftgateway_cached_responses_content_length_bytes_total Accumulated content length of delivered cached responses`,
+    `# TYPE nftgateway_cached_responses_content_length_bytes_total summary`,
     `nftgateway_cached_responses_content_length_bytes_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalCachedContentLengthBytes}`,
   ].join('\n')
 
