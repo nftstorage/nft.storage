@@ -37,8 +37,9 @@ import {
 export async function gatewayGet(request, env, ctx) {
   const startTs = Date.now()
   const cache = caches.default
-  let res = await cache.match(request.url)
+  // let res = await cache.match(request.url)
 
+  let res = undefined
   if (res) {
     // Update cache metrics in background
     const responseTime = Date.now() - startTs
@@ -90,8 +91,8 @@ export async function gatewayGet(request, env, ctx) {
           storeWinnerGwResponse(request, env, winnerGwResponse),
           settleGatewayRequests(),
           // Cache request URL in Cloudflare CDN if smaller than CF_CACHE_MAX_OBJECT_SIZE
-          contentLengthMb <= CF_CACHE_MAX_OBJECT_SIZE &&
-            cache.put(request.url, winnerGwResponse.response.clone()),
+          // contentLengthMb <= CF_CACHE_MAX_OBJECT_SIZE &&
+          //   cache.put(request.url, winnerGwResponse.response.clone()),
         ])
       })()
     )
