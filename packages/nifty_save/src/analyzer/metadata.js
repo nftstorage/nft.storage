@@ -10,23 +10,23 @@ const dataPrefix = 'data:'
 const jsonPrefix = 'application/json'
 const base64Prefix = 'base64,'
 
-export function detectTokenURIFormat(tokenURI) {
-  if (tokenURI.startsWith(httpsPrefix)) {
+export function detectFormat(input) {
+  if (input.startsWith(httpsPrefix)) {
     return 'HTTPS'
   }
 
-  if (tokenURI.startsWith(ipfsPrefix)) {
+  if (input.startsWith(ipfsPrefix)) {
     return 'IPFS'
   }
 
-  const isData = tokenURI.startsWith(dataPrefix)
+  const isData = input.startsWith(dataPrefix)
 
   if (isData) {
-    const next = tokenURI.slice(dataPrefix.length)
+    const next = input.slice(dataPrefix.length)
     const isJSON = next.startsWith(jsonPrefix)
 
     if (isJSON) {
-      const next = tokenURI.slice(dataPrefix.length + jsonPrefix.length)
+      const next = input.slice(dataPrefix.length + jsonPrefix.length)
       if (next.startsWith(`;${base64Prefix}`)) {
         return 'BASE64'
       }
@@ -36,6 +36,8 @@ export function detectTokenURIFormat(tokenURI) {
 
   return 'UNKNOWN_FORMAT'
 }
+
+export const detectTokenURIFormat = (tokenUri) => detectFormat(tokenUri)
 
 export function cleanJSON(tokenURI) {
   const data = tokenURI.replace(`${dataPrefix}${jsonPrefix},`, '')

@@ -15,31 +15,37 @@ export async function metrics(_, { db }) {
  * @returns {Promise<string>}
  */
 async function exportPromMetrics(db) {
-  const [usersTotal, uploadsMetrics, pinsMetrics] = await Promise.all([
-    db.getMetric('users_total'),
-    Promise.all(
-      UPLOAD_TYPES.map(async t => ({
-        type: t,
-        total: await db.getMetric(`uploads_${t.toLowerCase()}_total`),
-      }))
-    ),
-    Promise.all(
-      PIN_SERVICES.map(async svc => ({
-        service: svc,
-        totals: await Promise.all(
-          PIN_STATUSES.map(async s => {
-            const name = `pins_${svc.toLowerCase()}_${s.toLowerCase()}_total`
-            return { status: s, total: await db.getMetric(name) }
-          })
-        ),
-      }))
-    ),
-  ])
+  const [usersTotal, contentDagSizeTotal, uploadsMetrics, pinsMetrics] =
+    await Promise.all([
+      db.getMetric('users_total'),
+      db.getMetric('content_dag_size_total'),
+      Promise.all(
+        UPLOAD_TYPES.map(async (t) => ({
+          type: t,
+          total: await db.getMetric(`uploads_${t.toLowerCase()}_total`),
+        }))
+      ),
+      Promise.all(
+        PIN_SERVICES.map(async (svc) => ({
+          service: svc,
+          totals: await Promise.all(
+            PIN_STATUSES.map(async (s) => {
+              const name = `pins_${svc.toLowerCase()}_${s.toLowerCase()}_total`
+              return { status: s, total: await db.getMetric(name) }
+            })
+          ),
+        }))
+      ),
+    ])
 
   return [
     '# HELP nftstorage_users_total Total users registered.',
     '# TYPE nftstorage_users_total counter',
     `nftstorage_users_total ${usersTotal || 0}`,
+
+    '# HELP nftstorage_content_bytes_total Total bytes of all root DAGs stored.',
+    '# TYPE nftstorage_content_bytes_total counter',
+    `nftstorage_content_bytes_total ${contentDagSizeTotal || 0}`,
 
     '# HELP nftstorage_uploads_total Total number of uploads by type.',
     '# TYPE nftstorage_uploads_total counter',
@@ -54,8 +60,9 @@ async function exportPromMetrics(db) {
       return totals
         .map(
           ({ status, total }) =>
-            `nftstorage_pins_total{service="${service}",status="${status}"} ${total ||
-              0}`
+            `nftstorage_pins_total{service="${service}",status="${status}"} ${
+              total || 0
+            }`
         )
         .join('\n')
     }),

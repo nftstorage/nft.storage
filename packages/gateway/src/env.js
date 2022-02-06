@@ -17,13 +17,14 @@ import { Logging } from './logs.js'
  * @property {Object} GATEWAYMETRICS
  * @property {Object} SUMMARYMETRICS
  * @property {Object} CIDSTRACKER
+ * @property {Object} GATEWAYRATELIMITS
  *
  * @typedef {Object} EnvTransformed
  * @property {Array<string>} ipfsGateways
  * @property {Object} gatewayMetricsDurable
  * @property {Object} summaryMetricsDurable
  * @property {Object} cidsTrackerDurable
- * @property {number} REQUEST_TIMEOUT
+ * @property {Object} gatewayRateLimitsDurable
  * @property {Toucan} [sentry]
  * @property {Logging} [log]
  *
@@ -41,6 +42,7 @@ export function envAll(request, env, ctx) {
   env.gatewayMetricsDurable = env.GATEWAYMETRICS
   env.summaryMetricsDurable = env.SUMMARYMETRICS
   env.cidsTrackerDurable = env.CIDSTRACKER
+  env.gatewayRateLimitsDurable = env.GATEWAYRATELIMITS
   env.REQUEST_TIMEOUT = env.REQUEST_TIMEOUT || 20000
 
   env.log = new Logging(request, env, ctx)

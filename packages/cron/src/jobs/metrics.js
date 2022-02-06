@@ -17,6 +17,8 @@ const COUNT_UPLOADS = 'SELECT COUNT(*) AS total FROM upload WHERE type = $1'
 const COUNT_PINS =
   'SELECT COUNT(*) AS total FROM pin WHERE service = $1 AND status = $2'
 
+const SUM_CONTENT_DAG_SIZE = `SELECT SUM(c.dag_size) AS "total" FROM content c`
+
 const UPDATE_METRIC = `
 INSERT INTO metric (name, value, updated_at)
      VALUES ($1, $2, TIMEZONE('utc', NOW()))
@@ -32,9 +34,10 @@ ON CONFLICT (name) DO UPDATE
 export async function updateMetrics({ roPg, rwPg }) {
   const results = await settle([
     updateUsersCount(roPg, rwPg),
-    ...UPLOAD_TYPES.map(t => updateUploadsCount(roPg, rwPg, t)),
-    ...PIN_SERVICES.map(svc =>
-      PIN_STATUSES.map(s => updatePinsCount(roPg, rwPg, svc, s))
+    updateContentRootDagSizeSum(roPg, rwPg),
+    ...UPLOAD_TYPES.map((t) => updateUploadsCount(roPg, rwPg, t)),
+    ...PIN_SERVICES.map((svc) =>
+      PIN_STATUSES.map((s) => updatePinsCount(roPg, rwPg, svc, s))
     ).flat(),
   ])
 
@@ -46,6 +49,16 @@ export async function updateMetrics({ roPg, rwPg }) {
   }
 
   if (error) throw error
+}
+
+/**
+ * @param {Client} roPg
+ * @param {Client} rwPg
+ */
+async function updateContentRootDagSizeSum(roPg, rwPg) {
+  const { rows } = await roPg.query(SUM_CONTENT_DAG_SIZE)
+  if (!rows.length) throw new Error('no rows returned counting users')
+  await rwPg.query(UPDATE_METRIC, ['content_dag_size_total', rows[0].total])
 }
 
 /**

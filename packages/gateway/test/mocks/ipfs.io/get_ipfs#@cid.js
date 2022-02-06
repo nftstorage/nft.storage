@@ -19,6 +19,7 @@ module.exports = async ({ params }) => {
       body: 'Hello nft.storage! 😎👻',
     }
   }
+
   return {
     statusCode: 500,
     headers: { 'Content-Type': 'text/plain' },
