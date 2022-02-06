@@ -1,7 +1,7 @@
 /**
  * Durable Object for tracking Gateway Redirect counts.
  */
-export class GatewayRedirectCounter0 {
+export class GatewayRedirectCounter2 {
   constructor(state) {
     this.state = state
 
@@ -27,6 +27,10 @@ export class GatewayRedirectCounter0 {
             gatewayRedirectCount: this.value,
           })
         )
+      case '/reset':
+        this.value = 0
+        await this.state.storage.put('value', this.value)
+        return new Response()
       default:
         return new Response('Not found', { status: 404 })
     }

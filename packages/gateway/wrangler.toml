@@ -18,11 +18,11 @@ main = "index.mjs"
 
 [durable_objects]
 bindings = [
-  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
-  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics1"},
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics2"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics3"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
   {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"},
-  {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
+  {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter2"}
 ]
 
 # PROD!
@@ -39,11 +39,11 @@ ENV = "production"
 
 [env.production.durable_objects]
 bindings = [
-  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
-  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics1"},
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics2"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics3"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
   {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"},
-  {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
+  {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter2"}
 ]
 
 # Staging!
@@ -60,11 +60,11 @@ ENV = "staging"
 
 [env.staging.durable_objects]
 bindings = [
-  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
-  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics1"},
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics2"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics3"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
   {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"},
-  {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
+  {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter2"}
 ]
 
 # Test!
@@ -78,11 +78,11 @@ ENV = "test"
 
 [env.test.durable_objects]
 bindings = [
-  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
-  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics1"},
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics2"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics3"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
   {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"},
-  {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
+  {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter2"}
 ]
 
 # Dev!
@@ -95,11 +95,11 @@ IPFS_GATEWAYS = "[\"https://ipfs.io\"]"
 
 [env.vsantos.durable_objects]
 bindings = [
-  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
-  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics1"},
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics2"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics3"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
   {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"},
-  {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
+  {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter2"}
 ]
 
 [[migrations]]
@@ -107,5 +107,19 @@ tag = "v1" # Should be unique for each entry
 new_classes = ["GatewayMetrics0", "SummaryMetrics0", "CidsTracker0", "GatewayRateLimits0"]
 [[migrations]]
 tag = "v2" # Should be unique for each entry
-new_classes = ["SummaryMetrics1", "GatewayRedirectCounter0]
+new_classes = ["SummaryMetrics1", "GatewayRedirectCounter0"]
 deleted_classes = ["SummaryMetrics0"]
+[[migrations]]
+tag = "v3" # Should be unique for each entry
+renamed_classes = [
+  {from = "SummaryMetrics1", to = "SummaryMetrics2" },
+  {from = "GatewayRedirectCounter0", to = "GatewayRedirectCounter1" },
+  {from = "GatewayMetrics0", to = "GatewayMetrics1" }
+]
+[[migrations]]
+tag = "v4" # Should be unique for each entry
+renamed_classes = [
+  {from = "SummaryMetrics2", to = "SummaryMetrics3" },
+  {from = "GatewayRedirectCounter1", to = "GatewayRedirectCounter2" },
+  {from = "GatewayMetrics1", to = "GatewayMetrics2" }
+]

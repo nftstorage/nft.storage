@@ -23,7 +23,7 @@ const GATEWAY_METRICS_ID = 'gateway_metrics'
 /**
  * Durable Object for keeping Metrics state of a gateway.
  */
-export class GatewayMetrics0 {
+export class GatewayMetrics2 {
   constructor(state) {
     this.state = state
 
@@ -51,6 +51,11 @@ export class GatewayMetrics0 {
         return new Response()
       case '/metrics':
         return new Response(JSON.stringify(this.gatewayMetrics))
+      case '/reset':
+        this.gatewayMetrics = createMetricsTracker()
+        // Save updated Metrics
+        await this.state.storage.put(GATEWAY_METRICS_ID, this.gatewayMetrics)
+        return new Response()
       default:
         return new Response('Not found', { status: 404 })
     }

@@ -39,7 +39,7 @@ const RESPONSE_TIME_HISTOGRAM_ID = 'responseTimeHistogram'
 /**
  * Durable Object for keeping summary metrics of gateway.nft.storage
  */
-export class SummaryMetrics1 {
+export class SummaryMetrics3 {
   constructor(state) {
     this.state = state
 
@@ -98,6 +98,51 @@ export class SummaryMetrics1 {
               responseTimeHistogram: this.responseTimeHistogram,
             })
           )
+        case '/reset':
+          this.totalWinnerResponseTime = 0
+          this.totalWinnerSuccessfulRequests = 0
+          this.totalCachedResponseTime = 0
+          this.totalCachedResponses = 0
+          this.totalContentLengthBytes = BigInt(0)
+          this.totalCachedContentLengthBytes = BigInt(0)
+          this.contentLengthHistogram = createContentLengthHistogramObject()
+          this.responseTimeHistogram = createResponseTimeHistogramObject()
+
+          await Promise.all([
+            this.state.storage.put(
+              TOTAL_WINNER_RESPONSE_TIME_ID,
+              this.totalWinnerResponseTime
+            ),
+            this.state.storage.put(
+              TOTAL_WINNER_SUCCESSFUL_REQUESTS_ID,
+              this.totalWinnerSuccessfulRequests
+            ),
+            this.state.storage.put(
+              TOTAL_CACHED_RESPONSE_TIME_ID,
+              this.totalCachedResponseTime
+            ),
+            this.state.storage.put(
+              TOTAL_CACHED_RESPONSES_ID,
+              this.totalCachedResponses
+            ),
+            this.state.storage.put(
+              TOTAL_CACHED_CONTENT_LENGTH_BYTES_ID,
+              this.totalCachedContentLengthBytes
+            ),
+            this.state.storage.put(
+              TOTAL_CONTENT_LENGTH_BYTES_ID,
+              this.totalContentLengthBytes
+            ),
+            this.state.storage.put(
+              CONTENT_LENGTH_HISTOGRAM_ID,
+              this.contentLengthHistogram
+            ),
+            this.state.storage.put(
+              RESPONSE_TIME_HISTOGRAM_ID,
+              this.responseTimeHistogram
+            ),
+          ])
+          return new Response()
         default:
           return new Response('Not found', { status: 404 })
       }

@@ -6,21 +6,23 @@ import { gatewayGet } from './gateway.js'
 import { metricsGet } from './metrics.js'
 
 // Export Durable Object namespace from the root module.
-export { GatewayMetrics0 } from './durable-objects/gateway-metrics.js'
-export { SummaryMetrics1 } from './durable-objects/summary-metrics.js'
+export { GatewayMetrics2 } from './durable-objects/gateway-metrics.js'
+export { SummaryMetrics3 } from './durable-objects/summary-metrics.js'
 export { CidsTracker0 } from './durable-objects/cids.js'
 export { GatewayRateLimits0 } from './durable-objects/gateway-rate-limits.js'
-export { GatewayRedirectCounter0 } from './durable-objects/gateway-redirect-counter.js'
+export { GatewayRedirectCounter2 } from './durable-objects/gateway-redirect-counter.js'
 
 import { addCorsHeaders, withCorsHeaders } from './cors.js'
 import { errorHandler } from './error-handler.js'
 import { envAll } from './env.js'
+import { resetGet } from './reset.js'
 
 const router = Router()
 
 router
   .all('*', envAll)
   .get('/metrics', withCorsHeaders(metricsGet))
+  .get('/reset', withCorsHeaders(resetGet))
   .get('*', withCorsHeaders(gatewayGet))
 
 /**
