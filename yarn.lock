@@ -12678,6 +12678,14 @@ p-settle@^5.0.0:
     p-limit "^4.0.0"
     p-reflect "^3.0.0"
 
+p-some@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/p-some/-/p-some-5.0.0.tgz#8b730c74b4fe5169d7264a240ad010b6ebc686a4"
+  integrity sha512-Js5XZxo6vHjB9NOYAzWDYAIyyiPvva0DWESAIWIK7uhSpGsyg5FwUPxipU/SOQx5x9EqhOh545d1jo6cVkitig==
+  dependencies:
+    aggregate-error "^3.0.0"
+    p-cancelable "^2.0.0"
+
 p-some@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/p-some/-/p-some-6.0.0.tgz#4613a822038abe125e42152ea9f7705a7967526f"

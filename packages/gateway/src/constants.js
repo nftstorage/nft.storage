@@ -5,3 +5,4 @@ export const SUMMARY_METRICS_ID = 'summary-metrics'
 export const HTTP_STATUS_RATE_LIMITED = 429
 export const HTTP_STATUS_SUCCESS = 200
 export const REQUEST_PREVENTED_RATE_LIMIT_CODE = 'RATE_LIMIT'
+export const ABORT_ERR_CODE = 'ABORT_ERR'
