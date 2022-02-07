@@ -67,6 +67,7 @@ export interface ListUploadsOptions {
    */
   match?: 'exact' | 'iexact' | 'partial' | 'ipartial'
   status?: Array<definitions['pin']['status']>
+  type?: Array<definitions['upload']['type']>
   before?: string
   after?: string
   /**
