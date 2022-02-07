@@ -3,7 +3,7 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
-  console.log(process.env.NIFTYSAVE_API_ENDPOINT)
+  console.log(process.env.NIFTYSAVE_API_URL)
   return (
     <div className={styles.container}>
       <Head>
@@ -14,8 +14,9 @@ export default function Home() {
 
       <main className={styles.main}>
         <ul>
-          <li>NIFTYSAVE_API_ENDPOINT</li>
-          <li>{`${process.env.NIFTYSAVE_API_ENDPOINT}`}</li>
+          <li>NIFTYSAVE_API_URL</li>
+          <li>{`${process.env.NIFTYSAVE_API_URL}`}</li>
+          <li>%NIFTYSAVE_API_URL%</li>
         </ul>
       </main>
     </div>

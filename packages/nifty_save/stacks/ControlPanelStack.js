@@ -7,14 +7,12 @@ export default class ControlPanelStack extends sst.Stack {
     const site = new sst.NextjsSite(this, 'NextSite', {
       path: 'frontend',
       environment: {
-        NIFTYSAVE_API_ENDPOINT: api.url,
+        NIFTYSAVE_API_URL: api.url || 'yoyoyoyo',
       },
     })
-
     site.attachPermissions([api])
-
     this.addOutputs({
-      SiteUrl: site.url,
+      ControlPanelURL: site.url,
     })
   }
 }
