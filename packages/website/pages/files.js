@@ -406,12 +406,9 @@ export default function Files({ user }) {
  *
  * @param {{cid: string, type?: string}} props
  */
-function GatewayLink({ cid }) {
-  // const gatewayLink = cid.startsWith('Qm')
-  //   ? `https://ipfs.io/ipfs/${cid}`
-  //   : `ipfs://${cid}`
-  // const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
-  const href = `https://ipfs.io/ipfs/${cid}`
+function GatewayLink({ cid, type }) {
+  const gatewayLink = `https://ipfs.io/ipfs/${cid}`
+  const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
   return (
     <a title="View IPFS Url" href={href} target="_blank" rel="noreferrer">
       View
