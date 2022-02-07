@@ -20,7 +20,11 @@ export async function pinsList(event, ctx) {
   if (result.error) {
     return new JSONResponse(result.error, { status: 400 })
   } else {
-    const params = result.data
+    /** @type {ListUploadsOptions} */
+    const params = {
+      ...result.data,
+      type: ['Remote'],
+    }
 
     // Query database
     const data = await db.listUploads(user.id, params)

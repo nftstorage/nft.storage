@@ -1,5 +1,19 @@
 # Changelog
 
+### [5.2.4](https://github.com/nftstorage/nft.storage/compare/client-v5.2.3...client-v5.2.4) (2022-02-03)
+
+
+### Bug Fixes
+
+* add pre-bundled esm build to package exports ([#1234](https://github.com/nftstorage/nft.storage/issues/1234)) ([05c5b96](https://github.com/nftstorage/nft.storage/commit/05c5b96eac977a4d078ae0164f01cb9376dd899c))
+
+### [5.2.3](https://github.com/nftstorage/nft.storage/compare/client-v5.2.2...client-v5.2.3) (2022-02-03)
+
+
+### Bug Fixes
+
+* client close blockstore on store directory and store blob ([#1198](https://github.com/nftstorage/nft.storage/issues/1198)) ([50210f0](https://github.com/nftstorage/nft.storage/commit/50210f03c4032a96e0b95df0f5189711c97ac5ca))
+
 ### [5.2.2](https://github.com/nftstorage/nft.storage/compare/client-v5.2.1...client-v5.2.2) (2022-01-24)
 
 

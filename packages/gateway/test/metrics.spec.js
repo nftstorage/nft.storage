@@ -21,6 +21,13 @@ test('Gets Metrics content when empty state', async (t) => {
     true
   )
   t.is(metricsResponse.includes('nftgateway_winner_requests_total'), true)
+  t.is(metricsResponse.includes(`_responses_content_length_total{le=`), true)
+  t.is(
+    metricsResponse.includes(
+      `_responses_content_length_bytes_total{env="test"} 0`
+    ),
+    true
+  )
   gateways.forEach((gw) => {
     t.is(
       metricsResponse.includes(`_requests_total{gateway="${gw}",env="test"} 0`),
@@ -54,7 +61,23 @@ test('Gets Metrics content when empty state', async (t) => {
 test('Gets Metrics content', async (t) => {
   const { mf } = t.context
 
-  // Trigger two requests
+  let response = await mf.dispatchFetch('http://localhost:8787/metrics')
+  let metricsResponse = await response.text()
+
+  t.is(
+    metricsResponse.includes(
+      `_responses_content_length_total{le="524288",env="test"} 0`
+    ),
+    true
+  )
+  t.is(
+    metricsResponse.includes(
+      `_responses_content_length_bytes_total{env="test"} 0`
+    ),
+    true
+  )
+
+  // Trigger two requests with content length of 23 each
   const p = await Promise.all([
     mf.dispatchFetch(
       'http://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq.ipfs.localhost:8787'
@@ -67,8 +90,21 @@ test('Gets Metrics content', async (t) => {
   // Wait for waitUntil
   await Promise.all(p.map((p) => p.waitUntil()))
 
-  const response = await mf.dispatchFetch('http://localhost:8787/metrics')
-  const metricsResponse = await response.text()
+  response = await mf.dispatchFetch('http://localhost:8787/metrics')
+  metricsResponse = await response.text()
+
+  t.is(
+    metricsResponse.includes(
+      `_responses_content_length_total{le="524288",env="test"} 2`
+    ),
+    true
+  )
+  t.is(
+    metricsResponse.includes(
+      `_responses_content_length_bytes_total{env="test"} 46`
+    ),
+    true
+  )
 
   gateways.forEach((gw) => {
     t.is(
@@ -141,6 +177,12 @@ test('Counts failures', async (t) => {
   t.is(
     metricsResponse.includes(
       `_failed_requests_total{gateway="${gateways[2]}",env="test"} 2`
+    ),
+    true
+  )
+  t.is(
+    metricsResponse.includes(
+      `_requests_by_status_total{gateway="${gateways[2]}",env="test",status="524"} 2`
     ),
     true
   )

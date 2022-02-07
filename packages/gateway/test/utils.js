@@ -15,6 +15,10 @@ export function getMiniflare() {
   })
 }
 
-export function getCIDsTracker() {
+export function getCIDsTrackerName() {
   return 'CIDSTRACKER'
+}
+
+export function getGatewayRateLimitsName() {
+  return 'GATEWAYRATELIMITS'
 }

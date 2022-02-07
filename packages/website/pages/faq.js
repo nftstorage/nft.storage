@@ -37,7 +37,7 @@ const faqs = [
     content: faqContent.dataStorageLength,
   },
   {
-    question: 'Are there any size restrictions for stored NFTs?',
+    question: 'What are the upload or file size restrictions on NFT.storage?',
     content: faqContent.nftSizeRestrictions,
   },
   {

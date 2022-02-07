@@ -34,6 +34,7 @@ const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
  * @typedef {import('./lib/interface.js').Deal} Deal
  * @typedef {import('./lib/interface.js').Pin} Pin
  * @typedef {import('./lib/interface.js').CarReader} CarReader
+ * @typedef {import('ipfs-car/blockstore').Blockstore} BlockstoreI
  */
 
 /**
@@ -99,9 +100,18 @@ class NFTStorage {
    * @returns {Promise<CIDString>}
    */
   static async storeBlob(service, blob) {
-    const { cid, car } = await NFTStorage.encodeBlob(blob)
-    await NFTStorage.storeCar(service, car)
-    return cid.toString()
+    const blockstore = new Blockstore()
+    let cidString
+
+    try {
+      const { cid, car } = await NFTStorage.encodeBlob(blob, { blockstore })
+      await NFTStorage.storeCar(service, car)
+      cidString = cid.toString()
+    } finally {
+      await blockstore.close()
+    }
+
+    return cidString
   }
 
   /**
@@ -177,9 +187,20 @@ class NFTStorage {
    * @returns {Promise<CIDString>}
    */
   static async storeDirectory(service, files) {
-    const { cid, car } = await NFTStorage.encodeDirectory(files)
-    await NFTStorage.storeCar(service, car)
-    return cid.toString()
+    const blockstore = new Blockstore()
+    let cidString
+
+    try {
+      const { cid, car } = await NFTStorage.encodeDirectory(files, {
+        blockstore,
+      })
+      await NFTStorage.storeCar(service, car)
+      cidString = cid.toString()
+    } finally {
+      await blockstore.close()
+    }
+
+    return cidString
   }
 
   /**
@@ -347,14 +368,18 @@ class NFTStorage {
    * ```
    *
    * @param {Blob} blob
+   * @param {object} [options]
+   * @param {BlockstoreI} [options.blockstore]
    * @returns {Promise<{ cid: CID, car: CarReader }>}
    */
-  static async encodeBlob(blob) {
+  static async encodeBlob(blob, { blockstore } = {}) {
     if (blob.size === 0) {
       throw new Error('Content size is 0, make sure to provide some content')
     }
-
-    return packCar([{ path: 'blob', content: blob.stream() }], false)
+    return packCar([{ path: 'blob', content: blob.stream() }], {
+      blockstore,
+      wrapWithDirectory: false,
+    })
   }
 
   /**
@@ -378,9 +403,11 @@ class NFTStorage {
    * ```
    *
    * @param {Iterable<File>} files
+   * @param {object} [options]
+   * @param {BlockstoreI} [options.blockstore]
    * @returns {Promise<{ cid: CID, car: CarReader }>}
    */
-  static async encodeDirectory(files) {
+  static async encodeDirectory(files, { blockstore } = {}) {
     const input = []
     let size = 0
     for (const file of files) {
@@ -394,7 +421,10 @@ class NFTStorage {
       )
     }
 
-    return packCar(input, true)
+    return packCar(input, {
+      blockstore,
+      wrapWithDirectory: true,
+    })
   }
 
   // Just a sugar so you don't have to pass around endpoint and token around.
@@ -604,10 +634,13 @@ For more context please see ERC-721 specification https://eips.ethereum.org/EIPS
 
 /**
  * @param {Array<{ path: string, content: import('./platform.js').ReadableStream }>} input
- * @param {boolean} wrapWithDirectory
+ * @param {object} [options]
+ * @param {BlockstoreI} [options.blockstore]
+ * @param {boolean} [options.wrapWithDirectory]
  */
-const packCar = async (input, wrapWithDirectory) => {
-  const blockstore = new Blockstore()
+const packCar = async (input, { blockstore, wrapWithDirectory } = {}) => {
+  /* c8 ignore next 1 */
+  blockstore = blockstore || new Blockstore()
   const { root: cid } = await pack({ input, blockstore, wrapWithDirectory })
   const car = new BlockstoreCarReader(1, [cid], blockstore)
   return { cid, car }
