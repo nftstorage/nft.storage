@@ -195,6 +195,10 @@ export class DBClient {
       query = query.in('source_cid', opts.cid)
     }
 
+    if (opts.type) {
+      query = query.in('type', opts.type)
+    }
+
     if (opts.name && match === 'exact') {
       query = query.like('name', `${opts.name}`)
     }
