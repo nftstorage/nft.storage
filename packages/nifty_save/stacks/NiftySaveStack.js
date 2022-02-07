@@ -2,6 +2,7 @@ import * as sst from '@serverless-stack/resources'
 
 import { Function, Table, TableFieldType } from '@serverless-stack/resources'
 
+import { App } from 'aws-cdk-lib'
 import { LayerVersion } from 'aws-cdk-lib/aws-lambda'
 
 export default class NiftySaveStack extends sst.Stack {
@@ -234,6 +235,8 @@ export default class NiftySaveStack extends sst.Stack {
         },
       }
     }
+
+    this.apiEndpoint = api.url
 
     //     this.addDefaultFunctionLayers(functionLayers)
     //     this.addDefaultFunctionEnv(lambdaEnvVars)

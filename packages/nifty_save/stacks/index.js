@@ -2,7 +2,7 @@ import ControlPanelStack from './ControlPanelStack'
 import NiftySaveStack from './NiftySaveStack'
 export default function main(app) {
   // Set default runtime for all functions
-  app.setDefaultFunctionProps((stack) => ({
+  app.setDefaultFunctionProps(stack => ({
     runtime: 'nodejs14.x',
     environment: {
       HASURA_URL: process.env.HASURA_URL,
@@ -11,5 +11,8 @@ export default function main(app) {
   }))
 
   const niftysave = new NiftySaveStack(app, 'niftysave-stack')
-  const controlpanel = new ControlPanelStack(app, 'controlpanel-stack')
+
+  const controlpanel = new ControlPanelStack(app, 'controlpanel-stack', {
+    apiEndpoint: niftysave.apiEndpoint,
+  })
 }

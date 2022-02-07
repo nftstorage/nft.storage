@@ -4,13 +4,15 @@ export default class ControlPanelStack extends sst.Stack {
   constructor(scope, id, props) {
     super(scope, id, props)
 
-    const { api, auth, bucket } = props
+    console.log(props)
 
     // Define our React app
     const site = new sst.NextjsSite(this, 'NextSite', {
       path: 'frontend',
       // Pass in our environment variables
-      environment: {},
+      environment: {
+        NIFTYSAVE_API_ENDPOINT: scope.niftysaveApiUrl,
+      },
     })
 
     // Show the url in the output
