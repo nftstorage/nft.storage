@@ -1,5 +1,6 @@
 {
   "name": "nifty-save",
   "region": "us-east-1",
-  "main": "stacks/index.js"
+  "main": "stacks/index.js",
+  "lint": true
 }

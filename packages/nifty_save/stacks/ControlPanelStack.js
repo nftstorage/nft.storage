@@ -11,6 +11,8 @@ export default class ControlPanelStack extends sst.Stack {
       },
     })
 
+    site.attachPermissions([api])
+
     this.addOutputs({
       SiteUrl: site.url,
     })

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "sst-env -- next dev",
+    "start-site": "(cd frontend && yarn dev)",
     "test": "sst test",
     "start": "sst start --outputs-file=cdk.json",
     "build": "sst build",
