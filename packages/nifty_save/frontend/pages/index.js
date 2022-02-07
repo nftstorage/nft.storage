@@ -2,8 +2,17 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
-export default function Home() {
-  console.log(process.env.NIFTYSAVE_API_URL)
+export async function getStaticProps() {
+  console.log('url', process.env.NIFTYSAVE_API_URL)
+  return {
+    props: {
+      NIFTYSAVE_API_URL: process.env.NIFTYSAVE_API_URL,
+    },
+  }
+}
+
+export default function Home(props) {
+  const { NIFTYSAVE_API_URL } = props
   return (
     <div className={styles.container}>
       <Head>
@@ -15,7 +24,7 @@ export default function Home() {
       <main className={styles.main}>
         <ul>
           <li>NIFTYSAVE_API_URL</li>
-          <li>{`${process.env.NIFTYSAVE_API_URL}`}</li>
+          <li>{`${NIFTYSAVE_API_URL}`}</li>
           <li>%NIFTYSAVE_API_URL%</li>
         </ul>
       </main>
