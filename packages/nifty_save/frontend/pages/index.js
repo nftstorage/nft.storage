@@ -1,5 +1,9 @@
+import { Canvas, Edge, Icon, Label, MarkerArrow, Node, Port } from 'reaflow'
+
+import ApiGatewayIcon from 'react-aws-icons/dist/aws/logo/APIGateway'
 import Head from 'next/head'
-import Image from 'next/image'
+import SQSIcon from 'react-aws-icons/dist/aws/logo/SQS'
+import { icons } from '../components/icons'
 import styles from '../styles/Home.module.css'
 
 export async function getStaticProps() {
@@ -13,6 +17,54 @@ export async function getStaticProps() {
 
 export default function Home(props) {
   const { NIFTYSAVE_API_URL } = props
+
+  const iconWH = { height: 30, width: 30 }
+
+  const nodes = [
+    {
+      id: '1',
+      text: 'Node 1',
+      icon: {
+        url: icons.gateway,
+        ...iconWH,
+      },
+    },
+    {
+      id: '2',
+      text: 'Thing',
+      icon: {
+        url: icons.sqs,
+        ...iconWH,
+      },
+    },
+    {
+      id: '3',
+      text: 'Thing',
+      icon: {
+        url: icons.lambda,
+        ...iconWH,
+      },
+    },
+  ]
+  const edges = []
+
+  const canvas = typeof window !== 'undefined' && (
+    <Canvas
+      nodes={nodes}
+      edges={edges}
+      node={
+        <Node
+          icon={<Icon />}
+          style={{ stroke: '#1a192b', fill: 'white', strokeWidth: 1 }}
+          label={<Label style={{ fill: 'black' }} />}
+          port={
+            <Port style={{ fill: 'blue', stroke: 'white' }} rx={10} ry={10} />
+          }
+        />
+      }
+    />
+  )
+
   return (
     <div className={styles.container}>
       <Head>
@@ -21,13 +73,11 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <ul>
-          <li>NIFTYSAVE_API_URL</li>
-          <li>{`${NIFTYSAVE_API_URL}`}</li>
-          <li>%NIFTYSAVE_API_URL%</li>
-        </ul>
-      </main>
+      <div
+        style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}
+      >
+        {canvas}
+      </div>
     </div>
   )
 }
