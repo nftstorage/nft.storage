@@ -236,7 +236,8 @@ export default class NiftySaveStack extends sst.Stack {
       }
     }
 
-    this.apiEndpoint = api.url
+    //expose api
+    this.api = api
 
     //     this.addDefaultFunctionLayers(functionLayers)
     //     this.addDefaultFunctionEnv(lambdaEnvVars)

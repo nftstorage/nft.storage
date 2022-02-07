@@ -13,6 +13,6 @@ export default function main(app) {
   const niftysave = new NiftySaveStack(app, 'niftysave-stack')
 
   const controlpanel = new ControlPanelStack(app, 'controlpanel-stack', {
-    apiEndpoint: niftysave.apiEndpoint,
+    api: niftysave.api,
   })
 }
