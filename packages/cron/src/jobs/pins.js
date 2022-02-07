@@ -3,6 +3,11 @@ import { consume, transform, pipeline } from 'streaming-iterables'
 
 const log = debug('pins:updatePinStatuses')
 const CONCURRENCY = 5
+/**
+ * 8k max request length to cluster for statusAll, we hit this at around 126 CIDs
+ * http://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers
+ */
+const MAX_CLUSTER_STATUS_CIDS = 120
 const CLUSTERS = ['IpfsCluster', 'IpfsCluster2', 'IpfsCluster3']
 
 /**
@@ -113,7 +118,7 @@ UPDATE pin AS p
  * }} config
  */
 async function updatePinStatuses(config) {
-  const { countPins, fetchPins, pg, cluster2, cluster3 } = config
+  const { countPins, fetchPins, pg, cluster3 } = config
   if (!log.enabled) {
     console.log('ℹ️ Enable logging by setting DEBUG=pins:updatePinStatuses')
   }
@@ -135,27 +140,26 @@ async function updatePinStatuses(config) {
         offset += limit
       }
     },
+    async function* (source) {
+      for await (let pins of source) {
+        // TODO: remove filter when nft2 has finished copying to nft3
+        pins = pins.filter((p) => p.service !== 'IpfsCluster2')
+        // Split into chunks of MAX_CLUSTER_STATUS_CIDS
+        while (pins.length) {
+          yield pins.slice(0, MAX_CLUSTER_STATUS_CIDS)
+          pins = pins.slice(MAX_CLUSTER_STATUS_CIDS)
+        }
+      }
+    },
     transform(CONCURRENCY, async (pins) => {
       /** @type {Pin[]} */
       const updatedPins = []
+      const cids = pins.map((p) => p.content_cid)
+      const statuses = await cluster3.statusAll({ cids })
+      const statusByCid = Object.fromEntries(statuses.map((s) => [s.cid, s]))
+
       for (const pin of pins) {
-        /** @type {import('@nftstorage/ipfs-cluster/dist/src/interface').StatusResponse} */
-        let statusRes
-
-        switch (pin.service) {
-          case 'IpfsCluster':
-            statusRes = await cluster3.status(pin.content_cid)
-            break
-          case 'IpfsCluster2':
-            statusRes = await cluster2.status(pin.content_cid)
-            break
-          case 'IpfsCluster3':
-            statusRes = await cluster3.status(pin.content_cid)
-            break
-          default:
-            throw new Error(`Service ${pin.service} not supported.`)
-        }
-
+        const statusRes = statusByCid[pin.content_cid]
         const pinInfos = Object.values(statusRes.peerMap)
 
         /** @type {Pin['status']} */
