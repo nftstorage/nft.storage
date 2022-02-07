@@ -352,7 +352,9 @@ async function updateCidsTracker(request, env, responses, cid) {
 function getDurableRequestUrl(request, route, data) {
   const reqUrl = new URL(
     route,
-    request.url.startsWith('http') ? request.url : `http://${request.url}`
+    request.url.startsWith('http') || request.url.startsWith('https')
+      ? request.url
+      : `https://${request.url}`
   )
   const headers = new Headers()
   headers.append('Content-Type', 'application/json')
