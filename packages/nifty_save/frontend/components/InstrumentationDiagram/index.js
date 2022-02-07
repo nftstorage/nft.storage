@@ -1,5 +1,6 @@
 import { Canvas, Edge, Icon, Label, MarkerArrow, Node, Port } from 'reaflow'
 
+import FlowDiagram from './FlowDiagram'
 import { icons } from './icons'
 
 export default function InstrumentationDiagram(props) {
@@ -80,8 +81,17 @@ export default function InstrumentationDiagram(props) {
   )
 
   return (
-    <div>
-      <button onClick={sendTimeRangeToSlicer}>Send Timerange</button>
+    <div
+      style={{
+        backgroundColor: '#000',
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+      }}
+    >
+      <FlowDiagram />
     </div>
   )
 }

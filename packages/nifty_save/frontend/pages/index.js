@@ -1,5 +1,5 @@
 import Head from 'next/head'
-
+import InstrumentationDiagram from '../components/InstrumentationDiagram'
 export async function getStaticProps() {
   console.log('url', process.env.NIFTYSAVE_API_URL)
   return {
@@ -12,24 +12,6 @@ export async function getStaticProps() {
 export default function Home(props) {
   const { NIFTYSAVE_API_URL } = props
 
-  const sendTimeRangeToSlicer = async () => {
-    await fetch(
-      'https://v3ooz5obj9.execute-api.us-east-1.amazonaws.com/ingest/slice-queue/fill',
-      {
-        body: JSON.stringify({
-          timesliceSize: 6000000,
-          rangeStartTime: '2019-6-1',
-          rangeEndTime: '2019-6-2',
-          source: 'the-graph',
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-      }
-    )
-  }
-
   return (
     <div>
       <Head>
@@ -41,9 +23,7 @@ export default function Home(props) {
         <meta name="description" content="Niftysave Tools" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>
-        <button onClick={sendTimeRangeToSlicer}>Send Timerange</button>
-      </div>
+      <InstrumentationDiagram apiUrl={NIFTYSAVE_API_URL} />
     </div>
   )
 }
