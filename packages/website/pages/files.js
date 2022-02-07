@@ -332,9 +332,76 @@ export default function Files({ user }) {
                       <thead>
                         <tr className="bg-nsgray">
                           <th className="">Date</th>
-                          <th className="">CID</th>
-                          <th className="">Pin Status</th>
-                          <th className="">Storage Providers</th>
+                          <th className="">
+                            <span aria-describedby="cid-tooltip">
+                              CID
+                              <Tooltip
+                                placement="top"
+                                overlay={
+                                  <span>
+                                    The content identifier for a file or piece
+                                    of data.{' '}
+                                    <a
+                                      href="https://nftschool.dev/concepts/content-addressing/"
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Learn more
+                                    </a>
+                                  </span>
+                                }
+                                overlayClassName="table-tooltip"
+                                id="cid-tooltip"
+                              >
+                                <VscQuestion size={16} className="" />
+                              </Tooltip>
+                            </span>
+                          </th>
+                          <th className="">
+                            <span aria-describedby="pin-status-tooltip">
+                              Pin Status
+                              <Tooltip
+                                placement="top"
+                                overlay={
+                                  <span>
+                                    Reports the status of a file or piece of
+                                    data stored on the IPFS Cluster. Status
+                                    might not be fully up-to-date. Data is still
+                                    available even when still in Queued state.
+                                  </span>
+                                }
+                                overlayClassName="table-tooltip"
+                                id="pin-status-tooltip"
+                              >
+                                <VscQuestion size={16} className="" />
+                              </Tooltip>
+                            </span>
+                          </th>
+                          <th className="">
+                            <span aria-describedby="pin-status-tooltip">
+                              Storage Providers
+                              <Tooltip
+                                placement="top"
+                                overlay={
+                                  <span>
+                                    Service providers offering storage capacity
+                                    to the Filecoin network.{' '}
+                                    <a
+                                      href="https://nftschool.dev/concepts/content-persistence/"
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Learn more
+                                    </a>
+                                  </span>
+                                }
+                                overlayClassName="table-tooltip"
+                                id="pin-status-tooltip"
+                              >
+                                <VscQuestion size={16} className="" />
+                              </Tooltip>
+                            </span>
+                          </th>
                           <th className="">Size</th>
                           <th className="">
                             <span className="sr-only">File Actions</span>
