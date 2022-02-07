@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.23.1](https://github.com/nftstorage/nft.storage/compare/website-v1.23.0...website-v1.23.1) (2022-02-07)
+
+
+### Bug Fixes
+
+* edit to roadmap blog post ([#1209](https://github.com/nftstorage/nft.storage/issues/1209)) ([630b32a](https://github.com/nftstorage/nft.storage/commit/630b32a13029482b5bcf696153e6c136429aaef1))
+* gateway link for nft type uploads ([#1268](https://github.com/nftstorage/nft.storage/issues/1268)) ([a413a6b](https://github.com/nftstorage/nft.storage/commit/a413a6b46008f395304c0f22228d6c664c40c90e))
+
 ## [1.23.0](https://github.com/nftstorage/nft.storage/compare/website-v1.22.2...website-v1.23.0) (2022-01-31)
 
 
