@@ -1,14 +1,13 @@
 /* eslint-env serviceworker, browser */
 /* global Response caches */
 
-import pAny from 'p-any'
+import pAny, { AggregateError } from 'p-any'
 import { FilterError } from 'p-some'
 import pSettle from 'p-settle'
 
 import { TimeoutError } from './errors.js'
 import { getCidFromSubdomainUrl } from './utils/cid.js'
 import {
-  ABORT_ERR_CODE,
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
   REDIRECT_COUNTER_METRICS_ID,
@@ -23,6 +22,7 @@ import {
  * @property {string} url
  * @property {number} [responseTime]
  * @property {string} [requestPreventedCode]
+ * @property {boolean} [aborted]
  *
  * @typedef {import('./env').Env} Env
  */
@@ -126,7 +126,7 @@ export async function gatewayGet(request, env, ctx) {
     }
 
     // Return the error response from gateway, error is not from nft.storage Gateway
-    if (err instanceof FilterError) {
+    if (err instanceof FilterError || err instanceof AggregateError) {
       const candidateResponse = responses.find((r) => r.value?.response)
 
       // Return first response with upstream error
@@ -135,7 +135,7 @@ export async function gatewayGet(request, env, ctx) {
       }
 
       // Gateway timeout
-      if (responses[0].reason?.code === ABORT_ERR_CODE) {
+      if (responses[0].value?.aborted) {
         throw new TimeoutError()
       }
     }
@@ -198,6 +198,14 @@ async function gatewayFetch(
       signal: controller.signal,
       headers: getHeaders(request),
     })
+  } catch (error) {
+    if (controller.signal.aborted) {
+      return {
+        url: gwUrl,
+        aborted: true,
+      }
+    }
+    throw error
   } finally {
     clearTimeout(timer)
   }
@@ -308,6 +316,10 @@ async function updateGatewayMetrics(
   gwResponse,
   isWinner = false
 ) {
+  if (!gwResponse.response?.status && !gwResponse.requestPreventedCode) {
+    return
+  }
+
   // Get durable object for gateway
   const id = env.gatewayMetricsDurable.idFromName(gwResponse.url)
   const stub = env.gatewayMetricsDurable.get(id)
