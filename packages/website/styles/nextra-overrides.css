@@ -41,3 +41,7 @@
 .nextra-container .docs-container ul li {
   font-family: var(--sansserif);
 }
+
+.nextra-container .overflow-wrap-breakword {
+  overflow-wrap: break-word;
+}

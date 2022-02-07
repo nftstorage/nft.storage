@@ -25,9 +25,9 @@ IPFS uses a technique called [content addressing][ipfs-docs-concepts-cid] to uni
 
 A CID usually looks something like this:
 
-```
+<code class="overflow-wrap-breakword">
 bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy
-```
+</code>
 
 If your NFTs use [IPFS best practices][ipfs-docs-nft-best-practices], the link from the blockchain to your IPFS data will be in the form of a URI that looks like this:
 
@@ -43,7 +43,7 @@ Some IPFS addresses also have a **path** component following the CID, like this:
 ipfs://bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif
 ```
 
-Here the `/amazing.gif` path points to an image file that's "inside" the IPFS directory with the CID `bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy`. 
+Here the `/amazing.gif` path points to an image file that's "inside" the IPFS directory with the CID <code class="overflow-wrap-breakword">bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy</code>. 
 
 URLs with the `ipfs://` prefix can be used directly with a browser that supports IPFS like [Brave](https://brave.com). Once you've [configured IPFS support][brave-ipfs], you can just paste an `ipfs://` URL into your address bar and see content in your browser.
 
@@ -62,7 +62,7 @@ You can often find this information on NFT marketplaces and other NFT explorer s
 
 ![Screenshot of OpenSea web ui showing a metadata link for an NFT](/images/opensea-nft-details.png).
 
-In the example above, the metadata link is https://ipfs.io/ipfs/bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi, which is an IPFS gateway URL that uses the public gateway at `https://ipfs.io`.
+In the example above, the metadata link is <span className="overflow-wrap-breakword">https://ipfs.io/ipfs/bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi</span>, which is an IPFS gateway URL that uses the public gateway at `https://ipfs.io`.
 
 You might see a different gateway host instead of `ipfs.io`, or a different kind of [IPFS address](#understanding-ipfs-addresses) depending on how your NFT was created and which platform you're using to view it. That's totally fine! All we need is the Content Identifier (CID), which is the random-looking string after `/ipfs` in the example above.
 
@@ -96,7 +96,7 @@ https://dweb.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpj
 
 These are gateway URLs, which link to IPFS data using an HTTP gateway provider. Gateways provide a bridge between the peer-to-peer IPFS protocol and the HTTP protocol supported by all web browsers.
 
-You can turn any `ipfs://` URL into a gateway URL by [choosing a gateway][public-gateway-checker] and replacing the `ipfs://` prefix with `https://<gateway-host>/ipfs/`. For example, to use the gateway at `dweb.link`, you could create the URL https://dweb.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif. Clicking that link should take you to an image served by the gateway host.
+You can turn any `ipfs://` URL into a gateway URL by [choosing a gateway][public-gateway-checker] and replacing the `ipfs://` prefix with `https://<gateway-host>/ipfs/`. For example, to use the gateway at `dweb.link`, you could create the URL <span className="overflow-wrap-breakword">https://dweb.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif</span>. Clicking that link should take you to an image served by the gateway host.
 
 ## Option: Running IPFS on your computer
 
@@ -106,7 +106,7 @@ Once you have the `ipfs` command installed, you can download any IPFS data to yo
 
 Running `ipfs get <cid>` (replacing `<cid>` with the CID for your content) will download a copy of the referenced data to your local computer. 
 
-You can also include a **path** after the CID, just as you can with IPFS URLs. So for example, `ipfs get bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif` will download the file `amazing.gif`.
+You can also include a **path** after the CID, just as you can with IPFS URLs. So for example, <code class="overflow-wrap-breakword">ipfs get bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif</code> will download the file `amazing.gif`.
 
 While `ipfs get` is great for viewing your files, you can also add them to your local IPFS "repository", so that other users on the IPFS network can fetch the data directly from your computer. To do so, use the `ipfs pin add` command to tell your local IPFS node to fetch and "pin" the content:
 
@@ -137,7 +137,7 @@ The first step is to [find the IPFS address of the NFT's metadata](#finding-the-
 
 2. Download an IPFS Content Archive (CAR) using the metadata address
 
-Find the CID portion of the address you found in step 1. For example, if your NFT has the URI `ipfs://bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi`, you just need the `bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi` part. See [Understanding IPFS addresses](#understanding-ipfs-addresses) for more about CIDs.
+Find the CID portion of the address you found in step 1. For example, if your NFT has the URI <code class="overflow-wrap-breakword">ipfs://bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi`, you just need the `bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi</code> part. See [Understanding IPFS addresses](#understanding-ipfs-addresses) for more about CIDs.
 
 Using the CID, you can download an IPFS Content Archive file (CAR), which contains the data exactly as it was encoded for storage on IPFS and Filecoin. This is important, because the same file can produce multiple different CIDs, depending on how it was encoded when adding to IPFS. By downloading a CAR, you preserve all the original CIDs and make it possible to re-provide the data in exactly the format it was in when the NFT was minted.
 

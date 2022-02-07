@@ -67,7 +67,7 @@ node index.mjs // or index.js
 
 For more examples please see the [examples directory in the project repository][examples directory], which contains sample projects for both [browsers][examples.browser] and [Node.js][examples.node].
 
-[raw http api]: https://nft.storage/#api-docs
+[raw http api]: ../client/api-docs/
 [node.js]: https://nodejs.org/
 [api documentation]: https://nftstorage.github.io/nft.storage/client/
 [examples directory]: https://github.com/nftstorage/nft.storage/tree/main/packages/client/examples

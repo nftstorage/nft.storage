@@ -37,7 +37,8 @@ To preserve filenames, or to upload multiple related files at once, use the [`st
 
 It's important to note that `storeDirectory` returns the CID of the directory listing, and you'll need to append the filename to the CID to construct links to the files themselves.
 
-For example, storing an image named `pinpie.jpg` using `storeDirectory` might return the CID `bafybeiajdopsmspomlrpaohtzo5sdnpknbolqjpde6huzrsejqmvijrcea`. If you [view this CID on an HTTP gateway](https://bafybeiajdopsmspomlrpaohtzo5sdnpknbolqjpde6huzrsejqmvijrcea.ipfs.dweb.link), you should see a directory listing page with a link to the file `pinpie.jpg`.
+For example, storing an image named `pinpie.jpg` using `storeDirectory` might return the CID
+<code class="overflow-wrap-breakword">bafybeiajdopsmspomlrpaohtzo5sdnpknbolqjpde6huzrsejqmvijrcea</code>. If you [view this CID on an HTTP gateway](https://bafybeiajdopsmspomlrpaohtzo5sdnpknbolqjpde6huzrsejqmvijrcea.ipfs.dweb.link), you should see a directory listing page with a link to the file `pinpie.jpg`.
 
 To link to the image, you'll need to add `/pinpie.jpg` to the CID to create a valid IPFS URI:
 
@@ -183,7 +184,7 @@ If you do include HTTP links, use them _in addition_ to IPFS URIs, as an optimiz
 
 There are several different ways to refer to data on IPFS, all of which involve a Content Identifier or CID. 
 
-If you're writing your own contract, you may be tempted to store IPFS CIDs in their binary form, which uses a bit less storage space than a string-encoded CID like `bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi`.
+If you're writing your own contract, you may be tempted to store IPFS CIDs in their binary form, which uses a bit less storage space than a string-encoded CID like <code class="overflow-wrap-breakword">bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi`</code>
 
 While it's true that a binary CID uses a bit less memory than the equivalent string encoding, in many cases it doesn't actually matter in practice. On platforms like the Ethereum Virtual Machine where the minimum storage allocation is 256 bits, both forms of CID require the same amount of actual on-chain storage space. In some cases it can be _more_ expensive to store binary CIDs, for example, if you need to convert to the string form inside a contract.
 

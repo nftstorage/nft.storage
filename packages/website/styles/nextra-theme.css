@@ -230,6 +230,12 @@
 .nextra-container .icons {
   margin: 1rem 0;
 }
+.nextra-container .icons p img {
+  display: inline-block;
+}
+.nextra-container .icons p a {
+  display: inline-block;
+}
 .nextra-container .icons img {
   margin: 0;
 }
