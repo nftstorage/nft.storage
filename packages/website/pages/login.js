@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Router, { useRouter } from 'next/router'
+import Router from 'next/router'
 import { loginEmail, loginSocial } from '../lib/magic.js'
 import countly from '../lib/countly'
 import Button from '../components/button.js'
@@ -21,7 +21,6 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState('')
   const [disabled, setDisabled] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
-  const { query } = useRouter()
 
   /**
    * @param {import('react').ChangeEvent<HTMLFormElement>} e

@@ -74,7 +74,7 @@ export default function ManageKeys({ user }) {
     setCopied(key)
   }
 
-  let keys = []
+  const keys = []
 
   for (const key of data || []) {
     keys.push([key.name, key.secret, key.id])
