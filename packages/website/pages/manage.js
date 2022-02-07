@@ -6,7 +6,6 @@ import { useQuery, useQueryClient } from 'react-query'
 import Button from '../components/button.js'
 import Loading from '../components/loading.js'
 import countly from '../lib/countly.js'
-import { useRouter } from 'next/router'
 
 /**
  *
@@ -30,12 +29,10 @@ export function getStaticProps() {
  * @returns
  */
 export default function ManageKeys({ user }) {
-  const router = useRouter()
-  const version = /** @type {string} */ (router.query.version)
   const [deleting, setDeleting] = useState('')
   const [copied, setCopied] = useState('')
   const queryClient = useQueryClient()
-  const { status, data } = useQuery('get-tokens', () => getTokens(version), {
+  const { status, data } = useQuery('get-tokens', () => getTokens(), {
     enabled: !!user,
   })
   useEffect(() => {
@@ -58,7 +55,7 @@ export default function ManageKeys({ user }) {
       setDeleting(name)
 
       try {
-        await deleteToken(name, version)
+        await deleteToken(name)
       } finally {
         await queryClient.invalidateQueries('get-tokens')
         setDeleting('')
@@ -79,12 +76,8 @@ export default function ManageKeys({ user }) {
 
   let keys = []
 
-  if (version === '0') {
-    keys = Object.entries(data || {})
-  } else {
-    for (const key of data || []) {
-      keys.push([key.name, key.secret, key.id])
-    }
+  for (const key of data || []) {
+    keys.push([key.name, key.secret, key.id])
   }
 
   return (
@@ -100,7 +93,6 @@ export default function ManageKeys({ user }) {
               <Button
                 href={{
                   pathname: '/new-key',
-                  query: version ? { version } : null,
                 }}
                 className="flex-none"
                 id="new-key"
@@ -158,7 +150,7 @@ export default function ManageKeys({ user }) {
                                 type="hidden"
                                 name="name"
                                 id={`token-${t[0]}`}
-                                value={version === '0' ? t[0] : `${t[2]}`}
+                                value={`${t[2]}`}
                               />
                               <Button
                                 type="submit"
@@ -170,8 +162,7 @@ export default function ManageKeys({ user }) {
                                   ui: countly.ui.TOKENS,
                                 }}
                               >
-                                {deleting ===
-                                (version === '0' ? t[0] : `${t[2]}`)
+                                {deleting === `${t[2]}`
                                   ? 'Deleting...'
                                   : 'Delete'}
                               </Button>
