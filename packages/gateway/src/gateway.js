@@ -193,6 +193,12 @@ async function gatewayFetch(
       signal: controller.signal,
       headers: getHeaders(request),
     })
+  } catch (err) {
+    if (err.code === ABORT_ERR_CODE) {
+      return {
+        url: gwUrl,
+      }
+    }
   } finally {
     clearTimeout(timer)
   }
@@ -288,6 +294,10 @@ async function updateGatewayMetrics(
   gwResponse,
   isWinner = false
 ) {
+  if (!gwResponse.response?.status && !gwResponse.requestPreventedCode) {
+    return
+  }
+
   // Get durable object for gateway
   const id = env.gatewayMetricsDurable.idFromName(gwResponse.url)
   const stub = env.gatewayMetricsDurable.get(id)
