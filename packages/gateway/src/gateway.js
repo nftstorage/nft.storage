@@ -1,7 +1,7 @@
 /* eslint-env serviceworker, browser */
 /* global Response caches */
 
-import pAny from 'p-any'
+import pAny, { AggregateError } from 'p-any'
 import { FilterError } from 'p-some'
 import pSettle from 'p-settle'
 
@@ -126,7 +126,7 @@ export async function gatewayGet(request, env, ctx) {
     }
 
     // Return the error response from gateway, error is not from nft.storage Gateway
-    if (err instanceof FilterError) {
+    if (err instanceof FilterError || err instanceof AggregateError) {
       const candidateResponse = responses.find((r) => r.value?.response)
 
       // Return first response with upstream error
