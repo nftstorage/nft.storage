@@ -205,3 +205,15 @@
   background-color: #000;
   color: #fff;
 }
+
+.hidden-deals-trigger {
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  font-size: inherit;
+  padding: 0;
+}
+
+.hidden-deals {
+  max-width: 320px;
+}
