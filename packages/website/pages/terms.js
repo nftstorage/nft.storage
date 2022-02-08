@@ -100,7 +100,7 @@ export default function TermsOfService() {
           <HashLink id="storage-term">NFT.Storage Gateway</HashLink>
         </h2>
         <p className="lh-copy">
-          Use of the NFT.Storage Gateway ("the Gateway") is subject to the 
+          Use of the NFT.Storage Gateway (“the Gateway”) is subject to the 
           Terms of Service of {' '}
           <a className="black" href="https://discuss.ipfs.io/tos">
             IPFS.io
