@@ -16,10 +16,6 @@ export default function Home(props) {
     <div>
       <Head>
         <title>Niftysave Tools</title>
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
-        ></link>
         <meta name="description" content="Niftysave Tools" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

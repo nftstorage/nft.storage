@@ -1,0 +1,225 @@
+/* vars*/
+
+:root {
+  --nsblack: #000;
+  --nswhite: #fff;
+
+  --nsgray: #d8dad9;
+  --nsgray-50: #f7f7f7;
+  --nsgray-100: #d8dad9;
+  --nsgray-200: #bbbbbb;
+  --nsgray-300: #7d8492;
+  --nsgray-400: #888888;
+  --nsgray-500: #666666;
+  --nsgray-600: #3b4151;
+
+  --nsltblue: #eef7f6;
+  --nsblue: #47aed7;
+  --nsforest: #0a854c;
+  --nsgreen: #d3e7dc;
+  --nslime: #66fecb;
+  --nsnavy: #336bad;
+  --nsorange: #ee4116;
+  --nsorangred: #d53810;
+  --nspeach: #ffe1c5;
+  --nspink: #f7cdcf;
+  --nsred-100: #feebeb;
+  --nsred: #e11e2e;
+  --nsyellow: #e2ba36;
+
+  --nstitle: ChicagoFLF, sans-serif;
+  --sansserif: -apple-system, BlinkMacSystemFont, 'avenir next', avenir,
+    'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial,
+    sans-serif;
+  --nsmonospace: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  --bradius: 0px;
+  --bwidth: 1px;
+
+  --btn-ghost-x: -4px;
+  --btn-ghost-y: -4px;
+  --btn-ghost-x-hover: -1px;
+  --btn-ghost-y-hover: -1px;
+
+  --h2-size: 2em;
+  --h3-size: 2em;
+  --h4-size: 1.75em;
+  --h5-size: 1.5em;
+  --h6-size: 1.25em;
+}
+/* util */
+.grid {
+  display: grid;
+}
+
+/* type */
+@font-face {
+  font-family: ChicagoFLF;
+  src: url('/fonts/ChicagoFLF.woff2') format('woff2');
+  font-display: swap;
+}
+
+.chicagoflf {
+  font-family: var(--nstitle);
+}
+
+h2,
+.h2 {
+  font-size: var(--h2-size);
+}
+h3,
+.h3 {
+  font-size: var(--h3-size);
+}
+
+h4,
+.h4 {
+  font-size: var(--h4-size);
+}
+
+h5,
+.h5 {
+  font-size: var(--h5-size);
+}
+
+h6,
+.h6 {
+  font-size: var(--h6-size);
+}
+
+.btn {
+  display: flex;
+  justify-content: center;
+  margin-top: calc(var(--btn-ghost-y) * -1);
+  min-width: 7rem;
+  padding: 0.5rem;
+}
+
+.btn.small {
+  min-width: 0;
+}
+
+/*Use CSS for button variants*/
+
+.btn.dark {
+  color: var(--nswhite);
+  background-color: var(--nsblack);
+}
+
+.btn.light {
+  color: var(--nsblack);
+  background-color: var(--nswhite);
+}
+
+.btn.caution {
+  color: var(--nswhite);
+  background-color: var(--nsorangred);
+}
+
+.btn.small {
+  min-width: auto;
+}
+
+.icon-button.transparent {
+  cursor: pointer;
+  border: 0;
+  background-color: transparent;
+}
+
+.icon-button svg {
+  outline: 0;
+  height: 1rem;
+  width: 1rem;
+}
+
+/* decorators */
+.hologram {
+  text-decoration: none;
+  border: var(--bwidth) solid var(--nsblack);
+  box-shadow: var(--btn-ghost-x) var(--btn-ghost-y) 0px 0px var(--nsgray),
+    var(--btn-ghost-x) var(--btn-ghost-y) 0px 1px var(--nsblack);
+}
+
+.hologram.interactive {
+  transition: all 150ms ease;
+  cursor: pointer;
+}
+
+svg.interactive.hologram {
+  background-color: #ccc;
+}
+
+svg.hologram.interactive > g > path {
+  stroke-width: 8px;
+  stroke-linejoin: round;
+  opacity: 1;
+}
+
+svg.hologram.interactive:hover > g > path {
+  opacity: 0.8;
+  fill: none;
+  stroke: #ffffff;
+}
+
+.hologram.interactive:hover {
+  box-shadow: var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 0px
+      var(--nsltblue),
+    var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 1px var(--nsblack);
+}
+
+.hologram.ltblue {
+  border: var(--bwidth) solid var(--nsblack);
+  box-shadow: var(--btn-ghost-x) var(--btn-ghost-y) 0px 0px var(--nsltblue),
+    var(--btn-ghost-x) var(--btn-ghost-y) 0px 1px var(--nsblack);
+}
+
+.hologram.caution {
+  box-shadow: var(--btn-ghost-x) var(--btn-ghost-y) 0px 0px var(--nsgray-50),
+    var(--btn-ghost-x) var(--btn-ghost-y) 0px 1px var(--nsblack);
+}
+
+.hologram.right {
+  box-shadow: calc(var(--btn-ghost-x) * -1) var(--btn-ghost-y) 0px 0px
+      var(--nsgray),
+    calc(var(--btn-ghost-x) * -1) var(--btn-ghost-y) 0px 1px var(--nsblack);
+}
+
+.hologram.right.interactive:hover {
+  box-shadow: calc(var(--btn-ghost-x-hover) * -1) var(--btn-ghost-y-hover) 0px
+      0px var(--nsorange),
+    calc(var(--btn-ghost-x-hover) * -1) var(--btn-ghost-y-hover) 0px 1px
+      var(--nsblack);
+}
+
+.hologram.card {
+  border: var(--bwidth) solid var(--nsblack);
+  box-shadow: var(--card-ghost-x) var(--card-ghost-y) 0px 0px var(--nsltblue),
+    var(--card-ghost-x) var(--card-ghost-y) 0px 1px var(--nsblack);
+}
+
+.hologram.card.right {
+  box-shadow: calc(var(--card-ghost-x) * -1) var(--card-ghost-y) 0px 0px
+      var(--nsltblue),
+    calc(var(--card-ghost-x) * -1) var(--card-ghost-y) 0px 1px var(--nsblack);
+}
+
+.hologram.card.interactive {
+  transition: all 300ms ease;
+  cursor: pointer;
+}
+
+.hologram.card.interactive:hover {
+  box-shadow: var(--card-ghost-x-hover) var(--card-ghost-y-hover) 0px 0px
+      var(--nsorange),
+    var(--card-ghost-x-hover) var(--card-ghost-y-hover) 0px 1px var(--nsblack);
+}
+
+.hologram.card.right.interactive:hover {
+  box-shadow: calc(var(--card-ghost-x-hover) * -1) var(--card-ghost-y-hover) 0px
+      0px var(--nsorange),
+    calc(var(--card-ghost-x-hover) * -1) var(--card-ghost-y-hover) 0px 1px
+      var(--nsblack),
+    calc(var(--card-ghost-x-hover) * -2) calc(var(--card-ghost-y-hover) * 2) 0px
+      0px var(--nsred),
+    calc(var(--card-ghost-x-hover) * -2) calc(var(--card-ghost-y-hover) * 2) 0px
+      1px var(--nsblack);
+}
