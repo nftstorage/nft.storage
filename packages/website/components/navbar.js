@@ -146,10 +146,10 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
           <a className="no-underline v-mid" onClick={onLinkClick}>
             <img
               src={logo.src}
-              width="160"
+              width="210"
               height="79"
               className="nav-logo"
-              style={{ maxWidth: '80px', height: 'auto' }}
+              style={{ maxWidth: '210px', height: 'auto' }}
               alt="NFT Storage Logo"
             />
           </a>
@@ -227,10 +227,10 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
             <a className="no-underline v-mid">
               <img
                 src={logo.src}
-                width="160"
+                width="210"
                 height="79"
                 className="mobile-nav-logo"
-                style={{ maxWidth: '80px', height: 'auto' }}
+                style={{ maxWidth: '210px', height: 'auto' }}
                 alt="NFT Storage Logo"
               />
             </a>

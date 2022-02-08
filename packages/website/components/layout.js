@@ -89,9 +89,7 @@ export default function Layout({
   })
   const shouldWaitForUser = needsUser && status === 'loading'
   const logo = {
-    src: altLogo
-      ? '/images/logo-nft-storage-dark.svg'
-      : '/images/logo-nft-storage-sm.png',
+    src: altLogo ? '/images/logo-nft-storage-dark.svg' : '/images/logo-new.svg',
     isDark: altLogo,
   }
 
