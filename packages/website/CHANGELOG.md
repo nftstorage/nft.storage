@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.24.1](https://github.com/nftstorage/nft.storage/compare/website-v1.24.0...website-v1.24.1) (2022-02-08)
+
+
+### Bug Fixes
+
+* add pointer to hidden deals link ([#1287](https://github.com/nftstorage/nft.storage/issues/1287)) ([1eb8a0d](https://github.com/nftstorage/nft.storage/commit/1eb8a0d35aef67fbcb1529319ae4323c7516751d))
+* line height for storage providers ([#1284](https://github.com/nftstorage/nft.storage/issues/1284)) ([921d5fb](https://github.com/nftstorage/nft.storage/commit/921d5fb544142b1e54e719a8ebc0a20a9f613365))
+
 ## [1.24.0](https://github.com/nftstorage/nft.storage/compare/website-v1.23.1...website-v1.24.0) (2022-02-08)
 
 
