@@ -110,6 +110,7 @@ export default function Files({ user }) {
    */
   const TableItem = ({ nft }) => {
     // to do, add actual types
+    const [showAllDeals, setShowAllDeals] = useState(false)
     const deals = nft.deals
       .filter((/** @type {any} */ d) => d.status !== 'queued')
       .map(
@@ -162,6 +163,8 @@ export default function Files({ user }) {
       )
     }
 
+    const dealsHidden = deals.splice(3)
+
     if (!nft.deals.length) {
       deals.push(
         <span
@@ -212,7 +215,24 @@ export default function Files({ user }) {
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
         </td>
         <td data-label="Deals">
-          <div className="lh-copy">{deals}</div>
+          <div className="lh-copy">
+            {deals}
+            {dealsHidden.length > 0 && (
+              <>
+                {!showAllDeals && (
+                  <button
+                    onClick={() => setShowAllDeals(true)}
+                    className="hidden-deals-trigger"
+                  >
+                    +{dealsHidden.length} More
+                  </button>
+                )}
+                {showAllDeals && (
+                  <div className="hidden-deals">{dealsHidden}</div>
+                )}
+              </>
+            )}
+          </div>
         </td>
         <td data-label="Size" className="nowrap">
           {bytes(nft.size || 0)}
