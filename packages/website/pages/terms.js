@@ -101,7 +101,10 @@ export default function TermsOfService() {
         </h2>
         <p className="lh-copy">
           Use of the NFT.Storage Gateway ("the Gateway") is subject to the 
-          Terms of Service of [IPFS.io](https://discuss.ipfs.io/tos).
+          Terms of Service of {' '}
+          <a className="black" href="https://discuss.ipfs.io/tos">
+            IPFS.io
+          </a>{' '}.
         </p>
         <p className="lh-copy">
           When you access content via the Gateway, Protocol Labs may cache that 
