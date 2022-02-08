@@ -10,6 +10,7 @@ export { GatewayMetrics0 } from './durable-objects/gateway-metrics.js'
 export { SummaryMetrics1 } from './durable-objects/summary-metrics.js'
 export { CidsTracker0 } from './durable-objects/cids.js'
 export { GatewayRateLimits0 } from './durable-objects/gateway-rate-limits.js'
+export { GatewayRedirectCounter0 } from './durable-objects/gateway-redirect-counter.js'
 
 import { addCorsHeaders, withCorsHeaders } from './cors.js'
 import { errorHandler } from './error-handler.js'
