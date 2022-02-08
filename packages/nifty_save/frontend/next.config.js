@@ -1,8 +1,3 @@
-const withTM = require('next-transpile-modules')(['reaflow'])
-
-module.exports = withTM({
+module.exports = {
   reactStrictMode: true,
-  experimental: {
-    esmExternals: 'loose', // second add this experimental flag to the config
-  },
-})
+}
