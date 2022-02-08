@@ -56,7 +56,7 @@ const faqContent = {
         <a className="white">HTTP API docs</a>
       </Link>{' '}
       for details.) Currently, the rate limit will be triggered if the API
-      receives more than 30 requests using the same API key within a ten second
+      receives more than 30 requests using the same API key within a 10 second
       window.
     </p>
   ),
