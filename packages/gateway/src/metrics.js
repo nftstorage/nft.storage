@@ -7,7 +7,7 @@ import {
   SUMMARY_METRICS_ID,
   HTTP_STATUS_SUCCESS,
 } from './constants.js'
-import { histogram } from './durable-objects/gateway-metrics.js'
+import { responseTimeHistogram } from './utils/histogram.js'
 import { contentLengthHistogram } from './durable-objects/summary-metrics.js'
 
 /**
@@ -80,9 +80,26 @@ export async function metricsGet(request, env, ctx) {
   })
 
   const metrics = [
+    `# HELP nftgateway_summary_responses_total Total winner and cached responses returned.`,
+    `# TYPE nftgateway_summary_responses_total counter`,
+    `nftgateway_summary_responses_total{env="${env.ENV}"} ${
+      metricsCollected.summaryMetrics.totalWinnerSuccessfulRequests +
+      metricsCollected.summaryMetrics.totalCachedResponses
+    }`,
+    `# HELP nftgateway_summary_response_time_seconds_total Accumulated summary response time of winner responses and cached responses.`,
+    `# TYPE nftgateway_summary_response_time_seconds_total summary`,
+    `nftgateway_summary_response_time_seconds_total{env="${env.ENV}"} ${msToS(
+      metricsCollected.summaryMetrics.totalWinnerResponseTime +
+        metricsCollected.summaryMetrics.totalCachedResponseTime
+    )}`,
     `# HELP nftgateway_cache_hit_responses_total Total cached responses returned.`,
     `# TYPE nftgateway_cache_hit_responses_total counter`,
     `nftgateway_cache_hit_responses_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalCachedResponses}`,
+    `# HELP nftgateway_cache_hit_response_time_seconds_total Accumulated cached response time.`,
+    `# TYPE nftgateway_cache_hit_response_time_seconds_total summary`,
+    `nftgateway_cache_hit_response_time_seconds_total{env="${env.ENV}"} ${msToS(
+      metricsCollected.summaryMetrics.totalCachedResponseTime
+    )}`,
     `# HELP nftgateway_winner_requests_total Total winner requests.`,
     `# TYPE nftgateway_winner_requests_total counter`,
     `nftgateway_winner_requests_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalWinnerSuccessfulRequests}`,
@@ -91,6 +108,18 @@ export async function metricsGet(request, env, ctx) {
     `nftgateway_winner_response_time_seconds_total{env="${env.ENV}"} ${msToS(
       metricsCollected.summaryMetrics.totalWinnerResponseTime
     )}`,
+    `# HELP nftgateway_summary_responses_per_time_total total of responses per response time bucket`,
+    `# TYPE nftgateway_summary_responses_per_time_total histogram`,
+    ...responseTimeHistogram.map(
+      (t) =>
+        `nftgateway_summary_responses_per_time_total{le="${msToS(t)}",env="${
+          env.ENV
+        }"} ${metricsCollected.summaryMetrics.responseTimeHistogram[t]}`
+    ),
+    `nftgateway_summary_responses_per_time_total{le="+Inf",env="${env.ENV}"} ${
+      metricsCollected.summaryMetrics.totalWinnerSuccessfulRequests +
+      metricsCollected.summaryMetrics.totalCachedResponses
+    }`,
     `# HELP nftgateway_response_time_seconds_total Accumulated response time of each gateway.`,
     `# TYPE nftgateway_response_time_seconds_total summary`,
     ...env.ipfsGateways.map(
@@ -184,11 +213,15 @@ export async function metricsGet(request, env, ctx) {
     ),
     `# HELP nftgateway_requests_per_time_total total of requests per response time bucket`,
     `# TYPE nftgateway_requests_per_time_total histogram`,
-    ...histogram.map((t) => {
+    ...responseTimeHistogram.map((t) => {
       return env.ipfsGateways
         .map(
           (gw) =>
-            `nftgateway_requests_per_time_total{gateway="${gw}",le="${t}",env="${env.ENV}"} ${metricsCollected.ipfsGateways[gw].responseTimeHistogram[t]}`
+            `nftgateway_requests_per_time_total{gateway="${gw}",le="${msToS(
+              t
+            )}",env="${env.ENV}"} ${
+              metricsCollected.ipfsGateways[gw].responseTimeHistogram[t]
+            }`
         )
         .join('\n')
     }),
@@ -208,7 +241,10 @@ export async function metricsGet(request, env, ctx) {
       (t) =>
         `nftgateway_responses_content_length_total{le="${t}",env="${env.ENV}"} ${metricsCollected.summaryMetrics.contentLengthHistogram[t]}`
     ),
-    `nftgateway_responses_content_length_total{le="+Inf",env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalWinnerSuccessfulRequests}`,
+    `nftgateway_responses_content_length_total{le="+Inf",env="${env.ENV}"} ${
+      metricsCollected.summaryMetrics.totalWinnerSuccessfulRequests +
+      metricsCollected.summaryMetrics.totalCachedResponses
+    }`,
     `# HELP nftgateway_responses_content_length_bytes_total Accumulated content length of delivered cached responses`,
     `# TYPE nftgateway_responses_content_length_bytes_total summary`,
     `nftgateway_responses_content_length_bytes_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalContentLengthBytes}`,
