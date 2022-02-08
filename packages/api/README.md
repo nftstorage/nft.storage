@@ -81,3 +81,5 @@ When prompted for a value enter one of the following permission combinations:
 ## S3 Setup
 
 We use [S3](https://aws.amazon.com/s3/) for backup and disaster recovery. For production deployment an account on AWS is required.
+
+Test release please
