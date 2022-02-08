@@ -215,7 +215,7 @@ export default function Files({ user }) {
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
         </td>
         <td data-label="Deals">
-          <div>
+          <div className="lh-copy">
             {deals}
             {dealsHidden.length > 0 && (
               <>
