@@ -367,7 +367,7 @@ export default function Files({ user }) {
                                     Reports the status of a file or piece of
                                     data stored on the IPFS Cluster. Status
                                     might not be fully up-to-date. Data is still
-                                    available even when still in Queued state.
+                                    available even when in Queued state.
                                   </span>
                                 }
                                 overlayClassName="table-tooltip"
