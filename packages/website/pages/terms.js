@@ -104,7 +104,7 @@ export default function TermsOfService() {
           Terms of Service of {' '}
           <a className="black" href="https://discuss.ipfs.io/tos">
             IPFS.io
-          </a>{' '}.
+          </a>.
         </p>
         <p className="lh-copy">
           When you access content via the Gateway, Protocol Labs may cache that 
