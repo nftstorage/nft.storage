@@ -39,6 +39,25 @@ You only need to `npm start` for subsequent runs. PR your env config to the `wra
 
 The IPFS gateway for nft.storage is not "another gateway", but a caching layer for NFT’s that sits on top of existing IPFS public gateways.
 
+## Usage
+
+nft.storage Gateway provides subdomain style resolutions maintaining compliance with the [same-origin policy](https://en.wikipedia.org/wiki/Same-origin_policy). The canonical form of access `https://{CID}.ipfs.nft.storage/{optional path to resource}` causes the browser to interpret each returned file as being from a different origin.
+
+```
+curl https://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq.ipfs.nft.storage
+Hello nft.storage! 😎
+```
+
+Please note that subdomain resolution is only supported with [CIDv1](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) in case-insensitive encoding such as Base32 or Base36. For CIDv0 support, you can use the Path style resolution using the nft.storage API as follows:
+
+```
+curl https://api.nft.storage/ipfs/QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX
+```
+
+### Rate limiting
+
+nft.storage Gateway is currently rate limited at 200 requests per minute to a given IP Address. In the event of a rate limit, the IP will be blocked for 30 seconds.
+
 ## Persistence
 
 Several metrics per gateway are persisted to track the performance of each public gateway over time. Moreover, the list of gateways that have previously fetched successfully a given CID are also persisted.
