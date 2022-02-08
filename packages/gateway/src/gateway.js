@@ -8,7 +8,6 @@ import pSettle from 'p-settle'
 import { TimeoutError } from './errors.js'
 import { getCidFromSubdomainUrl } from './utils/cid.js'
 import {
-  ABORT_ERR_CODE,
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
   REDIRECT_COUNTER_METRICS_ID,
@@ -23,6 +22,7 @@ import {
  * @property {string} url
  * @property {number} [responseTime]
  * @property {string} [requestPreventedCode]
+ * @property {boolean} [aborted]
  *
  * @typedef {import('./env').Env} Env
  */
@@ -135,7 +135,7 @@ export async function gatewayGet(request, env, ctx) {
       }
 
       // Gateway timeout
-      if (responses[0].reason?.code === ABORT_ERR_CODE) {
+      if (responses[0].value?.aborted) {
         throw new TimeoutError()
       }
     }
@@ -198,12 +198,14 @@ async function gatewayFetch(
       signal: controller.signal,
       headers: getHeaders(request),
     })
-  } catch (err) {
-    if (err.code === ABORT_ERR_CODE) {
+  } catch (error) {
+    if (controller.signal.aborted) {
       return {
         url: gwUrl,
+        aborted: true,
       }
     }
+    throw error
   } finally {
     clearTimeout(timer)
   }
