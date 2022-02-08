@@ -39,7 +39,7 @@ const RESPONSE_TIME_HISTOGRAM_ID = 'responseTimeHistogram'
 /**
  * Durable Object for keeping summary metrics of gateway.nft.storage
  */
-export class SummaryMetrics1 {
+export class SummaryMetrics0 {
   constructor(state) {
     this.state = state
 
