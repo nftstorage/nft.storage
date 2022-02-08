@@ -95,6 +95,23 @@ export default function TermsOfService() {
           Filecoin deals will persist for the duration of the relevant storage
           deal.
         </p>
+
+        <h2 className="chicagoflf">
+          <HashLink id="storage-term">NFT.Storage Gateway</HashLink>
+        </h2>
+        <p className="lh-copy">
+          Use of the NFT.Storage Gateway ("the Gateway") is subject to the 
+          Terms of Service of [IPFS.io](https://discuss.ipfs.io/tos).
+        </p>
+        <p className="lh-copy">
+          When you access content via the Gateway, Protocol Labs may cache that 
+          content or the associated CID for performance reasons. Protocol Labs 
+          may also collect analytics data on use of the Gateway, including data 
+          on requests, gateway speeds, CIDs, and other performance data. 
+          Protocol Labs reserves all rights in and to any performance data and 
+          analytics collected in the course of providing the Gateway for optimizing
+          the Gateway user experience.
+        </p>
       </div>
     </main>
   )
