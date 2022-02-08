@@ -51,7 +51,7 @@ Hello nft.storage! 😎
 Please note that subdomain resolution is only supported with [CIDv1](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) in case-insensitive encoding such as Base32 or Base36. For CIDv0 support, you can use the Path style resolution using the nft.storage API as follows:
 
 ```
-curl https://api.nft.storage/ipfs/QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX
+curl https://nft.storage/ipfs/QmT5NvUtoM5nWFfrQdVrFtvGfKFmG7AHE8P34isapyhCxX
 ```
 
 ### Rate limiting
