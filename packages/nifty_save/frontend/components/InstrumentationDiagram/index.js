@@ -2,6 +2,7 @@ import { Canvas, Edge, Icon, Label, MarkerArrow, Node, Port } from 'reaflow'
 
 import FlowDiagram from './FlowDiagram'
 import { icons } from './icons'
+import { sendTimeRangeToSlicer } from './actions'
 
 export default function InstrumentationDiagram(props) {
   const { apiUrl } = props
@@ -59,21 +60,6 @@ export default function InstrumentationDiagram(props) {
     />
   )
 
-  const sendTimeRangeToSlicer = async () => {
-    await fetch(`${apiUrl}/ingest/slice-queue/fill`, {
-      body: JSON.stringify({
-        timesliceSize: 6000000,
-        rangeStartTime: '2019-6-1',
-        rangeEndTime: '2019-6-2',
-        source: 'the-graph',
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    })
-  }
-
   const diagram = (
     <div style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0 }}>
       {canvas}
@@ -91,7 +77,12 @@ export default function InstrumentationDiagram(props) {
         right: 0,
       }}
     >
-      <FlowDiagram />
+      <FlowDiagram
+        onClickApi={async () => {
+          console.log('clik')
+          await sendTimeRangeToSlicer(apiUrl, {})
+        }}
+      />
     </div>
   )
 }
