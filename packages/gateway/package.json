@@ -1,6 +1,6 @@
 {
   "name": "gateway",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "IPFS gateway for nft.storage",
   "private": true,
   "type": "module",
