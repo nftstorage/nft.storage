@@ -212,7 +212,7 @@ export default function Files({ user }) {
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
         </td>
         <td data-label="Deals">
-          <div>{deals}</div>
+          <div className="lh-copy">{deals}</div>
         </td>
         <td data-label="Size" className="nowrap">
           {bytes(nft.size || 0)}
