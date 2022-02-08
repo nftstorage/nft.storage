@@ -221,11 +221,13 @@ async function gatewayFetch(
  * @param {Request} request
  */
 function getHeaders(request) {
-  const existingProxies = request.headers['X-Forwarded-For']
-    ? `, ${request.headers['X-Forwarded-For']}`
+  const existingProxies = request.headers.get('X-Forwarded-For')
+    ? `, ${request.headers.get('X-Forwarded-For')}`
     : ''
   return {
-    'X-Forwarded-For': `${request.headers['cf-connecting-ip']}${existingProxies}`,
+    'X-Forwarded-For': `${request.headers.get(
+      'cf-connecting-ip'
+    )}${existingProxies}`,
   }
 }
 
