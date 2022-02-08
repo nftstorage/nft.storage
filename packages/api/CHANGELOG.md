@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.15.0](https://github.com/nftstorage/nft.storage/compare/api-v2.14.1...api-v2.15.0) (2022-02-08)
+
+
+### Features
+
+* api ipfs path ([#1064](https://github.com/nftstorage/nft.storage/issues/1064)) ([3b46940](https://github.com/nftstorage/nft.storage/commit/3b46940f9ee57c05f166aeb26f7024e6e6ce1f09))
+* **api:** schema updates for admin site. ([#1203](https://github.com/nftstorage/nft.storage/issues/1203)) ([bca153e](https://github.com/nftstorage/nft.storage/commit/bca153e6074c39b94a10aa350fd5c9fe8e283311))
+* track content bytes total metric ([#1199](https://github.com/nftstorage/nft.storage/issues/1199)) ([695e4a5](https://github.com/nftstorage/nft.storage/commit/695e4a5d7bbefc125291cfd001a743683efb6808))
+
+
+### Bug Fixes
+
+* pinning api list only returns pin requests ([#1267](https://github.com/nftstorage/nft.storage/issues/1267)) ([5246958](https://github.com/nftstorage/nft.storage/commit/52469589922ec0e8d66c505d799d6e42a3e4f0f7))
+* remove rp config ([9f3c859](https://github.com/nftstorage/nft.storage/commit/9f3c85954a73119f11a888708c09a3beff17d44f))
+* testing release ([bd61204](https://github.com/nftstorage/nft.storage/commit/bd612042a54109ed11c94078391dd7ed677d611c))
+* testing release api scope ([451e9ba](https://github.com/nftstorage/nft.storage/commit/451e9ba052416ab4d90248e9333ba8f167cea8fe))
+
 ### [2.14.1](https://github.com/nftstorage/nft.storage/compare/api-v2.14.0...api-v2.14.1) (2022-01-24)
 
 
