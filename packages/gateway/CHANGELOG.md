@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.0.1](https://github.com/nftstorage/nft.storage/compare/gateway-v1.0.0...gateway-v1.0.1) (2022-02-08)
+
+
+### Bug Fixes
+
+* path with file and extension ([#1296](https://github.com/nftstorage/nft.storage/issues/1296)) ([a616623](https://github.com/nftstorage/nft.storage/commit/a616623de9991b01003cad013bdd98e0bd91643e))
+
 ## 1.0.0 (2022-02-08)
 
 
