@@ -167,7 +167,31 @@ See [this pull request](https://github.com/nftstorage/nft.storage/pull/991) for 
 
 ### Minting your NFT
 
-Coming soon...
+Now that your metadata is stored with NFT.Storage, you can mint tokens using the blockchain platform of your choice.
+
+We won't attempt to illustrate the minting process here, because the details depend on which chain and development language you're using, as well as the contract and standards you're targeting.
+
+Instead, we'll offer some advice that applies to any blockchain when linking to assets stored using NFT.Storage.
+
+To see an example of NFT.Storage being used with custom metadata, take a look at the [Flow tutorial on NFT School][nft-school-flow].
+
+#### Avoid storing HTTP URLs on-chain
+
+Although in many cases the most convenient way to [retrieve NFT data from IPFS][howto-retrieve] may involve using an IPFS HTTP gateway, you should avoid storing HTTP gateway links in a smart contract or other blockchain record.
+
+Instead, store the `ipfs://` URI, which doesn't depend on a single gateway provider. You can rewrite this URL into a gateway link at the "last mile" when displaying the NFT on the web. This ensures that the blockchain link is always valid as long as any IPFS peer is providing the data, and doesn't tie your NFT to any specific gateway host.
+
+If you do include HTTP links, use them _in addition_ to IPFS URIs, as an optimization or fallback. Wherever possible, the IPFS URI should be the canonical link, or "source of truth".
+
+#### Prefer IPFS URIs to raw CIDs or hashes
+
+There are several different ways to refer to data on IPFS, all of which involve a Content Identifier or CID. 
+
+If you're writing your own contract, you may be tempted to store IPFS CIDs in their binary form, which uses a bit less storage space than a string-encoded CID like `bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi`.
+
+While it's true that a binary CID uses a bit less memory than the equivalent string encoding, in many cases it doesn't actually matter in practice. On platforms like the Ethereum Virtual Machine where the minimum storage allocation is 256 bits, both forms of CID require the same amount of actual on-chain storage space. In some cases it can be _more_ expensive to store binary CIDs, for example, if you need to convert to the string form inside a contract.
+
+We recommend using URIs of the form `ipfs://<cid>/<path>` when linking from on-chain records to IPFS data. This gives you flexible addresses that can include human-friendly filenames in the path, and using strings instead of binary links makes debugging a lot simpler.
 
 
 [guide-car-files]: ../../concepts/car-files/
@@ -177,6 +201,9 @@ Coming soon...
 [reference-js-storeblob]: https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#storeBlob
 [reference-js-storedirectory]: https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#storeDirectory
 [reference-js-storecar]: https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#storeCar
+[howto-retrieve]: ../retrieve/
+
+[nft-school-flow]: https://nftschool.dev/tutorial/flow-nft-marketplace/
 
 [mdn-file]: https://developer.mozilla.org/en-US/docs/Web/API/File
 [mdn-blob]: https://developer.mozilla.org/en-US/docs/Web/API/Blob
