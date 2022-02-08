@@ -11,7 +11,7 @@
  * Durable Object to keep track of gateway rating limits.
  * State: number[]
  */
-export class GatewayRateLimits0 {
+export class GatewayRateLimits1 {
   constructor(state) {
     this.state = state
     this.id = this.state.id.name
