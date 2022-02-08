@@ -1,6 +1,6 @@
 {
   "packages/api": "2.14.1",
-  "packages/client": "5.2.4",
+  "packages/client": "6.0.0",
   "packages/website": "1.24.1",
   "packages/gateway": "1.0.0"
 }
