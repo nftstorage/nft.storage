@@ -49,9 +49,13 @@ export default function Files({ user }) {
   let isDev
   if (!!globalThis.window && location.host === 'localhost:4000') isDev = true
 
-  const { status, data } = useQuery(queryKey, ctx => getNfts(ctx.queryKey[1]), {
-    enabled: !!user,
-  })
+  const { status, data } = useQuery(
+    queryKey,
+    (ctx) => getNfts(ctx.queryKey[1]),
+    {
+      enabled: !!user,
+    }
+  )
 
   /** @type {any[]} */
   const nfts = isDev ? MOCK_FILES : data || []
@@ -106,26 +110,28 @@ export default function Files({ user }) {
     const [showAllDeals, setShowAllDeals] = useState(false)
     const deals = nft.deals
       .filter((/** @type {any} */ d) => d.status !== 'queued')
-      .map((
-        /** @type {any} */ deal,
-        /** @type {number} */ i,
-        /** @type {any[]} */ deals
-      ) => {
-        const url = `https://filfox.info/en/deal/${deal.chainDealID}`
-        return (
-          <span key={deal.chainDealID} title={deal.status}>
-            <a
-              className="underline black"
-              href={url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              {deal.miner}
-            </a>
-            {i === deals.length - 1 ? '' : ', '}
-          </span>
-        )
-      })
+      .map(
+        (
+          /** @type {any} */ deal,
+          /** @type {number} */ i,
+          /** @type {any[]} */ deals
+        ) => {
+          const url = `https://filfox.info/en/deal/${deal.chainDealID}`
+          return (
+            <span key={deal.chainDealID} title={deal.status}>
+              <a
+                className="underline black"
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {deal.miner}
+              </a>
+              {i === deals.length - 1 ? '' : ', '}
+            </span>
+          )
+        }
+      )
 
     const queuedDeals = nft.deals.filter(
       (/** @type {any} */ d) => d.status === 'queued'
@@ -213,7 +219,7 @@ export default function Files({ user }) {
                 {!showAllDeals && (
                   <button
                     onClick={() => setShowAllDeals(true)}
-                    className="hidden-deals-trigger"
+                    className="hidden-deals-trigger pointer"
                   >
                     +{dealsHidden.length} More
                   </button>
@@ -231,7 +237,7 @@ export default function Files({ user }) {
         <td className="shrink-cell center-cell">
           <Popover
             isOpen={isActionMenuOpen === nft.cid}
-            onClickOutside={e => {
+            onClickOutside={(e) => {
               console.log(e)
               if (e.currentTarget !== null) {
                 if (
@@ -352,12 +358,11 @@ export default function Files({ user }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {nfts.map((
-                          /** @type {any} */ nft,
-                          /** @type {number} */ i
-                        ) => (
-                          <TableItem nft={nft} key={`nft-${i}`} />
-                        ))}
+                        {nfts.map(
+                          (/** @type {any} */ nft, /** @type {number} */ i) => (
+                            <TableItem nft={nft} key={`nft-${i}`} />
+                          )
+                        )}
                       </tbody>
                     </table>
                     <div className="flex flex-wrap justify-center tc mv3">
