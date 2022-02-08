@@ -14,6 +14,7 @@ import { nftGet } from './routes/nfts-get.js'
 import { nftDelete } from './routes/nfts-delete.js'
 import { nftList } from './routes/nfts-list.js'
 import { nftStore } from './routes/nfts-store.js'
+import { ipfsGet } from './routes/ipfs-get.js'
 import { pinsAdd } from './routes/pins-add.js'
 import { pinsDelete } from './routes/pins-delete.js'
 import { pinsGet } from './routes/pins-get.js'
@@ -104,6 +105,10 @@ r.add('delete', '/internal/tokens', withMode(tokensDelete, RW), [postCors])
 
 // Blog
 r.add('post', '/internal/blog/subscribe', blogSubscribe, [postCors])
+
+// Gateway proxy for IPFS path
+r.add('get', '/ipfs/:cid', withMode(ipfsGet, RO))
+r.add('get', '/ipfs/:cid/*', withMode(ipfsGet, RO))
 
 // Note: /api/* endpoints are legacy and will eventually be removed.
 r.add('get', '/api/pins', psa(pinsList, RO), [postCors])

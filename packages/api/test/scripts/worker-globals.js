@@ -4,6 +4,7 @@ export const CLUSTER_API_URL = 'http://localhost:9094'
 // will be used with we can active auth in cluster base64 of test:test
 export const CLUSTER_BASIC_AUTH_TOKEN = 'dGVzdDp0ZXN0'
 export const CLUSTER_SERVICE = ''
+export const GATEWAY_NFT_STORAGE = 'ipfs-staging.nft.storage'
 export const MAGIC_SECRET_KEY = 'test'
 export const ENV = 'test'
 export const SENTRY_DSN = 'https://test@test.ingest.sentry.io/0000000'

@@ -16,6 +16,7 @@ DATABASE_URL = "http://localhost:3000"
 CLUSTER_SERVICE = "" # This should be empty to fallback to CLUSTER_API_URL
 CLUSTER_API_URL = "http://localhost:9094"
 CLUSTER_BASIC_AUTH_TOKEN = "dGVzdDp0ZXN0"
+GATEWAY_NFT_STORAGE = 'ipfs-staging.nft.storage'
 
 [build]
 command = "scripts/cli.js build"
@@ -39,6 +40,7 @@ usage_model = "unbound"
 ENV = "staging"
 DEBUG = "true"
 DATABASE_URL = "https://nft-storage-pgrest-staging.herokuapp.com"
+GATEWAY_NFT_STORAGE = 'ipfs-staging.nft.storage'
 
 [env.staging.build]
 command = "scripts/cli.js build --env staging"
@@ -59,6 +61,7 @@ usage_model = "unbound"
 ENV = "production"
 DEBUG = "false"
 DATABASE_URL = "https://nft-storage-pgrest-prod.herokuapp.com"
+GATEWAY_NFT_STORAGE = 'ipfs.nft.storage'
 
 [env.production.build]
 command = "scripts/cli.js build --env production"
