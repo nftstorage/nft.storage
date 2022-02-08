@@ -193,6 +193,7 @@ export default class NiftySaveStack extends sst.Stack {
       },
       routes: {
         'GET /ingest/health': 'src/ingest.ingestHealth',
+        'GET /report/health': 'src/report.health',
 
         'POST /ingest/slice-queue/purge': 'src/ingest.purgeSliceCommandQueue',
         'POST /ingest/slice-queue/fill': 'src/ingest.fillIngestTimeSliceQueue',
@@ -209,7 +210,14 @@ export default class NiftySaveStack extends sst.Stack {
       },
     })
 
-    api.attachPermissions([bus, sliceCommandQueue, fetchedRecordQueue])
+    api.attachPermissions([
+      bus,
+      fetchedRecordsTable,
+      sliceCommandQueue,
+      fetchedRecordQueue,
+      'cloudwatch:GetMetricData',
+      'cloudwatch:GetDashboard',
+    ])
 
     this.addOutputs({
       ApiEndpoint: api.url,
