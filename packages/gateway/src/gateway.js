@@ -14,6 +14,7 @@ import {
   CF_CACHE_MAX_OBJECT_SIZE,
   HTTP_STATUS_RATE_LIMITED,
   REQUEST_PREVENTED_RATE_LIMIT_CODE,
+  TIMEOUT_CODE,
 } from './constants.js'
 
 /**
@@ -21,7 +22,7 @@ import {
  * @property {Response} [response]
  * @property {string} url
  * @property {number} [responseTime]
- * @property {string} [requestPreventedCode]
+ * @property {string} [reason]
  * @property {boolean} [aborted]
  *
  * @typedef {import('./env').Env} Env
@@ -105,7 +106,7 @@ export async function gatewayGet(request, env, ctx) {
     const wasRateLimited = responses.every(
       (r) =>
         r.value?.response?.status === HTTP_STATUS_RATE_LIMITED ||
-        r.value?.requestPreventedCode === REQUEST_PREVENTED_RATE_LIMIT_CODE
+        r.value?.reason === REQUEST_PREVENTED_RATE_LIMIT_CODE
     )
 
     ctx.waitUntil(
@@ -135,7 +136,10 @@ export async function gatewayGet(request, env, ctx) {
       }
 
       // Gateway timeout
-      if (responses[0].value?.aborted) {
+      if (
+        responses[0].value?.aborted &&
+        responses[0].value?.reason == TIMEOUT_CODE
+      ) {
         throw new TimeoutError()
       }
     }
@@ -183,7 +187,8 @@ async function gatewayFetch(
     /** @type {GatewayResponse} */
     return {
       url: gwUrl,
-      requestPreventedCode: REQUEST_PREVENTED_RATE_LIMIT_CODE,
+      aborted: true,
+      reason: REQUEST_PREVENTED_RATE_LIMIT_CODE,
     }
   }
 
@@ -203,6 +208,7 @@ async function gatewayFetch(
       return {
         url: gwUrl,
         aborted: true,
+        reason: TIMEOUT_CODE,
       }
     }
     throw error
@@ -316,10 +322,6 @@ async function updateGatewayMetrics(
   gwResponse,
   isWinner = false
 ) {
-  if (!gwResponse.response?.status && !gwResponse.requestPreventedCode) {
-    return
-  }
-
   // Get durable object for gateway
   const id = env.gatewayMetricsDurable.idFromName(gwResponse.url)
   const stub = env.gatewayMetricsDurable.get(id)
@@ -329,7 +331,7 @@ async function updateGatewayMetrics(
     status: gwResponse.response?.status,
     winner: isWinner,
     responseTime: gwResponse.responseTime,
-    requestPreventedCode: gwResponse.requestPreventedCode,
+    requestPreventedCode: gwResponse.reason,
   }
 
   await stub.fetch(getDurableRequestUrl(request, 'update', fetchStats))
