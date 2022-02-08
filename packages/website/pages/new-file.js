@@ -25,7 +25,6 @@ export function getStaticProps() {
 
 export default function NewFile() {
   const router = useRouter()
-  const version = /** @type {string} */ (router.query.version)
   const queryClient = useQueryClient()
   const [uploading, setUploading] = useState(false)
   const [isCar, setIsCar] = useState(false)
@@ -54,7 +53,7 @@ export default function NewFile() {
     if (file && file instanceof File) {
       const client = new NFTStorage({
         token: await getToken(),
-        endpoint: new URL(API + (version ? `/v${version}/` : '/')),
+        endpoint: new URL(API + '/'),
       })
       setUploading(true)
       setError('')
@@ -68,13 +67,13 @@ export default function NewFile() {
         }
         let totalBytesSent = 0
         await client.storeCar(car, {
-          onStoredChunk: (size) => {
+          onStoredChunk: size => {
             totalBytesSent += size
             setPercentComplete(Math.round((totalBytesSent / car.size) * 100))
           },
         })
 
-        router.push({ pathname: '/files', query: version ? { version } : null })
+        router.push({ pathname: '/files' })
         setError('')
       } catch (/** @type any */ err) {
         console.error(err)

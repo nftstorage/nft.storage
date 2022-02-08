@@ -19,11 +19,10 @@ export async function getToken() {
 }
 
 /**
- * @param {string} version
+ * Get tokens
  */
-export async function getTokens(version) {
-  const route = `${version ? `/v${version}` : ''}/internal/tokens`
-  const res = await fetch(API + route, {
+export async function getTokens() {
+  const res = await fetch(API + `/internal/tokens`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -44,18 +43,15 @@ export async function getTokens(version) {
  * Delete Token
  *
  * @param {string} name
- * @param {string | undefined} [version]
  */
-export async function deleteToken(name, version) {
-  const route = `${version ? `/v${version}` : ''}/internal/tokens`
-  const data = version !== '0' ? { id: name } : { name }
-  const res = await fetch(API + route, {
+export async function deleteToken(name) {
+  const res = await fetch(API + `/internal/tokens`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + (await getToken()),
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ id: name }),
   })
 
   const body = await res.json()
@@ -71,11 +67,9 @@ export async function deleteToken(name, version) {
  * Create Token
  *
  * @param {string} name
- * @param {string | undefined} [version]
  */
-export async function createToken(name, version) {
-  const route = `${version ? `/v${version}` : ''}/internal/tokens`
-  const res = await fetch(API + route, {
+export async function createToken(name) {
+  const res = await fetch(API + `/internal/tokens`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -97,13 +91,10 @@ export async function createToken(name, version) {
  * Get NFTs
  *
  * @param {{limit: number, before: string }} query
- * @param {string} version
- * @returns
  */
-export async function getNfts({ limit, before }, version = '') {
-  const route = version ? `/v${version}` : '/'
+export async function getNfts({ limit, before }) {
   const params = new URLSearchParams({ before, limit: String(limit) })
-  const res = await fetch(`${API}${route}?${params}`, {
+  const res = await fetch(`${API}/?${params}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

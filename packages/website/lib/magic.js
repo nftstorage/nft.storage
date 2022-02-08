@@ -25,11 +25,9 @@ export function getMagic() {
  * Login request
  *
  * @param {string} [token]
- * @param {string} [version]
  */
-export async function login(token, type = 'magic', data = {}, version = '') {
-  const loginURL = version ? `/v${version}/login` : '/login'
-  const res = await fetch(API + loginURL, {
+export async function login(token, type = 'magic', data = {}) {
+  const res = await fetch(API + '/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -64,17 +62,15 @@ export async function isLoggedIn() {
  * Login with email
  *
  * @param {string} email
- * @param {string} version
  */
-export async function loginEmail(email, version) {
-  const callback = version === '0' ? '/callback-v0' : '/callback'
+export async function loginEmail(email) {
   const didToken = await getMagic().auth.loginWithMagicLink({
     email: email,
-    redirectURI: new URL(callback, window.location.origin).href,
+    redirectURI: new URL('/callback', window.location.origin).href,
   })
 
   if (didToken) {
-    const data = await login(didToken, 'email', undefined, version)
+    const data = await login(didToken, 'email')
     return data
   }
 
@@ -85,26 +81,22 @@ export async function loginEmail(email, version) {
  * Login with social
  *
  * @param {import('@magic-ext/oauth').OAuthProvider} provider
- * @param {string} version
  */
-export async function loginSocial(provider, version) {
-  const callback = version === '0' ? '/callback-v0' : '/callback'
-
-  // @ts-ignore - TODO fix Magic extension types
+export async function loginSocial(provider) {
   await getMagic().oauth.loginWithRedirect({
     provider,
-    redirectURI: new URL(callback, window.location.origin).href,
+    redirectURI: new URL('/callback', window.location.origin).href,
   })
 }
 
 /**
- * @param {string} [version]
+ * Redirect with magic email
  */
-export async function redirectMagic(version = '') {
+export async function redirectMagic() {
   const idToken = await getMagic().auth.loginWithCredential()
   if (idToken) {
     try {
-      const data = await login(idToken, 'email', undefined, version)
+      const data = await login(idToken, 'email')
       return { ...data, idToken }
     } catch (err) {
       await getMagic().user.logout()
@@ -116,12 +108,12 @@ export async function redirectMagic(version = '') {
 }
 
 /**
- * @param {string} [version]
+ * Redirect with github
  */
-export async function redirectSocial(version = '') {
+export async function redirectSocial() {
   const result = await getMagic().oauth.getRedirectResult()
   try {
-    const data = await login(result.magic.idToken, 'github', result, version)
+    const data = await login(result.magic.idToken, 'github', result)
     return { ...data, idToken: result.magic.idToken }
   } catch (err) {
     await getMagic().user.logout()

@@ -10,7 +10,6 @@ import Script from 'next/script'
 import { When } from 'react-if'
 import bytes from 'bytes'
 import countly from '../lib/countly.js'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
 import CopyButton from '../components/copyButton'
 import { Popover, ArrowContainer } from 'react-tiny-popover'
@@ -38,8 +37,6 @@ export function getStaticProps() {
  * @returns
  */
 export default function Files({ user }) {
-  const router = useRouter()
-  const version = /** @type {string} */ (router.query.version)
   const [deleting, setDeleting] = useState('')
   const [limit] = useState(25)
   const [befores, setBefores] = useState([''])
@@ -52,13 +49,9 @@ export default function Files({ user }) {
   let isDev
   if (!!globalThis.window && location.host === 'localhost:4000') isDev = true
 
-  const { status, data } = useQuery(
-    queryKey,
-    (ctx) => getNfts(ctx.queryKey[1], version),
-    {
-      enabled: !!user,
-    }
-  )
+  const { status, data } = useQuery(queryKey, ctx => getNfts(ctx.queryKey[1]), {
+    enabled: !!user,
+  })
 
   /** @type {any[]} */
   const nfts = isDev ? MOCK_FILES : data || []
@@ -79,7 +72,7 @@ export default function Files({ user }) {
       try {
         const client = new NFTStorage({
           token: await getToken(),
-          endpoint: new URL(API + (version ? `/v${version}/` : '/')),
+          endpoint: new URL(API + '/'),
         })
         await client.delete(cid)
       } finally {
@@ -113,28 +106,26 @@ export default function Files({ user }) {
     const [showAllDeals, setShowAllDeals] = useState(false)
     const deals = nft.deals
       .filter((/** @type {any} */ d) => d.status !== 'queued')
-      .map(
-        (
-          /** @type {any} */ deal,
-          /** @type {number} */ i,
-          /** @type {any[]} */ deals
-        ) => {
-          const url = `https://filfox.info/en/deal/${deal.chainDealID}`
-          return (
-            <span key={deal.chainDealID} title={deal.status}>
-              <a
-                className="underline black"
-                href={url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {deal.miner}
-              </a>
-              {i === deals.length - 1 ? '' : ', '}
-            </span>
-          )
-        }
-      )
+      .map((
+        /** @type {any} */ deal,
+        /** @type {number} */ i,
+        /** @type {any[]} */ deals
+      ) => {
+        const url = `https://filfox.info/en/deal/${deal.chainDealID}`
+        return (
+          <span key={deal.chainDealID} title={deal.status}>
+            <a
+              className="underline black"
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {deal.miner}
+            </a>
+            {i === deals.length - 1 ? '' : ', '}
+          </span>
+        )
+      })
 
     const queuedDeals = nft.deals.filter(
       (/** @type {any} */ d) => d.status === 'queued'
@@ -240,7 +231,7 @@ export default function Files({ user }) {
         <td className="shrink-cell center-cell">
           <Popover
             isOpen={isActionMenuOpen === nft.cid}
-            onClickOutside={(e) => {
+            onClickOutside={e => {
               console.log(e)
               if (e.currentTarget !== null) {
                 if (
@@ -326,7 +317,6 @@ export default function Files({ user }) {
                 <Button
                   href={{
                     pathname: '/new-file',
-                    query: version ? { version } : null,
                   }}
                   className="flex-none"
                   id="upload"
@@ -362,11 +352,12 @@ export default function Files({ user }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {nfts.map(
-                          (/** @type {any} */ nft, /** @type {number} */ i) => (
-                            <TableItem nft={nft} key={`nft-${i}`} />
-                          )
-                        )}
+                        {nfts.map((
+                          /** @type {any} */ nft,
+                          /** @type {number} */ i
+                        ) => (
+                          <TableItem nft={nft} key={`nft-${i}`} />
+                        ))}
                       </tbody>
                     </table>
                     <div className="flex flex-wrap justify-center tc mv3">

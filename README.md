@@ -84,7 +84,8 @@ DEBUG=true
 SALT=secret
 MAILCHIMP_API_KEY=secret
 METAPLEX_AUTH_TOKEN=secret
-MAGIC_SECRET_KEY=secret # needs to be real so create a personal magic.link account or use the staging key
+# needs to be real so create a personal magic.link account or use the staging key
+MAGIC_SECRET_KEY=secret
 LOGTAIL_TOKEN=secret
 
 ## API Sentry
