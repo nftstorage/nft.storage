@@ -181,7 +181,7 @@ export default function Files({ user }) {
             overlayClassName="table-tooltip"
             id="all-deals-queued-tooltip"
           >
-            <VscQuestion size={16} className="flex self-end" />
+            <VscQuestion size={16} className="ml1" />
           </Tooltip>
         </span>
       )
@@ -353,7 +353,7 @@ export default function Files({ user }) {
                                 overlayClassName="table-tooltip"
                                 id="cid-tooltip"
                               >
-                                <VscQuestion size={16} className="" />
+                                <VscQuestion size={16} />
                               </Tooltip>
                             </span>
                           </th>

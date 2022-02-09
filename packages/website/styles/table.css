@@ -218,6 +218,12 @@
 .rc-tooltip.table-tooltip {
   opacity: 1;
   max-width: 40ch;
+  background-color: transparent;
+}
+
+.rc-tooltip-inner {
+  border: none !important;
+  border-radius: 0 !important;
 }
 
 .rc-tooltip.table-tooltip .rc-tooltip-content {
