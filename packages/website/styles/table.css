@@ -28,7 +28,8 @@
   display: flex;
   align-items: center;
 }
-.table-responsive table tr th > span > svg {
+.table-responsive table tr th > span > svg,
+.table-responsive table tr td span > svg {
   padding: 2px 0 0 2px;
 }
 .table-responsive table tr {
