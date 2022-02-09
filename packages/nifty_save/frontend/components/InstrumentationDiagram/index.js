@@ -66,7 +66,7 @@ function EditSliceCommandForm(props) {
           <input></input>
         </span>
         <span className="input">
-          <label>Range Start</label>
+          <label>Range End</label>
           <input></input>
         </span>
       </div>
