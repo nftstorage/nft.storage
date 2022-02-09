@@ -14,17 +14,24 @@ export const dialogModes = {
   DIALOG: 'dialog',
 }
 
+const NOOP = () => {
+  return null
+}
+
 export function Modal(
-  { children, startOpen = false, mode = dialogModes.MODAL },
+  { children, open = false, mode = dialogModes.MODAL, onClose = NOOP },
   ref
 ) {
-  const [isOpen, setIsOpen] = useState(startOpen)
+  const [isOpen, setIsOpen] = useState(open)
   const [modalId, setModalId] = useState(
     `modal_${Date.now()}_${Math.floor(Math.random() * 1000)}`
   )
   const [modalEl, setModalEl] = useState(null)
 
-  const close = useCallback(() => setIsOpen(false), [])
+  const close = useCallback(() => {
+    setIsOpen(false)
+    onClose && onClose()
+  }, [onClose])
 
   useImperativeHandle(
     ref,
@@ -58,10 +65,15 @@ export function Modal(
       appendEl()
       document.addEventListener('keydown', onEsc, false)
     }
+
+    if (isOpen != open) {
+      setIsOpen(open)
+    }
+
     return () => {
       document.removeEventListener('keydown', onEsc, false)
     }
-  }, [onEsc, isOpen, modalEl, modalId])
+  }, [onEsc, isOpen, modalEl, modalId, open])
 
   const content = isOpen ? (
     <div className={`modal`}>

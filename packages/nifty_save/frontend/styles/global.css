@@ -45,6 +45,7 @@
   --h4-size: 1.75em;
   --h5-size: 1.5em;
   --h6-size: 1.25em;
+  --h-padscale: 0.2;
 }
 /* util */
 .grid {
@@ -52,6 +53,12 @@
 }
 
 /* type */
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir,
+    helvetica neue, helvetica, ubuntu, roboto, noto, segoe ui, arial, sans-serif;
+}
+
 @font-face {
   font-family: ChicagoFLF;
   src: url('/fonts/ChicagoFLF.woff2') format('woff2');
@@ -62,28 +69,47 @@
   font-family: var(--nstitle);
 }
 
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-family: var(--nstitle);
+}
+
 h2,
 .h2 {
   font-size: var(--h2-size);
+  padding: calc(var(--h2-size) * var(--h-padscale)) 0;
 }
 h3,
 .h3 {
   font-size: var(--h3-size);
+  padding: calc(var(--h3-size) * var(--h-padscale)) 0;
 }
 
 h4,
 .h4 {
   font-size: var(--h4-size);
+  padding: calc(var(--h4-size) * var(--h-padscale)) 0;
 }
 
 h5,
 .h5 {
   font-size: var(--h5-size);
+  padding: calc(var(--h5-size) * var(--h-padscale)) 0;
 }
 
 h6,
 .h6 {
   font-size: var(--h6-size);
+  padding: calc(var(--h6-size) * var(--h-padscale)) 0;
+}
+
+p,
+.p {
+  font-size: 12px;
+  line-height: 16px;
 }
 
 .btn {
@@ -224,6 +250,17 @@ svg.hologram.interactive:hover > g > path {
       1px var(--nsblack);
 }
 
+/*Diagram*/
+
+.niftysave-diagram {
+  background-color: #000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 /*Modal*/
 .modal {
 }
@@ -231,20 +268,26 @@ svg.hologram.interactive:hover > g > path {
 .modal-body {
   position: absolute;
   background: rgba(0, 0, 0, 0.95);
+  color: var(--nsltblue);
   text-align: center;
-  border: var(--bwidth) solid var(--nsforest);
+  border: var(--bwidth) solid var(--nsltblue);
 
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 15rem;
-  box-shadow: 4px -4px 0px 0px var(--nsblack), 4px -4px 0px 1px var(--nsforest);
+  max-width: 20rem;
+  box-shadow: 4px -4px 0px 0px var(--nsblack), 4px -4px 0px 1px var(--nsltblue);
 }
 
 .modal-content {
   padding: 1rem;
   min-width: 8rem;
   min-height: 8rem;
+  display: grid;
+}
+
+.modal-content div {
+  display: grid;
 }
 
 .modal-overlay {
@@ -271,4 +314,46 @@ svg.hologram.interactive:hover > g > path {
 
 .modal-close:hover {
   color: #ddd;
+}
+
+/*Default Form Elements*/
+
+.input input {
+  width: 100%;
+  padding: 12px 0px 12px 0px;
+  text-indent: 12px;
+  border: 0 !important;
+  background-color: var(--nsgray-100);
+  margin: 0.5rem 0 1rem 0;
+}
+
+.input select {
+  width: 100%;
+  padding: 12px;
+  border: 0 !important;
+  background-color: var(--nsgray-100);
+  /* needed */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  /* SVG background image */
+  background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Ctitle%3Edown-arrow%3C%2Ftitle%3E%3Cg%20fill%3D%22%23000000%22%3E%3Cpath%20d%3D%22M10.293%2C3.293%2C6%2C7.586%2C1.707%2C3.293A1%2C1%2C0%2C0%2C0%2C.293%2C4.707l5%2C5a1%2C1%2C0%2C0%2C0%2C1.414%2C0l5-5a1%2C1%2C0%2C1%2C0-1.414-1.414Z%22%20fill%3D%22%23000000%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E');
+  background-size: 0.6em;
+  background-position: calc(100% - 1.3em) center;
+  background-repeat: no-repeat;
+  margin: 0.5rem 0 1rem 0;
+}
+
+.input input:focus,
+.input select:focus {
+  border: var(--bwidth) solid var(--nsltblue);
+}
+
+.input label {
+  text-align: left;
+  display: grid;
+}
+
+select::-ms-expand {
+  display: none;
 }
