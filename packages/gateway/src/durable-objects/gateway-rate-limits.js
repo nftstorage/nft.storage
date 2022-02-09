@@ -32,6 +32,14 @@ export class GatewayRateLimits1 {
     let url = new URL(request.url)
     switch (url.pathname) {
       case '/request':
+        if (this.rateLimitCharacteristics.RATE_LIMIT_REQUESTS === Infinity) {
+          return new Response(
+            JSON.stringify({
+              shouldBlock: false,
+            })
+          )
+        }
+
         // Filter out outdated requests
         const now = Date.now()
         this.rateLimitUsage = this.rateLimitUsage.filter(
@@ -79,7 +87,7 @@ function getRateLimitingCharacteristics(gatewayUrl) {
     case 'https://ipfs.io':
       return {
         RATE_LIMIT_REQUESTS: Infinity,
-        RATE_LIMIT_TIMEFRAME: SECOND * 10,
+        RATE_LIMIT_TIMEFRAME: MINUTE,
       }
     case 'https://cf-ipfs.com':
       return {
