@@ -378,7 +378,7 @@ export default function Files({ user }) {
                             </span>
                           </th>
                           <th className="">
-                            <span aria-describedby="pin-status-tooltip">
+                            <span aria-describedby="storage-providers-tooltip">
                               Storage Providers
                               <Tooltip
                                 placement="top"
@@ -396,7 +396,7 @@ export default function Files({ user }) {
                                   </span>
                                 }
                                 overlayClassName="table-tooltip"
-                                id="pin-status-tooltip"
+                                id="storage-providers-tooltip"
                               >
                                 <VscQuestion size={16} className="" />
                               </Tooltip>
