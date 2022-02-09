@@ -426,8 +426,8 @@ function GatewayLink({ cid, type }) {
   const gatewayLink = `https://ipfs.io/ipfs/${cid}`
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
   return (
-    <a title="View IPFS Url" href={href} target="_blank" rel="noreferrer">
-      View
+    <a title="View IPFS URL" href={href} target="_blank" rel="noreferrer">
+      View URL
     </a>
   )
 }
@@ -445,12 +445,12 @@ function CopyGatewayLink({ cid, type }) {
 
   return (
     <CopyButton
-      title="Copy IPFS Url to Clipboard"
+      title="Copy IPFS URL to Clipboard"
       text={href}
-      popupContent={'IPFS Url has been copied!'}
+      popupContent={'IPFS URL has been copied!'}
       asLink={true}
     >
-      <>Copy IPFS Url</>
+      <>Copy IPFS URL</>
     </CopyButton>
   )
 }
