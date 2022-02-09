@@ -331,8 +331,8 @@ export default function Files({ user }) {
                     <table className="w-100 collapse">
                       <thead>
                         <tr className="bg-nsgray">
-                          <th className="">Date</th>
-                          <th className="">
+                          <th>Date</th>
+                          <th>
                             <span aria-describedby="cid-tooltip">
                               CID
                               <Tooltip
@@ -357,7 +357,7 @@ export default function Files({ user }) {
                               </Tooltip>
                             </span>
                           </th>
-                          <th className="">
+                          <th>
                             <span aria-describedby="pin-status-tooltip">
                               Pin Status
                               <Tooltip
@@ -373,11 +373,11 @@ export default function Files({ user }) {
                                 overlayClassName="table-tooltip"
                                 id="pin-status-tooltip"
                               >
-                                <VscQuestion size={16} className="" />
+                                <VscQuestion size={16} />
                               </Tooltip>
                             </span>
                           </th>
-                          <th className="">
+                          <th>
                             <span aria-describedby="storage-providers-tooltip">
                               Storage Providers
                               <Tooltip
@@ -398,12 +398,12 @@ export default function Files({ user }) {
                                 overlayClassName="table-tooltip"
                                 id="storage-providers-tooltip"
                               >
-                                <VscQuestion size={16} className="" />
+                                <VscQuestion size={16} />
                               </Tooltip>
                             </span>
                           </th>
-                          <th className="">Size</th>
-                          <th className="">
+                          <th>Size</th>
+                          <th>
                             <span className="sr-only">File Actions</span>
                           </th>
                         </tr>
