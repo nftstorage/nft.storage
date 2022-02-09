@@ -256,6 +256,16 @@ function About() {
                   local IPFS node
                 </a>
                 , to other decentralized networks like Arweave or Storj.
+                And as time goes on, NFT.Storage will increasingly ' '}
+                <a
+                  href="https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/"
+                  className="black"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  decentralize itself
+                </a> 
+                as a public good!
               </p>
             </div>
           </div>
