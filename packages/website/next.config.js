@@ -22,6 +22,7 @@ const nextConfig = withBundleAnalyzer({
       '/ipfs-404.html': { page: '/404' },
       '/docs/': { page: '/docs/quickstart', statusCode: 301 },
       '/docs/why-nft-storage': { page: '/docs/why-nft-storage' },
+      '/docs/troubleshooting': { page: '/docs/troubleshooting' },
       '/docs/quickstart': { page: '/docs/quickstart' },
       '/docs/concepts/decentralized-storage': {
         page: '/docs/concepts/decentralized-storage',
