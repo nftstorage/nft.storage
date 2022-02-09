@@ -52,7 +52,7 @@ const Logos = ({ logos }) => {
           <Logo key={`marketplace-logo-${logo}`} src={logo} />
         ))}
       </div>
-      <p className="tc chicagoflf">and 10,000+ other users!</p>
+      <p className="tc chicagoflf">and 20,000+ other users!</p>
     </div>
   )
 }
