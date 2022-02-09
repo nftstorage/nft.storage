@@ -33,8 +33,6 @@ const fillHandler = async (event, context, err) => {
   const { rangeStartTime, rangeEndTime, source, timesliceSize } =
     event?.body || {}
 
-  //console.log({ rangeStartTime, rangeEndTime, source, timesliceSize })
-
   const isBinRange = checkIsBinRange(rangeStartTime, rangeEndTime)
 
   if (!isBinRange) {
