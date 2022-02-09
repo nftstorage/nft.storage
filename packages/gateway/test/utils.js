@@ -22,3 +22,7 @@ export function getCIDsTrackerName() {
 export function getGatewayRateLimitsName() {
   return 'GATEWAYRATELIMITS'
 }
+
+export function getSummaryMetricsName() {
+  return 'SUMMARYMETRICS'
+}

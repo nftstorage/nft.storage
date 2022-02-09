@@ -1,5 +1,51 @@
 # Changelog
 
+### [1.24.3](https://github.com/nftstorage/nft.storage/compare/website-v1.24.2...website-v1.24.3) (2022-02-09)
+
+
+### Bug Fixes
+
+* add redirect rule for docs ([#1309](https://github.com/nftstorage/nft.storage/issues/1309)) ([5e79512](https://github.com/nftstorage/nft.storage/commit/5e7951249c702aae602c72c8478cd269f7c51710))
+* number of users on homepage ([#1292](https://github.com/nftstorage/nft.storage/issues/1292)) ([f02d1c0](https://github.com/nftstorage/nft.storage/commit/f02d1c0e765e9a2b3d914915975ae93cb62c2255))
+
+### [1.24.2](https://github.com/nftstorage/nft.storage/compare/website-v1.24.1...website-v1.24.2) (2022-02-09)
+
+
+### Features
+
+* New docs internal integration ([#1044](https://github.com/nftstorage/nft.storage/issues/1044)) ([2d8c67a](https://github.com/nftstorage/nft.storage/commit/2d8c67a8fe99c112001867d2cac6b14ca9f02e89))
+
+### [1.24.1](https://github.com/nftstorage/nft.storage/compare/website-v1.24.0...website-v1.24.1) (2022-02-08)
+
+
+### Bug Fixes
+
+* add pointer to hidden deals link ([#1287](https://github.com/nftstorage/nft.storage/issues/1287)) ([1eb8a0d](https://github.com/nftstorage/nft.storage/commit/1eb8a0d35aef67fbcb1529319ae4323c7516751d))
+* line height for storage providers ([#1284](https://github.com/nftstorage/nft.storage/issues/1284)) ([921d5fb](https://github.com/nftstorage/nft.storage/commit/921d5fb544142b1e54e719a8ebc0a20a9f613365))
+
+## [1.24.0](https://github.com/nftstorage/nft.storage/compare/website-v1.23.1...website-v1.24.0) (2022-02-08)
+
+
+### Features
+
+* blog post When you buy an NFT, what are you actually getting? ([#1161](https://github.com/nftstorage/nft.storage/issues/1161)) ([b11d5b8](https://github.com/nftstorage/nft.storage/commit/b11d5b87bf209d527b5116178708074409f1ace3))
+* limit 3 storage providers and add toggle for showing rest ([#1279](https://github.com/nftstorage/nft.storage/issues/1279)) ([ffb849f](https://github.com/nftstorage/nft.storage/commit/ffb849f084024149d709b99dc0ea2d3dfde8e938))
+
+
+### Bug Fixes
+
+* blog post date ([#1283](https://github.com/nftstorage/nft.storage/issues/1283)) ([0ecfb8c](https://github.com/nftstorage/nft.storage/commit/0ecfb8c9593e04adab2b34657d61e1b187b530a6))
+* update tooltip styles to match site ([#1226](https://github.com/nftstorage/nft.storage/issues/1226)) ([a6e64f6](https://github.com/nftstorage/nft.storage/commit/a6e64f6187f35b261e7da11ffcd10b5f4a1835bf))
+* **website:** fix rate limit definition in FAQ ([#1280](https://github.com/nftstorage/nft.storage/issues/1280)) ([17ea541](https://github.com/nftstorage/nft.storage/commit/17ea541a29a5f58813e9090f20815ebe3057241c))
+
+### [1.23.1](https://github.com/nftstorage/nft.storage/compare/website-v1.23.0...website-v1.23.1) (2022-02-07)
+
+
+### Bug Fixes
+
+* edit to roadmap blog post ([#1209](https://github.com/nftstorage/nft.storage/issues/1209)) ([630b32a](https://github.com/nftstorage/nft.storage/commit/630b32a13029482b5bcf696153e6c136429aaef1))
+* gateway link for nft type uploads ([#1268](https://github.com/nftstorage/nft.storage/issues/1268)) ([a413a6b](https://github.com/nftstorage/nft.storage/commit/a413a6b46008f395304c0f22228d6c664c40c90e))
+
 ## [1.23.0](https://github.com/nftstorage/nft.storage/compare/website-v1.22.2...website-v1.23.0) (2022-01-31)
 
 

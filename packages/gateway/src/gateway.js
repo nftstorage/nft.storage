@@ -1,19 +1,20 @@
 /* eslint-env serviceworker, browser */
 /* global Response caches */
 
-import pAny from 'p-any'
+import pAny, { AggregateError } from 'p-any'
 import { FilterError } from 'p-some'
 import pSettle from 'p-settle'
 
 import { TimeoutError } from './errors.js'
 import { getCidFromSubdomainUrl } from './utils/cid.js'
 import {
-  ABORT_ERR_CODE,
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
+  REDIRECT_COUNTER_METRICS_ID,
   CF_CACHE_MAX_OBJECT_SIZE,
   HTTP_STATUS_RATE_LIMITED,
   REQUEST_PREVENTED_RATE_LIMIT_CODE,
+  TIMEOUT_CODE,
 } from './constants.js'
 
 /**
@@ -21,7 +22,8 @@ import {
  * @property {Response} [response]
  * @property {string} url
  * @property {number} [responseTime]
- * @property {string} [requestPreventedCode]
+ * @property {string} [reason]
+ * @property {boolean} [aborted]
  *
  * @typedef {import('./env').Env} Env
  */
@@ -34,12 +36,15 @@ import {
  * @param {import('./index').Ctx} ctx
  */
 export async function gatewayGet(request, env, ctx) {
+  const startTs = Date.now()
   const cache = caches.default
   let res = await cache.match(request.url)
 
   if (res) {
     // Update cache metrics in background
-    ctx.waitUntil(updateSummaryCacheMetrics(request, env, res))
+    const responseTime = Date.now() - startTs
+
+    ctx.waitUntil(updateSummaryCacheMetrics(request, env, res, responseTime))
     return res
   }
 
@@ -97,6 +102,13 @@ export async function gatewayGet(request, env, ctx) {
   } catch (err) {
     const responses = await pSettle(gatewayReqs)
 
+    // Redirect if all failed with rate limited error
+    const wasRateLimited = responses.every(
+      (r) =>
+        r.value?.response?.status === HTTP_STATUS_RATE_LIMITED ||
+        r.value?.reason === REQUEST_PREVENTED_RATE_LIMIT_CODE
+    )
+
     ctx.waitUntil(
       (async () => {
         // Update metrics as all requests failed
@@ -105,14 +117,8 @@ export async function gatewayGet(request, env, ctx) {
             updateGatewayMetrics(request, env, r.value, false)
           )
         )
+        wasRateLimited && updateGatewayRedirectCounter(request, env)
       })()
-    )
-
-    // Redirect if all failed with rate limited error
-    const wasRateLimited = responses.every(
-      (r) =>
-        r.value?.response?.status === HTTP_STATUS_RATE_LIMITED ||
-        r.value?.requestPreventedCode === REQUEST_PREVENTED_RATE_LIMIT_CODE
     )
 
     if (wasRateLimited) {
@@ -121,7 +127,7 @@ export async function gatewayGet(request, env, ctx) {
     }
 
     // Return the error response from gateway, error is not from nft.storage Gateway
-    if (err instanceof FilterError) {
+    if (err instanceof FilterError || err instanceof AggregateError) {
       const candidateResponse = responses.find((r) => r.value?.response)
 
       // Return first response with upstream error
@@ -130,7 +136,10 @@ export async function gatewayGet(request, env, ctx) {
       }
 
       // Gateway timeout
-      if (responses[0].reason?.code === ABORT_ERR_CODE) {
+      if (
+        responses[0].value?.aborted &&
+        responses[0].value?.reason == TIMEOUT_CODE
+      ) {
         throw new TimeoutError()
       }
     }
@@ -178,7 +187,8 @@ async function gatewayFetch(
     /** @type {GatewayResponse} */
     return {
       url: gwUrl,
-      requestPreventedCode: REQUEST_PREVENTED_RATE_LIMIT_CODE,
+      aborted: true,
+      reason: REQUEST_PREVENTED_RATE_LIMIT_CODE,
     }
   }
 
@@ -193,6 +203,15 @@ async function gatewayFetch(
       signal: controller.signal,
       headers: getHeaders(request),
     })
+  } catch (error) {
+    if (controller.signal.aborted) {
+      return {
+        url: gwUrl,
+        aborted: true,
+        reason: TIMEOUT_CODE,
+      }
+    }
+    throw error
   } finally {
     clearTimeout(timer)
   }
@@ -210,11 +229,13 @@ async function gatewayFetch(
  * @param {Request} request
  */
 function getHeaders(request) {
-  const existingProxies = request.headers['X-Forwarded-For']
-    ? `, ${request.headers['X-Forwarded-For']}`
+  const existingProxies = request.headers.get('X-Forwarded-For')
+    ? `, ${request.headers.get('X-Forwarded-For')}`
     : ''
   return {
-    'X-Forwarded-For': `${request.headers['cf-connecting-ip']}${existingProxies}`,
+    'X-Forwarded-For': `${request.headers.get(
+      'cf-connecting-ip'
+    )}${existingProxies}`,
   }
 }
 
@@ -222,20 +243,33 @@ function getHeaders(request) {
  * @param {Request} request
  * @param {import('./env').Env} env
  * @param {Response} response
+ * @param {number} responseTime
  */
-async function updateSummaryCacheMetrics(request, env, response) {
+async function updateSummaryCacheMetrics(request, env, response, responseTime) {
   // Get durable object for gateway
   const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
   const stub = env.summaryMetricsDurable.get(id)
 
-  /** @type {import('./durable-objects/summary-metrics').ContentLengthStats} */
+  /** @type {import('./durable-objects/summary-metrics').FetchStats} */
   const contentLengthStats = {
     contentLength: Number(response.headers.get('content-length')),
+    responseTime,
   }
 
   await stub.fetch(
     getDurableRequestUrl(request, 'metrics/cache', contentLengthStats)
   )
+}
+/**
+ * @param {Request} request
+ * @param {import('./env').Env} env
+ */
+async function updateGatewayRedirectCounter(request, env) {
+  // Get durable object for counter
+  const id = env.gatewayRedirectCounter.idFromName(REDIRECT_COUNTER_METRICS_ID)
+  const stub = env.gatewayRedirectCounter.get(id)
+
+  await stub.fetch(getDurableRequestUrl(request, 'update'))
 }
 
 /**
@@ -267,7 +301,7 @@ async function updateSummaryWinnerMetrics(request, env, gwResponse) {
   const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
   const stub = env.summaryMetricsDurable.get(id)
 
-  /** @type {import('./durable-objects/summary-metrics').ResponseWinnerStats} */
+  /** @type {import('./durable-objects/summary-metrics').FetchStats} */
   const fetchStats = {
     responseTime: gwResponse.responseTime,
     contentLength: Number(gwResponse.response.headers.get('content-length')),
@@ -297,7 +331,7 @@ async function updateGatewayMetrics(
     status: gwResponse.response?.status,
     winner: isWinner,
     responseTime: gwResponse.responseTime,
-    requestPreventedCode: gwResponse.requestPreventedCode,
+    requestPreventedCode: gwResponse.reason,
   }
 
   await stub.fetch(getDurableRequestUrl(request, 'update', fetchStats))
@@ -330,14 +364,12 @@ async function updateCidsTracker(request, env, responses, cid) {
  * @param {any} [data]
  */
 function getDurableRequestUrl(request, route, data) {
-  const reqUrl = new URL(
-    route,
-    request.url.startsWith('http') ? request.url : `http://${request.url}`
-  )
+  const reqUrl = new URL(request.url)
+  const durableReqUrl = new URL(route, `${reqUrl.protocol}//${reqUrl.host}`)
   const headers = new Headers()
   headers.append('Content-Type', 'application/json')
 
-  return new Request(reqUrl.toString(), {
+  return new Request(durableReqUrl.toString(), {
     headers,
     method: 'PUT',
     body: data && JSON.stringify(data),

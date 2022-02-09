@@ -10,7 +10,6 @@ import Script from 'next/script'
 import { When } from 'react-if'
 import bytes from 'bytes'
 import countly from '../lib/countly.js'
-import { useRouter } from 'next/router'
 import { useState } from 'react'
 import CopyButton from '../components/copyButton'
 import { Popover, ArrowContainer } from 'react-tiny-popover'
@@ -38,8 +37,6 @@ export function getStaticProps() {
  * @returns
  */
 export default function Files({ user }) {
-  const router = useRouter()
-  const version = /** @type {string} */ (router.query.version)
   const [deleting, setDeleting] = useState('')
   const [limit] = useState(25)
   const [befores, setBefores] = useState([''])
@@ -55,7 +52,7 @@ export default function Files({ user }) {
 
   const { status, data } = useQuery(
     queryKey,
-    (ctx) => getNfts(ctx.queryKey[1], version),
+    (ctx) => getNfts(ctx.queryKey[1]),
     {
       enabled: !!user,
     }
@@ -80,7 +77,7 @@ export default function Files({ user }) {
       try {
         const client = new NFTStorage({
           token: await getToken(),
-          endpoint: new URL(API + (version ? `/v${version}/` : '/')),
+          endpoint: new URL(API + '/'),
         })
         await client.delete(cid)
       } finally {
@@ -118,33 +115,31 @@ export default function Files({ user }) {
    */
   const TableItem = ({ nft }) => {
     // to do, add actual types
-    const deals =
-      (nft.deals &&
-        nft.deals
-          .filter((/** @type {any} */ d) => d.status !== 'queued')
-          .map(
-            (
-              /** @type {any} */ deal,
-              /** @type {number} */ i,
-              /** @type {any[]} */ deals
-            ) => {
-              const url = `https://filfox.info/en/deal/${deal.chainDealID}`
-              return (
-                <span key={deal.chainDealID} title={deal.status}>
-                  <a
-                    className="underline black"
-                    href={url}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {deal.miner}
-                  </a>
-                  {i === deals.length - 1 ? '' : ', '}
-                </span>
-              )
-            }
-          )) ||
-      []
+    const [showAllDeals, setShowAllDeals] = useState(false)
+    const deals = nft.deals
+      .filter((/** @type {any} */ d) => d.status !== 'queued')
+      .map(
+        (
+          /** @type {any} */ deal,
+          /** @type {number} */ i,
+          /** @type {any[]} */ deals
+        ) => {
+          const url = `https://filfox.info/en/deal/${deal.chainDealID}`
+          return (
+            <span key={deal.chainDealID} title={deal.status}>
+              <a
+                className="underline black"
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {deal.miner}
+              </a>
+              {i === deals.length - 1 ? '' : ', '}
+            </span>
+          )
+        }
+      )
 
     const queuedDeals =
       (nft.deals &&
@@ -168,13 +163,15 @@ export default function Files({ user }) {
             overlayClassName="table-tooltip"
             id="queued-deals-tooltip"
           >
-            <VscQuestion size={16} className="ml2" />
+            <VscQuestion size={16} />
           </Tooltip>
         </span>
       )
     }
 
-    if (!nft.deals || !nft.deals.length) {
+    const dealsHidden = deals.splice(3)
+
+    if (!nft.deals.length) {
       deals.push(
         <span
           className="queuing flex items-center"
@@ -193,7 +190,7 @@ export default function Files({ user }) {
             overlayClassName="table-tooltip"
             id="all-deals-queued-tooltip"
           >
-            <VscQuestion size={16} className="ml2 flex self-end" />
+            <VscQuestion size={16} className="flex self-end" />
           </Tooltip>
         </span>
       )
@@ -224,7 +221,24 @@ export default function Files({ user }) {
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
         </td>
         <td data-label="Deals">
-          <div>{deals}</div>
+          <div className="lh-copy">
+            {deals}
+            {dealsHidden.length > 0 && (
+              <>
+                {!showAllDeals && (
+                  <button
+                    onClick={() => setShowAllDeals(true)}
+                    className="hidden-deals-trigger pointer"
+                  >
+                    +{dealsHidden.length} More
+                  </button>
+                )}
+                {showAllDeals && (
+                  <div className="hidden-deals">{dealsHidden}</div>
+                )}
+              </>
+            )}
+          </div>
         </td>
         <td data-label="Size" className="nowrap">
           {bytes(nft.size || 0)}
@@ -337,7 +351,6 @@ export default function Files({ user }) {
                 <Button
                   href={{
                     pathname: '/new-file',
-                    query: version ? { version } : null,
                   }}
                   className="flex-none"
                   id="upload"

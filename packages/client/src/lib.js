@@ -93,7 +93,7 @@ class NFTStorage {
   }
 
   /**
-   * Stores a single file and returns it's CID.
+   * Stores a single file and returns its CID.
    *
    * @param {Service} service
    * @param {Blob} blob
@@ -115,7 +115,7 @@ class NFTStorage {
   }
 
   /**
-   * Stores a CAR file and returns it's root CID.
+   * Stores a CAR file and returns its root CID.
    *
    * @param {Service} service
    * @param {Blob|CarReader} car
@@ -353,7 +353,7 @@ class NFTStorage {
   }
 
   /**
-   * Encodes a single file to a CAR file and also returns it's root CID.
+   * Encodes a single file to a CAR file and also returns its root CID.
    *
    * @example
    * ```js

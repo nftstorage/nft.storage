@@ -1,17 +1,21 @@
+import {
+  responseTimeHistogram,
+  createResponseTimeHistogramObject,
+} from '../utils/histogram.js'
+
 /**
  * @typedef {Object} SummaryMetrics
  * @property {number} totalWinnerResponseTime total response time of the requests
  * @property {number} totalWinnerSuccessfulRequests total number of successful requests
+ * @property {number} totalCachedResponseTime total response time to forward cached responses
  * @property {number} totalCachedResponses total number of cached responses
  * @property {BigInt} totalContentLengthBytes total content length of responses
  * @property {BigInt} totalCachedContentLengthBytes total content length of cached responses
  * @property {Record<string, number>} contentLengthHistogram
+ * @property {Record<string, number>} responseTimeHistogram
  *
- * @typedef {Object} ResponseWinnerStats
+ * @typedef {Object} FetchStats
  * @property {number} responseTime number of milliseconds to get response
- * @property {number} contentLength content length header content
- *
- * @typedef {Object} ContentLengthStats
  * @property {number} contentLength content length header content
  */
 
@@ -19,6 +23,8 @@
 const TOTAL_WINNER_RESPONSE_TIME_ID = 'totalWinnerResponseTime'
 // Key to track total successful requests
 const TOTAL_WINNER_SUCCESSFUL_REQUESTS_ID = 'totalWinnerSuccessfulRequests'
+// Key to track total time for forwarding cached response
+const TOTAL_CACHED_RESPONSE_TIME_ID = 'totalCachedResponseTime'
 // Key to track total cached requests
 const TOTAL_CACHED_RESPONSES_ID = 'totalCachedResponses'
 // Key to track total content length of responses
@@ -27,9 +33,11 @@ const TOTAL_CONTENT_LENGTH_BYTES_ID = 'totalContentLengthBytes'
 const TOTAL_CACHED_CONTENT_LENGTH_BYTES_ID = 'totalCachedContentLengthBytes'
 // Key to track content size histogram
 const CONTENT_LENGTH_HISTOGRAM_ID = 'contentLengthHistogram'
+// Key to track response time histogram
+const RESPONSE_TIME_HISTOGRAM_ID = 'responseTimeHistogram'
 
 /**
- * Durable Object for keeping generic Metrics of gateway.nft.storage
+ * Durable Object for keeping summary metrics of gateway.nft.storage
  */
 export class SummaryMetrics0 {
   constructor(state) {
@@ -43,6 +51,9 @@ export class SummaryMetrics0 {
       // Total successful requests
       this.totalWinnerSuccessfulRequests =
         (await this.state.storage.get(TOTAL_WINNER_SUCCESSFUL_REQUESTS_ID)) || 0
+      // Total cached response time
+      this.totalCachedResponseTime =
+        (await this.state.storage.get(TOTAL_CACHED_RESPONSE_TIME_ID)) || 0
       // Total cached requests
       this.totalCachedResponses =
         (await this.state.storage.get(TOTAL_CACHED_RESPONSES_ID)) || 0
@@ -57,7 +68,11 @@ export class SummaryMetrics0 {
       // Content length histogram
       this.contentLengthHistogram =
         (await this.state.storage.get(CONTENT_LENGTH_HISTOGRAM_ID)) ||
-        createHistogramObject()
+        createContentLengthHistogramObject()
+      // Response time histogram
+      this.responseTimeHistogram =
+        (await this.state.storage.get(RESPONSE_TIME_HISTOGRAM_ID)) ||
+        createResponseTimeHistogramObject()
     })
   }
 
@@ -74,11 +89,13 @@ export class SummaryMetrics0 {
             JSON.stringify({
               totalWinnerResponseTime: this.totalWinnerResponseTime,
               totalWinnerSuccessfulRequests: this.totalWinnerSuccessfulRequests,
+              totalCachedResponseTime: this.totalCachedResponseTime,
               totalCachedResponses: this.totalCachedResponses,
               totalContentLengthBytes: this.totalContentLengthBytes.toString(),
               totalCachedContentLengthBytes:
                 this.totalCachedContentLengthBytes.toString(),
               contentLengthHistogram: this.contentLengthHistogram,
+              responseTimeHistogram: this.responseTimeHistogram,
             })
           )
         default:
@@ -87,17 +104,14 @@ export class SummaryMetrics0 {
     }
 
     // POST
-    let data
+    /** @type {FetchStats} */
+    const data = await request.json()
     switch (url.pathname) {
       case '/metrics/winner':
-        /** @type {ResponseWinnerStats} */
-        data = await request.json()
         await this._updateWinnerMetrics(data)
         return new Response()
       case '/metrics/cache':
-        /** @type {ContentLengthStats} */
-        data = await request.json()
-        await this._updateWinnerMetrics(data)
+        await this._updatedCacheMetrics(data)
         return new Response()
       default:
         return new Response('Not found', { status: 404 })
@@ -105,15 +119,21 @@ export class SummaryMetrics0 {
   }
 
   /**
-   * @param {ContentLengthStats} stats
+   * @param {FetchStats} stats
    */
   async _updatedCacheMetrics(stats) {
     // Update metrics
+    this.totalCachedResponseTime += stats.responseTime
     this.totalCachedResponses += 1
     this.totalCachedContentLengthBytes += BigInt(stats.contentLength)
     this._updateContentLengthMetrics(stats)
-    // Sabe updated metrics
+    this._updateResponseTimeHistogram(stats)
+    // Save updated metrics
     await Promise.all([
+      this.state.storage.put(
+        TOTAL_CACHED_RESPONSE_TIME_ID,
+        this.totalCachedResponseTime
+      ),
       this.state.storage.put(
         TOTAL_CACHED_RESPONSES_ID,
         this.totalCachedResponses
@@ -130,17 +150,22 @@ export class SummaryMetrics0 {
         CONTENT_LENGTH_HISTOGRAM_ID,
         this.contentLengthHistogram
       ),
+      this.state.storage.put(
+        RESPONSE_TIME_HISTOGRAM_ID,
+        this.responseTimeHistogram
+      ),
     ])
   }
 
   /**
-   * @param {ResponseWinnerStats} stats
+   * @param {FetchStats} stats
    */
   async _updateWinnerMetrics(stats) {
     // Updated Metrics
     this.totalWinnerResponseTime += stats.responseTime
     this.totalWinnerSuccessfulRequests += 1
     this._updateContentLengthMetrics(stats)
+    this._updateResponseTimeHistogram(stats)
     // Save updated Metrics
     await Promise.all([
       this.state.storage.put(
@@ -159,11 +184,15 @@ export class SummaryMetrics0 {
         CONTENT_LENGTH_HISTOGRAM_ID,
         this.contentLengthHistogram
       ),
+      this.state.storage.put(
+        RESPONSE_TIME_HISTOGRAM_ID,
+        this.responseTimeHistogram
+      ),
     ])
   }
 
   /**
-   * @param {ContentLengthStats} stats
+   * @param {FetchStats} stats
    */
   _updateContentLengthMetrics(stats) {
     this.totalContentLengthBytes += BigInt(stats.contentLength)
@@ -183,9 +212,29 @@ export class SummaryMetrics0 {
 
     this.contentLengthHistogram = tmpHistogram
   }
+
+  /**
+   * @param {FetchStats} stats
+   */
+  _updateResponseTimeHistogram(stats) {
+    const tmpHistogram = {
+      ...this.responseTimeHistogram,
+    }
+
+    // Get all the histogram buckets where the response time is smaller
+    const histogramCandidates = responseTimeHistogram.filter(
+      (h) => stats.responseTime < h
+    )
+
+    histogramCandidates.forEach((candidate) => {
+      tmpHistogram[candidate] += 1
+    })
+
+    this.responseTimeHistogram = tmpHistogram
+  }
 }
 
-function createHistogramObject() {
+function createContentLengthHistogramObject() {
   const h = contentLengthHistogram.map((h) => [h, 0])
   return Object.fromEntries(h)
 }

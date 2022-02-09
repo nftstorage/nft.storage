@@ -198,6 +198,7 @@
   border: 1px solid #000;
   padding: 6px 10px;
   cursor: pointer;
+  color: #000;
 }
 
 .actions-trigger:focus,
@@ -211,4 +212,27 @@
   padding-right: 2rem;
   display: flex;
   align-items: flex-start;
+}
+
+.hidden-deals-trigger {
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  font-size: inherit;
+  padding: 0;
+}
+
+.hidden-deals {
+  max-width: 320px;
+}
+
+.rc-tooltip.table-tooltip {
+  opacity: 1;
+  max-width: 40ch;
+}
+
+.rc-tooltip.table-tooltip .rc-tooltip-content {
+  border-radius: 0;
+  border: 1px solid #000;
+  font-family: var(--sansserif);
 }
