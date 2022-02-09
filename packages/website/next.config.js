@@ -21,23 +21,23 @@ const nextConfig = withBundleAnalyzer({
     return {
       '/ipfs-404.html': { page: '/404' },
       '/docs/': { page: '/docs/quickstart', statusCode: 301 },
-      '/docs/why-nft-storage/': { page: '/docs/why-nft-storage/' },
-      '/docs/quickstart/': { page: '/docs/quickstart/' },
-      '/docs/concepts/decentralized-storage/': {
-        page: '/docs/concepts/decentralized-storage/',
+      '/docs/why-nft-storage': { page: '/docs/why-nft-storage' },
+      '/docs/quickstart': { page: '/docs/quickstart' },
+      '/docs/concepts/decentralized-storage': {
+        page: '/docs/concepts/decentralized-storage',
       },
-      '/docs/concepts/architecture-considerations/': {
-        page: '/docs/concepts/architecture-considerations/',
+      '/docs/concepts/architecture-considerations': {
+        page: '/docs/concepts/architecture-considerations',
       },
       '/docs/concepts/car-files': { page: '/docs/concepts/car-files' },
-      '/docs/how-to/mint-erc-1155/': { page: '/docs/how-to/mint-erc-1155/' },
+      '/docs/how-to/mint-erc-1155': { page: '/docs/how-to/mint-erc-1155' },
 
-      '/docs/how-to/mint-custom-metadata/': {
-        page: '/docs/how-to/mint-custom-metadata/',
+      '/docs/how-to/mint-custom-metadata': {
+        page: '/docs/how-to/mint-custom-metadata',
       },
-      '/docs/how-to/retrieve/': { page: '/docs/how-to/retrieve/' },
-      '/docs/client/api-docs/': { page: '/docs/client/api-docs/' },
-      '/docs/client/lib/': { page: '/docs/client/lib/' },
+      '/docs/how-to/retrieve': { page: '/docs/how-to/retrieve' },
+      '/docs/client/api-docs': { page: '/docs/client/api-docs' },
+      '/docs/client/lib': { page: '/docs/client/lib' },
     }
   },
 })
