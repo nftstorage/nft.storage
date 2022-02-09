@@ -318,13 +318,33 @@ svg.hologram.interactive:hover > g > path {
 
 /*Default Form Elements*/
 
+.input {
+  margin: 0.5rem 0 0.75rem 0;
+}
+
+div .input:last-child {
+  margin: 0.5rem 0 1.75rem 0;
+}
+
+.input label {
+  padding: 0.5rem 0;
+}
+/*hint text*/
+.input input + label,
+.input input + label ~ label,
+.input select + label,
+.input select + label ~ label {
+  font-size: 0.8rem;
+  padding: 0.5rem 0 0 0;
+}
+
 .input input {
   width: 100%;
   padding: 12px 0px 12px 0px;
   text-indent: 12px;
   border: 0 !important;
   background-color: var(--nsgray-100);
-  margin: 0.75rem 0 1.25rem 0;
+
   transition: all 150ms ease;
   box-shadow: -3px -3px 0px 0px var(--nsblack),
     -3px -3px 0px 1px var(--nsltblue);
@@ -344,7 +364,6 @@ svg.hologram.interactive:hover > g > path {
   background-size: 0.6em;
   background-position: calc(100% - 1.3em) center;
   background-repeat: no-repeat;
-  margin: 0.75rem 0 1.25rem 0;
   transition: all 150ms ease;
   box-shadow: -3px -3px 0px 0px var(--nsblack),
     -3px -3px 0px 1px var(--nsltblue);

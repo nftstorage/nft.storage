@@ -1,6 +1,7 @@
 import Modal, { dialogModes } from '../Modal'
 
 import FlowDiagram from './FlowDiagram'
+import { msToTime } from './formatting'
 import { sendTimeRangeToSlicer } from './actions'
 import { useState } from 'react'
 
@@ -38,9 +39,30 @@ export default function InstrumentationDiagram(props) {
 
 function EditSliceCommandForm(props) {
   const { onSubmit, isBusy } = props
-  const [data, setData] = useState({})
+  const [data, setData] = useState({
+    source: 'the-graph',
+    rangeStartTime: '2019-6-1',
+    rangeEndTime: '2019-6-2',
+    timesliceSize: 6000000,
+  })
 
   const cta = isBusy ? 'Sending...' : 'Send Slice'
+
+  const onChangeData =
+    (key) =>
+    ({ target }) => {
+      let _nextData = { ...data }
+      _nextData[key] = target?.value || ''
+      setData(_nextData)
+      console.log(_nextData)
+    }
+
+  const fullRange =
+    new Date(data.rangeEndTime).getTime() -
+      new Date(data.rangeStartTime).getTime() || 0
+
+  const rangeStartAt = Date.now() - new Date(data.rangeStartTime).getTime() || 0
+  const rangeEndAt = Date.now() - new Date(data.rangeStartTime).getTime() || 0
 
   return (
     <div className="grid">
@@ -55,19 +77,44 @@ function EditSliceCommandForm(props) {
       <div className="grid">
         <span className="input">
           <label>Source</label>
-          <select name="test" aria-invalid="false">
+          <select
+            name="test"
+            aria-invalid="false"
+            value={data.source}
+            onChange={onChangeData('source')}
+          >
             <option value="the-graph">The Graph [Eth]</option>
-            <option value="nftport-polygon">NFTPort [PolyGon]</option>
-            <option value="source-3">Another Source</option>
+            <option value="nftport-polygon">💀 NFTPort [PolyGon]</option>
+            <option value="source-3">💀 Another Source 1</option>
+            <option value="source-4">💀 Another Source 2</option>
           </select>
+          <label>{`💀 = currently unimplemented`}</label>
         </span>
         <span className="input">
           <label>Range Start</label>
-          <input></input>
+          <input
+            value={data.rangeStartTime}
+            onChange={onChangeData('rangeStartTime')}
+          ></input>
+          <label>{`Start At: ${msToTime(rangeStartAt)} ago`}</label>
         </span>
         <span className="input">
           <label>Range End</label>
-          <input></input>
+          <input
+            value={data.rangeEndTime}
+            onChange={onChangeData('rangeEndTime')}
+          ></input>
+          <label>{`End at: ${msToTime(rangeEndAt)}`}</label>
+          <label>{`Full Range is: ${msToTime(fullRange)}`}</label>
+        </span>
+        <span className="input">
+          <label>Time Slice Size</label>
+          <input
+            type="number"
+            value={data.timesliceSize}
+            onChange={onChangeData('timesliceSize')}
+          ></input>
+          <label>{`Slice Width: ${msToTime(data.timesliceSize)}`}</label>
         </span>
       </div>
 
