@@ -17,10 +17,21 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const nextConfig = withBundleAnalyzer({
   trailingSlash: true,
   reactStrictMode: true,
+  redirects: [
+    {
+      source: '/docs/:slug',
+      destination: '/docs/:slug', // Matched parameters can be used in the destination
+      permanent: true,
+    },
+    {
+      source: '/docs/:slug/:path',
+      destination: '/docs/:slug/:path', // Matched parameters can be used in the destination
+      permanent: true,
+    },
+  ],
   exportPathMap: async function () {
     return {
       '/ipfs-404.html': { page: '/404' },
-      '/docs/': { page: '/docs/quickstart', statusCode: 301 },
     }
   },
 })
