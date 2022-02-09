@@ -471,7 +471,7 @@ function CopyGatewayLink({ cid, type, useWebViewer }) {
       popupContent={'IPFS URL has been copied!'}
       asLink={true}
     >
-      <>Copy IPFS Url</>
+      <>Copy IPFS URL</>
     </CopyButton>
   )
 }
