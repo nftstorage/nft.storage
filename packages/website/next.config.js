@@ -20,6 +20,7 @@ const nextConfig = withBundleAnalyzer({
   exportPathMap: async function () {
     return {
       '/ipfs-404.html': { page: '/404' },
+      '/docs/': { page: '/docs/quickstart', statusCode: 301 },
     }
   },
 })
