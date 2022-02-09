@@ -222,10 +222,9 @@
 .rc-tooltip.table-tooltip {
   opacity: 1;
   max-width: 40ch;
+  background: transparent;
 }
 
 .rc-tooltip.table-tooltip .rc-tooltip-content {
-  border-radius: 0;
-  border: 1px solid #000;
   font-family: var(--sansserif);
 }
