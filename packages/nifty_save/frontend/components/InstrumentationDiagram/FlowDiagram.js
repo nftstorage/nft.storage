@@ -12,7 +12,6 @@ const SvgComponent = (props) => {
       height={'100%'}
       viewBox="0 -80 1200 1500"
       id="niftysave-diagram"
-      {...props}
     >
       <filter id="grayscale">
         <feColorMatrix values="0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0" />
@@ -626,7 +625,7 @@ const SvgComponent = (props) => {
           id="4b59f4e2-b107-4540-8949-ec935eaeeb2c"
         />
         <g id="10433b90-3311-443b-9a4a-289d0bddbc23">
-          <svg x={1170} y={1193} height={90} id="svg25" width={90} {...props}>
+          <svg x={1170} y={1193} height={90} id="svg25" width={90}>
             <g id="Working" fillOpacity={1} transform="scale(1.2)">
               <path
                 id="Purple_Light_BG"
@@ -695,7 +694,6 @@ const SvgComponent = (props) => {
           y={878}
           overflow="visible"
           id="d6ac8779-678e-4ed7-9aca-ec183224ef52"
-          {...props}
         >
           <svg
             x={-13.5}
@@ -703,9 +701,8 @@ const SvgComponent = (props) => {
             width={27}
             height={32}
             transform="scale(1.415)"
-            {...props}
           >
-            <svg width={27} height={32} viewBox="0 0 27 32" {...props}>
+            <svg width={27} height={32} viewBox="0 0 27 32">
               <defs>
                 <marker
                   orient="auto"
@@ -790,7 +787,6 @@ const SvgComponent = (props) => {
           y={675}
           overflow="visible"
           id="0c1d6316-4f5b-4b9d-970b-48974fbec96d"
-          {...props}
         >
           <svg
             x={-28}
@@ -798,7 +794,6 @@ const SvgComponent = (props) => {
             width={56}
             height={67}
             transform="scale(1.415)"
-            {...props}
           >
             <svg
               xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -808,7 +803,6 @@ const SvgComponent = (props) => {
               stroke="#000"
               strokeLinecap="round"
               strokeLinejoin="round"
-              {...props}
             >
               <use xlinkHref="#a" x={1.358} y={1.358} />
             </svg>
@@ -819,9 +813,8 @@ const SvgComponent = (props) => {
           y={653}
           overflow="visible"
           id="73db9b97-77ec-44e0-b047-8fdc21e79b52"
-          {...props}
         >
-          <svg x={-70} y={-70} overflow="visible" {...props}>
+          <svg x={-70} y={-70} overflow="visible">
             <g transform="scale(0.6)">
               <image
                 xlinkHref="https://images.cloudcraft.co/3fddd10c-9a4a-4e5c-999e-3991f56c626a/nft_storage_logo.png"
@@ -836,9 +829,8 @@ const SvgComponent = (props) => {
           y={1125}
           overflow="visible"
           id="c301b48a-8498-41c1-bb64-32d878ef810c"
-          {...props}
         >
-          <svg x={-60} y={-50} overflow="visible" {...props}>
+          <svg x={-60} y={-50} overflow="visible">
             <g transform="scale(.2)">
               <image
                 xlinkHref="https://images.cloudcraft.co/3fddd10c-9a4a-4e5c-999e-3991f56c626a/hasura.png"
@@ -853,9 +845,8 @@ const SvgComponent = (props) => {
           y={878}
           overflow="visible"
           id="8ba022f2-6f13-4dee-ac9c-ff07fea89db1"
-          {...props}
         >
-          <svg x={-70} y={-70} overflow="visible" {...props}>
+          <svg x={-70} y={-70} overflow="visible">
             <g transform="scale(0.6)">
               <image
                 xlinkHref="https://images.cloudcraft.co/3fddd10c-9a4a-4e5c-999e-3991f56c626a/nft_storage_logo.png"
@@ -872,7 +863,6 @@ const SvgComponent = (props) => {
           y={1305}
           overflow="visible"
           id="7d30176d-0d19-4099-bd17-c35c5827f6ea"
-          {...props}
         >
           <g transform="scale(1.20748)">
             <circle fill="transparent" r={37.5} />
@@ -884,14 +874,12 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 75 75"
                 className="api-gateway interactive hologram"
                 onClick={onClickApi}
-                {...props}
               >
                 <defs>
                   <linearGradient
@@ -946,7 +934,6 @@ const SvgComponent = (props) => {
           y={968}
           overflow="visible"
           id="cdd07a73-ec60-4b30-90ce-304ea88593cd"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -958,14 +945,12 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={75}
                 height={75}
                 viewBox="0 0 75 75"
-                {...props}
               >
                 <g id="Example">
                   <path
@@ -992,7 +977,6 @@ const SvgComponent = (props) => {
           y={1260}
           overflow="visible"
           id="65a5b282-51b9-4320-8b5e-8b7177fcee35"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -1004,13 +988,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   id="Orange_Light_BG"
                   data-name="Orange Light BG"
@@ -1042,7 +1021,6 @@ const SvgComponent = (props) => {
           y={675}
           overflow="visible"
           id="ea521457-004c-4007-9dca-454ab8497f28"
-          {...props}
         >
           <g transform="scale(.89443)">
             <circle fill="#fff" r={23} />
@@ -1054,14 +1032,12 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={30}
                 height={32}
                 viewBox="0 0 30 32"
-                {...props}
               >
                 <path d="m16 29.089 11.429-6.232V11.5L16 15.661V29.09zm-1.143-15.446 12.464-4.536-12.464-4.536L2.393 9.107zm14.857-4.5v13.714c0 .839-.464 1.607-1.196 2l-12.571 6.857c-.339.196-.714.286-1.089.286s-.75-.089-1.089-.286L1.198 24.857a2.273 2.273 0 0 1-1.196-2V9.143A2.28 2.28 0 0 1 1.502 7l12.571-4.571c.25-.089.518-.143.786-.143s.536.054.786.143L28.216 7a2.28 2.28 0 0 1 1.5 2.143z" />
               </svg>
@@ -1073,7 +1049,6 @@ const SvgComponent = (props) => {
           y={675}
           overflow="visible"
           id="d6f8e126-226a-4fc2-b81d-c218249a6f7e"
-          {...props}
         >
           <g transform="scale(.89443)">
             <circle fill="#fff" r={23} />
@@ -1085,14 +1060,12 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={30}
                 height={32}
                 viewBox="0 0 30 32"
-                {...props}
               >
                 <path d="m16 29.089 11.429-6.232V11.5L16 15.661V29.09zm-1.143-15.446 12.464-4.536-12.464-4.536L2.393 9.107zm14.857-4.5v13.714c0 .839-.464 1.607-1.196 2l-12.571 6.857c-.339.196-.714.286-1.089.286s-.75-.089-1.089-.286L1.198 24.857a2.273 2.273 0 0 1-1.196-2V9.143A2.28 2.28 0 0 1 1.502 7l12.571-4.571c.25-.089.518-.143.786-.143s.536.054.786.143L28.216 7a2.28 2.28 0 0 1 1.5 2.143z" />
               </svg>
@@ -1104,7 +1077,6 @@ const SvgComponent = (props) => {
           y={675}
           overflow="visible"
           id="f1fdd8f6-2fbf-424f-8965-f4e3e573fee4"
-          {...props}
         >
           <g transform="scale(.89443)">
             <circle fill="#fff" r={23} />
@@ -1116,14 +1088,12 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={30}
                 height={32}
                 viewBox="0 0 30 32"
-                {...props}
               >
                 <path d="m16 29.089 11.429-6.232V11.5L16 15.661V29.09zm-1.143-15.446 12.464-4.536-12.464-4.536L2.393 9.107zm14.857-4.5v13.714c0 .839-.464 1.607-1.196 2l-12.571 6.857c-.339.196-.714.286-1.089.286s-.75-.089-1.089-.286L1.198 24.857a2.273 2.273 0 0 1-1.196-2V9.143A2.28 2.28 0 0 1 1.502 7l12.571-4.571c.25-.089.518-.143.786-.143s.536.054.786.143L28.216 7a2.28 2.28 0 0 1 1.5 2.143z" />
               </svg>
@@ -1135,7 +1105,6 @@ const SvgComponent = (props) => {
           y={675}
           overflow="visible"
           id="c333cdd1-a3b5-4cb3-b00d-21309df6293b"
-          {...props}
         >
           <g transform="scale(.89443)">
             <circle fill="#fff" r={23} />
@@ -1147,14 +1116,12 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={30}
                 height={32}
                 viewBox="0 0 30 32"
-                {...props}
               >
                 <path d="m16 29.089 11.429-6.232V11.5L16 15.661V29.09zm-1.143-15.446 12.464-4.536-12.464-4.536L2.393 9.107zm14.857-4.5v13.714c0 .839-.464 1.607-1.196 2l-12.571 6.857c-.339.196-.714.286-1.089.286s-.75-.089-1.089-.286L1.198 24.857a2.273 2.273 0 0 1-1.196-2V9.143A2.28 2.28 0 0 1 1.502 7l12.571-4.571c.25-.089.518-.143.786-.143s.536.054.786.143L28.216 7a2.28 2.28 0 0 1 1.5 2.143z" />
               </svg>
@@ -1166,7 +1133,6 @@ const SvgComponent = (props) => {
           y={1148}
           overflow="visible"
           id="66d3a6bd-3b65-4b02-ad6f-b21cf6ab22c0"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -1178,13 +1144,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   id="Pink_Light_BG"
                   data-name="Pink Light BG"
@@ -1222,7 +1183,6 @@ const SvgComponent = (props) => {
           y={1058}
           overflow="visible"
           id="85d8d8da-e7a6-4708-bbd4-1f7cb5c2aacf"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1234,13 +1194,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1271,7 +1226,6 @@ const SvgComponent = (props) => {
           y={1058}
           overflow="visible"
           id="7ec31d73-b761-40e7-b55f-b9d99bafa8da"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1283,13 +1237,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1320,7 +1269,6 @@ const SvgComponent = (props) => {
           y={1058}
           overflow="visible"
           id="e3d7be76-eaf7-4f2b-ad4a-7e1e3c1102f9"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1332,13 +1280,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1369,7 +1312,6 @@ const SvgComponent = (props) => {
           y={1058}
           overflow="visible"
           id="f7ebf214-d769-46b6-a29e-5c97971ed67d"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1381,13 +1323,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1418,7 +1355,6 @@ const SvgComponent = (props) => {
           y={1058}
           overflow="visible"
           id="6f18f798-f236-48be-a429-0986dd51f929"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1430,13 +1366,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1467,7 +1398,6 @@ const SvgComponent = (props) => {
           y={878}
           overflow="visible"
           id="18b1d75f-af68-4785-9c0b-7b2791d63e10"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1479,13 +1409,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1516,7 +1441,6 @@ const SvgComponent = (props) => {
           y={878}
           overflow="visible"
           id="b436825e-af95-4efc-838c-30a6784534d9"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1528,13 +1452,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1565,7 +1484,6 @@ const SvgComponent = (props) => {
           y={878}
           overflow="visible"
           id="5b144e90-1bfa-46fb-82c5-0773673a330f"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1577,13 +1495,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1614,7 +1527,6 @@ const SvgComponent = (props) => {
           y={878}
           overflow="visible"
           id="d90af879-8dfb-4d1c-a708-f739847b2d0c"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1626,13 +1538,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1663,7 +1570,6 @@ const SvgComponent = (props) => {
           y={878}
           overflow="visible"
           id="9751357f-37ba-48fb-8449-62968e88badb"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1675,13 +1581,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1712,7 +1613,6 @@ const SvgComponent = (props) => {
           y={810}
           overflow="visible"
           id="4f75c56b-7d89-42cd-9972-787568881b1a"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1724,13 +1624,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1761,7 +1656,6 @@ const SvgComponent = (props) => {
           y={810}
           overflow="visible"
           id="3f5b92c2-2e00-4a18-a1c9-b98a36a622f6"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1773,13 +1667,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1810,7 +1699,6 @@ const SvgComponent = (props) => {
           y={810}
           overflow="visible"
           id="857c8a5c-a376-4834-979d-8625e24e3b54"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1822,13 +1710,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1859,7 +1742,6 @@ const SvgComponent = (props) => {
           y={810}
           overflow="visible"
           id="cd930103-ab04-4d87-b116-19f19ff9036a"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1871,13 +1753,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1908,7 +1785,6 @@ const SvgComponent = (props) => {
           y={810}
           overflow="visible"
           id="163d230c-e234-4ea9-94b2-8fa7888919c4"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1920,13 +1796,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -1957,7 +1828,6 @@ const SvgComponent = (props) => {
           y={428}
           overflow="visible"
           id="f3a8c0de-3419-402c-bb41-34db889e3525"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -1969,13 +1839,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2006,7 +1871,6 @@ const SvgComponent = (props) => {
           y={428}
           overflow="visible"
           id="b1c43ad5-c9ec-4866-adb8-60904acd83ba"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -2018,13 +1882,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2055,7 +1914,6 @@ const SvgComponent = (props) => {
           y={428}
           overflow="visible"
           id="b0dc7578-5963-41ac-9f0b-3ce3b4a2a97d"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -2067,13 +1925,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2104,7 +1957,6 @@ const SvgComponent = (props) => {
           y={428}
           overflow="visible"
           id="d82d4679-841b-403e-b5e4-f0cd4fd08844"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -2116,13 +1968,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2153,7 +2000,6 @@ const SvgComponent = (props) => {
           y={518}
           overflow="visible"
           id="cb42740c-4e45-4266-8f3e-71afed7108df"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -2165,13 +2011,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Pink Light BG"
                   style={{
@@ -2208,7 +2049,6 @@ const SvgComponent = (props) => {
           y={428}
           overflow="visible"
           id="ecbbd47b-3d77-4f0e-9820-496e4be5dcfb"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -2220,13 +2060,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2257,7 +2092,6 @@ const SvgComponent = (props) => {
           y={90}
           overflow="visible"
           id="9d62650d-dee3-4ba8-ae3b-4a6412ab15ff"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -2269,13 +2103,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2306,7 +2135,6 @@ const SvgComponent = (props) => {
           y={90}
           overflow="visible"
           id="b7c7e3dd-bca5-4133-a1b0-2cf80f345d87"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -2318,13 +2146,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Pink Light BG"
                   style={{
@@ -2361,7 +2184,6 @@ const SvgComponent = (props) => {
           y={1260}
           overflow="visible"
           id="c418f4a2-71c4-4422-9df1-f67ceed91f36"
-          {...props}
         >
           <g transform="scale(2.94794)">
             <circle fill="transparent" r={25} />
@@ -2373,14 +2195,12 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={50}
                 height={50}
                 viewBox="0 0 50 50"
-                {...props}
               >
                 <path
                   d="M4.27 10.75v2.69h-.94V6.51h2a1.79 1.79 0 0 1 1 .27 1.76 1.76 0 0 1 .67.75 2.57 2.57 0 0 1 .23 1.1 2.26 2.26 0 0 1-.52 1.54 1.7 1.7 0 0 1-1.35.58zm0-.77h1A.86.86 0 0 0 6 9.62a1.62 1.62 0 0 0 .27-1 1.63 1.63 0 0 0-.27-1 .88.88 0 0 0-.73-.35h-1zM10 13.57a1.7 1.7 0 0 1-1.46-.69 3.29 3.29 0 0 1-.5-2 3.28 3.28 0 0 1 .5-2A1.7 1.7 0 0 1 10 8.24a1.69 1.69 0 0 1 1.45.69 3.28 3.28 0 0 1 .51 2 3.29 3.29 0 0 1-.51 2 1.69 1.69 0 0 1-1.45.64zm0-.76a.83.83 0 0 0 .77-.47A3.23 3.23 0 0 0 11 10.9a3.26 3.26 0 0 0-.25-1.44A.83.83 0 0 0 10 9a.81.81 0 0 0-.77.46 3.12 3.12 0 0 0-.25 1.44 3.09 3.09 0 0 0 .25 1.44.81.81 0 0 0 .77.47zm4.81-.73c0-.29-.19-.52-.56-.7l-.65-.32a1.43 1.43 0 0 1-.89-1.38 1.4 1.4 0 0 1 .41-1 1.51 1.51 0 0 1 1.09-.4 2.49 2.49 0 0 1 1.21.32v.68A2.63 2.63 0 0 0 14.29 9a.8.8 0 0 0-.54.18.63.63 0 0 0-.19.49.64.64 0 0 0 .13.42 1.4 1.4 0 0 0 .46.33l.6.3a1.65 1.65 0 0 1 .69.55 1.41 1.41 0 0 1 .21.79 1.5 1.5 0 0 1-.42 1.11 1.58 1.58 0 0 1-1.15.42 2.73 2.73 0 0 1-1.41-.37v-.68a3.73 3.73 0 0 0 1.35.31.77.77 0 0 0 .58-.2.71.71 0 0 0 .21-.57zm4.02 1.24a2.38 2.38 0 0 1-.91.18 1.14 1.14 0 0 1-.92-.34 1.57 1.57 0 0 1-.29-1.05v-3H16v-.6l.75-.12.13-1.39h.77v1.37h1.16v.76h-1.16V12a.88.88 0 0 0 .12.53.51.51 0 0 0 .44.16 1.91 1.91 0 0 0 .62-.1zm3.46-.49a1.67 1.67 0 0 1-1.14.51 1.31 1.31 0 0 1-.88-.32 2 2 0 0 1-.57-.87 4.07 4.07 0 0 1-.2-1.32 3.39 3.39 0 0 1 .5-1.89 1.36 1.36 0 0 1 1.21-.7 1.79 1.79 0 0 1 1.21.54l.06-.41h.79v4.78c0 1.65-.67 2.47-2 2.47a2.74 2.74 0 0 1-1.4-.37v-.72a3.47 3.47 0 0 0 1.32.31 1 1 0 0 0 .89-.38 2.34 2.34 0 0 0 .25-1.26zm-.87-.26a1.39 1.39 0 0 0 .87-.38V9.37a1.51 1.51 0 0 0-.91-.37.75.75 0 0 0-.71.43 3.11 3.11 0 0 0-.23 1.36 2.7 2.7 0 0 0 .25 1.33.77.77 0 0 0 .73.45zm3.14.87V8.37h.78l.09.61a1.87 1.87 0 0 1 .57-.5 1.47 1.47 0 0 1 .67-.15 1.66 1.66 0 0 1 .32 0v.87a2.74 2.74 0 0 0-.45 0 1.64 1.64 0 0 0-1 .37v3.88zm3.76-2.33a2.27 2.27 0 0 0 .32 1.3 1.13 1.13 0 0 0 1 .4 3.06 3.06 0 0 0 1.26-.31v.69a2.64 2.64 0 0 1-1.42.38 1.79 1.79 0 0 1-1.52-.66 3.34 3.34 0 0 1-.5-2 3.36 3.36 0 0 1 .5-2 1.67 1.67 0 0 1 1.43-.69 1.42 1.42 0 0 1 1.2.52 2.47 2.47 0 0 1 .4 1.53 3.6 3.6 0 0 1-.08.83zm1-2.16a.82.82 0 0 0-.71.38 2.26 2.26 0 0 0-.29 1.14h1.8v-.27a1.72 1.72 0 0 0-.2-.95.67.67 0 0 0-.6-.25zm3.84 1.19a2.64 2.64 0 0 1-1-.78 1.86 1.86 0 0 1-.3-1.08 1.87 1.87 0 0 1 .53-1.38 1.94 1.94 0 0 1 1.39-.52 3.8 3.8 0 0 1 1.5.36v.78a3.35 3.35 0 0 0-1.43-.31 1 1 0 0 0-.74.27 1.05 1.05 0 0 0-.28.75 1.07 1.07 0 0 0 .19.63 1.86 1.86 0 0 0 .63.49l.71.36a2.41 2.41 0 0 1 1 .78 1.9 1.9 0 0 1 .3 1.08 2 2 0 0 1-.58 1.43 2.11 2.11 0 0 1-1.52.55 3.22 3.22 0 0 1-.88-.11 2.35 2.35 0 0 1-.74-.3v-.77a4.12 4.12 0 0 0 1.59.35 1 1 0 0 0 1.14-1.13 1.24 1.24 0 0 0-.79-1.13zM36.6 10a4.47 4.47 0 0 1 .69-2.66 2.45 2.45 0 0 1 3.86 0 4.47 4.47 0 0 1 .69 2.66 5 5 0 0 1-.48 2.33A2.25 2.25 0 0 1 40 13.48a3.41 3.41 0 0 0 .83.49 4 4 0 0 0 1 .23v.85a4.2 4.2 0 0 1-1.44-.47 5 5 0 0 1-1.25-1 2.4 2.4 0 0 1-1.35-.48 2.68 2.68 0 0 1-.84-1.24A5.6 5.6 0 0 1 36.6 10zm1 0a4.24 4.24 0 0 0 .4 2.06 1.4 1.4 0 0 0 2.44 0 4.13 4.13 0 0 0 .41-2.06 4.13 4.13 0 0 0-.41-2.08A1.41 1.41 0 0 0 38 7.9a4.24 4.24 0 0 0-.41 2.1zm5.58 3.44V6.51h1v6.12h2.52v.81zM40 20.28c-5 0-10 1.56-10 4.55v20.34c0 3 5 4.55 10 4.55s10-1.56 10-4.55V24.83c0-2.99-5-4.55-10-4.55zm.13 2c5.19 0 8 1.68 8 2.55s-2.83 2.56-8 2.56-8-1.69-8-2.56 2.8-2.55 8-2.55zm0 25.44c-5.2 0-8-1.68-8-2.55v-3.42a16.66 16.66 0 0 0 8 1.74 16.65 16.65 0 0 0 8-1.74v3.42c.02.83-2.81 2.55-8 2.55zm0-6.23c-5.2 0-8-1.69-8-2.56v-4.16a16.78 16.78 0 0 0 8 1.73 16.77 16.77 0 0 0 8-1.73v4.16c.02.87-2.81 2.56-8 2.56zm0-7c-5.2 0-8-1.69-8-2.56v-4.28a16.66 16.66 0 0 0 8 1.74 16.65 16.65 0 0 0 8-1.74v4.29c.02.87-2.81 2.56-8 2.56z"
@@ -2403,7 +2223,6 @@ const SvgComponent = (props) => {
           y={1125}
           overflow="visible"
           id="2b95f738-ff17-44a3-bed5-735626c66deb"
-          {...props}
         >
           <g transform="scale(.77279)">
             <circle fill="transparent" r={37.5} />
@@ -2415,13 +2234,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2452,7 +2266,6 @@ const SvgComponent = (props) => {
           y={203}
           overflow="visible"
           id="e3890b8d-3133-4b8f-8908-e433623c7aca"
-          {...props}
         >
           <g transform="scale(1.20748)">
             <circle fill="transparent" r={37.5} />
@@ -2464,13 +2277,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <defs>
                   <linearGradient
                     id="BlueGradient"
@@ -2539,7 +2347,6 @@ const SvgComponent = (props) => {
           y={540}
           overflow="visible"
           id="8acf1cc8-0427-42ce-a843-ed25d246ee05"
-          {...props}
         >
           <g transform="scale(1.88668)">
             <circle fill="#e91e63" r={37.5} />
@@ -2551,14 +2358,12 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width={75}
                 height={75}
                 viewBox="0 0 75 75"
-                {...props}
               >
                 <path
                   data-name="Green Light BG"
@@ -2582,7 +2387,6 @@ const SvgComponent = (props) => {
           y={203}
           overflow="visible"
           id="80c1d1d9-8f5f-4f1c-8ce9-3c53d78b43f0"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -2594,13 +2398,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2631,7 +2430,6 @@ const SvgComponent = (props) => {
           y={315}
           overflow="visible"
           id="a1ba3cc1-3444-46ab-b43f-777585a2cea9"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -2643,13 +2441,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2680,7 +2473,6 @@ const SvgComponent = (props) => {
           y={428}
           overflow="visible"
           id="3a3c5174-bf0b-4ff5-b34f-3e9fa958495b"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -2692,13 +2484,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2729,7 +2516,6 @@ const SvgComponent = (props) => {
           y={540}
           overflow="visible"
           id="8e5a1961-c629-446b-b425-e30d9e4ee86a"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -2741,13 +2527,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2778,7 +2559,6 @@ const SvgComponent = (props) => {
           y={653}
           overflow="visible"
           id="820869e6-38dd-4421-8f59-935f734c7dc4"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -2790,13 +2570,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2827,7 +2602,6 @@ const SvgComponent = (props) => {
           y={765}
           overflow="visible"
           id="ffa17d7e-1c28-434c-95c1-198ab9d999a1"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -2839,13 +2613,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2876,7 +2645,6 @@ const SvgComponent = (props) => {
           y={878}
           overflow="visible"
           id="86f1eaae-0aa9-49ad-91a7-7f0e39fee6dd"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -2888,13 +2656,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2925,7 +2688,6 @@ const SvgComponent = (props) => {
           y={990}
           overflow="visible"
           id="26c50c49-baef-463d-81ee-b5810a400338"
-          {...props}
         >
           <g transform="scale(.96598)">
             <circle fill="transparent" r={37.5} />
@@ -2937,13 +2699,8 @@ const SvgComponent = (props) => {
               style={{
                 fill: '#000',
               }}
-              {...props}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 75 75"
-                {...props}
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path
                   data-name="Orange Light BG"
                   style={{
@@ -2976,7 +2733,6 @@ const SvgComponent = (props) => {
           y={1350}
           overflow="visible"
           id="9e861845-8c3a-4aea-b194-d19c2fa05145"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3016,7 +2772,6 @@ const SvgComponent = (props) => {
           y={653}
           overflow="visible"
           id="5aa6544c-490c-4106-b405-45d136379892"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3056,7 +2811,6 @@ const SvgComponent = (props) => {
           y={360}
           overflow="visible"
           id="fb58820d-7860-433b-bda9-524090350f3a"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3090,7 +2844,6 @@ const SvgComponent = (props) => {
           y={1170}
           overflow="visible"
           id="1c407f9e-37d6-4339-82c9-015da318ebe4"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3124,7 +2877,6 @@ const SvgComponent = (props) => {
           y={1035}
           overflow="visible"
           id="de545f28-c184-475c-81e7-de55d1094117"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3164,7 +2916,6 @@ const SvgComponent = (props) => {
           y={945}
           overflow="visible"
           id="e3ba8068-de9c-4884-b0bc-cb4306d0abe1"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3204,7 +2955,6 @@ const SvgComponent = (props) => {
           y={540}
           overflow="visible"
           id="97d6709f-74d1-403f-8a96-9b106f1e579e"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3244,7 +2994,6 @@ const SvgComponent = (props) => {
           y={1215}
           overflow="visible"
           id="240c827b-8885-46d8-abe1-1d2370a290aa"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3284,7 +3033,6 @@ const SvgComponent = (props) => {
           y={1328}
           overflow="visible"
           id="6424251d-0cb3-47fc-8f2b-d0dad9e48646"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3322,7 +3070,6 @@ const SvgComponent = (props) => {
           y={1283}
           overflow="visible"
           id="fd1a2f29-bf6c-4ffe-975b-b7af06f60cde"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3356,7 +3103,6 @@ const SvgComponent = (props) => {
           y={1103}
           overflow="visible"
           id="ab248c22-265c-4489-a0c9-c99be885d5cf"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3390,7 +3136,6 @@ const SvgComponent = (props) => {
           y={180}
           overflow="visible"
           id="3e5e1777-d1e6-4016-beb0-3d66d1678328"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3424,7 +3169,6 @@ const SvgComponent = (props) => {
           y={-67}
           overflow="visible"
           id="cbc130a0-3641-4987-a9f5-dfe454a7f8d9"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3464,7 +3208,6 @@ const SvgComponent = (props) => {
           y={180}
           overflow="visible"
           id="d7f1e028-4fd5-4c7a-878f-9b5f2d7209a7"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3504,7 +3247,6 @@ const SvgComponent = (props) => {
           y={293}
           overflow="visible"
           id="76baf0b7-3ab8-40b3-b2ac-4b439ffe8b89"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3538,7 +3280,6 @@ const SvgComponent = (props) => {
           y={405}
           overflow="visible"
           id="5bcea846-f87b-4ef6-941b-af3601ac6e8c"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3578,7 +3319,6 @@ const SvgComponent = (props) => {
           y={518}
           overflow="visible"
           id="c1fbf108-5f9a-47c4-9cc9-b1ef9b758071"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3612,7 +3352,6 @@ const SvgComponent = (props) => {
           y={630}
           overflow="visible"
           id="1e6ef1d6-b191-47aa-bc7a-8c82dd52e778"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3646,7 +3385,6 @@ const SvgComponent = (props) => {
           y={743}
           overflow="visible"
           id="f58fb124-a7f3-4685-8a8c-c42f8e9af4a0"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3680,7 +3418,6 @@ const SvgComponent = (props) => {
           y={855}
           overflow="visible"
           id="dd211352-8fce-4675-8a64-530c25faaf71"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3714,7 +3451,6 @@ const SvgComponent = (props) => {
           y={968}
           overflow="visible"
           id="394d1429-4d83-41c8-a79b-f6e588aa5a53"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3748,7 +3484,6 @@ const SvgComponent = (props) => {
           y={1103}
           overflow="visible"
           id="3a81e274-f238-4fde-94dd-d8b503dc152e"
-          {...props}
         >
           <text
             stroke="#000"
@@ -3788,7 +3523,6 @@ const SvgComponent = (props) => {
           y={1215}
           overflow="visible"
           id="260cb1f0-fec4-4adf-b2e6-947a64041b3e"
-          {...props}
         >
           <text
             stroke="#000"
