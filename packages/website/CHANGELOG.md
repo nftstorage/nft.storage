@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.24.2](https://github.com/nftstorage/nft.storage/compare/website-v1.24.1...website-v1.24.2) (2022-02-09)
+
+
+### Features
+
+* New docs internal integration ([#1044](https://github.com/nftstorage/nft.storage/issues/1044)) ([2d8c67a](https://github.com/nftstorage/nft.storage/commit/2d8c67a8fe99c112001867d2cac6b14ca9f02e89))
+
 ### [1.24.1](https://github.com/nftstorage/nft.storage/compare/website-v1.24.0...website-v1.24.1) (2022-02-08)
 
 
