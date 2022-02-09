@@ -1,7 +1,7 @@
 {
-  "index": "QuickStart",
+  "quickstart": "Quickstart",
   "why-nft-storage": "Why NFT.Storage",
-  "troubleshooting": "TroubleShooting",
+  "troubleshooting": "Troubleshooting",
   "api-docs": "Api Docs",
   "concepts": "Concepts",
   "how-to": "How To"
