@@ -223,3 +223,52 @@ svg.hologram.interactive:hover > g > path {
     calc(var(--card-ghost-x-hover) * -2) calc(var(--card-ghost-y-hover) * 2) 0px
       1px var(--nsblack);
 }
+
+/*Modal*/
+.modal {
+}
+
+.modal-body {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.95);
+  text-align: center;
+  border: var(--bwidth) solid var(--nsforest);
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 15rem;
+  box-shadow: 4px -4px 0px 0px var(--nsblack), 4px -4px 0px 1px var(--nsforest);
+}
+
+.modal-content {
+  padding: 1rem;
+  min-width: 8rem;
+  min-height: 8rem;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.modal-close {
+  color: #fff;
+  transition: all 150ms ease;
+  cursor: pointer;
+  display: block;
+  width: 22px;
+  height: 22px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.5rem;
+}
+
+.modal-close:hover {
+  color: #ddd;
+}
