@@ -324,7 +324,9 @@ svg.hologram.interactive:hover > g > path {
   text-indent: 12px;
   border: 0 !important;
   background-color: var(--nsgray-100);
-  margin: 0.5rem 0 1rem 0;
+  margin: 0.75rem 0 1.25rem 0;
+  transition: all 150ms ease;
+  box-shadow: 2px -2px 0px 0px var(--nsblack), 2px -2px 0px 1px var(--nsltblue);
 }
 
 .input select {
@@ -341,12 +343,19 @@ svg.hologram.interactive:hover > g > path {
   background-size: 0.6em;
   background-position: calc(100% - 1.3em) center;
   background-repeat: no-repeat;
-  margin: 0.5rem 0 1rem 0;
+  margin: 0.75rem 0 1.25rem 0;
+  transition: all 150ms ease;
+  box-shadow: 2px -2px 0px 0px var(--nsblack), 2px -2px 0px 1px var(--nsltblue);
 }
 
 .input input:focus,
-.input select:focus {
+.input input:active,
+.input select:focus,
+.input select:active {
+  background-color: var(--nswhite);
   border: var(--bwidth) solid var(--nsltblue);
+  outline: none;
+  box-shadow: 4px -4px 0px 0px var(--nsblack), 4px -4px 0px 1px var(--nsltblue);
 }
 
 .input label {
