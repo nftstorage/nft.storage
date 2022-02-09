@@ -12,6 +12,7 @@ const SvgComponent = (props) => {
       height={'100%'}
       viewBox="0 -80 1200 1500"
       id="niftysave-diagram"
+      className="diagram"
     >
       <filter id="grayscale">
         <feColorMatrix values="0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0" />
@@ -2735,35 +2736,21 @@ const SvgComponent = (props) => {
           id="9e861845-8c3a-4aea-b194-d19c2fa05145"
         >
           <text
-            stroke="#000"
-            strokeWidth={2}
             fontFamily="Open Sans"
-            y={26.24}
+            y={22}
             fontSize="16pt"
             fill="#fff"
             fontWeight="bold"
             xmlSpace="preserve"
           >
-            <tspan x={8} dy={0}>
+            <tspan x={8} dy={-1} className="label">
               {'Target Source '}
             </tspan>
-            <tspan x={8} dy="1.1em">
+            <tspan x={8} dy="1em" className="label">
               {'With Time Range'}
             </tspan>
-          </text>
-          <text
-            fontFamily="Open Sans"
-            y={26.24}
-            fontSize="16pt"
-            fill="#fff"
-            fontWeight="bold"
-            xmlSpace="preserve"
-          >
-            <tspan x={8} dy={0}>
-              {'Target Source '}
-            </tspan>
-            <tspan x={8} dy="1.1em">
-              {'With Time Range'}
+            <tspan x={8} dy="1.2em" className="label-readout">
+              {`${props?.apiGatewayReadout?.message}`}
             </tspan>
           </text>
         </svg>

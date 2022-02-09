@@ -1,0 +1,8 @@
+.diagram .label {
+  font-size: 14px;
+}
+
+.diagram .label-readout {
+  font-size: 15px;
+  fill: rgba(255, 255, 255, 0.5);
+}

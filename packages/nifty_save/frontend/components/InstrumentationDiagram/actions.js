@@ -5,13 +5,17 @@ const createAction = async (route, data) =>
       'Content-Type': 'application/json',
     },
     method: 'POST',
-  })
+  }).then((r) => r.json())
+
+export const defaultTimeCommand = {
+  timesliceSize: 6000000,
+  rangeStartTime: '2019-6-1',
+  rangeEndTime: '2019-6-2',
+  source: 'the-graph',
+}
 
 export const sendTimeRangeToSlicer = (apiUrl, data) =>
   createAction(`${apiUrl}/ingest/slice-queue/fill`, {
     ...data,
-    timesliceSize: 6000000,
-    rangeStartTime: '2019-6-1',
-    rangeEndTime: '2019-6-2',
-    source: 'the-graph',
+    ...defaultTimeCommand,
   })

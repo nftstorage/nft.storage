@@ -1,14 +1,17 @@
 import Modal, { dialogModes } from '../Modal'
+import { defaultTimeCommand, sendTimeRangeToSlicer } from './actions'
 
 import FlowDiagram from './FlowDiagram'
 import { msToTime } from './formatting'
-import { sendTimeRangeToSlicer } from './actions'
 import { useState } from 'react'
 
 export default function InstrumentationDiagram(props) {
   const { apiUrl } = props
   const [apiGateWayFormIsOpen, setApiGatewayFormIsOpen] = useState(false)
   const [sendingSlice, setSendingSlice] = useState(false)
+  const [apiGatewayReadout, setApiGatewayReadout] = useState({
+    message: 'No Commands sent',
+  })
 
   return (
     <div className="niftysave-diagram">
@@ -22,13 +25,15 @@ export default function InstrumentationDiagram(props) {
           isBusy={sendingSlice}
           onSubmit={async (data) => {
             setSendingSlice(true)
-            await sendTimeRangeToSlicer(apiUrl, {})
+            const results = await sendTimeRangeToSlicer(apiUrl, data)
+            setApiGatewayReadout(results)
             setSendingSlice(false)
             setApiGatewayFormIsOpen(false)
           }}
         />
       </Modal>
       <FlowDiagram
+        apiGatewayReadout={apiGatewayReadout}
         onClickApi={() => {
           setApiGatewayFormIsOpen(true)
         }}
@@ -39,12 +44,7 @@ export default function InstrumentationDiagram(props) {
 
 function EditSliceCommandForm(props) {
   const { onSubmit, isBusy } = props
-  const [data, setData] = useState({
-    source: 'the-graph',
-    rangeStartTime: '2019-6-1',
-    rangeEndTime: '2019-6-2',
-    timesliceSize: 6000000,
-  })
+  const [data, setData] = useState(defaultTimeCommand)
 
   const cta = isBusy ? 'Sending...' : 'Send Slice'
 
