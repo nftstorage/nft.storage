@@ -1,0 +1,5 @@
+{
+  "mint-erc-1155": "Store and mint NFTs using ERC-1155 metadata standards",
+  "mint-custom-metadata": "Store and mint NFTs using custom metadata",
+  "retrieve": "Retrieve NFT data from IPFS"
+}

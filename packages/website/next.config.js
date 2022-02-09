@@ -17,17 +17,24 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const nextConfig = withBundleAnalyzer({
   trailingSlash: true,
   reactStrictMode: true,
-  exportPathMap: async function() {
+  exportPathMap: async function () {
     return {
       '/ipfs-404.html': { page: '/404' },
     }
   },
 })
 
+const withNextra = require('nextra')({
+  theme: 'nextra-theme-docs',
+  themeConfig: './theme.config.js',
+})
+
+const configWithDocs = withNextra({ ...nextConfig })
+
 const config =
   env === 'dev'
-    ? nextConfig
-    : withSentryConfig(nextConfig, {
+    ? configWithDocs
+    : withSentryConfig(configWithDocs, {
         debug: false,
         silent: true,
         setCommits: { auto: true, ignoreEmpty: true, ignoreMissing: true },

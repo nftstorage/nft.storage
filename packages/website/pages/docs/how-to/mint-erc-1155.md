@@ -2,8 +2,10 @@
 title: Store and mint NFTs using ERC-1155 metadata standards
 ---
 
-<!-- TODO: introduce & define ERC-1155, explain that it works for ERC-721 also -->
+import Callout from 'nextra-theme-docs/callout';
+import { Tabs, TabItem } from 'components/mdx/tabs';
 
+# Store and mint NFTs using ERC-1155 metadata standards
 Using NFT.Storage, you can: 
 
 - Store all your NFT's images and assets
@@ -15,9 +17,6 @@ Using NFT.Storage, you can:
 
 Here's an example on how to do this to mint your own NFT!
 
-<!-- docusaurus tabs imports -->
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
 
 ## Uploading your images, assets, and metadata
 
@@ -27,15 +26,19 @@ Below are examples of storing NFT assets and metadata using JavaScript and the H
 
 This method expects the metadata to conform to the [ERC-1155 metadata schema][reference-erc-1155-schema]. This standard is backwards compatible with ERC-721 metadata and is generally well supported by various wallets and marketplaces.
 
-:::tip Not using ERC-1155?
-If your metadata doesn't fit the ERC-1155 standard, learn how to [mint using custom metadata](./mint-custom-metadata.md) instead!
-:::
+<Callout emoji="💡">
+
+**Not using ERC-1155?**
+
+If your metadata doesn't fit the ERC-1155 standard, learn how to [mint using custom metadata](../mint-custom-metadata/) instead!
+
+</Callout>
 
 When adding custom properties, we recommend that you put them in the `properties` object, rather than at the top level. However, if you're minting for a specific marketplace, you should consult their documentation and follow their recommendations.
 
 For the examples below, we'll use metadata that looks like this:
 
-```json
+```
 {
   "name": "Storing the World's Most Valuable Virtual Assets with NFT.Storage",
   "description": "The metaverse is here. Where is it all being stored?",
@@ -64,6 +67,7 @@ Although wallets and other clients won't understand the meaning of our custom fi
 
 Speaking of the `image`, if you look closely at the metadata above, you might notice that the `image` field is set to `null`. This is because the method for including images and other files with your request is a little different depending on whether you're using the JavaScript client or the HTTP API. See the tab that matches your platform to see how to prepare your request.
 
+
 <Tabs>
 <TabItem value="js" label="JavaScript">
 
@@ -75,7 +79,7 @@ You can include additional files by adding an entry to the `properties` field wh
 
 Here's an example:
 
-```js
+```javascript
 import { NFTStorage } from 'nft.storage'
 
 // read the API key from an environment variable. You'll need to set this before running the example!
@@ -126,9 +130,13 @@ storeExampleNFT()
 
 To store ERC-1155 NFT metadata and assets using the [HTTP API][reference-http], send a `POST` request to the `/store` endpoint, with a body containing `multipart/form-data` content.
 
-:::info Check your file sizes
+<Callout emoji="💡">
+
+**Check your file sizes**
+
 The `/store` endpoint supports a total request size of 100Mib, including all metadata, images and other asset files. If you need to store larger files and are unable to use the JavaScript client, see the [guide to CAR files][guide-car-files] to see how to chunk large files for upload.
-:::
+
+</Callout>
 
 Inside the form data, you must have a field named `meta`, which contains your ERC-1155 compatible metadata as a JSON string.
 
@@ -157,10 +165,8 @@ It assumes that you have a file named `image.jpg` in your local directory. If no
 ```bash
 curl --request POST -F image=@image.jpg -F meta='{"image":null,"name":"Storing the Worlds Most Valuable Virtual Assets with NFT.Storage","description":"The metaverse is here. Where is it all being stored?","properties":{"type":"blog-post","origins":{"http":"https://nft.storage/blog/post/2021-11-30-hello-world-nft-storage/","ipfs":"ipfs://bafybeieh4gpvatp32iqaacs6xqxqitla4drrkyyzq6dshqqsilkk3fqmti/blog/post/2021-11-30-hello-world-nft-storage/"},"authors":[{"name":"David Choi"}],"content":{"text/markdown":"The last year has witnessed the explosion of NFTs onto the world’s mainstage. From fine art to collectibles to music and media, NFTs are quickly demonstrating just how quickly grassroots Web3 communities can grow, and perhaps how much closer we are to mass adoption than we may have previously thought. <... remaining content omitted ...>"}}}'
 ```
-
 </TabItem>
 </Tabs>
-
 
 ## Minting your NFT
 
@@ -168,14 +174,16 @@ Once you have the IPFS URI for your metadata, you're ready to mint an NFT!
 
 The details of how to mint an NFT will depend on which blockchain you're using, as well as the amount of control you want to have over the minting
 
-:::info Check your metadata URI
+<Callout emoji="💡">
+
+**Check your metadata URI**
+
 It's important to make sure the metadata URL you use when minting your NFT is a properly formatted IPFS URL (i.e., `ipfs://bafy...`). This way, any IPFS-compatible browser can retrieve the right data directly using this URL, and your NFT follows this universal standard. Click [here](https://docs.ipfs.io/how-to/address-ipfs-on-web/) to read more about IPFS URLs.
-:::
+
+</Callout>
 
 
-<Tabs>
-<TabItem value="contract" label="Writing an NFT smart contract">
-
+### Writing an NFT smart contract
 [Ethereum](https://ethereum.org) was the "birthplace" of NFTs and is still one of the most popular platforms for NFT marketplaces and creators.
 
 The most widely-used and well-supported standards are [ERC-721](https://eips.ethereum.org/EIPS/eip-721) and [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155). Adopting one of these interfaces will give your NFTs broad support by wallets and other NFT apps "out of the box" without requiring any special coordination or effort on your part.
@@ -186,7 +194,7 @@ Generally speaking, you'll mint a new token by calling a smart contract function
 
 Here's the example contract from the [OpenZeppelin ERC-721 guide](https://docs.openzeppelin.com/contracts/4.x/erc721), using their excellent base contracts:
 
-```solidity
+```
 // contracts/GameItem.sol
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
@@ -227,18 +235,18 @@ We've only scratched the surface of what's possible with NFTs on Ethereum. Here 
 - [OpenSea's ERC-721 tutorial](https://docs.opensea.io/docs/getting-started)
 - [How to mint an NFT with IPFS](https://docs.ipfs.io/how-to/mint-nfts-with-ipfs/) and [Best practices for storing NFT data with IPFS](https://docs.ipfs.io/how-to/best-practices-for-nft-data/) from the [IPFS documentation site](https://docs.ipfs.io).
 
-</TabItem>
 
-</Tabs>
 
-:::tip
+<Callout emoji="💡">
+
 You can find more in-depth examples at [NFT School](https://nftschool.dev)!
-:::
+
+</Callout>
 
 
 
 
-[guide-car-files]: ../concepts/car-files.md
+[guide-car-files]: ./concepts/car-files/
 [reference-http]: https://nft.storage/api-docs/
 [reference-erc-1155-schema]: https://eips.ethereum.org/EIPS/eip-1155#metadata
 [mdn-file]: https://developer.mozilla.org/en-US/docs/Web/API/File

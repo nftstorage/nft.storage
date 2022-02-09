@@ -4,9 +4,9 @@ sidebar_label: Work with Content Archives
 description: Learn how to work with Content Archives of IPLD data.
 ---
 
-<!-- docusaurus tabs imports -->
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Callout from 'nextra-theme-docs/callout';
+
+# Working with Content Archives
 
 When you upload files to NFT.Storage using the [client library][reference-client-library], your data is converted into a graph of data structures, which are then packed into a format called a Content Archive (CAR) before being sent to the NFT.Storage service. 
 
@@ -109,7 +109,7 @@ There are two JavaScript packages available for manipulating CARs inside your ap
 
 #### ipfs-car
 
-The `ipfs-car` package includes library functions for packing and unpacking files into CARs, using the IPFS UnixFs data model. The library includes the same functionality as the `ipfs-car` command line utility [described above](#ipfs-car).
+The `ipfs-car` package includes library functions for packing and unpacking files into CARs, using the IPFS UnixFs data model. The library includes the same functionality as the `ipfs-car` command line utility described above.
 
 See the [ipfs-car README](https://github.com/web3-storage/ipfs-car#api) for API documentation and usage examples.
 
@@ -121,7 +121,7 @@ The [`@ipld/car` package](https://github.com/ipld/js-car) contains the main Java
 
 Here's a simple example of loading a CAR file from a Node.js stream and storing it with NFT.Storage:
 
-```javascript
+```js
 import { createReadStream } from 'fs'
 import { CarReader } from '@ipld/car'
 
@@ -153,40 +153,40 @@ The main tool available for splitting and joining CARs is called `carbites`, whi
 
 This section will demonstrate a few ways to split CARs in a way that's acceptable to the NFT.Storage service, using the command line tool, as well as programmatically using the `carbites` libraries in JavaScript and Go.
 
-<Tabs>
-<TabItem default value="carbites-cli" label="Using the carbites-cli tool">
+## Using the carbites-cli tool"
 
-  The JavaScript [carbites library][github-carbites-js] includes a package called `carbites-cli` that can split and join CARs from the command line. You'll need a recent version of [Node.js](https://nodejs.org) installed, preferably the latest stable version.
+The JavaScript [carbites library][github-carbites-js] includes a package called `carbites-cli` that can split and join CARs from the command line. You'll need a recent version of [Node.js](https://nodejs.org) installed, preferably the latest stable version.
 
-  You can install the tool globally with `npm`:
+You can install the tool globally with `npm`:
 
-  ```shell with-output
-  npm install -g carbites-cli
-  ```
+```shell with-output
+npm install -g carbites-cli
+```
 
-  ```
-  added 71 packages, and audited 72 packages in 846ms
-  20 packages are looking for funding
-    run `npm fund` for details
-  found 0 vulnerabilities
-  ```
+```
+added 71 packages, and audited 72 packages in 846ms
+20 packages are looking for funding
+  run `npm fund` for details
+found 0 vulnerabilities
+```
 
-  This will add a `carbites` command to your shell's environment:
+This will add a `carbites` command to your shell's environment:
 
-  ```shell with-output
-  carbites --help
-  ```
+```shell with-output
+carbites --help
+```
 
-  ```
-    CLI tool for splitting a single CAR into multiple CARs from the comfort of your terminal.
-    Usage
-      $ carbites <command>
-      Commands
-        split
-        join
-  ```
+```
+  CLI tool for splitting a single CAR into multiple CARs from the comfort of your terminal.
+  Usage
+    $ carbites <command>
+    Commands
+      split
+      join
+```
 
-:::tip Running with npx
+<Callout emoji="💡">
+
   You can run the `carbites` command without installing it globally using the `npx` command, which is included with Node.js:
 
   ```shell
@@ -202,7 +202,8 @@ This section will demonstrate a few ways to split CARs in a way that's acceptabl
   ```
 
   After that, you can use `npx carbites-cli` instead of `carbites` for any of the commands below!
-:::
+
+</Callout>
 
   #### Splitting CARs
 
@@ -240,15 +241,16 @@ This section will demonstrate a few ways to split CARs in a way that's acceptabl
   ```shell
   carbites join my-video-*.car --output my-video-joined.car
   ```
-
-</TabItem>
-<TabItem value="carbites-js-lib" label="Using JavaScript code">
-
+## Using JavaScript code
   The [carbites library][github-carbites-js] provides an interface for splitting CARs that can be invoked from your application code.
 
-:::tip You probably don't need this!
+<Callout emoji="💡">
+
+  **You probably don't need this!**
+
   If you're using JavaScript, you can [use the NFT.Storage client][howto-store] to upload your data and let the client take care of CAR splitting for you. If you're sure you want to split CARs from JavaScript yourself, read on!
-:::
+
+</Callout>
 
   To split CARs from your JavaScript code, install the `carbites` package:
 
@@ -258,13 +260,13 @@ This section will demonstrate a few ways to split CARs in a way that's acceptabl
 
   And import the `TreewalkCarSplitter` class into your code:
 
-  ```javascript
+  ```js
   import { TreewalkCarSplitter } from 'carbites/treewalk'
   ```
 
-  You can create a `TreewalkCarSplitter` by passing in a `CarReader` and a `targetSize` in bytes for the output cars. See the section on [@ipld/car](#ipld-car) for more information on `CarReader`. For now, we'll assume that the `loadLargeCar` function returns a `CarReader`, and we'll use the `TreewalkCarSplitter` to create split CARs:
+  You can create a `TreewalkCarSplitter` by passing in a `CarReader` and a `targetSize` in bytes for the output cars. See the section on @ipld/car for more information on `CarReader`. For now, we'll assume that the `loadLargeCar` function returns a `CarReader`, and we'll use the `TreewalkCarSplitter` to create split CARs:
 
-  ```javascript
+  ```js
   import { TreewalkCarSplitter } from 'carbites/treewalk'
   async function splitCars() {
     const largeCar = await loadLargeCar()
@@ -285,10 +287,7 @@ This section will demonstrate a few ways to split CARs in a way that's acceptabl
     }
   }
   ```
-
-</TabItem>
-<TabItem value="go-carbites-lib" label="Using Go code">
-
+## Using Go code
   The [go-carbites](https://github.com/alanshaw/go-carbites) module can be used to split large CARs from your Go applications.
 
   Install the module with `go get`:
@@ -331,9 +330,6 @@ func main() {
   ```
 
   You can also use [`NewTreewalkSplitterFromPath`](https://pkg.go.dev/github.com/alanshaw/go-carbites#NewTreewalkSplitterFromPath), which takes a local file path instead of an `io.Reader`.
-
-</TabItem>
-</Tabs>
 
 ## Advanced IPLD formats
 
