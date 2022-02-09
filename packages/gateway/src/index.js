@@ -22,6 +22,7 @@ router
   .all('*', envAll)
   .get('/metrics', withCorsHeaders(metricsGet))
   .get('*', withCorsHeaders(gatewayGet))
+  .head('*', withCorsHeaders(gatewayGet))
 
 /**
  * @param {Error} error
