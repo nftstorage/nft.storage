@@ -27,16 +27,22 @@ const nextConfig = withBundleAnalyzer({
       '/docs/concepts/decentralized-storage': {
         page: '/docs/concepts/decentralized-storage',
       },
+      '/docs/concepts': {
+        page: '/docs/concepts/decentralized-storage',
+      },
       '/docs/concepts/architecture-considerations': {
         page: '/docs/concepts/architecture-considerations',
       },
       '/docs/concepts/car-files': { page: '/docs/concepts/car-files' },
       '/docs/how-to/mint-erc-1155': { page: '/docs/how-to/mint-erc-1155' },
-
+      '/docs/how-to': {
+        page: '/docs/how-to/mint-erc-1155',
+      },
       '/docs/how-to/mint-custom-metadata': {
         page: '/docs/how-to/mint-custom-metadata',
       },
       '/docs/how-to/retrieve': { page: '/docs/how-to/retrieve' },
+      '/docs/client': { page: '/docs/client/api-docs' },
       '/docs/client/api-docs': { page: '/docs/client/api-docs' },
       '/docs/client/lib': { page: '/docs/client/lib' },
     }
