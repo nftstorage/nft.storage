@@ -149,7 +149,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
               width="210"
               height="79"
               className="nav-logo"
-              style={{ maxWidth: '210px', height: 'auto' }}
+              style={{ maxWidth: '30vw', height: 'auto' }}
               alt="NFT Storage Logo"
             />
           </a>
@@ -230,7 +230,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                 width="210"
                 height="79"
                 className="mobile-nav-logo"
-                style={{ maxWidth: '210px', height: 'auto' }}
+                style={{ maxWidth: '40vw', height: 'auto' }}
                 alt="NFT Storage Logo"
               />
             </a>

@@ -40,6 +40,9 @@
 
 /* 832px */
 @media screen and (min-width: 52em) {
+  .nav-logo {
+    display: block;
+  }
   .navbar {
     position: unset;
     top: unset;
@@ -53,5 +56,19 @@
   .navbar .mobile-nav {
     opacity: 0;
     visibility: hidden;
+  }
+}
+
+/* 832px */
+@media screen and (min-width: 52em) and (max-width: 64em) {
+  .desktop-nav-items .f4 {
+    font-size: 1.1rem;
+  }
+}
+
+@media screen and (max-width: 64em) {
+  .navbar > .ph5-ns {
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }
