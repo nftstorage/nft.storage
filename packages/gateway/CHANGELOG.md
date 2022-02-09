@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/nftstorage/nft.storage/compare/gateway-v1.0.1...gateway-v1.1.0) (2022-02-09)
+
+
+### Features
+
+* gateway add support for head request ([#1312](https://github.com/nftstorage/nft.storage/issues/1312)) ([f2faf79](https://github.com/nftstorage/nft.storage/commit/f2faf7936588a4754349f3a578ca822ce03877ef))
+
+
+### Bug Fixes
+
+* gateway metrics route with cached response ([#1311](https://github.com/nftstorage/nft.storage/issues/1311)) ([7a5a72a](https://github.com/nftstorage/nft.storage/commit/7a5a72aacb216ee71ec2f9439a17ffa59816de21))
+* not prevent ipfs io requests ([#1230](https://github.com/nftstorage/nft.storage/issues/1230)) ([769a465](https://github.com/nftstorage/nft.storage/commit/769a4658226656de25f69aae5a8de5066c4d2a26))
+
 ### [1.0.1](https://github.com/nftstorage/nft.storage/compare/gateway-v1.0.0...gateway-v1.0.1) (2022-02-08)
 
 
