@@ -3,7 +3,6 @@
 import * as React from 'react'
 
 const SvgComponent = (props) => {
-  const { onClickApi } = props
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -880,7 +879,7 @@ const SvgComponent = (props) => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 75 75"
                 className="api-gateway api interactive hologram"
-                onClick={onClickApi}
+                onClick={props?.onClickApi}
               >
                 <defs>
                   <linearGradient
@@ -1150,6 +1149,7 @@ const SvgComponent = (props) => {
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 75 75"
                 className="sqs-command-queue sqs interactive hologram"
+                onClick={props?.onClickTimeSliceSQS}
               >
                 <path
                   id="Pink_Light_BG"

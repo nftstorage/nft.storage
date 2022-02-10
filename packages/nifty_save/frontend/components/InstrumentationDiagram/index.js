@@ -1,8 +1,8 @@
 import { EditSliceCommandForm, TimeSliceCommandQueueForm } from './Forms'
+import { purgeTimeSliceSQS, sendTimeRangeToSlicer } from './actions'
 
 import FlowDiagram from './FlowDiagram'
 import Modal from '../Modal'
-import { sendTimeRangeToSlicer } from './actions'
 import { useState } from 'react'
 
 export default function InstrumentationDiagram(props) {
@@ -16,7 +16,8 @@ export default function InstrumentationDiagram(props) {
   })
 
   /* Time Slice Command Queue */
-  const [timeSliceSQSIsOpen, setTimeSliceSQS] = useState(false)
+  const [timeSliceSQSIsOpen, setTimeSliceSQSIsOpen] = useState(false)
+  const [purgingTimeSliceSQS, setPurgingTimeSliceSQS] = useState(false)
 
   return (
     <div className="niftysave-diagram">
@@ -25,8 +26,12 @@ export default function InstrumentationDiagram(props) {
         onClickApi={() => {
           setApiGatewayFormIsOpen(true)
         }}
+        onClickTimeSliceSQS={() => {
+          setTimeSliceSQSIsOpen(true)
+        }}
       />
 
+      {/* Forms */}
       <Modal
         open={apiGateWayFormIsOpen}
         onClose={() => {
@@ -44,11 +49,21 @@ export default function InstrumentationDiagram(props) {
           }}
         />
       </Modal>
-      <Modal>
+      <Modal
+        open={timeSliceSQSIsOpen}
+        onClose={() => {
+          setTimeSliceSQSIsOpen(false)
+        }}
+      >
         <TimeSliceCommandQueueForm
-          open={timeSliceSQSIsOpen}
-          onClose={() => {
-            setTimeSliceSQS(false)
+          isBusy={purgingTimeSliceSQS}
+          onPurgeQueue={async () => {
+            /* TODO Purge Queue */
+            setPurgingTimeSliceSQS(true)
+            const results = await purgeTimeSliceSQS(apiUrl, {})
+            console.log(results)
+            setTimeSliceSQSIsOpen(false)
+            setPurgingTimeSliceSQS(false)
           }}
         />
       </Modal>
