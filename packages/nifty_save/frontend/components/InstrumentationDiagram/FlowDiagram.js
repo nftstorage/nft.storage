@@ -1148,7 +1148,7 @@ const SvgComponent = (props) => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 75 75"
-                className="sqs-command-queue sqs interactive hologram"
+                className="time-slice sqs interactive hologram"
                 onClick={props?.onClickTimeSliceSQS}
               >
                 <path
@@ -2017,7 +2017,12 @@ const SvgComponent = (props) => {
                 fill: '#000',
               }}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 75 75"
+                className="fetched-records sqs interactive hologram"
+                onClick={props.onClickFetchedRecordSQS}
+              >
                 <path
                   data-name="Pink Light BG"
                   style={{
@@ -2152,7 +2157,12 @@ const SvgComponent = (props) => {
                 fill: '#000',
               }}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 75 75"
+                className="preprocessor sqs interactive hologram"
+                onClick={props.onClickPreprocessorSQS}
+              >
                 <path
                   data-name="Pink Light BG"
                   style={{
@@ -2934,23 +2944,6 @@ const SvgComponent = (props) => {
           id="97d6709f-74d1-403f-8a96-9b106f1e579e"
         >
           <text
-            stroke="#000"
-            strokeWidth={2}
-            fontFamily="Open Sans"
-            y={23.96}
-            fontSize="14pt"
-            fill="#fff"
-            fontWeight="bold"
-            xmlSpace="preserve"
-          >
-            <tspan x={8} dy={0}>
-              {'Fetched Record'}
-            </tspan>
-            <tspan x={8} dy="1.1em">
-              {'Queue'}
-            </tspan>
-          </text>
-          <text
             fontFamily="Open Sans"
             y={23.96}
             fontSize="14pt"
@@ -3457,8 +3450,78 @@ const SvgComponent = (props) => {
           </text>
         </svg>
         <svg
+          x={810}
+          y={1100}
+          overflow="visible"
+          id="b7c7e3dd-bca5-4133-a1b0-2cf80f345d87"
+        >
+          <g transform="scale(.96598)">
+            <circle fill="transparent" r={37.5} />
+            <svg
+              width={75}
+              height={75}
+              x={-37.5}
+              y={-37.5}
+              style={{
+                fill: '#000',
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 75 75"
+                className="postprocessor sqs interactive hologram"
+                onClick={props.onClickPostProcessorSQS}
+                title="postprocessor sqs queue"
+              >
+                <path
+                  data-name="Pink Light BG"
+                  style={{
+                    fill: '#cc2264',
+                  }}
+                  d="M0 0h75v75H0z"
+                />
+                <g data-name="Product Icon">
+                  <path
+                    d="M21.69 22a22.18 22.18 0 0 1 36.6 8.36l1.89-.66a24.18 24.18 0 0 0-45.65 0l1.89.66A21.84 21.84 0 0 1 21.69 22zM53 53a22.19 22.19 0 0 1-31.36 0 22 22 0 0 1-5.27-8.42l-1.89.66a24.18 24.18 0 0 0 39.93 9.17 23.89 23.89 0 0 0 5.78-9.25l-1.89-.64A22 22 0 0 1 53 53zM20.15 37.46a5.84 5.84 0 1 0-1.71 4.12 5.78 5.78 0 0 0 1.71-4.12zM17 40.17a3.93 3.93 0 0 1-5.41 0 3.83 3.83 0 0 1 2.7-6.53A3.86 3.86 0 0 1 17 34.76a3.83 3.83 0 0 1 0 5.41zm47.8-6.76a5.82 5.82 0 1 0 0 8.23 5.82 5.82 0 0 0 0-8.23zm-1.42 6.81a3.82 3.82 0 0 1-5.4 0 3.81 3.81 0 0 1 0-5.4 3.82 3.82 0 1 1 5.4 5.4z"
+                    style={{
+                      fill: '#fff',
+                    }}
+                  />
+                  <path
+                    d="M29.18 47.18c4.1-4.1 12.45-4.1 16.55 0a1 1 0 0 0 .7.29 1 1 0 0 0 1-1 1 1 0 0 0-.29-.71 11.66 11.66 0 0 1-3-8.27 11.67 11.67 0 0 1 3-8.27 1 1 0 0 0 0-1.41 1 1 0 0 0-1.41 0c-4.1 4.09-12.45 4.09-16.55 0a1 1 0 0 0-1.41 0 1 1 0 0 0 0 1.41 11.67 11.67 0 0 1 3.05 8.27 11.66 11.66 0 0 1-3.05 8.27 1 1 0 0 0-.29.71 1 1 0 0 0 .29.71 1 1 0 0 0 1.41 0zm2.59-15.36a15.6 15.6 0 0 0 11.37 0 15.86 15.86 0 0 0 0 11.35 15.6 15.6 0 0 0-11.37 0 15.86 15.86 0 0 0 0-11.35z"
+                    style={{
+                      fill: '#fff',
+                    }}
+                  />
+                  <path
+                    d="M49.63 41.59 53 38.18a1 1 0 0 0 0-1.41l-3.39-3.39-1.42 1.41 1.71 1.7h-4.52v2h4.52l-1.69 1.69zm-24.17.02 3.41-3.41a1 1 0 0 0 0-1.41l-3.41-3.41-1.41 1.41 1.7 1.7h-4.37v2h4.37l-1.7 1.71z"
+                    style={{
+                      fill: '#fff',
+                    }}
+                  />
+                </g>
+              </svg>
+            </svg>
+            <text
+              fontFamily="Open Sans"
+              y={5}
+              fontSize="16pt"
+              fill="#fff"
+              fontWeight="bold"
+              xmlSpace="preserve"
+            >
+              <tspan x={60} dy={0}>
+                {'Postprocessor Queue'}
+              </tspan>
+              <tspan x={60} dy={'1.1rem'}>
+                {'Queue'}
+              </tspan>
+            </text>
+          </g>
+        </svg>
+        <svg
           x={765}
-          y={1103}
+          y={1203}
           overflow="visible"
           id="3a81e274-f238-4fde-94dd-d8b503dc152e"
         >
