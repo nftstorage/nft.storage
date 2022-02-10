@@ -178,7 +178,7 @@ async function gatewayFetch(
   cid,
   request,
   env,
-  { pathname = '', timeout = 20000 } = {}
+  { pathname = '', timeout = 60000 } = {}
 ) {
   // Block before hitting rate limit if needed
   const { shouldBlock } = await getGatewayRateLimitState(request, env, gwUrl)
