@@ -1,20 +1,19 @@
 import AWS from 'aws-sdk'
-import Converter from 'aws-sdk/lib/dynamodb/converter.js'
-
 const dynamoDb = new AWS.DynamoDB.DocumentClient()
-const sqs = new AWS.SQS()
 
-export async function store(event) {
+export async function storeProcessedRecord(event) {
   const records = event.Records.map((x) => JSON.parse(x.body))
 
   let tableBatch = []
   for (const record of records) {
+    if (!record.id) {
+      continue
+    }
     const result = dynamoDb
       .put({
-        TableName: process.env.fetchedRecordsTableName,
+        TableName: process.env.postProcesserTableName,
         Item: {
           ...record,
-          created_at: Date.now(),
         },
       })
       .promise()
@@ -24,14 +23,11 @@ export async function store(event) {
   try {
     await Promise.all(tableBatch)
   } catch (err) {
-    return {
-      statusCode: 500,
-      message: `ERROR: ${err}`,
-    }
+    console.log('there was an error storing:' + err)
   }
 
   return {
     statusCode: 200,
-    message: `Stored ${records.length} Fetched Record`,
+    message: `step: Stored ${tableBatch.length} out of ${records.length}`,
   }
 }
