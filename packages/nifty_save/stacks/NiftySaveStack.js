@@ -9,6 +9,10 @@ export default class NiftySaveStack extends sst.Stack {
   constructor(scope, id, props) {
     super(scope, id, props)
 
+    const projectName = scope.stage
+
+    console.log('what', projectName)
+
     //configure the event bus
     const bus = new sst.EventBus(this, 'Bus')
 
@@ -183,11 +187,14 @@ export default class NiftySaveStack extends sst.Stack {
       defaultFunctionProps: {
         // Pass in the queue to our API
         environment: {
+          projectName,
           sliceCommandQueueUrl: sliceCommandQueue.sqsQueue.queueUrl,
           fetchedRecordQueueUrl: fetchedRecordQueue.sqsQueue.queueUrl,
           //           analyzerIntakeQueueUrl: analyzerIntakeQueue.sqsQueue.queueUrl,
           //           postPinningIntakeQueue: postPinningIntakeQueue.sqsQueue.queueUrl,
           fetchedRecordsTableName: fetchedRecordsTable.dynamodbTable.tableName,
+          fakeDataWarehouseTableName:
+            fakeDataWarehouseTable.dynamodbTable.tableName,
           busArn: bus.eventBusArn,
         },
       },
@@ -213,6 +220,7 @@ export default class NiftySaveStack extends sst.Stack {
     api.attachPermissions([
       bus,
       fetchedRecordsTable,
+      fakeDataWarehouseTable,
       sliceCommandQueue,
       fetchedRecordQueue,
       'cloudwatch:GetMetricData',
