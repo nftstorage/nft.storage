@@ -115,7 +115,7 @@ export default function InstrumentationDiagram(props) {
           isBusy={purgingFetchedRecordSQS}
           onPurgeQueue={async () => {
             /* TODO Purge Queue */
-            purgingFetchedRecordSQS(true)
+            setPurgingFetchedRecordSQS(true)
             const results = await purgeFetchedRecordsSQS(apiUrl, {})
             console.log(results)
             setFetchedRecordSQSIsOpen(false)
