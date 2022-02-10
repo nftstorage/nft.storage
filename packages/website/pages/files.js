@@ -181,7 +181,7 @@ export default function Files({ user }) {
             overlayClassName="table-tooltip"
             id="all-deals-queued-tooltip"
           >
-            <VscQuestion size={16} className="flex self-end" />
+            <VscQuestion size={16} />
           </Tooltip>
         </span>
       )
@@ -347,12 +347,79 @@ export default function Files({ user }) {
                     <table className="w-100 collapse">
                       <thead>
                         <tr className="bg-nsgray">
-                          <th className="">Date</th>
-                          <th className="">CID</th>
-                          <th className="">Pin Status</th>
-                          <th className="">Storage Providers</th>
-                          <th className="">Size</th>
-                          <th className="">
+                          <th>Date</th>
+                          <th>
+                            <span aria-describedby="cid-tooltip">
+                              CID
+                              <Tooltip
+                                placement="top"
+                                overlay={
+                                  <span>
+                                    The content identifier for a file or piece
+                                    of data.{' '}
+                                    <a
+                                      href="https://nftschool.dev/concepts/content-addressing/"
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Learn more
+                                    </a>
+                                  </span>
+                                }
+                                overlayClassName="table-tooltip"
+                                id="cid-tooltip"
+                              >
+                                <VscQuestion size={16} />
+                              </Tooltip>
+                            </span>
+                          </th>
+                          <th>
+                            <span aria-describedby="pin-status-tooltip">
+                              Pin Status
+                              <Tooltip
+                                placement="top"
+                                overlay={
+                                  <span>
+                                    Reports the status of a file or piece of
+                                    data stored on the IPFS Cluster. Status
+                                    might not be fully up-to-date. Data is still
+                                    available even when in Queued state.
+                                  </span>
+                                }
+                                overlayClassName="table-tooltip"
+                                id="pin-status-tooltip"
+                              >
+                                <VscQuestion size={16} />
+                              </Tooltip>
+                            </span>
+                          </th>
+                          <th>
+                            <span aria-describedby="storage-providers-tooltip">
+                              Storage Providers
+                              <Tooltip
+                                placement="top"
+                                overlay={
+                                  <span>
+                                    Service providers offering storage capacity
+                                    to the Filecoin network.{' '}
+                                    <a
+                                      href="https://nftschool.dev/concepts/content-persistence/"
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Learn more
+                                    </a>
+                                  </span>
+                                }
+                                overlayClassName="table-tooltip"
+                                id="storage-providers-tooltip"
+                              >
+                                <VscQuestion size={16} />
+                              </Tooltip>
+                            </span>
+                          </th>
+                          <th>Size</th>
+                          <th>
                             <span className="sr-only">File Actions</span>
                           </th>
                         </tr>
@@ -426,8 +493,8 @@ function GatewayLink({ cid, type }) {
   const gatewayLink = `https://ipfs.io/ipfs/${cid}`
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
   return (
-    <a title="View IPFS Url" href={href} target="_blank" rel="noreferrer">
-      View
+    <a title="View IPFS URL" href={href} target="_blank" rel="noreferrer">
+      View URL
     </a>
   )
 }
@@ -445,12 +512,12 @@ function CopyGatewayLink({ cid, type }) {
 
   return (
     <CopyButton
-      title="Copy IPFS Url to Clipboard"
+      title="Copy IPFS URL to Clipboard"
       text={href}
-      popupContent={'IPFS Url has been copied!'}
+      popupContent={'IPFS URL has been copied!'}
       asLink={true}
     >
-      <>Copy IPFS Url</>
+      <>Copy IPFS URL</>
     </CopyButton>
   )
 }

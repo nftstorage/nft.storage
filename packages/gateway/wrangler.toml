@@ -21,7 +21,7 @@ bindings = [
   {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
-  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits1"},
   {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
 ]
 
@@ -42,7 +42,7 @@ bindings = [
   {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
-  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits1"},
   {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
 ]
 
@@ -63,7 +63,7 @@ bindings = [
   {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
-  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits1"},
   {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
 ]
 
@@ -81,7 +81,7 @@ bindings = [
   {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
-  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits1"},
   {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
 ]
 
@@ -98,10 +98,15 @@ bindings = [
   {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
-  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits0"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits1"},
   {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
 ]
 
 [[migrations]]
 tag = "v1" # Should be unique for each entry
 new_classes = ["GatewayMetrics0", "SummaryMetrics0", "CidsTracker0", "GatewayRateLimits0", "GatewayRedirectCounter0"]
+[[migrations]]
+tag = "v2" # Should be unique for each entry
+renamed_classes = [
+  {from="GatewayRateLimits0", to="GatewayRateLimits1"}
+]

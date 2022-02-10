@@ -30,14 +30,12 @@ import { contentLengthHistogram } from './durable-objects/summary-metrics.js'
  * @returns {Promise<Response>}
  */
 export async function metricsGet(request, env, ctx) {
-  // TODO: Set cache
-  // const cache = caches.default
-  // let res = await cache.match(request)
+  const cache = caches.default
+  let res = await cache.match(request)
 
-  // if (res) {
-  //   return res
-  // }
-  let res
+  if (res) {
+    return res
+  }
 
   const [summaryMetrics, ipfsGateways, gatewayRedirectCount] =
     await Promise.all([
@@ -277,7 +275,7 @@ export async function metricsGet(request, env, ctx) {
     },
   })
 
-  // ctx.waitUntil(cache.put(request, res.clone()))
+  ctx.waitUntil(cache.put(request, res.clone()))
 
   return res
 }

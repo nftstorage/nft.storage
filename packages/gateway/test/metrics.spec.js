@@ -1,7 +1,7 @@
 import test from 'ava'
 
 import { gateways } from './constants.js'
-import { getMiniflare } from './utils.js'
+import { getMiniflare, getSummaryMetricsName } from './utils.js'
 
 test.beforeEach((t) => {
   // Create a new Miniflare environment for each test
@@ -76,21 +76,15 @@ test('Gets Metrics content when empty state', async (t) => {
 test('Gets Metrics content', async (t) => {
   const { mf } = t.context
 
-  let response = await mf.dispatchFetch('http://localhost:8787/metrics')
-  let metricsResponse = await response.text()
+  // Get Durable object current state
+  const ns = await mf.getDurableObjectNamespace(getSummaryMetricsName())
+  const id = ns.idFromName('summary-metrics')
+  const stub = ns.get(id)
+  const doRes = await stub.fetch(`http://localhost:8787/metrics`)
 
-  t.is(
-    metricsResponse.includes(
-      `_responses_content_length_total{le="524288",env="test"} 0`
-    ),
-    true
-  )
-  t.is(
-    metricsResponse.includes(
-      `_responses_content_length_bytes_total{env="test"} 0`
-    ),
-    true
-  )
+  const doMetrics = await doRes.json()
+  t.is(doMetrics.totalContentLengthBytes, '0')
+  t.is(doMetrics.contentLengthHistogram['524288'], 0)
 
   // Trigger two requests with content length of 23 each
   const p = await Promise.all([
@@ -105,8 +99,8 @@ test('Gets Metrics content', async (t) => {
   // Wait for waitUntil
   await Promise.all(p.map((p) => p.waitUntil()))
 
-  response = await mf.dispatchFetch('http://localhost:8787/metrics')
-  metricsResponse = await response.text()
+  const response = await mf.dispatchFetch('http://localhost:8787/metrics')
+  const metricsResponse = await response.text()
 
   t.is(
     metricsResponse.includes(

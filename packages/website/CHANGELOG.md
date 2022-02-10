@@ -1,5 +1,20 @@
 # Changelog
 
+### [1.24.3](https://github.com/nftstorage/nft.storage/compare/website-v1.24.2...website-v1.24.3) (2022-02-09)
+
+
+### Bug Fixes
+
+* add redirect rule for docs ([#1309](https://github.com/nftstorage/nft.storage/issues/1309)) ([5e79512](https://github.com/nftstorage/nft.storage/commit/5e7951249c702aae602c72c8478cd269f7c51710))
+* number of users on homepage ([#1292](https://github.com/nftstorage/nft.storage/issues/1292)) ([f02d1c0](https://github.com/nftstorage/nft.storage/commit/f02d1c0e765e9a2b3d914915975ae93cb62c2255))
+
+### [1.24.2](https://github.com/nftstorage/nft.storage/compare/website-v1.24.1...website-v1.24.2) (2022-02-09)
+
+
+### Features
+
+* New docs internal integration ([#1044](https://github.com/nftstorage/nft.storage/issues/1044)) ([2d8c67a](https://github.com/nftstorage/nft.storage/commit/2d8c67a8fe99c112001867d2cac6b14ca9f02e89))
+
 ### [1.24.1](https://github.com/nftstorage/nft.storage/compare/website-v1.24.0...website-v1.24.1) (2022-02-08)
 
 

@@ -3,6 +3,8 @@ title: Decentralized storage
 description: Learn about decentralized storage works and how it's key to NFT.Storage.
 ---
 
+
+
 # Decentralized storage in brief
 
 NFT.Storage relies on _decentralized storage_ to store your files for free on the network. **Decentralized storage is a technique for storing data that, instead of traditional servers, uses a distributed network with many participants providing storage capacity.** This model inherently builds in redundancy that provides resilience against failure and attacks, as well as enhanced performance due to the geographical localization offered by a large network of distributed storage providers. While you don't need to understand decentralized storage to be able to incorporate NFT.Storage in your apps and services, if you're curious about what's going on under the hood, read on.
@@ -39,7 +41,7 @@ When you upload a file to NFT.Storage, you get the CID of that file in return. T
 
 You can monitor this activity for files you upload to NFT.Storage by [calling `check()`](https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#check) and providing a file's CID. This will return a list of deals that have been made at the time of query. Here's how you might include this call in your JavaScript project:
 
-```javascript
+```js
 const cid = 'bafybeiggzq4ryi7hscq5hzvzcnk4urnxt3asp37dhgvnjilf7exskximla'
 
 // check status based on CID

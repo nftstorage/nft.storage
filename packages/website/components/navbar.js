@@ -69,8 +69,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
       },
       {
         link: {
-          pathname: '/',
-          hash: '#docs',
+          pathname: '/docs',
           query: version ? { version } : null,
         },
         name: 'Docs',

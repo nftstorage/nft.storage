@@ -11,7 +11,7 @@
  * Durable Object to keep track of gateway rating limits.
  * State: number[]
  */
-export class GatewayRateLimits0 {
+export class GatewayRateLimits1 {
   constructor(state) {
     this.state = state
     this.id = this.state.id.name
@@ -32,6 +32,14 @@ export class GatewayRateLimits0 {
     let url = new URL(request.url)
     switch (url.pathname) {
       case '/request':
+        if (this.rateLimitCharacteristics.RATE_LIMIT_REQUESTS === Infinity) {
+          return new Response(
+            JSON.stringify({
+              shouldBlock: false,
+            })
+          )
+        }
+
         // Filter out outdated requests
         const now = Date.now()
         this.rateLimitUsage = this.rateLimitUsage.filter(
@@ -78,7 +86,7 @@ function getRateLimitingCharacteristics(gatewayUrl) {
   switch (gatewayUrl) {
     case 'https://ipfs.io':
       return {
-        RATE_LIMIT_REQUESTS: 800,
+        RATE_LIMIT_REQUESTS: Infinity,
         RATE_LIMIT_TIMEFRAME: MINUTE,
       }
     case 'https://cf-ipfs.com':
