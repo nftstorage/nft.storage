@@ -20,12 +20,13 @@ export async function store(event) {
       .promise()
     tableBatch.push(result)
 
-    //       sqs
-    //         .sendMessage({
-    //           QueueUrl: process.env.preProcesserQueueUrl,
-    //           MessageBody: JSON.stringify(records),
-    //         })
-    //         .promise()
+    // TODO: This should be some other lambda / consumer of the table.
+    sqs
+      .sendMessage({
+        QueueUrl: process.env.preProcesserQueueUrl,
+        MessageBody: JSON.stringify(records),
+      })
+      .promise()
   }
 
   await Promise.all(tableBatch)
