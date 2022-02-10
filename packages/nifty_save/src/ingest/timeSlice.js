@@ -39,7 +39,7 @@ export async function fanOut(event) {
 export async function execute(event, context) {
   const { detail } = event
 
-  console.log('executing for detail, source', detail.source)
+  //   console.log('executing for detail, source', detail.source)
   const datasource = getDataSource(detail.source)
 
   if (!datasource) {
@@ -57,10 +57,10 @@ export async function execute(event, context) {
 
   const fetchNFTs = datasource.fetch
 
-  console.log(
-    'fetchedRecordQueueUrl (execute)',
-    process.env.fetchedRecordQueueUrl
-  )
+  //   console.log(
+  //     'fetchedRecordQueueUrl (execute)',
+  //     process.env.fetchedRecordQueueUrl
+  //   )
 
   const results = await fetchNFTs(event, context)
 

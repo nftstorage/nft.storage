@@ -7,6 +7,8 @@ export {
 
 export { store as storeFetchedRecord } from './ingest/fetchedRecord'
 
+export { consumer as fetchedRecordsConsumer } from './ingest/fetchedRecordConsumer'
+
 export {
   purgeSliceCommandQueue,
   purgeFetchedRecordqueue,

@@ -43,15 +43,15 @@ function makeTheGraphQuery(time, offset) {
 }
 
 export async function fetchNFTs(event, context) {
-  console.log(process.env.MY_ENV_VAR)
+  //   console.log(process.env.MY_ENV_VAR)
   const { detail } = event
 
   const { rangeStartTime, rangeEndTime } = detail
 
-  console.log(
-    'fetchedRecordQueueUrl (fetchNFTs)',
-    process.env.fetchedRecordQueueUrl
-  )
+  //   console.log(
+  //     'fetchedRecordQueueUrl (fetchNFTs)',
+  //     process.env.fetchedRecordQueueUrl
+  //   )
   const fetchedRecordQueueUrl = process.env.fetchedRecordQueueUrl
 
   //Divice by 1000 because the-graph's smallest resolution is 1s
@@ -59,12 +59,12 @@ export async function fetchNFTs(event, context) {
   const hasBinRange = checkIsBinRange(rangeStartTime, rangeEndTime)
 
   if (!hasBinRange) {
-    console.table({
-      rangeStartTime,
-      rangeEndTime,
-      startIsDate: isDate(rangeStartTime),
-      endIsDate: isDate(rangeEndTime),
-    })
+    //     console.table({
+    //       rangeStartTime,
+    //       rangeEndTime,
+    //       startIsDate: isDate(rangeStartTime),
+    //       endIsDate: isDate(rangeEndTime),
+    //     })
 
     return {
       statusCode: 200,
@@ -75,7 +75,7 @@ export async function fetchNFTs(event, context) {
   }
 
   if (!fetchedRecordQueueUrl) {
-    console.log(`No target Queue, got ${fetchedRecordQueueUrl}`)
+    //     console.log(`No target Queue, got ${fetchedRecordQueueUrl}`)
     return {
       statusCode: 200,
       body: JSON.stringify({
@@ -132,13 +132,6 @@ export async function fetchNFTs(event, context) {
   //     time: cursor.time,
   //     offset: cursor.offset,
   //   })
-
-  const queueAttrs = await sqs.getQueueAttributes({
-    QueueUrl: process.env.fetchedRecordQueueUrl,
-    AttributeNames: ['ApproximateNumberOfMessages'],
-  })
-
-  console.log(queueAttrs)
 
   return {
     statusCode: 200,
