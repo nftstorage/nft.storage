@@ -1,5 +1,7 @@
 import * as sst from '@serverless-stack/resources'
+
 import { Table, TableFieldType } from '@serverless-stack/resources'
+
 import { LayerVersion } from 'aws-cdk-lib/aws-lambda'
 
 export default class NiftySaveStack extends sst.Stack {
@@ -229,7 +231,7 @@ export default class NiftySaveStack extends sst.Stack {
       },
       routes: {
         'GET /ingest/health': 'src/ingest.ingestHealth',
-        'GET /report/health': 'src/report.health',
+        'POST /report/health': 'src/report.health',
 
         'POST /ingest/slice-queue/purge': 'src/ingest.purgeSliceCommandQueue',
         'POST /ingest/slice-queue/fill': 'src/ingest.fillIngestTimeSliceQueue',

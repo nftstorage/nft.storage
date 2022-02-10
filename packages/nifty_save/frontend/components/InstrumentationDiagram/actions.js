@@ -14,20 +14,23 @@ export const defaultTimeCommand = {
   source: 'the-graph',
 }
 
-export const sendTimeRangeToSlicer = (apiUrl, data) =>
+export const sendTimeRangeToSlicer = (apiUrl, data = {}) =>
   createAction(`${apiUrl}/ingest/slice-queue/fill`, {
     ...data,
     ...defaultTimeCommand,
   })
 
-export const purgeTimeSliceSQS = (apiUrl, data) =>
+export const purgeTimeSliceSQS = (apiUrl, data = {}) =>
   createAction(`${apiUrl}/ingest/slice-queue/purge`, data)
 
-export const purgeFetchedRecordsSQS = (apiUrl, data) =>
+export const purgeFetchedRecordsSQS = (apiUrl, data = {}) =>
   createAction(`${apiUrl}/ingest/records/purge`, data)
 
-export const purgePreprocessorSQS = (apiUrl, data) =>
+export const purgePreprocessorSQS = (apiUrl, data = {}) =>
   createAction(`${apiUrl}/ingest/preprocessor/purge`, data)
 
-export const purgePostProcessorSQS = (apiUrl, data) =>
+export const purgePostProcessorSQS = (apiUrl, data = {}) =>
   createAction(`${apiUrl}/ingest/postprocessor/purge`, data)
+
+export const getHealthReport = (apiUrl, data = {}) =>
+  createAction(`${apiUrl}/report/health`, data)

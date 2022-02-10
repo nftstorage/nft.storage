@@ -6,19 +6,23 @@ import {
   TimeSliceCommandQueueForm,
 } from './Forms'
 import {
+  getHealthReport,
   purgeFetchedRecordsSQS,
   purgePostProcessorSQS,
   purgePreprocessorSQS,
   purgeTimeSliceSQS,
   sendTimeRangeToSlicer,
 } from './actions'
+import { useEffect, useState } from 'react'
 
 import FlowDiagram from './FlowDiagram'
 import Modal from '../Modal'
-import { useState } from 'react'
 
 export default function InstrumentationDiagram(props) {
   const { apiUrl } = props
+
+  /* Report | Health */
+  const [healthReport, setHealthReport] = useState({})
 
   /* Api Gateway */
   const [apiGateWayFormIsOpen, setApiGatewayFormIsOpen] = useState(false)
@@ -44,6 +48,17 @@ export default function InstrumentationDiagram(props) {
   /* PostprocessorQueueForm*/
   const [postprocessorSQSIsOpen, setPostprocessorSQSIsOpen] = useState(false)
   const [purgingPostProcessorSQS, setPurgingPostprocessorSQS] = useState(false)
+
+  useEffect(() => {
+    const updateHealth = async () => {
+      console.log('run update health')
+      const results = await getHealthReport(apiUrl)
+      console.log('health report done.')
+      console.log(results)
+      setHealthReport(results)
+    }
+    updateHealth()
+  }, [setHealthReport, apiUrl])
 
   return (
     <div className="niftysave-diagram">
