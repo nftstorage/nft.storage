@@ -3521,7 +3521,7 @@ const SvgComponent = (props) => {
         </svg>
         <svg
           x={765}
-          y={1203}
+          y={1260}
           overflow="visible"
           id="3a81e274-f238-4fde-94dd-d8b503dc152e"
         >
