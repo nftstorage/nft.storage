@@ -39,7 +39,7 @@ export async function fanOut(event) {
 export async function execute(event, context) {
   const { detail } = event
 
-  console.log('executing fror detail, source', detail.source)
+  console.log('executing for detail, source', detail.source)
   const datasource = getDataSource(detail.source)
 
   if (!datasource) {

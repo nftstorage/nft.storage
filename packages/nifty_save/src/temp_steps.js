@@ -3,24 +3,61 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient()
 const bus = new AWS.EventBridge()
 const sqs = new AWS.SQS()
 
+/**
+ * Put a processed record back on the bus
+ *
+ * @async
+ * @param {string} step - The current step.
+ * @param {object} data - The data/record to put on the bus.
+ * @returns {Promise<object>} The promise from the bus putting the events on.
+ */
+async function putOnBus(step, data) {
+  const entries = [
+    {
+      DetailType: step,
+      Detail: JSON.stringify(data),
+      Source: `temp_steps.${step}`,
+      EventBusName: process.env.busArn,
+    },
+  ]
+
+  await bus.putEvents({ Entries: entries }).promise()
+}
+
 export async function test() {
-  //   const actualMessages = event.Records.map(x => JSON.parse(x.body))
-  //
-  //   const msg = `count ${event.Records.length} index ${actualMessages[0].index}`
-  //
-  //   const entries = actualMessages.map(messageToEntry)
-  await bus
-    .putEvents({
-      Entries: [
-        {
-          DetailType: 'temp_steps test',
-          Detail: JSON.stringify({ id: 'test', token_id: 'test' }),
-          Source: 'temp_steps.test',
-          EventBusName: process.env.busArn,
-        },
-      ],
+  const data = []
+
+  for (var i = 0; i < 20; i++) {
+    data.push({
+      DetailType: 'test',
+      Detail: JSON.stringify({
+        id: 'test_' + Math.round(Math.random() * 1000),
+        token_id: 'test',
+      }),
+      Source: `temp_steps.test`,
+      EventBusName: process.env.busArn,
     })
-    .promise()
+    if (data.length == 5) {
+      await bus.putEvents({ Entries: data }).promise()
+      data.length = 0
+      await new Promise((r) => setTimeout(r, 1000))
+    }
+  }
+
+  if (data.length > 0) {
+    await new Promise((r) => setTimeout(r, 1000))
+    await bus.putEvents({ Entries: data }).promise()
+  }
+
+  //   const entries = [
+  //     {
+  //       DetailType: 'test',
+  //       Detail: JSON.stringify(data),
+  //       Source: `temp_steps.test`,
+  //       EventBusName: process.env.busArn,
+  //     },
+  //   ]
+  //   bus.putEvents({ Entries: data }).promise()
 
   return {
     statusCode: 200,
@@ -31,40 +68,20 @@ export async function test() {
 }
 
 export async function analyze(event) {
-  const msg = event.detail
-
-  const entries = [
-    {
-      DetailType: 'Analyze',
-      Detail: JSON.stringify(msg),
-      Source: 'temp_steps.analyze',
-      EventBusName: process.env.busArn,
-    },
-  ]
-
-  await bus.putEvents({ Entries: entries }).promise()
+  const data = event.detail
+  putOnBus('analyze', data)
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      message: 'step: Analyze' + msg,
+      message: 'step: Analyze' + data,
     }),
   }
 }
 
 export async function getMetaData(event) {
   const msg = event.detail
-
-  const entries = [
-    {
-      DetailType: 'getMetaData',
-      Detail: JSON.stringify(msg),
-      Source: 'temp_steps.getMetaData',
-      EventBusName: process.env.busArn,
-    },
-  ]
-
-  await bus.putEvents({ Entries: entries }).promise()
+  putOnBus('getMetaData', msg)
 
   return {
     statusCode: 200,
@@ -76,17 +93,7 @@ export async function getMetaData(event) {
 
 export async function pinMetaData(event) {
   const msg = event.detail
-
-  const entries = [
-    {
-      DetailType: 'pinMetaData',
-      Detail: JSON.stringify(msg),
-      Source: 'temp_steps.pinMetaData',
-      EventBusName: process.env.busArn,
-    },
-  ]
-
-  await bus.putEvents({ Entries: entries }).promise()
+  putOnBus('pinMetaData', msg)
 
   return {
     statusCode: 200,
@@ -98,17 +105,7 @@ export async function pinMetaData(event) {
 
 export async function getContent(event) {
   const msg = event.detail
-
-  const entries = [
-    {
-      DetailType: 'getContent',
-      Detail: JSON.stringify(msg),
-      Source: 'temp_steps.getContent',
-      EventBusName: process.env.busArn,
-    },
-  ]
-
-  await bus.putEvents({ Entries: entries }).promise()
+  putOnBus('getContent', msg)
 
   return {
     statusCode: 200,
@@ -121,7 +118,7 @@ export async function getContent(event) {
 export async function pinContent(event) {
   const msg = event.detail
 
-  sqs
+  await sqs
     .sendMessage({
       QueueUrl: process.env.dataWarehouseQueue,
       MessageBody: JSON.stringify(msg),
@@ -136,13 +133,12 @@ export async function pinContent(event) {
   }
 }
 
-export async function storeInDataWarehouse(event) {
+export async function storeProcessedRecord(event) {
   const msg = event.Records.map((x) => JSON.parse(x.body))[0]
-  console.log(msg)
 
   const result = await dynamoDb
     .put({
-      TableName: process.env.fakeDataWarehouseTable,
+      TableName: process.env.postProcesserTableName,
       Item: {
         id: msg.id,
         token_id: msg.token_id,

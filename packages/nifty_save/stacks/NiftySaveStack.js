@@ -1,17 +1,11 @@
 import * as sst from '@serverless-stack/resources'
-
-import { Function, Table, TableFieldType } from '@serverless-stack/resources'
-
-import { App } from 'aws-cdk-lib'
+import { Table, TableFieldType } from '@serverless-stack/resources'
 import { LayerVersion } from 'aws-cdk-lib/aws-lambda'
 
 export default class NiftySaveStack extends sst.Stack {
   constructor(scope, id, props) {
     super(scope, id, props)
-
     const projectName = scope.stage
-
-    console.log('what', projectName)
 
     //configure the event bus
     const bus = new sst.EventBus(this, 'Bus')
@@ -93,7 +87,7 @@ export default class NiftySaveStack extends sst.Stack {
     //     )
 
     //     const analyzerBus = new sst.EventBus(this, 'analyzerBus')
-    const dataWarehouseQueue = new sst.Queue(this, 'DataWarehouseQueue')
+    const postProcesserQueue = new sst.Queue(this, 'PostProcesserQueue')
 
     bus.addRules(this, {
       stepAnalyze: {
@@ -152,31 +146,56 @@ export default class NiftySaveStack extends sst.Stack {
               handler: 'src/temp_steps.pinContent',
               environment: {
                 busArn: bus.eventBusArn,
-                dataWarehouseQueue: dataWarehouseQueue.sqsQueue.queueUrl,
+                dataWarehouseQueue: postProcesserQueue.sqsQueue.queueUrl,
               },
-              permissions: [bus, dataWarehouseQueue],
+              permissions: [bus, postProcesserQueue],
             },
           },
         ],
       },
     })
 
-    const fakeDataWarehouseTable = new Table(this, 'FakeDataWarehouseTable', {
+    const postProcesserTable = new Table(this, 'PostProcesserTable', {
       fields: {
         id: TableFieldType.STRING,
         token_id: TableFieldType.STRING,
+        token_uri: TableFieldType.STRING,
+        mint_time: TableFieldType.STRING,
+        contract_id: TableFieldType.STRING,
+        contract_name: TableFieldType.STRING,
+        contract_symbol: TableFieldType.STRING,
+        contract_supports_eip721_metadata: TableFieldType.BINARY,
+        block_hash: TableFieldType.STRING,
+        block_number: TableFieldType.NUMBER,
+        owner_id: TableFieldType.STRING,
+        updated_at: TableFieldType.STRING,
+        inserted_at: TableFieldType.STRING,
+        last_processed: TableFieldType.STRING,
+
+        // Additional fields post process
+        last_step: TableFieldType.STRING,
+        ipfs_uri: TableFieldType.STRING,
+
+        //content info
+        content_cid: TableFieldType.STRING,
+        content_pin_service: TableFieldType.STRING,
+
+        //metadata info
+        metadata_cid: TableFieldType.STRING,
+        metadata_name: TableFieldType.STRING,
+        metadata_description: TableFieldType.STRING,
+        metadata_json: TableFieldType.STRING,
       },
       primaryIndex: { partitionKey: 'id', sortKey: 'token_id' },
     })
 
-    dataWarehouseQueue.addConsumer(this, {
+    postProcesserQueue.addConsumer(this, {
       function: {
-        handler: 'src/temp_steps.storeInDataWarehouse',
+        handler: 'src/temp_steps.storeProcessedRecord',
         environment: {
-          fakeDataWarehouseTable:
-            fakeDataWarehouseTable.dynamodbTable.tableName,
+          postProcesserTableName: postProcesserTable.dynamodbTable.tableName,
         },
-        permissions: [fakeDataWarehouseTable],
+        permissions: [postProcesserTable],
       },
     })
 
@@ -193,8 +212,7 @@ export default class NiftySaveStack extends sst.Stack {
           //           analyzerIntakeQueueUrl: analyzerIntakeQueue.sqsQueue.queueUrl,
           //           postPinningIntakeQueue: postPinningIntakeQueue.sqsQueue.queueUrl,
           fetchedRecordsTableName: fetchedRecordsTable.dynamodbTable.tableName,
-          fakeDataWarehouseTableName:
-            fakeDataWarehouseTable.dynamodbTable.tableName,
+          postProcesserTableName: postProcesserTable.dynamodbTable.tableName,
           busArn: bus.eventBusArn,
         },
       },
@@ -220,7 +238,7 @@ export default class NiftySaveStack extends sst.Stack {
     api.attachPermissions([
       bus,
       fetchedRecordsTable,
-      fakeDataWarehouseTable,
+      postProcesserTable,
       sliceCommandQueue,
       fetchedRecordQueue,
       'cloudwatch:GetMetricData',
