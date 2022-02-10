@@ -6,3 +6,32 @@
   font-size: 15px;
   fill: rgba(255, 255, 255, 0.5);
 }
+
+/*API*/
+svg.interactive {
+  --diagram-interactive-speed: 200ms;
+  --diagram-interative-stroke-w: 10px;
+}
+svg.interactive:hover {
+}
+
+svg.interactive.api > g > path {
+  stroke-width: var(--diagram-interative-stroke-w);
+  stroke: rgba(255, 255, 255, 0);
+  transition: all var(--diagram-interactive-speed) ease;
+}
+
+svg.interactive.api:hover > g > path {
+  stroke: rgba(255, 255, 255, 1);
+}
+
+/*SQS*/
+svg.interactive.sqs > path {
+  stroke-width: var(--diagram-interative-stroke-w);
+  stroke: rgba(255, 255, 255, 0);
+  transition: all var(--diagram-interactive-speed) ease;
+}
+
+svg.interactive.sqs:hover > path {
+  stroke: rgba(255, 255, 255, 1);
+}
