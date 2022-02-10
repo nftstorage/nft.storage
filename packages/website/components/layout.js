@@ -121,7 +121,7 @@ export default function Layout({
         <>
           <MaintenanceBanner />
           <Navbar bgColor={navBgColor} logo={logo} user={user} />
-          {children({ user })}
+          <div className="flex flex-column flex-auto">{children({ user })}</div>
           <Footer />
         </>
       )}
