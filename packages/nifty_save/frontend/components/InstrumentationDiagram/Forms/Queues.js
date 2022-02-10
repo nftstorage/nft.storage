@@ -7,6 +7,10 @@ export function TimeSliceCommandQueueForm(props) {
     <div className="grid">
       <h2>Time Slice Commands</h2>
       <h5>SQS Quque</h5>
+      <p>
+        The Time slice commnad queue is all the slices calculated from the
+        inital range.
+      </p>
       <button className="btn interactive hologram" onClick={onPurgeQueue}>
         {cta}
       </button>
