@@ -25,29 +25,29 @@ export async function putOnProcessorBus(step, data) {
 }
 
 export async function test() {
-  const data = []
+  //   const data = []
 
-  for (var i = 0; i < 20; i++) {
-    data.push({
-      DetailType: 'test',
-      Detail: JSON.stringify({
-        id: 'test_' + Math.round(Math.random() * 1000),
-        token_id: 'test',
-      }),
-      Source: `temp_steps.process`,
-      EventBusName: process.env.busArn,
-    })
-    if (data.length == 5) {
-      await bus.putEvents({ Entries: data }).promise()
-      data.length = 0
-      await new Promise((r) => setTimeout(r, 1000))
-    }
-  }
-
-  if (data.length > 0) {
-    await new Promise((r) => setTimeout(r, 1000))
-    await bus.putEvents({ Entries: data }).promise()
-  }
+  //   for (var i = 0; i < 20; i++) {
+  //     data.push({
+  //       DetailType: 'test',
+  //       Detail: JSON.stringify({
+  //         id: 'test_' + Math.round(Math.random() * 1000),
+  //         token_id: 'test',
+  //       }),
+  //       Source: `temp_steps.process`,
+  //       EventBusName: process.env.busArn,
+  //     })
+  //     if (data.length == 5) {
+  //       await bus.putEvents({ Entries: data }).promise()
+  //       data.length = 0
+  //       await new Promise((r) => setTimeout(r, 1000))
+  //     }
+  //   }
+  //
+  //   if (data.length > 0) {
+  //     await new Promise((r) => setTimeout(r, 1000))
+  //     await bus.putEvents({ Entries: data }).promise()
+  //   }
 
   return {
     statusCode: 200,
@@ -57,14 +57,24 @@ export async function test() {
   }
 }
 
-export async function process(event) {
-  const data = event.Records.map((x) => JSON.parse(x.body))
-  putOnProcessorBus('process', data)
+export async function beginProcess(event) {
+  const busEvents = event.Records.map((x) => JSON.parse(x.body)).map((record) =>
+    putOnProcessorBus('process', record)
+  )
+
+  try {
+    await Promise.all(busEvents)
+  } catch (err) {
+    return {
+      statusCode: 500,
+      message: `Error: ${err}`,
+    }
+  }
 
   return {
     statusCode: 200,
     body: JSON.stringify({
-      message: 'step: Process' + data,
+      message: 'step: Process' + busEvents.length,
     }),
   }
 }
@@ -136,20 +146,28 @@ export async function pinContent(event) {
 }
 
 export async function storeProcessedRecord(event) {
-  const msg = event.Records.map((x) => JSON.parse(x.body))[0]
+  const records = event.Records.map((x) => JSON.parse(x.body))
 
-  const result = await dynamoDb
-    .put({
-      TableName: process.env.postProcesserTableName,
-      Item: {
-        id: msg.id,
-        token_id: msg.token_id,
-      },
-    })
-    .promise()
+  let tableBatch = []
+  for (const record of records) {
+    if (!record.id) {
+      continue
+    }
+    const result = dynamoDb
+      .put({
+        TableName: process.env.postProcesserTableName,
+        Item: {
+          ...record,
+        },
+      })
+      .promise()
+    tableBatch.push(result)
+  }
+
+  await Promise.all(tableBatch)
 
   return {
     statusCode: 200,
-    message: `analyze: Stored ${msg}`,
+    message: `step: Stored ${records.length}`,
   }
 }

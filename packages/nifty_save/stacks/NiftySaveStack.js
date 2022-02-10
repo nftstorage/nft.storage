@@ -1,6 +1,7 @@
 import * as sst from '@serverless-stack/resources'
 import { Table, TableFieldType } from '@serverless-stack/resources'
 import { LayerVersion } from 'aws-cdk-lib/aws-lambda'
+import { StreamViewType } from 'aws-cdk-lib/aws-dynamodb'
 
 export default class NiftySaveStack extends sst.Stack {
   constructor(scope, id, props) {
@@ -27,7 +28,6 @@ export default class NiftySaveStack extends sst.Stack {
     })
 
     const fetchedRecordQueue = new sst.Queue(this, 'FetchedRecordQueue')
-    const preProcesserQueue = new sst.Queue(this, 'PreProcesserQueue')
 
     //Ingest
     bus.addRules(this, {
@@ -47,6 +47,8 @@ export default class NiftySaveStack extends sst.Stack {
       },
     })
 
+    const preProcesserQueue = new sst.Queue(this, 'PreProcesserQueue')
+
     const fetchedRecordsTable = new Table(this, 'FetchedRecordsTable', {
       fields: {
         id: TableFieldType.STRING,
@@ -65,6 +67,18 @@ export default class NiftySaveStack extends sst.Stack {
         last_processed: TableFieldType.STRING,
       },
       primaryIndex: { partitionKey: 'id', sortKey: 'token_id' },
+      stream: StreamViewType.NEW_IMAGE,
+      // consumer settings for table.
+      defaultFunctionProps: {
+        timeout: 20,
+        environment: {
+          preProcesserQueueUrl: preProcesserQueue.sqsQueue.queueUrl,
+        },
+        permissions: [preProcesserQueue],
+      },
+      consumers: {
+        consumer1: 'src/ingest.fetchedRecordsConsumer',
+      },
     })
 
     fetchedRecordQueue.addConsumer(this, {
@@ -72,18 +86,23 @@ export default class NiftySaveStack extends sst.Stack {
         handler: 'src/ingest.storeFetchedRecord',
         environment: {
           fetchedRecordsTableName: fetchedRecordsTable.dynamodbTable.tableName,
+          preProcesserQueueUrl: preProcesserQueue.sqsQueue.queueUrl,
         },
-        permissions: [fetchedRecordsTable],
+        permissions: [fetchedRecordsTable, preProcesserQueue],
       },
     })
 
     preProcesserQueue.addConsumer(this, {
+      consumerProps: {
+        batchSize: 5,
+      },
       function: {
-        handler: 'src/temp_steps.process',
+        handler: 'src/temp_steps.beginProcess',
         environment: {
           preProcesserQueueUrl: preProcesserQueue.sqsQueue.queueUrl,
+          busArn: bus.eventBusArn,
         },
-        permissions: [preProcesserQueue],
+        permissions: [bus, preProcesserQueue],
       },
     })
 
@@ -205,8 +224,9 @@ export default class NiftySaveStack extends sst.Stack {
         handler: 'src/temp_steps.storeProcessedRecord',
         environment: {
           postProcesserTableName: postProcesserTable.dynamodbTable.tableName,
+          busArn: bus.eventBusArn,
         },
-        permissions: [postProcesserTable],
+        permissions: [bus, postProcesserTable],
       },
     })
 

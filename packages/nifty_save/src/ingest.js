@@ -5,7 +5,10 @@ export {
   execute as executeTimeSlice,
 } from './ingest/timeSlice'
 
-export { store as storeFetchedRecord } from './ingest/fetchedRecord'
+export {
+  store as storeFetchedRecord,
+  consumer as fetchedRecordsConsumer,
+} from './ingest/fetchedRecord'
 
 export {
   purgeSliceCommandQueue,
