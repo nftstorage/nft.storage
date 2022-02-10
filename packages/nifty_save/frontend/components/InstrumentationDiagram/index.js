@@ -55,6 +55,15 @@ export default function InstrumentationDiagram(props) {
         onClickTimeSliceSQS={() => {
           setTimeSliceSQSIsOpen(true)
         }}
+        onClickFetchedRecordSQS={() => {
+          setFetchedRecordSQSIsOpen(true)
+        }}
+        onClickPreprocessorSQS={() => {
+          setPreprocessorSQSIsOpen(true)
+        }}
+        onClickPostProcessorSQS={() => {
+          setPostprocessorSQSIsOpen(true)
+        }}
       />
 
       {/* Forms */}
