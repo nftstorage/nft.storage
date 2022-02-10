@@ -18,6 +18,7 @@ const decoders = [pb, raw, cbor]
  * @typedef {import('../bindings').NFT} NFT
  * @typedef {import('../bindings').NFTResponse} NFTResponse
  * @typedef {import('@nftstorage/ipfs-cluster').API.StatusResponse} StatusResponse
+ * @typedef {import('../bindings').DagStructure} DagStructure
  */
 
 /** @type {import('../bindings').Handler} */
@@ -60,7 +61,7 @@ export async function nftUpload(event, ctx) {
     const isCar = contentType.includes('application/car')
     /** @type {'Car'|'Blob'} */
     let uploadType
-    /** @type {import('../bindings').DagStructure} */
+    /** @type {DagStructure} */
     let structure
     /** @type {Blob} */
     let car
@@ -103,14 +104,17 @@ export async function nftUpload(event, ctx) {
  *   car: Blob
  *   uploadType?: import('../utils/db-types').definitions['upload']['type']
  *   mimeType: string
- *   structure: import('../bindings').DagStructure
+ *   structure: DagStructure
  *   files: Array<{ name: string; type?: string }>
  *   meta?: Record<string, string>
  * }} UploadCarInput
  * @param {UploadCarInput} params
  */
 export async function uploadCar(params) {
-  const stat = await carStat(params.car)
+  const stat = await carStat(params.car, {
+    structure: params.structure,
+  })
+
   return uploadCarWithStat(params, stat)
 }
 
@@ -119,20 +123,15 @@ export async function uploadCar(params) {
  * @param {CarStat} stat
  */
 export async function uploadCarWithStat(
-  { ctx, user, key, car, uploadType = 'Car', mimeType, structure, files, meta },
+  { ctx, user, key, car, uploadType = 'Car', mimeType, files, meta },
   stat
 ) {
-  // if unknown, but the root CID is raw, then it is complete
-  if (structure === 'Unknown' && stat.rootCid.code === raw.code) {
-    structure = 'Complete'
-  }
-
   const [added, backupUrl] = await Promise.all([
     cluster.addCar(car, {
       local: car.size > constants.cluster.localAddThreshold,
     }),
     ctx.backup
-      ? ctx.backup.backupCar(user.id, stat.rootCid, car, structure)
+      ? ctx.backup.backupCar(user.id, stat.rootCid, car, stat.structure)
       : Promise.resolve(null),
   ])
 
@@ -141,7 +140,7 @@ export async function uploadCarWithStat(
     type: uploadType,
     content_cid: stat.rootCid.toV1().toString(),
     source_cid: stat.rootCid.toString(),
-    dag_size: structure === 'Complete' ? added.bytes : stat.size,
+    dag_size: stat.structure === 'Complete' ? added.bytes : stat.size,
     user_id: user.id,
     files,
     meta,
@@ -166,11 +165,13 @@ export async function uploadCarWithStat(
  * The DAG size will be returned ONLY IF the root node is dag-pb or raw.
  *
  * @typedef {import('multiformats').CID} CID
- * @typedef {{ size?: number, rootCid: CID }} CarStat
+ * @typedef {{ size?: number, rootCid: CID, structure?: DagStructure }} CarStat
  * @param {Blob} carBlob
+ * @param {Object} [options]
+ * @param {DagStructure} [options.structure]
  * @returns {Promise<CarStat>}
  */
-export async function carStat(carBlob) {
+export async function carStat(carBlob, { structure } = {}) {
   const carBytes = new Uint8Array(await carBlob.arrayBuffer())
   const blocksIterator = await CarBlockIterator.fromBytes(carBytes)
   const roots = await blocksIterator.getRoots()
@@ -182,7 +183,8 @@ export async function carStat(carBlob) {
   }
   const rootCid = roots[0]
   let rawRootBlock
-  let blocks = 0
+  /** @type {import('@ipld/car/api').Block[]} */
+  const blocks = []
   for await (const block of blocksIterator) {
     const blockSize = block.bytes.byteLength
     if (blockSize > MAX_BLOCK_SIZE) {
@@ -191,9 +193,9 @@ export async function carStat(carBlob) {
     if (!rawRootBlock && block.cid.equals(rootCid)) {
       rawRootBlock = block
     }
-    blocks++
+    blocks.push(block)
   }
-  if (blocks === 0) {
+  if (!blocks.length) {
     throw new Error('empty CAR')
   }
   if (!rawRootBlock) {
@@ -203,8 +205,9 @@ export async function carStat(carBlob) {
   let size
   if (decoder) {
     // if there's only 1 block (the root block) and it's a raw node, we know the size.
-    if (blocks === 1 && rootCid.code === raw.code) {
+    if (blocks.length === 1 && rootCid.code === raw.code) {
       size = rawRootBlock.bytes.byteLength
+      structure = 'Complete'
     } else {
       const rootBlock = new Block({
         cid: rootCid,
@@ -213,16 +216,58 @@ export async function carStat(carBlob) {
       })
       const hasLinks = !rootBlock.links()[Symbol.iterator]().next().done
       // if the root block has links, then we should have at least 2 blocks in the CAR
-      if (hasLinks && blocks < 2) {
+      if (hasLinks && blocks.length < 2) {
         throw new Error('CAR must contain at least one non-root block')
       }
       // get the size of the full dag for this root, even if we only have a partial CAR.
       if (rootBlock.cid.code === pb.code) {
         size = cumulativeSize(rootBlock.bytes, rootBlock.value)
       }
+      // get Structure if not already known
+      if (!structure || structure === 'Unknown') {
+        const isComplete = iterateDag(rawRootBlock, blocks)
+        structure = isComplete ? 'Complete' : 'Partial'
+      }
     }
   }
-  return { rootCid, size }
+  return { rootCid, size, structure }
+}
+
+/**
+ * Iterate over a dag starting on the raw block and using the CAR blocks.
+ * Returns whether the DAG is complete.
+ *
+ * @param {import('@ipld/car/api').Block} rawRootBlock
+ * @param {import('@ipld/car/api').Block[]} blocks
+ */
+function iterateDag(rawRootBlock, blocks) {
+  const decoder = decoders.find((d) => d.code === rawRootBlock.cid.code)
+  if (!decoder) {
+    return false
+  }
+
+  const rBlock = new Block({
+    cid: rawRootBlock.cid,
+    bytes: rawRootBlock.bytes,
+    value: decoder.decode(rawRootBlock.bytes),
+  })
+  const bLinks = Array.from(rBlock.links())
+  for (const link of bLinks) {
+    const existingBlock = blocks.find((b) => b.cid.equals(link[1]))
+
+    // Incomplete Dag
+    if (!existingBlock) {
+      return false
+    }
+
+    // Incomplete Dag
+    if (!iterateDag(existingBlock, blocks)) {
+      return false
+    }
+  }
+
+  // Complete Dag
+  return true
 }
 
 /**
