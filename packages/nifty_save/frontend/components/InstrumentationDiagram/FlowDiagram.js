@@ -3511,7 +3511,7 @@ const SvgComponent = (props) => {
               xmlSpace="preserve"
             >
               <tspan x={60} dy={0}>
-                {'Postprocessor Queue'}
+                {'Postprocessor'}
               </tspan>
               <tspan x={60} dy={'1.1rem'}>
                 {'Queue'}
