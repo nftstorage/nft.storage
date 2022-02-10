@@ -11,7 +11,7 @@ const sqs = new AWS.SQS()
  * @param {object} data - The data/record to put on the bus.
  * @returns {Promise<object>} The promise from the bus putting the events on.
  */
-async function putOnBus(step, data) {
+export async function putOnProcessorBus(step, data) {
   const entries = [
     {
       DetailType: step,
@@ -34,7 +34,7 @@ export async function test() {
         id: 'test_' + Math.round(Math.random() * 1000),
         token_id: 'test',
       }),
-      Source: `temp_steps.test`,
+      Source: `temp_steps.process`,
       EventBusName: process.env.busArn,
     })
     if (data.length == 5) {
@@ -49,16 +49,6 @@ export async function test() {
     await bus.putEvents({ Entries: data }).promise()
   }
 
-  //   const entries = [
-  //     {
-  //       DetailType: 'test',
-  //       Detail: JSON.stringify(data),
-  //       Source: `temp_steps.test`,
-  //       EventBusName: process.env.busArn,
-  //     },
-  //   ]
-  //   bus.putEvents({ Entries: data }).promise()
-
   return {
     statusCode: 200,
     body: JSON.stringify({
@@ -67,9 +57,21 @@ export async function test() {
   }
 }
 
+export async function process(event) {
+  const data = event.Records.map((x) => JSON.parse(x.body))
+  putOnProcessorBus('process', data)
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: 'step: Process' + data,
+    }),
+  }
+}
+
 export async function analyze(event) {
   const data = event.detail
-  putOnBus('analyze', data)
+  putOnProcessorBus('analyze', data)
 
   return {
     statusCode: 200,
@@ -81,7 +83,7 @@ export async function analyze(event) {
 
 export async function getMetaData(event) {
   const msg = event.detail
-  putOnBus('getMetaData', msg)
+  putOnProcessorBus('getMetaData', msg)
 
   return {
     statusCode: 200,
@@ -93,7 +95,7 @@ export async function getMetaData(event) {
 
 export async function pinMetaData(event) {
   const msg = event.detail
-  putOnBus('pinMetaData', msg)
+  putOnProcessorBus('pinMetaData', msg)
 
   return {
     statusCode: 200,
@@ -105,7 +107,7 @@ export async function pinMetaData(event) {
 
 export async function getContent(event) {
   const msg = event.detail
-  putOnBus('getContent', msg)
+  putOnProcessorBus('getContent', msg)
 
   return {
     statusCode: 200,
