@@ -27,6 +27,7 @@ export default class NiftySaveStack extends sst.Stack {
     })
 
     const fetchedRecordQueue = new sst.Queue(this, 'FetchedRecordQueue')
+    const preProcesserQueue = new sst.Queue(this, 'PreProcesserQueue')
 
     //Ingest
     bus.addRules(this, {
@@ -76,6 +77,16 @@ export default class NiftySaveStack extends sst.Stack {
       },
     })
 
+    preProcesserQueue.addConsumer(this, {
+      function: {
+        handler: 'src/temp_steps.process',
+        environment: {
+          preProcesserQueueUrl: preProcesserQueue.sqsQueue.queueUrl,
+        },
+        permissions: [preProcesserQueue],
+      },
+    })
+
     //Analyze
     //     const analyzerIntakeQueue = new sst.Queue(this, 'AnalyzerIntakeQueue', {})
 
@@ -91,7 +102,7 @@ export default class NiftySaveStack extends sst.Stack {
 
     bus.addRules(this, {
       stepAnalyze: {
-        eventPattern: { source: ['temp_steps.test'] },
+        eventPattern: { source: ['temp_steps.process'] },
         targets: [
           {
             function: {
