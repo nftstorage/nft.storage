@@ -170,22 +170,6 @@ p,
   cursor: pointer;
 }
 
-svg.interactive.hologram {
-  background-color: #ccc;
-}
-
-svg.hologram.interactive > g > path {
-  stroke-width: 8px;
-  stroke-linejoin: round;
-  opacity: 1;
-}
-
-svg.hologram.interactive:hover > g > path {
-  opacity: 0.8;
-  fill: none;
-  stroke: #ffffff;
-}
-
 .hologram.interactive:hover {
   box-shadow: var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 0px
       var(--nsltblue),

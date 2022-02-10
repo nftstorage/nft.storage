@@ -3,7 +3,6 @@
 import * as React from 'react'
 
 const SvgComponent = (props) => {
-  const { onClickApi } = props
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -879,8 +878,8 @@ const SvgComponent = (props) => {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 75 75"
-                className="api-gateway interactive hologram"
-                onClick={onClickApi}
+                className="api-gateway api interactive hologram"
+                onClick={props?.onClickApi}
               >
                 <defs>
                   <linearGradient
@@ -1146,7 +1145,12 @@ const SvgComponent = (props) => {
                 fill: '#000',
               }}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 75 75"
+                className="sqs-command-queue sqs interactive hologram"
+                onClick={props?.onClickTimeSliceSQS}
+              >
                 <path
                   id="Pink_Light_BG"
                   data-name="Pink Light BG"
@@ -2832,20 +2836,6 @@ const SvgComponent = (props) => {
           overflow="visible"
           id="1c407f9e-37d6-4339-82c9-015da318ebe4"
         >
-          <text
-            stroke="#000"
-            strokeWidth={2}
-            fontFamily="Open Sans"
-            y={26.24}
-            fontSize="16pt"
-            fill="#fff"
-            fontWeight="bold"
-            xmlSpace="preserve"
-          >
-            <tspan x={8} dy={0}>
-              {'Range -> slices into SQS'}
-            </tspan>
-          </text>
           <text
             fontFamily="Open Sans"
             y={26.24}
