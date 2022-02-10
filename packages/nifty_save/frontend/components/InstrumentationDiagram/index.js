@@ -64,6 +64,14 @@ export default function InstrumentationDiagram(props) {
         onClickPostProcessorSQS={() => {
           setPostprocessorSQSIsOpen(true)
         }}
+        onClickFetchedRecordsTable={() => {
+          console.log('clicked fetched records table')
+          alert('Fetched Records Table has 0 records')
+        }}
+        onClickPostprocessorTable={() => {
+          console.log('clicked postprocessor table')
+          alert('Postprocessed Records Table has 0 records')
+        }}
       />
 
       {/* Forms */}
