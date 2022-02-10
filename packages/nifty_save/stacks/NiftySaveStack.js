@@ -191,9 +191,9 @@ export default class NiftySaveStack extends sst.Stack {
 
     postProcesserQueue.addConsumer(this, {
       function: {
-        handler: 'src/temp_steps.storeInDataWarehouse',
+        handler: 'src/temp_steps.storeProcessedRecord',
         environment: {
-          postProcesserTable: postProcesserTable.dynamodbTable.tableName,
+          postProcesserTableName: postProcesserTable.dynamodbTable.tableName,
         },
         permissions: [postProcesserTable],
       },
@@ -212,8 +212,7 @@ export default class NiftySaveStack extends sst.Stack {
           //           analyzerIntakeQueueUrl: analyzerIntakeQueue.sqsQueue.queueUrl,
           //           postPinningIntakeQueue: postPinningIntakeQueue.sqsQueue.queueUrl,
           fetchedRecordsTableName: fetchedRecordsTable.dynamodbTable.tableName,
-          fakeDataWarehouseTableName:
-            postProcesserTable.dynamodbTable.tableName,
+          postProcesserTableName: postProcesserTable.dynamodbTable.tableName,
           busArn: bus.eventBusArn,
         },
       },
