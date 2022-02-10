@@ -17,12 +17,14 @@ import { useEffect, useState } from 'react'
 
 import FlowDiagram from './FlowDiagram'
 import Modal from '../Modal'
+import { useLongPoll } from './longpoll'
 
 export default function InstrumentationDiagram(props) {
   const { apiUrl } = props
 
   /* Report | Health */
   const [healthReport, setHealthReport] = useState({})
+  const [checkingHealth, setCheckingHealth] = useState(false)
 
   /* Api Gateway */
   const [apiGateWayFormIsOpen, setApiGatewayFormIsOpen] = useState(false)
@@ -50,15 +52,21 @@ export default function InstrumentationDiagram(props) {
   const [purgingPostProcessorSQS, setPurgingPostprocessorSQS] = useState(false)
 
   useEffect(() => {
+    console.log(healthReport)
+  }, [healthReport])
+
+  useLongPoll(() => {
     const updateHealth = async () => {
-      console.log('run update health')
+      setCheckingHealth(true)
       const results = await getHealthReport(apiUrl)
-      console.log('health report done.')
-      console.log(results)
       setHealthReport(results)
+      setCheckingHealth(false)
     }
-    updateHealth()
-  }, [setHealthReport, apiUrl])
+
+    if (!checkingHealth) {
+      updateHealth()
+    }
+  }, 75000)
 
   return (
     <div className="niftysave-diagram">

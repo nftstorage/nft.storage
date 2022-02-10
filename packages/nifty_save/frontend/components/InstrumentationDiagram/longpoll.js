@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'core-js/library/fn/reflect/es7/metadata'
+import { useEffect, useRef } from 'react'
 
 /**
  *

@@ -93,8 +93,6 @@ export function Modal(
     </div>
   ) : null
 
-  console.log(modalEl)
-
   return modalEl ? createPortal(content, modalEl) : null
 }
 
