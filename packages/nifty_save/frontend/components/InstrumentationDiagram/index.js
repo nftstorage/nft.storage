@@ -1,5 +1,17 @@
-import { EditSliceCommandForm, TimeSliceCommandQueueForm } from './Forms'
-import { purgeTimeSliceSQS, sendTimeRangeToSlicer } from './actions'
+import {
+  EditSliceCommandForm,
+  FetchedRecordQueueForm,
+  PostprocessorQueueForm,
+  PreprocessorQueueForm,
+  TimeSliceCommandQueueForm,
+} from './Forms'
+import {
+  purgeFetchedRecordsSQS,
+  purgePostProcessorSQS,
+  purgePreprocessorSQS,
+  purgeTimeSliceSQS,
+  sendTimeRangeToSlicer,
+} from './actions'
 
 import FlowDiagram from './FlowDiagram'
 import Modal from '../Modal'
@@ -15,9 +27,23 @@ export default function InstrumentationDiagram(props) {
     message: 'No Commands sent',
   })
 
-  /* Time Slice Command Queue */
+  /* SQS Queues */
+
+  /* TimeSliceCommandQueueForm*/
   const [timeSliceSQSIsOpen, setTimeSliceSQSIsOpen] = useState(false)
   const [purgingTimeSliceSQS, setPurgingTimeSliceSQS] = useState(false)
+
+  /* FetchedRecordQueueForm*/
+  const [fetchedRecordSQSIsOpen, setFetchedRecordSQSIsOpen] = useState(false)
+  const [purgingFetchedRecordSQS, setPurgingFetchedRecordSQS] = useState(false)
+
+  /* PreprocessorQueueForm*/
+  const [preprocessorSQSIsOpen, setPreprocessorSQSIsOpen] = useState(false)
+  const [purgingPreprocessorSQS, setPurgingPreprocessorSQS] = useState(false)
+
+  /* PostprocessorQueueForm*/
+  const [postprocessorSQSIsOpen, setPostprocessorSQSIsOpen] = useState(false)
+  const [purgingPostProcessorSQS, setPurgingPostprocessorSQS] = useState(false)
 
   return (
     <div className="niftysave-diagram">
@@ -49,6 +75,8 @@ export default function InstrumentationDiagram(props) {
           }}
         />
       </Modal>
+
+      {/* SQS Queues */}
       <Modal
         open={timeSliceSQSIsOpen}
         onClose={() => {
@@ -64,6 +92,63 @@ export default function InstrumentationDiagram(props) {
             console.log(results)
             setTimeSliceSQSIsOpen(false)
             setPurgingTimeSliceSQS(false)
+          }}
+        />
+      </Modal>
+
+      <Modal
+        open={fetchedRecordSQSIsOpen}
+        onClose={() => {
+          setFetchedRecordSQSIsOpen(false)
+        }}
+      >
+        <FetchedRecordQueueForm
+          isBusy={purgingFetchedRecordSQS}
+          onPurgeQueue={async () => {
+            /* TODO Purge Queue */
+            purgingFetchedRecordSQS(true)
+            const results = await purgeFetchedRecordsSQS(apiUrl, {})
+            console.log(results)
+            setFetchedRecordSQSIsOpen(false)
+            setPurgingFetchedRecordSQS(false)
+          }}
+        />
+      </Modal>
+
+      <Modal
+        open={preprocessorSQSIsOpen}
+        onClose={() => {
+          setPreprocessorSQSIsOpen(false)
+        }}
+      >
+        <PreprocessorQueueForm
+          isBusy={purgingPreprocessorSQS}
+          onPurgeQueue={async () => {
+            /* TODO Purge Queue */
+            setPurgingPreprocessorSQS(true)
+            const results = await purgePreprocessorSQS(apiUrl, {})
+            console.log(results)
+            setPreprocessorSQSIsOpen(false)
+            setPurgingPreprocessorSQS(false)
+          }}
+        />
+      </Modal>
+
+      <Modal
+        open={postprocessorSQSIsOpen}
+        onClose={() => {
+          setPostprocessorSQSIsOpen(false)
+        }}
+      >
+        <PostprocessorQueueForm
+          isBusy={purgingPostProcessorSQS}
+          onPurgeQueue={async () => {
+            /* TODO Purge Queue */
+            setPurgingPostprocessorSQS(true)
+            const results = await purgePostProcessorSQS(apiUrl, {})
+            console.log(results)
+            setPostprocessorSQSIsOpen(false)
+            setPurgingPostprocessorSQS(false)
           }}
         />
       </Modal>
