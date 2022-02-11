@@ -1,5 +1,5 @@
 import { parse } from 'regexparam'
-import { database, GATEWAY_NFT_STORAGE_HOSTNAME } from '../constants.js'
+import { database } from '../constants.js'
 
 /**
  * @typedef {{ params: Record<string, string> }} BasicRouteContext
@@ -184,11 +184,8 @@ class Router {
     // Add more if needed for other backends
     const passThrough = [database.url]
 
-    // Ignore http requests from the passthrough list above and gateway
-    if (
-      !passThrough.includes(`${url.protocol}//${url.host}`) &&
-      !url.hostname.includes(GATEWAY_NFT_STORAGE_HOSTNAME)
-    ) {
+    // Ignore http requests from the passthrough list above
+    if (!passThrough.includes(`${url.protocol}//${url.host}`)) {
       event.respondWith(this.route(event))
     }
   }
