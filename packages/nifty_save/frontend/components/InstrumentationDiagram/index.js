@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from 'react'
 
 import FlowDiagram from './FlowDiagram'
+import Loader from './loader'
 import Modal from '../Modal'
 import { useLongPoll } from './longpoll'
 
@@ -58,18 +59,28 @@ export default function InstrumentationDiagram(props) {
   useLongPoll(() => {
     const updateHealth = async () => {
       setCheckingHealth(true)
+      console.time('health')
       const results = await getHealthReport(apiUrl)
       setHealthReport(results)
       setCheckingHealth(false)
+      console.timeEnd('health')
     }
 
     if (!checkingHealth) {
       updateHealth()
     }
-  }, 75000)
+  }, 7500)
 
   return (
     <div className="niftysave-diagram">
+      <div
+        style={{
+          position: 'absolute',
+          display: checkingHealth ? 'block' : 'none',
+        }}
+      >
+        <Loader />
+      </div>
       <FlowDiagram
         apiGatewayReadout={apiGatewayReadout}
         onClickApi={() => {
