@@ -65,9 +65,10 @@ const fetchMetadata = async route =>
 export async function tokenUriToJSON(tokenURI) {
   let tokenURIFormat = detectTokenURIFormat(tokenURI)
 
-  if (tokenURIFormat) {
+  if (tokenURIFormat === 'EMPTY') {
     return {}
   }
+
   if (tokenURIFormat === 'JSON') {
     return cleanJSON(tokenURI)
   }
