@@ -7,23 +7,29 @@ const CodeEditor = dynamic(
   () => import('@uiw/react-textarea-code-editor').then(mod => mod.default),
   { ssr: false }
 )
-
+const monospace =
+  'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace'
 function Editor() {
-  const [code, setCode] = React.useState(
-    `function add(a, b) {\n  return a + b;\n}`
-  )
+  const [code, setCode] = React.useState(`{}`)
   return (
     <CodeEditor
       value={code}
-      language="js"
-      placeholder="Please enter JS code."
-      onChange={evn => setCode(evn.target.value)}
-      padding={15}
+      language="json"
+      placeholder="Enter JSON here"
+      onChange={evn => {
+        try {
+          JSON.parse(evn.target.value)
+          setCode(evn.target.value)
+        } catch (err) {
+          setCode(evn.target.value)
+        }
+      }}
+      padding={20}
       style={{
-        fontSize: 12,
-        backgroundColor: '#f5f5f5',
-        fontFamily:
-          'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+        fontSize: 14,
+        backgroundColor: '#000',
+        border: `1px #fff solid`,
+        fontFamily: monospace,
       }}
     />
   )
