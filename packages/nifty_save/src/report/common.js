@@ -7,7 +7,7 @@
  */
 export function buildMetricQuery(namespace, name, method = 'Sum') {
   const projectName = process.env.projectName
-  const period = 120 // time sample period in seconds.
+  const period = 10 // time sample period in seconds.
 
   return {
     Id: `report_health_${name.toLowerCase()}_${method.toLowerCase()}`,

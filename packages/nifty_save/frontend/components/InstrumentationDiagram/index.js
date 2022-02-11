@@ -22,7 +22,7 @@ import Loader from './loader'
 import Modal from '../Modal'
 import { useLongPoll } from './longpoll'
 
-const LONG_POLL_SPEED = 200000 * 1000
+const LONG_POLL_SPEED = 10 * 1000
 
 export default function InstrumentationDiagram(props) {
   const { apiUrl } = props
@@ -162,7 +162,7 @@ export default function InstrumentationDiagram(props) {
       >
         <EditSliceCommandForm
           isBusy={sendingSlice}
-          onSubmit={async data => {
+          onSubmit={async (data) => {
             setSendingSlice(true)
             const results = await sendTimeRangeToSlicer(apiUrl, data)
             console.log(results)
@@ -291,15 +291,15 @@ function getMetricsForComponent(type = '', name = '', metrics = []) {
   let componentMetrics = []
 
   componentMetrics =
-    metrics.find(x => x.type === type)?.metrics?.MetricDataResults || []
+    metrics.find((x) => x.type === type)?.metrics?.MetricDataResults || []
 
   componentMetrics = componentMetrics.filter(
-    mdr => mdr?.Label?.indexOf(name) > -1
+    (mdr) => mdr?.Label?.indexOf(name) > -1
   )
 
   //console.log(componentMetrics)
 
-  componentMetrics = componentMetrics.map(mdr => {
+  componentMetrics = componentMetrics.map((mdr) => {
     const label = mdr?.Label?.split(' ')[1] || ''
     const { Timestamps, Values, Messages } = mdr
     const values = Timestamps?.reduce((acc, timestamp, index) => {
