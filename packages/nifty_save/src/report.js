@@ -1,4 +1,3 @@
-import AWS from 'aws-sdk'
 import { getCloudWatchDynamoDbMetrics } from './report/database'
 import { getCloudWatchLambdaMetrics } from './report/lambda'
 import { getCloudWatchQueueMetrics } from './report/queue'
