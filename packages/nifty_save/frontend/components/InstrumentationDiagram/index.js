@@ -271,8 +271,8 @@ function getMetricsForComponent(type = '', name = '', metrics = []) {
     }, [])
 
     const value =
-      values.sort((a, b) =>
-        new Date(a.date).getTime() > new Date(b.date).getTime() ? 1 : 0
+      values.sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
       )[0]?.value || null
 
     const metric = {
