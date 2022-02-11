@@ -52,6 +52,7 @@
   }
   .navbar .desktop-nav-items {
     display: flex;
+    align-items: center;
   }
   .navbar .mobile-nav {
     opacity: 0;
