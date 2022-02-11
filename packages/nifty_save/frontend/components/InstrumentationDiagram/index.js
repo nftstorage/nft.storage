@@ -18,7 +18,6 @@ import { useEffect, useState } from 'react'
 import FlowDiagram from './FlowDiagram'
 import Loader from './loader'
 import Modal from '../Modal'
-import { isCallChain } from 'typescript'
 import { useLongPoll } from './longpoll'
 
 export default function InstrumentationDiagram(props) {
@@ -98,7 +97,7 @@ export default function InstrumentationDiagram(props) {
     if (!checkingHealth) {
       updateHealth()
     }
-  }, 2 * 1000)
+  }, 200000 * 1000)
 
   return (
     <div className="niftysave-diagram">

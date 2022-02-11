@@ -11,6 +11,10 @@ const jsonPrefix = 'application/json'
 const base64Prefix = 'base64,'
 
 export function detectFormat(input) {
+  if (input === '') {
+    return 'EMPTY'
+  }
+
   if (input.startsWith(httpsPrefix)) {
     return 'HTTPS'
   }
