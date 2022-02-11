@@ -185,7 +185,7 @@ export default class NiftySaveStack extends sst.Stack {
         ],
       },
       addToPPQueue: {
-        eventPattern: { source: ['steps.pinContent'] },
+        eventPattern: { source: ['steps.pinContent', 'steps.failed'] },
         targets: [
           {
             function: {
@@ -231,8 +231,24 @@ export default class NiftySaveStack extends sst.Stack {
         metadata_name: TableFieldType.STRING,
         metadata_description: TableFieldType.STRING,
         metadata_json: TableFieldType.STRING,
+
+        // string set, not listed in table field type
+        // see: https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_AttributeValue.html
+        //         steps: [TableFieldType.STRING]
       },
       primaryIndex: { partitionKey: 'id', sortKey: 'token_id' },
+      stream: StreamViewType.NEW_IMAGE,
+      // consumer settings for table.
+      defaultFunctionProps: {
+        timeout: 20,
+        environment: {
+          preProcesserQueueUrl: preProcesserQueue.sqsQueue.queueUrl,
+        },
+        permissions: [preProcesserQueue],
+      },
+      consumers: {
+        consumer1: 'src/failureConsumer.failureConsumer',
+      },
     })
 
     postProcesserQueue.addConsumer(this, {
