@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-const SvgComponent = (props) => {
+const SvgComponent = props => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -2362,6 +2362,104 @@ const SvgComponent = (props) => {
             </svg>
           </g>
         </svg>
+        <svg
+          x={675}
+          y={370}
+          overflow="visible"
+          id="65a5b282-51b9-4320-8b5e-8b7177fcee35"
+        >
+          <g transform="scale(.8)">
+            <circle fill="transparent" r={37.5} />
+            <svg
+              width={75}
+              height={75}
+              x={-37.5}
+              y={-37.5}
+              style={{
+                fill: '#000',
+              }}
+              className="interactive hologram lambda pre-consumer"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
+                <path
+                  id="Orange_Light_BG"
+                  data-name="Orange Light BG"
+                  style={{
+                    fill: '#d86613',
+                  }}
+                  d="M0 0h75v75H0z"
+                />
+                <g data-name="Product Icon">
+                  <path
+                    d="M60.5 62.5H48.18a1 1 0 0 1-.9-.57L29.86 25.5h-7.37a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1h15.4a1 1 0 0 1 .9.57L56.13 49.5h4.37a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1zm-11.69-2H59.5v-9h-4a1 1 0 0 1-.9-.57L37.26 14.5H23.5v9h7a1 1 0 0 1 .9.57z"
+                    style={{
+                      fill: '#fff',
+                    }}
+                  />
+                  <path
+                    d="M27.48 62.5h-13a1 1 0 0 1-.85-.47 1 1 0 0 1-.05-1l13.6-28.41a1 1 0 0 1 .9-.57 1 1 0 0 1 .9.56L35.49 46a1 1 0 0 1 0 .87l-7.1 15a1 1 0 0 1-.91.63zm-11.4-2h10.77l6.63-14-5.39-11.15z"
+                    style={{
+                      fill: '#fff',
+                    }}
+                  />
+                </g>
+              </svg>
+            </svg>
+          </g>
+        </svg>
+
+        <svg
+          x={500}
+          y={530}
+          overflow="visible"
+          id="65a5b282-51b9-4320-8b5e-8b7177fcee35"
+        >
+          <path
+            stroke="#fff"
+            strokeWidth="2"
+            strokeLinecap="round"
+            d="M 0 0 L 150 0"
+          ></path>
+          <g transform="scale(.8)">
+            <circle fill="transparent" r={37.5} />
+            <svg
+              width={75}
+              height={75}
+              x={-37.5}
+              y={-37.5}
+              style={{
+                fill: '#000',
+              }}
+              className="interactive hologram lambda record-process-injector"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
+                <path
+                  id="Orange_Light_BG"
+                  data-name="Orange Light BG"
+                  style={{
+                    fill: '#d86613',
+                  }}
+                  d="M0 0h75v75H0z"
+                />
+                <g data-name="Product Icon">
+                  <path
+                    d="M60.5 62.5H48.18a1 1 0 0 1-.9-.57L29.86 25.5h-7.37a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1h15.4a1 1 0 0 1 .9.57L56.13 49.5h4.37a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1zm-11.69-2H59.5v-9h-4a1 1 0 0 1-.9-.57L37.26 14.5H23.5v9h7a1 1 0 0 1 .9.57z"
+                    style={{
+                      fill: '#fff',
+                    }}
+                  />
+                  <path
+                    d="M27.48 62.5h-13a1 1 0 0 1-.85-.47 1 1 0 0 1-.05-1l13.6-28.41a1 1 0 0 1 .9-.57 1 1 0 0 1 .9.56L35.49 46a1 1 0 0 1 0 .87l-7.1 15a1 1 0 0 1-.91.63zm-11.4-2h10.77l6.63-14-5.39-11.15z"
+                    style={{
+                      fill: '#fff',
+                    }}
+                  />
+                </g>
+              </svg>
+            </svg>
+          </g>
+        </svg>
+
         <svg
           x={675}
           y={540}
