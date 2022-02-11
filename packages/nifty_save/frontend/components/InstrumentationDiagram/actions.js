@@ -16,8 +16,8 @@ export const defaultTimeCommand = {
 
 export const sendTimeRangeToSlicer = (apiUrl, data = {}) =>
   createAction(`${apiUrl}/ingest/slice-queue/fill`, {
-    ...data,
     ...defaultTimeCommand,
+    ...data,
   })
 
 export const purgeTimeSliceSQS = (apiUrl, data = {}) =>

@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react'
 import FlowDiagram from './FlowDiagram'
 import Loader from './loader'
 import Modal from '../Modal'
+import { isCallChain } from 'typescript'
 import { useLongPoll } from './longpoll'
 
 export default function InstrumentationDiagram(props) {
@@ -26,13 +27,12 @@ export default function InstrumentationDiagram(props) {
   /* Report | Health */
   const [healthReport, setHealthReport] = useState({})
   const [checkingHealth, setCheckingHealth] = useState(false)
+  const [metrics, setMetrics] = useState({ postProcessorSQS: {} })
 
   /* Api Gateway */
   const [apiGateWayFormIsOpen, setApiGatewayFormIsOpen] = useState(false)
   const [sendingSlice, setSendingSlice] = useState(false)
-  const [apiGatewayReadout, setApiGatewayReadout] = useState({
-    message: 'No Commands sent',
-  })
+  const [apiGatewayReadout, setApiGatewayReadout] = useState('No Commands sent')
 
   /* SQS Queues */
 
@@ -53,23 +53,35 @@ export default function InstrumentationDiagram(props) {
   const [purgingPostProcessorSQS, setPurgingPostprocessorSQS] = useState(false)
 
   useEffect(() => {
-    console.log(healthReport)
-  }, [healthReport])
+    const data = healthReport?.data || []
+    const _newMetrics = {
+      //   postProcessorSQS: getMetricsForComponent(
+      //     'Queue',
+      //     'PostProcesserQueue',
+      //     data
+      //   ),
+      sliceCommandSQS: getMetricsForComponent(
+        'Queue',
+        'SliceCommandQueue',
+        data
+      ),
+    }
+
+    setMetrics(_newMetrics)
+  }, [healthReport, apiGatewayReadout, sendingSlice])
 
   useLongPoll(() => {
     const updateHealth = async () => {
       setCheckingHealth(true)
-      console.time('health')
       const results = await getHealthReport(apiUrl)
       setHealthReport(results)
       setCheckingHealth(false)
-      console.timeEnd('health')
     }
 
     if (!checkingHealth) {
       updateHealth()
     }
-  }, 7500)
+  }, 2 * 1000)
 
   return (
     <div className="niftysave-diagram">
@@ -120,7 +132,8 @@ export default function InstrumentationDiagram(props) {
           onSubmit={async (data) => {
             setSendingSlice(true)
             const results = await sendTimeRangeToSlicer(apiUrl, data)
-            setApiGatewayReadout(results)
+            console.log(results)
+            setApiGatewayReadout(results?.message)
             setSendingSlice(false)
             setApiGatewayFormIsOpen(false)
           }}
@@ -192,6 +205,7 @@ export default function InstrumentationDiagram(props) {
         }}
       >
         <PostprocessorQueueForm
+          info={metrics.postProcessorSQS}
           isBusy={purgingPostProcessorSQS}
           onPurgeQueue={async () => {
             /* TODO Purge Queue */
@@ -205,4 +219,73 @@ export default function InstrumentationDiagram(props) {
       </Modal>
     </div>
   )
+}
+
+/**
+ *
+ * @param {string} type
+ * @param {string} name
+ * @param {any[]} metrics
+ * @returns any[]
+ */
+function getMetricsForComponent(type = '', name = '', metrics = []) {
+  let componentMetrics = []
+
+  if (type === 'Queue') {
+    componentMetrics =
+      metrics.find((x) => x.name === 'queueMetrics')?.metrics
+        ?.MetricDataResults || []
+  }
+
+  if (type === 'Table') {
+    componentMetrics =
+      metrics.find((x) => x.name === 'dynamoDdMetrics')?.metrics
+        ?.MetricDataResults || []
+  }
+
+  if (type === 'Lambda') {
+    componentMetrics =
+      metrics.find((x) => x.name === 'lambdaMetrics')?.metrics
+        ?.MetricDataResults || []
+  }
+
+  componentMetrics = componentMetrics.filter(
+    (mdr) => mdr?.Label?.indexOf(name) > -1
+  )
+
+  //console.log(componentMetrics)
+
+  componentMetrics = componentMetrics.map((mdr) => {
+    const label = mdr?.Label?.split(' ')[1] || ''
+
+    const { Timestamps, Values, Messages } = mdr
+    const values = Timestamps?.reduce((acc, timestamp, index) => {
+      let _acc = [...acc]
+      let val = Values[index]
+      //   console.log(index, timestamp, val)
+      _acc.push({
+        date: timestamp,
+        value: val,
+      })
+      return _acc
+    }, [])
+
+    const value =
+      values.sort((a, b) =>
+        new Date(a.date).getTime() > new Date(b.date).getTime() ? 1 : 0
+      )[0]?.value || null
+
+    const metric = {
+      label: label.split(/(?=[A-Z])/)?.join(' '),
+      id: label,
+      values,
+      value,
+      messages: Messages,
+    }
+    return metric
+  })
+
+  console.table(componentMetrics)
+
+  return componentMetrics
 }

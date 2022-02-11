@@ -2769,7 +2769,7 @@ const SvgComponent = (props) => {
               {'With Time Range'}
             </tspan>
             <tspan x={8} dy="1.2em" className="label-readout">
-              {`${props?.apiGatewayReadout?.message}`}
+              {`${props?.apiGatewayReadout}`}
             </tspan>
           </text>
         </svg>
