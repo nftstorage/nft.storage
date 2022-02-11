@@ -2431,6 +2431,7 @@ const SvgComponent = props => {
                 fill: '#000',
               }}
               className="interactive hologram lambda record-process-injector"
+              onClick={props.onClickInjectProcessorRecord}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75">
                 <path

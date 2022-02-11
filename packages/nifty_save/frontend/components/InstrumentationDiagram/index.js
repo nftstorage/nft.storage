@@ -1,6 +1,7 @@
 import {
   EditSliceCommandForm,
   FetchedRecordQueueForm,
+  InjectProcessorRecordForm,
   PostprocessorQueueForm,
   PreprocessorQueueForm,
   TimeSliceCommandQueueForm,
@@ -57,6 +58,13 @@ export default function InstrumentationDiagram(props) {
   /* PostprocessorQueueForm*/
   const [postprocessorSQSIsOpen, setPostprocessorSQSIsOpen] = useState(false)
   const [purgingPostProcessorSQS, setPurgingPostprocessorSQS] = useState(false)
+
+  /* Lambdas */
+
+  const [
+    injectProcessorRecordIsOpen,
+    setInjectProcessorRecordIsOpen,
+  ] = useState(false)
 
   useEffect(() => {
     const data = healthReport?.data || []
@@ -136,6 +144,9 @@ export default function InstrumentationDiagram(props) {
           console.log('clicked postprocessor table')
           alert('Postprocessed Records Table has 0 records')
         }}
+        onClickInjectProcessorRecord={() => {
+          setInjectProcessorRecordIsOpen(true)
+        }}
       />
 
       {/* Forms */}
@@ -154,6 +165,21 @@ export default function InstrumentationDiagram(props) {
             setApiGatewayReadout(results?.message)
             setSendingSlice(false)
             setApiGatewayFormIsOpen(false)
+          }}
+        />
+      </Modal>
+
+      {/* Special Lambdas */}
+      <Modal
+        open={injectProcessorRecordIsOpen}
+        onClose={() => {
+          setInjectProcessorRecordIsOpen(false)
+        }}
+      >
+        <InjectProcessorRecordForm
+          onInjectRecordToProcessor={() => {
+            alert('boom')
+            setInjectProcessorRecordIsOpen(false)
           }}
         />
       </Modal>

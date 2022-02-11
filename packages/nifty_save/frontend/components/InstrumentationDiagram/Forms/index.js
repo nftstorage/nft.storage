@@ -6,6 +6,7 @@ import {
 } from './Queues'
 
 import { EditSliceCommandForm } from './EditSliceCommandForm'
+import { InjectProcessorRecordForm } from './InjectProcessorRecord'
 
 export {
   EditSliceCommandForm,
@@ -13,4 +14,5 @@ export {
   PostprocessorQueueForm,
   PreprocessorQueueForm,
   FetchedRecordQueueForm,
+  InjectProcessorRecordForm,
 }
