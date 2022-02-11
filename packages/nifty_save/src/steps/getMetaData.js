@@ -15,7 +15,7 @@ export async function getMetaData(event) {
       tokenUriMetadata,
     }
 
-    console.log(JSON.stringify(_decoratedData))
+    console.log(JSON.stringify(_decoratedData, null, 2))
 
     putOnProcessorBus('getMetaData', _decoratedData)
   } catch (err) {
