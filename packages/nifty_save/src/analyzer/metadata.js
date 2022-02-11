@@ -73,7 +73,7 @@ export async function tokenUriToJSON(tokenURI) {
     return cleanJSON(tokenURI)
   }
 
-  if (tokenURIFormat === 'HTTPS' || tokenURIFormat === 'HTTPS') {
+  if (tokenURIFormat === 'HTTPS' || tokenURIFormat === 'HTTP') {
     const results = await fetchMetadata(tokenURI)
     return results
   }
