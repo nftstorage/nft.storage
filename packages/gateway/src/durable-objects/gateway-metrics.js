@@ -1,3 +1,8 @@
+import {
+  responseTimeHistogram,
+  createResponseTimeHistogramObject,
+} from '../utils/histogram.js'
+
 /**
  * @typedef {Object} GatewayMetrics
  * @property {number} totalResponseTime total response time of the requests
@@ -86,8 +91,10 @@ export class GatewayMetrics0 {
     }
 
     // Get all the histogram buckets where the response time is smaller
-    const histogramCandidates = histogram.filter((h) => stats.responseTime < h)
-    histogramCandidates.forEach((candidate) => {
+    const histogramCandidates = responseTimeHistogram.filter(
+      h => stats.responseTime < h
+    )
+    histogramCandidates.forEach(candidate => {
       gwHistogram[candidate] += 1
     })
 
@@ -95,21 +102,14 @@ export class GatewayMetrics0 {
   }
 }
 
-// We will count occurences per bucket where response time is less or equal than bucket value
-export const histogram = [
-  300, 500, 750, 1000, 1500, 2000, 3000, 5000, 10000, 20000,
-]
-
 function createMetricsTracker() {
-  const h = histogram.map((h) => [h, 0])
-
   /** @type {GatewayMetrics} */
   const m = {
     totalResponseTime: 0,
     totalWinnerRequests: 0,
     totalResponsesByStatus: {},
     totalRequestsPreventedByReason: {},
-    responseTimeHistogram: Object.fromEntries(h),
+    responseTimeHistogram: createResponseTimeHistogramObject(),
   }
 
   return m

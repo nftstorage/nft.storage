@@ -1,6 +1,6 @@
 {
   "name": "nft.storage",
-  "version": "5.2.4",
+  "version": "6.0.0",
   "description": "A client library for the https://nft.storage/ service. It provides a convenient interface for working with the HTTP API from a web browser or Node.js",
   "license": "(Apache-2.0 OR MIT)",
   "type": "module",
@@ -51,15 +51,15 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@ipld/car": "^3.1.20",
+    "@ipld/car": "^3.2.3",
     "@ipld/dag-cbor": "^6.0.13",
     "@web-std/blob": "^3.0.1",
     "@web-std/fetch": "^3.0.3",
     "@web-std/file": "^3.0.0",
     "@web-std/form-data": "^3.0.0",
     "carbites": "^1.0.6",
-    "ipfs-car": "^0.6.0",
-    "multiformats": "^9.4.10",
+    "ipfs-car": "^0.6.2",
+    "multiformats": "^9.6.3",
     "p-retry": "^4.6.1",
     "streaming-iterables": "^6.0.0"
   },

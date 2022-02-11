@@ -69,8 +69,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
       },
       {
         link: {
-          pathname: '/',
-          hash: '#docs',
+          pathname: '/docs',
           query: version ? { version } : null,
         },
         name: 'Docs',
@@ -112,7 +111,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
     [user, version, logout, trackLogout]
   )
 
-  const onLinkClick = useCallback((event) => {
+  const onLinkClick = useCallback(event => {
     countly.trackCustomLinkClick(
       countly.events.LINK_CLICK_NAVBAR,
       event.currentTarget
@@ -127,7 +126,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   }, [isMenuOpen])
 
   const onMobileLinkClick = useCallback(
-    (event) => {
+    event => {
       onLinkClick(event)
       toggleMenu()
     },
@@ -143,19 +142,19 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
           </Button>
         </div>
         <Link href={{ pathname: '/', query: version ? { version } : null }}>
-          <a className="no-underline v-mid" onClick={onLinkClick}>
+          <a className="flex no-underline v-mid" onClick={onLinkClick}>
             <img
               src={logo.src}
-              width="160"
+              width="210"
               height="79"
               className="nav-logo"
-              style={{ maxWidth: '80px', height: 'auto' }}
+              style={{ maxWidth: '40vw', height: 'auto' }}
               alt="NFT Storage Logo"
             />
           </a>
         </Link>
         <div className="flex items-center">
-          <div className="desktop-nav-items mr4">
+          <div className="desktop-nav-items">
             {ITEMS.map((item, index) =>
               item.mobileOnly ? null : (
                 <div
@@ -181,12 +180,11 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                 </div>
               )
             )}
-          </div>
-          <div className="mb1">
             {user ? (
               <Button
                 onClick={logout}
                 id="logout"
+                className="ml4"
                 tracking={{
                   event: countly.events.LOGOUT_CLICK,
                   ui: countly.ui.NAVBAR,
@@ -197,6 +195,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
               </Button>
             ) : (
               <Button
+                className="ml4"
                 href={{
                   pathname: '/login',
                   query: version ? { version } : null,
@@ -224,13 +223,13 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
       >
         <div className="flex flex-column items-center text-center mt4">
           <Link href="/">
-            <a className="no-underline v-mid">
+            <a className="flex no-underline v-mid">
               <img
                 src={logo.src}
-                width="160"
+                width="210"
                 height="79"
                 className="mobile-nav-logo"
-                style={{ maxWidth: '80px', height: 'auto' }}
+                style={{ maxWidth: '50vw', height: 'auto' }}
                 alt="NFT Storage Logo"
               />
             </a>

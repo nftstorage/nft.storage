@@ -3,6 +3,11 @@ import { consume, transform, pipeline } from 'streaming-iterables'
 
 const log = debug('pins:updatePinStatuses')
 const CONCURRENCY = 5
+/**
+ * 8k max request length to cluster for statusAll, we hit this at around 126 CIDs
+ * http://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers
+ */
+const MAX_CLUSTER_STATUS_CIDS = 120
 const CLUSTERS = ['IpfsCluster', 'IpfsCluster2', 'IpfsCluster3']
 
 /**
@@ -18,7 +23,7 @@ const CLUSTERS = ['IpfsCluster', 'IpfsCluster2', 'IpfsCluster3']
  * @typedef {import('@supabase/postgrest-js').PostgrestQueryBuilder<Pin>} PinQuery
  */
 
-const CLUSTER_LIST = CLUSTERS.map((c) => `'${c}'`).toString()
+const CLUSTER_LIST = CLUSTERS.map(c => `'${c}'`).toString()
 const COUNT_PENDING_PINS = `SELECT COUNT(*) FROM pin WHERE service IN (${CLUSTER_LIST}) AND status != 'Pinned' AND status != 'PinError'`
 const FETCH_PENDING_PINS = `SELECT * FROM pin WHERE service IN (${CLUSTER_LIST}) AND status != 'Pinned' AND status != 'PinError' OFFSET $1 LIMIT $2`
 
@@ -98,7 +103,7 @@ UPDATE pin AS p
    SET status = c.status,
        updated_at = c.updated_at
   FROM (VALUES ${pins.map(
-    (p) =>
+    p =>
       `(${p.id}, '${p.status}'::pin_status_type, '${p.updated_at}'::timestamp)`
   )}) AS c(id, status, updated_at) 
  WHERE c.id = p.id`.trim()
@@ -113,7 +118,7 @@ UPDATE pin AS p
  * }} config
  */
 async function updatePinStatuses(config) {
-  const { countPins, fetchPins, pg, cluster2, cluster3 } = config
+  const { countPins, fetchPins, pg, cluster3 } = config
   if (!log.enabled) {
     console.log('ℹ️ Enable logging by setting DEBUG=pins:updatePinStatuses')
   }
@@ -122,7 +127,7 @@ async function updatePinStatuses(config) {
   log(`🎯 Updating ${count} pin statuses`)
 
   await pipeline(
-    async function* () {
+    async function*() {
       let offset = 0
       const limit = 1000
       while (true) {
@@ -135,36 +140,35 @@ async function updatePinStatuses(config) {
         offset += limit
       }
     },
-    transform(CONCURRENCY, async (pins) => {
+    async function*(source) {
+      for await (let pins of source) {
+        // TODO: remove filter when nft2 has finished copying to nft3
+        pins = pins.filter(p => p.service !== 'IpfsCluster2')
+        // Split into chunks of MAX_CLUSTER_STATUS_CIDS
+        while (pins.length) {
+          yield pins.slice(0, MAX_CLUSTER_STATUS_CIDS)
+          pins = pins.slice(MAX_CLUSTER_STATUS_CIDS)
+        }
+      }
+    },
+    transform(CONCURRENCY, async pins => {
       /** @type {Pin[]} */
       const updatedPins = []
+      const cids = pins.map(p => p.content_cid)
+      const statuses = await cluster3.statusAll({ cids })
+      const statusByCid = Object.fromEntries(statuses.map(s => [s.cid, s]))
+
       for (const pin of pins) {
-        /** @type {import('@nftstorage/ipfs-cluster/dist/src/interface').StatusResponse} */
-        let statusRes
-
-        switch (pin.service) {
-          case 'IpfsCluster':
-            statusRes = await cluster3.status(pin.content_cid)
-            break
-          case 'IpfsCluster2':
-            statusRes = await cluster2.status(pin.content_cid)
-            break
-          case 'IpfsCluster3':
-            statusRes = await cluster3.status(pin.content_cid)
-            break
-          default:
-            throw new Error(`Service ${pin.service} not supported.`)
-        }
-
+        const statusRes = statusByCid[pin.content_cid]
         const pinInfos = Object.values(statusRes.peerMap)
 
         /** @type {Pin['status']} */
         let status = 'PinError'
-        if (pinInfos.some((i) => i.status === 'pinned')) {
+        if (pinInfos.some(i => i.status === 'pinned')) {
           status = 'Pinned'
-        } else if (pinInfos.some((i) => i.status === 'pinning')) {
+        } else if (pinInfos.some(i => i.status === 'pinning')) {
           status = 'Pinning'
-        } else if (pinInfos.some((i) => i.status === 'pin_queued')) {
+        } else if (pinInfos.some(i => i.status === 'pin_queued')) {
           status = 'PinQueued'
         }
 

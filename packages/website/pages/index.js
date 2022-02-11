@@ -48,11 +48,11 @@ const Logos = ({ logos }) => {
     <div className="marketplace-logos-container center pv4 ph3 ph5-ns">
       <h2 className="tc mt0 chicagoflf">Trusted by</h2>
       <div className="marketplace-logo-grid">
-        {logos.map((logo) => (
+        {logos.map(logo => (
           <Logo key={`marketplace-logo-${logo}`} src={logo} />
         ))}
       </div>
-      <p className="tc chicagoflf">and 10,000+ other users!</p>
+      <p className="tc chicagoflf">and 20,000+ other users!</p>
     </div>
   )
 }
@@ -314,7 +314,7 @@ function About() {
 }
 
 function GettingStarted() {
-  const onClickHandler = useCallback((event) => {
+  const onClickHandler = useCallback(event => {
     countly.trackCustomLinkClick(
       countly.events.CTA_LINK_CLICK,
       event.currentTarget,

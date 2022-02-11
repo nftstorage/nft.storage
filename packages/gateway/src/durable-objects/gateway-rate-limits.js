@@ -11,7 +11,7 @@
  * Durable Object to keep track of gateway rating limits.
  * State: number[]
  */
-export class GatewayRateLimits0 {
+export class GatewayRateLimits1 {
   constructor(state) {
     this.state = state
     this.id = this.state.id.name
@@ -32,10 +32,18 @@ export class GatewayRateLimits0 {
     let url = new URL(request.url)
     switch (url.pathname) {
       case '/request':
+        if (this.rateLimitCharacteristics.RATE_LIMIT_REQUESTS === Infinity) {
+          return new Response(
+            JSON.stringify({
+              shouldBlock: false,
+            })
+          )
+        }
+
         // Filter out outdated requests
         const now = Date.now()
         this.rateLimitUsage = this.rateLimitUsage.filter(
-          (ts) => now - ts <= this.rateLimitCharacteristics.RATE_LIMIT_TIMEFRAME
+          ts => now - ts <= this.rateLimitCharacteristics.RATE_LIMIT_TIMEFRAME
         )
 
         // Add new request to track
@@ -65,7 +73,8 @@ export class GatewayRateLimits0 {
   }
 }
 
-const MINUTE = 1000 * 60
+const SECOND = 1000
+const MINUTE = SECOND * 60
 
 /**
  * Get rate limiting characteristics of a given Gateway.
@@ -77,17 +86,17 @@ function getRateLimitingCharacteristics(gatewayUrl) {
   switch (gatewayUrl) {
     case 'https://ipfs.io':
       return {
-        RATE_LIMIT_REQUESTS: 800,
+        RATE_LIMIT_REQUESTS: Infinity,
         RATE_LIMIT_TIMEFRAME: MINUTE,
       }
     case 'https://cf-ipfs.com':
       return {
-        RATE_LIMIT_REQUESTS: 100,
-        RATE_LIMIT_TIMEFRAME: MINUTE,
+        RATE_LIMIT_REQUESTS: 16,
+        RATE_LIMIT_TIMEFRAME: SECOND * 10,
       }
     case 'https://nft-storage.mypinata.cloud/':
       return {
-        RATE_LIMIT_REQUESTS: 200,
+        RATE_LIMIT_REQUESTS: 400,
         RATE_LIMIT_TIMEFRAME: MINUTE,
       }
     // Default to 100
