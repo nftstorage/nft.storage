@@ -46,7 +46,7 @@ export async function detectFormat(input) {
   return 'UNKNOWN_FORMAT'
 }
 
-export const detectTokenURIFormat = async tokenUri =>
+export const detectTokenURIFormat = async (tokenUri) =>
   await detectFormat(tokenUri)
 
 export function cleanJSON(tokenURI) {
@@ -54,20 +54,21 @@ export function cleanJSON(tokenURI) {
   return JSON.parse(decodeURI(data))
 }
 
-const fetchMetadata = async route =>
+const fetchMetadata = async (route) =>
   await fetch(route, {
     headers: {
       'Content-Type': 'application/json',
     },
     method: 'GET',
-  }).then(r => r.json())
+  }).then((r) => r.json())
 
 export async function tokenUriToJSON(tokenURI) {
   let tokenURIFormat = detectTokenURIFormat(tokenURI)
 
-  if (tokenURIFormat) {
+  if (tokenURIFormat === 'EMPTY') {
     return {}
   }
+
   if (tokenURIFormat === 'JSON') {
     return cleanJSON(tokenURI)
   }

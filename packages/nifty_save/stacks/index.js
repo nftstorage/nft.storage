@@ -7,7 +7,7 @@ export default function main(app) {
     environment: {
       HASURA_URL: process.env.HASURA_URL,
       SUBGRAPH_URL: process.env.SUBGRAPH_URL,
-      NFTSTORAGE_KEY: process.env.NFTSTORAGE_KEY,
+      NFT_STORAGE_KEY: process.env.NFT_STORAGE_KEY,
     },
   }))
 
