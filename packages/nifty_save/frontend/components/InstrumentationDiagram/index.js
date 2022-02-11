@@ -59,6 +59,7 @@ export default function InstrumentationDiagram(props) {
 
   useEffect(() => {
     const data = healthReport?.data || []
+    console.log(healthReport)
     const _newMetrics = {
       SliceCommandQueue: getMetricsForComponent(
         'Queue',
@@ -250,23 +251,8 @@ export default function InstrumentationDiagram(props) {
 function getMetricsForComponent(type = '', name = '', metrics = []) {
   let componentMetrics = []
 
-  if (type === 'Queue') {
-    componentMetrics =
-      metrics.find((x) => x.name === 'queueMetrics')?.metrics
-        ?.MetricDataResults || []
-  }
-
-  if (type === 'Table') {
-    componentMetrics =
-      metrics.find((x) => x.name === 'dynamoDdMetrics')?.metrics
-        ?.MetricDataResults || []
-  }
-
-  if (type === 'Lambda') {
-    componentMetrics =
-      metrics.find((x) => x.name === 'lambdaMetrics')?.metrics
-        ?.MetricDataResults || []
-  }
+  componentMetrics =
+    metrics.find((x) => x.type === type)?.metrics?.MetricDataResults || []
 
   componentMetrics = componentMetrics.filter(
     (mdr) => mdr?.Label?.indexOf(name) > -1

@@ -1,8 +1,7 @@
 import AWS from 'aws-sdk'
-
+import { getCloudWatchDynamoDbMetrics } from './report/database'
 import { getCloudWatchLambdaMetrics } from './report/lambda'
 import { getCloudWatchQueueMetrics } from './report/queue'
-import { getCloudWatchDynamoDbMetrics } from './report/database'
 
 /**
  * Returns a JSON object with "health" metrics about the service.
@@ -10,15 +9,15 @@ import { getCloudWatchDynamoDbMetrics } from './report/database'
 export async function health() {
   const data = [
     {
-      name: 'queueMetrics',
+      type: 'Queue',
       metrics: await getCloudWatchQueueMetrics(),
     },
     {
-      name: 'dynamoDbMetrics',
+      type: 'Table',
       metrics: await getCloudWatchDynamoDbMetrics(),
     },
     {
-      name: 'lambdaMetrics',
+      type: 'Lambda',
       metrics: await getCloudWatchLambdaMetrics(),
     },
   ]
