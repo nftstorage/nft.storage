@@ -5,7 +5,7 @@ const createAction = async (route, data) =>
       'Content-Type': 'application/json',
     },
     method: 'POST',
-  }).then((r) => r.json())
+  }).then(r => r.json())
 
 export const defaultTimeCommand = {
   timesliceSize: 6000000,
@@ -34,3 +34,6 @@ export const purgePostProcessorSQS = (apiUrl, data = {}) =>
 
 export const getHealthReport = (apiUrl, data = {}) =>
   createAction(`${apiUrl}/report/health`, data)
+
+export const injectRecordToProcessor = (apiUrl, data = {}) =>
+  createAction(`${apiUrl}/steps/insertSingleRecord`, data)

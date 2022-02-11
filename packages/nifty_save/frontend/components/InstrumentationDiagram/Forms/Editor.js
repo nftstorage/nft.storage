@@ -1,6 +1,7 @@
 import '@uiw/react-textarea-code-editor/dist.css'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+
 import dynamic from 'next/dynamic'
 
 const CodeEditor = dynamic(
@@ -9,20 +10,24 @@ const CodeEditor = dynamic(
 )
 const monospace =
   'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace'
-function Editor() {
-  const [code, setCode] = React.useState(`{}`)
+
+function Editor(props) {
+  const [_code, setCode] = useState(props.code)
+
+  useEffect(() => {
+    setCode(props.code)
+  }, [props.code])
+
   return (
     <CodeEditor
-      value={code}
+      value={_code}
       language="json"
       placeholder="Enter JSON here"
       onChange={evn => {
-        try {
-          JSON.parse(evn.target.value)
-          setCode(evn.target.value)
-        } catch (err) {
-          setCode(evn.target.value)
+        if (props.onChangeCode) {
+          props.onChangeCode(evn.target.value)
         }
+        setCode(evn.target.value)
       }}
       padding={20}
       style={{

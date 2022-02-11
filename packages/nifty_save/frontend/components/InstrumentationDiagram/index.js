@@ -8,6 +8,7 @@ import {
 } from './Forms'
 import {
   getHealthReport,
+  injectRecordToProcessor,
   purgeFetchedRecordsSQS,
   purgePostProcessorSQS,
   purgePreprocessorSQS,
@@ -66,6 +67,10 @@ export default function InstrumentationDiagram(props) {
     setInjectProcessorRecordIsOpen,
   ] = useState(false)
 
+  const [injectRecordCode, setInjectRecordCode] = useState({})
+
+  console.log('injectRecordCode', injectRecordCode)
+
   useEffect(() => {
     const data = healthReport?.data || []
     console.log(healthReport)
@@ -93,7 +98,6 @@ export default function InstrumentationDiagram(props) {
     }
 
     setMetrics(_newMetrics)
-    console.log(_newMetrics)
   }, [healthReport, apiGatewayReadout, sendingSlice])
 
   useLongPoll(() => {
@@ -177,8 +181,16 @@ export default function InstrumentationDiagram(props) {
         }}
       >
         <InjectProcessorRecordForm
-          onInjectRecordToProcessor={() => {
-            alert('boom')
+          onChangeInjectRecordCode={value => {
+            setInjectRecordCode(value)
+            console.log('on change code in root')
+          }}
+          onInjectRecordToProcessor={async () => {
+            const result = await injectRecordToProcessor(
+              apiUrl,
+              injectRecordCode
+            )
+            console.log(result)
             setInjectProcessorRecordIsOpen(false)
           }}
         />
