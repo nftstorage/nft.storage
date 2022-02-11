@@ -83,6 +83,7 @@ export default function InstrumentationDiagram(props) {
     }
 
     setMetrics(_newMetrics)
+    console.log(_newMetrics)
   }, [healthReport, apiGatewayReadout, sendingSlice])
 
   useLongPoll(() => {

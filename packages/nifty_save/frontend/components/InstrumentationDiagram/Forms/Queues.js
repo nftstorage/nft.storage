@@ -6,7 +6,7 @@ export function TimeSliceCommandQueueForm(props) {
   return (
     <div className="sqs-form grid">
       <h2>Time Slice Commands</h2>
-      <h5>SQS Quque</h5>
+      <h5>SQS Queue</h5>
       <p>
         The Time slice commnad queue is all the slices calculated from the
         inital range.
@@ -81,7 +81,7 @@ export function PostprocessorQueueForm(props) {
 
 function SQSInfoReadout(props) {
   const { data } = props
-
+  console.log(data)
   return (
     <div className="sqs-readout-panel grid">
       {data.map((d) => {
@@ -92,6 +92,11 @@ function SQSInfoReadout(props) {
           </div>
         )
       })}
+      <ul>
+        {data?.messages?.map((m, i) => (
+          <li key={`${data.id}_m_${i}`}>{m}</li>
+        ))}
+      </ul>
     </div>
   )
 }
