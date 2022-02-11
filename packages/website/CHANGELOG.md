@@ -1,5 +1,15 @@
 # Changelog
 
+### [1.24.4](https://github.com/nftstorage/nft.storage/compare/website-v1.24.3...website-v1.24.4) (2022-02-11)
+
+
+### Bug Fixes
+
+* broken link ([#1343](https://github.com/nftstorage/nft.storage/issues/1343)) ([fbfc4a2](https://github.com/nftstorage/nft.storage/commit/fbfc4a2ca0abb9fedd5f406169ab005af5ab213e))
+* fix overflow issue on /docs mobile ([#1327](https://github.com/nftstorage/nft.storage/issues/1327)) ([d57c738](https://github.com/nftstorage/nft.storage/commit/d57c7383708e23dd02e8d0dff8be82ca2e28bca6))
+* issue 1307 update logo ([#1333](https://github.com/nftstorage/nft.storage/issues/1333)) ([447d587](https://github.com/nftstorage/nft.storage/commit/447d587ec3fce4314a8fbb462b9e6bf468437174))
+* mobile layout break faq page ([#1341](https://github.com/nftstorage/nft.storage/issues/1341)) ([c811815](https://github.com/nftstorage/nft.storage/commit/c811815a8d6e51381aebfde2f7dcf15889cac38f))
+
 ### [1.24.3](https://github.com/nftstorage/nft.storage/compare/website-v1.24.2...website-v1.24.3) (2022-02-09)
 
 
