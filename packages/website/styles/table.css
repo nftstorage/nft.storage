@@ -22,6 +22,15 @@
 }
 .table-responsive table tr th {
   display: none;
+  white-space: nowrap;
+}
+.table-responsive table tr th > span {
+  display: flex;
+  align-items: center;
+}
+.table-responsive table tr th > span > svg,
+.table-responsive table tr td span > svg {
+  padding: 2px 0 0 2px;
 }
 .table-responsive table tr {
   margin-bottom: 0.5rem;
@@ -229,10 +238,21 @@
 .rc-tooltip.table-tooltip {
   opacity: 1;
   max-width: 40ch;
+  background-color: transparent;
+}
+
+.rc-tooltip-inner {
+  border: none !important;
+  border-radius: 0 !important;
 }
 
 .rc-tooltip.table-tooltip .rc-tooltip-content {
   border-radius: 0;
   border: 1px solid #000;
   font-family: var(--sansserif);
+}
+
+.rc-tooltip.table-tooltip .rc-tooltip-content a,
+.rc-tooltip.table-tooltip .rc-tooltip-content a:visited {
+  color: #000;
 }
