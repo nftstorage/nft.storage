@@ -24,5 +24,3 @@ packages/client/src/lib/interface.ts
 packages/website/public/robots.txt
 packages/website/public/sitemap.xml
 *.mdx
-
-
