@@ -67,7 +67,7 @@ export default function NewFile() {
         }
         let totalBytesSent = 0
         await client.storeCar(car, {
-          onStoredChunk: size => {
+          onStoredChunk: (size) => {
             totalBytesSent += size
             setPercentComplete(Math.round((totalBytesSent / car.size) * 100))
           },
