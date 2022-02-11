@@ -1,22 +1,27 @@
 import AWS from 'aws-sdk'
-
+import fetch from 'node-fetch'
 export async function parse() {
   return {}
 }
 
 const httpsPrefix = 'https://'
+const httpPrefix = 'http://'
 const ipfsPrefix = 'ipfs://'
 const dataPrefix = 'data:'
 const jsonPrefix = 'application/json'
 const base64Prefix = 'base64,'
 
-export function detectFormat(input) {
+export async function detectFormat(input) {
   if (input === '') {
     return 'EMPTY'
   }
 
   if (input.startsWith(httpsPrefix)) {
     return 'HTTPS'
+  }
+
+  if (input.startsWith(httpPrefix)) {
+    return 'HTTP'
   }
 
   if (input.startsWith(ipfsPrefix)) {
@@ -41,18 +46,35 @@ export function detectFormat(input) {
   return 'UNKNOWN_FORMAT'
 }
 
-export const detectTokenURIFormat = (tokenUri) => detectFormat(tokenUri)
+export const detectTokenURIFormat = async tokenUri =>
+  await detectFormat(tokenUri)
 
 export function cleanJSON(tokenURI) {
   const data = tokenURI.replace(`${dataPrefix}${jsonPrefix},`, '')
   return JSON.parse(decodeURI(data))
 }
 
+const fetchMetadata = async route =>
+  await fetch(route, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  }).then(r => r.json())
+
 export async function tokenUriToJSON(tokenURI) {
   let tokenURIFormat = detectTokenURIFormat(tokenURI)
 
+  if (tokenURIFormat) {
+    return {}
+  }
   if (tokenURIFormat === 'JSON') {
     return cleanJSON(tokenURI)
+  }
+
+  if (tokenURIFormat === 'HTTPS' || tokenURIFormat === 'HTTPS') {
+    const results = await fetchMetadata(tokenURI)
+    return results
   }
 
   return tokenURI

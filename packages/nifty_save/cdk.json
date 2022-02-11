@@ -1,8 +1,0 @@
-{
-  "arn-aws-iam--580699901748-root-nifty-save-niftysave-stack": {
-    "ApiEndpoint": "https://l9t0ktgm81.execute-api.us-east-1.amazonaws.com"
-  },
-  "arn-aws-iam--580699901748-root-nifty-save-controlpanel-stack": {
-    "ControlPanelURL": "https://dwlbti2xi3jq4.cloudfront.net"
-  }
-}
