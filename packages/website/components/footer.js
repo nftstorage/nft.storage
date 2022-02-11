@@ -1,5 +1,8 @@
 import { useCallback } from 'react'
 import Link from 'next/link'
+import Discord from '../icons/discord'
+import Twitter from '../icons/twitter'
+import Github from '../icons/github'
 
 import countly from '../lib/countly'
 
@@ -24,6 +27,32 @@ export default function Footer() {
             Protocol Labs
           </a>
         </span>
+      </div>
+      <div className="social-icons">
+        <a
+          href="https://discord.com/channels/806902334369824788/831502708082081822"
+          title="nft.storage Discord"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <Discord />
+        </a>
+        <a
+          href="https://twitter.com/nft_storage"
+          title="@nft_storage Twitter"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <Twitter />
+        </a>
+        <a
+          href="https://github.com/nftstorage"
+          title="nft.storage Github"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <Github />
+        </a>
       </div>
       <div>
         <span className="db db-m dib-ns mv3">
