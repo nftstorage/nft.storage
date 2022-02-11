@@ -4,6 +4,8 @@ const sqs = new AWS.SQS()
 export async function insertSingleRecord(event) {
   const record = JSON.parse(event?.body) || {}
 
+  console.log('Inserting a single Record', JSON.stringify(record, null, 2))
+
   if (record && record.id) {
     sqs
       .sendMessage({
@@ -11,6 +13,10 @@ export async function insertSingleRecord(event) {
         MessageBody: JSON.stringify(record),
       })
       .promise()
+  } else {
+    console.log(
+      `The record, ${JSON.stringify(record, null, 2)} was not processed`
+    )
   }
 
   return {

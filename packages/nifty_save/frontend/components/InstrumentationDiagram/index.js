@@ -62,10 +62,8 @@ export default function InstrumentationDiagram(props) {
 
   /* Lambdas */
 
-  const [
-    injectProcessorRecordIsOpen,
-    setInjectProcessorRecordIsOpen,
-  ] = useState(false)
+  const [injectProcessorRecordIsOpen, setInjectProcessorRecordIsOpen] =
+    useState(false)
 
   const [injectRecordCode, setInjectRecordCode] = useState({})
 
@@ -103,8 +101,16 @@ export default function InstrumentationDiagram(props) {
   useLongPoll(() => {
     const updateHealth = async () => {
       setCheckingHealth(true)
-      const results = await getHealthReport(apiUrl)
-      setHealthReport(results)
+      let results = null
+      try {
+        results = await getHealthReport(apiUrl)
+        setHealthReport(results)
+      } catch (err) {
+        console.log({
+          message: 'Failure Checking the Health Status',
+          error: err,
+        })
+      }
       setCheckingHealth(false)
     }
 
@@ -181,7 +187,7 @@ export default function InstrumentationDiagram(props) {
         }}
       >
         <InjectProcessorRecordForm
-          onChangeInjectRecordCode={value => {
+          onChangeInjectRecordCode={(value) => {
             setInjectRecordCode(value)
             console.log('on change code in root')
           }}
