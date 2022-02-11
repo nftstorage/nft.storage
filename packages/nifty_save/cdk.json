@@ -1,8 +1,8 @@
 {
-  "arn-aws-iam--580699901748-root-nifty-save-niftysave-stack": {
-    "ApiEndpoint": "https://l9t0ktgm81.execute-api.us-east-1.amazonaws.com"
+  "ns-simian-dev-nifty-save-niftysave-stack": {
+    "ApiEndpoint": "https://v3ooz5obj9.execute-api.us-east-1.amazonaws.com"
   },
-  "arn-aws-iam--580699901748-root-nifty-save-controlpanel-stack": {
-    "ControlPanelURL": "https://dwlbti2xi3jq4.cloudfront.net"
+  "ns-simian-dev-nifty-save-controlpanel-stack": {
+    "ControlPanelURL": "https://d23c6noen1jpb1.cloudfront.net"
   }
 }

@@ -27,7 +27,12 @@ export default function InstrumentationDiagram(props) {
   /* Report | Health */
   const [healthReport, setHealthReport] = useState({})
   const [checkingHealth, setCheckingHealth] = useState(false)
-  const [metrics, setMetrics] = useState({ postProcessorSQS: {} })
+  const [metrics, setMetrics] = useState({
+    SliceCommandQueue: [],
+    FetchedRecordQueue: [],
+    PreProcesserQueue: [],
+    PostProcesserQueue: [],
+  })
 
   /* Api Gateway */
   const [apiGateWayFormIsOpen, setApiGatewayFormIsOpen] = useState(false)
@@ -55,14 +60,24 @@ export default function InstrumentationDiagram(props) {
   useEffect(() => {
     const data = healthReport?.data || []
     const _newMetrics = {
-      //   postProcessorSQS: getMetricsForComponent(
-      //     'Queue',
-      //     'PostProcesserQueue',
-      //     data
-      //   ),
-      sliceCommandSQS: getMetricsForComponent(
+      SliceCommandQueue: getMetricsForComponent(
         'Queue',
         'SliceCommandQueue',
+        data
+      ),
+      FetchedRecordQueue: getMetricsForComponent(
+        'Queue',
+        'FetchedRecordQueue',
+        data
+      ),
+      PreProcesserQueue: getMetricsForComponent(
+        'Queue',
+        'PreProcesserQueue',
+        data
+      ),
+      PostProcesserQueue: getMetricsForComponent(
+        'Queue',
+        'PostProcesserQueue',
         data
       ),
     }
@@ -148,6 +163,7 @@ export default function InstrumentationDiagram(props) {
         }}
       >
         <TimeSliceCommandQueueForm
+          info={metrics.SliceCommandQueue}
           isBusy={purgingTimeSliceSQS}
           onPurgeQueue={async () => {
             /* TODO Purge Queue */
@@ -167,6 +183,7 @@ export default function InstrumentationDiagram(props) {
         }}
       >
         <FetchedRecordQueueForm
+          info={metrics.FetchedRecordQueue}
           isBusy={purgingFetchedRecordSQS}
           onPurgeQueue={async () => {
             /* TODO Purge Queue */
@@ -186,6 +203,7 @@ export default function InstrumentationDiagram(props) {
         }}
       >
         <PreprocessorQueueForm
+          info={metrics.PreProcesserQueue}
           isBusy={purgingPreprocessorSQS}
           onPurgeQueue={async () => {
             /* TODO Purge Queue */
@@ -205,7 +223,7 @@ export default function InstrumentationDiagram(props) {
         }}
       >
         <PostprocessorQueueForm
-          info={metrics.postProcessorSQS}
+          info={metrics.PostProcesserQueue}
           isBusy={purgingPostProcessorSQS}
           onPurgeQueue={async () => {
             /* TODO Purge Queue */
@@ -257,7 +275,6 @@ function getMetricsForComponent(type = '', name = '', metrics = []) {
 
   componentMetrics = componentMetrics.map((mdr) => {
     const label = mdr?.Label?.split(' ')[1] || ''
-
     const { Timestamps, Values, Messages } = mdr
     const values = Timestamps?.reduce((acc, timestamp, index) => {
       let _acc = [...acc]
@@ -284,8 +301,5 @@ function getMetricsForComponent(type = '', name = '', metrics = []) {
     }
     return metric
   })
-
-  console.table(componentMetrics)
-
   return componentMetrics
 }

@@ -1,0 +1,34 @@
+.sqs-form {
+  padding: 1rem;
+  grid-gap: 1rem;
+}
+
+.sqs-readout-panel {
+  padding: 1rem;
+  display: grid;
+  grid: repeat(auto-fill, 8rem) / repeat(auto-fill, 8rem);
+  grid-auto-flow: row dense;
+  grid-auto-columns: auto;
+  grid-auto-rows: auto;
+  grid-gap: 1rem;
+  justify-content: center;
+  min-width: calc(8rem * 3.5);
+  margin-bottom: 2rem;
+}
+
+.sqs-readout-panel .sqs-readout {
+  padding: 1rem;
+  border: 1px rgba(255, 255, 255, 0.1) solid;
+}
+
+.sqs-readout-panel .label {
+  font-size: 12px;
+  display: grid;
+  line-height: 1rem;
+}
+
+.sqs-readout-panel .value {
+  font-size: 18px;
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
