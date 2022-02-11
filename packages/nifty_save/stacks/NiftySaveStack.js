@@ -282,6 +282,7 @@ export default class NiftySaveStack extends sst.Stack {
       },
       routes: {
         'GET /ingest/health': 'src/ingest.ingestHealth',
+        'GET /report/health': 'src/report.health',
         'POST /report/health': 'src/report.health',
 
         'POST /ingest/slice-queue/purge': 'src/ingest.purgeSliceCommandQueue',

@@ -20,21 +20,21 @@ export async function getCloudWatchQueueMetrics() {
       buildMetricQuery(
         namespace,
         'ApproximateNumberOfMessagesDelayed',
-        'Average'
+        'Maximum'
       ),
       buildMetricQuery(
         namespace,
         'ApproximateNumberOfMessagesNotVisible',
-        'Average'
+        'Maximum'
       ),
       buildMetricQuery(
         namespace,
         'ApproximateNumberOfMessagesVisible',
-        'Average'
+        'Maximum'
       ),
-      buildMetricQuery(namespace, 'NumberOfEmptyReceives', 'Average'),
-      buildMetricQuery(namespace, 'NumberOfMessagesDeleted', 'Average'),
-      buildMetricQuery(namespace, 'NumberOfMessagesReceived', 'Average'),
+      buildMetricQuery(namespace, 'NumberOfEmptyReceives', 'Maximum'),
+      buildMetricQuery(namespace, 'NumberOfMessagesDeleted', 'Maximum'),
+      buildMetricQuery(namespace, 'NumberOfMessagesReceived', 'Maximum'),
       buildMetricQuery(namespace, 'NumberOfMessagesSent', 'Maximum'),
       buildMetricQuery(namespace, 'SentMessageSize', 'Average'),
     ],
