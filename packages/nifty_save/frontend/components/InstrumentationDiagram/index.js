@@ -6,19 +6,26 @@ import {
   TimeSliceCommandQueueForm,
 } from './Forms'
 import {
+  getHealthReport,
   purgeFetchedRecordsSQS,
   purgePostProcessorSQS,
   purgePreprocessorSQS,
   purgeTimeSliceSQS,
   sendTimeRangeToSlicer,
 } from './actions'
+import { useEffect, useState } from 'react'
 
 import FlowDiagram from './FlowDiagram'
+import Loader from './loader'
 import Modal from '../Modal'
-import { useState } from 'react'
+import { useLongPoll } from './longpoll'
 
 export default function InstrumentationDiagram(props) {
   const { apiUrl } = props
+
+  /* Report | Health */
+  const [healthReport, setHealthReport] = useState({})
+  const [checkingHealth, setCheckingHealth] = useState(false)
 
   /* Api Gateway */
   const [apiGateWayFormIsOpen, setApiGatewayFormIsOpen] = useState(false)
@@ -45,8 +52,35 @@ export default function InstrumentationDiagram(props) {
   const [postprocessorSQSIsOpen, setPostprocessorSQSIsOpen] = useState(false)
   const [purgingPostProcessorSQS, setPurgingPostprocessorSQS] = useState(false)
 
+  useEffect(() => {
+    console.log(healthReport)
+  }, [healthReport])
+
+  useLongPoll(() => {
+    const updateHealth = async () => {
+      setCheckingHealth(true)
+      console.time('health')
+      const results = await getHealthReport(apiUrl)
+      setHealthReport(results)
+      setCheckingHealth(false)
+      console.timeEnd('health')
+    }
+
+    if (!checkingHealth) {
+      updateHealth()
+    }
+  }, 7500)
+
   return (
     <div className="niftysave-diagram">
+      <div
+        style={{
+          position: 'absolute',
+          display: checkingHealth ? 'block' : 'none',
+        }}
+      >
+        <Loader />
+      </div>
       <FlowDiagram
         apiGatewayReadout={apiGatewayReadout}
         onClickApi={() => {
