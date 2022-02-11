@@ -1,8 +1,18 @@
 import { putOnProcessorBus } from './utils'
 
+async function doAnalyze(data) {
+  // TODO
+  return true
+}
+
 export async function analyze(event) {
   const data = event.detail
-  putOnProcessorBus('analyze', data)
+
+  if (doAnalyze(data)) {
+    putOnProcessorBus('analyze', data)
+  } else {
+    putOnProcessorBus('failure', data)
+  }
 
   return {
     statusCode: 200,

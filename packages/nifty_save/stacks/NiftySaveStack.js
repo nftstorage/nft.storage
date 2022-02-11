@@ -183,7 +183,7 @@ export default class NiftySaveStack extends sst.Stack {
         ],
       },
       addToPPQueue: {
-        eventPattern: { source: ['steps.pinContent'] },
+        eventPattern: { source: ['steps.pinContent', 'steps.failed'] },
         targets: [
           {
             function: {

@@ -14,6 +14,10 @@ export async function putOnProcessorBus(step, data) {
     throw `Bus arn was not provided in step: ${step}`
   }
 
+  if (step != 'failure') {
+    data = { ...data, steps: [...(data.steps || []), step] }
+  }
+
   const entries = [
     {
       DetailType: step,
