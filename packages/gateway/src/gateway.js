@@ -236,7 +236,7 @@ function getHeaders(request) {
     'X-Forwarded-For': `${request.headers.get(
       'cf-connecting-ip'
     )}${existingProxies}`,
-    'X-Forwarded-Host': 'nft.storage',
+    'X-Forwarded-Host': request.headers.get('host'),
   }
 }
 
