@@ -45,7 +45,6 @@ export default function Files({ user }) {
   /** @type {[string, { before: string, limit: number }]} */
   const queryKey = ['get-nfts', queryParams]
   const [isActionMenuOpen, setIsActionMenuOpen] = useState('')
-  const [useWebViewer, setUseWebViewer] = useState(false)
 
   let isDev
   if (!!globalThis.window && location.host === 'localhost:4000') isDev = true
@@ -99,13 +98,6 @@ export default function Files({ user }) {
 
   function handleFirstClick() {
     setBefores([''])
-  }
-
-  /**
-   * @param {import('react').ChangeEvent<HTMLInputElement>} e
-   */
-  function handleWebViewerToggle(e) {
-    setUseWebViewer(e.target.checked)
   }
 
   const hasZeroNfts = nfts.length === 0 && befores.length === 1
@@ -272,16 +264,8 @@ export default function Files({ user }) {
                 arrowClassName="popover-arrow"
               >
                 <div className="actions-menu">
-                  <GatewayLink
-                    cid={nft.cid}
-                    type={nft.type}
-                    useWebViewer={useWebViewer}
-                  />
-                  <CopyGatewayLink
-                    cid={nft.cid}
-                    type={nft.type}
-                    useWebViewer={useWebViewer}
-                  />
+                  <GatewayLink cid={nft.cid} type={nft.type} />
+                  <CopyGatewayLink cid={nft.cid} type={nft.type} />
                   <CopyCID cid={nft.cid} type={nft.type} />
                   <form onSubmit={handleDeleteFile}>
                     <input type="hidden" name="cid" value={nft.cid} />
@@ -337,16 +321,6 @@ export default function Files({ user }) {
               <div className="flex items-center mb3">
                 <div className="flex-auto chicagoflf mv3">
                   <h1>Files</h1>
-                  <label className="webViewer-toggle mt1">
-                    <input
-                      type="checkbox"
-                      name="toggleWebViewer"
-                      className="mr1"
-                      onChange={(e) => handleWebViewerToggle(e)}
-                    />
-                    Use IPFS web viewer instead of IPFS applications where
-                    applicable
-                  </label>
                 </div>
                 <Button
                   href={{
@@ -515,13 +489,12 @@ export default function Files({ user }) {
 /**
  * Gateway Link Component
  *
- * @param {{cid: string, type?: string, useWebViewer?: boolean}} props
+ * @param {{cid: string, type?: string}} props
  */
-function GatewayLink({ cid, type, useWebViewer }) {
-  const gatewayLink =
-    cid.startsWith('Qm') || useWebViewer
-      ? `https://ipfs.io/ipfs/${cid}`
-      : `ipfs://${cid}`
+function GatewayLink({ cid, type }) {
+  const gatewayLink = cid.startsWith('Qm')
+    ? `https://ipfs.io/ipfs/${cid}`
+    : `ipfs://${cid}`
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
   const btnLabel = type === 'nft' ? 'View Metadata' : 'View URL'
   const btnTitle = type === 'nft' ? 'View Metadata JSON' : 'View URL'
@@ -535,13 +508,12 @@ function GatewayLink({ cid, type, useWebViewer }) {
 /**
  * Copy Gateway Link Component
  *
- * @param {{cid: string, type?: string, useWebViewer?: boolean}} props
+ * @param {{cid: string, type?: string}} props
  */
-function CopyGatewayLink({ cid, type, useWebViewer }) {
-  const gatewayLink =
-    cid.startsWith('Qm') || useWebViewer
-      ? `https://ipfs.io/ipfs/${cid}`
-      : `ipfs://${cid}`
+function CopyGatewayLink({ cid, type }) {
+  const gatewayLink = cid.startsWith('Qm')
+    ? `https://ipfs.io/ipfs/${cid}`
+    : `ipfs://${cid}`
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
 
   return (
