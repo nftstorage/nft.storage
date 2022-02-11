@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.1.1](https://github.com/nftstorage/nft.storage/compare/gateway-v1.1.0...gateway-v1.1.1) (2022-02-11)
+
+
+### Bug Fixes
+
+* gateway requested with custom header requested from ([#1344](https://github.com/nftstorage/nft.storage/issues/1344)) ([cf841bb](https://github.com/nftstorage/nft.storage/commit/cf841bbf0c2e24d303dae05f494b1b4fcbc500bd))
+
 ## [1.1.0](https://github.com/nftstorage/nft.storage/compare/gateway-v1.0.1...gateway-v1.1.0) (2022-02-09)
 
 
