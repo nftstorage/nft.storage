@@ -52,7 +52,7 @@ export async function gatewayGet(request, env, ctx) {
   const cid = getCidFromSubdomainUrl(reqUrl)
   const pathname = reqUrl.pathname
 
-  const gatewayReqs = env.ipfsGateways.map(gwUrl =>
+  const gatewayReqs = env.ipfsGateways.map((gwUrl) =>
     gatewayFetch(gwUrl, cid, request, env, {
       pathname,
       timeout: env.REQUEST_TIMEOUT,
@@ -62,19 +62,21 @@ export async function gatewayGet(request, env, ctx) {
   try {
     /** @type {GatewayResponse} */
     const winnerGwResponse = await pAny(gatewayReqs, {
-      filter: res => res.response?.ok,
+      filter: (res) => res.response?.ok,
     })
 
     async function settleGatewayRequests() {
       // Wait for remaining responses
       const responses = await pSettle(gatewayReqs)
-      const successFullResponses = responses.filter(r => r.value?.response?.ok)
+      const successFullResponses = responses.filter(
+        (r) => r.value?.response?.ok
+      )
 
       await Promise.all([
         // Filter out winner and update remaining gateway metrics
         ...responses
-          .filter(r => r.value?.url !== winnerGwResponse.url)
-          .map(r => updateGatewayMetrics(request, env, r.value, false)),
+          .filter((r) => r.value?.url !== winnerGwResponse.url)
+          .map((r) => updateGatewayMetrics(request, env, r.value, false)),
         updateCidsTracker(request, env, successFullResponses, cid),
       ])
     }
@@ -102,7 +104,7 @@ export async function gatewayGet(request, env, ctx) {
 
     // Redirect if all failed with rate limited error
     const wasRateLimited = responses.every(
-      r =>
+      (r) =>
         r.value?.response?.status === HTTP_STATUS_RATE_LIMITED ||
         r.value?.reason === REQUEST_PREVENTED_RATE_LIMIT_CODE
     )
@@ -111,7 +113,9 @@ export async function gatewayGet(request, env, ctx) {
       (async () => {
         // Update metrics as all requests failed
         await Promise.all(
-          responses.map(r => updateGatewayMetrics(request, env, r.value, false))
+          responses.map((r) =>
+            updateGatewayMetrics(request, env, r.value, false)
+          )
         )
         wasRateLimited && updateGatewayRedirectCounter(request, env)
       })()
@@ -124,7 +128,7 @@ export async function gatewayGet(request, env, ctx) {
 
     // Return the error response from gateway, error is not from nft.storage Gateway
     if (err instanceof FilterError || err instanceof AggregateError) {
-      const candidateResponse = responses.find(r => r.value?.response)
+      const candidateResponse = responses.find((r) => r.value?.response)
 
       // Return first response with upstream error
       if (candidateResponse) {
@@ -174,7 +178,7 @@ async function gatewayFetch(
   cid,
   request,
   env,
-  { pathname = '', timeout = 20000 } = {}
+  { pathname = '', timeout = 60000 } = {}
 ) {
   // Block before hitting rate limit if needed
   const { shouldBlock } = await getGatewayRateLimitState(request, env, gwUrl)
@@ -347,7 +351,7 @@ async function updateCidsTracker(request, env, responses, cid) {
   /** @type {import('./durable-objects/cids').CidUpdateRequest} */
   const updateRequest = {
     cid,
-    urls: responses.filter(r => r.isFulfilled).map(r => r?.value?.url),
+    urls: responses.filter((r) => r.isFulfilled).map((r) => r?.value?.url),
   }
 
   await stub.fetch(getDurableRequestUrl(request, 'update', updateRequest))
