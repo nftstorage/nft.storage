@@ -63,12 +63,16 @@ export default function NewFile() {
         if (isCar) {
           car = file
         } else {
-          ;({ car } = await packToBlob({ input: [file] }))
+          ;({ car } = await packToBlob({
+            input: [file],
+            wrapWithDirectory: false,
+          }))
         }
         let totalBytesSent = 0
         await client.storeCar(car, {
           onStoredChunk: (size) => {
             totalBytesSent += size
+            console.log(size, totalBytesSent)
             setPercentComplete(Math.round((totalBytesSent / car.size) * 100))
           },
         })
