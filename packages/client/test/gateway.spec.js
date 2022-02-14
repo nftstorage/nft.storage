@@ -7,14 +7,14 @@ const filename = 'yesthisisdog.jpg'
 describe('toGatewayURL', () => {
   it('converts ipfs:// URL to a gateway URL', () => {
     const ipfsURL = new URL(`ipfs://${cid}/${filename}`)
-    const gwURL = new URL(`https://dweb.link/ipfs/${cid}/${filename}`)
+    const gwURL = new URL(`https://nftstorage.link/ipfs/${cid}/${filename}`)
     const result = toGatewayURL(ipfsURL)
     assert.equal(result.href, gwURL.href)
   })
 
   it('converts ipfs:// URL (as string) to a gateway URL', () => {
     const ipfsURLStr = `ipfs://${cid}/${filename}`
-    const gwURL = new URL(`https://dweb.link/ipfs/${cid}/${filename}`)
+    const gwURL = new URL(`https://nftstorage.link/ipfs/${cid}/${filename}`)
     const result = toGatewayURL(ipfsURLStr)
     assert.equal(result.href, gwURL.href)
   })
