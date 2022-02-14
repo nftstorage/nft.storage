@@ -90,6 +90,17 @@ export default function Footer() {
         </span>
         <Dot />
         <span className="db db-m dib-ns mv3">
+          <Link href="/stats">
+            <a
+              className="nspink no-underline underline-hover v-mid"
+              onClick={onLinkClick}
+            >
+              Stats
+            </a>
+          </Link>
+        </span>
+        <Dot />
+        <span className="db db-m dib-ns mv3">
           <span className="v-mid">Need Help? </span>
           <a
             href="https://github.com/nftstorage/nft.storage/issues/new"

@@ -7,6 +7,7 @@ import Step from '../components/step.js'
 import Box from '../components/box.js'
 import Link from 'next/link'
 import { FAQ } from './faq'
+import { TrustedBy } from '../components/trustedByLogos'
 
 export async function getStaticProps() {
   const logos = fs.readdirSync('public/images/marketplace-logos')
@@ -25,39 +26,6 @@ export async function getStaticProps() {
 }
 
 /**
- * Logo Component
- * @param {Object} props
- * @param {string} props.src
- */
-const Logo = ({ src }) => (
-  <img
-    className="marketplace-logo"
-    src={`images/marketplace-logos/${src}`}
-    alt="Nft.Storage Users"
-  />
-)
-
-/**
- * Logos Component
- * @param {Object} props
- * @param {string[]} props.logos
- *
- */
-const Logos = ({ logos }) => {
-  return (
-    <div className="marketplace-logos-container center pv4 ph3 ph5-ns">
-      <h2 className="tc mt0 chicagoflf">Trusted by</h2>
-      <div className="marketplace-logo-grid">
-        {logos.map((logo) => (
-          <Logo key={`marketplace-logo-${logo}`} src={logo} />
-        ))}
-      </div>
-      <p className="tc chicagoflf">and 20,000+ other users!</p>
-    </div>
-  )
-}
-
-/**
  * Home Component
  * @param {Object} props
  * @param {string[]} props.logos
@@ -68,7 +36,7 @@ export default function Home({ logos }) {
     <>
       <Hero />
       <main className="bg-nsltblue">
-        <Logos logos={logos} />
+        <TrustedBy logos={logos} />
         <About />
         <GettingStarted />
         <article className="bg-nsforest">
