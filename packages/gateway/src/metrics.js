@@ -9,6 +9,7 @@ import {
   HTTP_STATUS_SUCCESS,
 } from './constants.js'
 import { responseTimeHistogram } from './utils/histogram.js'
+import { PinStatusMap } from './utils/pins.js'
 import { contentLengthHistogram } from './durable-objects/summary-metrics.js'
 
 /**
@@ -267,6 +268,60 @@ export async function metricsGet(request, env, ctx) {
     `# HELP nftgateway_redirect_total Total redirects to gateway.`,
     `# TYPE nftgateway_redirect_total counter`,
     `nftgateway_redirect_total{env="${env.ENV}"} ${metricsCollected.gatewayRedirectCount}`,
+    `# HELP nftgateway_errored_responses_with_known_content_total errored requests with known content in NFT.storage.`,
+    `# TYPE nftgateway_errored_responses_with_known_content_total counter`,
+    `nftgateway_errored_responses_with_known_content_total{env="${env.ENV}"} ${metricsCollected.summaryMetrics.totalErroredResponsesWithKnownContent}`,
+    `# HELP nftgateway_responses_by_content_status_total total of responses by content status. Either stored or not stored.`,
+    `# TYPE nftgateway_responses_by_content_status_total counter`,
+    Object.keys(metricsCollected.summaryMetrics.totalResponsesByContentStatus)
+      .map(
+        (status) =>
+          `nftgateway_responses_by_content_status_total{env="${
+            env.ENV
+          }",status="${status}"} ${
+            metricsCollected.summaryMetrics.totalResponsesByContentStatus[
+              status
+            ] || 0
+          }`
+      )
+      .join('\n'),
+    `# HELP nftgateway_responses_by_pin_status_total total of responses by pin status.`,
+    `# TYPE nftgateway_responses_by_pin_status_total counter`,
+    Object.keys(metricsCollected.summaryMetrics.totalResponsesByPinStatus)
+      .map(
+        (status) =>
+          `nftgateway_responses_by_pin_status_total{env="${
+            env.ENV
+          }",status="${status}"} ${
+            metricsCollected.summaryMetrics.totalResponsesByPinStatus[status] ||
+            0
+          }`
+      )
+      .join('\n'),
+    `# HELP nftgateway_responses_per_time_by_status_total total of responses by status per response time bucket`,
+    `# TYPE nftgateway_responses_per_time_by_status_total histogram`,
+    ...responseTimeHistogram.map((t) => {
+      return Object.values(PinStatusMap)
+        .map(
+          (status) =>
+            `nftgateway_responses_per_time_by_status_total{status="${status}",le="${msToS(
+              t
+            )}",env="${env.ENV}"} ${
+              metricsCollected.summaryMetrics.responseTimeHistogramByPinStatus[
+                status
+              ][t]
+            }`
+        )
+        .join('\n')
+    }),
+    ...Object.values(PinStatusMap).map(
+      (status) =>
+        `nftgateway_responses_per_time_by_status_total{status="${status}",le="+Inf",env="${
+          env.ENV
+        }"} ${
+          metricsCollected.summaryMetrics.totalResponsesByPinStatus[status] || 0
+        }`
+    ),
   ].join('\n')
 
   res = new Response(metrics, {

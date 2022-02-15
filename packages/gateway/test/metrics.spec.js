@@ -38,9 +38,23 @@ test('Gets Metrics content when empty state', async (t) => {
   )
   t.is(metricsResponse.includes(`_responses_content_length_total{le=`), true)
   t.is(
-    metricsResponse.includes(
-      `_responses_content_length_bytes_total{env="test"} 0`
-    ),
+    metricsResponse.includes(`_responses_by_pin_status_total{env="test"`),
+    true
+  )
+  t.is(
+    metricsResponse.includes(`_responses_by_content_status_total{env="test"`),
+    true
+  )
+  t.is(
+    metricsResponse.includes('_errored_responses_with_known_content_total'),
+    true
+  )
+  t.is(
+    metricsResponse.includes('nftgateway_winner_response_time_seconds_total'),
+    true
+  )
+  t.is(
+    metricsResponse.includes('nftgateway_winner_response_time_seconds_total'),
     true
   )
   gateways.forEach((gw) => {

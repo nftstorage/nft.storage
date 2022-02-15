@@ -37,6 +37,9 @@ import {
  */
 export async function gatewayGet(request, env, ctx) {
   const startTs = Date.now()
+  const reqUrl = new URL(request.url)
+  const cid = getCidFromSubdomainUrl(reqUrl)
+
   const cache = caches.default
   let res = await cache.match(request.url)
 
@@ -44,14 +47,13 @@ export async function gatewayGet(request, env, ctx) {
     // Update cache metrics in background
     const responseTime = Date.now() - startTs
 
-    ctx.waitUntil(updateSummaryCacheMetrics(request, env, res, responseTime))
+    ctx.waitUntil(
+      updateSummaryCacheMetrics(request, env, res, responseTime, cid)
+    )
     return res
   }
 
-  const reqUrl = new URL(request.url)
-  const cid = getCidFromSubdomainUrl(reqUrl)
   const pathname = reqUrl.pathname
-
   const gatewayReqs = env.ipfsGateways.map((gwUrl) =>
     gatewayFetch(gwUrl, cid, request, env, {
       pathname,
@@ -88,7 +90,7 @@ export async function gatewayGet(request, env, ctx) {
         )
 
         await Promise.all([
-          storeWinnerGwResponse(request, env, winnerGwResponse),
+          storeWinnerGwResponse(request, env, winnerGwResponse, cid),
           settleGatewayRequests(),
           // Cache request URL in Cloudflare CDN if smaller than CF_CACHE_MAX_OBJECT_SIZE
           contentLengthMb <= CF_CACHE_MAX_OBJECT_SIZE &&
@@ -100,6 +102,8 @@ export async function gatewayGet(request, env, ctx) {
     // forward winner gateway response
     return winnerGwResponse.response
   } catch (err) {
+    let candidateResponse,
+      wasTimeout = false
     const responses = await pSettle(gatewayReqs)
 
     // Redirect if all failed with rate limited error
@@ -109,6 +113,20 @@ export async function gatewayGet(request, env, ctx) {
         r.value?.reason === REQUEST_PREVENTED_RATE_LIMIT_CODE
     )
 
+    // Return the error response from gateway, error is not from nft.storage Gateway
+    if (err instanceof FilterError || err instanceof AggregateError) {
+      candidateResponse = responses.find((r) => r.value?.response)
+
+      // Gateway timeout
+      if (
+        !candidateResponse &&
+        responses[0].value?.aborted &&
+        responses[0].value?.reason == TIMEOUT_CODE
+      ) {
+        wasTimeout = true
+      }
+    }
+
     ctx.waitUntil(
       (async () => {
         // Update metrics as all requests failed
@@ -117,7 +135,13 @@ export async function gatewayGet(request, env, ctx) {
             updateGatewayMetrics(request, env, r.value, false)
           )
         )
-        wasRateLimited && updateGatewayRedirectCounter(request, env)
+        // Update errored if candidate response
+        candidateResponse &&
+          (await updateSummaryWinnerMetrics(request, env, cid, {
+            errored: true,
+          }))
+        // Update redirect counter
+        wasRateLimited && (await updateGatewayRedirectCounter(request, env))
       })()
     )
 
@@ -126,24 +150,17 @@ export async function gatewayGet(request, env, ctx) {
       return Response.redirect(`${ipfsUrl.toString()}/${cid}${pathname}`, 302)
     }
 
-    // Return the error response from gateway, error is not from nft.storage Gateway
-    if (err instanceof FilterError || err instanceof AggregateError) {
-      const candidateResponse = responses.find((r) => r.value?.response)
-
-      // Return first response with upstream error
-      if (candidateResponse) {
-        return candidateResponse.value?.response
-      }
-
-      // Gateway timeout
-      if (
-        responses[0].value?.aborted &&
-        responses[0].value?.reason == TIMEOUT_CODE
-      ) {
-        throw new TimeoutError()
-      }
+    // Return first response with upstream error
+    if (candidateResponse) {
+      return candidateResponse.value?.response
     }
 
+    // Return timeout error if timeout
+    if (wasTimeout) {
+      throw new TimeoutError()
+    }
+
+    // Throw server error
     throw err
   }
 }
@@ -153,12 +170,13 @@ export async function gatewayGet(request, env, ctx) {
  *
  * @param {Request} request
  * @param {Env} env
- * @param {GatewayResponse} winnerGwResponse
+ * @param {GatewayResponse} gwResponse
+ * @param {string} cid
  */
-async function storeWinnerGwResponse(request, env, winnerGwResponse) {
+async function storeWinnerGwResponse(request, env, gwResponse, cid) {
   await Promise.all([
-    updateGatewayMetrics(request, env, winnerGwResponse, true),
-    updateSummaryWinnerMetrics(request, env, winnerGwResponse),
+    updateGatewayMetrics(request, env, gwResponse, true),
+    updateSummaryWinnerMetrics(request, env, cid, { gwResponse }),
   ])
 }
 
@@ -245,14 +263,23 @@ function getHeaders(request) {
  * @param {import('./env').Env} env
  * @param {Response} response
  * @param {number} responseTime
+ * @param {string} cid
  */
-async function updateSummaryCacheMetrics(request, env, response, responseTime) {
+async function updateSummaryCacheMetrics(
+  request,
+  env,
+  response,
+  responseTime,
+  cid
+) {
   // Get durable object for gateway
   const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
   const stub = env.summaryMetricsDurable.get(id)
 
   /** @type {import('./durable-objects/summary-metrics').FetchStats} */
   const contentLengthStats = {
+    cid,
+    errored: false,
     contentLength: Number(response.headers.get('content-length')),
     responseTime,
   }
@@ -295,17 +322,27 @@ async function getGatewayRateLimitState(request, env, gwUrl) {
 /**
  * @param {Request} request
  * @param {import('./env').Env} env
- * @param {GatewayResponse} gwResponse
+ * @param {string} cid
+ * @param {Object} options
+ * @param {GatewayResponse} [options.gwResponse]
+ * @param {boolean} [options.errored]
  */
-async function updateSummaryWinnerMetrics(request, env, gwResponse) {
+async function updateSummaryWinnerMetrics(
+  request,
+  env,
+  cid,
+  { gwResponse, errored = false }
+) {
   // Get durable object for gateway
   const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
   const stub = env.summaryMetricsDurable.get(id)
 
   /** @type {import('./durable-objects/summary-metrics').FetchStats} */
   const fetchStats = {
-    responseTime: gwResponse.responseTime,
-    contentLength: Number(gwResponse.response.headers.get('content-length')),
+    cid,
+    errored,
+    responseTime: gwResponse?.responseTime,
+    contentLength: Number(gwResponse?.response.headers.get('content-length')),
   }
 
   await stub.fetch(getDurableRequestUrl(request, 'metrics/winner', fetchStats))
