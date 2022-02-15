@@ -59,7 +59,8 @@ export class DBClient {
     id,
     magic_link_id,
     github_id,
-    keys:auth_key_user_id_fkey(user_id,id,name,secret)
+    keys:auth_key_user_id_fkey(user_id,id,name,secret),
+    tags:user_tag_user_id_fkey(user_id,id,tag,value)
     `
       )
       .or(`magic_link_id.eq.${id},github_id.eq.${id}`)

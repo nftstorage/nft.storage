@@ -1,7 +1,6 @@
 import { maybeCapture, ErrorPinningUnauthorized } from '../errors.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth.js'
-import { psaAllow } from '../constants.js'
 
 /** @typedef {import('../bindings').Handler} Handler */
 
@@ -40,7 +39,9 @@ export function withPinningAuthorized(handler) {
   return async (event, ctx) => {
     // TODO: we need withAuth middleware so we don't have to do this twice
     const { user } = await validate(event, ctx)
-    const authorized = psaAllow.includes(String(user.id)) || psaAllow[0] === '*'
+    const authorized = user.tags?.find(
+      (tag) => tag.tag === 'PSA_ENABLED' && tag.value === 'true'
+    )
     if (!authorized) {
       throw new ErrorPinningUnauthorized()
     }

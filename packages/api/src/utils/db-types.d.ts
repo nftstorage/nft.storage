@@ -1030,6 +1030,38 @@ export interface definitions {
      */
     updated_at: string
   }
+  user_tag: {
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Primary Key.<pk/>
+     */
+    id: number
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Foreign Key to `user.id`.<fk table='user' column='id'/>
+     */
+    user_id: number
+    /** Format: text */
+    tag: string
+    /** Format: text */
+    value: string
+    /** Format: text */
+    user_tag_value_type: string
+    /** Format: text */
+    reason: string
+    /**
+     * Format: timestamp with time zone
+     * @default timezone('utc'::text, now())
+     */
+    inserted_at: string
+    /**
+     * Format: timestamp with time zone
+     * @default timezone('utc'::text, now())
+     */
+    deleted_at?: string
+  }
 }
 
 export interface parameters {
