@@ -62,6 +62,23 @@ export async function createTestUserWithFixedToken({
     userId: user.id,
   })
 
+  await client.createUserTag({
+    user_id: user.id,
+    tag: 'PSA_ENABLED',
+    value: 'true',
+    value_type: 'boolean',
+    reason: '',
+    inserted_at: '2/22/2022',
+  })
+
+  await client.createUserTag({
+    user_id: user.id,
+    tag: 'ACCOUNT_ENABLED',
+    value: 'true',
+    value_type: 'boolean',
+    reason: '',
+    inserted_at: '2/22/2022',
+  })
   return { token, userId: user.id, githubId: user.github_id }
 }
 

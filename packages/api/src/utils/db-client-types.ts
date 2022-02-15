@@ -18,8 +18,14 @@ export type UserOutputKey = Pick<
   'user_id' | 'id' | 'name' | 'secret'
 >
 
+export type UserOutputTag = Pick<
+  definitions['user_tag'],
+  'user_id' | 'id' | 'tag' | 'value'
+>
+
 export type UserOutput = definitions['user'] & {
   keys: Array<UserOutputKey>
+  tags: Array<UserOutputTag>
 }
 
 export type UploadOutput = definitions['upload'] & {
