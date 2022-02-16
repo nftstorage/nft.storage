@@ -42,7 +42,7 @@ export default function Alert({
       className={clsx(
         className,
         'flex justify-center items-center',
-        'fixed left-0 right-0',
+        'fixed left-0 right-0 z-999',
         position === 'bottom' &&
           hasTimerEnded &&
           'bottom-0 disappear-to-bottom',
