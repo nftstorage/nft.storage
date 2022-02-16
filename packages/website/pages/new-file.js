@@ -86,8 +86,8 @@ export default function NewFile() {
   }
 
   return (
-    <main className="bg-nsyellow">
-      <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
+    <main className="bg-nsyellow flex-grow-1">
+      <div className="mw9 center pv3 ph3 ph5-ns">
         <Box
           bgColor="nsgray"
           borderColor="nspink"

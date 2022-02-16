@@ -49,8 +49,8 @@ export default function NewKey() {
   }
 
   return (
-    <main className="bg-nsgreen">
-      <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
+    <main className="bg-nsgreen flex-grow-1">
+      <div className="mw9 center pv3 ph3 ph5-ns">
         <Box
           bgColor="nsgray"
           borderColor="nspink"
