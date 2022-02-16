@@ -29,4 +29,4 @@ This error can occur because of having an old version of Node. We no longer offe
 
 ### Don't See Your Question Answered?
 
-[Chat with us on discord.](https://discord.com/channels/806902334369824788/831502708082081822)
+[Chat with us in #nft-storage on IPFS discord](https://discord.com/invite/KKucsCpZmY)
