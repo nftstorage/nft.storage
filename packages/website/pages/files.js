@@ -306,13 +306,13 @@ export default function Files({ user }) {
   return (
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
-      <main className="bg-nsyellow">
+      <main className="bg-nsyellow flex-grow-1">
         <div className="flex justify-center pt4">
           <Button data-tf-popup="OTxv3w2O" className="mh3 mb3" variant="dark">
             {'Tell us how we are doing'}
           </Button>
         </div>
-        <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
+        <div className="mw9 center pv3 ph3 ph5-ns">
           <When condition={status === 'loading'}>
             <Loading />
           </When>
