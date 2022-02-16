@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.25.0](https://github.com/nftstorage/nft.storage/compare/website-v1.24.4...website-v1.25.0) (2022-02-16)
+
+
+### Features
+
+* add footer logos for discord,twitter,github ([#1336](https://github.com/nftstorage/nft.storage/issues/1336)) ([bc87ea9](https://github.com/nftstorage/nft.storage/commit/bc87ea9b3df9e3848376e8de8ddbbb83c35cefbe))
+* update ToS for gateway ([#1302](https://github.com/nftstorage/nft.storage/issues/1302)) ([872e035](https://github.com/nftstorage/nft.storage/commit/872e03554f4f2868f4898d87a968e041dd631166))
+
+
+### Bug Fixes
+
+* increase z-index of the alert component ([#1348](https://github.com/nftstorage/nft.storage/issues/1348)) ([#1356](https://github.com/nftstorage/nft.storage/issues/1356)) ([9fea0bd](https://github.com/nftstorage/nft.storage/commit/9fea0bd8d9e06412174f7b202ca6fe660851ced6))
+* links for nft type to indicate metadata and add toggle for webview ([#1258](https://github.com/nftstorage/nft.storage/issues/1258)) ([d746bcd](https://github.com/nftstorage/nft.storage/commit/d746bcd50736cf1ac5555feb36b18236ad7585af))
+* update layout component to remove potential space below footer ([#1313](https://github.com/nftstorage/nft.storage/issues/1313)) ([#1338](https://github.com/nftstorage/nft.storage/issues/1338)) ([f609c8b](https://github.com/nftstorage/nft.storage/commit/f609c8b655b8ff9602cf66703e7e2e2271de0ae9))
+
 ### [1.24.4](https://github.com/nftstorage/nft.storage/compare/website-v1.24.3...website-v1.24.4) (2022-02-11)
 
 
