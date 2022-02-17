@@ -6,7 +6,7 @@
   "license": "(Apache-2.0 OR MIT)",
   "scripts": {
     "dev": "next dev -p 4000",
-    "build": "next build && next-sitemap && next export",
+    "build": "yarn workspace nft.storage prepare && next build && next-sitemap && next export",
     "start": "next start",
     "test": "eslint './**/*.js' && tsc --build",
     "lint:fix": "eslint './**/*.js' --fix-dry-run",
