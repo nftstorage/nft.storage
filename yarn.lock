@@ -10056,6 +10056,23 @@ nft.storage@^3.3.0:
     p-retry "^4.6.1"
     streaming-iterables "^6.0.0"
 
+nft.storage@^5.1.0:
+  version "5.2.5"
+  resolved "https://registry.yarnpkg.com/nft.storage/-/nft.storage-5.2.5.tgz#55c9f1b3cd40654cfeae006c3a4abb2da238049f"
+  integrity sha512-ITP9ETleKIZvSRsjpHi6JFFE/YVcp9jwwyi+Q1GtdNmFc5Xyu1g7it+yrk7m5+iSEMcOjSJGPQrktnUTe0qtAg==
+  dependencies:
+    "@ipld/car" "^3.2.3"
+    "@ipld/dag-cbor" "^6.0.13"
+    "@web-std/blob" "^3.0.1"
+    "@web-std/fetch" "^3.0.3"
+    "@web-std/file" "^3.0.0"
+    "@web-std/form-data" "^3.0.0"
+    carbites "^1.0.6"
+    ipfs-car "^0.6.2"
+    multiformats "^9.6.3"
+    p-retry "^4.6.1"
+    streaming-iterables "^6.0.0"
+
 nice-try@^1.0.4:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
@@ -10088,7 +10105,6 @@ node-fetch@^1.0.1:
 
 "node-fetch@https://registry.npmjs.org/@achingbrain/node-fetch/-/node-fetch-2.6.7.tgz":
   version "2.6.7"
-  uid "1b5d62978f2ed07b99444f64f0df39f960a6d34d"
   resolved "https://registry.npmjs.org/@achingbrain/node-fetch/-/node-fetch-2.6.7.tgz#1b5d62978f2ed07b99444f64f0df39f960a6d34d"
 
 node-forge@^1.2.0:

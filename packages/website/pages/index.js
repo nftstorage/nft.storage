@@ -5,6 +5,7 @@ import Hero from '../components/hero.js'
 import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
 import Link from 'next/link'
+import Button from '../components/button'
 
 export async function getStaticProps() {
   const logos = fs.readdirSync('public/images/marketplace-logos')
@@ -312,58 +313,48 @@ function GettingStarted() {
     <article className="bg-yellow">
       <div className="mw9 center pa4 pa5-ns">
         <h2 className="chicagoflf tc mb5">
-          <HashLink id="getting-started">Getting started</HashLink>
+          <HashLink id="getting-started">Getting started is Easy</HashLink>
         </h2>
-        <ol className="list tc pl0 mb5">
-          <li>
-            <Step>1</Step>
-            <p className="chicagoflf f3 mw6 center">
-              <Link href="/login">
-                <a
-                  className="no-underline underline-hover nsnavy"
-                  onClick={onClickHandler}
-                >
-                  Register an NFT.Storage account
-                </a>
-              </Link>{' '}
-              so that you can create API access keys.
-            </p>
-            <img
-              width="29px"
-              height="66px"
-              src="images/icon-arrow-down.svg"
-              alt="arrow down"
-              className="mb3"
-            />
-          </li>
-          <li>
-            <Step>2</Step>
-            <p className="chicagoflf f3 mw6 center">
-              <Link href="/manage">
-                <a
-                  className="no-underline underline-hover nsnavy"
-                  onClick={onClickHandler}
-                >
-                  Create an API access key
-                </a>
-              </Link>{' '}
-              and note it down.
-            </p>
-            <img
-              width="29px"
-              height="66px"
-              src="images/icon-arrow-down.svg"
-              alt="arrow down"
-              className="mb3"
-            />
-          </li>
-          <li>
-            <Step>3</Step>
-            <p className="chicagoflf f3 mw6 center">
-              Choose a method to get your NFT data stored:
-            </p>
-          </li>
-        </ol>
+        <div className="getting-started-callout">
+          <img
+            src="https://user-images.githubusercontent.com/22168118/146547661-afddfed5-d26e-49e2-8ff1-c32e8ccb7bc1.png"
+            alt="getting-started"
+          />
+          <ol className="list pl0 mb5">
+            <li>
+              <Step>1</Step>
+              <p className="chicagoflf f3 center mb4 lh-copy">
+                <Link href="/login">
+                  <a className="nsblue" onClick={onClickHandler}>
+                    Create an NFT.Storage account
+                  </a>
+                </Link>{' '}
+                and start uploading your files to IPFS.
+              </p>
+            </li>
+            <li>
+              <Step>2</Step>
+              <p className="chicagoflf f3 center lh-copy">
+                Mint your NFTs on any blockchain, and share them with any
+                gallery.
+              </p>
+            </li>
+          </ol>
+        </div>
+        <div className="mv5 center tc">
+          <h4 className="mv4 chicagoflf">
+            Are You a Developer? We have an API for that
+          </h4>
+          <div className="flex justify-center">
+            <Button
+              className="mh3 mb3"
+              href="/docs"
+              // tracking={{ ui: countly.ui.HOME_HERO, action: 'Get Started' }}
+            >
+              View Docs
+            </Button>
+          </div>
+        </div>
       </div>
     </article>
   )
