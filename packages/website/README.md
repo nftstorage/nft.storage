@@ -15,7 +15,6 @@ NEXT_PUBLIC_ENV=dev
 NEXT_PUBLIC_API=http://127.0.0.1:8787
 # needs to be real so create a personal magic.link account or use the staging publishable key
 NEXT_PUBLIC_MAGIC=<magic publishable key>
-
 # Vars below this line are optional or can have fake values
 NEXT_PUBLIC_SENTRY_DSN=<sentry dsn>
 SENTRY_URL=https://sentry.io/
