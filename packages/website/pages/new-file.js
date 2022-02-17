@@ -63,7 +63,10 @@ export default function NewFile() {
         if (isCar) {
           car = file
         } else {
-          ;({ car } = await packToBlob({ input: [file] }))
+          ;({ car } = await packToBlob({
+            input: [file],
+            wrapWithDirectory: false,
+          }))
         }
         let totalBytesSent = 0
         await client.storeCar(car, {
