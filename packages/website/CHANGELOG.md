@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.25.2](https://github.com/nftstorage/nft.storage/compare/website-v1.25.1...website-v1.25.2) (2022-02-17)
+
+
+### Bug Fixes
+
+* remove empty line ([693767c](https://github.com/nftstorage/nft.storage/commit/693767c456094e3ddf2958b31308aae79e2fe9d2))
+
 ### [1.25.1](https://github.com/nftstorage/nft.storage/compare/website-v1.25.0...website-v1.25.1) (2022-02-17)
 
 
