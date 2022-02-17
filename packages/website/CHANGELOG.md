@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.25.1](https://github.com/nftstorage/nft.storage/compare/website-v1.25.0...website-v1.25.1) (2022-02-17)
+
+
+### Bug Fixes
+
+* previous commit to trigger release ([5b50fff](https://github.com/nftstorage/nft.storage/commit/5b50fff4f56b2131df4f430772e1420b80711321))
+* update ipfs car and client ([#1373](https://github.com/nftstorage/nft.storage/issues/1373)) ([2b61549](https://github.com/nftstorage/nft.storage/commit/2b61549f4f31684a6afca28c9f7ed39dc076ada2))
+
 ## [1.25.0](https://github.com/nftstorage/nft.storage/compare/website-v1.24.4...website-v1.25.0) (2022-02-16)
 
 
