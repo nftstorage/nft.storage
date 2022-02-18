@@ -16,6 +16,8 @@ const log = debug('metrics:updateMetrics')
 const COUNT_USERS = 'SELECT COUNT(*) AS total FROM public.user'
 
 const COUNT_UPLOADS = 'SELECT COUNT(*) AS total FROM upload WHERE type = $1'
+const COUNT_ALL_UPLOADS_PAST_7_DAYS =
+  'SELECT COUNT(*) AS total FROM upload WHERE inserted_at > CURRENT_DATE - 7'
 
 const COUNT_PINS =
   'SELECT COUNT(*) AS total FROM pin WHERE service = $1 AND status = $2'
@@ -83,6 +85,34 @@ async function updateUsersCount(roPg, rwPg) {
   const { rows } = await roPg.query(COUNT_USERS)
   if (!rows.length) throw new Error('no rows returned counting users')
   await rwPg.query(UPDATE_METRIC, ['users_total', rows[0].total])
+}
+
+/**
+ * @param {Client} roPg
+ * @param {Client} rwPg
+ * @param {string} type
+ */
+async function updateUploadsCount(roPg, rwPg, type) {
+  const { rows } = await roPg.query(COUNT_UPLOADS, [type])
+  if (!rows.length) throw new Error(`no rows returned counting ${type} uploads`)
+  await rwPg.query(UPDATE_METRIC, [
+    `uploads_${type.toLowerCase()}_total`,
+    rows[0].total,
+  ])
+}
+
+/**
+ * @param {Client} roPg
+ * @param {Client} rwPg
+ */
+async function updateUploadsPast7DaysCount(roPg, rwPg) {
+  const { rows } = await roPg.query(COUNT_ALL_UPLOADS_PAST_7_DAYS)
+  if (!rows.length)
+    throw new Error(`no rows returned counting past weeks uploads`)
+  await rwPg.query(UPDATE_METRIC, [
+    `uploads_all_types_past_week_total`,
+    rows[0].total,
+  ])
 }
 
 /**
