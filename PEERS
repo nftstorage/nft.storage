@@ -13,14 +13,26 @@
 /ip4/145.40.96.233/tcp/4001/p2p/12D3KooWEGeZ19Q79NdzS6CJBoCwFZwujqi5hoK8BtRcLa48fJdu
 # nft3-storage-am6-2
 /ip4/147.75.87.85/tcp/4001/p2p/12D3KooWBnmsaeNRP6SCdNbhzaNHihQQBPDhmDvjVGsR1EbswncV
+# nft3-storage-am6-3
+/ip4/147.75.81.81/tcp/4001/p2p/12D3KooWLsSWaRsoCejZ6RMsGqdftpKbohczNqs3jvNfPgRwrMp2
+# nft3-storage-am6-4
+/ip4/147.75.101.41/tcp/4001/p2p/12D3KooWJc7GbwkjVg9voPNxdRnmEDS3i8NXNwRXD6kLattaMnE4
 # nft3-storage-dc13-1
 /ip4/136.144.57.203/tcp/4001/p2p/12D3KooWDLYiAdzUdM7iJHhWu5KjmCN62aWd7brQEQGRWbv8QcVb
 # nft3-storage-dc13-2
 /ip4/145.40.69.29/tcp/4001/p2p/12D3KooWFZmGztVoo2K1BcAoDEUmnp7zWFhaK5LcRHJ8R735T3eY
+# nft3-storage-dc13-3
+/ip4/136.144.57.171/tcp/4001/p2p/12D3KooWKKcYZGRtQVdZVrTuARdJHLSBymB7dNN1R6PWwUT24qK4
+# nft3-storage-dc13-4
+/ip4/145.40.69.211/tcp/4001/p2p/12D3KooWCPjVv1qZEy8twPUK9fzEvNSF3JxY7zwAFGzybsm2J2cP
 # nft3-storage-sv15-1
 /ip4/139.178.70.235/tcp/4001/p2p/12D3KooWRJpsEsBtJ1TNik2zgdirqD4KFq5V4ar2vKCrEXUqFXPP
 # nft3-storage-sv15-2
 /ip4/145.40.67.89/tcp/4001/p2p/12D3KooWNxUGEN1SzRuwkJdbMDnHEVViXkRQEFCSuHRTdjFvD5uw
+# nft3-storage-sv15-3
+/ip4/147.75.108.229/tcp/4001/p2p/12D3KooWHXKaRAKgQbPNqgpJwojmcHUajSFnQvHdKjPRbVHRhobC
+# nft3-storage-sv15-4
+/ip4/145.40.82.171/tcp/4001/p2p/12D3KooWMoAAVDbwuZc8oKALPJc9QDEe95V394fzKsEouB5DNG8T
 
 # IpfsCluster2
 
