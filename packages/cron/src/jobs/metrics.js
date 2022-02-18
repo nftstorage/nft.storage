@@ -118,20 +118,6 @@ async function updateUploadsPast7DaysCount(roPg, rwPg) {
 /**
  * @param {Client} roPg
  * @param {Client} rwPg
- * @param {string} type
- */
-async function updateUploadsCount(roPg, rwPg, type) {
-  const { rows } = await roPg.query(COUNT_UPLOADS, [type])
-  if (!rows.length) throw new Error(`no rows returned counting ${type} uploads`)
-  await rwPg.query(UPDATE_METRIC, [
-    `uploads_${type.toLowerCase()}_total`,
-    rows[0].total,
-  ])
-}
-
-/**
- * @param {Client} roPg
- * @param {Client} rwPg
  * @param {string} service
  * @param {string} status
  */
