@@ -1,4 +1,5 @@
 import { UPLOAD_TYPES, PIN_SERVICES, PIN_STATUSES } from '../utils/db-client.js'
+import { JSONResponse } from '../utils/json-response.js'
 
 /**
  * TODO: basic auth
@@ -6,6 +7,21 @@ import { UPLOAD_TYPES, PIN_SERVICES, PIN_STATUSES } from '../utils/db-client.js'
 /** @type {import('../bindings').Handler} */
 export async function metrics(_, { db }) {
   return new Response(await exportPromMetrics(db))
+}
+
+/** @type {import('../bindings').Handler} */
+export async function getUploadsPast7DaysCount(_, { db }) {
+  let total = await db.getMetric('uploads_all_types_past_week_total')
+  return new JSONResponse(
+    {
+      ok: true,
+      data: {
+        total,
+        metric: 'uploads_all_types_past_week_total',
+      },
+    },
+    { status: 202 }
+  )
 }
 
 /**
