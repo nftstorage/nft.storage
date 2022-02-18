@@ -14,7 +14,7 @@ With NFT.Storage, you can upload all the off-chain data for your Solana NFTs, in
 You can even upload data for Solana NFTs without an NFT.Storage account! By using a signature from your Solana wallet, you (or your users, if you're building a platform) can make free uploads to NFT.Storage without an NFT.Storage API key.
 -->
 
-At the most fundamental level, an NFT on Solana is defined by the Solana Program Library's [Token program](https://spl.solana.com/token), which enables the creation of both fungible and non-fungible tokens on Solana. While it's possible to [create NFTs through the Token program directly](https://spl.solana.com/token#example-create-a-non-fungible-token), tokens created in this way have no associated metadata or intrinsic "meaning", and are essentially just unique identifiers.
+At the most fundamental level, an NFT on Solana is defined by the Solana Program Library's [Token program](https://spl.solana.com/token), which enables the creation of both fungible and non-fungible tokens on Solana. While it's possible to [create NFTs through the Token program directly](https://spl.solana.com/token#example-create-a-non-fungible-token), tokens created in this way have no associated metadata or intrinsic "meaning", and are essentially just unique identifiers that can be owned by a Solana account.
 
 To build feature-rich NFTs, the Solana community has developed standards on top of the basic NFT functionality provided by the Token program which allow "decorating" a token with metadata describing the token and its properties.
 
@@ -72,11 +72,11 @@ The `image` field specifies the filename of the main image for the NFT. Right no
 
 The `attributes` array allows you to tag your NFT with various "traits", the meaning of which is entirely up to you. For example, if you're writing a game, your NFT weapons might have a "damage" `trait_type` whose `value` corresponds to the attack power of the weapon. Some art NFTs may benefit "rarity" trait to indicate how relatively unique a given NFT is compared to its collection-mates.
 
-Finally, the `properties` field is a home for any custom metadata you want to include, but it also contains two important sub-fields, `creators` and `files`. 
+Finally, the `properties` field is a home for any custom metadata you want to include, but it also contains two important sub-fields, `properties.creators` and `properties.files`. 
 
-The `creators` field lists the Solana wallet addresses of each of the NFT creators. Each entry in the `creators` array has a `share` that indicates how much of the sale price will go to each creator. The total of all `share` entries must sum to 100, so if there's a single creator, its share should always be 100.
+The `properties.creators` field lists the Solana wallet addresses of each of the NFT creators. Each entry in the `properties.creators` array has a `share` that indicates how much of the sale price will go to each creator. The total of all `share` entries must sum to 100, so if there's a single creator, its share should always be 100.
 
-The `files` array contains metadata about any files associated with the NFT. Most importantly, each entry in the array contains a `type` field with the MIME content type of the file.
+The `properties.files` array contains metadata about any files associated with the NFT. Most importantly, each entry in the array contains a `type` field with the MIME content type of the file.
 
 All NFTs that include an `image` will have at least one entry in `properties.files` with a `uri` that is equal to the value of the `image` field. As with the `image` field, this example shows a local file path, but this will be replaced with the URL for the uploaded image once it has been stored with NFT.Storage.
 
@@ -84,16 +84,40 @@ Please note that this example does not show all possible metadata fields. Consul
 
 ## Using candy machine cli
 
+A Candy Machine is a Solana program that ...
+
+### Pre-requisites
+
+TODO: list pre-reqs:
+
+- [ ] solana keypair (for devnet)
+- [ ] airdrop devnet SOL to new wallet
+- [ ] software needed:
+  - [ ] solana cli tools
+  - [ ] git
+  - [ ] node
+  - [ ] ts-node
+
 
 ### Candy machine configuration
-- [ ] Pre-reqs (solana keypair, etc)
+
 - [ ] How to install (link to official docs)
 - [ ] How to set `nft-storage` config option
 - [ ] How to optionally set `nftStorageKey` and why
   - why: so you can see the uploads in your account, etc
   - what happens if not: quick explainer about wallet sig auth
+
+### Uploading NFTs with Candy Machine
+
+- [ ] show upload cli command and expected output
+- [ ] show how to see new token in block explorer
+- [ ] show how to see token metadata uri and verify metadata
+
+### After uploading: next steps
+
 - [ ] What to do after uploading
   - give example of running candy-machine mint command
+  - mention candy machine UI
   - link to official metaplex minting docs
 
 ## Other options
