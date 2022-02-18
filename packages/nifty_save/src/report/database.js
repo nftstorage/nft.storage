@@ -1,6 +1,7 @@
 import AWS from 'aws-sdk'
-import { buildMetricQuery } from './common'
+import { buildMetricQuery, MetricMethod, MetricNamespace } from './common'
 const cloudwatch = new AWS.CloudWatch()
+const dynamoDb = new AWS.DynamoDB()
 
 /**
  * Returns a promise containing cloud watch dynamo db metrics.
@@ -9,24 +10,36 @@ const cloudwatch = new AWS.CloudWatch()
  * @returns {Promise<object>} The promise with metrics.
  */
 export async function getCloudWatchDynamoDbMetrics() {
-  const namespace = 'AWS/DynamoDB'
+  const namespace = MetricNamespace.DynamoDB
   var start = new Date()
   start.setMinutes(start.getMinutes() - 60)
 
   var params = {
     EndTime: new Date().toISOString(),
     MetricDataQueries: [
-      buildMetricQuery(namespace, 'SuccessfulRequestLatency', 'Average'),
-      buildMetricQuery(namespace, 'ThrottledRequests', 'Sum'),
-      buildMetricQuery(namespace, 'UserErrors', 'Sum'),
-      buildMetricQuery(namespace, 'ConsumedReadCapacityUnits', 'Sum'),
-      buildMetricQuery(namespace, 'ProvisionedReadCapacityUnits', 'Average'),
-      buildMetricQuery(namespace, 'ConsumedWriteCapacityUnits', 'Sum'),
-      buildMetricQuery(namespace, 'ProvisionedWriteCapacityUnits', 'Average'),
-      buildMetricQuery(namespace, 'ReturnedBytes', 'Average'),
-      buildMetricQuery(namespace, 'ReturnedItemCount', 'Average'),
+      buildMetricQuery(
+        namespace,
+        'SuccessfulRequestLatency',
+        MetricMethod.Average
+      ),
+      //       buildMetricQuery(namespace, 'ThrottledRequests', MetricMethod.Sum),
+      //       buildMetricQuery(namespace, 'UserErrors', MetricMethod.Sum),
+      //       buildMetricQuery(namespace, 'ConsumedReadCapacityUnits', MetricMethod.Sum),
+      //       buildMetricQuery(namespace, 'ProvisionedReadCapacityUnits', MetricMethod.Sum),
+      //       buildMetricQuery(namespace, 'ConsumedWriteCapacityUnits', MetricMethod.Sum),
+      //       buildMetricQuery(namespace, 'ProvisionedWriteCapacityUnits', MetricMethod.Sum),
+      //       buildMetricQuery(namespace, 'ReturnedBytes', MetricMethod.Average),
+      buildMetricQuery(namespace, 'ReturnedItemCount', MetricMethod.Maximum),
     ],
     StartTime: start.toISOString(),
   }
   return cloudwatch.getMetricData(params).promise()
+}
+
+export async function getDynamoDbDescription(tablename) {
+  const params = {
+    TableName: tablename,
+  }
+
+  return dynamoDb.describeTable(params).promise()
 }
