@@ -82,13 +82,9 @@ export class DBClient {
     id,
     magic_link_id,
     github_id,
-<<<<<<< HEAD
     did,
     keys:auth_key_user_id_fkey(user_id,id,name,secret)
-=======
-    keys:auth_key_user_id_fkey(user_id,id,name,secret),
     tags:user_tag_user_id_fkey(user_id,id,tag,value)
->>>>>>> 3e16c7d (feat: refactor pinning authorization logic to use user_tag table)
     `
       )
       .or(`magic_link_id.eq.${id},github_id.eq.${id},did.eq.${id}`)

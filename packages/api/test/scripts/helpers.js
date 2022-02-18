@@ -33,6 +33,32 @@ export async function createTestUser({
 }
 
 /**
+ * Create a new user tag
+ *
+ * @param {Object} tag
+ * @param {number} tag.user_id
+ * @param {string} tag.tag
+ * @param {string} tag.value
+ * @param {string} tag.inserted_at
+ * @param {string} tag.reason
+ */
+async function createUserTag(tag) {
+  const query = rawClient.from('user_tag')
+
+  const { data, error } = await query.upsert(tag).single()
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
+    throw new Error('User tag not created.')
+  }
+
+  return data
+}
+
+/**
  * @param {{publicAddress?: string, issuer?: string, name?: string, token?: string}} userInfo
  */
 export async function createTestUserWithFixedToken({
@@ -62,20 +88,18 @@ export async function createTestUserWithFixedToken({
     userId: user.id,
   })
 
-  await client.createUserTag({
+  await createUserTag({
     user_id: user.id,
-    tag: 'PSA_ENABLED',
+    tag: 'HasPsaAccess',
     value: 'true',
-    value_type: 'boolean',
     reason: '',
     inserted_at: '2/22/2022',
   })
 
-  await client.createUserTag({
+  await createUserTag({
     user_id: user.id,
-    tag: 'ACCOUNT_ENABLED',
-    value: 'true',
-    value_type: 'boolean',
+    tag: 'HasAccountRestriction',
+    value: 'false',
     reason: '',
     inserted_at: '2/22/2022',
   })

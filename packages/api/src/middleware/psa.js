@@ -54,8 +54,8 @@ export function withPinningAuthorized(handler) {
     const { user } = await validate(event, ctx)
 
     const authorized =
-      hasTag(user, 'PSA_ENABLED', 'true') &&
-      !hasTag(user, 'ACCOUNT_ENABLED', 'false')
+      hasTag(user, 'HasPsaAccess', 'true') &&
+      !hasTag(user, 'HasAccountRestriction', 'true')
 
     if (!authorized) {
       throw new ErrorPinningUnauthorized()
