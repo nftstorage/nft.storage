@@ -35,6 +35,7 @@ export default function InstrumentationDiagram(props) {
     FetchedRecordQueue: [],
     PreProcesserQueue: [],
     PostProcesserQueue: [],
+    FetchedRecordsTable: [],
   })
 
   /* Api Gateway */
@@ -71,7 +72,7 @@ export default function InstrumentationDiagram(props) {
 
   useEffect(() => {
     const data = healthReport?.data || []
-    console.log(healthReport)
+    console.log('health report:', healthReport)
     const _newMetrics = {
       SliceCommandQueue: getMetricsForComponent(
         'Queue',
@@ -93,6 +94,22 @@ export default function InstrumentationDiagram(props) {
         'PostProcesserQueue',
         data
       ),
+      FetchedRecordsTable: {
+        metrics: getMetricsForComponent('Table', 'FetchedRecordsTable', data),
+        description: getDescriptionForComponent(
+          'Table',
+          'FetchedRecordsTable',
+          data
+        ),
+      },
+      PostProcesserTable: {
+        metrics: getMetricsForComponent('Table', 'PostProcesserTable', data),
+        description: getDescriptionForComponent(
+          'Table',
+          'PostProcesserTable',
+          data
+        ),
+      },
     }
 
     setMetrics(_newMetrics)
@@ -147,12 +164,19 @@ export default function InstrumentationDiagram(props) {
           setPostprocessorSQSIsOpen(true)
         }}
         onClickFetchedRecordsTable={() => {
-          console.log('clicked fetched records table')
-          alert('Fetched Records Table has 0 records')
+          console.log(
+            'clicked fetched records table',
+            metrics.FetchedRecordsTable
+          )
+          alert(
+            `Fetched Records Table has ${metrics.FetchedRecordsTable.description.ItemCount} records`
+          )
         }}
         onClickPostprocessorTable={() => {
           console.log('clicked postprocessor table')
-          alert('Postprocessed Records Table has 0 records')
+          alert(
+            `Post Processor Table has ${metrics.PostProcesserTable.description.ItemCount} records`
+          )
         }}
         onClickInjectProcessorRecord={() => {
           setInjectProcessorRecordIsOpen(true)
@@ -284,6 +308,21 @@ export default function InstrumentationDiagram(props) {
       </Modal>
     </div>
   )
+}
+
+/**
+ * Gets a description from AWS of a named object of the given type.
+ *
+ * @param {string} [type] - The type
+ * @param {string} [name] - The name of the object in AWS
+ * @param {any[]} metrics
+ * @returns {object}
+ */
+function getDescriptionForComponent(type = '', name = [], metrics = []) {
+  return metrics
+    .find((x) => x.type === type)
+    ?.descriptions.map((x) => x[type])
+    .find((x) => x.TableName?.includes(name))
 }
 
 /**
