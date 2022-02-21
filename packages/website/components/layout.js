@@ -80,7 +80,7 @@ export default function Layout({
   image = 'https://nft.storage/images/social.png',
 }) {
   // @ts-ignore
-  const user = useUser()
+  const { user } = useUser()
 
   const logo = {
     src: altLogo

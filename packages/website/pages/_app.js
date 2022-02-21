@@ -24,7 +24,7 @@ const queryClient = new QueryClient({
  */
 export default function App({ Component, pageProps }) {
   const router = useRouter()
-  const [user, setUser] = useState()
+  const [user, setUser] = useState(null)
 
   const handleIsLoggedIn = useCallback(async () => {
     const data = await isLoggedIn()
@@ -60,6 +60,10 @@ export default function App({ Component, pageProps }) {
     })
   }, [])
 
+  function handleClearUser() {
+    setUser(null)
+  }
+
   if (pageProps.needsUser && !user) {
     return <Loading />
   }
@@ -85,7 +89,7 @@ export default function App({ Component, pageProps }) {
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider
           // @ts-ignore
-          value={user}
+          value={{ user, handleClearUser }}
         >
           <Layout {...pageProps}>
             {(props) => <Component {...pageProps} {...props} />}
