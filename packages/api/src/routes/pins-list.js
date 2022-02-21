@@ -30,7 +30,7 @@ export async function pinsList(event, ctx) {
     const data = await db.listUploads(user.id, params)
 
     // Not found
-    if (!data || data.length === 0) {
+    if (!data) {
       return new JSONResponse(
         {
           error: {
