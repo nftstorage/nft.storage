@@ -21,19 +21,17 @@ When working with off-chain references to NFTs (especially in contexts like gami
 2) Persistence: That the assets are available somewhere to be served back
 3) Performance: That the assets are served with load times that meet the expectations of users. 
 
-In previous blogs, we’ve argued about how to approach problems (1) and (2) - both of which are critical for ensuring is persisted and available with the guarantees users expect. Today, we’ll share an approach for leveraging the verifiability of content ids (CIDs) used by IPFS to deliver on this third objective. 
+In previous blogs, we’ve argued about how to approach problems (1) and (2) - both of which are critical for ensuring is persisted and available with the guarantees users expect. Today, we’ll share an approach for leveraging the verifiability of content IDs (CIDs) used by [IPFS](https://ipfs.io/) to deliver on this third objective. 
 
-When we put our data in [IPFS](https://ipfs.io/) we get to refer to it by content address. This immutable, verifiable, identifier puts our data on web3. HTTP URLs can also be built using the content identifier, which Web2 clients can fetch from the nearest [IPFS Gateway](https://docs.ipfs.io/concepts/ipfs-gateway/). This gives free access to a verifiable, global CDN.
-
-As a brief refresher - the URLs used by IPFS to reference content are hashes of the content (CIDs) using the [IPLD](https://ipld.io) data model. Hash based addresses mean we can reference, resolve, and verify content - regardless of where that content is actually stored. 
+As a brief refresher - the URIs used by IPFS to reference content are centered around CIDs, which are hashes of the content using the [IPLD](https://ipld.io) data model. Hash based addresses mean we can reference, resolve, and verify content - regardless of where that content is actually stored. 
 
 When serving content over IPFS, the two primary methods for doing so are via: 
-1) An IPFS node (which can check if content exists locally, or ask over the DHT to find peers that have the content)
-2) A gateway node (a node that will take an HTTP request with your CID, and do the function of (1) on your behalf). 
+1) An IPFS node (which can check if content exists locally, or find connected peers that have and can serve the content)
+2) A gateway node (a node that will take an HTTP request with your CID, and do the function of (1) on your behalf)
 
-Note that because in both cases the reference is to a CID - you don’t have to trust the content served to you is the content you requested (regardless of whether you ask for the data over a peer-to-peer network, or over HTTP), you as the recipient can verify that the content you’ve received back is actually the content you requested by checking to see if the data matches the CID! 
+Note that because in both cases the reference is to a CID - you don’t have to trust the content served to you is the content you requested (regardless of whether you ask for the data over a peer-to-peer network, or over HTTP), you as the recipient can verify that the content you’ve received back is actually the content you requested by checking to see if the data matches the CID!
 
-CID’s are cryptographically verifiable, which gives them strong performance and safety properties when referenced from smart contracts, apps, and integrity checkers. Hashes of other values, such a transaction or signature, don’t offer the same benefit. By exploiting the verifiability of web3 storage, we can use web2 infrastructure to access content with low latency. 
+CID’s are cryptographically verifiable, which gives them strong performance and safety properties when referenced from smart contracts, apps, and integrity checkers. Hashes of other values, such a transaction or signature, don’t offer the same benefit. By utilizing the verifiability of web3 storage, we can use Web2 infrastructure to access content with low latency. 
 
 ## Web 2.5
 
@@ -43,10 +41,12 @@ In most of these caching layers, developers tend to work with hashes of the unde
 
 Of course, this is a natural complement to the way in which CIDs are used as references inside the IPFS network! Applications can tune IPFS gateways for maximum performance by using the verifiable primitives of CIDs within the traditional infrastructure stack of web2. If you know your popular content, you can prime your gateway’s cache using the appropriate CIDs. Client requests can be served by the winner of a race between your caching layers and the IPFS DHT. From the user’s perspective this is transparent - as the CID allows the data they receive to be verified. 
 
-**Gateway.NFT.Storage**
+## NFT.Storage and Web2.5
 
-We’ve been putting the above into practice by building an IPFS Gateway CDN that is optimized for NFT data. When a new NFT is processed by [nft.storage](http://nft.storage) (either because it was uploaded directly or because it was indexed off a public chain), its content (metadata.json, images, and other assets) is not only archived to Filecoin, it is also primed into the edge cache at gateway.nft.storage. 
+We’ve been putting the above into practice in multiple ways. From a storage standpoint, our APIs are run on Cloudflare Workers, which are edge servers deployed to cover the vast majority of the globe with sub-second latency. And you can take advantage of the performance and reliability this infrastructure provides you completely trustlessly. Because CIDs are computed on the client-side, you don't actually have to trust that the CID we give you back is the correct one. And once an upload is stored on Filecoin storage providers, you can always verify that these storage providers are actually storing your data by checking the Filecoin chain for their [storage proofs](https://filecoin.io/blog/posts/what-sets-us-apart-filecoin-s-proof-system/). In fact, [as NFT.Storage decentralizes itself](https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/) as a service, you will even be able to verify the smart contracts enforcing long-term redundancy, renewal, and persistence.
 
-Our aim is for the resulting Gateway URLs to be the fastest way to load NFT assets and metadata. If you are building an NFT gallery or wallet, you can use our API to look up any NFT and retrieve a [gateway.nft.storage](http://gateway.nft.storage) url for it. This way you can offer your users lightning fast performance with web3 cryptographic integrity, without managing your own crawler, archive, or CDN.
+On the retrieval side, we are soon launching an IPFS Gateway CDN that is optimized for NFT data. When a new NFT is processed by [NFT.Storage](http://nft.storage) (either because it was uploaded directly or because it was indexed off a public chain), its content (metadata.json, images, and other assets) is not only archived to Filecoin, it is also primed into the edge cache.
+
+Our aim is for the resulting Gateway URLs to be the fastest way to load NFT assets and metadata. If you are building an NFT gallery or wallet, you can use our API to look up any NFT and retrieve an HTTP URL for it (that includes a CID). This way you can offer your users lightning fast performance with web3 cryptographic integrity, without managing your own crawler, archive, or CDN.
 
 The [gateway is open source](https://github.com/nftstorage/nft.storage/tree/main/packages/gateway), so if you have another application that could benefit from similar treatment, go ahead and spin one up. For instance, instead of preloading all the NFTs, yours could specialize in open source geographic or time series datasets, public domain music, or maybe the social media uploaded to your web2 app. In this way we expect our caching gateway to be useful even for legacy applications.
