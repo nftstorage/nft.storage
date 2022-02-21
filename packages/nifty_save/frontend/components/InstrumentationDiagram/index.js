@@ -22,7 +22,7 @@ import Loader from './loader'
 import Modal from '../Modal'
 import { useLongPoll } from './longpoll'
 
-const LONG_POLL_SPEED = 10 * 1000
+const LONG_POLL_SPEED = 20 * 1000
 
 export default function InstrumentationDiagram(props) {
   const { apiUrl } = props
