@@ -21,7 +21,7 @@ When working with off-chain references to NFTs (especially in contexts like gami
 2) Persistence: That the assets are available somewhere to be served back
 3) Performance: That the assets are served with load times that meet the expectations of users. 
 
-In previous blogs, we’ve argued about how to approach problems (1) and (2) - both of which are critical for ensuring is persisted and available with the guarantees users expect. Today, we’ll share an approach for leveraging the verifiability of content IDs (CIDs) used by [IPFS](https://ipfs.io/) to deliver on this third objective. 
+In previous blogs, we’ve argued about [how to approach problems (1) and (2)](https://nft.storage/blog/post/2021-12-14-storage-layer-maximalism/) - both of which are critical for ensuring is persisted and available with the guarantees users expect. Today, we’ll share an approach for leveraging the verifiability of content IDs (CIDs) used by [IPFS](https://ipfs.io/) to deliver on this third objective. 
 
 As a brief refresher - the URIs used by IPFS to reference content are centered around CIDs, which are hashes of the content using the [IPLD](https://ipld.io) data model. Hash based addresses mean we can reference, resolve, and verify content - regardless of where that content is actually stored. 
 
