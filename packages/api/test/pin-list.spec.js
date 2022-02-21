@@ -10,6 +10,18 @@ describe('Pin list ', () => {
   })
 
   it('should pin with just cid', async () => {
+    // List
+    const resEmptyPinList = await fetch('pins?status=queued,pinning', {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${client.token}` },
+    })
+    const valueEmptyPinList = await resEmptyPinList.json()
+    assert.strictEqual(
+      valueEmptyPinList.count,
+      0,
+      'Server response with empty pin requests'
+    )
+
     // Pin request
     const cid = 'bafkreihwlixzeusjrd5avlg53yidaoonf5r5srzumu7y5uuumtt7rxxbrm'
     const resPinCreate = await fetch('pins', {
