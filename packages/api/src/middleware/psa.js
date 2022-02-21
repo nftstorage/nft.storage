@@ -37,7 +37,9 @@ export function withPsaErrorHandler(handler) {
  */
 function hasTag(user, tagName, value) {
   return Boolean(
-    user.tags?.find((tag) => tag.tag === tagName && tag.value === value)
+    user.tags?.find(
+      (tag) => tag.tag === tagName && tag.value === value && !tag.deleted_at
+    )
   )
 }
 

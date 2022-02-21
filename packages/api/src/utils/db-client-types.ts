@@ -20,7 +20,7 @@ export type UserOutputKey = Pick<
 
 export type UserOutputTag = Pick<
   definitions['user_tag'],
-  'user_id' | 'id' | 'tag' | 'value'
+  'user_id' | 'id' | 'tag' | 'value' | 'deleted_at'
 >
 
 export type UserOutput = definitions['user'] & {
