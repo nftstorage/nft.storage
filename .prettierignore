@@ -22,3 +22,5 @@ CHANGELOG.md
 *.toml
 packages/client/src/lib/interface.ts
 *.mdx
+public/sitemap.xml
+public/robots.txt
