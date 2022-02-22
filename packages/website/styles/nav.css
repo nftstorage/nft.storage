@@ -20,6 +20,9 @@
 .navbar .mobile-nav-link {
   font-size: 1.5rem;
 }
+.navbar .nav-logo-link {
+  transform: scale(0.8);
+}
 
 /* 640px */
 @media screen and (min-height: 40em) {
@@ -35,6 +38,9 @@
   }
   .navbar .mobile-nav-link {
     font-size: 3rem;
+  }
+  .navbar .nav-logo-link {
+    transform: scale(0.9);
   }
 }
 
