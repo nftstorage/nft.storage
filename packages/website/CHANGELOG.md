@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.26.0](https://github.com/nftstorage/nft.storage/compare/website-v1.25.2...website-v1.26.0) (2022-02-22)
+
+
+### Features
+
+* additional language on why nft.storage ([#1436](https://github.com/nftstorage/nft.storage/issues/1436)) ([0eefb7c](https://github.com/nftstorage/nft.storage/commit/0eefb7c2709f906e29056f596995757105de1b19))
+
+
+### Bug Fixes
+
+* fix client-gen script and openapi schema ([#1371](https://github.com/nftstorage/nft.storage/issues/1371)) ([3aaf9d1](https://github.com/nftstorage/nft.storage/commit/3aaf9d18505fac36926560aa021ec30587c472ad))
+* logo alignment and blurriness ([#1438](https://github.com/nftstorage/nft.storage/issues/1438)) ([caf5fe6](https://github.com/nftstorage/nft.storage/commit/caf5fe66da0fae4bce2e7b52e13337df6d551f7d))
+* refetch issues on /files ([#1437](https://github.com/nftstorage/nft.storage/issues/1437)) ([e2a9c39](https://github.com/nftstorage/nft.storage/commit/e2a9c39427a2fdf81803f8d469428a1dfb709a2a))
+* remove top level and only entry point via css ([#1399](https://github.com/nftstorage/nft.storage/issues/1399)) ([bf941d4](https://github.com/nftstorage/nft.storage/commit/bf941d4bfb001ba963f1d5439915412e25951cbc))
+
 ### [1.25.2](https://github.com/nftstorage/nft.storage/compare/website-v1.25.1...website-v1.25.2) (2022-02-17)
 
 
