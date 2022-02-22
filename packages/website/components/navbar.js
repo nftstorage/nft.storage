@@ -9,6 +9,7 @@ import clsx from 'clsx'
 import countly from '../lib/countly'
 import { getMagic } from '../lib/magic.js'
 import { useQueryClient } from 'react-query'
+import Logo from '../components/logo'
 
 /**
  * Navbar Component
@@ -142,15 +143,11 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
           </Button>
         </div>
         <Link href={{ pathname: '/', query: version ? { version } : null }}>
-          <a className="flex no-underline v-mid" onClick={onLinkClick}>
-            <img
-              src={logo.src}
-              width="210"
-              height="79"
-              className="nav-logo"
-              style={{ maxWidth: '40vw', height: 'auto' }}
-              alt="NFT Storage Logo"
-            />
+          <a
+            className="nav-logo-link flex no-underline v-mid"
+            onClick={onLinkClick}
+          >
+            <Logo dark={logo.isDark} />
           </a>
         </Link>
         <div className="flex items-center">
@@ -223,15 +220,8 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
       >
         <div className="flex flex-column items-center text-center mt4">
           <Link href="/">
-            <a className="flex no-underline v-mid">
-              <img
-                src={logo.src}
-                width="210"
-                height="79"
-                className="mobile-nav-logo"
-                style={{ maxWidth: '50vw', height: 'auto' }}
-                alt="NFT Storage Logo"
-              />
+            <a className="mobile-nav-menu-logo flex no-underline v-mid">
+              <Logo dark={logo.isDark} />
             </a>
           </Link>
         </div>
