@@ -54,6 +54,7 @@ export default function Files({ user }) {
     (ctx) => getNfts(ctx.queryKey[1]),
     {
       enabled: !!user,
+      refetchOnWindowFocus: false,
     }
   )
 
