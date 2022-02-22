@@ -34,12 +34,6 @@ h6 {
 
 .blog .highlight-card-buttons {
   flex-direction: column;
-  align-items: center;
-  margin: 0;
-}
-
-.blog .highlight-card-buttons button {
-  width: 100%;
 }
 
 .blog #blog-highlight-subscribe {
@@ -54,8 +48,6 @@ h6 {
 @media screen and (min-width: 375px) {
   .blog .highlight-card-buttons {
     flex-direction: row;
-    align-content: center;
-    margin-left: 0.5rem;
   }
   .blog .blog-card {
     width: 300px;
@@ -65,9 +57,6 @@ h6 {
   }
   .blog #blog-highlight-read-more {
     margin: 0;
-  }
-  .blog .highlight-card-buttons button {
-    width: unset;
   }
 }
 
