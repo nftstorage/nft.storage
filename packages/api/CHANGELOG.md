@@ -1,5 +1,14 @@
 # Changelog
 
+### [2.15.1](https://github.com/nftstorage/nft.storage/compare/api-v2.15.0...api-v2.15.1) (2022-02-22)
+
+
+### Bug Fixes
+
+* add durable object types ([#1212](https://github.com/nftstorage/nft.storage/issues/1212)) ([ffc9934](https://github.com/nftstorage/nft.storage/commit/ffc9934037795e2e16c816139d336c2bbb83b3c1))
+* psa list empty ([#1432](https://github.com/nftstorage/nft.storage/issues/1432)) ([df96ce0](https://github.com/nftstorage/nft.storage/commit/df96ce0280affdaaa098d7c1ea85e438afd6de9e))
+* update ipfs car and client ([#1373](https://github.com/nftstorage/nft.storage/issues/1373)) ([2b61549](https://github.com/nftstorage/nft.storage/commit/2b61549f4f31684a6afca28c9f7ed39dc076ada2))
+
 ## [2.15.0](https://github.com/nftstorage/nft.storage/compare/api-v2.14.1...api-v2.15.0) (2022-02-08)
 
 
