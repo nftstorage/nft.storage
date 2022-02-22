@@ -1,4 +1,4 @@
 {
-  "api-docs": "Client",
-  "lib": "Lib"
+  "js": { "title": "JavaScript", "type": "docs" },
+  "generated": "OpenAPI generated clients"
 }
