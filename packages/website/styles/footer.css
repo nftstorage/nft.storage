@@ -8,3 +8,19 @@
   width: 1.5rem;
   fill: #fff;
 }
+
+.pl-byline {
+  display: flex;
+  align-items: center;
+}
+
+.pl-logo {
+  display: inline-flex;
+  align-items: center;
+}
+
+.pl-logo svg {
+  width: 1.2rem;
+  margin: 0 0.4rem;
+  fill: #fff;
+}
