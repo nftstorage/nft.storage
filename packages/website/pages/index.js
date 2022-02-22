@@ -207,7 +207,8 @@ function About() {
               <p className="lh-copy">
                 <strong>NFT.Storage</strong> is a long-term storage service
                 designed for <strong>off-chain</strong> NFT data (like metadata,
-                images, and other assets) for up to 31GiB in size. Data is{' '}
+                images, and other assets) for up to 31GiB in size per individual
+                upload. Data is{' '}
                 <a
                   href="https://nftschool.dev/concepts/content-addressing"
                   className="black"
