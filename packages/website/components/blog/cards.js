@@ -81,7 +81,7 @@ export const HighlightCard = ({ post }) => (
                 pathname: `/blog/post/${post.slug}`,
               }}
               className="mw4 pv3 ph3 cta"
-              id="read-more"
+              id="blog-highlight-read-more"
             >
               Read More
             </Button>
@@ -90,7 +90,7 @@ export const HighlightCard = ({ post }) => (
                 pathname: '/blog/subscribe',
               }}
               className="mw4 ml4 pv3 cta"
-              id="card-subscribe"
+              id="blog-highlight-subscribe"
               tracking={{
                 ui: countly.ui.BLOG_CARD,
                 action: 'Subcribe',
