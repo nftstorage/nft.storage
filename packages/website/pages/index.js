@@ -316,14 +316,11 @@ function GettingStarted() {
           <HashLink id="getting-started">Getting started is Easy</HashLink>
         </h2>
         <div className="getting-started-callout">
-          <img
-            src="https://user-images.githubusercontent.com/22168118/146547661-afddfed5-d26e-49e2-8ff1-c32e8ccb7bc1.png"
-            alt="getting-started"
-          />
-          <ol className="list pl0 mb5">
+          <img src="/images/getting-started.png" alt="getting-started" />
+          <ol className="list pl0 mb2">
             <li>
               <Step>1</Step>
-              <p className="chicagoflf f3 center mb4 lh-copy">
+              <p className="chicagoflf f4 f3-ns center mb4 lh-copy">
                 <Link href="/login">
                   <a className="nsblue" onClick={onClickHandler}>
                     Create an NFT.Storage account
@@ -334,7 +331,7 @@ function GettingStarted() {
             </li>
             <li>
               <Step>2</Step>
-              <p className="chicagoflf f3 center lh-copy">
+              <p className="chicagoflf f4 f3-ns center lh-copy">
                 Mint your NFTs on any blockchain, and share them with any
                 gallery.
               </p>
@@ -342,7 +339,7 @@ function GettingStarted() {
           </ol>
         </div>
         <div className="mv5 center tc">
-          <h4 className="mv4 chicagoflf">
+          <h4 className="f3-ns f4 mv4 chicagoflf">
             Are You a Developer? We have an API for that
           </h4>
           <div className="flex justify-center">
