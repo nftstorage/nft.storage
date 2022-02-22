@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.0](https://github.com/nftstorage/nft.storage/compare/website-v1.26.0...website-v1.27.0) (2022-02-22)
+
+
+### Features
+
+* blog post on web2.5 ([#1434](https://github.com/nftstorage/nft.storage/issues/1434)) ([71cff59](https://github.com/nftstorage/nft.storage/commit/71cff59eeac7eb72fddbab3c7fc65e049f211c35))
+
 ## [1.26.0](https://github.com/nftstorage/nft.storage/compare/website-v1.25.2...website-v1.26.0) (2022-02-22)
 
 
