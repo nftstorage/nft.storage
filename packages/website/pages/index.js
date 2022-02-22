@@ -167,7 +167,7 @@ function About() {
         </a>
         , or by using{' '}
         <a
-          href="https://github.com/nftstorage/ipfs-desktop"
+          href="https://github.com/ipfs/ipfs-desktop"
           className="black"
           target="_blank"
           rel="noopener noreferrer"
