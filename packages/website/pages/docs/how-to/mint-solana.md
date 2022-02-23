@@ -16,7 +16,7 @@ At the most fundamental level, an NFT on Solana is defined by the Solana Program
 
 To build feature-rich NFTs, the Solana community has developed standards on top of the basic NFT functionality provided by the Token program which allow "decorating" a token with metadata describing the token and its properties.
 
-This guide will focus on [Metaplex](https://metaplex.com), which is currently the most popular and fully featured NFT standard on Solana, enabling thousands of NFT projects. If you're using a different Solana program to mint your NFTs, the principles here will still apply, but you may need to use different tools and metadata conventions.
+This guide will focus on [Metaplex](https://metaplex.com), which is currently the most popular and fully featured NFT standard on Solana, enabling thousands of NFT projects.
 
 ## Metaplex NFT overview
 
