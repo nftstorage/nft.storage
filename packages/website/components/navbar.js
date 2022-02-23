@@ -225,7 +225,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
             </a>
           </Link>
         </div>
-        <div className="mobile-nav-items flex flex-column items-center justify-center text-center pv4 flex-auto">
+        <div className="mobile-nav-items flex flex-column items-center justify-center text-center pv4 flex-auto overflow-y-scroll">
           {ITEMS.map((item, index) => (
             <div
               className="mobile-nav-item"

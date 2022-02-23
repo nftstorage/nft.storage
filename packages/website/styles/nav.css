@@ -32,7 +32,7 @@
 }
 
 /* 576px */
-@media screen and (min-width: 36em) {
+@media screen and (min-width: 36em) and (orientation: portrait) {
   .navbar .mobile-nav-item {
     padding: 1rem;
   }
