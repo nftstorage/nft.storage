@@ -4,17 +4,18 @@ title: Mint NFTs on Solana with Metaplex
 
 import Callout from 'nextra-theme-docs/callout';
 
+# Store and mint NFTs on Solana with Metaplex
 
-The [Solana](https://solana.com) blockchain is a high-performance, permissionless blockchain that has rapidly grown and found an enthusiastic community in the NFT space.
+[Solana](https://solana.com) is a high-performance, permissionless blockchain that has rapidly grown and found an enthusiastic community in the NFT space.
 
 With NFT.Storage, you can upload all the off-chain data for your Solana NFTs, including images, videos, animations, and metadata, leveraging the power of [decentralized storage][concepts-decentralized-storage] to preserve your NFT data and make it available on the web.
 
-<!-- TODO: include this once https://github.com/metaplex-foundation/metaplex/pull/1757 is merged:
+{ /* TODO: include this once https://github.com/metaplex-foundation/metaplex/pull/1757 is merged:
 
 You can even upload data for Solana NFTs without an NFT.Storage account! By using a signature from your Solana wallet, you (or your users, if you're building a platform) can make free uploads to NFT.Storage without an NFT.Storage API key.
--->
+*/ }
 
-At the most fundamental level, an NFT on Solana is defined by the Solana Program Library's [Token program](https://spl.solana.com/token), which enables the creation of both fungible and non-fungible tokens on Solana. While it's possible to [create NFTs through the Token program directly](https://spl.solana.com/token#example-create-a-non-fungible-token), tokens created in this way have no associated metadata or intrinsic "meaning", and are essentially just unique identifiers that can be owned by a Solana account.
+At the most fundamental level, an NFT on Solana is defined by the Solana Program Library's [Token program](https://spl.solana.com/token), which enables the creation of both fungible and non-fungible tokens on Solana. While it's possible to [create NFTs through the Token program directly](https://spl.solana.com/token#example-create-a-non-fungible-token), tokens created in this way have no associated metadata or intrinsic "meaning" and are essentially just unique identifiers that can be owned by a Solana account.
 
 To build feature-rich NFTs, the Solana community has developed standards on top of the basic NFT functionality provided by the Token program which allow "decorating" a token with metadata describing the token and its properties.
 
@@ -34,7 +35,15 @@ The newly created token account is then registered with the Metaplex [Token Meta
 
 The URI for the extended metadata is important, as the extended metadata contains all the information about the images and other media files associated with the NFT, as well as things like a description and whatever custom properties you might need.
 
+There are many ways to create and distribute Metaplex NFTs, some of which are tailored for a particular use case. This guide will focus on "Candy Machines", which are designed to mint NFTs in a random, unpredictable manner upon request, similar to a gumball machine that dispenses a random flavor when given a coin.
+
+Candy Machines are often used for generative art NFTs and profile pic (PFP) collections, where hundreds or thousands of NFTs may comprise a collection. Our example will be smaller in scope, but you can scale up the technique as far as you need.
+
+Later you'll [use a tool called the Candy Machine CLI](#using-candy-machine-cli) to handle the process of uploading NFT data, creating the token, and minting NFTs. First, see the section below to learn how to [prepare your metadata](#preparing-your-metadata) for upload.
+
 ## Preparing your metadata
+
+Before you can configure and create a Candy Machine, you'll need to prepare some metadata that describes each NFT in the collection.
 
 The [Metaplex Token Standard][metaplex-token-standard] defines the standard metadata fields for Metaplex NFTs. This includes both the on-chain and off-chain components.
 
@@ -84,28 +93,77 @@ Please note that this example does not show all possible metadata fields. Consul
 
 ## Using candy machine cli
 
-A Candy Machine is a Solana program that ...
+The Candy Machine CLI is a command-line tool written in TypeScript that takes images and their associated metadata and turns them into a collection of NFTs that can be minted from an on-chain Solana Candy Machine program.
 
 ### Pre-requisites
 
-TODO: list pre-reqs:
+There are a few things you'll need to set up before you can run the Candy Machine CLI, including git, Node.js, and the Solana command-line tools.
 
-- [ ] solana keypair (for devnet)
-- [ ] airdrop devnet SOL to new wallet
-- [ ] software needed:
-  - [ ] solana cli tools
-  - [ ] git
-  - [ ] node
-  - [ ] ts-node
+It's best to head over to the official Candy Machine [Getting Started guide][cmv2-getting-started], which is kept up to date with the current required versions of everything you'll need. 
 
+The remainder of this guide will assume that you've installed the recommended tools and have cloned the [`metaplex` git repository](https://github.com/metaplex-foundation/metaplex) to your home folder at `~/metaplex`. 
+
+You should also have a wallet for the Solana devnet with a few devnet SOL to play with, and this guide will assume that the key file lives at `~/.config/solana/devnet.json` as in the Getting Started guide. If your key lives elsewhere, make sure to update the example commands with the correct location.
+
+If everything is installed correctly, you should be able to run the following command to get some help text from the cli tool:
+
+```bash
+ts-node ~/metaplex/js/packages/cli/src/candy-machine-v2-cli.ts --help
+```
+
+It can be a bit awkward to type all that each time you want to run a command, so if you like, you can make an alias with your shell. The details will depend on which shell you use - for Bash and compatible shells, you can use this command to create an alias named `candy-machine`:
+
+```bash
+alias candy-machine="ts-node ~/metaplex/js/packages/cli/src/candy-machine-v2-cli.ts"
+```
+
+Now you should be able to run `candy-machine --help` to see the same help output as before. To make this alias permanent, you'll need to add it to one of the configuration files for your shell, for example, `.profile` or `.bashrc`.
+
+<Callout emoji="ℹ️">
+Throughout the rest of the guide, we'll use the `candy-machine` alias to keep the examples focused on the rest of the command line arguments. If you decide not to set up an alias, remember to replace `candy-machine` with the full `ts-node ~/metaplex/js/packages/cli/src/candy-machine-v2-cli.ts` command when running the example commands.
+</Callout>
 
 ### Candy machine configuration
 
-- [ ] How to install (link to official docs)
-- [ ] How to set `nft-storage` config option
-- [ ] How to optionally set `nftStorageKey` and why
-  - why: so you can see the uploads in your account, etc
-  - what happens if not: quick explainer about wallet sig auth
+Each Candy Machine project that you create is defined by two things. 
+
+First, a JSON [configuration file][cmv2-config] defines settings that apply to the entire project. This includes the price to mint an NFT from the machine (in SOL or another fungible SPL token), the Solana account that should recieve the payment, and settings related to how and when NFTs should be made available for sale.
+
+Here's a minimal configuration file that uses NFT.Storage for uploads:
+
+```json
+{
+    "price": 1.0,
+    "number": 10,
+    "gatekeeper": null,
+    "solTreasuryAccount": "<YOUR WALLET ADDRESS>",
+    "splTokenAccount": null,
+    "splToken": null,
+    "goLiveDate": "25 Dec 2022 00:00:00 GMT",
+    "endSettings": null,
+    "whitelistMintSettings": null,
+    "hiddenSettings": null,
+    "storage": "nft-storage",
+    "nftStorageKey": "<YOUR NFT STORAGE TOKEN>",
+    "ipfsInfuraProjectId": null,
+    "ipfsInfuraSecret": null,
+    "awsS3Bucket": null,
+    "noRetainAuthority": false,
+    "noMutable": false
+}
+```
+
+You'll need to replace `<YOUR WALLET ADDRESS>` with the address of your solana wallet, and `<YOUR NFT STORAGE TOKEN>` with an API key for NFT.Storage.
+
+See the [configuration documentation][cmv2-config] for details about the other arguments.
+
+The second thing you need is a directory full of NFT assets and metadata. This directory contains a collection of images named in a numeric sequence starting at zero, e.g., `0.png`, `1.png`, etc. 
+
+For each image file, there needs to be a corresponding `.json` file with the same number (`0.json`, etc) that includes metadata for the corresponding image. This metadata should be in the format described in the [Preparing your metadata section](#preparing-your-metadata) above.
+
+<Callout emoji="❗">
+It's important that the `number` field in your configuration JSON matches the number of NFTs in your assets directory. For example, if `number` is set to `10`, you should have ten image and metadata pairs, numbered 0 - 9.
+</Callout>
 
 ### Uploading NFTs with Candy Machine
 
@@ -132,3 +190,5 @@ TODO: list pre-reqs:
 [metaplex-docs-token-standard]: https://docs.metaplex.com/token-metadata/Versions/v1.0.0/nft-standard
 
 [metaplex-token-standard]: https://docs.metaplex.com/token-metadata/specification
+[cmv2-getting-started]: http://docs.metaplex.com/candy-machine-v2/getting-started
+[cmv2-config]: http://docs.metaplex.com/candy-machine-v2/configuration
