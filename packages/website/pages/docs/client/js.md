@@ -153,3 +153,4 @@ The entry for the data will be removed from your account's file listing page, an
 [npm-package]: https://npmjs.com/package/nft.storage
 [mdn-blob]: https://developer.mozilla.org/en-US/docs/Web/API/Blob
 [mdn-file]: https://developer.mozilla.org/en-US/docs/Web/API/File
+[erc-1155]: https://eips.ethereum.org/EIPS/eip-1155
