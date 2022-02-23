@@ -102,14 +102,15 @@ function About() {
         URL (<code>ipfs://&lt;cid&gt;</code>). Use this IPFS URL in your NFT
         data to refer to <strong>off-chain</strong> data (e.g., the metadata
         field in your NFT, the image field in your metadata) as a pointer to the
-        content.
+        content itself, so no one can dispute what your NFT is.
       </p>
       <p className="lh-copy">
         Filecoin provides long-term storage for the data ensuring that even if
-        NFT.Storage is attacked or taken down the NFT data persists! And
-        NFT.Storage will continue to decentralize itself out of the picture
-        moving forward (e.g., making perpetual storage completely smart
-        contract-based utilizing future tools like the{' '}
+        NFT.Storage is attacked or taken down the NFT data persists! This storage
+        is trustlessly verifiable (with on-chain, cryptographic proofs that data
+        is stored as promised). And NFT.Storage will continue to decentralize 
+        itself out of the picture moving forward (e.g., making perpetual 
+        storage completely smart contract-based utilizing future tools like the{' '}
         <a
           className="black"
           href="https://filecoin.io/blog/posts/introducing-the-filecoin-virtual-machine/"
