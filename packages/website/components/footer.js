@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Discord from '../icons/discord'
 import Twitter from '../icons/twitter'
 import Github from '../icons/github'
-
+import PLLogo from '../icons/protocolLabs'
 import countly from '../lib/countly'
 
 export default function Footer() {
@@ -17,13 +17,14 @@ export default function Footer() {
   return (
     <footer className="bg-black db db-m flex-ns items-center justify-between f7 white pv3 ph5">
       <div>
-        <span className="db db-m dib-ns mv3">
+        <span className="mv3 pl-byline">
           Made with ❤️ by{' '}
           <a
             href="https://protocol.ai/"
-            className="nspink underline-hover no-underline"
+            className="nspink underline-hover no-underline pl-logo"
             onClick={onLinkClick}
           >
+            <PLLogo />
             Protocol Labs
           </a>
         </span>
