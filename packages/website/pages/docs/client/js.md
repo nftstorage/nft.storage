@@ -5,7 +5,7 @@ import Callout from 'nextra-theme-docs/callout';
 
 The [`nft.storage` JavaScript package][npm-package] is a small and easy-to-use library that can have your JavaScript or TypeScript project integrated with NFT.Storage in minutes.
 
-The JavaScript client uses the [HTTP API][reference-http-api] to send your data to the NFT.Storage service as a collection of [Content Archives (CARs)][concepts-car]. Encoding data into CARs locally allows you to send files that would otherwise be too large to fit within the API's size limits, as the client will automatically split large CARs into smaller pieces and re-assemble them once they are all received. 
+The JavaScript client uses the [HTTP API][reference-http-api] to send your data to the NFT.Storage service as a collection of [Content Archives (CARs)][concepts-car]. Encoding data into CARs locally allows you to send files that would otherwise be too large to fit within the API's size limits, as the client will automatically split large CARs into smaller pieces and the service will re-assemble them once they are all received. 
 
 Encoding the data locally has another benefit of reducing the trust required of the NFT.Storage service. By calculating all of the [Content Identifiers (CIDs)][concepts-cid] for your data yourself, you can make sure that the data you send is exactly what gets provided to the network. Any alteration of your data by the NFT.Storage service or a third party "monster in the middle" would result in a different CID, which the client will reject as an error.
 
