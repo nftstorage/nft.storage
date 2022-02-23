@@ -32,7 +32,7 @@ export const Card = ({ post }) => (
         <p className="line-clamp-2 mb2 f5" title={post.description}>
           {post.description}
         </p>
-        <div className="flex">
+        <div className="blog-card-meta">
           <span className="darker-gray f6 mr2">{post.author}</span>
           <span className="darker-gray f6">{post.date}</span>
         </div>

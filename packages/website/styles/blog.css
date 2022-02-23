@@ -234,6 +234,17 @@ h6 {
   grid-template-columns: repeat(auto-fill, var(--card-size));
 }
 
+@media screen and (max-width: 460px) {
+  .blog .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-card-meta span {
+    display: block;
+    line-height: 1.5;
+  }
+}
+
 .blog .btn-secondary {
   border: 1px solid var(--nsblack);
   background-color: var(--nspeach);
@@ -381,7 +392,7 @@ h6 {
 
 @media screen and (max-width: 460px) {
   .blog .blog-card {
-    width: 300px;
+    width: 100%;
     justify-self: center;
   }
 }
