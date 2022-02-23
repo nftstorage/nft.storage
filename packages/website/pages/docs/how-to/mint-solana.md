@@ -86,7 +86,7 @@ The `properties.files` array contains metadata about any files associated with t
 
 All NFTs that include an `image` will have at least one entry in `properties.files` with a `uri` that is equal to the value of the `image` field. As with the `image` field, this example shows a local file path, but this will be replaced with the URL for the uploaded image once it has been stored with NFT.Storage.
 
-Please note that this example does not show all possible metadata fields. Consult the [metadata standard][metaplex-metadata-standard] for the complete specification.
+Please note that this example does not show all possible metadata fields. Consult the [metadata standard][metaplex-token-standard] for the complete specification.
 
 ## Using candy machine cli
 
