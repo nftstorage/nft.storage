@@ -8,9 +8,9 @@ import Callout from 'nextra-theme-docs/callout';
 
 [Solana](https://solana.com) is a high-performance, permissionless blockchain that has rapidly grown and found an enthusiastic community in the NFT space.
 
-With NFT.Storage, you can upload all the off-chain data for your Solana NFTs, including images, videos, animations, and metadata, leveraging the power of [decentralized storage][concepts-decentralized-storage] to preserve your NFT data and make it available on the web.
+With NFT.Storage, you can upload all the off-chain data for your Solana NFTs, including images, videos, animations, and metadata, leveraging the power of [decentralized storage][concepts-decentralized-storage] to preserve your NFT data and make it available on the web. NFT.Storage uses IPFS to reference data with using a universal identifier (meaning no one can argue what your NFT is of), and Filecoin to provide multi-generational, verifiable storage (with on-chain, cryptographic proofs trustlessly showing that those saying are storing your data are actually doing so, and storage designed to get cheaper as the network grows). Read more about NFT.Storage [here][why-nft-storage]!
 
-You can even upload data for Solana NFTs without an NFT.Storage account! By using a signature from your Solana wallet, you (or your users, if you're building a platform) can make free uploads to NFT.Storage without an NFT.Storage API key.
+You can upload data for Solana NFTs with or without an NFT.Storage account! By using a signature from your Solana wallet, you (or your users, if you're building a platform) can make free uploads to NFT.Storage without an NFT.Storage API key.
 
 At the most fundamental level, an NFT on Solana is defined by the Solana Program Library's [Token program](https://spl.solana.com/token), which enables the creation of both fungible and non-fungible tokens on Solana. While it's possible to [create NFTs through the Token program directly](https://spl.solana.com/token#example-create-a-non-fungible-token), tokens created in this way have no associated metadata or intrinsic "meaning" and are essentially just unique identifiers that can be owned by a Solana account.
 
@@ -50,7 +50,7 @@ The on-chain metadata also includes a `uri` field that links to a JSON document 
 
 For this guide, we're mostly going to focus on the JSON document with the off-chain metadata. The parts relating to keys and ownership will be covered in the [Candy Machine configuration](#candy-machine-configuration) section below.
 
-This is the basic metadata format for a very simple Metaplex NFT:
+This is the basic off-chain metadata format for a very simple Metaplex NFT:
 
 ```json
 {
@@ -120,7 +120,7 @@ Now you should be able to run `candy-machine --help` to see the same help output
 Throughout the rest of the guide, we'll use the `candy-machine` alias to keep the examples focused on the rest of the command line arguments. If you decide not to set up an alias, remember to replace `candy-machine` with the full `ts-node ~/metaplex/js/packages/cli/src/candy-machine-v2-cli.ts` command when running the example commands.
 </Callout>
 
-### Candy machine configuration
+### Candy Machine configuration
 
 Each Candy Machine project that you create is defined by two things. 
 
@@ -152,7 +152,7 @@ Here's a minimal configuration file that uses NFT.Storage for uploads:
 
 You'll need to replace `<YOUR WALLET ADDRESS>` with the address of your solana wallet.
 
-You can also optionally set the `nftStorageKey` field to an NFT.Storage API key, which will cause the uploads to appear in your NFT.Storage account's file listing. 
+If you want to use your personal NFT.Storage account to track and manage uploads associated with your account, you can also optionally set the `nftStorageKey` field to an NFT.Storage API key, which will cause the uploads to appear in your NFT.Storage account's file listing. You can create an API key in your Account page when you're logged in to [NFT.Storage](https://nft.storage/).
 
 If you do not provide an NFT.Storage API key, your Solana wallet key will be used to create a signature to authorize the upload, using the [metaplex-auth library][metaplex-auth-github].
 
@@ -269,7 +269,7 @@ wallet public key: N4f6zftYsuu4yT7icsjLwh4i6pB1zvvKbseHj2NmSQw
 mint_one_token finished 3R9XADK91RWESj3FZdzB2QXHchpjwcS5khdwZVoSd3petHyqt2T6MjntMxozX2meRFyaFZEsqjPxbCUjxz5eL5z9
 ```
 
-If you now check your wallet, for example in the [Solana explorer](https://explorer.solana.com), you should see the new token.
+If you now check your wallet, for example in the [Solana Explorer](https://explorer.solana.com), you should see the new token.
 
 See the [Metaplex docs][cmv2-mint-tokens] for more examples, as well as a [guide to setting up a minting website][cmv2-minting-website] so that anyone can easily mint tokens for themselves.
 
@@ -277,13 +277,13 @@ See the [Metaplex docs][cmv2-mint-tokens] for more examples, as well as a [guide
 
 If you're eager to use NFT.Storage for your Solana NFTs but are not creating a Candy Machine, there are a few options.
 
-[Magic Eden](https://www.magiceden.io) is a Solana NFT marketplace and community that offers a full-service NFT minting program called [Launchpad](https://blog.magiceden.io/p/magic-eden-launchpad) that can take care of all the technical issues involved in minting Solana NFTs. Since Launchpad is integrated with NFT.Storage, you can take advantage of the [benefits of decentralized storage][concepts-decentralized-storage] without needing to write any code or learn about blockchain development.
+[Magic Eden](https://www.magiceden.io) is a Solana NFT marketplace and community that offers a full-service NFT minting program called [Launchpad](https://blog.magiceden.io/p/magic-eden-launchpad) that can take care of all the technical issues involved in minting Solana NFTs. Since Lanchpad is integrated with NFT.Storage, you can take advantage of the [benefits of decentralized storage][concepts-decentralized-storage] without needing to write any code or learn about blockchain development.
 
 On the other hand, if you're a Solana developer who wants even more technical details, you can use the [metaplex-auth library][metaplex-auth-github] directly in your NFT projects instead of through the Candy Machine CLI. 
 
 Using `metaplex-auth`, you can build applications that allow users to upload NFT data directly from the browser using their Solana wallet, so that they never need to create an NFT.Storage account to take advantage of its benefits.
 
-
+[why-nft-storage]: ../why-nft-storage/
 [concepts-decentralized-storage]: ../concepts/decentralized-storage/
 [metaplex-docs-token-standard]: https://docs.metaplex.com/token-metadata/Versions/v1.0.0/nft-standard
 
