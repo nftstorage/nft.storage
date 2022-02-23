@@ -18,6 +18,10 @@
 @import './tabs.css';
 @import './footer.css';
 
+html {
+  scroll-behavior: smooth;
+}
+
 .grid {
   display: grid;
 }
