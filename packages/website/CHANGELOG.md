@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.28.1](https://github.com/nftstorage/nft.storage/compare/website-v1.28.0...website-v1.28.1) (2022-02-23)
+
+
+### Bug Fixes
+
+* add solana how-to to path map ([#1465](https://github.com/nftstorage/nft.storage/issues/1465)) ([cb6ab26](https://github.com/nftstorage/nft.storage/commit/cb6ab260528d53eb21a25e0eb64ac96e1d6f0186))
+
 ## [1.28.0](https://github.com/nftstorage/nft.storage/compare/website-v1.27.1...website-v1.28.0) (2022-02-23)
 
 
