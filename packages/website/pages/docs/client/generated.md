@@ -4,6 +4,8 @@ If you're integrating NFT.Storage with a JavaScript project, the [JavaScript cli
 
 In addition to using the standard request libraries for your language, you can use client libraries generated from the [OpenAPI](https://www.openapis.org/) schema that describes the API.
 
+Please note that the generated clients are limited to uploads of 100 Mib per request. It's possible to recreate the behavior of the [JavaScript client][reference-js-client] and upload files of up to 31 Gib by first encoding your data into a Content Archive (CAR) and splitting the CAR into chunks of less than 100 Mib. Once all of the CAR chunks are uploaded, the complete file will be available for retrieval. See the [guide to CAR files][concepts-car] for more details on creating and splitting CARs.
+
 Generated clients are available for the following languages:
 
 - [Go](https://github.com/nftstorage/go-client)
