@@ -17,5 +17,6 @@ Generated clients are available for the following languages:
 
 Please see the repository for each client library for usage details.
 
+[concepts-car]: /docs/concepts/car-files
 [reference-http-api]: /api-docs/
 [reference-js-client]: /docs/client/js/
