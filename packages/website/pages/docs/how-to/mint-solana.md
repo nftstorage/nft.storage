@@ -42,7 +42,7 @@ Later you'll [use a tool called the Candy Machine CLI](#using-candy-machine-cli)
 
 Before you can configure and create a Candy Machine, you'll need to prepare some metadata that describes each NFT in the collection.
 
-The [Metaplex Token Standard][metaplex-token-standard] defines the standard metadata fields for Metaplex NFTs. This includes both the on-chain and off-chain components.
+The [Metaplex Token Standard][metaplex-token-standard] defines the standard metadata fields for Metaplex NFTs. This includes two separate metadata blobs: an on-chain metadata component, and an off-chain JSON file with extended metadata.
 
 The on-chain metadata contains the public keys of the Solana accounts that are authorized to mint and update the NFT, as well as some infromation about whether the NFT has been sold, what collection it belongs to, and other pieces of "state" relating to the NFT.
 
