@@ -31,8 +31,8 @@ export default function Footer() {
       </div>
       <div className="social-icons">
         <a
-          href="https://discord.com/channels/806902334369824788/831502708082081822"
-          title="nft.storage Discord"
+          href="https://discord.com/invite/KKucsCpZmY"
+          title="IPFS Discord (#nft-storage)"
           target="_blank"
           rel="noreferrer"
         >
