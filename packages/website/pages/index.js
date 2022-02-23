@@ -313,7 +313,7 @@ function GettingStarted() {
     <article className="bg-yellow">
       <div className="mw9 center pa4 pa5-ns">
         <h2 className="chicagoflf tc mb5">
-          <HashLink id="getting-started">Getting started is Easy</HashLink>
+          <HashLink id="getting-started">Getting started is easy</HashLink>
         </h2>
         <div className="getting-started-callout">
           <img src="/images/getting-started.png" alt="getting-started" />
@@ -322,7 +322,7 @@ function GettingStarted() {
               <Step>1</Step>
               <p className="chicagoflf f4 f3-ns center mb4 lh-copy">
                 <Link href="/login">
-                  <a className="nsblue" onClick={onClickHandler}>
+                  <a className="nsnavy" onClick={onClickHandler}>
                     Create an NFT.Storage account
                   </a>
                 </Link>{' '}
@@ -332,7 +332,7 @@ function GettingStarted() {
             <li>
               <Step>2</Step>
               <p className="chicagoflf f4 f3-ns center lh-copy">
-                Mint your NFTs on any blockchain, and share them with any
+                Mint your NFTs on any blockchain and share them with any
                 gallery.
               </p>
             </li>
@@ -340,7 +340,7 @@ function GettingStarted() {
         </div>
         <div className="mv5 center tc">
           <h4 className="f3-ns f4 mv4 chicagoflf">
-            Are You a Developer? We have an API for that
+            Are you a developer? We have an API for that!
           </h4>
           <div className="flex justify-center">
             <Button
