@@ -10,10 +10,7 @@ import Callout from 'nextra-theme-docs/callout';
 
 With NFT.Storage, you can upload all the off-chain data for your Solana NFTs, including images, videos, animations, and metadata, leveraging the power of [decentralized storage][concepts-decentralized-storage] to preserve your NFT data and make it available on the web.
 
-{ /* TODO: include this once https://github.com/metaplex-foundation/metaplex/pull/1757 is merged:
-
 You can even upload data for Solana NFTs without an NFT.Storage account! By using a signature from your Solana wallet, you (or your users, if you're building a platform) can make free uploads to NFT.Storage without an NFT.Storage API key.
-*/ }
 
 At the most fundamental level, an NFT on Solana is defined by the Solana Program Library's [Token program](https://spl.solana.com/token), which enables the creation of both fungible and non-fungible tokens on Solana. While it's possible to [create NFTs through the Token program directly](https://spl.solana.com/token#example-create-a-non-fungible-token), tokens created in this way have no associated metadata or intrinsic "meaning" and are essentially just unique identifiers that can be owned by a Solana account.
 
@@ -144,7 +141,7 @@ Here's a minimal configuration file that uses NFT.Storage for uploads:
     "whitelistMintSettings": null,
     "hiddenSettings": null,
     "storage": "nft-storage",
-    "nftStorageKey": "<YOUR NFT STORAGE TOKEN>",
+    "nftStorageKey": null,
     "ipfsInfuraProjectId": null,
     "ipfsInfuraSecret": null,
     "awsS3Bucket": null,
@@ -153,7 +150,11 @@ Here's a minimal configuration file that uses NFT.Storage for uploads:
 }
 ```
 
-You'll need to replace `<YOUR WALLET ADDRESS>` with the address of your solana wallet, and `<YOUR NFT STORAGE TOKEN>` with an API key for NFT.Storage.
+You'll need to replace `<YOUR WALLET ADDRESS>` with the address of your solana wallet.
+
+You can also optionally set the `nftStorageKey` field to an NFT.Storage API key, which will cause the uploads to appear in your NFT.Storage account's file listing. 
+
+If you do not provide an NFT.Storage API key, your Solana wallet key will be used to create a signature to authorize the upload, using the [metaplex-auth library][metaplex-auth-github].
 
 See the [configuration documentation][cmv2-config] for details about the other arguments.
 
@@ -165,25 +166,122 @@ For each image file, there needs to be a corresponding `.json` file with the sam
 It's important that the `number` field in your configuration JSON matches the number of NFTs in your assets directory. For example, if `number` is set to `10`, you should have ten image and metadata pairs, numbered 0 - 9.
 </Callout>
 
+In the end, your project directory should look something like this:
+
+```
+example-nft/
+├── assets
+│   ├── 0.json
+│   ├── 0.png
+│   ├── 1.json
+│   ├── 1.png
+│   ├── 2.json
+│   ├── 2.png
+│   ├── 3.json
+│   ├── 3.png
+│   ├── 4.json
+│   └── 4.png
+└── config.json
+```
+
+See the [official Metaplex docs on asset preparation for more][cmv2-prepare-assets].
+
 ### Uploading NFTs with Candy Machine
 
-- [ ] show upload cli command and expected output
-- [ ] show how to see new token in block explorer
-- [ ] show how to see token metadata uri and verify metadata
+Once you've [prepared your metadata](#preparing-your-metadata) and set up the [configuration file and asset directory](#candy-machine-configuration), you can upload your NFT data and create the new token.
+
+First, check the balance of your Solana wallet with `solana balance` to make sure you have some SOL available. If not, see the [Metaplex getting started guide][cmv2-getting-started] to learn how to get some devnet SOL.
+
+Now navigate to your project directory, which should include a `config.json` file and an `assets` directory with your images and metadata.
+
+You can now run the candy machine `upload` command, passing in your devnet Solana key file and the path to your configuration and assets:
+
+```shell
+candy-machine upload -e devnet -c example -k ~/.config/solana/devnet.json -cp config.json ./assets
+```
+
+The `-c example` flag sets the name for the local upload cache to "example". You can choose whatever name you like, but remember your choice for future commands.
+
+You should see output similar to this:
+
+```
+wallet public key: 3eoKfwCQ4jMBD5CEpLM8aCTZVN7wGQ9KTUBHhksmaZNh
+Beginning the upload for 5 (img+json) pairs
+started at: 1645646275683
+initializing candy machine
+initialized config for a candy machine with publickey: ANhEU5d5T5fE41UthWDKa6VEcST9v9Hx1ymEaAumsv1t
+Uploading Size 5 { mediaExt: '.png', index: '0' }
+Processing asset: 0
+Media Upload /home/yusef/work/projects/metaplex/cmv2/example-nft/assets/0.png
+Upload metadata
+Upload end
+Processing asset: 1
+Media Upload /home/yusef/work/projects/metaplex/cmv2/example-nft/assets/1.png
+Upload metadata
+Upload end
+Processing asset: 2
+Media Upload /home/yusef/work/projects/metaplex/cmv2/example-nft/assets/2.png
+Upload metadata
+Upload end
+Processing asset: 3
+Media Upload /home/yusef/work/projects/metaplex/cmv2/example-nft/assets/3.png
+Upload metadata
+Upload end
+Processing asset: 4
+Media Upload /home/yusef/work/projects/metaplex/cmv2/example-nft/assets/4.png
+Upload metadata
+Upload end
+Writing indices 0-4
+Done. Successful = true.
+ended at: 2022-02-23T19:58:42.635Z. time taken: 00:00:46
+```
+
+<Callout emoji="💡">
+If you get an error that `candy-machine` cannot be found, see the [Pre-requisites section](#pre-requisites) to set up an alias, or use the full `ts-node` command described in that section.
+</Callout>
 
 ### After uploading: next steps
 
-- [ ] What to do after uploading
-  - give example of running candy-machine mint command
-  - mention candy machine UI
-  - link to official metaplex minting docs
+Once you've run the `upload` command, your Candy Machine is ready to interact with. 
+
+Before minting tokens, it's best to verify the upload to make sure everything can be retrieved correctly.
+
+You can use the `verify_upload` Candy Machine cli command, passing in the name of the local cache file. In the upload example we used the `-c example` flag to set the cache file name, so we'll use the same flag here:
+
+```bash
+candy-machine verify_upload -e devnet -c example -k ~/.config/solana/devnet.json
+```
+
+If you see any errors, try running the `upload` command again.
+
+Once you've verified the upload, you can mint tokens from the Candy Machine. As the owner (or "authority") of the Candy Machine, you can mint tokens before the `goLiveDate` set in the configuration file.
+
+Use the `mint_one_token` command to mint a single token:
+
+```bash
+candy-machine mint_one_token -e devnet -c example -k ~/.config/solana/devnet.json
+```
+
+You should see something similar to:
+
+```
+wallet public key: N4f6zftYsuu4yT7icsjLwh4i6pB1zvvKbseHj2NmSQw
+mint_one_token finished 3R9XADK91RWESj3FZdzB2QXHchpjwcS5khdwZVoSd3petHyqt2T6MjntMxozX2meRFyaFZEsqjPxbCUjxz5eL5z9
+```
+
+If you now check your wallet, for example in the [Solana explorer](https://explorer.solana.com), you should see the new token.
+
+See the [Metaplex docs][cmv2-mint-tokens] for more examples, as well as a [guide to setting up a minting website][cmv2-minting-website] so that anyone can easily mint tokens for themselves.
 
 ## Other options
 
-- "can't someone else do it?"
-    - [ ] link to Magic Eden
-- "i want even more nerdy details / I'm a Solana wizard"
-    - [ ] link to metaplex-auth lib, explain that you can use it with any Solana program / signing key
+If you're eager to use NFT.Storage for your Solana NFTs but are not creating a Candy Machine, there are a few options.
+
+[Magic Eden](https://www.magiceden.io) is a Solana NFT marketplace and community that offers a full-service NFT minting program called [Lanuchpad](https://blog.magiceden.io/p/magic-eden-launchpad) that can take care of all the technical issues involved in minting Solana NFTs. Since Lanchpad is integrated with NFT.Storage, you can take advantage of the [benefits of decentralized storage][concepts-decentralized-storage] without needing to write any code or learn about blockchain development.
+
+On the other hand, if you're a Solana developer who wants even more technical details, you can use the [metaplex-auth library][metaplex-auth-github] directly in your NFT projects instead of through the Candy Machine CLI. 
+
+Using `metaplex-auth`, you can build applications that allow users to upload NFT data directly from the browser using their Solana wallet, so that they never need to create an NFT.Storage account to take advantage of its benefits.
 
 
 [concepts-decentralized-storage]: ../concepts/decentralized-storage/
@@ -192,3 +290,8 @@ It's important that the `number` field in your configuration JSON matches the nu
 [metaplex-token-standard]: https://docs.metaplex.com/token-metadata/specification
 [cmv2-getting-started]: http://docs.metaplex.com/candy-machine-v2/getting-started
 [cmv2-config]: http://docs.metaplex.com/candy-machine-v2/configuration
+[cmv2-prepare-assets]: http://docs.metaplex.com/candy-machine-v2/preparing-assets
+[cmv2-mint-tokens]: http://docs.metaplex.com/candy-machine-v2/mint-tokens
+[cmv2-minting-website]: http://docs.metaplex.com/candy-machine-v2/mint-frontend
+
+[metaplex-auth-github]: https://github.com/nftstorage/metaplex-auth
