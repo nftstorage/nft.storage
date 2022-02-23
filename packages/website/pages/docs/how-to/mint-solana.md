@@ -277,7 +277,7 @@ See the [Metaplex docs][cmv2-mint-tokens] for more examples, as well as a [guide
 
 If you're eager to use NFT.Storage for your Solana NFTs but are not creating a Candy Machine, there are a few options.
 
-[Magic Eden](https://www.magiceden.io) is a Solana NFT marketplace and community that offers a full-service NFT minting program called [Lanuchpad](https://blog.magiceden.io/p/magic-eden-launchpad) that can take care of all the technical issues involved in minting Solana NFTs. Since Lanchpad is integrated with NFT.Storage, you can take advantage of the [benefits of decentralized storage][concepts-decentralized-storage] without needing to write any code or learn about blockchain development.
+[Magic Eden](https://www.magiceden.io) is a Solana NFT marketplace and community that offers a full-service NFT minting program called [Launchpad](https://blog.magiceden.io/p/magic-eden-launchpad) that can take care of all the technical issues involved in minting Solana NFTs. Since Launchpad is integrated with NFT.Storage, you can take advantage of the [benefits of decentralized storage][concepts-decentralized-storage] without needing to write any code or learn about blockchain development.
 
 On the other hand, if you're a Solana developer who wants even more technical details, you can use the [metaplex-auth library][metaplex-auth-github] directly in your NFT projects instead of through the Candy Machine CLI. 
 
