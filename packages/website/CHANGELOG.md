@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.28.0](https://github.com/nftstorage/nft.storage/compare/website-v1.27.1...website-v1.28.0) (2022-02-23)
+
+
+### Features
+
+* **docs:** add how-to for minting on solana with metaplex ([#1419](https://github.com/nftstorage/nft.storage/issues/1419)) ([1c1c058](https://github.com/nftstorage/nft.storage/commit/1c1c058d3d490dfe733095bdce3b63ce09faaa22))
+* **docs:** add how-to for storing directory of files ([#1460](https://github.com/nftstorage/nft.storage/issues/1460)) ([396a1a9](https://github.com/nftstorage/nft.storage/commit/396a1a9e52717eda34265f37a26ec0070628bfc9))
+
+
+### Bug Fixes
+
+* add PL logo to footer ([#1445](https://github.com/nftstorage/nft.storage/issues/1445)) ([82af6b8](https://github.com/nftstorage/nft.storage/commit/82af6b8b0fcde75aa07ce7a779bf5c7d39a85044))
+* front end bugs ([#1443](https://github.com/nftstorage/nft.storage/issues/1443)) ([0d2edc0](https://github.com/nftstorage/nft.storage/commit/0d2edc03fc2f5a283b46589fe0f40813498b395d))
+* update decentralized docs ([#1463](https://github.com/nftstorage/nft.storage/issues/1463)) ([6b48213](https://github.com/nftstorage/nft.storage/commit/6b482132b86cc29cab6c5957ef7a4bc5c26ade20))
+
 ### [1.27.1](https://github.com/nftstorage/nft.storage/compare/website-v1.27.0...website-v1.27.1) (2022-02-23)
 
 
