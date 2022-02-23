@@ -225,26 +225,28 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
             </a>
           </Link>
         </div>
-        <div className="mobile-nav-items flex flex-column items-center justify-center text-center pv4 flex-auto overflow-y-scroll">
-          {ITEMS.map((item, index) => (
-            <div
-              className="mobile-nav-item"
-              key={`menu-nav-link-${index}`}
-              onClick={item.onClick}
-            >
-              <Link href={item.link || ''}>
-                <a
-                  className={clsx(
-                    'mobile-nav-link v-mid chicagoflf',
-                    logo.isDark ? 'black' : 'white'
-                  )}
-                  onClick={item.tracking ? item.tracking : onMobileLinkClick}
-                >
-                  {item.name}
-                </a>
-              </Link>
-            </div>
-          ))}
+        <div className="mobile-nav-items flex flex-column items-center justify-center text-center flex-auto overflow-y-scroll">
+          <div className="pv-4">
+            {ITEMS.map((item, index) => (
+              <div
+                className="mobile-nav-item"
+                key={`menu-nav-link-${index}`}
+                onClick={item.onClick}
+              >
+                <Link href={item.link || ''}>
+                  <a
+                    className={clsx(
+                      'mobile-nav-link v-mid chicagoflf',
+                      logo.isDark ? 'black' : 'white'
+                    )}
+                    onClick={item.tracking ? item.tracking : onMobileLinkClick}
+                  >
+                    {item.name}
+                  </a>
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="flex flex-column items-center mb4">
           <Button className="flex justify-center" onClick={toggleMenu}>
