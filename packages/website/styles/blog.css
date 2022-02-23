@@ -32,6 +32,40 @@ h6 {
   max-height: var(--card-size);
 }
 
+.blog .highlight-card-buttons {
+  flex-direction: column;
+}
+
+.blog #blog-highlight-subscribe {
+  margin: 1rem 0 0 0;
+}
+
+.blog .blog-card {
+  width: 250px;
+  justify-self: center;
+}
+
+@media screen and (min-width: 375px) {
+  .blog .highlight-card-buttons {
+    flex-direction: row;
+  }
+  .blog .blog-card {
+    width: 300px;
+  }
+  .blog #blog-highlight-subscribe {
+    margin: 0 0 0 2rem;
+  }
+  .blog #blog-highlight-read-more {
+    margin: 0;
+  }
+}
+
+@media screen and (min-width: 480px) {
+  .blog .blog-card {
+    width: 400px;
+  }
+}
+
 @media screen and (max-width: 880px) {
   .blog .h-card {
     max-height: auto;
@@ -50,10 +84,6 @@ h6 {
     position: relative;
     overflow: hidden;
   }
-}
-
-.blog .w-card {
-  width: var(--card-size);
 }
 
 .blog .cta {
@@ -204,6 +234,17 @@ h6 {
   grid-template-columns: repeat(auto-fill, var(--card-size));
 }
 
+@media screen and (max-width: 460px) {
+  .blog .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .blog-card-meta span {
+    display: block;
+    line-height: 1.5;
+  }
+}
+
 .blog .btn-secondary {
   border: 1px solid var(--nsblack);
   background-color: var(--nspeach);
@@ -351,7 +392,7 @@ h6 {
 
 @media screen and (max-width: 460px) {
   .blog .blog-card {
-    width: 300px;
+    width: 100%;
     justify-self: center;
   }
 }

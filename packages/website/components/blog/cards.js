@@ -32,7 +32,7 @@ export const Card = ({ post }) => (
         <p className="line-clamp-2 mb2 f5" title={post.description}>
           {post.description}
         </p>
-        <div className="flex">
+        <div className="blog-card-meta">
           <span className="darker-gray f6 mr2">{post.author}</span>
           <span className="darker-gray f6">{post.date}</span>
         </div>
@@ -84,7 +84,7 @@ export const HighlightCard = ({ post }) => (
                 pathname: `/blog/post/${post.slug}`,
               }}
               className="mw4 pv3 ph3 cta"
-              id="read-more"
+              id="blog-highlight-read-more"
             >
               Read More
             </Button>
@@ -93,7 +93,7 @@ export const HighlightCard = ({ post }) => (
                 pathname: '/blog/subscribe',
               }}
               className="mw4 ml4 pv3 cta"
-              id="card-subscribe"
+              id="blog-highlight-subscribe"
               tracking={{
                 ui: countly.ui.BLOG_CARD,
                 action: 'Subcribe',
