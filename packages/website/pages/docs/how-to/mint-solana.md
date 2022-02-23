@@ -76,7 +76,7 @@ The `name`, `symbol`, and `description` fields are standard descriptive properti
 
 The `image` field specifies the filename of the main image for the NFT. Right now it points to a local file, `0.png`, which needs to be in the same directory as this JSON file. Once the image is uploaded to NFT.Storage, `0.png` will be replaced with a link to the uploaded file before the metadata is stored.
 
-The `attributes` array allows you to tag your NFT with various "traits", the meaning of which is entirely up to you. For example, if you're writing a game, your NFT weapons might have a "damage" `trait_type` whose `value` corresponds to the attack power of the weapon. Some art NFTs may benefit "rarity" trait to indicate how relatively unique a given NFT is compared to its collection-mates.
+The `attributes` array allows you to tag your NFT with various "traits", the meaning of which is entirely up to you. For example, if you're writing a game, your NFT weapons might have a "damage" `trait_type` whose `value` corresponds to the attack power of the weapon. Some art NFTs may benefit from a "rarity" trait to indicate how relatively unique a given NFT is compared to its collection-mates.
 
 Finally, the `properties` field is a home for any custom metadata you want to include, but it also contains two important sub-fields, `properties.creators` and `properties.files`. 
 
