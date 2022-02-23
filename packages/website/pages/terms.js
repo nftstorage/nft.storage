@@ -16,7 +16,7 @@ export function getStaticProps() {
 
 export default function TermsOfService() {
   return (
-    <main className="bg-nspeach">
+    <main className="bg-nspeach flex-grow-1">
       <div className="mw9 center pa4 pa5-ns">
         <h1 className="chicagoflf">
           <HashLink id="terms-of-service">Terms of Service</HashLink>
@@ -49,10 +49,11 @@ export default function TermsOfService() {
         <p className="lh-copy">
           The Service is offered for the creation and storage of NFTs. Use of
           the Service to store other types of data is not permitted. The Service
-          accepts uploads of up to 31GiB in size. Currently, the Service does
-          not limit users with respect to the total amount of data they can
-          upload. Protocol Labs may amend this limit at its sole discretion,
-          though any such amendment will not affect data previously uploaded.
+          accepts uploads of up to 31GiB in size per individual upload.
+          Currently, the Service does not limit users with respect to the total
+          amount of data they can upload. Protocol Labs may amend this limit at
+          its sole discretion, though any such amendment will not affect data
+          previously uploaded.
         </p>
 
         <h2 className="chicagoflf">
@@ -94,6 +95,27 @@ export default function TermsOfService() {
           may retain copies of the data indefinitely and data aggregated into
           Filecoin deals will persist for the duration of the relevant storage
           deal.
+        </p>
+
+        <h2 className="chicagoflf">
+          <HashLink id="storage-term">NFT.Storage Gateway</HashLink>
+        </h2>
+        <p className="lh-copy">
+          Use of the NFT.Storage Gateway (“the Gateway”) is subject to the Terms
+          of Service of{' '}
+          <a className="black" href="https://discuss.ipfs.io/tos">
+            IPFS.io
+          </a>
+          .
+        </p>
+        <p className="lh-copy">
+          When you access content via the Gateway, Protocol Labs may cache that
+          content or the associated CID for performance reasons. Protocol Labs
+          may also collect analytics data on use of the Gateway, including data
+          on requests, gateway speeds, CIDs, and other performance data.
+          Protocol Labs reserves all rights in and to any performance data and
+          analytics collected in the course of providing the Gateway for
+          optimizing the Gateway user experience.
         </p>
       </div>
     </main>

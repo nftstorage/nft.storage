@@ -13,6 +13,8 @@
 
   .nextra-container aside.fixed {
     width: clamp(200px, 22rem, 30%);
+    top: 0 !important;
+    height: 100vh !important;
   }
 }
 

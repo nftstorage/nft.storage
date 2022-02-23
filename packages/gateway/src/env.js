@@ -2,7 +2,6 @@ import Toucan from 'toucan-js'
 import pkg from '../package.json'
 import { Logging } from './logs.js'
 
-// TODO: Get Durable object typedef
 /**
  * @typedef {Object} EnvInput
  * @property {string} IPFS_GATEWAYS
@@ -22,11 +21,12 @@ import { Logging } from './logs.js'
  *
  * @typedef {Object} EnvTransformed
  * @property {Array<string>} ipfsGateways
- * @property {Object} gatewayMetricsDurable
- * @property {Object} summaryMetricsDurable
- * @property {Object} cidsTrackerDurable
- * @property {Object} gatewayRateLimitsDurable
- * @property {Object} gatewayRedirectCounter
+ * @property {DurableObjectNamespace} gatewayMetricsDurable
+ * @property {DurableObjectNamespace} summaryMetricsDurable
+ * @property {DurableObjectNamespace} cidsTrackerDurable
+ * @property {DurableObjectNamespace} gatewayRateLimitsDurable
+ * @property {DurableObjectNamespace} gatewayRedirectCounter
+ * @property {number} REQUEST_TIMEOUT
  * @property {Toucan} [sentry]
  * @property {Logging} [log]
  *
@@ -77,3 +77,26 @@ function getSentry(request, env) {
     pkg,
   })
 }
+
+/**
+ * From: https://github.com/cloudflare/workers-types
+ *
+ * @typedef {{
+ *  toString(): string
+ *  equals(other: DurableObjectId): boolean
+ *  readonly name?: string
+ * }} DurableObjectId
+ *
+ * @typedef {{
+ *   newUniqueId(options?: { jurisdiction?: string }): DurableObjectId
+ *   idFromName(name: string): DurableObjectId
+ *   idFromString(id: string): DurableObjectId
+ *   get(id: DurableObjectId): DurableObjectStub
+ * }} DurableObjectNamespace
+ *
+ * @typedef {{
+ *   readonly id: DurableObjectId
+ *   readonly name?: string
+ *   fetch(requestOrUrl: Request | string, requestInit?: RequestInit | Request): Promise<Response>
+ * }} DurableObjectStub
+ */

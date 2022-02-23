@@ -178,7 +178,7 @@ async function gatewayFetch(
   cid,
   request,
   env,
-  { pathname = '', timeout = 20000 } = {}
+  { pathname = '', timeout = 60000 } = {}
 ) {
   // Block before hitting rate limit if needed
   const { shouldBlock } = await getGatewayRateLimitState(request, env, gwUrl)
@@ -236,6 +236,7 @@ function getHeaders(request) {
     'X-Forwarded-For': `${request.headers.get(
       'cf-connecting-ip'
     )}${existingProxies}`,
+    'X-Forwarded-Host': request.headers.get('host'),
   }
 }
 

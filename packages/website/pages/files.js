@@ -54,6 +54,7 @@ export default function Files({ user }) {
     (ctx) => getNfts(ctx.queryKey[1]),
     {
       enabled: !!user,
+      refetchOnWindowFocus: false,
     }
   )
 
@@ -133,9 +134,10 @@ export default function Files({ user }) {
         }
       )
 
-    const queuedDeals = nft.deals.filter(
-      (/** @type {any} */ d) => d.status === 'queued'
-    )
+    const queuedDeals =
+      (nft.deals &&
+        nft.deals.filter((/** @type {any} */ d) => d.status === 'queued')) ||
+      []
     if (queuedDeals.length) {
       const message = `The content from this upload has been aggregated for storage on Filecoin and is queued for deals with ${
         queuedDeals.length
@@ -238,7 +240,6 @@ export default function Files({ user }) {
           <Popover
             isOpen={isActionMenuOpen === nft.cid}
             onClickOutside={(e) => {
-              console.log(e)
               if (e.currentTarget !== null) {
                 if (
                   e.target instanceof Element &&
@@ -306,20 +307,22 @@ export default function Files({ user }) {
   return (
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
-      <main className="bg-nsyellow">
+      <main className="bg-nsyellow flex-grow-1">
         <div className="flex justify-center pt4">
           <Button data-tf-popup="OTxv3w2O" className="mh3 mb3" variant="dark">
             {'Tell us how we are doing'}
           </Button>
         </div>
-        <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
+        <div className="mw9 center pv3 ph3 ph5-ns">
           <When condition={status === 'loading'}>
             <Loading />
           </When>
           <When condition={status !== 'loading'}>
             <>
               <div className="flex items-center mb3">
-                <h1 className="flex-auto chicagoflf mv4">Files</h1>
+                <div className="flex-auto chicagoflf mv3">
+                  <h1>Files</h1>
+                </div>
                 <Button
                   href={{
                     pathname: '/new-file',
@@ -490,11 +493,15 @@ export default function Files({ user }) {
  * @param {{cid: string, type?: string}} props
  */
 function GatewayLink({ cid, type }) {
-  const gatewayLink = `https://ipfs.io/ipfs/${cid}`
+  const gatewayLink = cid.startsWith('Qm')
+    ? `https://ipfs.io/ipfs/${cid}`
+    : `ipfs://${cid}`
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
+  const btnLabel = type === 'nft' ? 'View Metadata' : 'View URL'
+  const btnTitle = type === 'nft' ? 'View Metadata JSON' : 'View URL'
   return (
-    <a title="View IPFS URL" href={href} target="_blank" rel="noreferrer">
-      View URL
+    <a title={btnTitle} href={href} target="_blank" rel="noreferrer">
+      {btnLabel}
     </a>
   )
 }
@@ -529,7 +536,12 @@ function CopyGatewayLink({ cid, type }) {
  */
 function CopyCID({ cid }) {
   return (
-    <CopyButton text={cid} popupContent={'CID has been copied!'} asLink={true}>
+    <CopyButton
+      title="Copy CID to Clipboard"
+      text={cid}
+      popupContent={'CID has been copied!'}
+      asLink={true}
+    >
       <>Copy CID</>
     </CopyButton>
   )

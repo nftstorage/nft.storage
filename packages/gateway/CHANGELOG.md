@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.2.0](https://github.com/nftstorage/nft.storage/compare/gateway-v1.1.2...gateway-v1.2.0) (2022-02-15)
+
+
+### Features
+
+* gateway known errors render html response ([#1369](https://github.com/nftstorage/nft.storage/issues/1369)) ([2fc0d00](https://github.com/nftstorage/nft.storage/commit/2fc0d00f55b7b6df0ebfde1795f165431f8303a8))
+
+### [1.1.2](https://github.com/nftstorage/nft.storage/compare/gateway-v1.1.1...gateway-v1.1.2) (2022-02-14)
+
+
+### Bug Fixes
+
+* increase gateway timeout ([#1331](https://github.com/nftstorage/nft.storage/issues/1331)) ([c5f5dee](https://github.com/nftstorage/nft.storage/commit/c5f5dee412c36e7d715943cb7031b9078a79ed7c))
+
+### [1.1.1](https://github.com/nftstorage/nft.storage/compare/gateway-v1.1.0...gateway-v1.1.1) (2022-02-11)
+
+
+### Bug Fixes
+
+* gateway requested with custom header requested from ([#1344](https://github.com/nftstorage/nft.storage/issues/1344)) ([cf841bb](https://github.com/nftstorage/nft.storage/commit/cf841bbf0c2e24d303dae05f494b1b4fcbc500bd))
+
 ## [1.1.0](https://github.com/nftstorage/nft.storage/compare/gateway-v1.0.1...gateway-v1.1.0) (2022-02-09)
 
 

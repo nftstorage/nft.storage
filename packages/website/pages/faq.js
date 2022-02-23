@@ -136,8 +136,8 @@ export const FAQ = ({ limit = faqs.length }) => {
  *
  */
 const Faq = () => (
-  <main className="bg-nsforest">
-    <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
+  <main className="bg-nsforest flex-grow-1">
+    <div className="mw9 center pv3 ph3 ph5-ns">
       <h1 className="chicagoflf white mv4 flex-auto ">FAQ</h1>
       <div className="mb5">
         <TOC />

@@ -63,11 +63,14 @@ export default function NewFile() {
         if (isCar) {
           car = file
         } else {
-          ;({ car } = await packToBlob({ input: [file] }))
+          ;({ car } = await packToBlob({
+            input: [file],
+            wrapWithDirectory: false,
+          }))
         }
         let totalBytesSent = 0
         await client.storeCar(car, {
-          onStoredChunk: size => {
+          onStoredChunk: (size) => {
             totalBytesSent += size
             setPercentComplete(Math.round((totalBytesSent / car.size) * 100))
           },
@@ -86,8 +89,8 @@ export default function NewFile() {
   }
 
   return (
-    <main className="bg-nsyellow">
-      <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
+    <main className="bg-nsyellow flex-grow-1">
+      <div className="mw9 center pv3 ph3 ph5-ns">
         <Box
           bgColor="nsgray"
           borderColor="nspink"

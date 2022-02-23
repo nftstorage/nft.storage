@@ -16,6 +16,7 @@
 @import './nav.css';
 @import './table.css';
 @import './tabs.css';
+@import './footer.css';
 
 .grid {
   display: grid;
