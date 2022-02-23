@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.28.2](https://github.com/nftstorage/nft.storage/compare/website-v1.28.1...website-v1.28.2) (2022-02-23)
+
+
+### Bug Fixes
+
+* add issue template and discord link to docs ([#1390](https://github.com/nftstorage/nft.storage/issues/1390)) ([d274299](https://github.com/nftstorage/nft.storage/commit/d274299c63a431f72748ab219c7561bb3fdccce9))
+
 ### [1.28.1](https://github.com/nftstorage/nft.storage/compare/website-v1.28.0...website-v1.28.1) (2022-02-23)
 
 
