@@ -40,6 +40,6 @@ site/public
 .local
 .supabase
 
-public/sitemap.xml
-public/robots.txt
+packages/website/public/robots.txt
+packages/website/public/sitemap.xml
 packages/api/docker/compose
