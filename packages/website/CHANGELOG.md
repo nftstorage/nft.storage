@@ -1,5 +1,20 @@
 # Changelog
 
+### [1.27.1](https://github.com/nftstorage/nft.storage/compare/website-v1.27.0...website-v1.27.1) (2022-02-23)
+
+
+### Bug Fixes
+
+* nextra scolling inline style ([#1446](https://github.com/nftstorage/nft.storage/issues/1446)) ([873bda7](https://github.com/nftstorage/nft.storage/commit/873bda7e22377fd4e87a478de4d7cd9d49f82a7d))
+* refactor blog highlight ([#1454](https://github.com/nftstorage/nft.storage/issues/1454)) ([82743e4](https://github.com/nftstorage/nft.storage/commit/82743e476a536cb4813c3175af1b6176b81f9699))
+
+## [1.27.0](https://github.com/nftstorage/nft.storage/compare/website-v1.26.0...website-v1.27.0) (2022-02-22)
+
+
+### Features
+
+* blog post on web2.5 ([#1434](https://github.com/nftstorage/nft.storage/issues/1434)) ([71cff59](https://github.com/nftstorage/nft.storage/commit/71cff59eeac7eb72fddbab3c7fc65e049f211c35))
+
 ## [1.26.0](https://github.com/nftstorage/nft.storage/compare/website-v1.25.2...website-v1.26.0) (2022-02-22)
 
 
