@@ -48,7 +48,7 @@ The on-chain metadata contains the public keys of the Solana accounts that are a
 
 The on-chain metadata also includes a `uri` field that links to a JSON document with details about the NFT, along with a few fields from the JSON metadata that are preserved on-chain, such as the `name` and `symbol`.
 
-For this guide, we're mostly going to focus on the JSON document with the off-chain metadata. The parts relating to keys and ownership will be covered in the [Candy machine configuration](#candy-machine-configuration) section below.
+For this guide, we're mostly going to focus on the JSON document with the off-chain metadata. The parts relating to keys and ownership will be covered in the [Candy Machine configuration](#candy-machine-configuration) section below.
 
 This is the basic metadata format for a very simple Metaplex NFT:
 
@@ -88,7 +88,7 @@ All NFTs that include an `image` will have at least one entry in `properties.fil
 
 Please note that this example does not show all possible metadata fields. Consult the [metadata standard][metaplex-token-standard] for the complete specification.
 
-## Using candy machine cli
+## Using Candy Machine CLI
 
 The Candy Machine CLI is a command-line tool written in TypeScript that takes images and their associated metadata and turns them into a collection of NFTs that can be minted from an on-chain Solana Candy Machine program.
 
@@ -246,7 +246,7 @@ Once you've run the `upload` command, your Candy Machine is ready to interact wi
 
 Before minting tokens, it's best to verify the upload to make sure everything can be retrieved correctly.
 
-You can use the `verify_upload` Candy Machine cli command, passing in the name of the local cache file. In the upload example we used the `-c example` flag to set the cache file name, so we'll use the same flag here:
+You can use the `verify_upload` Candy Machine CLI command, passing in the name of the local cache file. In the upload example we used the `-c example` flag to set the cache file name, so we'll use the same flag here:
 
 ```bash
 candy-machine verify_upload -e devnet -c example -k ~/.config/solana/devnet.json
