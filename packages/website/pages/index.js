@@ -116,7 +116,7 @@ function About() {
           rel="noreferrer"
         >
           decentralize itself
-        </a>
+        </a>{' '}
         out of the picture moving forward (e.g., making perpetual 
         storage completely smart contract-based utilizing future tools like the{' '}
         <a
