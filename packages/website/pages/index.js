@@ -321,20 +321,23 @@ function GettingStarted() {
           <ol className="list pl0 mb2">
             <li>
               <Step>1</Step>
-              <p className="chicagoflf f4 f3-ns center mb4 lh-copy">
+              <p className="chicagoflf f5 f4-ns center mb4 lh-copy">
                 <Link href="/login">
                   <a className="nsnavy" onClick={onClickHandler}>
                     Create an NFT.Storage account
                   </a>
                 </Link>{' '}
-                and start uploading your files to IPFS.
+                and start uploading your files to IPFS. Your data will be
+                accessible on the IPFS network where it is perpetually and
+                verifiably stored by multiple Filecoin storage providers!
               </p>
             </li>
             <li>
               <Step>2</Step>
-              <p className="chicagoflf f4 f3-ns center lh-copy">
-                Mint your NFTs on any blockchain and share them with any
-                gallery.
+              <p className="chicagoflf f5 f4-ns center lh-copy">
+                Use IPFS links when minting your NFT and metadata. As long as
+                your NFT uses IPFS content identifiers (a hash of the data), no
+                one can dispute what content your NFT is referring to!
               </p>
             </li>
           </ol>
