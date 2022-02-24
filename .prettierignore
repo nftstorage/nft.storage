@@ -6,7 +6,6 @@ dist
 worker
 site/public
 docs
-packages/niftysave/gen
 *.sql
 *.sh
 *.svg
