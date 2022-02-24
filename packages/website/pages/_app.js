@@ -22,11 +22,6 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     Router.events.on('routeChangeComplete', (route) => {
       countly.trackPageView(route)
-      if (window.location.hash) {
-        setTimeout(() => {
-          location.hash = window.location.hash
-        }, 1000)
-      }
     })
   }, [])
 

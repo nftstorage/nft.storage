@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useLayoutEffect } from 'react'
 import fs from 'fs'
 import countly from '../lib/countly.js'
 import Hero from '../components/hero.js'
@@ -63,6 +63,11 @@ const Logos = ({ logos }) => {
  *
  */
 export default function Home({ logos }) {
+  useLayoutEffect(() => {
+    if (window.location.hash) {
+      location.hash = window.location.hash
+    }
+  }, [])
   return (
     <>
       <Hero />
