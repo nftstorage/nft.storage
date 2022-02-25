@@ -85,18 +85,22 @@ Above we saw some examples of [IPFS addresses](#understanding-ipfs-addresses) th
 You might also see HTTP links to IPFS content that look like this:
 
 ```
-https://bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy.ipfs.dweb.link
+https://bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy.ipfs.nftstorage.link
 ```
 
 or possibly in this form, with the CID in the path instead of the domain name:
 
 ```
-https://dweb.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy
+https://nftstorage.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy
 ```
 
 These are gateway URLs, which link to IPFS data using an HTTP gateway provider. Gateways provide a bridge between the peer-to-peer IPFS protocol and the HTTP protocol supported by all web browsers.
 
-You can turn any `ipfs://` URL into a gateway URL by [choosing a gateway][public-gateway-checker] and replacing the `ipfs://` prefix with `https://<gateway-host>/ipfs/`. For example, to use the gateway at `dweb.link`, you could create the URL <span className="overflow-wrap-breakword">https://dweb.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif</span>. Clicking that link should take you to an image served by the gateway host.
+You can turn any `ipfs://` URL into a gateway URL by [choosing a gateway][public-gateway-checker] and replacing the `ipfs://` prefix with `https://<gateway-host>/ipfs/`. 
+
+We recommend using the `nftstorage.link` gateway, which was built by the NFT.Storage team to optimize retrieval of NFT assets and includes a cache for data uploaded through NFT.Storage.
+
+To use the gateway at `nftstorage.link` with the above example CID, you would create the URL <span className="overflow-wrap-breakword">https://nftstorage.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif</span>. Clicking that link should take you to an image served by the gateway host.
 
 ## Option: Running IPFS on your computer
 
