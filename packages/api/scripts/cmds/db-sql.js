@@ -36,25 +36,23 @@ export async function dbSqlCmd(opts) {
 
   const client = await getDbClient(env.DATABASE_CONNECTION)
 
-  // if resetting, run post reset commands here
   if (opts.reset) {
     await client.query(reset)
-
-    await client.query(configSql)
-    await client.query(tables)
-
-    if (opts.cargo) {
-      if (opts.testing) {
-        await client.query(cargoTesting)
-      } else {
-        await client.query(fdw)
-        await client.query(cargo)
-      }
-    }
-
-    await client.query(functions)
   }
 
+  await client.query(configSql)
+  await client.query(tables)
+
+  if (opts.cargo) {
+    if (opts.testing) {
+      await client.query(cargoTesting)
+    } else {
+      await client.query(fdw)
+      await client.query(cargo)
+    }
+  }
+
+  await client.query(functions)
   await client.end()
 }
 
