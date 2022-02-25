@@ -25,17 +25,8 @@
   margin: 0 auto;
 }
 
-@media screen and (min-width: 600px) {
+@media screen and (min-width: 481px) {
   .marketplace-logo-grid {
-    grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
-  }
-  .marketplace-logo {
-    padding: 12px 15%;
-  }
-}
-
-@media screen and (min-width: 768px) {
-  .marketplace-logo {
-    padding: 12px 20%;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
 }
