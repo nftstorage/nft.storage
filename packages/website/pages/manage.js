@@ -19,6 +19,7 @@ export function getStaticProps() {
       navBgColor: 'bg-nsgreen',
       redirectTo: '/',
       needsUser: true,
+      altLogo: true,
     },
   }
 }

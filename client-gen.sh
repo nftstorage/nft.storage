@@ -5,7 +5,7 @@
 
 docker run --rm \
   -v ${PWD}:/local openapitools/openapi-generator-cli generate \
-  -i /local/website/public/schema.yml \
+  -i /local/packages/website/public/schema.yml \
   -g ruby \
   --api-name-suffix=API \
   --git-user-id=nftstorage \
@@ -20,7 +20,7 @@ docker run --rm \
 
 docker run --rm \
   -v ${PWD}:/local openapitools/openapi-generator-cli generate \
-  -i /local/website/public/schema.yml \
+  -i /local/packages/website/public/schema.yml \
   -g go \
   --api-name-suffix=API \
   --git-user-id=nftstorage \
@@ -32,7 +32,7 @@ docker run --rm \
 
 docker run --rm \
   -v ${PWD}:/local openapitools/openapi-generator-cli generate \
-  -i /local/website/public/schema.yml \
+  -i /local/packages/website/public/schema.yml \
   -g python \
   --api-name-suffix=API \
   --git-user-id=nftstorage \
@@ -45,7 +45,7 @@ docker run --rm \
 
 docker run --rm \
   -v ${PWD}:/local openapitools/openapi-generator-cli generate \
-  -i /local/website/public/schema.yml \
+  -i /local/packages/website/public/schema.yml \
   -g rust \
   --api-name-suffix=API \
   --git-user-id=nftstorage \
@@ -57,7 +57,7 @@ docker run --rm \
 
 docker run --rm \
   -v ${PWD}:/local openapitools/openapi-generator-cli generate \
-  -i /local/website/public/schema.yml \
+  -i /local/packages/website/public/schema.yml \
   -g php \
   --api-name-suffix=API \
   --git-user-id=nftstorage \
@@ -70,7 +70,7 @@ docker run --rm \
 
 docker run --rm \
   -v ${PWD}:/local openapitools/openapi-generator-cli generate \
-  -i /local/website/public/schema.yml \
+  -i /local/packages/website/public/schema.yml \
   -g java \
   --git-user-id=nftstorage \
   --git-repo-id=java-client \

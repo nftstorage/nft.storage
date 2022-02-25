@@ -32,7 +32,7 @@ export const Card = ({ post }) => (
         <p className="line-clamp-2 mb2 f5" title={post.description}>
           {post.description}
         </p>
-        <div className="flex">
+        <div className="blog-card-meta">
           <span className="darker-gray f6 mr2">{post.author}</span>
           <span className="darker-gray f6">{post.date}</span>
         </div>
@@ -49,7 +49,7 @@ export const Card = ({ post }) => (
  * @returns {JSX.Element}
  */
 export const HighlightCard = ({ post }) => (
-  <div className="flex justify-center blog-highlight-card h-card w-100">
+  <div className="flex justify-center blog-highlight-card w-100">
     <div className="relative flex w-100 mw9 blog-highlight-info-container">
       <div className="flex justify-between highlight-info flex-column w-50">
         <div className="highlight-card-container">
@@ -67,7 +67,10 @@ export const HighlightCard = ({ post }) => (
                 <a>{post.title}</a>
               </Link>
             </h1>
-            <p className="mw6 f3 mb2 description" title={post.description}>
+            <p
+              className="mw6 f5 f4-ns mb2 description"
+              title={post.description}
+            >
               {post.description}
             </p>
             <div className="flex">
@@ -75,13 +78,13 @@ export const HighlightCard = ({ post }) => (
               <span className="darker-gray f6">{post.date}</span>
             </div>
           </div>
-          <div className="flex highlight-card-buttons ml2">
+          <div className="flex highlight-card-buttons ml2 mt3">
             <Button
               href={{
                 pathname: `/blog/post/${post.slug}`,
               }}
               className="mw4 pv3 ph3 cta"
-              id="read-more"
+              id="blog-highlight-read-more"
             >
               Read More
             </Button>
@@ -90,7 +93,7 @@ export const HighlightCard = ({ post }) => (
                 pathname: '/blog/subscribe',
               }}
               className="mw4 ml4 pv3 cta"
-              id="card-subscribe"
+              id="blog-highlight-subscribe"
               tracking={{
                 ui: countly.ui.BLOG_CARD,
                 action: 'Subcribe',
@@ -103,7 +106,7 @@ export const HighlightCard = ({ post }) => (
         <img
           src={post.thumbnail}
           alt={`Banner for ${post.title}`}
-          className="object-cover object-center h-card highlight-img w-50"
+          className="object-cover object-center highlight-img w-50"
         />
       </div>
     </div>

@@ -41,7 +41,9 @@ const nextConfig = withBundleAnalyzer({
       '/docs/how-to/mint-custom-metadata': {
         page: '/docs/how-to/mint-custom-metadata',
       },
+      '/docs/how-to/mint-solana': { page: '/docs/how-to/mint-solana' },
       '/docs/how-to/retrieve': { page: '/docs/how-to/retrieve' },
+      '/docs/how-to/store-directory': { page: '/docs/how-to/store-directory' },
       '/docs/client': { page: '/docs/client/api-docs' },
       '/docs/client/api-docs': { page: '/docs/client/api-docs' },
       '/docs/client/lib': { page: '/docs/client/lib' },

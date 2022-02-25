@@ -11,20 +11,10 @@ CREATE TYPE auth_key_blocked_status_type AS ENUM (
 -- in the application.
 CREATE TYPE user_tag_type AS ENUM
 (
-  'ACCOUNT_ENABLED',
-  'PSA_ENABLED',
-  'STORAGE_LIMIT_BYTES'
+  'HasAccountRestriction',
+  'HasPsaAccess',
+  'StorageLimitBytes'
 );
-
-CREATE TYPE user_tag_value_type AS ENUM
-(
-  'bigint',
-  'boolean',
-  'integer',
-  'real',
-  'text'
-);
-
 
 -- Pin status type is a subset of IPFS Cluster "TrackerStatus".
 -- https://github.com/ipfs/ipfs-cluster/blob/54c3608899754412861e69ee81ca8f676f7e294b/api/types.go#L52-L83
@@ -88,7 +78,6 @@ CREATE TABLE IF NOT EXISTS public.user_tag
   user_id         BIGINT                                                        NOT NULL REFERENCES public.user (id),
   tag             user_tag_type                                                 NOT NULL,
   value           TEXT                                                          NOT NULL,
-  value_type      user_tag_value_type                                           NOT NULL,
   reason          TEXT                                                          NOT NULL,
   inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())     NOT NULL,
   deleted_at  TIMESTAMP WITH TIME ZONE

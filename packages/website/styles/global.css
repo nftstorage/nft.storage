@@ -5,6 +5,7 @@
 @import './utils.css';
 @import './animations.css';
 @import './logos.css';
+@import './home.css';
 @import './about.css';
 @import './button.css';
 @import './blog.css';
@@ -17,6 +18,10 @@
 @import './tabs.css';
 @import './modal.css';
 @import './footer.css';
+
+html {
+  scroll-behavior: smooth;
+}
 
 .grid {
   display: grid;

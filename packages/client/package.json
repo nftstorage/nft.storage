@@ -47,8 +47,8 @@
     "build:cjs": "rollup --config rollup.config.js",
     "build:esm": "rollup --config rollup.esm.config.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && npx codecov",
-    "typedoc": "typedoc ./src/lib.js ./src/lib/interface.ts  --out ../../docs/client --excludeExternals --internalNamespace _",
-    "prepublishOnly": "npm run build"
+    "typedoc": "typedoc",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "@ipld/car": "^3.2.3",
@@ -59,7 +59,7 @@
     "@web-std/form-data": "^3.0.0",
     "carbites": "^1.0.6",
     "ipfs-car": "^0.6.2",
-    "multiformats": "^9.6.3",
+    "multiformats": "^9.6.4",
     "p-retry": "^4.6.1",
     "streaming-iterables": "^6.0.0"
   },

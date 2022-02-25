@@ -13,9 +13,7 @@ export default function Step({ wrapperClassName, className, children }) {
   }`.trim()
   return (
     <div className={wrapperClassName}>
-      <div className={className} style={{ top: 3, right: 3 }}>
-        Step {children}
-      </div>
+      <div className={className}>Step {children}</div>
     </div>
   )
 }
