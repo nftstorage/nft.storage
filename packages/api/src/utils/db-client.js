@@ -447,6 +447,22 @@ export class DBClient {
 
     return data[0].value
   }
+
+  async get7DayGrowthRate() {
+    /** @type {PostgrestQueryBuilder<definitions['upload_7_day_total_growth']>} */
+    const query = this.client.from('upload_7_day_total_growth')
+    const { data, error } = await query.select('growth_rate_percent')
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    if (!data || !data.length) {
+      return undefined
+    }
+
+    return data[0].growth_rate_percent
+  }
 }
 
 export class DBError extends Error {

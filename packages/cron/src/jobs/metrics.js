@@ -19,27 +19,8 @@ const COUNT_UPLOADS = 'SELECT COUNT(*) AS total FROM upload WHERE type = $1'
 
 const COUNT_TOTAL_UPLOADS = 'SELECT COUNT(*) AS total FROM upload'
 // This is a rolling 7 day date window of total uploads
-const UPLOAD_7_DAY_GROWTH = `select 
-  ((
-      SELECT 
-        "count"(*) as val2 
-      from 
-        upload
-    )
-    -
-    (
-      SELECT 
-        "count"(*) as val1 
-      from 
-        upload
-    WHERE inserted_at < CURRENT_DATE - 7
-     )) / (
-        SELECT 
-        "count"(*) as val1 
-      from 
-        upload
-    WHERE inserted_at < CURRENT_DATE - 7
-    ) * 100 as total;`
+const REFRESH_UPLOAD_7_DAY_GROWTH =
+  'REFRESH MATERIALIZED VIEW upload_7_day_total_growth;'
 
 const COUNT_PINS =
   'SELECT COUNT(*) AS total FROM pin WHERE service = $1 AND status = $2'
@@ -141,11 +122,7 @@ async function updateUploadTotal(roPg, rwPg) {
  * @param {Client} rwPg
  */
 async function updateUploadWeekGrowth(roPg, rwPg) {
-  const { rows } = await roPg.query(UPLOAD_7_DAY_GROWTH)
-  if (!rows.length)
-    throw new Error(`no rows returned counting past weeks uploads`)
-  console.log('rows', rows[0].total)
-  await rwPg.query(UPDATE_METRIC, [`uploads_weekly_growth`, rows[0].total])
+  await roPg.query(REFRESH_UPLOAD_7_DAY_GROWTH)
 }
 
 /**

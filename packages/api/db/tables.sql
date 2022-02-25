@@ -217,3 +217,28 @@ CREATE TABLE IF NOT EXISTS backup
 );
 
 CREATE INDEX IF NOT EXISTS backup_upload_id_idx ON backup (upload_id);
+
+-- Count is the most accurate representation of data
+-- Creating a materialized views gives us cacheing as well as accuracy for percent difference
+
+CREATE MATERIALIZED VIEW upload_7_day_total_growth AS
+  select
+    (((
+    SELECT 
+    cast("count"(*) as float )
+    from 
+        upload
+        )
+    -
+    (
+    SELECT 
+        cast("count"(*) as float )
+        from 
+        upload
+        WHERE inserted_at < CURRENT_DATE - 7
+        ))/ (SELECT 
+    cast("count"(*) as float )
+    from 
+        upload
+    WHERE inserted_at < CURRENT_DATE - 7
+        ))*100 as growth_rate_percent;

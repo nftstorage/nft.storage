@@ -309,6 +309,18 @@ export interface paths {
       }
     }
   }
+  '/stats': {
+    get: {
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions['upload_7_day_total_growth'][]
+        }
+        /** Partial Content */
+        206: unknown
+      }
+    }
+  }
   '/metric': {
     get: {
       parameters: {
@@ -856,6 +868,14 @@ export interface definitions {
     updated_at: string
     /** Format: timestamp with time zone */
     deleted_at?: string
+  }
+  upload_7_day_total_growth: {
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a calculated value on a materialized view that represents a whole number percent
+     */
+    growth_rate_percent: number
   }
   backup: {
     /**

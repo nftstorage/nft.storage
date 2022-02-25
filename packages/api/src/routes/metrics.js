@@ -10,15 +10,18 @@ export async function metrics(_, { db }) {
 }
 
 /** @type {import('../bindings').Handler} */
-export async function getUploadsPast7DaysCount(_, { db }) {
-  let total = await db.getMetric('uploads_all_types_past_week_total')
+export async function getUpload7DayGrowthRate(_, { db }) {
+  let growth_rate_percent = await db.get7DayGrowthRate()
+
   return new JSONResponse(
     {
       ok: true,
-      data: {
-        total,
-        metric: 'uploads_all_types_past_week_total',
-      },
+      data: [
+        {
+          value: growth_rate_percent,
+          stat: 'upload_7_day_total_growth_percent',
+        },
+      ],
     },
     { status: 202 }
   )

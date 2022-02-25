@@ -3,7 +3,7 @@ import { notFound } from './utils/utils.js'
 import { HTTPError } from './errors.js'
 import { cors, postCors } from './routes/cors.js'
 import { JSONResponse } from './utils/json-response.js'
-import { metrics, getUploadsPast7DaysCount } from './routes/metrics.js'
+import { getUpload7DayGrowthRate, metrics } from './routes/metrics.js'
 import { tokensDelete } from './routes/tokens-delete.js'
 import { tokensCreate } from './routes/tokens-create.js'
 import { tokensList } from './routes/tokens-list.js'
@@ -45,7 +45,7 @@ const r = new Router(getContext, {
 
 // Monitoring
 r.add('get', '/metrics', withMode(metrics, RO))
-r.add('get', '/stats', withMode(getUploadsPast7DaysCount, RO))
+r.add('get', '/stats', withMode(getUpload7DayGrowthRate, RO))
 
 // CORS
 r.add('options', '*', cors)
