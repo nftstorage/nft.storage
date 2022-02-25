@@ -227,7 +227,9 @@ function About() {
                   content identifier
                 </a>, or CID). IPFS URLs and CIDs can be
                 used in NFTs and metadata to ensure the NFT forever actually
-                refers to the intended data (eliminating things like rug pulls).
+                refers to the intended data (eliminating things like rug pulls,
+                and making it trustlessly verifiable what content an NFT is
+                associated with).
               </p>
             </div>
             <div>
