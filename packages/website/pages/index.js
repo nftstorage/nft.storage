@@ -216,8 +216,16 @@ function About() {
                 >
                   content addressed
                 </a>{' '}
-                using IPFS, meaning the URL pointing to a piece of data
-                (“ipfs://…”) is completely unique to that data. IPFS URLs can be
+                using IPFS, meaning the URI pointing to a piece of data
+                (“ipfs://…”) is completely unique to that data (using a{' '}
+                <a
+                  href="https://docs.ipfs.io/concepts/content-addressing/"
+                  className="black"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  content identifier
+                </a>, or CID). IPFS URLs and CIDs can be
                 used in NFTs and metadata to ensure the NFT forever actually
                 refers to the intended data (eliminating things like rug pulls).
               </p>
@@ -264,7 +272,7 @@ function About() {
                   rel="noreferrer"
                 >
                   decentralize itself
-                </a> 
+                </a> {' '}
                 as a public good!
               </p>
             </div>
