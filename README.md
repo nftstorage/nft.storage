@@ -81,7 +81,6 @@ In the root folder create a `.env` file with the following:
 DEBUG=true
 
 # API Secrets
-# the salt is literally secret, not a random string, just 'secret'
 SALT=secret
 MAILCHIMP_API_KEY=secret
 METAPLEX_AUTH_TOKEN=secret
@@ -139,11 +138,6 @@ DAG_CARGO_DATABASE=<db-name>
 DAG_CARGO_USER=<db-user>
 DAG_CARGO_PASSWORD=<db-password>
 
-
-
-# Pinning services api, requires a PSA allow list for authoritzation
-# this is the user id in the database
-PSA_ALLOW=1
 ```
 
 Production vars should be set in Github Actions secrets.

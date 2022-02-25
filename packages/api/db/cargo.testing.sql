@@ -46,7 +46,7 @@ INSERT INTO cargo.aggregates ("aggregate_cid", "piece_cid", "sha256hex", "export
 INSERT INTO cargo.deals ("deal_id", "aggregate_cid", "client", "provider", "status", "start_epoch", "end_epoch", "entry_created", "entry_last_updated", "status_meta", "start_time", "sector_start_epoch", "sector_start_time", "end_time") VALUES
 (2424132, 'bafybeiek5gau46j4dxoyty27qtirb3iuoq7aax4l3xt25mfk2igyt35bme', 'f144zep4gitj73rrujd3jw6iprljicx6vl4wbeavi', 'f0678914', 'active', 1102102, 2570902, '2021-09-09 16:30:52.252233+00', '2021-09-10 00:45:50.408956+00', 'containing sector active as of 2021-09-10 00:36:30 at epoch 1097593', '2021-09-11 14:11:00+00', 1097593, '2021-09-10 00:36:30+00', '2023-02-03 14:11:00+00');
 
-INSERT INTO public."user" (magic_link_id, github_id, name, email, public_address) VALUES ('did:ethr:0x65007A739ab7AC5c537161249b81250E49e2853C', 'github|000000', 'mock user', 'test@gmail.com', '0x65007A739ab7AC5c537161249b81250E49e2853Z');
+INSERT INTO public."user" (magic_link_id, github_id, name, email, public_address) VALUES ('did:ethr:0x65007A739ab7AC5c537161249b81250E49e2853Z', 'github|000000', 'mock user', 'test@gmail.com', '0x65007A739ab7AC5c537161249b81250E49e2853Z');
 
 INSERT INTO public.auth_key (name, secret, user_id) VALUES ('main', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDY1MDA3QTczOWFiN0FDNWM1MzcxNjEyNDliODEyNTBFNDllMjg1M0MiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYzOTc1NDczNjYzOCwibmFtZSI6Im1haW4ifQ.wKwJIRXXHsgwVp8mOQp6r3_F4Lz5lnoAkgVP8wqwA_Y', 1);
 
