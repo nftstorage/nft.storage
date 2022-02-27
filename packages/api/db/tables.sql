@@ -236,9 +236,9 @@ CREATE MATERIALIZED VIEW upload_7_day_total_growth AS
         from 
         upload
         WHERE inserted_at < CURRENT_DATE - 7
-        ))/ (SELECT 
+        ))/ nullif((SELECT 
     cast("count"(*) as float )
     from 
         upload
     WHERE inserted_at < CURRENT_DATE - 7
-        ))*100 as growth_rate_percent;
+        ),0))*100 as growth_rate_percent;

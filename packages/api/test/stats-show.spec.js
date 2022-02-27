@@ -10,21 +10,21 @@ describe('Status Show Route ', () => {
   })
 
   it('should fetch last 7 days upload metrics', async () => {
-    // Pin request
-    const cid = 'bafkreihwlixzeusjrd5avlg53yidaoonf5r5srzumu7y5uuumtt7rxxbrm'
-    const getStats = await fetch('stats', {
-      headers: { Authorization: `Bearer ${client.token}` },
-    })
-    const valuePinCreate = await getStats.json()
-    // assert.deepStrictEqual(
-    //   valuePinCreate.pin,
-    //   {
-    //     cid,
-    //     meta: null,
-    //     name: null,
-    //     origins: null,
-    //   },
-    //   'Server responded with expected data for first pin'
-    // )
+    // Stats request
+    const getStats = await fetch('stats')
+    const statsResults = await getStats.json()
+    assert.deepStrictEqual(
+      statsResults,
+      {
+        ok: true,
+        data: [
+          {
+            value: null,
+            stat: 'upload_7_day_total_growth_percent',
+          },
+        ],
+      },
+      'Server responded with null for upload growth, since none exists'
+    )
   })
 })
