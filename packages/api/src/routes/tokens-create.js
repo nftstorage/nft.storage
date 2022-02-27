@@ -1,7 +1,7 @@
 import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { signJWT } from '../utils/jwt.js'
-import { secrets } from '../constants.js'
+import { secrets } from '../constants'
 
 /** @type {import('../bindings').Handler} */
 export const tokensCreate = async (event, ctx) => {

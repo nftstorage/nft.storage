@@ -1,5 +1,5 @@
 import { parse } from 'regexparam'
-import { database, GATEWAY_NFT_STORAGE_HOSTNAME } from '../constants.js'
+import { GATEWAY_NFT_STORAGE_HOSTNAME, getConstants } from '../constants'
 
 /**
  * @typedef {{ params: Record<string, string> }} BasicRouteContext
@@ -181,8 +181,9 @@ class Router {
    */
   listen(event) {
     const url = new URL(event.request.url)
+    const { url: dbUrl } = getConstants(ENV)
     // Add more if needed for other backends
-    const passThrough = [database.url]
+    const passThrough = [dbUrl]
 
     // Ignore http requests from the passthrough list above and gateway
     if (

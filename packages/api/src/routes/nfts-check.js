@@ -1,11 +1,13 @@
 import { JSONResponse } from '../utils/json-response.js'
 import { HTTPError } from '../errors.js'
-import { secrets, database } from '../constants.js'
+import { secrets, getConstants } from '../constants'
 import { DBClient } from '../utils/db-client'
 import { parseCid } from '../utils/utils.js'
 import { toCheckNftResponse } from '../utils/db-transforms.js'
 
-const db = new DBClient(database.url, secrets.database)
+console.log('process', process.env)
+const con = getConstants(ENV)
+const db = new DBClient(con.url, secrets.database)
 
 /** @type {import('../bindings').Handler} */
 export const nftCheck = async (event, { params }) => {

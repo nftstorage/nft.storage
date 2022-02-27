@@ -1,12 +1,24 @@
 version: '3.6'
 services:
+  test-rest:
+    image: postgrest/postgrest:v9.0.0
+    depends_on:
+      - test-db
+    restart: always
+    ports:
+      - 8888:3000/tcp
+    environment:
+      PGRST_DB_URI: postgresql://postgres:postgres@test-db:5432/pg-test
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: postgres
+      PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
   rest:
     image: postgrest/postgrest:v9.0.0
     depends_on:
       - db
     restart: always
     ports:
-      - 3000:3000/tcp
+      - 8700:3000/tcp
     environment:
       PGRST_DB_URI: postgres://postgres:postgres@db:5432/postgres
       PGRST_DB_SCHEMA: public
@@ -23,6 +35,20 @@ services:
       - wal_level=logical
     environment:
       POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_PORT: 5432
+  test-db:
+    build:
+      context: ./postgres
+    ports:
+      - 5400:5432
+    command:
+      - postgres
+      - -c
+      - wal_level=logical
+    environment:
+      POSTGRES_DB: pg-test
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_PORT: 5432

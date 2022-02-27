@@ -2,6 +2,7 @@ import { Cluster } from '@nftstorage/ipfs-cluster'
 import pg from 'pg'
 import { Pinata } from './pinata.js'
 import { DBClient } from '../../../api/src/utils/db-client.js'
+import { getConstants } from './constants'
 
 /**
  * Create a new IPFS Cluster instance from the passed environment variables.
@@ -60,17 +61,7 @@ export function getPinata(env) {
  * @param {Record<string, string|undefined>} env
  */
 export function getDBClient(env) {
-  let url, token
-  if (env.ENV === 'production') {
-    url = env.PROD_DATABASE_URL
-    token = env.PROD_DATABASE_TOKEN
-  } else if (env.ENV === 'staging') {
-    url = env.STAGING_DATABASE_URL
-    token = env.STAGING_DATABASE_TOKEN
-  } else {
-    url = env.DATABASE_URL
-    token = env.DATABASE_TOKEN
-  }
+  const { url, token } = getConstants(env.ENV)
   if (!url || !token) throw new Error('missing PostgREST credentials')
   return new DBClient(url, token)
 }

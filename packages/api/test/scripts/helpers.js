@@ -51,6 +51,7 @@ export async function createTestUserWithFixedToken({
       picture: 'http://example.org/avatar.png',
     })
     .single()
+  console.log('here', user, error)
 
   if (error || !user) {
     throw new Error('error creating user')

@@ -1,5 +1,5 @@
 import { parseCid } from '../utils/utils.js'
-import { GATEWAY_NFT_STORAGE_HOSTNAME } from '../constants.js'
+import { GATEWAY_NFT_STORAGE_HOSTNAME } from '../constants'
 
 /** @type {import('../bindings').Handler} */
 export const ipfsGet = async (event, { params }) => {

@@ -14,7 +14,7 @@ import {
   ErrorMetaplexTokenNotFound,
   ErrorInvalidMetaplexToken,
 } from '../errors.js'
-import { secrets } from '../constants.js'
+import { secrets } from '../constants'
 import { uploadCarWithStat, carStat } from './nfts-upload.js'
 
 /**

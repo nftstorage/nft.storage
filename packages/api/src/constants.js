@@ -46,10 +46,6 @@ export const cluster = {
   localAddThreshold: 0,
 }
 
-export const database = {
-  url: DATABASE_URL,
-}
-
 export const isDebug = DEBUG === 'true'
 
 /**
@@ -66,4 +62,35 @@ export const s3 = {
   secretAccessKey:
     typeof S3_SECRET_ACCESS_KEY !== 'undefined' ? S3_SECRET_ACCESS_KEY : '',
   bucketName: typeof S3_BUCKET_NAME !== 'undefined' ? S3_BUCKET_NAME : '',
+}
+
+/** @type {import("./bindings").Hash} **/
+const CONSTANTS = {
+  test: {
+    url: process.env.TEST_DATABASE_URL,
+    token: process.env.DATABASE_TOKEN,
+    connection: process.env.TEST_DATABASE_CONNECTION,
+  },
+  staging: {
+    url: process.env.STAGING_DATABASE_URL,
+    token: process.env.STAGING_DATABASE_TOKEN,
+  },
+  production: {
+    url: process.env.PROD_DATABASE_URL,
+    token: process.env.PROD_DATABASE_TOKEN,
+  },
+  dev: {
+    url: process.env.DATABASE_URL,
+    token: process.env.DATABASE_TOKEN,
+    connection: process.env.DATABASE_CONNECTION,
+  },
+}
+
+/**
+ *
+ * getConstants can take the process.env and returns env specific constants
+ * @param {string | undefined} env
+ */
+export function getConstants(env) {
+  return env ? CONSTANTS[env] : CONSTANTS.dev
 }

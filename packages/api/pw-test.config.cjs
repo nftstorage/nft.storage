@@ -32,7 +32,7 @@ module.exports = {
     inject: [path.join(__dirname, './scripts/node-globals.js')],
     plugins: [nodeBuiltinsPlugin],
     define: {
-      DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
+      DATABASE_URL: JSON.stringify(process.env.TEST_DATABASE_URL),
       DATABASE_TOKEN: JSON.stringify(process.env.DATABASE_TOKEN),
     },
   },
@@ -43,7 +43,7 @@ module.exports = {
     ],
     plugins: [nodeBuiltinsPlugin],
     define: {
-      DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
+      DATABASE_URL: JSON.stringify(process.env.TEST_DATABASE_URL),
       DATABASE_TOKEN: JSON.stringify(process.env.DATABASE_TOKEN),
     },
   },
@@ -66,7 +66,7 @@ module.exports = {
     console.log('⚡️ Shutting down mock servers.')
 
     beforeTests.mock.proc.kill()
-    await execa(cli, ['db', '--clean'])
+    // await execa(cli, ['db', '--clean'])
   },
 }
 

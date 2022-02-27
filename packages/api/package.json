@@ -12,7 +12,7 @@
     "dev": "miniflare --watch --debug --env ../../.env",
     "clean": "./scripts/cli.js db --clean && rm -rf docker/compose",
     "build": "scripts/cli.js build",
-    "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js",
+    "test": "tsc && ENV=test playwright-test \"test/**/*.spec.js\" --sw src/index.js",
     "db-types": "./scripts/cli.js db-types"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",

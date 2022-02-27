@@ -1,5 +1,5 @@
 import { Magic } from '@magic-sdk/admin'
-import { secrets } from '../constants.js'
+import { secrets } from '../constants'
 import { HTTPError, ErrorUserNotFound, ErrorTokenNotFound } from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
 export const magic = new Magic(secrets.magic)
@@ -68,6 +68,7 @@ export async function loginOrRegister(event, data, { db }) {
   const token = magic.utils.parseAuthorizationHeader(auth)
 
   magic.token.validate(token)
+
   const metadata = await magic.users.getMetadataByToken(token)
   if (metadata.issuer) {
     const parsed =

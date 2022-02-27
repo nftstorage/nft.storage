@@ -13,11 +13,12 @@ declare global {
   const CLUSTER_BASIC_AUTH_TOKEN: string
   const MAGIC_SECRET_KEY: string
   const DATABASE_URL: string
+  const TEST_DATABASE_URL: string
   const DATABASE_TOKEN: string
   const GATEWAY_NFT_STORAGE: string
   const MAILCHIMP_API_KEY: string
   const LOGTAIL_TOKEN: string
-  const ENV: 'dev' | 'staging' | 'production'
+  const ENV: 'dev' | 'test' | 'staging' | 'production'
   const SENTRY_DSN: string
   const BRANCH: string
   const VERSION: string
@@ -43,6 +44,10 @@ export type Handler = (
   event: FetchEvent,
   ctx: RouteContext
 ) => Promise<Response> | Response
+
+export interface Hash {
+  [key: string]: any
+}
 
 export interface Pin {
   /**

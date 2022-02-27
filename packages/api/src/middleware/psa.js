@@ -1,7 +1,7 @@
 import { maybeCapture, ErrorPinningUnauthorized } from '../errors.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth.js'
-import { psaAllow } from '../constants.js'
+import { psaAllow } from '../constants'
 
 /** @typedef {import('../bindings').Handler} Handler */
 

@@ -69,9 +69,10 @@ export async function dbCmd(opts) {
   }
 
   if (opts.start) {
-    if ((await isPortReachable(5432)) || (await isPortReachable(3000))) {
+    if ((await isPortReachable(5432)) || (await isPortReachable(8700))) {
       console.error('⚠️ Docker project is already running.')
     }
+
     await execa('docker-compose', [
       '--file',
       composePath,

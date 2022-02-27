@@ -18,8 +18,10 @@ export async function dbSqlCmd(opts) {
     expectEnv('DAG_CARGO_PASSWORD')
   }
   expectEnv('DATABASE_CONNECTION')
-
   const { env } = process
+
+  if (env.ENV === 'test') expectEnv('TEST_DATABASE_CONNECTION')
+
   const configSql = loadSql('config.sql')
   const tables = loadSql('tables.sql')
   const functions = loadSql('functions.sql')
@@ -34,25 +36,31 @@ export async function dbSqlCmd(opts) {
     .replace(":'DAG_CARGO_PASSWORD'", `'${env.DAG_CARGO_PASSWORD}'`)
     .replace(':NFT_STORAGE_USER', env.NFT_STORAGE_USER || 'CURRENT_USER')
 
-  const client = await getDbClient(env.DATABASE_CONNECTION)
+  const dbConnection =
+    env.ENV === 'test' ? env.TEST_DATABASE_CONNECTION : env.DATABASE_CONNECTION
+  const client = await getDbClient(dbConnection)
 
   // if resetting, run post reset commands here
   if (opts.reset) {
-    await client.query(reset)
-
-    await client.query(configSql)
-    await client.query(tables)
-
-    if (opts.cargo) {
-      if (opts.testing) {
-        await client.query(cargoTesting)
-      } else {
-        await client.query(fdw)
-        await client.query(cargo)
-      }
+    try {
+      await client.query(reset).catch((err) => {})
+    } catch (err) {
+      // do nothing
     }
+  }
 
-    await client.query(functions)
+  await client.query(configSql)
+  await client.query(tables).catch((err) => {})
+  await client.query(functions)
+
+  if (opts.cargo) {
+    if (opts.testing) {
+      await client.query(cargoTesting).catch((err) => {})
+    } else {
+      await client.query(fdw)
+      console.log('post non testing cargo')
+    }
+    await client.query(cargo).catch((err) => {})
   }
 
   await client.end()

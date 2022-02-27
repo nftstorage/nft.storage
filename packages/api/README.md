@@ -21,6 +21,10 @@ The database is pre populated with a single mock user. You can start making requ
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDY1MDA3QTczOWFiN0FDNWM1MzcxNjEyNDliODEyNTBFNDllMjg1M0MiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYzOTc1NDczNjYzOCwibmFtZSI6Im1haW4ifQ.wKwJIRXXHsgwVp8mOQp6r3_F4Lz5lnoAkgVP8wqwA_Y
 ```
 
+## Testing Locally
+
+Set NODE_ENV=test
+
 ### Clean/Reset docker
 
 In the case you need to clean up docker after failed tests or debugging session you can just run the command below.

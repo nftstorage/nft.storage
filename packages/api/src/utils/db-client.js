@@ -40,7 +40,7 @@ export class DBClient {
   upsertUser(user) {
     /**@type {PostgrestQueryBuilder<definitions['user']>} */
     const query = this.client.from('user')
-
+    console.log('user', user)
     return query.upsert(user, { onConflict: 'github_id' })
   }
 
