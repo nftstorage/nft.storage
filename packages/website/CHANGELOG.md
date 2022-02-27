@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.29.0](https://github.com/nftstorage/nft.storage/compare/website-v1.28.2...website-v1.29.0) (2022-02-25)
+
+
+### Features
+
+* pare down homepage ([#1005](https://github.com/nftstorage/nft.storage/issues/1005)) ([5f3672a](https://github.com/nftstorage/nft.storage/commit/5f3672ac9ecee625823112234048804a3e4dd24e))
+
 ### [1.28.2](https://github.com/nftstorage/nft.storage/compare/website-v1.28.1...website-v1.28.2) (2022-02-23)
 
 
