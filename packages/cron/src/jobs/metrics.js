@@ -62,6 +62,7 @@ export async function updateMetrics({ roPg, rwPg }) {
   }
 
   if (error) throw error
+  log('✅ Done')
 }
 
 /**
