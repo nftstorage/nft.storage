@@ -50,3 +50,31 @@ INSERT INTO public."user" (magic_link_id, github_id, name, email, public_address
 
 INSERT INTO public.auth_key (name, secret, user_id) VALUES ('main', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDY1MDA3QTczOWFiN0FDNWM1MzcxNjEyNDliODEyNTBFNDllMjg1M0MiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYzOTc1NDczNjYzOCwibmFtZSI6Im1haW4ifQ.wKwJIRXXHsgwVp8mOQp6r3_F4Lz5lnoAkgVP8wqwA_Y', 1);
 
+
+-- Count is the most accurate representation of data
+-- Creating a materialized views gives us cacheing as well as accuracy for percent difference
+
+CREATE MATERIALIZED VIEW upload_stats AS
+	SELECT
+    (
+        SELECT
+        CAST("count"(*) AS float )
+        FROM upload
+    ) AS total_uploads
+	, 
+	(
+        SELECT 
+        CAST("count"(*) AS float )
+        FROM upload
+        WHERE inserted_at < CURRENT_DATE - 7
+    ) AS total_uploads_past_7,
+    (
+        SELECT 
+        CAST("count"(*) AS float )
+        FROM cargo.deals
+    ) AS total_deals,
+    (
+        SELECT
+        SUM(export_size)
+        FROM cargo.aggregates
+    ) as total_deal_size
