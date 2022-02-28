@@ -16,11 +16,13 @@ export { GatewayRedirectCounter0 } from './durable-objects/gateway-redirect-coun
 import { addCorsHeaders, withCorsHeaders } from './cors.js'
 import { errorHandler } from './error-handler.js'
 import { envAll } from './env.js'
+import { cacheWarmFromBackupUrlGet } from './cache/warm.js'
 
 const router = Router()
 
 router
   .all('*', envAll)
+  .get('/cache/warm/:url', withCorsHeaders(cacheWarmFromBackupUrlGet))
   .get('/metrics', withCorsHeaders(metricsGet))
   .get('/ipfs/:cid', withCorsHeaders(ipfsGet))
   .get('/ipfs/:cid/*', withCorsHeaders(ipfsGet))

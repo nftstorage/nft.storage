@@ -1,4 +1,5 @@
 import Toucan from 'toucan-js'
+import { S3Client } from '@aws-sdk/client-s3/dist-es/S3Client.js'
 import pkg from '../package.json'
 import { Logging } from './logs.js'
 
@@ -14,12 +15,18 @@ import { Logging } from './logs.js'
  * @property {string} [SENTRY_DSN]
  * @property {string} [LOGTAIL_TOKEN]
  * @property {number} [REQUEST_TIMEOUT]
+ * @property {string} [S3_BUCKET_ENDPOINT]
+ * @property {string} [S3_BUCKET_NAME]
+ * @property {string} [S3_BUCKET_REGION]
+ * @property {string} [S3_ACCESS_KEY_ID]
+ * @property {string} [S3_SECRET_ACCESS_KEY_ID]
  * @property {Object} GATEWAYMETRICS
  * @property {Object} SUMMARYMETRICS
  * @property {Object} CIDSTRACKER
  * @property {Object} GATEWAYRATELIMITS
  * @property {Object} GATEWAYREDIRECTCOUNTER
  *
+ * // Derived values and class dependencies
  * @typedef {Object} EnvTransformed
  * @property {Array<string>} ipfsGateways
  * @property {DurableObjectNamespace} gatewayMetricsDurable
@@ -29,6 +36,7 @@ import { Logging } from './logs.js'
  * @property {DurableObjectNamespace} gatewayRedirectCounter
  * @property {number} REQUEST_TIMEOUT
  * @property {Toucan} [sentry]
+ * @property {S3Client} [s3Client]
  * @property {Logging} [log]
  *
  * @typedef {EnvInput & EnvTransformed} Env
@@ -41,6 +49,7 @@ import { Logging } from './logs.js'
  */
 export function envAll(request, env, ctx) {
   env.sentry = getSentry(request, env)
+  env.s3Client = getS3Client(env)
   env.ipfsGateways = JSON.parse(env.IPFS_GATEWAYS)
   env.gatewayMetricsDurable = env.GATEWAYMETRICS
   env.summaryMetricsDurable = env.SUMMARYMETRICS
@@ -51,6 +60,28 @@ export function envAll(request, env, ctx) {
 
   env.log = new Logging(request, env, ctx)
   env.log.time('request')
+}
+
+/**
+ * Get s3 client instance if configured
+ *
+ * @param {Env} env
+ */
+function getS3Client(env) {
+  // s3 not required in dev mode
+  if (env.ENV === 'dev' && !env.S3_ACCESS_KEY_ID) {
+    console.log('running without s3 wired up')
+  } else {
+    return new S3Client({
+      endpoint: env.S3_BUCKET_ENDPOINT,
+      forcePathStyle: !!env.S3_BUCKET_ENDPOINT, // Force path if endpoint provided
+      region: env.S3_BUCKET_REGION,
+      credentials: {
+        accessKeyId: env.S3_ACCESS_KEY_ID,
+        secretAccessKey: env.S3_SECRET_ACCESS_KEY_ID,
+      },
+    })
+  }
 }
 
 /**

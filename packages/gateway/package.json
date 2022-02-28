@@ -16,9 +16,11 @@
     "docker:ipfs:start": "node scripts/cli.js ipfs --start",
     "docker:ipfs:stop": "node scripts/cli.js ipfs --stop",
     "mock:ipfs.io": "smoke -p 9082 test/mocks/ipfs.io",
-    "mock:cf-ipfs.com": "smoke -p 9083 test/mocks/cf-ipfs.com"
+    "mock:cf-ipfs.com": "smoke -p 9083 test/mocks/cf-ipfs.com",
+    "mock:s3": "smoke -p 9'96 test/mocks/s3"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.53.1",
     "itty-router": "^2.4.5",
     "multiformats": "^9.6.4",
     "nanoid": "^3.1.30",
