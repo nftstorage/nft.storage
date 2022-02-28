@@ -97,5 +97,5 @@ export function getPg(env, mode = 'rw') {
       mode === 'rw' ? env.DATABASE_CONNECTION : env.RO_DATABASE_CONNECTION
   }
   if (!connectionString) throw new Error('missing Postgres connection string')
-  return new pg.Pool({ connectionString })
+  return new pg.Pool({ connectionString, allowExitOnIdle: true })
 }
