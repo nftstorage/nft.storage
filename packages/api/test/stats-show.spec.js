@@ -20,7 +20,7 @@ describe('Status Show Route ', () => {
         data: [
           {
             value: null,
-            stat: 'upload_7_day_total_growth_percent',
+            stat: 'upload_stats',
           },
         ],
       },

@@ -448,10 +448,15 @@ export class DBClient {
     return data[0].value
   }
 
-  async get7DayGrowthRate() {
-    /** @type {PostgrestQueryBuilder<definitions['upload_7_day_total_growth']>} */
-    const query = this.client.from('upload_7_day_total_growth')
-    const { data, error } = await query.select('growth_rate_percent')
+  async getUploadStats() {
+    /** @type {PostgrestQueryBuilder<definitions['upload_stats']>} */
+    const query = this.client.from('upload_stats')
+    const { data, error } = await query.select(`
+                                    total_uploads,
+                                    total_uploads_past_7,
+                                    total_deals,
+                                    total_deal_size
+                                  `)
 
     if (error) {
       throw new DBError(error)
@@ -461,7 +466,7 @@ export class DBClient {
       return undefined
     }
 
-    return data[0].growth_rate_percent
+    return data[0]
   }
 }
 

@@ -11,7 +11,7 @@ export async function metrics(_, { db }) {
 
 /** @type {import('../bindings').Handler} */
 export async function getUpload7DayGrowthRate(_, { db }) {
-  let growth_rate_percent = await db.get7DayGrowthRate()
+  let growth_rate_percent = await db.getUploadStats()
 
   return new JSONResponse(
     {
@@ -19,7 +19,7 @@ export async function getUpload7DayGrowthRate(_, { db }) {
       data: [
         {
           value: growth_rate_percent,
-          stat: 'upload_7_day_total_growth_percent',
+          stat: 'upload_stats_percent',
         },
       ],
     },

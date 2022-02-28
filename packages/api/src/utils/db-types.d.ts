@@ -314,7 +314,7 @@ export interface paths {
       responses: {
         /** OK */
         200: {
-          schema: definitions['upload_7_day_total_growth'][]
+          schema: definitions['upload_stats'][]
         }
         /** Partial Content */
         206: unknown
@@ -869,12 +869,14 @@ export interface definitions {
     /** Format: timestamp with time zone */
     deleted_at?: string
   }
-  upload_7_day_total_growth: {
+  upload_stats: {
     /**
      * Format: bigint
      * @description Note:
      * This is a calculated value on a materialized view that represents a whole number percent
      */
+    total_uploads: number
+    total_deals: number
     growth_rate_percent: number
   }
   backup: {
