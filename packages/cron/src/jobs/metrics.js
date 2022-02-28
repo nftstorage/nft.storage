@@ -19,8 +19,7 @@ const COUNT_UPLOADS = 'SELECT COUNT(*) AS total FROM upload WHERE type = $1'
 
 const COUNT_TOTAL_UPLOADS = 'SELECT COUNT(*) AS total FROM upload'
 // This is a rolling 7 day date window of total uploads
-const REFRESH_UPLOAD_7_DAY_GROWTH =
-  'REFRESH MATERIALIZED VIEW upload_7_day_total_growth;'
+const REFRESH_UPLOAD_STATS = 'REFRESH MATERIALIZED VIEW upload_stats;'
 
 const COUNT_PINS =
   'SELECT COUNT(*) AS total FROM pin WHERE service = $1 AND status = $2'
@@ -52,6 +51,7 @@ export async function updateMetrics({ roPg, rwPg }) {
     ),
     updateUploadTotal(roPg, rwPg),
     updateUploadWeekGrowth(roPg, rwPg),
+    updateUploadStats(roPg, rwPg),
     ...PIN_SERVICES.map((svc) =>
       PIN_STATUSES.map((s) =>
         withTimeLog(`updatePinsCount[${svc}][${s}]`, () =>
@@ -121,8 +121,8 @@ async function updateUploadTotal(roPg, rwPg) {
  * @param {Client} roPg
  * @param {Client} rwPg
  */
-async function updateUploadWeekGrowth(roPg, rwPg) {
-  await roPg.query(REFRESH_UPLOAD_7_DAY_GROWTH)
+async function updateUploadStats(roPg, rwPg) {
+  await roPg.query(REFRESH_UPLOAD_STATS)
 }
 
 /**
