@@ -71,7 +71,11 @@ function getSentry(request, env) {
     debug: false,
     environment: env.ENV || 'dev',
     rewriteFrames: {
-      root: '/',
+      // strip . from start of the filename ./worker.mjs as set by cloudflare, to make absolute path `/worker.mjs`
+      iteratee: (frame) => ({
+        ...frame,
+        filename: frame.filename.substring(1),
+      }),
     },
     release: env.VERSION,
     pkg,

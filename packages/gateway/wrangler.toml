@@ -14,7 +14,7 @@ command = "npm run build"
 [build.upload]
 format = "modules"
 dir = "dist"
-main = "index.mjs"
+main = "worker.mjs"
 
 [durable_objects]
 bindings = [
