@@ -1,9 +1,12 @@
 import settle from 'p-settle'
+import debug from 'debug'
 import {
   UPLOAD_TYPES,
   PIN_SERVICES,
   PIN_STATUSES,
 } from '../../../api/src/utils/db-client.js'
+
+const log = debug('metrics:updateMetrics')
 
 /**
  * @typedef {import('pg').Client} Client
@@ -17,7 +20,7 @@ const COUNT_UPLOADS = 'SELECT COUNT(*) AS total FROM upload WHERE type = $1'
 const COUNT_PINS =
   'SELECT COUNT(*) AS total FROM pin WHERE service = $1 AND status = $2'
 
-const SUM_CONTENT_DAG_SIZE = `SELECT SUM(c.dag_size) AS "total" FROM content c`
+const SUM_CONTENT_DAG_SIZE = 'SELECT SUM(c.dag_size) AS "total" FROM content c'
 
 const UPDATE_METRIC = `
 INSERT INTO metric (name, value, updated_at)
@@ -33,11 +36,21 @@ ON CONFLICT (name) DO UPDATE
  */
 export async function updateMetrics({ roPg, rwPg }) {
   const results = await settle([
-    updateUsersCount(roPg, rwPg),
-    updateContentRootDagSizeSum(roPg, rwPg),
-    ...UPLOAD_TYPES.map((t) => updateUploadsCount(roPg, rwPg, t)),
+    withTimeLog('updateUsersCount', () => updateUsersCount(roPg, rwPg)),
+    withTimeLog('updateContentRootDagSizeSum', () =>
+      updateContentRootDagSizeSum(roPg, rwPg)
+    ),
+    ...UPLOAD_TYPES.map((t) =>
+      withTimeLog(`updateUploadsCount[${t}]`, () =>
+        updateUploadsCount(roPg, rwPg, t)
+      )
+    ),
     ...PIN_SERVICES.map((svc) =>
-      PIN_STATUSES.map((s) => updatePinsCount(roPg, rwPg, svc, s))
+      PIN_STATUSES.map((s) =>
+        withTimeLog(`updatePinsCount[${svc}][${s}]`, () =>
+          updatePinsCount(roPg, rwPg, svc, s)
+        )
+      )
     ).flat(),
   ])
 
@@ -99,4 +112,19 @@ async function updatePinsCount(roPg, rwPg, service, status) {
     `pins_${service.toLowerCase()}_${status.toLowerCase()}_total`,
     rows[0].total,
   ])
+}
+
+/**
+ * @template T
+ * @param {string} name
+ * @param {() => Promise<T>} fn
+ * @returns {Promise<T>}
+ */
+async function withTimeLog(name, fn) {
+  const start = Date.now()
+  try {
+    return await fn()
+  } finally {
+    log(`${name} took: ${Date.now() - start}ms`)
+  }
 }
