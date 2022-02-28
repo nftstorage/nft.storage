@@ -17,12 +17,12 @@ describe('Status Show Route ', () => {
       statsResults,
       {
         ok: true,
-        data: [
-          {
-            value: null,
-            stat: 'upload_stats',
-          },
-        ],
+        data: {
+          total_uploads: 0,
+          total_uploads_past_7: 0,
+          total_deals: 1,
+          total_deal_size: 25515304172,
+        },
       },
       'Server responded with null for upload growth, since none exists'
     )
