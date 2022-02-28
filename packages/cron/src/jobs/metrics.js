@@ -9,7 +9,7 @@ import {
 const log = debug('metrics:updateMetrics')
 
 /**
- * @typedef {import('pg').Client} Client
+ * @typedef {import('pg').Pool} Client
  * @typedef {{ name: string, value: number }} Metric
  */
 
