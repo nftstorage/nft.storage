@@ -64,3 +64,18 @@ test('should resolve a cid and path with IPFS canonical resolution when subdomai
     'https://bafybeifvsmjgbhck72pabliifeo35cew5yhxujfqjxg4g32vr3yv24h6zu.ipfs.localhost:8787/path/file.txt'
   )
 })
+
+test('should resolve a cid IPFS canonical resolution keeping query parameters', async (t) => {
+  const { mf } = t.context
+  const queryString = '?key=value'
+
+  const response = await mf.dispatchFetch(
+    `https://localhost:8787/ipfs/bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq${queryString}`
+  )
+  await response.waitUntil()
+  t.is(response.status, 302)
+  t.is(
+    response.headers.get('location'),
+    `https://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq.ipfs.localhost:8787/${queryString}`
+  )
+})
