@@ -79,3 +79,17 @@ test('should resolve a cid IPFS canonical resolution keeping query parameters', 
     `https://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq.ipfs.localhost:8787/${queryString}`
   )
 })
+
+test('should resolve a cid IPFS canonical resolution with same path as IPFS path', async (t) => {
+  const { mf } = t.context
+
+  const response = await mf.dispatchFetch(
+    'https://localhost:8787/ipfs/bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq/ipfs/bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq'
+  )
+  await response.waitUntil()
+  t.is(response.status, 302)
+  t.is(
+    response.headers.get('location'),
+    'https://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq.ipfs.localhost:8787/ipfs/bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq'
+  )
+})

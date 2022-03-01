@@ -12,7 +12,7 @@ export async function ipfsGet(request, env) {
   const reqQueryString = reqUrl.searchParams.toString()
 
   // Get pathname to query from URL pathname avoiding potential CID appear in the domain
-  const redirectPath = reqUrl.pathname.split(cid)[1] || ''
+  const redirectPath = reqUrl.pathname.split(cid).slice(1).join(cid)
   const redirectQueryString = reqQueryString ? `?${reqQueryString}` : ''
 
   // Parse and normalize CID
