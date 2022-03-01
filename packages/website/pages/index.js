@@ -16,7 +16,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      needsUser: false,
+      needsUser: true,
       logos,
       description: 'NFT.Storage homepage',
     },

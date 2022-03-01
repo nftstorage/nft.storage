@@ -72,16 +72,22 @@ const MaintenanceBanner = () => {
  */
 export default function Layout({
   callback,
+  needsUser = false,
   children,
+  redirectTo,
+  redirectIfFound = false,
   title = 'NFT.Storage - Free decentralized storage and bandwidth for NFTs on IPFS & Filecoin.',
   description = 'NFT Storage is a brand new service, built specifically for storing off-chain NFT data on IPFS and Filecoin.',
   navBgColor = 'bg-nsorange',
   altLogo = false,
   image = 'https://nft.storage/images/social.png',
 }) {
-  // @ts-ignore
-  const { user } = useUser()
-
+  const { user, status } = useUser({
+    redirectTo,
+    redirectIfFound,
+    enabled: needsUser,
+  })
+  const shouldWaitForUser = needsUser && status === 'loading'
   const logo = {
     src: altLogo
       ? '/images/logo-nft-storage-inline-dark.svg'
@@ -104,7 +110,9 @@ export default function Layout({
         <meta name="twitter:site" content="@protocollabs" />
         <meta name="twitter:creator" content="@protocollabs" />
       </Head>
-      {callback ? (
+      {shouldWaitForUser ? (
+        <Loading />
+      ) : callback ? (
         <>
           <Loading />
           {children({ user })}

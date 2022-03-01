@@ -5,13 +5,9 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import Script from 'next/script'
 import Layout from '../components/layout.js'
 import { ReactQueryDevtools } from 'react-query/devtools'
-import Router, { useRouter } from 'next/router'
+import Router from 'next/router'
 import countly from '../lib/countly'
-import { useCallback, useEffect, useState } from 'react'
-import { isLoggedIn } from 'lib/magic'
-import * as Sentry from '@sentry/nextjs'
-import { UserContext } from 'lib/user'
-import Loading from 'components/loading'
+import { useEffect } from 'react'
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 60 * 1000 } },
@@ -23,50 +19,11 @@ const queryClient = new QueryClient({
  * @param {any} props
  */
 export default function App({ Component, pageProps }) {
-  const router = useRouter()
-  const [user, setUser] = useState(null)
-
-  const handleIsLoggedIn = useCallback(async () => {
-    const data = await isLoggedIn()
-    if (!data) return
-    if (data) {
-      // @ts-ignore
-      Sentry.setUser(user)
-    }
-    setUser(data)
-  }, [])
-
-  useEffect(() => {
-    handleIsLoggedIn()
-  }, [router, handleIsLoggedIn])
-
-  useEffect(() => {
-    if (!pageProps.redirectTo && pageProps.needsUser) {
-      return
-    }
-    if (
-      // If redirectTo is set, redirect if the user was not found.
-      (pageProps.redirectTo && !pageProps.redirectIfFound && !user) ||
-      // If redirectIfFound is also set, redirect if the user was found
-      (pageProps.redirectIfFound && user)
-    ) {
-      router.push(pageProps.redirectTo)
-    }
-  }, [pageProps, user, router])
-
   useEffect(() => {
     Router.events.on('routeChangeComplete', (route) => {
       countly.trackPageView(route)
     })
   }, [])
-
-  function handleClearUser() {
-    setUser(null)
-  }
-
-  if (pageProps.needsUser && !user) {
-    return <Loading />
-  }
 
   return (
     <>
@@ -87,14 +44,9 @@ export default function App({ Component, pageProps }) {
         }}
       />
       <QueryClientProvider client={queryClient}>
-        <UserContext.Provider
-          // @ts-ignore
-          value={{ user, handleClearUser }}
-        >
-          <Layout {...pageProps}>
-            {(props) => <Component {...pageProps} {...props} />}
-          </Layout>
-        </UserContext.Provider>
+        <Layout {...pageProps}>
+          {(props) => <Component {...pageProps} {...props} />}
+        </Layout>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </>
