@@ -14,7 +14,7 @@ function ExternalRedirect(props) {
   const { url } = props
   useEffect(() => {
     window.location = url
-  }, [])
+  }, [url])
   return <></>
 }
 
