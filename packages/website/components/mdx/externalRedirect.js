@@ -13,7 +13,7 @@ import { useEffect } from 'react'
 function ExternalRedirect(props) {
   const { url } = props
   useEffect(() => {
-    window.location = url
+    window.location.href = url || ''
   }, [url])
   return <></>
 }
