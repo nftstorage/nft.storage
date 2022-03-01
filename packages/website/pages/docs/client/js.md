@@ -3,7 +3,7 @@
 import { Tabs, TabItem } from 'components/mdx/tabs';
 import Callout from 'nextra-theme-docs/callout';
 
-The [`nft.storage` JavaScript package][npm-package] is a small and easy-to-use library that can have your JavaScript or TypeScript project integrated with NFT.Storage in minutes.
+The [`nft.storage`][npm-package] JavaScript package is a small and easy-to-use library that can have your JavaScript or TypeScript project integrated with NFT.Storage in minutes.
 
 The JavaScript client uses the [HTTP API][reference-http-api] to send your data to the NFT.Storage service as a collection of [Content Archives (CARs)][concepts-car]. Encoding data into CARs locally allows you to send files that would otherwise be too large to fit within the API's size limits, as the client will automatically split large CARs into smaller pieces and the service will re-assemble them once they are all received. 
 
@@ -13,7 +13,7 @@ This guide will cover the basics of creating a client object, as well as the mos
 
 ## Installation and importing
 
-The [`nft.storage` NPM package][npm-package] can be added to your project with your favorite JS dependency manager:
+The [`nft.storage`][npm-package] NPM package can be added to your project with your favorite JS dependency manager:
 
 <Tabs>
 <TabItem value="npm" label="NPM">
@@ -77,7 +77,7 @@ There are a few methods available for storing data.
 
 ### `store` - store ERC1155 NFT data
 
-For NFTs that follow the [ERC-1155][erc-1155] metadata specification, the [`store` method][reference-store] provides a convenient way to upload your NFT assets (images, etc) in the same operation as your metadata, with the client taking care of the details of linking from the metadata to the assets.
+For NFTs that follow the [ERC-1155][erc-1155] metadata specification, the [`store`][reference-store] method provides a convenient way to upload your NFT assets (images, etc) in the same operation as your metadata, with the client taking care of the details of linking from the metadata to the assets.
 
 ```js
 const imageFile = new File([ someBinaryImageData ], 'nft.png', { type: 'image/png' })
@@ -92,7 +92,7 @@ For more details, see the [guide to storing ERC-1155 NFTs][howto-erc1155].
 
 ### `storeBlob` - store a single binary data object
 
-The [`storeBlob` method][reference-storeBlob] takes a single [`Blob`][mdn-blob] of binary data and stores it with NFT.Storage, returning the CID asynchronously. Note that files stored in this manner will not have human-readable filenames stored on IPFS and must be fetched directly by CID.
+The [`storeBlob`][reference-storeBlob]  method takes a single [`Blob`][mdn-blob] of binary data and stores it with NFT.Storage, returning the CID asynchronously. Note that files stored in this manner will not have human-readable filenames stored on IPFS and must be fetched directly by CID.
 
 ```js
 const someData = new Blob(["hello world"])
@@ -101,7 +101,7 @@ const cid = await client.storeBlob(someData)
 
 ### `storeDirectory` - store a collection of files
 
-The [`storeDirectory` method] takes a collection of one or more [`File`][mdn-file] objects and stores them in an IPFS directory listing. You can create a directory structure by using `/` characters in the filenames to delimit directories.
+The [`storeDirectory`][reference-storeDirectory] method takes a collection of one or more [`File`][mdn-file] objects and stores them in an IPFS directory listing. You can create a directory structure by using `/` characters in the filenames to delimit directories.
 
 ```js
 const readmeFile = new File('Run node src/index.js for a friendly greeting.', 'README.txt', { type: 'text/plain' })
@@ -114,7 +114,7 @@ The CID returned by the `storeDirectory` method will resolve to an IPFS director
 
 ### `storeCar` - store a Content Archive (CAR)
 
-The [`storeCar` method][reference-storeCar] stores a [Content Archive (CAR)][concepts-car] of content-addressed data, returning the root CID of the archive.
+The [`storeCar`][reference-storeCar] method stores a [Content Archive (CAR)][concepts-car] of content-addressed data, returning the root CID of the archive.
 
 One of the simplest ways to create a CAR is using the [`encodeBlob`][reference-encodeBlob] and [`encodeDirectory`][reference-encodeDirectory] static methods of the `NFTStorage` class. For other options, see the [guide to CAR files][concepts-car].
 
@@ -127,7 +127,7 @@ const cid = await client.storeCar(car)
 
 ## Deleting an upload from your account
 
-The [`delete` method][reference-delete] can remove uploaded data from your account, however it's important to understand that this **does not** guarantee that the data will be removed from the [decentralized storage networks][concepts-decentralized-storage] used by NFT.Storage. 
+The [`delete`][reference-delete] method can remove uploaded data from your account, however it's important to understand that this **does not** guarantee that the data will be removed from the [decentralized storage networks][concepts-decentralized-storage] used by NFT.Storage. 
 
 The entry for the data will be removed from your account's file listing page, and the NFT.Storage service may stop providing the data to the IPFS network and managing Filecoin storage deals. However, any peers in the storage networks who have obtained a copy of the data may continue to store it and may continue to provide the data to the network at their discretion.
 
