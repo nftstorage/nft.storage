@@ -201,7 +201,7 @@ export default function Files({ user }) {
             popupContent={'CID has been copied!!'}
           >
             <a
-              href={`https://ipfs.io/ipfs/${nft.cid}`}
+              href={`https://nftstorage.link/ipfs/${nft.cid}`}
               className="underline black truncate"
               target="_blank"
               rel="noreferrer"
