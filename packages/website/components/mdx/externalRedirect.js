@@ -1,6 +1,17 @@
 import { useEffect } from 'react'
 
-function ExternalRedirect({ url }) {
+/**
+ * @typedef {Object} ExternalRedirect
+ * @prop {string} [url]
+ */
+
+/**
+ *
+ * @param {ExternalRedirect} props
+ * @returns
+ */
+function ExternalRedirect(props) {
+  const { url } = props
   useEffect(() => {
     window.location = url
   }, [])
