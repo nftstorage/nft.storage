@@ -17,7 +17,7 @@ The best practice is to use URIs that contain [IPFS content IDs](https://docs.ip
 
 Using NFT.Storage also makes it easy to store your data on the public IPFS network. The beauty of IPFS is that it's unopinionated on where data physically sits, since it references data by its CID. As a result, IPFS guarantees that, if at least one copy of the data is being broadcast to the network (whether it's stored on a storage service, on decentralized storage, or on your local computer), you can get a copy back. 
 
-NFT.Storage functions as a great long-term home for NFT data, with data being broadcasted to the IPFS network and stored trustlessly on Filecoin (with a vision to [increasingly decentralize itself as a service](https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/). And the storage and retrieval infrastructure behind NFT.Storage is designed to, and will increasingly, utilize innovations from both Web2 and web3 to provide the performance that end-users expect.
+NFT.Storage functions as a great long-term home for NFT data, with data being broadcasted to the IPFS network and stored trustlessly on Filecoin (with a vision to [fully decentralize itself as a service](https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/)). And the storage and retrieval infrastructure behind NFT.Storage is designed to, and will increasingly, utilize innovations from both Web2 and web3 to provide the performance that end-users expect.
 
 
 ## Pitfalls with using HTTP URLs
