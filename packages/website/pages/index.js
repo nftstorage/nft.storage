@@ -207,10 +207,20 @@ function About() {
                 >
                   content addressed
                 </a>{' '}
-                using IPFS, meaning the URL pointing to a piece of data
-                (“ipfs://…”) is completely unique to that data. IPFS URLs can be
+                using IPFS, meaning the URI pointing to a piece of data
+                (“ipfs://…”) is completely unique to that data (using a{' '}
+                <a
+                  href="https://docs.ipfs.io/concepts/content-addressing/"
+                  className="black"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  content identifier
+                </a>, or CID). IPFS URLs and CIDs can be
                 used in NFTs and metadata to ensure the NFT forever actually
-                refers to the intended data (eliminating things like rug pulls).
+                refers to the intended data (eliminating things like rug pulls,
+                and making it trustlessly verifiable what content an NFT is
+                associated with).
               </p>
             </div>
             <div>
@@ -246,7 +256,17 @@ function About() {
                 >
                   local IPFS node
                 </a>
-                , to other decentralized networks like Arweave or Storj.
+                , to other storage networks like Arweave or Storj.
+                And as time goes on, NFT.Storage will increasingly{' '}
+                <a
+                  href="https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/"
+                  className="black"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  decentralize itself
+                </a> {' '}
+                as a public good!
               </p>
             </div>
           </div>
