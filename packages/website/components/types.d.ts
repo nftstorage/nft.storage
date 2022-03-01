@@ -36,11 +36,10 @@ export interface LayoutProps {
   logos?: string[]
 }
 
-export interface MagicUser {
-  issuer: string | null
-  publicAddress: string | null
-  email: string | null
-}
 export interface LayoutChildrenProps {
-  user?: MagicUser | null
+  user?: {
+    issuer: string | null
+    publicAddress: string | null
+    email: string | null
+  }
 }
