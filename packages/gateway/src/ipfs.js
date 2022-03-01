@@ -8,7 +8,7 @@ import { normalizeCid } from './utils/cid.js'
  */
 export async function ipfsGet(request, env) {
   const cid = request.params.cid
-  const path = request.url.split(cid)[1] || ''
+  const path = request.url.split(`/ipfs/${cid}`)[1] || ''
 
   // Parse and normalize CID
   const nCid = normalizeCid(cid)
