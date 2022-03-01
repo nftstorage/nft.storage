@@ -1,0 +1,16 @@
+.faq-item h2 {
+  font-size: 28px;
+}
+.faq-item h2 code {
+  font-size: 24px;
+}
+
+/* 768px */
+@media screen and (min-width: 48rem) {
+  .faq-item h2 {
+    font-size: 32px;
+  }
+  .faq-item h2 code {
+    font-size: 28px;
+  }
+}
