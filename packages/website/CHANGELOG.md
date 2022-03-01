@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.30.1](https://github.com/nftstorage/nft.storage/compare/website-v1.30.0...website-v1.30.1) (2022-03-01)
+
+
+### Bug Fixes
+
+* website gateway url ([#1424](https://github.com/nftstorage/nft.storage/issues/1424)) ([bcd5ef4](https://github.com/nftstorage/nft.storage/commit/bcd5ef459de2002421de4f3e323e39bb381a412a))
+
 ## [1.30.0](https://github.com/nftstorage/nft.storage/compare/website-v1.29.0...website-v1.30.0) (2022-03-01)
 
 
