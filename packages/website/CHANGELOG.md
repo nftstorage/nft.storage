@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.30.0](https://github.com/nftstorage/nft.storage/compare/website-v1.29.0...website-v1.30.0) (2022-03-01)
+
+
+### Features
+
+* authentication persistence refactor ([#1495](https://github.com/nftstorage/nft.storage/issues/1495)) ([5954d4a](https://github.com/nftstorage/nft.storage/commit/5954d4ad00e8c74ac7850e95c4f9b214c7f68f66))
+
 ## [1.29.0](https://github.com/nftstorage/nft.storage/compare/website-v1.28.2...website-v1.29.0) (2022-02-25)
 
 
