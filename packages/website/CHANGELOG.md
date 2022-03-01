@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.31.0](https://github.com/nftstorage/nft.storage/compare/website-v1.30.1...website-v1.31.0) (2022-03-01)
+
+
+### Features
+
+* add homepage link to decentralization post ([#1326](https://github.com/nftstorage/nft.storage/issues/1326)) ([d2a7d21](https://github.com/nftstorage/nft.storage/commit/d2a7d216fd374ef30bad4fd092f4516f921437ad))
+* **docs:** add overview page for js client & links to generated clients ([#1450](https://github.com/nftstorage/nft.storage/issues/1450)) ([236fda4](https://github.com/nftstorage/nft.storage/commit/236fda42073106d7ce4943ed91667268fbfd389b))
+
+
+### Bug Fixes
+
+* add more on what filecoin gets you, typos ([#1459](https://github.com/nftstorage/nft.storage/issues/1459)) ([551ec14](https://github.com/nftstorage/nft.storage/commit/551ec14195f8c7a44f4149e0aecaae6fc7f09432))
+* client docs markdown fixes ([#1520](https://github.com/nftstorage/nft.storage/issues/1520)) ([6185140](https://github.com/nftstorage/nft.storage/commit/61851409895b221fd63317d6e172ba1526c10da5))
+* **docs:** add pathPrefix to storeDirectory example ([#1523](https://github.com/nftstorage/nft.storage/issues/1523)) ([52b4098](https://github.com/nftstorage/nft.storage/commit/52b4098bd862fcb1d1773d52d6c8c123eb47aff5))
+
 ### [1.30.1](https://github.com/nftstorage/nft.storage/compare/website-v1.30.0...website-v1.30.1) (2022-03-01)
 
 
