@@ -24,6 +24,8 @@ router
   .get('/metrics', withCorsHeaders(metricsGet))
   .get('/ipfs/:cid', withCorsHeaders(ipfsGet))
   .get('/ipfs/:cid/*', withCorsHeaders(ipfsGet))
+  .head('/ipfs/:cid', withCorsHeaders(ipfsGet))
+  .head('/ipfs/:cid/*', withCorsHeaders(ipfsGet))
   .get('*', withCorsHeaders(gatewayGet))
   .head('*', withCorsHeaders(gatewayGet))
 
