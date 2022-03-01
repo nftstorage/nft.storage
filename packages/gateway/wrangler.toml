@@ -34,6 +34,7 @@ route = "*gateway.nft.storage/*"
 
 [env.production.vars]
 IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]"
+GATEWAY_HOSTNAME = 'ipfs.nftstorage.link'
 DEBUG = "false"
 ENV = "production"
 
@@ -55,6 +56,7 @@ route = "*gateway-staging.nft.storage/*"
 
 [env.staging.vars]
 IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]"
+GATEWAY_HOSTNAME = 'ipfs-staging.nftstorage.link'
 DEBUG = "true"
 ENV = "staging"
 
@@ -73,6 +75,7 @@ workers_dev = true
 
 [env.test.vars]
 IPFS_GATEWAYS = "[\"http://127.0.0.1:9081\", \"http://localhost:9082\", \"http://localhost:9083\"]"
+GATEWAY_HOSTNAME = 'ipfs.localhost:8787'
 DEBUG = "true"
 ENV = "test"
 
@@ -91,6 +94,7 @@ workers_dev = true
 account_id = "7ec0b7cf2ec201b2580374e53ba5f37b"
 
 [env.vsantos.vars]
+GATEWAY_HOSTNAME = 'ipfs.localhost:8787'
 IPFS_GATEWAYS = "[\"https://ipfs.io\"]"
 
 [env.vsantos.durable_objects]

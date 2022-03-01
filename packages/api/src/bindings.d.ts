@@ -14,7 +14,6 @@ declare global {
   const MAGIC_SECRET_KEY: string
   const DATABASE_URL: string
   const DATABASE_TOKEN: string
-  const GATEWAY_NFT_STORAGE: string
   const MAILCHIMP_API_KEY: string
   const LOGTAIL_TOKEN: string
   const ENV: 'dev' | 'staging' | 'production'

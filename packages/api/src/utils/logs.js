@@ -133,8 +133,7 @@ export class Logging {
    * @param {Response} response
    */
   async end(response) {
-    // Headers are immutable for Redirect
-    if (this.opts?.debug && response.status !== 302) {
+    if (this.opts?.debug) {
       response.headers.set('Server-Timing', this._timersString())
     }
     const run = async () => {
