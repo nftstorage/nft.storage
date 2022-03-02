@@ -18,10 +18,14 @@ describe('Status Show Route ', () => {
       {
         ok: true,
         data: {
-          total_uploads: 0,
           total_uploads_past_7: 0,
           total_deals: 1,
           total_deal_size: 25515304172,
+          uploads_car_total: 0,
+          uploads_blob_total: 0,
+          uploads_multipart_total: 0,
+          uploads_remote_total: 0,
+          uploads_nft_total: 0,
         },
       },
       'Server responded with null for upload growth, since none exists'

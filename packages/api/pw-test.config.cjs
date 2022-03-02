@@ -53,7 +53,7 @@ module.exports = {
     await execa(cli, ['db', '--start'])
     console.log('⚡️ Cluster and Postgres started.')
 
-    await execa(cli, ['db-sql', '--cargo', '--testing'])
+    await execa(cli, ['db-sql', '--cargo', '--testing', '--reset'])
     console.log('⚡️ SQL schema loaded.')
 
     await delay(2000)

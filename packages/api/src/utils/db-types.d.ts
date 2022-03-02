@@ -870,14 +870,7 @@ export interface definitions {
     deleted_at?: string
   }
   upload_stats: {
-    /**
-     * Format: bigint
-     * @description Note:
-     * This is a calculated value on a materialized view that represents a whole number percent
-     */
-    total_uploads: number
-    total_deals: number
-    growth_rate_percent: number
+    [key: string]: string
   }
   backup: {
     /**
