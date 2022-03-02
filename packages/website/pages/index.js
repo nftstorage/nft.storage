@@ -8,7 +8,7 @@ import Link from 'next/link'
 import Button from '../components/button'
 
 export async function getStaticProps() {
-  const logos = fs.readdirSync('public/images/marketplace-logos')
+  const logos = fs.readdirSync('public/images/marketplace-logos/home')
   // make opensea be the first logo
   logos.sort((a, b) =>
     a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
@@ -31,7 +31,7 @@ export async function getStaticProps() {
 const Logo = ({ src }) => (
   <img
     className="marketplace-logo"
-    src={`images/marketplace-logos/${src}`}
+    src={`images/marketplace-logos/home/${src}`}
     alt="Nft.Storage Users"
   />
 )
