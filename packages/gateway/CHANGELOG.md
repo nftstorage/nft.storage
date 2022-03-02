@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.2.3](https://github.com/nftstorage/nft.storage/compare/gateway-v1.2.2...gateway-v1.2.3) (2022-03-02)
+
+
+### Bug Fixes
+
+* gateway directories links resolution ([#1503](https://github.com/nftstorage/nft.storage/issues/1503)) ([65c9517](https://github.com/nftstorage/nft.storage/commit/65c95175d2782d1f5c036fe2f7c6a6c40e294a08))
+
 ### [1.2.2](https://github.com/nftstorage/nft.storage/compare/gateway-v1.2.1...gateway-v1.2.2) (2022-03-02)
 
 
