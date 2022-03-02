@@ -8,11 +8,18 @@ import { normalizeCid } from './utils/cid.js'
  */
 export async function ipfsGet(request, env) {
   const cid = request.params.cid
-  const path = request.url.split(cid)[1] || ''
+  const reqUrl = new URL(request.url)
+  const reqQueryString = reqUrl.searchParams.toString()
+
+  // Get pathname to query from URL pathname avoiding potential CID appear in the domain
+  const redirectPath = reqUrl.pathname.split(cid).slice(1).join(cid)
+  const redirectQueryString = reqQueryString ? `?${reqQueryString}` : ''
 
   // Parse and normalize CID
   const nCid = normalizeCid(cid)
-  const url = `https://${nCid}.${env.GATEWAY_HOSTNAME}${path}`
+  const url = new URL(
+    `https://${nCid}.${env.GATEWAY_HOSTNAME}${redirectPath}${redirectQueryString}`
+  )
 
   return Response.redirect(url, 302)
 }
