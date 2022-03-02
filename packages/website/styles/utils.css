@@ -56,6 +56,10 @@
   width: fit-content;
 }
 
+.hidden {
+  visibility: hidden;
+}
+
 /*Screenreader Only utility*/
 .sr-only {
   position: absolute;
