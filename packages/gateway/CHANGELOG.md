@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.2.2](https://github.com/nftstorage/nft.storage/compare/gateway-v1.2.1...gateway-v1.2.2) (2022-03-02)
+
+
+### Bug Fixes
+
+* gateway ipfs route support for head requests ([#1501](https://github.com/nftstorage/nft.storage/issues/1501)) ([47a4e6c](https://github.com/nftstorage/nft.storage/commit/47a4e6c13e4a40fcafd8e566fde1cbcf6781a714))
+
 ### [1.2.1](https://github.com/nftstorage/nft.storage/compare/gateway-v1.2.0...gateway-v1.2.1) (2022-03-01)
 
 
