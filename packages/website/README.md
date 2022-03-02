@@ -1,6 +1,6 @@
 # Website
 
-Frontend build for the nft.storage website.
+Frontend build for the NFT.Storage website.
 
 ## Usage
 

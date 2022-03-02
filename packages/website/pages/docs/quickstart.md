@@ -224,7 +224,7 @@ Token {
 }
 ```
 
-The `url` is an IPFS url that can be viewed with [Brave](https://brave.com) and other IPFS-aware tools and browsers. For other ways to access your token data, see our [guide to retrieving NFT data][howto-retrieve].
+The `url` is an IPFS URL that can be viewed with [Brave](https://brave.com) and other IPFS-aware tools and browsers. For other ways to access your token data, see our [guide to retrieving NFT data][howto-retrieve].
 
 [reference-http-api]: https://nft.storage/api-docs/
 [concepts-car-files]: ./concepts/car-files/

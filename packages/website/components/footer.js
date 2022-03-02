@@ -48,7 +48,7 @@ export default function Footer() {
         </a>
         <a
           href="https://github.com/nftstorage"
-          title="nft.storage Github"
+          title="NFT.Storage Github"
           target="_blank"
           rel="noreferrer"
         >
