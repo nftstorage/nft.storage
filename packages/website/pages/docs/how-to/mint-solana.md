@@ -102,7 +102,7 @@ The remainder of this guide will assume that you've installed the recommended to
 
 You should also have a wallet for the Solana devnet with a few devnet SOL to play with, and this guide will assume that the key file lives at `~/.config/solana/devnet.json` as in the Getting Started guide. If your key lives elsewhere, make sure to update the example commands with the correct location.
 
-If everything is installed correctly, you should be able to run the following command to get some help text from the cli tool:
+If everything is installed correctly, you should be able to run the following command to get some help text from the CLI tool:
 
 ```bash
 ts-node ~/metaplex/js/packages/cli/src/candy-machine-v2-cli.ts --help
