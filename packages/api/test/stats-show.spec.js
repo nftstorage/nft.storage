@@ -18,9 +18,9 @@ describe('Status Show Route ', () => {
       {
         ok: true,
         data: {
-          total_uploads_past_7: 0,
-          total_deals: 1,
-          total_deal_size: 25515304172,
+          uploads_past_7_total: 0,
+          deals_total: 1,
+          deals_size_total: 25515304172,
           uploads_car_total: 0,
           uploads_blob_total: 0,
           uploads_multipart_total: 0,

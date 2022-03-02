@@ -17,11 +17,13 @@ const COUNT_USERS = 'SELECT COUNT(*) AS total FROM public.user'
 
 const COUNT_UPLOADS = 'SELECT COUNT(*) AS total FROM upload WHERE type = $1'
 
-const TOTAL_UPLOADS_PAST_7 =
+const UPLOADS_PAST_7_TOTAL =
   'SELECT COUNT(*) FROM upload WHERE inserted_at > CURRENT_DATE - 7'
-const TOTAL_DEALS = 'SELECT COUNT(*) from cargo.deals'
-const TOTAL_DEALS_SIZE =
-  'SELECT SUM(export_size) as total_deals_size from cargo.aggregates'
+
+const DEALS_TOTAL = 'SELECT COUNT(*) from cargo.deals'
+
+const DEALS_SIZE_TOTAL =
+  'SELECT SUM(export_size) as deals_size_total from cargo.aggregates'
 
 const COUNT_PINS =
   'SELECT COUNT(*) AS total FROM pin WHERE service = $1 AND status = $2'
@@ -101,9 +103,9 @@ async function updateUsersCount(roPg, rwPg) {
  * @param {Client} rwPg
  */
 async function updateTotalUploadPast7(roPg, rwPg) {
-  const { rows } = await roPg.query(TOTAL_UPLOADS_PAST_7)
+  const { rows } = await roPg.query(UPLOADS_PAST_7_TOTAL)
   if (!rows.length) throw new Error('no rows returned counting uploads')
-  await rwPg.query(UPDATE_METRIC, ['total_uploads_past_7', rows[0].count])
+  await rwPg.query(UPDATE_METRIC, ['uploads_past_7_total', rows[0].count])
 }
 
 /**
@@ -111,9 +113,9 @@ async function updateTotalUploadPast7(roPg, rwPg) {
  * @param {Client} rwPg
  */
 async function updateTotalDeals(roPg, rwPg) {
-  const { rows } = await roPg.query(TOTAL_DEALS)
+  const { rows } = await roPg.query(DEALS_TOTAL)
   if (!rows.length) throw new Error(`no rows returned counting total deals`)
-  await rwPg.query(UPDATE_METRIC, [`total_deals`, rows[0].count])
+  await rwPg.query(UPDATE_METRIC, [`deals_total`, rows[0].count])
 }
 
 /**
@@ -121,11 +123,11 @@ async function updateTotalDeals(roPg, rwPg) {
  * @param {Client} rwPg
  */
 async function updateTotalDealsSize(roPg, rwPg) {
-  const { rows } = await roPg.query(TOTAL_DEALS_SIZE)
+  const { rows } = await roPg.query(DEALS_SIZE_TOTAL)
   if (!rows.length) throw new Error(`no rows returned counting total deal size`)
   await rwPg.query(UPDATE_METRIC, [
-    `total_deals_size`,
-    rows[0].total_deals_size,
+    `deals_size_total`,
+    rows[0].deals_size_total,
   ])
 }
 
