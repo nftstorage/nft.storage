@@ -25,9 +25,7 @@ IPFS uses a technique called [content addressing][ipfs-docs-concepts-cid] to uni
 
 A CID usually looks something like this:
 
-<code class="overflow-wrap-breakword">
-bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy
-</code>
+<p><code class="overflow-wrap-breakword">bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy</code></p>
 
 If your NFTs use [IPFS best practices][ipfs-docs-nft-best-practices], the link from the blockchain to your IPFS data will be in the form of a URI that looks like this:
 
@@ -60,7 +58,7 @@ Before you can retrieve your off-chain NFT metadata, you need to know where to f
 
 You can often find this information on NFT marketplaces and other NFT explorer sites. For example, OpenSea's `Details` view includes a link to an NFT's "Frozen" metadata that's been stored on IPFS:
 
-![Screenshot of OpenSea web ui showing a metadata link for an NFT](/images/opensea-nft-details.png).
+![Screenshot of OpenSea web ui showing a metadata link for an NFT](/images/opensea-nft-details.png)
 
 In the example above, the metadata link is <span className="overflow-wrap-breakword">https://ipfs.io/ipfs/bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi</span>, which is an IPFS gateway URL that uses the public gateway at `https://ipfs.io`.
 
@@ -70,7 +68,7 @@ If your marketplace or wallet doesn't display the original metadata URI, you can
 
 Below is an example of calling the `uri()` function on a [Polygon](https://polygon.technology/) contract that conforms to [ERC-1155][erc-1155]:
 
-![Screenshot of polygonscan block explorer showing a call to the `uri` contract function](/images/block-explorer-read-token-uri.png).
+![Screenshot of polygonscan block explorer showing a call to the `uri` contract function](/images/block-explorer-read-token-uri.png)
 
 Now that you have your metadata address, you can download a copy [using an HTTP gateway](#using-ipfs-http-gateways) or [IPFS on your computer](#running-ipfs-on-your-computer).
 
@@ -137,7 +135,7 @@ The first step is to [find the IPFS address of the NFT's metadata](#finding-the-
 
 2. Download an IPFS Content Archive (CAR) using the metadata address
 
-Find the CID portion of the address you found in step 1. For example, if your NFT has the URI <code class="overflow-wrap-breakword">ipfs://bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi`, you just need the `bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi</code> part. See [Understanding IPFS addresses](#understanding-ipfs-addresses) for more about CIDs.
+Find the CID portion of the address you found in step 1. For example, if your NFT has the URI <code class="overflow-wrap-breakword">ipfs://bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi</code>, you just need the <code class="overflow-wrap-breakword">bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi</code> part. See [Understanding IPFS addresses](#understanding-ipfs-addresses) for more about CIDs.
 
 Using the CID, you can download an IPFS Content Archive file (CAR), which contains the data exactly as it was encoded for storage on IPFS and Filecoin. This is important, because the same file can produce multiple different CIDs, depending on how it was encoded when adding to IPFS. By downloading a CAR, you preserve all the original CIDs and make it possible to re-provide the data in exactly the format it was in when the NFT was minted.
 

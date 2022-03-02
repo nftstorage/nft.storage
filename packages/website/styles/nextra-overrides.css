@@ -74,6 +74,16 @@
   border-radius: 0;
 }
 
+@media screen and (max-width: 600px) {
+  .nextra-container .tabs {
+    display: flex;
+    align-items: center;
+  }
+  .nextra-container .tabs__item {
+    font-size: 1rem;
+  }
+}
+
 .nextra-container .tabs__item.tabs__item--active {
   border: 2px solid var(--nsgray-100);
   border-bottom: 0;
