@@ -454,9 +454,9 @@ export class DBClient {
     const { data, error } = await query
       .select('name, value')
       .in('name', [
-        'total_deals',
-        'total_deals_size',
-        'total_uploads_past_7',
+        'deals_total',
+        'deals_size_total',
+        'uploads_past_7_total',
         'uploads_blob_total',
         'uploads_car_total',
         'uploads_nft_total',
