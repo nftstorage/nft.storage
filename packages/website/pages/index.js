@@ -6,6 +6,7 @@ import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
 import Link from 'next/link'
 import Button from '../components/button'
+import { TrustedBy } from '../components/trustedByLogos'
 
 export async function getStaticProps() {
   const logos = fs.readdirSync('public/images/marketplace-logos/home')
@@ -72,7 +73,7 @@ export default function Home({ logos }) {
     <>
       <Hero />
       <main className="bg-nsltblue">
-        <Logos logos={logos} />
+        <TrustedBy logos={logos} />
         <About />
         <GettingStarted />
       </main>
