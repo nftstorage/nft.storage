@@ -8,7 +8,7 @@ import { Tabs, TabItem } from 'components/mdx/tabs';
 
 # Quickstart
 
-NFT.Storage is a storage service that lets you upload off-chain NFT data for free. The data is stored perpetually in the [Filecoin decentralized storage network](https://filecoin.io/) and made available over [IPFS](https://ipfs.io/) via its unique content ID. You can upload as much data as you want as long as it's part of an NFT (e.g., metadata, images and other assets referenced in a token or its metadata), although there is currently a limit of 31GiB per individual upload.
+NFT.Storage is a storage service that lets you upload off-chain NFT data for free, with the goal to store all NFT data as a public good. The data is stored perpetually in the [Filecoin decentralized storage network](https://filecoin.io/) and made available over [IPFS](https://ipfs.io/) via its unique content ID. You can upload as much data as you want as long as it's part of an NFT (e.g., metadata, images and other assets referenced in a token or its metadata), although there is currently a limit of 31GiB per individual upload.
 
 NFT.Storage is especially useful for individual creators who are minting NFTs, or NFT tooling developers looking to support creators and collectors! NFT.Storage is super easy to use and integrate, gives you back the content ID of your upload which you need when minting an NFT to [make it truly immutable][why-nft-storage], and makes your data [performantly available][web-25].
 
