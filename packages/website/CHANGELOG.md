@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.32.0](https://github.com/nftstorage/nft.storage/compare/website-v1.31.0...website-v1.32.0) (2022-03-02)
+
+
+### Features
+
+* add project galaxy logo ([#1471](https://github.com/nftstorage/nft.storage/issues/1471)) ([abf8a23](https://github.com/nftstorage/nft.storage/commit/abf8a23fe8f0b7bfb98a705ec3c10168681de141))
+
+
+### Bug Fixes
+
+* correct capitalization of CID, move survey to bottom, only show after load ([#1533](https://github.com/nftstorage/nft.storage/issues/1533)) ([77612e3](https://github.com/nftstorage/nft.storage/commit/77612e35beccacfb0ea61b2a1b6c9e90f5100f2f))
+* fix broken login page styles ([#1532](https://github.com/nftstorage/nft.storage/issues/1532)) ([e224e51](https://github.com/nftstorage/nft.storage/commit/e224e519bfc1332a0b99e981a67fb7004612b2b8))
+* fix typos and capitalization errors ([#1534](https://github.com/nftstorage/nft.storage/issues/1534)) ([993e08a](https://github.com/nftstorage/nft.storage/commit/993e08a5416c2263daa9af602f9b8613460b2df5))
+* more context on quickstart ([#1535](https://github.com/nftstorage/nft.storage/issues/1535)) ([0b30310](https://github.com/nftstorage/nft.storage/commit/0b3031036ff851ce0b2eccd214bf62a92be96940))
+* remove hyperlink for gateway.nft.storage ([#1538](https://github.com/nftstorage/nft.storage/issues/1538)) ([a4ff758](https://github.com/nftstorage/nft.storage/commit/a4ff75867fca8284826554372807b028d6181fea))
+* update styles of faq page ([#1524](https://github.com/nftstorage/nft.storage/issues/1524)) ([2579fe4](https://github.com/nftstorage/nft.storage/commit/2579fe4945297a48f847131b5189c98839d16999))
+
 ## [1.31.0](https://github.com/nftstorage/nft.storage/compare/website-v1.30.1...website-v1.31.0) (2022-03-01)
 
 
