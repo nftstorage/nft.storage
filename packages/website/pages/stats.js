@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { TrustedBy } from '../components/trustedByLogos'
 import fs from 'fs'
 
@@ -29,6 +30,11 @@ export function getStaticProps() {
  *
  */
 export default function Stats({ logos }) {
+  const [stats, setStats] = useState({})
+
+  useEffect(() => {}, [])
+
+  funct
   const Marquee = () => {
     return (
       <div className="marquee">
