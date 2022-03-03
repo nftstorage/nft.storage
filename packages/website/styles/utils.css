@@ -57,7 +57,7 @@
 }
 
 .hidden {
-  visibility: hidden;
+  display: none;
 }
 
 /*Screenreader Only utility*/
