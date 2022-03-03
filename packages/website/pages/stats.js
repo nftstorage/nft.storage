@@ -23,6 +23,14 @@ export function getStaticProps() {
   }
 }
 
+const uploadKeysToSum = [
+  'uploads_blob_total',
+  'uploads_car_total',
+  'uploads_nft_total',
+  'uploads_remote_total',
+  'uploads_multipart_total',
+]
+
 /**
  * Stats Page
  * @param {Object} props
@@ -32,9 +40,42 @@ export function getStaticProps() {
 export default function Stats({ logos }) {
   const [stats, setStats] = useState({})
 
-  useEffect(() => {}, [])
+  useEffect(() => {
+    fetchStats()
+  }, [])
 
-  funct
+  function fetchStats() {
+    const fakeStats = {
+      deals_total: Math.floor(Math.random() * 1000000 + 1),
+      deals_size_total: Math.floor(Math.random() * 1000000000000000 + 1),
+      uploads_past_7_total: 15000,
+      uploads_blob_total: 10000,
+      uploads_car_total: 10000,
+      uploads_nft_total: 10000,
+      uploads_remote_total: 10000,
+      uploads_multipart_total: 10000,
+    }
+    setStats(decorateAdditionalCalculatedValues(fakeStats))
+  }
+
+  function decorateAdditionalCalculatedValues(obj) {
+    const total = Object.keys(obj).reduce((acc, key) => {
+      if (uploadKeysToSum.includes(key)) {
+        return acc + obj[key]
+      }
+      return acc
+    }, 0)
+
+    let totalBefore = total - obj.uploads_past_7_total
+    const uploadsGrowthRate = parseFloat(
+      ((total - totalBefore) / totalBefore) * 100
+    ).toFixed(2)
+
+    return { ...obj, totalUploads: total, growthRate: uploadsGrowthRate }
+  }
+
+  console.log('stats', stats)
+
   const Marquee = () => {
     return (
       <div className="marquee">
@@ -90,8 +131,8 @@ export default function Stats({ logos }) {
               title="Upload Count"
               image="/images/stats-upload-count.svg"
               desc="Total uploads to NFT.Storage"
-              statValue="34.5 mil"
-              percChange={100}
+              statValue={stats.totalUploads}
+              percChange={stats.growthRate}
             />
             <StatCard
               title="Data Stored"
