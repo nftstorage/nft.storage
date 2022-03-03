@@ -2,7 +2,6 @@ import { Else, If, Then, When } from 'react-if'
 import { deleteToken, getTokens } from '../lib/api'
 import { useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from 'react-query'
-import { Dialog } from '@headlessui/react'
 import Button from '../components/button.js'
 import Loading from '../components/loading.js'
 import countly from '../lib/countly.js'
@@ -32,7 +31,6 @@ export function getStaticProps() {
 export default function ManageKeys({ user }) {
   const [deleting, setDeleting] = useState('')
   const [copied, setCopied] = useState('')
-  const [pinReqestOpen, setPinReqestOpen] = useState(false)
   const queryClient = useQueryClient()
   const { status, data } = useQuery('get-tokens', () => getTokens(), {
     enabled: !!user,
@@ -91,25 +89,27 @@ export default function ManageKeys({ user }) {
             <Loading></Loading>
           </Then>
           <Else>
-            <div className="flex items-center mb3">
+            <div className="flex flex-wrap items-center mb3">
               <h1 className="flex-auto chicagoflf mv4">API Keys</h1>
-              <Button
-                className="flex-none mr3"
-                id="request-api-pinning"
-                onClick={() => setPinReqestOpen(true)}
-              >
-                Request API Pinning Access
-              </Button>
-              <Button
-                href={{
-                  pathname: '/new-key',
-                }}
-                className="flex-none"
-                id="new-key"
-                tracking={{ ui: countly.ui.TOKENS, action: 'New API Token' }}
-              >
-                + New Key
-              </Button>
+              <div className="flex flex-wrap items-center mt2">
+                <a
+                  href="mailto:support@nft.storage?cc=&bcc=&subject=Request%3A%20Pinning%20Service%20API%20Allowlist%20Access&body=Why%20you%20are%20looking%20for%20pinning%20service%20API%20access%20(e.g.%20you're%20an%20artist%20looking%20for%20extra%20redundancy)%3A%0A%0A%3CANSWER%20HERE%3E%0A%0APlease%20provide%20a%20sample%20of%205-10%20CIDs%20of%20NFTs%20%2F%20metadata%20you%20are%20looking%20to%20pin%3A%0A%0A%3CANSWER%20HERE%3E%0A%0APlease%20provide%20your%20profile%20on%20an%20NFT%20service%20(artist%20profile%2C%20collector%2C%20etc.)%3A%0A%0A%3CANSWER%20HERE%3E%0A%0AThanks%2C%0A%3CINSERT%20YOUR%20NAME%3E"
+                  className="flex-none mr3 mb2 btn button-reset select-none black flex-none pv2 ph3 hologram chicagoflf interactive light"
+                  id="request-api-pinning"
+                >
+                  ✉ Request API Pinning Access
+                </a>
+                <Button
+                  href={{
+                    pathname: '/new-key',
+                  }}
+                  className="flex-none mb2"
+                  id="new-key"
+                  tracking={{ ui: countly.ui.TOKENS, action: 'New API Token' }}
+                >
+                  + New Key
+                </Button>
+              </div>
             </div>
             <When condition={keys.length > 0}>
               <div className="table-responsive">
@@ -195,113 +195,6 @@ export default function ManageKeys({ user }) {
           </Else>
         </If>
       </div>
-
-      <Dialog
-        open={pinReqestOpen}
-        onClose={() => setPinReqestOpen(false)}
-        className="modal swagger-ui"
-      >
-        <div className="flex items-center justify-center min-vh-100">
-          <Dialog.Overlay className="fixed inset-0 bg-black-0 min-vh-100 w-100" />
-          <div className="modal-content relative bg-white max-w-sm mx-auto pa4">
-            <button
-              className="modal-close absolute chicagoflf top-0 right-0"
-              onClick={() => setPinReqestOpen(false)}
-            >
-              <svg
-                width="20px"
-                height="20px"
-                viewBox="0 0 12 12"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <g transform="matrix(1.2,0,0,1.2,0,0)">
-                  <path
-                    d="M6.5 3.5L3.5 6.5"
-                    fill="none"
-                    stroke="#000000"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></path>
-                  <path
-                    d="M3.5 3.5L6.5 6.5"
-                    fill="none"
-                    stroke="#000000"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></path>
-                  <path
-                    d="M0.500 0.500 L9.500 0.500 L9.500 9.500 L0.500 9.500 Z"
-                    fill="none"
-                    stroke="#000000"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  ></path>
-                </g>
-              </svg>
-            </button>
-            <Dialog.Title className={`chicagoflf`}>
-              Request API Pinning Allowlist Access
-            </Dialog.Title>
-            <Dialog.Description>
-              {/* This will permanently deactivate your account */}
-              <form>
-                <p className="mv4">
-                  <label htmlFor="user-pin-request-why" className="f5 dib mb2">
-                    Why you are looking for pinning service API access?{' '}
-                    <small className="db black-50 mt1">
-                      (e.g. you are an artist looking for extra redundancy)
-                    </small>
-                  </label>
-                  <input
-                    type="text"
-                    id="user-pin-request-why"
-                    name="user-pin-request-why"
-                    className="w-100 db ba b--black w5 pa2"
-                  />
-                </p>
-                <p className="mv4">
-                  <label htmlFor="user-pin-request-cids" className="f5 dib mb2">
-                    What metadata you are looking to pin?
-                    <small className="db black-50 mt1">
-                      (5-10 CIDs of NFTs)
-                    </small>
-                  </label>
-                  <textarea
-                    id="user-pin-request-cids"
-                    name="user-pin-request-cids"
-                    className="w-100 db ba b--black w5 pa2 textarea"
-                  ></textarea>
-                </p>
-                <p className="mv4">
-                  <label
-                    htmlFor="user-pin-request-social"
-                    className="f5 dib mb2"
-                  >
-                    Your profile on an NFT service (artist profile, collector,
-                    etc.)
-                  </label>
-                  <input
-                    type="text"
-                    id="user-pin-request-social"
-                    name="user-pin-request-social"
-                    className="w-100 db ba b--black w5 pa2"
-                  />
-                </p>
-                <p className="mt4 ml1 flex">
-                  <Button
-                    className="bg-nslime mt4"
-                    type="submit"
-                    id="create-new-key"
-                    onClick={() => setPinReqestOpen(false)}
-                  >
-                    Submit Request
-                  </Button>
-                </p>
-              </form>
-            </Dialog.Description>
-          </div>
-        </div>
-      </Dialog>
     </main>
   )
 }
