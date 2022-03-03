@@ -1,7 +1,21 @@
-# Raw HTTP
+# Raw HTTP Request
 
-import ExternalRedirect from 'components/mdx/externalRedirect';
+Configure your HTTP client and set the `Authorization` header:
+```
+"Authorization":"Bearer YOU_API_KEY"
+```
 
-This page is hosted on https://nft.storage/api-docs
+Submit a `multipart/form-data` HTTP `POST` request to `https://api.nft.storage`
 
-<ExternalRedirect url="https://nft.storage/api-docs" />
+The request should contain a `file` property, the data for the file you want
+to add.
+
+The response is a JSON object. Check the [API Docs](https://nft.storage/api-docs) for information about the response.
+
+Check out the [API Docs](https://nft.storage/api-docs) to find out how to query
+the request to see IPFS pinning status and Filecoin deal state.
+
+
+## API Docs
+
+[Full API Docs](https://nft.storage/api-docs)
