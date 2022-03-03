@@ -1,4 +1,5 @@
 import test from 'ava'
+import { createErrorHtmlContent } from '../src/errors.js'
 
 import { getMiniflare } from './utils.js'
 
@@ -7,6 +8,21 @@ test.beforeEach((t) => {
   t.context = {
     mf: getMiniflare(),
   }
+})
+
+test('Fails when invalid cid with IPFS canonical resolution', async (t) => {
+  const { mf } = t.context
+
+  const response = await mf.dispatchFetch(
+    'https://localhost:8787/ipfs/bafy.../path'
+  )
+  t.is(response.status, 400)
+
+  const textResponse = await response.text()
+  t.is(
+    textResponse,
+    createErrorHtmlContent(400, 'invalid CID: bafy...: Non-base32 character')
+  )
 })
 
 test('should resolve a cid v0 with IPFS canonical resolution', async (t) => {
