@@ -18,6 +18,7 @@
 @import './tabs.css';
 @import './modal.css';
 @import './footer.css';
+@import './faq.css';
 
 html {
   scroll-behavior: smooth;

@@ -5,6 +5,7 @@ import { Logging } from './logs.js'
 /**
  * @typedef {Object} EnvInput
  * @property {string} IPFS_GATEWAYS
+ * @property {string} GATEWAY_HOSTNAME
  * @property {string} VERSION
  * @property {string} COMMITHASH
  * @property {string} BRANCH
@@ -71,7 +72,11 @@ function getSentry(request, env) {
     debug: false,
     environment: env.ENV || 'dev',
     rewriteFrames: {
-      root: '/',
+      // strip . from start of the filename ./worker.mjs as set by cloudflare, to make absolute path `/worker.mjs`
+      iteratee: (frame) => ({
+        ...frame,
+        filename: frame.filename.substring(1),
+      }),
     },
     release: env.VERSION,
     pkg,

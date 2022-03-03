@@ -8,7 +8,7 @@ import Link from 'next/link'
 import Button from '../components/button'
 
 export async function getStaticProps() {
-  const logos = fs.readdirSync('public/images/marketplace-logos')
+  const logos = fs.readdirSync('public/images/marketplace-logos/home')
   // make opensea be the first logo
   logos.sort((a, b) =>
     a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
@@ -16,7 +16,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      needsUser: true,
+      needsUser: false,
       logos,
       description: 'NFT.Storage homepage',
     },
@@ -31,8 +31,8 @@ export async function getStaticProps() {
 const Logo = ({ src }) => (
   <img
     className="marketplace-logo"
-    src={`images/marketplace-logos/${src}`}
-    alt="Nft.Storage Users"
+    src={`images/marketplace-logos/home/${src}`}
+    alt="NFT.Storage Users"
   />
 )
 
@@ -92,14 +92,23 @@ function About() {
         URL (<code>ipfs://&lt;cid&gt;</code>). Use this IPFS URL in your NFT
         data to refer to <strong>off-chain</strong> data (e.g., the metadata
         field in your NFT, the image field in your metadata) as a pointer to the
-        content.
+        content itself, so no one can dispute what your NFT is.
       </p>
       <p className="lh-copy">
         Filecoin provides long-term storage for the data ensuring that even if
-        NFT.Storage is attacked or taken down the NFT data persists! And
-        NFT.Storage will continue to decentralize itself out of the picture
-        moving forward (e.g., making perpetual storage completely smart
-        contract-based utilizing future tools like the{' '}
+        NFT.Storage is attacked or taken down the NFT data persists! This
+        storage is trustlessly verifiable (with on-chain, cryptographic proofs
+        that data is stored as promised). And NFT.Storage will continue to{' '}
+        <a
+          className="black"
+          href="https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          decentralize itself
+        </a>{' '}
+        out of the picture moving forward (e.g., making perpetual storage
+        completely smart contract-based utilizing future tools like the{' '}
         <a
           className="black"
           href="https://filecoin.io/blog/posts/introducing-the-filecoin-virtual-machine/"
@@ -207,10 +216,20 @@ function About() {
                 >
                   content addressed
                 </a>{' '}
-                using IPFS, meaning the URL pointing to a piece of data
-                (“ipfs://…”) is completely unique to that data. IPFS URLs can be
-                used in NFTs and metadata to ensure the NFT forever actually
-                refers to the intended data (eliminating things like rug pulls).
+                using IPFS, meaning the URI pointing to a piece of data
+                (“ipfs://…”) is completely unique to that data (using a{' '}
+                <a
+                  href="https://docs.ipfs.io/concepts/content-addressing/"
+                  className="black"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  content identifier
+                </a>
+                , or CID). IPFS URLs and CIDs can be used in NFTs and metadata
+                to ensure the NFT forever actually refers to the intended data
+                (eliminating things like rug pulls, and making it trustlessly
+                verifiable what content an NFT is associated with).
               </p>
             </div>
             <div>
@@ -246,7 +265,17 @@ function About() {
                 >
                   local IPFS node
                 </a>
-                , to other decentralized networks like Arweave or Storj.
+                , to other storage networks like Arweave or Storj. And as time
+                goes on, NFT.Storage will increasingly{' '}
+                <a
+                  href="https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/"
+                  className="black"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  decentralize itself
+                </a>{' '}
+                as a public good!
               </p>
             </div>
           </div>

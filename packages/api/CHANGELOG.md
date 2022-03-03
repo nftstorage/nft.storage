@@ -1,5 +1,14 @@
 # Changelog
 
+### [2.15.2](https://github.com/nftstorage/nft.storage/compare/api-v2.15.1...api-v2.15.2) (2022-03-01)
+
+
+### Bug Fixes
+
+* api assert dep ([#1499](https://github.com/nftstorage/nft.storage/issues/1499)) ([8dd67ea](https://github.com/nftstorage/nft.storage/commit/8dd67ea512bc1ab77b4ab7499cc9f410ee2d957a))
+* augment car start to inspect car and check if complete ([#1330](https://github.com/nftstorage/nft.storage/issues/1330)) ([d591223](https://github.com/nftstorage/nft.storage/commit/d591223b0ee528360037ed8860cf3a2c8b79324a))
+* gateway ipfs path in gateway worker ([#1347](https://github.com/nftstorage/nft.storage/issues/1347)) ([8cf367c](https://github.com/nftstorage/nft.storage/commit/8cf367c885a73f74abe284018556b345738067dc))
+
 ### [2.15.1](https://github.com/nftstorage/nft.storage/compare/api-v2.15.0...api-v2.15.1) (2022-02-22)
 
 

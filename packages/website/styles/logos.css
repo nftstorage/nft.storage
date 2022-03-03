@@ -11,12 +11,6 @@
   justify-content: center;
 }
 
-@media screen and (min-width: 481px) {
-  .marketplace-logo-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  }
-}
-
 .marketplace-logo {
   width: 100%;
   height: 80px;
@@ -29,4 +23,10 @@
   user-select: none;
   box-sizing: border-box;
   margin: 0 auto;
+}
+
+@media screen and (min-width: 481px) {
+  .marketplace-logo-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
 }

@@ -1,5 +1,30 @@
 # Changelog
 
+### [1.2.3](https://github.com/nftstorage/nft.storage/compare/gateway-v1.2.2...gateway-v1.2.3) (2022-03-02)
+
+
+### Bug Fixes
+
+* gateway directories links resolution ([#1503](https://github.com/nftstorage/nft.storage/issues/1503)) ([65c9517](https://github.com/nftstorage/nft.storage/commit/65c95175d2782d1f5c036fe2f7c6a6c40e294a08))
+
+### [1.2.2](https://github.com/nftstorage/nft.storage/compare/gateway-v1.2.1...gateway-v1.2.2) (2022-03-02)
+
+
+### Bug Fixes
+
+* gateway ipfs route support for head requests ([#1501](https://github.com/nftstorage/nft.storage/issues/1501)) ([47a4e6c](https://github.com/nftstorage/nft.storage/commit/47a4e6c13e4a40fcafd8e566fde1cbcf6781a714))
+
+### [1.2.1](https://github.com/nftstorage/nft.storage/compare/gateway-v1.2.0...gateway-v1.2.1) (2022-03-01)
+
+
+### Bug Fixes
+
+* add durable object types ([#1212](https://github.com/nftstorage/nft.storage/issues/1212)) ([ffc9934](https://github.com/nftstorage/nft.storage/commit/ffc9934037795e2e16c816139d336c2bbb83b3c1))
+* gateway ipfs path in gateway worker ([#1347](https://github.com/nftstorage/nft.storage/issues/1347)) ([8cf367c](https://github.com/nftstorage/nft.storage/commit/8cf367c885a73f74abe284018556b345738067dc))
+* gateway sentry source maps ([#1487](https://github.com/nftstorage/nft.storage/issues/1487)) ([85215c9](https://github.com/nftstorage/nft.storage/commit/85215c96b7c0ef1709e18b41aadfce6ad5229bac))
+* update gw architecture diagram with new domain ([#1409](https://github.com/nftstorage/nft.storage/issues/1409)) ([8ca4426](https://github.com/nftstorage/nft.storage/commit/8ca4426988e5c98dfb4125a351a6138e197d6b5e))
+* update ipfs car and client ([#1373](https://github.com/nftstorage/nft.storage/issues/1373)) ([2b61549](https://github.com/nftstorage/nft.storage/commit/2b61549f4f31684a6afca28c9f7ed39dc076ada2))
+
 ## [1.2.0](https://github.com/nftstorage/nft.storage/compare/gateway-v1.1.2...gateway-v1.2.0) (2022-02-15)
 
 

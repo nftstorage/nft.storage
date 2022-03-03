@@ -43,6 +43,7 @@ async function main() {
 
   console.log(`storing ${files.length} file(s) from ${path}`)
   const cid = await storage.storeDirectory(files, {
+      pathPrefix: path // see the note about pathPrefix below
       hidden: true // use the default of false if you want to ignore files that start with '.'
   })
   console.log({ cid })
@@ -53,11 +54,21 @@ async function main() {
 main()
 ```
 
+The `getFilesFromPath` function is provided by the [`files-from-path` package][npm-files-from-path]. It will read the contents of a directory into `File` objects that can be passed into the NFT.Storage client.
+
+The `pathPrefix` option tells `getFilesFromPath` to remove the input `path` from the filenames of the `File` objects it creates. For example, if you're reading in files from a directory called `example`, calling `getFilesFromPath` _without_ the `pathPrefix` argument would result in `File` objects with filenames like `example/file1.txt`, `example/file2.txt`, and so on. If you set the `pathPrefix` option to `example`, you'll get `file1.txt`, `file2.txt`, etc. instead. This results in a final IPFS URI of `ipfs://<directory-cid>/file1.txt` instead of `ipfs://<directory-cid>/example/file1.txt`.
+
+<Callout emoji="💡">
+If your directory contains a lot of files, or if the files themselves are very large, you may want to use `filesFromPath` instead of `getFilesFromPath`. This will avoid buffering all the files into memory, but will require you to handle each `File` object individually as you pull from the returned `AsyncIterator`.
+</Callout>
+
 You'll need to replace `YOUR_API_TOKEN` with your NFT.Storage API key. If you don't yet have an API key, see the [Quickstart guide][quickstart].
 
 <Callout emoji="⚠️">
 Make sure not to check your API token into version control! If you plan to share this script with others, it's best to read the token from an environment variable or configuration file instead of including it in your source code.
 </Callout>
+
+
 
 ## Running the script
 
@@ -71,3 +82,5 @@ When the upload is complete, the CID and status of the upload will be printed to
 
 [quickstart]: /docs/
 [reference-client-js]: /docs/client/lib
+
+[npm-files-from-path]: https://www.npmjs.com/package/files-from-path
