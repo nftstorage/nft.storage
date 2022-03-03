@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.33.0](https://github.com/nftstorage/nft.storage/compare/website-v1.32.0...website-v1.33.0) (2022-03-03)
+
+
+### Features
+
+* Added support for full path external redirects ([#1526](https://github.com/nftstorage/nft.storage/issues/1526)) ([c3f73a7](https://github.com/nftstorage/nft.storage/commit/c3f73a792b864e00cda96a54f85998dc89842453))
+
 ## [1.32.0](https://github.com/nftstorage/nft.storage/compare/website-v1.31.0...website-v1.32.0) (2022-03-02)
 
 
