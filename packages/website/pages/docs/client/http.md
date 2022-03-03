@@ -1,5 +1,6 @@
-# Raw HTTP Request
+# HTTP API
 
+## Raw HTTP Request
 Configure your HTTP client and set the `Authorization` header:
 ```
 "Authorization":"Bearer YOU_API_KEY"
@@ -16,6 +17,6 @@ Check out the [API Docs](https://nft.storage/api-docs) to find out how to query
 the request to see IPFS pinning status and Filecoin deal state.
 
 
-## API Docs
+## HTTP API Docs
 
 [Full API Docs](https://nft.storage/api-docs)
