@@ -45,6 +45,28 @@ export class DBClient {
   }
 
   /**
+   * Register a DID for a user
+   * @param {string} did
+   * @param {number} userId
+   */
+  async registerDid(did, userId) {
+    /**@type {PostgrestQueryBuilder<definitions['user']>} */
+    const query = this.client.from('user')
+    const { data, error } = await query.update({
+      id: userId,
+      did: did,
+    })
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    if (!data) {
+      throw new Error('Auth key not created.')
+    }
+  }
+
+  /**
    * Get user by magic.link or old github id
    *
    * @param {string} id
@@ -59,6 +81,7 @@ export class DBClient {
     id,
     magic_link_id,
     github_id,
+    did,
     keys:auth_key_user_id_fkey(user_id,id,name,secret)
     `
       )

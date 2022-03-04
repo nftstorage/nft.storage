@@ -10,6 +10,7 @@ export type UpsertUserInput = Pick<
   | 'email'
   | 'public_address'
   | 'github'
+  | 'did'
 >
 
 export type UserOutputKey = Pick<

@@ -32,6 +32,9 @@ import {
 import { withPsaErrorHandler, withPinningAuthorized } from './middleware/psa.js'
 import { cluster } from './constants.js'
 import { getContext } from './utils/context.js'
+import { userDid } from './routes/user-did.js'
+import { userUcan } from './routes/user-ucan.js'
+import { did } from './routes/did.js'
 
 const getMaintenanceMode = () =>
   typeof MAINTENANCE_MODE !== 'undefined' ? MAINTENANCE_MODE : DEFAULT_MODE
@@ -79,6 +82,7 @@ const psa = (handler, mode) =>
 
 // Login
 r.add('post', '/login', withMode(login, RO), [postCors])
+r.add('get', '/did', withMode(did, RO), [postCors])
 
 // Pinning
 r.add('get', '/pins', psa(pinsList, RO), [postCors])
@@ -97,6 +101,10 @@ r.add('delete', '/:cid', withMode(nftDelete, RW), [postCors])
 
 // Temporary Metaplex upload route, mapped to metaplex user account.
 r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
+
+// User
+r.add('post', '/user/did', withMode(userDid, RW), [postCors])
+r.add('get', '/user/ucan', withMode(userUcan, RW), [postCors])
 
 // Tokens
 r.add('get', '/internal/tokens', withMode(tokensList, RO), [postCors])
