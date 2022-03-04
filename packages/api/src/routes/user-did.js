@@ -5,7 +5,7 @@ import { parse } from 'ucan-storage/did'
 /** @type {import('../bindings').Handler} */
 export const userDid = async (event, ctx) => {
   const { user } = await validate(event, ctx)
-  const { db, ucanService } = ctx
+  const { db } = ctx
   const body = await event.request.json()
 
   if (body.did) {
@@ -14,7 +14,6 @@ export const userDid = async (event, ctx) => {
 
     await db.registerDid(body.did, user.id)
 
-    console.log(ucanService.did())
     return new JSONResponse({
       ok: true,
       value: body.did,
