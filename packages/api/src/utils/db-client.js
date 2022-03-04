@@ -85,7 +85,7 @@ export class DBClient {
     keys:auth_key_user_id_fkey(user_id,id,name,secret)
     `
       )
-      .or(`magic_link_id.eq.${id},github_id.eq.${id}`)
+      .or(`magic_link_id.eq.${id},github_id.eq.${id},did.eq.${id}`)
       // @ts-ignore
       .filter('keys.deleted_at', 'is', null)
 

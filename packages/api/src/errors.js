@@ -184,3 +184,12 @@ export class ErrorMaintenance extends HTTPError {
   }
 }
 ErrorMaintenance.CODE = 'ERROR_MAINTENANCE'
+
+export class ErrorDIDNotFound extends HTTPError {
+  constructor(msg = 'User does not have a DID registered.') {
+    super(msg, 400)
+    this.name = 'DIDNotFound'
+    this.code = ErrorMaintenance.CODE
+  }
+}
+ErrorMaintenance.CODE = 'ERROR_DID_NOT_FOUND'

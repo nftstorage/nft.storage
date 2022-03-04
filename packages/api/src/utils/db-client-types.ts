@@ -44,7 +44,7 @@ export interface CreateUploadInput {
   dag_size?: definitions['content']['dag_size']
   files?: Array<{ name?: string; type?: string }>
   origins?: string[]
-  meta?: Record<string, string>
+  meta?: Record<string, unknown>
   name?: string
   backup_urls?: URL[]
   inserted_at?: definitions['upload']['inserted_at']
