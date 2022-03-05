@@ -1,0 +1,41 @@
+---
+title: 'Feature releases: NFT.Storage Gateway and UCAN-signed uploads'
+description: A faster HTTP gateway for NFT.Storage content and signed uploads for your end-users
+author: Hugo Dias, Vasco Santos, David Choi
+thumbnail: 
+date: Mar 9, 2022
+tags:
+  - ipfs
+  - gateway
+  - ucan
+---
+
+The team has been hard at work, and we're excited to announce the release of two highly-requested features! The first is an HTTP gateway for fetching content off the public IPFS network, optimized for data stored on NFT.Storage, with a CDN, smart caching, and more! The second for an NFT.Storage user to delegate others the permission to upload using their account (like S3-signed uploads) using [UCANs](https://fission.codes/blog/auth-without-backend/), great for minting service, marketplace, and other developers who are building NFT tools with end-users and are looking to deliver them a frictionless upload flow.
+
+# NFT.Storage Gateway: nftstorage.link
+
+When creating an NFT, it's best-practice to [use IPFS CIDs to reference off-chain data](https://nft.storage/blog/post/2021-12-14-storage-layer-maximalism/) in the minting transaction, metadata, and anywhere else - this ensures that the NFT directly references its corresponding data itself, regardless of where it's stored on the IPFS network, and can be retrieved using the CID. The easiest way for most web applications and users to fetch data off the network is using an [HTTP IPFS gateway](https://docs.ipfs.io/concepts/ipfs-gateway/), as HTTP is the most common web transport protocol found in browsers and other tools. If you've clicked on an NFT and saw a link to `https://ipfs.io/ipfs/{CID}`, you were using an HTTP gateway.
+
+HTTP gateways are great because they allow many users to utilize IPFS without any additional tooling, while keeping the retrieval process trustless (since a user can always cryptographically verify the data against its CID). IPFS nodes will increasingly be embedded directly in web browsers (e.g., [Brave](https://brave.com/ipfs-support/), [Opera](https://blog.ipfs.io/2021-02-08-opera-ios-and-ipfs/)), but gateways will remain important for a long time. However, these gateways are often run as public services, and as a result, might be slow at times of heavy stress, or when the content it is looking for is large, or when the only copy of the data on the network is difficult to find.
+
+At NFT.Storage, part of our mission is to deliver a simple and performant storage and retrieval experience for our users. As a result, we have launched the NFT.Storage Gateway, which brings the ease-of-use of HTTP IPFS gateways with the performance users expect from modern web infrastructure, leaning into CDNs and smart caching. Anyone can use it to fetch any content from the IPFS network by plugging in a CID to URL `https://nftstorage.link/ipfs/{CID}`, but where its performance really shines is for __content stored on NFT.Storage__!
+
+The NFT.Storage Gateway is effectively a caching layer. When a request is received by `nftstorage.link`, it triggers requests to a number of public gateways and "races" them. In the future, NFT.Storage might also run its own, dedicated gateway on top of its IPFS infrastructure in this race. The CDN and caching for `nftstorage.link` is optimized and will continue to be tweaked to ensure a fast retrieval experience for users retrieving data stored on NFT.Storage. Today, this corpus of content includes data that NFT.Storage users have uploaded diretly to the service, but later on this will include off-chain NFT data that we're scraping and storing (as a part of our mission to [preserve all NFT data as a public good](https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/)!).
+
+Future improvements to the gateway might include premium features, such as image resizing. Stay tuned!
+
+# UCAN-signed uploads
+
+Previously, NFT.Storage could only give its users an API token to authenticate and authorize uploads. This is standard Web 2 auth, and it works great, but it has some limitations. For instance, many users of NFT.Storage are tools like minting APIs (like NFTPort, Tatum, and Project Galaxy) or marketplaces (like OpenSea, Holaplex, and Magic Eden). Today, they run proxy servers that receive data uploaded by their end-users and attach their tokens to storage requests. This works well in some cases (e.g., they want to keep their own copy of uploads in their back-ends), but for many use cases, they would like their end-users to upload data directly to NFT.Storage. However, they also need to be careful of exposing their API tokens in web application source code. 
+
+Though there are a number of possible solutions to this, we landed on using [UCANs](https://fission.codes/blog/auth-without-backend/). They are JSON Web Tokens [JWTs](https://jwt.io/) containing [Decentralized Identity Documents](https://github.com/yusefnapora/ucan.storage/blob/docs/readme/readme.md#use-cases) secured by public key cryptography. UCAN tokens can be used to derive "child" UCAN tokens, which can have a subset of the permissions encoded in the "parent" UCAN.
+
+Participants in the UCAN auth flow are identified by a keypair, which is a private signing key with a corresponding public verification key. Each user or service involved in the flow will have their own keypair. The public key for each user or service is encoded into a DID using the did:key method, which encodes the public key into a compact string of the form `did:key:<encoded-public-key>`. These DID strings are used to identify each of the participants in the UCAN flow.
+
+In practice, NFT.Storage users can create their own keypair and register the DID with the NFT.Storage UCAN service to get a UCAN token. The NFT.Storage user is then free to create user UCAN tokens derived from their registered UCAN. Today, these derived tokens can be used to limit end-users to upload either any data or data with a specific CID within a scoped time period. When a token is used, NFT.Storage can validate it by looking at the chain of proofs used to derive a token, checking the cryptographic identity of each signer of the token. 
+
+As time goes on, NFT.Storage's ability UCANs can be expanded (e.g., blacklisting CIDs from being uploaded, permission to update mutable references). You can read more about how to implement UCAN-signed uploads in [our docs]().
+
+# Bringing Web3 to the Web
+
+To fulfill the potential of Web3 technologies like NFTs, we need to meet the Web where it is today, while being intentional about how we do so to keep the benefits and principles of Web3 in-place. IPFS HTTP gateways and UCAN tokens are two such ways to do so, and we can't wait to see how our users utilize them to provide delightful end-user experiences!
