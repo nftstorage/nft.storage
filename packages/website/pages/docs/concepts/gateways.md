@@ -6,7 +6,7 @@ The IPFS network is a peer-to-peer network of computers that share resources to 
 
 To make IPFS data accessible outside of the peer-to-peer network, [special IPFS nodes called "gateways"][ipfs-docs-gateway] act as bridges between the HTTP protocol that all web browsers understand and the peer-to-peer Bitswap protocol.
 
-As more browsers like [Brave][brave-ipfs] and [Opera][opera-ipfs] adopt native IPFS support, the need for gateways will naturally lessen over time. Today, you can reach the widest audience by using HTTP gateways in your web applications, but it's a great idea to also surface the original `ipfs://` URI for your content as well, so that IPFS-native browsers can access the content directly through Bitswap.
+As more browsers like [Brave][brave-ipfs] and [Opera][opera-ipfs] adopt native IPFS support, the need for gateways will naturally lessen over time. Today, you can reach the widest audience by using HTTP gateways in your web applications, but it's a great idea to also surface the original `ipfs://` URI for your content, so that IPFS-native browsers can access the content directly through Bitswap.
 
 This guide collects some helpful information about gateways, including how and why to use the [NFT.Storage gateway](#the-nft-storage-gateway) available at `nftstorage.link`.
 
@@ -27,7 +27,6 @@ This layered architecture has several benefits over using the "downstream" gatew
 Requests for content that are not cached are served by making parallel requests to multiple public IPFS gateways and returning the first valid response. This gives you the performance of the fastest downstream gateway, which may vary from time to time due to network conditions and the state of the gateway's own local cache. 
 
 Sending multiple requests also reduces the dependence on any single gateway and protects your app from experiencing degraded service if a gateway goes down for maintainence or has connectivity issues.
-
 
 ### Using the gateway
 
