@@ -16,7 +16,7 @@ For more information about fetching content from gateways, see our [guide to dat
 
 Providing a great retrieval experience on the web is a key part of NFT.Storage's mission, as we work to make [decentralized data storage][concepts-decentralized-storage] the default choice for NFT creators.
 
-To further this goal, we created a new HTTP gateway that uses existing public IPFS infrastructure and cloud-native caching strategies to provide a high-performance, NFT-focused HTTP retrieval solution.
+To further this goal, we created a new HTTP gateway that uses existing public IPFS infrastructure and cloud-native caching strategies to provide a high-performance, CID-based HTTP retrieval solution that is NFT-focused.
 
 ### Architecture
 
@@ -24,9 +24,11 @@ The NFT.Storage gateway is effectively a caching layer that sits in front of sev
 
 This layered architecture has several benefits over using the "downstream" gateways directly. By using CloudFlare Workers to cache requests at the edge, the gateway can serve popular content quickly, while taking load off of the public IPFS gateways and peer-to-peer network.
 
-Requests for content that are not cached are served by making parallel requests to multiple public IPFS gateways and returning the first valid response. This gives you the performance of the fastest downstream gateway, which may vary from time to time due to network conditions and the state of the gateway's own local cache. 
+Requests for content that are not cached are served by making parallel requests to multiple public IPFS gateways and returning the first valid response. This gives you the performance of the fastest downstream gateway, which may vary from time to time due to network conditions and the state of the gateway's own local cache.
 
 Sending multiple requests also reduces the dependence on any single gateway and protects your app from experiencing degraded service if a gateway goes down for maintainence or has connectivity issues.
+
+Since NFT.Storage also knows what content that is stored with the service, the NFT.Storage gateway can be optimized and will be most performant for data stored on NFT.Storage.
 
 ### Using the gateway
 
