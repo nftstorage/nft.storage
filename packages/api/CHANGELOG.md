@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.16.0](https://github.com/nftstorage/nft.storage/compare/api-v2.15.2...api-v2.16.0) (2022-03-07)
+
+
+### Features
+
+* add stats routes ([#1400](https://github.com/nftstorage/nft.storage/issues/1400)) ([96acd59](https://github.com/nftstorage/nft.storage/commit/96acd592b8e0cc36f2adaf542ef4921cfa8bea22))
+
 ### [2.15.2](https://github.com/nftstorage/nft.storage/compare/api-v2.15.1...api-v2.15.2) (2022-03-01)
 
 
