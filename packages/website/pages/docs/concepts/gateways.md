@@ -2,7 +2,7 @@
 
 NFT.Storage uses the [InterPlanetary File System (IPFS)](https://ipfs.io) as a key part of its [storage and retrieval infrastructure][concepts-decentralized-storage].
 
-The IPFS network is a peer-to-peer network of computers that share resources to efficiently provide content to anyone that requests it. Computers that join the IPFS network use a protocol called Bitswap to request and supply blocks of data using a hash-based Content Identifier (CID) to uniquely identify each block.
+The IPFS network is a peer-to-peer network of computers that share resources to efficiently provide content to anyone that requests it. Computers that join the IPFS network use a protocol called [Bitswap][ipfs-docs-bitswap] to request and supply blocks of data using a hash-based Content Identifier (CID) to uniquely identify each block.
 
 To make IPFS data accessible outside of the peer-to-peer network, [special IPFS nodes called "gateways"][ipfs-docs-gateway] act as bridges between the HTTP protocol that all web browsers understand and the peer-to-peer Bitswap protocol.
 
