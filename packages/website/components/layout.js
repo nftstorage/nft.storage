@@ -89,6 +89,16 @@ export default function Layout({
     isDark: altLogo,
   }
 
+  const jsonLD = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'NFT.Storage',
+    slogan:
+      'Free decentralized storage and bandwidth for NFTs on IPFS & Filecoin.',
+    url: 'https://nft.storage',
+    logo: 'https://nft.storage/images/social-1200x800.png',
+  })
+
   return (
     <div className="nft-storage sans-serif flex flex-column min-vh-100">
       <Head>
@@ -103,6 +113,10 @@ export default function Layout({
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@protocollabs" />
         <meta name="twitter:creator" content="@protocollabs" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLD }}
+        ></script>
       </Head>
       {callback ? (
         <>
