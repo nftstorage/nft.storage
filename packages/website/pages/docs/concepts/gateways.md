@@ -10,7 +10,7 @@ As more browsers like [Brave][brave-ipfs] and [Opera][opera-ipfs] adopt native I
 
 This guide collects some helpful information about gateways, including how and why to use the [NFT.Storage gateway](#the-nft-storage-gateway) available at `nftstorage.link`.
 
-For more information about fetching content from gatweways, see our [guide to data retrieval][howto-retrieve].
+For more information about fetching content from gateways, see our [guide to data retrieval][howto-retrieve].
 
 ## The NFT.Storage gateway
 
