@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.2.4](https://github.com/nftstorage/nft.storage/compare/gateway-v1.2.3...gateway-v1.2.4) (2022-03-07)
+
+
+### Bug Fixes
+
+* gateway ipfs path error on invalid cid ([#1548](https://github.com/nftstorage/nft.storage/issues/1548)) ([6cc7ec8](https://github.com/nftstorage/nft.storage/commit/6cc7ec856fa7ef3db043ff41ecdc5afeb3678ac5))
+
 ### [1.2.3](https://github.com/nftstorage/nft.storage/compare/gateway-v1.2.2...gateway-v1.2.3) (2022-03-02)
 
 
