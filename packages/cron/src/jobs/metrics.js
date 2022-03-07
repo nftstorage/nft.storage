@@ -53,11 +53,11 @@ export async function updateMetrics({ roPg, rwPg }) {
         updateUploadsCount(roPg, rwPg, t)
       )
     ),
-    updateUsersCount(roPg, rwPg),
-    updateTotalUploadPast7(roPg, rwPg),
-    updateTotalDeals(roPg, rwPg),
-    updateTotalDealsSize(roPg, rwPg),
-    updateContentRootDagSizeSum(roPg, rwPg),
+    withTimeLog('updateTotalUploadPast7', () =>
+      updateTotalUploadPast7(roPg, rwPg)
+    ),
+    withTimeLog('updateTotalDeals', () => updateTotalDeals(roPg, rwPg)),
+    withTimeLog('updateTotalDealsSize', () => updateTotalDealsSize(roPg, rwPg)),
     ...PIN_SERVICES.map((svc) =>
       PIN_STATUSES.map((s) =>
         withTimeLog(`updatePinsCount[${svc}][${s}]`, () =>
