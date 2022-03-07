@@ -1,5 +1,12 @@
 # Changelog
 
+### [6.0.2](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.0.1...nft.storage-v6.0.2) (2022-03-07)
+
+
+### Bug Fixes
+
+* rate limit error message ([#1154](https://github.com/nftstorage/nft.storage/issues/1154)) ([f449126](https://github.com/nftstorage/nft.storage/commit/f4491267b4f596a4871a52f9582d063dd4dc4ec7))
+
 ### [6.0.1](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.0.0...nft.storage-v6.0.1) (2022-03-01)
 
 
