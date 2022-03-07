@@ -34,6 +34,7 @@ const nextConfig = withBundleAnalyzer({
         page: '/docs/concepts/architecture-considerations',
       },
       '/docs/concepts/car-files': { page: '/docs/concepts/car-files' },
+      '/docs/concepts/gateways': { page: '/docs/concepts/gateways' },
       '/docs/how-to/mint-erc-1155': { page: '/docs/how-to/mint-erc-1155' },
       '/docs/how-to': {
         page: '/docs/how-to/mint-erc-1155',
