@@ -52,10 +52,11 @@ export class DBClient {
   async registerDid(did, userId) {
     /**@type {PostgrestQueryBuilder<definitions['user']>} */
     const query = this.client.from('user')
-    const { data, error } = await query.update({
-      id: userId,
-      did: did,
-    })
+    const { data, error } = await query
+      .update({
+        did: did,
+      })
+      .match({ id: userId })
 
     if (error) {
       throw new DBError(error)

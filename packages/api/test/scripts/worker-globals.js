@@ -1,4 +1,4 @@
-export const SALT = 'supersecret'
+export const SALT = 'secret'
 export const DEBUG = 'true'
 export const CLUSTER_API_URL = 'http://localhost:9094'
 // will be used with we can active auth in cluster base64 of test:test
@@ -19,3 +19,4 @@ export const S3_REGION = 'test'
 export const S3_ACCESS_KEY_ID = 'test'
 export const S3_SECRET_ACCESS_KEY = 'test'
 export const S3_BUCKET_NAME = 'test'
+export const PRIVATE_KEY = 'xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY='

@@ -9,6 +9,8 @@ import {
 } from './scripts/helpers.js'
 import { createCar } from './scripts/car.js'
 import { S3_ENDPOINT, S3_BUCKET_NAME } from './scripts/worker-globals.js'
+import { build } from 'ucan-storage/ucan-storage'
+import { KeyPair } from 'ucan-storage/keypair'
 
 describe('NFT Upload ', () => {
   /** @type{DBTestClient} */
@@ -301,5 +303,63 @@ describe('NFT Upload ', () => {
     const backupUrl = `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${client.userId}/${carHash}.car`
 
     assert.equal(backup.url, backupUrl)
+  })
+
+  it.only('should upload a single file using ucan', async () => {
+    const kp = await KeyPair.create()
+    // Register DID
+    await fetch(`user/did`, {
+      headers: { Authorization: `Bearer ${client.token}` },
+      method: 'POST',
+      body: JSON.stringify({
+        did: kp.did(),
+      }),
+    })
+
+    // Get root UCAN
+    const ucanRsp = await fetch(`ucan/token`, {
+      headers: { Authorization: `Bearer ${client.token}` },
+      method: 'POST',
+    })
+    const { value: rootUcan } = await ucanRsp.json()
+
+    // Get service DID
+    const didRsp = await fetch(`did`)
+    const { value: serviceDID } = await didRsp.json()
+
+    // Signed new ucan with service as audience
+    const opUcan = await build({
+      audience: serviceDID,
+      issuer: kp,
+      lifetimeInSeconds: 1000,
+      capabilities: [
+        {
+          with: `storage://${kp.did()}/public`,
+          can: 'upload/IMPORT',
+          mh: '',
+        },
+      ],
+      proofs: [rootUcan],
+    })
+
+    const file = new Blob(['hello world!'], { type: 'application/text' })
+    // expected CID for the above data
+    const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+    const res = await fetch('upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${opUcan}` },
+      body: file,
+    })
+    const { ok, value } = await res.json()
+    assert(ok, 'Server response payload has `ok` property')
+
+    const { data } = await rawClient
+      .from('upload')
+      .select('*')
+      .match({ source_cid: cid, user_id: client.userId })
+      .single()
+
+    // @ts-ignore
+    assert.equal(data.meta.ucan.token, opUcan)
   })
 })

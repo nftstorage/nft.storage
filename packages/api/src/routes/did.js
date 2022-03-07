@@ -1,4 +1,3 @@
-import { validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 
 /** @type {import('../bindings').Handler} */
