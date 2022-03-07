@@ -8,17 +8,22 @@
     "dev": "next dev -p 4000",
     "build": "yarn workspace nft.storage prepare && next build && next-sitemap && next export",
     "start": "next start",
-    "test": "eslint './**/*.js' && tsc --build",
+    "lint": "eslint './**/*.js' && tsc --build",
+    "test": "jest",
+    "test:ci": "jest --runInBand --maxWorkers=4",
     "lint:fix": "eslint './**/*.js' --fix-dry-run",
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@magic-ext/oauth": "^0.11.2",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.3",
     "bytes": "^3.1.0",
     "clsx": "^1.1.1",
     "copy-to-clipboard": "^3.3.1",
     "gray-matter": "^4.0.3",
     "ipfs-car": "0.6.2",
+    "jest": "^27.5.1",
     "magic-sdk": "^6.2.1",
     "next-mdx-remote": "^4.0.0-rc.1",
     "nextra": "^2.0.0-beta.5",
@@ -62,6 +67,7 @@
       "prettier"
     ],
     "env": {
+      "jest": true,
       "es2020": true,
       "browser": true,
       "node": true
