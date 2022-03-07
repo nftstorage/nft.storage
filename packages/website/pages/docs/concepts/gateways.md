@@ -42,6 +42,8 @@ curl -L https://nftstorage.link/ipfs/bafybeid4gwmvbza257a7rx52bheeplwlaogshu4rgs
 
 The gateway always redirects path-style URLs into subdomain-style URLs, so that web content served through the gateway can be isolated with the [same-origin policy](https://en.wikipedia.org/wiki/Same-origin_policy). In some cases, this may result in the CID being re-encoded to a format that's compatible with subdomain addressing. In particular, "version 0" CIDs beginning with `Qm` will be encoded to CID version 1 (`bafy...`) in the base32 string encoding. Although the encodings are different, the CIDs are still equivalent for the purposes of content identification and verification, and you can convert back into CIDv0 without losing any information.
 
+You can avoid the redirect from path to subdomain URL by creating a [subdomain style URL](#subdomain-style-urls) directly, but you'll need to make sure that you're only using CIDv1, as CIDv0's case-sensitive encoding is incompatible with subdomain URLs. The NFT.Storage APIs always return CIDv1, but if you have other sources of IPFS CIDs you can [convert CIDv0 to v1][ipfs-docs-cid-convert] yourself before constructing the gateway URL.
+
 ### Rate limits
 
 The NFT.Storage gateway is currently rate limited to 200 requests per minute for a given IP address. In the event of a rate limit, the IP will be blocked for 30 seconds.
@@ -89,6 +91,7 @@ This is the preferred style for serving web assets over HTTP gateways, because w
 [brave-ipfs]: https://brave.com/ipfs-support/
 [opera-ipfs]: https://blogs.opera.com/tips-and-tricks/2021/02/opera-crypto-files-for-keeps-ipfs-unstoppable-domains/
 [ipfs-docs-cid]: https://docs.ipfs.io/concepts/content-addressing
+[ipfs-docs-cid-convert]: https://docs.ipfs.io/concepts/content-addressing/#cid-conversion
 [ipfs-docs-gateway]: https://docs.ipfs.io/concepts/ipfs-gateway/
 [ipfs-docs-gateway-resolution]: https://docs.ipfs.io/concepts/ipfs-gateway/#resolution-style
 [ipfs-docs-bitswap]: https://docs.ipfs.io/concepts/bitswap/
