@@ -91,5 +91,6 @@ This is the preferred style for serving web assets over HTTP gateways, because w
 [ipfs-docs-cid]: https://docs.ipfs.io/concepts/content-addressing
 [ipfs-docs-gateway]: https://docs.ipfs.io/concepts/ipfs-gateway/
 [ipfs-docs-gateway-resolution]: https://docs.ipfs.io/concepts/ipfs-gateway/#resolution-style
+[ipfs-docs-bitswap]: https://docs.ipfs.io/concepts/bitswap/
 [public-gateway-checker]: https://ipfs.github.io/public-gateway-checker/
 [howto-retrieve]: /docs/how-to/retrieve
