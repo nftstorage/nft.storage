@@ -32,7 +32,7 @@ import {
 import { withPsaErrorHandler, withPinningAuthorized } from './middleware/psa.js'
 import { cluster } from './constants.js'
 import { getContext } from './utils/context.js'
-import { userDid } from './routes/user-did.js'
+import { userDidRegister } from './routes/user-did-register.js'
 import { ucanToken } from './routes/ucan-token.js'
 import { did } from './routes/did.js'
 
@@ -105,7 +105,7 @@ r.add('delete', '/:cid', withMode(nftDelete, RW), [postCors])
 r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
 
 // User
-r.add('post', '/user/did', withMode(userDid, RW), [postCors])
+r.add('post', '/user/did', withMode(userDidRegister, RW), [postCors])
 
 // Tokens
 r.add('get', '/internal/tokens', withMode(tokensList, RO), [postCors])
