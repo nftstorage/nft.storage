@@ -816,6 +816,7 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  transform: translate3d(0, 0, 0);
 }
 @media (min-width: 768px) {
   .nextra-container .sidebar {
