@@ -309,6 +309,18 @@ export interface paths {
       }
     }
   }
+  '/stats': {
+    get: {
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions['upload_stats'][]
+        }
+        /** Partial Content */
+        206: unknown
+      }
+    }
+  }
   '/metric': {
     get: {
       parameters: {
@@ -856,6 +868,9 @@ export interface definitions {
     updated_at: string
     /** Format: timestamp with time zone */
     deleted_at?: string
+  }
+  upload_stats: {
+    [key: string]: string
   }
   backup: {
     /**

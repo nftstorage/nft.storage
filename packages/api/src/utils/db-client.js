@@ -447,6 +447,36 @@ export class DBClient {
 
     return data[0].value
   }
+
+  async getStats() {
+    /** @type {PostgrestQueryBuilder<definitions['upload_stats']>} */
+    const query = this.client.from('metric')
+    const { data, error } = await query
+      .select('name, value')
+      .in('name', [
+        'deals_total',
+        'deals_size_total',
+        'uploads_past_7_total',
+        'uploads_blob_total',
+        'uploads_car_total',
+        'uploads_nft_total',
+        'uploads_remote_total',
+        'uploads_multipart_total',
+      ])
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    if (!data || !data.length) {
+      return undefined
+    }
+
+    return data.reduce((obj, curr) => {
+      obj[curr.name] = curr.value
+      return obj
+    }, {})
+  }
 }
 
 export class DBError extends Error {
