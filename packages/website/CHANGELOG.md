@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.34.0](https://github.com/nftstorage/nft.storage/compare/website-v1.33.0...website-v1.34.0) (2022-03-07)
+
+
+### Features
+
+* **docs:** add gateway concept doc & update retrieval doc ([#1482](https://github.com/nftstorage/nft.storage/issues/1482)) ([4fade34](https://github.com/nftstorage/nft.storage/commit/4fade34a71d2c5590f77cfa6fe320b3951ae6e14))
+
+
+### Bug Fixes
+
+* docs tabs breaking and other markdown issues ([#1537](https://github.com/nftstorage/nft.storage/issues/1537)) ([ee64153](https://github.com/nftstorage/nft.storage/commit/ee64153eb8dbadfa1e77c23f94ebb5fa1f2e171d))
+
 ## [1.33.0](https://github.com/nftstorage/nft.storage/compare/website-v1.32.0...website-v1.33.0) (2022-03-03)
 
 
