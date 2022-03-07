@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { TrustedBy } from '../components/trustedByLogos'
 import fs from 'fs'
-
+import decorateAdditionalCalculatedValues from '../lib/statsUtils'
+import { API } from '../lib/api'
 /**
  *
  * @returns {{ props: import('../components/types.js').LayoutProps}}
  */
+
 export function getStaticProps() {
   const logos = fs.readdirSync('public/images/marketplace-logos')
   // make opensea be the first logo
@@ -23,14 +25,6 @@ export function getStaticProps() {
   }
 }
 
-const uploadKeysToSum = [
-  'uploads_blob_total',
-  'uploads_car_total',
-  'uploads_nft_total',
-  'uploads_remote_total',
-  'uploads_multipart_total',
-]
-
 /**
  * Stats Page
  * @param {Object} props
@@ -44,37 +38,30 @@ export default function Stats({ logos }) {
     fetchStats()
   }, [])
 
-  function fetchStats() {
-    const fakeStats = {
-      deals_total: Math.floor(Math.random() * 1000000 + 1),
-      deals_size_total: Math.floor(Math.random() * 1000000000000000 + 1),
-      uploads_past_7_total: 15000,
-      uploads_blob_total: 10000,
-      uploads_car_total: 10000,
-      uploads_nft_total: 10000,
-      uploads_remote_total: 10000,
-      uploads_multipart_total: 10000,
-    }
-    setStats(decorateAdditionalCalculatedValues(fakeStats))
-  }
-
-  function decorateAdditionalCalculatedValues(obj) {
-    const total = Object.keys(obj).reduce((acc, key) => {
-      if (uploadKeysToSum.includes(key)) {
-        return acc + obj[key]
+  async function fetchStats() {
+    try {
+      const stats = await fetch(`${API}/stats`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((res) => res.json())
+      setStats(decorateAdditionalCalculatedValues(stats))
+    } catch (e) {
+      const fakeData = {
+        ok: true,
+        data: {
+          uploads_past_7_total: 2001137,
+          uploads_nft_total: 685281,
+          uploads_multipart_total: 1447292,
+          uploads_remote_total: 11067087,
+          uploads_blob_total: 12406191,
+          uploads_car_total: 17425593,
+        },
       }
-      return acc
-    }, 0)
-
-    let totalBefore = total - obj.uploads_past_7_total
-    const uploadsGrowthRate = parseFloat(
-      ((total - totalBefore) / totalBefore) * 100
-    ).toFixed(2)
-
-    return { ...obj, totalUploads: total, growthRate: uploadsGrowthRate }
+      setStats(decorateAdditionalCalculatedValues(fakeData.data))
+    }
   }
-
-  console.log('stats', stats)
 
   const Marquee = () => {
     return (
@@ -131,8 +118,8 @@ export default function Stats({ logos }) {
               title="Upload Count"
               image="/images/stats-upload-count.svg"
               desc="Total uploads to NFT.Storage"
-              statValue={stats.totalUploads}
-              percChange={stats.growthRate}
+              statValue={stats.totalUploads || 0}
+              percChange={stats.growthRate || 0}
             />
             <StatCard
               title="Data Stored"
