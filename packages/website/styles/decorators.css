@@ -7,6 +7,7 @@
     calc(var(--btn-ghost-y) * -1 / 2),
     0
   );
+  backface-visibility: hidden;
   border: 0;
   box-shadow: 0 0 0 1px var(--nsblack),
     var(--btn-ghost-x) var(--btn-ghost-y) 0px 0px var(--nsgray),
