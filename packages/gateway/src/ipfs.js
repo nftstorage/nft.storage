@@ -1,4 +1,5 @@
 import { normalizeCid } from './utils/cid.js'
+import { InvalidUrlError } from './errors.js'
 
 /**
  * Handle gateway request
@@ -16,7 +17,12 @@ export async function ipfsGet(request, env) {
   const redirectQueryString = reqQueryString ? `?${reqQueryString}` : ''
 
   // Parse and normalize CID
-  const nCid = normalizeCid(cid)
+  let nCid
+  try {
+    nCid = normalizeCid(cid)
+  } catch (err) {
+    throw new InvalidUrlError(`invalid CID: ${cid}: ${err.message}`)
+  }
   const url = new URL(
     `https://${nCid}.${env.GATEWAY_HOSTNAME}${redirectPath}${redirectQueryString}`
   )
