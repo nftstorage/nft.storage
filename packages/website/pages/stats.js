@@ -3,11 +3,11 @@ import { TrustedBy } from '../components/trustedByLogos'
 import fs from 'fs'
 import decorateAdditionalCalculatedValues from '../lib/statsUtils'
 import { API } from '../lib/api'
+
 /**
  *
  * @returns {{ props: import('../components/types.js').LayoutProps}}
  */
-
 export function getStaticProps() {
   const logos = fs.readdirSync('public/images/marketplace-logos')
   // make opensea be the first logo
