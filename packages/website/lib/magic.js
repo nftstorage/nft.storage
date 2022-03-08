@@ -49,11 +49,7 @@ export async function login(token, type = 'magic', data = {}) {
 
 export async function isLoggedIn() {
   try {
-    const meta = await getMagic().user.getMetadata()
-
-    return {
-      ...meta,
-    }
+    return await getMagic().user.getMetadata()
   } catch {
     // do nothing
   }
