@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from 'react-query'
 import Button from '../components/button.js'
 import Loading from '../components/loading.js'
 import countly from '../lib/countly.js'
+import { VscMail } from 'react-icons/vsc'
 
 /**
  *
@@ -94,10 +95,11 @@ export default function ManageKeys({ user }) {
               <div className="flex flex-wrap items-center mt2">
                 <a
                   href="mailto:support@nft.storage?cc=&bcc=&subject=Request%3A%20Pinning%20Service%20API%20Allowlist%20Access&body=Why%20you%20are%20looking%20for%20pinning%20service%20API%20access%20(e.g.%20you're%20an%20artist%20looking%20for%20extra%20redundancy)%3A%0A%0A%3CANSWER%20HERE%3E%0A%0APlease%20provide%20a%20sample%20of%205-10%20CIDs%20of%20NFTs%20%2F%20metadata%20you%20are%20looking%20to%20pin%3A%0A%0A%3CANSWER%20HERE%3E%0A%0APlease%20provide%20your%20profile%20on%20an%20NFT%20service%20(artist%20profile%2C%20collector%2C%20etc.)%3A%0A%0A%3CANSWER%20HERE%3E%0A%0AThanks%2C%0A%3CINSERT%20YOUR%20NAME%3E"
-                  className="flex-none mr3 mb2 btn button-reset select-none black flex-none pv2 ph3 hologram chicagoflf interactive light"
+                  className="items-center mr3 mb2 btn button-reset select-none black pv2 ph3 hologram chicagoflf interactive light"
                   id="request-api-pinning"
                 >
-                  ✉ Request API Pinning Access
+                  <VscMail size={12} className="mr2" /> Request API Pinning
+                  Access
                 </a>
                 <Button
                   href={{
