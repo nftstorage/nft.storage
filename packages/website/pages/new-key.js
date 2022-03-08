@@ -50,23 +50,23 @@ export default function NewKey() {
 
   return (
     <main className="bg-nsgreen flex-grow-1">
-      <div className="mw9 center pv3 ph3 ph5-ns">
+      <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
         <Box
           bgColor="nsgray"
           borderColor="nspink"
           wrapperClassName="center mv4 mw6"
         >
-          <h1 className="chicagoflf f4 fw4">New API Key</h1>
+          <h1 className="chicagoflf text-xl font-normal">New API Key</h1>
           <form onSubmit={handleCreateToken}>
-            <div className="mv3">
-              <label htmlFor="name" className="dib mb2">
+            <div className="my-4">
+              <label htmlFor="name" className="inline-block mb-2">
                 Name
               </label>
               <input
                 id="name"
                 name="name"
                 placeholder="Give this API key a name"
-                className="db ba b--black w5 pa2"
+                className="block border border-solid b--black w-64 p-2"
                 required
               />
             </div>

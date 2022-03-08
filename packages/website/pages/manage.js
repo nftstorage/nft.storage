@@ -83,14 +83,14 @@ export default function ManageKeys({ user }) {
 
   return (
     <main className="bg-nsgreen flex-grow-1">
-      <div className="mw9 center pv3 ph3 ph5-ns">
+      <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
         <If condition={status === 'loading'}>
           <Then>
             <Loading></Loading>
           </Then>
           <Else>
-            <div className="flex items-center mb3">
-              <h1 className="flex-auto chicagoflf mv4">API Keys</h1>
+            <div className="flex items-center mb-4">
+              <h1 className="flex-auto chicagoflf my-8">API Keys</h1>
               <Button
                 href={{
                   pathname: '/new-key',
@@ -104,7 +104,7 @@ export default function ManageKeys({ user }) {
             </div>
             <When condition={keys.length > 0}>
               <div className="table-responsive">
-                <table className="w-100 mb4">
+                <table className="w-full mb-8">
                   <thead>
                     <tr className="bg-nsgray">
                       <th>Name</th>
@@ -114,14 +114,14 @@ export default function ManageKeys({ user }) {
                   </thead>
                   <tbody>
                     {keys.map((t, k) => (
-                      <tr className="bg-white bb" key={k}>
+                      <tr className="bg-white border-b" key={k}>
                         <td className="shrink-cell" data-label="Name">
                           {t[0]}
                         </td>
                         <td data-label="Key">
                           <input
                             disabled
-                            className="h2 w-100 mt1"
+                            className="h-8 w-full mt-1"
                             type="text"
                             id={`value-${t[0]}`}
                             value={t[1]}
@@ -132,7 +132,7 @@ export default function ManageKeys({ user }) {
                             <form
                               data-value={t[1]}
                               onSubmit={handleCopyToken}
-                              className="mr2"
+                              className="mr-2"
                             >
                               <Button
                                 className="bg-white black"
@@ -177,8 +177,8 @@ export default function ManageKeys({ user }) {
               </div>
             </When>
             <When condition={keys.length === 0}>
-              <p className="tc mv5">
-                <span className="f1 dib mb3">😢</span>
+              <p className="text-center my-16">
+                <span className="text-5xl inline-block mb-4">😢</span>
                 <br />
                 No API keys
               </p>

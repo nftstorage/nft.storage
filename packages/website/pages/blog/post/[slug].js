@@ -69,17 +69,17 @@ const Post = ({ post }) => {
   const linkedinParams = { url: currentUrl }
 
   return (
-    <div className="blog flex-grow-1 pb24">
-      <div className="post pb24 flex flex-column w-100 items-center">
+    <div className="blog flex-grow-1 pb-SPACING24">
+      <div className="post pb-SPACING24 flex flex-col w-full items-center">
         <img
           src={post.meta.thumbnail}
           alt={`Banner for ${post.meta.title}`}
           className="h-card object-cover object-center"
         />
-        <div className="mt14 mw7 ph8">
-          <div className="post-meta mb4">
-            <div className="flex flex-column mb5 justify-between items-center">
-              <div className="flex justify-between items-end w-100">
+        <div className="mt-SPACING14 max-w-3lx px-SPACING8">
+          <div className="post-meta mb-8">
+            <div className="flex flex-col mb-16 justify-between items-center">
+              <div className="flex justify-between items-end w-full">
                 <div className="social-links flex">
                   <SocialLink
                     url={twitterShareLink}
@@ -112,18 +112,22 @@ const Post = ({ post }) => {
                 </Button>
               </div>
             </div>
-            <h1 className="chicagoflf f2 mb7 mt2">{post.meta.title}</h1>
+            <h1 className="chicagoflf text-4xl mb-64 mt-2">
+              {post.meta.title}
+            </h1>
             {post.meta?.tags ? (
-              <div className="mb3">
+              <div className="mb-4">
                 <Tags tags={post.meta.tags} />
               </div>
             ) : (
               <div></div>
             )}
-            <p className="mb2">{post.meta.description}</p>
-            <div className="flex mb7">
-              <span className="darker-gray f6 mr2">{post.meta.author}</span>
-              <span className="darker-gray f6">{post.meta.date}</span>
+            <p className="mb-2">{post.meta.description}</p>
+            <div className="flex mb-64">
+              <span className="darker-gray text-sm mr-2">
+                {post.meta.author}
+              </span>
+              <span className="darker-gray text-sm">{post.meta.date}</span>
             </div>
           </div>
           <MDXRemote {...post.content} />

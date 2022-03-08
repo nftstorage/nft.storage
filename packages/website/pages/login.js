@@ -42,17 +42,17 @@ export default function Login() {
     }
   }
   return (
-    <main className="flex-auto bg-nsorange w-100">
-      <div className="mw9 center pv5 mtauto">
+    <main className="flex-auto bg-nsorange w-full">
+      <div className="max-w-7xl mx-auto py-16 mtauto">
         <form
           onSubmit={onSubmit}
-          className="flex items-center justify-center flex-column tc"
+          className="flex items-center justify-center flex-col text-center"
         >
-          <label className="f5 db mb3 chicagoflf">
+          <label className="text-base block mb-4 chicagoflf">
             <h1>Log in with</h1>
           </label>
           <Button
-            className="w5"
+            className="w-64"
             onClick={() => {
               setIsRedirecting(true)
               loginSocial('github')
@@ -66,7 +66,7 @@ export default function Login() {
             {isRedirecting ? 'Redirecting...' : 'Github'}
           </Button>
 
-          <h4 className="mv3 f3">Or</h4>
+          <h4 className="my-4 text-2xl">Or</h4>
 
           <label id="email-entry-label" htmlFor="email" className="sr-only">
             Enter Your Email
@@ -77,13 +77,13 @@ export default function Login() {
             name="email"
             required
             placeholder="Enter your email"
-            className="input-reset ba b--black pa2 mb2 w5 center db"
+            className="appearance-none border border-solid b--black p-2 mb-2 w-64 mx-auto block"
           />
 
           <Button
             type="submit"
             disabled={disabled}
-            className="w5 tc"
+            className="w-64 text-center"
             tracking={{
               event: countly.events.LOGIN_CLICK,
               ui: countly.ui.LOGIN,

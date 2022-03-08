@@ -12,9 +12,9 @@ const crossStyle = {
 export default function Hero() {
   return (
     <div className="bg-nsorange">
-      <div className="relative center mw9 ba b--black">
+      <div className="relative mx-auto max-w-7xl border border-solid b--black">
         <GreenBox
-          className="dn dn-m db-ns bl br b--black mh5"
+          className="hidden lg:hidden sm:block border-l border-r b--black mx-16"
           style={crossStyle}
         >
           <GreenBox>
@@ -35,20 +35,22 @@ export default function Hero() {
           </GreenBox>
         </GreenBox>
         <div
-          className="relative top-0 relative-m absolute-ns w-100 ph3 tc"
+          className="relative top-0 lg:relative sm:absolute w-full px-4 text-center"
           style={{ height: '100%' }}
         >
           <img
             height="470"
             width="1002"
             style={{ width: '75vw', maxWidth: '1002px', height: 'auto' }}
-            className="mt4 mb2 mb4-ns"
+            className="mt-8 mb-2 sm:mb-8"
             src="images/logo-nft.storage.svg"
             alt="NFT Storage logo"
           />
           <hgroup className="chicagoflf white">
-            <h1 className="f4 f2-m f1-ns fw4 mv3">Free Storage for NFTs</h1>
-            <h2 className="f3 fw4 mw8 center mv3 lh-copy">
+            <h1 className="text-xl lg:text-4xl sm:text-5xl font-normal my-4">
+              Free Storage for NFTs
+            </h1>
+            <h2 className="text-2xl font-normal max-w-5xl mx-auto my-4 leading-normal">
               Free decentralized storage and bandwidth for NFTs on{' '}
               <img
                 src="images/logo-ipfs-sm.png"
@@ -72,7 +74,7 @@ export default function Hero() {
           </hgroup>
           <div className="flex justify-center">
             <Button
-              className="mh3 mb3"
+              className="mx-4 mb-4"
               href="#getting-started"
               tracking={{ ui: countly.ui.HOME_HERO, action: 'Get Started' }}
             >

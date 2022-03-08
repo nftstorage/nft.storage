@@ -160,16 +160,16 @@ const Paginated = ({ items, pageNumber, setPageNumber }) => {
     )
   }
   return (
-    <div className="flex-auto pb24">
+    <div className="flex-auto pb-SPACING24">
       {currentItems.length > 0 ? (
         <Items currentItems={currentItems} />
       ) : (
-        <div className="flex items-center justify-center flex-auto h-100 pt4">
+        <div className="flex items-center justify-center flex-auto h-full pt-8">
           More blogs coming soon
         </div>
       )}
       {items.length > BLOG_ITEMS_PER_PAGE && (
-        <div className="flex justify-center mt13">
+        <div className="flex justify-center mt-SPACING13">
           <PaginatedNav />
         </div>
       )}
@@ -184,7 +184,7 @@ const Paginated = ({ items, pageNumber, setPageNumber }) => {
  * @param {import('../../components/types').PostMeta[]} props.currentItems
  */
 const Items = ({ currentItems }) => (
-  <div className="card-grid pt2">
+  <div className="card-grid pt-2">
     {currentItems.map((post, i) => (
       <Card key={i} post={post} />
     ))}
@@ -201,7 +201,7 @@ const Items = ({ currentItems }) => (
  */
 function TagsContainer({ tags, filters, handleTagClick }) {
   return (
-    <div className="button-tags-container pv3 mw9">
+    <div className="button-tags-container py-4 max-w-7xl">
       <Tags
         tags={tags.map((tag) => {
           const normTag = tag.toLowerCase()
@@ -283,10 +283,10 @@ const Blog = ({ posts }) => {
   if (posts.length === 0) return <Backdrop>There are no blogs yet 😞</Backdrop>
 
   return (
-    <main className="flex flex-auto blog bg-nspeach w-100">
-      <div className="blog-body w-100">
+    <main className="flex flex-auto blog bg-nspeach w-full">
+      <div className="blog-body w-full">
         <HighlightCard post={first} />
-        <div className="blog-content w-100 mw9">
+        <div className="blog-content w-full max-w-7xl">
           <TagsContainer
             filters={filters}
             handleTagClick={handleTagClick}

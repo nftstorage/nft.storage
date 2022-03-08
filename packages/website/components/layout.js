@@ -50,9 +50,9 @@ const MaintenanceBanner = () => {
 
   if (maintenanceMessage) {
     return (
-      <div className="bg-yellow bb b--black" style={{ zIndex: 50 }}>
-        <div className="lh-copy mw9 tc center pv3 ph3">
-          <span className="f4">⚠</span> {maintenanceMessage}
+      <div className="bg-yellow border-b b--black" style={{ zIndex: 50 }}>
+        <div className="leading-normal max-w-7xl text-center mx-auto py-4 px-4">
+          <span className="text-xl">⚠</span> {maintenanceMessage}
         </div>
       </div>
     )
@@ -90,7 +90,7 @@ export default function Layout({
   }
 
   return (
-    <div className="nft-storage sans-serif flex flex-column min-vh-100">
+    <div className="nft-storage font-sans flex flex-col min-vh-100">
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -113,7 +113,7 @@ export default function Layout({
         <>
           <MaintenanceBanner />
           <Navbar bgColor={navBgColor} logo={logo} user={user} />
-          <div className="flex flex-column flex-auto">{children({ user })}</div>
+          <div className="flex flex-col flex-auto">{children({ user })}</div>
           <Footer />
         </>
       )}

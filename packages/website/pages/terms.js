@@ -17,11 +17,11 @@ export function getStaticProps() {
 export default function TermsOfService() {
   return (
     <main className="bg-nspeach flex-grow-1">
-      <div className="mw9 center pa4 pa5-ns">
+      <div className="max-w-7xl mx-auto p-8 sm:p-16">
         <h1 className="chicagoflf">
           <HashLink id="terms-of-service">Terms of Service</HashLink>
         </h1>
-        <p className="lh-copy">
+        <p className="leading-normal">
           The following terms and conditions govern all use of the{' '}
           <a className="black" href="https://nft.storage">
             NFT.Storage
@@ -38,7 +38,7 @@ export default function TermsOfService() {
           </a>
           .
         </p>
-        <p className="lh-copy">
+        <p className="leading-normal">
           If you do not agree to all the terms and conditions of this agreement,
           then you may not access the Website or use any services.
         </p>
@@ -46,7 +46,7 @@ export default function TermsOfService() {
         <h3 className="chicagoflf">
           <HashLink id="data-limits">Data Limits</HashLink>
         </h3>
-        <p className="lh-copy">
+        <p className="leading-normal">
           The Service is offered for the creation and storage of NFTs. Use of
           the Service to store other types of data is not permitted. The Service
           accepts uploads of up to 31GiB in size per individual upload.
@@ -59,7 +59,7 @@ export default function TermsOfService() {
         <h2 className="chicagoflf">
           <HashLink id="storage-term">Storage Term</HashLink>
         </h2>
-        <p className="lh-copy">
+        <p className="leading-normal">
           Data stored on the Service is stored on the Filecoin network in
           long-term deals with independent Filecoin storage providers, and may
           also be stored redundantly by other means to support the functionality
@@ -68,7 +68,7 @@ export default function TermsOfService() {
           deal varies, and the number of deals that will support storage of
           given data are variable.
         </p>
-        <p className="lh-copy">
+        <p className="leading-normal">
           Filecoin deals are public, and anyone can access information about
           them (e.g., content address, duration, expiration, price, etc.) and
           renew or create new deals storing the underlying data. Data will be
@@ -86,7 +86,7 @@ export default function TermsOfService() {
           information about any Filecoin deals containing this data for users
           who want to continue storing this data in Filecoin deals.
         </p>
-        <p className="lh-copy">
+        <p className="leading-normal">
           All data uploaded via the Service is available to anyone who requests
           it using the correct content identifier. Users should not store any
           private or sensitive information in an unencrypted form using the
@@ -100,7 +100,7 @@ export default function TermsOfService() {
         <h2 className="chicagoflf">
           <HashLink id="storage-term">NFT.Storage Gateway</HashLink>
         </h2>
-        <p className="lh-copy">
+        <p className="leading-normal">
           Use of the NFT.Storage Gateway (“the Gateway”) is subject to the Terms
           of Service of{' '}
           <a className="black" href="https://discuss.ipfs.io/tos">
@@ -108,7 +108,7 @@ export default function TermsOfService() {
           </a>
           .
         </p>
-        <p className="lh-copy">
+        <p className="leading-normal">
           When you access content via the Gateway, Protocol Labs may cache that
           content or the associated CID for performance reasons. Protocol Labs
           may also collect analytics data on use of the Gateway, including data

@@ -1,4 +1,4 @@
-import 'tachyons/css/tachyons.css'
+// import 'tachyons/css/tachyons.css'
 import '../styles/global.css'
 
 import { QueryClient, QueryClientProvider } from 'react-query'

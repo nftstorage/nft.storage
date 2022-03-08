@@ -15,9 +15,9 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer className="bg-black db db-m flex-ns items-center justify-between f7 white pv3 ph5">
+    <footer className="bg-black block lg:block sm:flex items-center justify-between text-xs white py-4 px-16">
       <div>
-        <span className="mv3 pl-byline">
+        <span className="my-4 pl-byline">
           Made with ❤️ by{' '}
           <a
             href="https://protocol.ai/"
@@ -56,7 +56,7 @@ export default function Footer() {
         </a>
       </div>
       <div>
-        <span className="db db-m dib-ns mv3">
+        <span className="block lg:block sm:inline-block my-4">
           <a
             href="https://status.nft.storage/"
             className="nspink no-underline underline-hover v-mid"
@@ -68,7 +68,7 @@ export default function Footer() {
           </a>
         </span>
         <Dot />
-        <span className="db db-m dib-ns mv3">
+        <span className="block lg:block sm:inline-block my-4">
           <Link href="/terms">
             <a
               className="nspink no-underline underline-hover v-mid"
@@ -79,7 +79,7 @@ export default function Footer() {
           </Link>
         </span>
         <Dot />
-        <span className="db db-m dib-ns mv3">
+        <span className="block lg:block sm:inline-block my-4">
           <Link href="/faq">
             <a
               className="nspink no-underline underline-hover v-mid"
@@ -90,7 +90,7 @@ export default function Footer() {
           </Link>
         </span>
         <Dot />
-        <span className="db db-m dib-ns mv3">
+        <span className="block lg:block sm:inline-block my-4">
           <span className="v-mid">Need Help? </span>
           <a
             href="https://github.com/nftstorage/nft.storage/issues/new"
@@ -106,5 +106,9 @@ export default function Footer() {
 }
 
 function Dot() {
-  return <span className="mh2 b dn dn-m dib-ns mv3 v-mid">•</span>
+  return (
+    <span className="mx-2 font-bold hidden lg:hidden sm:inline-block my-4 v-mid">
+      •
+    </span>
+  )
 }

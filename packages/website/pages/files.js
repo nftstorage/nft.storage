@@ -191,11 +191,15 @@ export default function Files({ user }) {
     }
 
     return (
-      <tr className="bg-white bb">
-        <td data-label="Date" className="nowrap" title={nft.created}>
+      <tr className="bg-white border-b">
+        <td
+          data-label="Date"
+          className="whitespace-no-wrap"
+          title={nft.created}
+        >
           {nft.created.split('T')[0]}
         </td>
-        <td data-label="CID" className="nowrap">
+        <td data-label="CID" className="whitespace-no-wrap">
           <CopyButton
             title="Copy CID to Clipboard"
             text={nft.cid}
@@ -211,18 +215,18 @@ export default function Files({ user }) {
             </a>
           </CopyButton>
         </td>
-        <td data-label="Pin Status" className="nowrap">
+        <td data-label="Pin Status" className="whitespace-no-wrap">
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
         </td>
         <td data-label="Deals">
-          <div className="lh-copy">
+          <div className="leading-normal">
             {deals}
             {dealsHidden.length > 0 && (
               <>
                 {!showAllDeals && (
                   <button
                     onClick={() => setShowAllDeals(true)}
-                    className="hidden-deals-trigger pointer"
+                    className="hidden-deals-trigger cursor-pointer"
                   >
                     +{dealsHidden.length} More
                   </button>
@@ -234,7 +238,7 @@ export default function Files({ user }) {
             )}
           </div>
         </td>
-        <td data-label="Size" className="nowrap">
+        <td data-label="Size" className="whitespace-no-wrap">
           {bytes(nft.size || 0)}
         </td>
         <td className="shrink-cell center-cell">
@@ -309,14 +313,14 @@ export default function Files({ user }) {
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
       <main className="bg-nsyellow flex-grow-1">
-        <div className="mw9 center pv3 ph3 ph5-ns">
+        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
           <When condition={status === 'loading'}>
             <Loading />
           </When>
           <When condition={status !== 'loading'}>
             <>
-              <div className="flex items-center mb3">
-                <div className="flex-auto chicagoflf mv3">
+              <div className="flex items-center mb-4">
+                <div className="flex-auto chicagoflf my-4">
                   <h1>Files</h1>
                 </div>
                 <Button
@@ -335,15 +339,15 @@ export default function Files({ user }) {
               </div>
               <div className="table-responsive">
                 <When condition={hasZeroNfts}>
-                  <p className="tc mv5">
-                    <span className="f1 dib mb3">😢</span>
+                  <p className="text-center my-16">
+                    <span className="text-5xl inline-block mb-4">😢</span>
                     <br />
                     No files
                   </p>
                 </When>
                 <When condition={!hasZeroNfts}>
                   <>
-                    <table className="w-100 collapse">
+                    <table className="w-full collapse">
                       <thead>
                         <tr className="bg-nsgray">
                           <th>Date</th>
@@ -431,9 +435,9 @@ export default function Files({ user }) {
                         )}
                       </tbody>
                     </table>
-                    <div className="flex flex-wrap justify-center tc mv3">
+                    <div className="flex flex-wrap justify-center text-center my-4">
                       <Button
-                        className="mh2 mb2"
+                        className="mx-2 mb-2"
                         disabled={befores.length === 1}
                         onClick={handleFirstClick}
                         id="files-first"
@@ -446,7 +450,7 @@ export default function Files({ user }) {
                         ⇤ First
                       </Button>
                       <Button
-                        className="mh2 mb2"
+                        className="mx-2 mb-2"
                         disabled={befores.length === 1}
                         onClick={handlePrevClick}
                         id="files-previous"
@@ -459,7 +463,7 @@ export default function Files({ user }) {
                         ← Previous
                       </Button>
                       <Button
-                        className="mh2 mb2"
+                        className="mx-2 mb-2"
                         disabled={nfts.length < limit}
                         onClick={handleNextClick}
                         id="files-next"
@@ -483,7 +487,11 @@ export default function Files({ user }) {
               status === 'loading' && 'hidden'
             )}
           >
-            <Button data-tf-popup="OTxv3w2O" className="mh3 mb3" variant="dark">
+            <Button
+              data-tf-popup="OTxv3w2O"
+              className="mx-4 mb-4"
+              variant="dark"
+            >
               {'Tell us how we are doing'}
             </Button>
           </div>
