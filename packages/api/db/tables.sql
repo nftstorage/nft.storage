@@ -179,6 +179,8 @@ CREATE TABLE IF NOT EXISTS upload
     UNIQUE (user_id, source_cid)
 );
 
+CREATE INDEX IF NOT EXISTS upload_inserted_at_idx ON upload (inserted_at);
+
 CREATE VIEW admin_search as
 select
   u.id::text as user_id,
