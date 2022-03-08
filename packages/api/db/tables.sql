@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS public.user
     email          TEXT                                                          NOT NULL,
     -- Cryptographic public address of the user.
     public_address TEXT UNIQUE,
+    did            TEXT UNIQUE,
     github         jsonb,
     inserted_at    TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at     TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL

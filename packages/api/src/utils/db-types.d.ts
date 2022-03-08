@@ -12,6 +12,46 @@ export interface paths {
       }
     }
   }
+  '/admin_search': {
+    get: {
+      parameters: {
+        query: {
+          user_id?: parameters['rowFilter.admin_search.user_id']
+          email?: parameters['rowFilter.admin_search.email']
+          token?: parameters['rowFilter.admin_search.token']
+          token_id?: parameters['rowFilter.admin_search.token_id']
+          deleted_at?: parameters['rowFilter.admin_search.deleted_at']
+          reason_inserted_at?: parameters['rowFilter.admin_search.reason_inserted_at']
+          reason?: parameters['rowFilter.admin_search.reason']
+          status?: parameters['rowFilter.admin_search.status']
+          /** Filtering Columns */
+          select?: parameters['select']
+          /** Ordering */
+          order?: parameters['order']
+          /** Limiting and Pagination */
+          offset?: parameters['offset']
+          /** Limiting and Pagination */
+          limit?: parameters['limit']
+        }
+        header: {
+          /** Limiting and Pagination */
+          Range?: parameters['range']
+          /** Limiting and Pagination */
+          'Range-Unit'?: parameters['rangeUnit']
+          /** Preference */
+          Prefer?: parameters['preferCount']
+        }
+      }
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions['admin_search'][]
+        }
+        /** Partial Content */
+        206: unknown
+      }
+    }
+  }
   '/auth_key': {
     get: {
       parameters: {
@@ -105,6 +145,108 @@ export interface paths {
         body: {
           /** auth_key */
           auth_key?: definitions['auth_key']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+  }
+  '/auth_key_history': {
+    get: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.auth_key_history.id']
+          status?: parameters['rowFilter.auth_key_history.status']
+          reason?: parameters['rowFilter.auth_key_history.reason']
+          auth_key_id?: parameters['rowFilter.auth_key_history.auth_key_id']
+          inserted_at?: parameters['rowFilter.auth_key_history.inserted_at']
+          deleted_at?: parameters['rowFilter.auth_key_history.deleted_at']
+          /** Filtering Columns */
+          select?: parameters['select']
+          /** Ordering */
+          order?: parameters['order']
+          /** Limiting and Pagination */
+          offset?: parameters['offset']
+          /** Limiting and Pagination */
+          limit?: parameters['limit']
+        }
+        header: {
+          /** Limiting and Pagination */
+          Range?: parameters['range']
+          /** Limiting and Pagination */
+          'Range-Unit'?: parameters['rangeUnit']
+          /** Preference */
+          Prefer?: parameters['preferCount']
+        }
+      }
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions['auth_key_history'][]
+        }
+        /** Partial Content */
+        206: unknown
+      }
+    }
+    post: {
+      parameters: {
+        body: {
+          /** auth_key_history */
+          auth_key_history?: definitions['auth_key_history']
+        }
+        query: {
+          /** Filtering Columns */
+          select?: parameters['select']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** Created */
+        201: unknown
+      }
+    }
+    delete: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.auth_key_history.id']
+          status?: parameters['rowFilter.auth_key_history.status']
+          reason?: parameters['rowFilter.auth_key_history.reason']
+          auth_key_id?: parameters['rowFilter.auth_key_history.auth_key_id']
+          inserted_at?: parameters['rowFilter.auth_key_history.inserted_at']
+          deleted_at?: parameters['rowFilter.auth_key_history.deleted_at']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+    patch: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.auth_key_history.id']
+          status?: parameters['rowFilter.auth_key_history.status']
+          reason?: parameters['rowFilter.auth_key_history.reason']
+          auth_key_id?: parameters['rowFilter.auth_key_history.auth_key_id']
+          inserted_at?: parameters['rowFilter.auth_key_history.inserted_at']
+          deleted_at?: parameters['rowFilter.auth_key_history.deleted_at']
+        }
+        body: {
+          /** auth_key_history */
+          auth_key_history?: definitions['auth_key_history']
         }
         header: {
           /** Preference */
@@ -306,18 +448,6 @@ export interface paths {
       responses: {
         /** No Content */
         204: never
-      }
-    }
-  }
-  '/stats': {
-    get: {
-      responses: {
-        /** OK */
-        200: {
-          schema: definitions['upload_stats'][]
-        }
-        /** Partial Content */
-        206: unknown
       }
     }
   }
@@ -656,6 +786,7 @@ export interface paths {
           picture?: parameters['rowFilter.user.picture']
           email?: parameters['rowFilter.user.email']
           public_address?: parameters['rowFilter.user.public_address']
+          did?: parameters['rowFilter.user.did']
           github?: parameters['rowFilter.user.github']
           inserted_at?: parameters['rowFilter.user.inserted_at']
           updated_at?: parameters['rowFilter.user.updated_at']
@@ -716,6 +847,7 @@ export interface paths {
           picture?: parameters['rowFilter.user.picture']
           email?: parameters['rowFilter.user.email']
           public_address?: parameters['rowFilter.user.public_address']
+          did?: parameters['rowFilter.user.did']
           github?: parameters['rowFilter.user.github']
           inserted_at?: parameters['rowFilter.user.inserted_at']
           updated_at?: parameters['rowFilter.user.updated_at']
@@ -740,6 +872,7 @@ export interface paths {
           picture?: parameters['rowFilter.user.picture']
           email?: parameters['rowFilter.user.email']
           public_address?: parameters['rowFilter.user.public_address']
+          did?: parameters['rowFilter.user.did']
           github?: parameters['rowFilter.user.github']
           inserted_at?: parameters['rowFilter.user.inserted_at']
           updated_at?: parameters['rowFilter.user.updated_at']
@@ -747,6 +880,111 @@ export interface paths {
         body: {
           /** user */
           user?: definitions['user']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+  }
+  '/user_tag': {
+    get: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.user_tag.id']
+          user_id?: parameters['rowFilter.user_tag.user_id']
+          tag?: parameters['rowFilter.user_tag.tag']
+          value?: parameters['rowFilter.user_tag.value']
+          reason?: parameters['rowFilter.user_tag.reason']
+          inserted_at?: parameters['rowFilter.user_tag.inserted_at']
+          deleted_at?: parameters['rowFilter.user_tag.deleted_at']
+          /** Filtering Columns */
+          select?: parameters['select']
+          /** Ordering */
+          order?: parameters['order']
+          /** Limiting and Pagination */
+          offset?: parameters['offset']
+          /** Limiting and Pagination */
+          limit?: parameters['limit']
+        }
+        header: {
+          /** Limiting and Pagination */
+          Range?: parameters['range']
+          /** Limiting and Pagination */
+          'Range-Unit'?: parameters['rangeUnit']
+          /** Preference */
+          Prefer?: parameters['preferCount']
+        }
+      }
+      responses: {
+        /** OK */
+        200: {
+          schema: definitions['user_tag'][]
+        }
+        /** Partial Content */
+        206: unknown
+      }
+    }
+    post: {
+      parameters: {
+        body: {
+          /** user_tag */
+          user_tag?: definitions['user_tag']
+        }
+        query: {
+          /** Filtering Columns */
+          select?: parameters['select']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** Created */
+        201: unknown
+      }
+    }
+    delete: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.user_tag.id']
+          user_id?: parameters['rowFilter.user_tag.user_id']
+          tag?: parameters['rowFilter.user_tag.tag']
+          value?: parameters['rowFilter.user_tag.value']
+          reason?: parameters['rowFilter.user_tag.reason']
+          inserted_at?: parameters['rowFilter.user_tag.inserted_at']
+          deleted_at?: parameters['rowFilter.user_tag.deleted_at']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+    patch: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.user_tag.id']
+          user_id?: parameters['rowFilter.user_tag.user_id']
+          tag?: parameters['rowFilter.user_tag.tag']
+          value?: parameters['rowFilter.user_tag.value']
+          reason?: parameters['rowFilter.user_tag.reason']
+          inserted_at?: parameters['rowFilter.user_tag.inserted_at']
+          deleted_at?: parameters['rowFilter.user_tag.deleted_at']
+        }
+        body: {
+          /** user_tag */
+          user_tag?: definitions['user_tag']
         }
         header: {
           /** Preference */
@@ -839,6 +1077,28 @@ export interface paths {
 }
 
 export interface definitions {
+  admin_search: {
+    /** Format: text */
+    user_id?: string
+    /** Format: text */
+    email?: string
+    /** Format: text */
+    token?: string
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Primary Key.<pk/>
+     */
+    token_id?: number
+    /** Format: timestamp with time zone */
+    deleted_at?: string
+    /** Format: timestamp with time zone */
+    reason_inserted_at?: string
+    /** Format: text */
+    reason?: string
+    /** Format: public.auth_key_blocked_status_type */
+    status?: 'Blocked' | 'Unblocked'
+  }
   auth_key: {
     /**
      * Format: bigint
@@ -869,8 +1129,30 @@ export interface definitions {
     /** Format: timestamp with time zone */
     deleted_at?: string
   }
-  upload_stats: {
-    [key: string]: string
+  auth_key_history: {
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Primary Key.<pk/>
+     */
+    id: number
+    /** Format: public.auth_key_blocked_status_type */
+    status: 'Blocked' | 'Unblocked'
+    /** Format: text */
+    reason: string
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Foreign Key to `auth_key.id`.<fk table='auth_key' column='id'/>
+     */
+    auth_key_id: number
+    /**
+     * Format: timestamp with time zone
+     * @default timezone('utc'::text, now())
+     */
+    inserted_at: string
+    /** Format: timestamp with time zone */
+    deleted_at?: string
   }
   backup: {
     /**
@@ -1032,6 +1314,8 @@ export interface definitions {
     email: string
     /** Format: text */
     public_address?: string
+    /** Format: text */
+    did?: string
     /** Format: jsonb */
     github?: string
     /**
@@ -1044,6 +1328,33 @@ export interface definitions {
      * @default timezone('utc'::text, now())
      */
     updated_at: string
+  }
+  user_tag: {
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Primary Key.<pk/>
+     */
+    id: number
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Foreign Key to `user.id`.<fk table='user' column='id'/>
+     */
+    user_id: number
+    /** Format: public.user_tag_type */
+    tag: 'HasAccountRestriction' | 'HasPsaAccess' | 'StorageLimitBytes'
+    /** Format: text */
+    value: string
+    /** Format: text */
+    reason: string
+    /**
+     * Format: timestamp with time zone
+     * @default timezone('utc'::text, now())
+     */
+    inserted_at: string
+    /** Format: timestamp with time zone */
+    deleted_at?: string
   }
 }
 
@@ -1071,6 +1382,24 @@ export interface parameters {
   offset: string
   /** @description Limiting and Pagination */
   limit: string
+  /** @description admin_search */
+  'body.admin_search': definitions['admin_search']
+  /** Format: text */
+  'rowFilter.admin_search.user_id': string
+  /** Format: text */
+  'rowFilter.admin_search.email': string
+  /** Format: text */
+  'rowFilter.admin_search.token': string
+  /** Format: bigint */
+  'rowFilter.admin_search.token_id': string
+  /** Format: timestamp with time zone */
+  'rowFilter.admin_search.deleted_at': string
+  /** Format: timestamp with time zone */
+  'rowFilter.admin_search.reason_inserted_at': string
+  /** Format: text */
+  'rowFilter.admin_search.reason': string
+  /** Format: public.auth_key_blocked_status_type */
+  'rowFilter.admin_search.status': string
   /** @description auth_key */
   'body.auth_key': definitions['auth_key']
   /** Format: bigint */
@@ -1087,6 +1416,20 @@ export interface parameters {
   'rowFilter.auth_key.updated_at': string
   /** Format: timestamp with time zone */
   'rowFilter.auth_key.deleted_at': string
+  /** @description auth_key_history */
+  'body.auth_key_history': definitions['auth_key_history']
+  /** Format: bigint */
+  'rowFilter.auth_key_history.id': string
+  /** Format: public.auth_key_blocked_status_type */
+  'rowFilter.auth_key_history.status': string
+  /** Format: text */
+  'rowFilter.auth_key_history.reason': string
+  /** Format: bigint */
+  'rowFilter.auth_key_history.auth_key_id': string
+  /** Format: timestamp with time zone */
+  'rowFilter.auth_key_history.inserted_at': string
+  /** Format: timestamp with time zone */
+  'rowFilter.auth_key_history.deleted_at': string
   /** @description backup */
   'body.backup': definitions['backup']
   /** Format: bigint */
@@ -1177,12 +1520,30 @@ export interface parameters {
   'rowFilter.user.email': string
   /** Format: text */
   'rowFilter.user.public_address': string
+  /** Format: text */
+  'rowFilter.user.did': string
   /** Format: jsonb */
   'rowFilter.user.github': string
   /** Format: timestamp with time zone */
   'rowFilter.user.inserted_at': string
   /** Format: timestamp with time zone */
   'rowFilter.user.updated_at': string
+  /** @description user_tag */
+  'body.user_tag': definitions['user_tag']
+  /** Format: bigint */
+  'rowFilter.user_tag.id': string
+  /** Format: bigint */
+  'rowFilter.user_tag.user_id': string
+  /** Format: public.user_tag_type */
+  'rowFilter.user_tag.tag': string
+  /** Format: text */
+  'rowFilter.user_tag.value': string
+  /** Format: text */
+  'rowFilter.user_tag.reason': string
+  /** Format: timestamp with time zone */
+  'rowFilter.user_tag.inserted_at': string
+  /** Format: timestamp with time zone */
+  'rowFilter.user_tag.deleted_at': string
 }
 
 export interface operations {}
