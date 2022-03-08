@@ -33,6 +33,10 @@ export async function dbSqlCmd(opts) {
     .replace(":'DAG_CARGO_USER'", `'${env.DAG_CARGO_USER}'`)
     .replace(":'DAG_CARGO_PASSWORD'", `'${env.DAG_CARGO_PASSWORD}'`)
     .replace(':NFT_STORAGE_USER', env.NFT_STORAGE_USER || 'CURRENT_USER')
+    .replace(
+      ':NFT_STORAGE_STATS_USER',
+      env.NFT_STORAGE_STATS_USER || 'CURRENT_USER'
+    )
 
   const client = await getDbClient(env.DATABASE_CONNECTION)
 
