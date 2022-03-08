@@ -451,18 +451,6 @@ export interface paths {
       }
     }
   }
-  '/stats': {
-    get: {
-      responses: {
-        /** OK */
-        200: {
-          schema: definitions['upload_stats'][]
-        }
-        /** Partial Content */
-        206: unknown
-      }
-    }
-  }
   '/metric': {
     get: {
       parameters: {
@@ -1141,8 +1129,30 @@ export interface definitions {
     /** Format: timestamp with time zone */
     deleted_at?: string
   }
-  upload_stats: {
-    [key: string]: string
+  auth_key_history: {
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Primary Key.<pk/>
+     */
+    id: number
+    /** Format: public.auth_key_blocked_status_type */
+    status: 'Blocked' | 'Unblocked'
+    /** Format: text */
+    reason: string
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Foreign Key to `auth_key.id`.<fk table='auth_key' column='id'/>
+     */
+    auth_key_id: number
+    /**
+     * Format: timestamp with time zone
+     * @default timezone('utc'::text, now())
+     */
+    inserted_at: string
+    /** Format: timestamp with time zone */
+    deleted_at?: string
   }
   backup: {
     /**
