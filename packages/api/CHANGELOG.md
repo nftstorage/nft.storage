@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.17.0](https://github.com/nftstorage/nft.storage/compare/api-v2.16.0...api-v2.17.0) (2022-03-08)
+
+
+### Features
+
+* ucan support ([#1555](https://github.com/nftstorage/nft.storage/issues/1555)) ([b0388da](https://github.com/nftstorage/nft.storage/commit/b0388da852f5843b75d1a170949eb2bea791296e))
+
+
+### Bug Fixes
+
+* infra package grants for stats metrics ([#1578](https://github.com/nftstorage/nft.storage/issues/1578)) ([f06883e](https://github.com/nftstorage/nft.storage/commit/f06883e4b896a81f71e31404f4595e763e0d4f3f))
+* metrics cron permissions and increase timeout ([#1574](https://github.com/nftstorage/nft.storage/issues/1574)) ([ca4411a](https://github.com/nftstorage/nft.storage/commit/ca4411a0bc3283d97fcb7069780b41bd9fee30bb))
+
+
+### Performance Improvements
+
+* metrics max concurrent queries and adds inserted at index to upload ([#1576](https://github.com/nftstorage/nft.storage/issues/1576)) ([4645d15](https://github.com/nftstorage/nft.storage/commit/4645d1594ec93eefee2d2d8f783b6ff5be5cfd8e))
+
 ## [2.16.0](https://github.com/nftstorage/nft.storage/compare/api-v2.15.2...api-v2.16.0) (2022-03-07)
 
 
