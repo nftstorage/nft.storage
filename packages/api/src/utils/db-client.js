@@ -473,7 +473,7 @@ export class DBClient {
   }
 
   async getStats() {
-    /** @type {PostgrestQueryBuilder<definitions['upload_stats']>} */
+    /** @type {PostgrestQueryBuilder<definitions['metric']>} */
     const query = this.client.from('metric')
     const { data, error } = await query
       .select('name, value')
@@ -497,6 +497,7 @@ export class DBClient {
     }
 
     return data.reduce((obj, curr) => {
+      // @ts-ignore
       obj[curr.name] = curr.value
       return obj
     }, {})
