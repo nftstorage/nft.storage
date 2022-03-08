@@ -125,6 +125,8 @@ CREATE TABLE IF NOT EXISTS content
 
 CREATE INDEX IF NOT EXISTS content_updated_at_idx ON content (updated_at);
 CREATE INDEX IF NOT EXISTS content_inserted_at_idx ON content (inserted_at);
+CREATE UNIQUE INDEX content_cid_with_size_idx ON content (cid) INCLUDE (dag_size);
+
 
 -- Information for piece of content pinned in IPFS.
 CREATE TABLE IF NOT EXISTS pin

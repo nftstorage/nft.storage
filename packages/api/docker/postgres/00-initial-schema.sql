@@ -25,7 +25,7 @@ create schema if not exists cargo;
 
 -- Grant privileges
 grant usage                     on schema public, cargo to postgres, anon, authenticated, service_role;
-alter default privileges in schema public, cargo grant all on tables to postgres, anon, authenticated, service_role, stats;
+alter default privileges in schema public, cargo grant all on tables to postgres, anon, authenticated, service_role;
 alter default privileges in schema public, cargo grant all on functions to postgres, anon, authenticated, service_role;
 alter default privileges in schema public, cargo grant all on sequences to postgres, anon, authenticated, service_role;
 
