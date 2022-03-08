@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.16.0](https://github.com/nftstorage/nft.storage/compare/api-v2.15.2...api-v2.16.0) (2022-03-07)
+
+
+### Features
+
+* add stats routes ([#1400](https://github.com/nftstorage/nft.storage/issues/1400)) ([96acd59](https://github.com/nftstorage/nft.storage/commit/96acd592b8e0cc36f2adaf542ef4921cfa8bea22))
+
+### [2.15.2](https://github.com/nftstorage/nft.storage/compare/api-v2.15.1...api-v2.15.2) (2022-03-01)
+
+
+### Bug Fixes
+
+* api assert dep ([#1499](https://github.com/nftstorage/nft.storage/issues/1499)) ([8dd67ea](https://github.com/nftstorage/nft.storage/commit/8dd67ea512bc1ab77b4ab7499cc9f410ee2d957a))
+* augment car start to inspect car and check if complete ([#1330](https://github.com/nftstorage/nft.storage/issues/1330)) ([d591223](https://github.com/nftstorage/nft.storage/commit/d591223b0ee528360037ed8860cf3a2c8b79324a))
+* gateway ipfs path in gateway worker ([#1347](https://github.com/nftstorage/nft.storage/issues/1347)) ([8cf367c](https://github.com/nftstorage/nft.storage/commit/8cf367c885a73f74abe284018556b345738067dc))
+
+### [2.15.1](https://github.com/nftstorage/nft.storage/compare/api-v2.15.0...api-v2.15.1) (2022-02-22)
+
+
+### Bug Fixes
+
+* add durable object types ([#1212](https://github.com/nftstorage/nft.storage/issues/1212)) ([ffc9934](https://github.com/nftstorage/nft.storage/commit/ffc9934037795e2e16c816139d336c2bbb83b3c1))
+* psa list empty ([#1432](https://github.com/nftstorage/nft.storage/issues/1432)) ([df96ce0](https://github.com/nftstorage/nft.storage/commit/df96ce0280affdaaa098d7c1ea85e438afd6de9e))
+* update ipfs car and client ([#1373](https://github.com/nftstorage/nft.storage/issues/1373)) ([2b61549](https://github.com/nftstorage/nft.storage/commit/2b61549f4f31684a6afca28c9f7ed39dc076ada2))
+
 ## [2.15.0](https://github.com/nftstorage/nft.storage/compare/api-v2.14.1...api-v2.15.0) (2022-02-08)
 
 

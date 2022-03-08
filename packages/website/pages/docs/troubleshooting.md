@@ -27,3 +27,6 @@ We no longer offer support for versions prior to v14 ([see here](https://nft.sto
 
 This error can occur because of having an old version of Node. We no longer offer support for versions prior to v14 ([see here](https://nft.storage/faq/#why-don't-you-support-versions-of-node-prior-to-v14)). With Node v14 or greater, you should be able to use `import` if you are using ESM Modules, otherwise you will need to use `require`.
 
+### Don't See Your Question Answered?
+
+[Chat with us in #nft-storage on IPFS discord](https://discord.com/invite/KKucsCpZmY)

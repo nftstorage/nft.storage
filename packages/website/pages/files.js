@@ -13,6 +13,7 @@ import countly from '../lib/countly.js'
 import { useState } from 'react'
 import CopyButton from '../components/copyButton'
 import { Popover, ArrowContainer } from 'react-tiny-popover'
+import clsx from 'clsx'
 
 /**
  * Static Props
@@ -54,6 +55,7 @@ export default function Files({ user }) {
     (ctx) => getNfts(ctx.queryKey[1]),
     {
       enabled: !!user,
+      refetchOnWindowFocus: false,
     }
   )
 
@@ -195,12 +197,12 @@ export default function Files({ user }) {
         </td>
         <td data-label="CID" className="nowrap">
           <CopyButton
-            title="Copy cid to Clipboard"
+            title="Copy CID to Clipboard"
             text={nft.cid}
             popupContent={'CID has been copied!!'}
           >
             <a
-              href={`https://ipfs.io/ipfs/${nft.cid}`}
+              href={`https://nftstorage.link/ipfs/${nft.cid}`}
               className="underline black truncate"
               target="_blank"
               rel="noreferrer"
@@ -306,13 +308,8 @@ export default function Files({ user }) {
   return (
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
-      <main className="bg-nsyellow">
-        <div className="flex justify-center pt4">
-          <Button data-tf-popup="OTxv3w2O" className="mh3 mb3" variant="dark">
-            {'Tell us how we are doing'}
-          </Button>
-        </div>
-        <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
+      <main className="bg-nsyellow flex-grow-1">
+        <div className="mw9 center pv3 ph3 ph5-ns">
           <When condition={status === 'loading'}>
             <Loading />
           </When>
@@ -480,6 +477,16 @@ export default function Files({ user }) {
               </div>
             </>
           </When>
+          <div
+            className={clsx(
+              'flex justify-center pt4',
+              status === 'loading' && 'hidden'
+            )}
+          >
+            <Button data-tf-popup="OTxv3w2O" className="mh3 mb3" variant="dark">
+              {'Tell us how we are doing'}
+            </Button>
+          </div>
         </div>
       </main>
     </>

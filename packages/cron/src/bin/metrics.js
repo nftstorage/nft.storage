@@ -4,16 +4,13 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 import { updateMetrics } from '../jobs/metrics.js'
-import { getPg } from '../lib/utils.js'
+import { getPgPool } from '../lib/utils.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 async function main() {
-  const rwPg = getPg(process.env, 'rw')
-  const roPg = getPg(process.env, 'ro')
-
-  await rwPg.connect()
-  await roPg.connect()
+  const rwPg = getPgPool(process.env, 'rw')
+  const roPg = getPgPool(process.env, 'ro')
 
   try {
     await updateMetrics({ rwPg, roPg })

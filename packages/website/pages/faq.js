@@ -92,10 +92,9 @@ const faqs = [
 
 const TOC = () => (
   <div className="flex flex-column pv1 mw7">
-    <h2 className="chicagoflf white">Table Of Contents</h2>
     {faqs.map((faq, index) => (
       <Link href={`/faq/#${hashify(faq.question)}`} key={`faq-item${index}`}>
-        <a className="white mv1 underline">
+        <a className="white mv2 underline">
           {faq.error ? `Why am I seeing: ${faq.error}` : faq.question}
         </a>
       </Link>
@@ -136,8 +135,8 @@ export const FAQ = ({ limit = faqs.length }) => {
  *
  */
 const Faq = () => (
-  <main className="bg-nsforest">
-    <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
+  <main className="bg-nsforest flex-grow-1">
+    <div className="mw9 center pv3 ph3 ph5-ns">
       <h1 className="chicagoflf white mv4 flex-auto ">FAQ</h1>
       <div className="mb5">
         <TOC />

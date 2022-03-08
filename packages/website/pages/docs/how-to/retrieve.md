@@ -25,9 +25,7 @@ IPFS uses a technique called [content addressing][ipfs-docs-concepts-cid] to uni
 
 A CID usually looks something like this:
 
-<code class="overflow-wrap-breakword">
-bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy
-</code>
+<p><code class="overflow-wrap-breakword">bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy</code></p>
 
 If your NFTs use [IPFS best practices][ipfs-docs-nft-best-practices], the link from the blockchain to your IPFS data will be in the form of a URI that looks like this:
 
@@ -60,7 +58,7 @@ Before you can retrieve your off-chain NFT metadata, you need to know where to f
 
 You can often find this information on NFT marketplaces and other NFT explorer sites. For example, OpenSea's `Details` view includes a link to an NFT's "Frozen" metadata that's been stored on IPFS:
 
-![Screenshot of OpenSea web ui showing a metadata link for an NFT](/images/opensea-nft-details.png).
+![Screenshot of OpenSea web ui showing a metadata link for an NFT](/images/opensea-nft-details.png)
 
 In the example above, the metadata link is <span className="overflow-wrap-breakword">https://ipfs.io/ipfs/bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi</span>, which is an IPFS gateway URL that uses the public gateway at `https://ipfs.io`.
 
@@ -70,7 +68,7 @@ If your marketplace or wallet doesn't display the original metadata URI, you can
 
 Below is an example of calling the `uri()` function on a [Polygon](https://polygon.technology/) contract that conforms to [ERC-1155][erc-1155]:
 
-![Screenshot of polygonscan block explorer showing a call to the `uri` contract function](/images/block-explorer-read-token-uri.png).
+![Screenshot of polygonscan block explorer showing a call to the `uri` contract function](/images/block-explorer-read-token-uri.png)
 
 Now that you have your metadata address, you can download a copy [using an HTTP gateway](#using-ipfs-http-gateways) or [IPFS on your computer](#running-ipfs-on-your-computer).
 
@@ -85,18 +83,22 @@ Above we saw some examples of [IPFS addresses](#understanding-ipfs-addresses) th
 You might also see HTTP links to IPFS content that look like this:
 
 ```
-https://bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy.ipfs.dweb.link
+https://bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy.ipfs.nftstorage.link
 ```
 
 or possibly in this form, with the CID in the path instead of the domain name:
 
 ```
-https://dweb.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy
+https://nftstorage.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy
 ```
 
 These are gateway URLs, which link to IPFS data using an HTTP gateway provider. Gateways provide a bridge between the peer-to-peer IPFS protocol and the HTTP protocol supported by all web browsers.
 
-You can turn any `ipfs://` URL into a gateway URL by [choosing a gateway][public-gateway-checker] and replacing the `ipfs://` prefix with `https://<gateway-host>/ipfs/`. For example, to use the gateway at `dweb.link`, you could create the URL <span className="overflow-wrap-breakword">https://dweb.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif</span>. Clicking that link should take you to an image served by the gateway host.
+You can turn any `ipfs://` URL into a gateway URL by [choosing a gateway][public-gateway-checker] and replacing the `ipfs://` prefix with `https://<gateway-host>/ipfs/`. 
+
+We recommend using the `nftstorage.link` gateway, which was built by the NFT.Storage team to optimize retrieval of NFT assets and includes a cache for data uploaded through NFT.Storage. You can learn more about the `nftstorage.link` gateway in our [Gateway overview guide][concepts-gateways].
+
+To use the gateway at `nftstorage.link` with the above example CID, you would create the URL <span className="overflow-wrap-breakword">https://nftstorage.link/ipfs/bafybeigvgzoolc3drupxhlevdp2ugqcrbcsqfmcek2zxiw5wctk3xjpjwy/amazing.gif</span>. Clicking that link should take you to an image served by the gateway host.
 
 ## Option: Running IPFS on your computer
 
@@ -137,7 +139,7 @@ The first step is to [find the IPFS address of the NFT's metadata](#finding-the-
 
 2. Download an IPFS Content Archive (CAR) using the metadata address
 
-Find the CID portion of the address you found in step 1. For example, if your NFT has the URI <code class="overflow-wrap-breakword">ipfs://bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi`, you just need the `bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi</code> part. See [Understanding IPFS addresses](#understanding-ipfs-addresses) for more about CIDs.
+Find the CID portion of the address you found in step 1. For example, if your NFT has the URI <code class="overflow-wrap-breakword">ipfs://bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi</code>, you just need the <code class="overflow-wrap-breakword">bafkreigfvngoydofemwj5x5ioqsaqarvlprzgxinkcv3am3jpv2sysqobi</code> part. See [Understanding IPFS addresses](#understanding-ipfs-addresses) for more about CIDs.
 
 Using the CID, you can download an IPFS Content Archive file (CAR), which contains the data exactly as it was encoded for storage on IPFS and Filecoin. This is important, because the same file can produce multiple different CIDs, depending on how it was encoded when adding to IPFS. By downloading a CAR, you preserve all the original CIDs and make it possible to re-provide the data in exactly the format it was in when the NFT was minted.
 

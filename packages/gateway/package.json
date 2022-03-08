@@ -1,10 +1,10 @@
 {
   "name": "gateway",
-  "version": "1.1.2",
+  "version": "1.2.4",
   "description": "IPFS gateway for nft.storage",
   "private": true,
   "type": "module",
-  "module": "./dist/index.mjs",
+  "module": "./dist/worker.mjs",
   "scripts": {
     "build": "node scripts/cli.js build",
     "dev": "miniflare --watch --debug",
@@ -20,12 +20,12 @@
   },
   "dependencies": {
     "itty-router": "^2.4.5",
-    "multiformats": "^9.5.2",
+    "multiformats": "^9.6.4",
     "nanoid": "^3.1.30",
     "p-any": "^4.0.0",
     "p-map": "^5.3.0",
-    "p-some": "^5.0.0",
     "p-settle": "^5.0.0",
+    "p-some": "^5.0.0",
     "toucan-js": "^2.5.0"
   },
   "devDependencies": {

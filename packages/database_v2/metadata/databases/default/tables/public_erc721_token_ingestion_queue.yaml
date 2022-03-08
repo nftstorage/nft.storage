@@ -1,3 +1,0 @@
-table:
-  name: erc721_token_ingestion_queue
-  schema: public

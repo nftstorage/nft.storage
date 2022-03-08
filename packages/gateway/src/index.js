@@ -2,6 +2,7 @@
 
 import { Router } from 'itty-router'
 
+import { ipfsGet } from './ipfs.js'
 import { gatewayGet } from './gateway.js'
 import { metricsGet } from './metrics.js'
 
@@ -21,6 +22,10 @@ const router = Router()
 router
   .all('*', envAll)
   .get('/metrics', withCorsHeaders(metricsGet))
+  .get('/ipfs/:cid', withCorsHeaders(ipfsGet))
+  .get('/ipfs/:cid/*', withCorsHeaders(ipfsGet))
+  .head('/ipfs/:cid', withCorsHeaders(ipfsGet))
+  .head('/ipfs/:cid/*', withCorsHeaders(ipfsGet))
   .get('*', withCorsHeaders(gatewayGet))
   .head('*', withCorsHeaders(gatewayGet))
 

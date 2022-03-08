@@ -1,5 +1,5 @@
 /**
- * @param {Error & {status?: number;code?: string;}} err
+ * @param {Error & {status?: number;code?: string; contentType?: string;}} err
  * @param {import('./env').Env} env
  */
 export function errorHandler(err, env) {
@@ -11,5 +11,10 @@ export function errorHandler(err, env) {
     env.log.error(err)
   }
 
-  return new Response(err.message || 'Server Error', { status })
+  return new Response(err.message || 'Server Error', {
+    status,
+    headers: {
+      'content-type': err.contentType || 'text/plain',
+    },
+  })
 }

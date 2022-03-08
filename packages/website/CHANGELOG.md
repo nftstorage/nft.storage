@@ -1,5 +1,166 @@
 # Changelog
 
+## [1.34.0](https://github.com/nftstorage/nft.storage/compare/website-v1.33.0...website-v1.34.0) (2022-03-07)
+
+
+### Features
+
+* **docs:** add gateway concept doc & update retrieval doc ([#1482](https://github.com/nftstorage/nft.storage/issues/1482)) ([4fade34](https://github.com/nftstorage/nft.storage/commit/4fade34a71d2c5590f77cfa6fe320b3951ae6e14))
+
+
+### Bug Fixes
+
+* docs tabs breaking and other markdown issues ([#1537](https://github.com/nftstorage/nft.storage/issues/1537)) ([ee64153](https://github.com/nftstorage/nft.storage/commit/ee64153eb8dbadfa1e77c23f94ebb5fa1f2e171d))
+
+## [1.33.0](https://github.com/nftstorage/nft.storage/compare/website-v1.32.0...website-v1.33.0) (2022-03-03)
+
+
+### Features
+
+* Added support for full path external redirects ([#1526](https://github.com/nftstorage/nft.storage/issues/1526)) ([c3f73a7](https://github.com/nftstorage/nft.storage/commit/c3f73a792b864e00cda96a54f85998dc89842453))
+
+## [1.32.0](https://github.com/nftstorage/nft.storage/compare/website-v1.31.0...website-v1.32.0) (2022-03-02)
+
+
+### Features
+
+* add project galaxy logo ([#1471](https://github.com/nftstorage/nft.storage/issues/1471)) ([abf8a23](https://github.com/nftstorage/nft.storage/commit/abf8a23fe8f0b7bfb98a705ec3c10168681de141))
+
+
+### Bug Fixes
+
+* correct capitalization of CID, move survey to bottom, only show after load ([#1533](https://github.com/nftstorage/nft.storage/issues/1533)) ([77612e3](https://github.com/nftstorage/nft.storage/commit/77612e35beccacfb0ea61b2a1b6c9e90f5100f2f))
+* fix broken login page styles ([#1532](https://github.com/nftstorage/nft.storage/issues/1532)) ([e224e51](https://github.com/nftstorage/nft.storage/commit/e224e519bfc1332a0b99e981a67fb7004612b2b8))
+* fix typos and capitalization errors ([#1534](https://github.com/nftstorage/nft.storage/issues/1534)) ([993e08a](https://github.com/nftstorage/nft.storage/commit/993e08a5416c2263daa9af602f9b8613460b2df5))
+* more context on quickstart ([#1535](https://github.com/nftstorage/nft.storage/issues/1535)) ([0b30310](https://github.com/nftstorage/nft.storage/commit/0b3031036ff851ce0b2eccd214bf62a92be96940))
+* remove hyperlink for gateway.nft.storage ([#1538](https://github.com/nftstorage/nft.storage/issues/1538)) ([a4ff758](https://github.com/nftstorage/nft.storage/commit/a4ff75867fca8284826554372807b028d6181fea))
+* update styles of faq page ([#1524](https://github.com/nftstorage/nft.storage/issues/1524)) ([2579fe4](https://github.com/nftstorage/nft.storage/commit/2579fe4945297a48f847131b5189c98839d16999))
+
+## [1.31.0](https://github.com/nftstorage/nft.storage/compare/website-v1.30.1...website-v1.31.0) (2022-03-01)
+
+
+### Features
+
+* add homepage link to decentralization post ([#1326](https://github.com/nftstorage/nft.storage/issues/1326)) ([d2a7d21](https://github.com/nftstorage/nft.storage/commit/d2a7d216fd374ef30bad4fd092f4516f921437ad))
+* **docs:** add overview page for js client & links to generated clients ([#1450](https://github.com/nftstorage/nft.storage/issues/1450)) ([236fda4](https://github.com/nftstorage/nft.storage/commit/236fda42073106d7ce4943ed91667268fbfd389b))
+
+
+### Bug Fixes
+
+* add more on what filecoin gets you, typos ([#1459](https://github.com/nftstorage/nft.storage/issues/1459)) ([551ec14](https://github.com/nftstorage/nft.storage/commit/551ec14195f8c7a44f4149e0aecaae6fc7f09432))
+* client docs markdown fixes ([#1520](https://github.com/nftstorage/nft.storage/issues/1520)) ([6185140](https://github.com/nftstorage/nft.storage/commit/61851409895b221fd63317d6e172ba1526c10da5))
+* **docs:** add pathPrefix to storeDirectory example ([#1523](https://github.com/nftstorage/nft.storage/issues/1523)) ([52b4098](https://github.com/nftstorage/nft.storage/commit/52b4098bd862fcb1d1773d52d6c8c123eb47aff5))
+
+### [1.30.1](https://github.com/nftstorage/nft.storage/compare/website-v1.30.0...website-v1.30.1) (2022-03-01)
+
+
+### Bug Fixes
+
+* website gateway url ([#1424](https://github.com/nftstorage/nft.storage/issues/1424)) ([bcd5ef4](https://github.com/nftstorage/nft.storage/commit/bcd5ef459de2002421de4f3e323e39bb381a412a))
+
+## [1.30.0](https://github.com/nftstorage/nft.storage/compare/website-v1.29.0...website-v1.30.0) (2022-03-01)
+
+
+### Features
+
+* authentication persistence refactor ([#1495](https://github.com/nftstorage/nft.storage/issues/1495)) ([5954d4a](https://github.com/nftstorage/nft.storage/commit/5954d4ad00e8c74ac7850e95c4f9b214c7f68f66))
+
+## [1.29.0](https://github.com/nftstorage/nft.storage/compare/website-v1.28.2...website-v1.29.0) (2022-02-25)
+
+
+### Features
+
+* pare down homepage ([#1005](https://github.com/nftstorage/nft.storage/issues/1005)) ([5f3672a](https://github.com/nftstorage/nft.storage/commit/5f3672ac9ecee625823112234048804a3e4dd24e))
+
+### [1.28.2](https://github.com/nftstorage/nft.storage/compare/website-v1.28.1...website-v1.28.2) (2022-02-23)
+
+
+### Bug Fixes
+
+* add issue template and discord link to docs ([#1390](https://github.com/nftstorage/nft.storage/issues/1390)) ([d274299](https://github.com/nftstorage/nft.storage/commit/d274299c63a431f72748ab219c7561bb3fdccce9))
+
+### [1.28.1](https://github.com/nftstorage/nft.storage/compare/website-v1.28.0...website-v1.28.1) (2022-02-23)
+
+
+### Bug Fixes
+
+* add solana how-to to path map ([#1465](https://github.com/nftstorage/nft.storage/issues/1465)) ([cb6ab26](https://github.com/nftstorage/nft.storage/commit/cb6ab260528d53eb21a25e0eb64ac96e1d6f0186))
+
+## [1.28.0](https://github.com/nftstorage/nft.storage/compare/website-v1.27.1...website-v1.28.0) (2022-02-23)
+
+
+### Features
+
+* **docs:** add how-to for minting on solana with metaplex ([#1419](https://github.com/nftstorage/nft.storage/issues/1419)) ([1c1c058](https://github.com/nftstorage/nft.storage/commit/1c1c058d3d490dfe733095bdce3b63ce09faaa22))
+* **docs:** add how-to for storing directory of files ([#1460](https://github.com/nftstorage/nft.storage/issues/1460)) ([396a1a9](https://github.com/nftstorage/nft.storage/commit/396a1a9e52717eda34265f37a26ec0070628bfc9))
+
+
+### Bug Fixes
+
+* add PL logo to footer ([#1445](https://github.com/nftstorage/nft.storage/issues/1445)) ([82af6b8](https://github.com/nftstorage/nft.storage/commit/82af6b8b0fcde75aa07ce7a779bf5c7d39a85044))
+* front end bugs ([#1443](https://github.com/nftstorage/nft.storage/issues/1443)) ([0d2edc0](https://github.com/nftstorage/nft.storage/commit/0d2edc03fc2f5a283b46589fe0f40813498b395d))
+* update decentralized docs ([#1463](https://github.com/nftstorage/nft.storage/issues/1463)) ([6b48213](https://github.com/nftstorage/nft.storage/commit/6b482132b86cc29cab6c5957ef7a4bc5c26ade20))
+
+### [1.27.1](https://github.com/nftstorage/nft.storage/compare/website-v1.27.0...website-v1.27.1) (2022-02-23)
+
+
+### Bug Fixes
+
+* nextra scolling inline style ([#1446](https://github.com/nftstorage/nft.storage/issues/1446)) ([873bda7](https://github.com/nftstorage/nft.storage/commit/873bda7e22377fd4e87a478de4d7cd9d49f82a7d))
+* refactor blog highlight ([#1454](https://github.com/nftstorage/nft.storage/issues/1454)) ([82743e4](https://github.com/nftstorage/nft.storage/commit/82743e476a536cb4813c3175af1b6176b81f9699))
+
+## [1.27.0](https://github.com/nftstorage/nft.storage/compare/website-v1.26.0...website-v1.27.0) (2022-02-22)
+
+
+### Features
+
+* blog post on web2.5 ([#1434](https://github.com/nftstorage/nft.storage/issues/1434)) ([71cff59](https://github.com/nftstorage/nft.storage/commit/71cff59eeac7eb72fddbab3c7fc65e049f211c35))
+
+## [1.26.0](https://github.com/nftstorage/nft.storage/compare/website-v1.25.2...website-v1.26.0) (2022-02-22)
+
+
+### Features
+
+* additional language on why nft.storage ([#1436](https://github.com/nftstorage/nft.storage/issues/1436)) ([0eefb7c](https://github.com/nftstorage/nft.storage/commit/0eefb7c2709f906e29056f596995757105de1b19))
+
+
+### Bug Fixes
+
+* fix client-gen script and openapi schema ([#1371](https://github.com/nftstorage/nft.storage/issues/1371)) ([3aaf9d1](https://github.com/nftstorage/nft.storage/commit/3aaf9d18505fac36926560aa021ec30587c472ad))
+* logo alignment and blurriness ([#1438](https://github.com/nftstorage/nft.storage/issues/1438)) ([caf5fe6](https://github.com/nftstorage/nft.storage/commit/caf5fe66da0fae4bce2e7b52e13337df6d551f7d))
+* refetch issues on /files ([#1437](https://github.com/nftstorage/nft.storage/issues/1437)) ([e2a9c39](https://github.com/nftstorage/nft.storage/commit/e2a9c39427a2fdf81803f8d469428a1dfb709a2a))
+* remove top level and only entry point via css ([#1399](https://github.com/nftstorage/nft.storage/issues/1399)) ([bf941d4](https://github.com/nftstorage/nft.storage/commit/bf941d4bfb001ba963f1d5439915412e25951cbc))
+
+### [1.25.2](https://github.com/nftstorage/nft.storage/compare/website-v1.25.1...website-v1.25.2) (2022-02-17)
+
+
+### Bug Fixes
+
+* remove empty line ([693767c](https://github.com/nftstorage/nft.storage/commit/693767c456094e3ddf2958b31308aae79e2fe9d2))
+
+### [1.25.1](https://github.com/nftstorage/nft.storage/compare/website-v1.25.0...website-v1.25.1) (2022-02-17)
+
+
+### Bug Fixes
+
+* previous commit to trigger release ([5b50fff](https://github.com/nftstorage/nft.storage/commit/5b50fff4f56b2131df4f430772e1420b80711321))
+* update ipfs car and client ([#1373](https://github.com/nftstorage/nft.storage/issues/1373)) ([2b61549](https://github.com/nftstorage/nft.storage/commit/2b61549f4f31684a6afca28c9f7ed39dc076ada2))
+
+## [1.25.0](https://github.com/nftstorage/nft.storage/compare/website-v1.24.4...website-v1.25.0) (2022-02-16)
+
+
+### Features
+
+* add footer logos for discord,twitter,github ([#1336](https://github.com/nftstorage/nft.storage/issues/1336)) ([bc87ea9](https://github.com/nftstorage/nft.storage/commit/bc87ea9b3df9e3848376e8de8ddbbb83c35cefbe))
+* update ToS for gateway ([#1302](https://github.com/nftstorage/nft.storage/issues/1302)) ([872e035](https://github.com/nftstorage/nft.storage/commit/872e03554f4f2868f4898d87a968e041dd631166))
+
+
+### Bug Fixes
+
+* increase z-index of the alert component ([#1348](https://github.com/nftstorage/nft.storage/issues/1348)) ([#1356](https://github.com/nftstorage/nft.storage/issues/1356)) ([9fea0bd](https://github.com/nftstorage/nft.storage/commit/9fea0bd8d9e06412174f7b202ca6fe660851ced6))
+* links for nft type to indicate metadata and add toggle for webview ([#1258](https://github.com/nftstorage/nft.storage/issues/1258)) ([d746bcd](https://github.com/nftstorage/nft.storage/commit/d746bcd50736cf1ac5555feb36b18236ad7585af))
+* update layout component to remove potential space below footer ([#1313](https://github.com/nftstorage/nft.storage/issues/1313)) ([#1338](https://github.com/nftstorage/nft.storage/issues/1338)) ([f609c8b](https://github.com/nftstorage/nft.storage/commit/f609c8b655b8ff9602cf66703e7e2e2271de0ae9))
+
 ### [1.24.4](https://github.com/nftstorage/nft.storage/compare/website-v1.24.3...website-v1.24.4) (2022-02-11)
 
 

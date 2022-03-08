@@ -10,7 +10,7 @@ import { CarWriter } from '@ipld/car'
 import * as dagJson from '@ipld/dag-json'
 import { randomCar } from './helpers.js'
 
-const DWEB_LINK = 'dweb.link'
+const GATEWAY_LINK = 'nftstorage.link'
 
 describe('client', () => {
   const { AUTH_TOKEN, SERVICE_ENDPOINT } = process.env
@@ -481,7 +481,7 @@ describe('client', () => {
       assert.equal(embed.description, 'stuff')
       assert.ok(embed.image instanceof URL)
       assert.ok(embed.image.protocol, 'https:')
-      assert.ok(embed.image.host, DWEB_LINK)
+      assert.ok(embed.image.host, GATEWAY_LINK)
 
       assert.equal(embed.properties.extra, 'meta')
       assert.ok(Array.isArray(embed.properties.src))
@@ -490,11 +490,11 @@ describe('client', () => {
       const [h2, b2] = /** @type {[URL, URL]} */ (embed.properties.src)
       assert.ok(h2 instanceof URL)
       assert.equal(h2.protocol, 'https:')
-      assert.equal(h2.host, DWEB_LINK)
+      assert.equal(h2.host, GATEWAY_LINK)
 
       assert.ok(b2 instanceof URL)
       assert.equal(b2.protocol, 'https:')
-      assert.equal(b2.host, DWEB_LINK)
+      assert.equal(b2.host, GATEWAY_LINK)
     })
 
     it('store with OpenSea extensions', async () => {

@@ -48,10 +48,10 @@ const faqContent = {
   ),
   nftSizeRestrictions: (
     <p className="lh-copy white mb4">
-      NFT.Storage accepts storage requests up to <strong>31GiB</strong> in size!
-      Each upload can include a single file or a directory of files. (If you are
-      using the HTTP API, you&apos;ll need to do some manual splitting for files
-      over 100MB. See the{' '}
+      NFT.Storage accepts storage requests up to <strong>31GiB</strong> in size
+      per individual upload! Each upload can include a single file or a
+      directory of files. (If you are using the HTTP API, you&apos;ll need to do
+      some manual splitting for files over 100MB. See the{' '}
       <Link href="/api-docs">
         <a className="white">HTTP API docs</a>
       </Link>{' '}
@@ -146,13 +146,13 @@ const faqContent = {
   ),
   filesLimit: (
     <p className="lh-copy white mb4">
-      There are no limits enforced by the service, other than the 31GiB upload,
-      limit. However, if your directory is large or has a lot of files, you
-      might have some difficulty uploading it due to memory issues (especially
-      if you are uploading to the website via your browser or the directory size
-      is larger than your device&#39;s memory) or connection issues. If this is
-      the case for you, we recommend splitting up your directory into smaller
-      directories.
+      There are no limits enforced by the service, other than the size limit of
+      31GiB per individual upload. However, if your directory is large or has a
+      lot of files, you might have some difficulty uploading it due to memory
+      issues (especially if you are uploading to the website via your browser or
+      the directory size is larger than your device&#39;s memory) or connection
+      issues. If this is the case for you, we recommend splitting up your
+      directory into smaller directories.
     </p>
   ),
   unexpectedToken: (

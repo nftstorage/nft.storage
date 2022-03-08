@@ -69,7 +69,7 @@ const Post = ({ post }) => {
   const linkedinParams = { url: currentUrl }
 
   return (
-    <div className="blog min-vh-100 pb24">
+    <div className="blog flex-grow-1 pb24">
       <div className="post pb24 flex flex-column w-100 items-center">
         <img
           src={post.meta.thumbnail}

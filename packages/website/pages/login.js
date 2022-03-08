@@ -43,14 +43,31 @@ export default function Login() {
   }
   return (
     <main className="flex-auto bg-nsorange w-100">
-      <div className="mw9 center pv3 mtauto">
+      <div className="mw9 center pv5 mtauto">
         <form
           onSubmit={onSubmit}
           className="flex items-center justify-center flex-column tc"
         >
-          <label className="f5 db mb2 chicagoflf">
-            <h1>Log in</h1>
+          <label className="f5 db mb3 chicagoflf">
+            <h1>Log in with</h1>
           </label>
+          <Button
+            className="w5"
+            onClick={() => {
+              setIsRedirecting(true)
+              loginSocial('github')
+            }}
+            tracking={{
+              event: countly.events.LOGIN_CLICK,
+              ui: countly.ui.LOGIN,
+              action: 'Github',
+            }}
+          >
+            {isRedirecting ? 'Redirecting...' : 'Github'}
+          </Button>
+
+          <h4 className="mv3 f3">Or</h4>
+
           <label id="email-entry-label" htmlFor="email" className="sr-only">
             Enter Your Email
           </label>
@@ -78,22 +95,6 @@ export default function Login() {
 
           {errorMsg && <p className="error">{errorMsg}</p>}
 
-          <h4>Or with</h4>
-
-          <Button
-            className="w5"
-            onClick={() => {
-              setIsRedirecting(true)
-              loginSocial('github')
-            }}
-            tracking={{
-              event: countly.events.LOGIN_CLICK,
-              ui: countly.ui.LOGIN,
-              action: 'Github',
-            }}
-          >
-            {isRedirecting ? 'Redirecting...' : 'Github'}
-          </Button>
           <br />
           <br />
         </form>

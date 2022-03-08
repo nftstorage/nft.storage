@@ -63,7 +63,10 @@ export default function NewFile() {
         if (isCar) {
           car = file
         } else {
-          ;({ car } = await packToBlob({ input: [file] }))
+          ;({ car } = await packToBlob({
+            input: [file],
+            wrapWithDirectory: false,
+          }))
         }
         let totalBytesSent = 0
         await client.storeCar(car, {
@@ -86,8 +89,8 @@ export default function NewFile() {
   }
 
   return (
-    <main className="bg-nsyellow">
-      <div className="mw9 center pv3 ph3 ph5-ns min-vh-100">
+    <main className="bg-nsyellow flex-grow-1">
+      <div className="mw9 center pv3 ph3 ph5-ns">
         <Box
           bgColor="nsgray"
           borderColor="nspink"
@@ -134,7 +137,7 @@ export default function NewFile() {
                 >
                   <code>ipfs-car</code>
                 </a>{' '}
-                cli or via{' '}
+                CLI or via{' '}
                 <a
                   className="black"
                   href="https://car.ipfs.io"
@@ -147,7 +150,7 @@ export default function NewFile() {
               </p>
               <p className="pl3 mt2 lh-copy">
                 Give your CAR filename the <code>.car</code> extention, and when
-                it&apos;s uploaded to nft.storge your asset will be stored with
+                it&apos;s uploaded to NFT.Storage your asset will be stored with
                 the exact same root CID as defined in the CAR file.
               </p>
             </details>
@@ -200,22 +203,22 @@ export default function NewFile() {
           <section>
             <h3 className="notification-header">🌍 Public data</h3>
             <p>
-              All data uploaded to Nft.Storage is available to anyone who
+              All data uploaded to NFT.Storage is available to anyone who
               requests it using the correct CID. Do not store any private or
-              sensitive information in an unencrypted form using Nft.Storage.
+              sensitive information in an unencrypted form using NFT.Storage.
             </p>
           </section>
           <section>
             <h3 className="notification-header">♾️ Permanent data</h3>
             <p>
-              Deleting files from the Nft.Storage site’s{' '}
+              Deleting files from the NFT.Storage site’s{' '}
               <Link href="/files">
                 <a className="black no-underline underline-hover">Files</a>
               </Link>{' '}
               page will remove them from the file listing for your account, but
               that doesn’t prevent nodes on the decentralized storage network
               from retaining copies of the data indefinitely. Do not use
-              Nft.Storage for data that may need to be permanently deleted in
+              NFT.Storage for data that may need to be permanently deleted in
               the future.
             </p>
           </section>

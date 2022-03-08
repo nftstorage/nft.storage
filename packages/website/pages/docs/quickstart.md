@@ -8,6 +8,10 @@ import { Tabs, TabItem } from 'components/mdx/tabs';
 
 # Quickstart
 
+NFT.Storage is a storage service that lets you upload off-chain NFT data for free, with the goal to store all NFT data as a public good. The data is stored perpetually in the [Filecoin decentralized storage network](https://filecoin.io/) and made available over [IPFS](https://ipfs.io/) via its unique content ID. You can upload as much data as you want as long as it's part of an NFT (e.g., metadata, images and other assets referenced in a token or its metadata), although there is currently a limit of 31GiB per individual upload.
+
+NFT.Storage is especially useful for individual creators who are minting NFTs, or NFT tooling developers looking to support creators and collectors! NFT.Storage is super easy to use and integrate, gives you back the content ID of your upload which you need when minting an NFT to [make it truly immutable][why-nft-storage], and makes your data [performantly available][web-25].
+
 **Ready to get started using NFT.Storage right now?** Get up and running in minutes by following this quickstart guide. In this guide, we'll walk through the following steps:
 
 1. [Creating an NFT.Storage account](#create-an-account)
@@ -224,12 +228,14 @@ Token {
 }
 ```
 
-The `url` is an IPFS url that can be viewed with [Brave](https://brave.com) and other IPFS-aware tools and browsers. For other ways to access your token data, see our [guide to retrieving NFT data][howto-retrieve].
+The `url` is an IPFS URL that can be viewed with [Brave](https://brave.com) and other IPFS-aware tools and browsers. For other ways to access your token data, see our [guide to retrieving NFT data][howto-retrieve].
 
 [reference-http-api]: https://nft.storage/api-docs/
 [concepts-car-files]: ./concepts/car-files/
 [howto-retrieve]: ./how-to/retrieve/
-[js-client]: ./client/lib/
+[js-client]: ./client/js/
+[why-nft-storage]: ./why-nft-storage/#pitfalls-with-using-http-urls
+[web-25]: ./why-nft-storage/#infrastructure-for-web25
 
 [mdn-file]: https://developer.mozilla.org/en-US/docs/Web/API/File
 

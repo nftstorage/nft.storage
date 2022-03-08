@@ -1,5 +1,8 @@
+import { useEffect, useState } from 'react'
 import { TrustedBy } from '../components/trustedByLogos'
 import fs from 'fs'
+import decorateAdditionalCalculatedValues from '../lib/statsUtils'
+import { API } from '../lib/api'
 
 /**
  *
@@ -29,6 +32,37 @@ export function getStaticProps() {
  *
  */
 export default function Stats({ logos }) {
+  const [stats, setStats] = useState({})
+
+  useEffect(() => {
+    fetchStats()
+  }, [])
+
+  async function fetchStats() {
+    try {
+      const stats = await fetch(`${API}/stats`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((res) => res.json())
+      setStats(decorateAdditionalCalculatedValues(stats))
+    } catch (e) {
+      const fakeData = {
+        ok: true,
+        data: {
+          uploads_past_7_total: 2001137,
+          uploads_nft_total: 685281,
+          uploads_multipart_total: 1447292,
+          uploads_remote_total: 11067087,
+          uploads_blob_total: 12406191,
+          uploads_car_total: 17425593,
+        },
+      }
+      setStats(decorateAdditionalCalculatedValues(fakeData.data))
+    }
+  }
+
   const Marquee = () => {
     return (
       <div className="marquee">
@@ -84,8 +118,8 @@ export default function Stats({ logos }) {
               title="Upload Count"
               image="/images/stats-upload-count.svg"
               desc="Total uploads to NFT.Storage"
-              statValue="34.5 mil"
-              percChange={100}
+              statValue={stats.totalUploads || 0}
+              percChange={stats.growthRate || 0}
             />
             <StatCard
               title="Data Stored"

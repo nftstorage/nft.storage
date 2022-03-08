@@ -1,4 +1,5 @@
 import test from 'ava'
+import { createErrorHtmlContent } from '../src/errors.js'
 
 import { getMiniflare } from './utils.js'
 
@@ -19,7 +20,10 @@ test('Fails when invalid cid is provided', async (t) => {
   t.is(response.status, 400)
 
   const textResponse = await response.text()
-  t.is(textResponse, `invalid CID: ${invalidCid}: Unexpected end of data`)
+  t.is(
+    textResponse,
+    createErrorHtmlContent(400, 'invalid CID: bafy: Unexpected end of data')
+  )
 })
 
 test('Gets content', async (t) => {

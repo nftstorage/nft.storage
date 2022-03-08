@@ -1472,3 +1472,12 @@
     margin-right: -6rem;
   }
 }
+
+/* hide the top-level "docs" button since we have only one level/entry point */
+.nextra-container .sidebar ul > li:first-child > button {
+  display: none;
+}
+
+.nextra-container .sidebar ul > li:first-child > button + div > ul {
+  margin: 0;
+}
