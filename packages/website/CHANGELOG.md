@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.35.0](https://github.com/nftstorage/nft.storage/compare/website-v1.34.0...website-v1.35.0) (2022-03-08)
+
+
+### Features
+
+* gateway announcement blog post ([#1559](https://github.com/nftstorage/nft.storage/issues/1559)) ([c658012](https://github.com/nftstorage/nft.storage/commit/c65801258902f25499485a4df31e1de5e1439be9))
+* ucan support ([#1555](https://github.com/nftstorage/nft.storage/issues/1555)) ([b0388da](https://github.com/nftstorage/nft.storage/commit/b0388da852f5843b75d1a170949eb2bea791296e))
+
+
+### Bug Fixes
+
+* remove localstorage, only use magic link api for auth status ([#1585](https://github.com/nftstorage/nft.storage/issues/1585)) ([c57d66a](https://github.com/nftstorage/nft.storage/commit/c57d66a445bd87344d6a4257b7b5be1e76807367))
+
 ## [1.34.0](https://github.com/nftstorage/nft.storage/compare/website-v1.33.0...website-v1.34.0) (2022-03-07)
 
 
