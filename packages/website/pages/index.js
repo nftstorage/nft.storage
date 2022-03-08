@@ -9,7 +9,11 @@ import Button from '../components/button'
 import { TrustedBy } from '../components/trustedByLogos'
 
 export async function getStaticProps() {
-  const logos = fs.readdirSync('public/images/marketplace-logos/home')
+  const logos = fs
+    .readdirSync('public/images/marketplace-logos', { withFileTypes: true })
+    .filter((dirent) => dirent.isFile())
+    .map((dirent) => dirent.name)
+  logos.push('home/project-galaxy.svg', 'home/tatum.svg')
   // make opensea be the first logo
   logos.sort((a, b) =>
     a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0

@@ -21,8 +21,8 @@ export const TrustedBy = ({ logos }) => {
     <div className="marketplace-logos-container center pv4 ph3 ph5-ns">
       <h2 className="tc mt0 chicagoflf">Trusted by</h2>
       <div className="marketplace-logo-grid">
-        {logos.map((logo) => (
-          <Logo key={`marketplace-logo-${logo}`} src={logo} />
+        {logos.map((logo, i) => (
+          <Logo key={`marketplace-logo-${i}`} src={logo} />
         ))}
       </div>
       <p className="tc chicagoflf">and 20,000+ other users!</p>
