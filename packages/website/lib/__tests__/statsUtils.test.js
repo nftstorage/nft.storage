@@ -23,7 +23,7 @@ describe('Stats Utils unit tests', () => {
 
   it('Should decorate upload totals correctly, given fake data', () => {
     const stats = decorateAdditionalCalculatedValues(fakeData.data)
-    expect(stats.growthRate).toBe('4.88')
-    expect(stats.totalUploads).toBe(43031444)
+    expect(stats.growthRate).toBe('4.87')
+    expect(stats.totalUploads).toBe(43352125)
   })
 })
