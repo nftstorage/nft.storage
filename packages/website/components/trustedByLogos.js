@@ -7,7 +7,7 @@ const Logo = ({ src }) => (
   <img
     className="marketplace-logo"
     src={`/images/marketplace-logos/${src}`}
-    alt="Nft.Storage Users"
+    alt="NFT.Storage Users"
   />
 )
 /**

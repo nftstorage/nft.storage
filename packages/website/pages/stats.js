@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { TrustedBy } from '../components/trustedByLogos'
 import fs from 'fs'
-import decorateAdditionalCalculatedValues from '../lib/statsUtils'
+import decorateAdditionalCalculatedValues, {
+  formatBytes,
+} from '../lib/statsUtils'
 import { API } from '../lib/api'
-import bytes from 'bytes'
-import { abbreviateNumber } from 'js-abbreviation-number'
 
 /**
  *
@@ -77,8 +77,11 @@ export default function Stats({ logos }) {
       <div className="marquee">
         <div className="marquee-track">
           <p className="marquee-text chicagoflf">
-            Nft.Storage is storing... Nft.Storage is storing... Nft.Storage is
-            storing... Nft.Storage is storing... Nft.Storage is storing...
+            NFT.Storage is storing... NFT.Storage is storing... NFT.Storage is
+            storing... NFT.Storage is storing... NFT.Storage is storing...
+            NFT.Storage is storing... NFT.Storage is storing... NFT.Storage is
+            storing... NFT.Storage is storing... NFT.Storage is storing...
+            NFT.Storage is storing... NFT.Storage is storing...
           </p>
         </div>
       </div>
@@ -113,7 +116,7 @@ export default function Stats({ logos }) {
                 <div className="pv3 ph3">
                   <p className="chicagoflf">Total uploads to NFT.Storage</p>
                   <figure className="chicagoflf">
-                    {abbreviateNumber(stats.totalUploads || 0, 1)}
+                    {formatBytes(stats.totalUploads || 0, 1)}
                   </figure>
                   <p
                     className={`chicagoflf ${
@@ -124,7 +127,7 @@ export default function Stats({ logos }) {
                   >
                     {stats.growthRate || 0}%
                   </p>
-                  <p>[week over week change]</p>
+                  <p>[Week over week change]</p>
                 </div>
               </div>
             </StatCard>
@@ -137,16 +140,16 @@ export default function Stats({ logos }) {
                     Total data stored on Filecoin from NFT.Storage
                   </p>
                   <figure className="chicagoflf">
-                    {bytes(stats.deals_size_total || 0)}
+                    {formatBytes(stats.deals_size_total || 0)}
                   </figure>
                   <p
                     className={`chicagoflf ${
                       stats.deals_total > 0 ? 'stat-green' : 'stat-red'
                     }`}
                   >
-                    {stats.deals_total || 0}
+                    {stats.deals_total ? stats.deals_total.toLocaleString() : 0}
                   </p>
-                  <p>[Total Deals]</p>
+                  <p>[Total deals]</p>
                 </div>
               </div>
             </StatCard>
