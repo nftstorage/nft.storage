@@ -11,18 +11,19 @@ import { abbreviateNumber } from 'js-abbreviation-number'
  * @returns {{ props: import('../components/types.js').LayoutProps}}
  */
 export function getStaticProps() {
-  const logos = fs.readdirSync('public/images/marketplace-logos')
+  const logos = fs.readdirSync('public/images/marketplace-logos/home')
   // make opensea be the first logo
   logos.sort((a, b) =>
     a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
   )
+  const logosWithDir = logos.map((logo) => `/home/${logo}`)
   return {
     props: {
       title: 'Stats - NFT Storage',
       description: 'NFT.Storage usage stats',
       navBgColor: 'bg-nsgreen',
       needsUser: false,
-      logos,
+      logos: logosWithDir.slice(0, 3),
     },
   }
 }

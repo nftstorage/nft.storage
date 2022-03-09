@@ -14,11 +14,12 @@ export async function getStaticProps() {
   logos.sort((a, b) =>
     a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
   )
+  const logosWithDir = logos.map((logo) => `/home/${logo}`)
 
   return {
     props: {
       needsUser: false,
-      logos,
+      logos: logosWithDir,
       description: 'NFT.Storage homepage',
     },
   }
@@ -40,6 +41,7 @@ export default function Home({ logos }) {
     <>
       <Hero />
       <main className="bg-nsltblue">
+        {console.log(logos)}
         <TrustedBy logos={logos} />
         <About />
         <GettingStarted />
