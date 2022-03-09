@@ -34,6 +34,7 @@ export function getStaticProps() {
  *
  */
 export default function Stats({ logos }) {
+  /** @type [any, any] */
   const [stats, setStats] = useState({})
 
   useEffect(() => {
@@ -83,10 +84,7 @@ export default function Stats({ logos }) {
   /**
    * @param {Object} props
    * @param {string} [props.title]
-   * @param {string} [props.image]
-   * @param {string} [props.desc]
-   * @param {string} [props.statValue]
-   * @param {number} [props.percChange]
+   * @param {any} [props.children]
    */
   const StatCard = ({ title, children }) => {
     return (
@@ -115,7 +113,9 @@ export default function Stats({ logos }) {
                   </figure>
                   <p
                     className={`chicagoflf ${
-                      stats.growthRate > 0 ? 'stat-green' : 'stat-red'
+                      stats.growthRate > 0
+                        ? 'stat-green stat-green-plus'
+                        : 'stat-red'
                     }`}
                   >
                     {stats.growthRate || 0}%
