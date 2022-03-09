@@ -185,6 +185,10 @@ CREATE TABLE IF NOT EXISTS upload
 ) PARTITION BY HASH (source_cid);
 
 CREATE INDEX IF NOT EXISTS upload_inserted_at_idx ON upload (inserted_at);
+CREATE INDEX IF NOT EXISTS upload_content_cid_idx ON upload (content_cid);
+CREATE INDEX IF NOT EXISTS upload_source_cid_idx ON upload (source_cid);
+CREATE INDEX IF NOT EXISTS upload_updated_at_idx ON upload (updated_at);
+CREATE INDEX IF NOT EXISTS upload_type_idx ON upload (type);
 
 CREATE VIEW admin_search as
 select
