@@ -104,6 +104,8 @@
 .stat-card img {
   width: 100%;
   border-bottom: 1px solid;
+  object-fit: cover;
+  aspect-ratio: 5/2;
 }
 
 .stat-card .stat-green {
