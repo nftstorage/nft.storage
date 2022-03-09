@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "nft.storage": "latest",
-    "ucan-storage": "latest"
+    "ucan-storage": "latest",
+    "undici": "^4.15.1"
   },
   "devDependencies": {
     "@types/node": "^17.0.21"
