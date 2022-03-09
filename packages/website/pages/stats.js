@@ -11,7 +11,11 @@ import { abbreviateNumber } from 'js-abbreviation-number'
  * @returns {{ props: import('../components/types.js').LayoutProps}}
  */
 export function getStaticProps() {
-  const logos = fs.readdirSync('public/images/marketplace-logos')
+  const logos = fs
+    .readdirSync('public/images/marketplace-logos', { withFileTypes: true })
+    .filter((dirent) => dirent.isFile())
+    .map((dirent) => dirent.name)
+  logos.push('stats/calaxy.svg', 'stats/K21.svg')
   // make opensea be the first logo
   logos.sort((a, b) =>
     a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
