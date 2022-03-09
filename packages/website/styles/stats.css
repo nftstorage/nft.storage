@@ -13,8 +13,10 @@
 .marquee-track {
   position: absolute;
   white-space: nowrap;
-  will-change: transform;
-  animation: marquee 100s linear infinite;
+  transform: translateX(-8%);
+  /* will-change: transform; */
+  /* animation: marquee 100s linear infinite; */
+  /* animation-fill-mode: forwards; */
 }
 
 .marquee-text {
