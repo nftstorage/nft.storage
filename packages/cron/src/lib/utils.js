@@ -90,7 +90,10 @@ export function getPg(env, mode = 'rw') {
  * @param {'ro'|'rw'} [mode]
  */
 export function getPgPool(env, mode = 'rw') {
-  return new pg.Pool({ connectionString: getPgConnString(env, mode) })
+  return new pg.Pool({
+    connectionString: getPgConnString(env, mode),
+    max: MAX_CONCURRENT_QUERIES,
+  })
 }
 
 /**
@@ -117,3 +120,5 @@ function getPgConnString(env, mode = 'rw') {
   if (!connectionString) throw new Error('missing Postgres connection string')
   return connectionString
 }
+
+export const MAX_CONCURRENT_QUERIES = 10

@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS public.user
     email          TEXT                                                          NOT NULL,
     -- Cryptographic public address of the user.
     public_address TEXT UNIQUE,
+    did            TEXT UNIQUE,
     github         jsonb,
     inserted_at    TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at     TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
@@ -125,6 +126,8 @@ CREATE TABLE IF NOT EXISTS content
 
 CREATE INDEX IF NOT EXISTS content_updated_at_idx ON content (updated_at);
 CREATE INDEX IF NOT EXISTS content_inserted_at_idx ON content (inserted_at);
+CREATE UNIQUE INDEX content_cid_with_size_idx ON content (cid) INCLUDE (dag_size);
+
 
 -- Information for piece of content pinned in IPFS.
 CREATE TABLE IF NOT EXISTS pin
@@ -176,6 +179,8 @@ CREATE TABLE IF NOT EXISTS upload
     deleted_at TIMESTAMP WITH TIME ZONE,
     UNIQUE (user_id, source_cid)
 );
+
+CREATE INDEX IF NOT EXISTS upload_inserted_at_idx ON upload (inserted_at);
 
 CREATE VIEW admin_search as
 select

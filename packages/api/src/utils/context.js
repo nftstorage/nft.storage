@@ -4,6 +4,7 @@ import { S3BackupClient } from './s3-backup-client.js'
 import { secrets, database, isDebug, s3 as s3Config } from '../constants.js'
 import { Logging } from './logs.js'
 import pkg from '../../package.json'
+import { Service } from 'ucan-storage/service'
 
 const db = new DBClient(database.url, secrets.database)
 
@@ -39,9 +40,9 @@ const sentryOptions = {
  *
  * @param {FetchEvent} event
  * @param {Record<string, string>} params Parameters from the URL
- * @returns {import('../bindings').RouteContext}
+ * @returns {Promise<import('../bindings').RouteContext>}
  */
-export function getContext(event, params) {
+export async function getContext(event, params) {
   const sentry = new Toucan({
     event,
     ...sentryOptions,
@@ -51,5 +52,7 @@ export function getContext(event, params) {
     debug: isDebug,
     sentry,
   })
-  return { params, db, backup, log }
+
+  const ucanService = await Service.fromPrivateKey(secrets.privateKey)
+  return { params, db, backup, log, ucanService }
 }

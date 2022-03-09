@@ -31,8 +31,6 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
 
   const logout = useCallback(async () => {
     await getMagic().user.logout()
-    await localStorage.removeItem('nft-user')
-    await queryClient.invalidateQueries('magic-user')
     handleClearUser()
     Router.push({ pathname: '/', query: version ? { version } : null })
   }, [queryClient, version])
@@ -78,6 +76,13 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
           query: version ? { version } : null,
         },
         name: 'Docs',
+      },
+      {
+        link: {
+          pathname: '/stats',
+          query: version ? { version } : null,
+        },
+        name: 'Stats',
       },
       {
         link: {

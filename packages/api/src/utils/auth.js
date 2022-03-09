@@ -3,16 +3,33 @@ import { secrets } from '../constants.js'
 import { HTTPError, ErrorUserNotFound, ErrorTokenNotFound } from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
 export const magic = new Magic(secrets.magic)
+import * as Ucan from 'ucan-storage/ucan-storage'
 
 /**
  * Validate auth
  *
  * @param {FetchEvent} event
  * @param {import('../bindings').RouteContext} ctx
+ * @param {{checkUcan: boolean}} [options]
  */
-export async function validate(event, { log, db }) {
+export async function validate(event, { log, db, ucanService }, options) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
+
+  if (options?.checkUcan && Ucan.isUcan(token)) {
+    const { root, cap } = await ucanService.validateFromCaps(token)
+    const user = await db.getUser(root.audience())
+    if (user) {
+      return {
+        user: user,
+        db,
+        ucan: { token, root: root._decoded.payload, cap },
+        type: 'ucan',
+      }
+    } else {
+      throw new ErrorTokenNotFound()
+    }
+  }
 
   // validate access tokens
   if (await verifyJWT(token, secrets.salt)) {
@@ -29,6 +46,7 @@ export async function validate(event, { log, db }) {
           user: user,
           key,
           db,
+          type: 'key',
         }
       } else {
         throw new ErrorTokenNotFound()
@@ -50,6 +68,7 @@ export async function validate(event, { log, db }) {
       return {
         user,
         db,
+        type: 'session',
       }
     } else {
       throw new ErrorUserNotFound()

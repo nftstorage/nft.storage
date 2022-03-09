@@ -3,17 +3,15 @@ import { TrustedBy } from '../components/trustedByLogos'
 import fs from 'fs'
 import decorateAdditionalCalculatedValues from '../lib/statsUtils'
 import { API } from '../lib/api'
+import bytes from 'bytes'
+import { abbreviateNumber } from 'js-abbreviation-number'
 
 /**
  *
  * @returns {{ props: import('../components/types.js').LayoutProps}}
  */
 export function getStaticProps() {
-  const logos = fs
-    .readdirSync('public/images/marketplace-logos', { withFileTypes: true })
-    .filter((dirent) => dirent.isFile())
-    .map((dirent) => dirent.name)
-  logos.push('stats/calaxy.svg', 'stats/K21.svg')
+  const logos = fs.readdirSync('public/images/marketplace-logos')
   // make opensea be the first logo
   logos.sort((a, b) =>
     a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
@@ -36,6 +34,7 @@ export function getStaticProps() {
  *
  */
 export default function Stats({ logos }) {
+  /** @type [any, any] */
   const [stats, setStats] = useState({})
 
   useEffect(() => {
@@ -55,12 +54,14 @@ export default function Stats({ logos }) {
       const fakeData = {
         ok: true,
         data: {
-          uploads_past_7_total: 2001137,
-          uploads_nft_total: 685281,
-          uploads_multipart_total: 1447292,
-          uploads_remote_total: 11067087,
-          uploads_blob_total: 12406191,
-          uploads_car_total: 17425593,
+          deals_size_total: 249523372029443,
+          uploads_past_7_total: 2011366,
+          uploads_nft_total: 685866,
+          uploads_remote_total: 11077834,
+          deals_total: 34959,
+          uploads_car_total: 17711308,
+          uploads_multipart_total: 1456388,
+          uploads_blob_total: 12420729,
         },
       }
       setStats(decorateAdditionalCalculatedValues(fakeData.data))
@@ -83,32 +84,13 @@ export default function Stats({ logos }) {
   /**
    * @param {Object} props
    * @param {string} [props.title]
-   * @param {string} [props.image]
-   * @param {string} [props.desc]
-   * @param {string} [props.statValue]
-   * @param {number} [props.percChange]
+   * @param {any} [props.children]
    */
-  const StatCard = ({ title, image, desc, statValue, percChange = 0 }) => {
+  const StatCard = ({ title, children }) => {
     return (
       <div className="stat-card">
         <h2 className="stat-card-header chicagoflf">{title}</h2>
-        <div className="stat-card-inner">
-          <div>
-            <img src={image} alt={title} />
-            <div className="pv3 ph3">
-              <p className="chicagoflf">{desc}</p>
-              <figure className="chicagoflf">{statValue}</figure>
-              <p
-                className={`chicagoflf ${
-                  percChange > 0 ? 'stat-green' : 'stat-red'
-                }`}
-              >
-                {percChange}%
-              </p>
-              <p>[week over week change]</p>
-            </div>
-          </div>
-        </div>
+        <div className="stat-card-inner">{children}</div>
       </div>
     )
   }
@@ -118,20 +100,52 @@ export default function Stats({ logos }) {
       <div className="stat-cards-wrapper">
         <div className="mw9 center pv3 ph3 ph5-ns">
           <div className="stat-cards">
-            <StatCard
-              title="Upload Count"
-              image="/images/stats-upload-count.svg"
-              desc="Total uploads to NFT.Storage"
-              statValue={stats.totalUploads || 0}
-              percChange={stats.growthRate || 0}
-            />
-            <StatCard
-              title="Data Stored"
-              image="/images/stats-data-stored.svg"
-              desc="Total data stored on Filecoin from NFT.Storage"
-              statValue="134.2 TiB"
-              percChange={-100}
-            />
+            <StatCard title="Upload Count">
+              <div>
+                <img
+                  src={'/images/stats-upload-count.svg'}
+                  alt="Upload Count"
+                />
+                <div className="pv3 ph3">
+                  <p className="chicagoflf">Total uploads to NFT.Storage</p>
+                  <figure className="chicagoflf">
+                    {abbreviateNumber(stats.totalUploads || 0, 1)}
+                  </figure>
+                  <p
+                    className={`chicagoflf ${
+                      stats.growthRate > 0
+                        ? 'stat-green stat-green-plus'
+                        : 'stat-red'
+                    }`}
+                  >
+                    {stats.growthRate || 0}%
+                  </p>
+                  <p>[week over week change]</p>
+                </div>
+              </div>
+            </StatCard>
+
+            <StatCard title="Data Stored">
+              <div>
+                <img src={'/images/stats-upload-count.svg'} alt="Data Stored" />
+                <div className="pv3 ph3">
+                  <p className="chicagoflf">
+                    Total data stored on Filecoin from NFT.Storage
+                  </p>
+                  <figure className="chicagoflf">
+                    {bytes(stats.deals_size_total || 0)}
+                  </figure>
+                  <p
+                    className={`chicagoflf ${
+                      stats.deals_total > 0 ? 'stat-green' : 'stat-red'
+                    }`}
+                  >
+                    {stats.deals_total || 0}
+                  </p>
+                  <p>[Total Deals]</p>
+                </div>
+              </div>
+            </StatCard>
           </div>
         </div>
       </div>

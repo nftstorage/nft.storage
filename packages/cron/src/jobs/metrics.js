@@ -5,6 +5,7 @@ import {
   PIN_SERVICES,
   PIN_STATUSES,
 } from '../../../api/src/utils/db-client.js'
+import { MAX_CONCURRENT_QUERIES } from '../lib/utils.js'
 
 const log = debug('metrics:updateMetrics')
 
@@ -43,29 +44,34 @@ ON CONFLICT (name) DO UPDATE
  * @param {{ rwPg: Client, roPg: Client }} config
  */
 export async function updateMetrics({ roPg, rwPg }) {
-  const results = await settle([
-    withTimeLog('updateUsersCount', () => updateUsersCount(roPg, rwPg)),
-    withTimeLog('updateContentRootDagSizeSum', () =>
-      updateContentRootDagSizeSum(roPg, rwPg)
-    ),
-    ...UPLOAD_TYPES.map((t) =>
-      withTimeLog(`updateUploadsCount[${t}]`, () =>
-        updateUploadsCount(roPg, rwPg, t)
-      )
-    ),
-    withTimeLog('updateTotalUploadPast7', () =>
-      updateTotalUploadPast7(roPg, rwPg)
-    ),
-    withTimeLog('updateTotalDeals', () => updateTotalDeals(roPg, rwPg)),
-    withTimeLog('updateTotalDealsSize', () => updateTotalDealsSize(roPg, rwPg)),
-    ...PIN_SERVICES.map((svc) =>
-      PIN_STATUSES.map((s) =>
-        withTimeLog(`updatePinsCount[${svc}][${s}]`, () =>
-          updatePinsCount(roPg, rwPg, svc, s)
+  const results = await settle(
+    [
+      withTimeLog('updateUsersCount', () => updateUsersCount(roPg, rwPg)),
+      withTimeLog('updateContentRootDagSizeSum', () =>
+        updateContentRootDagSizeSum(roPg, rwPg)
+      ),
+      ...UPLOAD_TYPES.map((t) =>
+        withTimeLog(`updateUploadsCount[${t}]`, () =>
+          updateUploadsCount(roPg, rwPg, t)
         )
-      )
-    ).flat(),
-  ])
+      ),
+      withTimeLog('updateTotalUploadPast7', () =>
+        updateTotalUploadPast7(roPg, rwPg)
+      ),
+      withTimeLog('updateTotalDeals', () => updateTotalDeals(roPg, rwPg)),
+      withTimeLog('updateTotalDealsSize', () =>
+        updateTotalDealsSize(roPg, rwPg)
+      ),
+      ...PIN_SERVICES.map((svc) =>
+        PIN_STATUSES.map((s) =>
+          withTimeLog(`updatePinsCount[${svc}][${s}]`, () =>
+            updatePinsCount(roPg, rwPg, svc, s)
+          )
+        )
+      ).flat(),
+    ],
+    { concurrency: MAX_CONCURRENT_QUERIES }
+  )
 
   let error
   for (const promise of results) {

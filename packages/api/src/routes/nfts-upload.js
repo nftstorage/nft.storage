@@ -25,7 +25,9 @@ const decoders = [pb, raw, cbor]
 export async function nftUpload(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
-  const { user, key } = await validate(event, ctx)
+  const { user, key, type, ucan } = await validate(event, ctx, {
+    checkUcan: true,
+  })
 
   /** @type {import('../utils/db-client-types').UploadOutput} */
   let upload
@@ -51,6 +53,7 @@ export async function nftUpload(event, ctx) {
       mimeType: 'multipart/form-data',
       files: files.map((f) => ({ name: f.name, type: f.type })),
       structure: 'Complete',
+      meta: type === 'ucan' ? { ucan } : undefined,
     })
   } else {
     const blob = await event.request.blob()
@@ -90,6 +93,7 @@ export async function nftUpload(event, ctx) {
       mimeType: contentType,
       files: [],
       structure,
+      meta: type === 'ucan' ? { ucan } : undefined,
     })
   }
 
@@ -106,7 +110,7 @@ export async function nftUpload(event, ctx) {
  *   mimeType: string
  *   structure: DagStructure
  *   files: Array<{ name: string; type?: string }>
- *   meta?: Record<string, string>
+ *   meta?: Record<string, unknown>
  * }} UploadCarInput
  * @param {UploadCarInput} params
  */
