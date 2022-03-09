@@ -1,0 +1,7 @@
+{
+  "infiniteLoopProtection": true,
+  "hardReloadOnChange": false,
+  "view": "console",
+  "template": "preact-cli",
+  "node": "16"
+}
