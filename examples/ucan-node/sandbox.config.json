@@ -3,5 +3,8 @@
   "hardReloadOnChange": false,
   "view": "console",
   "template": "node",
-  "node": "16"
+  "node": "16",
+  "container": {
+    "node": "16"
+  }
 }
