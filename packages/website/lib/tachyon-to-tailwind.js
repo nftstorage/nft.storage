@@ -31,6 +31,7 @@ export default function transformer(file, api) {
     br2: 'rounded',
     br3: 'rounded-lg',
     'br-pill': 'rounded-full',
+    'border-black': 'border-black',
 
     'sans-serif': 'font-sans',
     serif: 'font-serif',
@@ -151,6 +152,9 @@ export default function transformer(file, api) {
     mw5: 'max-w-2xs',
     'z-999': 'z-999',
     'z-max': 'z-max',
+
+    // alignment
+    'v-mid': 'align-middle',
 
     // tailwindcss-aspect-ratio plugin
     'aspect-ratio--1x1': 'aspect-ratio-1x1',

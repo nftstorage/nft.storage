@@ -66,12 +66,12 @@ export default function Button({
     [tracking, onClick, href]
   )
 
-  let btnClasses = clsx('btn button-reset select-none black', className)
+  let btnClasses = clsx('btn button-reset select-none color-black', className)
 
   if (!unstyled) {
     btnClasses = clsx(
       btnClasses,
-      'pv2 ph3',
+      'py-2 px-3',
       variant !== 'tag' && hologram && 'hologram chicagoflf',
       small && 'small',
       disabled ? 'o-60' : 'interactive',

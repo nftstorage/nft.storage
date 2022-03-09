@@ -283,13 +283,16 @@ h6 {
 
 /* max-width */
 
-.blog .mw4 {
+.blog .mw4,
+.blog .max-w-xs {
   max-width: 9.375rem;
 }
-.blog .mw6 {
+.blog .mw6,
+.blog .max-w-lg {
   max-width: 36rem;
 }
-.blog .mw7 {
+.blog .mw7,
+.blog .max-w-3lx {
   max-width: 42rem;
 }
 

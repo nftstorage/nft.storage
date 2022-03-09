@@ -77,7 +77,7 @@ export default function Login() {
             name="email"
             required
             placeholder="Enter your email"
-            className="appearance-none border border-solid b--black p-2 mb-2 w-64 mx-auto block"
+            className="appearance-none border border-solid border-black placeholder:text-gray-500 p-2 mb-2 w-64 mx-auto block"
           />
 
           <Button

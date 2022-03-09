@@ -20,7 +20,7 @@ const SocialLink = ({ url, Icon, params }) => {
       aria-label="social media icon"
       style={{ color: 'unset' }}
     >
-      <div className="social-link hologram interactive ltblue flex items-center justify-center border border-solid bg-white w8 h8 mx-2 flex flex-col">
+      <div className="social-link hologram interactive ltblue flex flex-col items-center justify-center border-solid border-black bg-white w8 h8 mx-2">
         <Icon />
       </div>
     </a>

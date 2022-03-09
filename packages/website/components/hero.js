@@ -11,10 +11,10 @@ const crossStyle = {
 
 export default function Hero() {
   return (
-    <div className="bg-nsorange">
-      <div className="relative mx-auto max-w-7xl border border-solid b--black">
+    <div className="bg-orange">
+      <div className="relative mx-auto max-w-7xl border border-solid border-black">
         <GreenBox
-          className="hidden lg:hidden sm:block border-l border-r b--black mx-16"
+          className="hidden lg:block border-l border-r border-black mx-16"
           style={crossStyle}
         >
           <GreenBox>
@@ -35,18 +35,18 @@ export default function Hero() {
           </GreenBox>
         </GreenBox>
         <div
-          className="relative top-0 lg:relative sm:absolute w-full px-4 text-center"
+          className="relative top-0 lg:absolute w-full px-4 text-center"
           style={{ height: '100%' }}
         >
           <img
             height="470"
             width="1002"
             style={{ width: '75vw', maxWidth: '1002px', height: 'auto' }}
-            className="mt-8 mb-2 sm:mb-8"
+            className="mt-8 mb-2 sm:mb-8 inline-block"
             src="images/logo-nft.storage.svg"
             alt="NFT Storage logo"
           />
-          <hgroup className="chicagoflf white">
+          <hgroup className="chicagoflf text-white">
             <h1 className="text-xl lg:text-4xl sm:text-5xl font-normal my-4">
               Free Storage for NFTs
             </h1>
@@ -56,7 +56,7 @@ export default function Hero() {
                 src="images/logo-ipfs-sm.png"
                 width="57"
                 height="64"
-                className="v-mid"
+                className="align-middle inline"
                 style={{ maxWidth: '28px', height: 'auto' }}
                 alt="IPFS logo"
               />{' '}
@@ -65,7 +65,7 @@ export default function Hero() {
                 src="images/logo-filecoin-sm.png"
                 width="61"
                 height="60"
-                className="v-mid"
+                className="align-middle inline"
                 style={{ maxWidth: '30px', height: 'auto' }}
                 alt="Filecoin logo"
               />{' '}
@@ -105,7 +105,7 @@ const greenBoxStyle = {
  */
 function GreenBox({ className, style, children }) {
   style = style ? { ...greenBoxStyle, ...style } : greenBoxStyle
-  className = className ?? 'ba b--black'
+  className = className ?? 'border border-solid border-black'
   return (
     <div className={className} style={style}>
       {children}

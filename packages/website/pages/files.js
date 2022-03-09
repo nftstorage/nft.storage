@@ -122,7 +122,7 @@ export default function Files({ user }) {
           return (
             <span key={deal.chainDealID} title={deal.status}>
               <a
-                className="underline black"
+                className="underline text-black"
                 href={url}
                 target="_blank"
                 rel="noreferrer"
@@ -192,30 +192,28 @@ export default function Files({ user }) {
 
     return (
       <tr className="bg-white border-b">
-        <td
-          data-label="Date"
-          className="whitespace-no-wrap"
-          title={nft.created}
-        >
+        <td data-label="Date" className="whitespace-nowrap" title={nft.created}>
           {nft.created.split('T')[0]}
         </td>
-        <td data-label="CID" className="whitespace-no-wrap">
-          <CopyButton
-            title="Copy CID to Clipboard"
-            text={nft.cid}
-            popupContent={'CID has been copied!!'}
-          >
-            <a
-              href={`https://nftstorage.link/ipfs/${nft.cid}`}
-              className="underline black truncate"
-              target="_blank"
-              rel="noreferrer"
+        <td data-label="CID" className="whitespace-nowrap">
+          <div className="flex justify-between items-center">
+            <CopyButton
+              title="Copy CID to Clipboard"
+              text={nft.cid}
+              popupContent={'CID has been copied!!'}
             >
-              {nft.cid}
-            </a>
-          </CopyButton>
+              <a
+                href={`https://nftstorage.link/ipfs/${nft.cid}`}
+                className="grow block underline text-black truncate ..."
+                target="_blank"
+                rel="noreferrer"
+              >
+                {nft.cid}
+              </a>
+            </CopyButton>
+          </div>
         </td>
-        <td data-label="Pin Status" className="whitespace-no-wrap">
+        <td data-label="Pin Status" className="whitespace-nowrap">
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
         </td>
         <td data-label="Deals">
@@ -238,7 +236,7 @@ export default function Files({ user }) {
             )}
           </div>
         </td>
-        <td data-label="Size" className="whitespace-no-wrap">
+        <td data-label="Size" className="whitespace-nowrap">
           {bytes(nft.size || 0)}
         </td>
         <td className="shrink-cell center-cell">
@@ -312,7 +310,7 @@ export default function Files({ user }) {
   return (
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
-      <main className="bg-nsyellow flex-grow-1">
+      <main className="bg-nsyellow grow">
         <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
           <When condition={status === 'loading'}>
             <Loading />

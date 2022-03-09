@@ -69,16 +69,16 @@ const Post = ({ post }) => {
   const linkedinParams = { url: currentUrl }
 
   return (
-    <div className="blog flex-grow-1 pb-SPACING24">
-      <div className="post pb-SPACING24 flex flex-col w-full items-center">
+    <div className="blog grow pb-24">
+      <div className="post pb-24 flex flex-col w-full items-center">
         <img
           src={post.meta.thumbnail}
           alt={`Banner for ${post.meta.title}`}
           className="h-card object-cover object-center"
         />
-        <div className="mt-SPACING14 max-w-3lx px-SPACING8">
+        <div className="mt-14 max-w-3lx px-8">
           <div className="post-meta mb-8">
-            <div className="flex flex-col mb-16 justify-between items-center">
+            <div className="flex flex-col mb-8 justify-between items-center">
               <div className="flex justify-between items-end w-full">
                 <div className="social-links flex">
                   <SocialLink
@@ -112,7 +112,7 @@ const Post = ({ post }) => {
                 </Button>
               </div>
             </div>
-            <h1 className="chicagoflf text-4xl mb-64 mt-2">
+            <h1 className="chicagoflf text-4xl mb-16 mt-2">
               {post.meta.title}
             </h1>
             {post.meta?.tags ? (
@@ -123,7 +123,7 @@ const Post = ({ post }) => {
               <div></div>
             )}
             <p className="mb-2">{post.meta.description}</p>
-            <div className="flex mb-64">
+            <div className="flex mb-16">
               <span className="darker-gray text-sm mr-2">
                 {post.meta.author}
               </span>

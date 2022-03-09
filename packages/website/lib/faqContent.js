@@ -9,7 +9,7 @@ const faqContent = {
       in the short-term, it is a trustless and decentralized solution. Users are
       able to cryptographically verify that the{' '}
       <a
-        className="white"
+        className="text-white"
         href="https://docs.ipfs.io/concepts/content-addressing"
         target="_blank"
         rel="noreferrer"
@@ -36,24 +36,24 @@ const faqContent = {
     </p>
   ),
   dataStorageLength: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       Data will be available in IPFS indefinitely as well as stored in
       long-term, redundant Filecoin storage deals with the global community of
       miners. See the{' '}
       <Link href="/terms">
-        <a className="white">Terms of Service</a>
+        <a className="text-white">Terms of Service</a>
       </Link>{' '}
       for details.
     </p>
   ),
   nftSizeRestrictions: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       NFT.Storage accepts storage requests up to <strong>31GiB</strong> in size
       per individual upload! Each upload can include a single file or a
       directory of files. (If you are using the HTTP API, you&apos;ll need to do
       some manual splitting for files over 100MB. See the{' '}
       <Link href="/api-docs">
-        <a className="white">HTTP API docs</a>
+        <a className="text-white">HTTP API docs</a>
       </Link>{' '}
       for details.) Currently, the rate limit will be triggered if the API
       receives more than 30 requests using the same API key within a 10 second
@@ -61,9 +61,9 @@ const faqContent = {
     </p>
   ),
   nftBestPractices: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       Visit{' '}
-      <a href="https://nftschool.dev" className="white">
+      <a href="https://nftschool.dev" className="text-white">
         NFT School
       </a>{' '}
       for information on NFT best practices as well as a variety of helpful
@@ -71,14 +71,14 @@ const faqContent = {
     </p>
   ),
   whoHasAccess: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       All data uploaded to NFT.Storage is available to anyone who requests it
       using the correct CID. Do not store any private or sensitive information
       in an unencrypted form using NFT.Storage.
     </p>
   ),
   dataDeletion: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       You can delete data from being associated with your account, and it will
       no longer appear on the Files page of your account. However, this doesn’t
       prevent nodes in the IPFS decentralized storage network from retaining
@@ -87,7 +87,7 @@ const faqContent = {
     </p>
   ),
   httpGatewayError: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       Not necessarily! HTTP gateways are a great way for users who {"aren't"}{' '}
       running their own IPFS nodes to retrieve content from the IPFS network.
       However, they do introduce a centralized point of failure to a user flow.
@@ -104,7 +104,7 @@ const faqContent = {
     </p>
   ),
   howIsNftStorageFree: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       Filecoin storage providers commit their hard drive capacity to the
       Filecoin network, and earn significant block rewards for doing so. This
       translates into real-world profits for storage providers, which
@@ -117,7 +117,7 @@ const faqContent = {
         href="https://docs.filecoin.io/store/filecoin-plus/"
         target="_blank"
         rel="noopener noreferrer"
-        className="white"
+        className="text-white"
       >
         Filecoin Plus
       </a>{' '}
@@ -135,7 +135,7 @@ const faqContent = {
         href="https://protocol.ai/"
         target="_blank"
         rel="noopener noreferrer"
-        className="white"
+        className="text-white"
       >
         Protocol Labs
       </a>{' '}
@@ -145,7 +145,7 @@ const faqContent = {
     </p>
   ),
   filesLimit: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       There are no limits enforced by the service, other than the size limit of
       31GiB per individual upload. However, if your directory is large or has a
       lot of files, you might have some difficulty uploading it due to memory
@@ -156,18 +156,18 @@ const faqContent = {
     </p>
   ),
   unexpectedToken: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       <strong>Try updating to Node version 14 or later</strong>. We no longer
       offer support for versions prior to v14 (
       <Link href="/faq/#why-no-support-for-node-pre-14">
-        <a className="white">see here</a>
+        <a className="text-white">see here</a>
       </Link>
       ). This error can occur when attempting to use{' '}
       <a
         href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining#browser_compatibility"
         target="_blank"
         rel="noopener noreferrer"
-        className="white"
+        className="text-white"
       >
         Optional Chaining
       </a>{' '}
@@ -175,12 +175,12 @@ const faqContent = {
     </p>
   ),
   importStatementOutsideModule: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       <strong>Try updating to Node version 14 or later</strong>. This error can
       occur because of having an old version of Node. We no longer offer support
       for Node versions prior to v14 (
       <Link href="/faq/#why-no-support-for-node-pre-14">
-        <a className="white">see here</a>
+        <a className="text-white">see here</a>
       </Link>
       ). With Node v14 or greater, you should be able to use{' '}
       <InlineCode>import</InlineCode> if you are using ESM Modules, otherwise
@@ -188,14 +188,14 @@ const faqContent = {
     </p>
   ),
   nodeSupport: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       We do not support versions of Node prior to v14 because they are not
       considered active{' '}
       <a
         href="https://nodejs.org/en/about/releases/"
         target="_blank"
         rel="noopener noreferrer"
-        className="white"
+        className="text-white"
       >
         releases
       </a>{' '}
@@ -204,7 +204,7 @@ const faqContent = {
         href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining#browser_compatibility"
         target="_blank"
         rel="noopener noreferrer"
-        className="white"
+        className="text-white"
       >
         Optional Chaining
       </a>
@@ -212,7 +212,7 @@ const faqContent = {
     </p>
   ),
   httpUrls: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       We generally try to steer people away from linking to specific HTTP
       gateways, since they can be a single point of failure and may go down or
       disappear some point. If your heart is set on using HTTP URLs, I&#39;d say
@@ -222,7 +222,7 @@ const faqContent = {
         href="https://github.com/yusefnapora/minty"
         target="_blank"
         rel="noopener noreferrer"
-        className="white"
+        className="text-white"
       >
         minty
       </a>{' '}
@@ -232,7 +232,7 @@ const faqContent = {
     </p>
   ),
   webpack4: (
-    <p className="lh-copy white mb4">
+    <p className="lh-copy text-white mb4">
       We are working on a long-term solution but for now, you can import the
       prebuilt bundle directly in the browser from{' '}
       <InlineCode>

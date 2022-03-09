@@ -160,7 +160,7 @@ const Paginated = ({ items, pageNumber, setPageNumber }) => {
     )
   }
   return (
-    <div className="flex-auto pb-SPACING24">
+    <div className="flex-auto pb-24">
       {currentItems.length > 0 ? (
         <Items currentItems={currentItems} />
       ) : (
@@ -169,7 +169,7 @@ const Paginated = ({ items, pageNumber, setPageNumber }) => {
         </div>
       )}
       {items.length > BLOG_ITEMS_PER_PAGE && (
-        <div className="flex justify-center mt-SPACING13">
+        <div className="flex justify-center mt-12">
           <PaginatedNav />
         </div>
       )}

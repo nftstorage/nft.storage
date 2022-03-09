@@ -146,7 +146,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
         </div>
         <Link href={{ pathname: '/', query: version ? { version } : null }}>
           <a
-            className="nav-logo-link flex no-underline v-mid"
+            className="nav-logo-link flex no-underline align-middle"
             onClick={onLinkClick}
           >
             <Logo dark={logo.isDark} />
@@ -165,7 +165,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                     <a
                       key={item.name}
                       className={clsx(
-                        'f4 black no-underline underline-hover v-mid',
+                        'text-xl text-black no-underline underline-hover align-middle',
                         { mr4: index === ITEMS.length - 1 }
                       )}
                       onClick={item.tracking ? item.tracking : onLinkClick}
@@ -174,7 +174,9 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                     </a>
                   </Link>
                   {index !== ITEMS.length - 2 && (
-                    <span className="mx-2 v-mid font-bold black">•</span>
+                    <span className="mx-2 align-middle font-bold text-black">
+                      •
+                    </span>
                   )}
                 </div>
               )
@@ -222,7 +224,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
       >
         <div className="flex flex-col items-center text-center mt-8">
           <Link href="/">
-            <a className="mobile-nav-menu-logo flex no-underline v-mid">
+            <a className="mobile-nav-menu-logo flex no-underline align-middle">
               <Logo dark={logo.isDark} />
             </a>
           </Link>
@@ -238,7 +240,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                 <Link href={item.link || ''}>
                   <a
                     className={clsx(
-                      'mobile-nav-link v-mid chicagoflf',
+                      'mobile-nav-link align-middle chicagoflf',
                       logo.isDark ? 'black' : 'white'
                     )}
                     onClick={item.tracking ? item.tracking : onMobileLinkClick}

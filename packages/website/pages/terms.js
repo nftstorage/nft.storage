@@ -16,7 +16,7 @@ export function getStaticProps() {
 
 export default function TermsOfService() {
   return (
-    <main className="bg-nspeach flex-grow-1">
+    <main className="bg-nspeach grow">
       <div className="max-w-7xl mx-auto p-8 sm:p-16">
         <h1 className="chicagoflf">
           <HashLink id="terms-of-service">Terms of Service</HashLink>

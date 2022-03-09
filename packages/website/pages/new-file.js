@@ -89,7 +89,7 @@ export default function NewFile() {
   }
 
   return (
-    <main className="bg-nsyellow flex-grow-1">
+    <main className="bg-nsyellow grow">
       <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
         <Box
           bgColor="nsgray"
@@ -106,7 +106,7 @@ export default function NewFile() {
                 id="file"
                 name="file"
                 type="file"
-                className="block border border-solid b--black w-64 p-2"
+                className="block border border-solid border-black w-64 p-2"
                 required
                 onChange={checkCar}
               />
@@ -187,7 +187,7 @@ export default function NewFile() {
           </form>
         </Box>
         <When condition={error !== ''}>
-          <Alert className="p-8 white" position="top" type="error">
+          <Alert className="p-8 text-white" position="top" type="error">
             <>
               {error}{' '}
               <button

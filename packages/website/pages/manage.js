@@ -82,7 +82,7 @@ export default function ManageKeys({ user }) {
   }
 
   return (
-    <main className="bg-nsgreen flex-grow-1">
+    <main className="bg-nsgreen grow">
       <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
         <If condition={status === 'loading'}>
           <Then>
@@ -135,7 +135,7 @@ export default function ManageKeys({ user }) {
                               className="mr-2"
                             >
                               <Button
-                                className="bg-white black"
+                                className="bg-white text-black"
                                 type="submit"
                                 id="copy-key"
                                 tracking={{

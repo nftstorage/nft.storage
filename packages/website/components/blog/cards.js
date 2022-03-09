@@ -22,7 +22,7 @@ export const Card = ({ post }) => (
         alt={`Banner for ${post.title}`}
         className="object-cover object-center w-full card-thumb"
       />
-      <div className="p-16 flex flex-col flex-auto">
+      <div className="p-5 flex flex-col flex-auto">
         <div className="mb-2">{post.tags && <Tags tags={post.tags} />}</div>
         <div className="overflow-hidden mb-2">
           <h1 className="chicagoflf text-xl" title={post.title}>
@@ -51,7 +51,7 @@ export const Card = ({ post }) => (
 export const HighlightCard = ({ post }) => (
   <div className="flex justify-center blog-highlight-card w-full">
     <div className="relative flex w-full max-w-7xl blog-highlight-info-container">
-      <div className="flex justify-between highlight-info flex-col w-50">
+      <div className="flex justify-between highlight-info flex-col w-1/2">
         <div className="highlight-card-container">
           <div className="highlight-card-text">
             <div className="mb-4">{post.tags && <Tags tags={post.tags} />}</div>
@@ -106,7 +106,7 @@ export const HighlightCard = ({ post }) => (
         <img
           src={post.thumbnail}
           alt={`Banner for ${post.title}`}
-          className="object-cover object-center highlight-img w-50"
+          className="object-cover object-center highlight-img w-1/2"
         />
       </div>
     </div>

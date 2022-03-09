@@ -49,7 +49,7 @@ export default function NewKey() {
   }
 
   return (
-    <main className="bg-nsgreen flex-grow-1">
+    <main className="bg-nsgreen grow">
       <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
         <Box
           bgColor="nsgray"
@@ -66,7 +66,7 @@ export default function NewKey() {
                 id="name"
                 name="name"
                 placeholder="Give this API key a name"
-                className="block border border-solid b--black w-64 p-2"
+                className="block border border-solid border-black w-64 p-2"
                 required
               />
             </div>

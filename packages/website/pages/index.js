@@ -313,6 +313,7 @@ function About() {
               srcSet="images/diagram-store-and-retrieve@2x.png 2x"
               alt="diagram of storage and retrieval with NFT.Storage"
               width="1177"
+              className="inline-block"
               style={{ width: '1177px', height: 'auto', maxWidth: '90%' }}
             />
           </div>
@@ -321,7 +322,7 @@ function About() {
               <div className="pt-32">{storeText}</div>
             </div>
             <div
-              className="flex-auto flex items-center w-50"
+              className="flex-auto flex items-center w-1/2"
               style={{ maxWidth: '35%', paddingBottom: '4rem' }}
             >
               <div>{retrieveText}</div>

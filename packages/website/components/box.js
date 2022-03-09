@@ -23,7 +23,12 @@ export default function Box({
 }) {
   return (
     <div
-      className={clsx(`bg-${borderColor}`, 'ba', 'b--black', wrapperClassName)}
+      className={clsx(
+        `bg-${borderColor}`,
+        'border',
+        'border-black',
+        wrapperClassName
+      )}
     >
       <div
         className={clsx(
@@ -33,7 +38,7 @@ export default function Box({
           'pa3',
           `bg-${bgColor}`,
           'ba',
-          'b--black',
+          'border-black',
           className
         )}
         style={{ top: 10, right: 8 }}

@@ -80,7 +80,7 @@ export default function Subcribe({ user }) {
         onChange={(e) => setEmail(e.target.value)}
         disabled={status === 'pending'}
         value={email}
-        className="appearance-none border border-solid b--black p-2 mb-4 w-64 mx-auto block"
+        className="appearance-none border border-solid border-black placeholder:text-gray-500 p-2 mb-4 w-64 mx-auto block"
       />
 
       <Button

@@ -94,7 +94,7 @@ const TOC = () => (
   <div className="flex flex-col py-1 max-w-3lx">
     {faqs.map((faq, index) => (
       <Link href={`/faq/#${hashify(faq.question)}`} key={`faq-item${index}`}>
-        <a className="white my-2 underline">
+        <a className="text-white my-2 underline">
           {faq.error ? `Why am I seeing: ${faq.error}` : faq.question}
         </a>
       </Link>
@@ -112,7 +112,7 @@ export const FAQ = ({ limit = faqs.length }) => {
     <>
       {items.slice(0, limit).map((faq, index) => (
         <div className="faq-item" key={`faq-item${index}`}>
-          <h2 className="chicagoflf white">
+          <h2 className="chicagoflf text-white">
             <HashLink id={hashify(faq.question)}>
               {faq.error ? (
                 <>
@@ -123,7 +123,7 @@ export const FAQ = ({ limit = faqs.length }) => {
               )}
             </HashLink>
           </h2>
-          <div className="leading-normal white mb-8">{faq.content}</div>
+          <div className="leading-normal text-white mb-8">{faq.content}</div>
         </div>
       ))}
     </>
@@ -135,9 +135,9 @@ export const FAQ = ({ limit = faqs.length }) => {
  *
  */
 const Faq = () => (
-  <main className="bg-nsforest flex-grow-1">
+  <main className="bg-nsforest grow">
     <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
-      <h1 className="chicagoflf white my-8 flex-auto ">FAQ</h1>
+      <h1 className="chicagoflf text-white my-8 flex-auto ">FAQ</h1>
       <div className="mb-16">
         <TOC />
       </div>
