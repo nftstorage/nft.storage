@@ -1,0 +1,29 @@
+---
+title: 'Feature release: NFT.Storage Gateway'
+description: A faster HTTP gateway for NFT.Storage content
+author: Vasco Santos, Yusef Napora, David Choi
+thumbnail: https://user-images.githubusercontent.com/22168118/157000554-60ddfcfa-cada-4e00-b394-b466262cc8c9.png
+date: Mar 8, 2022
+tags:
+  - ipfs
+  - gateway
+  - retrieval
+---
+
+The team has been hard at work, and we're excited to announce the release of a [new HTTP gateway](https://nft.storage/docs/concepts/gateways/) for fetching content off the public IPFS network, optimized for data stored on NFT.Storage.
+
+# NFT.Storage Gateway: nftstorage.link
+
+When creating an NFT, it's best-practice to [use IPFS CIDs to reference off-chain data](https://nft.storage/blog/post/2021-12-14-storage-layer-maximalism/) in the minting transaction, metadata, and anywhere else. This ensures that the NFT directly references its corresponding data itself, regardless of where it's stored on the IPFS network. Using the CID, anyone can retrieve the NFT data using the tools that make sense for their technology stack. The easiest way for most web applications and users to fetch data off the network is using an [HTTP IPFS gateway](https://docs.ipfs.io/concepts/ipfs-gateway/), as HTTP is the most common web transport protocol found in browsers and other tools. If you've clicked on an NFT and saw a link to `https://ipfs.io/ipfs/{CID}` or `https://{CID}.ipfs.dweb.link/`, you were using an HTTP gateway.
+
+HTTP gateways are great because they allow many users to utilize IPFS without any additional tooling, while keeping the retrieval process trustless (since a user can always cryptographically verify the data against its CID). IPFS nodes will increasingly be embedded directly in web browsers (e.g., [Brave](https://brave.com/ipfs-support/), [Opera](https://blog.ipfs.io/2021-02-08-opera-ios-and-ipfs/)), but gateways will remain important for a long time. However, these gateways are often run as public services, and as a result, might be slow at times of heavy stress, or when the content it is looking for is large, or when the only copy of the data on the network is difficult to find.
+
+At NFT.Storage, part of our mission is to deliver a simple and performant storage and retrieval experience for our users. As a result, we have launched the NFT.Storage Gateway, which brings the ease-of-use of HTTP IPFS gateways with the performance users expect from modern web infrastructure, leaning into CDNs and smart caching. Anyone can use it to fetch any content broadcasted to the IPFS network by plugging in a CID to URL `https://nftstorage.link/ipfs/{CID}`, but where its performance really shines is for __content stored on NFT.Storage__!
+
+The NFT.Storage Gateway is effectively a caching layer. When a request is received by `nftstorage.link`, it triggers requests to a number of public gateways and "races" them. In the future, NFT.Storage might also run its own, dedicated gateway on top of its IPFS infrastructure in this race. The CDN and caching for `nftstorage.link` is optimized and will continue to be tweaked to ensure a fast retrieval experience for users retrieving data stored on NFT.Storage. Today, this corpus of content includes data that NFT.Storage users have uploaded diretly to the service, but later on this will include off-chain NFT data that we're scraping and storing (as a part of our mission to [preserve all NFT data as a public good](https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/)!).
+
+Future improvements to the gateway might include premium features, such as image resizing. Stay tuned!
+
+# Bringing web3 to the web
+
+To fulfill the potential of Web3 technologies like NFTs, we need to meet the Web where it is today, while being intentional about how we do so to keep the benefits and principles of Web3 in-place. IPFS HTTP gateways are one key piece of this, and we can't wait to see how our users utilize them to provide delightful end-user experiences!

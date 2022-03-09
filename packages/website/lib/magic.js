@@ -49,17 +49,7 @@ export async function login(token, type = 'magic', data = {}) {
 
 export async function isLoggedIn() {
   try {
-    const exists = localStorage.getItem('nft-user')
-    if (exists) {
-      return JSON.parse(exists)
-    }
-    const meta = await getMagic().user.getMetadata()
-
-    if (meta) {
-      localStorage.setItem('nft-user', JSON.stringify(meta))
-      return meta
-    }
-    return undefined
+    return await getMagic().user.getMetadata()
   } catch {
     // do nothing
   }
@@ -106,7 +96,6 @@ export async function redirectMagic() {
       const data = await login(idToken, 'email')
       return { ...data, idToken }
     } catch (err) {
-      await localStorage.removeItem('nft-user')
       await getMagic().user.logout()
       throw err
     }

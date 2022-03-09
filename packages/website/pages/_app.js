@@ -33,6 +33,7 @@ export default function App({ Component, pageProps }) {
       // @ts-ignore
       Sentry.setUser(user)
     }
+    // @ts-ignore
     setUser(data)
   }, [])
 
