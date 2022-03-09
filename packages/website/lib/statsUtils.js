@@ -48,7 +48,7 @@ export function calcuateGrowthRate(total, totalBefore) {
  * @param {number} decimals
  * @returns {string}
  */
-export function formatBytes(bytes, decimals) {
+export function formatBytes(bytes, decimals = 1) {
   if (bytes === 0) return '0 Bytes'
   const k = 1024
   const dm = decimals || 1
