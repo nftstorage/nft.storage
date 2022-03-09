@@ -1,0 +1,16 @@
+{
+  "private": true,
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "nft.storage": "latest",
+    "ucan-storage": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.21"
+  }
+}
