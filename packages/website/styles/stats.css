@@ -109,7 +109,8 @@
 .stat-card .stat-green {
   color: var(--nsforest);
 }
-.stat-card .stat-green:before {
+
+.stat-card .stat-green-plus:before {
   content: '+';
 }
 

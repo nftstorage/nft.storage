@@ -137,6 +137,7 @@ describe('client', () => {
     })
 
     it('upload large CAR with a CarReader', async function () {
+      // @ts-ignore
       this.timeout(130e3)
       let uploadedChunks = 0
 
