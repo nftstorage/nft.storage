@@ -175,6 +175,8 @@ CREATE TABLE IF NOT EXISTS upload
     -- 1. Pinning Service API user provided `Record<string, string>`.
     -- 2. Metaplex endpoint `/metaplex/upload` to store details of the Metaplex user.
     meta        jsonb,
+
+    backup_urls text[],
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     deleted_at  TIMESTAMP WITH TIME ZONE,
@@ -207,15 +209,3 @@ CREATE TABLE IF NOT EXISTS metric
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
-
--- URLs of backups of user uploads
-CREATE TABLE IF NOT EXISTS backup
-(
-    id          BIGSERIAL PRIMARY KEY,
-    upload_id   BIGINT NOT NULL REFERENCES public.upload (id),
-    url         TEXT NOT NULL,
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    UNIQUE (upload_id, url)
-);
-
-CREATE INDEX IF NOT EXISTS backup_upload_id_idx ON backup (upload_id);

@@ -25,10 +25,6 @@ services:
           memory: 1G
     ports:
       - 5432:5432
-    command:
-      - postgres
-      - -c
-      - wal_level=logical
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres

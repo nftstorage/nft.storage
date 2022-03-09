@@ -259,102 +259,6 @@ export interface paths {
       }
     }
   }
-  '/backup': {
-    get: {
-      parameters: {
-        query: {
-          id?: parameters['rowFilter.backup.id']
-          upload_id?: parameters['rowFilter.backup.upload_id']
-          url?: parameters['rowFilter.backup.url']
-          inserted_at?: parameters['rowFilter.backup.inserted_at']
-          /** Filtering Columns */
-          select?: parameters['select']
-          /** Ordering */
-          order?: parameters['order']
-          /** Limiting and Pagination */
-          offset?: parameters['offset']
-          /** Limiting and Pagination */
-          limit?: parameters['limit']
-        }
-        header: {
-          /** Limiting and Pagination */
-          Range?: parameters['range']
-          /** Limiting and Pagination */
-          'Range-Unit'?: parameters['rangeUnit']
-          /** Preference */
-          Prefer?: parameters['preferCount']
-        }
-      }
-      responses: {
-        /** OK */
-        200: {
-          schema: definitions['backup'][]
-        }
-        /** Partial Content */
-        206: unknown
-      }
-    }
-    post: {
-      parameters: {
-        body: {
-          /** backup */
-          backup?: definitions['backup']
-        }
-        query: {
-          /** Filtering Columns */
-          select?: parameters['select']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** Created */
-        201: unknown
-      }
-    }
-    delete: {
-      parameters: {
-        query: {
-          id?: parameters['rowFilter.backup.id']
-          upload_id?: parameters['rowFilter.backup.upload_id']
-          url?: parameters['rowFilter.backup.url']
-          inserted_at?: parameters['rowFilter.backup.inserted_at']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** No Content */
-        204: never
-      }
-    }
-    patch: {
-      parameters: {
-        query: {
-          id?: parameters['rowFilter.backup.id']
-          upload_id?: parameters['rowFilter.backup.upload_id']
-          url?: parameters['rowFilter.backup.url']
-          inserted_at?: parameters['rowFilter.backup.inserted_at']
-        }
-        body: {
-          /** backup */
-          backup?: definitions['backup']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** No Content */
-        204: never
-      }
-    }
-  }
   '/content': {
     get: {
       parameters: {
@@ -1129,6 +1033,7 @@ export interface definitions {
     /** Format: timestamp with time zone */
     deleted_at?: string
   }
+<<<<<<< HEAD
   auth_key_history: {
     /**
      * Format: bigint
@@ -1175,6 +1080,8 @@ export interface definitions {
      */
     inserted_at: string
   }
+=======
+>>>>>>> 3f1bd9f (chore: rebase and improve backup system)
   content: {
     /**
      * Format: text
@@ -1282,6 +1189,11 @@ export interface definitions {
     origins?: string
     /** Format: jsonb */
     meta?: string
+    /**
+     * Format: text[]
+     * @description Note:
+     */
+    backup_urls: string[]
     /**
      * Format: timestamp with time zone
      * @default timezone('utc'::text, now())
@@ -1418,6 +1330,7 @@ export interface parameters {
   'rowFilter.auth_key.updated_at': string
   /** Format: timestamp with time zone */
   'rowFilter.auth_key.deleted_at': string
+<<<<<<< HEAD
   /** @description auth_key_history */
   'body.auth_key_history': definitions['auth_key_history']
   /** Format: bigint */
@@ -1442,6 +1355,8 @@ export interface parameters {
   'rowFilter.backup.url': string
   /** Format: timestamp with time zone */
   'rowFilter.backup.inserted_at': string
+=======
+>>>>>>> 3f1bd9f (chore: rebase and improve backup system)
   /** @description content */
   'body.content': definitions['content']
   /** Format: text */
