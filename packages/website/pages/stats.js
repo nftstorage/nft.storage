@@ -80,10 +80,7 @@ export default function Stats({ logos }) {
     return (
       <div className="marquee">
         <div className="marquee-track">
-          <p className="marquee-text chicagoflf">
-            Nft.Storage is storing... Nft.Storage is storing... Nft.Storage is
-            storing... Nft.Storage is storing... Nft.Storage is storing...
-          </p>
+          <p className="marquee-text chicagoflf">NFT.Storage is storing...</p>
         </div>
       </div>
     )
@@ -128,7 +125,7 @@ export default function Stats({ logos }) {
                   >
                     {stats.growthRate || 0}%
                   </p>
-                  <p>[week over week change]</p>
+                  <p>[Week over week change]</p>
                 </div>
               </div>
             </StatCard>
@@ -148,9 +145,9 @@ export default function Stats({ logos }) {
                       stats.deals_total > 0 ? 'stat-green' : 'stat-red'
                     }`}
                   >
-                    {stats.deals_total || 0}
+                    {stats.deals_total?.toLocaleString() || 0}
                   </p>
-                  <p>[Total Deals]</p>
+                  <p>[Total deals]</p>
                 </div>
               </div>
             </StatCard>
