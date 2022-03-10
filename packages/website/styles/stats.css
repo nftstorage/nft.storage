@@ -11,16 +11,18 @@
 }
 
 .marquee-track {
-  position: absolute;
-  white-space: nowrap;
-  will-change: transform;
-  animation: marquee 16s linear infinite;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  /* position: absolute; */
+  /* white-space: nowrap; */
+  /* will-change: transform; */
+  /* animation: marquee 16s linear infinite; */
 }
 
 .marquee-text {
   font-size: clamp(16px, 2.6rem, 6vw);
-  overflow: hidden;
-  white-space: nowrap;
+  text-align: center;
   padding: 1rem;
   margin: 0;
 }
