@@ -30,7 +30,7 @@ export function getStaticProps() {
       description: 'NFT.Storage usage stats',
       navBgColor: 'bg-nsgreen',
       needsUser: false,
-      logos: logosWithDir.slice(0, 3),
+      logos: logosWithDir,
     },
   }
 }
