@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.36.2](https://github.com/nftstorage/nft.storage/compare/website-v1.36.1...website-v1.36.2) (2022-03-10)
+
+
+### Bug Fixes
+
+* add label to docs menu to prevent double hamburger ambiguity ([#1582](https://github.com/nftstorage/nft.storage/issues/1582)) ([fdb6f1d](https://github.com/nftstorage/nft.storage/commit/fdb6f1dd4312a13cb6511e52de21ea7d46da2421))
+
 ### [1.36.1](https://github.com/nftstorage/nft.storage/compare/website-v1.36.0...website-v1.36.1) (2022-03-10)
 
 
