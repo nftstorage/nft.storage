@@ -16,7 +16,7 @@ export class GatewayRateLimits2 {
     this.state = state
     this.id = this.state.id.name
     /** @type {RateLimitCharacteristics} */
-    this.rateLimitCharacteristics = getRateLimitingPreventionCharacteristics(
+    this.rateLimitCharacteristics = getRateLimitConfig(
       this.id
     )
 
@@ -84,7 +84,7 @@ const MINUTE = SECOND * 60
  * @param {string} gatewayUrl
  * @return {RateLimitCharacteristics}
  */
-function getRateLimitingPreventionCharacteristics(gatewayUrl) {
+function getRateLimitConfig(gatewayUrl) {
   switch (gatewayUrl) {
     case 'https://ipfs.io':
       return {
