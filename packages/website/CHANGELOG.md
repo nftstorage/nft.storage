@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.36.0](https://github.com/nftstorage/nft.storage/compare/website-v1.35.0...website-v1.36.0) (2022-03-10)
+
+
+### Features
+
+* add stats page ([#1376](https://github.com/nftstorage/nft.storage/issues/1376)) ([db62471](https://github.com/nftstorage/nft.storage/commit/db624711f10b672a3422e149092f4df0a5495d91))
+* quick fix for logo issue ([#1598](https://github.com/nftstorage/nft.storage/issues/1598)) ([cded26d](https://github.com/nftstorage/nft.storage/commit/cded26d461ad7a8ca908bb41738b3af444e1603c))
+* temp mailto link for pinning access ([#1551](https://github.com/nftstorage/nft.storage/issues/1551)) ([6802186](https://github.com/nftstorage/nft.storage/commit/6802186f9ea698999b17195257c11af985609e0c))
+
 ## [1.35.0](https://github.com/nftstorage/nft.storage/compare/website-v1.34.0...website-v1.35.0) (2022-03-08)
 
 
