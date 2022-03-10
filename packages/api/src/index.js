@@ -48,7 +48,7 @@ const r = new Router(getContext, {
 
 // Monitoring
 r.add('get', '/metrics', withMode(metrics, RO))
-r.add('get', '/stats', withMode(getStats, RO))
+r.add('get', '/stats', withMode(getStats, RO), [postCors])
 
 // CORS
 r.add('options', '*', cors)
@@ -84,7 +84,7 @@ r.add('get', '/did', withMode(did, RO), [postCors])
 
 // Login
 r.add('post', '/ucan/token', withMode(ucanToken, RW), [postCors])
-r.add('post', '/login', withMode(login, RO), [postCors])
+r.add('post', '/login', withMode(login, RO))
 
 // Pinning
 r.add('get', '/pins', psa(pinsList, RO), [postCors])
