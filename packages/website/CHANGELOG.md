@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.36.1](https://github.com/nftstorage/nft.storage/compare/website-v1.36.0...website-v1.36.1) (2022-03-10)
+
+
+### Bug Fixes
+
+* add back all the same logos as was on the homepage ([#1600](https://github.com/nftstorage/nft.storage/issues/1600)) ([824ce24](https://github.com/nftstorage/nft.storage/commit/824ce24358614026225679a65f44a6f81c338f39))
+
 ## [1.36.0](https://github.com/nftstorage/nft.storage/compare/website-v1.35.0...website-v1.36.0) (2022-03-10)
 
 
