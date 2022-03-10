@@ -140,23 +140,43 @@ export function tryGitInit(root) {
 
 /**
  * @param {URL} url
+ * @param {{ branch: string; path: string; }} opts
  */
-export function getRepoInfo(url) {
-  const [, username, name, t, branch, ...filePath] = url.pathname.split('/')
+export function getRepoInfo(url, opts) {
+  const [, username, repo, t, branch, ...folderPath] = url.pathname.split('/')
 
-  if (username && name && branch && t === 'tree') {
-    return { username, name, branch, filePath }
+  if (opts.branch) {
+    return { username, repo, branch: opts.branch, folderPath: opts.path }
+  }
+
+  if (username && repo && branch && t === 'tree') {
+    return { username, repo, branch, folderPath: folderPath.join('/') }
   }
 }
 
 /**
- *
- * @param {import('./types').RepoInfo} param0
- * @returns
+ * @param {string} example
  */
-export function hasRepo({ username, name, branch, filePath }) {
-  const contentsUrl = `https://api.github.com/repos/${username}/${name}/contents`
-  const packagePath = `${filePath ? `/${filePath.join('/')}` : ''}/package.json`
+export function isValidURL(example) {
+  try {
+    const url = new URL(example)
+    if (url.origin === 'https://github.com') {
+      return url
+    }
+  } catch (error) {}
+}
+
+/**
+ *
+ * @param {import('./types').RepoInfo} [info]
+ */
+export function hasRepo(info) {
+  if (!info) {
+    return Promise.resolve(false)
+  }
+  const { username, repo, branch, folderPath } = info
+  const contentsUrl = `https://api.github.com/repos/${username}/${repo}/contents`
+  const packagePath = `${folderPath ? `/${folderPath}` : ''}/package.json`
 
   return isUrlOk(contentsUrl + packagePath + `?ref=${branch}`)
 }
@@ -198,14 +218,23 @@ export async function clone(repoInfo, example, root) {
  * @param {import('./types').RepoInfo} repoInfo
  */
 export function downloadAndExtractRepo(root, repoInfo) {
-  const { username, name, branch, filePath } = repoInfo
+  const { username, repo, branch, folderPath } = repoInfo
+
   return pipeline(
     got.stream(
-      `https://codeload.github.com/${username}/${name}/tar.gz/${branch}`
+      `https://codeload.github.com/${username}/${repo}/tar.gz/${branch}`
     ),
-    tar.extract({ cwd: root, strip: filePath ? filePath.length + 1 : 1 }, [
-      `${name}-${branch}${filePath ? `/${filePath.join('/')}` : ''}`,
-    ])
+    tar.extract(
+      {
+        cwd: root,
+        strip: folderPath ? folderPath.split('/').length + 1 : 1,
+      },
+      [
+        `${repo}-${branch.replace('/', '-')}${
+          folderPath ? `/${folderPath}` : ''
+        }`,
+      ]
+    )
   )
 }
 
@@ -221,14 +250,17 @@ export async function installDeps(projectDir) {
     },
   }).start()
 
+  let proc
   try {
-    await execa(`npm`, [`install`], {
+    proc = execa(`npm`, [`install`], {
       stdio: 'ignore',
       cwd: projectDir,
     })
+    await proc
     spinner.succeed()
   } catch (err) {
     spinner.fail()
-    console.error(err)
+    // @ts-ignore
+    console.error(err.message)
   }
 }

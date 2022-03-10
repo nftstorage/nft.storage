@@ -1,6 +1,6 @@
 export type RepoInfo = {
   username: string
-  name: string
+  repo: string
   branch: string
-  filePath: string[]
+  folderPath: string
 }

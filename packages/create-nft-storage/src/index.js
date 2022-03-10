@@ -10,6 +10,7 @@ import {
   hasRepo,
   installDeps,
   isFolderEmpty,
+  isValidURL,
   isWriteable,
   makeDir,
   tryGitInit,
@@ -19,15 +20,42 @@ import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+const cliName = 'create-nft-storage'
 const cli = sade('create-nft-storage [example]', true)
 
 cli
-  .describe('Create a new NFT Storage app.')
-  .action(async (example) => {
+  .describe([
+    'Create a new NFT Storage app.\n',
+    'When your branch name includes a "/" use the --branch option instead of the full github url.',
+  ])
+  .example(
+    `ucan-node ${kleur.dim(
+      '# Create app based on "ucan-node" example in nft.storage repo.'
+    )}`
+  )
+  .example(
+    `ucan-node -b new-example ${kleur.dim(
+      '# Create app based on "ucan-node" example in nft.storage repo in a different branch.'
+    )}`
+  )
+  .example(
+    `https://github.com/nftstorage/nft.storage/tree/main/examples/ucan-node ${kleur.dim(
+      '# Create app based on full github URL.'
+    )}`
+  )
+  .example(
+    `https://github.com/nftstorage/nft.storage --branch master --path examples/basic ${kleur.dim(
+      '# Create app based on base github repo URL with options for branch and example folder.'
+    )}`
+  )
+  .option('-b, --branch', 'Branch name.')
+  .option('-p, --path', 'Path to a directory in the example repo.')
+  .action(async (example, opts) => {
     console.log(
-      ">>> Welcome to NFT Storage! Let's get you set up with a new codebase."
+      ">>> Welcome to NFT Storage! Let's get you set up with a new codebase.\n"
     )
 
+    // Ask for a directory to clone example
     const projectDir = path.resolve(
       process.cwd(),
       (
@@ -66,48 +94,49 @@ cli
     console.log(`Creating a new NFT Storage app in ${kleur.green(root)}.`)
     console.log()
 
+    // CD into the root directory
     process.chdir(root)
 
-    // Copy example to dir
+    // Copy/Pull example to root
     if (example) {
-      let repoUrl
-
-      try {
-        repoUrl = new URL(example)
-      } catch (error) {
-        console.error(error)
-        process.exit(1)
-      }
+      let repoUrl = isValidURL(example)
 
       if (repoUrl) {
-        if (repoUrl.origin !== 'https://github.com') {
-          console.error(
-            `Invalid URL: ${kleur.red(
-              `"${example}"`
-            )}. Only GitHub repositories are supported. Please use a GitHub URL and try again.`
-          )
-          process.exit(1)
-        }
-
-        const repoInfo = getRepoInfo(repoUrl)
-
-        if (!repoInfo) {
-          console.error(
-            `Found invalid GitHub URL: ${kleur.red(
-              `"${example}"`
-            )}. Please fix the URL and try again.`
-          )
-          process.exit(1)
-        }
-
+        const repoInfo = getRepoInfo(repoUrl, opts)
         const found = await hasRepo(repoInfo)
 
-        if (!found) {
+        if (!repoInfo || !found) {
           console.error(
             `Could not locate the repository for ${kleur.red(
               `"${example}"`
-            )}. Please check that the repository exists and try again.`
+            )}.\nPlease check ${kleur.blue(`${cliName} --help`)} and try again.`
           )
+          if (repoInfo) {
+            console.error(kleur.dim(JSON.stringify(repoInfo, undefined, 2)))
+          }
+          process.exit(1)
+        }
+        await clone(repoInfo, example, root)
+      } else {
+        // try our own repo examples
+        const repoInfo = getRepoInfo(
+          new URL('https://github.com/nftstorage/nft.storage'),
+          {
+            branch: opts.branch || 'main',
+            path: `examples/${example}`,
+          }
+        )
+
+        const found = await hasRepo(repoInfo)
+        if (!repoInfo || !found) {
+          console.error(
+            `Could not locate the example ${kleur.red(
+              `"${example}"`
+            )}.\nPlease check ${kleur.blue(`${cliName} --help`)} and try again.`
+          )
+          if (repoInfo) {
+            console.error(kleur.dim(JSON.stringify(repoInfo, undefined, 2)))
+          }
           process.exit(1)
         }
         await clone(repoInfo, example, root)
