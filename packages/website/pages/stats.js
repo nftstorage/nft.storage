@@ -77,7 +77,7 @@ export default function Stats({ logos }) {
       }
       setStats(decorateAdditionalCalculatedValues(fakeData.data))
     }
-    // setStatsLoading(false)
+    setStatsLoading(false)
   }
 
   const Marquee = () => {
