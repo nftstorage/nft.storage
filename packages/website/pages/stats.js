@@ -145,7 +145,7 @@ export default function Stats({ logos }) {
                       stats.deals_total > 0 ? 'stat-green' : 'stat-red'
                     }`}
                   >
-                    {stats.deals_total.toLocaleString() || 0}
+                    {stats.deals_total?.toLocaleString() || 0}
                   </p>
                   <p>[Total deals]</p>
                 </div>
