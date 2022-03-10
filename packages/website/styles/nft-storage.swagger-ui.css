@@ -7914,7 +7914,8 @@
 .swagger-ui input[type='password'],
 .swagger-ui input[type='search'],
 .swagger-ui input[type='text'],
-.swagger-ui textarea {
+.swagger-ui textarea,
+.swagger-ui .textarea {
   background: var(--nswhite);
   border: var(--bwidth) solid var(--nsgray);
   border-radius: var(--bradius);

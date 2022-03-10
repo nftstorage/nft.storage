@@ -8,8 +8,8 @@
     "dev": "next dev -p 4000",
     "build": "yarn workspace nft.storage prepare && next build && next-sitemap && next export",
     "start": "next start",
-    "lint": "eslint './**/*.js' && tsc --build",
-    "test": "jest",
+    "test": "eslint './**/*.js' && tsc --build",
+    "test:jest": "jest",
     "test:ci": "jest --runInBand --maxWorkers=4",
     "lint:fix": "eslint './**/*.js' --fix-dry-run",
     "analyze": "ANALYZE=true next build"
