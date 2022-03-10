@@ -8,7 +8,7 @@ import tar from 'tar'
 import { Stream } from 'stream'
 import { promisify } from 'util'
 import ora from 'ora'
-import execa from 'execa'
+import { execa } from 'execa'
 
 const pipeline = promisify(Stream.pipeline)
 

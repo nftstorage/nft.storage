@@ -18,19 +18,19 @@
   },
   "scripts": {},
   "dependencies": {
-    "execa": "5.0.0",
+    "execa": "6.1.0",
     "fs-extra": "^10.0.0",
     "inquirer": "^8.0.0",
     "kleur": "^4.1.4",
-    "ora": "4.0.4",
+    "ora": "6.1.0",
     "rimraf": "^3.0.2",
     "sade": "^1.8.1",
     "tar": "^6.1.11"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
-    "@types/inquirer": "^7.3.1",
-    "@types/node": "^16.11.12",
+    "@types/inquirer": "^8.2.0",
+    "@types/node": "^17.0.21",
     "@types/rimraf": "^3.0.2",
     "@types/tar": "^6.1.1",
     "semver": "^7.3.5"
