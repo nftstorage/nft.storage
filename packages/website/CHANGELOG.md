@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.36.3](https://github.com/nftstorage/nft.storage/compare/website-v1.36.2...website-v1.36.3) (2022-03-10)
+
+
+### Bug Fixes
+
+* reapply stats format function and add loading ([#1614](https://github.com/nftstorage/nft.storage/issues/1614)) ([d1f996e](https://github.com/nftstorage/nft.storage/commit/d1f996ea55aa8ec8487c70bb59a8e9a2d5f5693b))
+* update global button hover so button drops toward shadow ([#1552](https://github.com/nftstorage/nft.storage/issues/1552)) ([58cee57](https://github.com/nftstorage/nft.storage/commit/58cee579710beeb17cf5f36a308cea5aacab1077))
+
 ### [1.36.2](https://github.com/nftstorage/nft.storage/compare/website-v1.36.1...website-v1.36.2) (2022-03-10)
 
 
