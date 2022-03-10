@@ -41,7 +41,6 @@ export default function Home({ logos }) {
     <>
       <Hero />
       <main className="bg-nsltblue">
-        {console.log(logos)}
         <TrustedBy logos={logos} />
         <About />
         <GettingStarted />
