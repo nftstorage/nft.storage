@@ -84,7 +84,7 @@ r.add('get', '/did', withMode(did, RO), [postCors])
 
 // Login
 r.add('post', '/ucan/token', withMode(ucanToken, RW), [postCors])
-r.add('post', '/login', withMode(login, RO))
+r.add('post', '/login', withMode(login, RO), [postCors])
 
 // Pinning
 r.add('get', '/pins', psa(pinsList, RO), [postCors])
