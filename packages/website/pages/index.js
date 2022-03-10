@@ -6,54 +6,30 @@ import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
 import Link from 'next/link'
 import Button from '../components/button'
+import { TrustedBy } from '../components/trustedByLogos'
 
 export async function getStaticProps() {
   const logos = fs.readdirSync('public/images/marketplace-logos/home')
   // make opensea be the first logo
-  logos.sort((a, b) =>
-    a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
-  )
+  const logosWithDir = logos
+    .sort((a, b) =>
+      a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
+    )
+    .map((logo) => {
+      const cleanedFileName = logo.replace(/\.[^/.]+$/, '')
+      return {
+        src: `home/${logo}`,
+        alt: cleanedFileName + ' logo',
+      }
+    })
 
   return {
     props: {
       needsUser: false,
-      logos,
+      logos: logosWithDir,
       description: 'NFT.Storage homepage',
     },
   }
-}
-
-/**
- * Logo Component
- * @param {Object} props
- * @param {string} props.src
- */
-const Logo = ({ src }) => (
-  <img
-    className="marketplace-logo"
-    src={`images/marketplace-logos/home/${src}`}
-    alt="NFT.Storage Users"
-  />
-)
-
-/**
- * Logos Component
- * @param {Object} props
- * @param {string[]} props.logos
- *
- */
-const Logos = ({ logos }) => {
-  return (
-    <div className="marketplace-logos-container mx-auto py-8 px-4 sm:px-16">
-      <h2 className="text-center mt-0 chicagoflf">Trusted by</h2>
-      <div className="marketplace-logo-grid">
-        {logos.map((logo) => (
-          <Logo key={`marketplace-logo-${logo}`} src={logo} />
-        ))}
-      </div>
-      <p className="text-center chicagoflf">and 20,000+ other users!</p>
-    </div>
-  )
 }
 
 /**
@@ -72,7 +48,7 @@ export default function Home({ logos }) {
     <>
       <Hero />
       <main className="bg-nsltblue">
-        <Logos logos={logos} />
+        <TrustedBy logos={logos} />
         <About />
         <GettingStarted />
       </main>

@@ -2,10 +2,10 @@ import { Else, If, Then, When } from 'react-if'
 import { deleteToken, getTokens } from '../lib/api'
 import { useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from 'react-query'
-
 import Button from '../components/button.js'
 import Loading from '../components/loading.js'
 import countly from '../lib/countly.js'
+import { VscMail } from 'react-icons/vsc'
 
 /**
  *
@@ -35,6 +35,7 @@ export default function ManageKeys({ user }) {
   const queryClient = useQueryClient()
   const { status, data } = useQuery('get-tokens', () => getTokens(), {
     enabled: !!user,
+    refetchOnWindowFocus: false,
   })
   useEffect(() => {
     if (!copied) return
@@ -89,18 +90,28 @@ export default function ManageKeys({ user }) {
             <Loading></Loading>
           </Then>
           <Else>
-            <div className="flex items-center mb-4">
-              <h1 className="flex-auto chicagoflf my-8">API Keys</h1>
-              <Button
-                href={{
-                  pathname: '/new-key',
-                }}
-                className="flex-none"
-                id="new-key"
-                tracking={{ ui: countly.ui.TOKENS, action: 'New API Token' }}
-              >
-                + New Key
-              </Button>
+            <div className="flex flex-wrap items-center mb3">
+              <h1 className="flex-auto chicagoflf mv4">API Keys</h1>
+              <div className="flex flex-wrap items-center mt2">
+                <a
+                  href="mailto:support@nft.storage?cc=&bcc=&subject=Request%3A%20Pinning%20Service%20API%20Allowlist%20Access&body=Why%20you%20are%20looking%20for%20pinning%20service%20API%20access%20(e.g.%20you're%20an%20artist%20looking%20for%20extra%20redundancy)%3A%0A%0A%3CANSWER%20HERE%3E%0A%0APlease%20provide%20a%20sample%20of%205-10%20CIDs%20of%20NFTs%20%2F%20metadata%20you%20are%20looking%20to%20pin%3A%0A%0A%3CANSWER%20HERE%3E%0A%0APlease%20provide%20your%20profile%20on%20an%20NFT%20service%20(artist%20profile%2C%20collector%2C%20etc.)%3A%0A%0A%3CANSWER%20HERE%3E%0A%0AThanks%2C%0A%3CINSERT%20YOUR%20NAME%3E"
+                  className="items-center mr3 mb2 btn button-reset select-none black pv2 ph3 hologram chicagoflf interactive light"
+                  id="request-api-pinning"
+                >
+                  <VscMail size={12} className="mr2" /> Request API Pinning
+                  Access
+                </a>
+                <Button
+                  href={{
+                    pathname: '/new-key',
+                  }}
+                  className="flex-none mb2"
+                  id="new-key"
+                  tracking={{ ui: countly.ui.TOKENS, action: 'New API Token' }}
+                >
+                  + New Key
+                </Button>
+              </div>
             </div>
             <When condition={keys.length > 0}>
               <div className="table-responsive">

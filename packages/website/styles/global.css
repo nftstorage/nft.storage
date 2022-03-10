@@ -8,6 +8,7 @@
 @import './logos.css';
 @import './home.css';
 @import './about.css';
+@import './stats.css';
 @import './button.css';
 @import './blog.css';
 @import './markdown.css';
@@ -17,6 +18,7 @@
 @import './nav.css';
 @import './table.css';
 @import './tabs.css';
+@import './modal.css';
 @import './footer.css';
 @import './faq.css';
 

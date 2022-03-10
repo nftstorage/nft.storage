@@ -1477,7 +1477,23 @@
 .nextra-container .sidebar ul > li:first-child > button {
   display: none;
 }
-
 .nextra-container .sidebar ul > li:first-child > button + div > ul {
   margin: 0;
+}
+/* add context to mobile docs hamburger */
+.nextra-container > nav .block.md\:hidden {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-gap: 1rem;
+  text-align: right;
+  font-family: var(--nstitle);
+  align-items: center;
+}
+.nextra-container > nav .block.md\:hidden svg {
+  margin: 0.5rem 0;
+}
+.nextra-container > nav .block.md\:hidden:before {
+  content: 'Table of Contents';
+  white-space: nowrap;
 }

@@ -1,5 +1,28 @@
 # Changelog
 
+### [1.36.2](https://github.com/nftstorage/nft.storage/compare/website-v1.36.1...website-v1.36.2) (2022-03-10)
+
+
+### Bug Fixes
+
+* add label to docs menu to prevent double hamburger ambiguity ([#1582](https://github.com/nftstorage/nft.storage/issues/1582)) ([fdb6f1d](https://github.com/nftstorage/nft.storage/commit/fdb6f1dd4312a13cb6511e52de21ea7d46da2421))
+
+### [1.36.1](https://github.com/nftstorage/nft.storage/compare/website-v1.36.0...website-v1.36.1) (2022-03-10)
+
+
+### Bug Fixes
+
+* add back all the same logos as was on the homepage ([#1600](https://github.com/nftstorage/nft.storage/issues/1600)) ([824ce24](https://github.com/nftstorage/nft.storage/commit/824ce24358614026225679a65f44a6f81c338f39))
+
+## [1.36.0](https://github.com/nftstorage/nft.storage/compare/website-v1.35.0...website-v1.36.0) (2022-03-10)
+
+
+### Features
+
+* add stats page ([#1376](https://github.com/nftstorage/nft.storage/issues/1376)) ([db62471](https://github.com/nftstorage/nft.storage/commit/db624711f10b672a3422e149092f4df0a5495d91))
+* quick fix for logo issue ([#1598](https://github.com/nftstorage/nft.storage/issues/1598)) ([cded26d](https://github.com/nftstorage/nft.storage/commit/cded26d461ad7a8ca908bb41738b3af444e1603c))
+* temp mailto link for pinning access ([#1551](https://github.com/nftstorage/nft.storage/issues/1551)) ([6802186](https://github.com/nftstorage/nft.storage/commit/6802186f9ea698999b17195257c11af985609e0c))
+
 ## [1.35.0](https://github.com/nftstorage/nft.storage/compare/website-v1.34.0...website-v1.35.0) (2022-03-08)
 
 
