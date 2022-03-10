@@ -17,7 +17,13 @@ export function getStaticProps() {
     .sort((a, b) =>
       a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
     )
-    .map((logo) => `/home/${logo}`)
+    .map((logo) => {
+      const cleanedFileName = logo.replace(/\.[^/.]+$/, '')
+      return {
+        src: `home/${logo}`,
+        alt: cleanedFileName + ' logo',
+      }
+    })
   return {
     props: {
       title: 'Stats - NFT Storage',
