@@ -14,10 +14,6 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  /* position: absolute; */
-  /* white-space: nowrap; */
-  /* will-change: transform; */
-  /* animation: marquee 16s linear infinite; */
 }
 
 .marquee-text {
