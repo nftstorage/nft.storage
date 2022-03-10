@@ -1,19 +1,20 @@
 /**
  * Logo Component
- * @param {Object} props
- * @param {string} props.src
+ * @param {Object} logo
+ * @param {string} logo.src
+ * @param {string} logo.alt
  */
-const Logo = ({ src }) => (
+const Logo = ({ src, alt }) => (
   <img
     className="marketplace-logo"
     src={`/images/marketplace-logos/${src}`}
-    alt="Nft.Storage Users"
+    alt={alt}
   />
 )
 /**
  * Logos Component
  * @param {Object} props
- * @param {string[]} props.logos
+ * @param {any[]} props.logos
  *
  */
 export const TrustedBy = ({ logos }) => {
@@ -22,7 +23,11 @@ export const TrustedBy = ({ logos }) => {
       <h2 className="tc mt0 chicagoflf">Trusted by</h2>
       <div className="marketplace-logo-grid">
         {logos.map((logo) => (
-          <Logo key={`marketplace-logo-${logo}`} src={logo} />
+          <Logo
+            key={`marketplace-logo-${logo}`}
+            src={logo.src}
+            alt={logo.alt}
+          />
         ))}
       </div>
       <p className="tc chicagoflf">and 20,000+ other users!</p>
