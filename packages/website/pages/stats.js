@@ -103,7 +103,7 @@ export default function Stats({ logos }) {
   const StatCards = () => {
     return (
       <div className="stat-cards-wrapper">
-        <div className="mw9 center pv3 ph3 ph5-ns">
+        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
           <div className="stat-cards">
             <StatCard title="Upload Count">
               <div>
@@ -111,7 +111,7 @@ export default function Stats({ logos }) {
                   src={'/images/stats-upload-count.svg'}
                   alt="Upload Count"
                 />
-                <div className="pv3 ph3">
+                <div className="py-4 px-4">
                   <p className="chicagoflf">Total uploads to NFT.Storage</p>
                   <figure className="chicagoflf">
                     {abbreviateNumber(stats.totalUploads || 0, 1)}
@@ -133,7 +133,7 @@ export default function Stats({ logos }) {
             <StatCard title="Data Stored">
               <div>
                 <img src={'/images/stats-upload-count.svg'} alt="Data Stored" />
-                <div className="pv3 ph3">
+                <div className="py-4 px-4">
                   <p className="chicagoflf">
                     Total data stored on Filecoin from NFT.Storage
                   </p>
@@ -162,7 +162,7 @@ export default function Stats({ logos }) {
       <Marquee />
       <StatCards />
       <div className="bg-nsblue">
-        <div className="stats-trusted-wrapper mw9 center pv3 ph3 ph5-ns">
+        <div className="stats-trusted-wrapper max-w-7xl mx-auto py-4 px-4 sm:px-16">
           <div>
             <TrustedBy logos={logos} />
           </div>

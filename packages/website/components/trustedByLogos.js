@@ -19,8 +19,8 @@ const Logo = ({ src, alt }) => (
  */
 export const TrustedBy = ({ logos }) => {
   return (
-    <div className="marketplace-logos-container center pv4 ph3 ph5-ns">
-      <h2 className="tc mt0 chicagoflf">Trusted by</h2>
+    <div className="marketplace-logos-container mx-auto py-8 px-4 sm:px-16">
+      <h2 className="text-center mt-0 chicagoflf">Trusted by</h2>
       <div className="marketplace-logo-grid">
         {logos.map((logo) => (
           <Logo
@@ -30,7 +30,7 @@ export const TrustedBy = ({ logos }) => {
           />
         ))}
       </div>
-      <p className="tc chicagoflf">and 20,000+ other users!</p>
+      <p className="text-center chicagoflf">and 20,000+ other users!</p>
     </div>
   )
 }
