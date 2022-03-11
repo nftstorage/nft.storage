@@ -236,7 +236,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
             </a>
           </Link>
         </div>
-        <div className="mobile-nav-items text-center flex flex-col items-center justify-center text-center flex-auto overflow-y-scroll">
+        <div className="mobile-nav-items text-center flex flex-col items-center justify-center flex-auto overflow-y-scroll">
           <div style={{ maxHeight: '100%' }}>
             {ITEMS.map((item, index) => (
               <div
