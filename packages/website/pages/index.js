@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import fs from 'fs'
 import countly from '../lib/countly.js'
 import Hero from '../components/hero.js'
@@ -39,7 +39,7 @@ export async function getStaticProps() {
  *
  */
 export default function Home({ logos }) {
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (window.location.hash) {
       location.hash = window.location.hash
     }

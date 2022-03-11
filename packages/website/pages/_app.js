@@ -35,6 +35,7 @@ export default function App({ Component, pageProps }) {
     }
     // @ts-ignore
     setUser(data)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
