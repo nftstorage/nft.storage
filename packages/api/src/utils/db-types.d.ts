@@ -904,30 +904,13 @@ export interface paths {
       }
     }
   }
-  '/rpc/pgrst_watch': {
-    post: {
-      parameters: {
-        body: {
-          args: { [key: string]: unknown }
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferParams']
-        }
-      }
-      responses: {
-        /** OK */
-        200: unknown
-      }
-    }
-  }
-  '/rpc/find_deals_by_content_cids': {
+  '/rpc/create_upload': {
     post: {
       parameters: {
         body: {
           args: {
-            /** Format: text[] */
-            cids: string
+            /** Format: json */
+            data: string
           }
         }
         header: {
@@ -961,13 +944,30 @@ export interface paths {
       }
     }
   }
-  '/rpc/create_upload': {
+  '/rpc/pgrst_watch': {
+    post: {
+      parameters: {
+        body: {
+          args: { [key: string]: unknown }
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferParams']
+        }
+      }
+      responses: {
+        /** OK */
+        200: unknown
+      }
+    }
+  }
+  '/rpc/find_deals_by_content_cids': {
     post: {
       parameters: {
         body: {
           args: {
-            /** Format: json */
-            data: string
+            /** Format: text[] */
+            cids: string
           }
         }
         header: {
