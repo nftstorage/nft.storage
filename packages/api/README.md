@@ -97,6 +97,15 @@ When prompted for a value enter one of the following permission combinations:
 - `r-` = read only mode
 - `rw` = read and write (normal operation)
 
+## DB Types
+
+The postgres rest api can generate automatic type defs based on the table and column
+names. To use this, make sure you've spun down your nft dev environment and run
+`yarn db-types` from packages/api root directory. This will auto generate the
+`packages/api/utils/db-types/d.ts` file.
+
+Common errors would be "cannot read version of schema", this typically indicates that another service running on localhost:3000 which is the default port and url for the postgres rest api.
+
 ## S3 Setup
 
 We use [S3](https://aws.amazon.com/s3/) for backup and disaster recovery. For production deployment an account on AWS is required.
