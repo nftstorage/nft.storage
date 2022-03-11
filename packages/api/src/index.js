@@ -48,7 +48,7 @@ const r = new Router(getContext, {
 
 // Monitoring
 r.add('get', '/metrics', withMode(metrics, RO))
-r.add('get', '/stats', withMode(getStats, RO))
+r.add('get', '/stats', withMode(getStats, RO), [postCors])
 
 // CORS
 r.add('options', '*', cors)

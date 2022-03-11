@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { TrustedBy } from '../components/trustedByLogos'
 import fs from 'fs'
-import decorateAdditionalCalculatedValues from '../lib/statsUtils'
+import decorateAdditionalCalculatedValues, {
+  formatBytes,
+} from '../lib/statsUtils'
 import { API } from '../lib/api'
-import bytes from 'bytes'
-import { abbreviateNumber } from 'js-abbreviation-number'
+import Loading from '../components/loading'
 
 /**
  *
@@ -44,12 +45,14 @@ export function getStaticProps() {
 export default function Stats({ logos }) {
   /** @type [any, any] */
   const [stats, setStats] = useState({})
+  const [statsLoading, setStatsLoading] = useState(false)
 
   useEffect(() => {
     fetchStats()
   }, [])
 
   async function fetchStats() {
+    setStatsLoading(true)
     try {
       const stats = await fetch(`${API}/stats`, {
         method: 'GET',
@@ -74,6 +77,7 @@ export default function Stats({ logos }) {
       }
       setStats(decorateAdditionalCalculatedValues(fakeData.data))
     }
+    setStatsLoading(false)
   }
 
   const Marquee = () => {
@@ -114,7 +118,8 @@ export default function Stats({ logos }) {
                 <div className="py-4 px-4">
                   <p className="chicagoflf">Total uploads to NFT.Storage</p>
                   <figure className="chicagoflf">
-                    {abbreviateNumber(stats.totalUploads || 0, 1)}
+                    {statsLoading && <Loading />}
+                    {formatBytes(stats.totalUploads || 0, 1)}
                   </figure>
                   <p
                     className={`chicagoflf ${
@@ -138,7 +143,8 @@ export default function Stats({ logos }) {
                     Total data stored on Filecoin from NFT.Storage
                   </p>
                   <figure className="chicagoflf">
-                    {bytes(stats.deals_size_total || 0)}
+                    {statsLoading && <Loading />}
+                    {formatBytes(stats.deals_size_total || 0, 2)}
                   </figure>
                   <p
                     className={`chicagoflf ${

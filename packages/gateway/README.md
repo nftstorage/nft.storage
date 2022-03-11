@@ -1,6 +1,6 @@
 # gateway.nft.storage
 
-> The IPFS gateway for nft.storage.
+> The IPFS gateway for nft.storage is not "another gateway", but a caching layer for NFT’s that sits on top of existing IPFS public gateways.
 
 ## Getting started
 
@@ -35,9 +35,18 @@ You only need to `npm start` for subsequent runs. PR your env config to the `wra
 
 ## High level architecture
 
+`nftstorage.link` is serverless code running across the globe to provide exceptional performance, reliability, and scale. It is powered by Cloudflare workers running as close as possible to end users.
+
+Thanks to IPFS immutable nature, a CDN cache is an excellent fit for content retrieval as a given request URL will always return the same response. Accordingly, as a first IPFS resolution layer, `nftstorage.link` leverages Cloudflare [Cache API](https://developers.cloudflare.com/workers/runtime-apis/cache) to look up for content previously cached in Cloudflare CDN (based on geolocation of the end user).
+
+In the event of content not being already cached, a race with multiple IPFS gateways is performed. As soon as one gateway successfully responds, its response is forwarded to the user and added to Cloudflare Cache.
+
 ![High level Architecture](./gateway.nft.storage.jpg)
 
-The IPFS gateway for nft.storage is not "another gateway", but a caching layer for NFT’s that sits on top of existing IPFS public gateways.
+Notes:
+
+- Cloudflare Cache is [limited](https://developers.cloudflare.com/workers/platform/limits/#cache-api-limits) to 512 MB size objects.
+- Using a CDN Cache also enables us to implement intelligent caching strategies to warm the cache for content with high likelihood of being requested soon.
 
 ## Usage
 
