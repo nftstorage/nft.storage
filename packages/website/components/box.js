@@ -33,11 +33,12 @@ export default function Box({
       <div
         className={clsx(
           'relative',
-          'w-100',
-          'h-100',
-          'pa3',
+          'w-full',
+          'h-full',
+          'p-6',
           `bg-${bgColor}`,
-          'ba',
+          'border',
+          'border-solid',
           'border-black',
           className
         )}

@@ -150,6 +150,9 @@
     content: '';
     float: left;
   }
+  .table-responsive table .truncate {
+    max-width: 510px;
+  }
 
   /*Utilities at full-size*/
   .table-responsive td.shrink-cell {

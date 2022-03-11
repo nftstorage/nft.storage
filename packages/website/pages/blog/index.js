@@ -286,7 +286,7 @@ const Blog = ({ posts }) => {
     <main className="flex flex-auto blog bg-nspeach w-full">
       <div className="blog-body w-full">
         <HighlightCard post={first} />
-        <div className="blog-content w-full max-w-7xl">
+        <div className="blog-content w-full max-w-7xl px-4 sm:px-16">
           <TagsContainer
             filters={filters}
             handleTagClick={handleTagClick}
