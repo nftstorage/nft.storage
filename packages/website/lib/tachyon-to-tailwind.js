@@ -1,3 +1,4 @@
+// @ts-nocheck
 export default function transformer(file, api) {
   const MAP = {
     'p([tblr])(\\d+)': 'p$1-SPACING$2',
