@@ -19,7 +19,7 @@ const Logo = ({ src, alt }) => (
  */
 export const TrustedBy = ({ logos }) => {
   return (
-    <div className="marketplace-logos-container mx-auto py-8 px-4 sm:px-16">
+    <div className="marketplace-logos-container mx-auto py-8 px-6 sm:px-16">
       <h2 className="text-center mt-0 chicagoflf">Trusted by</h2>
       <div className="marketplace-logo-grid">
         {logos.map((logo) => (

@@ -172,7 +172,7 @@ function About() {
   )
   return (
     <article className="about-section bg-nsgreen">
-      <div className="max-w-7xl mx-auto p-8 px-4 sm:px-16">
+      <div className="max-w-7xl mx-auto p-8 px-6 sm:px-16">
         <div className="about-text">
           <h2 className="chicagoflf">
             <HashLink id="about">About</HashLink>

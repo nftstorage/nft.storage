@@ -272,7 +272,7 @@ const Blog = ({ posts }) => {
   const Backdrop = ({ children, abs }) => (
     <div
       className={clsx(
-        'bg-nsltblue flex flex-auto justify-center items-center w-100 h-100 z-999 top-0 left-0 select-none',
+        'bg-nsltblue flex flex-auto justify-center items-center w-full h-full z-999 top-0 left-0 select-none',
         abs && 'absolute'
       )}
     >
@@ -286,7 +286,7 @@ const Blog = ({ posts }) => {
     <main className="flex flex-auto blog bg-nspeach w-full">
       <div className="blog-body w-full">
         <HighlightCard post={first} />
-        <div className="blog-content w-full max-w-7xl px-4 sm:px-16">
+        <div className="blog-content w-full max-w-7xl px-6 sm:px-16">
           <TagsContainer
             filters={filters}
             handleTagClick={handleTagClick}

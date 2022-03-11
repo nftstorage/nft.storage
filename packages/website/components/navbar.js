@@ -144,8 +144,8 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   )
 
   return (
-    <nav className={clsx(bgColor, 'w-100 z-50 navbar')} ref={containerRef}>
-      <div className="flex items-center justify-between px-4 sm:px-16 py-4 mx-auto max-w-7xl">
+    <nav className={clsx(bgColor, 'w-full z-50 navbar')} ref={containerRef}>
+      <div className="flex items-center justify-between px-6 sm:px-16 py-4 mx-auto max-w-7xl">
         <div className="hamburger flex align-middle">
           <Button onClick={toggleMenu} small className="flex-col">
             <Hamburger className="w-4 m2" aria-label="Toggle Navbar" />
@@ -223,8 +223,8 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
       <div
         className={clsx(
           bgColor,
-          'mobile-nav transition-all duration-300 fixed top-0 left-0 bottom-0 shadow-4 p6 w-100',
-          isMenuOpen ? 'flex opacity-100' : 'o-0 invisible'
+          'flex mobile-nav transition-all fixed top-0 left-0 bottom-0 w-full',
+          isMenuOpen ? 'opacity-100' : 'opacity-0 invisible'
         )}
         style={{ zIndex: 100 }}
         aria-hidden={isMenuOpen}

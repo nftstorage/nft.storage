@@ -84,7 +84,7 @@ export default function ManageKeys({ user }) {
 
   return (
     <main className="bg-nsgreen grow">
-      <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
+      <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
         <If condition={status === 'loading'}>
           <Then>
             <Loading></Loading>

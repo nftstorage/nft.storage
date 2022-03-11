@@ -311,7 +311,7 @@ export default function Files({ user }) {
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
       <main className="bg-nsyellow grow">
-        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
+        <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
           <When condition={status === 'loading'}>
             <Loading />
           </When>

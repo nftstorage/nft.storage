@@ -90,7 +90,7 @@ export default function NewFile() {
 
   return (
     <main className="bg-nsyellow grow">
-      <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
+      <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
         <Box
           bgColor="nsgray"
           borderColor="nspink"

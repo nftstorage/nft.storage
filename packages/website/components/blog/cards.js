@@ -50,7 +50,7 @@ export const Card = ({ post }) => (
  */
 export const HighlightCard = ({ post }) => (
   <div className="flex justify-center blog-highlight-card w-full">
-    <div className="flex relative w-full max-w-7xl px-4 sm:px-16">
+    <div className="flex relative w-full max-w-7xl px-6 sm:px-16">
       <div className="flex blog-highlight-info-container">
         <div className="flex justify-between highlight-info flex-col w-1/2">
           <div className="highlight-card-container py-7">

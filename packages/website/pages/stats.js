@@ -107,7 +107,7 @@ export default function Stats({ logos }) {
   const StatCards = () => {
     return (
       <div className="stat-cards-wrapper">
-        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-16">
+        <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
           <div className="stat-cards">
             <StatCard title="Upload Count">
               <div>
@@ -168,7 +168,7 @@ export default function Stats({ logos }) {
       <Marquee />
       <StatCards />
       <div className="bg-nsblue">
-        <div className="stats-trusted-wrapper max-w-7xl mx-auto py-4 px-4 sm:px-16">
+        <div className="stats-trusted-wrapper max-w-7xl mx-auto py-4 px-6 sm:px-16">
           <div>
             <TrustedBy logos={logos} />
           </div>

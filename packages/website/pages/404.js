@@ -10,7 +10,7 @@ export default function Custom404() {
   }, [])
 
   return (
-    <main className="flex items-center justify-between my-4 lg:my-32 layout-margins grow px-4 sm:px-16">
+    <main className="flex items-center justify-between my-4 lg:my-32 layout-margins grow px-6 sm:px-16">
       <h1 className="">404 - Page Not Found</h1>
     </main>
   )
