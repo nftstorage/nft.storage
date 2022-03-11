@@ -40,7 +40,7 @@ jobs:
           SENTRY_TOKEN: ${{secrets.SENTRY_TOKEN}}
           SENTRY_UPLOAD: ${{ secrets.SENTRY_UPLOAD }}
         with:
-          apiToken: ${{secrets.CF_API_TOKEN }}
+          apiToken: ${{secrets.CF_GATEWAY_TOKEN }}
           workingDirectory: 'packages/gateway'
           environment: 'staging'
   release:
@@ -73,6 +73,6 @@ jobs:
           SENTRY_TOKEN: ${{ secrets.SENTRY_TOKEN }}
           SENTRY_UPLOAD: ${{ secrets.SENTRY_UPLOAD }}
         with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
+          apiToken: ${{ secrets.CF_GATEWAY_TOKEN }}
           workingDirectory: 'packages/gateway'
           environment: 'production'
