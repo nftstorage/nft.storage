@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.36.5](https://github.com/nftstorage/nft.storage/compare/website-v1.36.4...website-v1.36.5) (2022-03-12)
+
+
+### Bug Fixes
+
+* upload stat isnt a byte count, but a number count ([#1629](https://github.com/nftstorage/nft.storage/issues/1629)) ([91568b8](https://github.com/nftstorage/nft.storage/commit/91568b8236124f829be099aff7341ed85dba373f))
+
 ### [1.36.4](https://github.com/nftstorage/nft.storage/compare/website-v1.36.3...website-v1.36.4) (2022-03-12)
 
 
