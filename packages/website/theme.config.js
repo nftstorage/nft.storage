@@ -1,5 +1,5 @@
 // theme.config.js
-export default {
+const theme = {
   nextLinks: false,
   prevLinks: false,
   search: false,
@@ -14,3 +14,5 @@ export default {
     </>
   ),
 }
+
+export default theme
