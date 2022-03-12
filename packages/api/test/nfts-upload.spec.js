@@ -305,7 +305,7 @@ describe('NFT Upload ', () => {
     assert.equal(backup.url, backupUrl)
   })
 
-  it.only('should upload a single file using ucan', async () => {
+  it('should upload a single file using ucan', async () => {
     const kp = await KeyPair.create()
     // Register DID
     await fetch(`user/did`, {

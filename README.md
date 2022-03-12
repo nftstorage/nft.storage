@@ -88,6 +88,8 @@ METAPLEX_AUTH_TOKEN=secret
 # needs to be real so create a personal magic.link account or use the staging key
 MAGIC_SECRET_KEY=secret
 LOGTAIL_TOKEN=secret
+# Dev private key for ucan auth
+# You can use this one or create a new key with the ucan cli `ucan-storage keypair`
 PRIVATE_KEY=xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY=
 
 ## API Sentry
