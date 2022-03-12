@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.36.4](https://github.com/nftstorage/nft.storage/compare/website-v1.36.3...website-v1.36.4) (2022-03-12)
+
+
+### Bug Fixes
+
+* cleaned up eslint errors ([#1618](https://github.com/nftstorage/nft.storage/issues/1618)) ([5182798](https://github.com/nftstorage/nft.storage/commit/518279853247e72fcb2ecc02762f413302fe39f4))
+* stats requires data attr ([#1627](https://github.com/nftstorage/nft.storage/issues/1627)) ([5684bb2](https://github.com/nftstorage/nft.storage/commit/5684bb2fe152893abb500a434a636218e33d69b1))
+
 ### [1.36.3](https://github.com/nftstorage/nft.storage/compare/website-v1.36.2...website-v1.36.3) (2022-03-10)
 
 
