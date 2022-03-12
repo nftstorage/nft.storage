@@ -26,4 +26,21 @@ describe('Stats Utils unit tests', () => {
     expect(stats.growthRate).toBe('4.87')
     expect(stats.totalUploads).toBe(43352125)
   })
+
+  it('Should return 0 if totalBefore is 0 (dividing by zero)', () => {
+    const infinityData = {
+      data: {
+        uploads_past_7_total: 0,
+        uploads_nft_total: 0,
+        uploads_remote_total: 0,
+        uploads_car_total: 0,
+        uploads_multipart_total: 0,
+        uploads_blob_total: 0,
+      },
+    }
+    const stats = decorateAdditionalCalculatedValues(infinityData.data)
+
+    // passing in 0/0 should return 0, not infinity
+    expect(stats.growthRate).toBe(0)
+  })
 })
