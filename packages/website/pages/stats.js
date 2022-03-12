@@ -60,7 +60,7 @@ export default function Stats({ logos }) {
           'Content-Type': 'application/json',
         },
       }).then((res) => res.json())
-      setStats(decorateAdditionalCalculatedValues(stats))
+      setStats(decorateAdditionalCalculatedValues(stats.data))
     } catch (e) {
       const fakeData = {
         ok: true,
