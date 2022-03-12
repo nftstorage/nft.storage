@@ -3,7 +3,7 @@ import { notFound } from './utils/utils.js'
 import { HTTPError } from './errors.js'
 import { cors, postCors } from './routes/cors.js'
 import { JSONResponse } from './utils/json-response.js'
-import { metrics } from './routes/metrics.js'
+import { getStats, metrics } from './routes/metrics.js'
 import { tokensDelete } from './routes/tokens-delete.js'
 import { tokensCreate } from './routes/tokens-create.js'
 import { tokensList } from './routes/tokens-list.js'
@@ -14,7 +14,6 @@ import { nftGet } from './routes/nfts-get.js'
 import { nftDelete } from './routes/nfts-delete.js'
 import { nftList } from './routes/nfts-list.js'
 import { nftStore } from './routes/nfts-store.js'
-import { ipfsGet } from './routes/ipfs-get.js'
 import { pinsAdd } from './routes/pins-add.js'
 import { pinsDelete } from './routes/pins-delete.js'
 import { pinsGet } from './routes/pins-get.js'
@@ -33,6 +32,9 @@ import {
 import { withPsaErrorHandler, withPinningAuthorized } from './middleware/psa.js'
 import { cluster } from './constants.js'
 import { getContext } from './utils/context.js'
+import { userDidRegister } from './routes/user-did-register.js'
+import { ucanToken } from './routes/ucan-token.js'
+import { did } from './routes/did.js'
 
 const getMaintenanceMode = () =>
   typeof MAINTENANCE_MODE !== 'undefined' ? MAINTENANCE_MODE : DEFAULT_MODE
@@ -46,6 +48,7 @@ const r = new Router(getContext, {
 
 // Monitoring
 r.add('get', '/metrics', withMode(metrics, RO))
+r.add('get', '/stats', withMode(getStats, RO), [postCors])
 
 // CORS
 r.add('options', '*', cors)
@@ -77,7 +80,10 @@ r.add(
 const psa = (handler, mode) =>
   withPsaErrorHandler(withPinningAuthorized(withMode(handler, mode)))
 
+r.add('get', '/did', withMode(did, RO), [postCors])
+
 // Login
+r.add('post', '/ucan/token', withMode(ucanToken, RW), [postCors])
 r.add('post', '/login', withMode(login, RO), [postCors])
 
 // Pinning
@@ -98,6 +104,9 @@ r.add('delete', '/:cid', withMode(nftDelete, RW), [postCors])
 // Temporary Metaplex upload route, mapped to metaplex user account.
 r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
 
+// User
+r.add('post', '/user/did', withMode(userDidRegister, RW), [postCors])
+
 // Tokens
 r.add('get', '/internal/tokens', withMode(tokensList, RO), [postCors])
 r.add('post', '/internal/tokens', withMode(tokensCreate, RW), [postCors])
@@ -105,10 +114,6 @@ r.add('delete', '/internal/tokens', withMode(tokensDelete, RW), [postCors])
 
 // Blog
 r.add('post', '/internal/blog/subscribe', blogSubscribe, [postCors])
-
-// Gateway proxy for IPFS path
-r.add('get', '/ipfs/:cid', withMode(ipfsGet, RO))
-r.add('get', '/ipfs/:cid/*', withMode(ipfsGet, RO))
 
 // Note: /api/* endpoints are legacy and will eventually be removed.
 r.add('get', '/api/pins', psa(pinsList, RO), [postCors])

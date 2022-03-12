@@ -58,6 +58,14 @@ export async function updatePendingPinStatuses(config) {
 const COUNT_FAILED_PINS = `SELECT COUNT(*) FROM pin WHERE service IN (${CLUSTER_LIST}) AND status = 'PinError' AND inserted_at > $1`
 const FETCH_FAILED_PINS = `SELECT * FROM pin WHERE service IN (${CLUSTER_LIST}) AND status = 'PinError' AND inserted_at > $1 OFFSET $2 LIMIT $3`
 
+// If Cluster reports PinError, set the status to Pinning when it is still a new
+// pin i.e. less than 24 hours old. Cluster will continue trying to pin the data
+// indefinitely so the PinError status may be temporary and we should not set
+// _our_ status to PinError yet. If we do set our status to PinError it won't be
+// re-checked for up to a week (pins-failed cron), so set to Pinning instead and
+// keep checking up on this pin in this cron job.
+const PIN_ERROR_GRACE_PERIOD = 1000 * 60 * 60 * 24
+
 /**
  * Check on failed pins < 1 month old to see if their status changed from failed
  * to pinned.
@@ -114,7 +122,7 @@ UPDATE pin AS p
  *
  * @param {Config & {
  *   countPins: () => Promise<number>
- *   fetchPins: (offset:number, limit: number) => Promise<Pin[]>
+ *   fetchPins: (offset: number, limit: number) => Promise<Pin[]>
  * }} config
  */
 async function updatePinStatuses(config) {
@@ -170,6 +178,14 @@ async function updatePinStatuses(config) {
           status = 'Pinning'
         } else if (pinInfos.some((i) => i.status === 'pin_queued')) {
           status = 'PinQueued'
+        }
+
+        // Only set to PinError if Cluster was not able to pin the data after
+        // the PIN_ERROR_GRACE_PERIOD.
+        const pinAge = Date.now() - new Date(pin.inserted_at).getTime()
+        if (status === 'PinError' && pinAge < PIN_ERROR_GRACE_PERIOD) {
+          log(`ℹ️ ${pin.content_cid} is ${status} in grace period`)
+          status = 'Pinning'
         }
 
         if (status !== pin.status) {

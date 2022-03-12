@@ -122,7 +122,7 @@ export async function gatewayGet(request, env, ctx) {
     )
 
     if (wasRateLimited) {
-      const ipfsUrl = new URL('ipfs', env.IPFS_GATEWAYS[0])
+      const ipfsUrl = new URL('ipfs', env.ipfsGateways[0])
       return Response.redirect(`${ipfsUrl.toString()}/${cid}${pathname}`, 302)
     }
 

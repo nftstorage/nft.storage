@@ -1,5 +1,21 @@
 # Changelog
 
+### [6.0.2](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.0.1...nft.storage-v6.0.2) (2022-03-07)
+
+
+### Bug Fixes
+
+* rate limit error message ([#1154](https://github.com/nftstorage/nft.storage/issues/1154)) ([f449126](https://github.com/nftstorage/nft.storage/commit/f4491267b4f596a4871a52f9582d063dd4dc4ec7))
+
+### [6.0.1](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.0.0...nft.storage-v6.0.1) (2022-03-01)
+
+
+### Bug Fixes
+
+* gateway url in client ([#1425](https://github.com/nftstorage/nft.storage/issues/1425)) ([785a1db](https://github.com/nftstorage/nft.storage/commit/785a1db360dfc7947b4e3e1289fb9de3b2ac3c58))
+* link to main branch from generated client docs ([#1430](https://github.com/nftstorage/nft.storage/issues/1430)) ([b0a1f8e](https://github.com/nftstorage/nft.storage/commit/b0a1f8e8f0a9f551e933dee1dc3c67a61aa8444a))
+* update ipfs car and client ([#1373](https://github.com/nftstorage/nft.storage/issues/1373)) ([2b61549](https://github.com/nftstorage/nft.storage/commit/2b61549f4f31684a6afca28c9f7ed39dc076ada2))
+
 ## [6.0.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v5.2.1...nft.storage-v6.0.0) (2022-02-09)
 
 

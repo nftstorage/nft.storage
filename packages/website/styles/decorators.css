@@ -1,9 +1,18 @@
 /* decorators */
 .hologram {
   text-decoration: none;
-  border: var(--bwidth) solid var(--nsblack);
-  box-shadow: var(--btn-ghost-x) var(--btn-ghost-y) 0px 0px var(--nsgray),
+  background-color: #fff;
+  transform: translate3d(
+    calc(var(--btn-ghost-x) * -1),
+    calc(var(--btn-ghost-y) * -1 / 2),
+    0
+  );
+  backface-visibility: hidden;
+  border: 0;
+  box-shadow: 0 0 0 1px var(--nsblack),
+    var(--btn-ghost-x) var(--btn-ghost-y) 0px 0px var(--nsgray),
     var(--btn-ghost-x) var(--btn-ghost-y) 0px 1px var(--nsblack);
+  position: relative;
 }
 
 .hologram.interactive {
@@ -12,9 +21,10 @@
 }
 
 .hologram.interactive:hover {
-  box-shadow: var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 0px
-      var(--nsltblue),
-    var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 1px var(--nsblack);
+  box-shadow: 0 0 0 1px var(--nsblack),
+    var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 0px var(--nsltblue),
+    var(--btn-ghost-x-hover) var(--btn-ghost-y-hover) 0px 0px var(--nsblack);
+  transform: translate3d(0, calc(var(--btn-ghost-y) * 1 / 2), 0);
 }
 
 .hologram.ltblue {

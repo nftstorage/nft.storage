@@ -81,6 +81,27 @@ export function getDBClient(env) {
  * @param {'ro'|'rw'} [mode]
  */
 export function getPg(env, mode = 'rw') {
+  return new pg.Client({ connectionString: getPgConnString(env, mode) })
+}
+
+/**
+ * Create a new Postgres pool instance from the passed environment variables.
+ * @param {Record<string, string|undefined>} env
+ * @param {'ro'|'rw'} [mode]
+ */
+export function getPgPool(env, mode = 'rw') {
+  return new pg.Pool({
+    connectionString: getPgConnString(env, mode),
+    max: MAX_CONCURRENT_QUERIES,
+  })
+}
+
+/**
+ * Get a postgres connection string from the passed environment variables.
+ * @param {Record<string, string|undefined>} env
+ * @param {'ro'|'rw'} [mode]
+ */
+function getPgConnString(env, mode = 'rw') {
   let connectionString
   if (env.ENV === 'production') {
     connectionString =
@@ -97,5 +118,7 @@ export function getPg(env, mode = 'rw') {
       mode === 'rw' ? env.DATABASE_CONNECTION : env.RO_DATABASE_CONNECTION
   }
   if (!connectionString) throw new Error('missing Postgres connection string')
-  return new pg.Client({ connectionString })
+  return connectionString
 }
+
+export const MAX_CONCURRENT_QUERIES = 10

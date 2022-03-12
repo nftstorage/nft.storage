@@ -8,7 +8,6 @@ import sade from 'sade'
 import { build } from 'esbuild'
 import git from 'git-rev-sync'
 import Sentry from '@sentry/cli'
-import delay from 'delay'
 import pWaitFor from 'p-wait-for'
 import { create } from 'ipfs-http-client'
 import globSource from 'ipfs-utils/src/files/glob-source.js'
@@ -33,25 +32,25 @@ prog
   .action(ipfsCmd)
 
 async function buildCmd(opts) {
-  const version = `${pkg.name}@${pkg.version}-${opts.env}+${git.short(
+  const sentryRelease = `nft-gateway@${pkg.version}-${opts.env}+${git.short(
     __dirname
   )}`
+  console.log(`Building ${sentryRelease}`)
 
   await build({
-    entryPoints: [path.join(__dirname, '../src/index.js')],
+    entryPoints: [path.join(__dirname, '..', 'src', 'index.js')],
     bundle: true,
     format: 'esm',
-    outfile: 'dist/index.mjs',
+    outfile: path.join(__dirname, '..', 'dist', 'worker.mjs'),
     legalComments: 'external',
     define: {
-      VERSION: JSON.stringify(version),
+      VERSION: JSON.stringify(pkg.version),
       COMMITHASH: JSON.stringify(git.long(__dirname)),
       BRANCH: JSON.stringify(git.branch(__dirname)),
-      ENV: opts.env || 'dev',
       global: 'globalThis',
     },
     minify: opts.env === 'dev' ? false : true,
-    sourcemap: true,
+    sourcemap: 'external',
   })
 
   // Sentry release and sourcemap upload
@@ -63,18 +62,18 @@ async function buildCmd(opts) {
       dist: git.short(__dirname),
     })
 
-    await cli.releases.new(version)
-    await cli.releases.setCommits(version, {
+    await cli.releases.new(sentryRelease)
+    await cli.releases.setCommits(sentryRelease, {
       auto: true,
       ignoreEmpty: true,
       ignoreMissing: true,
     })
-    await cli.releases.uploadSourceMaps(version, {
+    await cli.releases.uploadSourceMaps(sentryRelease, {
       include: ['./dist'],
-      urlPrefix: '/',
+      ext: ['map', 'mjs'],
     })
-    await cli.releases.finalize(version)
-    await cli.releases.newDeploy(version, {
+    await cli.releases.finalize(sentryRelease)
+    await cli.releases.newDeploy(sentryRelease, {
       env: opts.env,
     })
   }

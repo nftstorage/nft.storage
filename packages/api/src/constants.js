@@ -1,6 +1,7 @@
-// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN, DATABASE_TOKEN, CLUSTER_SERVICE, LOGTAIL_TOKEN, MAILCHIMP_API_KEY, METAPLEX_AUTH_TOKEN, GATEWAY_NFT_STORAGE
+// let MAGIC_SECRET_KEY, SALT, PINATA_JWT, SENTRY_DSN, DATABASE_TOKEN, CLUSTER_SERVICE, LOGTAIL_TOKEN, MAILCHIMP_API_KEY, METAPLEX_AUTH_TOKEN
 
 export const secrets = {
+  privateKey: PRIVATE_KEY,
   salt: SALT,
   magic: MAGIC_SECRET_KEY,
   sentry: SENTRY_DSN,
@@ -12,8 +13,6 @@ export const secrets = {
       ? METAPLEX_AUTH_TOKEN
       : undefined,
 }
-
-export const GATEWAY_NFT_STORAGE_HOSTNAME = GATEWAY_NFT_STORAGE
 
 const CLUSTER1 = 'https://nft.storage.ipfscluster.io/api/'
 const CLUSTER2 = 'https://nft2.storage.ipfscluster.io/api/'

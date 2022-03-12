@@ -45,6 +45,29 @@ export class DBClient {
   }
 
   /**
+   * Register a DID for a user
+   * @param {string} did
+   * @param {number} userId
+   */
+  async registerDid(did, userId) {
+    /**@type {PostgrestQueryBuilder<definitions['user']>} */
+    const query = this.client.from('user')
+    const { data, error } = await query
+      .update({
+        did: did,
+      })
+      .match({ id: userId })
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    if (!data) {
+      throw new Error('Auth key not created.')
+    }
+  }
+
+  /**
    * Get user by magic.link or old github id
    *
    * @param {string} id
@@ -59,10 +82,11 @@ export class DBClient {
     id,
     magic_link_id,
     github_id,
+    did,
     keys:auth_key_user_id_fkey(user_id,id,name,secret)
     `
       )
-      .or(`magic_link_id.eq.${id},github_id.eq.${id}`)
+      .or(`magic_link_id.eq.${id},github_id.eq.${id},did.eq.${id}`)
       // @ts-ignore
       .filter('keys.deleted_at', 'is', null)
 
@@ -446,6 +470,37 @@ export class DBClient {
     }
 
     return data[0].value
+  }
+
+  async getStats() {
+    /** @type {PostgrestQueryBuilder<definitions['metric']>} */
+    const query = this.client.from('metric')
+    const { data, error } = await query
+      .select('name, value')
+      .in('name', [
+        'deals_total',
+        'deals_size_total',
+        'uploads_past_7_total',
+        'uploads_blob_total',
+        'uploads_car_total',
+        'uploads_nft_total',
+        'uploads_remote_total',
+        'uploads_multipart_total',
+      ])
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    if (!data || !data.length) {
+      return undefined
+    }
+
+    return data.reduce((obj, curr) => {
+      // @ts-ignore
+      obj[curr.name] = curr.value
+      return obj
+    }, {})
   }
 }
 

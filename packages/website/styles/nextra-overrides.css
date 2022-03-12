@@ -13,6 +13,8 @@
 
   .nextra-container aside.fixed {
     width: clamp(200px, 22rem, 30%);
+    top: 0 !important;
+    height: 100vh !important;
   }
 }
 
@@ -70,6 +72,16 @@
   font-size: 1.1rem;
   border: 0;
   border-radius: 0;
+}
+
+@media screen and (max-width: 600px) {
+  .nextra-container .tabs {
+    display: flex;
+    align-items: center;
+  }
+  .nextra-container .tabs__item {
+    font-size: 1rem;
+  }
 }
 
 .nextra-container .tabs__item.tabs__item--active {

@@ -34,6 +34,7 @@ const nextConfig = withBundleAnalyzer({
         page: '/docs/concepts/architecture-considerations',
       },
       '/docs/concepts/car-files': { page: '/docs/concepts/car-files' },
+      '/docs/concepts/gateways': { page: '/docs/concepts/gateways' },
       '/docs/how-to/mint-erc-1155': { page: '/docs/how-to/mint-erc-1155' },
       '/docs/how-to': {
         page: '/docs/how-to/mint-erc-1155',
@@ -41,10 +42,15 @@ const nextConfig = withBundleAnalyzer({
       '/docs/how-to/mint-custom-metadata': {
         page: '/docs/how-to/mint-custom-metadata',
       },
+      '/docs/how-to/mint-solana': { page: '/docs/how-to/mint-solana' },
       '/docs/how-to/retrieve': { page: '/docs/how-to/retrieve' },
-      '/docs/client': { page: '/docs/client/api-docs' },
-      '/docs/client/api-docs': { page: '/docs/client/api-docs' },
-      '/docs/client/lib': { page: '/docs/client/lib' },
+      '/docs/how-to/store-directory': { page: '/docs/how-to/store-directory' },
+      '/docs/client': { page: '/docs/client/js' },
+      '/docs/client/https': { page: '/docs/client/http' },
+      '/docs/client/generated': { page: '/docs/client/generated' },
+      '/docs/client/js': { page: '/docs/client/js' },
+      '/docs/client/api-docs': { page: '/docs/client/js' },
+      '/docs/client/lib': { page: '/docs/client/js' },
     }
   },
 })

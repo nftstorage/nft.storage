@@ -1,6 +1,7 @@
 export {}
 
 import Toucan from 'toucan-js'
+import { Service } from 'ucan-storage/service'
 import { Mode } from './middleware/maintenance.js'
 import { DBClient } from './utils/db-client.js'
 import { Logging } from './utils/logs.js'
@@ -14,7 +15,6 @@ declare global {
   const MAGIC_SECRET_KEY: string
   const DATABASE_URL: string
   const DATABASE_TOKEN: string
-  const GATEWAY_NFT_STORAGE: string
   const MAILCHIMP_API_KEY: string
   const LOGTAIL_TOKEN: string
   const ENV: 'dev' | 'staging' | 'production'
@@ -30,6 +30,7 @@ declare global {
   const S3_ACCESS_KEY_ID: string
   const S3_SECRET_ACCESS_KEY: string
   const S3_BUCKET_NAME: string
+  const PRIVATE_KEY: string
 }
 
 export interface RouteContext {
@@ -37,6 +38,7 @@ export interface RouteContext {
   db: DBClient
   log: Logging
   backup?: BackupClient
+  ucanService: Service
 }
 
 export type Handler = (

@@ -2,10 +2,10 @@ import Toucan from 'toucan-js'
 import pkg from '../package.json'
 import { Logging } from './logs.js'
 
-// TODO: Get Durable object typedef
 /**
  * @typedef {Object} EnvInput
  * @property {string} IPFS_GATEWAYS
+ * @property {string} GATEWAY_HOSTNAME
  * @property {string} VERSION
  * @property {string} COMMITHASH
  * @property {string} BRANCH
@@ -22,11 +22,12 @@ import { Logging } from './logs.js'
  *
  * @typedef {Object} EnvTransformed
  * @property {Array<string>} ipfsGateways
- * @property {Object} gatewayMetricsDurable
- * @property {Object} summaryMetricsDurable
- * @property {Object} cidsTrackerDurable
- * @property {Object} gatewayRateLimitsDurable
- * @property {Object} gatewayRedirectCounter
+ * @property {DurableObjectNamespace} gatewayMetricsDurable
+ * @property {DurableObjectNamespace} summaryMetricsDurable
+ * @property {DurableObjectNamespace} cidsTrackerDurable
+ * @property {DurableObjectNamespace} gatewayRateLimitsDurable
+ * @property {DurableObjectNamespace} gatewayRedirectCounter
+ * @property {number} REQUEST_TIMEOUT
  * @property {Toucan} [sentry]
  * @property {Logging} [log]
  *
@@ -71,9 +72,36 @@ function getSentry(request, env) {
     debug: false,
     environment: env.ENV || 'dev',
     rewriteFrames: {
-      root: '/',
+      // strip . from start of the filename ./worker.mjs as set by cloudflare, to make absolute path `/worker.mjs`
+      iteratee: (frame) => ({
+        ...frame,
+        filename: frame.filename.substring(1),
+      }),
     },
     release: env.VERSION,
     pkg,
   })
 }
+
+/**
+ * From: https://github.com/cloudflare/workers-types
+ *
+ * @typedef {{
+ *  toString(): string
+ *  equals(other: DurableObjectId): boolean
+ *  readonly name?: string
+ * }} DurableObjectId
+ *
+ * @typedef {{
+ *   newUniqueId(options?: { jurisdiction?: string }): DurableObjectId
+ *   idFromName(name: string): DurableObjectId
+ *   idFromString(id: string): DurableObjectId
+ *   get(id: DurableObjectId): DurableObjectStub
+ * }} DurableObjectNamespace
+ *
+ * @typedef {{
+ *   readonly id: DurableObjectId
+ *   readonly name?: string
+ *   fetch(requestOrUrl: Request | string, requestInit?: RequestInit | Request): Promise<Response>
+ * }} DurableObjectStub
+ */

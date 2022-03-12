@@ -2,7 +2,7 @@ name: Cron Metrics
 
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/20 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         env: ['staging', 'production']
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2

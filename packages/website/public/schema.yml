@@ -5,6 +5,7 @@ info:
 
 servers:
   - url: https://api.nft.storage
+  - url: http://127.0.0.1:8787
 
 tags:
   - name: NFT Storage
@@ -294,7 +295,104 @@ paths:
           $ref: '#/components/responses/notFound'
         '500':
           $ref: '#/components/responses/internalServerError'
+  /did:
+    get:
+      tags:
+        - NFT Storage
+      summary: Get nft.storage DID
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    default: true
+                  value:
+                    type: string
+                    example: did:key:z6MkgBRFJi7Ew2mzN7JtYN7nkq8M8qTHhLbsTEvV5j4ajWZS
+                    description: NFT Storage DID.
+  /user/did:
+    post:
+      tags:
+        - NFT Storage
+      summary: Register a DID for a user.
+      requestBody:
+        required: true
+        content:
+          'application/json':
+            schema:
+              type: object
+              properties:
+                did:
+                  type: string
+                  example: did:key:z6MkgBRFJi7Ew2mzN7JtYN7nkq8M8qTHhLbsTEvV5j4ajWZS
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    default: true
+                  value:
+                    type: string
+                    example: did:key:z6MkgBRFJi7Ew2mzN7JtYN7nkq8M8qTHhLbsTEvV5j4ajWZS
+                    description: NFT Storage DID.
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /ucan/token:
+    post:
+      tags:
+        - NFT Storage
+      summary: Get a root UCAN.
+      description: |
+        This endpoint returns a root UCAN for nft.storage.
+        The UCAN will be valid for **two weeks** and has full capabilities. The JWT payload will looking similar to this:
+          
+        ```json
+        {
+          "att": [
+            {
+              "with": "storage://did:key:z6MkheUPoHhYRS5LoHbbttpaTkkxvFFFUV5VPSziwTJmbb7D",
+              "can": "upload/*"
+            }
+          ],
+          "exp": 1646668606,
+          "iss": "did:key:z6MkheUPoHhYRS5LoHbbttpaTkkxvFFFUV5VPSziwTJmbb7D",
+          "prf": []
+        }
+        ```
 
+        A valid UCAN can be used for authorization in this endpoint.
+
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                    default: true
+                  value:
+                    type: string
+                    example: eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCIsInVjdiI6IjAuOC4wIn0.eyJhdHQiOlt7IndpdGgiOiJzdG9yYWdlOi8vZGlkOmtleTp6Nk1raGVVUG9IaFlSUzVMb0hiYnR0cGFUa2t4dkZGRlVWNVZQU3ppd1RKbWJiN0QiLCJjYW4iOiJ1cGxvYWQvKiJ9XSwiZXhwIjoxNjQ2NjY4NjA2LCJpc3MiOiJkaWQ6a2V5Ono2TWtoZVVQb0hoWVJTNUxvSGJidHRwYVRra3h2RkZGVVY1VlBTeml3VEptYmI3RCIsInByZiI6W251bGxdfQ.JSJ01PY3d6a-vkN6clTvVi2AeZQorvRpyBYwYYMNEtZp6TXW0AhsUCP1ltL7hJjr0iWAp-B6dpOHsJS6tR1jCg
+                    description: Root UCAN.
+        '400':
+          $ref: '#/components/responses/didNotFoundError'
+        '500':
+          $ref: '#/components/responses/internalServerError'
 components:
   schemas:
     NFT:
@@ -535,7 +633,21 @@ components:
             message:
               type: string
               enum: [Token is not valid, Session expired]
-
+    DidNotFoundErrorResponse:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          default: false
+        error:
+          type: object
+          properties:
+            name:
+              type: string
+              default: DIDNotFound
+            message:
+              type: string
+              default: User does not have a DID registered.
   securitySchemes:
     bearerAuth:
       description: |
@@ -582,6 +694,12 @@ components:
         'application/json':
           schema:
             $ref: '#/components/schemas/ErrorResponse'
+    didNotFoundError:
+      description: Bad Request
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/DidNotFoundErrorResponse'
   parameters:
     before:
       description: Return results created before provided timestamp

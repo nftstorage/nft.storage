@@ -1,6 +1,8 @@
+import { VscLoading } from 'react-icons/vsc'
+
 const Loading = () => (
   <div className="loading">
-    <img src="/spinner.svg" height="50" alt="Loading" />
+    <VscLoading size={55} strokeWidth={0.5} className="spin" />
   </div>
 )
 

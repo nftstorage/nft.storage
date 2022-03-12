@@ -1,5 +1,5 @@
 import { parse } from 'regexparam'
-import { database, GATEWAY_NFT_STORAGE_HOSTNAME } from '../constants.js'
+import { database } from '../constants.js'
 
 /**
  * @typedef {{ params: Record<string, string> }} BasicRouteContext
@@ -46,7 +46,7 @@ function matchParams(path, result) {
  */
 class Router {
   /**
-   * @param {(e: FetchEvent, params: Record<string, string>) => RouteContext} getRouteContext
+   * @param {(e: FetchEvent, params: Record<string, string>) => Promise<RouteContext>} getRouteContext
    * @param {object} [options]
    * @param {BasicHandler} [options.onNotFound]
    * @param {ErrorHandler} [options.onError]
@@ -152,7 +152,7 @@ class Router {
   async route(event) {
     const req = event.request
     const [handler, params, postHandlers] = this.resolve(req)
-    const ctx = this.getRouteContext(event, params)
+    const ctx = await this.getRouteContext(event, params)
     let rsp
 
     ctx.log.time('request')
@@ -184,11 +184,8 @@ class Router {
     // Add more if needed for other backends
     const passThrough = [database.url]
 
-    // Ignore http requests from the passthrough list above and gateway
-    if (
-      !passThrough.includes(`${url.protocol}//${url.host}`) &&
-      !url.hostname.includes(GATEWAY_NFT_STORAGE_HOSTNAME)
-    ) {
+    // Ignore http requests from the passthrough list above
+    if (!passThrough.includes(`${url.protocol}//${url.host}`)) {
       event.respondWith(this.route(event))
     }
   }

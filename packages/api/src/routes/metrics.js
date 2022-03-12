@@ -1,4 +1,5 @@
 import { UPLOAD_TYPES, PIN_SERVICES, PIN_STATUSES } from '../utils/db-client.js'
+import { JSONResponse } from '../utils/json-response.js'
 
 /**
  * TODO: basic auth
@@ -6,6 +7,19 @@ import { UPLOAD_TYPES, PIN_SERVICES, PIN_STATUSES } from '../utils/db-client.js'
 /** @type {import('../bindings').Handler} */
 export async function metrics(_, { db }) {
   return new Response(await exportPromMetrics(db))
+}
+
+/** @type {import('../bindings').Handler} */
+export async function getStats(_, { db }) {
+  let stats = await db.getStats()
+
+  return new JSONResponse(
+    {
+      ok: true,
+      data: stats,
+    },
+    { status: 200 }
+  )
 }
 
 /**

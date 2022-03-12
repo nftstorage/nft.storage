@@ -2,6 +2,7 @@
 
 import { Router } from 'itty-router'
 
+import { ipfsGet } from './ipfs.js'
 import { gatewayGet } from './gateway.js'
 import { metricsGet } from './metrics.js'
 
@@ -9,7 +10,7 @@ import { metricsGet } from './metrics.js'
 export { GatewayMetrics0 } from './durable-objects/gateway-metrics.js'
 export { SummaryMetrics0 } from './durable-objects/summary-metrics.js'
 export { CidsTracker0 } from './durable-objects/cids.js'
-export { GatewayRateLimits1 } from './durable-objects/gateway-rate-limits.js'
+export { GatewayRateLimits2 } from './durable-objects/gateway-rate-limits.js'
 export { GatewayRedirectCounter0 } from './durable-objects/gateway-redirect-counter.js'
 
 import { addCorsHeaders, withCorsHeaders } from './cors.js'
@@ -21,6 +22,10 @@ const router = Router()
 router
   .all('*', envAll)
   .get('/metrics', withCorsHeaders(metricsGet))
+  .get('/ipfs/:cid', withCorsHeaders(ipfsGet))
+  .get('/ipfs/:cid/*', withCorsHeaders(ipfsGet))
+  .head('/ipfs/:cid', withCorsHeaders(ipfsGet))
+  .head('/ipfs/:cid/*', withCorsHeaders(ipfsGet))
   .get('*', withCorsHeaders(gatewayGet))
   .head('*', withCorsHeaders(gatewayGet))
 

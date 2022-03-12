@@ -1,5 +1,0 @@
-function:
-  name: link_resource_content
-  schema: public
-configuration:
-  exposed_as: mutation

@@ -21,6 +21,11 @@ export interface Tag {
   selected?: boolean
 }
 
+interface Logo {
+  src: string
+  alt: string
+}
+
 export interface LayoutProps {
   callback?: boolean
   needsUser: boolean
@@ -33,13 +38,14 @@ export interface LayoutProps {
   altLogo?: boolean
   withSubscribe?: boolean
   posts?: PostMeta[]
-  logos?: string[]
+  logos?: Logo[]
 }
 
+export interface MagicUser {
+  issuer: string | null
+  publicAddress: string | null
+  email: string | null
+}
 export interface LayoutChildrenProps {
-  user?: {
-    issuer: string | null
-    publicAddress: string | null
-    email: string | null
-  }
+  user?: MagicUser | null
 }

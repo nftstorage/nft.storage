@@ -1,60 +1,35 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import fs from 'fs'
 import countly from '../lib/countly.js'
 import Hero from '../components/hero.js'
 import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
-import Box from '../components/box.js'
 import Link from 'next/link'
-import { FAQ } from './faq'
+import Button from '../components/button'
+import { TrustedBy } from '../components/trustedByLogos'
 
 export async function getStaticProps() {
-  const logos = fs.readdirSync('public/images/marketplace-logos')
+  const logos = fs.readdirSync('public/images/marketplace-logos/home')
   // make opensea be the first logo
-  logos.sort((a, b) =>
-    a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
-  )
+  const logosWithDir = logos
+    .sort((a, b) =>
+      a.includes('opensea') ? -1 : b.includes('opensea') ? 1 : 0
+    )
+    .map((logo) => {
+      const cleanedFileName = logo.replace(/\.[^/.]+$/, '')
+      return {
+        src: `home/${logo}`,
+        alt: cleanedFileName + ' logo',
+      }
+    })
 
   return {
     props: {
-      needsUser: true,
-      logos,
+      needsUser: false,
+      logos: logosWithDir,
       description: 'NFT.Storage homepage',
     },
   }
-}
-
-/**
- * Logo Component
- * @param {Object} props
- * @param {string} props.src
- */
-const Logo = ({ src }) => (
-  <img
-    className="marketplace-logo"
-    src={`images/marketplace-logos/${src}`}
-    alt="Nft.Storage Users"
-  />
-)
-
-/**
- * Logos Component
- * @param {Object} props
- * @param {string[]} props.logos
- *
- */
-const Logos = ({ logos }) => {
-  return (
-    <div className="marketplace-logos-container center pv4 ph3 ph5-ns">
-      <h2 className="tc mt0 chicagoflf">Trusted by</h2>
-      <div className="marketplace-logo-grid">
-        {logos.map((logo) => (
-          <Logo key={`marketplace-logo-${logo}`} src={logo} />
-        ))}
-      </div>
-      <p className="tc chicagoflf">and 20,000+ other users!</p>
-    </div>
-  )
 }
 
 /**
@@ -64,27 +39,18 @@ const Logos = ({ logos }) => {
  *
  */
 export default function Home({ logos }) {
+  useEffect(() => {
+    if (window.location.hash) {
+      location.hash = window.location.hash
+    }
+  }, [])
   return (
     <>
       <Hero />
       <main className="bg-nsltblue">
-        <Logos logos={logos} />
+        <TrustedBy logos={logos} />
         <About />
         <GettingStarted />
-        <article className="bg-nsforest">
-          <div className="mw9 center pa4 pa5-ns">
-            <h2 className="chicagoflf white">
-              <HashLink id="faq">FAQ</HashLink>
-            </h2>
-            <FAQ limit={5} />
-            <h3 className="chicagoflf white">
-              More FAQs{' '}
-              <Link href="/faq">
-                <a className="white underline">here</a>
-              </Link>
-            </h3>
-          </div>
-        </article>
       </main>
     </>
   )
@@ -102,14 +68,23 @@ function About() {
         URL (<code>ipfs://&lt;cid&gt;</code>). Use this IPFS URL in your NFT
         data to refer to <strong>off-chain</strong> data (e.g., the metadata
         field in your NFT, the image field in your metadata) as a pointer to the
-        content.
+        content itself, so no one can dispute what your NFT is.
       </p>
       <p className="lh-copy">
         Filecoin provides long-term storage for the data ensuring that even if
-        NFT.Storage is attacked or taken down the NFT data persists! And
-        NFT.Storage will continue to decentralize itself out of the picture
-        moving forward (e.g., making perpetual storage completely smart
-        contract-based utilizing future tools like the{' '}
+        NFT.Storage is attacked or taken down the NFT data persists! This
+        storage is trustlessly verifiable (with on-chain, cryptographic proofs
+        that data is stored as promised). And NFT.Storage will continue to{' '}
+        <a
+          className="black"
+          href="https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          decentralize itself
+        </a>{' '}
+        out of the picture moving forward (e.g., making perpetual storage
+        completely smart contract-based utilizing future tools like the{' '}
         <a
           className="black"
           href="https://filecoin.io/blog/posts/introducing-the-filecoin-virtual-machine/"
@@ -167,7 +142,7 @@ function About() {
         </a>
         , or by using{' '}
         <a
-          href="https://github.com/nftstorage/ipfs-desktop"
+          href="https://github.com/ipfs/ipfs-desktop"
           className="black"
           target="_blank"
           rel="noopener noreferrer"
@@ -207,7 +182,8 @@ function About() {
               <p className="lh-copy">
                 <strong>NFT.Storage</strong> is a long-term storage service
                 designed for <strong>off-chain</strong> NFT data (like metadata,
-                images, and other assets) for up to 31GiB in size. Data is{' '}
+                images, and other assets) for up to 31GiB in size per individual
+                upload. Data is{' '}
                 <a
                   href="https://nftschool.dev/concepts/content-addressing"
                   className="black"
@@ -216,10 +192,20 @@ function About() {
                 >
                   content addressed
                 </a>{' '}
-                using IPFS, meaning the URL pointing to a piece of data
-                (“ipfs://…”) is completely unique to that data. IPFS URLs can be
-                used in NFTs and metadata to ensure the NFT forever actually
-                refers to the intended data (eliminating things like rug pulls).
+                using IPFS, meaning the URI pointing to a piece of data
+                (“ipfs://…”) is completely unique to that data (using a{' '}
+                <a
+                  href="https://docs.ipfs.io/concepts/content-addressing/"
+                  className="black"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  content identifier
+                </a>
+                , or CID). IPFS URLs and CIDs can be used in NFTs and metadata
+                to ensure the NFT forever actually refers to the intended data
+                (eliminating things like rug pulls, and making it trustlessly
+                verifiable what content an NFT is associated with).
               </p>
             </div>
             <div>
@@ -255,7 +241,17 @@ function About() {
                 >
                   local IPFS node
                 </a>
-                , to other decentralized networks like Arweave or Storj.
+                , to other storage networks like Arweave or Storj. And as time
+                goes on, NFT.Storage will increasingly{' '}
+                <a
+                  href="https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/"
+                  className="black"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  decentralize itself
+                </a>{' '}
+                as a public good!
               </p>
             </div>
           </div>
@@ -324,247 +320,51 @@ function GettingStarted() {
     )
   }, [])
 
-  const jsEx = `import { NFTStorage, File } from 'nft.storage'
-import { pack } from 'ipfs-car/pack';
-
-const apiKey = 'YOUR_API_KEY'
-const client = new NFTStorage({ token: apiKey })
-
-const metadata = await client.store({
-  name: 'Pinpie',
-  description: 'Pin is not delicious beef!',
-  image: new File([/* data */], 'pinpie.jpg', { type: 'image/jpg' })
-})
-console.log(metadata.url)
-// ipfs://bafyreib4pff766vhpbxbhjbqqnsh5emeznvujayjj4z2iu533cprgbz23m/metadata.json`
-
-  const curlEx = `curl -X POST --data-binary @art.jpg -H 'Authorization: Bearer YOUR_API_KEY' https://api.nft.storage/upload`
-
-  const uploadResp = `{
-  "ok": true,
-  "value": { "cid": "bafy..." }
-}`
-
   return (
     <article className="bg-yellow">
       <div className="mw9 center pa4 pa5-ns">
         <h2 className="chicagoflf tc mb5">
-          <HashLink id="getting-started">Getting started</HashLink>
+          <HashLink id="getting-started">Getting started is easy</HashLink>
         </h2>
-        <ol className="list tc pl0 mb5">
-          <li>
-            <Step>1</Step>
-            <p className="chicagoflf f3 mw6 center">
-              <Link href="/login">
-                <a
-                  className="no-underline underline-hover nsnavy"
-                  onClick={onClickHandler}
-                >
-                  Register an NFT.Storage account
-                </a>
-              </Link>{' '}
-              so that you can create API access keys.
-            </p>
-            <img
-              width="29px"
-              height="66px"
-              src="images/icon-arrow-down.svg"
-              alt="arrow down"
-              className="mb3"
-            />
-          </li>
-          <li>
-            <Step>2</Step>
-            <p className="chicagoflf f3 mw6 center">
-              <Link href="/manage">
-                <a
-                  className="no-underline underline-hover nsnavy"
-                  onClick={onClickHandler}
-                >
-                  Create an API access key
-                </a>
-              </Link>{' '}
-              and note it down.
-            </p>
-            <img
-              width="29px"
-              height="66px"
-              src="images/icon-arrow-down.svg"
-              alt="arrow down"
-              className="mb3"
-            />
-          </li>
-          <li>
-            <Step>3</Step>
-            <p className="chicagoflf f3 mw6 center">
-              Choose a method to get your NFT data stored:
-            </p>
-          </li>
-        </ol>
-        <div
-          id="docs"
-          className="db-m flex-ns justify-center center mw9 mw-none-m mw-none-ns mh-3"
-        >
-          <Box
-            bgColor="nspeach"
-            borderColor="nsnavy"
-            wrapperClassName="w-100 w-100-m w-50-ns mh0 mh0-m mh3-ns mb4"
-          >
-            <h3 className="chicagoflf f5 fw4">
-              <HashLink id="js-client-library">JS Client Library</HashLink>
-            </h3>
-            <p className="lh-copy">
-              Install the{' '}
-              <a
-                href="https://npmjs.org/package/nft.storage"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="black"
-              >
-                JS library
-              </a>
-              :
-            </p>
-            <pre className="f6 lh-copy white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll">
-              npm install nft.storage
-            </pre>
-            <p className="lh-copy">Use the client in Node.js or the browser:</p>
-            <pre className="f6 lh-copy white bg-nsnavy pa3 br1 ba b--black code overflow-x-scroll">
-              {jsEx}
-            </pre>
-            <p className="lh-copy">
-              View the{' '}
-              <a
-                href="https://nftstorage.github.io/nft.storage/client/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="black"
-              >
-                full library reference docs
-              </a>
-              .
-            </p>
-            <p className="lh-copy">
-              For additional example code, check out our{' '}
-              <a
-                className="black"
-                href="https://github.com/nftstorage/nft.storage/tree/main/packages/client/examples/node.js"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub repo
-              </a>{' '}
-              and{' '}
-              <a
-                className="black"
-                href="https://nftschool.dev/tutorial/end-to-end-experience/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                NFT School.
-              </a>
-            </p>
-          </Box>
-          <Box
-            bgColor="nspeach"
-            borderColor="nspink"
-            wrapperClassName="w-100 w-100-m w-50-ns mh0 mh0-m mh3-ns mb4"
-          >
-            <h3 className="chicagoflf f5 fw4">
-              <HashLink id="raw-http-request">Raw HTTP Request</HashLink>
-            </h3>
-            <p className="lh-copy">
-              Configure your HTTP client and set the{' '}
-              <code className="f6 bg-nspink ph2 pv1 br1 ba b--black code">
-                Authorization
-              </code>{' '}
-              header:
-            </p>
-            <pre className="f6 lh-copy bg-nspink pa3 br1 ba b--black code overflow-x-scroll">
-              &quot;Authorization&quot;: &quot;Bearer YOUR_API_KEY&quot;
-            </pre>
-            <p className="lh-copy">
-              Submit a HTTP{' '}
-              <code className="f6 bg-nspink ph2 pv1 br1 ba b--black code">
-                POST
-              </code>{' '}
-              request to{' '}
-              <span className="black underline">api.nft.storage/upload</span>{' '}
-              passing the file data in the request body. e.g.
-            </p>
-            <pre className="f6 lh-copy bg-nspink pa3 br1 ba b--black code overflow-x-scroll">
-              {curlEx}
-            </pre>
-            <p className="lh-copy">
-              Successful requests will receive a HTTP{' '}
-              <code className="f6 bg-nspink ph2 pv1 br1 ba b--black code">
-                200
-              </code>{' '}
-              status and{' '}
-              <code className="f6 bg-nspink ph2 pv1 br1 ba b--black code">
-                application/json
-              </code>{' '}
-              response like:
-            </p>
-            <pre className="f6 lh-copy bg-nspink pa3 br1 ba b--black code overflow-x-scroll">
-              {uploadResp}
-            </pre>
-            <p className="lh-copy">
-              Check the{' '}
-              <Link href="/api-docs">
-                <a className="black">API Docs</a>
-              </Link>{' '}
-              for information on uploading multiple files and the other
-              available endpoints.
-            </p>
-            <p className="lh-copy">
-              For additional example code, check out our{' '}
-              <a
-                className="black"
-                href="https://github.com/nftstorage/nft.storage/tree/main/packages/client/examples/browser"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub repo
-              </a>
-              .
-            </p>
-          </Box>
-          {/* <Box
-            bgColor="nspeach"
-            borderColor="nsred"
-            wrapperClassName="w-100 w-100-m w-33-ns mh0 mh0-m mh3-ns mb4"
-          >
-            <h2 className="chicagoflf f5 fw4">
-              <HashLink id="configure-as-a-remote-pinning-service">
-                Configure as a Remote Pinning Service
-              </HashLink>
-            </h2>
-            <p className="lh-copy">
-              You can use <strong>nft.storage</strong> as a{' '}
-              <a
-                href="https://ipfs.github.io/pinning-services-api-spec"
-                className="black"
-              >
-                remote pinning service
-              </a>{' '}
-              in IPFS.
-            </p>
-            <pre className="f6 lh-copy white bg-nsred pa3 br1 ba b--black code overflow-x-scroll">
-              ipfs pin remote service add nft-storage https://api.nft.storage
-              YOUR_API_KEY
-            </pre>
-            <p className="lh-copy">
-              Use the{' '}
-              <code className="f6 white bg-nsred ph2 pv1 br1 ba b--black code">
-                --help
-              </code>{' '}
-              option for information on other remote pinning service commands:
-            </p>
-            <pre className="f6 lh-copy white bg-nsred pa3 br1 ba b--black code overflow-x-scroll">
-              ipfs pin remote --help
-            </pre>
-          </Box> */}
+        <div className="getting-started-callout">
+          <img src="/images/getting-started.png" alt="getting-started" />
+          <ol className="list pl0 mb2">
+            <li>
+              <Step>1</Step>
+              <p className="chicagoflf f5 f4-ns center mb4 lh-copy">
+                <Link href="/login">
+                  <a className="nsnavy" onClick={onClickHandler}>
+                    Create an NFT.Storage account
+                  </a>
+                </Link>{' '}
+                and start uploading your files to IPFS. Your data will be
+                accessible on the IPFS network where it is perpetually and
+                verifiably stored by multiple Filecoin storage providers!
+              </p>
+            </li>
+            <li>
+              <Step>2</Step>
+              <p className="chicagoflf f5 f4-ns center lh-copy">
+                Use IPFS links when minting your NFT and metadata. As long as
+                your NFT uses IPFS content identifiers (a hash of the data), no
+                one can dispute what content your NFT is referring to!
+              </p>
+            </li>
+          </ol>
+        </div>
+        <div className="mv5 center tc">
+          <h4 className="f3-ns f4 mv4 chicagoflf">
+            Are you a developer? We have an API for that!
+          </h4>
+          <div className="flex justify-center">
+            <Button
+              className="mh3 mb3"
+              href="/docs"
+              // tracking={{ ui: countly.ui.HOME_HERO, action: 'Get Started' }}
+            >
+              View Docs
+            </Button>
+          </div>
         </div>
       </div>
     </article>

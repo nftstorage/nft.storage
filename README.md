@@ -88,6 +88,7 @@ METAPLEX_AUTH_TOKEN=secret
 # needs to be real so create a personal magic.link account or use the staging key
 MAGIC_SECRET_KEY=secret
 LOGTAIL_TOKEN=secret
+PRIVATE_KEY=xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY=
 
 ## API Sentry
 SENTRY_DSN=https://000000@0000000.ingest.sentry.io/00000

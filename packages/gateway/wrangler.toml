@@ -14,14 +14,14 @@ command = "npm run build"
 [build.upload]
 format = "modules"
 dir = "dist"
-main = "index.mjs"
+main = "worker.mjs"
 
 [durable_objects]
 bindings = [
   {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
-  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits1"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits2"},
   {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
 ]
 
@@ -29,11 +29,12 @@ bindings = [
 [env.production]
 # name = "gateway-nft-storage-production"
 account_id = "fffa4b4363a7e5250af8357087263b3a" # Protocol Labs CF account
-zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"    # nft.storage zone
+zone_id = "c7795a0adce7609a95d62fec04705aff"    # nftstorage.link zone
 route = "*gateway.nft.storage/*"
 
 [env.production.vars]
-IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]"
+IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf.nftstorage.link\", \"https://nft-storage.mypinata.cloud/\"]"
+GATEWAY_HOSTNAME = 'ipfs.nftstorage.link'
 DEBUG = "false"
 ENV = "production"
 
@@ -42,7 +43,7 @@ bindings = [
   {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
-  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits1"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits2"},
   {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
 ]
 
@@ -50,11 +51,12 @@ bindings = [
 [env.staging]
 # name = "gateway-nft-storage-staging"
 account_id = "fffa4b4363a7e5250af8357087263b3a" # Protocol Labs CF account
-zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"    # nft.storage zone
+zone_id = "c7795a0adce7609a95d62fec04705aff"    # nftstorage.link zone
 route = "*gateway-staging.nft.storage/*"
 
 [env.staging.vars]
-IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf-ipfs.com\", \"https://nft-storage.mypinata.cloud/\"]"
+IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf.nftstorage.link\", \"https://nft-storage.mypinata.cloud/\"]"
+GATEWAY_HOSTNAME = 'ipfs-staging.nftstorage.link'
 DEBUG = "true"
 ENV = "staging"
 
@@ -63,7 +65,7 @@ bindings = [
   {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
-  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits1"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits2"},
   {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
 ]
 
@@ -73,6 +75,7 @@ workers_dev = true
 
 [env.test.vars]
 IPFS_GATEWAYS = "[\"http://127.0.0.1:9081\", \"http://localhost:9082\", \"http://localhost:9083\"]"
+GATEWAY_HOSTNAME = 'ipfs.localhost:8787'
 DEBUG = "true"
 ENV = "test"
 
@@ -81,7 +84,7 @@ bindings = [
   {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
-  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits1"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits2"},
   {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
 ]
 
@@ -91,6 +94,7 @@ workers_dev = true
 account_id = "7ec0b7cf2ec201b2580374e53ba5f37b"
 
 [env.vsantos.vars]
+GATEWAY_HOSTNAME = 'ipfs.localhost:8787'
 IPFS_GATEWAYS = "[\"https://ipfs.io\"]"
 
 [env.vsantos.durable_objects]
@@ -98,7 +102,7 @@ bindings = [
   {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
   {name = "CIDSTRACKER", class_name = "CidsTracker0"},
-  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits1"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits2"},
   {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
 ]
 
@@ -109,4 +113,9 @@ new_classes = ["GatewayMetrics0", "SummaryMetrics0", "CidsTracker0", "GatewayRat
 tag = "v2" # Should be unique for each entry
 renamed_classes = [
   {from="GatewayRateLimits0", to="GatewayRateLimits1"}
+]
+[[migrations]]
+tag = "v3" # Should be unique for each entry
+renamed_classes = [
+  {from="GatewayRateLimits1", to="GatewayRateLimits2"}
 ]
