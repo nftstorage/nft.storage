@@ -1,5 +1,5 @@
 import { parse } from 'regexparam'
-import { database } from '../constants.js'
+import { database, cluster } from '../constants.js'
 
 /**
  * @typedef {{ params: Record<string, string> }} BasicRouteContext
@@ -182,7 +182,7 @@ class Router {
   listen(event) {
     const url = new URL(event.request.url)
     // Add more if needed for other backends
-    const passThrough = [database.url]
+    const passThrough = [database.url, cluster.apiUrl]
 
     // Ignore http requests from the passthrough list above
     if (!passThrough.includes(`${url.protocol}//${url.host}`)) {

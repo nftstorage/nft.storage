@@ -1,7 +1,16 @@
+import { Cluster } from '@nftstorage/ipfs-cluster'
 import { signJWT } from '../../src/utils/jwt.js'
-import { SALT } from './worker-globals.js'
+import {
+  SALT,
+  CLUSTER_API_URL,
+  CLUSTER_BASIC_AUTH_TOKEN,
+} from './worker-globals.js'
 import { PostgrestClient } from '@supabase/postgrest-js'
 import { DBClient } from '../../src/utils/db-client.js'
+
+export const cluster = new Cluster(CLUSTER_API_URL, {
+  headers: { Authorization: `Basic ${CLUSTER_BASIC_AUTH_TOKEN}` },
+})
 
 export const rawClient = new PostgrestClient(DATABASE_URL, {
   headers: {
