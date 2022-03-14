@@ -11,14 +11,12 @@
  * Durable Object to keep track of gateway rating limits.
  * State: number[]
  */
-export class GatewayRateLimits2 {
+export class GatewayRateLimits3 {
   constructor(state) {
     this.state = state
     this.id = this.state.id.name
     /** @type {RateLimitCharacteristics} */
-    this.rateLimitCharacteristics = getRateLimitConfig(
-      this.id
-    )
+    this.rateLimitCharacteristics = getRateLimitConfig()
 
     // `blockConcurrencyWhile()` ensures no requests are delivered until initialization completes.
     this.state.blockConcurrencyWhile(async () => {
@@ -81,31 +79,11 @@ const MINUTE = SECOND * 60
 /**
  * Get rate limiting characteristics of a given Gateway.
  *
- * @param {string} gatewayUrl
  * @return {RateLimitCharacteristics}
  */
-function getRateLimitConfig(gatewayUrl) {
-  switch (gatewayUrl) {
-    case 'https://ipfs.io':
-      return {
-        RATE_LIMIT_REQUESTS: Infinity,
-        RATE_LIMIT_TIMEFRAME: SECOND * 10,
-      }
-    case 'https://cf.nftstorage.link':
-      return {
-        RATE_LIMIT_REQUESTS: Infinity,
-        RATE_LIMIT_TIMEFRAME: SECOND * 10,
-      }
-    case 'https://nft-storage.mypinata.cloud/':
-      return {
-        RATE_LIMIT_REQUESTS: 400,
-        RATE_LIMIT_TIMEFRAME: MINUTE,
-      }
-    // Default to 100
-    default:
-      return {
-        RATE_LIMIT_REQUESTS: 100,
-        RATE_LIMIT_TIMEFRAME: MINUTE,
-      }
+function getRateLimitConfig() {
+  return {
+    RATE_LIMIT_REQUESTS: 400,
+    RATE_LIMIT_TIMEFRAME: MINUTE,
   }
 }
