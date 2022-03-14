@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/nftstorage/nft.storage/compare/gateway-v1.2.4...gateway-v1.3.0) (2022-03-14)
+
+
+### Features
+
+* gateway with dedicated cf gateway ([#1546](https://github.com/nftstorage/nft.storage/issues/1546)) ([a3acf00](https://github.com/nftstorage/nft.storage/commit/a3acf00248dd136897b1ccb5f08693f0f74530c3))
+
+
+### Bug Fixes
+
+* gateway wrangler route ([#1633](https://github.com/nftstorage/nft.storage/issues/1633)) ([b4e9dcc](https://github.com/nftstorage/nft.storage/commit/b4e9dcc497bc01b190cb4e4282665e8a71c9b974))
+
 ### [1.2.4](https://github.com/nftstorage/nft.storage/compare/gateway-v1.2.3...gateway-v1.2.4) (2022-03-07)
 
 
