@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.37.0](https://github.com/nftstorage/nft.storage/compare/website-v1.36.5...website-v1.37.0) (2022-03-14)
+
+
+### Features
+
+* add ux for button compared to link in docs nav ([#1570](https://github.com/nftstorage/nft.storage/issues/1570)) ([49b2392](https://github.com/nftstorage/nft.storage/commit/49b23920e233cb48d3f4da2f6d08a5c0d048f590))
+
+
+### Bug Fixes
+
+* add json+ld markup for search results ([#1568](https://github.com/nftstorage/nft.storage/issues/1568)) ([7258055](https://github.com/nftstorage/nft.storage/commit/7258055170d106b18c9abd9af01f45d8a362f5d6))
+* ios z-index and fixed position glitch ([#1569](https://github.com/nftstorage/nft.storage/issues/1569)) ([9dbcd54](https://github.com/nftstorage/nft.storage/commit/9dbcd547df2cc990fce3c5328322b64da1198595))
+
 ### [1.36.5](https://github.com/nftstorage/nft.storage/compare/website-v1.36.4...website-v1.36.5) (2022-03-12)
 
 
