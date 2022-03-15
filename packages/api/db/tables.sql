@@ -187,7 +187,7 @@ select
   u.id::text as user_id,
   u.email as email,
   ak.secret as token,
-  ak.id as token_id,
+  ak.id::text as token_id,
   ak.deleted_at as deleted_at,
   akh.inserted_at as reason_inserted_at,
   akh.reason as reason,
