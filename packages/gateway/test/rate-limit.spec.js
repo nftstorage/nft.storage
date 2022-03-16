@@ -1,5 +1,6 @@
 import test from 'ava'
 
+import { GATEWAY_RATE_LIMIT_ID } from '../src/constants.js'
 import { gateways } from './constants.js'
 import { getMiniflare, getGatewayRateLimitsName } from './utils.js'
 
@@ -18,7 +19,7 @@ test('Receives falsy on should block when not on high load', async (t) => {
   await p.waitUntil()
 
   const ns = await mf.getDurableObjectNamespace(getGatewayRateLimitsName())
-  const id = ns.idFromName(gateways[0])
+  const id = ns.idFromName(GATEWAY_RATE_LIMIT_ID)
   const stub = ns.get(id)
   const doRes = await stub.fetch(`http://localhost:8787/request`)
 
@@ -31,7 +32,7 @@ test('Receives should block when load reaches the RATE_LIMIT_REQUESTS', async (t
   const cid = 'bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq'
 
   const ns = await mf.getDurableObjectNamespace(getGatewayRateLimitsName())
-  const id = ns.idFromName(gateways[0])
+  const id = ns.idFromName(GATEWAY_RATE_LIMIT_ID)
   const stub = ns.get(id)
   await Promise.all(
     Array.from({ length: 100 }, (_, i) =>
@@ -41,8 +42,8 @@ test('Receives should block when load reaches the RATE_LIMIT_REQUESTS', async (t
 
   const doRes = await stub.fetch(`http://localhost:8787/request`)
 
-  const rateLimitResponse = await doRes.json()
-  t.truthy(rateLimitResponse.shouldBlock)
+  const shouldPreventRateLimit = await doRes.json()
+  t.truthy(shouldPreventRateLimit[gateways[0]])
 
   const p = await mf.dispatchFetch(`https://${cid}.ipfs.localhost:8787`)
   await p.waitUntil()
