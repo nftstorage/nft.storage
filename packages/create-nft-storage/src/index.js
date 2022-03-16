@@ -30,7 +30,7 @@ cli
   ])
   .example(
     `ucan-node ${kleur.dim(
-      '# Create app based on "ucan-node" example in nft.storage repo.'
+      '# Create app based on "ucan-node" example in NFT.Storage repo.'
     )}`
   )
   .example(
