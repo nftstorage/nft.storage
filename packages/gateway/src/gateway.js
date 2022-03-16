@@ -279,6 +279,12 @@ async function updateGatewayRedirectCounter(request, env) {
  * @param {string} gwUrl
  */
 async function getGatewayRateLimitState(request, env, gwUrl) {
+  if (!shouldCheckRateLimitPrevention(gwUrl)) {
+    return {
+      shouldBlock: false,
+    }
+  }
+
   // Get durable object for gateway rate limits
   const id = env.gatewayRateLimitsDurable.idFromName(gwUrl)
   const stub = env.gatewayRateLimitsDurable.get(id)
@@ -375,4 +381,20 @@ function getDurableRequestUrl(request, route, data) {
     method: 'PUT',
     body: data && JSON.stringify(data),
   })
+}
+
+/**
+ * Get rate limiting characteristics of a given Gateway.
+ */
+function shouldCheckRateLimitPrevention(gatewayUrl) {
+  switch (gatewayUrl) {
+    case 'https://ipfs.io':
+      return false
+    case 'https://cf.nftstorage.link':
+      return false
+    case 'https://nft-storage.mypinata.cloud/':
+      return true
+    default:
+      return true
+  }
 }

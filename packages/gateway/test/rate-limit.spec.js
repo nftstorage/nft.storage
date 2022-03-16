@@ -34,7 +34,7 @@ test('Receives should block when load reaches the RATE_LIMIT_REQUESTS', async (t
   const id = ns.idFromName(gateways[0])
   const stub = ns.get(id)
   await Promise.all(
-    Array.from({ length: 100 }, (_, i) =>
+    Array.from({ length: 400 }, (_, i) =>
       stub.fetch(`http://localhost:8787/request`)
     )
   )
