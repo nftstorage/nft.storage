@@ -45,7 +45,7 @@ cli
   )
   .example(
     `https://github.com/nftstorage/nft.storage --branch master --path examples/basic ${kleur.dim(
-      '# Create app based on base github repo URL with options for branch and example folder.'
+      '# Create app based on base GitHub repo URL with options for branch and example folder.'
     )}`
   )
   .option('-b, --branch', 'Branch name.')
