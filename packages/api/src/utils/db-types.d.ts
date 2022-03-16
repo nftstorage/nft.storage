@@ -1347,6 +1347,8 @@ export interface definitions {
     /** Format: text */
     value: string
     /** Format: text */
+    user_tag_value_type: string
+    /** Format: text */
     reason: string
     /**
      * Format: timestamp with time zone

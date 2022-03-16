@@ -3,6 +3,7 @@ DROP TYPE IF EXISTS pin_status_type cascade;
 DROP TYPE IF EXISTS service_type cascade;
 DROP TYPE IF EXISTS auth_key_blocked_status_type cascade;
 DROP TYPE IF EXISTS user_tag_type cascade;
+DROP TYPE IF EXISTS user_tag_value_type cascade;
 
 DROP TABLE IF EXISTS upload CASCADE;
 DROP TABLE IF EXISTS pin;
