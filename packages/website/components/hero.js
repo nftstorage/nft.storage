@@ -50,7 +50,7 @@ export default function Hero() {
             <h1 className="text-xl lg:text-4xl sm:text-5xl font-normal my-4">
               Free Storage for NFTs
             </h1>
-            <h2 className="text-2xl font-normal max-w-5xl mx-auto my-4 leading-normal">
+            <h2 className="text-lg sm:text-2xl font-normal max-w-5xl mx-auto my-4 leading-normal">
               Free decentralized storage and bandwidth for NFTs on{' '}
               <img
                 src="images/logo-ipfs-sm.png"
@@ -74,7 +74,7 @@ export default function Hero() {
           </hgroup>
           <div className="flex justify-center">
             <Button
-              className="mx-4 mb-4"
+              className="mx-4 mb-8"
               href="#getting-started"
               tracking={{ ui: countly.ui.HOME_HERO, action: 'Get Started' }}
             >

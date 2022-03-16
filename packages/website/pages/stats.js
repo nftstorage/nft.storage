@@ -99,7 +99,9 @@ export default function Stats({ logos }) {
   const StatCard = ({ title, children }) => {
     return (
       <div className="stat-card">
-        <h2 className="stat-card-header chicagoflf">{title}</h2>
+        <h2 className="text-2xl sm:text-4xl stat-card-header chicagoflf">
+          {title}
+        </h2>
         <div className="stat-card-inner">{children}</div>
       </div>
     )

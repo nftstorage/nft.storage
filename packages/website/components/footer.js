@@ -15,7 +15,7 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer className="bg-black block lg:flex items-center justify-between text-xs text-white py-4 px-16">
+    <footer className="bg-black block lg:flex items-center justify-between text-xs text-white py-4 px-6 sm:px-16">
       <div>
         <span className="my-4 pl-byline">
           Made with ❤️ by{' '}

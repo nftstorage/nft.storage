@@ -76,7 +76,7 @@ export const HighlightCard = ({ post }) => (
               >
                 {post.description}
               </p>
-              <div className="flex">
+              <div className="flex flex-wrap">
                 <span className="darker-gray text-sm mr-2">{post.author}</span>
                 <span className="darker-gray text-sm">{post.date}</span>
               </div>
