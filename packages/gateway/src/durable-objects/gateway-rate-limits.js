@@ -22,23 +22,8 @@ export class GatewayRateLimits4 {
     this.state.blockConcurrencyWhile(async () => {
       // Get state and initialize if not existing
       /** @type {Map<string, Array<number>>} */
-      this.gatewayUsage = new Map()
-
-      const storedUsagePerGw = await Promise.all(
-        this.ipfsGateways.map(async (gw) => {
-          /** @type {Array<number>} */
-          const value = (await this.state.storage.get(gw)) || []
-
-          return {
-            gw,
-            value,
-          }
-        })
-      )
-
-      storedUsagePerGw.forEach(({ gw, value }) => {
-        this.gatewayUsage.set(gw, value)
-      })
+      this.gatewayUsage =
+        (await this.state.storage.get(this.id)) || this._createGatewayUsage()
     })
   }
 
@@ -89,13 +74,24 @@ export class GatewayRateLimits4 {
       rateLimitUsage.push(Date.now())
       this.gatewayUsage.set(gatewayUrl, rateLimitUsage)
 
-      await this.state.storage.put(gatewayUrl, rateLimitUsage, {
+      await this.state.storage.put(this.id, this.gatewayUsage, {
         allowUnconfirmed: true,
       })
       return false
     }
 
     return true
+  }
+
+  /**
+   * @return {Map<string, Array<number>>}
+   */
+  _createGatewayUsage() {
+    const gatewayUsage = new Map()
+    this.ipfsGateways.forEach((gwUrl) => {
+      gatewayUsage.set(gwUrl, [])
+    })
+    return gatewayUsage
   }
 }
 
