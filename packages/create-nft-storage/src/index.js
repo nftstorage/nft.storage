@@ -26,7 +26,7 @@ const cli = sade('create-nft-storage [example]', true)
 cli
   .describe([
     'Create a new NFT Storage app.\n',
-    'When your branch name includes a "/" use the --branch option instead of the full github url.',
+    'When your branch name includes a "/" use the --branch option instead of the full GitHub URL.',
   ])
   .example(
     `ucan-node ${kleur.dim(
