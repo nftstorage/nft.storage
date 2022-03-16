@@ -1,5 +1,6 @@
 import assert from 'assert'
 import { createClientWithUser, DBTestClient } from './scripts/helpers.js'
+import { KeyPair } from 'ucan-storage/keypair'
 
 describe('User DID', () => {
   /** @type{DBTestClient} */
@@ -10,16 +11,16 @@ describe('User DID', () => {
   })
 
   it('should register new did ', async () => {
-    const did = 'did:key:z6MkkxgkZhCLmibS6EwfYvvtjjBfGjwqd8uc3F1jZ4TLMPCg'
+    const kp = await KeyPair.create()
     const res = await fetch(`user/did`, {
       headers: { Authorization: `Bearer ${client.token}` },
       method: 'POST',
       body: JSON.stringify({
-        did,
+        did: kp.did(),
       }),
     })
     const { ok, value } = await res.json()
-    assert.equal(value, did)
+    assert.equal(value, kp.did())
   })
 
   it('should error with bad DID', async () => {

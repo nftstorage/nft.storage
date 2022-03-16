@@ -37,8 +37,8 @@ function uploadsTotal(statsObject) {
   }, 0)
 
   const totalBefore = total - statsObject.uploads_past_7_total
-  const uploadsGrowthRate = calcuateGrowthRate(total, totalBefore)
-
+  const uploadsGrowthRate =
+    totalBefore > 0 ? calcuateGrowthRate(total, totalBefore) : 0
   return { ...statsObject, totalUploads: total, growthRate: uploadsGrowthRate }
 }
 

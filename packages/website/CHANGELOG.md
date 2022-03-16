@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.37.0](https://github.com/nftstorage/nft.storage/compare/website-v1.36.5...website-v1.37.0) (2022-03-14)
+
+
+### Features
+
+* add ux for button compared to link in docs nav ([#1570](https://github.com/nftstorage/nft.storage/issues/1570)) ([49b2392](https://github.com/nftstorage/nft.storage/commit/49b23920e233cb48d3f4da2f6d08a5c0d048f590))
+
+
+### Bug Fixes
+
+* add json+ld markup for search results ([#1568](https://github.com/nftstorage/nft.storage/issues/1568)) ([7258055](https://github.com/nftstorage/nft.storage/commit/7258055170d106b18c9abd9af01f45d8a362f5d6))
+* ios z-index and fixed position glitch ([#1569](https://github.com/nftstorage/nft.storage/issues/1569)) ([9dbcd54](https://github.com/nftstorage/nft.storage/commit/9dbcd547df2cc990fce3c5328322b64da1198595))
+
+### [1.36.5](https://github.com/nftstorage/nft.storage/compare/website-v1.36.4...website-v1.36.5) (2022-03-12)
+
+
+### Bug Fixes
+
+* upload stat isnt a byte count, but a number count ([#1629](https://github.com/nftstorage/nft.storage/issues/1629)) ([91568b8](https://github.com/nftstorage/nft.storage/commit/91568b8236124f829be099aff7341ed85dba373f))
+
+### [1.36.4](https://github.com/nftstorage/nft.storage/compare/website-v1.36.3...website-v1.36.4) (2022-03-12)
+
+
+### Bug Fixes
+
+* cleaned up eslint errors ([#1618](https://github.com/nftstorage/nft.storage/issues/1618)) ([5182798](https://github.com/nftstorage/nft.storage/commit/518279853247e72fcb2ecc02762f413302fe39f4))
+* stats requires data attr ([#1627](https://github.com/nftstorage/nft.storage/issues/1627)) ([5684bb2](https://github.com/nftstorage/nft.storage/commit/5684bb2fe152893abb500a434a636218e33d69b1))
+
 ### [1.36.3](https://github.com/nftstorage/nft.storage/compare/website-v1.36.2...website-v1.36.3) (2022-03-10)
 
 

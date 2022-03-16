@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.18.0](https://github.com/nftstorage/nft.storage/compare/api-v2.17.0...api-v2.18.0) (2022-03-11)
+
+
+### Features
+
+* add cors handler to stats route, trying to resolve cors issue ([#1599](https://github.com/nftstorage/nft.storage/issues/1599)) ([f69f570](https://github.com/nftstorage/nft.storage/commit/f69f570cf65e2847ac3016a58f85bd1f138f5c3a))
+
 ## [2.17.0](https://github.com/nftstorage/nft.storage/compare/api-v2.16.0...api-v2.17.0) (2022-03-08)
 
 

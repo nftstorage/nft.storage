@@ -1,6 +1,6 @@
 // theme.config.js
 // eslint-disable-next-line import/no-anonymous-default-export
-export default {
+const theme = {
   nextLinks: false,
   prevLinks: false,
   search: false,
@@ -15,3 +15,5 @@ export default {
     </>
   ),
 }
+
+export default theme

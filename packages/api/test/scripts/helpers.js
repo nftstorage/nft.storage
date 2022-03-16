@@ -1,7 +1,16 @@
+import { Cluster } from '@nftstorage/ipfs-cluster'
 import { signJWT } from '../../src/utils/jwt.js'
-import { SALT } from './worker-globals.js'
+import {
+  SALT,
+  CLUSTER_API_URL,
+  CLUSTER_BASIC_AUTH_TOKEN,
+} from './worker-globals.js'
 import { PostgrestClient } from '@supabase/postgrest-js'
 import { DBClient } from '../../src/utils/db-client.js'
+
+export const cluster = new Cluster(CLUSTER_API_URL, {
+  headers: { Authorization: `Basic ${CLUSTER_BASIC_AUTH_TOKEN}` },
+})
 
 export const rawClient = new PostgrestClient(DATABASE_URL, {
   headers: {
@@ -30,6 +39,32 @@ export async function createTestUser({
   )
 
   return createTestUserWithFixedToken({ token, publicAddress, issuer, name })
+}
+
+/**
+ * Create a new user tag
+ *
+ * @param {Object} tag
+ * @param {number} tag.user_id
+ * @param {string} tag.tag
+ * @param {string} tag.value
+ * @param {string} tag.inserted_at
+ * @param {string} tag.reason
+ */
+async function createUserTag(tag) {
+  const query = rawClient.from('user_tag')
+
+  const { data, error } = await query.upsert(tag).single()
+
+  if (error) {
+    throw error
+  }
+
+  if (!data) {
+    throw new Error('User tag not created.')
+  }
+
+  return data
 }
 
 /**
@@ -62,6 +97,21 @@ export async function createTestUserWithFixedToken({
     userId: user.id,
   })
 
+  await createUserTag({
+    user_id: user.id,
+    tag: 'HasPsaAccess',
+    value: 'true',
+    reason: '',
+    inserted_at: '2/22/2022',
+  })
+
+  await createUserTag({
+    user_id: user.id,
+    tag: 'HasAccountRestriction',
+    value: 'false',
+    reason: '',
+    inserted_at: '2/22/2022',
+  })
   return { token, userId: user.id, githubId: user.github_id }
 }
 

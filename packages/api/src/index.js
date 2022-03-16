@@ -21,6 +21,9 @@ import { pinsList } from './routes/pins-list.js'
 import { pinsReplace } from './routes/pins-replace.js'
 import { metaplexUpload } from './routes/metaplex-upload.js'
 import { blogSubscribe } from './routes/blog-subscribe.js'
+import { userDIDRegister } from './routes/user-did-register.js'
+import { ucanToken } from './routes/ucan-token.js'
+import { did } from './routes/did.js'
 
 import {
   withMode,
@@ -32,9 +35,6 @@ import {
 import { withPsaErrorHandler, withPinningAuthorized } from './middleware/psa.js'
 import { cluster } from './constants.js'
 import { getContext } from './utils/context.js'
-import { userDidRegister } from './routes/user-did-register.js'
-import { ucanToken } from './routes/ucan-token.js'
-import { did } from './routes/did.js'
 
 const getMaintenanceMode = () =>
   typeof MAINTENANCE_MODE !== 'undefined' ? MAINTENANCE_MODE : DEFAULT_MODE
@@ -105,7 +105,7 @@ r.add('delete', '/:cid', withMode(nftDelete, RW), [postCors])
 r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
 
 // User
-r.add('post', '/user/did', withMode(userDidRegister, RW), [postCors])
+r.add('post', '/user/did', withMode(userDIDRegister, RW), [postCors])
 
 // Tokens
 r.add('get', '/internal/tokens', withMode(tokensList, RO), [postCors])

@@ -816,6 +816,7 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  transform: translate3d(0, 0, 0);
 }
 @media (min-width: 768px) {
   .nextra-container .sidebar {
@@ -844,6 +845,16 @@
 .nextra-container .dark .sidebar .active-anchor {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+.nextra-container .sidebar div > ul > li > button {
+  display: flex;
+  justify-content: space-between;
+}
+.nextra-container .sidebar div > ul > li > button:after {
+  content: '+';
+}
+.nextra-container .sidebar div > ul > li.active > button:after {
+  content: '-';
 }
 .nextra-container .sidebar li.active > a {
   --tw-bg-opacity: 1;

@@ -54,7 +54,6 @@ export async function pinsReplace(event, ctx) {
       { status: 400 }
     )
   }
-  let meta
 
   // validate meta
   if (pinData.meta) {
@@ -64,15 +63,13 @@ export async function pinsReplace(event, ctx) {
         { status: 400 }
       )
     }
-    meta = Object.fromEntries(
+    pinData.meta = Object.fromEntries(
       Object.entries(pinData.meta).filter(([, v]) => typeof v === 'string')
     )
   }
 
-  await cluster.pin(cid.contentCid, {
+  await cluster.pin(cid.sourceCid, {
     origins: pinData.origins,
-    name: pinData.name,
-    metadata: pinData.meta,
   })
 
   const upload = await db.createUpload({

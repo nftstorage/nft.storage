@@ -81,12 +81,15 @@ In the root folder create a `.env` file with the following:
 DEBUG=true
 
 # API Secrets
+# the salt is literally secret, not a random string, just 'secret'
 SALT=secret
 MAILCHIMP_API_KEY=secret
 METAPLEX_AUTH_TOKEN=secret
 # needs to be real so create a personal magic.link account or use the staging key
 MAGIC_SECRET_KEY=secret
 LOGTAIL_TOKEN=secret
+# Dev private key for ucan auth
+# You can use this one or create a new key with the ucan cli `ucan-storage keypair`
 PRIVATE_KEY=xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY=
 
 ## API Sentry
@@ -139,6 +142,11 @@ DAG_CARGO_DATABASE=<db-name>
 DAG_CARGO_USER=<db-user>
 DAG_CARGO_PASSWORD=<db-password>
 
+
+
+# Pinning services api, requires a PSA allow list for authoritzation
+# this is the user id in the database
+PSA_ALLOW=1
 ```
 
 Production vars should be set in Github Actions secrets.

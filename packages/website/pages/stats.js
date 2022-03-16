@@ -6,6 +6,7 @@ import decorateAdditionalCalculatedValues, {
 } from '../lib/statsUtils'
 import { API } from '../lib/api'
 import Loading from '../components/loading'
+import { abbreviateNumber } from 'js-abbreviation-number'
 
 /**
  *
@@ -60,7 +61,7 @@ export default function Stats({ logos }) {
           'Content-Type': 'application/json',
         },
       }).then((res) => res.json())
-      setStats(decorateAdditionalCalculatedValues(stats))
+      setStats(decorateAdditionalCalculatedValues(stats.data))
     } catch (e) {
       const fakeData = {
         ok: true,
@@ -119,7 +120,7 @@ export default function Stats({ logos }) {
                   <p className="chicagoflf">Total uploads to NFT.Storage</p>
                   <figure className="chicagoflf">
                     {statsLoading && <Loading />}
-                    {formatBytes(stats.totalUploads || 0, 1)}
+                    {abbreviateNumber(stats.totalUploads || 0, 1)}
                   </figure>
                   <p
                     className={`chicagoflf ${

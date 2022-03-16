@@ -1,9 +1,17 @@
 import assert from 'assert'
+import { CID } from 'multiformats'
 import {
   createClientWithUser,
   DBTestClient,
   rawClient,
+  cluster,
 } from './scripts/helpers.js'
+import {
+  TrackerStatusPinned,
+  TrackerStatusPinning,
+  TrackerStatusPinQueued,
+  TrackerStatusUnpinned,
+} from '@nftstorage/ipfs-cluster'
 
 describe('Pin add ', () => {
   /** @type{DBTestClient} */
@@ -172,5 +180,53 @@ describe('Pin add ', () => {
         details: 'invalid metadata',
       },
     })
+  })
+
+  it('should pin to cluster by source CID', async () => {
+    const cidv0 = 'QmXRdb4vemfS7Z6EL2p47XdjRatZ5Ne8DEnwr5uaHqXnak'
+    const cidv1 = CID.parse(cidv0).toV1().toString()
+
+    const res = await fetch('pins', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: JSON.stringify({ cid: cidv0 }),
+    })
+    const data = await res.json()
+    assert.strictEqual(data.pin.cid, cidv0)
+
+    // should be being pinned by the source CID
+    let status = await cluster.status(cidv0)
+    const goodStatuses = [
+      TrackerStatusPinQueued,
+      TrackerStatusPinning,
+      TrackerStatusPinned,
+    ]
+    Object.values(status.peerMap).forEach(({ status }) => {
+      assert(
+        goodStatuses.some((s) => s === status),
+        `status is ${status}, not one of ${goodStatuses}`
+      )
+    })
+
+    // should not be pinned by normalized v1 CID
+    status = await cluster.status(cidv1)
+    Object.values(status.peerMap).forEach(({ status }) => {
+      assert.strictEqual(status, TrackerStatusUnpinned)
+    })
+  })
+
+  it('should filter non-string meta values', async () => {
+    const cid = 'bafkreihwlixzeusjrd5avlg53yidaoonf5r5srzumu7y5uuumtt7rxxbrm'
+    const res = await fetch('pins', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: JSON.stringify({
+        cid,
+        meta: { invalid: { object: 42 }, valid: 'string' },
+      }),
+    })
+    const { pin } = await res.json()
+    assert.strictEqual(pin.meta.invalid, undefined)
+    assert.strictEqual(pin.meta.valid, 'string')
   })
 })
