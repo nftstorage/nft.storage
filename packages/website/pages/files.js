@@ -5,6 +5,7 @@ import Button from '../components/button.js'
 import Tooltip from '../components/tooltip.js'
 import Loading from '../components/loading'
 import { MOCK_FILES } from '../lib/mock_files'
+import { formatTimestamp } from '../lib/format'
 import { NFTStorage } from 'nft.storage'
 import Script from 'next/script'
 import { When } from 'react-if'
@@ -193,7 +194,8 @@ export default function Files({ user }) {
     return (
       <tr className="bg-white bb">
         <td data-label="Date" className="nowrap" title={nft.created}>
-          {nft.created.split('T')[0]}
+          {/* {nft.created.split('T')[0]} */}
+          {formatTimestamp(nft.created)}
         </td>
         <td data-label="CID" className="nowrap">
           <CopyButton
