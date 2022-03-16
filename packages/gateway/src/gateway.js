@@ -10,6 +10,7 @@ import { getCidFromSubdomainUrl } from './utils/cid.js'
 import {
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
+  GATEWAY_RATE_LIMIT_ID,
   REDIRECT_COUNTER_METRICS_ID,
   CF_CACHE_MAX_OBJECT_SIZE,
   HTTP_STATUS_RATE_LIMITED,
@@ -52,13 +53,15 @@ export async function gatewayGet(request, env, ctx) {
   const cid = getCidFromSubdomainUrl(reqUrl)
   const pathname = reqUrl.pathname
 
+  // Prepare IPFS gateway requests
+  const shouldPreventRateLimit = await getGatewayRateLimitState(request, env)
   const gatewayReqs = env.ipfsGateways.map((gwUrl) =>
-    gatewayFetch(gwUrl, cid, request, env, {
+    gatewayFetch(gwUrl, cid, request, {
       pathname,
       timeout: env.REQUEST_TIMEOUT,
+      shouldPreventRateLimit: shouldPreventRateLimit[gwUrl],
     })
   )
-
   try {
     /** @type {GatewayResponse} */
     const winnerGwResponse = await pAny(gatewayReqs, {
@@ -168,22 +171,19 @@ async function storeWinnerGwResponse(request, env, winnerGwResponse) {
  * @param {string} gwUrl
  * @param {string} cid
  * @param {Request} request
- * @param {Env} env
  * @param {Object} [options]
  * @param {string} [options.pathname]
  * @param {number} [options.timeout]
+ * @param {boolean} [options.shouldPreventRateLimit]
  */
 async function gatewayFetch(
   gwUrl,
   cid,
   request,
-  env,
-  { pathname = '', timeout = 60000 } = {}
+  { pathname = '', timeout = 60000, shouldPreventRateLimit = false } = {}
 ) {
   // Block before hitting rate limit if needed
-  const { shouldBlock } = await getGatewayRateLimitState(request, env, gwUrl)
-
-  if (shouldBlock) {
+  if (shouldPreventRateLimit) {
     /** @type {GatewayResponse} */
     return {
       url: gwUrl,
@@ -276,17 +276,10 @@ async function updateGatewayRedirectCounter(request, env) {
 /**
  * @param {Request} request
  * @param {import('./env').Env} env
- * @param {string} gwUrl
  */
-async function getGatewayRateLimitState(request, env, gwUrl) {
-  if (!shouldCheckRateLimitPrevention(gwUrl)) {
-    return {
-      shouldBlock: false,
-    }
-  }
-
+async function getGatewayRateLimitState(request, env) {
   // Get durable object for gateway rate limits
-  const id = env.gatewayRateLimitsDurable.idFromName(gwUrl)
+  const id = env.gatewayRateLimitsDurable.idFromName(GATEWAY_RATE_LIMIT_ID)
   const stub = env.gatewayRateLimitsDurable.get(id)
 
   const stubResponse = await stub.fetch(
@@ -381,20 +374,4 @@ function getDurableRequestUrl(request, route, data) {
     method: 'PUT',
     body: data && JSON.stringify(data),
   })
-}
-
-/**
- * Get rate limiting characteristics of a given Gateway.
- */
-function shouldCheckRateLimitPrevention(gatewayUrl) {
-  switch (gatewayUrl) {
-    case 'https://ipfs.io':
-      return false
-    case 'https://cf.nftstorage.link':
-      return false
-    case 'https://nft-storage.mypinata.cloud/':
-      return true
-    default:
-      return true
-  }
 }
