@@ -40,7 +40,7 @@ cli
   )
   .example(
     `https://github.com/nftstorage/nft.storage/tree/main/examples/ucan-node ${kleur.dim(
-      '# Create app based on full github URL.'
+      '# Create app based on full GitHub URL.'
     )}`
   )
   .example(
