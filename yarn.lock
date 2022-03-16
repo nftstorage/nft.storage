@@ -1960,6 +1960,11 @@
   resolved "https://registry.yarnpkg.com/@noble/ed25519/-/ed25519-1.6.0.tgz#b55f7c9e532b478bf1d7c4f609e1f3a37850b583"
   integrity sha512-UKju89WV37IUALIMfKhKW3psO8AqmrE/GvH6QbPKjzolQ98zM7WmGUeY+xdIgSf5tqPFf75ZCYMgym6E9Jsw3Q==
 
+"@nftstorage/ipfs-cluster@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@nftstorage/ipfs-cluster/-/ipfs-cluster-4.0.0.tgz#245a0cb733050c5b0d3811cee69ad4040cf38672"
+  integrity sha512-PEt85HJdXpmQ8PULbC7iDdtf12KrM9tblR+o/2k+/0pvcpAdrplJeTQkUiEGRBiyeevjFXvyMs0f/eGpfxBBgA==
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
