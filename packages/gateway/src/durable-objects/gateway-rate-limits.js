@@ -33,20 +33,14 @@ export class GatewayRateLimits4 {
     let url = new URL(request.url)
     switch (url.pathname) {
       case '/request':
-        const shouldPreventRateLimit = (
-          await Promise.all(
-            this.ipfsGateways.map(async (gwUrl) => {
-              return {
-                gwUrl,
-                shouldPreventRequest: await this._shouldPreventRequest(gwUrl),
-              }
-            })
-          )
-        ).reduce(
-          (obj, item) =>
-            Object.assign(obj, { [item.gwUrl]: item.shouldPreventRequest }),
-          {}
-        )
+        const shouldPreventRateLimit = {}
+        this.ipfsGateways.forEach((gwUrl) => {
+          shouldPreventRateLimit[gwUrl] = this._shouldPreventRequest(gwUrl)
+        })
+
+        await this.state.storage.put(this.id, this.gatewayUsage, {
+          allowUnconfirmed: true,
+        })
 
         return new Response(JSON.stringify(shouldPreventRateLimit))
       default:
@@ -57,7 +51,7 @@ export class GatewayRateLimits4 {
   /**
    * @param {string} gatewayUrl
    */
-  async _shouldPreventRequest(gatewayUrl) {
+  _shouldPreventRequest(gatewayUrl) {
     const rateLimitConfig = getRateLimitConfig(gatewayUrl)
     if (rateLimitConfig.RATE_LIMIT_REQUESTS === Infinity) {
       return false
@@ -73,12 +67,9 @@ export class GatewayRateLimits4 {
     if (rateLimitUsage.length < rateLimitConfig.RATE_LIMIT_REQUESTS) {
       rateLimitUsage.push(Date.now())
       this.gatewayUsage.set(gatewayUrl, rateLimitUsage)
-
-      await this.state.storage.put(this.id, this.gatewayUsage, {
-        allowUnconfirmed: true,
-      })
       return false
     }
+    this.gatewayUsage.set(gatewayUrl, rateLimitUsage)
 
     return true
   }
