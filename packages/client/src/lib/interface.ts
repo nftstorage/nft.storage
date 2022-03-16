@@ -15,10 +15,12 @@ export type Tagged<T, Tag> = T & { tag?: Tag }
 export interface Service {
   endpoint: URL
   token: string
+  rateLimiter?: RateLimiter
 }
 
 export interface PublicService {
   endpoint: URL
+  rateLimiter?: RateLimiter
 }
 
 /**
@@ -383,3 +385,11 @@ type Rule<Format extends Pattern<any, any>> = Format extends [infer I, infer O]
   : Format extends (input: infer I) => infer O
   ? (input: I) => O
   : never
+
+/**
+ * RateLimiter returns a promise that resolves when it is safe to send a request
+ * that does not exceed the rate limit.
+ */
+export interface RateLimiter {
+  (): Promise<void>
+}
