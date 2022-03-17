@@ -37,7 +37,7 @@ const CONTENT_LENGTH_HISTOGRAM_ID = 'contentLengthHistogram'
 const RESPONSE_TIME_HISTOGRAM_ID = 'responseTimeHistogram'
 
 /**
- * Durable Object for keeping summary metrics of gateway.nft.storage
+ * Durable Object for keeping summary metrics of nft.storage Gateway
  */
 export class SummaryMetrics0 {
   constructor(state) {

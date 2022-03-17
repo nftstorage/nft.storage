@@ -1,6 +1,6 @@
 /**
  * @typedef {Object} RateLimitResponse
- * @property {boolean} shouldBlock request should be blocked
+ * @property {Record<string, boolean>} shouldPreventRateLimit whether request should be prevented per gateway
  *
  * @typedef {Object} RateLimitCharacteristics
  * @property {number} RATE_LIMIT_REQUESTS
@@ -11,20 +11,19 @@
  * Durable Object to keep track of gateway rating limits.
  * State: number[]
  */
-export class GatewayRateLimits2 {
-  constructor(state) {
+export class GatewayRateLimits4 {
+  constructor(state, env) {
     this.state = state
     this.id = this.state.id.name
-    /** @type {RateLimitCharacteristics} */
-    this.rateLimitCharacteristics = getRateLimitConfig(
-      this.id
-    )
 
+    /** @type {Array<string>} */
+    this.ipfsGateways = JSON.parse(env.IPFS_GATEWAYS)
     // `blockConcurrencyWhile()` ensures no requests are delivered until initialization completes.
     this.state.blockConcurrencyWhile(async () => {
-      // Get state and initialize if not existing with gateway state
-      /** @type {Array<number>} */
-      this.rateLimitUsage = (await this.state.storage.get(this.id)) || []
+      // Get state and initialize if not existing
+      /** @type {Map<string, Array<number>>} */
+      this.gatewayUsage =
+        (await this.state.storage.get(this.id)) || this._createGatewayUsage()
     })
   }
 
@@ -34,44 +33,56 @@ export class GatewayRateLimits2 {
     let url = new URL(request.url)
     switch (url.pathname) {
       case '/request':
-        if (this.rateLimitCharacteristics.RATE_LIMIT_REQUESTS === Infinity) {
-          return new Response(
-            JSON.stringify({
-              shouldBlock: false,
-            })
-          )
-        }
+        const shouldPreventRateLimit = {}
+        this.ipfsGateways.forEach((gwUrl) => {
+          shouldPreventRateLimit[gwUrl] = this._shouldPreventRequest(gwUrl)
+        })
 
-        // Filter out outdated requests
-        const now = Date.now()
-        this.rateLimitUsage = this.rateLimitUsage.filter(
-          (ts) => now - ts <= this.rateLimitCharacteristics.RATE_LIMIT_TIMEFRAME
-        )
+        await this.state.storage.put(this.id, this.gatewayUsage, {
+          allowUnconfirmed: true,
+        })
 
-        // Add new request to track
-        if (
-          this.rateLimitUsage.length <
-          this.rateLimitCharacteristics.RATE_LIMIT_REQUESTS
-        ) {
-          this.rateLimitUsage.push(Date.now())
-          await this.state.storage.put(this.id, this.rateLimitUsage)
-
-          return new Response(
-            JSON.stringify({
-              shouldBlock: false,
-            })
-          )
-        }
-
-        // Block to prevent rate limit
-        return new Response(
-          JSON.stringify({
-            shouldBlock: true,
-          })
-        )
+        return new Response(JSON.stringify(shouldPreventRateLimit))
       default:
         return new Response('Not found', { status: 404 })
     }
+  }
+
+  /**
+   * @param {string} gatewayUrl
+   */
+  _shouldPreventRequest(gatewayUrl) {
+    const rateLimitConfig = getRateLimitConfig(gatewayUrl)
+    if (rateLimitConfig.RATE_LIMIT_REQUESTS === Infinity) {
+      return false
+    }
+
+    // Filter out outdated requests
+    const now = Date.now()
+    const rateLimitUsage = this.gatewayUsage
+      .get(gatewayUrl)
+      .filter((ts) => now - ts <= rateLimitConfig.RATE_LIMIT_TIMEFRAME)
+
+    // Add new request to track
+    if (rateLimitUsage.length < rateLimitConfig.RATE_LIMIT_REQUESTS) {
+      rateLimitUsage.push(Date.now())
+      this.gatewayUsage.set(gatewayUrl, rateLimitUsage)
+      return false
+    }
+    this.gatewayUsage.set(gatewayUrl, rateLimitUsage)
+
+    return true
+  }
+
+  /**
+   * @return {Map<string, Array<number>>}
+   */
+  _createGatewayUsage() {
+    const gatewayUsage = new Map()
+    this.ipfsGateways.forEach((gwUrl) => {
+      gatewayUsage.set(gwUrl, [])
+    })
+    return gatewayUsage
   }
 }
 
