@@ -48,6 +48,7 @@ export async function createTestUser({
  * @param {number} tag.user_id
  * @param {string} tag.tag
  * @param {string} tag.value
+ * @param {string=} tag.deleted_at
  * @param {string} tag.inserted_at
  * @param {string} tag.reason
  */
@@ -96,13 +97,12 @@ export async function createTestUserWithFixedToken({
     secret: token,
     userId: user.id,
   })
-
   await createUserTag({
     user_id: user.id,
     tag: 'HasPsaAccess',
     value: 'true',
     reason: '',
-    inserted_at: '2/22/2022',
+    inserted_at: new Date().toISOString(),
   })
 
   await createUserTag({
@@ -110,8 +110,27 @@ export async function createTestUserWithFixedToken({
     tag: 'HasAccountRestriction',
     value: 'false',
     reason: '',
-    inserted_at: '2/22/2022',
+    inserted_at: new Date().toISOString(),
   })
+
+  // Add some deleted tags to ensure our filtering works
+  await createUserTag({
+    user_id: user.id,
+    tag: 'HasPsaAccess',
+    value: 'false',
+    reason: '',
+    inserted_at: new Date().toISOString(),
+    deleted_at: new Date().toISOString(),
+  })
+  await createUserTag({
+    user_id: user.id,
+    tag: 'HasAccountRestriction',
+    value: 'true',
+    reason: '',
+    inserted_at: new Date().toISOString(),
+    deleted_at: new Date().toISOString(),
+  })
+
   return { token, userId: user.id, githubId: user.github_id }
 }
 
