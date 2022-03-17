@@ -1,0 +1,21 @@
+.rc-tooltip.ns-tooltip {
+  opacity: 1;
+  max-width: 48ch;
+  background-color: transparent;
+}
+
+.rc-tooltip-inner {
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.rc-tooltip.ns-tooltip .rc-tooltip-content {
+  border-radius: 0;
+  border: 1px solid #000;
+  font-family: var(--sansserif);
+}
+
+.rc-tooltip.ns-tooltip .rc-tooltip-content a,
+.rc-tooltip.ns-tooltip .rc-tooltip-content a:visited {
+  color: #000;
+}

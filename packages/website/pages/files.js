@@ -154,7 +154,7 @@ export default function Files({ user }) {
           <Tooltip
             placement="top"
             overlay={<span>{message}</span>}
-            overlayClassName="table-tooltip"
+            overlayClassName=""
             id="queued-deals-tooltip"
           >
             <VscQuestion size={16} />
@@ -181,7 +181,7 @@ export default function Files({ user }) {
                 upload.
               </span>
             }
-            overlayClassName="table-tooltip"
+            overlayClassName="ns-tooltip"
             id="all-deals-queued-tooltip"
           >
             <VscQuestion size={16} />
@@ -365,7 +365,7 @@ export default function Files({ user }) {
                                     </a>
                                   </span>
                                 }
-                                overlayClassName="table-tooltip"
+                                overlayClassName="ns-tooltip"
                                 id="cid-tooltip"
                               >
                                 <VscQuestion size={16} />
@@ -385,7 +385,7 @@ export default function Files({ user }) {
                                     available even when in Queued state.
                                   </span>
                                 }
-                                overlayClassName="table-tooltip"
+                                overlayClassName="ns-tooltip"
                                 id="pin-status-tooltip"
                               >
                                 <VscQuestion size={16} />
@@ -410,7 +410,7 @@ export default function Files({ user }) {
                                     </a>
                                   </span>
                                 }
-                                overlayClassName="table-tooltip"
+                                overlayClassName="ns-tooltip"
                                 id="storage-providers-tooltip"
                               >
                                 <VscQuestion size={16} />
