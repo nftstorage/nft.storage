@@ -144,9 +144,7 @@ DAG_CARGO_PASSWORD=<db-password>
 
 
 
-# Pinning services api, requires a PSA allow list for authoritzation
-# this is the user id in the database
-PSA_ALLOW=1
+# Pinning services api, requires a user to have the HasPsaAccess user_tag.
 ```
 
 Production vars should be set in Github Actions secrets.
