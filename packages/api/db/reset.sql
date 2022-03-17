@@ -17,3 +17,6 @@ DROP TABLE IF EXISTS cargo.aggregate_entries;
 DROP TABLE IF EXISTS cargo.aggregates;
 DROP TABLE IF EXISTS cargo.deals;
 DROP SERVER IF EXISTS dag_cargo_server CASCADE;
+
+-- Reset settings from config.sql
+ALTER DATABASE postgres RESET ALL;
