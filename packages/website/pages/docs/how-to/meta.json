@@ -3,5 +3,6 @@
   "mint-custom-metadata": "Store and mint NFTs using custom metadata",
   "mint-solana": "Store and mint NFTs for Solana with Metaplex",
   "retrieve": "Retrieve NFT data from IPFS",
-  "store-directory": "Store a directory of files"
+  "store-directory": "Store a directory of files",
+  "get-status": "Get upload status"
 }
