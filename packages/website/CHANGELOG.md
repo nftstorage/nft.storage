@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.0](https://github.com/nftstorage/nft.storage/compare/website-v1.37.0...website-v1.38.0) (2022-03-17)
+
+
+### Features
+
+* add actions menu for api keys page ([#1659](https://github.com/nftstorage/nft.storage/issues/1659)) ([034bc3a](https://github.com/nftstorage/nft.storage/commit/034bc3ac5ed9816aaff4c2bf3d9ec4eae1d0064d))
+
 ## [1.37.0](https://github.com/nftstorage/nft.storage/compare/website-v1.36.5...website-v1.37.0) (2022-03-14)
 
 
