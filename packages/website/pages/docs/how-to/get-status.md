@@ -20,9 +20,13 @@ The **Pin Status** column shows the status of the pinning operation. There are t
 
 The `Queuing` status indicates that a request to pin the data has been submitted to a cluster node, and the node has added the request to a queue for pinning. Depending on how busy the cluster is, an upload may stay in the `Queuing` state for some time before transitioning to `Pinned` or `Failed`.
 
-A `Pinned` status means that the cluster has successfully pinned the data and will retain a copy until instructed otherwise.
+Note that you can [retrieve your data using IPFS][howto-retrieve] even while the status is `Queuing`. You can verify this by retrieving your data from an HTTP gateway. If you've uploaded a directory, try retrieving a sample of the files within the directory. 
+
+A `Pinned` status means that the cluster has successfully pinned the data.
 
 A `Failed` status indicates that an operation failed while attempting to pin the data. Note that a `Failed` status may be temporary, as the cluster will continually retry `Failed` pins in the background and will update the status to `Pinned` if a retry attempt is successful.
+
+In addition to automatic retries by the cluster, a `Failed` pin will change to `Pinned` if the same data is uploaded successfully in a subsequent request. As long as the CID is the same for both uploads, the original upload's status will be marked as `Pinned` after a small delay.
 
 There are several reasons why an upload may end up in the `Failed` state.
 
@@ -30,11 +34,11 @@ If you are able to [retrieve the data from IPFS][howto-retrieve], the cluster is
 
 If you uploaded your data directly to the NFT.Storage service using a [client library][client-js], [the HTTP API][client-http], or the [Upload page on the website][upload-page], a `Failed` status may indicate that one or more chunks of data was not recieved by the service. This may happen when uploading large files or directories containing many files and may be resolved by retrying the upload.
 
-If your data was pinned using the Pinning Service API, a `Failed` status usually means that the cluster wasn't able to fetch the complete content over the IPFS peer-to-peer network. These issues can be hard to diagnose due to the many variables involved, especially when original source of the data may have an unreliable connection to the network or is behind a firewall. If the data is being provided by another pinning service such as Pinata, or if you've verified that the data is retrievable using IPFS (ideally from multiple distinct locations), please [file an issue][new-issue] or join the `#nft-storage` channel on the [IPFS Discord][support-discord] so we can dig into the cause.
+If your data was pinned using the Pinning Service API, a `Failed` status usually means that the cluster wasn't able to fetch the complete content over the IPFS peer-to-peer network. These issues can be hard to diagnose due to the many variables involved, especially when original source of the data may have an unreliable connection to the network or is behind a firewall. If the data is being provided by another pinning service such as Pinata, or if you've verified that the data is retrievable using IPFS (ideally from multiple distinct locations), please [file an issue][new-issue] so we can look into the cause.
 
 Please note that the status reported by the NFT.Storage service may not always be in sync with the actual status as reported by the IPFS cluster. The NFT.Storage service checks if `Failed` pins have been found and pinned by the cluster once per week for up to one month after the initial upload. 
 
-If you find that your file is retrievable but the pin status still says `Failed`, please [file an issue][new-issue] with the relevant CIDs and we'll take a look. If you'd prefer to keep the CIDs private, reach out to one of the devs on the `#nft-storage` [Discord channel][support-discord] in a direct message.
+If you find that your file is retrievable but the pin status still says `Failed`, please [file an issue][new-issue] with the relevant CIDs and we'll take a look.
 
 ## Storage providers
 
@@ -65,6 +69,7 @@ Here's an example JSON object that describes an active storage deal:
 }
 ```
 
+You can verify the status of your upload on the Filecoin blockchain at any time after the initial storage deals are made. Once a deal is active, you'll find links to the deal information in the **Storage Providers** column on the file listing page. These will take you to the [Filfox block explorer](https://filfox.info/), which shows details of every Filecoin message and transaction. You can also use the information from the JSON deals object described above to retrieve deal information using native Filecoin software like [Lotus](https://lotus.filecoin.io/).
 
 [howto-retrieve]: /docs/how-to/retrieve/
 [client-js]: /docs/client/js/
