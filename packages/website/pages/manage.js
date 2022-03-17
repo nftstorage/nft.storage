@@ -95,7 +95,7 @@ export default function ManageKeys({ user }) {
               <h1 className="flex-auto chicagoflf mv4">API Keys</h1>
               <div className="flex flex-wrap items-center mt2">
                 <Tooltip
-                  placement="top"
+                  placement="bottom"
                   overlay={
                     <span>
                       The Pinning Service API is for users who want to take data
