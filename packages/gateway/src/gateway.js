@@ -247,7 +247,7 @@ function getHeaders(request) {
  * @param {number} responseTime
  */
 async function updateSummaryCacheMetrics(request, env, response, responseTime) {
-  // Get durable object for gateway
+  // Get durable object for summary
   const id = env.summaryMetricsDurable.idFromName(SUMMARY_METRICS_ID)
   const stub = env.summaryMetricsDurable.get(id)
 
