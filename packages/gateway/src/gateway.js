@@ -282,13 +282,23 @@ async function getGatewayRateLimitState(request, env) {
   const id = env.gatewayRateLimitsDurable.idFromName(GATEWAY_RATE_LIMIT_ID)
   const stub = env.gatewayRateLimitsDurable.get(id)
 
-  const stubResponse = await stub.fetch(
-    getDurableRequestUrl(request, 'request')
-  )
+  try {
+    const stubResponse = await stub.fetch(
+      getDurableRequestUrl(request, 'request')
+    )
 
-  /** @type {import('./durable-objects/gateway-rate-limits').RateLimitResponse} */
-  const rateLimitResponse = await stubResponse.json()
-  return rateLimitResponse
+    /** @type {import('./durable-objects/gateway-rate-limits').RateLimitResponse} */
+    const rateLimitResponse = await stubResponse.json()
+    return rateLimitResponse
+  } catch (err) {
+    env.log.log(err, 'error')
+    // Just force no prevention of rate limit
+    const shouldPreventRateLimit = {}
+    this.ipfsGateways.forEach((gwUrl) => {
+      shouldPreventRateLimit[gwUrl] = false
+    })
+    return shouldPreventRateLimit
+  }
 }
 
 /**
