@@ -67,13 +67,13 @@ BEGIN
             (data ->> 'updated_at')::timestamptz,
             (data ->> 'inserted_at')::timestamptz)
     ON CONFLICT ( user_id, source_cid )
-        DO UPDATE SET deleted_at = null,
-                      updated_at = (data ->> 'updated_at')::timestamptz,
-                      name       = data ->> 'name',
-                      meta       = (data ->> 'meta')::jsonb,
-                      origins    = (data ->> 'origins')::jsonb,
-                      mime_type  = data ->> 'mime_type',
-                      type       = (data ->> 'type')::upload_type
+        DO UPDATE SET deleted_at  = null,
+                      updated_at  = (data ->> 'updated_at')::timestamptz,
+                      name        = data ->> 'name',
+                      meta        = (data ->> 'meta')::jsonb,
+                      origins     = (data ->> 'origins')::jsonb,
+                      mime_type   = data ->> 'mime_type',
+                      type        = (data ->> 'type')::upload_type
     RETURNING id INTO inserted_upload_id;
 END
 $$;
