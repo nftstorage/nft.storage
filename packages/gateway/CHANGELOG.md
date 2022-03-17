@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.3.1](https://github.com/nftstorage/nft.storage/compare/gateway-v1.3.0...gateway-v1.3.1) (2022-03-17)
+
+
+### Bug Fixes
+
+* gateway trigger gh actions ([9ed6e36](https://github.com/nftstorage/nft.storage/commit/9ed6e3641bd37d24f41703a4ce7d57998f2c161c))
+* use same rate limit prevention do ([#1645](https://github.com/nftstorage/nft.storage/issues/1645)) ([f8c3252](https://github.com/nftstorage/nft.storage/commit/f8c325235745ef664f57912a402289ec869b1ab1))
+
 ## [1.3.0](https://github.com/nftstorage/nft.storage/compare/gateway-v1.2.4...gateway-v1.3.0) (2022-03-14)
 
 
