@@ -174,6 +174,7 @@ CREATE TABLE IF NOT EXISTS upload
     -- 1. Pinning Service API user provided `Record<string, string>`.
     -- 2. Metaplex endpoint `/metaplex/upload` to store details of the Metaplex user.
     meta        jsonb,
+    backup_urls text[],
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     deleted_at TIMESTAMP WITH TIME ZONE,
@@ -181,6 +182,10 @@ CREATE TABLE IF NOT EXISTS upload
 );
 
 CREATE INDEX IF NOT EXISTS upload_inserted_at_idx ON upload (inserted_at);
+CREATE INDEX IF NOT EXISTS upload_content_cid_idx ON upload (content_cid);
+CREATE INDEX IF NOT EXISTS upload_source_cid_idx ON upload (source_cid);
+CREATE INDEX IF NOT EXISTS upload_updated_at_idx ON upload (updated_at);
+CREATE INDEX IF NOT EXISTS upload_type_idx ON upload (type);
 
 CREATE VIEW admin_search as
 select
@@ -196,11 +201,6 @@ from public.user u
 right join auth_key ak on ak.user_id = u.id
 full outer join (select * from auth_key_history where deleted_at is null) as akh on akh.auth_key_id = ak.id
 where ak.deleted_at is NULL or ak.deleted_at is not NULL and akh.status is not NULL;
-
-CREATE INDEX IF NOT EXISTS upload_content_cid_idx ON upload (content_cid);
-CREATE INDEX IF NOT EXISTS upload_source_cid_idx ON upload (source_cid);
-CREATE INDEX IF NOT EXISTS upload_updated_at_idx ON upload (updated_at);
-CREATE INDEX IF NOT EXISTS upload_type_idx ON upload (type);
 
 -- Metric contains the current values of collected metrics.
 CREATE TABLE IF NOT EXISTS metric
