@@ -20,6 +20,7 @@
   "dependencies": {
     "execa": "6.1.0",
     "fs-extra": "^10.0.0",
+    "got": "^12.0.2",
     "inquirer": "^8.0.0",
     "kleur": "^4.1.4",
     "ora": "6.1.0",
