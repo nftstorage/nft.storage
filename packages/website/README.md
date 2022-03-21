@@ -4,7 +4,7 @@ Frontend build for the NFT.Storage website.
 
 ## Usage
 
-Make sure you already did step 1 and 2 from these [instructions](/#getting-started).
+Make sure you already did step 1 and 2 from these [instructions](/README.md#getting-started).
 
 ### Local environment configuration
 
