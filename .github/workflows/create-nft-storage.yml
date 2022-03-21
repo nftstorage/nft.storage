@@ -1,0 +1,44 @@
+name: create-nft-storage
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/create-nft-storage/**'
+      - '.github/workflows/create-nft-storage.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'packages/create-nft-storage/**'
+      - '.github/workflows/create-nft-storage.yml'
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v3
+        id: tag-release
+        with:
+          path: packages/create-nft-storage
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
+          monorepo-tags: true
+          package-name: create-nft-storage
+      - uses: actions/checkout@v2
+        if: ${{ steps.tag-release.outputs.releases_created }}
+      - uses: actions/setup-node@v2
+        if: ${{ steps.tag-release.outputs.releases_created }}
+        with:
+          node-version: '16'
+          registry-url: https://registry.npmjs.org/
+      - uses: bahmutov/npm-install@v1
+        if: ${{ steps.tag-release.outputs.releases_created }}
+      - name: NPM Publish
+        if: ${{ steps.tag-release.outputs.releases_created }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+        run: |
+          cd packages/create-nft-storage
+          npm publish --access=public
