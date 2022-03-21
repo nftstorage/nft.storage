@@ -3,9 +3,7 @@
   "main": "index.js",
   "license": "MIT",
   "type": "module",
-  "scripts": {
-    "start": "node index.js"
-  },
+  "scripts": {},
   "dependencies": {
     "nft.storage": "latest",
     "ucan-storage": "latest",
