@@ -1,5 +1,7 @@
-import _ from 'lodash/fp'
-
+const pipe =
+  (/** @type {any[]} */ ...fns) =>
+  (/** @type {any} */ x) =>
+    fns.reduce((v, f) => f(v), x)
 const uploadKeysToSum = [
   'uploads_blob_total',
   'uploads_car_total',
@@ -57,6 +59,6 @@ export function calcuateGrowthRate(total, totalBefore) {
   }
 }
 
-const decorateAdditionalCalculatedValues = _.pipe(uploadsTotal)
+const decorateAdditionalCalculatedValues = pipe(uploadsTotal)
 
 export default decorateAdditionalCalculatedValues

@@ -7,11 +7,13 @@ import decorateAdditionalCalculatedValues, {
 import { API } from '../lib/api'
 import Loading from '../components/loading'
 import { abbreviateNumber } from 'js-abbreviation-number'
+import Image from 'next/image'
 
 /**
  *
  * @returns {{ props: import('../components/types.js').LayoutProps}}
  */
+
 export function getStaticProps() {
   const logos = fs.readdirSync('public/images/marketplace-logos/home')
   // make opensea be the first logo
@@ -112,9 +114,10 @@ export default function Stats({ logos }) {
           <div className="stat-cards">
             <StatCard title="Upload Count">
               <div>
-                <img
+                <Image
                   src={'/images/stats-upload-count.svg'}
                   alt="Upload Count"
+                  layout="fill"
                 />
                 <div className="pv3 ph3">
                   <p className="chicagoflf">Total uploads to NFT.Storage</p>
