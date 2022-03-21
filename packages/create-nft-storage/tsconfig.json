@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "ES2020",
+    "allowJs": true,
+    "checkJs": true,
+    "target": "esnext",
+    "lib": ["ESNext", "DOM.Iterable"],
+    "strict": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    // Need to disable this because generated typedefs omit generics which
+    // creates a problew for multiformats
+    // @see https://github.com/multiformats/js-multiformats#typescript-support
+    "skipLibCheck": true,
+    "noEmit": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src", "templates"],
+  "exclude": ["node_modules/", "dist/"]
+}

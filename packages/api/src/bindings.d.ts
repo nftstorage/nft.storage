@@ -24,7 +24,6 @@ declare global {
   const COMMITHASH: string
   const MAINTENANCE_MODE: Mode
   const METAPLEX_AUTH_TOKEN: string
-  const PSA_ALLOW: string
   const S3_ENDPOINT: string
   const S3_REGION: string
   const S3_ACCESS_KEY_ID: string

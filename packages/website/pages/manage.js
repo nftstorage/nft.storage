@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from 'react-query'
 import Button from '../components/button.js'
 import Loading from '../components/loading.js'
+import Tooltip from '../components/tooltip.js'
 import countly from '../lib/countly.js'
 import { VscMail } from 'react-icons/vsc'
+import { Popover, ArrowContainer } from 'react-tiny-popover'
 
 /**
  *
@@ -32,6 +34,7 @@ export function getStaticProps() {
 export default function ManageKeys({ user }) {
   const [deleting, setDeleting] = useState('')
   const [copied, setCopied] = useState('')
+  const [isActionMenuOpen, setIsActionMenuOpen] = useState('')
   const queryClient = useQueryClient()
   const { status, data } = useQuery('get-tokens', () => getTokens(), {
     enabled: !!user,
@@ -93,14 +96,31 @@ export default function ManageKeys({ user }) {
             <div className="flex flex-wrap items-center mb-4">
               <h1 className="flex-auto chicagoflf my-8">API Keys</h1>
               <div className="flex flex-wrap items-center mt-2">
-                <a
-                  href="mailto:support@nft.storage?cc=&bcc=&subject=Request%3A%20Pinning%20Service%20API%20Allowlist%20Access&body=Why%20you%20are%20looking%20for%20pinning%20service%20API%20access%20(e.g.%20you're%20an%20artist%20looking%20for%20extra%20redundancy)%3A%0A%0A%3CANSWER%20HERE%3E%0A%0APlease%20provide%20a%20sample%20of%205-10%20CIDs%20of%20NFTs%20%2F%20metadata%20you%20are%20looking%20to%20pin%3A%0A%0A%3CANSWER%20HERE%3E%0A%0APlease%20provide%20your%20profile%20on%20an%20NFT%20service%20(artist%20profile%2C%20collector%2C%20etc.)%3A%0A%0A%3CANSWER%20HERE%3E%0A%0AThanks%2C%0A%3CINSERT%20YOUR%20NAME%3E"
-                  className="items-center mr-4 mb-2 btn button-reset select-none black py-2 px-4 hologram chicagoflf interactive light"
-                  id="request-api-pinning"
+                <Tooltip
+                  placement="bottom"
+                  overlay={
+                    <span>
+                      The Pinning Service API is for users who want to take data
+                      that is not yet stored with NFT.Storage but already
+                      available on the IPFS network and store additional copies
+                      via NFT.Storage. You do not need to request Pinning
+                      Service API access if you are just looking to upload your
+                      data to NFT.Storage. Check out the docs for more details.
+                    </span>
+                  }
+                  overlayClassName="ns-tooltip"
+                  id="request-api-pinning-info"
                 >
-                  <VscMail size={12} className="mr-2" /> Request API Pinning
-                  Access
-                </a>
+                  <a
+                    href="mailto:support@nft.storage?cc=&bcc=&subject=Request%3A%20Pinning%20Service%20API%20Allowlist%20Access&body=Why%20you%20are%20looking%20for%20pinning%20service%20API%20access%20(e.g.%20you're%20an%20artist%20looking%20for%20extra%20redundancy)%3A%0A%0A%3CANSWER%20HERE%3E%0A%0APlease%20provide%20a%20sample%20of%205-10%20CIDs%20of%20NFTs%20%2F%20metadata%20you%20are%20looking%20to%20pin%3A%0A%0A%3CANSWER%20HERE%3E%0A%0APlease%20provide%20your%20profile%20on%20an%20NFT%20service%20(artist%20profile%2C%20collector%2C%20etc.)%3A%0A%0A%3CANSWER%20HERE%3E%0A%0AThanks%2C%0A%3CINSERT%20YOUR%20NAME%3E"
+                    className="items-center mr-4 mb-2 btn button-reset select-none black py-2 px-4 hologram chicagoflf interactive light"
+                    id="request-api-pinning"
+                  >
+                    <VscMail size={12} className="mr2" /> Request API Pinning
+                    Access
+                  </a>
+                </Tooltip>
+
                 <Button
                   href={{
                     pathname: '/new-key',
@@ -139,47 +159,90 @@ export default function ManageKeys({ user }) {
                           />
                         </td>
                         <td className="shrink-cell center-cell">
-                          <div className="flex">
-                            <form
-                              data-value={t[1]}
-                              onSubmit={handleCopyToken}
-                              className="mr-2"
+                          <Popover
+                            isOpen={isActionMenuOpen === t[0]}
+                            onClickOutside={(e) => {
+                              if (e.currentTarget !== null) {
+                                if (
+                                  e.target instanceof Element &&
+                                  e.target.getAttribute('data-key')
+                                ) {
+                                  const keyname =
+                                    e.target.getAttribute('data-key')
+                                  setIsActionMenuOpen(keyname || '')
+                                } else {
+                                  setIsActionMenuOpen('')
+                                }
+                              }
+                            }}
+                            positions={['bottom', 'left', 'top', 'right']} // preferred positions by priority
+                            padding={2}
+                            content={({ position, childRect, popoverRect }) => (
+                              <ArrowContainer
+                                position={position}
+                                childRect={childRect}
+                                popoverRect={popoverRect}
+                                arrowColor={'black'}
+                                arrowSize={6}
+                                className="popover-arrow-container"
+                                arrowClassName="popover-arrow"
+                              >
+                                <div className="actions-menu">
+                                  <form
+                                    data-value={t[1]}
+                                    onSubmit={handleCopyToken}
+                                  >
+                                    <Button
+                                      type="submit"
+                                      id="copy-key"
+                                      hologram={false}
+                                      tracking={{
+                                        event: countly.events.TOKEN_COPY,
+                                        ui: countly.ui.TOKENS,
+                                      }}
+                                    >
+                                      {copied === t[1] ? 'Copied!' : 'Copy'}
+                                    </Button>
+                                  </form>
+                                  <form onSubmit={handleDeleteToken}>
+                                    <input
+                                      type="hidden"
+                                      name="name"
+                                      id={`token-${t[0]}`}
+                                      value={`${t[2]}`}
+                                    />
+                                    <Button
+                                      type="submit"
+                                      variant="caution"
+                                      hologram={false}
+                                      disabled={Boolean(deleting)}
+                                      id={`delete-key-${t[0]}`}
+                                      tracking={{
+                                        event: countly.events.TOKEN_DELETE,
+                                        ui: countly.ui.TOKENS,
+                                      }}
+                                    >
+                                      {deleting === `${t[2]}`
+                                        ? 'Deleting...'
+                                        : 'Delete'}
+                                    </Button>
+                                  </form>
+                                </div>
+                              </ArrowContainer>
+                            )}
+                          >
+                            <button
+                              onClick={() => setIsActionMenuOpen(t[0])}
+                              className={`${
+                                isActionMenuOpen === t[0]
+                                  ? 'actions-trigger--active'
+                                  : ''
+                              } btn small actions-trigger`}
+                              data-key={t[0]}
                             >
-                              <Button
-                                className="bg-white text-black"
-                                type="submit"
-                                id="copy-key"
-                                tracking={{
-                                  event: countly.events.TOKEN_COPY,
-                                  ui: countly.ui.TOKENS,
-                                }}
-                              >
-                                {copied === t[1] ? 'Copied!' : 'Copy'}
-                              </Button>
-                            </form>
-                            <form onSubmit={handleDeleteToken}>
-                              <input
-                                type="hidden"
-                                name="name"
-                                id={`token-${t[0]}`}
-                                value={`${t[2]}`}
-                              />
-                              <Button
-                                type="submit"
-                                variant="caution"
-                                disabled={Boolean(deleting)}
-                                id={`delete-key-${t[0]}`}
-                                tracking={{
-                                  event: countly.events.TOKEN_DELETE,
-                                  ui: countly.ui.TOKENS,
-                                }}
-                              >
-                                {deleting === `${t[2]}`
-                                  ? 'Deleting...'
-                                  : 'Delete'}
-                              </Button>
-                            </form>
-                          </div>
+                              Actions
+                            </button>
+                          </Popover>
                         </td>
                       </tr>
                     ))}

@@ -83,13 +83,15 @@ export class DBClient {
     magic_link_id,
     github_id,
     did,
-    keys:auth_key_user_id_fkey(user_id,id,name,secret)
+    keys:auth_key_user_id_fkey(user_id,id,name,secret),
     tags:user_tag_user_id_fkey(user_id,id,tag,value)
     `
       )
       .or(`magic_link_id.eq.${id},github_id.eq.${id},did.eq.${id}`)
       // @ts-ignore
       .filter('keys.deleted_at', 'is', null)
+      // @ts-ignore
+      .filter('tags.deleted_at', 'is', null)
 
     const { data, error, status } = await select.single()
 

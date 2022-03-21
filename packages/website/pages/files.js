@@ -1,10 +1,12 @@
 import { API, getNfts, getToken } from '../lib/api.js'
 import { useQuery, useQueryClient } from 'react-query'
 import { VscQuestion } from 'react-icons/vsc'
+import { CID } from 'multiformats/cid'
 import Button from '../components/button.js'
 import Tooltip from '../components/tooltip.js'
 import Loading from '../components/loading'
 import { MOCK_FILES } from '../lib/mock_files'
+import { formatTimestamp } from '../lib/format'
 import { NFTStorage } from 'nft.storage'
 import Script from 'next/script'
 import { When } from 'react-if'
@@ -154,7 +156,7 @@ export default function Files({ user }) {
           <Tooltip
             placement="top"
             overlay={<span>{message}</span>}
-            overlayClassName="table-tooltip"
+            overlayClassName=""
             id="queued-deals-tooltip"
           >
             <VscQuestion size={16} />
@@ -181,7 +183,7 @@ export default function Files({ user }) {
                 upload.
               </span>
             }
-            overlayClassName="table-tooltip"
+            overlayClassName="ns-tooltip"
             id="all-deals-queued-tooltip"
           >
             <VscQuestion size={16} />
@@ -193,7 +195,7 @@ export default function Files({ user }) {
     return (
       <tr className="bg-white border-b">
         <td data-label="Date" className="whitespace-nowrap" title={nft.created}>
-          {nft.created.split('T')[0]}
+          {formatTimestamp(nft.created)}
         </td>
         <td data-label="CID" className="whitespace-nowrap">
           <div className="flex justify-between items-center">
@@ -269,7 +271,7 @@ export default function Files({ user }) {
               >
                 <div className="actions-menu">
                   <GatewayLink cid={nft.cid} type={nft.type} />
-                  <CopyGatewayLink cid={nft.cid} type={nft.type} />
+                  <CopyIpfsUrl cid={nft.cid} type={nft.type} />
                   <CopyCID cid={nft.cid} type={nft.type} />
                   <form onSubmit={handleDeleteFile}>
                     <input type="hidden" name="cid" value={nft.cid} />
@@ -367,7 +369,7 @@ export default function Files({ user }) {
                                     </a>
                                   </span>
                                 }
-                                overlayClassName="table-tooltip"
+                                overlayClassName="ns-tooltip"
                                 id="cid-tooltip"
                               >
                                 <VscQuestion size={16} />
@@ -387,7 +389,7 @@ export default function Files({ user }) {
                                     available even when in Queued state.
                                   </span>
                                 }
-                                overlayClassName="table-tooltip"
+                                overlayClassName="ns-tooltip"
                                 id="pin-status-tooltip"
                               >
                                 <VscQuestion size={16} />
@@ -412,7 +414,7 @@ export default function Files({ user }) {
                                     </a>
                                   </span>
                                 }
-                                overlayClassName="table-tooltip"
+                                overlayClassName="ns-tooltip"
                                 id="storage-providers-tooltip"
                               >
                                 <VscQuestion size={16} />
@@ -505,9 +507,7 @@ export default function Files({ user }) {
  * @param {{cid: string, type?: string}} props
  */
 function GatewayLink({ cid, type }) {
-  const gatewayLink = cid.startsWith('Qm')
-    ? `https://ipfs.io/ipfs/${cid}`
-    : `ipfs://${cid}`
+  const gatewayLink = `https://nftstorage.link/ipfs/${cid}`
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
   const btnLabel = type === 'nft' ? 'View Metadata' : 'View URL'
   const btnTitle = type === 'nft' ? 'View Metadata JSON' : 'View URL'
@@ -519,15 +519,13 @@ function GatewayLink({ cid, type }) {
 }
 
 /**
- * Copy Gateway Link Component
+ * Copy the IPFS URL (ipfs://<cid>)
  *
  * @param {{cid: string, type?: string}} props
  */
-function CopyGatewayLink({ cid, type }) {
-  const gatewayLink = cid.startsWith('Qm')
-    ? `https://ipfs.io/ipfs/${cid}`
-    : `ipfs://${cid}`
-  const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
+function CopyIpfsUrl({ cid, type }) {
+  const url = `ipfs://${CID.parse(cid).toV1()}`
+  const href = type === 'nft' ? `${url}/metadata.json` : url
 
   return (
     <CopyButton

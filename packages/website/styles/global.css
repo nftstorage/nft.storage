@@ -21,6 +21,7 @@
 @import './modal.css';
 @import './footer.css';
 @import './faq.css';
+@import './tooltip.css';
 
 html {
   scroll-behavior: smooth;
