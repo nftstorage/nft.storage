@@ -194,7 +194,7 @@ export default function Files({ user }) {
 
     return (
       <tr className="bg-white border-b">
-        <td data-label="Date" className="whitespace-nowrap" title={nft.created}>
+        <td data-label="Date" className="" title={nft.created}>
           {formatTimestamp(nft.created)}
         </td>
         <td data-label="CID" className="whitespace-nowrap">
@@ -215,7 +215,7 @@ export default function Files({ user }) {
             </CopyButton>
           </div>
         </td>
-        <td data-label="Pin Status" className="whitespace-nowrap">
+        <td data-label="Pin Status" className="">
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
         </td>
         <td data-label="Deals">
@@ -238,7 +238,7 @@ export default function Files({ user }) {
             )}
           </div>
         </td>
-        <td data-label="Size" className="whitespace-nowrap">
+        <td data-label="Size" className="">
           {bytes(nft.size || 0)}
         </td>
         <td className="shrink-cell center-cell">
