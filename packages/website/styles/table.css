@@ -227,25 +227,3 @@
 .hidden-deals {
   max-width: 320px;
 }
-
-.rc-tooltip.table-tooltip {
-  opacity: 1;
-  max-width: 40ch;
-  background-color: transparent;
-}
-
-.rc-tooltip-inner {
-  border: none !important;
-  border-radius: 0 !important;
-}
-
-.rc-tooltip.table-tooltip .rc-tooltip-content {
-  border-radius: 0;
-  border: 1px solid #000;
-  font-family: var(--sansserif);
-}
-
-.rc-tooltip.table-tooltip .rc-tooltip-content a,
-.rc-tooltip.table-tooltip .rc-tooltip-content a:visited {
-  color: #000;
-}
