@@ -75,6 +75,14 @@ async function signRequestUCAN(kp, serviceDID, rootUCAN) {
 }
 
 async function main() {
+  if (!token) {
+    throw new Error('Get a real API Key from https://nft.storage/manage')
+  }
+
+  if (!privateKey) {
+    throw new Error('Get a keypair by running "npx ucan-storage keypair"')
+  }
+
   const kp = await KeyPair.fromExportedKey(privateKey)
 
   // Get Service DID

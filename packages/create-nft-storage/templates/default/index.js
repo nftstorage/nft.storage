@@ -5,7 +5,7 @@ const endpoint = 'https://api.nft.storage' // the default
 const token = 'API_KEY' // your API key from https://nft.storage/manage
 
 async function main() {
-  const storage = new NFTStorage({ endpoint, token })
+  const storage = new NFTStorage({ endpoint: new URL(endpoint), token })
   const data = await fs.promises.readFile('pinpie.jpg')
   const { cid, car } = await NFTStorage.encodeBlob(new Blob([data]))
   console.log(`File CID: ${cid}`)
