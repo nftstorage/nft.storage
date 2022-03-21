@@ -1,6 +1,7 @@
 import { API, getNfts, getToken } from '../lib/api.js'
 import { useQuery, useQueryClient } from 'react-query'
 import { VscQuestion } from 'react-icons/vsc'
+import { CID } from 'multiformats/cid'
 import Button from '../components/button.js'
 import Tooltip from '../components/tooltip.js'
 import Loading from '../components/loading'
@@ -267,7 +268,7 @@ export default function Files({ user }) {
               >
                 <div className="actions-menu">
                   <GatewayLink cid={nft.cid} type={nft.type} />
-                  <CopyGatewayLink cid={nft.cid} type={nft.type} />
+                  <CopyIpfsUrl cid={nft.cid} type={nft.type} />
                   <CopyCID cid={nft.cid} type={nft.type} />
                   <form onSubmit={handleDeleteFile}>
                     <input type="hidden" name="cid" value={nft.cid} />
@@ -499,9 +500,7 @@ export default function Files({ user }) {
  * @param {{cid: string, type?: string}} props
  */
 function GatewayLink({ cid, type }) {
-  const gatewayLink = cid.startsWith('Qm')
-    ? `https://ipfs.io/ipfs/${cid}`
-    : `ipfs://${cid}`
+  const gatewayLink = `https://nftstorage.link/ipfs/${cid}`
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
   const btnLabel = type === 'nft' ? 'View Metadata' : 'View URL'
   const btnTitle = type === 'nft' ? 'View Metadata JSON' : 'View URL'
@@ -513,15 +512,13 @@ function GatewayLink({ cid, type }) {
 }
 
 /**
- * Copy Gateway Link Component
+ * Copy the IPFS URL (ipfs://<cid>)
  *
  * @param {{cid: string, type?: string}} props
  */
-function CopyGatewayLink({ cid, type }) {
-  const gatewayLink = cid.startsWith('Qm')
-    ? `https://ipfs.io/ipfs/${cid}`
-    : `ipfs://${cid}`
-  const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
+function CopyIpfsUrl({ cid, type }) {
+  const url = `ipfs://${CID.parse(cid).toV1()}`
+  const href = type === 'nft' ? `${url}/metadata.json` : url
 
   return (
     <CopyButton

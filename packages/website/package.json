@@ -26,6 +26,7 @@
     "jest": "^27.5.1",
     "js-abbreviation-number": "^1.4.0",
     "magic-sdk": "^6.2.1",
+    "multiformats": "^9.6.4",
     "next-mdx-remote": "^4.0.0-rc.1",
     "nextra": "^2.0.0-beta.5",
     "nextra-theme-docs": "^2.0.0-beta.5",
