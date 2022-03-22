@@ -45,6 +45,7 @@ export async function nftUpload(event, ctx) {
     })
 
     upload = await uploadCar({
+      event,
       ctx,
       user,
       key,
@@ -69,7 +70,6 @@ export async function nftUpload(event, ctx) {
     /** @type {Blob} */
     let car
     /** @type {string} */
-    let name
 
     if (isCar) {
       car = blob
@@ -87,6 +87,7 @@ export async function nftUpload(event, ctx) {
     }
 
     upload = await uploadCar({
+      event,
       ctx,
       user,
       key,
@@ -104,6 +105,7 @@ export async function nftUpload(event, ctx) {
 
 /**
  * @typedef {{
+ *   event: FetchEvent,
  *   ctx: import('../bindings').RouteContext
  *   user: Pick<import('../utils/db-client-types').UserOutput, 'id'>
  *   key?: Pick<import('../utils/db-client-types').UserOutputKey, 'id'>
@@ -113,7 +115,6 @@ export async function nftUpload(event, ctx) {
  *   structure: DagStructure
  *   files: Array<{ name: string; type?: string }>
  *   meta?: Record<string, unknown>
- *   name?: string
  * }} UploadCarInput
  * @param {UploadCarInput} params
  */
@@ -130,7 +131,7 @@ export async function uploadCar(params) {
  * @param {CarStat} stat
  */
 export async function uploadCarWithStat(
-  { ctx, user, key, car, uploadType = 'Car', mimeType, files, meta, name },
+  { event, ctx, user, key, car, uploadType = 'Car', mimeType, files, meta },
   stat
 ) {
   const [added, backupUrl] = await Promise.all([
@@ -141,6 +142,12 @@ export async function uploadCarWithStat(
       ? ctx.backup.backupCar(user.id, stat.rootCid, car, stat.structure)
       : Promise.resolve(null),
   ])
+
+  const xName = event.request.headers.get('x-name')
+  let name = xName && decodeURIComponent(xName)
+  if (!name || typeof name !== 'string') {
+    name = `Upload at ${new Date().toISOString()}`
+  }
 
   const upload = await ctx.db.createUpload({
     mime_type: mimeType,
@@ -153,7 +160,7 @@ export async function uploadCarWithStat(
     meta,
     key_id: key?.id,
     backup_urls: backupUrl ? [backupUrl] : [],
-    name: name,
+    name,
   })
 
   return upload

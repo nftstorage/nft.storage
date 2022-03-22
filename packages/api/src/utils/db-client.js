@@ -111,6 +111,32 @@ export class DBClient {
    * @param {import('./db-client-types').CreateUploadInput} data
    * @returns
    */
+  async updateUpload(data) {
+    const now = new Date().toISOString()
+    const rsp = await this.client.rpc('update_upload', {
+      data: {
+        ...data,
+        updated_at: data.updated_at || now,
+      },
+    })
+
+    if (rsp.error) {
+      throw new DBError(rsp.error)
+    }
+
+    const upload = await this.getUpload(data.source_cid, data.user_id)
+    if (upload) {
+      return upload
+    }
+    throw new Error('failed to get new upload')
+  }
+
+  /**
+   * Create upload with content and pins
+   *
+   * @param {import('./db-client-types').CreateUploadInput} data
+   * @returns
+   */
   async createUpload(data) {
     const defaultPins = [
       {

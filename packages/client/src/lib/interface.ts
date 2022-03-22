@@ -150,10 +150,6 @@ export interface StatusResult {
   created: Date
 }
 
-export interface Upload extends StatusResult {
-  label: string
-}
-
 export type Deal =
   | QueuedDeal
   | PendingDeal

@@ -4,6 +4,7 @@ export const MOCK_FILES = [
     created: '2021-12-17T17:27:24.605+00:00',
     type: 'application/car',
     scope: 'session',
+    name: 'super special name for mocks',
     files: [],
     size: 3328510,
     pin: {
@@ -19,6 +20,7 @@ export const MOCK_FILES = [
     created: '2021-12-11T14:26:23.205+00:00',
     type: 'application/car',
     scope: 'session',
+    name: 'super special name 2 for mocks',
     files: [],
     size: 8267,
     pin: {
@@ -81,6 +83,7 @@ export const MOCK_FILES = [
     type: 'application/car',
     scope: 'session',
     files: [],
+    name: 'super special name 2 for mocks',
     size: 414193,
     pin: {
       cid: 'bafybeiefibctpwu7tm25nxgcn3b5ywwskowkgccl4cbwnvtrgv6rsqjpxa',
