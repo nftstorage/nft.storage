@@ -178,9 +178,10 @@ export default function Files({ user }) {
           <Tooltip
             overlay={
               <span>
-                The content from this upload is being aggregated for storage on
-                Filecoin. Filecoin deals will be active within 48 hours of
-                upload.
+                The content from this upload is being aggregated for redundant
+                storage on Filecoin. Filecoin deals will be active within 48
+                hours of upload. While Queuing, data is still available on the
+                IPFS network.
               </span>
             }
             overlayClassName="ns-tooltip"
@@ -402,10 +403,10 @@ export default function Files({ user }) {
                                 placement="top"
                                 overlay={
                                   <span>
-                                    Service providers offering storage capacity
-                                    to the Filecoin network.{' '}
+                                    Filecoin storage providers provably storing
+                                    replicas of this data.{' '}
                                     <a
-                                      href="https://nftschool.dev/concepts/content-persistence/"
+                                      href="https://filecoin.io/blog/posts/what-sets-us-apart-filecoin-s-proof-system/"
                                       target="_blank"
                                       rel="noreferrer"
                                     >
