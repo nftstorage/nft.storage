@@ -392,7 +392,7 @@ class NFTStorage {
     if (blob.size === 0) {
       throw new Error('Content size is 0, make sure to provide some content')
     }
-    return packCar([{ path: 'blob', content: blob.stream() }], {
+    return packCar([toImportCandidate('blob', blob)], {
       blockstore,
       wrapWithDirectory: false,
     })
@@ -427,7 +427,7 @@ class NFTStorage {
     const input = []
     let size = 0
     for (const file of files) {
-      input.push({ path: file.name, content: file.stream() })
+      input.push(toImportCandidate(file.name, file))
       size += file.size
     }
 
@@ -687,5 +687,25 @@ const decodeDeals = (deals) =>
  * @returns {Pin}
  */
 const decodePin = (pin) => ({ ...pin, created: new Date(pin.created) })
+
+/**
+ * Convert the passed blob to an "import candidate" - an object suitable for
+ * passing to the ipfs-unixfs-importer. Note: content is an accessor so that
+ * the stream is created only when needed.
+ *
+ * @param {string} path
+ * @param {Blob} blob
+ */
+function toImportCandidate(path, blob) {
+  /** @type {ReadableStream} */
+  let stream
+  return {
+    path,
+    get content() {
+      stream = stream || blob.stream()
+      return stream
+    },
+  }
+}
 
 export { NFTStorage, File, Blob, FormData, toGatewayURL, Token }
