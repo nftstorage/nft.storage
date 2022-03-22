@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.19.0](https://github.com/nftstorage/nft.storage/compare/api-v2.18.0...api-v2.19.0) (2022-03-21)
+
+
+### Features
+
+* create starter kit and ucan example ([#1593](https://github.com/nftstorage/nft.storage/issues/1593)) ([0408aa1](https://github.com/nftstorage/nft.storage/commit/0408aa12e0a5d6dcacbd257d9190be441cef4552))
+* refactor pinning authorization logic to use user_tag table ([#1389](https://github.com/nftstorage/nft.storage/issues/1389)) ([b5e99ec](https://github.com/nftstorage/nft.storage/commit/b5e99ec2a08d93e844c9271ee103bb98cccf7b28)), closes [#1381](https://github.com/nftstorage/nft.storage/issues/1381)
+
+
+### Bug Fixes
+
+* [#1666](https://github.com/nftstorage/nft.storage/issues/1666): admin_search should return users without tokens ([#1668](https://github.com/nftstorage/nft.storage/issues/1668)) ([13363e7](https://github.com/nftstorage/nft.storage/commit/13363e715558a15ff9faa96982f176693e55447c))
+* database credentials for startup ([#1462](https://github.com/nftstorage/nft.storage/issues/1462)) ([e0512e4](https://github.com/nftstorage/nft.storage/commit/e0512e4851e130c77e07d3e81238e7a1369b9bbe))
+* pin by source CID ([#1634](https://github.com/nftstorage/nft.storage/issues/1634)) ([4ab48ce](https://github.com/nftstorage/nft.storage/commit/4ab48ce19657f5f6a03ea2fe0a98d2d10f0e5509))
+* Refactor pinning authorization logic to use user_tag table ([#1654](https://github.com/nftstorage/nft.storage/issues/1654)) ([043049e](https://github.com/nftstorage/nft.storage/commit/043049e22c53ca1143b01e87e563cc488f0e2845))
+* remove only in tests and ucan feedback ([#1613](https://github.com/nftstorage/nft.storage/issues/1613)) ([fb93a2a](https://github.com/nftstorage/nft.storage/commit/fb93a2aeb433d1f6d57cf7cd6da2eca4f8cb1d24))
+
 ## [2.18.0](https://github.com/nftstorage/nft.storage/compare/api-v2.17.0...api-v2.18.0) (2022-03-11)
 
 
