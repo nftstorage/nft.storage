@@ -68,6 +68,8 @@ export async function nftUpload(event, ctx) {
     let structure
     /** @type {Blob} */
     let car
+    /** @type {string} */
+    let name
 
     if (isCar) {
       car = blob
@@ -111,6 +113,7 @@ export async function nftUpload(event, ctx) {
  *   structure: DagStructure
  *   files: Array<{ name: string; type?: string }>
  *   meta?: Record<string, unknown>
+ *   name?: string
  * }} UploadCarInput
  * @param {UploadCarInput} params
  */
@@ -127,7 +130,7 @@ export async function uploadCar(params) {
  * @param {CarStat} stat
  */
 export async function uploadCarWithStat(
-  { ctx, user, key, car, uploadType = 'Car', mimeType, files, meta },
+  { ctx, user, key, car, uploadType = 'Car', mimeType, files, meta, name },
   stat
 ) {
   const [added, backupUrl] = await Promise.all([
@@ -150,6 +153,7 @@ export async function uploadCarWithStat(
     meta,
     key_id: key?.id,
     backup_urls: backupUrl ? [backupUrl] : [],
+    name: name,
   })
 
   return upload
