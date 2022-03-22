@@ -63,7 +63,7 @@ export default function Login() {
               action: 'Github',
             }}
           >
-            {isRedirecting ? 'Redirecting...' : 'Github'}
+            {isRedirecting ? 'Redirecting...' : 'GitHub'}
           </Button>
 
           <h4 className="mv3 f3">Or</h4>
