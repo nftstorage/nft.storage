@@ -22,6 +22,7 @@ jobs:
           node-version: 16
       - uses: bahmutov/npm-install@v1
       - run: yarn test:website
+      - run: yarn build:website
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Release
