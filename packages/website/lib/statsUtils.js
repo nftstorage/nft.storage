@@ -19,7 +19,7 @@ export function formatBytes(bytes, decimals = 1) {
  * @param {any} previousTotal
  * @returns {string}
  */
-function calcuateGrowthRate(total, previousTotal) {
+export function calcuateGrowthRate(total, previousTotal) {
   try {
     return (((total - previousTotal) / previousTotal) * 100).toFixed(2)
   } catch (e) {
@@ -70,6 +70,6 @@ export function calculateStats(stats) {
   if (previousTotal > 0) {
     growthRate = calcuateGrowthRate(totalUploads, previousTotal)
   }
-  console.log('stats', { ...stats, totalUploads, growthRate })
+
   return { ...stats, totalUploads, growthRate }
 }
