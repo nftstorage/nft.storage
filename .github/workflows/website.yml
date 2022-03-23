@@ -1,6 +1,11 @@
-name: Website Delivery
+name: Website
 on:
   push:
+    branches:
+      - main
+    paths:
+      - 'packages/website/**'
+  pull_request:
     branches:
       - main
     paths:
