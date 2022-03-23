@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Img from '../components/cloudflareImage'
 
 /**
  * Logo Component
@@ -7,7 +7,7 @@ import Image from 'next/image'
  * @param {string} logo.alt
  */
 const Logo = ({ src, alt }) => (
-  <Image
+  <Img
     className="marketplace-logo"
     src={`/images/marketplace-logos/${src}`}
     alt={alt}

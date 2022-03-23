@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 import Tags from '../tags'
 import countly from '../../lib/countly'
-import Image from 'next/image'
+import Img from '../cloudflareImage'
 
 // custom styles from /styles/blog.css
 
@@ -18,7 +18,7 @@ import Image from 'next/image'
 export const Card = ({ post }) => (
   <Link href={`/blog/post/${post.slug}`}>
     <a className="bg-white blog-card w-card hologram card right interactive pointer">
-      <Image
+      <Img
         src={post.thumbnail}
         alt={`Banner for ${post.title}`}
         className="object-cover object-center w-100 card-thumb"
@@ -47,9 +47,7 @@ export const Card = ({ post }) => (
  *
  * @param {Object} props
  * @param {import('../types').PostMeta} props.post
- * @returnsimport { Image } from 'next/image';
- {JSX.Elemeimport { Image } from 'next/image';
-nt}
+ * @return {JSX.Element}
  */
 export const HighlightCard = ({ post }) => (
   <div className="flex justify-center blog-highlight-card w-100">
@@ -106,7 +104,7 @@ export const HighlightCard = ({ post }) => (
             </Button>
           </div>
         </div>
-        <Image
+        <Img
           src={post.thumbnail}
           alt={`Banner for ${post.title}`}
           className="object-cover object-center highlight-img w-50"

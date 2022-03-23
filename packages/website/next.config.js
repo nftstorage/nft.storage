@@ -17,6 +17,9 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const nextConfig = withBundleAnalyzer({
   trailingSlash: true,
   reactStrictMode: true,
+  images: {
+    loader: 'custom',
+  },
   exportPathMap: async function () {
     return {
       '/ipfs-404.html': { page: '/404' },
