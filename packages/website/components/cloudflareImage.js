@@ -15,7 +15,7 @@ const cloudflareImageLoader = ({ src, width, quality = '75' }) =>
  * @param {import('next/image').ImageProps} props
  */
 export default function Img(props) {
-  if (props.src.includes('.svg')) {
+  if (props.src.includes('.svg') || props.src.includes('https://')) {
     // eslint-disable-next-line jsx-a11y/alt-text
     return <img {...props} />
   }
