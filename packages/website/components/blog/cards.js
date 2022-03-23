@@ -47,7 +47,7 @@ export const Card = ({ post }) => (
  *
  * @param {Object} props
  * @param {import('../types').PostMeta} props.post
- * @return {JSX.Element}
+ * @returns {JSX.Element}
  */
 export const HighlightCard = ({ post }) => (
   <div className="flex justify-center blog-highlight-card w-100">

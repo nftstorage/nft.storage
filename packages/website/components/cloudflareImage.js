@@ -15,6 +15,10 @@ const cloudflareImageLoader = ({ src, width, quality = '75' }) =>
  * @param {import('next/image').ImageProps} props
  */
 export default function Img(props) {
+  if (props.src.includes('.svg')) {
+    // eslint-disable-next-line jsx-a11y/alt-text
+    return <img {...props} />
+  }
   if (process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line jsx-a11y/alt-text
     return <Image unoptimized={true} {...props} />
