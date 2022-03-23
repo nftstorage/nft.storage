@@ -10,6 +10,7 @@ import * as cluster from '../cluster.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
+import { parseCid } from '../utils/utils.js'
 
 const MAX_BLOCK_SIZE = 1 << 20 // Maximum permitted block size in bytes (1MiB).
 const decoders = [pb, raw, cbor]
@@ -164,6 +165,27 @@ export async function uploadCarWithStat(
   })
 
   return upload
+}
+
+/** @type {import('../bindings').Handler} */
+export async function nftUpdateUpload(event, ctx) {
+  const { params, db } = ctx
+  try {
+    const { user } = await validate(event, ctx)
+    const id = params.id
+
+    // id is required for updating
+    if (!id) return new JSONResponse({ ok: false, value: 'ID is required' })
+
+    const body = await event.request.json()
+    const { name } = body
+
+    const updatedRecord = await db.updateUpload({ id, name, user_id: user.id })
+
+    return new JSONResponse({ ok: true, value: updatedRecord })
+  } catch (/** @type {any} */ err) {
+    return new JSONResponse({ ok: false, value: err.message })
+  }
 }
 
 /**

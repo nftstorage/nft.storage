@@ -8,7 +8,7 @@ import { tokensDelete } from './routes/tokens-delete.js'
 import { tokensCreate } from './routes/tokens-create.js'
 import { tokensList } from './routes/tokens-list.js'
 import { login } from './routes/login.js'
-import { nftUpload } from './routes/nfts-upload.js'
+import { nftUpdateUpload, nftUpload } from './routes/nfts-upload.js'
 import { nftCheck } from './routes/nfts-check.js'
 import { nftGet } from './routes/nfts-get.js'
 import { nftDelete } from './routes/nfts-delete.js'
@@ -98,6 +98,8 @@ r.add('get', '/check/:cid', withMode(nftCheck, RO), [postCors])
 r.add('get', '', withMode(nftList, RO), [postCors])
 r.add('get', '/:cid', withMode(nftGet, RO), [postCors])
 r.add('post', '/upload', withMode(nftUpload, RW), [postCors])
+r.add('patch', '/upload/:id', withMode(nftUpdateUpload, RW), [postCors])
+
 r.add('post', '/store', withMode(nftStore, RW), [postCors])
 r.add('delete', '/:cid', withMode(nftDelete, RW), [postCors])
 

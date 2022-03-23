@@ -108,27 +108,41 @@ export class DBClient {
   /**
    * Create upload with content and pins
    *
-   * @param {import('./db-client-types').CreateUploadInput} data
+   * @param {import('./db-client-types').UpdateUploadInput} data
    * @returns
    */
   async updateUpload(data) {
     const now = new Date().toISOString()
-    const rsp = await this.client.rpc('update_upload', {
-      data: {
-        ...data,
-        updated_at: data.updated_at || now,
-      },
-    })
 
-    if (rsp.error) {
-      throw new DBError(rsp.error)
+    const query = this.client.from('upload')
+
+    // we have to see if the upload exists with:
+    // the id requested and that the user is the uploads user
+    // and that the upload is not deleted
+    const { data: upload, status } = await query
+      .update({
+        name: data.name,
+        updated_at: now,
+      })
+      .select(this.uploadQuery)
+      .eq('id', data.id)
+      .eq('user_id', data.user_id)
+      .is('deleted_at', null)
+      .single()
+
+    if (status === 406) {
+      throw new Error(`Status 406, cannot update ${data.id}`)
     }
 
-    const upload = await this.getUpload(data.source_cid, data.user_id)
-    if (upload) {
-      return upload
+    if (!upload) {
+      throw new Error(
+        `Cannot update upload ${JSON.stringify(data.id)} ${JSON.stringify(
+          status
+        )}`
+      )
     }
-    throw new Error('failed to get new upload')
+
+    return upload
   }
 
   /**
