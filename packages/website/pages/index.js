@@ -324,7 +324,9 @@ function GettingStarted() {
     <article className="bg-yellow">
       <div className="mw9 center pa4 pa5-ns">
         <h2 className="chicagoflf tc mb5">
-          <HashLink id="getting-started">Getting started is easy</HashLink>
+          <HashLink id="getting-started">
+            Getting started is super easy
+          </HashLink>
         </h2>
         <div className="getting-started-callout">
           <img src="/images/getting-started.png" alt="getting-started" />
