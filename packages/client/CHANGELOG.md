@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.1.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.0.2...nft.storage-v6.1.0) (2022-03-23)
+
+
+### Features
+
+* add stats page ([#1376](https://github.com/nftstorage/nft.storage/issues/1376)) ([db62471](https://github.com/nftstorage/nft.storage/commit/db624711f10b672a3422e149092f4df0a5495d91))
+
+
+### Bug Fixes
+
+* create stream when needed ([#1693](https://github.com/nftstorage/nft.storage/issues/1693)) ([6dd3368](https://github.com/nftstorage/nft.storage/commit/6dd33685e236f7dbd1343c338d6e29ba6efd9d4e))
+
 ### [6.0.2](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.0.1...nft.storage-v6.0.2) (2022-03-07)
 
 
