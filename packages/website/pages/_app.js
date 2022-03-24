@@ -20,15 +20,6 @@ const queryClient = new QueryClient({
 /**
  * App Component
  *
- * @param {any} metric
- */
-export function reportWebVitals(metric) {
-  console.log(metric)
-}
-
-/**
- * App Component
- *
  * @param {any} props
  */
 export default function App({ Component, pageProps }) {

@@ -22,9 +22,8 @@ export default function Img(props) {
   if (process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line jsx-a11y/alt-text
     return <Image unoptimized={true} {...props} />
-  } else {
-    // @ts-ignore
-    // eslint-disable-next-line jsx-a11y/alt-text
-    return <Image {...props} loader={cloudflareImageLoader} />
   }
+  // @ts-ignore
+  // eslint-disable-next-line jsx-a11y/alt-text
+  return <Image {...props} loader={cloudflareImageLoader} />
 }
