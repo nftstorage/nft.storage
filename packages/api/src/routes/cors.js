@@ -42,6 +42,10 @@ export function postCors(req, rsp) {
   const origin = req.headers.get('origin')
   if (origin) {
     rsp.headers.set('Access-Control-Allow-Origin', origin)
+    rsp.headers.set(
+      'Access-Control-Allow-Methods',
+      'GET,POST,DELETE,PATCH,OPTIONS'
+    )
     rsp.headers.set('Vary', 'Origin')
   } else {
     rsp.headers.set('Access-Control-Allow-Origin', '*')
