@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.39.0](https://github.com/nftstorage/nft.storage/compare/website-v1.38.0...website-v1.39.0) (2022-03-26)
+
+
+### Features
+
+* add time format function/util ([#1649](https://github.com/nftstorage/nft.storage/issues/1649)) ([b209305](https://github.com/nftstorage/nft.storage/commit/b2093058c519f7d013da47cfc9bf8cf8bab6b59d))
+* **docs:** add how-to for checking upload status ([#1661](https://github.com/nftstorage/nft.storage/issues/1661)) ([b7102b7](https://github.com/nftstorage/nft.storage/commit/b7102b785fc2fb7d6f9584c63a0d52c7ae422ffe))
+* issue 1642 pin req email hover ([#1658](https://github.com/nftstorage/nft.storage/issues/1658)) ([664ec11](https://github.com/nftstorage/nft.storage/commit/664ec1148a8d924c773f8926e549a58b6f298903))
+
+
+### Bug Fixes
+
+* action menu URLs ([#1677](https://github.com/nftstorage/nft.storage/issues/1677)) ([0c8467c](https://github.com/nftstorage/nft.storage/commit/0c8467cd07b75a6714fcbcbee7b76af822dd8a47))
+* blog formatting with mdx p tag ([#1680](https://github.com/nftstorage/nft.storage/issues/1680)) ([3bbf593](https://github.com/nftstorage/nft.storage/commit/3bbf593493df181de6c941136bcf4cb536cb6e21))
+* capitalize H in GitHub ([#1682](https://github.com/nftstorage/nft.storage/issues/1682)) ([56ca19f](https://github.com/nftstorage/nft.storage/commit/56ca19fa50104193645a2645c5324b4512736362))
+* correct broken link to Getting Started ([#1671](https://github.com/nftstorage/nft.storage/issues/1671)) ([df9d5ee](https://github.com/nftstorage/nft.storage/commit/df9d5ee265719e6d4a931599cada8b47c683a5fb))
+* swap stats image, img already exists in assets folder ([#1681](https://github.com/nftstorage/nft.storage/issues/1681)) ([449d73e](https://github.com/nftstorage/nft.storage/commit/449d73e493e6e00fba76934fc347b030442be302))
+* update /files tooltip copy ([#1679](https://github.com/nftstorage/nft.storage/issues/1679)) ([fde13e0](https://github.com/nftstorage/nft.storage/commit/fde13e016b11d1cd5cb110981f1d8e0188aca1a1))
+
 ## [1.38.0](https://github.com/nftstorage/nft.storage/compare/website-v1.37.0...website-v1.38.0) (2022-03-17)
 
 
