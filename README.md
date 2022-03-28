@@ -40,6 +40,14 @@ The JS client library is the official and supported client to nft.storage. Other
 
 Check out the [HTTP API documentation](https://nft.storage/api-docs).
 
+# Examples
+
+See the [`examples`](./examples) directory in this repository for some example projects you can use to get started.
+
+The [`examples/client`](./examples/client/) directory contains projects using the JS client library in the browser and node.js.
+
+In [`examples/ucan-node`] you can find an example of using [`ucan.storage`](https://github.com/nftstorage/ucan.storage) for delegated authorization using [User Controlled Authorization Networks (UCAN)](https://ucan.xyz/).
+
 # Developer Tools
 
 We've created some scripts to help developers with bulk imports, status checks, file listings and more:
