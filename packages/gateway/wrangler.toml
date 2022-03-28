@@ -30,7 +30,7 @@ bindings = [
 # name = "gateway-nft-storage-production"
 account_id = "fffa4b4363a7e5250af8357087263b3a" # Protocol Labs CF account
 zone_id = "c7795a0adce7609a95d62fec04705aff"    # nftstorage.link zone
-route = "*nftstorage.link/*"
+route = "*.ipfs.nftstorage.link/*"
 
 [env.production.vars]
 IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf.nftstorage.link\", \"https://nft-storage.mypinata.cloud/\"]"
@@ -52,7 +52,7 @@ bindings = [
 # name = "gateway-nft-storage-staging"
 account_id = "fffa4b4363a7e5250af8357087263b3a" # Protocol Labs CF account
 zone_id = "c7795a0adce7609a95d62fec04705aff"    # nftstorage.link zone
-route = "*-staging.nftstorage.link/*"
+route = "*.ipfs-staging.nftstorage.link/*"
 
 [env.staging.vars]
 IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf.nftstorage.link\", \"https://nft-storage.mypinata.cloud/\"]"
