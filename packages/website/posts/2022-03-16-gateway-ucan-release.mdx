@@ -22,7 +22,9 @@ Participants in the UCAN auth flow are identified by a keypair, which is a priva
 
 In practice, NFT.Storage users can create their own keypair and register the DID with the NFT.Storage UCAN service to get a UCAN token. The NFT.Storage user is then free to create user UCAN tokens derived from their registered UCAN. Today, these derived tokens can be used to limit end-users to upload either any data or data with a specific CID within a scoped time period. When a token is used, NFT.Storage can validate it by looking at the chain of proofs used to derive a token, checking the cryptographic identity of each signer of the token. 
 
-As time goes on, NFT.Storage's ability UCANs can be expanded (e.g., blacklisting CIDs from being uploaded, permission to update mutable references). You can read more about how to implement UCAN-signed uploads in [our docs]() or on our UCAN implementation's [README](https://github.com/nftstorage/ucan.storage).
+As time goes on, NFT.Storage's ability UCANs can be expanded (e.g., blacklisting CIDs from being uploaded, permission to update mutable references). You can read more about how to implement UCAN-signed uploads in [our docs](https://nft.storage/docs/how-to/ucan) or on our UCAN implementation's [README](https://github.com/nftstorage/ucan.storage).
+
+This feature is fully functional, but is currently a Preview Feature as we look to take feedback from the community and improve it. As you try it out, we'd appreciate any thoughts on [this Discussions thread](https://github.com/nftstorage/nft.storage/discussions/1591)!
 
 # Bringing Web3 to the Web
 
