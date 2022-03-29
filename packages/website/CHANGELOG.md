@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.40.1](https://github.com/nftstorage/nft.storage/compare/website-v1.40.0...website-v1.40.1) (2022-03-29)
+
+
+### Bug Fixes
+
+* revert website gateway to nftstorage.link ([#1719](https://github.com/nftstorage/nft.storage/issues/1719)) ([4f5b06a](https://github.com/nftstorage/nft.storage/commit/4f5b06a3734e611084c979fce91b9d93ad012fe8))
+
 ## [1.40.0](https://github.com/nftstorage/nft.storage/compare/website-v1.39.0...website-v1.40.0) (2022-03-29)
 
 
