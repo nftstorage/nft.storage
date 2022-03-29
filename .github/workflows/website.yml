@@ -35,6 +35,9 @@ jobs:
           - ubuntu-18.04
         node-version:
           - 16
+        test_results_path:
+          # corresponds to playwright invocation/configuration
+          - packages/website/test-results
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -48,11 +51,16 @@ jobs:
       - run: npx playwright install --with-deps ${{ matrix.browser }} chromium
         working-directory: packages/website
       - run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- yarn workspace website run test:e2e -- --project=${{ matrix.browser }}
-      - uses: actions/upload-artifact@v1
-        if: always()
+      - name: Check for website test results
+        id: check_website_test_results
+        uses: andstor/file-existence-action@v1
+        with:
+          files: ${{ matrix.test_results_path }}
+      - if: steps.check_website_test_results.outputs.files_exists == 'true'
+        uses: actions/upload-artifact@v1
         with:
           name: ${{ matrix.browser }}-${{ matrix.os }}-test-results
-          path: test-results
+          path: ${{ matrix.test_results_path }}
   release:
     name: Release
     runs-on: ubuntu-latest
