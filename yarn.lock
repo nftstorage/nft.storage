@@ -2921,6 +2921,17 @@
     "@web3-storage/multipart-parser" "^1.0.0"
     data-uri-to-buffer "^3.0.1"
 
+"@web-std/fetch@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@web-std/fetch/-/fetch-4.0.0.tgz#32cb02e38c25518599843a51c4518b7ccb108d2c"
+  integrity sha512-RZUY1m7WoSsNGLfBeef3oAsmskU/IrlDSCMEakQZjD1csC91bdq3MJG7GiKijKJNg/PKRC45YxOo5yeSrAz5mA==
+  dependencies:
+    "@web-std/blob" "^3.0.3"
+    "@web-std/form-data" "^3.0.2"
+    "@web3-storage/multipart-parser" "^1.0.0"
+    data-uri-to-buffer "^3.0.1"
+    mrmime "^1.0.0"
+
 "@web-std/file@^3.0.0":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@web-std/file/-/file-3.0.2.tgz#b84cc9ed754608b18dcf78ac62c40dbcc6a94692"

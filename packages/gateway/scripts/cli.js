@@ -11,6 +11,7 @@ import Sentry from '@sentry/cli'
 import pWaitFor from 'p-wait-for'
 import { create } from 'ipfs-http-client'
 import globSource from 'ipfs-utils/src/files/glob-source.js'
+import { denylistCmd } from './denylist.js'
 
 const IPFS_API_URL = 'http://127.0.0.1:9089'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -30,6 +31,10 @@ prog
   .option('--start', 'Start docker container', false)
   .option('--stop', 'Stop and clean all dockers artifacts', false)
   .action(ipfsCmd)
+  .command('denylist')
+  .describe('Manage the gateway deny list')
+  .option('--update', 'Update the deny list from various sources', false)
+  .action(denylistCmd)
 
 async function buildCmd(opts) {
   const sentryRelease = `nft-gateway@${pkg.version}-${opts.env}+${git.short(
