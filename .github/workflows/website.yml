@@ -24,7 +24,7 @@ jobs:
       # - run: yarn build:website
       - run: yarn test:website
       # Install Playwright browsers
-      - run: npx playwright install
+      - run: npx playwright install --with-deps
         working-directory: packages/website
       - run: yarn workspace website run test:e2e
       - uses: actions/upload-artifact@v2
