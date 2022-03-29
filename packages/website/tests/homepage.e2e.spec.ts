@@ -5,6 +5,9 @@ test.beforeEach(async ({ page }) => {
 })
 
 test.describe('nft.storage homepage', () => {
+  test('should not have unexpected visual changes', async ({ page }) => {
+    expect(await page.screenshot()).toMatchSnapshot()
+  })
   test('should explain the product', async ({ page }) => {
     const nftStorage = await page.locator('.nft-storage')
     expect(await nftStorage.innerText()).toMatch(/Free Storage for NFTs/gi)
