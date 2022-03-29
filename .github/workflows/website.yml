@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: 16
       - uses: bahmutov/npm-install@v1
-      - run: yarn build:website
+      # - run: yarn build:website
       - run: yarn test:website
       - run: yarn workspace website run test:e2e
       - uses: actions/upload-artifact@v2
