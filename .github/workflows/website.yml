@@ -23,6 +23,9 @@ jobs:
       - uses: bahmutov/npm-install@v1
       # - run: yarn build:website
       - run: yarn test:website
+      # Install Playwright browsers
+      - run: npx playwright install
+        working-directory: packages/website
       - run: yarn workspace website run test:e2e
       - uses: actions/upload-artifact@v2
         if: always()
