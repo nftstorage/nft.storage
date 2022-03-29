@@ -206,7 +206,7 @@ export default function Files({ user }) {
             popupContent={'CID has been copied!!'}
           >
             <a
-              href={`https://nftstorage.link/ipfs/${nft.cid}`}
+              href={`https://dweb.link/ipfs/${nft.cid}`}
               className="underline black truncate"
               target="_blank"
               rel="noreferrer"
@@ -503,7 +503,7 @@ export default function Files({ user }) {
  * @param {{cid: string, type?: string}} props
  */
 function GatewayLink({ cid, type }) {
-  const gatewayLink = `https://nftstorage.link/ipfs/${cid}`
+  const gatewayLink = `https://dweb.link/ipfs/${cid}`
   const href = type === 'nft' ? `${gatewayLink}/metadata.json` : gatewayLink
   const btnLabel = type === 'nft' ? 'View Metadata' : 'View URL'
   const btnTitle = type === 'nft' ? 'View Metadata JSON' : 'View URL'
