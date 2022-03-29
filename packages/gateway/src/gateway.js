@@ -58,6 +58,7 @@ export async function gatewayGet(request, env, ctx) {
 
   if (env.DENYLIST) {
     const anchor = await toDenyListAnchor(`${cid}/`)
+    // TODO: in theory we should check each subcomponent of the pathname also.
     const value = await env.DENYLIST.get(anchor)
     if (value) {
       const { status, reason } = JSON.parse(value)
