@@ -22,16 +22,37 @@ jobs:
           node-version: 16
       - uses: bahmutov/npm-install@v1
       - run: yarn test:website
-      # Install Playwright browsers
-      - run: npx playwright install --with-deps
+  test-e2e:
+    name: ${{ matrix.os }} (${{ matrix.browser }})
+    strategy:
+      fail-fast: false
+      matrix:
+        browser:
+          - firefox
+          - webkit
+          - chromium
+        os:
+          - ubuntu-18.04
+        node-version:
+          - 16
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - uses: bahmutov/npm-install@v1
+        env:
+          DEBUG: pw:install
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+      - run: npx playwright install --with-deps ${{ matrix.browser }} chromium
         working-directory: packages/website
-      - run: yarn workspace website run test:e2e
-      - uses: actions/upload-artifact@v2
+      - run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- yarn workspace website run test:e2e -- --project=${{ matrix.browser }}
+      - uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: website-playwright-report
-          path: packages/website/playwright-report/
-          retention-days: 30
+          name: ${{ matrix.browser }}-${{ matrix.os }}-test-results
+          path: test-results
   release:
     name: Release
     runs-on: ubuntu-latest
