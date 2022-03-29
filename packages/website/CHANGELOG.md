@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.40.0](https://github.com/nftstorage/nft.storage/compare/website-v1.39.0...website-v1.40.0) (2022-03-29)
+
+
+### Features
+
+* 50M upload blog post ([#1713](https://github.com/nftstorage/nft.storage/issues/1713)) ([a0a96b3](https://github.com/nftstorage/nft.storage/commit/a0a96b36deecc488ea0cdcfc477fd5eab82602ae))
+
+
+### Bug Fixes
+
+* **docs:** add pre-built bundle info to troubleshooting & update faq ([#1710](https://github.com/nftstorage/nft.storage/issues/1710)) ([3010a53](https://github.com/nftstorage/nft.storage/commit/3010a530eae098bef17ca464bfc47dd860c76998))
+* website gateway url tmp revert ([#1716](https://github.com/nftstorage/nft.storage/issues/1716)) ([0fe173b](https://github.com/nftstorage/nft.storage/commit/0fe173b4b61f60d81d5a124c434055679cf5f648))
+
 ## [1.39.0](https://github.com/nftstorage/nft.storage/compare/website-v1.38.0...website-v1.39.0) (2022-03-26)
 
 
