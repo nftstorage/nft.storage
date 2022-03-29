@@ -10,7 +10,7 @@
     "start": "next start",
     "test": "eslint './**/*.js' && tsc --build",
     "test:jest": "jest",
-    "test:screenshots": "npx playwright test",
+    "test:e2e": "npx playwright test",
     "test:ci": "jest --runInBand --maxWorkers=4",
     "lint:fix": "eslint './**/*.js' --fix-dry-run",
     "analyze": "ANALYZE=true next build"

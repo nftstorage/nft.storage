@@ -21,8 +21,15 @@ jobs:
         with:
           node-version: 16
       - uses: bahmutov/npm-install@v1
-      - run: yarn test:website
       - run: yarn build:website
+      - run: yarn test:website
+      - run: yarn workspace website run test:e2e
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: website-playwright-report
+          path: packages/website/playwright-report/
+          retention-days: 30
   release:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Release
