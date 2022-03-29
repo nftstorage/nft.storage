@@ -21,7 +21,6 @@ jobs:
         with:
           node-version: 16
       - uses: bahmutov/npm-install@v1
-      # - run: yarn build:website
       - run: yarn test:website
       # Install Playwright browsers
       - run: npx playwright install --with-deps
@@ -34,7 +33,6 @@ jobs:
           path: packages/website/playwright-report/
           retention-days: 30
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Release
     runs-on: ubuntu-latest
     needs: check

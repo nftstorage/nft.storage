@@ -15,7 +15,6 @@ on:
 
 jobs:
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Release
     runs-on: ubuntu-latest
     steps:

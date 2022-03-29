@@ -46,7 +46,6 @@ jobs:
       - name: Coverage
         run: yarn --cwd packages/client coverage
   release:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Release
     runs-on: ubuntu-latest
     needs:
