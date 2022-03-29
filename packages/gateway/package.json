@@ -43,7 +43,9 @@
     "p-retry": "^5.0.0",
     "p-wait-for": "^4.1.0",
     "sade": "^1.7.4",
-    "smoke": "^3.1.1"
+    "smoke": "^3.1.1",
+    "toml": "^3.0.0",
+    "uint8arrays": "^3.0.0"
   },
   "author": "Vasco Santos <santos.vasco10@gmail.com>",
   "license": "Apache-2.0 OR MIT"

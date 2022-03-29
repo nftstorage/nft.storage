@@ -93,12 +93,31 @@ bindings = [
 [env.vsantos]
 workers_dev = true
 account_id = "7ec0b7cf2ec201b2580374e53ba5f37b"
+kv_namespaces = [{ binding = "DENYLIST", id = "" }]
 
 [env.vsantos.vars]
 GATEWAY_HOSTNAME = 'ipfs.localhost:8787'
 IPFS_GATEWAYS = "[\"https://ipfs.io\"]"
 
 [env.vsantos.durable_objects]
+bindings = [
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
+  {name = "CIDSTRACKER", class_name = "CidsTracker0"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits4"},
+  {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
+]
+
+[env.alanshaw]
+workers_dev = true
+account_id = "4fe12d085474d33bdcfd8e9bed4d8f95"
+kv_namespaces = [{ binding = "DENYLIST", id = "4ecfe1eb8f634ef9846d52601ff5fd20", preview_id = "4ecfe1eb8f634ef9846d52601ff5fd20" }]
+
+[env.alanshaw.vars]
+GATEWAY_HOSTNAME = 'ipfs.localhost:8787'
+IPFS_GATEWAYS = "[\"https://ipfs.io\"]"
+
+[env.alanshaw.durable_objects]
 bindings = [
   {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},

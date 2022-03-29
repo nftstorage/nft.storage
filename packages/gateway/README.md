@@ -32,7 +32,7 @@ One time set up of your cloudflare worker subdomain for dev:
 
   ```sh
   wrangler kv:namespace create DENYLIST --preview --env USER
-  # cli output something like: `{ binding = "DENYLIST", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" }`
+  # Outputs something like: `{ binding = "DENYLIST", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" }`
   # but you need to put `{ binding = "DENYLIST", preview_id = "7e441603d1bc4d5a87f6cecb959018e4", id = "7e441603d1bc4d5a87f6cecb959018e4" }` inside the `kv_namespaces`.
   # for production: wrangler kv:namespace create DENYLIST --env production
   ```
