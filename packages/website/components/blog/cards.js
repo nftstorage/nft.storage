@@ -3,6 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 import Tags from '../tags'
 import countly from '../../lib/countly'
+import Img from '../cloudflareImage'
 
 // custom styles from /styles/blog.css
 
@@ -17,7 +18,7 @@ import countly from '../../lib/countly'
 export const Card = ({ post }) => (
   <Link href={`/blog/post/${post.slug}`}>
     <a className="bg-white blog-card w-card hologram card right interactive pointer">
-      <img
+      <Img
         src={post.thumbnail}
         alt={`Banner for ${post.title}`}
         className="object-cover object-center w-100 card-thumb"
@@ -103,7 +104,7 @@ export const HighlightCard = ({ post }) => (
             </Button>
           </div>
         </div>
-        <img
+        <Img
           src={post.thumbnail}
           alt={`Banner for ${post.title}`}
           className="object-cover object-center highlight-img w-50"

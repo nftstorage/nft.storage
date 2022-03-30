@@ -25,7 +25,6 @@ export async function getStaticProps() {
 
   return {
     props: {
-      needsUser: false,
       logos: logosWithDir,
       description: 'NFT.Storage homepage',
     },
@@ -327,7 +326,7 @@ function GettingStarted() {
           <HashLink id="getting-started">Getting started is easy</HashLink>
         </h2>
         <div className="getting-started-callout">
-          <img src="/images/getting-started.png" alt="getting-started" />
+          <img src="/images/getting-started.jpg" alt="getting-started" />
           <ol className="list pl0 mb2">
             <li>
               <Step>1</Step>

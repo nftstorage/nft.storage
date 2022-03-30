@@ -1,3 +1,5 @@
+import Img from '../components/cloudflareImage'
+
 /**
  * Logo Component
  * @param {Object} logo
@@ -5,10 +7,12 @@
  * @param {string} logo.alt
  */
 const Logo = ({ src, alt }) => (
-  <img
+  <Img
     className="marketplace-logo"
     src={`/images/marketplace-logos/${src}`}
     alt={alt}
+    width="100%"
+    height={80}
   />
 )
 /**

@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
 import { TrustedBy } from '../components/trustedByLogos'
 import fs from 'fs'
-import decorateAdditionalCalculatedValues, {
-  formatBytes,
-} from '../lib/statsUtils'
+import { formatBytes, calculateStats } from '../lib/statsUtils'
 import { API } from '../lib/api'
 import Loading from '../components/loading'
 import { abbreviateNumber } from 'js-abbreviation-number'
+import Img from '../components/cloudflareImage'
 
 /**
  *
  * @returns {{ props: import('../components/types.js').LayoutProps}}
  */
+
 export function getStaticProps() {
   const logos = fs.readdirSync('public/images/marketplace-logos/home')
   // make opensea be the first logo
@@ -61,7 +61,7 @@ export default function Stats({ logos }) {
           'Content-Type': 'application/json',
         },
       }).then((res) => res.json())
-      setStats(decorateAdditionalCalculatedValues(stats.data))
+      setStats(calculateStats(stats.data))
     } catch (e) {
       const fakeData = {
         ok: true,
@@ -76,7 +76,7 @@ export default function Stats({ logos }) {
           uploads_blob_total: 12420729,
         },
       }
-      setStats(decorateAdditionalCalculatedValues(fakeData.data))
+      setStats(calculateStats(fakeData.data))
     }
     setStatsLoading(false)
   }
@@ -112,9 +112,12 @@ export default function Stats({ logos }) {
           <div className="stat-cards">
             <StatCard title="Upload Count">
               <div>
-                <img
+                <Img
                   src={'/images/stats-upload-count.svg'}
                   alt="Upload Count"
+                  width="500px"
+                  height="200px"
+                  layout="responsive"
                 />
                 <div className="pv3 ph3">
                   <p className="chicagoflf">Total uploads to NFT.Storage</p>
@@ -138,7 +141,13 @@ export default function Stats({ logos }) {
 
             <StatCard title="Data Stored">
               <div>
-                <img src={'/images/stats-data-stored.svg'} alt="Data Stored" />
+                <Img
+                  src={'/images/stats-upload-count.svg'}
+                  alt="Data Stored"
+                  width="500px"
+                  height="200px"
+                  layout="responsive"
+                />
                 <div className="pv3 ph3">
                   <p className="chicagoflf">
                     Total data stored on Filecoin from NFT.Storage
