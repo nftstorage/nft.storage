@@ -36,7 +36,9 @@ prog
   .option('--env', 'Wrangler environment to use.', 'dev')
   .action(denylistSyncCmd)
   .command('denylist add <cid>')
-  .describe('Add a CID (or CID + path) to the local deny list.')
+  .describe(
+    'Add a CID (or CID + path) to the local deny list. Note: we currently DO NOT support denying by CID + path in the API.'
+  )
   .option('--status', 'HTTP status to send in response.')
   .option('--reason', 'Reason for deny. Note: may be communicated in response')
   .action(denylistAddCmd)

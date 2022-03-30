@@ -4,12 +4,10 @@
 import pAny, { AggregateError } from 'p-any'
 import { FilterError } from 'p-some'
 import pSettle from 'p-settle'
-import * as uint8arrays from 'uint8arrays'
-import { base32 } from 'multiformats/bases/base32'
-import { sha256 } from 'multiformats/hashes/sha2'
-import { CID } from 'multiformats/cid'
+
 import { TimeoutError } from './errors.js'
 import { getCidFromSubdomainUrl } from './utils/cid.js'
+import { toDenyListAnchor } from './utils/deny-list.js'
 import {
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
@@ -57,7 +55,7 @@ export async function gatewayGet(request, env, ctx) {
   const pathname = reqUrl.pathname
 
   if (env.DENYLIST) {
-    const anchor = await toDenyListAnchor(`${cid}/`)
+    const anchor = await toDenyListAnchor(cid)
     // TODO: in theory we should check each subcomponent of the pathname also.
     const value = await env.DENYLIST.get(anchor)
     if (value) {
@@ -387,10 +385,4 @@ function getDurableRequestUrl(request, route, data) {
     method: 'PUT',
     body: data && JSON.stringify(data),
   })
-}
-
-async function toDenyListAnchor(str) {
-  const multihash = await sha256.digest(uint8arrays.fromString(str))
-  const digest = multihash.bytes.subarray(2)
-  return uint8arrays.toString(digest, 'hex')
 }
