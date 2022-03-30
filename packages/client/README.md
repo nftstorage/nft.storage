@@ -63,9 +63,9 @@ For more examples please see the [API documentation](https://nftstorage.github.i
 [raw http api]: https://nft.storage/#api-docs
 [node.js]: https://nodejs.org/
 [api documentation]: https://nftstorage.github.io/nft.storage/client/
-[examples directory]: https://github.com/nftstorage/nft.storage/tree/main/packages/client/examples
-[examples.node]: https://github.com/nftstorage/nft.storage/tree/main/packages/client/examples/node.js
-[examples.browser]: https://github.com/nftstorage/nft.storage/tree/main/packages/client/examples/browser
+[examples directory]: https://github.com/nftstorage/nft.storage/tree/main/examples/client
+[examples.node]: https://github.com/nftstorage/nft.storage/tree/main/examples/client/node.js
+[examples.browser]: https://github.com/nftstorage/nft.storage/tree/main/examples/client/browser
 [ci.icon]: https://github.com/nftstorage/nft.storage/actions/workflows/client.yml/badge.svg
 [version.icon]: https://img.shields.io/npm/v/nft.storage.svg
 [package.url]: https://npmjs.org/package/nft.storage
