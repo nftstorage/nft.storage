@@ -27,7 +27,6 @@ jobs:
       matrix:
         browser:
           - firefox
-          - webkit
           - chromium
         os:
           - ubuntu-18.04
