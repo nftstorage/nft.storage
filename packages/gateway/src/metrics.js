@@ -267,6 +267,35 @@ export async function metricsGet(request, env, ctx) {
     `# HELP nftgateway_redirect_total Total redirects to gateway.`,
     `# TYPE nftgateway_redirect_total counter`,
     `nftgateway_redirect_total{env="${env.ENV}"} ${metricsCollected.gatewayRedirectCount}`,
+    `# HELP nftgateway_responses_by_ipld_codec_total total of responses by ipld codec.`,
+    `# TYPE nftgateway_responses_by_ipld_codec_total counter`,
+    Object.keys(metricsCollected.summaryMetrics.totalResponsesByIpldCodec)
+      .map(
+        (codec) =>
+          `nftgateway_responses_by_ipld_codec_total{env="${
+            env.ENV
+          }",codec="${codec}"} ${
+            metricsCollected.summaryMetrics.totalResponsesByIpldCodec[codec] ||
+            0
+          }`
+      )
+      .join('\n'),
+    `# HELP nftgateway_responses_by_multihash_function_total total of responses by multihash function.`,
+    `# TYPE nftgateway_responses_by_multihash_function_total counter`,
+    Object.keys(
+      metricsCollected.summaryMetrics.totalResponsesByMultihashFunction
+    )
+      .map(
+        (fn) =>
+          `nftgateway_responses_by_multihash_function_total{env="${
+            env.ENV
+          }",function="${fn}"} ${
+            metricsCollected.summaryMetrics.totalResponsesByMultihashFunction[
+              fn
+            ] || 0
+          }`
+      )
+      .join('\n'),
   ].join('\n')
 
   res = new Response(metrics, {

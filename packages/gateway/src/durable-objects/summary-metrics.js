@@ -1,3 +1,5 @@
+import multicodec from 'multicodec'
+import { CID } from 'multiformats/cid'
 import {
   responseTimeHistogram,
   createResponseTimeHistogramObject,
@@ -11,10 +13,13 @@ import {
  * @property {number} totalCachedResponses total number of cached responses
  * @property {BigInt} totalContentLengthBytes total content length of responses
  * @property {BigInt} totalCachedContentLengthBytes total content length of cached responses
+ * @property {Record<string, number>} totalResponsesByIpldCodec
+ * @property {Record<string, number>} totalResponsesByMultihashFunction
  * @property {Record<string, number>} contentLengthHistogram
  * @property {Record<string, number>} responseTimeHistogram
  *
  * @typedef {Object} FetchStats
+ * @property {string} cid fetched CID
  * @property {number} responseTime number of milliseconds to get response
  * @property {number} contentLength content length header content
  */
@@ -35,6 +40,11 @@ const TOTAL_CACHED_CONTENT_LENGTH_BYTES_ID = 'totalCachedContentLengthBytes'
 const CONTENT_LENGTH_HISTOGRAM_ID = 'contentLengthHistogram'
 // Key to track response time histogram
 const RESPONSE_TIME_HISTOGRAM_ID = 'responseTimeHistogram'
+// Key to track responses by ipld codec
+const TOTAL_RESPONSES_BY_IPLD_CODEC_ID = 'totalResponsesByIpldCodec'
+// Key to track responses by multihash function
+const TOTAL_RESPONSES_BY_MULTIHASH_FUNCTION_ID =
+  'totalResponsesByMultihashFunction'
 
 /**
  * Durable Object for keeping summary metrics of nft.storage Gateway
@@ -65,6 +75,14 @@ export class SummaryMetrics0 {
       this.totalCachedContentLengthBytes =
         (await this.state.storage.get(TOTAL_CACHED_CONTENT_LENGTH_BYTES_ID)) ||
         BigInt(0)
+      /** @type {Record<string, number>} */
+      this.totalResponsesByIpldCodec =
+        (await this.state.storage.get(TOTAL_RESPONSES_BY_IPLD_CODEC_ID)) || {}
+      /** @type {Record<string, number>} */
+      this.totalResponsesByMultihashFunction =
+        (await this.state.storage.get(
+          TOTAL_RESPONSES_BY_MULTIHASH_FUNCTION_ID
+        )) || {}
       // Content length histogram
       this.contentLengthHistogram =
         (await this.state.storage.get(CONTENT_LENGTH_HISTOGRAM_ID)) ||
@@ -94,6 +112,9 @@ export class SummaryMetrics0 {
               totalContentLengthBytes: this.totalContentLengthBytes.toString(),
               totalCachedContentLengthBytes:
                 this.totalCachedContentLengthBytes.toString(),
+              totalResponsesByIpldCodec: this.totalResponsesByIpldCodec,
+              totalResponsesByMultihashFunction:
+                this.totalResponsesByMultihashFunction,
               contentLengthHistogram: this.contentLengthHistogram,
               responseTimeHistogram: this.responseTimeHistogram,
             })
@@ -126,6 +147,7 @@ export class SummaryMetrics0 {
     this.totalCachedResponseTime += stats.responseTime
     this.totalCachedResponses += 1
     this.totalCachedContentLengthBytes += BigInt(stats.contentLength)
+    this._updateCidMetrics(stats)
     this._updateContentLengthMetrics(stats)
     this._updateResponseTimeHistogram(stats)
     // Save updated metrics
@@ -154,6 +176,14 @@ export class SummaryMetrics0 {
         RESPONSE_TIME_HISTOGRAM_ID,
         this.responseTimeHistogram
       ),
+      this.state.storage.put(
+        TOTAL_RESPONSES_BY_IPLD_CODEC_ID,
+        this.totalResponsesByIpldCodec
+      ),
+      this.state.storage.put(
+        TOTAL_RESPONSES_BY_MULTIHASH_FUNCTION_ID,
+        this.totalResponsesByMultihashFunction
+      ),
     ])
   }
 
@@ -164,6 +194,7 @@ export class SummaryMetrics0 {
     // Updated Metrics
     this.totalWinnerResponseTime += stats.responseTime
     this.totalWinnerSuccessfulRequests += 1
+    this._updateCidMetrics(stats)
     this._updateContentLengthMetrics(stats)
     this._updateResponseTimeHistogram(stats)
     // Save updated Metrics
@@ -188,7 +219,42 @@ export class SummaryMetrics0 {
         RESPONSE_TIME_HISTOGRAM_ID,
         this.responseTimeHistogram
       ),
+      this.state.storage.put(
+        TOTAL_RESPONSES_BY_IPLD_CODEC_ID,
+        this.totalResponsesByIpldCodec
+      ),
+      this.state.storage.put(
+        TOTAL_RESPONSES_BY_MULTIHASH_FUNCTION_ID,
+        this.totalResponsesByMultihashFunction
+      ),
     ])
+  }
+
+  /**
+   * @param {FetchStats} stats
+   */
+  _updateCidMetrics(stats) {
+    const cid = CID.parse(stats.cid)
+    const cidInspectObj = CID.inspectBytes(cid.bytes.subarray(0, 10))
+    // IPLD codec
+    const ipldCodec = multicodec.getNameFromCode(cidInspectObj.codec)
+    if (this.totalResponsesByIpldCodec[ipldCodec]) {
+      // increment one if exists, otherwise initialize it
+      this.totalResponsesByIpldCodec[ipldCodec] += 1
+    } else {
+      this.totalResponsesByIpldCodec[ipldCodec] = 1
+    }
+
+    // Multihash function
+    const multihashFunction = multicodec.getNameFromCode(
+      cidInspectObj.multihashCode
+    )
+    if (this.totalResponsesByMultihashFunction[multihashFunction]) {
+      // increment one if exists, otherwise initialize it
+      this.totalResponsesByMultihashFunction[multihashFunction] += 1
+    } else {
+      this.totalResponsesByMultihashFunction[multihashFunction] = 1
+    }
   }
 
   /**

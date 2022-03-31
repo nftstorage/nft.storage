@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "itty-router": "^2.4.5",
+    "multicodec": "^3.2.1",
     "multiformats": "^9.6.4",
     "nanoid": "^3.1.30",
     "p-any": "^4.0.0",

@@ -123,6 +123,32 @@ test('Gets Metrics content', async (t) => {
   })
 })
 
+test('gets Metrics from content ipld codec and multihash function', async (t) => {
+  const { mf } = t.context
+
+  const p = await mf.dispatchFetch(
+    'http://bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq.ipfs.localhost:8787'
+  )
+
+  await p.waitUntil()
+
+  const response = await mf.dispatchFetch('http://localhost:8787/metrics')
+  const metricsResponse = await response.text()
+
+  t.is(
+    metricsResponse.includes(
+      `nftgateway_responses_by_ipld_codec_total{env="test",codec="raw"} 1`
+    ),
+    true
+  )
+  t.is(
+    metricsResponse.includes(
+      `nftgateway_responses_by_multihash_function_total{env="test",function="sha2-256"} 1`
+    ),
+    true
+  )
+})
+
 test('Gets Metrics from faster gateway', async (t) => {
   const { mf } = t.context
 
