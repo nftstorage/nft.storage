@@ -101,8 +101,17 @@ In the example below, replace `$API_TOKEN` with your NFT.Storage API token, or s
 Likewise, replace `$DID` with your DID string, or set a shell variable named `DID` before running the command.
 
 ```bash
-curl -X POST -H "Authorization: Bearer $API_TOKEN" -H 'Content-Type: application/json' --data "{\"did\": \"$DID\"}"
+curl -X POST -H "Authorization: Bearer $API_TOKEN" -H 'Content-Type: application/json' --data "{\"did\": \"$DID\"}" https://api.nft.storage/user/did
 ```
+
+This should return a JSON object:
+
+```json
+{
+  "ok": true,
+  "value": "<the-did-you-registered>"}
+```
+
 
 ### Obtaining a root UCAN token
 
@@ -118,7 +127,14 @@ In the example below, replace `$TOKEN` with either an existing UCAN token or an 
 curl -X POST -H "Authorization: Bearer $TOKEN" https://api.nft.storage/ucan/token
 ```
 
-{ /* TODO: show response body  */ }
+This will return a JSON object with the UCAN token in the `value` field:
+
+```json
+{
+  "ok":true,
+  "value":"eyJhb..."
+}
+```
 
 You can use the root token to [derive child UCAN tokens][ucan-storage-typedoc-deriving-a-child-token] for other users, or to [create a request token][ucan-storage-typedoc-creating-a-request-token] to upload content using UCAN auth instead of your API token.
 
