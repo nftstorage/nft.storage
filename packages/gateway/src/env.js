@@ -19,6 +19,7 @@ import { Logging } from './logs.js'
  * @property {Object} CIDSTRACKER
  * @property {Object} GATEWAYRATELIMITS
  * @property {Object} GATEWAYREDIRECTCOUNTER
+ * @property {KVNamespace} DENYLIST
  *
  * @typedef {Object} EnvTransformed
  * @property {Array<string>} ipfsGateways
@@ -104,4 +105,6 @@ function getSentry(request, env) {
  *   readonly name?: string
  *   fetch(requestOrUrl: Request | string, requestInit?: RequestInit | Request): Promise<Response>
  * }} DurableObjectStub
+ *
+ * @typedef {{ get: (key: string) => Promise<string | null> }} KVNamespace
  */

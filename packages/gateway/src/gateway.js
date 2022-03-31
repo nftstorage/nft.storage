@@ -7,6 +7,7 @@ import pSettle from 'p-settle'
 
 import { TimeoutError } from './errors.js'
 import { getCidFromSubdomainUrl } from './utils/cid.js'
+import { toDenyListAnchor } from './utils/deny-list.js'
 import {
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
@@ -52,6 +53,17 @@ export async function gatewayGet(request, env, ctx) {
   const reqUrl = new URL(request.url)
   const cid = getCidFromSubdomainUrl(reqUrl)
   const pathname = reqUrl.pathname
+
+  if (env.DENYLIST) {
+    const anchor = await toDenyListAnchor(cid)
+    // TODO: in theory we should check each subcomponent of the pathname also.
+    // https://github.com/nftstorage/nft.storage/issues/1737
+    const value = await env.DENYLIST.get(anchor)
+    if (value) {
+      const { status, reason } = JSON.parse(value)
+      return new Response(reason || '', { status: status || 410 })
+    }
+  }
 
   // Prepare IPFS gateway requests
   const shouldPreventRateLimit = await getGatewayRateLimitState(request, env)

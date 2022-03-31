@@ -11,6 +11,7 @@ import Sentry from '@sentry/cli'
 import pWaitFor from 'p-wait-for'
 import { create } from 'ipfs-http-client'
 import globSource from 'ipfs-utils/src/files/glob-source.js'
+import { denylistSyncCmd, denylistAddCmd } from './denylist.js'
 
 const IPFS_API_URL = 'http://127.0.0.1:9089'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -30,6 +31,17 @@ prog
   .option('--start', 'Start docker container', false)
   .option('--stop', 'Stop and clean all dockers artifacts', false)
   .action(ipfsCmd)
+  .command('denylist sync')
+  .describe('Sync the gateway deny list with various sources.')
+  .option('--env', 'Wrangler environment to use.', 'dev')
+  .action(denylistSyncCmd)
+  .command('denylist add <cid>')
+  .describe(
+    'Add a CID (or CID + path) to the local deny list. Note: we currently DO NOT support denying by CID + path in the API.'
+  )
+  .option('--status', 'HTTP status to send in response.')
+  .option('--reason', 'Reason for deny. Note: may be communicated in response')
+  .action(denylistAddCmd)
 
 async function buildCmd(opts) {
   const sentryRelease = `nft-gateway@${pkg.version}-${opts.env}+${git.short(

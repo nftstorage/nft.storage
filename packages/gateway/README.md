@@ -28,6 +28,15 @@ One time set up of your cloudflare worker subdomain for dev:
     wrangler secret put LOGTAIL_TOKEN --env $(whoami) # Get from Logtail
   ```
 
+- Add KV namespaces
+
+  ```sh
+  wrangler kv:namespace create DENYLIST --preview --env USER
+  # Outputs something like: `{ binding = "DENYLIST", preview_id = "7e441603d1bc4d5a87f6cecb959018e4" }`
+  # but you need to put `{ binding = "DENYLIST", preview_id = "7e441603d1bc4d5a87f6cecb959018e4", id = "7e441603d1bc4d5a87f6cecb959018e4" }` inside the `kv_namespaces`.
+  # for production: wrangler kv:namespace create DENYLIST --env production
+  ```
+
 - `npm run publish` - Publish the worker under your env. An alias for `wrangler publish --env $(whoami)`
 - `npm start` - Run the worker in dev mode. An alias for `wrangler dev --env $(whoami)`
 

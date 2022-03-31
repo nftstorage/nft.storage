@@ -31,6 +31,7 @@ bindings = [
 account_id = "fffa4b4363a7e5250af8357087263b3a" # Protocol Labs CF account
 zone_id = "c7795a0adce7609a95d62fec04705aff"    # nftstorage.link zone
 route = "*.ipfs.nftstorage.link/*"
+kv_namespaces = [{ binding = "DENYLIST", id = "785cf627e913468ca5319523ae929def" }]
 
 [env.production.vars]
 IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf.nftstorage.link\", \"https://nft-storage.mypinata.cloud/\"]"
@@ -53,6 +54,7 @@ bindings = [
 account_id = "fffa4b4363a7e5250af8357087263b3a" # Protocol Labs CF account
 zone_id = "c7795a0adce7609a95d62fec04705aff"    # nftstorage.link zone
 route = "*.ipfs-staging.nftstorage.link/*"
+kv_namespaces = [{ binding = "DENYLIST", id = "f4eb0eca32e14e28b643604a82e00cb3" }]
 
 [env.staging.vars]
 IPFS_GATEWAYS = "[\"https://ipfs.io\", \"https://cf.nftstorage.link\", \"https://nft-storage.mypinata.cloud/\"]"
@@ -72,6 +74,7 @@ bindings = [
 # Test!
 [env.test]
 workers_dev = true
+kv_namespaces = [{ binding = "DENYLIST" }]
 
 [env.test.vars]
 IPFS_GATEWAYS = "[\"http://127.0.0.1:9081\", \"http://localhost:9082\", \"http://localhost:9083\"]"
@@ -92,12 +95,31 @@ bindings = [
 [env.vsantos]
 workers_dev = true
 account_id = "7ec0b7cf2ec201b2580374e53ba5f37b"
+kv_namespaces = [{ binding = "DENYLIST", id = "" }]
 
 [env.vsantos.vars]
 GATEWAY_HOSTNAME = 'ipfs.localhost:8787'
 IPFS_GATEWAYS = "[\"https://ipfs.io\"]"
 
 [env.vsantos.durable_objects]
+bindings = [
+  {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
+  {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
+  {name = "CIDSTRACKER", class_name = "CidsTracker0"},
+  {name = "GATEWAYRATELIMITS", class_name = "GatewayRateLimits4"},
+  {name = "GATEWAYREDIRECTCOUNTER", class_name = "GatewayRedirectCounter0"}
+]
+
+[env.alanshaw]
+workers_dev = true
+account_id = "4fe12d085474d33bdcfd8e9bed4d8f95"
+kv_namespaces = [{ binding = "DENYLIST", id = "4ecfe1eb8f634ef9846d52601ff5fd20", preview_id = "4ecfe1eb8f634ef9846d52601ff5fd20" }]
+
+[env.alanshaw.vars]
+GATEWAY_HOSTNAME = 'ipfs.localhost:8787'
+IPFS_GATEWAYS = "[\"https://ipfs.io\"]"
+
+[env.alanshaw.durable_objects]
 bindings = [
   {name = "GATEWAYMETRICS", class_name = "GatewayMetrics0"},
   {name = "SUMMARYMETRICS", class_name = "SummaryMetrics0"},
