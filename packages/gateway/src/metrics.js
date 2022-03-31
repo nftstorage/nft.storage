@@ -267,6 +267,18 @@ export async function metricsGet(request, env, ctx) {
     `# HELP nftgateway_redirect_total Total redirects to gateway.`,
     `# TYPE nftgateway_redirect_total counter`,
     `nftgateway_redirect_total{env="${env.ENV}"} ${metricsCollected.gatewayRedirectCount}`,
+    `# HELP nftgateway_responses_by_query_type_total total of responses by query status. Either CID or CID+PATH.`,
+    `# TYPE nftgateway_responses_by_query_type_total counter`,
+    Object.keys(metricsCollected.summaryMetrics.totalResponsesByQueryType)
+      .map(
+        (type) =>
+          `nftgateway_responses_by_query_type_total{env="${
+            env.ENV
+          }",type="${type}"} ${
+            metricsCollected.summaryMetrics.totalResponsesByQueryType[type] || 0
+          }`
+      )
+      .join('\n'),
   ].join('\n')
 
   res = new Response(metrics, {

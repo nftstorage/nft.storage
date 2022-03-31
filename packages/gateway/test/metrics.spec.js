@@ -38,9 +38,11 @@ test('Gets Metrics content when empty state', async (t) => {
   )
   t.is(metricsResponse.includes(`_responses_content_length_total{le=`), true)
   t.is(
-    metricsResponse.includes(
-      `_responses_content_length_bytes_total{env="test"} 0`
-    ),
+    metricsResponse.includes('nftgateway_winner_response_time_seconds_total'),
+    true
+  )
+  t.is(
+    metricsResponse.includes('nftgateway_winner_response_time_seconds_total'),
     true
   )
   gateways.forEach((gw) => {
@@ -121,6 +123,38 @@ test('Gets Metrics content', async (t) => {
       true
     )
   })
+})
+
+test('gets Metrics from query type', async (t) => {
+  const { mf } = t.context
+
+  const p = await Promise.all([
+    mf.dispatchFetch(
+      'http://bafybeih74zqc6kamjpruyra4e4pblnwdpickrvk4hvturisbtveghflovq.ipfs.localhost:8787'
+    ),
+    mf.dispatchFetch(
+      'https://bafybeih74zqc6kamjpruyra4e4pblnwdpickrvk4hvturisbtveghflovq.ipfs.localhost:8787/path'
+    ),
+  ])
+
+  // Wait for waitUntil
+  await Promise.all(p.map((p) => p.waitUntil()))
+
+  const response = await mf.dispatchFetch('http://localhost:8787/metrics')
+  const metricsResponse = await response.text()
+
+  t.is(
+    metricsResponse.includes(
+      `nftgateway_responses_by_query_type_total{env="test",type="CID"} 1`
+    ),
+    true
+  )
+  t.is(
+    metricsResponse.includes(
+      `nftgateway_responses_by_query_type_total{env="test",type="CID+PATH"} 1`
+    ),
+    true
+  )
 })
 
 test('Gets Metrics from faster gateway', async (t) => {
