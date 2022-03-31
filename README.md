@@ -192,4 +192,4 @@ Feel free to join in. All welcome. [Open an issue](https://github.com/nftstorage
 
 # License
 
-Dual-licensed under [MIT](https://github.com/nftstorage/nft.storage/blob/main/LICENSE-MIT) + [Apache 2.0](https://github.com/nftstorage/nft.storage/blob/main/LICENSE-APACHE)
+Dual-licensed under [MIT + Apache 2.0](https://github.com/nftstorage/nft.storage/blob/main/LICENSE.md)
