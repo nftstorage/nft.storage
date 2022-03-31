@@ -215,6 +215,7 @@ export default function Files({ user }) {
           }),
           headers: {
             'Content-type': 'application/json; charset=UTF-8',
+            Authorization: `Bearer ${await getToken()}`,
           },
         })
         setError('')
@@ -463,7 +464,7 @@ export default function Files({ user }) {
                                     uploads
                                   </span>
                                 }
-                                overlayClassName="table-tooltip"
+                                overlayClassName="ns-tooltip"
                                 id="label-tooltip"
                               >
                                 <VscQuestion size={16} />
