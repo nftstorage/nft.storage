@@ -1,0 +1,31 @@
+---
+title: 'Feature release: UCAN-signed uploads'
+description: Signed uploads to NFT.Storage for your end-users
+author: Hugo Dias, Yusef Napora, David Choi
+thumbnail: https://user-images.githubusercontent.com/89210666/158711664-cac3de1d-7906-411e-8556-434b1170dc9f.png
+date: Apr 1, 2022
+tags:
+  - ipfs
+  - ucan
+  - uploads
+---
+
+Hot off the release of the [NFT.Storage Gateway](https://nft.storage/blog/post/2022-03-08-gateway-ucan-release/) is another new product feature announcement! We're excited to announce the ability for an NFT.Storage user to delegate others the permission to upload using their account (like S3-signed uploads) using [UCANs](https://fission.codes/blog/auth-without-backend/). This tool is especially great for minting services, marketplaces, and other developers who are building NFT tools with end-users and are looking to deliver them a frictionless upload flow.
+
+# UCAN-signed uploads
+
+Previously, NFT.Storage could only give its users an API token to authenticate and authorize uploads. This is standard Web 2 auth, and it works great, but it has some limitations. For instance, many users of NFT.Storage are tools like minting APIs (like NFTPort, Tatum, and Project Galaxy) or marketplaces (like OpenSea, Holaplex, and Magic Eden). Today, they run proxy servers that receive data uploaded by their end-users and attach their tokens to storage requests. This works well in some cases (e.g., they want to keep their own copy of uploads in their back-ends), but for many use cases, they would like their end-users to upload data directly to NFT.Storage. However, they also need to be careful of exposing their API tokens in web application source code. 
+
+Though there are a number of possible solutions to this, we landed on using [UCANs](https://fission.codes/blog/auth-without-backend/). They are JSON Web Tokens [JWTs](https://jwt.io/) containing [Decentralized Identity Documents](https://www.w3.org/TR/did-core/) secured by public key cryptography. UCAN tokens can be used to derive "child" UCAN tokens, which can have a subset of the permissions encoded in the "parent" UCAN.
+
+Participants in the UCAN auth flow are identified by a keypair, which is a private signing key with a corresponding public verification key. Each user or service involved in the flow will have their own keypair. The public key for each user or service is encoded into a DID using the did:key method, which encodes the public key into a compact string of the form `did:key:<encoded-public-key>`. These DID strings are used to identify each of the participants in the UCAN flow.
+
+In practice, NFT.Storage users can create their own keypair and register the DID with the NFT.Storage UCAN service to get a UCAN token. The NFT.Storage user is then free to create user UCAN tokens derived from their registered UCAN. Today, these derived tokens can be used to limit end-users to upload either any data or data with a specific CID within a scoped time period. When a token is used, NFT.Storage can validate it by looking at the chain of proofs used to derive a token, checking the cryptographic identity of each signer of the token. 
+
+As time goes on, NFT.Storage's ability UCANs can be expanded (e.g., blacklisting CIDs from being uploaded, permission to update mutable references). You can read more about how to implement UCAN-signed uploads in [our docs](https://nft.storage/docs/how-to/ucan) or on our UCAN implementation's [README](https://github.com/nftstorage/ucan.storage).
+
+This feature is fully functional, but is currently a Preview Feature as we look to take feedback from the community and improve it. As you try it out, we'd appreciate any thoughts on [this Discussions thread](https://github.com/nftstorage/nft.storage/discussions/1591)!
+
+# Bringing Web3 to the Web
+
+To fulfill the potential of Web3 technologies like NFTs, we need to meet the Web where it is today, while being intentional about how we do so to keep the benefits and principles of Web3 in-place. IPFS HTTP gateways and UCAN tokens are two such ways to do so, and we can't wait to see how our users utilize them to provide delightful end-user experiences!
