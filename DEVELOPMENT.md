@@ -32,7 +32,7 @@ The site should now be available at http://localhost:4000
 
 ## Local environment configuration
 
-In the root folder, copy `.env.example` to a file named `.env`.
+In the root folder, copy the `.env.tpl` template file to a new file named `.env`.
 
 Edit the `.env` file and change the value of the `MAGIC_SECRET_KEY` variable to the secret key for your Magic Link app.
 
