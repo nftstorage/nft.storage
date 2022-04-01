@@ -39,17 +39,6 @@ import {
  */
 export async function gatewayGet(request, env, ctx) {
   const startTs = Date.now()
-  const cache = caches.default
-  let res = await cache.match(request.url)
-
-  if (res) {
-    // Update cache metrics in background
-    const responseTime = Date.now() - startTs
-
-    ctx.waitUntil(updateSummaryCacheMetrics(request, env, res, responseTime))
-    return res
-  }
-
   const reqUrl = new URL(request.url)
   const cid = getCidFromSubdomainUrl(reqUrl)
   const pathname = reqUrl.pathname
@@ -63,6 +52,17 @@ export async function gatewayGet(request, env, ctx) {
       const { status, reason } = JSON.parse(value)
       return new Response(reason || '', { status: status || 410 })
     }
+  }
+
+  const cache = caches.default
+  const res = await cache.match(request.url)
+
+  if (res) {
+    // Update cache metrics in background
+    const responseTime = Date.now() - startTs
+
+    ctx.waitUntil(updateSummaryCacheMetrics(request, env, res, responseTime))
+    return res
   }
 
   // Prepare IPFS gateway requests
@@ -153,7 +153,7 @@ export async function gatewayGet(request, env, ctx) {
       // Gateway timeout
       if (
         responses[0].value?.aborted &&
-        responses[0].value?.reason == TIMEOUT_CODE
+        responses[0].value?.reason === TIMEOUT_CODE
       ) {
         throw new TimeoutError()
       }

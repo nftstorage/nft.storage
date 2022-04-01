@@ -48,8 +48,11 @@ export default {
       env.log.timeEnd('request')
       return env.log.end(res)
     } catch (error) {
-      env.log.timeEnd('request')
-      return env.log.end(serverError(error, request, env))
+      if (env.log) {
+        env.log.timeEnd('request')
+        return env.log.end(serverError(error, request, env))
+      }
+      return serverError(error, request, env)
     }
   },
 }
