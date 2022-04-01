@@ -3,7 +3,7 @@ title: 'Feature release: UCAN-signed uploads'
 description: Signed uploads to NFT.Storage for your end-users
 author: Hugo Dias, Yusef Napora, David Choi
 thumbnail: https://user-images.githubusercontent.com/89210666/158711664-cac3de1d-7906-411e-8556-434b1170dc9f.png
-date: Mar 16, 2022
+date: Apr 1, 2022
 tags:
   - ipfs
   - ucan
@@ -16,7 +16,7 @@ Hot off the release of the [NFT.Storage Gateway](https://nft.storage/blog/post/2
 
 Previously, NFT.Storage could only give its users an API token to authenticate and authorize uploads. This is standard Web 2 auth, and it works great, but it has some limitations. For instance, many users of NFT.Storage are tools like minting APIs (like NFTPort, Tatum, and Project Galaxy) or marketplaces (like OpenSea, Holaplex, and Magic Eden). Today, they run proxy servers that receive data uploaded by their end-users and attach their tokens to storage requests. This works well in some cases (e.g., they want to keep their own copy of uploads in their back-ends), but for many use cases, they would like their end-users to upload data directly to NFT.Storage. However, they also need to be careful of exposing their API tokens in web application source code. 
 
-Though there are a number of possible solutions to this, we landed on using [UCANs](https://fission.codes/blog/auth-without-backend/). They are JSON Web Tokens [JWTs](https://jwt.io/) containing [Decentralized Identity Documents](https://github.com/yusefnapora/ucan.storage/blob/docs/readme/readme.md#use-cases) secured by public key cryptography. UCAN tokens can be used to derive "child" UCAN tokens, which can have a subset of the permissions encoded in the "parent" UCAN.
+Though there are a number of possible solutions to this, we landed on using [UCANs](https://fission.codes/blog/auth-without-backend/). They are JSON Web Tokens [JWTs](https://jwt.io/) containing [Decentralized Identity Documents](https://www.w3.org/TR/did-core/) secured by public key cryptography. UCAN tokens can be used to derive "child" UCAN tokens, which can have a subset of the permissions encoded in the "parent" UCAN.
 
 Participants in the UCAN auth flow are identified by a keypair, which is a private signing key with a corresponding public verification key. Each user or service involved in the flow will have their own keypair. The public key for each user or service is encoded into a DID using the did:key method, which encodes the public key into a compact string of the form `did:key:<encoded-public-key>`. These DID strings are used to identify each of the participants in the UCAN flow.
 
