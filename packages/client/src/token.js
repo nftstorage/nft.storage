@@ -1,4 +1,4 @@
-import { pack } from 'ipfs-car/dist/esm/pack'
+import { pack } from 'ipfs-car/dist/cjs/pack'
 import { CID } from 'multiformats/cid'
 import * as Block from 'multiformats/block'
 import { sha256 } from 'multiformats/hashes/sha2'

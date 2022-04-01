@@ -17,7 +17,7 @@
 import { transform } from 'streaming-iterables'
 import pRetry, { AbortError } from 'p-retry'
 import { TreewalkCarSplitter } from 'carbites/treewalk'
-import { pack } from 'ipfs-car/dist/esm/pack'
+import { pack } from 'ipfs-car/dist/cjs/pack'
 import { CID } from 'multiformats/cid'
 import * as Token from './token.js'
 import { fetch, File, Blob, FormData, Blockstore } from './platform.js'
@@ -150,6 +150,10 @@ class NFTStorage {
               headers,
               body: carFile,
             })
+            /* c8 ignore next 3 */
+            if (response.status === 429) {
+              throw new Error('rate limited')
+            }
             const result = await response.json()
             if (!result.ok) {
               // do not retry if unauthorized - will not succeed
@@ -246,6 +250,10 @@ class NFTStorage {
       method: 'GET',
       headers: NFTStorage.auth(token),
     })
+    /* c8 ignore next 3 */
+    if (response.status === 429) {
+      throw new Error('rate limited')
+    }
     const result = await response.json()
 
     if (result.ok) {
@@ -271,6 +279,10 @@ class NFTStorage {
   static async check({ endpoint }, cid) {
     const url = new URL(`check/${cid}/`, endpoint)
     const response = await fetch(url.toString())
+    /* c8 ignore next 3 */
+    if (response.status === 429) {
+      throw new Error('rate limited')
+    }
     const result = await response.json()
 
     if (result.ok) {
@@ -299,6 +311,10 @@ class NFTStorage {
       method: 'DELETE',
       headers: NFTStorage.auth(token),
     })
+    /* c8 ignore next 3 */
+    if (response.status === 429) {
+      throw new Error('rate limited')
+    }
     const result = await response.json()
     if (!result.ok) {
       throw new Error(result.error.message)
@@ -376,7 +392,7 @@ class NFTStorage {
     if (blob.size === 0) {
       throw new Error('Content size is 0, make sure to provide some content')
     }
-    return packCar([{ path: 'blob', content: blob.stream() }], {
+    return packCar([toImportCandidate('blob', blob)], {
       blockstore,
       wrapWithDirectory: false,
     })
@@ -411,7 +427,7 @@ class NFTStorage {
     const input = []
     let size = 0
     for (const file of files) {
-      input.push({ path: file.name, content: file.stream() })
+      input.push(toImportCandidate(file.name, file))
       size += file.size
     }
 
@@ -671,5 +687,25 @@ const decodeDeals = (deals) =>
  * @returns {Pin}
  */
 const decodePin = (pin) => ({ ...pin, created: new Date(pin.created) })
+
+/**
+ * Convert the passed blob to an "import candidate" - an object suitable for
+ * passing to the ipfs-unixfs-importer. Note: content is an accessor so that
+ * the stream is created only when needed.
+ *
+ * @param {string} path
+ * @param {Blob} blob
+ */
+function toImportCandidate(path, blob) {
+  /** @type {ReadableStream} */
+  let stream
+  return {
+    path,
+    get content() {
+      stream = stream || blob.stream()
+      return stream
+    },
+  }
+}
 
 export { NFTStorage, File, Blob, FormData, toGatewayURL, Token }
