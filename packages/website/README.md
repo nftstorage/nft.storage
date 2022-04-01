@@ -8,6 +8,8 @@ See [DEVELOPMENT.md](../../DEVELOPMENT.md) in the project root, and follow step 
 
 In particular, make sure to add your Magic Link publishable key to a `.env.local` file, as described in the [local environment configuration](../../DEVELOPMENT.md#local-environment-configuration) section.
 
+The `.env.development` file will be automatically loaded when running locally using `yarn dev`, and it is configured to connect to the default local development API server URL. If you're running the API on a different port or targetting a different environment, add an override for the `NEXT_PUBLIC_API` variable to your `.env.local` file and set it to the correct URL.
+
 ### Running Locally
 
 ```bash
