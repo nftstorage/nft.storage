@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS content
     dag_size    BIGINT,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
-);
+) PARTITION BY HASH (cid);
 
 CREATE INDEX IF NOT EXISTS content_updated_at_idx ON content (updated_at);
 CREATE INDEX IF NOT EXISTS content_inserted_at_idx ON content (inserted_at);
@@ -132,7 +132,7 @@ CREATE UNIQUE INDEX content_cid_with_size_idx ON content (cid) INCLUDE (dag_size
 -- Information for piece of content pinned in IPFS.
 CREATE TABLE IF NOT EXISTS pin
 (
-    id          BIGSERIAL PRIMARY KEY,
+    id          BIGSERIAL,
     -- Overall pinning status at this location (may be pinned on multiple nodes).
     status      pin_status_type                                               NOT NULL,
     -- The root CID of the pinned content, normalized as base32 v1.
@@ -141,8 +141,9 @@ CREATE TABLE IF NOT EXISTS pin
     service     service_type                                                  NOT NULL,
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    CONSTRAINT pin_pkey PRIMARY KEY (content_cid, id),
     UNIQUE (content_cid, service)
-);
+) PARTITION BY HASH (content_cid);
 
 CREATE INDEX IF NOT EXISTS pin_updated_at_idx ON pin (updated_at);
 CREATE INDEX IF NOT EXISTS pin_composite_service_and_status_idx ON pin (service, status);
@@ -151,7 +152,7 @@ CREATE INDEX IF NOT EXISTS pin_composite_updated_at_and_content_cid_idx ON pin (
 -- An upload created by a user.
 CREATE TABLE IF NOT EXISTS upload
 (
-    id          BIGSERIAL PRIMARY KEY,
+    id          BIGSERIAL,
     user_id     BIGINT                                                        NOT NULL REFERENCES public.user (id),
     -- User authentication token that was used to upload this content.
     -- Note: maybe be null when the user upload through the website.
@@ -174,13 +175,20 @@ CREATE TABLE IF NOT EXISTS upload
     -- 1. Pinning Service API user provided `Record<string, string>`.
     -- 2. Metaplex endpoint `/metaplex/upload` to store details of the Metaplex user.
     meta        jsonb,
+
+    backup_urls text[],
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    deleted_at TIMESTAMP WITH TIME ZONE,
+    deleted_at  TIMESTAMP WITH TIME ZONE,
+    CONSTRAINT upload_pkey PRIMARY KEY (source_cid, id),
     UNIQUE (user_id, source_cid)
-);
+) PARTITION BY HASH (source_cid);
 
 CREATE INDEX IF NOT EXISTS upload_inserted_at_idx ON upload (inserted_at);
+CREATE INDEX IF NOT EXISTS upload_content_cid_idx ON upload (content_cid);
+CREATE INDEX IF NOT EXISTS upload_source_cid_idx ON upload (source_cid);
+CREATE INDEX IF NOT EXISTS upload_updated_at_idx ON upload (updated_at);
+CREATE INDEX IF NOT EXISTS upload_type_idx ON upload (type);
 
 CREATE VIEW admin_search as
 select
@@ -196,11 +204,6 @@ from public.user u
 full outer join auth_key ak on ak.user_id = u.id
 full outer join (select * from auth_key_history where deleted_at is null) as akh on akh.auth_key_id = ak.id;
 
-CREATE INDEX IF NOT EXISTS upload_content_cid_idx ON upload (content_cid);
-CREATE INDEX IF NOT EXISTS upload_source_cid_idx ON upload (source_cid);
-CREATE INDEX IF NOT EXISTS upload_updated_at_idx ON upload (updated_at);
-CREATE INDEX IF NOT EXISTS upload_type_idx ON upload (type);
-
 -- Metric contains the current values of collected metrics.
 CREATE TABLE IF NOT EXISTS metric
 (
@@ -209,15 +212,3 @@ CREATE TABLE IF NOT EXISTS metric
     inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at  TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
-
--- URLs of backups of user uploads
-CREATE TABLE IF NOT EXISTS backup
-(
-    id          BIGSERIAL PRIMARY KEY,
-    upload_id   BIGINT NOT NULL REFERENCES public.upload (id),
-    url         TEXT NOT NULL,
-    inserted_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-    UNIQUE (upload_id, url)
-);
-
-CREATE INDEX IF NOT EXISTS backup_upload_id_idx ON backup (upload_id);

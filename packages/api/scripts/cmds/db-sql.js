@@ -23,6 +23,7 @@ export async function dbSqlCmd(opts) {
   const configSql = loadSql('config.sql')
   const tables = loadSql('tables.sql')
   const functions = loadSql('functions.sql')
+  const partitions = loadSql('partitions.sql')
   const reset = loadSql('reset.sql')
   const cargo = loadSql('cargo.sql')
   const cargoTesting = loadSql('cargo.testing.sql')
@@ -46,6 +47,7 @@ export async function dbSqlCmd(opts) {
 
   await client.query(configSql)
   await client.query(tables)
+  await client.query(partitions)
 
   if (opts.cargo) {
     if (opts.testing) {

@@ -23,10 +23,7 @@ AS
 $$
 DECLARE
   inserted_upload_id BIGINT;
-  backup_url TEXT;
 BEGIN
-    SET LOCAL statement_timeout = '30s';
-
     insert into content (cid, dag_size, updated_at, inserted_at)
     values (data ->> 'content_cid',
             (data ->> 'dag_size')::BIGINT,
@@ -52,7 +49,10 @@ BEGIN
                         name,
                         files,
                         origins,
-                        meta, updated_at, inserted_at)
+                        meta,
+                        backup_urls,
+                        updated_at,
+                        inserted_at)
     values ((data ->> 'user_id')::BIGINT,
             (data ->> 'key_id')::BIGINT,
             data ->> 'content_cid',
@@ -63,24 +63,18 @@ BEGIN
             (data ->> 'files')::jsonb,
             (data ->> 'origins')::jsonb,
             (data ->> 'meta')::jsonb,
+            json_arr_to_text_arr(data -> 'backup_urls'),
             (data ->> 'updated_at')::timestamptz,
             (data ->> 'inserted_at')::timestamptz)
     ON CONFLICT ( user_id, source_cid )
-        DO UPDATE SET deleted_at = null,
-                      updated_at = (data ->> 'updated_at')::timestamptz,
-                      name       = data ->> 'name',
-                      meta       = (data ->> 'meta')::jsonb,
-                      origins    = (data ->> 'origins')::jsonb,
-                      mime_type  = data ->> 'mime_type',
-                      type       = (data ->> 'type')::upload_type
+        DO UPDATE SET deleted_at  = null,
+                      updated_at  = (data ->> 'updated_at')::timestamptz,
+                      name        = data ->> 'name',
+                      meta        = (data ->> 'meta')::jsonb,
+                      origins     = (data ->> 'origins')::jsonb,
+                      mime_type   = data ->> 'mime_type',
+                      type        = (data ->> 'type')::upload_type
     RETURNING id INTO inserted_upload_id;
-
-    FOREACH backup_url IN ARRAY json_arr_to_text_arr(data -> 'backup_urls')
-    LOOP
-        INSERT INTO backup (upload_id, url, inserted_at)
-        VALUES (inserted_upload_id, backup_url, (data ->> 'inserted_at')::TIMESTAMPTZ)
-        ON CONFLICT (upload_id, url) DO NOTHING;
-    END LOOP;
 END
 $$;
 
