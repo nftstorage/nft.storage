@@ -281,13 +281,7 @@ describe('NFT Upload ', () => {
 
     const upload = await client.client.getUpload(value.cid, client.userId)
     assert(upload)
-
-    const { data: backup } = await rawClient
-      .from('backup')
-      .select('*')
-      .match({ upload_id: upload.id })
-      .single()
-    assert(backup) // should have a backup for this upload
+    assert(upload.backup_urls)
 
     /**
      * @param {Uint8Array} data
@@ -302,7 +296,7 @@ describe('NFT Upload ', () => {
     const carHash = await getHash(new Uint8Array(carBuf))
     const backupUrl = `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${client.userId}/${carHash}.car`
 
-    assert.equal(backup.url, backupUrl)
+    assert.equal(upload.backup_urls[0], backupUrl)
   })
 
   it('should upload a single file using ucan', async () => {
