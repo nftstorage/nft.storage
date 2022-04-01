@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.41.0](https://github.com/nftstorage/nft.storage/compare/website-v1.40.1...website-v1.41.0) (2022-04-01)
+
+
+### Features
+
+* **docs:** add UCAN how-to ([#1705](https://github.com/nftstorage/nft.storage/issues/1705)) ([0da5a53](https://github.com/nftstorage/nft.storage/commit/0da5a53f569e4c2a79642e6ad92d5fc312bbed7e))
+* ucan blog post ([#1583](https://github.com/nftstorage/nft.storage/issues/1583)) ([6cc48cc](https://github.com/nftstorage/nft.storage/commit/6cc48cc0c96d92f2350a361818448ebbfb6c2404))
+
+
+### Bug Fixes
+
+* lots of small optimizations led to big gains ([#1683](https://github.com/nftstorage/nft.storage/issues/1683)) ([ed03d34](https://github.com/nftstorage/nft.storage/commit/ed03d341f403fd412f0fb75fc0e78d6f5ab59eeb))
+
 ### [1.40.1](https://github.com/nftstorage/nft.storage/compare/website-v1.40.0...website-v1.40.1) (2022-03-29)
 
 
