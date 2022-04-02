@@ -1,4 +1,4 @@
-import { validate } from '../utils/auth.js'
+import { checkAuth } from '../utils/auth.js'
 import { setIn } from '../utils/utils.js'
 import { JSONResponse } from '../utils/json-response.js'
 import * as CBOR from '@ipld/dag-cbor'
@@ -15,7 +15,7 @@ import * as constants from '../constants.js'
 
 /** @type {import('../bindings').Handler} */
 export async function nftStore(event, ctx) {
-  const { user, key } = await validate(event, ctx)
+  const { user, key } = checkAuth(ctx)
   const { db } = ctx
   const form = await event.request.formData()
 

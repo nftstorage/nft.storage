@@ -8,7 +8,7 @@ import * as constants from '../constants.js'
 import { HTTPError } from '../errors.js'
 import * as cluster from '../cluster.js'
 import { JSONResponse } from '../utils/json-response.js'
-import { validate } from '../utils/auth.js'
+import { checkAuth } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 import { parseCid } from '../utils/utils.js'
 
@@ -26,9 +26,7 @@ const decoders = [pb, raw, cbor]
 export async function nftUpload(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
-  const { user, key, type, ucan } = await validate(event, ctx, {
-    checkUcan: true,
-  })
+  const { user, key, type, ucan } = checkAuth(ctx)
 
   /** @type {import('../utils/db-client-types').UploadOutput} */
   let upload

@@ -66,3 +66,19 @@ export function parseCid(cid) {
     throw new ErrorInvalidCid(cid)
   }
 }
+
+/**
+ * Return true if a user has a tag with a given name and value.
+ *
+ * @param {import('../utils/db-client-types.js').UserOutput} user
+ * @param {string} tagName
+ * @param {string} value
+ * @returns  {boolean}
+ */
+export function hasTag(user, tagName, value) {
+  return Boolean(
+    user.tags?.find(
+      (tag) => tag.tag === tagName && tag.value === value && !tag.deleted_at
+    )
+  )
+}

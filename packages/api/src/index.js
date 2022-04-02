@@ -22,6 +22,7 @@ import { pinsReplace } from './routes/pins-replace.js'
 import { metaplexUpload } from './routes/metaplex-upload.js'
 import { blogSubscribe } from './routes/blog-subscribe.js'
 import { userDIDRegister } from './routes/user-did-register.js'
+import { userPermissions } from './routes/user-permissions.js'
 import { ucanToken } from './routes/ucan-token.js'
 import { did } from './routes/did.js'
 
@@ -32,9 +33,9 @@ import {
   DEFAULT_MODE,
   setMaintenanceModeGetter,
 } from './middleware/maintenance.js'
-import { withPsaErrorHandler, withPinningAuthorized } from './middleware/psa.js'
 import { cluster } from './constants.js'
 import { getContext } from './utils/context.js'
+import { withAuth } from './middleware/auth.js'
 
 const getMaintenanceMode = () =>
   typeof MAINTENANCE_MODE !== 'undefined' ? MAINTENANCE_MODE : DEFAULT_MODE
@@ -78,12 +79,20 @@ r.add(
  * @returns {import('./bindings').Handler}
  */
 const psa = (handler, mode) =>
-  withPsaErrorHandler(withPinningAuthorized(withMode(handler, mode)))
+  withAuth(withMode(handler, mode), {
+    checkHasPsaAccess: true,
+    checkHasAccountRestriction: true,
+  })
 
 r.add('get', '/did', withMode(did, RO), [postCors])
 
 // Login
-r.add('post', '/ucan/token', withMode(ucanToken, RW), [postCors])
+r.add(
+  'post',
+  '/ucan/token',
+  withMode(withAuth(ucanToken, { checkUcan: true }), RW),
+  [postCors]
+)
 r.add('post', '/login', withMode(login, RO), [postCors])
 
 // Pinning
@@ -95,24 +104,46 @@ r.add('delete', '/pins/:requestid', psa(pinsDelete, RW), [postCors])
 
 // Upload
 r.add('get', '/check/:cid', withMode(nftCheck, RO), [postCors])
-r.add('get', '', withMode(nftList, RO), [postCors])
-r.add('get', '/:cid', withMode(nftGet, RO), [postCors])
-r.add('post', '/upload', withMode(nftUpload, RW), [postCors])
-r.add('patch', '/upload/:cid', withMode(nftUpdateUpload, RW), [postCors])
-
-r.add('post', '/store', withMode(nftStore, RW), [postCors])
-r.add('delete', '/:cid', withMode(nftDelete, RW), [postCors])
+r.add('get', '', withAuth(withMode(nftList, RO)), [postCors])
+r.add('get', '/:cid', withAuth(withMode(nftGet, RO)), [postCors])
+r.add(
+  'post',
+  '/upload',
+  withAuth(withMode(nftUpload, RW), {
+    checkHasAccountRestriction: true,
+    checkUcan: true,
+  }),
+  [postCors]
+)
+r.add('patch', '/upload/:cid', withAuth(withMode(nftUpdateUpload, RW)), [postCors])
+r.add('post', '/store', withAuth(withMode(nftStore, RW)), [postCors])
+r.add('delete', '/:cid', withAuth(withMode(nftDelete, RW)), [postCors])
 
 // Temporary Metaplex upload route, mapped to metaplex user account.
-r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
+r.add(
+  'post',
+  '/metaplex/upload',
+  withAuth(withMode(metaplexUpload, RW), { checkHasAccountRestriction: true }),
+  [postCors]
+)
 
 // User
-r.add('post', '/user/did', withMode(userDIDRegister, RW), [postCors])
+r.add('post', '/user/did', withAuth(withMode(userDIDRegister, RW)), [postCors])
+r.add('get', '/user/permissions', withAuth(withMode(userPermissions, RO)), [
+  postCors,
+])
 
 // Tokens
-r.add('get', '/internal/tokens', withMode(tokensList, RO), [postCors])
-r.add('post', '/internal/tokens', withMode(tokensCreate, RW), [postCors])
-r.add('delete', '/internal/tokens', withMode(tokensDelete, RW), [postCors])
+r.add('get', '/internal/tokens', withAuth(withMode(tokensList, RO)), [postCors])
+r.add(
+  'post',
+  '/internal/tokens',
+  withAuth(withMode(tokensCreate, RW), { checkHasAccountRestriction: true }),
+  [postCors]
+)
+r.add('delete', '/internal/tokens', withAuth(withMode(tokensDelete, RW)), [
+  postCors,
+])
 
 // Blog
 r.add('post', '/internal/blog/subscribe', blogSubscribe, [postCors])
@@ -125,11 +156,16 @@ r.add('post', '/api/pins/:requestid', psa(pinsReplace, RW), [postCors])
 r.add('delete', '/api/pins/:requestid', psa(pinsDelete, RW), [postCors])
 
 // Public API
-r.add('get', '/api', withMode(nftList, RO), [postCors])
+r.add('get', '/api', withAuth(withMode(nftList, RO)), [postCors])
 r.add('get', '/api/check/:cid', withMode(nftCheck, RO), [postCors])
-r.add('get', '/api/:cid', withMode(nftGet, RO), [postCors])
-r.add('post', '/api/upload', withMode(nftUpload, RW), [postCors])
-r.add('delete', '/api/:cid', withMode(nftDelete, RW), [postCors])
+r.add('get', '/api/:cid', withAuth(withMode(nftGet, RO)), [postCors])
+r.add(
+  'post',
+  '/api/upload',
+  withAuth(withMode(nftUpload, RW), { checkUcan: true }),
+  [postCors]
+)
+r.add('delete', '/api/:cid', withAuth(withMode(nftDelete, RW)), [postCors])
 
 r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))

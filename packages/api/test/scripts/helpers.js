@@ -58,7 +58,7 @@ async function createUserTag(tag) {
   const { data, error } = await query.upsert(tag).single()
 
   if (error) {
-    throw error;
+    throw error
   }
 
   if (!data) {
@@ -69,13 +69,14 @@ async function createUserTag(tag) {
 }
 
 /**
- * @param {{publicAddress?: string, issuer?: string, name?: string, token?: string}} userInfo
+ * @param {{publicAddress?: string, issuer?: string, name?: string, token?: string, addAccountRestriction?: boolean}} userInfo
  */
 export async function createTestUserWithFixedToken({
   token = '',
   publicAddress = `0x73573${Date.now()}`,
   issuer = `did:eth:${publicAddress}`,
   name = 'A Tester',
+  addAccountRestriction = false,
 } = {}) {
   const { data: user, error } = await client
     .upsertUser({
@@ -122,14 +123,17 @@ export async function createTestUserWithFixedToken({
     inserted_at: new Date().toISOString(),
     deleted_at: new Date().toISOString(),
   })
-  await createUserTag({
-    user_id: user.id,
-    tag: 'HasAccountRestriction',
-    value: 'true',
-    reason: '',
-    inserted_at: new Date().toISOString(),
-    deleted_at: new Date().toISOString(),
-  })
+
+  if (addAccountRestriction) {
+    await createUserTag({
+      user_id: user.id,
+      tag: 'HasAccountRestriction',
+      value: 'true',
+      reason: '',
+      inserted_at: new Date().toISOString(),
+      deleted_at: new Date().toISOString(),
+    })
+  }
 
   return { token, userId: user.id, githubId: user.github_id }
 }
