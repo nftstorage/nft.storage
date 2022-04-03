@@ -1,7 +1,7 @@
 import { API, getNfts, getToken } from '../lib/api.js'
 import { useQuery, useQueryClient } from 'react-query'
-import { VscQuestion } from 'react-icons/vsc'
 import { CID } from 'multiformats/cid'
+import { VscQuestion, VscEdit, VscLoading, VscSave } from 'react-icons/vsc'
 import Button from '../components/button.js'
 import Tooltip from '../components/tooltip.js'
 import Loading from '../components/loading'
@@ -111,6 +111,10 @@ export default function Files({ user }) {
    */
   const TableItem = ({ nft }) => {
     // to do, add actual types
+    const [isRenaming, setRenaming] = useState(false)
+    const [isLoading, setLoading] = useState(false)
+    const [renameError, setError] = useState('')
+    const [renamedValue, setRenamedValue] = useState('')
     const [showAllDeals, setShowAllDeals] = useState(false)
     const deals = nft.deals
       .filter((/** @type {any} */ d) => d.status !== 'queued')
@@ -193,11 +197,109 @@ export default function Files({ user }) {
       )
     }
 
+    /** @param {import('react').ChangeEvent<HTMLFormElement>} ev */
+    const handleRename = async (ev) => {
+      ev.preventDefault()
+      const data = new FormData(ev.target)
+      const fileName = data.get('fileName')
+
+      if (!fileName || typeof fileName !== 'string') return
+      if (fileName === nft.name) return setRenaming(false)
+
+      try {
+        setLoading(true)
+        await fetch(`${API}/upload/${nft.cid}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            name: fileName,
+          }),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        })
+        setError('')
+      } catch (e) {
+        console.error(e)
+        // @ts-ignore Catch clause variable type annotation must be 'any' or 'unknown' if specified.ts(1196)
+        setError(e.message)
+      }
+
+      setLoading(false)
+      setRenaming(false)
+      setRenamedValue(fileName)
+    }
+
     return (
       <tr className="bg-white bb">
         <td data-label="Date" className="nowrap" title={nft.created}>
           {/* {nft.created.split('T')[0]} */}
           {formatTimestamp(nft.created)}
+        </td>
+        <td data-label="Label" className="nowrap" title={nft.label}>
+          {!isRenaming ? (
+            <div
+              className={clsx(
+                'flex items-center justify-start',
+                renameError.length > 0 && 'text-w3storage-red'
+              )}
+            >
+              <span className="flex-auto">{renamedValue || nft.name}</span>
+              {renameError.length > 0 && (
+                <span
+                  className="rounded-full border-w3storage-red border flex-none w-6 h-6 flex justify-center items-center"
+                  title={renameError}
+                >
+                  !
+                </span>
+              )}
+              <button
+                className="flex pa0 pl1 cursor-pointer bw0-ns bg-transparent input-reset button-reset"
+                onClick={() => setRenaming(true)}
+              >
+                <VscEdit
+                  style={{ minWidth: 18 }}
+                  height="18"
+                  className="dib"
+                  fill="currentColor"
+                  aria-label="Edit"
+                />
+              </button>
+            </div>
+          ) : (
+            <form
+              onSubmit={handleRename}
+              className="flex items-center justify-start"
+            >
+              <input
+                className="flex-auto p-0"
+                defaultValue={renamedValue || nft.name}
+                autoFocus
+                name="fileName"
+                required
+              />
+              <button
+                className="flex pa0 pl1 cursor-pointer bw0-ns bg-transparent input-reset button-reset"
+                type="submit"
+              >
+                {isLoading ? (
+                  <VscLoading
+                    height={18}
+                    className="dib relative"
+                    fill="currentColor"
+                  />
+                ) : (
+                  <VscSave
+                    style={{ minWidth: 18 }}
+                    height="18"
+                    className="dib"
+                    fill="currentColor"
+                    aria-label="Save"
+                  />
+                )}
+              </button>
+            </form>
+          )}
         </td>
         <td data-label="CID" className="nowrap">
           <CopyButton
@@ -351,6 +453,24 @@ export default function Files({ user }) {
                       <thead>
                         <tr className="bg-nsgray">
                           <th>Date</th>
+                          <th>
+                            <span aria-describedby="label-tooltip">
+                              Label
+                              <Tooltip
+                                placement="top"
+                                overlay={
+                                  <span>
+                                    An optional text label for organizing your
+                                    uploads
+                                  </span>
+                                }
+                                overlayClassName="ns-tooltip"
+                                id="label-tooltip"
+                              >
+                                <VscQuestion size={16} />
+                              </Tooltip>
+                            </span>
+                          </th>
                           <th>
                             <span aria-describedby="cid-tooltip">
                               CID

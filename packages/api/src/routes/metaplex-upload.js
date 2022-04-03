@@ -47,6 +47,7 @@ export async function metaplexUpload(event, ctx) {
 
   const upload = await uploadCarWithStat(
     {
+      event,
       ctx,
       user,
       key,

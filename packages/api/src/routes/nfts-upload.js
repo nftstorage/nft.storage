@@ -10,6 +10,7 @@ import * as cluster from '../cluster.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
+import { parseCid } from '../utils/utils.js'
 
 const MAX_BLOCK_SIZE = 1 << 20 // Maximum permitted block size in bytes (1MiB).
 const decoders = [pb, raw, cbor]
@@ -45,6 +46,7 @@ export async function nftUpload(event, ctx) {
     })
 
     upload = await uploadCar({
+      event,
       ctx,
       user,
       key,
@@ -68,6 +70,7 @@ export async function nftUpload(event, ctx) {
     let structure
     /** @type {Blob} */
     let car
+    /** @type {string} */
 
     if (isCar) {
       car = blob
@@ -85,6 +88,7 @@ export async function nftUpload(event, ctx) {
     }
 
     upload = await uploadCar({
+      event,
       ctx,
       user,
       key,
@@ -102,6 +106,7 @@ export async function nftUpload(event, ctx) {
 
 /**
  * @typedef {{
+ *   event: FetchEvent,
  *   ctx: import('../bindings').RouteContext
  *   user: Pick<import('../utils/db-client-types').UserOutput, 'id'>
  *   key?: Pick<import('../utils/db-client-types').UserOutputKey, 'id'>
@@ -127,7 +132,7 @@ export async function uploadCar(params) {
  * @param {CarStat} stat
  */
 export async function uploadCarWithStat(
-  { ctx, user, key, car, uploadType = 'Car', mimeType, files, meta },
+  { event, ctx, user, key, car, uploadType = 'Car', mimeType, files, meta },
   stat
 ) {
   const [added, backupUrl] = await Promise.all([
@@ -138,6 +143,12 @@ export async function uploadCarWithStat(
       ? ctx.backup.backupCar(user.id, stat.rootCid, car, stat.structure)
       : Promise.resolve(null),
   ])
+
+  const xName = event.request.headers.get('x-name')
+  let name = xName && decodeURIComponent(xName)
+  if (!name || typeof name !== 'string') {
+    name = `Upload at ${new Date().toISOString()}`
+  }
 
   const upload = await ctx.db.createUpload({
     mime_type: mimeType,
@@ -150,9 +161,31 @@ export async function uploadCarWithStat(
     meta,
     key_id: key?.id,
     backup_urls: backupUrl ? [backupUrl] : [],
+    name,
   })
 
   return upload
+}
+
+/** @type {import('../bindings').Handler} */
+export async function nftUpdateUpload(event, ctx) {
+  const { params, db } = ctx
+  try {
+    const { user } = await validate(event, ctx)
+    const id = params.id
+
+    // id is required for updating
+    if (!id) return new JSONResponse({ ok: false, value: 'ID is required' })
+
+    const body = await event.request.json()
+    const { name } = body
+
+    const updatedRecord = await db.updateUpload({ id, name, user_id: user.id })
+
+    return new JSONResponse({ ok: true, value: updatedRecord })
+  } catch (/** @type {any} */ err) {
+    return new JSONResponse({ ok: false, value: err.message })
+  }
 }
 
 /**
