@@ -125,13 +125,13 @@ export class DBClient {
         updated_at: now,
       })
       .select(this.uploadQuery)
-      .eq('id', data.id)
+      .eq('content_cid', data.content_cid)
       .eq('user_id', data.user_id)
       .is('deleted_at', null)
       .single()
 
     if (status === 406) {
-      throw new Error(`Status 406, cannot update ${data.id}`)
+      throw new Error(`Status 406, cannot update ${data.content_cid}`)
     }
 
     if (!upload) {
