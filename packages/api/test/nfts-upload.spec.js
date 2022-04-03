@@ -371,14 +371,14 @@ describe('NFT Upload ', () => {
     const { data } = await rawClient
       .from('upload')
       .select('*')
-      .match({ source_cid: cid, user_id: client.userId })
+      .match({ content_cid: cid, user_id: client.userId })
       .single()
 
     // update file we just created above
 
     const name = 'test updated name'
 
-    const uploadRes = await fetch(`upload/${data.id}`, {
+    const uploadRes = await fetch(`upload/${data.content_cid}`, {
       method: 'PATCH',
       headers: {
         Authorization: `Bearer ${client.token}`,
