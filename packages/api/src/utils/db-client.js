@@ -136,9 +136,9 @@ export class DBClient {
 
     if (!upload) {
       throw new Error(
-        `Cannot update upload ${JSON.stringify(data.id)} ${JSON.stringify(
-          status
-        )}`
+        `Cannot update upload ${JSON.stringify(
+          data.content_cid
+        )} ${JSON.stringify(status)}`
       )
     }
 
