@@ -175,8 +175,8 @@ export async function nftUpdateUpload(event, ctx) {
     const { cid } = params
 
     // id is required for updating
-    if (!cid)
-      return new JSONResponse({ ok: false, value: 'upload CID is required' })
+    if (!cid || typeof cid !== 'string')
+      return new JSONResponse({ ok: false, value: 'Upload CID is required' })
 
     const body = await event.request.json()
     const { name } = body
