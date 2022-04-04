@@ -176,7 +176,7 @@ export async function nftUpdateUpload(event, ctx) {
 
     // id is required for updating
     if (!content_cid)
-      return new JSONResponse({ ok: false, value: 'ID is required' })
+      return new JSONResponse({ ok: false, value: 'upload CID is required' })
 
     const body = await event.request.json()
     const { name } = body
