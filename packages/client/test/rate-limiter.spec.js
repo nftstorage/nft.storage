@@ -11,13 +11,13 @@ describe('rate limiter', () => {
     /** @type {import('mocha').Context} */
     this.timeout(RATE_LIMIT_PERIOD * 2)
     const rateLimiter = createRateLimiter()
-    const start = Date.now()
     // check how many times the rate limiter returns within the time period
     let numRequests = 0
+    const start = Date.now()
     while (true) {
       await rateLimiter()
-      // don't count if provided _after_ the period - it belongs to the next
-      if (Date.now() - start > RATE_LIMIT_PERIOD) {
+      // don't count if provided at/after the period - it belongs to the next
+      if (Date.now() - start >= RATE_LIMIT_PERIOD) {
         break
       }
       numRequests++
