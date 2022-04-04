@@ -2,8 +2,13 @@ name: Cron sync deny list
 
 on:
   schedule:
-    - cron: '13 8 * * *'
+    - cron: '13 0,5,10,15,20 * * *'
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/gateway/denylist.json'
 
 jobs:
   update:
