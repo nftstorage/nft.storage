@@ -23,6 +23,7 @@ jobs:
         env:
           # Fake environment vars required for build
           NEXT_PUBLIC_SENTRY_DSN: 'https://000000@0000000.ingest.sentry.io/00000'
+          NEXT_PUBLIC_ENV: dev
         run: yarn build:website
       - name: Run test
         run: yarn test:website
