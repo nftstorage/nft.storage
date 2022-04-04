@@ -1,0 +1,25 @@
+name: Cron sync deny list
+
+on:
+  schedule:
+    - cron: '13 8 * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    name: Sync deny list with KV store
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: ['staging', 'production']
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - uses: bahmutov/npm-install@v1
+      - name: Run job
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: node packages/gateway/scripts/cli.js denylist sync --env ${{ matrix.env }}
