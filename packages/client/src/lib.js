@@ -86,7 +86,7 @@ class NFTStorage {
    * })
    * ```
    *
-   * @param {{token: string, endpoint?:URL, rateLimiter?: RateLimiter}} options
+   * @param {{token: string, endpoint?: URL, rateLimiter?: RateLimiter}} options
    */
   constructor({
     token,
