@@ -7,6 +7,7 @@ import pSettle from 'p-settle'
 
 import { TimeoutError } from './errors.js'
 import { getCidFromSubdomainUrl } from './utils/cid.js'
+import { toDenyListAnchor } from './utils/deny-list.js'
 import {
   CIDS_TRACKER_ID,
   SUMMARY_METRICS_ID,
@@ -38,8 +39,23 @@ import {
  */
 export async function gatewayGet(request, env, ctx) {
   const startTs = Date.now()
+  const reqUrl = new URL(request.url)
+  const cid = getCidFromSubdomainUrl(reqUrl)
+  const pathname = reqUrl.pathname
+
+  if (env.DENYLIST) {
+    const anchor = await toDenyListAnchor(cid)
+    // TODO: in theory we should check each subcomponent of the pathname also.
+    // https://github.com/nftstorage/nft.storage/issues/1737
+    const value = await env.DENYLIST.get(anchor)
+    if (value) {
+      const { status, reason } = JSON.parse(value)
+      return new Response(reason || '', { status: status || 410 })
+    }
+  }
+
   const cache = caches.default
-  let res = await cache.match(request.url)
+  const res = await cache.match(request.url)
 
   if (res) {
     // Update cache metrics in background
@@ -48,10 +64,6 @@ export async function gatewayGet(request, env, ctx) {
     ctx.waitUntil(updateSummaryCacheMetrics(request, env, res, responseTime))
     return res
   }
-
-  const reqUrl = new URL(request.url)
-  const cid = getCidFromSubdomainUrl(reqUrl)
-  const pathname = reqUrl.pathname
 
   // Prepare IPFS gateway requests
   const shouldPreventRateLimit = await getGatewayRateLimitState(request, env)
@@ -141,7 +153,7 @@ export async function gatewayGet(request, env, ctx) {
       // Gateway timeout
       if (
         responses[0].value?.aborted &&
-        responses[0].value?.reason == TIMEOUT_CODE
+        responses[0].value?.reason === TIMEOUT_CODE
       ) {
         throw new TimeoutError()
       }

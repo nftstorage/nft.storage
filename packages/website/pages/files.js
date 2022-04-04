@@ -1,12 +1,12 @@
 import { API, getNfts, getToken } from '../lib/api.js'
 import { useQuery, useQueryClient } from 'react-query'
-import { VscQuestion } from 'react-icons/vsc'
 import { CID } from 'multiformats/cid'
+import { VscQuestion, VscEdit, VscLoading, VscSave } from 'react-icons/vsc'
 import Button from '../components/button.js'
 import Tooltip from '../components/tooltip.js'
 import Loading from '../components/loading'
 import { MOCK_FILES } from '../lib/mock_files'
-import { formatTimestamp } from '../lib/format'
+import { formatTimestamp, truncateCID } from '../lib/format'
 import { NFTStorage } from 'nft.storage'
 import Script from 'next/script'
 import { When } from 'react-if'
@@ -111,6 +111,10 @@ export default function Files({ user }) {
    */
   const TableItem = ({ nft }) => {
     // to do, add actual types
+    const [isRenaming, setRenaming] = useState(false)
+    const [isLoading, setLoading] = useState(false)
+    const [renameError, setError] = useState('')
+    const [renamedValue, setRenamedValue] = useState('')
     const [showAllDeals, setShowAllDeals] = useState(false)
     const deals = nft.deals
       .filter((/** @type {any} */ d) => d.status !== 'queued')
@@ -178,9 +182,10 @@ export default function Files({ user }) {
           <Tooltip
             overlay={
               <span>
-                The content from this upload is being aggregated for storage on
-                Filecoin. Filecoin deals will be active within 48 hours of
-                upload.
+                The content from this upload is being aggregated for redundant
+                storage on Filecoin. Filecoin deals will be active within 48
+                hours of upload. While Queuing, data is still available on the
+                IPFS network.
               </span>
             }
             overlayClassName="ns-tooltip"
@@ -192,28 +197,133 @@ export default function Files({ user }) {
       )
     }
 
+    /** @param {import('react').ChangeEvent<HTMLFormElement>} ev */
+    const handleRename = async (ev) => {
+      ev.preventDefault()
+      const data = new FormData(ev.target)
+      const fileName = data.get('fileName')
+
+      if (!fileName || typeof fileName !== 'string') return
+      if (fileName === nft.name) return setRenaming(false)
+
+      try {
+        setLoading(true)
+        await fetch(`${API}/upload/${nft.cid}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            name: fileName,
+          }),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+            Authorization: `Bearer ${await getToken()}`,
+          },
+        })
+        setError('')
+      } catch (e) {
+        console.error(e)
+        // @ts-ignore Catch clause variable type annotation must be 'any' or 'unknown' if specified.ts(1196)
+        setError(e.message)
+      }
+
+      setLoading(false)
+      setRenaming(false)
+      setRenamedValue(fileName)
+    }
+
     return (
       <tr className="bg-white border-b">
-        <td data-label="Date" className="" title={nft.created}>
+        <td data-label="Date" className="whitespace-nowrap" title={nft.created}>
+          {/* {nft.created.split('T')[0]} */}
           {formatTimestamp(nft.created)}
         </td>
-        <td data-label="CID" className="whitespace-nowrap">
-          <div className="flex justify-between items-center">
-            <CopyButton
-              title="Copy CID to Clipboard"
-              text={nft.cid}
-              popupContent={'CID has been copied!!'}
-            >
-              <a
-                href={`https://nftstorage.link/ipfs/${nft.cid}`}
-                className="grow block underline text-black truncate ..."
-                target="_blank"
-                rel="noreferrer"
+        <td data-label="Label" className="whitespace-nowrap" title={nft.label}>
+          <div className="flex justify-between items-center truncate ...">
+            {!isRenaming ? (
+              <div
+                className={clsx(
+                  'flex items-center justify-start ml-auto lg:ml-0 truncate ...',
+                  renameError.length > 0 && 'text-w3storage-red'
+                )}
               >
-                {nft.cid}
-              </a>
-            </CopyButton>
+                <span
+                  className="flex-auto truncate ..."
+                  title={renamedValue || nft.name}
+                >
+                  {renamedValue || nft.name}
+                </span>
+                {renameError.length > 0 && (
+                  <span
+                    className="rounded-full border-w3storage-red border flex-none w-6 h-6 flex justify-center items-center"
+                    title={renameError}
+                  >
+                    !
+                  </span>
+                )}
+                <button
+                  className="flex pa0 pl1 cursor-pointer bw0-ns bg-transparent input-reset button-reset"
+                  onClick={() => setRenaming(true)}
+                >
+                  <VscEdit
+                    style={{ minWidth: 18 }}
+                    height="18"
+                    className="dib"
+                    fill="currentColor"
+                    aria-label="Edit"
+                  />
+                </button>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleRename}
+                className="flex items-center justify-start w-full"
+              >
+                <input
+                  className="flex-auto p-0"
+                  defaultValue={renamedValue || nft.name}
+                  autoFocus
+                  name="fileName"
+                  required
+                />
+                <button
+                  className="flex p-0 pl-1 cursor-pointer bw0-ns bg-transparent input-reset button-reset"
+                  type="submit"
+                >
+                  {isLoading ? (
+                    <VscLoading
+                      height={18}
+                      className="dib relative"
+                      fill="currentColor"
+                    />
+                  ) : (
+                    <VscSave
+                      style={{ minWidth: 18 }}
+                      height="18"
+                      className="dib"
+                      fill="currentColor"
+                      aria-label="Save"
+                    />
+                  )}
+                </button>
+              </form>
+            )}
           </div>
+        </td>
+        <td data-label="CID" className="whitespace-nowrap">
+          <CopyButton
+            title="Copy CID to Clipboard"
+            text={nft.cid}
+            popupContent={'CID has been copied!!'}
+          >
+            <a
+              href={`https://nftstorage.link/ipfs/${nft.cid}`}
+              className="underline text-black truncate"
+              target="_blank"
+              title={nft.cid}
+              rel="noreferrer"
+            >
+              {truncateCID(nft.cid)}
+            </a>
+          </CopyButton>
         </td>
         <td data-label="Pin Status" className="">
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
@@ -238,7 +348,7 @@ export default function Files({ user }) {
             )}
           </div>
         </td>
-        <td data-label="Size" className="">
+        <td data-label="Size" className="whitespace-nowrap">
           {bytes(nft.size || 0)}
         </td>
         <td className="shrink-cell center-cell">
@@ -352,6 +462,24 @@ export default function Files({ user }) {
                         <tr className="bg-nsgray">
                           <th>Date</th>
                           <th>
+                            <span aria-describedby="label-tooltip">
+                              Label
+                              <Tooltip
+                                placement="top"
+                                overlay={
+                                  <span>
+                                    An optional text label for organizing your
+                                    uploads
+                                  </span>
+                                }
+                                overlayClassName="ns-tooltip"
+                                id="label-tooltip"
+                              >
+                                <VscQuestion size={16} />
+                              </Tooltip>
+                            </span>
+                          </th>
+                          <th>
                             <span aria-describedby="cid-tooltip">
                               CID
                               <Tooltip
@@ -403,10 +531,10 @@ export default function Files({ user }) {
                                 placement="top"
                                 overlay={
                                   <span>
-                                    Service providers offering storage capacity
-                                    to the Filecoin network.{' '}
+                                    Filecoin storage providers provably storing
+                                    replicas of this data.{' '}
                                     <a
-                                      href="https://nftschool.dev/concepts/content-persistence/"
+                                      href="https://filecoin.io/blog/posts/what-sets-us-apart-filecoin-s-proof-system/"
                                       target="_blank"
                                       rel="noreferrer"
                                     >
@@ -483,7 +611,7 @@ export default function Files({ user }) {
           </When>
           <div
             className={clsx(
-              'flex justify-center pt4',
+              'flex justify-center pt-4',
               status === 'loading' && 'hidden'
             )}
           >

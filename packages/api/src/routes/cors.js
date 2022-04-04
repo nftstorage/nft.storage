@@ -14,7 +14,7 @@ export function cors(event) {
     let respHeaders = {
       'Content-Length': '0',
       'Access-Control-Allow-Origin': headers.get('origin') || '*',
-      'Access-Control-Allow-Methods': 'GET,POST,DELETE,OPTIONS',
+      'Access-Control-Allow-Methods': 'GET,POST,DELETE,PATCH,OPTIONS',
       'Access-Control-Max-Age': '86400',
       // Allow all future content Request headers to go back to browser
       // such as Authorization (Bearer) or X-Client-Name-Version
@@ -42,6 +42,10 @@ export function postCors(req, rsp) {
   const origin = req.headers.get('origin')
   if (origin) {
     rsp.headers.set('Access-Control-Allow-Origin', origin)
+    rsp.headers.set(
+      'Access-Control-Allow-Methods',
+      'GET,POST,DELETE,PATCH,OPTIONS'
+    )
     rsp.headers.set('Vary', 'Origin')
   } else {
     rsp.headers.set('Access-Control-Allow-Origin', '*')

@@ -4,7 +4,7 @@ The nft.storage public API.
 
 ## Usage
 
-Make sure you already did step 1 and 2 from these [root instructions](/#getting-started).
+See [DEVELOPMENT.md](../../DEVELOPMENT.md) in the project root, and follow step 1 and 2 from the [Getting started section](../../DEVELOPMENT.md#getting-started).
 
 ### Running Locally
 
@@ -28,6 +28,25 @@ In the case you need to clean up docker after failed tests or debugging session 
 ```bash
 yarn clean
 ```
+
+### Dev CLI scripts
+
+The `packages/api/scripts` directory contains a small `cli.js` utility script for building the API workers and managing the local development database. These scripts are invoked automatically when running `yarn dev` but may also be useful to run manually when debugging, etc.
+
+Running `node scripts/cli.js db` gives you some knobs for controlling the state of the local database:
+
+- `db --init` will re-build the docker-compose setup, ignoring any previously cached images
+- `db --start` starts the docker-compose setup
+- `db --stop` stops all running containers
+- `db --clean` removes all docker containers, volumes, and other artifacts related to the database
+
+Each of the above can have a `--project` flag added, which sets the name of the [docker-compose project](https://docs.docker.com/compose/#multiple-isolated-environments-on-a-single-host). This can be useful if you want to create a custom environment that won't be automatically reset.
+
+The `db-sql` subcommand populates the database schema, using the `.sql` files in `packages/api/db` as a source of truth.
+
+For local development, you probably want `cli.js db-sql --reset --cargo --testing`, which will reset everything to a clean state.
+
+The `--cargo` flag adds support for querying foreign tables provided by the [dagcargo](https://github.com/nftstorage/dagcargo) database. In production this will set up a [foreign data wrapper](https://wiki.postgresql.org/wiki/Foreign_data_wrappers) to a live database using credentials from the environment. For local development, you should set the `--testing` flag as well, which seeds the db with test data instead of importing from a live host.
 
 ## Manual deploy to Cloudflare
 

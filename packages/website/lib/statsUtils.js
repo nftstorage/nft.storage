@@ -1,13 +1,3 @@
-import _ from 'lodash/fp'
-
-const uploadKeysToSum = [
-  'uploads_blob_total',
-  'uploads_car_total',
-  'uploads_nft_total',
-  'uploads_remote_total',
-  'uploads_multipart_total',
-]
-
 /**
  * Format Bytes
  * @param {number} bytes
@@ -24,39 +14,62 @@ export function formatBytes(bytes, decimals = 1) {
 }
 
 /**
- * Uploads Total
- * @param {import('./types').StatsPayload} statsObject
- * @returns {any}
- */
-function uploadsTotal(statsObject) {
-  const total = Object.keys(statsObject).reduce((acc, key) => {
-    if (uploadKeysToSum.includes(key)) {
-      return acc + statsObject[key]
-    }
-    return acc
-  }, 0)
-
-  const totalBefore = total - statsObject.uploads_past_7_total
-  const uploadsGrowthRate =
-    totalBefore > 0 ? calcuateGrowthRate(total, totalBefore) : 0
-  return { ...statsObject, totalUploads: total, growthRate: uploadsGrowthRate }
-}
-
-/**
  * Calculate Growth Rate
- * @param {number} total
- * @param {number} totalBefore
+ * @param {any} total
+ * @param {any} previousTotal
  * @returns {string}
  */
-export function calcuateGrowthRate(total, totalBefore) {
+export function calcuateGrowthRate(total, previousTotal) {
   try {
-    // open to suggestions on refactoring math
-    return (((total - totalBefore) / totalBefore) * 100).toFixed(2)
+    return (((total - previousTotal) / previousTotal) * 100).toFixed(2)
   } catch (e) {
     throw new Error(`Could not calculate growth rate: ${e}`)
   }
 }
 
-const decorateAdditionalCalculatedValues = _.pipe(uploadsTotal)
+/** @type {string[]} */
+const uploadKeysToSum = [
+  'uploads_blob_total',
+  'uploads_car_total',
+  'uploads_nft_total',
+  'uploads_remote_total',
+  'uploads_multipart_total',
+]
 
-export default decorateAdditionalCalculatedValues
+/**
+ * Get Total Uploads
+ * @param {any} stats
+ * @param {any} keys
+ * @returns {any}
+ */
+const getTotalUploads = (stats, keys) => {
+  const keysToNumber = (/** @type {any} */ acc, /** @type {string} */ key) =>
+    keys.includes(key) ? acc + stats[key] : acc
+  return Object.keys(stats).reduce(keysToNumber, 0)
+}
+
+/**
+ * Get Previous Total
+ * @param {any} stats
+ * @param {any} totalUploads
+ * @returns {number}
+ */
+const getPreviousTotal = (stats, totalUploads) =>
+  totalUploads - stats.uploads_past_7_total
+
+/**
+ * Format Bytes
+ * @param {any} stats
+ * @returns {any}
+ */
+export function calculateStats(stats) {
+  let growthRate = '0'
+  const totalUploads = getTotalUploads(stats, uploadKeysToSum)
+  const previousTotal = getPreviousTotal(stats, totalUploads)
+
+  if (previousTotal > 0) {
+    growthRate = calcuateGrowthRate(totalUploads, previousTotal)
+  }
+
+  return { ...stats, totalUploads, growthRate }
+}

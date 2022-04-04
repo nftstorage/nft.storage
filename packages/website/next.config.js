@@ -17,6 +17,9 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const nextConfig = withBundleAnalyzer({
   trailingSlash: true,
   reactStrictMode: true,
+  images: {
+    loader: 'custom',
+  },
   exportPathMap: async function () {
     return {
       '/ipfs-404.html': { page: '/404' },
@@ -45,6 +48,8 @@ const nextConfig = withBundleAnalyzer({
       '/docs/how-to/mint-solana': { page: '/docs/how-to/mint-solana' },
       '/docs/how-to/retrieve': { page: '/docs/how-to/retrieve' },
       '/docs/how-to/store-directory': { page: '/docs/how-to/store-directory' },
+      '/docs/how-to/get-status': { page: '/docs/how-to/get-status' },
+      '/docs/how-to/ucan': { page: '/docs/how-to/ucan' },
       '/docs/client': { page: '/docs/client/js' },
       '/docs/client/https': { page: '/docs/client/http' },
       '/docs/client/generated': { page: '/docs/client/generated' },

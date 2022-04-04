@@ -281,13 +281,7 @@ describe('NFT Upload ', () => {
 
     const upload = await client.client.getUpload(value.cid, client.userId)
     assert(upload)
-
-    const { data: backup } = await rawClient
-      .from('backup')
-      .select('*')
-      .match({ upload_id: upload.id })
-      .single()
-    assert(backup) // should have a backup for this upload
+    assert(upload.backup_urls)
 
     /**
      * @param {Uint8Array} data
@@ -302,7 +296,7 @@ describe('NFT Upload ', () => {
     const carHash = await getHash(new Uint8Array(carBuf))
     const backupUrl = `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${client.userId}/${carHash}.car`
 
-    assert.equal(backup.url, backupUrl)
+    assert.equal(upload.backup_urls[0], backupUrl)
   })
 
   it('should upload a single file using ucan', async () => {
@@ -361,5 +355,63 @@ describe('NFT Upload ', () => {
 
     // @ts-ignore
     assert.equal(data.meta.ucan.token, opUcan)
+  })
+
+  it('should update a single file', async () => {
+    const file = new Blob(['hello world!'], { type: 'application/text' })
+    // expected CID for the above data
+    const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+
+    await fetch('upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: file,
+    })
+
+    const { data } = await rawClient
+      .from('upload')
+      .select('*')
+      .match({ source_cid: cid, user_id: client.userId })
+      .single()
+
+    // update file we just created above
+
+    const name = 'test updated name'
+
+    const uploadRes = await fetch(`upload/${data.id}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${client.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+      }),
+    })
+
+    const { ok: uploadOk, value: uploadValue } = await uploadRes.json()
+    assert(
+      uploadOk,
+      'Server response payload has `ok` property for upload endpoint'
+    )
+    assert.strictEqual(
+      uploadValue.cid,
+      data.cid,
+      'Server responded with expected CID'
+    )
+    assert.strictEqual(
+      uploadValue.name,
+      name,
+      'type should match blob mime-type'
+    )
+
+    const { data: uploadData } = await rawClient
+      .from('upload')
+      .select('*')
+      .match({ id: data.id })
+      .single()
+
+    // @ts-ignore
+    assert.equal(uploadData.name, name)
   })
 })

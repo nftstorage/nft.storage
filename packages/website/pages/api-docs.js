@@ -1,6 +1,9 @@
 // @ts-ignore
-import SwaggerUI from 'swagger-ui-react'
+import dynamic from 'next/dynamic'
+
 import { getToken } from '../lib/api'
+
+const DynamicSwaggerUI = dynamic(() => import('swagger-ui-react'))
 
 /**
  *
@@ -27,8 +30,9 @@ export function getStaticProps() {
 
 export default function docs() {
   return (
-    <SwaggerUI
+    <DynamicSwaggerUI
       url="/schema.yml"
+      // @ts-ignore
       requestInterceptor={requestHandler}
       className="foo"
     />

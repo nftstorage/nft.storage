@@ -15,12 +15,16 @@ services:
   db:
     build:
       context: ./postgres
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
     ports:
       - 5432:5432
-    command:
-      - postgres
-      - -c
-      - wal_level=logical
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres

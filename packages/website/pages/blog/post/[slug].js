@@ -1,5 +1,6 @@
 import { FiFacebook, FiLinkedin, FiTwitter } from 'react-icons/fi'
 import { useEffect, useState } from 'react'
+import Img from '../../../components/cloudflareImage'
 import { serialize } from 'next-mdx-remote/serialize'
 import { MDXRemote } from 'next-mdx-remote'
 import SocialLink from '../../../components/social-link'
@@ -71,7 +72,7 @@ const Post = ({ post }) => {
   return (
     <div className="blog grow pb-24">
       <div className="post pb-24 flex flex-col w-full items-center">
-        <img
+        <Img
           src={post.meta.thumbnail}
           alt={`Banner for ${post.meta.title}`}
           className="h-card object-cover object-center"

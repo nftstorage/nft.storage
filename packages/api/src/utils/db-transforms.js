@@ -28,6 +28,7 @@ export function toNFTResponse(upload, sourceCid) {
     scope: upload.key ? upload.key.name : 'session',
     files: upload.files,
     size: upload.content.dag_size || 0,
+    name: upload.name,
     pin: {
       cid: sourceCid || upload.source_cid,
       created: upload.content.pin[0].inserted_at,

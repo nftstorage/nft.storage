@@ -58,6 +58,12 @@ export interface CreateUploadInput {
   pins?: Pick<definitions['pin'], 'service' | 'status'>[]
 }
 
+export interface UpdateUploadInput {
+  id: string
+  name?: string
+  user_id: number
+}
+
 export type ContentOutput = definitions['content'] & {
   pins: Array<definitions['pin']>
   deals: Deal[]

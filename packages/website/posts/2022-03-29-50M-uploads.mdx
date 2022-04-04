@@ -1,0 +1,30 @@
+---
+title: 'NFT.Storage crosses 50M uploads'
+description: NFT.Storage has grown to 50M uploads. Here's to the next 500M!
+author: David Choi
+thumbnail: https://user-images.githubusercontent.com/89210666/160478599-0de7cfdd-da01-4df5-a24d-12dcc01db259.png
+date: Mar 29, 2022
+tags:
+  - milestone
+---
+
+We're excited to announce that over the weekend, NFT.Storage crossed 50 million user uploads to our service! It's a big milestone that shows both the overall growth of the NFT space, as well as increased awareness within the space of the importance of securely handling off-chain NFT data. The NFT ecosystem is increasingly seeing the importance of making references off-chain data [content addressed](https://docs.ipfs.io/concepts/content-addressing/) (using IPFS CIDs so no one can argue about the content the NFT represents), and ensuring this data is always accessible on IPFS via these content addresses (with NFT.Storage as one perpetual storage option with long-term provable storage via Filecoin, but also utilizing IPFS's flexibility to store wherever else [makes them feel comfortable](https://nft.storage/blog/post/2021-12-14-storage-layer-maximalism/)).
+
+# Young but precocious
+
+NFT.Storage was launched as a free storage service at the [end of April, 2021 by Protocol Labs](https://filecoin.io/blog/posts/introducing-nft.storage-free-decentralized-storage-for-nfts/) to help NFT creators and minting services follow best-practices with handling their off-chain NFT data, a piece that is as critical as the on-chain piece but often overlooked. We wanted it to be easy for users to trustlessly get the IPFS CID of their off-chain content and make it available on the IPFS network perpetually, with copies of the data stored on the Filecoin network (meaning users could always check the Filecoin blockchain for validated proofs that their data is physicaly stored without needing to trust us).
+
+We're excited to announce that, in less than a year, we've crossed 50 million user uploads! This translates to likely more than 50 million NFTs (since one directory uploaded often corresponds to many NFTs, like for 10K PFP drops). Since launch, we have seen:
+- Over 100 uploads per minute (with over 250 uploads per minute in the last 3 months)
+- 46% month-over-month growth in uploads (up and to the right)
+- 152 TiB data stored on Filecoin (that's a lot of images!)
+
+It's been exciting for the team to take on the challenge of scaling our systems to take on this growth, and interesting to see how the landscape of NFTs have changed in just months. The bulk of our upload volume comes from marketplaces and minting APIs like OpenSea and NFTPort, but we also have a ton of individual developers and artists who upload directly or pin remotely to NFT.Storage (about 30,000 users in all).
+
+# What's next?
+
+The long-term goal of our service has always been to make persistence of public off-chain NFT data a public good - a public archive of NFTs. The potential of NFTs are to be an immutable graph of digital ownership data that anyone on the Web can plug into. We want to help fulfill this potential by bridging NFT's "tragedy of the commons," where many are benefitting from this public data, but no one party has responsibility over the off-chain portion. Consequently, we will [increasingly decentralize](https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/) NFT.Storage. This means smart contract-based persistence of data on Filecoin with the FVM (i.e., enforcing `n` copies of data are always around), funding the effort through a DAO, and more.
+
+However, it's easier to fulfill this mission if we're there at the ground floor, which is why we've been integrating with many different platforms and artists' workflows. We are super proud of 50 million uploads because this means that users understand the importance of storing their NFT data the right way. However, minting services and artists alike have a long list of needs beyond this, giving us to build the features that our users need - in Q1, this included [more performant reads](https://nft.storage/docs/concepts/gateways/), [delegated uploads](https://github.com/nftstorage/ucan.storage), Solana wallet authorization for [uploading via Metaplex](https://nft.storage/docs/how-to/mint-solana/), and simply making the service as resilient as possible as we scaled up.
+
+We have a ton of other features we're building to make the choice simple for users to utilize NFT.Storage in some way, like an improved upload experience for large files and premium gateway features, so stay tuned! We're excited to continue building the foundation needed for NFTs to maximize their promise as a cornerstone of the Internet. WAGMI!

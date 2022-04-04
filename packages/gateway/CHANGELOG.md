@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/nftstorage/nft.storage/compare/gateway-v1.3.1...gateway-v1.4.0) (2022-04-01)
+
+
+### Features
+
+* gateway deny list ([#1721](https://github.com/nftstorage/nft.storage/issues/1721)) ([b5cecc1](https://github.com/nftstorage/nft.storage/commit/b5cecc1b79bbb3b3a5bfbaf569899f3f7b9e6009))
+
+
+### Bug Fixes
+
+* check deny list before cache and fix blocked CIDs ([#1748](https://github.com/nftstorage/nft.storage/issues/1748)) ([fbd2922](https://github.com/nftstorage/nft.storage/commit/fbd2922a66d7d82755a3c23c433e16f2abe65880))
+
 ### [1.3.1](https://github.com/nftstorage/nft.storage/compare/gateway-v1.3.0...gateway-v1.3.1) (2022-03-17)
 
 

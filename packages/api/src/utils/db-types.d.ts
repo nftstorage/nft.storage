@@ -259,102 +259,6 @@ export interface paths {
       }
     }
   }
-  '/backup': {
-    get: {
-      parameters: {
-        query: {
-          id?: parameters['rowFilter.backup.id']
-          upload_id?: parameters['rowFilter.backup.upload_id']
-          url?: parameters['rowFilter.backup.url']
-          inserted_at?: parameters['rowFilter.backup.inserted_at']
-          /** Filtering Columns */
-          select?: parameters['select']
-          /** Ordering */
-          order?: parameters['order']
-          /** Limiting and Pagination */
-          offset?: parameters['offset']
-          /** Limiting and Pagination */
-          limit?: parameters['limit']
-        }
-        header: {
-          /** Limiting and Pagination */
-          Range?: parameters['range']
-          /** Limiting and Pagination */
-          'Range-Unit'?: parameters['rangeUnit']
-          /** Preference */
-          Prefer?: parameters['preferCount']
-        }
-      }
-      responses: {
-        /** OK */
-        200: {
-          schema: definitions['backup'][]
-        }
-        /** Partial Content */
-        206: unknown
-      }
-    }
-    post: {
-      parameters: {
-        body: {
-          /** backup */
-          backup?: definitions['backup']
-        }
-        query: {
-          /** Filtering Columns */
-          select?: parameters['select']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** Created */
-        201: unknown
-      }
-    }
-    delete: {
-      parameters: {
-        query: {
-          id?: parameters['rowFilter.backup.id']
-          upload_id?: parameters['rowFilter.backup.upload_id']
-          url?: parameters['rowFilter.backup.url']
-          inserted_at?: parameters['rowFilter.backup.inserted_at']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** No Content */
-        204: never
-      }
-    }
-    patch: {
-      parameters: {
-        query: {
-          id?: parameters['rowFilter.backup.id']
-          upload_id?: parameters['rowFilter.backup.upload_id']
-          url?: parameters['rowFilter.backup.url']
-          inserted_at?: parameters['rowFilter.backup.inserted_at']
-        }
-        body: {
-          /** backup */
-          backup?: definitions['backup']
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferReturn']
-        }
-      }
-      responses: {
-        /** No Content */
-        204: never
-      }
-    }
-  }
   '/content': {
     get: {
       parameters: {
@@ -1154,27 +1058,6 @@ export interface definitions {
     /** Format: timestamp with time zone */
     deleted_at?: string
   }
-  backup: {
-    /**
-     * Format: bigint
-     * @description Note:
-     * This is a Primary Key.<pk/>
-     */
-    id: number
-    /**
-     * Format: bigint
-     * @description Note:
-     * This is a Foreign Key to `upload.id`.<fk table='upload' column='id'/>
-     */
-    upload_id: number
-    /** Format: text */
-    url: string
-    /**
-     * Format: timestamp with time zone
-     * @default timezone('utc'::text, now())
-     */
-    inserted_at: string
-  }
   content: {
     /**
      * Format: text
@@ -1282,6 +1165,11 @@ export interface definitions {
     origins?: string
     /** Format: jsonb */
     meta?: string
+    /**
+     * Format: text[]
+     * @description Note:
+     */
+    backup_urls: string[]
     /**
      * Format: timestamp with time zone
      * @default timezone('utc'::text, now())
@@ -1432,16 +1320,6 @@ export interface parameters {
   'rowFilter.auth_key_history.inserted_at': string
   /** Format: timestamp with time zone */
   'rowFilter.auth_key_history.deleted_at': string
-  /** @description backup */
-  'body.backup': definitions['backup']
-  /** Format: bigint */
-  'rowFilter.backup.id': string
-  /** Format: bigint */
-  'rowFilter.backup.upload_id': string
-  /** Format: text */
-  'rowFilter.backup.url': string
-  /** Format: timestamp with time zone */
-  'rowFilter.backup.inserted_at': string
   /** @description content */
   'body.content': definitions['content']
   /** Format: text */

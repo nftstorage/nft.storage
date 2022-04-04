@@ -1,6 +1,4 @@
-import decorateAdditionalCalculatedValues, {
-  calcuateGrowthRate,
-} from '../statsUtils'
+import { calculateStats, calcuateGrowthRate } from '../statsUtils'
 
 const fakeData = {
   ok: true,
@@ -22,7 +20,7 @@ describe('Stats Utils unit tests', () => {
   })
 
   it('Should decorate upload totals correctly, given fake data', () => {
-    const stats = decorateAdditionalCalculatedValues(fakeData.data)
+    const stats = calculateStats(fakeData.data)
     expect(stats.growthRate).toBe('4.87')
     expect(stats.totalUploads).toBe(43352125)
   })
@@ -38,7 +36,7 @@ describe('Stats Utils unit tests', () => {
         uploads_blob_total: 0,
       },
     }
-    const stats = decorateAdditionalCalculatedValues(infinityData.data)
+    const stats = calculateStats(infinityData.data)
 
     // passing in 0/0 should return 0, not infinity
     expect(stats.growthRate).toBe(0)
