@@ -1,0 +1,25 @@
+---
+title: 'NFTUp is the easist way to share your NFT content'
+description: NFTUp is a downloadable application that makes it simple to upload large directories to NFT.Storage
+author:  J Chris Anderson
+thumbnail: https://user-images.githubusercontent.com/22168118/149502173-d50d7e98-29a9-4c53-9dbc-ed19ab0ae755.png
+date: Mar 29, 2022
+tags:
+  - nft
+  - uploads
+  - ipfs
+---
+
+People have been asking for an easy way to drag and drop large directories onto IPFS and NFT.Storage — today we deliver.
+
+Click to download the latest release, follow the link that matches your computer, or [browse the repo's GitHub releases page](https://github.com/nftstorage/nftup/releases):
+
+* [M1 Mac](https://github.com/nftstorage/nftup/releases/download/v1.0.0-alpha.6/NFT-UP-1.0.0-alpha.6-arm64-mac.zip)
+* [Intel Mac](https://github.com/nftstorage/nftup/releases/download/v1.0.0-alpha.6/NFT-UP-1.0.0-alpha.6-mac.zip)
+* [Windows](https://github.com/nftstorage/nftup/releases/download/v1.0.0-alpha.6/NFT-UP-Setup-1.0.0-alpha.6.exe)
+* [Linux x86](https://github.com/nftstorage/nftup/releases/download/v1.0.0-alpha.6/NFT-UP-1.0.0-alpha.6.dmg)
+* [Linux ARM](https://github.com/nftstorage/nftup/releases/download/v1.0.0-alpha.6/NFT-UP-1.0.0-alpha.6-arm64.dmg)
+
+While your download is happening, scroll to see what you can expect:
+
+
