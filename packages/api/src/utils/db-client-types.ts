@@ -59,7 +59,7 @@ export interface CreateUploadInput {
 }
 
 export interface UpdateUploadInput {
-  content_cid: string
+  cid: string
   name?: string
   user_id: number
 }
