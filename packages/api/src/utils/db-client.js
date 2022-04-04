@@ -125,21 +125,17 @@ export class DBClient {
         updated_at: now,
       })
       .select(this.uploadQuery)
-      .eq('id', data.id)
+      .eq('source_cid', data.cid)
       .eq('user_id', data.user_id)
       .is('deleted_at', null)
       .single()
 
     if (status === 406) {
-      throw new Error(`Status 406, cannot update ${data.id}`)
+      throw new Error(`Status 406, cannot update ${data.cid}`)
     }
 
     if (!upload) {
-      throw new Error(
-        `Cannot update upload ${JSON.stringify(data.id)} ${JSON.stringify(
-          status
-        )}`
-      )
+      throw new Error(`Cannot update upload ${data.cid} ${status}`)
     }
 
     return upload
