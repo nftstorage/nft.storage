@@ -8,6 +8,7 @@ const RATE_LIMIT_PERIOD = 10 * 1000
 
 describe('rate limiter', () => {
   it('limits to correct rate', async function () {
+    /** @type {import('mocha').Context} */
     this.timeout(RATE_LIMIT_PERIOD * 2)
     const rateLimiter = createRateLimiter()
     const start = Date.now()
