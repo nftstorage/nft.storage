@@ -19,6 +19,9 @@ jobs:
         with:
           node-version: 16
       - uses: bahmutov/npm-install@v1
+        env:
+          # Fake environment vars required for build
+          NEXT_PUBLIC_SENTRY_DSN: 'https://000000@0000000.ingest.sentry.io/00000'
       - run: yarn build:website
       - run: yarn test:website
   test-e2e:
