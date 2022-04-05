@@ -285,7 +285,7 @@ export default function Files({ user }) {
                 {isLoading ? (
                   <VscLoading
                     height={18}
-                    className="dib relative"
+                    className="dib relative spin"
                     fill="currentColor"
                   />
                 ) : (
@@ -555,49 +555,49 @@ export default function Files({ user }) {
                         )}
                       </tbody>
                     </table>
-                    <div className="flex flex-wrap justify-center tc mv3">
-                      <Button
-                        className="mh2 mb2"
-                        disabled={befores.length === 1}
-                        onClick={handleFirstClick}
-                        id="files-first"
-                        tracking={{
-                          event: countly.events.FILES_NAVIGATION_CLICK,
-                          ui: countly.ui.FILES,
-                          action: 'First',
-                        }}
-                      >
-                        ⇤ First
-                      </Button>
-                      <Button
-                        className="mh2 mb2"
-                        disabled={befores.length === 1}
-                        onClick={handlePrevClick}
-                        id="files-previous"
-                        tracking={{
-                          event: countly.events.FILES_NAVIGATION_CLICK,
-                          ui: countly.ui.FILES,
-                          action: 'Previous',
-                        }}
-                      >
-                        ← Previous
-                      </Button>
-                      <Button
-                        className="mh2 mb2"
-                        disabled={nfts.length < limit}
-                        onClick={handleNextClick}
-                        id="files-next"
-                        tracking={{
-                          event: countly.events.FILES_NAVIGATION_CLICK,
-                          ui: countly.ui.FILES,
-                          action: 'Next',
-                        }}
-                      >
-                        Next →
-                      </Button>
-                    </div>
                   </>
                 </When>
+              </div>
+              <div className="flex flex-wrap justify-center tc mv3">
+                <Button
+                  className="mh2 mb2"
+                  disabled={befores.length === 1}
+                  onClick={handleFirstClick}
+                  id="files-first"
+                  tracking={{
+                    event: countly.events.FILES_NAVIGATION_CLICK,
+                    ui: countly.ui.FILES,
+                    action: 'First',
+                  }}
+                >
+                  ⇤ First
+                </Button>
+                <Button
+                  className="mh2 mb2"
+                  disabled={befores.length === 1}
+                  onClick={handlePrevClick}
+                  id="files-previous"
+                  tracking={{
+                    event: countly.events.FILES_NAVIGATION_CLICK,
+                    ui: countly.ui.FILES,
+                    action: 'Previous',
+                  }}
+                >
+                  ← Previous
+                </Button>
+                <Button
+                  className="mh2 mb2"
+                  disabled={nfts.length < limit}
+                  onClick={handleNextClick}
+                  id="files-next"
+                  tracking={{
+                    event: countly.events.FILES_NAVIGATION_CLICK,
+                    ui: countly.ui.FILES,
+                    action: 'Next',
+                  }}
+                >
+                  Next →
+                </Button>
               </div>
             </>
           </When>
