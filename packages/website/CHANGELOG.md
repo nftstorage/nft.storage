@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.43.0](https://github.com/nftstorage/nft.storage/compare/website-v1.42.0...website-v1.43.0) (2022-04-05)
+
+
+### Features
+
+* Updated to add docs for pinning services api ([#1774](https://github.com/nftstorage/nft.storage/issues/1774)) ([133a6f0](https://github.com/nftstorage/nft.storage/commit/133a6f01efa04d70de14abc704d48e212366d95e))
+
 ## [1.42.0](https://github.com/nftstorage/nft.storage/compare/website-v1.41.0...website-v1.42.0) (2022-04-05)
 
 
