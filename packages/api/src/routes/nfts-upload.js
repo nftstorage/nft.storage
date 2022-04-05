@@ -172,15 +172,20 @@ export async function nftUpdateUpload(event, ctx) {
   const { params, db } = ctx
   try {
     const { user } = await validate(event, ctx)
-    const id = params.id
+    const { cid } = params
 
     // id is required for updating
-    if (!id) return new JSONResponse({ ok: false, value: 'ID is required' })
+    if (!cid || typeof cid !== 'string')
+      return new JSONResponse({ ok: false, value: 'Upload CID is required' })
 
     const body = await event.request.json()
     const { name } = body
 
-    const updatedRecord = await db.updateUpload({ id, name, user_id: user.id })
+    const updatedRecord = await db.updateUpload({
+      cid,
+      name,
+      user_id: user.id,
+    })
 
     return new JSONResponse({ ok: true, value: updatedRecord })
   } catch (/** @type {any} */ err) {

@@ -19,6 +19,7 @@ import pRetry, { AbortError } from 'p-retry'
 import { TreewalkCarSplitter } from 'carbites/treewalk'
 import { pack } from 'ipfs-car/pack'
 import { CID } from 'multiformats/cid'
+import throttledQueue from 'throttled-queue'
 import * as Token from './token.js'
 import { fetch, File, Blob, FormData, Blockstore } from './platform.js'
 import { toGatewayURL } from './gateway.js'
@@ -27,6 +28,8 @@ import { BlockstoreCarReader } from './bs-car-reader.js'
 const MAX_STORE_RETRIES = 5
 const MAX_CONCURRENT_UPLOADS = 3
 const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
+const RATE_LIMIT_REQUESTS = 30
+const RATE_LIMIT_PERIOD = 10 * 1000
 
 /**
  * @typedef {import('./lib/interface.js').Service} Service
@@ -35,7 +38,23 @@ const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
  * @typedef {import('./lib/interface.js').Pin} Pin
  * @typedef {import('./lib/interface.js').CarReader} CarReader
  * @typedef {import('ipfs-car/blockstore').Blockstore} BlockstoreI
+ * @typedef {import('./lib/interface.js').RateLimiter} RateLimiter
  */
+
+/**
+ * @returns {RateLimiter}
+ */
+export function createRateLimiter() {
+  const throttle = throttledQueue(RATE_LIMIT_REQUESTS, RATE_LIMIT_PERIOD)
+  return () => throttle(() => {})
+}
+
+/**
+ * Rate limiter used by static API if no rate limiter is passed. Note that each
+ * instance of the NFTStorage class gets it's own limiter if none is passed.
+ * This is because rate limits are enforced per API token.
+ */
+const globalRateLimiter = createRateLimiter()
 
 /**
  * @template {import('./lib/interface.js').TokenInput} T
@@ -67,9 +86,13 @@ class NFTStorage {
    * })
    * ```
    *
-   * @param {{token: string, endpoint?:URL}} options
+   * @param {{token: string, endpoint?: URL, rateLimiter?: RateLimiter}} options
    */
-  constructor({ token, endpoint = new URL('https://api.nft.storage') }) {
+  constructor({
+    token,
+    endpoint = new URL('https://api.nft.storage'),
+    rateLimiter,
+  }) {
     /**
      * Authorization token.
      *
@@ -81,6 +104,10 @@ class NFTStorage {
      * @readonly
      */
     this.endpoint = endpoint
+    /**
+     * @readonly
+     */
+    this.rateLimiter = rateLimiter || createRateLimiter()
   }
 
   /**
@@ -123,7 +150,7 @@ class NFTStorage {
    * @returns {Promise<CIDString>}
    */
   static async storeCar(
-    { endpoint, token },
+    { endpoint, token, rateLimiter = globalRateLimiter },
     car,
     { onStoredChunk, maxRetries, decoders } = {}
   ) {
@@ -145,6 +172,7 @@ class NFTStorage {
         const carFile = new Blob(carParts, { type: 'application/car' })
         const cid = await pRetry(
           async () => {
+            await rateLimiter()
             const response = await fetch(url.toString(), {
               method: 'POST',
               headers,
@@ -244,8 +272,12 @@ class NFTStorage {
    * @param {string} cid
    * @returns {Promise<import('./lib/interface.js').StatusResult>}
    */
-  static async status({ endpoint, token }, cid) {
+  static async status(
+    { endpoint, token, rateLimiter = globalRateLimiter },
+    cid
+  ) {
     const url = new URL(`${cid}/`, endpoint)
+    await rateLimiter()
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: NFTStorage.auth(token),
@@ -276,8 +308,9 @@ class NFTStorage {
    * @param {string} cid
    * @returns {Promise<import('./lib/interface.js').CheckResult>}
    */
-  static async check({ endpoint }, cid) {
+  static async check({ endpoint, rateLimiter = globalRateLimiter }, cid) {
     const url = new URL(`check/${cid}/`, endpoint)
+    await rateLimiter()
     const response = await fetch(url.toString())
     /* c8 ignore next 3 */
     if (response.status === 429) {
@@ -305,8 +338,12 @@ class NFTStorage {
    * @param {string} cid
    * @returns {Promise<void>}
    */
-  static async delete({ endpoint, token }, cid) {
+  static async delete(
+    { endpoint, token, rateLimiter = globalRateLimiter },
+    cid
+  ) {
     const url = new URL(`${cid}/`, endpoint)
+    await rateLimiter()
     const response = await fetch(url.toString(), {
       method: 'DELETE',
       headers: NFTStorage.auth(token),

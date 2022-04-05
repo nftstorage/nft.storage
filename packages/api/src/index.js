@@ -98,7 +98,7 @@ r.add('get', '/check/:cid', withMode(nftCheck, RO), [postCors])
 r.add('get', '', withMode(nftList, RO), [postCors])
 r.add('get', '/:cid', withMode(nftGet, RO), [postCors])
 r.add('post', '/upload', withMode(nftUpload, RW), [postCors])
-r.add('patch', '/upload/:id', withMode(nftUpdateUpload, RW), [postCors])
+r.add('patch', '/upload/:cid', withMode(nftUpdateUpload, RW), [postCors])
 
 r.add('post', '/store', withMode(nftStore, RW), [postCors])
 r.add('delete', '/:cid', withMode(nftDelete, RW), [postCors])

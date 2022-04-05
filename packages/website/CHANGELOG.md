@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.42.0](https://github.com/nftstorage/nft.storage/compare/website-v1.41.0...website-v1.42.0) (2022-04-05)
+
+
+### Features
+
+* blog post about missing nfts ([#1752](https://github.com/nftstorage/nft.storage/issues/1752)) ([3f09503](https://github.com/nftstorage/nft.storage/commit/3f09503339386d602214a6c3d68b4f5fd1356cc6))
+* blog release NFTUp ([#1764](https://github.com/nftstorage/nft.storage/issues/1764)) ([4faf35e](https://github.com/nftstorage/nft.storage/commit/4faf35e11a2978d9d4dca6562574640da6b116f6))
+* labeling uploads on files ([#1694](https://github.com/nftstorage/nft.storage/issues/1694)) ([70d81ac](https://github.com/nftstorage/nft.storage/commit/70d81acff0cba3e4bb06b5491c7c60fb97d05b65))
+
+
+### Bug Fixes
+
+* temporarily hide upload name column ([#1770](https://github.com/nftstorage/nft.storage/issues/1770)) ([d92d7cf](https://github.com/nftstorage/nft.storage/commit/d92d7cf989547390b7fa01bc8d06e7478e488d3c))
+
 ## [1.41.0](https://github.com/nftstorage/nft.storage/compare/website-v1.40.1...website-v1.41.0) (2022-04-01)
 
 

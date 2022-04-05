@@ -4,26 +4,57 @@ import Image from 'next/image'
  * Logo Component
  * @param  {Object} logo
  * @param  {string} logo.src
- * @param  {string} logo.alt
- * @param  {string} logo.width
- * @param  {string} logo.quality
+ * @param  {number} logo.width
+ * @param  {number} [logo.quality]
  */
-const cloudflareImageLoader = ({ src, width, quality = '75' }) =>
+const cloudflareImageLoader = ({ src, width, quality = 75 }) =>
   `https://nft.storage/cdn-cgi/image/format=auto,width=${width},quality=${quality}${src}`
 
 /**
- * @param {import('next/image').ImageProps} props
+ * @param {{
+ *  src: string
+ *  width?: number | string
+ *  height?: number | string
+ *  alt?: string
+ *  className?: string
+ *  layout?: import('next/image').ImageProps['layout']
+ * }} props
+ * @returns
  */
-export default function Img(props) {
-  if (props.src.includes('.svg') || props.src.includes('https://')) {
-    // eslint-disable-next-line jsx-a11y/alt-text
-    return <img {...props} />
+export default function Img({ src, alt, width, height, className, layout }) {
+  if (src.includes('.svg') || src.includes('https://')) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        className={className}
+      />
+    )
   }
   if (process.env.NODE_ENV === 'development') {
-    // eslint-disable-next-line jsx-a11y/alt-text
-    return <Image unoptimized={true} {...props} />
+    return (
+      <Image
+        unoptimized
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        className={className}
+        layout={layout}
+      />
+    )
   }
-  // @ts-ignore
-  // eslint-disable-next-line jsx-a11y/alt-text
-  return <Image {...props} loader={cloudflareImageLoader} />
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      className={className}
+      layout={layout}
+      loader={cloudflareImageLoader}
+    />
+  )
 }

@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic'
 
 import { getToken } from '../lib/api'
 
-const DynamicSwaggerUI = dynamic(() => import('swagger-ui-react'))
+const DynamicSwaggerUI = dynamic(import('swagger-ui-react'), { ssr: false })
 
 /**
  *
