@@ -61,7 +61,8 @@
     "ipfs-car": "^0.6.2",
     "multiformats": "^9.6.4",
     "p-retry": "^4.6.1",
-    "streaming-iterables": "^6.0.0"
+    "streaming-iterables": "^6.0.0",
+    "throttled-queue": "^2.1.2"
   },
   "devDependencies": {
     "@ipld/dag-json": "^8.0.4",
