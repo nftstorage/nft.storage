@@ -1,7 +1,8 @@
 import { API, getNfts, getToken } from '../lib/api.js'
 import { useQuery, useQueryClient } from 'react-query'
 import { CID } from 'multiformats/cid'
-import { VscQuestion, VscEdit, VscLoading, VscSave } from 'react-icons/vsc'
+// import { VscQuestion, VscEdit, VscLoading, VscSave } from 'react-icons/vsc'
+import { VscQuestion } from 'react-icons/vsc'
 import Button from '../components/button.js'
 import Tooltip from '../components/tooltip.js'
 import Loading from '../components/loading'
@@ -111,10 +112,10 @@ export default function Files({ user }) {
    */
   const TableItem = ({ nft }) => {
     // to do, add actual types
-    const [isRenaming, setRenaming] = useState(false)
-    const [isLoading, setLoading] = useState(false)
-    const [renameError, setError] = useState('')
-    const [renamedValue, setRenamedValue] = useState('')
+    // const [isRenaming, setRenaming] = useState(false)
+    // const [isLoading, setLoading] = useState(false)
+    // const [renameError, setError] = useState('')
+    // const [renamedValue, setRenamedValue] = useState('')
     const [showAllDeals, setShowAllDeals] = useState(false)
     const deals = nft.deals
       .filter((/** @type {any} */ d) => d.status !== 'queued')
@@ -198,37 +199,37 @@ export default function Files({ user }) {
     }
 
     /** @param {import('react').ChangeEvent<HTMLFormElement>} ev */
-    const handleRename = async (ev) => {
-      ev.preventDefault()
-      const data = new FormData(ev.target)
-      const fileName = data.get('fileName')
+    // const handleRename = async (ev) => {
+    //   ev.preventDefault()
+    //   const data = new FormData(ev.target)
+    //   const fileName = data.get('fileName')
 
-      if (!fileName || typeof fileName !== 'string') return
-      if (fileName === nft.name) return setRenaming(false)
+    //   if (!fileName || typeof fileName !== 'string') return
+    //   if (fileName === nft.name) return setRenaming(false)
 
-      try {
-        setLoading(true)
-        await fetch(`${API}/upload/${nft.cid}`, {
-          method: 'PATCH',
-          body: JSON.stringify({
-            name: fileName,
-          }),
-          headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-            Authorization: `Bearer ${await getToken()}`,
-          },
-        })
-        setError('')
-      } catch (e) {
-        console.error(e)
-        // @ts-ignore Catch clause variable type annotation must be 'any' or 'unknown' if specified.ts(1196)
-        setError(e.message)
-      }
+    //   try {
+    //     setLoading(true)
+    //     await fetch(`${API}/upload/${nft.cid}`, {
+    //       method: 'PATCH',
+    //       body: JSON.stringify({
+    //         name: fileName,
+    //       }),
+    //       headers: {
+    //         'Content-type': 'application/json; charset=UTF-8',
+    //         Authorization: `Bearer ${await getToken()}`,
+    //       },
+    //     })
+    //     setError('')
+    //   } catch (e) {
+    //     console.error(e)
+    //     // @ts-ignore Catch clause variable type annotation must be 'any' or 'unknown' if specified.ts(1196)
+    //     setError(e.message)
+    //   }
 
-      setLoading(false)
-      setRenaming(false)
-      setRenamedValue(fileName)
-    }
+    //   setLoading(false)
+    //   setRenaming(false)
+    //   setRenamedValue(fileName)
+    // }
 
     return (
       <tr className="bg-white bb">
@@ -236,7 +237,7 @@ export default function Files({ user }) {
           {/* {nft.created.split('T')[0]} */}
           {formatTimestamp(nft.created)}
         </td>
-        <td data-label="Label" className="nowrap" title={nft.label}>
+        {/* <td data-label="Label" className="nowrap" title={nft.label}>
           {!isRenaming ? (
             <div
               className={clsx(
@@ -300,7 +301,7 @@ export default function Files({ user }) {
               </button>
             </form>
           )}
-        </td>
+        </td> */}
         <td data-label="CID" className="nowrap">
           <CopyButton
             title="Copy CID to Clipboard"
@@ -453,7 +454,7 @@ export default function Files({ user }) {
                       <thead>
                         <tr className="bg-nsgray">
                           <th>Date</th>
-                          <th>
+                          {/* <th>
                             <span aria-describedby="label-tooltip">
                               Label
                               <Tooltip
@@ -470,7 +471,7 @@ export default function Files({ user }) {
                                 <VscQuestion size={16} />
                               </Tooltip>
                             </span>
-                          </th>
+                          </th> */}
                           <th>
                             <span aria-describedby="cid-tooltip">
                               CID
