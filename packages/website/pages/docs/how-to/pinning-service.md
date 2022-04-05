@@ -1,16 +1,16 @@
 # Pinning Services API
 
-IPFS is a distributed storage network. Data is cached on IPFS nodes, but may be cleared to make room for new content. A pinning service is a collection of IPFS nodes dedicated to saving data on the network so that it is not removed.
+[IPFS](https://ipfs.io) is a distributed storage network. Data is cached on IPFS nodes, but may be cleared to make room for new content. A pinning service is a collection of IPFS nodes dedicated to saving data on the network so that it is not removed.
 
-NFT.Storage provides a pinning service that is modeled closely on the IPFS Pinning Service API specification.
+NFT.Storage provides a pinning service that is modeled closely on the [IPFS Pinning Service API specification](https://ipfs.github.io/pinning-services-api-spec/).
 
-For a full list and documentation of all the available pinning service endpoints, visit the IPFS Pinning Service API endpoint documentation.
+For a full list and documentation of all the available pinning service endpoints, visit the [IPFS Pinning Service API endpoint documentation](https://ipfs.github.io/pinning-services-api-spec/#tag/pins).
 
 ## Requesting access
-To request access to the pinning service for your NFT.Storage account, you will need to request access from your API Key account page. Once approved, you will be able to access the pinning service API endpoints using your API token.
+To request access to the pinning service for your NFT.Storage account, you will need to request access from your [API Key account page](https://nft.storage/manage/). Once approved, you will be able to access the pinning service API endpoints using your [API token](https://nft.storage/docs/#get-an-api-token).
 
 ## Using the HTTP API
-The NFT.Storage pinning service endpoint for all requests is https://api.nft.storage/pins.  For additional documentation, please see the IPFS Pinning Service API endpoint documentation.
+The NFT.Storage pinning service endpoint for all requests is [https://api.nft.storage/pins](https://api.nft.storage/pins).  For additional documentation, please see the [IPFS Pinning Service API endpoint documentation](https://ipfs.github.io/pinning-services-api-spec/#tag/pins).
 
 ### Add a pin
 ```javascript
@@ -37,11 +37,11 @@ curl -X DELETE 'https://api.nft.storage/pins/<requestId>' \
 ```
 
 ## Using the IPFS CLI
-The IPFS CLI can be used to maintain pins by first adding the NFT.Storage pinning service.
+The [IPFS CLI](https://docs.ipfs.io/reference/cli/) can be used to maintain pins by first adding the NFT.Storage pinning service.
 
 `ipfs pin remote service add nftstorage https://api.nft.storage/ <YOUR_AUTH_KEY_JWT>`
 
-See more extensive documentation in the IPFS Docs.
+See more extensive documentation in the [IPFS Docs](https://docs.ipfs.io/reference/cli/#ipfs-pin-remote).
 
 ### Add a pin
 `ipfs pin remote add --service=nftstorage --name=<PIN-NAME> <CID>`
