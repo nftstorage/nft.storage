@@ -73,7 +73,7 @@ SELECT p.id, p.service, p.status, u.source_cid, p.inserted_at, p.updated_at
     ON p.content_cid = u.content_cid
  WHERE p.service IN (${CLUSTER_LIST})
    AND p.status = 'PinError'
-   AND inserted_at > $1
+   AND p.inserted_at > $1
 OFFSET $2
  LIMIT $3`
 
