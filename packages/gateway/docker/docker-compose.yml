@@ -1,9 +1,0 @@
-version: '3.6'
-
-services:
-  ipfs0:
-    container_name: ipfs0
-    image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
-    ports:
-      - '9089:5001' # ipfs api - expose if needed/wanted
-      - '9081:8080' # ipfs gateway - expose if needed/wanted
