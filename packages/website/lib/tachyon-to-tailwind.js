@@ -73,7 +73,7 @@ export default function transformer(file, api) {
     fw1: 'font-hairline',
 
     mw6: 'max-w-lg',
-    mw7: 'max-w-3lx',
+    mw7: 'max-w-3xl',
     mw8: 'max-w-5xl',
     mw9: 'max-w-7xl',
 

@@ -15,9 +15,9 @@
   width: 100%;
   height: 80px;
   object-fit: contain;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
   border-radius: 4px;
-  padding: 12px 20px;
+  padding: 12px 20px !important;
   object-position: center;
   -webkit-user-select: none;
   user-select: none;

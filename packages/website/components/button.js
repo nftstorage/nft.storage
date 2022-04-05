@@ -66,7 +66,7 @@ export default function Button({
     [tracking, onClick, href]
   )
 
-  let btnClasses = clsx('btn button-reset select-none color-black', className)
+  let btnClasses = clsx('btn button-reset select-none text-black', className)
 
   if (!unstyled) {
     btnClasses = clsx(

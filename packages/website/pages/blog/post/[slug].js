@@ -77,7 +77,7 @@ const Post = ({ post }) => {
           alt={`Banner for ${post.meta.title}`}
           className="h-card object-cover object-center"
         />
-        <div className="mt-14 max-w-3lx px-8">
+        <div className="mt-14 max-w-3xl px-8">
           <div className="post-meta mb-8">
             <div className="flex flex-col mb-8 justify-between items-center">
               <div className="flex justify-between items-end w-full">

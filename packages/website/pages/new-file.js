@@ -94,7 +94,7 @@ export default function NewFile() {
         <Box
           bgColor="nsgray"
           borderColor="nspink"
-          wrapperClassName="center mv4 mw6"
+          wrapperClassName="max-w-3xl my-4 mx-auto"
         >
           <h1 className="chicagoflf text-xl font-normal">Upload File</h1>
           <form onSubmit={handleUploadSubmit}>
@@ -199,18 +199,18 @@ export default function NewFile() {
             </>
           </Alert>
         </When>
-        <section className="mx-auto max-w-3lx p-8">
+        <section className="mx-auto max-w-3xl p-6">
           <section>
             <h3 className="notification-header">🌍 Public data</h3>
-            <p>
+            <p className="my-2 text-sm">
               All data uploaded to NFT.Storage is available to anyone who
               requests it using the correct CID. Do not store any private or
               sensitive information in an unencrypted form using NFT.Storage.
             </p>
           </section>
           <section>
-            <h3 className="notification-header">♾️ Permanent data</h3>
-            <p>
+            <h3 className="notification-header mt-4">♾️ Permanent data</h3>
+            <p className="my-2 text-sm">
               Deleting files from the NFT.Storage site’s{' '}
               <Link href="/files">
                 <a className="black no-underline underline-hover">Files</a>

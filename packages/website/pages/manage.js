@@ -116,7 +116,7 @@ export default function ManageKeys({ user }) {
                     className="items-center mr-4 mb-2 btn button-reset select-none black py-2 px-4 hologram chicagoflf interactive light"
                     id="request-api-pinning"
                   >
-                    <VscMail size={12} className="mr2" /> Request API Pinning
+                    <VscMail size={12} className="mr-2" /> Request API Pinning
                     Access
                   </a>
                 </Tooltip>

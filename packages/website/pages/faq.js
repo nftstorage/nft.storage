@@ -91,7 +91,7 @@ const faqs = [
 ]
 
 const TOC = () => (
-  <div className="flex flex-col py-1 max-w-3lx">
+  <div className="flex flex-col py-1 max-w-3xl">
     {faqs.map((faq, index) => (
       <Link href={`/faq/#${hashify(faq.question)}`} key={`faq-item${index}`}>
         <a className="text-white my-2 underline">
