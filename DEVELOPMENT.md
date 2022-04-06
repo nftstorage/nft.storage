@@ -25,10 +25,12 @@ We use `yarn` in this project and commit the `yarn.lock` file.
    ```
 2. Setup your local environment with a `.env` file. See [intructions](#local-environment-configuration).
 3. Run locally by starting the following processes.
-   1. API server (`yarn dev` in `/packages/api`).
-   2. Web server (`yarn dev` in `/packages/website`).
+   1. API server (`yarn dev:api`).
+   2. Web server (`yarn dev:website`).
 
 The site should now be available at http://localhost:4000
+
+*NOTE* Github login does not work locally because the oauth settings don't whitelist localhost:4000.
 
 ## Local environment configuration
 
