@@ -25,10 +25,12 @@ We use `yarn` in this project and commit the `yarn.lock` file.
    ```
 2. Setup your local environment with a `.env` file. See [intructions](#local-environment-configuration).
 3. Run locally by starting the following processes.
-   1. API server (`yarn dev` in `/packages/api`).
-   2. Web server (`yarn dev` in `/packages/website`).
+   1. API server (`yarn dev:api`).
+   2. Web server (`yarn dev:website`).
 
 The site should now be available at http://localhost:4000
+
+_NOTE_ Github login does not work locally because the oauth settings don't whitelist localhost:4000.
 
 ## Local environment configuration
 
@@ -69,6 +71,7 @@ The vars below are used by the API and/or GitHub cron actions and should be set 
 | DAG_CARGO_DATABASE          | dag cargo database name                                |                                          |
 | DAG_CARGO_USER              | dag cargo db username                                  |                                          |
 | DAG_CARGO_PASSWORD          | dag cargo db password                                  |                                          |
+| PRIAVTE_KEY                 | UCAN private key, run `npx ucan-storage keypair`       |                                          |
 
 The frontend also needs some environment variables for staging and production deployments, which should be set as CloudFlare Pages secrets.
 

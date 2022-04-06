@@ -292,7 +292,7 @@ export default function Files({ user }) {
                   {isLoading ? (
                     <VscLoading
                       height={18}
-                      className="dib relative"
+                      className="inline-block relative spin"
                       fill="currentColor"
                     />
                   ) : (

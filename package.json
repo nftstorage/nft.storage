@@ -4,10 +4,11 @@
     "packages/*"
   ],
   "scripts": {
+    "dev:api": "cd packages/api && yarn dev",
+    "dev:website": "cd packages/website && yarn dev",
     "test": "run-s test:*",
     "test:client": "yarn --cwd packages/client test",
     "test:api": "yarn --cwd packages/api test",
-    "test:gateway": "yarn --cwd packages/gateway test",
     "test:website": "yarn --cwd packages/website test",
     "build:client:docs": "yarn --cwd packages/client typedoc",
     "build:website": "yarn --cwd packages/website build",
