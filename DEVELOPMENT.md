@@ -69,6 +69,7 @@ The vars below are used by the API and/or GitHub cron actions and should be set 
 | DAG_CARGO_DATABASE          | dag cargo database name                                |                                          |
 | DAG_CARGO_USER              | dag cargo db username                                  |                                          |
 | DAG_CARGO_PASSWORD          | dag cargo db password                                  |                                          |
+| PRIAVTE_KEY                 | UCAN private key, run `npx ucan-storage keypair`       |                                          |
 
 The frontend also needs some environment variables for staging and production deployments, which should be set as CloudFlare Pages secrets.
 
