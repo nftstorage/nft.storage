@@ -22,7 +22,7 @@ import { pinsReplace } from './routes/pins-replace.js'
 import { metaplexUpload } from './routes/metaplex-upload.js'
 import { blogSubscribe } from './routes/blog-subscribe.js'
 import { userDIDRegister } from './routes/user-did-register.js'
-import { userPermissions } from './routes/user-permissions.js'
+import { userTags } from './routes/user-tags.js'
 import { ucanToken } from './routes/ucan-token.js'
 import { did } from './routes/did.js'
 
@@ -129,7 +129,7 @@ r.add(
 
 // User
 r.add('post', '/user/did', withAuth(withMode(userDIDRegister, RW)), [postCors])
-r.add('get', '/user/permissions', withAuth(withMode(userPermissions, RO)), [
+r.add('get', '/user/tags', withAuth(withMode(userTags, RO)), [
   postCors,
 ])
 

@@ -169,7 +169,7 @@ export async function uploadCarWithStat(
 export async function nftUpdateUpload(event, ctx) {
   const { params, db } = ctx
   try {
-    const { user } = await validate(event, ctx)
+    const { user } = checkAuth(ctx)
     const { cid } = params
 
     // id is required for updating

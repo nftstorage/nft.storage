@@ -68,6 +68,20 @@ export function parseCid(cid) {
 }
 
 /**
+ * Return the current value of the tag requested.
+ *
+ * @param {import('../utils/db-client-types.js').UserOutput} user
+ * @param {string} tagName
+ * @param {string} defaultValue
+ * @returns  {string}
+ */
+export function getTagValue(user, tagName, defaultValue) {
+  return user.tags?.find(
+    (tag) => tag.tag === tagName && !tag.deleted_at
+  )?.value || defaultValue
+}
+
+/**
  * Return true if a user has a tag with a given name and value.
  *
  * @param {import('../utils/db-client-types.js').UserOutput} user

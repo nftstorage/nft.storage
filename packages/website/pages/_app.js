@@ -7,6 +7,7 @@ import Layout from '../components/layout.js'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import Router, { useRouter } from 'next/router'
 import countly from '../lib/countly'
+import { getUserTags } from '../lib/api'
 import { useCallback, useEffect, useState } from 'react'
 import { isLoggedIn } from 'lib/magic'
 import * as Sentry from '@sentry/nextjs'
@@ -33,8 +34,13 @@ export default function App({ Component, pageProps }) {
       // @ts-ignore
       Sentry.setUser(user)
     }
+    const tags = await getUserTags()
     // @ts-ignore
-    setUser(data)
+    setUser({
+      ...data,
+      // @ts-ignore
+      tags
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -78,7 +84,7 @@ export default function App({ Component, pageProps }) {
         dangerouslySetInnerHTML={{
           __html: `
 (function() {
-  var cly = document.createElement('script'); cly.type = 'text/javascript'; 
+  var cly = document.createElement('script'); cly.type = 'text/javascript';
   cly.async = true;
   // Enter url of script here (see below for other option)
   cly.src = 'https://cdn.jsdelivr.net/npm/countly-sdk-web@latest/lib/countly.min.js';
