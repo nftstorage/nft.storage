@@ -566,49 +566,49 @@ export default function Files({ user }) {
                         )}
                       </tbody>
                     </table>
-                    <div className="flex flex-wrap justify-center text-center my-4">
-                      <Button
-                        className="mx-2 mb-2"
-                        disabled={befores.length === 1}
-                        onClick={handleFirstClick}
-                        id="files-first"
-                        tracking={{
-                          event: countly.events.FILES_NAVIGATION_CLICK,
-                          ui: countly.ui.FILES,
-                          action: 'First',
-                        }}
-                      >
-                        ⇤ First
-                      </Button>
-                      <Button
-                        className="mx-2 mb-2"
-                        disabled={befores.length === 1}
-                        onClick={handlePrevClick}
-                        id="files-previous"
-                        tracking={{
-                          event: countly.events.FILES_NAVIGATION_CLICK,
-                          ui: countly.ui.FILES,
-                          action: 'Previous',
-                        }}
-                      >
-                        ← Previous
-                      </Button>
-                      <Button
-                        className="mx-2 mb-2"
-                        disabled={nfts.length < limit}
-                        onClick={handleNextClick}
-                        id="files-next"
-                        tracking={{
-                          event: countly.events.FILES_NAVIGATION_CLICK,
-                          ui: countly.ui.FILES,
-                          action: 'Next',
-                        }}
-                      >
-                        Next →
-                      </Button>
-                    </div>
                   </>
                 </When>
+              </div>
+              <div className="flex flex-wrap justify-center text-center my-4">
+                <Button
+                  className="mx-2 mb-2"
+                  disabled={befores.length === 1}
+                  onClick={handleFirstClick}
+                  id="files-first"
+                  tracking={{
+                    event: countly.events.FILES_NAVIGATION_CLICK,
+                    ui: countly.ui.FILES,
+                    action: 'First',
+                  }}
+                >
+                  ⇤ First
+                </Button>
+                <Button
+                  className="mx-2 mb-2"
+                  disabled={befores.length === 1}
+                  onClick={handlePrevClick}
+                  id="files-previous"
+                  tracking={{
+                    event: countly.events.FILES_NAVIGATION_CLICK,
+                    ui: countly.ui.FILES,
+                    action: 'Previous',
+                  }}
+                >
+                  ← Previous
+                </Button>
+                <Button
+                  className="mx-2 mb-2"
+                  disabled={nfts.length < limit}
+                  onClick={handleNextClick}
+                  id="files-next"
+                  tracking={{
+                    event: countly.events.FILES_NAVIGATION_CLICK,
+                    ui: countly.ui.FILES,
+                    action: 'Next',
+                  }}
+                >
+                  Next →
+                </Button>
               </div>
             </>
           </When>
