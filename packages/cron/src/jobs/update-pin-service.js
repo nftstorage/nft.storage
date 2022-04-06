@@ -8,16 +8,17 @@ const CONCURRENCY = 5
 /**
  * @typedef {import('pg').Client} Client
  * @typedef {{
- *   pg: Client
+ *   roPg: Client
+ *   rwPg: Client
  *   cluster3: import('@nftstorage/ipfs-cluster').Cluster
  * }} Config
- * @typedef {{ id: number, content_cid: string, source_cid: string, service: 'IpfsCluster'|'IpfsCluster2' }} PinRow
+ * @typedef {{ id: number, content_cid: string, source_cid: string, service: 'IpfsCluster'|'IpfsCluster2', status: string }} PinRow
  */
 
 const COUNT_PINS =
   "SELECT COUNT(*) FROM pin WHERE service IN ('IpfsCluster', 'IpfsCluster2')"
 const FETCH_PINS = `
-    SELECT p.id, p.content_cid, u.source_cid, p.service
+    SELECT p.id, p.content_cid, u.source_cid, p.service, p.status
       FROM pin p
 INNER JOIN upload u
         ON p.content_cid = u.content_cid
@@ -27,18 +28,14 @@ INNER JOIN upload u
 `
 
 /**
- * @param {Array<{ id: number, service: string, updated_at: string }>} pins
+ * @param {number[]} ids
  */
-function getUpdatePinStatusesSql(pins) {
+function getUpdatePinServiceSql(ids) {
   return `
-UPDATE pin AS p
-   SET service = c.service,
-       updated_at = c.updated_at
-  FROM (VALUES ${pins.map(
-    (p) =>
-      `(${p.id}, '${p.service}'::service_type, '${p.updated_at}'::timestamp)`
-  )}) AS c(id, service, updated_at) 
- WHERE c.id = p.id`.trim()
+UPDATE pin
+   SET service = 'IpfsCluster3',
+       updated_at = NOW()
+ WHERE id IN (${ids})`
 }
 
 /**
@@ -51,7 +48,7 @@ export async function updatePinService(config) {
    * @returns {Promise<number>}
    */
   const countPins = async () => {
-    const { rows } = await config.pg.query(COUNT_PINS)
+    const { rows } = await config.roPg.query(COUNT_PINS)
     if (!rows.length) throw new Error('no rows returned counting v0 CIDs')
     return rows[0].count
   }
@@ -62,7 +59,7 @@ export async function updatePinService(config) {
    * @returns {Promise<PinRow[]>}
    */
   const fetchPins = async (offset, limit) => {
-    const { rows } = await config.pg.query(FETCH_PINS, [offset, limit])
+    const { rows } = await config.roPg.query(FETCH_PINS, [offset, limit])
     return rows
   }
 
@@ -76,7 +73,7 @@ export async function updatePinService(config) {
  * }} config
  */
 async function doUpdatePinService(config) {
-  const { countPins, fetchPins, cluster3 } = config
+  const { countPins, fetchPins, cluster3, rwPg } = config
 
   console.log('🧮 Counting pins with old cluster service')
   const count = await countPins()
@@ -85,6 +82,23 @@ async function doUpdatePinService(config) {
   const problemStream = fs.createWriteStream(
     `./problem-cids-${Date.now()}.ndjson`
   )
+
+  /**
+   * @param {PinRow} pin
+   * @param {string[]} clusterStatuses
+   */
+  const logProblem = (pin, clusterStatuses) =>
+    new Promise((resolve) =>
+      problemStream.write(
+        `${JSON.stringify({
+          sourceCid: pin.source_cid,
+          contentCid: pin.content_cid,
+          status: pin.status,
+          clusterStatuses,
+        })}\n`,
+        resolve
+      )
+    )
 
   await pipeline(
     async function* () {
@@ -125,25 +139,20 @@ async function doUpdatePinService(config) {
 
         // if there's some statuses then cluster is tracking the CID
         if (statuses.length) {
-          // much success! update in DB
-          updatedPins.push({
-            id: p.id,
-            service: 'IpfsCluster3',
-            updated_at: new Date().toISOString(),
-          })
+          // log a problem if we think it is pinned but it is not pinned on any cluster node
+          if (p.status === 'Pinned' && !statuses.some((s) => s === 'pinned')) {
+            await logProblem(p, statuses)
+          } else {
+            updatedPins.push(p.id)
+          }
         } else {
-          await new Promise((resolve) =>
-            problemStream.write(
-              `${JSON.stringify({ cid: p.source_cid, statuses })}\n`,
-              resolve
-            )
-          )
+          await logProblem(p, statuses)
         }
       }
 
       if (updatedPins.length) {
-        // const updateSql = getUpdatePinStatusesSql(updatedPins)
-        // await pg.query(updateSql)
+        const updateSql = getUpdatePinServiceSql(updatedPins)
+        await rwPg.query(updateSql)
       }
 
       console.log(`🗂 ${pins.length} processed, ${updatedPins.length} updated`)
