@@ -318,7 +318,7 @@ export default function Files({ user }) {
           >
             <a
               href={`https://nftstorage.link/ipfs/${nft.cid}`}
-              className="underline text-black truncate"
+              className="underline text-black"
               target="_blank"
               title={nft.cid}
               rel="noreferrer"

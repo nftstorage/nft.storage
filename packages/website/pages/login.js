@@ -43,7 +43,7 @@ export default function Login() {
   }
   return (
     <main className="flex-auto bg-nsorange w-full">
-      <div className="max-w-7xl mx-auto py-16 mtauto">
+      <div className="max-w-7xl mx-auto py-4 mt-16">
         <form
           onSubmit={onSubmit}
           className="flex items-center justify-center flex-col text-center"

@@ -121,7 +121,7 @@ export default function Subcribe({ user }) {
 
   return (
     <main className="flex-auto bg-nsltblue w-full">
-      <div className="max-w-7xl mx-auto py-4 mtauto">{content}</div>
+      <div className="max-w-7xl mx-auto py-4 mt-16">{content}</div>
     </main>
   )
 }
