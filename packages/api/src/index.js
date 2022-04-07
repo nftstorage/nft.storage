@@ -47,6 +47,10 @@ const r = new Router(getContext, {
   },
 })
 
+const checkHasPsaAccess = true
+const checkHasAccountRestriction = true
+const checkUcan = true
+
 // Monitoring
 r.add('get', '/metrics', withMode(metrics, RO))
 r.add('get', '/stats', withMode(getStats, RO), [postCors])
@@ -72,35 +76,23 @@ r.add(
 
 // Remote Pinning API
 
-/**
- * Apply Pinning Services API Middleware
- * @param {import('./bindings').Handler} handler
- * @param {import('./middleware/maintenance').Mode} mode
- * @returns {import('./bindings').Handler}
- */
-const psa = (handler, mode) =>
-  withAuth(withMode(handler, mode), {
-    checkHasPsaAccess: true,
-    checkHasAccountRestriction: true,
-  })
-
 r.add('get', '/did', withMode(did, RO), [postCors])
 
 // Login
 r.add(
   'post',
   '/ucan/token',
-  withMode(withAuth(ucanToken, { checkUcan: true }), RW),
+  withMode(withAuth(ucanToken, { checkUcan, checkHasAccountRestriction }), RW),
   [postCors]
 )
 r.add('post', '/login', withMode(login, RO), [postCors])
 
 // Pinning
-r.add('get', '/pins', psa(pinsList, RO), [postCors])
-r.add('get', '/pins/:requestid', psa(pinsGet, RO), [postCors])
-r.add('post', '/pins', psa(pinsAdd, RW), [postCors])
-r.add('post', '/pins/:requestid', psa(pinsReplace, RW), [postCors])
-r.add('delete', '/pins/:requestid', psa(pinsDelete, RW), [postCors])
+r.add('get', '/pins', withAuth(withMode(pinsList, RO), { checkHasPsaAccess }), [postCors])
+r.add('get', '/pins/:requestid', withAuth(withMode(pinsGet, RO), {checkHasPsaAccess }), [postCors])
+r.add('post', '/pins', withAuth(withMode(pinsAdd, RW), {checkHasPsaAccess, checkHasAccountRestriction}), [postCors])
+r.add('post', '/pins/:requestid', withAuth(withMode(pinsReplace, RW), {checkHasPsaAccess, checkHasAccountRestriction}), [postCors])
+r.add('delete', '/pins/:requestid', withAuth(withMode(pinsDelete, RW), {checkHasPsaAccess}), [postCors])
 
 // Upload
 r.add('get', '/check/:cid', withMode(nftCheck, RO), [postCors])
@@ -110,25 +102,25 @@ r.add(
   'post',
   '/upload',
   withAuth(withMode(nftUpload, RW), {
-    checkHasAccountRestriction: true,
-    checkUcan: true,
+    checkHasAccountRestriction,
+    checkUcan,
   }),
   [postCors]
 )
-r.add('patch', '/upload/:cid', withAuth(withMode(nftUpdateUpload, RW)), [postCors])
-r.add('post', '/store', withAuth(withMode(nftStore, RW)), [postCors])
+r.add('patch', '/upload/:cid', withAuth(withMode(nftUpdateUpload, RW), { checkHasAccountRestriction }), [postCors])
+r.add('post', '/store', withAuth(withMode(nftStore, RW), {checkHasAccountRestriction }), [postCors])
 r.add('delete', '/:cid', withAuth(withMode(nftDelete, RW)), [postCors])
 
 // Temporary Metaplex upload route, mapped to metaplex user account.
 r.add(
   'post',
   '/metaplex/upload',
-  withAuth(withMode(metaplexUpload, RW), { checkHasAccountRestriction: true }),
+  withAuth(withMode(metaplexUpload, RW), { checkHasAccountRestriction }),
   [postCors]
 )
 
 // User
-r.add('post', '/user/did', withAuth(withMode(userDIDRegister, RW)), [postCors])
+r.add('post', '/user/did', withAuth(withMode(userDIDRegister, RW), { checkHasAccountRestriction }), [postCors])
 r.add('get', '/user/tags', withAuth(withMode(userTags, RO)), [
   postCors,
 ])
@@ -138,7 +130,7 @@ r.add('get', '/internal/tokens', withAuth(withMode(tokensList, RO)), [postCors])
 r.add(
   'post',
   '/internal/tokens',
-  withAuth(withMode(tokensCreate, RW), { checkHasAccountRestriction: true }),
+  withAuth(withMode(tokensCreate, RW), { checkHasAccountRestriction }),
   [postCors]
 )
 r.add('delete', '/internal/tokens', withAuth(withMode(tokensDelete, RW)), [
@@ -149,11 +141,11 @@ r.add('delete', '/internal/tokens', withAuth(withMode(tokensDelete, RW)), [
 r.add('post', '/internal/blog/subscribe', blogSubscribe, [postCors])
 
 // Note: /api/* endpoints are legacy and will eventually be removed.
-r.add('get', '/api/pins', psa(pinsList, RO), [postCors])
-r.add('get', '/api/pins/:requestid', psa(pinsGet, RO), [postCors])
-r.add('post', '/api/pins', psa(pinsAdd, RW), [postCors])
-r.add('post', '/api/pins/:requestid', psa(pinsReplace, RW), [postCors])
-r.add('delete', '/api/pins/:requestid', psa(pinsDelete, RW), [postCors])
+r.add('get', '/api/pins', withAuth(withMode(pinsList, RO), {checkHasPsaAccess}), [postCors])
+r.add('get', '/api/pins/:requestid', withAuth(withMode(pinsGet, RO), { checkHasPsaAccess}), [postCors])
+r.add('post', '/api/pins', withAuth(withMode(pinsAdd, RW), { checkHasPsaAccess, checkHasAccountRestriction}), [postCors])
+r.add('post', '/api/pins/:requestid', withAuth(withMode(pinsReplace, RW), { checkHasPsaAccess, checkHasAccountRestriction}), [postCors])
+r.add('delete', '/api/pins/:requestid', withAuth(withMode(pinsDelete, RW), { checkHasPsaAccess }), [postCors])
 
 // Public API
 r.add('get', '/api', withAuth(withMode(nftList, RO)), [postCors])
@@ -162,7 +154,7 @@ r.add('get', '/api/:cid', withAuth(withMode(nftGet, RO)), [postCors])
 r.add(
   'post',
   '/api/upload',
-  withAuth(withMode(nftUpload, RW), { checkUcan: true }),
+  withAuth(withMode(nftUpload, RW), { checkUcan, checkHasAccountRestriction }),
   [postCors]
 )
 r.add('delete', '/api/:cid', withAuth(withMode(nftDelete, RW)), [postCors])
