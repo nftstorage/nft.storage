@@ -24,6 +24,7 @@ $$
 DECLARE
   inserted_upload_id BIGINT;
 BEGIN
+    SET LOCAL statement_timeout = '30s';
     insert into content (cid, dag_size, updated_at, inserted_at)
     values (data ->> 'content_cid',
             (data ->> 'dag_size')::BIGINT,
