@@ -168,7 +168,7 @@ async function doUpdatePinService(config) {
               } catch (/** @type {any} */ err) {
                 if (err.constraint === 'pin_content_cid_service_key') {
                   console.warn(
-                    `updating pin ${id} to IpfsCluster3 violates unique constraint "pin_content_cid_service_key" (already exists a pin with this CID/service) - deleting it`
+                    `⛔️ deleting pin ${id}: there already exists a pin with this CID and service IpfsCluster3`
                   )
                   await rwPg.query(DELETE_PIN, [id])
                   numDeleted++
