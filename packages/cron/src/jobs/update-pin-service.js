@@ -6,7 +6,7 @@ const MAX_CLUSTER_STATUS_CIDS = 120
 const CONCURRENCY = 5
 
 /**
- * @typedef {import('pg').Client} Client
+ * @typedef {import('pg').Pool} Client
  * @typedef {{
  *   roPg: Client
  *   rwPg: Client
@@ -26,6 +26,9 @@ INNER JOIN upload u
     OFFSET $1
      LIMIT $2
 `
+const UPDATE_PIN_SERVICE =
+  "UPDATE pin SET service = 'IpfsCluster3', updated_at = NOW() WHERE id = $1"
+const DELETE_PIN = 'DELETE FROM pin WHERE id = $1'
 
 /**
  * @param {number[]} ids
@@ -130,7 +133,7 @@ async function doUpdatePinService(config) {
         cluster3.statusAll({ cids: pins.map((p) => p.source_cid) })
       )
       const statusByCid = Object.fromEntries(statusRes.map((s) => [s.cid, s]))
-      const updatedPins = []
+      const updatablePinIds = []
       for (const p of pins) {
         const statuses = Object.values(statusByCid[p.source_cid].peerMap)
           .filter((s) => s.status !== 'remote')
@@ -143,19 +146,46 @@ async function doUpdatePinService(config) {
           if (p.status === 'Pinned' && !statuses.some((s) => s === 'pinned')) {
             await logProblem(p, statuses)
           } else {
-            updatedPins.push(p.id)
+            updatablePinIds.push(p.id)
           }
         } else {
           await logProblem(p, statuses)
         }
       }
 
-      if (updatedPins.length) {
-        const updateSql = getUpdatePinServiceSql(updatedPins)
-        await rwPg.query(updateSql)
+      let numUpdated = 0
+      let numDeleted = 0
+      if (updatablePinIds.length) {
+        try {
+          await rwPg.query(getUpdatePinServiceSql(updatablePinIds))
+          numUpdated = updatablePinIds.length
+        } catch (/** @type {any} */ err) {
+          if (err.constraint === 'pin_content_cid_service_key') {
+            for (const id of updatablePinIds) {
+              try {
+                await rwPg.query(UPDATE_PIN_SERVICE, [id])
+                numUpdated++
+              } catch (/** @type {any} */ err) {
+                if (err.constraint === 'pin_content_cid_service_key') {
+                  console.warn(
+                    `updating pin ${id} to IpfsCluster3 violates unique constraint "pin_content_cid_service_key" (already exists a pin with this CID/service) - deleting it`
+                  )
+                  await rwPg.query(DELETE_PIN, [id])
+                  numDeleted++
+                } else {
+                  throw err
+                }
+              }
+            }
+          } else {
+            throw err
+          }
+        }
       }
 
-      console.log(`🗂 ${pins.length} processed, ${updatedPins.length} updated`)
+      console.log(
+        `🗂 ${pins.length} processed, ${numUpdated} updated, ${numDeleted} deleted`
+      )
     }),
     consume
   )

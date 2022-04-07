@@ -111,7 +111,7 @@ async function doPinV0s(config) {
               }/${err.attemptNumber + err.retriesLeft})`
             ),
         })
-        console.log(`📌 pinned ${cid}`)
+        // console.log(`📌 pinned ${cid}`)
       }
     }),
     consume

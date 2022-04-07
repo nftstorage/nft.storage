@@ -5,18 +5,15 @@ import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 import fetch from 'node-fetch'
 import { updatePinService } from '../jobs/update-pin-service.js'
-import { getPg, getCluster3 } from '../lib/utils.js'
+import { getPgPool, getCluster3 } from '../lib/utils.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 /** @ts-ignore */
 global.fetch = fetch
 
 async function main() {
-  const roPg = getPg(process.env, 'ro')
-  await roPg.connect()
-
-  const rwPg = getPg(process.env, 'rw')
-  await rwPg.connect()
+  const rwPg = getPgPool(process.env, 'rw')
+  const roPg = getPgPool(process.env, 'ro')
 
   try {
     const cluster3 = getCluster3(process.env)
