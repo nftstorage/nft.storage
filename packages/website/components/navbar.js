@@ -31,6 +31,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
 
   const logout = useCallback(async () => {
     await getMagic().user.logout()
+    delete sessionStorage['hasSeenUserBlockedModal']
     handleClearUser()
     Router.push({ pathname: '/', query: version ? { version } : null })
     // eslint-disable-next-line react-hooks/exhaustive-deps

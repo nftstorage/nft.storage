@@ -17,7 +17,6 @@ import { useState } from 'react'
 import CopyButton from '../components/copyButton'
 import { Popover, ArrowContainer } from 'react-tiny-popover'
 import clsx from 'clsx'
-import BlockedUploadsModal from 'components/blockedUploadsModal.js'
 
 /**
  * Static Props
@@ -45,8 +44,6 @@ export default function Files({ user }) {
   const [deleting, setDeleting] = useState('')
   const [limit] = useState(25)
   const [befores, setBefores] = useState([''])
-  const [isBlockedUploadModalOpen, setIsBlockedUploadModalOpen] =
-    useState(false)
   const queryClient = useQueryClient()
   const queryParams = { before: befores[0], limit }
   /** @type {[string, { before: string, limit: number }]} */
@@ -415,6 +412,23 @@ export default function Files({ user }) {
     )
   }
 
+  const UploadFileButton = () => (
+    <Button
+      disabled={user.tags.HasAccountRestriction}
+      href={{
+        pathname: '/new-file',
+      }}
+      className="flex-none"
+      id="upload"
+      tracking={{
+        ui: countly.ui.FILES,
+        action: 'Upload File',
+      }}
+    >
+      + Upload
+    </Button>
+  )
+
   return (
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
@@ -429,23 +443,23 @@ export default function Files({ user }) {
                 <div className="flex-auto chicagoflf mv3">
                   <h1>Files</h1>
                 </div>
-                <Button
-                  href={{
-                    pathname: '/new-file',
-                  }}
-                  className="flex-none"
-                  id="upload"
-                  tracking={{
-                    ui: countly.ui.FILES,
-                    action: 'Upload File',
-                  }}
-                >
-                  + Upload
-                </Button>
-                {isBlockedUploadModalOpen && (
-                  <BlockedUploadsModal
-                    onClose={() => setIsBlockedUploadModalOpen(false)}
-                  />
+                {user.tags.HasAccountRestriction ? (
+                  <Tooltip
+                    id="blocked-upload-file-booltip"
+                    placement="left"
+                    overlay={
+                      <span style={{ width: 160 }}>
+                        You are unable to upload files when your account is
+                        blocked. Please contact support@nft.storage
+                      </span>
+                    }
+                  >
+                    <span style={{ paddingLeft: 10 }}>
+                      <UploadFileButton />
+                    </span>
+                  </Tooltip>
+                ) : (
+                  <UploadFileButton />
                 )}
               </div>
               <div className="table-responsive">

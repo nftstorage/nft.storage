@@ -85,6 +85,20 @@ export default function ManageKeys({ user }) {
     keys.push([key.name, key.secret, key.id])
   }
 
+  const NewKeyButton = () => (
+    <Button
+      href={{
+        pathname: '/new-key',
+      }}
+      className="flex-none mb2"
+      disabled={user.tags.HasAccountRestriction}
+      id="new-key"
+      tracking={{ ui: countly.ui.TOKENS, action: 'New API Token' }}
+    >
+      + New Key
+    </Button>
+  )
+
   return (
     <main className="bg-nsgreen flex-grow-1">
       <div className="mw9 center pv3 ph3 ph5-ns">
@@ -101,12 +115,13 @@ export default function ManageKeys({ user }) {
                     placement="bottom"
                     overlay={
                       <span>
-                        The Pinning Service API is for users who want to take data
-                        that is not yet stored with NFT.Storage but already
-                        available on the IPFS network and store additional copies
-                        via NFT.Storage. You do not need to request Pinning
-                        Service API access if you are just looking to upload your
-                        data to NFT.Storage. Check out the docs for more details.
+                        The Pinning Service API is for users who want to take
+                        data that is not yet stored with NFT.Storage but already
+                        available on the IPFS network and store additional
+                        copies via NFT.Storage. You do not need to request
+                        Pinning Service API access if you are just looking to
+                        upload your data to NFT.Storage. Check out the docs for
+                        more details.
                       </span>
                     }
                     overlayClassName="ns-tooltip"
@@ -123,16 +138,24 @@ export default function ManageKeys({ user }) {
                   </Tooltip>
                 )}
 
-                <Button
-                  href={{
-                    pathname: '/new-key',
-                  }}
-                  className="flex-none mb2"
-                  id="new-key"
-                  tracking={{ ui: countly.ui.TOKENS, action: 'New API Token' }}
-                >
-                  + New Key
-                </Button>
+                {user.tags.HasAccountRestriction ? (
+                  <Tooltip
+                    id="blocked-new-key-booltip"
+                    placement="left"
+                    overlay={
+                      <span style={{ width: 160 }}>
+                        You are unable to create new API Keys when your account
+                        is blocked. Please contact support@nft.storage
+                      </span>
+                    }
+                  >
+                    <span style={{ paddingLeft: 10 }}>
+                      <NewKeyButton />
+                    </span>
+                  </Tooltip>
+                ) : (
+                  <NewKeyButton />
+                )}
               </div>
             </div>
             <When condition={keys.length > 0}>

@@ -17,7 +17,7 @@ const BlockedUploadsModal = ({ onClose }) => {
       <p className="chicagoflf f6 mv4">
         If you feel this was a mistake please contact support@nft.storage
       </p>
-      <Button>Confirm</Button>
+      <Button onClick={onClose}>Confirm</Button>
     </Modal>
   )
 }

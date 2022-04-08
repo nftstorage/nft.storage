@@ -76,9 +76,10 @@ export function parseCid(cid) {
  * @returns  {string}
  */
 export function getTagValue(user, tagName, defaultValue) {
-  return user.tags?.find(
-    (tag) => tag.tag === tagName && !tag.deleted_at
-  )?.value || defaultValue
+  return (
+    user.tags?.find((tag) => tag.tag === tagName && !tag.deleted_at)?.value ||
+    defaultValue
+  )
 }
 
 /**

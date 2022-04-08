@@ -12,6 +12,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { isLoggedIn } from 'lib/magic'
 import * as Sentry from '@sentry/nextjs'
 import { UserContext } from 'lib/user'
+import BlockedUploadsModal from 'components/blockedUploadsModal.js'
 import Loading from 'components/loading'
 
 const queryClient = new QueryClient({
@@ -26,6 +27,8 @@ const queryClient = new QueryClient({
 export default function App({ Component, pageProps }) {
   const router = useRouter()
   const [user, setUser] = useState(null)
+  const [isUserBlockedModalShowing, setIsUserBlockedModalShowing] =
+    useState(false)
 
   const handleIsLoggedIn = useCallback(async () => {
     const data = await isLoggedIn()
@@ -35,11 +38,18 @@ export default function App({ Component, pageProps }) {
       Sentry.setUser(user)
     }
     const tags = await getUserTags()
+    if (
+      tags.HasAccountRestriction &&
+      !sessionStorage['hasSeenUserBlockedModal']
+    ) {
+      sessionStorage['hasSeenUserBlockedModal'] = true
+      setIsUserBlockedModalShowing(true)
+    }
     // @ts-ignore
     setUser({
       ...data,
       // @ts-ignore
-      tags
+      tags,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -102,6 +112,11 @@ export default function App({ Component, pageProps }) {
           <Layout {...pageProps}>
             {(props) => <Component {...pageProps} {...props} />}
           </Layout>
+          {isUserBlockedModalShowing && (
+            <BlockedUploadsModal
+              onClose={() => setIsUserBlockedModalShowing(false)}
+            />
+          )}
         </UserContext.Provider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
