@@ -11,6 +11,6 @@ BEGIN
   EXECUTE 'ALTER DATABASE ' || current_database() || ' SET jit = on';
   EXECUTE 'ALTER DATABASE ' || current_database() || ' SET idle_in_transaction_session_timeout = ''1min''';
   EXECUTE 'ALTER DATABASE ' || current_database() || ' SET lock_timeout = ''1min''';
-  EXECUTE 'ALTER DATABASE ' || current_database() || ' SET statement_timeout = ''30s''';
+  EXECUTE 'ALTER DATABASE ' || current_database() || ' SET statement_timeout = ''3min''';
 END
 $$;

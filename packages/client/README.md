@@ -4,7 +4,6 @@
 [![package][version.icon]][package.url]
 [![styled with prettier][prettier.icon]][prettier.url]
 [![size][size.icon]][size.url]
-[![deps][deps.icon]][deps.url]
 [![codecov][cov.icon]][cov.url]
 
 A client library for the https://nft.storage/ service. It provides a convenient interface for working with the [Raw HTTP API][] from a web browser or [Node.js][] and comes bundled with TS for out-of-the box type inference and better IntelliSense.
@@ -60,7 +59,7 @@ node index.mjs # or index.js
 
 For more examples please see the [API documentation](https://nftstorage.github.io/nft.storage/client/) or the [examples directory in the project repository][examples directory], which contains sample projects for both [browsers][examples.browser] and [Node.js][examples.node].
 
-[raw http api]: https://nft.storage/#api-docs
+[raw http api]: https://nft.storage/api-docs/
 [node.js]: https://nodejs.org/
 [api documentation]: https://nftstorage.github.io/nft.storage/client/
 [examples directory]: https://github.com/nftstorage/nft.storage/tree/main/examples/client
@@ -73,7 +72,5 @@ For more examples please see the [API documentation](https://nftstorage.github.i
 [prettier.url]: https://github.com/prettier/prettier
 [size.icon]: https://badgen.net/bundlephobia/minzip/nft.storage
 [size.url]: https://bundlephobia.com/result?p=nft.storage
-[deps.icon]: https://status.david-dm.org/gh/nftstorage/nft.storage.svg?path=packages/client
-[deps.url]: https://david-dm.org/nftstorage/nft.storage?path=packages/client
 [cov.icon]: https://codecov.io/gh/nftstorage/nft.storage/branch/main/graph/badge.svg?token=dU5oWrlqHF
 [cov.url]: https://codecov.io/gh/nftstorage/nft.storage
