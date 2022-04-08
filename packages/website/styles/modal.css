@@ -1,33 +1,26 @@
-.modal {
+.modal-overlay {
   position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   top: 0;
   z-index: 50;
   width: 100%;
+  height: 100vh;
+  z-index: 999;
+}
+
+.close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }
 
 .modal-content {
   border: 2px solid #000;
+  background-color: white;
   position: relative;
-}
-
-.modal-content:before {
-  position: absolute;
-  content: '';
-  width: 100%;
-  height: 100%;
-  top: 0.75rem;
-  left: 0.75rem;
-  background-color: var(--nsforest);
-  z-index: -1;
-}
-
-.modal button.modal-close {
-  font-family: var(--nstitle) !important;
-  background: none !important;
-  appearance: none !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  padding: 0.5rem;
-  line-height: 1;
-  font-size: 1.2rem !important;
+  width: 541px;
+  min-height: 250px;
+  padding: 30px 40px;
 }

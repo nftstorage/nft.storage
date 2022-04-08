@@ -17,6 +17,7 @@ import { useState } from 'react'
 import CopyButton from '../components/copyButton'
 import { Popover, ArrowContainer } from 'react-tiny-popover'
 import clsx from 'clsx'
+import BlockedUploadsModal from 'components/blockedUploadsModal.js'
 
 /**
  * Static Props
@@ -44,6 +45,8 @@ export default function Files({ user }) {
   const [deleting, setDeleting] = useState('')
   const [limit] = useState(25)
   const [befores, setBefores] = useState([''])
+  const [isBlockedUploadModalOpen, setIsBlockedUploadModalOpen] =
+    useState(false)
   const queryClient = useQueryClient()
   const queryParams = { before: befores[0], limit }
   /** @type {[string, { before: string, limit: number }]} */
@@ -439,6 +442,11 @@ export default function Files({ user }) {
                 >
                   + Upload
                 </Button>
+                {isBlockedUploadModalOpen && (
+                  <BlockedUploadsModal
+                    onClose={() => setIsBlockedUploadModalOpen(false)}
+                  />
+                )}
               </div>
               <div className="table-responsive">
                 <When condition={hasZeroNfts}>
