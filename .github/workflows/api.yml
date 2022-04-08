@@ -30,7 +30,7 @@ jobs:
     name: Deploy Dev
     if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
-    needs: test
+    #needs: test
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
