@@ -28,7 +28,7 @@ jobs:
           DATABASE_CONNECTION: postgresql://postgres:postgres@localhost:5432/postgres
   deploy-dev:
     name: Deploy Dev
-    if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main' && secrets.CF_API_TOKEN != null
+    if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: test
     steps:
