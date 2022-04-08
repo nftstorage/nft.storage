@@ -12,14 +12,23 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 global.fetch = fetch
 
 async function main() {
-  const rwPg = getPgPool(process.env, 'rw')
-  const roPg = getPgPool(process.env, 'ro')
+  while (true) {
+    try {
+      const rwPg = getPgPool(process.env, 'rw')
+      const roPg = getPgPool(process.env, 'ro')
 
-  try {
-    const cluster3 = getCluster3(process.env)
-    await updatePinService({ roPg, rwPg, cluster3 })
-  } finally {
-    await Promise.all([roPg.end(), rwPg.end()])
+      try {
+        const cluster3 = getCluster3(process.env)
+        await updatePinService({ roPg, rwPg, cluster3 })
+      } finally {
+        await Promise.all([roPg.end(), rwPg.end()])
+      }
+    } catch (err) {
+      console.error(err)
+      await new Promise((resolve) => setTimeout(resolve, 10000))
+      continue
+    }
+    break
   }
 }
 

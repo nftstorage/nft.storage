@@ -12,14 +12,23 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 global.fetch = fetch
 
 async function main() {
-  const pg = getPg(process.env, 'ro')
-  await pg.connect()
+  while (true) {
+    try {
+      const pg = getPg(process.env, 'ro')
+      await pg.connect()
 
-  try {
-    const cluster3 = getCluster3(process.env)
-    await pinV0Cids({ pg, cluster3 })
-  } finally {
-    await pg.end()
+      try {
+        const cluster3 = getCluster3(process.env)
+        await pinV0Cids({ pg, cluster3 })
+      } finally {
+        await pg.end()
+      }
+    } catch (err) {
+      console.error(err)
+      await new Promise((resolve) => setTimeout(resolve, 10000))
+      continue
+    }
+    break
   }
 }
 
