@@ -4,7 +4,6 @@ services:
     image: postgrest/postgrest:v9.0.0
     depends_on:
       - db
-    restart: always
     ports:
       - 3000:3000/tcp
     environment:
@@ -12,6 +11,20 @@ services:
       PGRST_DB_SCHEMA: public
       PGRST_DB_ANON_ROLE: postgres
       PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+  db_init:
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: 'http://localhost:3000'
+      TEST_DATABASE_URL: 'http://localhost:8888'
+      DATABASE_TOKEN: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYwMzk2ODgzNCwiZXhwIjoyNTUwNjUzNjM0LCJyb2xlIjoic2VydmljZV9yb2xlIn0.necIJaiP7X2T2QjGeV-FhpkizcNTX8HjDDBAxpgQTEI'
+      DATABASE_CONNECTION: 'postgresql://postgres:postgres@localhost:5432/postgres'
+
+    build:
+      dockerfile: docker/db_init.Dockerfile
+      context: ../
+    network_mode: host
+
   db:
     build:
       context: ./postgres
@@ -31,13 +44,9 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_PORT: 5432
   ipfs0:
-    container_name: ipfs0
     image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
-    volumes:
-      - ./compose/ipfs0:/data/ipfs
 
   cluster0:
-    container_name: cluster0
     image: ipfs/ipfs-cluster:latest
     depends_on:
       - ipfs0
@@ -53,5 +62,3 @@ services:
       CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
     ports:
       - '127.0.0.1:9094:9094'
-    volumes:
-      - ./compose/cluster0:/data/ipfs-cluster
