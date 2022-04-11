@@ -11,15 +11,12 @@ RUN mkdir -p /app
 # Set working directory to App dir
 WORKDIR /app
 
-# Copy project files
+# Install dependencies in separate layer for speed.
 COPY ./package.json .
 RUN yarn install
 
 COPY . .
-# Install dependencies
 
-RUN yarn install
-
-# ENTRYPOINT "./scripts/cli.js db-sql --init"
-
-ENTRYPOINT bash
+ENTRYPOINT ["./scripts/cli.js", "db-sql", "--init"]
+# RUN "./scripts/cli.js db-sql --init"
+#  ./scripts/cli.js db-sql --cargo --testing --reset"
