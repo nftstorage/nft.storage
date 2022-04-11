@@ -42,4 +42,4 @@ site/public
 
 packages/website/public/robots.txt
 packages/website/public/sitemap.xml
-packages/api/docker/compose
+packages/api/docker/composetmp/
