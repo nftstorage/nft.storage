@@ -142,7 +142,7 @@ export default function Stats({ logos }) {
             <StatCard title="Data Stored">
               <div>
                 <Img
-                  src={'/images/stats-upload-count.svg'}
+                  src={'/images/stats-data-stored.svg'}
                   alt="Data Stored"
                   width="500px"
                   height="200px"
