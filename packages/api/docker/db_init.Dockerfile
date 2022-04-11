@@ -20,4 +20,6 @@ COPY . .
 
 RUN yarn install
 
-ENTRYPOINT "./scripts/cli.js --db-sql init"
+# ENTRYPOINT "./scripts/cli.js db --init"
+
+ENTRYPOINT bash
