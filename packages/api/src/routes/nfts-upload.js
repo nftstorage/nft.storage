@@ -4,13 +4,11 @@ import * as raw from 'multiformats/codecs/raw'
 import * as cbor from '@ipld/dag-cbor'
 import * as pb from '@ipld/dag-pb'
 import { Block } from 'multiformats/block'
-import * as constants from '../constants.js'
 import { HTTPError } from '../errors.js'
 import * as cluster from '../cluster.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { validate } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
-import { parseCid } from '../utils/utils.js'
 
 const MAX_BLOCK_SIZE = 1 << 20 // Maximum permitted block size in bytes (1MiB).
 const decoders = [pb, raw, cbor]
@@ -137,7 +135,7 @@ export async function uploadCarWithStat(
 ) {
   const [added, backupUrl] = await Promise.all([
     cluster.addCar(car, {
-      local: car.size > constants.cluster.localAddThreshold,
+      local: false,
     }),
     ctx.backup
       ? ctx.backup.backupCar(user.id, stat.rootCid, car, stat.structure)
