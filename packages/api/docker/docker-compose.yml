@@ -15,7 +15,7 @@ services:
     build:
       dockerfile: 'docker/db_init.Dockerfile'
       context: '../'
-    entrypoint: './scripts/cli.js", "db-sql", "--cargo", "--testing'
+    entrypoint: './scripts/cli.js db-sql --cargo --testing'
     depends_on:
       - db
     environment:
@@ -25,12 +25,12 @@ services:
     volumes:
       - '../scripts:/app/scripts'
   api:
-    restart: always
+    restart: on-failure
     environment:
-      DATABASE_URL: 'http://rest:3000'
-      TEST_DATABASE_URL: 'http://db:8888'
-      DATABASE_TOKEN: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYwMzk2ODgzNCwiZXhwIjoyNTUwNjUzNjM0LCJyb2xlIjoic2VydmljZV9yb2xlIn0.necIJaiP7X2T2QjGeV-FhpkizcNTX8HjDDBAxpgQTEI'
-      DATABASE_CONNECTION: 'postgresql://postgres:postgres@db:5432/postgres'
+      - DATABASE_URL
+      - TEST_DATABASE_URL
+      - DATABASE_TOKEN
+      - DATABASE_CONNECTION
     depends_on:
       - rest
     build:

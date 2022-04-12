@@ -19,4 +19,4 @@ RUN yarn install
 
 COPY . .
 
-ENTRYPOINT ["./scripts/cli.js", "db-sql", "--cargo", "--testing"]
+ENTRYPOINT ["./scripts/run-miniflare.sh"]
