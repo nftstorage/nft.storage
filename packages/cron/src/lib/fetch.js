@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'
+import fetch from '@web-std/fetch'
 import retry from 'p-retry'
 import debug from 'debug'
 
@@ -11,7 +11,7 @@ const RETRY_ATTEMPTS = 5
 /**
  * @param {import('limiter').RateLimiter} limiter
  * @param {string} url
- * @param {import('node-fetch').RequestInit} [init]
+ * @param {RequestInit} [init]
  * @returns {Promise<any>}
  */
 export async function fetchJSON(limiter, url, init) {

@@ -1,5 +1,5 @@
 import { URL } from 'url'
-import fetch from 'node-fetch'
+import fetch from '@web-std/fetch'
 
 export class IPFS {
   /**
