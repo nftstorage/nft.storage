@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.20.0](https://github.com/nftstorage/nft.storage/compare/api-v2.19.0...api-v2.20.0) (2022-04-12)
+
+
+### Features
+
+* api support for ipfs-cluster@1.0 ([#1789](https://github.com/nftstorage/nft.storage/issues/1789)) ([a9d6f84](https://github.com/nftstorage/nft.storage/commit/a9d6f84e6ec0a099d789601a642c22b6513911c3))
+* content_cid not id is used from nft data upload not uploads ([#1755](https://github.com/nftstorage/nft.storage/issues/1755)) ([21e8eb0](https://github.com/nftstorage/nft.storage/commit/21e8eb08962a36aa449d9d65e37631cfedcc672b))
+* db optimizations, backups optimizations ([#1664](https://github.com/nftstorage/nft.storage/issues/1664)) ([ef0cf02](https://github.com/nftstorage/nft.storage/commit/ef0cf02237aeacda178541f47863f8eee53bff76))
+* labeling uploads on files ([#1694](https://github.com/nftstorage/nft.storage/issues/1694)) ([70d81ac](https://github.com/nftstorage/nft.storage/commit/70d81acff0cba3e4bb06b5491c7c60fb97d05b65))
+
+
+### Bug Fixes
+
+* api add to cluster always with local false ([#1806](https://github.com/nftstorage/nft.storage/issues/1806)) ([1dd8d81](https://github.com/nftstorage/nft.storage/commit/1dd8d81b15acf5525d898a2fcce71e4defa28cc9))
+* lift pg statement_timeout ([#1773](https://github.com/nftstorage/nft.storage/issues/1773)) ([f7dff1d](https://github.com/nftstorage/nft.storage/commit/f7dff1d6dc985cdaab98ae84ed51b24c5f2aacfe))
+
 ## [2.19.0](https://github.com/nftstorage/nft.storage/compare/api-v2.18.0...api-v2.19.0) (2022-03-21)
 
 
