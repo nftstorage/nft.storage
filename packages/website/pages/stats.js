@@ -143,7 +143,13 @@ export default function Stats({ logos }) {
 
             <StatCard title="Data Stored">
               <div>
-                <img src={'/images/stats-upload-count.svg'} alt="Data Stored" />
+                <Img
+                  src={'/images/stats-data-stored.svg'}
+                  alt="Data Stored"
+                  width="500px"
+                  height="200px"
+                  layout="responsive"
+                />
                 <div className="py-4 px-4">
                   <p className="chicagoflf">
                     Total data stored on Filecoin from NFT.Storage
