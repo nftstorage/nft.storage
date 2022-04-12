@@ -1,6 +1,6 @@
 # Pinning Services API
 
-You can ask NFT.Storage to archive data that is already on the [IPFS](https://ipfs.io) distributed storage network with this API. This data will remain perpetually available over IPFS (backed by Filecoin decentralized storage).
+You can ask NFT.Storage to archive data that is already on the [IPFS](https://ipfs.io) distributed storage network with this API. This data will remain perpetually available over IPFS (backed by [Filecoin decentralized storage](https://nft.storage/docs/concepts/decentralized-storage/#filecoin-for-verifiable-content-persistence)).
 
 NFT.Storage provides a pinning service that is modeled closely on the [IPFS Pinning Service API specification](https://ipfs.github.io/pinning-services-api-spec/).
 
