@@ -12,6 +12,10 @@ services:
       PGRST_DB_ANON_ROLE: postgres
       PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
   db_init:
+    build:
+      dockerfile: 'docker/db_init.Dockerfile'
+      context: '../'
+    entrypoint: './scripts/cli.js", "db-sql", "--cargo", "--testing'
     depends_on:
       - db
     environment:
@@ -20,13 +24,8 @@ services:
       DATABASE_CONNECTION: 'postgresql://postgres:postgres@db:5432/postgres'
     volumes:
       - '../scripts:/app/scripts'
-
-    build:
-      dockerfile: docker/db_init.Dockerfile
-      context: ../
   api:
     restart: always
-    entrypoint: '/bin/bash'
     environment:
       DATABASE_URL: 'http://rest:3000'
       TEST_DATABASE_URL: 'http://db:8888'
