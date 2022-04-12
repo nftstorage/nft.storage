@@ -175,12 +175,14 @@ export default function NewFile() {
             <div>
               <p className="lh-copy f7">
                 You can also upload files using the{' '}
-                <Link href="/#js-client-library">
+                <Link href="/docs/client/js/">
                   <a className="black">JS Client Library</a>
                 </Link>{' '}
                 or{' '}
-                <Link href="/#raw-http-request">
-                  <a className="black">Raw HTTP Requests</a>
+                <Link href="https://nft.storage/api-docs/">
+                  <a className="black" target="_blank">
+                    Raw HTTP Requests
+                  </a>
                 </Link>
               </p>
             </div>
