@@ -26,7 +26,7 @@ services:
       context: ../
   api:
     restart: always
-    entrypoint: ''
+    entrypoint: '/bin/bash'
     environment:
       DATABASE_URL: 'http://rest:3000'
       TEST_DATABASE_URL: 'http://db:8888'

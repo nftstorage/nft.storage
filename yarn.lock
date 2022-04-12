@@ -2779,11 +2779,6 @@
   dependencies:
     "@types/node" "*"
 
-"@types/git-rev-sync@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@types/git-rev-sync/-/git-rev-sync-2.0.0.tgz#9de6e18cb01e65f769de77175bbe93254664023e"
-  integrity sha512-qGYApbb0m8Ofy3pwYks+kYVIZQAN/cqNucJGbl5O5GpLw9JSzp74rkTWDhPv3brrJfJb5/ixtimLJpo4tfh2QA==
-
 "@types/glob@*":
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.2.0.tgz#bc1b5bf3aa92f25bd5dd39f35c57361bdce5b2eb"
@@ -10101,7 +10096,7 @@ min-indent@^1.0.0:
   resolved "https://registry.yarnpkg.com/min-indent/-/min-indent-1.0.1.tgz#a63f681673b30571fbe8bc25686ae746eefa9869"
   integrity sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==
 
-miniflare@^2.0.0-rc.3:
+miniflare@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/miniflare/-/miniflare-2.4.0.tgz#e09aa92a7146760943710c69ea94b99b7a15e0fb"
   integrity sha512-xOBL/dQsUL95rxIYO+KrrVPPpm2TAf6TKl4AvhcjSfUeVkzDWd/y9f7hXCt8x6srDoK0Z2LpYouatvSfSUzGOw==
@@ -13942,7 +13937,12 @@ typedoc@^0.22.14:
     minimatch "^5.0.1"
     shiki "^0.10.1"
 
-typescript@4.4.4, typescript@4.5.3:
+typescript@4.4.4:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.4.tgz#2cd01a1a1f160704d3101fd5a58ff0f9fcb8030c"
+  integrity sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==
+
+typescript@4.5.3:
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.3.tgz#afaa858e68c7103317d89eb90c5d8906268d353c"
   integrity sha512-eVYaEHALSt+s9LbvgEv4Ef+Tdq7hBiIZgii12xXJnukryt3pMgJf6aKhoCZ3FWQsu6sydEnkg11fYXLzhLBjeQ==
