@@ -3,7 +3,7 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
-import fetch from 'node-fetch'
+import fetch from '@web-std/fetch'
 import { pinV0Cids } from '../jobs/pin-v0-cids.js'
 import { getPg, getCluster3 } from '../lib/utils.js'
 

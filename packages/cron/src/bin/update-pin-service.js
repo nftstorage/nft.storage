@@ -3,7 +3,7 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
-import fetch from 'node-fetch'
+import fetch from '@web-std/fetch'
 import { updatePinService } from '../jobs/update-pin-service.js'
 import { getPgPool, getCluster3 } from '../lib/utils.js'
 
