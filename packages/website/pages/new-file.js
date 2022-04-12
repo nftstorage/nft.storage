@@ -179,10 +179,8 @@ export default function NewFile() {
                   <a className="black">JS Client Library</a>
                 </Link>{' '}
                 or{' '}
-                <Link href="https://nft.storage/api-docs/">
-                  <a className="black" target="_blank">
-                    Raw HTTP Requests
-                  </a>
+                <Link href="/api-docs/">
+                  <a className="black">Raw HTTP Requests</a>
                 </Link>
               </p>
             </div>
