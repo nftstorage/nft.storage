@@ -38,7 +38,7 @@ services:
       dockerfile: docker/db_init.Dockerfile
       context: ../
     ports:
-      - 8787:8787/tcp
+      - 8787:8787
   db:
     build:
       context: ./postgres
