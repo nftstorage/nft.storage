@@ -22,19 +22,18 @@
   "license": "(Apache-2.0 OR MIT)",
   "dependencies": {
     "@nftstorage/ipfs-cluster": "^5.0.1",
+    "@web-std/fetch": "^4.0.0",
     "debug": "^4.3.2",
     "dotenv": "^10.0.0",
     "form-data": "^4.0.0",
     "limiter": "2.0.1",
     "nft.storage": "^6.0.0",
-    "node-fetch": "^2.6.1",
     "p-retry": "^4.6.1",
     "p-settle": "^5.0.0",
     "pg": "^8.7.1",
     "streaming-iterables": "^6.0.0"
   },
   "devDependencies": {
-    "@types/node-fetch": "^2.5.10",
     "npm-run-all": "^4.1.5"
   }
 }
