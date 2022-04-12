@@ -55,7 +55,6 @@ const nextConfig = withBundleAnalyzer({
       '/docs/how-to/ucan': { page: '/docs/how-to/ucan' },
       '/docs/client': { page: '/docs/client/js' },
       '/docs/client/https': { page: '/docs/client/http' },
-      '/docs/client/generated': { page: '/docs/client/generated' },
       '/docs/client/js': { page: '/docs/client/js' },
       '/docs/client/api-docs': { page: '/docs/client/js' },
       '/docs/client/lib': { page: '/docs/client/js' },
