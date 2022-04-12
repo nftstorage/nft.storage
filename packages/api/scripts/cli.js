@@ -16,9 +16,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(__dirname)
 const prog = sade('api')
 
-dotenv.config({
-  path: path.join(__dirname, '..', '..', '..', '.env'),
-})
+// dotenv.config({
+//   path: path.join(__dirname, '..', '..', '..', '.env'),
+// })
 
 const pkg = JSON.parse(
   fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8')
@@ -58,5 +58,7 @@ prog
   .command('db-types')
   .describe('Database openapi types')
   .action(dbTypesCmd)
+  .command('build')
+  .action(() => {})
 
 prog.parse(process.argv)

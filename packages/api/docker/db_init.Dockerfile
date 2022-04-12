@@ -17,6 +17,6 @@ RUN yarn install
 
 COPY . .
 
-ENTRYPOINT ["./scripts/cli.js", "db-sql", "--init"]
+ENTRYPOINT ["./scripts/cli.js", "db-sql", "--cargo", "--testing"]
 # RUN "./scripts/cli.js db-sql --init"
 #  ./scripts/cli.js db-sql --cargo --testing --reset"

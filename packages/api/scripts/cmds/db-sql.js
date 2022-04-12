@@ -67,7 +67,9 @@ function getDbClient(connectionString) {
   return retry(
     async () => {
       const c = new Client({ connectionString })
+      console.log('before connect')
       await c.connect()
+      console.log('after connect')
       return c
     },
     { minTimeout: 100 }
