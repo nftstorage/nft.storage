@@ -12,7 +12,10 @@ export const Tag = ({ tag }) => {
   const isString = typeof tag === 'string'
   const inner = (
     <span
-      className={clsx('ph2 pv1 f6 ba ttc mr1 mb1', isString && 'select-none')}
+      className={clsx(
+        'py-1 px-2 text-sm border border-solid border-black capitalize mr-1 mb-1',
+        isString && 'select-none'
+      )}
     >
       {isString ? tag : tag.label}
     </span>
@@ -25,7 +28,7 @@ export const Tag = ({ tag }) => {
         onClick={tag.onClick}
         variant="tag"
         className={clsx(
-          'btn-secondary ttc items-center',
+          'btn-secondary capitalize items-center',
           tag.selected && 'active'
         )}
       >

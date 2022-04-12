@@ -17,25 +17,25 @@ import Img from '../cloudflareImage'
 
 export const Card = ({ post }) => (
   <Link href={`/blog/post/${post.slug}`}>
-    <a className="bg-white blog-card w-card hologram card right interactive pointer">
+    <a className="bg-white blog-card w-card hologram card right interactive cursor-pointer">
       <Img
         src={post.thumbnail}
         alt={`Banner for ${post.title}`}
-        className="object-cover object-center w-100 card-thumb"
+        className="object-cover object-center w-full card-thumb"
       />
-      <div className="pa5 flex flex-column flex-auto">
-        <div className="mb2">{post.tags && <Tags tags={post.tags} />}</div>
-        <div className="overflow-hidden mb2">
-          <h1 className="chicagoflf f4" title={post.title}>
+      <div className="p-5 flex flex-col flex-auto">
+        <div className="mb-2">{post.tags && <Tags tags={post.tags} />}</div>
+        <div className="overflow-hidden mb-2">
+          <h1 className="chicagoflf text-xl" title={post.title}>
             {post.title}
           </h1>
         </div>
-        <p className="line-clamp-2 mb2 f5" title={post.description}>
+        <p className="line-clamp-2 mb-2 text-base" title={post.description}>
           {post.description}
         </p>
         <div className="blog-card-meta">
-          <span className="darker-gray f6 mr2">{post.author}</span>
-          <span className="darker-gray f6">{post.date}</span>
+          <span className="darker-gray text-sm mr-2">{post.author}</span>
+          <span className="darker-gray text-sm">{post.date}</span>
         </div>
       </div>
     </a>
@@ -50,65 +50,69 @@ export const Card = ({ post }) => (
  * @returns {JSX.Element}
  */
 export const HighlightCard = ({ post }) => (
-  <div className="flex justify-center blog-highlight-card w-100">
-    <div className="relative flex w-100 mw9 blog-highlight-info-container">
-      <div className="flex justify-between highlight-info flex-column w-50">
-        <div className="highlight-card-container">
-          <div className="highlight-card-text">
-            <div className="mb3">{post.tags && <Tags tags={post.tags} />}</div>
-            <h1
-              className="chicagoflf f1 title"
-              title={`Read More about"${post.title}"`}
-            >
-              <Link
+  <div className="flex justify-center blog-highlight-card w-full">
+    <div className="flex relative w-full max-w-7xl px-6 sm:px-16">
+      <div className="flex blog-highlight-info-container">
+        <div className="flex justify-between highlight-info flex-col w-1/2">
+          <div className="highlight-card-container py-7">
+            <div className="highlight-card-text">
+              <div className="mb-4">
+                {post.tags && <Tags tags={post.tags} />}
+              </div>
+              <h1
+                className="chicagoflf text-5xl title"
+                title={`Read More about"${post.title}"`}
+              >
+                <Link
+                  href={{
+                    pathname: `/blog/post/${post.slug}`,
+                  }}
+                >
+                  <a>{post.title}</a>
+                </Link>
+              </h1>
+              <p
+                className="max-w-lg text-base sm:text-xl mb-2 description"
+                title={post.description}
+              >
+                {post.description}
+              </p>
+              <div className="flex flex-wrap">
+                <span className="darker-gray text-sm mr-2">{post.author}</span>
+                <span className="darker-gray text-sm">{post.date}</span>
+              </div>
+            </div>
+            <div className="flex highlight-card-buttons ml-2 mt-4">
+              <Button
                 href={{
                   pathname: `/blog/post/${post.slug}`,
                 }}
+                className="mw4 py-4 px-4 cta"
+                id="blog-highlight-read-more"
               >
-                <a>{post.title}</a>
-              </Link>
-            </h1>
-            <p
-              className="mw6 f5 f4-ns mb2 description"
-              title={post.description}
-            >
-              {post.description}
-            </p>
-            <div className="flex">
-              <span className="darker-gray f6 mr2">{post.author}</span>
-              <span className="darker-gray f6">{post.date}</span>
+                Read More
+              </Button>
+              <Button
+                href={{
+                  pathname: '/blog/subscribe',
+                }}
+                className="mw4 ml-8 py-4 cta"
+                id="blog-highlight-subscribe"
+                tracking={{
+                  ui: countly.ui.BLOG_CARD,
+                  action: 'Subcribe',
+                }}
+              >
+                Subscribe
+              </Button>
             </div>
           </div>
-          <div className="flex highlight-card-buttons ml2 mt3">
-            <Button
-              href={{
-                pathname: `/blog/post/${post.slug}`,
-              }}
-              className="mw4 pv3 ph3 cta"
-              id="blog-highlight-read-more"
-            >
-              Read More
-            </Button>
-            <Button
-              href={{
-                pathname: '/blog/subscribe',
-              }}
-              className="mw4 ml4 pv3 cta"
-              id="blog-highlight-subscribe"
-              tracking={{
-                ui: countly.ui.BLOG_CARD,
-                action: 'Subcribe',
-              }}
-            >
-              Subscribe
-            </Button>
-          </div>
+          <img
+            src={post.thumbnail}
+            alt={`Banner for ${post.title}`}
+            className="object-cover object-center highlight-img w-1/2"
+          />
         </div>
-        <Img
-          src={post.thumbnail}
-          alt={`Banner for ${post.title}`}
-          className="object-cover object-center highlight-img w-50"
-        />
       </div>
     </div>
   </div>

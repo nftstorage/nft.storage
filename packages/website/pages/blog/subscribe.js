@@ -61,8 +61,11 @@ export default function Subcribe({ user }) {
   }
 
   let content = (
-    <form onSubmit={onSubmit} className="flex items-center tc flex-column">
-      <label className="f5 db mb2 chicagoflf">
+    <form
+      onSubmit={onSubmit}
+      className="flex items-center text-center flex-col"
+    >
+      <label className="text-base block mb-2 chicagoflf">
         <h1>Subscribe</h1>
       </label>
       <label id="email-entry-label" htmlFor="email" className="sr-only">
@@ -77,7 +80,7 @@ export default function Subcribe({ user }) {
         onChange={(e) => setEmail(e.target.value)}
         disabled={status === 'pending'}
         value={email}
-        className="input-reset ba b--black pa2 mb3 w5 center db"
+        className="appearance-none border border-solid border-black placeholder:text-gray-500 p-2 mb-4 w-64 mx-auto block"
       />
 
       <Button
@@ -89,7 +92,7 @@ export default function Subcribe({ user }) {
           ui: countly.ui.BLOG_SUBSCRIBE,
           action: 'Subscribe',
         }}
-        className="w5"
+        className="w-64"
       >
         Subscribe
       </Button>
@@ -100,7 +103,7 @@ export default function Subcribe({ user }) {
 
   if (status === 'success') {
     content = (
-      <div className="flex items-center tc flex-column">
+      <div className="flex items-center text-center flex-col">
         <h1 className="chicagoflf">Success!</h1>
         <p>You are subscribed to the Mailing List.</p>
         <br />
@@ -117,8 +120,8 @@ export default function Subcribe({ user }) {
   }
 
   return (
-    <main className="flex-auto bg-nsltblue w-100">
-      <div className="mw9 center pv3 mtauto">{content}</div>
+    <main className="flex-auto bg-nsltblue w-full">
+      <div className="max-w-7xl mx-auto py-4 mt-16">{content}</div>
     </main>
   )
 }

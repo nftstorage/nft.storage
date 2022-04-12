@@ -10,14 +10,14 @@ import clsx from 'clsx'
  * @param {string | JSX.Element | JSX.Element[]} [props.children]
  */
 const InlineCode = ({
-  color = 'black',
-  bgColor = 'nsgray',
+  color = 'text-black',
+  bgColor = 'bg-gray-400',
   className,
   children,
 }) => (
   <code
     style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
-    className={clsx('code ph1', color, `bg-${bgColor}`, className)}
+    className={clsx('code ph1', color, bgColor, className)}
   >
     {children}
   </code>

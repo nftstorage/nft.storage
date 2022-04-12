@@ -2,6 +2,7 @@
   "plugins": [
     "postcss-flexbugs-fixes",
     "postcss-import",
+    "tailwindcss",
     [
       "postcss-preset-env",
       {

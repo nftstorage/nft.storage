@@ -1,3 +1,4 @@
+@import './tailwind.css';
 @import './vars.css';
 @import './fonts.css';
 @import './decorators.css';
@@ -24,6 +25,13 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+@media screen and (min-width: 52em) {
+  html {
+    scroll-padding-top: 2rem;
+  }
 }
 
 .grid {

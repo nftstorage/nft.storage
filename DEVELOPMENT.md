@@ -30,7 +30,7 @@ We use `yarn` in this project and commit the `yarn.lock` file.
 
 The site should now be available at http://localhost:4000
 
-*NOTE* Github login does not work locally because the oauth settings don't whitelist localhost:4000.
+_NOTE_ Github login does not work locally because the oauth settings don't whitelist localhost:4000.
 
 ## Local environment configuration
 

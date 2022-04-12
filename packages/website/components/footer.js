@@ -15,9 +15,9 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer className="bg-black db db-m flex-ns items-center justify-between f7 white pv3 ph5">
+    <footer className="bg-black block lg:flex items-center justify-between text-xs text-white py-4 px-6 sm:px-16">
       <div>
-        <span className="mv3 pl-byline">
+        <span className="my-4 pl-byline">
           Made with ❤️ by{' '}
           <a
             href="https://protocol.ai/"
@@ -56,10 +56,10 @@ export default function Footer() {
         </a>
       </div>
       <div>
-        <span className="db db-m dib-ns mv3">
+        <span className="block lg:inline-block my-4">
           <a
             href="https://status.nft.storage/"
-            className="nspink no-underline underline-hover v-mid"
+            className="nspink no-underline underline-hover align-middle"
             target="_blank"
             rel="noreferrer"
             onClick={onLinkClick}
@@ -68,10 +68,10 @@ export default function Footer() {
           </a>
         </span>
         <Dot />
-        <span className="db db-m dib-ns mv3">
+        <span className="block lg:inline-block my-4">
           <Link href="/terms">
             <a
-              className="nspink no-underline underline-hover v-mid"
+              className="nspink no-underline underline-hover align-middle"
               onClick={onLinkClick}
             >
               Terms of Service
@@ -79,10 +79,10 @@ export default function Footer() {
           </Link>
         </span>
         <Dot />
-        <span className="db db-m dib-ns mv3">
+        <span className="block lg:inline-block my-4">
           <Link href="/faq">
             <a
-              className="nspink no-underline underline-hover v-mid"
+              className="nspink no-underline underline-hover align-middle"
               onClick={onLinkClick}
             >
               FAQ
@@ -90,10 +90,10 @@ export default function Footer() {
           </Link>
         </span>
         <Dot />
-        <span className="db db-m dib-ns mv3">
+        <span className="block lg:inline-block my-4">
           <Link href="/stats">
             <a
-              className="nspink no-underline underline-hover v-mid"
+              className="nspink no-underline underline-hover align-middle"
               onClick={onLinkClick}
             >
               Stats
@@ -101,11 +101,11 @@ export default function Footer() {
           </Link>
         </span>
         <Dot />
-        <span className="db db-m dib-ns mv3">
-          <span className="v-mid">Need Help? </span>
+        <span className="block lg:inline-block my-4">
+          <span className="align-middle">Need Help? </span>
           <a
             href="https://github.com/nftstorage/nft.storage/issues/new"
-            className="nspink underline-hover no-underline v-mid"
+            className="nspink underline-hover no-underline align-middle"
             onClick={onLinkClick}
           >
             Open an Issue
@@ -117,5 +117,9 @@ export default function Footer() {
 }
 
 function Dot() {
-  return <span className="mh2 b dn dn-m dib-ns mv3 v-mid">•</span>
+  return (
+    <span className="mx-2 font-bold hidden lg:inline-block my-4 align-middle">
+      •
+    </span>
+  )
 }

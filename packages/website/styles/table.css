@@ -81,7 +81,7 @@
   justify-content: flex-end;
 }
 
-@media screen and (max-width: 52em) {
+@media screen and (max-width: 1024px) {
   .table-responsive table tr td.nowrap {
     display: flex;
     align-items: center;
@@ -114,7 +114,7 @@
 }
 
 /* 832px */
-@media screen and (min-width: 52em) {
+@media screen and (min-width: 1024px) {
   /*Additive styles at full size*/
   .table-responsive table {
     table-layout: auto;
@@ -149,6 +149,12 @@
   .table-responsive table tr td[data-label]::before {
     content: '';
     float: left;
+  }
+  .table-responsive table .truncate {
+    max-width: 510px;
+  }
+  .table-responsive td .truncate {
+    max-width: 240px;
   }
 
   /*Utilities at full-size*/

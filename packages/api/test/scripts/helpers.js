@@ -58,7 +58,7 @@ async function createUserTag(tag) {
   const { data, error } = await query.upsert(tag).single()
 
   if (error) {
-    throw error;
+    throw error
   }
 
   if (!data) {

@@ -89,24 +89,24 @@ export default function NewFile() {
   }
 
   return (
-    <main className="bg-nsyellow flex-grow-1">
-      <div className="mw9 center pv3 ph3 ph5-ns">
+    <main className="bg-nsyellow grow">
+      <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
         <Box
           bgColor="nsgray"
           borderColor="nspink"
-          wrapperClassName="center mv4 mw6"
+          wrapperClassName="max-w-3xl my-4 mx-auto"
         >
-          <h1 className="chicagoflf f4 fw4">Upload File</h1>
+          <h1 className="chicagoflf text-xl font-normal">Upload File</h1>
           <form onSubmit={handleUploadSubmit}>
-            <div className="mv3">
-              <label htmlFor="name" className="dib mb2">
+            <div className="my-4">
+              <label htmlFor="name" className="inline-block mb-2">
                 File:
               </label>
               <input
                 id="file"
                 name="file"
                 type="file"
-                className="db ba b--black w5 pa2"
+                className="block border border-solid border-black w-64 p-2"
                 required
                 onChange={checkCar}
               />
@@ -119,13 +119,13 @@ export default function NewFile() {
                 checked={isCar}
                 readOnly
               />
-              <span className="ml2">is CAR?</span>
+              <span className="ml-2">is CAR?</span>
             </label>
-            <details className="db mt3 mb4">
-              <summary className="i pointer">
+            <details className="block mt-4 mb-8">
+              <summary className="i cursor-pointer">
                 CAR files supported! What is a CAR?
               </summary>
-              <p className="pl3 mt3 lh-copy">
+              <p className="pl-4 mt-4 leading-normal">
                 A CAR is a Content Addressed Archive that allows you to
                 pre-compute the root CID for your assets. You can pack your
                 assets into a CAR with the{' '}
@@ -148,13 +148,13 @@ export default function NewFile() {
                 </a>
                 .
               </p>
-              <p className="pl3 mt2 lh-copy">
+              <p className="pl-4 mt-2 leading-normal">
                 Give your CAR filename the <code>.car</code> extention, and when
                 it&apos;s uploaded to NFT.Storage your asset will be stored with
                 the exact same root CID as defined in the CAR file.
               </p>
             </details>
-            <div className="mv3">
+            <div className="my-4">
               <Button
                 className="bg-nslime"
                 type="submit"
@@ -173,7 +173,7 @@ export default function NewFile() {
               </Button>
             </div>
             <div>
-              <p className="lh-copy f7">
+              <p className="leading-normal text-xs">
                 You can also upload files using the{' '}
                 <Link href="/docs/client/js/">
                   <a className="black">JS Client Library</a>
@@ -187,11 +187,11 @@ export default function NewFile() {
           </form>
         </Box>
         <When condition={error !== ''}>
-          <Alert className="pa4 white" position="top" type="error">
+          <Alert className="p-8 text-white" position="top" type="error">
             <>
               {error}{' '}
               <button
-                className="border ml2 ph2 pv1 br-100 b--transparent pointer"
+                className="border ml-2 px-2 py-1 br-100 b--transparent cursor-pointer"
                 onClick={() => setError('')}
               >
                 <Cross width="12" height="12" fill="currentColor" />
@@ -199,18 +199,18 @@ export default function NewFile() {
             </>
           </Alert>
         </When>
-        <section className="center mw7 pa4">
+        <section className="mx-auto max-w-3xl p-6">
           <section>
             <h3 className="notification-header">🌍 Public data</h3>
-            <p>
+            <p className="my-2 text-sm">
               All data uploaded to NFT.Storage is available to anyone who
               requests it using the correct CID. Do not store any private or
               sensitive information in an unencrypted form using NFT.Storage.
             </p>
           </section>
           <section>
-            <h3 className="notification-header">♾️ Permanent data</h3>
-            <p>
+            <h3 className="notification-header mt-4">♾️ Permanent data</h3>
+            <p className="my-2 text-sm">
               Deleting files from the NFT.Storage site’s{' '}
               <Link href="/files">
                 <a className="black no-underline underline-hover">Files</a>
