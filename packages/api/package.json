@@ -44,7 +44,7 @@
     "buffer": "^6.0.3",
     "delay": "^5.0.0",
     "dotenv": "^10.0.0",
-    "esbuild": "^0.13.13",
+    "esbuild": "^0.14.36",
     "execa": "^5.1.1",
     "ipfs-unixfs-importer": "^9.0.3",
     "miniflare": "^2.4.0",
