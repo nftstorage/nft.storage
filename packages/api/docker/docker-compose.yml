@@ -35,6 +35,10 @@ services:
       - DATABASE_CONNECTION
       - SALT
       - PRIVATE_KEY
+      - MAGIC_SECRET_KEY
+      - SENTRY_DSN
+      - MAILCHIMP_API_KEY
+      - LOGTAIL_TOKEN
     depends_on:
       - rest
     ports:
