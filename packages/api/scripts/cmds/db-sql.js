@@ -1,10 +1,9 @@
-#!/usr/bin/env node
 import pg from 'pg'
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import retry from 'p-retry'
-import { URL } from 'url'
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const { Client } = pg
 
@@ -89,11 +88,3 @@ function expectEnv(name) {
 function loadSql(file) {
   return fs.readFileSync(path.join(__dirname, '..', '..', 'db', file), 'utf8')
 }
-
-const isExecutingFromTerminal = () => {
-  const fileDir = new URL(import.meta.url)
-  const execDir = new URL(`file://${process.argv[1]}`)
-  return fileDir.pathname === execDir.pathname
-}
-
-console.log(`is executing from terminal: ${isExecutingFromTerminal()}`)
