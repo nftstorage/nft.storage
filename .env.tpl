@@ -23,8 +23,8 @@ SENTRY_TOKEN=secret
 SENTRY_UPLOAD=false
 
 ## API PostgREST
-DATABASE_URL=http://localhost:3000
+DATABASE_URL=http://post_rest:3000
 DATABASE_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYwMzk2ODgzNCwiZXhwIjoyNTUwNjUzNjM0LCJyb2xlIjoic2VydmljZV9yb2xlIn0.necIJaiP7X2T2QjGeV-FhpkizcNTX8HjDDBAxpgQTEI
 
 # Postgres Database
-DATABASE_CONNECTION=postgresql://postgres:postgres@localhost:5432/postgres
+DATABASE_CONNECTION=postgresql://postgres:postgres@db:5432/postgres

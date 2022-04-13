@@ -1,11 +1,11 @@
 version: '3.6'
 services:
-  rest:
+  post_rest:
     image: postgrest/postgrest:v9.0.0
     depends_on:
       - db
     ports:
-      - 3000:3000/tcp
+      - '3000:3000/tcp'
     environment:
       PGRST_DB_URI: postgres://postgres:postgres@db:5432/postgres
       PGRST_DB_SCHEMA: public
@@ -40,14 +40,14 @@ services:
       - MAILCHIMP_API_KEY
       - LOGTAIL_TOKEN
     depends_on:
-      - rest
+      - post_rest
     ports:
-      - 8787:8787
+      - '8787:8787'
   db:
     build:
       context: ./postgres
     ports:
-      - 5432:5432
+      - '5432:5432'
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
