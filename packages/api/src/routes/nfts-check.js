@@ -1,7 +1,7 @@
 import { JSONResponse } from '../utils/json-response.js'
 import { HTTPError } from '../errors.js'
 import { secrets, database } from '../constants.js'
-import { DBClient } from '../utils/db-client'
+import { DBClient } from '../utils/db-client.js'
 import { parseCid } from '../utils/utils.js'
 import { toCheckNftResponse } from '../utils/db-transforms.js'
 
