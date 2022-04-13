@@ -26,29 +26,22 @@ services:
       - '../scripts:/app/scripts'
   api:
     restart: on-failure
-    environment:
-      - DATABASE_URL
-      - TEST_DATABASE_URL
-      - DATABASE_TOKEN
-      - DATABASE_CONNECTION
-    depends_on:
-      - rest
     build:
       dockerfile: docker/db_init.Dockerfile
       context: ../
+    environment:
+      - DATABASE_URL
+      - DATABASE_TOKEN
+      - DATABASE_CONNECTION
+      - SALT
+      - PRIVATE_KEY
+    depends_on:
+      - rest
     ports:
       - 8787:8787
   db:
     build:
       context: ./postgres
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 2G
-        reservations:
-          cpus: '1'
-          memory: 1G
     ports:
       - 5432:5432
     environment:
