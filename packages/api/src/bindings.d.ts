@@ -2,9 +2,6 @@ export {}
 
 import Toucan from 'toucan-js'
 import { Service } from 'ucan-storage/service'
-// import { StorageSemantics } from 'ucan-storage/types'
-// import { UcanPayload } from 'ucan-storage/types'
-// import { UcanChain } from 'ucan-storage/ucan-chain'
 import { Mode } from './middleware/maintenance.js'
 import { UserOutput, UserOutputKey } from './utils/db-client-types.js'
 import { DBClient } from './utils/db-client.js'

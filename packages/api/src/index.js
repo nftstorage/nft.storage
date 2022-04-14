@@ -150,12 +150,7 @@ r.add(
 r.add('delete', '/:cid', withAuth(withMode(nftDelete, RW)), [postCors])
 
 // Temporary Metaplex upload route, mapped to metaplex user account.
-r.add(
-  'post',
-  '/metaplex/upload',
-  withAuth(withMode(metaplexUpload, RW), { checkHasAccountRestriction }),
-  [postCors]
-)
+r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
 
 // User
 r.add(
