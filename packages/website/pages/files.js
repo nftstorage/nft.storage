@@ -414,7 +414,7 @@ export default function Files({ user }) {
 
   const UploadFileButton = () => (
     <Button
-      disabled={user.tags.HasAccountRestriction}
+      disabled={user?.tags.HasAccountRestriction}
       href={{
         pathname: '/new-file',
       }}
@@ -443,7 +443,7 @@ export default function Files({ user }) {
                 <div className="flex-auto chicagoflf mv3">
                   <h1>Files</h1>
                 </div>
-                {user.tags.HasAccountRestriction ? (
+                {user?.tags.HasAccountRestriction ? (
                   <Tooltip
                     id="blocked-upload-file-booltip"
                     placement="left"

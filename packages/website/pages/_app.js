@@ -38,11 +38,8 @@ export default function App({ Component, pageProps }) {
       Sentry.setUser(user)
     }
     const tags = await getUserTags()
-    if (
-      tags.HasAccountRestriction &&
-      !sessionStorage['hasSeenUserBlockedModal']
-    ) {
-      sessionStorage['hasSeenUserBlockedModal'] = true
+    if (tags.HasAccountRestriction && !sessionStorage.hasSeenUserBlockedModal) {
+      sessionStorage.hasSeenUserBlockedModal = true
       setIsUserBlockedModalShowing(true)
     }
     // @ts-ignore

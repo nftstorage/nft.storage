@@ -91,7 +91,7 @@ export default function ManageKeys({ user }) {
         pathname: '/new-key',
       }}
       className="flex-none mb2"
-      disabled={user.tags.HasAccountRestriction}
+      disabled={user?.tags.HasAccountRestriction}
       id="new-key"
       tracking={{ ui: countly.ui.TOKENS, action: 'New API Token' }}
     >
@@ -110,7 +110,7 @@ export default function ManageKeys({ user }) {
             <div className="flex flex-wrap items-center mb3">
               <h1 className="flex-auto chicagoflf mv4">API Keys</h1>
               <div className="flex flex-wrap items-center mt2">
-                {!user.tags.HasAccountRestriction && !user.tags.HasPsaAccess && (
+                {!user?.tags.HasAccountRestriction && !user?.tags.HasPsaAccess && (
                   <Tooltip
                     placement="bottom"
                     overlay={
@@ -138,7 +138,7 @@ export default function ManageKeys({ user }) {
                   </Tooltip>
                 )}
 
-                {user.tags.HasAccountRestriction ? (
+                {user?.tags.HasAccountRestriction ? (
                   <Tooltip
                     id="blocked-new-key-booltip"
                     placement="left"

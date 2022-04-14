@@ -24,6 +24,14 @@ export function getStaticProps() {
   }
 }
 
+/**
+ * @typedef {Object} NewFileProps
+ * @prop {import('components/types').User} user
+ */
+
+/**
+ * @param {NewFileProps} props
+ */
 export default function NewFile({ user }) {
   const router = useRouter()
   const queryClient = useQueryClient()
