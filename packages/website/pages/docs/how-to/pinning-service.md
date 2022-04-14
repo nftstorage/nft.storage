@@ -1,6 +1,6 @@
 # Pinning Services API
 
-[IPFS](https://ipfs.io) is a distributed storage network. Data is cached on IPFS nodes, but may be cleared to make room for new content. A pinning service is a collection of IPFS nodes dedicated to saving data on the network so that it is not removed.
+You can ask NFT.Storage to archive data that is already on the [IPFS](https://ipfs.io) distributed storage network with this API. This data will remain perpetually available over IPFS (backed by [Filecoin decentralized storage](https://nft.storage/docs/concepts/decentralized-storage/#filecoin-for-verifiable-content-persistence)).
 
 NFT.Storage provides a pinning service that is modeled closely on the [IPFS Pinning Service API specification](https://ipfs.github.io/pinning-services-api-spec/).
 
@@ -20,7 +20,7 @@ curl -X POST 'https://api.nft.storage/pins' \
   --header 'Content-Type: application/json' \
   -d '{
   "cid": "QmCIDToBePinned",
-  "name": "PreciousData.pdf",
+  "name": "PreciousData.pdf"
 }'
 ```
 

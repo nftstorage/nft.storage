@@ -146,16 +146,16 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   )
 
   return (
-    <nav className={clsx(bgColor, 'w-100 z-50 navbar')} ref={containerRef}>
-      <div className="flex items-center justify-between ph3 ph5-ns pv3 center mw9">
+    <nav className={clsx(bgColor, 'w-full z-50 navbar')} ref={containerRef}>
+      <div className="flex items-center justify-between px-6 sm:px-16 py-4 mx-auto max-w-7xl">
         <div className="hamburger flex align-middle">
-          <Button onClick={toggleMenu} small className="flex-column">
-            <Hamburger className="w1 m2" aria-label="Toggle Navbar" />
+          <Button onClick={toggleMenu} small className="flex-col">
+            <Hamburger className="w-4 m2" aria-label="Toggle Navbar" />
           </Button>
         </div>
         <Link href={{ pathname: '/', query: version ? { version } : null }}>
           <a
-            className="nav-logo-link flex no-underline v-mid"
+            className="nav-logo-link flex no-underline align-middle"
             onClick={onLinkClick}
           >
             <Logo dark={logo.isDark} />
@@ -174,7 +174,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                     <a
                       key={item.name}
                       className={clsx(
-                        'f4 black no-underline underline-hover v-mid',
+                        'text-xl text-black no-underline underline-hover align-middle',
                         { mr4: index === ITEMS.length - 1 }
                       )}
                       onClick={item.tracking ? item.tracking : onLinkClick}
@@ -183,7 +183,9 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                     </a>
                   </Link>
                   {index !== ITEMS.length - 2 && (
-                    <span className="mh2 v-mid b black">•</span>
+                    <span className="mx-2 align-middle font-bold text-black">
+                      •
+                    </span>
                   )}
                 </div>
               )
@@ -192,7 +194,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
               <Button
                 onClick={logout}
                 id="logout"
-                className="ml4"
+                className="ml-8"
                 tracking={{
                   event: countly.events.LOGOUT_CLICK,
                   ui: countly.ui.NAVBAR,
@@ -203,7 +205,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
               </Button>
             ) : (
               <Button
-                className="ml4"
+                className="ml-8"
                 href={{
                   pathname: '/login',
                   query: version ? { version } : null,
@@ -223,20 +225,20 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
       <div
         className={clsx(
           bgColor,
-          'mobile-nav transition-all duration-300 fixed top-0 left-0 bottom-0 shadow-4 p6 w-100',
-          isMenuOpen ? 'flex opacity-100' : 'o-0 invisible'
+          'flex mobile-nav transition-all fixed top-0 left-0 bottom-0 w-full',
+          isMenuOpen ? 'opacity-100' : 'opacity-0 invisible'
         )}
         style={{ zIndex: 100 }}
         aria-hidden={isMenuOpen}
       >
-        <div className="flex flex-column items-center text-center mt4">
+        <div className="flex flex-col items-center text-center mt-8">
           <Link href="/">
-            <a className="mobile-nav-menu-logo flex no-underline v-mid">
+            <a className="mobile-nav-menu-logo flex no-underline align-middle">
               <Logo dark={logo.isDark} />
             </a>
           </Link>
         </div>
-        <div className="mobile-nav-items tc flex flex-column items-center justify-center text-center flex-auto overflow-y-scroll">
+        <div className="mobile-nav-items text-center flex flex-col items-center justify-center flex-auto overflow-y-scroll">
           <div style={{ maxHeight: '100%' }}>
             {ITEMS.map((item, index) => (
               <div
@@ -247,7 +249,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                 <Link href={item.link || ''}>
                   <a
                     className={clsx(
-                      'mobile-nav-link v-mid chicagoflf',
+                      'mobile-nav-link align-middle chicagoflf',
                       logo.isDark ? 'black' : 'white'
                     )}
                     onClick={item.tracking ? item.tracking : onMobileLinkClick}
@@ -259,7 +261,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
             ))}
           </div>
         </div>
-        <div className="flex flex-column items-center mb4">
+        <div className="flex flex-col items-center mb-8">
           <Button className="flex justify-center" onClick={toggleMenu}>
             <Cross width="24" height="24" fill="currentColor" />
           </Button>

@@ -153,7 +153,7 @@ The main tool available for splitting and joining CARs is called `carbites`, whi
 
 This section will demonstrate a few ways to split CARs in a way that's acceptable to the NFT.Storage service, using the command line tool, as well as programmatically using the `carbites` libraries in JavaScript and Go.
 
-## Using the carbites-cli tool"
+## Using the carbites-cli tool
 
 The JavaScript [carbites library][github-carbites-js] includes a package called `carbites-cli` that can split and join CARs from the command line. You'll need a recent version of [Node.js](https://nodejs.org) installed, preferably the latest stable version.
 

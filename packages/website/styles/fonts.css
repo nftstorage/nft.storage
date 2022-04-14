@@ -8,6 +8,11 @@
   font-family: var(--nstitle);
 }
 
+h1 {
+  @apply text-4xl;
+  /* font-size: var(--h1-size); */
+}
+
 h2 {
   font-size: var(--h2-size);
 }

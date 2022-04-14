@@ -12,3 +12,12 @@ export function formatTimestamp(timestamp) {
     minute: 'numeric',
   })
 }
+
+/**
+ * If it's a different day, it returns the day, otherwise it returns the hour
+ * @param {string} cid
+ * @returns {string}
+ */
+export function truncateCID(cid) {
+  return `${cid.substring(0, 8)}...${cid.substring(cid.length - 8)}`
+}

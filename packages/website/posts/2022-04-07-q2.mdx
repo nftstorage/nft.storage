@@ -1,0 +1,44 @@
+---
+title: What's coming in Q2?
+description: A better upload experience, new gateway features, and more
+author: David Choi, J Chris Anderson
+thumbnail: https://user-images.githubusercontent.com/89210666/161042427-58805d3e-bdc9-4ea2-9727-99cb25035a3a.png
+date: Apr 7, 2022
+tags:
+  - roadmap
+  - q2
+  - ipfs
+  - performance
+---
+
+Crazy that we're already three months into 2022! In Q1, the NFT.Storage team brought you [delegated uploads using UCANs](https://nft.storage/docs/how-to/ucan/), a [faster HTTP IPFS gateway for NFTs](https://nft.storage/docs/concepts/gateways/), easy uploads with [NFTUp](https://nft.storage/blog/post/2022-04-05-announcing-nftup/), and more. We also [crossed 50M uploads as a service](https://nft.storage/blog/post/2022-03-29-50M-uploads/)! But the momentum doesn't stop there - continue reading to learn about what's in store for Q2.
+
+# Uploads v2
+
+Uploads in NFT.Storage are designed to be trustless, with the Javascript client library's uploads methods converting uploaded files into [CAR files](https://nft.storage/docs/concepts/car-files/) so computation of the IPFS content ID (CID) takes place client-side. This is done so users can cryptographically verify that NFT.Storage has not modified their data in any way. Further, to ensure uploads are fast, NFT.Storage's upload API is hosted in Cloudflare Workers, which has a 100MB per request limit. NFT.Storage gets around this by splitting uploads into smaller CAR files tagged with a shared a root CID, and sending them over separate requests. Since the root CID is shared, NFT.Storage uses the shared root CID to put the upload back together.
+
+We are currently building Uploads V2, an improved backend for this process, along with improved session handling, which will allow faster, more reliable uploads of more and larger files from even more constrained clients like web browsers and mobile apps. 
+
+The Upload v1 flow comes with its share of usability constraints. For instance, client-side CAR generation and splitting with the current version of [js-unixfs](https://github.com/ipfs/js-ipfs-unixfs), the [IPLD](https://ipld.io/) implementation that Javascript IPFS utilizes, requires that CAR conversion put the whole file or directory into memory, which can constrain the user from uploading larger files (especially folks like artists trying to upload from their local computer, or even the website, which is subject to even further memory constraints). Further, in Uploads V1, NFT.Storage only knows whether it received all the partial chunks for a full CAR file once it attempts to pin the root CID to its IPFS Cluster. This is done asynchronously, but with a Cluster handling 50M+ uploads, sometimes it takes a while for the Cluster to know whether an upload was fully successful, and even then NFT.Storage has to know to update the status in its database (why you might see "Queuing" for an upload's status even if it was successfully uploaded). This creates opaqueness that is not ideal for the user.
+
+Throughout Q1, we laid the groundwork for an improved Uploads V2 flow, including work on a new, cloud-native implementation of IPFS called IPFS Elastic Provider (which natively "speaks" CAR file rather than in terms of pins), improvements to `js-unixfs` to enable CAR file generation that isn't memory-constrained, and UCANs. We're excited to announce that in Q2, we are stitching together all these parts and replacing the current uploads flow - keeping it trustless but making it much more robust and reliable from the user's standpoint.
+
+The rollout of these components will be piecemeal -- Elastic Provider will start to take over some of our existing cluster workloads, while we upgrade tools like NFTUp, the CLI, and our website to the latest client after the full upload session infrastructure is in place.
+
+Uploads V2 clients will use [UCAN](https://nft.storage/blog/post/2022-04-01-gateway-ucan-release/) to establish sessions grouping CARs. The UCAN service will eventually become pivotal to web3 workloads like mutability and access control. Much of the infrastructure groundwork being laid by the Uploads V2 team will be used in future features.
+
+What does this mean in practice? More resilient uploads, even for larger files, that don't have to worry about the client-side envirnoment, no more opaque statuses being reported (like what does "Pinning" mean?), and more! More broadly, we think that Uploads v2 sets the foundations for all sorts of cool new, web3 native data flows while being highly usable and performant ("Web2.5" [if you will](https://nft.storage/blog/post/2022-02-21-use-web3-to-speed-up-web2/)).
+
+# Superhot Gateway
+
+Though native adoption of IPFS is increasing as more browsers like [Brave](https://brave.com/ipfs-support/) and [Opera](https://blog.ipfs.io/2021-02-08-opera-ios-and-ipfs/) as well as other tools embed IPFS nodes, the most common way for users to access data from the IPFS network today is via [HTTP IPFS gateways](https://docs.ipfs.io/concepts/ipfs-gateway/). These gateways take HTTP requests containing the CID of data and grab that data from the IPFS network. The major gateways are [peered](https://docs.ipfs.io/how-to/peering-with-content-providers/) with services like NFT.Storage to cut down on retrieval time (e.g., save time from searching the [DHT](https://docs.ipfs.io/concepts/dht/)).
+
+However, many of these gateways are run as public services (like the `ipfs.io` gateway), and as a result, might not always provide the performance that production applications are looking for. We built the [NFT.Storage Gateway](https://nft.storage/docs/concepts/gateways/) (i.e., `nftstorage.link`) to better optimize the retrieval experience for content stored on NFT.Storage. It's already made a big difference, with over 30M requests this last week and over 85% of these requests hitting the gateway's cache.
+
+Like other gateways, we run the NFT.Storage gateway as a public service. However, as the NFT.Storage Gateway's usage continues to grow, we are looking to offer users premium features that can differentiate their NFTs or platforms with superior retrieval. For instance, we are implementing the ability for users to perma-cache content so they can guarantee that anyone can retrieve this content quickly. Anyone from a marketplace, looking to provide fast retrieval for all NFTs on certain chains, to individual artists who want their NFTs to always be performantly available might find this appealing. Another example is the ability to request resized images for use cases like NFT marketplace thumbnails.
+
+These are features that many users have requested, and we're excited to launch this quarter! The cost for these premium features will be very reasonable since they lean into the advantages of IPFS: because everything is CID-based, costs scale super well from our end (e.g., we only have to pay to cache one copy of a given CID), which should provide a mutually beneficial relationship for both us and our users.
+
+# Looking forward to a great Q2!
+
+There are many other things on the horizon - NFTUp documentation and productization, mutability support in NFT.Storage, improved compatibility testing for incorporating NFT.Storage libraries into different frameworks, Niftysave (our effort to scrape all the chains to save all the off-chain NFT data) expanding beyond Ethereum, and more. We can't wait to continue sharing our progress with you all! As always, if you have any feedback for us, please hop into [our channel on IPFS Discord](https://discord.com/invite/KKucsCpZmY) or leave an [issue on Github](https://github.com/nftstorage/nft.storage/issues).

@@ -22,6 +22,7 @@
 }
 .navbar .nav-logo-link {
   transform: scale(0.8);
+  transform-origin: center left;
 }
 
 /* 640px */

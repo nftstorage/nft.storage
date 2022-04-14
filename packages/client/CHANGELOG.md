@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.2.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.1.0...nft.storage-v6.2.0) (2022-04-08)
+
+
+### Features
+
+* add rate limiter ([#1647](https://github.com/nftstorage/nft.storage/issues/1647)) ([7726c64](https://github.com/nftstorage/nft.storage/commit/7726c646b84624ede58dd8cac7913fc8d4431f16))
+
 ## [6.1.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.0.2...nft.storage-v6.1.0) (2022-03-23)
 
 

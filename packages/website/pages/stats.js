@@ -99,7 +99,9 @@ export default function Stats({ logos }) {
   const StatCard = ({ title, children }) => {
     return (
       <div className="stat-card">
-        <h2 className="stat-card-header chicagoflf">{title}</h2>
+        <h2 className="text-2xl sm:text-4xl stat-card-header chicagoflf">
+          {title}
+        </h2>
         <div className="stat-card-inner">{children}</div>
       </div>
     )
@@ -108,7 +110,7 @@ export default function Stats({ logos }) {
   const StatCards = () => {
     return (
       <div className="stat-cards-wrapper">
-        <div className="mw9 center pv3 ph3 ph5-ns">
+        <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
           <div className="stat-cards">
             <StatCard title="Upload Count">
               <div>
@@ -119,7 +121,7 @@ export default function Stats({ logos }) {
                   height="200px"
                   layout="responsive"
                 />
-                <div className="pv3 ph3">
+                <div className="py-4 px-4">
                   <p className="chicagoflf">Total uploads to NFT.Storage</p>
                   <figure className="chicagoflf">
                     {statsLoading && <Loading />}
@@ -142,13 +144,13 @@ export default function Stats({ logos }) {
             <StatCard title="Data Stored">
               <div>
                 <Img
-                  src={'/images/stats-upload-count.svg'}
+                  src={'/images/stats-data-stored.svg'}
                   alt="Data Stored"
                   width="500px"
                   height="200px"
                   layout="responsive"
                 />
-                <div className="pv3 ph3">
+                <div className="py-4 px-4">
                   <p className="chicagoflf">
                     Total data stored on Filecoin from NFT.Storage
                   </p>
@@ -178,7 +180,7 @@ export default function Stats({ logos }) {
       <Marquee />
       <StatCards />
       <div className="bg-nsblue">
-        <div className="stats-trusted-wrapper mw9 center pv3 ph3 ph5-ns">
+        <div className="stats-trusted-wrapper max-w-7xl mx-auto py-4 px-6 sm:px-16">
           <div>
             <TrustedBy logos={logos} />
           </div>

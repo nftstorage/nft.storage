@@ -57,7 +57,7 @@ function CopyButton({
       <button
         onClick={handleCopy}
         title={title}
-        className="icon-button transparent v-mid"
+        className="icon-button transparent align-middle"
         {...props}
       >
         <span
@@ -69,7 +69,7 @@ function CopyButton({
             {popupContent}
           </span>
         )}
-        <Copy tab-index={-1} />
+        <Copy tab-index={-1} className="ml-1" />
       </button>
     </>
   )
