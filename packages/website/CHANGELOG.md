@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.45.0](https://github.com/nftstorage/nft.storage/compare/website-v1.44.0...website-v1.45.0) (2022-04-14)
+
+
+### Features
+
+* update links to JS lib and api docs ([#1803](https://github.com/nftstorage/nft.storage/issues/1803)) ([84efb35](https://github.com/nftstorage/nft.storage/commit/84efb3564aaa231b3f5a3ba06643dc0a23e803f2))
+
+
+### Bug Fixes
+
+* broken link in blog post ([#1825](https://github.com/nftstorage/nft.storage/issues/1825)) ([81401fe](https://github.com/nftstorage/nft.storage/commit/81401fecf7d14a98e103fffb88441a1dcc41a3fd))
+* enable next.js sentry plugin only if SENTRY_UPLOAD is true ([#1814](https://github.com/nftstorage/nft.storage/issues/1814)) ([4c8f1dc](https://github.com/nftstorage/nft.storage/commit/4c8f1dcddb44678b7f00047d402712ba9590c3af))
+* invalid JSON in curl pin example ([#1815](https://github.com/nftstorage/nft.storage/issues/1815)) ([ca68143](https://github.com/nftstorage/nft.storage/commit/ca6814377d102af364ec3b89e61612fd1fd30d10))
+* mention that we don't mint ([#1820](https://github.com/nftstorage/nft.storage/issues/1820)) ([b484525](https://github.com/nftstorage/nft.storage/commit/b484525fdc774d1e05d122ff9fb583cd883e4200))
+* remove confusing verbiage ([#1817](https://github.com/nftstorage/nft.storage/issues/1817)) ([50254dc](https://github.com/nftstorage/nft.storage/commit/50254dc70b2f560fcf39cc15ed08b7c77a7d5407))
+* remove hanging quote in title ([#1804](https://github.com/nftstorage/nft.storage/issues/1804)) ([86f2d8b](https://github.com/nftstorage/nft.storage/commit/86f2d8b86f46600c59475bc1e59c887829f46799))
+* update data-stored image path ([#1802](https://github.com/nftstorage/nft.storage/issues/1802)) ([b399251](https://github.com/nftstorage/nft.storage/commit/b3992510a2d6c9e6bd34468c664cef471c6ae6e8))
+
 ## [1.44.0](https://github.com/nftstorage/nft.storage/compare/website-v1.43.0...website-v1.44.0) (2022-04-11)
 
 
