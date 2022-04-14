@@ -5,7 +5,7 @@ services:
     depends_on:
       - db
     environment:
-      PGRST_DB_URI: postgres://postgres:postgres@db:5432/postgres
+      PGRST_DB_URI: $DATABASE_CONNECTION
       PGRST_DB_SCHEMA: public
       PGRST_DB_ANON_ROLE: postgres
       PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
@@ -13,13 +13,13 @@ services:
     build:
       dockerfile: 'docker/db_init.Dockerfile'
       context: '../'
-    entrypoint: './scripts/cli.js db-sql --cargo --testing'
+    entrypoint: 'psql $DATABASE_CONNECTION -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql'
     depends_on:
       - db
     environment:
-      DATABASE_URL: 'http://db:3000'
-      DATABASE_TOKEN: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYwMzk2ODgzNCwiZXhwIjoyNTUwNjUzNjM0LCJyb2xlIjoic2VydmljZV9yb2xlIn0.necIJaiP7X2T2QjGeV-FhpkizcNTX8HjDDBAxpgQTEI'
-      DATABASE_CONNECTION: 'postgresql://postgres:postgres@db:5432/postgres'
+      - DATABASE_URL
+      - DATABASE_TOKEN
+      - DATABASE_CONNECTION
   api:
     restart: on-failure
     build:
