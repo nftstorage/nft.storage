@@ -3,6 +3,7 @@
     "postcss-flexbugs-fixes",
     "postcss-import",
     "tailwindcss",
+    "autoprefixer",
     [
       "postcss-preset-env",
       {
