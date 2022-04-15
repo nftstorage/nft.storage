@@ -6,10 +6,12 @@ import Layout from '../components/layout.js'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import Router, { useRouter } from 'next/router'
 import countly from '../lib/countly'
+import { getUserTags } from '../lib/api'
 import { useCallback, useEffect, useState } from 'react'
 import { isLoggedIn } from 'lib/magic'
 import * as Sentry from '@sentry/nextjs'
 import { UserContext } from 'lib/user'
+import BlockedUploadsModal from 'components/blockedUploadsModal.js'
 import Loading from 'components/loading'
 
 const queryClient = new QueryClient({
@@ -24,6 +26,8 @@ const queryClient = new QueryClient({
 export default function App({ Component, pageProps }) {
   const router = useRouter()
   const [user, setUser] = useState(null)
+  const [isUserBlockedModalShowing, setIsUserBlockedModalShowing] =
+    useState(false)
 
   const handleIsLoggedIn = useCallback(async () => {
     const data = await isLoggedIn()
@@ -32,8 +36,17 @@ export default function App({ Component, pageProps }) {
       // @ts-ignore
       Sentry.setUser(user)
     }
+    const tags = await getUserTags()
+    if (tags.HasAccountRestriction && !sessionStorage.hasSeenUserBlockedModal) {
+      sessionStorage.hasSeenUserBlockedModal = true
+      setIsUserBlockedModalShowing(true)
+    }
     // @ts-ignore
-    setUser(data)
+    setUser({
+      ...data,
+      // @ts-ignore
+      tags,
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -77,7 +90,7 @@ export default function App({ Component, pageProps }) {
         dangerouslySetInnerHTML={{
           __html: `
 (function() {
-  var cly = document.createElement('script'); cly.type = 'text/javascript'; 
+  var cly = document.createElement('script'); cly.type = 'text/javascript';
   cly.async = true;
   // Enter url of script here (see below for other option)
   cly.src = 'https://cdn.jsdelivr.net/npm/countly-sdk-web@latest/lib/countly.min.js';
@@ -95,6 +108,11 @@ export default function App({ Component, pageProps }) {
           <Layout {...pageProps}>
             {(props) => <Component {...pageProps} {...props} />}
           </Layout>
+          {isUserBlockedModalShowing && (
+            <BlockedUploadsModal
+              onClose={() => setIsUserBlockedModalShowing(false)}
+            />
+          )}
         </UserContext.Provider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>

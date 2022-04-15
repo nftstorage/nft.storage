@@ -46,6 +46,16 @@ export interface MagicUser {
   publicAddress: string | null
   email: string | null
 }
+
+export interface UserTag {
+  HasAccountRestriction?: boolean
+  HasPsaAccess?: boolean
+}
+
+export interface User extends MagicUser {
+  tags: UserTag
+}
+
 export interface LayoutChildrenProps {
-  user?: MagicUser | null
+  user?: User | null
 }

@@ -1,9 +1,9 @@
-import { validate } from '../utils/auth.js'
+import { checkAuth, validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 
 /** @type {import('../bindings').Handler} */
 export const tokensDelete = async (event, ctx) => {
-  const { user } = await validate(event, ctx)
+  const { user } = checkAuth(ctx)
   const body = await event.request.json()
 
   if (body.id) {

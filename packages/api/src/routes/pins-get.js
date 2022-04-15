@@ -1,4 +1,4 @@
-import { validate } from '../utils/auth.js'
+import { checkAuth, validate } from '../utils/auth.js'
 import { toPinsResponse } from '../utils/db-transforms.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { parseCidPinning } from '../utils/utils.js'
@@ -6,7 +6,7 @@ import { parseCidPinning } from '../utils/utils.js'
 /** @type {import('../bindings').Handler} */
 export async function pinsGet(event, ctx) {
   const { params } = ctx
-  const { user, db } = await validate(event, ctx)
+  const { user, db } = checkAuth(ctx)
 
   const cid = parseCidPinning(params.requestid)
   if (!cid) {

@@ -1,10 +1,10 @@
 import { ErrorDIDNotFound } from '../errors.js'
-import { validate } from '../utils/auth.js'
+import { checkAuth, validate } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 
 /** @type {import('../bindings').Handler} */
-export const ucanToken = async (event, ctx) => {
-  const { user, type, ucan } = await validate(event, ctx, { checkUcan: true })
+export const ucanToken = async (_, ctx) => {
+  const { user, type, ucan } = checkAuth(ctx)
   const { ucanService } = ctx
 
   if (!user.did) {

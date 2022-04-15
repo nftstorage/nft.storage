@@ -1,12 +1,12 @@
 import { JSONResponse } from '../utils/json-response.js'
 import * as cluster from '../cluster.js'
-import { validate } from '../utils/auth.js'
+import { checkAuth } from '../utils/auth.js'
 import { parseCidPinning } from '../utils/utils.js'
 import { toPinsResponse } from '../utils/db-transforms.js'
 
 /** @type {import('../bindings').Handler} */
 export async function pinsReplace(event, ctx) {
-  const { db, user, key } = await validate(event, ctx)
+  const { db, user, key } = checkAuth(ctx)
 
   const existingCid = ctx.params.requestid
   const existingUpload = await db.getUpload(existingCid, user.id)

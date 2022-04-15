@@ -1,4 +1,4 @@
-import { validate } from '../utils/auth.js'
+import { checkAuth } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { Validator } from '@cfworker/json-schema'
 import { parseCidPinning } from '../utils/utils.js'
@@ -13,7 +13,7 @@ const MAX_LIMIT = 1000
 
 /** @type {import('../bindings').Handler} */
 export async function pinsList(event, ctx) {
-  const { user, db } = await validate(event, ctx)
+  const { user, db } = checkAuth(ctx)
   const { searchParams } = new URL(event.request.url)
   const result = parseSearchParams(searchParams)
 
