@@ -39,8 +39,10 @@ export const TrustedBy = ({ logos }) => {
         <br />
         Request{' '}
         <a
+          title="Request to add your logo!"
           href="https://github.com/nftstorage/nft.storage/discussions/1474"
           target="_blank"
+          rel="noreferrer"
         >
           here
         </a>{' '}
