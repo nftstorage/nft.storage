@@ -10,6 +10,7 @@ services:
       PGRST_DB_ANON_ROLE: postgres
       PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
   db_init:
+    restart: on-failure
     build:
       dockerfile: 'docker/db_init.Dockerfile'
       context: '../'
@@ -25,6 +26,7 @@ services:
     build:
       dockerfile: docker/db_init.Dockerfile
       context: ../
+    entrypoint: /bin/bash
     environment:
       - DATABASE_URL
       - DATABASE_TOKEN
