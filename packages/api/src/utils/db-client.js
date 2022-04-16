@@ -30,6 +30,14 @@ export class DBClient {
         apikey: `${token}`,
       },
     })
+
+    this.cargo_client = new PostgrestClient(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apikey: `${token}`,
+      },
+      schema: 'cargo',
+    })
   }
 
   /**
@@ -541,11 +549,12 @@ export class DBClient {
   async getStats() {
     /** @type {PostgrestQueryBuilder<definitions['metric']>} */
     const query = this.client.from('metric')
+    const metrics_query = this.cargo_client.from('metrics')
+    const deals_prev_value_query = this.cargo_client.from('metrics_log')
+
     const { data, error } = await query
       .select('name, value')
       .in('name', [
-        'deals_total',
-        'deals_size_total',
         'uploads_past_7_total',
         'uploads_blob_total',
         'uploads_car_total',
@@ -554,19 +563,47 @@ export class DBClient {
         'uploads_multipart_total',
       ])
 
-    if (error) {
+    const { data: deals_size, error: deals_size_error } = await metrics_query
+      .select('name, dimensions, value, collected_at')
+      .match({
+        name: 'dagcargo_project_bytes_in_active_deals',
+        dimensions: '{{project,nft.storage}}',
+      })
+      .order('collected_at', { ascending: true })
+      .single()
+
+    let d = new Date()
+    d.setDate(d.getDate() - 7)
+
+    const { data: deals_size_history, error: deals_size_history_error } =
+      await deals_prev_value_query
+        .select('name, dimensions, value, collected_at')
+        .match({
+          name: 'dagcargo_project_bytes_in_active_deals',
+          dimensions: '{{project,nft.storage}}',
+        })
+        .lte('collected_at', d.toISOString())
+        .order('collected_at', { ascending: false })
+        .single()
+
+    if (error || deals_size_history_error || deals_size_error) {
+      // @ts-ignore
       throw new DBError(error)
     }
 
-    if (!data || !data.length) {
-      return undefined
+    /** @type any  */
+    const outbound_data = {}
+
+    // Simple splatting of the metrics from first query
+    if (data) {
+      for (const metric of data) {
+        outbound_data[metric.name] = metric.value
+      }
     }
 
-    return data.reduce((obj, curr) => {
-      // @ts-ignore
-      obj[curr.name] = curr.value
-      return obj
-    }, {})
+    outbound_data.deals_size_total = deals_size.value
+    outbound_data.deals_size_total_prev = deals_size_history.value
+    return outbound_data
   }
 }
 

@@ -9,7 +9,7 @@ services:
       - 3000:3000/tcp
     environment:
       PGRST_DB_URI: postgres://postgres:postgres@db:5432/postgres
-      PGRST_DB_SCHEMA: public
+      PGRST_DB_SCHEMAS: public,cargo
       PGRST_DB_ANON_ROLE: postgres
       PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
   db:

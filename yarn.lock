@@ -2005,11 +2005,6 @@
   resolved "https://registry.yarnpkg.com/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-12.1.5.tgz#02f377e4d41eaaacf265e34bab9bacd8efc4a351"
   integrity sha512-/SoXW1Ntpmpw3AXAzfDRaQidnd8kbZ2oSni8u5z0yw6t4RwJvmdZy1eOaAADRThWKV+2oU90++LSnXJIwBRWYQ==
 
-"@nftstorage/ipfs-cluster@^5.0.1":
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/@nftstorage/ipfs-cluster/-/ipfs-cluster-5.0.1.tgz#28655fd1bd35ac145b0acdd045f7db242713b3f4"
-  integrity sha512-e5+ICMllFgMRWIojh00vk/nk6SshDKQK/LDslg2249lHuBLEeIEajxiI8eM+9+w6DO14+o12IRjhtVIRk5rRaw==
-
 "@noble/ed25519@^1.5.2":
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/@noble/ed25519/-/ed25519-1.6.0.tgz#b55f7c9e532b478bf1d7c4f609e1f3a37850b583"

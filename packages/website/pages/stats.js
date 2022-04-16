@@ -67,10 +67,10 @@ export default function Stats({ logos }) {
         ok: true,
         data: {
           deals_size_total: 249523372029443,
+          deals_size_total_prev: 249523372020000,
           uploads_past_7_total: 2011366,
           uploads_nft_total: 685866,
           uploads_remote_total: 11077834,
-          deals_total: 34959,
           uploads_car_total: 17711308,
           uploads_multipart_total: 1456388,
           uploads_blob_total: 12420729,
@@ -164,10 +164,10 @@ export default function Stats({ logos }) {
                   </figure>
                   <p
                     className={`chicagoflf ${
-                      stats.deals_total > 0 ? 'stat-green' : 'stat-red'
+                      stats.dealsSizeGrowthRate > 0 ? 'stat-green' : 'stat-red'
                     }`}
                   >
-                    {stats.deals_total?.toLocaleString() || 0}
+                    {stats.dealsSizeGrowthRate || 0}%
                   </p>
                   <p>[Total deals]</p>
                 </div>

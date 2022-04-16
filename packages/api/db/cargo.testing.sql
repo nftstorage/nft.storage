@@ -54,10 +54,10 @@ CREATE TABLE IF NOT EXISTS cargo.metrics_log (
 -- Test data
 
 INSERT INTO cargo.metrics_log (name, dimensions, value, collected_at) VALUES
-  ('dagcargo_project_stored_items_active', '{{project,staging.web3.storage}}', 1391, '2022-04-11 13:41:08.479404+00');
+  ('dagcargo_project_bytes_in_active_deals', '{{project,staging.nft.storage}}', 167859554927623, '2022-04-01 13:41:08.479404+00');
 
  INSERT INTO cargo.metrics_log (name, dimensions, value, collected_at) VALUES
-  ('dagcargo_project_stored_bytes_deleted', '{{project,nft.storage}}', 6289272152814, '2022-04-11 16:33:28.505513+00');
+  ('dagcargo_project_bytes_in_active_deals', '{{project,nft.storage}}', 169334115720738, '2022-03-01 16:33:28.505513+00');
 
 INSERT INTO cargo.aggregate_entries ("aggregate_cid", "cid_v1", "datamodel_selector") VALUES
 ('bafybeiek5gau46j4dxoyty27qtirb3iuoq7aax4l3xt25mfk2igyt35bme', 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e', 'Links/19/Hash/Links/46/Hash/Links/0/Hash');
