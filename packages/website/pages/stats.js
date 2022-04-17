@@ -164,12 +164,14 @@ export default function Stats({ logos }) {
                   </figure>
                   <p
                     className={`chicagoflf ${
-                      stats.dealsSizeGrowthRate > 0 ? 'stat-green' : 'stat-red'
+                      stats.dealsSizeGrowthRate > 0
+                        ? 'stat-green stat-green-plus'
+                        : 'stat-red'
                     }`}
                   >
                     {stats.dealsSizeGrowthRate || 0}%
                   </p>
-                  <p>[Total deals]</p>
+                  <p>[Week over week change]</p>
                 </div>
               </div>
             </StatCard>
