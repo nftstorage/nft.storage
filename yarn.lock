@@ -1443,9 +1443,9 @@
   integrity sha512-hh7qzfT0+1rkKiZrZnttRZxjZLzcHHZNQ7XmzA8De0YJxhg/tEovmczM1AjuGZJr8sr69gfOFtfZgqz2s1/p5Q==
 
 "@cloudflare/workers-types@^3.3.1":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@cloudflare/workers-types/-/workers-types-3.4.0.tgz#80311e14df2f7f8c2cfcdce945b4f4ad8f9b03b1"
-  integrity sha512-i/3czUrt6YqbOWl44OtIqd0cSZvEVXp/1oD/DZylC4PHZL3q/BhbamdEVeVhc/HPk4iD/7MZ2HGaIMO4Z4b12A==
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/@cloudflare/workers-types/-/workers-types-3.3.1.tgz#8847543bda320472252708c29aaf7bac3374e814"
+  integrity sha512-GJFDgWd8ZHlr/m+Q2mp4xUl0/FIPpR6kf0Ix2C78E9HeJyUCW0c0w2EKCvgEDFFKB2rkzIX3eBqZCnLsbsw8zQ==
 
 "@corex/deepmerge@^2.6.148":
   version "2.6.148"
