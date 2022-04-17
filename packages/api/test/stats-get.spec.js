@@ -11,6 +11,16 @@ describe('Get Stats', () => {
   })
 
   it('should return proper response for cid v1', async () => {
+    const demoData = {
+      deals_size_total: 169389985753391,
+      deals_size_total_prev: 169334115720738,
+      uploads_blob_total: 12420729,
+      uploads_car_total: 17711308,
+      uploads_multipart_total: 1456388,
+      uploads_nft_total: 685866,
+      uploads_past_7_total: 2011366,
+      uploads_remote_total: 11077834,
+    }
     const res = await fetch('/stats', {
       headers: { Authorization: `Bearer ${client.token}` },
     })
@@ -20,9 +30,6 @@ describe('Get Stats', () => {
     assert.equal(ok, true)
 
     // this is brittle, but it's simple
-    assert.equal(data, {
-      deals_size_total: 169389985753391,
-      deals_size_total_prev: 169334115720738,
-    })
+    assert.deepStrictEqual(data, demoData)
   })
 })
