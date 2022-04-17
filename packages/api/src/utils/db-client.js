@@ -594,7 +594,9 @@ export class DBClient {
 
       const { data: primaryMetrics, error: primaryMetricsError } =
         fetchAllMetrics[0]
+
       const { data: dealsSize, error: dealsSizeError } = fetchAllMetrics[1]
+
       const { data: dealsSizeHistory, error: dealsSizeHistoryError } =
         fetchAllMetrics[2]
 
@@ -607,12 +609,15 @@ export class DBClient {
       const outbound_data = {}
 
       // Simple splatting of the metrics from first query
-      for (const metric of primaryMetrics) {
-        outbound_data[metric.name] = metric.value
+      if (primaryMetrics && primaryMetrics.length) {
+        for (const metric of primaryMetrics) {
+          outbound_data[metric.name] = metric.value
+        }
       }
 
       outbound_data.deals_size_total = dealsSize.value
       outbound_data.deals_size_total_prev = dealsSizeHistory.value
+
       return outbound_data
     } catch (err) {
       // @ts-ignore
