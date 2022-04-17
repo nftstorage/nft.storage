@@ -548,11 +548,11 @@ export class DBClient {
 
   async getStats() {
     /** @type {PostgrestQueryBuilder<definitions['metric']>} */
-    const query = this.client.from('metric')
-    const metrics_query = this.cargo_client.from('metrics')
-    const deals_prev_value_query = this.cargo_client.from('metrics_log')
+    const nonCargoMetricQuery = this.client.from('metric')
+    const metricsQuery = this.cargo_client.from('metrics')
+    const metricsLogQuery = this.cargo_client.from('metrics_log')
 
-    const { data, error } = await query
+    const primaryMetricQuery = nonCargoMetricQuery
       .select('name, value')
       .in('name', [
         'uploads_past_7_total',
@@ -563,7 +563,7 @@ export class DBClient {
         'uploads_multipart_total',
       ])
 
-    const { data: deals_size, error: deals_size_error } = await metrics_query
+    const dagByteSizeQuery = metricsQuery
       .select('name, dimensions, value, collected_at')
       .match({
         name: 'dagcargo_project_bytes_in_active_deals',
@@ -572,38 +572,52 @@ export class DBClient {
       .order('collected_at', { ascending: true })
       .single()
 
-    let d = new Date()
+    const d = new Date()
     d.setDate(d.getDate() - 7)
 
-    const { data: deals_size_history, error: deals_size_history_error } =
-      await deals_prev_value_query
-        .select('name, dimensions, value, collected_at')
-        .match({
-          name: 'dagcargo_project_bytes_in_active_deals',
-          dimensions: '{{project,nft.storage}}',
-        })
-        .lte('collected_at', d.toISOString())
-        .order('collected_at', { ascending: false })
-        .single()
+    const dagByteSizeHistory = metricsLogQuery
+      .select('name, dimensions, value, collected_at')
+      .match({
+        name: 'dagcargo_project_bytes_in_active_deals',
+        dimensions: '{{project,nft.storage}}',
+      })
+      .lte('collected_at', d.toISOString())
+      .order('collected_at', { ascending: false })
+      .single()
 
-    if (error || deals_size_history_error || deals_size_error) {
-      // @ts-ignore
-      throw new DBError(error)
-    }
+    try {
+      const fetchAllMetrics = await Promise.all([
+        primaryMetricQuery,
+        dagByteSizeQuery,
+        dagByteSizeHistory,
+      ])
 
-    /** @type any  */
-    const outbound_data = {}
+      const { data: primaryMetrics, error: primaryMetricsError } =
+        fetchAllMetrics[0]
+      const { data: dealsSize, error: dealsSizeError } = fetchAllMetrics[1]
+      const { data: dealsSizeHistory, error: dealsSizeHistoryError } =
+        fetchAllMetrics[2]
 
-    // Simple splatting of the metrics from first query
-    if (data) {
-      for (const metric of data) {
+      if (primaryMetricsError || dealsSizeHistoryError || dealsSizeError) {
+        // @ts-ignore
+        throw new DBError(error)
+      }
+
+      /** @type any  */
+      const outbound_data = {}
+
+      // Simple splatting of the metrics from first query
+      for (const metric of primaryMetrics) {
         outbound_data[metric.name] = metric.value
       }
-    }
 
-    outbound_data.deals_size_total = deals_size.value
-    outbound_data.deals_size_total_prev = deals_size_history.value
-    return outbound_data
+      outbound_data.deals_size_total = dealsSize.value
+      outbound_data.deals_size_total_prev = dealsSizeHistory.value
+      return outbound_data
+    } catch (err) {
+      // @ts-ignore
+      throw new Error(err)
+    }
   }
 }
 
