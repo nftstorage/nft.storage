@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-npx esbuild \
+node_modules/esbuild/bin/esbuild \
   --bundle \
   --define:PRIVATE_KEY='"xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY="' \
   --define:DATABASE_CONNECTION='"postgresql://postgres:postgres@db:5432/postgres"' \
