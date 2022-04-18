@@ -33,7 +33,7 @@ import {
   setMaintenanceModeGetter,
 } from './middleware/maintenance.js'
 import { withPsaErrorHandler, withPinningAuthorized } from './middleware/psa.js'
-import { cluster } from './constants.js'
+import { cluster } from './constants/constants.js'
 import { getContext } from './utils/context.js'
 
 const getMaintenanceMode = () =>

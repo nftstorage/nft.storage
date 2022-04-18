@@ -1,5 +1,5 @@
 import { JSONResponse } from '../utils/json-response.js'
-import { secrets } from '../constants.js'
+import { secrets } from '../constants/constants.js'
 
 const SERVER_PREFIX = 'us5'
 const LIST_ID = '64f6e3fd11'
