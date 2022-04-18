@@ -1,5 +1,5 @@
 import { Magic } from '@magic-sdk/admin'
-import { secrets } from '../constants.js'
+import { secrets } from '../../constants/constants.js'
 import { HTTPError, ErrorUserNotFound, ErrorTokenNotFound } from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
 export const magic = new Magic(secrets.magic)

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 npx esbuild \
+  --bundle \
   --define:PRIVATE_KEY='"xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY="' \
   --define:DATABASE_CONNECTION='"postgresql://postgres:postgres@db:5432/postgres"' \
   --define:DATABASE_TOKEN='"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYwMzk2ODgzNCwiZXhwIjoyNTUwNjUzNjM0LCJyb2xlIjoic2VydmljZV9yb2xlIn0.necIJaiP7X2T2QjGeV-FhpkizcNTX8HjDDBAxpgQTEI"' \
@@ -15,4 +16,5 @@ npx esbuild \
   --define:DEBUG='false' \
   --platform=node \
   --target=node16 \
-  src
+  --banner:js='import { createRequire as topLevelCreateRequire } from "module"; const require = topLevelCreateRequire(import.meta.url);' \
+  ./src/index.js

@@ -11,7 +11,7 @@
     "clean": "./scripts/cli.js db --clean && rm -rf docker/compose",
     "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js",
     "db-types": "./scripts/cli.js db-types",
-    "start": "node --experimental-json-modules ./src/index.js"
+    "start": "node --experimental-json-modules ./dist/index.js"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
   "license": "(Apache-2.0 OR MIT)",
