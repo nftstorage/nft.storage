@@ -6,7 +6,7 @@ import {
   database,
   isDebug,
   s3 as s3Config,
-} from '../constants/constants.js'
+} from '../../constants/constants.js'
 import { Logging } from './logs.js'
 import pkg from '../../package.json'
 import { Service } from 'ucan-storage/service'
