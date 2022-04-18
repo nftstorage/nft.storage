@@ -5,7 +5,7 @@
 FROM node:16-alpine3.12
 
 # Intall missing dependencies
-RUN apk add --update bash curl postgresql-client
+RUN apk add --update bash curl vim tmux postgresql-client
 
 # Create App dir
 RUN mkdir -p /app

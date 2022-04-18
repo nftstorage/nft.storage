@@ -26,7 +26,7 @@ services:
     build:
       dockerfile: docker/db_init.Dockerfile
       context: ../
-    entrypoint: /bin/bash
+    # entrypoint: /bin/bash
     environment:
       - DATABASE_URL
       - DATABASE_TOKEN
@@ -49,15 +49,15 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_PORT: 5432
-  ipfs0:
+  ipfs:
     image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
 
-  cluster0:
+  ipfs_cluster:
     image: ipfs/ipfs-cluster:latest
     depends_on:
-      - ipfs0
+      - ipfs
     environment:
-      CLUSTER_PEERNAME: cluster0
+      CLUSTER_PEERNAME: cluster
       CLUSTER_SECRET: ${CLUSTER_SECRET} # From shell variable if set
       CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs0/tcp/5001
       CLUSTER_CRDT_TRUSTEDPEERS: '*' # Trust all peers in Cluster

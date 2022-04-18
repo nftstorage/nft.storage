@@ -1892,13 +1892,11 @@
   dependencies:
     "@magic-sdk/types" "^5.2.0"
 
-"@magic-sdk/admin@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@magic-sdk/admin/-/admin-1.4.1.tgz#751eb7eea8978b99b3c6ec1016bbb960c3e8cc05"
-  integrity sha512-5l/bkYnjphxwQBYUF6e5H7jcjBMVgx8omZK85ma7UxEXY+4UH6Kin/V8TyZOLMFcqrC8xSJwJQBPAQlOuLToIg==
+"@magic-sdk/admin@1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@magic-sdk/admin/-/admin-1.4.0.tgz#7d98f4c6da64091136624f2fd14157939c8c0d15"
+  integrity sha512-tnBl09pJfUcPBIs/g6NScTCwb3cqSMmWyFOYBfwwTBXXktqvWq/KdtrHo7xo+fODHaI24xxrBQAfZtyJ74N51Q==
   dependencies:
-    "@types/atob" "^2.1.2"
-    atob "^2.1.2"
     ethereum-cryptography "^1.0.1"
     node-fetch "^2.6.0"
 
@@ -2724,11 +2722,6 @@
   version "1.5.6"
   resolved "https://registry.yarnpkg.com/@types/assert/-/assert-1.5.6.tgz#a8b5a94ce5fb8f4ba65fdc37fc9507609114189e"
   integrity sha512-Y7gDJiIqb9qKUHfBQYOWGngUpLORtirAVPuj/CWJrU2C6ZM4/y3XLwuwfGMF8s7QzW746LQZx23m0+1FSgjfug==
-
-"@types/atob@^2.1.2":
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@types/atob/-/atob-2.1.2.tgz#157eb0cc46264a8c55f2273a836c7a1a644fb820"
-  integrity sha512-8GAYQ1jDRUQkSpHzJUqXwAkYFOxuWAOGLhIR4aPd/Y/yL12Q/9m7LsKpHKlfKdNE/362Hc9wPI1Yh6opDfxVJg==
 
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14":
   version "7.1.19"
@@ -14796,12 +14789,7 @@ typedoc@^0.22.14:
     minimatch "^5.0.1"
     shiki "^0.10.1"
 
-typescript@4.4.4:
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.4.tgz#2cd01a1a1f160704d3101fd5a58ff0f9fcb8030c"
-  integrity sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==
-
-typescript@4.5.3:
+typescript@4.4.4, typescript@4.5.3:
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.3.tgz#afaa858e68c7103317d89eb90c5d8906268d353c"
   integrity sha512-eVYaEHALSt+s9LbvgEv4Ef+Tdq7hBiIZgii12xXJnukryt3pMgJf6aKhoCZ3FWQsu6sydEnkg11fYXLzhLBjeQ==
