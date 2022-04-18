@@ -555,6 +555,9 @@ export class DBClient {
       ])
 
     if (error) {
+      console.log(
+        `Error getting stats: ${error.details}, ${error.message}, ${error.code}`
+      )
       throw new DBError(error)
     }
 
@@ -583,6 +586,11 @@ export class DBError extends Error {
     super(`${message}, details: ${details}, hint: ${hint}, code: ${code}`)
     this.name = 'DBError'
     this.code = DBError.CODE
+    try {
+      throw new Error('Where are we?')
+    } catch (e) {
+      console.log(`we are at ${e.stack}`)
+    }
   }
 }
 DBError.CODE = 'ERROR_DB'

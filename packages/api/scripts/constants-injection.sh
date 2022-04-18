@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-mkdir /app/dist && \
 node_modules/esbuild/bin/esbuild \
   --bundle \
   --sourcemap \
@@ -19,6 +18,10 @@ node_modules/esbuild/bin/esbuild \
   --define:VERSION='"test"' \
   --define:COMMITHASH='"test"' \
   --define:BRANCH='"test"' \
+  --define:ENV="'test'" \
+  --platform=node \
+  --target=node16 \
+  --banner:js='import { createRequire as topLevelCreateRequire } from "module"; const require = topLevelCreateRequire(import.meta.url); class Response{}' \
   ./src/index.js > dist/worker.js
 
 

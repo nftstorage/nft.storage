@@ -8,7 +8,7 @@ FROM node:16-alpine3.12
 RUN apk add --update bash curl vim tmux postgresql-client
 
 # Create App dir
-RUN mkdir -p /app
+RUN mkdir -p /app/dist
 
 # Set working directory to App dir
 WORKDIR /app
