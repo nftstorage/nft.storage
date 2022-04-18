@@ -306,8 +306,8 @@ pre > div code span {
   border-color: #0366d6;
 }
 
-.post .border {
-  border: 1px solid #e1e4e8 !important;
+.post .border:not(.border-solid) {
+  border: 1px solid #e1e4e8;
 }
 
 .post .border-0 {
@@ -315,7 +315,7 @@ pre > div code span {
 }
 
 .post .border-bottom {
-  border-bottom: 1px solid #e1e4e8 !important;
+  border-bottom: 1px solid #e1e4e8;
 }
 
 .post .rounded-1 {

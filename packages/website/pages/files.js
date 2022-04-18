@@ -7,7 +7,7 @@ import Button from '../components/button.js'
 import Tooltip from '../components/tooltip.js'
 import Loading from '../components/loading'
 import { MOCK_FILES } from '../lib/mock_files'
-import { formatTimestamp } from '../lib/format'
+import { formatTimestamp, truncateCID } from '../lib/format'
 import { NFTStorage } from 'nft.storage'
 import Script from 'next/script'
 import { When } from 'react-if'
@@ -129,7 +129,7 @@ export default function Files({ user }) {
           return (
             <span key={deal.chainDealID} title={deal.status}>
               <a
-                className="underline black"
+                className="underline text-black"
                 href={url}
                 target="_blank"
                 rel="noreferrer"
@@ -232,77 +232,85 @@ export default function Files({ user }) {
     // }
 
     return (
-      <tr className="bg-white bb">
-        <td data-label="Date" className="nowrap" title={nft.created}>
+      <tr className="bg-white border-b">
+        <td data-label="Date" className="whitespace-nowrap" title={nft.created}>
           {/* {nft.created.split('T')[0]} */}
           {formatTimestamp(nft.created)}
         </td>
-        {/* <td data-label="Label" className="nowrap" title={nft.label}>
-          {!isRenaming ? (
-            <div
-              className={clsx(
-                'flex items-center justify-start',
-                renameError.length > 0 && 'text-w3storage-red'
-              )}
-            >
-              <span className="flex-auto">{renamedValue || nft.name}</span>
-              {renameError.length > 0 && (
+        {/* <td data-label="Label" className="whitespace-nowrap" title={nft.label}> 
+          <div className="flex justify-between items-center truncate ...">
+            {!isRenaming ? (
+              <div
+                className={clsx(
+                  'flex items-center justify-start ml-auto lg:ml-0 truncate ...',
+                  renameError.length > 0 && 'text-w3storage-red'
+                )}
+              >
                 <span
-                  className="rounded-full border-w3storage-red border flex-none w-6 h-6 flex justify-center items-center"
-                  title={renameError}
+                  className="flex-auto truncate ..."
+                  title={renamedValue || nft.name}
                 >
-                  !
+                  {renamedValue || nft.name}
                 </span>
-              )}
-              <button
-                className="flex pa0 pl1 cursor-pointer bw0-ns bg-transparent input-reset button-reset"
-                onClick={() => setRenaming(true)}
-              >
-                <VscEdit
-                  style={{ minWidth: 18 }}
-                  height="18"
-                  className="dib"
-                  fill="currentColor"
-                  aria-label="Edit"
-                />
-              </button>
-            </div>
-          ) : (
-            <form
-              onSubmit={handleRename}
-              className="flex items-center justify-start"
-            >
-              <input
-                className="flex-auto p-0"
-                defaultValue={renamedValue || nft.name}
-                autoFocus
-                name="fileName"
-                required
-              />
-              <button
-                className="flex pa0 pl1 cursor-pointer bw0-ns bg-transparent input-reset button-reset"
-                type="submit"
-              >
-                {isLoading ? (
-                  <VscLoading
-                    height={18}
-                    className="dib relative spin"
-                    fill="currentColor"
-                  />
-                ) : (
-                  <VscSave
+                {renameError.length > 0 && (
+                  <span
+                    className="rounded-full border-w3storage-red border flex-none w-6 h-6 flex justify-center items-center"
+                    title={renameError}
+                  >
+                    !
+                  </span>
+                )}
+                <button
+                  className="flex pa0 pl1 cursor-pointer bw0-ns bg-transparent input-reset button-reset"
+                  onClick={() => setRenaming(true)}
+                >
+                  <VscEdit
                     style={{ minWidth: 18 }}
                     height="18"
                     className="dib"
                     fill="currentColor"
-                    aria-label="Save"
+                    aria-label="Edit"
                   />
-                )}
-              </button>
-            </form>
-          )}
-        </td> */}
-        <td data-label="CID" className="nowrap">
+                </button>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleRename}
+                className="flex items-center justify-start w-full"
+              >
+                <input
+                  className="flex-auto p-0"
+                  defaultValue={renamedValue || nft.name}
+                  autoFocus
+                  name="fileName"
+                  required
+                />
+                <button
+                  className="flex p-0 pl-1 cursor-pointer bw0-ns bg-transparent input-reset button-reset"
+                  type="submit"
+                >
+                  {isLoading ? (
+                    <VscLoading
+                      height={18}
+                      className="inline-block relative spin"
+                      fill="currentColor"
+                    />
+                  ) : (
+                    <VscSave
+                      style={{ minWidth: 18 }}
+                      height="18"
+                      className="dib"
+                      fill="currentColor"
+                      aria-label="Save"
+                    />
+                  )}
+                </button>
+              </form>
+            )}
+          </div>
+        </td>
+        */}
+        <td data-label="CID" className="whitespace-nowrap">
           <CopyButton
             title="Copy CID to Clipboard"
             text={nft.cid}
@@ -310,26 +318,27 @@ export default function Files({ user }) {
           >
             <a
               href={`https://nftstorage.link/ipfs/${nft.cid}`}
-              className="underline black truncate"
+              className="underline text-black"
               target="_blank"
+              title={nft.cid}
               rel="noreferrer"
             >
-              {nft.cid}
+              {truncateCID(nft.cid)}
             </a>
           </CopyButton>
         </td>
-        <td data-label="Pin Status" className="nowrap">
+        <td data-label="Pin Status" className="">
           {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
         </td>
         <td data-label="Deals">
-          <div className="lh-copy">
+          <div className="leading-normal">
             {deals}
             {dealsHidden.length > 0 && (
               <>
                 {!showAllDeals && (
                   <button
                     onClick={() => setShowAllDeals(true)}
-                    className="hidden-deals-trigger pointer"
+                    className="hidden-deals-trigger cursor-pointer"
                   >
                     +{dealsHidden.length} More
                   </button>
@@ -341,7 +350,7 @@ export default function Files({ user }) {
             )}
           </div>
         </td>
-        <td data-label="Size" className="nowrap">
+        <td data-label="Size" className="whitespace-nowrap">
           {bytes(nft.size || 0)}
         </td>
         <td className="shrink-cell center-cell">
@@ -415,15 +424,15 @@ export default function Files({ user }) {
   return (
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
-      <main className="bg-nsyellow flex-grow-1">
-        <div className="mw9 center pv3 ph3 ph5-ns">
+      <main className="bg-nsyellow grow">
+        <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
           <When condition={status === 'loading'}>
             <Loading />
           </When>
           <When condition={status !== 'loading'}>
             <>
-              <div className="flex items-center mb3">
-                <div className="flex-auto chicagoflf mv3">
+              <div className="flex items-center mb-4">
+                <div className="flex-auto chicagoflf my-4">
                   <h1>Files</h1>
                 </div>
                 <Button
@@ -442,19 +451,19 @@ export default function Files({ user }) {
               </div>
               <div className="table-responsive">
                 <When condition={hasZeroNfts}>
-                  <p className="tc mv5">
-                    <span className="f1 dib mb3">😢</span>
+                  <p className="text-center my-16">
+                    <span className="text-5xl inline-block mb-4">😢</span>
                     <br />
                     No files
                   </p>
                 </When>
                 <When condition={!hasZeroNfts}>
                   <>
-                    <table className="w-100 collapse">
+                    <table className="w-full collapse">
                       <thead>
                         <tr className="bg-nsgray">
                           <th>Date</th>
-                          {/* <th>
+                          {/* <th> 
                             <span aria-describedby="label-tooltip">
                               Label
                               <Tooltip
@@ -471,7 +480,8 @@ export default function Files({ user }) {
                                 <VscQuestion size={16} />
                               </Tooltip>
                             </span>
-                          </th> */}
+                          </th>
+                          */}
                           <th>
                             <span aria-describedby="cid-tooltip">
                               CID
@@ -559,9 +569,9 @@ export default function Files({ user }) {
                   </>
                 </When>
               </div>
-              <div className="flex flex-wrap justify-center tc mv3">
+              <div className="flex flex-wrap justify-center text-center my-4">
                 <Button
-                  className="mh2 mb2"
+                  className="mx-2 mb-2"
                   disabled={befores.length === 1}
                   onClick={handleFirstClick}
                   id="files-first"
@@ -574,7 +584,7 @@ export default function Files({ user }) {
                   ⇤ First
                 </Button>
                 <Button
-                  className="mh2 mb2"
+                  className="mx-2 mb-2"
                   disabled={befores.length === 1}
                   onClick={handlePrevClick}
                   id="files-previous"
@@ -587,7 +597,7 @@ export default function Files({ user }) {
                   ← Previous
                 </Button>
                 <Button
-                  className="mh2 mb2"
+                  className="mx-2 mb-2"
                   disabled={nfts.length < limit}
                   onClick={handleNextClick}
                   id="files-next"
@@ -604,11 +614,15 @@ export default function Files({ user }) {
           </When>
           <div
             className={clsx(
-              'flex justify-center pt4',
+              'flex justify-center pt-4',
               status === 'loading' && 'hidden'
             )}
           >
-            <Button data-tf-popup="OTxv3w2O" className="mh3 mb3" variant="dark">
+            <Button
+              data-tf-popup="OTxv3w2O"
+              className="mx-4 mb-4"
+              variant="dark"
+            >
               {'Tell us how we are doing'}
             </Button>
           </div>

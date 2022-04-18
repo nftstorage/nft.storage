@@ -7,7 +7,6 @@ import { CID } from 'multiformats'
 import { sha256 } from 'multiformats/hashes/sha2'
 import * as Block from 'multiformats/block'
 import * as CAR from '../utils/car.js'
-import * as constants from '../constants.js'
 
 /**
  * @typedef {import('../bindings').NFT} NFT
@@ -32,7 +31,7 @@ export async function nftStore(event, ctx) {
     if (name !== 'meta') {
       const file = /** @type {File} */ (content)
       const asset = await cluster.importAsset(file, {
-        local: file.size > constants.cluster.localAddThreshold,
+        local: false,
       })
       const cid = CID.parse(asset)
 
@@ -46,7 +45,7 @@ export async function nftStore(event, ctx) {
 
   const blob = new Blob([JSON.stringify(data)])
   const metadata = await cluster.add(blob, {
-    local: blob.size > constants.cluster.localAddThreshold,
+    local: false,
   })
   const block = await Block.encode({
     value: {
@@ -59,7 +58,7 @@ export async function nftStore(event, ctx) {
   })
   const car = await CAR.encode([block.cid], [block])
   const { cid, bytes } = await cluster.addCar(car, {
-    local: car.size > constants.cluster.localAddThreshold,
+    local: false,
   })
 
   await db.createUpload({

@@ -61,7 +61,7 @@ function About() {
       <h3 className="chicagoflf">
         <HashLink id="store">Store</HashLink>
       </h3>
-      <p className="lh-copy">
+      <p className="leading-normal">
         Just upload your data and you&#39;ll receive an IPFS hash of the content
         (a &quot;CID,&quot; or content address) that you can use to make an IPFS
         URL (<code>ipfs://&lt;cid&gt;</code>). Use this IPFS URL in your NFT
@@ -69,7 +69,7 @@ function About() {
         field in your NFT, the image field in your metadata) as a pointer to the
         content itself, so no one can dispute what your NFT is.
       </p>
-      <p className="lh-copy">
+      <p className="leading-normal">
         Filecoin provides long-term storage for the data ensuring that even if
         NFT.Storage is attacked or taken down the NFT data persists! This
         storage is trustlessly verifiable (with on-chain, cryptographic proofs
@@ -94,7 +94,7 @@ function About() {
         </a>
         ).
       </p>
-      <p className="lh-copy">
+      <p className="leading-normal">
         Have additional preferences on where to store your data? Pin your data
         to any storage solution running a{' '}
         <a
@@ -114,13 +114,13 @@ function About() {
       <h3 className="chicagoflf">
         <HashLink id="retrieve">Retrieve</HashLink>
       </h3>
-      <p className="lh-copy">
+      <p className="leading-normal">
         NFT data stored by <strong>NFT.Storage</strong> can be accessed from the
         decentralized IPFS network from <em>any</em> peer that has the content.
         CIDs reference <strong>immutable</strong> content so you can be sure the
         content you access is the content referenced in the NFT.
       </p>
-      <p className="lh-copy">
+      <p className="leading-normal">
         The data can be fetched directly in the browser using{' '}
         <a
           href="https://brave.com/ipfs-support/"
@@ -159,7 +159,7 @@ function About() {
         </a>
         .
       </p>
-      <p className="lh-copy">
+      <p className="leading-normal">
         If fetching content using a public IPFS gateway (e.g., directly using an
         HTTP URL or via Brave), note that the availability and speed of
         retrieving the content depends on the gateway. In cases where the
@@ -171,14 +171,14 @@ function About() {
   )
   return (
     <article className="about-section bg-nsgreen">
-      <div className="mw9 center pa4">
-        <div className="about-text mw9">
+      <div className="max-w-7xl mx-auto p-8 px-6 sm:px-16">
+        <div className="about-text">
           <h2 className="chicagoflf">
             <HashLink id="about">About</HashLink>
           </h2>
-          <div className="two-column-collapsible pv2">
+          <div className="two-column-collapsible py-2">
             <div>
-              <p className="lh-copy">
+              <p className="leading-normal">
                 <strong>NFT.Storage</strong> is a long-term storage service
                 designed for <strong>off-chain</strong> NFT data (like metadata,
                 images, and other assets) for up to 31GiB in size per individual
@@ -208,7 +208,7 @@ function About() {
               </p>
             </div>
             <div>
-              <p className="lh-copy">
+              <p className="leading-normal">
                 NFT.Storage stores many copies of uploaded data on the public
                 IPFS network in two primary ways: in dedicated IPFS servers
                 managed by NFT.Storage, and decentralized on{' '}
@@ -258,7 +258,7 @@ function About() {
         <div className="store-and-retrieve-mobile">
           <div>
             {storeText}
-            <div className="tc mv4">
+            <div className="text-center my-8">
               <img
                 src="images/diagram-store.png"
                 alt="diagram of storage with NFT.Storage"
@@ -270,7 +270,7 @@ function About() {
           </div>
           <div>
             {retrieveText}
-            <div className="tc mv4">
+            <div className="text-center my-8">
               <img
                 src="images/diagram-retrieve.png"
                 alt="diagram of retrieval with NFT.Storage"
@@ -282,21 +282,22 @@ function About() {
           </div>
         </div>
         <div className="relative store-and-retrieve-desktop">
-          <div className="tr">
+          <div className="text-right">
             <img
               src="images/diagram-store-and-retrieve.png"
               srcSet="images/diagram-store-and-retrieve@2x.png 2x"
               alt="diagram of storage and retrieval with NFT.Storage"
               width="1177"
-              style={{ width: '1177px', height: 'auto', maxWidth: '90%' }}
+              className="inline-block"
+              style={{ width: '1177px', height: 'auto', maxWidth: '84%' }}
             />
           </div>
-          <div className="absolute top-0 w-100 h-100 flex justify-between">
+          <div className="absolute top-0 w-full h-full flex justify-between">
             <div className="flex-auto" style={{ maxWidth: '35%' }}>
-              <div className="pt6">{storeText}</div>
+              <div className="pt-32">{storeText}</div>
             </div>
             <div
-              className="flex-auto flex items-center w-50"
+              className="flex-auto flex items-center w-1/2"
               style={{ maxWidth: '35%', paddingBottom: '4rem' }}
             >
               <div>{retrieveText}</div>
@@ -321,16 +322,16 @@ function GettingStarted() {
 
   return (
     <article className="bg-yellow">
-      <div className="mw9 center pa4 pa5-ns">
-        <h2 className="chicagoflf tc mb5">
+      <div className="max-w-7xl mx-auto p-8 sm:p-16">
+        <h2 className="chicagoflf text-center mb-16">
           <HashLink id="getting-started">Getting started is easy</HashLink>
         </h2>
         <div className="getting-started-callout">
-          <img src="/images/getting-started.jpg" alt="getting-started" />
-          <ol className="list pl0 mb2">
+          <img src="/images/getting-started.png" alt="getting-started" />
+          <ol className="list-reset pl-0 mb-2">
             <li>
               <Step>1</Step>
-              <p className="chicagoflf f5 f4-ns center mb4 lh-copy">
+              <p className="chicagoflf text-base sm:text-xl mx-auto mb-8 leading-normal">
                 <Link href="/login">
                   <a className="nsnavy" onClick={onClickHandler}>
                     Create an NFT.Storage account
@@ -343,7 +344,7 @@ function GettingStarted() {
             </li>
             <li>
               <Step>2</Step>
-              <p className="chicagoflf f5 f4-ns center lh-copy">
+              <p className="chicagoflf text-base sm:text-xl mx-auto leading-normal">
                 Use IPFS links when minting your NFT and metadata. As long as
                 your NFT uses IPFS content identifiers (a hash of the data), no
                 one can dispute what content your NFT is referring to!
@@ -351,13 +352,13 @@ function GettingStarted() {
             </li>
           </ol>
         </div>
-        <div className="mv5 center tc">
-          <h4 className="f3-ns f4 mv4 chicagoflf">
+        <div className="my-16 mx-auto text-center">
+          <h4 className="sm:text-2xl text-xl my-8 chicagoflf">
             Are you a developer? We have an API for that!
           </h4>
           <div className="flex justify-center">
             <Button
-              className="mh3 mb3"
+              className="mx-4 mb-4"
               href="/docs"
               // tracking={{ ui: countly.ui.HOME_HERO, action: 'Get Started' }}
             >

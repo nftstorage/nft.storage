@@ -20,7 +20,7 @@ curl -X POST 'https://api.nft.storage/pins' \
   --header 'Content-Type: application/json' \
   -d '{
   "cid": "QmCIDToBePinned",
-  "name": "PreciousData.pdf",
+  "name": "PreciousData.pdf"
 }'
 ```
 

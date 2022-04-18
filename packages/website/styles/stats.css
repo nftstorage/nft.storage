@@ -153,5 +153,5 @@
   max-width: 900px;
   margin: 0 auto;
   /* grid-template-columns: repeat(auto-fit, 20%); */
-  grid-gap: 2rem;
+  grid-gap: clamp(0.5rem, 2vw, 2rem);
 }

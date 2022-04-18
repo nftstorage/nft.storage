@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.44.0](https://github.com/nftstorage/nft.storage/compare/website-v1.43.0...website-v1.44.0) (2022-04-11)
+
+
+### Features
+
+* Q2 2022 roadmap post ([#1714](https://github.com/nftstorage/nft.storage/issues/1714)) ([6962915](https://github.com/nftstorage/nft.storage/commit/6962915885dc819a95ff46dcd8cba995e9a2c21c))
+
+
+### Bug Fixes
+
+* add some required env vars ([#1771](https://github.com/nftstorage/nft.storage/issues/1771)) ([a9e72d4](https://github.com/nftstorage/nft.storage/commit/a9e72d43b9c7a20b2a51c3eeb9f5ae14089a5413))
+* four fe bugs ([#1768](https://github.com/nftstorage/nft.storage/issues/1768)) ([77fc350](https://github.com/nftstorage/nft.storage/commit/77fc3501050fbfbca4add91d75667adf03a07a93))
+* link to current unixfs importer ([#1795](https://github.com/nftstorage/nft.storage/issues/1795)) ([43b0f5f](https://github.com/nftstorage/nft.storage/commit/43b0f5f1ddea77ad26fd5e6063a19afdd2ff79ad))
+
 ## [1.43.0](https://github.com/nftstorage/nft.storage/compare/website-v1.42.0...website-v1.43.0) (2022-04-05)
 
 

@@ -6957,10 +6957,7 @@
 }
 .swagger-ui .wrapper {
   box-sizing: border-box;
-  margin: 0 auto;
-  max-width: 1460px;
-  padding: 0 20px;
-  width: 100%;
+  @apply w-full max-w-7xl px-6 sm:px-16 mx-auto;
 }
 .swagger-ui .opblock-tag-section {
   display: flex;
@@ -7327,6 +7324,7 @@
   display: flex;
   list-style: none;
   padding: 0;
+  margin: 1rem 0;
 }
 .swagger-ui .tab li {
   color: var(--nsgray-600);
@@ -7786,6 +7784,10 @@
   padding: 0;
   display: grid;
   grid-template-columns: 100px auto 1fr max-content;
+}
+
+.swagger-ui .model-box-control {
+  display: inline-block;
 }
 
 .swagger-ui .model-box-control:focus,
@@ -8609,7 +8611,6 @@
   margin: 0 0 0 0.5rem;
   padding: 0.5rem 0.5rem;
   position: relative;
-  top: -0.5rem;
   vertical-align: super;
   text-align: center;
 }

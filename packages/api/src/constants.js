@@ -36,13 +36,6 @@ if (typeof CLUSTER_SERVICE !== 'undefined' && CLUSTER_SERVICE) {
 export const cluster = {
   apiUrl: clusterUrl,
   basicAuthToken: CLUSTER_BASIC_AUTH_TOKEN,
-  /**
-   * When >2.5MB, use local add, because waiting for blocks to be sent to
-   * other cluster nodes can take a long time. Replication to other nodes
-   * will be done async by bitswap instead.
-   */
-  // localAddThreshold: 1024 * 1024 * 2.5,
-  localAddThreshold: 0,
 }
 
 export const database = {
