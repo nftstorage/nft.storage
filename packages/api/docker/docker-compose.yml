@@ -1,6 +1,6 @@
 version: '3.6'
 services:
-  post_rest:
+  post-rest:
     image: postgrest/postgrest:v9.0.0
     depends_on:
       - db
@@ -38,7 +38,7 @@ services:
       - MAILCHIMP_API_KEY
       - LOGTAIL_TOKEN
     depends_on:
-      - post_rest
+      - post-rest
     ports:
       - '8787:8787'
   db:
@@ -52,7 +52,7 @@ services:
   ipfs:
     image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
 
-  ipfs_cluster:
+  ipfs-cluster:
     image: ipfs/ipfs-cluster:latest
     depends_on:
       - ipfs
