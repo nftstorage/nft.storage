@@ -13,5 +13,6 @@ npx esbuild \
   --define:CLUSTER_API_URL='""' \
   --define:CLUSTER_BASIC_AUTH_TOKEN='""' \
   --define:DEBUG='false' \
-  ./src/constants.js \
-  ;
+  --platform=node \
+  --target=node16 \
+  src
