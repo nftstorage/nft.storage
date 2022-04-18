@@ -4,11 +4,11 @@ import { osName } from 'react-device-detect'
 /**
  * @param {any} props
  */
-export function ArchSwitch(props) {
+export function ArchSwitch({ children }) {
   return (
     <div className="arch-container mt-6">
-      {props.children.map(
-        (/** @type {{ props: { case: string; }; }} */ element) => {
+      {children.length &&
+        children.map((/** @type {{ props: { case: string; }; }} */ element) => {
           if (
             !element.props ||
             !element.props.case ||
@@ -16,8 +16,9 @@ export function ArchSwitch(props) {
           ) {
             return element
           }
-        }
-      )}
+
+          return null
+        })}
     </div>
   )
 }
