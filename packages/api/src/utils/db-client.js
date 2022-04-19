@@ -602,9 +602,7 @@ export class DBClient {
 
     if (primaryMetricsError || dealsSizeHistoryError || dealsSizeError) {
       // @ts-ignore
-      throw new DBError(
-        primaryMetricsError || dealsSizeHistoryError || dealsSizeError
-      )
+      throw new DBError('Error fetching stats.')
     }
 
     /** @type any  */
