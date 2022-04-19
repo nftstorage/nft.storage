@@ -43,20 +43,21 @@ const sentryOptions = {
 /**
  * Obtains a route context object.
  *
- * @param {FetchEvent} event
  * @param {Record<string, string>} params Parameters from the URL
  * @returns {Promise<import('../bindings').RouteContext>}
  */
-export async function getContext(event, params) {
-  const sentry = new Toucan({
-    event,
-    ...sentryOptions,
-  })
-  const log = new Logging(event, {
-    token: secrets.logtail,
-    debug: isDebug,
-    sentry,
-  })
+export async function getContext(params) {
+  // const sentry = new Toucan({
+  //   ...sentryOptions,
+  // })
+  const log = new Logging(
+    {},
+    {
+      token: secrets.logtail,
+      debug: isDebug,
+      // sentry,
+    }
+  )
 
   const ucanService = await Service.fromPrivateKey(secrets.privateKey)
   return { params, db, backup, log, ucanService }

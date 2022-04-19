@@ -1,6 +1,6 @@
 import { parse } from 'regexparam'
 import { database, cluster } from '../../constants/constants.js'
-
+import { ClientRequest } from 'http'
 /**
  * @typedef {{ params: Record<string, string> }} BasicRouteContext
  * @typedef {(req: Request) => boolean | Record<string,string>} Condition
@@ -10,11 +10,11 @@ import { database, cluster } from '../../constants/constants.js'
  */
 
 /**
- * @typedef {(event: FetchEvent, ctx: RouteContext) => Promise<Response> | Response} Handler
+ * @typedef {(req: Request) => Promise<Response> | Response} Handler
  */
 
 /**
- * @typedef {(req: Request, err: Error, ctx: RouteContext) => Response} ErrorHandler
+ * @typedef {(req: Request, err: Error) => Response} ErrorHandler
  */
 
 /**
@@ -46,7 +46,7 @@ function matchParams(path, result) {
  */
 class Router {
   /**
-   * @param {(e: FetchEvent, params: Record<string, string>) => Promise<RouteContext>} getRouteContext
+   * @param {(params: Record<string, string>) => Promise<RouteContext>} getRouteContext
    * @param {object} [options]
    * @param {BasicHandler} [options.onNotFound]
    * @param {ErrorHandler} [options.onError]
@@ -130,7 +130,7 @@ class Router {
    * Resolve returns the matching route for a request that returns
    * true for all conditions (if any).
    *
-   * @param {Request} req
+   * @param {ClientRequest} req
    * @return {[Handler|false, Record<string,string>, ResponseHandler[]]}
    */
   resolve(req) {
@@ -147,19 +147,18 @@ class Router {
   }
 
   /**
-   * @param {FetchEvent} event
+   * @param {ClientRequest} req
    */
-  async route(event) {
-    const req = event.request
+  async route(req) {
     const [handler, params, postHandlers] = this.resolve(req)
-    const ctx = await this.getRouteContext(event, params)
+    // const ctx = await this.getRouteContext(event, params)
     let rsp
 
-    ctx.log.time('request')
+    // ctx.log.time('request')
 
     if (handler) {
       try {
-        rsp = await handler(event, ctx)
+        rsp = await handler(req)
       } catch (err) {
         // @ts-ignore
         rsp = this.options.onError(req, err, ctx)
@@ -177,17 +176,16 @@ class Router {
   /**
    * Listen to fetch event
    *
-   * @param {FetchEvent} event
+   * @param {ClientRequest} req
    */
-  listen(event) {
-    const url = new URL(event.request.url)
+  async listen(req) {
+    const url = new URL(`${req.protocol}://${req.headers.host}${req.url}`)
     // Add more if needed for other backends
     const passThrough = [database.url, cluster.apiUrl]
-
     // Ignore http requests from the passthrough list above
-    if (!passThrough.includes(`${url.protocol}//${url.host}`)) {
-      event.respondWith(this.route(event))
-    }
+    if (!passThrough.includes(`${url.protocol}//${url.host}`)) return
+    const res = await this.route(req)
+    console.log({ res })
   }
 }
 

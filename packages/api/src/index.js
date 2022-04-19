@@ -1,3 +1,5 @@
+const http = require('http')
+
 import { Router } from './utils/router.js'
 import { notFound } from './utils/utils.js'
 import { HTTPError } from './errors.js'
@@ -132,4 +134,11 @@ r.add('post', '/api/upload', withMode(nftUpload, RW), [postCors])
 r.add('delete', '/api/:cid', withMode(nftDelete, RW), [postCors])
 
 r.add('all', '*', notFound)
-addEventListener('fetch', r.listen.bind(r))
+
+const server = http.createServer((req, res) => {
+  // console.log({req})
+  r.listen(req)
+  res.end()
+})
+server.listen(8787, () => {})
+// addEventListener('fetch', r.listen.bind(r))
