@@ -292,7 +292,7 @@ export default function Files({ user }) {
                   {isLoading ? (
                     <VscLoading
                       height={18}
-                      className="inline-block relative spin"
+                      className="inline-block relative animate-spin"
                       fill="currentColor"
                     />
                   ) : (

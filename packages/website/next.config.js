@@ -17,6 +17,11 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const nextConfig = withBundleAnalyzer({
   trailingSlash: true,
   reactStrictMode: true,
+  experimental: {
+    images: {
+      layoutRaw: true,
+    },
+  },
   images: {
     loader: 'custom',
   },
@@ -81,7 +86,5 @@ const config =
         dist: shortHash,
         deploy: { env },
       })
-
-config.future = { webpack5: true }
 
 module.exports = config

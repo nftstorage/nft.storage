@@ -5,7 +5,6 @@
 @import './colors.css';
 @import './utils.css';
 @import './animations.css';
-@import './logos.css';
 @import './home.css';
 @import './about.css';
 @import './stats.css';
@@ -26,6 +25,12 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
 @media screen and (min-width: 52em) {

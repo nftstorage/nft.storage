@@ -14,7 +14,7 @@
     "test:ci": "jest --runInBand --maxWorkers=4",
     "lint:fix": "eslint './**/*.js' --fix-dry-run",
     "analyze": "ANALYZE=true next build",
-    "storybook": "ls && start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "dependencies": {
