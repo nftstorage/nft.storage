@@ -27,6 +27,7 @@ export default {
     },
     overlayClassName: {
       control: 'text',
+      defaultValue: 'ns-tooltip',
     },
   },
 }
@@ -43,7 +44,7 @@ const Template = (
   args
 ) => (
   <Tooltip {...args}>
-    <p className="font-sans text-xl">Hello</p>
+    <button className="button">Hello</button>
   </Tooltip>
 )
 
