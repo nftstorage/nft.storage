@@ -564,65 +564,63 @@ export class DBClient {
       ])
 
     const dagByteSizeQuery = metricsQuery
-      .select('name, dimensions, value, collected_at')
+      .select('name, dimensions, value')
       .match({
         name: 'dagcargo_project_bytes_in_active_deals',
         dimensions: '{{project,nft.storage}}',
       })
-      .order('collected_at', { ascending: true })
       .single()
 
-    const d = new Date()
-    d.setDate(d.getDate() - 7)
+    const weekAgo = new Date()
+    weekAgo.setDate(weekAgo.getDate() - 7)
 
     const dagByteSizeHistory = metricsLogQuery
-      .select('name, dimensions, value, collected_at')
+      .select('name, dimensions, value')
       .match({
         name: 'dagcargo_project_bytes_in_active_deals',
         dimensions: '{{project,nft.storage}}',
       })
-      .lte('collected_at', d.toISOString())
+      .lte('collected_at', weekAgo.toISOString())
       .order('collected_at', { ascending: false })
+      .range(0, 1)
       .single()
 
-    try {
-      const fetchAllMetrics = await Promise.all([
-        primaryMetricQuery,
-        dagByteSizeQuery,
-        dagByteSizeHistory,
-      ])
-
-      const { data: primaryMetrics, error: primaryMetricsError } =
-        fetchAllMetrics[0]
-
-      const { data: dealsSize, error: dealsSizeError } = fetchAllMetrics[1]
-
-      const { data: dealsSizeHistory, error: dealsSizeHistoryError } =
-        fetchAllMetrics[2]
-
-      if (primaryMetricsError || dealsSizeHistoryError || dealsSizeError) {
-        // @ts-ignore
-        throw new DBError(error)
-      }
-
-      /** @type any  */
-      const outbound_data = {}
-
-      // Simple splatting of the metrics from first query
-      if (primaryMetrics && primaryMetrics.length) {
-        for (const metric of primaryMetrics) {
-          outbound_data[metric.name] = metric.value
-        }
-      }
-
-      outbound_data.deals_size_total = dealsSize.value
-      outbound_data.deals_size_total_prev = dealsSizeHistory.value
-
-      return outbound_data
-    } catch (err) {
-      // @ts-ignore
+    const [primaryRes, dagSizeRes, dagSizeHistRes] = await Promise.all([
+      primaryMetricQuery,
+      dagByteSizeQuery,
+      dagByteSizeHistory,
+    ]).catch((err) => {
       throw new Error(err)
+    })
+
+    const { data: primaryMetrics, error: primaryMetricsError } = primaryRes
+
+    const { data: dealsSize, error: dealsSizeError } = dagSizeRes
+
+    const { data: dealsSizeHistory, error: dealsSizeHistoryError } =
+      dagSizeHistRes
+
+    if (primaryMetricsError || dealsSizeHistoryError || dealsSizeError) {
+      // @ts-ignore
+      throw new DBError(
+        primaryMetricsError || dealsSizeHistoryError || dealsSizeError
+      )
     }
+
+    /** @type any  */
+    const outboundData = {}
+
+    // Simple splatting of the metrics from first query
+    if (primaryMetrics && primaryMetrics.length) {
+      for (const metric of primaryMetrics) {
+        outboundData[metric.name] = metric.value
+      }
+    }
+
+    outboundData.deals_size_total = dealsSize.value
+    outboundData.deals_size_total_prev = dealsSizeHistory.value
+
+    return outboundData
   }
 }
 

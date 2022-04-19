@@ -10,7 +10,7 @@ describe('Get Stats', () => {
     client = await createClientWithUser()
   })
 
-  it('should return proper response for cid v1', async () => {
+  it('Should return proper response for /stats route, based on seeded demoData', async () => {
     const demoData = {
       deals_size_total: 169389985753391,
       deals_size_total_prev: 169334115720738,
