@@ -546,6 +546,11 @@ export class DBClient {
     return data[0].value
   }
 
+  /**
+   * Get stats for uploads and cargo deals
+   *
+   * @returns {Promise<import('./db-client-types').StatsPayload>}
+   */
   async getStats() {
     /** @type {PostgrestQueryBuilder<definitions['metric']>} */
     const nonCargoMetricQuery = this.client.from('metric')
