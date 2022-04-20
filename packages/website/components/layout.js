@@ -15,9 +15,9 @@ const MaintenanceBanner = () => {
     () => getStatusPageSummary()
   )
 
-  const incidents =
-    (statusPageData?.incidents || []).filter(
-      (/** @type {{ resolved_at: string; }} */ incident) => !!incident.resolved_at)
+  const incidents = (statusPageData?.incidents || []).filter(
+    (/** @type {{ resolved_at: string; }} */ incident) => !incident.resolved_at
+  )
 
   const scheduledMaintenances =
     statusPageData?.scheduled_maintenances.filter(
