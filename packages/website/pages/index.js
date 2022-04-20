@@ -255,7 +255,7 @@ function About() {
             </div>
           </div>
         </div>
-        <div className="store-and-retrieve-mobile">
+        <div className="block xl:hidden">
           <div>
             {storeText}
             <div className="text-center my-8">
@@ -264,7 +264,7 @@ function About() {
                 alt="diagram of storage with NFT.Storage"
                 width="1152"
                 height="1650"
-                style={{ maxWidth: '576px', height: 'auto', width: '100%' }}
+                className="block mx-auto w-full max-w-[575px]"
               />
             </div>
           </div>
@@ -276,12 +276,12 @@ function About() {
                 alt="diagram of retrieval with NFT.Storage"
                 width="1262"
                 height="1260"
-                style={{ maxWidth: '631px', height: 'auto', width: '100%' }}
+                className="block mx-auto w-full max-w-[630px]"
               />
             </div>
           </div>
         </div>
-        <div className="relative store-and-retrieve-desktop">
+        <div className="relative hidden xl:block">
           <div className="text-right">
             <img
               src="images/diagram-store-and-retrieve.png"
@@ -323,12 +323,16 @@ function GettingStarted() {
   return (
     <article className="bg-yellow">
       <div className="max-w-7xl mx-auto p-8 sm:p-16">
-        <h2 className="chicagoflf text-center mb-16">
+        <h2 className="chicagoflf text-center mb-16 text-black">
           <HashLink id="getting-started">Getting started is easy</HashLink>
         </h2>
-        <div className="getting-started-callout">
-          <img src="/images/getting-started.png" alt="getting-started" />
-          <ol className="list-reset pl-0 mb-2">
+        <div className="grid gap-[clamp(2rem,_6vw,_6rem)] md:grid-cols-2 items-center">
+          <img
+            src="/images/getting-started.png"
+            alt="getting-started"
+            className="border-solid border-2 w-full"
+          />
+          <ol className="list-none pl-0 mb-2">
             <li>
               <Step>1</Step>
               <p className="chicagoflf text-base sm:text-xl mx-auto mb-8 leading-normal">

@@ -4,9 +4,6 @@ module.exports = {
     './components/**/*.{js,ts,jsx,tsx}',
     './components/**/*.stories.{js,ts,jsx,tsx}',
   ],
-  corePlugins: {
-    preflight: false,
-  },
   theme: {
     colors: {
       transparent: 'transparent',
@@ -38,5 +35,5 @@ module.exports = {
     },
     extend: {},
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/line-clamp')],
 }

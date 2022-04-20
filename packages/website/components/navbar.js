@@ -225,7 +225,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
         className={clsx(
           bgColor,
           'flex mobile-nav transition-all fixed top-0 left-0 bottom-0 w-full',
-          isMenuOpen ? 'opacity-100' : 'opacity-0 invisible'
+          isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         )}
         style={{ zIndex: 100 }}
         aria-hidden={isMenuOpen}

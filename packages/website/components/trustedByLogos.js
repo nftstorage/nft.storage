@@ -8,7 +8,7 @@ import Img from '../components/cloudflareImage'
  */
 const Logo = ({ src, alt }) => (
   <Img
-    className="w-full object-contain object-center !border !border-solid !border-gray-200 rounded !py-4 !px-6 select-none mx-auto"
+    className="w-full h-[80px] object-contain object-center !border !border-solid !border-gray-200 rounded !py-4 !px-6 select-none mx-auto"
     src={`/images/marketplace-logos/${src}`}
     alt={alt}
     width="100%"
