@@ -18,7 +18,10 @@ const MaintenanceBanner = () => {
   const incidents =
     statusPageData?.incidents.filter(
       (/** @type {{ resolved_at: string; }} */ incident) =>
-        incident.resolved_at === null
+        incident.resolved_at === null ||
+        incident.resolved_at === '' ||
+        incident.resolved_at === 'null' ||
+        incident.resolved_at === 'undefined'
     ) || []
 
   const scheduledMaintenances =
