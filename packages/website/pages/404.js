@@ -25,24 +25,11 @@ export default function Custom404() {
 
   return (
     <main className="bg-nslime grow flex">
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          textAlign: 'center',
-          padding: '10rem',
-        }}
-      >
+      <div className="w-full h-full text-center p-[10rem]">
         <img
           height="1120"
           width="1844"
-          style={{
-            margin: 'auto',
-            width: '40vw',
-            height: 'auto',
-            maxHeight: '1120px',
-          }}
-          className="mt-8 mb-2 sm:mb-8 inline-block"
+          className="m-auto w-[40vw] h-auto max-h-[1120px] mt-8 mb-2 sm:mb-8 inline-block"
           src="/images/image-404.gif"
           alt="Page Not Found"
         />
