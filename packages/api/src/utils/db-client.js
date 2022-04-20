@@ -589,36 +589,31 @@ export class DBClient {
       primaryMetricQuery,
       dagByteSizeQuery,
       dagByteSizeHistory,
-    ]).catch((err) => {
-      throw new Error(err)
-    })
+    ])
 
-    const { data: primaryMetrics, error: primaryMetricsError } = primaryRes
-
-    const { data: dealsSize, error: dealsSizeError } = dagSizeRes
-
-    const { data: dealsSizeHistory, error: dealsSizeHistoryError } =
-      dagSizeHistRes
-
-    if (primaryMetricsError || dealsSizeHistoryError || dealsSizeError) {
-      // @ts-ignore
-      throw new DBError('Error fetching stats.')
+    if (primaryRes.error || dagSizeHistRes.error || dagSizeRes.error) {
+      // this allows us to avoid changing the construtor of db error to allow null
+      const err = Object.assign(
+        {},
+        primaryRes.error || dagSizeHistRes.error || dagSizeRes.error
+      )
+      throw new DBError(err)
     }
 
-    /** @type any  */
-    const outboundData = {}
+    /** @type {import('./db-client-types').StatsPayload}  */
+    const stats = {}
 
     // Simple splatting of the metrics from first query
-    if (primaryMetrics && primaryMetrics.length) {
-      for (const metric of primaryMetrics) {
-        outboundData[metric.name] = metric.value
+    if (primaryRes.data && primaryRes.data.length) {
+      for (const metric of primaryRes.data) {
+        stats[metric.name] = metric.value
       }
     }
 
-    outboundData.deals_size_total = dealsSize.value
-    outboundData.deals_size_total_prev = dealsSizeHistory.value
+    stats.deals_size_total = dagSizeRes.data.value
+    stats.deals_size_total_prev = dagSizeHistRes.data.value
 
-    return outboundData
+    return stats
   }
 }
 
