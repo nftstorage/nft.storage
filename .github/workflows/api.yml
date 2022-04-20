@@ -10,6 +10,7 @@ on:
     paths:
       - 'packages/api/**'
       - '.github/workflows/api.yml'
+      - 'yarn.lock'
 jobs:
   test:
     runs-on: ubuntu-latest
