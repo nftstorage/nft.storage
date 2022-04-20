@@ -13,7 +13,7 @@ CREATE TYPE user_tag_type AS ENUM
 (
   'HasAccountRestriction',
   'HasPsaAccess',
-  'HasSuperHotAccess'
+  'HasSuperHotAccess',
   'StorageLimitBytes'
 );
 
