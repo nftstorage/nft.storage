@@ -40,9 +40,10 @@ export default function Box({
           'border',
           'border-solid',
           'border-black',
+          'top-2',
+          'right-2',
           className
         )}
-        style={{ top: 10, right: 8 }}
       >
         {children}
       </div>

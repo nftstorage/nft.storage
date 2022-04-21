@@ -18,11 +18,10 @@ const SocialLink = ({ url, Icon, params }) => {
       target="_blank"
       rel="noreferrer"
       aria-label="social media icon"
-      style={{ color: 'unset' }}
     >
-      <div className="social-link hologram interactive ltblue flex flex-col items-center justify-center border-solid border-black bg-white w8 h8 mr-4">
-        <Icon />
-      </div>
+      <span className="text-black social-link hologram interactive ltblue flex flex-col items-center justify-center border-solid border-black bg-white w8 h8 mr-4">
+        <Icon className="text-current" />
+      </span>
     </a>
   )
 }

@@ -12,10 +12,7 @@ export default function HashLink({ id, children }) {
       href={`#${id}`}
       className="group relative no-underline color-inherit"
     >
-      <span
-        className="absolute opacity-0 group-hover:opacity-100 transition-all"
-        style={{ left: '-0.85em' }}
-      >
+      <span className="absolute -left-6 -top-1 opacity-0 group-hover:opacity-100 transition-all">
         #
       </span>
       {children}

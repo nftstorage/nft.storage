@@ -78,10 +78,10 @@ const Post = ({ post }) => {
           className="h-card object-cover object-center"
         />
         <div className="mt-14 max-w-3xl px-8">
-          <div className="post-meta mb-8">
+          <div className="mb-8">
             <div className="flex flex-col mb-8 justify-between items-center">
               <div className="flex justify-between items-end w-full">
-                <div className="social-links flex">
+                <div className="flex">
                   <SocialLink
                     url={twitterShareLink}
                     params={twitterParams}
@@ -102,7 +102,7 @@ const Post = ({ post }) => {
                   href={{
                     pathname: '/blog/subscribe',
                   }}
-                  className="post-subscribe-button items-center"
+                  className="items-center h-8"
                   id="post-subscribe"
                   tracking={{
                     ui: countly.ui.BLOG_POST,

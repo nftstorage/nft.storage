@@ -124,9 +124,12 @@ const Paginated = ({ items, pageNumber, setPageNumber }) => {
         disabled={disabled}
         variant="tag"
         className={clsx(
-          'btn-secondary ttu items-center',
-          isActive && 'active',
-          disabled && 'disabled'
+          'border border-black bg-peach m-1 h-8 !min-w-0 items-center',
+          !isActive &&
+            !disabled &&
+            'hover:bg-orange hover:border-red hover:text-peach',
+          isActive && '!bg-black !text-white cursor-default',
+          disabled && 'disabled opacity-50 cursor-default'
         )}
       >
         {children}
@@ -184,7 +187,7 @@ const Paginated = ({ items, pageNumber, setPageNumber }) => {
  * @param {import('../../components/types').PostMeta[]} props.currentItems
  */
 const Items = ({ currentItems }) => (
-  <div className="card-grid pt-2">
+  <div className="card-grid pt-8">
     {currentItems.map((post, i) => (
       <Card key={i} post={post} />
     ))}
@@ -284,9 +287,9 @@ const Blog = ({ posts }) => {
 
   return (
     <main className="flex flex-auto blog bg-nspeach w-full">
-      <div className="blog-body w-full">
+      <div className="w-full">
         <HighlightCard post={first} />
-        <div className="blog-content w-full max-w-7xl px-6 sm:px-16">
+        <div className="w-full max-w-7xl px-6 sm:px-16 mx-auto">
           <TagsContainer
             filters={filters}
             handleTagClick={handleTagClick}
