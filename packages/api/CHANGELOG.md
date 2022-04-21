@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.21.0](https://github.com/nftstorage/nft.storage/compare/api-v2.20.0...api-v2.21.0) (2022-04-21)
+
+
+### Features
+
+* add HasSuperHotAccess user tag ([#1838](https://github.com/nftstorage/nft.storage/issues/1838)) ([019a505](https://github.com/nftstorage/nft.storage/commit/019a505e8f4bb93a24b8c480646779f5e4b66326))
+* add permissions endpoint ([#1753](https://github.com/nftstorage/nft.storage/issues/1753)) ([2f5b6fb](https://github.com/nftstorage/nft.storage/commit/2f5b6fb2660231e4591f37e29389c41ac7045605))
+
+
+### Bug Fixes
+
+* pin magic admin ([#1841](https://github.com/nftstorage/nft.storage/issues/1841)) ([1bec0b0](https://github.com/nftstorage/nft.storage/commit/1bec0b03dcf13f700ceeaf2a0e3cce8f291f0072))
+* remove cluster API URL from /version endpoint ([#1843](https://github.com/nftstorage/nft.storage/issues/1843)) ([cece7ce](https://github.com/nftstorage/nft.storage/commit/cece7ce7773b9c37a18d8c0f33b0ec307474e294))
+
 ## [2.20.0](https://github.com/nftstorage/nft.storage/compare/api-v2.19.0...api-v2.20.0) (2022-04-12)
 
 
