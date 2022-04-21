@@ -33,7 +33,6 @@ import {
   DEFAULT_MODE,
   setMaintenanceModeGetter,
 } from './middleware/maintenance.js'
-import { cluster } from './constants.js'
 import { getContext } from './utils/context.js'
 import { withAuth } from './middleware/auth.js'
 
@@ -68,7 +67,6 @@ r.add(
       commit: COMMITHASH,
       branch: BRANCH,
       mode: getMaintenanceMode(),
-      cluster: cluster.apiUrl,
     })
   },
   [postCors]
