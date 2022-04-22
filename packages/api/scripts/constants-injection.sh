@@ -20,10 +20,3 @@ node_modules/esbuild/bin/esbuild \
   --define:COMMITHASH='"test"' \
   --define:BRANCH='"test"' \
   ./src/index.js > dist/worker.js
-
-
-
-
-  #  --platform=node \
-  # --target=node16 \
-  # --banner:js='import { createRequire as topLevelCreateRequire } from "module"; const require = topLevelCreateRequire(import.meta.url);' \
