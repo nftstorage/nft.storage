@@ -1,44 +1,3 @@
-.blog {
-  --card-size: 400px;
-  --dark-gray: #9f9f9f;
-}
-
-.blog p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0;
-  font-weight: unset;
-  line-height: 1.5;
-}
-.blog p {
-  line-height: 1.5;
-  margin-bottom: 1rem;
-}
-.blog a {
-  color: unset;
-}
-.blog ul {
-  padding: 0;
-}
-.blog li {
-  list-style-type: none;
-}
-
-.blog .h-card {
-  max-height: var(--card-size);
-}
-
-@media screen and (max-width: 880px) {
-  .blog .h-card {
-    max-height: auto;
-    height: var(--card-size);
-  }
-}
-
 @supports not (aspect-ratio: auto) {
   .card-thumb {
     padding-top: 100%;
@@ -49,12 +8,6 @@ h6 {
 }
 
 /*Components*/
-
-.blog .blog-highlight-card {
-  min-height: var(--card-size);
-  background: var(--nsltblue);
-}
-
 .blog .card-grid {
   display: grid;
   /* compenstate for cards being offset & center */
@@ -94,13 +47,4 @@ h6 {
   line-height: 1.25;
   font-size: clamp(26px, 0.6rem + 2vw, 2.5rem);
   max-width: 32ch;
-}
-
-.highlight-card-text .description {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-height: 1.5;
-  margin: 1rem 0;
 }

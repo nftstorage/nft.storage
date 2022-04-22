@@ -187,7 +187,7 @@ const Paginated = ({ items, pageNumber, setPageNumber }) => {
  * @param {import('../../components/types').PostMeta[]} props.currentItems
  */
 const Items = ({ currentItems }) => (
-  <div className="card-grid pt-8">
+  <div className="card-grid grid gap-8 justify-center pt-8">
     {currentItems.map((post, i) => (
       <Card key={i} post={post} />
     ))}
@@ -206,6 +206,7 @@ function TagsContainer({ tags, filters, handleTagClick }) {
   return (
     <div className="button-tags-container py-4 max-w-7xl">
       <Tags
+        className="justify-center sm:justify-start border-b border-black pb-4"
         tags={tags.map((tag) => {
           const normTag = tag.toLowerCase()
           return {

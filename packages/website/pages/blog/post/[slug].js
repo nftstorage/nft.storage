@@ -75,9 +75,9 @@ const Post = ({ post }) => {
         <Img
           src={post.meta.thumbnail}
           alt={`Banner for ${post.meta.title}`}
-          className="h-card object-cover object-center"
+          className="max-h-auto h-[400px] md:max-h-[400px] object-cover object-center"
         />
-        <div className="mt-14 max-w-3xl px-8">
+        <div className="mt-14 max-w-2xl px-8">
           <div className="mb-8">
             <div className="flex flex-col mb-8 justify-between items-center">
               <div className="flex justify-between items-end w-full">

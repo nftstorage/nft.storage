@@ -21,6 +21,11 @@ export interface Tag {
   selected?: boolean
 }
 
+export interface Tags {
+  tags: Tag[] | string[]
+  className?: string
+}
+
 interface Logo {
   src: string
   alt: string

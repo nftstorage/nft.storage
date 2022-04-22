@@ -54,9 +54,9 @@ export const Card = ({ post }) => (
  * @returns {JSX.Element}
  */
 export const HighlightCard = ({ post }) => (
-  <div className="flex justify-center blog-highlight-card w-full">
+  <div className="flex justify-center bg-ltblue min-h-[400px] w-full">
     <div className="flex relative w-full max-w-7xl px-6 sm:px-16">
-      <div className="flex border-y border-black">
+      <div className="flex border-y border-black w-full">
         <div className="flex justify-between flex-row flex-1 w-1/2">
           <div className="flex flex-col justify-between h-full z-10 py-7">
             <div className="highlight-card-text">
@@ -76,7 +76,7 @@ export const HighlightCard = ({ post }) => (
                 </Link>
               </h1>
               <p
-                className="max-w-lg text-base sm:text-xl mb-2 description"
+                className="max-w-lg text-base sm:text-xl line-clamp-2 mt-2 mb-4"
                 title={post.description}
               >
                 {post.description}
