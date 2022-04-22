@@ -309,6 +309,23 @@ export default function Files({ user }) {
     )
   }
 
+  const UploadFileButton = () => (
+    <Button
+      disabled={user?.tags.HasAccountRestriction}
+      href={{
+        pathname: '/new-file',
+      }}
+      className="flex-none"
+      id="upload"
+      tracking={{
+        ui: countly.ui.FILES,
+        action: 'Upload File',
+      }}
+    >
+      + Upload
+    </Button>
+  )
+
   return (
     <>
       <Script src="//embed.typeform.com/next/embed.js" />
@@ -323,19 +340,24 @@ export default function Files({ user }) {
                 <div className="flex-auto chicagoflf my-4">
                   <h1>Files</h1>
                 </div>
-                <Button
-                  href={{
-                    pathname: '/new-file',
-                  }}
-                  className="flex-none"
-                  id="upload"
-                  tracking={{
-                    ui: countly.ui.FILES,
-                    action: 'Upload File',
-                  }}
-                >
-                  + Upload
-                </Button>
+                {user?.tags.HasAccountRestriction ? (
+                  <Tooltip
+                    id="blocked-upload-file-booltip"
+                    placement="left"
+                    overlay={
+                      <span style={{ width: 160 }}>
+                        You are unable to upload files when your account is
+                        blocked. Please contact support@nft.storage
+                      </span>
+                    }
+                  >
+                    <span style={{ paddingLeft: 10 }}>
+                      <UploadFileButton />
+                    </span>
+                  </Tooltip>
+                ) : (
+                  <UploadFileButton />
+                )}
               </div>
               <div className="table-responsive">
                 <When condition={hasZeroNfts}>

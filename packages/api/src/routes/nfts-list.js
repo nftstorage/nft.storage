@@ -1,6 +1,6 @@
 import { Validator } from '@cfworker/json-schema'
 import { JSONResponse } from '../utils/json-response.js'
-import { validate } from '../utils/auth.js'
+import { checkAuth } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 import { HTTPError } from '../errors.js'
 
@@ -18,7 +18,7 @@ const validator = new Validator({
 
 /** @type {import('../bindings').Handler} */
 export async function nftList(event, ctx) {
-  const { user } = await validate(event, ctx)
+  const { user } = checkAuth(ctx)
   const { db } = ctx
   const { searchParams } = new URL(event.request.url)
   const options = {

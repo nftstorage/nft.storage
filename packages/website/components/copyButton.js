@@ -1,4 +1,3 @@
-import copyToClipboard from 'copy-to-clipboard'
 import Copy from '../icons/copy'
 import { useState, useEffect } from 'react'
 import clsx from 'clsx'
@@ -43,7 +42,9 @@ function CopyButton({
   }
 
   function handleCopy() {
-    text && copyToClipboard(text)
+    if (text) {
+      navigator.clipboard.writeText(text)
+    }
     handlePopup()
   }
 

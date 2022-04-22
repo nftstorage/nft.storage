@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { TrustedBy } from '../components/trustedByLogos'
 import fs from 'fs'
-import { formatBytes, calculateStats } from '../lib/statsUtils'
+import { calculateStats } from '../lib/statsUtils'
+import Img from '../components/cloudflareImage'
 import { API } from '../lib/api'
 import Loading from '../components/loading'
-import { abbreviateNumber } from 'js-abbreviation-number'
-import Img from '../components/cloudflareImage'
+import bytes from 'bytes'
 
 /**
  *
@@ -131,7 +131,11 @@ export default function Stats({ logos }) {
                   <p className="chicagoflf">Total uploads to NFT.Storage</p>
                   <figure className={figureClass}>
                     {statsLoading && <Loading />}
-                    {abbreviateNumber(stats.totalUploads || 0, 1)}
+                    {new Intl.NumberFormat('en-GB', {
+                      notation: 'compact',
+                      compactDisplay: 'short',
+                      maximumFractionDigits: 1,
+                    }).format(stats.totalUploads || 0)}
                   </figure>
                   <p
                     className={`chicagoflf ${
@@ -163,7 +167,7 @@ export default function Stats({ logos }) {
                   </p>
                   <figure className={figureClass}>
                     {statsLoading && <Loading />}
-                    {formatBytes(stats.deals_size_total || 0, 2)}
+                    {bytes(stats.deals_size_total || 0, { decimalPlaces: 2 })}
                   </figure>
                   <p
                     className={`chicagoflf ${

@@ -1,10 +1,10 @@
-import { validate } from '../utils/auth.js'
+import { checkAuth } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { parse } from 'ucan-storage/did'
 
 /** @type {import('../bindings').Handler} */
 export const userDIDRegister = async (event, ctx) => {
-  const { user } = await validate(event, ctx)
+  const { user } = checkAuth(ctx)
   const { db } = ctx
   const body = await event.request.json()
 

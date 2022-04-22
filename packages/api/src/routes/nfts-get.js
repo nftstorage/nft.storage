@@ -1,6 +1,6 @@
 import { HTTPError } from '../errors.js'
 import { JSONResponse } from '../utils/json-response.js'
-import { validate } from '../utils/auth.js'
+import { checkAuth, validate } from '../utils/auth.js'
 import { parseCid } from '../utils/utils.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 
@@ -11,7 +11,7 @@ import { toNFTResponse } from '../utils/db-transforms.js'
 /** @type {import('../bindings').Handler} */
 export const nftGet = async (event, ctx) => {
   const { params, db } = ctx
-  const { user } = await validate(event, ctx)
+  const { user } = checkAuth(ctx)
   const cid = parseCid(params.cid)
   const nft = await db.getUpload(cid.sourceCid, user.id)
   if (nft) {

@@ -11,6 +11,7 @@ import Alert from '../components/alert.js'
 import Button from '../components/button.js'
 import Link from 'next/link'
 import Cross from '../icons/cross'
+import Tooltip from '../components/tooltip.js'
 
 export function getStaticProps() {
   return {
@@ -23,7 +24,15 @@ export function getStaticProps() {
   }
 }
 
-export default function NewFile() {
+/**
+ * @typedef {Object} NewFileProps
+ * @prop {import('components/types').User} user
+ */
+
+/**
+ * @param {NewFileProps} props
+ */
+export default function NewFile({ user }) {
   const router = useRouter()
   const queryClient = useQueryClient()
   const [uploading, setUploading] = useState(false)
@@ -87,6 +96,23 @@ export default function NewFile() {
       }
     }
   }
+
+  const UploadFileButton = () => (
+    <Button
+      className="bg-nslime"
+      type="submit"
+      disabled={uploading}
+      id="upload-file"
+      tracking={{
+        event: countly.events.FILE_UPLOAD_CLICK,
+        ui: countly.ui.NEW_FILE,
+      }}
+    >
+      {uploading
+        ? `Uploading...${percentComplete ? `(${percentComplete}%)` : ''}`
+        : 'Upload'}
+    </Button>
+  )
 
   return (
     <main className="bg-nsyellow grow">
@@ -155,22 +181,24 @@ export default function NewFile() {
               </p>
             </details>
             <div className="my-4">
-              <Button
-                className="bg-nslime"
-                type="submit"
-                disabled={uploading}
-                id="upload-file"
-                tracking={{
-                  event: countly.events.FILE_UPLOAD_CLICK,
-                  ui: countly.ui.NEW_FILE,
-                }}
-              >
-                {uploading
-                  ? `Uploading...${
-                      percentComplete ? `(${percentComplete}%)` : ''
-                    }`
-                  : 'Upload'}
-              </Button>
+              {user.tags.HasAccountRestriction ? (
+                <Tooltip
+                  id="blocked-upload-file-booltip"
+                  placement="left"
+                  overlay={
+                    <span style={{ width: 160 }}>
+                      You are unable to upload files when your account is
+                      blocked. Please contact support@nft.storage
+                    </span>
+                  }
+                >
+                  <span style={{ paddingLeft: 10 }}>
+                    <UploadFileButton />
+                  </span>
+                </Tooltip>
+              ) : (
+                <UploadFileButton />
+              )}
             </div>
             <div>
               <p className="leading-normal text-xs">
