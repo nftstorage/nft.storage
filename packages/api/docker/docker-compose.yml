@@ -14,7 +14,7 @@ services:
     build:
       dockerfile: 'docker/db_init.Dockerfile'
       context: '../'
-    entrypoint: 'bash -c "sleep 5; psql $DATABASE_CONNECTION -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql"'
+    entrypoint: 'psql $DATABASE_CONNECTION -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql'
     depends_on:
       - db
     environment:
