@@ -111,6 +111,24 @@ export async function getNfts({ limit, before }) {
   }
 }
 
+export async function getUserTags() {
+  const res = await fetch(`${API}/user/tags`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + (await getToken()),
+    },
+  })
+
+  const body = await res.json()
+
+  if (body.ok) {
+    return body.value
+  } else {
+    throw new Error(body.error.message)
+  }
+}
+
 export async function getVersion() {
   const route = '/version'
   const res = await fetch(`${API}${route}`, {

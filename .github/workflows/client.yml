@@ -6,12 +6,14 @@ on:
     paths:
       - 'packages/client/**'
       - '.github/workflows/client.yml'
+      - 'yarn.lock'
   pull_request:
     branches:
       - main
     paths:
       - 'packages/client/**'
       - '.github/workflows/client.yml'
+      - 'yarn.lock'
 
 jobs:
   check:

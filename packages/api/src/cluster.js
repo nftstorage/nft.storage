@@ -1,5 +1,5 @@
 import { Cluster } from '@nftstorage/ipfs-cluster'
-import { cluster } from '../constants/constants.js'
+import { cluster } from './constants.js'
 import { HTTPError } from './errors.js'
 
 const client = new Cluster(cluster.apiUrl, {

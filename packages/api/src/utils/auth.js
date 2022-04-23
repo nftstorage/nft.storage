@@ -1,6 +1,11 @@
 import { Magic } from '@magic-sdk/admin'
-import { secrets } from '../../constants/constants.js'
-import { HTTPError, ErrorUserNotFound, ErrorTokenNotFound } from '../errors.js'
+import { secrets } from '../constants.js'
+import {
+  HTTPError,
+  ErrorUserNotFound,
+  ErrorTokenNotFound,
+  ErrorUnauthenticated,
+} from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
 export const magic = new Magic(secrets.magic)
 import * as Ucan from 'ucan-storage/ucan-storage'
@@ -10,7 +15,8 @@ import * as Ucan from 'ucan-storage/ucan-storage'
  *
  * @param {FetchEvent} event
  * @param {import('../bindings').RouteContext} ctx
- * @param {{checkUcan: boolean}} [options]
+ * @param {import('../bindings').AuthOptions} [options]
+ * @returns {Promise<import('../bindings').Auth>}
  */
 export async function validate(event, { log, db, ucanService }, options) {
   const auth = event.request.headers.get('Authorization') || ''
@@ -171,4 +177,19 @@ function parseMagic({ issuer, email, publicAddress }) {
     publicAddress,
     tokens: {},
   }
+}
+
+/**
+ * Verifies that the auth object exists on context, and if not then it throws an ErrorUnauthenticated.
+ *
+ * @param {import('../bindings').RouteContext} ctx
+ * @returns {import('../bindings').Auth}
+ * @throws {ErrorUnauthenticated}
+ */
+export function checkAuth(ctx) {
+  if (typeof ctx.auth !== 'object') {
+    throw new ErrorUnauthenticated()
+  }
+
+  return ctx.auth
 }

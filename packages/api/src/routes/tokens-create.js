@@ -1,11 +1,11 @@
-import { validate } from '../utils/auth.js'
+import { checkAuth } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { signJWT } from '../utils/jwt.js'
-import { secrets } from '../../constants/constants.js'
+import { secrets } from '../constants.js'
 
 /** @type {import('../bindings').Handler} */
 export const tokensCreate = async (event, ctx) => {
-  const { user } = await validate(event, ctx)
+  const { user } = checkAuth(ctx)
   const { db } = ctx
   const body = await event.request.json()
 

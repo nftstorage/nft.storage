@@ -1,12 +1,7 @@
 import Toucan from 'toucan-js'
 import { DBClient } from './db-client.js'
 import { S3BackupClient } from './s3-backup-client.js'
-import {
-  secrets,
-  database,
-  isDebug,
-  s3 as s3Config,
-} from '../../constants/constants.js'
+import { secrets, database, isDebug, s3 as s3Config } from '../constants.js'
 import { Logging } from './logs.js'
 import pkg from '../../package.json'
 import { Service } from 'ucan-storage/service'

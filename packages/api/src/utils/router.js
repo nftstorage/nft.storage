@@ -1,5 +1,5 @@
 import { parse } from 'regexparam'
-import { database, cluster } from '../../constants/constants.js'
+import { database, cluster } from '../constants.js'
 
 /**
  * @typedef {{ params: Record<string, string> }} BasicRouteContext

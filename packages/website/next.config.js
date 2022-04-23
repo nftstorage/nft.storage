@@ -71,7 +71,7 @@ const withNextra = require('nextra')({
 const configWithDocs = withNextra({ ...nextConfig })
 
 const config =
-  env === 'dev'
+  env === 'dev' || process.env.SENTRY_UPLOAD !== 'true'
     ? configWithDocs
     : withSentryConfig(configWithDocs, {
         debug: false,

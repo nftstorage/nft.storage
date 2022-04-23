@@ -3,6 +3,7 @@ export {}
 import Toucan from 'toucan-js'
 import { Service } from 'ucan-storage/service'
 import { Mode } from './middleware/maintenance.js'
+import { UserOutput, UserOutputKey } from './utils/db-client-types.js'
 import { DBClient } from './utils/db-client.js'
 import { Logging } from './utils/logs.js'
 
@@ -32,12 +33,33 @@ declare global {
   const PRIVATE_KEY: string
 }
 
+export interface Ucan {
+  token: string
+  root: any
+  cap: any
+}
+
+export interface Auth {
+  user: UserOutput
+  key?: UserOutputKey
+  db: DBClient
+  ucan?: Ucan
+  type: 'ucan' | 'key' | 'session'
+}
+
+export interface AuthOptions {
+  checkUcan?: boolean
+  checkHasAccountRestriction?: boolean
+  checkHasPsaAccess?: boolean
+}
+
 export interface RouteContext {
   params: Record<string, string>
   db: DBClient
   log: Logging
   backup?: BackupClient
   ucanService: Service
+  auth?: Auth
 }
 
 export type Handler = (

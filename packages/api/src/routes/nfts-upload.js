@@ -7,7 +7,7 @@ import { Block } from 'multiformats/block'
 import { HTTPError } from '../errors.js'
 import * as cluster from '../cluster.js'
 import { JSONResponse } from '../utils/json-response.js'
-import { validate } from '../utils/auth.js'
+import { checkAuth } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 
 const MAX_BLOCK_SIZE = 1 << 20 // Maximum permitted block size in bytes (1MiB).
@@ -24,9 +24,7 @@ const decoders = [pb, raw, cbor]
 export async function nftUpload(event, ctx) {
   const { headers } = event.request
   const contentType = headers.get('content-type') || ''
-  const { user, key, type, ucan } = await validate(event, ctx, {
-    checkUcan: true,
-  })
+  const { user, key, type, ucan } = checkAuth(ctx)
 
   /** @type {import('../utils/db-client-types').UploadOutput} */
   let upload
@@ -169,7 +167,7 @@ export async function uploadCarWithStat(
 export async function nftUpdateUpload(event, ctx) {
   const { params, db } = ctx
   try {
-    const { user } = await validate(event, ctx)
+    const { user } = checkAuth(ctx)
     const { cid } = params
 
     // id is required for updating

@@ -174,6 +174,24 @@ export class ErrorPinningUnauthorized extends HTTPError {
 }
 ErrorPinningUnauthorized.CODE = 'ERROR_PINNING_UNAUTHORIZED'
 
+export class ErrorAccountRestricted extends HTTPError {
+  constructor(msg = 'Account restricted.') {
+    super(msg, 403)
+    this.name = 'AccountRestricted'
+    this.code = ErrorAccountRestricted.CODE
+  }
+}
+ErrorAccountRestricted.CODE = 'ERROR_ACCOUNT_RESTRICTED'
+
+export class ErrorUnauthenticated extends HTTPError {
+  constructor(msg = 'Unauthenticated') {
+    super(msg, 401)
+    this.name = 'Unauthenticated'
+    this.code = ErrorUnauthenticated.CODE
+  }
+}
+ErrorUnauthenticated.CODE = 'ERROR_UNAUTHENTICATED'
+
 export class ErrorMaintenance extends HTTPError {
   constructor(
     msg = 'API undergoing maintenance, check https://status.nft.storage for more info'
