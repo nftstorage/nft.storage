@@ -2642,10 +2642,10 @@
   resolved "https://registry.yarnpkg.com/@ssttevee/u8-utils/-/u8-utils-0.1.7.tgz#fb8db35ca9dda860ad3eaf1b557f61e4d43950bc"
   integrity sha512-bSD+ocJRyAWiav1w7iQmAJ+ao/DJ5cRLcs2VsFDQeA1pODdF8cVZYy69+/irAeEntYoFbKigID/eM389pZ3vMA==
 
-"@supabase/postgrest-js@^0.34.1":
-  version "0.34.1"
-  resolved "https://registry.yarnpkg.com/@supabase/postgrest-js/-/postgrest-js-0.34.1.tgz#ff53c19819b7e89424bb60e9b1431520a629ec38"
-  integrity sha512-64RQhBpwZDXOpPRCHqrCrlVcyPWE/p4nH6/ALnJCvTkQHkyzXNPDoTlX6OjbuyMH9/BNvgVhEZth0e6hfpWDXw==
+"@supabase/postgrest-js@^0.37.2":
+  version "0.37.2"
+  resolved "https://registry.yarnpkg.com/@supabase/postgrest-js/-/postgrest-js-0.37.2.tgz#4243587eea5ad9507371fcdc4b3ec096d652ad03"
+  integrity sha512-3Dgx5k3RvtKqc8DvR2BEyh2fVyjZe5P4e0zD1r8dyuVmpaYDaASZ2YeNVgyWXMCWH7xzrj4vepTYlKwfj78QLg==
   dependencies:
     cross-fetch "^3.0.6"
 
