@@ -17,7 +17,7 @@ export function getStaticProps() {
       title: 'New API Key - NFT Storage',
       navBgColor: 'bg-nsgreen',
       needsUser: true,
-      redirectTo: '/',
+      redirectTo: '/manage',
     },
   }
 }
