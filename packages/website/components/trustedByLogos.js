@@ -39,7 +39,7 @@ export const TrustedBy = ({ logos }) => {
         <br />
         Request to add your logo{' '}
         <a
-          className="nsblue"
+          className="nsnavy"
           title="Request to add your logo!"
           href="https://github.com/nftstorage/nft.storage/discussions/1474"
           target="_blank"
