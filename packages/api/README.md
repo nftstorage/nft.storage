@@ -102,7 +102,7 @@ When prompted for a value enter one of the following permission combinations:
 The postgres rest api can generate automatic type defs based on the table and column
 names. To use this, make sure you've spun down your nft dev environment and run
 `yarn db-types` from packages/api root directory. This will auto generate the
-`packages/api/utils/db-types/d.ts` file.
+`packages/api/utils/db-types.d.ts` file.
 
 Common errors would be "cannot read version of schema", this typically indicates that another service running on localhost:3000 which is the default port and url for the postgres rest api.
 
