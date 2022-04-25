@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.47.0](https://github.com/nftstorage/nft.storage/compare/website-v1.46.1...website-v1.47.0) (2022-04-25)
+
+
+### Features
+
+* update logo text and link to github ([#1833](https://github.com/nftstorage/nft.storage/issues/1833)) ([d7c38ce](https://github.com/nftstorage/nft.storage/commit/d7c38cedb97f7c2331d3775db32c0fa4aa890519))
+
 ### [1.46.1](https://github.com/nftstorage/nft.storage/compare/website-v1.46.0...website-v1.46.1) (2022-04-25)
 
 
