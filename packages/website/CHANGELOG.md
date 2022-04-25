@@ -1,5 +1,13 @@
 # Changelog
 
+### [1.46.1](https://github.com/nftstorage/nft.storage/compare/website-v1.46.0...website-v1.46.1) (2022-04-25)
+
+
+### Bug Fixes
+
+* OpenAPI generated Rust client URL ([#1847](https://github.com/nftstorage/nft.storage/issues/1847)) ([94c98b0](https://github.com/nftstorage/nft.storage/commit/94c98b08291ca697b29d3257d60eb2d0c11838cc))
+* updated nftup route ([#1848](https://github.com/nftstorage/nft.storage/issues/1848)) ([baca52a](https://github.com/nftstorage/nft.storage/commit/baca52a7d992fa5157595010c98f7d313d6a94f2))
+
 ## [1.46.0](https://github.com/nftstorage/nft.storage/compare/website-v1.45.0...website-v1.46.0) (2022-04-25)
 
 
