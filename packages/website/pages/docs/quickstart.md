@@ -16,6 +16,7 @@ NFT.Storage is especially useful for individual creators who are minting NFTs, o
 
 1. [Creating an NFT.Storage account](#create-an-account)
 1. [Uploading a file via the website](#uploading-a-file-using-the-website)
+1. [Uploading files & directories via the NFTUp application](#uploading-files--directories-via-the-nftup-application)
 1. [Getting a free API token](#get-an-api-token)
 1. [Using the JavaScript API](#using-the-javascript-api)
 
@@ -62,6 +63,20 @@ Once you're logged in, you can get started with NFT.Storage right away by upload
 1. Click the **Upload** button to store your file!
 
 Once the upload is complete, you'll be able to view your file in the [file listing page](https://nft.storage/files/).
+
+### Uploading files & directories via the NFTUp application
+
+NFTUp is the easiest way for content creators to upload their metadata and assets, ready to be minted into NFTs by smart contracts and then traded on marketplaces, and browsed in galleries.
+
+<img width="992" alt="Screenshot 2022-03-31 at 15 09 35" src="https://user-images.githubusercontent.com/253/161609435-9b1ba803-ea1b-48dd-a721-e9250f5ad2d1.png"/>
+
+1. [Download and install](./how-to/nftup/) NFTUp for your OS
+1. Launch the application.
+1. Drag and drop some files or folders on it. You might be prompted for your NFT.Storage API key. You can [get your key on your account page](https://nft.storage/manage/).
+1. Upload any file structure you want. If you are doing something like a HashLips build, you can upload the assets and metadata at the same time by dragging them both to the upload box.
+1. Once the upload is complete, you'll get a link to your content. Click it to fetch your data from the IPFS network.
+1. Set your [smart contract base URL](https://nft.storage/blog/post/2022-02-15-base-url-apis/), or otherwise share your content with NFT minting services.
+1. Contribute on [GitHub.](https://github.com/nftstorage/nftup)
 
 ### Get an API Token
 
