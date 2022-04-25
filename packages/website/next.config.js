@@ -53,6 +53,7 @@ const nextConfig = withBundleAnalyzer({
       '/docs/how-to/store-directory': { page: '/docs/how-to/store-directory' },
       '/docs/how-to/get-status': { page: '/docs/how-to/get-status' },
       '/docs/how-to/ucan': { page: '/docs/how-to/ucan' },
+      '/docs/how-to/nftup': { page: '/docs/how-to/nftup' },
       '/docs/client': { page: '/docs/client/js' },
       '/docs/client/https': { page: '/docs/client/http' },
       '/docs/client/generated': { page: '/docs/client/generated' },
