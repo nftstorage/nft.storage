@@ -13,7 +13,7 @@ Generated clients are available for the following languages:
 - [PHP](https://github.com/nftstorage/php-client)
 - [Python](https://github.com/nftstorage/python-client)
 - [Ruby](https://github.com/nftstorage/ruby-client)
-- [Rust](https://github.com/nftstorage/python-client)
+- [Rust](https://github.com/nftstorage/rust-client)
 
 Please see the repository for each client library for usage details.
 
