@@ -31,7 +31,7 @@ export class DBClient {
       },
     })
 
-    this.cargo_client = new PostgrestClient(url, {
+    this.cargoClient = new PostgrestClient(url, {
       headers: {
         Authorization: `Bearer ${token}`,
         apikey: `${token}`,
