@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.46.0](https://github.com/nftstorage/nft.storage/compare/website-v1.45.0...website-v1.46.0) (2022-04-25)
+
+
+### Features
+
+* add permissions endpoint ([#1753](https://github.com/nftstorage/nft.storage/issues/1753)) ([2f5b6fb](https://github.com/nftstorage/nft.storage/commit/2f5b6fb2660231e4591f37e29389c41ac7045605))
+* nft up docs ([#1837](https://github.com/nftstorage/nft.storage/issues/1837)) ([fae8de1](https://github.com/nftstorage/nft.storage/commit/fae8de1befec616869f24aade5cc97954c509e74))
+
+
+### Bug Fixes
+
+* remove deps in favor of web apis ([#1701](https://github.com/nftstorage/nft.storage/issues/1701)) ([7f4ae7a](https://github.com/nftstorage/nft.storage/commit/7f4ae7a77da1e5901da10ecda10dfe52e00cb691))
+
 ## [1.45.0](https://github.com/nftstorage/nft.storage/compare/website-v1.44.0...website-v1.45.0) (2022-04-14)
 
 
