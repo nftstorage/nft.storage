@@ -26,7 +26,6 @@ services:
     build:
       dockerfile: docker/db_init.Dockerfile
       context: ../
-    # entrypoint: /bin/bash
     environment:
       - DATABASE_URL
       - DATABASE_TOKEN
@@ -41,6 +40,8 @@ services:
       - post-rest
     ports:
       - '8787:8787'
+    volumes:
+      - ../src:/app/src
   db:
     ports:
       - '5432:5432'
