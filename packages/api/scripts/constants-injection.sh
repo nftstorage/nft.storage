@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-mkdir /app/dist && \
+mkdir -p /app/dist && \
 node_modules/esbuild/bin/esbuild \
   --bundle \
   --sourcemap \
