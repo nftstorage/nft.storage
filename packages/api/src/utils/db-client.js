@@ -554,8 +554,8 @@ export class DBClient {
   async getStats() {
     /** @type {PostgrestQueryBuilder<definitions['metric']>} */
     const nonCargoMetricQuery = this.client.from('metric')
-    const metricsQuery = this.cargo_client.from('metrics')
-    const metricsLogQuery = this.cargo_client.from('metrics_log')
+    const metricsQuery = this.cargoClient.from('metrics')
+    const metricsLogQuery = this.cargoClient.from('metrics_log')
 
     const primaryMetricQuery = nonCargoMetricQuery
       .select('name, value')
