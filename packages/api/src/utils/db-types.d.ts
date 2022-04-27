@@ -568,6 +568,7 @@ export interface paths {
           files?: parameters['rowFilter.upload.files']
           origins?: parameters['rowFilter.upload.origins']
           meta?: parameters['rowFilter.upload.meta']
+          backup_urls?: parameters['rowFilter.upload.backup_urls']
           inserted_at?: parameters['rowFilter.upload.inserted_at']
           updated_at?: parameters['rowFilter.upload.updated_at']
           deleted_at?: parameters['rowFilter.upload.deleted_at']
@@ -632,6 +633,7 @@ export interface paths {
           files?: parameters['rowFilter.upload.files']
           origins?: parameters['rowFilter.upload.origins']
           meta?: parameters['rowFilter.upload.meta']
+          backup_urls?: parameters['rowFilter.upload.backup_urls']
           inserted_at?: parameters['rowFilter.upload.inserted_at']
           updated_at?: parameters['rowFilter.upload.updated_at']
           deleted_at?: parameters['rowFilter.upload.deleted_at']
@@ -660,6 +662,7 @@ export interface paths {
           files?: parameters['rowFilter.upload.files']
           origins?: parameters['rowFilter.upload.origins']
           meta?: parameters['rowFilter.upload.meta']
+          backup_urls?: parameters['rowFilter.upload.backup_urls']
           inserted_at?: parameters['rowFilter.upload.inserted_at']
           updated_at?: parameters['rowFilter.upload.updated_at']
           deleted_at?: parameters['rowFilter.upload.deleted_at']
@@ -901,6 +904,43 @@ export interface paths {
       }
     }
   }
+  '/rpc/pgrst_watch': {
+    post: {
+      parameters: {
+        body: {
+          args: { [key: string]: unknown }
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferParams']
+        }
+      }
+      responses: {
+        /** OK */
+        200: unknown
+      }
+    }
+  }
+  '/rpc/find_deals_by_content_cids': {
+    post: {
+      parameters: {
+        body: {
+          args: {
+            /** Format: text[] */
+            cids: string
+          }
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferParams']
+        }
+      }
+      responses: {
+        /** OK */
+        200: unknown
+      }
+    }
+  }
   '/rpc/json_arr_to_text_arr': {
     post: {
       parameters: {
@@ -941,43 +981,6 @@ export interface paths {
       }
     }
   }
-  '/rpc/find_deals_by_content_cids': {
-    post: {
-      parameters: {
-        body: {
-          args: {
-            /** Format: text[] */
-            cids: string
-          }
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferParams']
-        }
-      }
-      responses: {
-        /** OK */
-        200: unknown
-      }
-    }
-  }
-  '/rpc/pgrst_watch': {
-    post: {
-      parameters: {
-        body: {
-          args: { [key: string]: unknown }
-        }
-        header: {
-          /** Preference */
-          Prefer?: parameters['preferParams']
-        }
-      }
-      responses: {
-        /** OK */
-        200: unknown
-      }
-    }
-  }
 }
 
 export interface definitions {
@@ -988,12 +991,8 @@ export interface definitions {
     email?: string
     /** Format: text */
     token?: string
-    /**
-     * Format: bigint
-     * @description Note:
-     * This is a Primary Key.<pk/>
-     */
-    token_id?: number
+    /** Format: text */
+    token_id?: string
     /** Format: timestamp with time zone */
     deleted_at?: string
     /** Format: timestamp with time zone */
@@ -1165,11 +1164,8 @@ export interface definitions {
     origins?: string
     /** Format: jsonb */
     meta?: string
-    /**
-     * Format: text[]
-     * @description Note:
-     */
-    backup_urls: string[]
+    /** Format: ARRAY */
+    backup_urls?: unknown[]
     /**
      * Format: timestamp with time zone
      * @default timezone('utc'::text, now())
@@ -1231,11 +1227,13 @@ export interface definitions {
      */
     user_id: number
     /** Format: public.user_tag_type */
-    tag: 'HasAccountRestriction' | 'HasPsaAccess' | 'StorageLimitBytes'
+    tag:
+      | 'HasAccountRestriction'
+      | 'HasPsaAccess'
+      | 'HasSuperHotAccess'
+      | 'StorageLimitBytes'
     /** Format: text */
     value: string
-    /** Format: text */
-    user_tag_value_type: string
     /** Format: text */
     reason: string
     /**
@@ -1280,7 +1278,7 @@ export interface parameters {
   'rowFilter.admin_search.email': string
   /** Format: text */
   'rowFilter.admin_search.token': string
-  /** Format: bigint */
+  /** Format: text */
   'rowFilter.admin_search.token_id': string
   /** Format: timestamp with time zone */
   'rowFilter.admin_search.deleted_at': string
@@ -1378,6 +1376,8 @@ export interface parameters {
   'rowFilter.upload.origins': string
   /** Format: jsonb */
   'rowFilter.upload.meta': string
+  /** Format: ARRAY */
+  'rowFilter.upload.backup_urls': string
   /** Format: timestamp with time zone */
   'rowFilter.upload.inserted_at': string
   /** Format: timestamp with time zone */

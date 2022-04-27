@@ -6,5 +6,6 @@
   "store-directory": "Store a directory of files",
   "get-status": "Get upload status",
   "ucan": "Use UCAN tokens for delegated authorization",
-  "pinning-service": "Pinning Services API"
+  "pinning-service": "Pinning Services API",
+  "nftup": "Upload with NFTUp"
 }

@@ -1,6 +1,6 @@
 {
   "name": "website",
-  "version": "1.45.0",
+  "version": "1.47.0",
   "description": "nft.storage website",
   "private": true,
   "license": "(Apache-2.0 OR MIT)",
@@ -31,6 +31,7 @@
     "nft.storage": "^6.0.0",
     "rc-tooltip": "^5.1.1",
     "react": "17.0.2",
+    "react-device-detect": "^2.2.2",
     "react-dom": "17.0.2",
     "react-icons": "^4.3.1",
     "react-if": "4.0.1",
