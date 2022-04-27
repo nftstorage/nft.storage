@@ -17,6 +17,11 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 const nextConfig = withBundleAnalyzer({
   trailingSlash: true,
   reactStrictMode: true,
+  experimental: {
+    images: {
+      layoutRaw: true,
+    },
+  },
   images: {
     loader: 'custom',
   },

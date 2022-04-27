@@ -8,7 +8,7 @@ import Img from '../components/cloudflareImage'
  */
 const Logo = ({ src, alt }) => (
   <Img
-    className="marketplace-logo"
+    className="w-full h-[80px] object-contain object-center !border !border-solid !border-gray-200 rounded !py-4 !px-6 select-none mx-auto"
     src={`/images/marketplace-logos/${src}`}
     alt={alt}
     width="100%"
@@ -23,9 +23,9 @@ const Logo = ({ src, alt }) => (
  */
 export const TrustedBy = ({ logos }) => {
   return (
-    <div className="marketplace-logos-container mx-auto py-8 px-6 sm:px-16">
+    <div className="max-w-4xl mx-auto py-8 px-6 sm:px-16">
       <h2 className="text-center mt-0 chicagoflf">Trusted by</h2>
-      <div className="marketplace-logo-grid">
+      <div className="grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] gap-4 p-5 justify-center mx-auto">
         {logos.map((logo) => (
           <Logo
             key={`marketplace-logo-${logo}`}

@@ -111,19 +111,22 @@ export const FAQ = ({ limit = faqs.length }) => {
   return (
     <>
       {items.slice(0, limit).map((faq, index) => (
-        <div className="faq-item" key={`faq-item${index}`}>
-          <h2 className="chicagoflf text-white">
+        <div key={`faq-item${index}`} className="mb-16">
+          <h2 className="chicagoflf text-white text-xl sm:text-2xl md:text-3xl">
             <HashLink id={hashify(faq.question)}>
               {faq.error ? (
                 <>
-                  Why am I seeing:&nbsp;<InlineCode>{faq.error}</InlineCode>
+                  Why am I seeing:&nbsp;
+                  <InlineCode className="text-lg sm:text-xl md:text-2xl">
+                    {faq.error}
+                  </InlineCode>
                 </>
               ) : (
                 faq.question
               )}
             </HashLink>
           </h2>
-          <div className="leading-normal text-white mb-8">{faq.content}</div>
+          <div className="leading-normal text-white my-2">{faq.content}</div>
         </div>
       ))}
     </>
