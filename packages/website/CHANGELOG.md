@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.48.0](https://github.com/nftstorage/nft.storage/compare/website-v1.47.0...website-v1.48.0) (2022-04-27)
+
+
+### Features
+
+* add cargo metric statements and dummy data inserts for testing … ([#1835](https://github.com/nftstorage/nft.storage/issues/1835)) ([72480d6](https://github.com/nftstorage/nft.storage/commit/72480d6a9719308bf4a8a81c34764a51f5f58cfa))
+* issue 1827 storybook init and convert inline styles and classes to tailwind ([#1845](https://github.com/nftstorage/nft.storage/issues/1845)) ([f8162f8](https://github.com/nftstorage/nft.storage/commit/f8162f82f9cf0b2222eb05068d350ddf79e27431))
+
+
+### Bug Fixes
+
+* blog post type ([97b680d](https://github.com/nftstorage/nft.storage/commit/97b680de080a4b34df55177f2997784100af864d))
+
 ## [1.47.0](https://github.com/nftstorage/nft.storage/compare/website-v1.46.1...website-v1.47.0) (2022-04-25)
 
 
