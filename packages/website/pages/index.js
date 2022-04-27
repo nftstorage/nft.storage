@@ -326,7 +326,7 @@ function GettingStarted() {
           <img
             src="/images/getting-started.png"
             alt="getting-started"
-            className="border-solid border-2 w-full"
+            className="border-solid border-black border-2 w-full"
           />
           <ol className="list-none pl-0 mb-2">
             <li>

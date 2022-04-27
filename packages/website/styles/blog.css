@@ -9,11 +9,8 @@
 
 /*Components*/
 .blog .card-grid {
-  display: grid;
   /* compenstate for cards being offset & center */
   padding-right: 0.6125rem;
-  grid-gap: 2rem;
-  justify-content: center;
   grid-template-columns: repeat(auto-fill, minmax(min(31%, 100%), 1fr));
 }
 
