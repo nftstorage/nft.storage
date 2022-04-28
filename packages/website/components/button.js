@@ -74,7 +74,7 @@ export default function Button({
       'py-2 px-3',
       variant !== 'tag' && hologram && 'hologram chicagoflf',
       small && 'small',
-      disabled ? 'o-60' : 'interactive',
+      disabled ? 'opacity-60' : 'interactive',
       variant
     )
   }
