@@ -140,36 +140,15 @@ export async function getUserTags() {
  * @returns {Promise<VersionInfo>} (async) version information for API service
  */
 export async function getVersion() {
-  const route = '/version'
-  const res = await fetch(`${API}${route}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-
-  if (res.ok) {
-    return await res.json()
-  } else {
-    throw new Error(`failed to get version ${res.status} - ${res.statusText}`)
-  }
+  return (await fetchRoute('/version')).value
 }
 
 /**
  * @returns {Promise<{ data: StatsData }>} (async) global service stats
  */
 export async function getStats() {
-  const res = await fetch(`${API}/stats`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-
-  if (res.ok) {
-    return res.json()
-  }
-  throw new Error(`failed to get stats: ${res.status} - ${res.statusText}`)
+  // @ts-expect-error the stat's route is an odd duck... it returns `{ ok, data }` instead of `{ ok, value }`
+  return fetchRoute('/stats')
 }
 
 /**
