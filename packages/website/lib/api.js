@@ -193,7 +193,7 @@ async function fetchAuthenticated(route, fetchOptions = {}) {
  * Sends a `fetch` request to an API route and unpacks the JSON response body.
  *
  * Note that it does not unpack the `.value` field from the body, so
- * you get a response like: `{"ok": "true", "value": "thing you care about"}`
+ * you get a response like: `{"ok": true, "value": "thing you care about"}`
  *
  * Defaults to GET requests, but you can pass in whatever `method` you want to the `fetchOptions` param.
  *
