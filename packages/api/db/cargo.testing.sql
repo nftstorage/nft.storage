@@ -59,6 +59,9 @@ INSERT INTO cargo.metrics_log (name, dimensions, value, collected_at) VALUES
 INSERT INTO cargo.metrics_log (name, dimensions, value, collected_at) VALUES
   ('dagcargo_project_bytes_in_active_deals', '{{project,nft.storage}}', 169334115720738, '2022-03-01 16:33:28.505513+00');
 
+INSERT INTO cargo.metrics_log (name, dimensions, value, collected_at) VALUES
+  ('dagcargo_project_bytes_in_active_deals', '{{project,nft.storage}}', 169334115720737, '2022-02-01 16:33:28.505513+00');
+
 INSERT INTO cargo.aggregate_entries ("aggregate_cid", "cid_v1", "datamodel_selector") VALUES
 ('bafybeiek5gau46j4dxoyty27qtirb3iuoq7aax4l3xt25mfk2igyt35bme', 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e', 'Links/19/Hash/Links/46/Hash/Links/0/Hash');
 
