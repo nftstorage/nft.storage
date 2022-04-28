@@ -10,7 +10,7 @@ import { JSONResponse } from '../utils/json-response.js'
 import { checkAuth } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 
-const MAX_BLOCK_SIZE = 1 << 20 // Maximum permitted block size in bytes (1MiB).
+const MAX_BLOCK_SIZE = 1 << 21 // Maximum permitted block size in bytes (2MiB).
 const decoders = [pb, raw, cbor]
 
 /**
@@ -195,7 +195,7 @@ export async function nftUpdateUpload(event, ctx) {
  *
  * - Missing root CIDs
  * - >1 root CID
- * - Any block bigger than MAX_BLOCK_SIZE (1MiB)
+ * - Any block bigger than MAX_BLOCK_SIZE (2MiB)
  * - 0 blocks
  * - Missing root block
  * - Missing non-root blocks (when root block has links)
