@@ -1,7 +1,6 @@
-import { getToken, API } from '../lib/api'
+import { getStorageClient } from '../lib/api'
 import countly from '../lib/countly.js'
 import { useRouter } from 'next/router'
-import { NFTStorage } from 'nft.storage'
 import { packToBlob } from 'ipfs-car/pack/blob'
 import { useQueryClient } from 'react-query'
 import { useState } from 'react'
@@ -60,10 +59,7 @@ export default function NewFile({ user }) {
     const data = new FormData(e.target)
     const file = data.get('file')
     if (file && file instanceof File) {
-      const client = new NFTStorage({
-        token: await getToken(),
-        endpoint: new URL(API + '/'),
-      })
+      const client = await getStorageClient()
       setUploading(true)
       setError('')
       try {

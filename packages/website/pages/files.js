@@ -1,4 +1,4 @@
-import { API, getNfts, getToken } from '../lib/api.js'
+import { getNfts, getStorageClient } from '../lib/api.js'
 import { useQuery, useQueryClient } from 'react-query'
 import { CID } from 'multiformats/cid'
 import { VscQuestion } from 'react-icons/vsc'
@@ -7,7 +7,6 @@ import Tooltip from '../components/tooltip.js'
 import Loading from '../components/loading'
 import { MOCK_FILES } from '../lib/mock_files'
 import { formatTimestamp, truncateCID } from '../lib/format'
-import { NFTStorage } from 'nft.storage'
 import Script from 'next/script'
 import { When } from 'react-if'
 import bytes from 'bytes'
@@ -78,10 +77,7 @@ export default function Files({ user }) {
       }
       setDeleting(cid)
       try {
-        const client = new NFTStorage({
-          token: await getToken(),
-          endpoint: new URL(API + '/'),
-        })
+        const client = await getStorageClient()
         await client.delete(cid)
       } finally {
         await queryClient.invalidateQueries('get-nfts')

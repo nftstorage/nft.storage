@@ -1,7 +1,15 @@
 import { getMagicUserToken } from './magic'
 import constants from './constants'
+import { NFTStorage } from 'nft.storage'
 
-export const API = constants.API
+const API = constants.API
+
+export async function getStorageClient() {
+  return new NFTStorage({
+    token: await getMagicUserToken(),
+    endpoint: new URL(API + '/'),
+  })
+}
 
 /**
  *
@@ -15,6 +23,7 @@ export async function fetchAuthenticated(route, fetchOptions = {}) {
   }
   const url = API + route
   const options = {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + (await getMagicUserToken()),
@@ -91,6 +100,20 @@ export async function getVersion() {
   if (res.ok) {
     return await res.json()
   } else {
-    throw new Error(`failed to get version ${res.status}`)
+    throw new Error(`failed to get version ${res.status} - ${res.statusText}`)
   }
+}
+
+export async function getStats() {
+  const res = await fetch(`${API}/stats`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  if (res.ok) {
+    return res.json()
+  }
+  throw new Error(`failed to get stats: ${res.status} - ${res.statusText}`)
 }

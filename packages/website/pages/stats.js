@@ -3,7 +3,7 @@ import { TrustedBy } from '../components/trustedByLogos'
 import fs from 'fs'
 import { calculateStats } from '../lib/statsUtils'
 import Img from '../components/cloudflareImage'
-import { API } from '../lib/api'
+import { getStats } from '../lib/api'
 import Loading from '../components/loading'
 import bytes from 'bytes'
 
@@ -55,12 +55,7 @@ export default function Stats({ logos }) {
   async function fetchStats() {
     setStatsLoading(true)
     try {
-      const stats = await fetch(`${API}/stats`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then((res) => res.json())
+      const stats = await getStats()
       setStats(calculateStats(stats.data))
     } catch (e) {
       const fakeData = {
