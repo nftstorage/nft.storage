@@ -23,7 +23,7 @@
     "clsx": "^1.1.1",
     "gray-matter": "^4.0.3",
     "ipfs-car": "0.6.2",
-    "magic-sdk": "^6.2.1",
+    "magic-sdk": "^8.1.1",
     "multiformats": "^9.6.4",
     "next-mdx-remote": "^4.0.0-rc.1",
     "nextra": "^2.0.0-beta.5",
