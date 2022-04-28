@@ -587,7 +587,7 @@ export class DBClient {
       })
       .lte('collected_at', weekAgo.toISOString())
       .order('collected_at', { ascending: false })
-      .range(0, 1)
+      .range(0, 0)
       .single()
 
     const [primaryRes, dagSizeRes, dagSizeHistRes] = await Promise.all([
