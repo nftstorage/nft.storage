@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.22.0](https://github.com/nftstorage/nft.storage/compare/api-v2.21.0...api-v2.22.0) (2022-04-28)
+
+
+### Features
+
+* add cargo metric statements and dummy data inserts for testing … ([#1835](https://github.com/nftstorage/nft.storage/issues/1835)) ([72480d6](https://github.com/nftstorage/nft.storage/commit/72480d6a9719308bf4a8a81c34764a51f5f58cfa))
+* cargo schema migration ([#1856](https://github.com/nftstorage/nft.storage/issues/1856)) ([fe2ce9c](https://github.com/nftstorage/nft.storage/commit/fe2ce9c3b084687104ce51d1cd972b0b957c9cea))
+
+
+### Bug Fixes
+
+* single() on multiple rows ([#1861](https://github.com/nftstorage/nft.storage/issues/1861)) ([459c4c1](https://github.com/nftstorage/nft.storage/commit/459c4c1c7df47a9e9a181cda3acefaa826a44ae3))
+* update db-types and add documentation ([#1619](https://github.com/nftstorage/nft.storage/issues/1619)) ([a3b28e2](https://github.com/nftstorage/nft.storage/commit/a3b28e2df4d09fd914a58e14fe362f4ec991279a))
+
 ## [2.21.0](https://github.com/nftstorage/nft.storage/compare/api-v2.20.0...api-v2.21.0) (2022-04-21)
 
 
