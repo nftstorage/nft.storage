@@ -27,7 +27,7 @@ let _magicUserTokenCreationTime = 0
  * Returns the Magic SDK instance, creating it on first use.
  * @returns {MagicSDKInstance}
  */
-export function getMagic() {
+function getMagic() {
   if (_magicInstance) {
     return _magicInstance
   }
