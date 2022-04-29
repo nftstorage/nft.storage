@@ -12,7 +12,7 @@ services:
   db_init:
     restart: on-failure
     build:
-      dockerfile: 'docker/db_init.Dockerfile'
+      dockerfile: './docker/Dockerfile'
       context: '../'
     entrypoint: 'psql $DATABASE_CONNECTION -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql'
     depends_on:
@@ -24,7 +24,7 @@ services:
   api:
     restart: on-failure
     build:
-      dockerfile: docker/db_init.Dockerfile
+      dockerfile: ./docker/Dockerfile
       context: ../
     environment:
       - DATABASE_URL
