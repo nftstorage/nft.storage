@@ -3,18 +3,17 @@
 
 # Introduced these variables mostly to debug the env templating in a container vs the host.
 
+# Variables for use in docker.
+ESBUILD_CMD="node_modules/esbuild/bin/esbuild"
+ENTRYPOINT="./src/index.js"
+OUT_DIR="/app/dist"
+
 # variables for use in the host for debugging, etc.
 ESBUILD_CMD="npx esbuild"
 ENTRYPOINT="./src/constants.js"
 OUT_DIR="./tmp"
 
 # End host debug section
-
-# Variables for use in docker.
-ESBUILD_CMD="node_modules/esbuild/bin/esbuild"
-ENTRYPOINT="./src/index.js"
-OUT_DIR="/app/dist"
-
 
 mkdir -p $OUT_DIR && \
 $ESBUILD_CMD \
