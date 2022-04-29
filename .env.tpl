@@ -17,6 +17,8 @@ LOGTAIL_TOKEN=secret
 # You can use this one or create a new key with the ucan cli `ucan-storage keypair`
 PRIVATE_KEY=xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY=
 
+CLUSTER_API_URL=http://ipfs:9094
+
 ## API Sentry
 SENTRY_DSN=https://000000@0000000.ingest.sentry.io/00000
 SENTRY_TOKEN=secret

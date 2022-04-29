@@ -27,15 +27,17 @@ services:
       dockerfile: ./docker/Dockerfile
       context: ../
     environment:
+      - PRIVATE_KEY
       - DATABASE_URL
       - DATABASE_TOKEN
       - DATABASE_CONNECTION
       - SALT
-      - PRIVATE_KEY
       - MAGIC_SECRET_KEY
       - SENTRY_DSN
       - MAILCHIMP_API_KEY
       - LOGTAIL_TOKEN
+      - CLUSTER_API_URL
+      - CLUSTER_BASIC_AUTH_TOKEN
     depends_on:
       - post-rest
     ports:

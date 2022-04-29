@@ -24,6 +24,7 @@
     "@magic-sdk/admin": "1.4.0",
     "@nftstorage/ipfs-cluster": "^5.0.1",
     "@supabase/postgrest-js": "^0.37.2",
+    "esbuild": "^0.14.38",
     "ipfs-car": "^0.6.1",
     "merge-options": "^3.0.4",
     "multiformats": "^9.6.4",
