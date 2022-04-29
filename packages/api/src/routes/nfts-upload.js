@@ -1,10 +1,12 @@
 import { packToBlob } from 'ipfs-car/pack/blob'
 import { CarBlockIterator } from '@ipld/car'
+import { equals } from 'uint8arrays'
 import * as raw from 'multiformats/codecs/raw'
 import * as cbor from '@ipld/dag-cbor'
 import * as pb from '@ipld/dag-pb'
 import { Block } from 'multiformats/block'
-import { HTTPError } from '../errors.js'
+import { sha256 } from 'multiformats/hashes/sha2'
+import { HTTPError, InvalidCarError } from '../errors.js'
 import * as cluster from '../cluster.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { checkAuth } from '../utils/auth.js'
@@ -227,6 +229,14 @@ export async function carStat(carBlob, { structure } = {}) {
     const blockSize = block.bytes.byteLength
     if (blockSize > MAX_BLOCK_SIZE) {
       throw new Error(`block too big: ${blockSize} > ${MAX_BLOCK_SIZE}`)
+    }
+    if (block.cid.multihash.code === sha256.code) {
+      const ourHash = await sha256.digest(block.bytes)
+      if (!equals(ourHash.digest, block.cid.multihash.digest)) {
+        throw new InvalidCarError(
+          `block data does not match CID for ${block.cid.toString()}`
+        )
+      }
     }
     if (!rawRootBlock && block.cid.equals(rootCid)) {
       rawRootBlock = block
