@@ -1,5 +1,46 @@
 # Changelog
 
+## [1.48.0](https://github.com/nftstorage/nft.storage/compare/website-v1.47.0...website-v1.48.0) (2022-04-27)
+
+
+### Features
+
+* add cargo metric statements and dummy data inserts for testing … ([#1835](https://github.com/nftstorage/nft.storage/issues/1835)) ([72480d6](https://github.com/nftstorage/nft.storage/commit/72480d6a9719308bf4a8a81c34764a51f5f58cfa))
+* issue 1827 storybook init and convert inline styles and classes to tailwind ([#1845](https://github.com/nftstorage/nft.storage/issues/1845)) ([f8162f8](https://github.com/nftstorage/nft.storage/commit/f8162f82f9cf0b2222eb05068d350ddf79e27431))
+
+
+### Bug Fixes
+
+* blog post type ([97b680d](https://github.com/nftstorage/nft.storage/commit/97b680de080a4b34df55177f2997784100af864d))
+
+## [1.47.0](https://github.com/nftstorage/nft.storage/compare/website-v1.46.1...website-v1.47.0) (2022-04-25)
+
+
+### Features
+
+* update logo text and link to github ([#1833](https://github.com/nftstorage/nft.storage/issues/1833)) ([d7c38ce](https://github.com/nftstorage/nft.storage/commit/d7c38cedb97f7c2331d3775db32c0fa4aa890519))
+
+### [1.46.1](https://github.com/nftstorage/nft.storage/compare/website-v1.46.0...website-v1.46.1) (2022-04-25)
+
+
+### Bug Fixes
+
+* OpenAPI generated Rust client URL ([#1847](https://github.com/nftstorage/nft.storage/issues/1847)) ([94c98b0](https://github.com/nftstorage/nft.storage/commit/94c98b08291ca697b29d3257d60eb2d0c11838cc))
+* updated nftup route ([#1848](https://github.com/nftstorage/nft.storage/issues/1848)) ([baca52a](https://github.com/nftstorage/nft.storage/commit/baca52a7d992fa5157595010c98f7d313d6a94f2))
+
+## [1.46.0](https://github.com/nftstorage/nft.storage/compare/website-v1.45.0...website-v1.46.0) (2022-04-25)
+
+
+### Features
+
+* add permissions endpoint ([#1753](https://github.com/nftstorage/nft.storage/issues/1753)) ([2f5b6fb](https://github.com/nftstorage/nft.storage/commit/2f5b6fb2660231e4591f37e29389c41ac7045605))
+* nft up docs ([#1837](https://github.com/nftstorage/nft.storage/issues/1837)) ([fae8de1](https://github.com/nftstorage/nft.storage/commit/fae8de1befec616869f24aade5cc97954c509e74))
+
+
+### Bug Fixes
+
+* remove deps in favor of web apis ([#1701](https://github.com/nftstorage/nft.storage/issues/1701)) ([7f4ae7a](https://github.com/nftstorage/nft.storage/commit/7f4ae7a77da1e5901da10ecda10dfe52e00cb691))
+
 ## [1.45.0](https://github.com/nftstorage/nft.storage/compare/website-v1.44.0...website-v1.45.0) (2022-04-14)
 
 

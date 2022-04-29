@@ -28,8 +28,9 @@ export const Tag = ({ tag }) => {
         onClick={tag.onClick}
         variant="tag"
         className={clsx(
-          'btn-secondary capitalize items-center',
-          tag.selected && 'active'
+          'btn-secondary capitalize items-center m-1 !min-w-0 border border-black !py-1 !px-2',
+          tag.selected && 'active !bg-black !text-peach',
+          !tag.selected && 'hover:bg-orange hover:border-red hover:text-peach'
         )}
       >
         {tag.label}
@@ -41,17 +42,12 @@ export const Tag = ({ tag }) => {
 /**
  * Tags Component
  *
- * @param {Object} props
- * @param {import("./types").Tag[] | string[]} props.tags
+ * @param {import("./types").Tags} props
  * @returns {JSX.Element}
  */
-const Tags = ({ tags }) => (
-  <div
-    className={clsx(
-      'blog-tags flex flex-wrap z-5',
-      typeof tags[0] !== 'string' && 'blog-tags-buttons'
-    )}
-  >
+
+const Tags = ({ tags, className }) => (
+  <div className={clsx(`flex flex-wrap z-5 ${className}`)}>
     {tags.map((tag, index) => (
       <Tag tag={tag} key={`blog-tag-${tag}-${index}`} />
     ))}

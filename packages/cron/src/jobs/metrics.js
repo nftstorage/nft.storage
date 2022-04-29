@@ -21,11 +21,6 @@ const COUNT_UPLOADS = 'SELECT COUNT(*) AS total FROM upload WHERE type = $1'
 const UPLOADS_PAST_7_TOTAL =
   'SELECT COUNT(*) FROM upload WHERE inserted_at > CURRENT_DATE - 7'
 
-const DEALS_TOTAL = 'SELECT COUNT(*) from cargo.deals'
-
-const DEALS_SIZE_TOTAL =
-  'SELECT SUM(export_size) as deals_size_total from cargo.aggregates'
-
 const COUNT_PINS =
   'SELECT COUNT(*) AS total FROM pin WHERE service = $1 AND status = $2'
 
@@ -57,10 +52,6 @@ export async function updateMetrics({ roPg, rwPg }) {
       ),
       withTimeLog('updateTotalUploadPast7', () =>
         updateTotalUploadPast7(roPg, rwPg)
-      ),
-      withTimeLog('updateTotalDeals', () => updateTotalDeals(roPg, rwPg)),
-      withTimeLog('updateTotalDealsSize', () =>
-        updateTotalDealsSize(roPg, rwPg)
       ),
       ...PIN_SERVICES.map((svc) =>
         PIN_STATUSES.map((s) =>
@@ -112,29 +103,6 @@ async function updateTotalUploadPast7(roPg, rwPg) {
   const { rows } = await roPg.query(UPLOADS_PAST_7_TOTAL)
   if (!rows.length) throw new Error('no rows returned counting uploads')
   await rwPg.query(UPDATE_METRIC, ['uploads_past_7_total', rows[0].count])
-}
-
-/**
- * @param {Client} roPg
- * @param {Client} rwPg
- */
-async function updateTotalDeals(roPg, rwPg) {
-  const { rows } = await roPg.query(DEALS_TOTAL)
-  if (!rows.length) throw new Error(`no rows returned counting total deals`)
-  await rwPg.query(UPDATE_METRIC, [`deals_total`, rows[0].count])
-}
-
-/**
- * @param {Client} roPg
- * @param {Client} rwPg
- */
-async function updateTotalDealsSize(roPg, rwPg) {
-  const { rows } = await roPg.query(DEALS_SIZE_TOTAL)
-  if (!rows.length) throw new Error(`no rows returned counting total deal size`)
-  await rwPg.query(UPDATE_METRIC, [
-    `deals_size_total`,
-    rows[0].deals_size_total,
-  ])
 }
 
 /**

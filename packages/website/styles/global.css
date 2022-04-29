@@ -5,9 +5,6 @@
 @import './colors.css';
 @import './utils.css';
 @import './animations.css';
-@import './logos.css';
-@import './home.css';
-@import './about.css';
 @import './stats.css';
 @import './button.css';
 @import './blog.css';
@@ -20,12 +17,17 @@
 @import './tabs.css';
 @import './modal.css';
 @import './footer.css';
-@import './faq.css';
 @import './tooltip.css';
 
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
 }
 
 @media screen and (min-width: 52em) {

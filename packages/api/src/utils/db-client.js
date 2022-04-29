@@ -30,6 +30,14 @@ export class DBClient {
         apikey: `${token}`,
       },
     })
+
+    this.cargoClient = new PostgrestClient(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apikey: `${token}`,
+      },
+      schema: 'cargo',
+    })
   }
 
   /**
@@ -538,14 +546,20 @@ export class DBClient {
     return data[0].value
   }
 
+  /**
+   * Get stats for uploads and cargo deals
+   *
+   * @returns {Promise<import('./db-client-types').StatsPayload>}
+   */
   async getStats() {
     /** @type {PostgrestQueryBuilder<definitions['metric']>} */
-    const query = this.client.from('metric')
-    const { data, error } = await query
+    const nonCargoMetricQuery = this.client.from('metric')
+    const metricsQuery = this.cargoClient.from('metrics')
+    const metricsLogQuery = this.cargoClient.from('metrics_log')
+
+    const primaryMetricQuery = nonCargoMetricQuery
       .select('name, value')
       .in('name', [
-        'deals_total',
-        'deals_size_total',
         'uploads_past_7_total',
         'uploads_blob_total',
         'uploads_car_total',
@@ -554,19 +568,57 @@ export class DBClient {
         'uploads_multipart_total',
       ])
 
-    if (error) {
-      throw new DBError(error)
+    const dagByteSizeQuery = metricsQuery
+      .select('name, dimensions, value')
+      .match({
+        name: 'dagcargo_project_bytes_in_active_deals',
+        dimensions: '{{project,nft.storage}}',
+      })
+      .single()
+
+    const weekAgo = new Date()
+    weekAgo.setDate(weekAgo.getDate() - 7)
+
+    const dagByteSizeHistory = metricsLogQuery
+      .select('name, dimensions, value')
+      .match({
+        name: 'dagcargo_project_bytes_in_active_deals',
+        dimensions: '{{project,nft.storage}}',
+      })
+      .lte('collected_at', weekAgo.toISOString())
+      .order('collected_at', { ascending: false })
+      .range(0, 0)
+      .single()
+
+    const [primaryRes, dagSizeRes, dagSizeHistRes] = await Promise.all([
+      primaryMetricQuery,
+      dagByteSizeQuery,
+      dagByteSizeHistory,
+    ])
+
+    if (primaryRes.error || dagSizeHistRes.error || dagSizeRes.error) {
+      // this allows us to avoid changing the construtor of db error to allow null
+      const err = Object.assign(
+        {},
+        primaryRes.error || dagSizeHistRes.error || dagSizeRes.error
+      )
+      throw new DBError(err)
     }
 
-    if (!data || !data.length) {
-      return undefined
+    /** @type {import('./db-client-types').StatsPayload}  */
+    const stats = {}
+
+    // Simple splatting of the metrics from first query
+    if (primaryRes.data && primaryRes.data.length) {
+      for (const metric of primaryRes.data) {
+        stats[metric.name] = metric.value
+      }
     }
 
-    return data.reduce((obj, curr) => {
-      // @ts-ignore
-      obj[curr.name] = curr.value
-      return obj
-    }, {})
+    stats.deals_size_total = dagSizeRes.data.value
+    stats.deals_size_total_prev = dagSizeHistRes.data.value
+
+    return stats
   }
 }
 

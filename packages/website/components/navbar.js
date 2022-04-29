@@ -225,10 +225,9 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
       <div
         className={clsx(
           bgColor,
-          'flex mobile-nav transition-all fixed top-0 left-0 bottom-0 w-full',
-          isMenuOpen ? 'opacity-100' : 'opacity-0 invisible'
+          'flex mobile-nav transition-all fixed top-0 left-0 bottom-0 w-full z-50',
+          isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         )}
-        style={{ zIndex: 100 }}
         aria-hidden={isMenuOpen}
       >
         <div className="flex flex-col items-center text-center mt-8">
@@ -239,7 +238,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
           </Link>
         </div>
         <div className="mobile-nav-items text-center flex flex-col items-center justify-center flex-auto overflow-y-scroll">
-          <div style={{ maxHeight: '100%' }}>
+          <div className="max-h-full">
             {ITEMS.map((item, index) => (
               <div
                 className="mobile-nav-item"

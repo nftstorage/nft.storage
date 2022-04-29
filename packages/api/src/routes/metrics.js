@@ -11,8 +11,7 @@ export async function metrics(_, { db }) {
 
 /** @type {import('../bindings').Handler} */
 export async function getStats(_, { db }) {
-  let stats = await db.getStats()
-
+  const stats = await db.getStats()
   return new JSONResponse(
     {
       ok: true,

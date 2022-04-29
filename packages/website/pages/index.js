@@ -61,7 +61,7 @@ function About() {
       <h3 className="chicagoflf">
         <HashLink id="store">Store</HashLink>
       </h3>
-      <p className="leading-normal">
+      <p className="leading-normal mb-4">
         Just upload your data and you&#39;ll receive an IPFS hash of the content
         (a &quot;CID,&quot; or content address) that you can use to make an IPFS
         URL (<code>ipfs://&lt;cid&gt;</code>). Use this IPFS URL in your NFT
@@ -69,7 +69,7 @@ function About() {
         field in your NFT, the image field in your metadata) as a pointer to the
         content itself, so no one can dispute what your NFT is.
       </p>
-      <p className="leading-normal">
+      <p className="leading-normal mb-4">
         Filecoin provides long-term storage for the data ensuring that even if
         NFT.Storage is attacked or taken down the NFT data persists! This
         storage is trustlessly verifiable (with on-chain, cryptographic proofs
@@ -94,7 +94,7 @@ function About() {
         </a>
         ).
       </p>
-      <p className="leading-normal">
+      <p className="leading-normal mb-4">
         Have additional preferences on where to store your data? Pin your data
         to any storage solution running a{' '}
         <a
@@ -114,13 +114,13 @@ function About() {
       <h3 className="chicagoflf">
         <HashLink id="retrieve">Retrieve</HashLink>
       </h3>
-      <p className="leading-normal">
+      <p className="leading-normal mb-4">
         NFT data stored by <strong>NFT.Storage</strong> can be accessed from the
         decentralized IPFS network from <em>any</em> peer that has the content.
         CIDs reference <strong>immutable</strong> content so you can be sure the
         content you access is the content referenced in the NFT.
       </p>
-      <p className="leading-normal">
+      <p className="leading-normal mb-4">
         The data can be fetched directly in the browser using{' '}
         <a
           href="https://brave.com/ipfs-support/"
@@ -159,7 +159,7 @@ function About() {
         </a>
         .
       </p>
-      <p className="leading-normal">
+      <p className="leading-normal mb-4">
         If fetching content using a public IPFS gateway (e.g., directly using an
         HTTP URL or via Brave), note that the availability and speed of
         retrieving the content depends on the gateway. In cases where the
@@ -172,12 +172,12 @@ function About() {
   return (
     <article className="about-section bg-nsgreen">
       <div className="max-w-7xl mx-auto p-8 px-6 sm:px-16">
-        <div className="about-text">
+        <div className="max-w-none text-left p-0">
           <h2 className="chicagoflf">
             <HashLink id="about">About</HashLink>
           </h2>
-          <div className="two-column-collapsible py-2">
-            <div>
+          <div className="flex flex-col flex-1 py-4 xl:flex-row">
+            <div className="w-full xl:w-1/2 xl:pr-4 mb-4">
               <p className="leading-normal">
                 <strong>NFT.Storage</strong> is a long-term storage service
                 designed for <strong>off-chain</strong> NFT data (like metadata,
@@ -207,7 +207,7 @@ function About() {
                 verifiable what content an NFT is associated with).
               </p>
             </div>
-            <div>
+            <div className="w-full xl:w-1/2 xl:pr-4 mb-4">
               <p className="leading-normal">
                 NFT.Storage stores many copies of uploaded data on the public
                 IPFS network in two primary ways: in dedicated IPFS servers
@@ -255,7 +255,7 @@ function About() {
             </div>
           </div>
         </div>
-        <div className="store-and-retrieve-mobile">
+        <div className="block xl:hidden">
           <div>
             {storeText}
             <div className="text-center my-8">
@@ -264,7 +264,7 @@ function About() {
                 alt="diagram of storage with NFT.Storage"
                 width="1152"
                 height="1650"
-                style={{ maxWidth: '576px', height: 'auto', width: '100%' }}
+                className="block mx-auto w-full max-w-[575px]"
               />
             </div>
           </div>
@@ -276,30 +276,26 @@ function About() {
                 alt="diagram of retrieval with NFT.Storage"
                 width="1262"
                 height="1260"
-                style={{ maxWidth: '631px', height: 'auto', width: '100%' }}
+                className="block mx-auto w-full max-w-[630px]"
               />
             </div>
           </div>
         </div>
-        <div className="relative store-and-retrieve-desktop">
+        <div className="relative hidden xl:block">
           <div className="text-right">
             <img
               src="images/diagram-store-and-retrieve.png"
               srcSet="images/diagram-store-and-retrieve@2x.png 2x"
               alt="diagram of storage and retrieval with NFT.Storage"
               width="1177"
-              className="inline-block"
-              style={{ width: '1177px', height: 'auto', maxWidth: '84%' }}
+              className="inline-block h-auto max-w-[84%]"
             />
           </div>
           <div className="absolute top-0 w-full h-full flex justify-between">
-            <div className="flex-auto" style={{ maxWidth: '35%' }}>
+            <div className="flex-auto max-w-[35%]">
               <div className="pt-32">{storeText}</div>
             </div>
-            <div
-              className="flex-auto flex items-center w-1/2"
-              style={{ maxWidth: '35%', paddingBottom: '4rem' }}
-            >
+            <div className="flex-auto flex items-center w-1/2 max-w-[35%] pb-16">
               <div>{retrieveText}</div>
             </div>
           </div>
@@ -323,12 +319,16 @@ function GettingStarted() {
   return (
     <article className="bg-yellow">
       <div className="max-w-7xl mx-auto p-8 sm:p-16">
-        <h2 className="chicagoflf text-center mb-16">
+        <h2 className="chicagoflf text-center mb-16 text-black">
           <HashLink id="getting-started">Getting started is easy</HashLink>
         </h2>
-        <div className="getting-started-callout">
-          <img src="/images/getting-started.png" alt="getting-started" />
-          <ol className="list-reset pl-0 mb-2">
+        <div className="grid gap-[clamp(2rem,_6vw,_6rem)] md:grid-cols-2 items-center">
+          <img
+            src="/images/getting-started.png"
+            alt="getting-started"
+            className="border-solid border-black border-2 w-full"
+          />
+          <ol className="list-none pl-0 mb-2">
             <li>
               <Step>1</Step>
               <p className="chicagoflf text-base sm:text-xl mx-auto mb-8 leading-normal">

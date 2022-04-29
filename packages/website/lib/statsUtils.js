@@ -56,5 +56,10 @@ export function calculateStats(stats) {
     growthRate = calcuateGrowthRate(totalUploads, previousTotal)
   }
 
-  return { ...stats, totalUploads, growthRate }
+  const dealsSizeGrowthRate = calcuateGrowthRate(
+    stats.deals_size_total,
+    stats.deals_size_total_prev
+  )
+
+  return { ...stats, totalUploads, growthRate, dealsSizeGrowthRate }
 }

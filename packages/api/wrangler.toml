@@ -67,3 +67,4 @@ watch_dir = "src"
 
 [env.production.build.upload]
 format = "service-worker"
+\

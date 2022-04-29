@@ -67,10 +67,10 @@ export default function Stats({ logos }) {
         ok: true,
         data: {
           deals_size_total: 249523372029443,
+          deals_size_total_prev: 249523372020000,
           uploads_past_7_total: 2011366,
           uploads_nft_total: 685866,
           uploads_remote_total: 11077834,
-          deals_total: 34959,
           uploads_car_total: 17711308,
           uploads_multipart_total: 1456388,
           uploads_blob_total: 12420729,
@@ -83,10 +83,10 @@ export default function Stats({ logos }) {
 
   const Marquee = () => {
     return (
-      <div className="marquee">
-        <div className="marquee-track">
-          <p className="marquee-text chicagoflf">NFT.Storage is storing...</p>
-        </div>
+      <div className="relative w-screen max-w-100 h-[100px] border-y border-black flex items-center justify-center">
+        <p className="chicagoflf p-4 m-0 text-[clamp(16px,_2.6rem,_6vw)]">
+          NFT.Storage is storing...
+        </p>
       </div>
     )
   }
@@ -98,32 +98,38 @@ export default function Stats({ logos }) {
    */
   const StatCard = ({ title, children }) => {
     return (
-      <div className="stat-card">
-        <h2 className="text-2xl sm:text-4xl stat-card-header chicagoflf">
+      <div className="bg-yellow text-center border border-black h-full box-content flex flex-col justify-between">
+        <h2 className="text-2xl sm:text-4xl text-white mb-4 mt-8 flex-initial chicagoflf">
           {title}
         </h2>
-        <div className="stat-card-inner">{children}</div>
+        <div className="stat-card-inner relative flex flex-1 z-10 -translate-x-8 translate-y-8">
+          {children}
+        </div>
       </div>
     )
   }
 
   const StatCards = () => {
+    const figureClass = `chicagoflf text-[clamp(22px,_4.2rem,_6vw)] my-5`
+    const statImageClass = `w-full border-b border-black object-cover aspect-[5/2]`
+    const statInnerClass = `bg-white border border-black w-full h-full flex flex-col justify-between`
     return (
       <div className="stat-cards-wrapper">
         <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
-          <div className="stat-cards">
+          <div className="stat-cards -mt-24 mb-16 pl-8 grid gap-x-16 gap-y-[8vw] md:grid-cols-2">
             <StatCard title="Upload Count">
-              <div>
+              <div className={statInnerClass}>
                 <Img
                   src={'/images/stats-upload-count.svg'}
                   alt="Upload Count"
                   width="500px"
                   height="200px"
                   layout="responsive"
+                  className={statImageClass}
                 />
-                <div className="py-4 px-4">
+                <div className="p-4">
                   <p className="chicagoflf">Total uploads to NFT.Storage</p>
-                  <figure className="chicagoflf">
+                  <figure className={figureClass}>
                     {statsLoading && <Loading />}
                     {new Intl.NumberFormat('en-GB', {
                       notation: 'compact',
@@ -134,8 +140,8 @@ export default function Stats({ logos }) {
                   <p
                     className={`chicagoflf ${
                       stats.growthRate > 0
-                        ? 'stat-green stat-green-plus'
-                        : 'stat-red'
+                        ? `text-forest before:content-['+']`
+                        : 'text-red'
                     }`}
                   >
                     {stats.growthRate || 0}%
@@ -146,30 +152,33 @@ export default function Stats({ logos }) {
             </StatCard>
 
             <StatCard title="Data Stored">
-              <div>
+              <div className={statInnerClass}>
                 <Img
                   src={'/images/stats-data-stored.svg'}
                   alt="Data Stored"
                   width="500px"
                   height="200px"
                   layout="responsive"
+                  className={statImageClass}
                 />
-                <div className="py-4 px-4">
+                <div className="p-4">
                   <p className="chicagoflf">
                     Total data stored on Filecoin from NFT.Storage
                   </p>
-                  <figure className="chicagoflf">
+                  <figure className={figureClass}>
                     {statsLoading && <Loading />}
                     {bytes(stats.deals_size_total || 0, { decimalPlaces: 2 })}
                   </figure>
                   <p
                     className={`chicagoflf ${
-                      stats.deals_total > 0 ? 'stat-green' : 'stat-red'
+                      stats.deals_total > 0
+                        ? `text-forest before:content-['+']`
+                        : 'text-red'
                     }`}
                   >
-                    {stats.deals_total?.toLocaleString() || 0}
+                    {stats.dealsSizeGrowthRate || 0}%
                   </p>
-                  <p>[Total deals]</p>
+                  <p>[Week over week change]</p>
                 </div>
               </div>
             </StatCard>

@@ -16,8 +16,12 @@ const InlineCode = ({
   children,
 }) => (
   <code
-    style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
-    className={clsx('code ph1', color, bgColor, className)}
+    className={clsx(
+      'code ph1 whitespace-pre-wrap break-words',
+      color,
+      bgColor,
+      className
+    )}
   >
     {children}
   </code>
