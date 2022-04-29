@@ -140,7 +140,12 @@ export async function getUserTags() {
  * @returns {Promise<VersionInfo>} (async) version information for API service
  */
 export async function getVersion() {
-  return (await fetchRoute('/version')).value
+  // the '/version' route doesn't wrap its response in `{ ok, value }` like `fetchRoute` expects
+  const res = await fetch(API + '/version')
+  if (!res.ok) {
+    throw new Error(`HTTP error: [${res.status}] ${res.statusText}`)
+  }
+  return res.json()
 }
 
 /**
@@ -204,6 +209,11 @@ async function fetchRoute(route, fetchOptions = {}) {
   if (body.ok) {
     return body
   } else {
-    throw new Error(body.error.message)
+    if (body.error && body.error.message) {
+      throw new Error(body.error.message)
+    }
+    throw new Error(
+      `unexpected response: ok != true, but body is missing error message`
+    )
   }
 }
