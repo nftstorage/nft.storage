@@ -106,10 +106,6 @@ export async function login(token, type = 'magic', data = {}) {
  * @returns {Promise<MagicUserMetadata | undefined>}
  */
 export async function getMagicUserMetadata() {
-  console.log(
-    'getting user metadata from magic.link. magic.user:',
-    getMagic().user
-  )
   try {
     return await getMagic().user.getMetadata()
   } catch {
