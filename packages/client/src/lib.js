@@ -17,7 +17,7 @@
 import { transform } from 'streaming-iterables'
 import pRetry, { AbortError } from 'p-retry'
 import { TreewalkCarSplitter } from 'carbites/treewalk'
-import { pack } from 'ipfs-car/pack'
+import { pack } from 'ipfs-car/dist/esm/pack'
 import { CID } from 'multiformats/cid'
 import throttledQueue from 'throttled-queue'
 import * as Token from './token.js'
