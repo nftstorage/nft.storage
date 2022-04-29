@@ -23,6 +23,7 @@ import { metaplexUpload } from './routes/metaplex-upload.js'
 import { blogSubscribe } from './routes/blog-subscribe.js'
 import { userDIDRegister } from './routes/user-did-register.js'
 import { userTags } from './routes/user-tags.js'
+import { userMetadata } from './routes/user-metadata.js'
 import { ucanToken } from './routes/ucan-token.js'
 import { did } from './routes/did.js'
 
@@ -158,6 +159,7 @@ r.add(
   [postCors]
 )
 r.add('get', '/user/tags', withAuth(withMode(userTags, RO)), [postCors])
+r.add('get', '/user/meta', withAuth(withMode(userMetadata, RO)), [postCors])
 
 // Tokens
 r.add('get', '/internal/tokens', withAuth(withMode(tokensList, RO)), [postCors])
