@@ -144,11 +144,11 @@ export async function getVersion() {
 }
 
 /**
- * @returns {Promise<{ data: StatsData }>} (async) global service stats
+ * @returns {Promise<StatsData>} (async) global service stats
  */
 export async function getStats() {
-  // @ts-expect-error the stat's route is an odd duck... it returns `{ ok, data }` instead of `{ ok, value }`
-  return fetchRoute('/stats')
+  // @ts-expect-error the stats route is an odd duck... it returns `{ ok, data }` instead of `{ ok, value }`
+  return (await fetchRoute('/stats')).data
 }
 
 /**

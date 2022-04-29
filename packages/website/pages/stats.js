@@ -56,22 +56,20 @@ export default function Stats({ logos }) {
     setStatsLoading(true)
     try {
       const stats = await getStats()
-      setStats(calculateStats(stats.data))
+      setStats(calculateStats(stats))
     } catch (e) {
-      const fakeData = {
-        ok: true,
-        data: {
-          deals_size_total: 249523372029443,
-          deals_size_total_prev: 249523372020000,
-          uploads_past_7_total: 2011366,
-          uploads_nft_total: 685866,
-          uploads_remote_total: 11077834,
-          uploads_car_total: 17711308,
-          uploads_multipart_total: 1456388,
-          uploads_blob_total: 12420729,
-        },
+      console.warn('showing fake stats due to error: ', e)
+      const fakeStats = {
+        deals_size_total: 249523372029443,
+        deals_size_total_prev: 249523372020000,
+        uploads_past_7_total: 2011366,
+        uploads_nft_total: 685866,
+        uploads_remote_total: 11077834,
+        uploads_car_total: 17711308,
+        uploads_multipart_total: 1456388,
+        uploads_blob_total: 12420729,
       }
-      setStats(calculateStats(fakeData.data))
+      setStats(calculateStats(fakeStats))
     }
     setStatsLoading(false)
   }
