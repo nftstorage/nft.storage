@@ -9,9 +9,9 @@ ENTRYPOINT="./src/index.js"
 OUT_DIR="/app/dist"
 
 # variables for use in the host for debugging, etc.
-ESBUILD_CMD="npx esbuild"
-ENTRYPOINT="./src/constants.js"
-OUT_DIR="./tmp"
+# ESBUILD_CMD="npx esbuild"
+# ENTRYPOINT="./src/constants.js"
+# OUT_DIR="./tmp"
 
 # End host debug section
 
@@ -19,7 +19,7 @@ mkdir -p $OUT_DIR && \
 $ESBUILD_CMD \
   --bundle \
   --sourcemap \
-  --define:PRIVATE_KEY="'xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY='" \
+  --define:PRIVATE_KEY="'$PRIVATE_KEY'" \
   --define:DATABASE_CONNECTION="\"$DATABASE_CONNECTION\"" \
   --define:DATABASE_TOKEN="\"$DATABASE_TOKEN\"" \
   --define:DATABASE_URL="\"$DATABASE_URL\"" \
