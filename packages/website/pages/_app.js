@@ -6,9 +6,8 @@ import Layout from '../components/layout.js'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import Router, { useRouter } from 'next/router'
 import countly from '../lib/countly'
-import { getUserTags } from '../lib/api'
+import { getUserMetadata, getUserTags } from '../lib/api'
 import { useCallback, useEffect, useState } from 'react'
-import { getMagicUserMetadata } from 'lib/magic'
 import * as Sentry from '@sentry/nextjs'
 import { UserContext } from 'lib/user'
 import BlockedUploadsModal from 'components/blockedUploadsModal.js'
@@ -30,12 +29,11 @@ export default function App({ Component, pageProps }) {
     useState(false)
 
   const handleIsLoggedIn = useCallback(async () => {
-    const data = await getMagicUserMetadata()
+    const data = await getUserMetadata()
     if (!data) return
-    if (data) {
-      // @ts-ignore
-      Sentry.setUser(user)
-    }
+
+    // @ts-ignore
+    Sentry.setUser(user)
     const tags = await getUserTags()
     if (tags.HasAccountRestriction && !sessionStorage.hasSeenUserBlockedModal) {
       sessionStorage.hasSeenUserBlockedModal = true

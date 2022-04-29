@@ -7,7 +7,7 @@ import Hamburger from '../icons/hamburger'
 import Link from 'next/link'
 import clsx from 'clsx'
 import countly from '../lib/countly'
-import { logoutMagicSession } from '../lib/magic.js'
+import { logoutUserSession } from '../lib/api.js'
 import { useQueryClient } from 'react-query'
 import Logo from '../components/logo'
 import { useUser } from 'lib/user.js'
@@ -30,7 +30,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   const version = /** @type {string} */ (query.version)
 
   const logout = useCallback(async () => {
-    await logoutMagicSession()
+    await logoutUserSession()
     delete sessionStorage.hasSeenUserBlockedModal
     handleClearUser()
     Router.push({ pathname: '/', query: version ? { version } : null })
