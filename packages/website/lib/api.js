@@ -1,8 +1,9 @@
-import { getMagicUserToken } from './magic'
+import { getMagicUserToken, logoutMagicSession } from './magic'
 import constants from './constants'
 import { NFTStorage } from 'nft.storage'
 
 const API = constants.API
+const REQUEST_TOKEN_STORAGE_KEY = 'client-request-token'
 
 /**
  * TODO(maybe): define a "common types" package, so we can share definitions with the api?
@@ -67,14 +68,66 @@ const API = constants.API
  * @property {number} uploads_multipart_total
  */
 
+export async function logoutUserSession() {
+  deleteSavedRequestToken()
+  return logoutMagicSession()
+}
+
 /**
  * @returns {Promise<NFTStorage>} an NFTStorage client instance, authenticated with the current user's auth token.
  */
 export async function getStorageClient() {
+  const token = await getClientRequestToken()
+  if (!token) {
+    throw new Error(
+      `can't get storage client: not logged in / no request token available`
+    )
+  }
+
   return new NFTStorage({
-    token: await getMagicUserToken(),
+    token,
     endpoint: new URL(API + '/'),
   })
+}
+
+export async function getClientRequestToken() {
+  let token = tokenFromLocationHash()
+  if (token) {
+    saveRequestToken(token)
+    window.location.hash = ''
+    return token
+  }
+
+  token = getSavedRequestToken()
+  if (token) {
+    return token
+  }
+
+  return getMagicUserToken()
+}
+
+/**
+ * @param {string} token
+ */
+function saveRequestToken(token) {
+  localStorage.setItem(REQUEST_TOKEN_STORAGE_KEY, token)
+}
+
+/**
+ * @returns {string|null}
+ */
+function getSavedRequestToken() {
+  return localStorage.getItem(REQUEST_TOKEN_STORAGE_KEY)
+}
+
+function deleteSavedRequestToken() {
+  localStorage.removeItem(REQUEST_TOKEN_STORAGE_KEY)
+}
+
+function tokenFromLocationHash() {
+  const fragment = window.location.hash.replace(/^#/, '')
+  const params = new URLSearchParams(fragment)
+  return params.get('authToken')
 }
 
 /**
@@ -156,6 +209,15 @@ export async function getStats() {
   return (await fetchRoute('/stats')).data
 }
 
+export async function getUserMetadata() {
+  const token = await getClientRequestToken()
+  if (!token) {
+    return null
+  }
+
+  return (await fetchAuthenticated('/user/meta')).value
+}
+
 /**
  * Sends a `fetch` request to an API route, using the current user's authentiation token.
  *
@@ -168,7 +230,7 @@ export async function getStats() {
 async function fetchAuthenticated(route, fetchOptions = {}) {
   fetchOptions.headers = {
     ...fetchOptions.headers,
-    Authorization: 'Bearer ' + (await getMagicUserToken()),
+    Authorization: 'Bearer ' + (await getClientRequestToken()), // TODO: handle null here
   }
   return fetchRoute(route, fetchOptions)
 }

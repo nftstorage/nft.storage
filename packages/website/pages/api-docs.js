@@ -1,5 +1,5 @@
 // @ts-ignore
-import { getMagicUserToken } from 'lib/magic'
+import { getClientRequestToken } from 'lib/api'
 import dynamic from 'next/dynamic'
 
 const DynamicSwaggerUI = dynamic(import('swagger-ui-react'), { ssr: false })
@@ -11,7 +11,7 @@ const DynamicSwaggerUI = dynamic(import('swagger-ui-react'), { ssr: false })
 const requestHandler = async (req) => {
   let token
   try {
-    token = await getMagicUserToken()
+    token = await getClientRequestToken()
     // @ts-ignore
     req.headers.Authorization = 'Bearer ' + token
   } catch (error) {}

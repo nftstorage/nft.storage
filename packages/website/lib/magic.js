@@ -39,6 +39,13 @@ function getMagic() {
 }
 
 export async function logoutMagicSession() {
+  // sadly, trying to log out without this check results in
+  // an error about trying to mutate a database that doesn't exist unless you have a valid session.
+  // magic.link uses indexdb to store session state, which could be the source.
+  const loggedIn = await getMagic().user.isLoggedIn()
+  if (!loggedIn) {
+    return
+  }
   return getMagic().user.logout()
 }
 
@@ -47,7 +54,7 @@ export async function logoutMagicSession() {
  * it's still within its expiry time. If the token is nearing expiration, a
  * new one is requested asynchronously.
  *
- * @returns {Promise<string>} the encoded magic.link token
+ * @returns {Promise<string|null>} the encoded magic.link token
  */
 export async function getMagicUserToken() {
   const magic = getMagic()
@@ -56,6 +63,11 @@ export async function getMagicUserToken() {
   const threshold = MAGIC_USER_TOKEN_LIFESPAN_SEC - 10
   if (_magicUserToken && elapsed < threshold) {
     return _magicUserToken
+  }
+
+  const loggedIn = await magic.user.isLoggedIn()
+  if (!loggedIn) {
+    return null
   }
 
   _magicUserToken = await magic.user.getIdToken({
