@@ -11,7 +11,12 @@ OUT_DIR="/app/dist"
 # variables for use in the host for debugging, etc.
 ESBUILD_CMD="npx esbuild"
 OUT_DIR="./tmp"
-ENTRYPOINT="./src/constants.js
+ENTRYPOINT="./src/constants.js"
+cat ../../.env
+source ../../.env
+echo $ENV
+# End host debug section
+
 mkdir -p $OUT_DIR && \
 $ESBUILD_CMD \
   --bundle \
@@ -31,4 +36,4 @@ $ESBUILD_CMD \
   --define:VERSION="'development'" \
   --define:COMMITHASH="'development'" \
   --define:BRANCH="'development'" \
- $ENTRYPOINT > $OUT_DIRA/worker.js
+ $ENTRYPOINT > $OUT_DIR/worker.js
