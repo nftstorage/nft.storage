@@ -3,19 +3,18 @@
 
 # Introduced these variables mostly to debug the env templating in a container vs the host.
 
+# variables for use in the host for debugging, etc.
+ESBUILD_CMD="npx esbuild"
+ENTRYPOINT="./src/constants.js"
+OUT_DIR="./tmp"
+
+# End host debug section
+
 # Variables for use in docker.
 ESBUILD_CMD="node_modules/esbuild/bin/esbuild"
 ENTRYPOINT="./src/index.js"
 OUT_DIR="/app/dist"
 
-# variables for use in the host for debugging, etc.
-ESBUILD_CMD="npx esbuild"
-OUT_DIR="./tmp"
-ENTRYPOINT="./src/constants.js"
-cat ../../.env
-source ../../.env
-echo $ENV
-# End host debug section
 
 mkdir -p $OUT_DIR && \
 $ESBUILD_CMD \
@@ -28,10 +27,10 @@ $ESBUILD_CMD \
   --define:LOGTAIL_TOKEN="\"$LOGTAIL_TOKEN\"" \
   --define:MAGIC_SECRET_KEY="\"$MAGIC_SECRET_KEY\"" \
   --define:SALT="\"$SALT\"" \
-  --define:SENTRY_DSN="\"$ENTRY_DSN\"" \
+  --define:SENTRY_DSN="\"$SENTRY_DSN\"" \
   --define:MAILCHIMP_API_KEY="\"$MAILCHIMP_API_KEY\"" \
   --define:CLUSTER_API_URL="\"$CLUSTER_API_URL\"" \
-  --define:CLUSTER_BASIC_AUTH_TOKEN="''" \
+  --define:CLUSTER_BASIC_AUTH_TOKEN="\"$CLUSTER_BASIC_AUTH_TOKEN\"" \
   --define:DEBUG='true' \
   --define:VERSION="'development'" \
   --define:COMMITHASH="'development'" \
