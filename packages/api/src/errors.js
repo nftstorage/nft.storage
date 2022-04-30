@@ -116,6 +116,16 @@ export class ErrorUserNotFound extends Error {
 }
 ErrorUserNotFound.CODE = 'ERROR_USER_NOT_FOUND'
 
+export class ErrorTokenIsBlocked extends Error {
+  constructor(msg = 'API Key is blocked.') {
+    super(msg)
+    this.name = 'TokenIsBlocked'
+    this.status = 403
+    this.code = ErrorTokenIsBlocked.CODE
+  }
+}
+ErrorTokenIsBlocked.CODE = 'ERROR_TOKEN_IS_BLOCKED'
+
 export class ErrorTokenNotFound extends Error {
   constructor(msg = 'API Key not found.') {
     super(msg)

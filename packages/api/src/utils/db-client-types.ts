@@ -15,7 +15,7 @@ export type UpsertUserInput = Pick<
 
 export type UserOutputKey = Pick<
   definitions['auth_key'],
-  'user_id' | 'id' | 'name' | 'secret'
+  'user_id' | 'id' | 'name' | 'secret' | 'deleted_at'
 >
 
 export type UserOutputTag = Pick<
@@ -39,6 +39,8 @@ export type UploadOutput = definitions['upload'] & {
   }
   deals: Deal[]
 }
+
+export type AuthKeyHistoryOutput = definitions['auth_key_history']
 
 export interface CreateUploadInput {
   user_id: definitions['upload']['user_id']
@@ -88,6 +90,10 @@ export interface ListUploadsOptions {
    */
   limit?: number
   meta?: unknown
+}
+
+export interface GetUserOptions {
+  includeAllKeys: boolean
 }
 
 export type StatsPayload = {

@@ -5,6 +5,7 @@ import {
   ErrorUserNotFound,
   ErrorTokenNotFound,
   ErrorUnauthenticated,
+  ErrorTokenIsBlocked,
 } from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
 export const magic = new Magic(secrets.magic)
@@ -40,16 +41,34 @@ export async function validate(event, { log, db, ucanService }, options) {
   // validate access tokens
   if (await verifyJWT(token, secrets.salt)) {
     const decoded = parseJWT(token)
-    const user = await db.getUser(decoded.sub)
+    const user = await db.getUser(decoded.sub, { includeAllKeys: true })
 
     if (user) {
       const key = user.keys.find((k) => k?.secret === token)
       if (key) {
+        const keyHistory = await db.getAuthKeyHistory(key.id)
+        if (keyHistory?.[0]?.status === 'Blocked') {
+          throw new ErrorTokenIsBlocked()
+        }
+
+        if (!keyHistory || !keyHistory.find((kh) => kh.deleted_at === null)) {
+          throw new ErrorTokenNotFound()
+        }
+
         log.setUser({
           id: user.id,
         })
         return {
-          user: user,
+          user: {
+            ...user,
+            keys: user.keys
+              .filter((k) => k.deleted_at === null)
+              .map((k) => {
+                const newKey = { ...k }
+                delete newKey.deleted_at
+                return newKey
+              }),
+          },
           key,
           db,
           type: 'key',

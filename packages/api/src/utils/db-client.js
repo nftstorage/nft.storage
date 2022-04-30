@@ -79,11 +79,11 @@ export class DBClient {
    * Get user by magic.link or old github id
    *
    * @param {string} id
+   * @param {import('./db-client-types').GetUserOptions} [opts]
    */
-  async getUser(id) {
+  async getUser(id, { includeAllKeys }) {
     /** @type {PostgrestQueryBuilder<import('./db-client-types').UserOutput>} */
     const query = this.client.from('user')
-
     let select = query
       .select(
         `
@@ -91,15 +91,20 @@ export class DBClient {
     magic_link_id,
     github_id,
     did,
-    keys:auth_key_user_id_fkey(user_id,id,name,secret),
+    keys:auth_key_user_id_fkey(user_id,id,name,secret${
+      includeAllKeys ? ',deleted_at' : ''
+    },
     tags:user_tag_user_id_fkey(user_id,id,tag,value)
     `
       )
       .or(`magic_link_id.eq.${id},github_id.eq.${id},did.eq.${id}`)
       // @ts-ignore
-      .filter('keys.deleted_at', 'is', null)
-      // @ts-ignore
       .filter('tags.deleted_at', 'is', null)
+
+    if (!includeAllKeys) {
+      // @ts-ignore
+      select.filter('keys.deleted_at', 'is', null)
+    }
 
     const { data, error, status } = await select.single()
 
@@ -111,6 +116,26 @@ export class DBClient {
     }
 
     return data
+  }
+
+  /**
+   * Get auth key history for a given auth key id
+   *
+   * @param {number} id
+   */
+  async getAuthKeyHistory(id) {
+    /** @type {PostgrestQueryBuilder<import('./db-client-types').AuthKeyHistoryOutput>} */
+    const query = this.client.from('auth_key_history')
+    let { data: keyHistory, error } = await query
+      .select(`*`)
+      .eq('auth_key_id', id)
+      .order('deleted_at')
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    return keyHistory
   }
 
   /**
