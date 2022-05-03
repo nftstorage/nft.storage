@@ -13,7 +13,7 @@ tags:
 
 NFT.Storage launched our IPFS HTTP gateway in early March, which has largely been a success - it is currently performantly providing 25 to 30 million reads of NFTs per day without users needing to install any specialized software, supporting dozens of NFT marketplaces and projects. 
 
-However, it has not been completely smooth sailing. This post discusses pain points that the NFT.Storage team has faced since launch due to mistakes made by “gatekeepers” of the web today. This has included outages caused by Google Chrome Safe Browsing on two separate instances, where false positives caused them to flag the entire gateway domain to effectively the entire web browsing population for 4+ hours each time (blocking users from accessing ~5,000,000 NFT requests in each instance), as well as smaller instances where security vendors flagged the domain, causing issues for users from unpredictable places. We share our experiences to open a dialogue across the IPFS ecosystem and the powerful entities that control the web experience today, like browsers, security vendors, and large websites.
+However, it has not been completely smooth sailing. This post discusses pain points that the NFT.Storage team has faced since launch due to “gatekeepers” of the web today. This has included outages caused by Google Chrome Safe Browsing on two separate instances, where false positives caused them to flag the entire gateway domain to effectively the entire web browsing population for 4+ hours each time (blocking users from accessing ~5,000,000 NFT requests in each instance), as well as smaller instances where security vendors flagged the domain, causing issues for users from unpredictable places. In these situations, generally we have seen these parties have good intentions, but bad outcomes in practice simply due to their level of concentrated power in the web. We share our experiences to open a dialogue across the IPFS ecosystem and the powerful entities that control the web experience today, like browsers, security vendors, and large websites.
 
 # IPFS HTTP Gateways: A primer
 
@@ -33,7 +33,7 @@ One way this is used by gateways is in a [“Bad Bits” Denylist](https://badbi
 
 NFT.Storage [launched our gateway](https://nft.storage/blog/post/2022-03-08-gateway-release/) in early March. Adoption accelerated rapidly, with 25 million weekly requests already by the second week. Folks minting Solana Metaplex NFTs (which require HTTP URLs) like Magic Eden started using nftstorage.link URLs that contained the CIDs of the relevant NFT content. Some of the latest numbers include over 155 million requests last week for more than 1000 TB and a >70% cache hit rate.
 
-We also quickly found oversized hammers from the web2 world that were able whole business sectors offline despite due to their mistakes. Despite the proactive security measures in place for gateways, the structure of our web today led to Google alone causing two major service disruptions for us, dozens of our users, and ~10,000,000 of their end-user requests, as well as an ongoing game of whack-a-mole with smaller security vendors.
+We also quickly found oversized hammers from the web2 world that were able whole business sectors offline. Despite the proactive security measures in place for gateways, the structure of our web today led to Google alone causing two major service disruptions for us, dozens of our users, and ~10,000,000 of their end-user requests, as well as an ongoing game of whack-a-mole with smaller security vendors.
 
 ## Incident 1: Google Safe Browsing
 
@@ -57,7 +57,7 @@ Our team and other members of the IPFS ecosystem tried backchanneling through ev
 
 In the meantime, an estimated ~5,000,000 requests were blocked from the gateway. This was especially alarming for folks in Solana who had NFTs that were minted using nftstorage.link, and they couldn’t access them in their wallets, causing fear of a rug pull.
 
-We later learned that we were not the only ones who have suffered [from this exact issue](https://gomox.medium.com/google-safe-browsing-can-kill-your-startup-7d73c474b98d) - Google opaquely blocking their domain without timely or transparent recourse. [This Hacker News thread](https://news.ycombinator.com/item?id=25802366) contains various thoughts on the topic. It's mostly anger at the premise of one entity having so much power over the web without choice, but the conclusion is generally that there is little an individual can do.
+We later learned that we were not the only ones who have suffered [from this exact issue](https://gomox.medium.com/google-safe-browsing-can-kill-your-startup-7d73c474b98d) - Google opaquely blocking their domain without timely or transparent recourse. [This Hacker News thread](https://news.ycombinator.com/item?id=25802366) contains various thoughts on the topic, with the general conclusion that there is little an individual can do.
 
 ## Incident 2: Whack-a-mole with security vendors
 
@@ -89,7 +89,7 @@ This time, we had a more difficult time getting into contact with the relevant t
 
 A little bit later, the issue had suddenly resolved itself - minus URLs with the specific malicious CIDs, but the gateway was unblocked. We were mostly relieved, but found it curious that we did not receive a notification from Google Search Console this time that our request had been accepted. 
 
-The next day, one of our Google contacts let us know that the relevant team had admitted that they had put in a bad regex statement. We’ve all been there before, but it was still a remarkable lack of care for such a powerful entity (why wasn’t there better testing?), as well as a shocking lack of transparency (why didn’t they let us know?).
+The next day, one of our Google contacts let us know that the relevant team had admitted that they had put in a bad regex statement. We’ve all been there before, and we were thankful that this confirmed the team's intent was to make sure the entire domain wouldn't ever get blacklisted again. However, but it once again did show the inherent issues of one party having so much power (why wasn’t there better testing? why was the resolution process so opaque?).
 
 # Suggestions for web operators
 
