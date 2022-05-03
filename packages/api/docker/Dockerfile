@@ -17,6 +17,8 @@ WORKDIR /app
 COPY ./package.json .
 RUN yarn install --verbose
 
-COPY ./db ./docker/scripts ./src .
+COPY ./docker/scripts ./scripts
+COPY ./db ./db
+COPY ./src/ .
 
 ENTRYPOINT ["nodemon", "--watch", "src/", "--exec", "'./scripts/run-miniflare.sh'" ]

@@ -19,7 +19,8 @@ mkdir -p $OUT_DIR && \
 $ESBUILD_CMD \
   --bundle \
   --sourcemap \
-  --define:PRIVATE_KEY="'$PRIVATE_KEY'" \
+  --define:ENV="\"$ENV\"" \
+  --define:PRIVATE_KEY="\"$PRIVATE_KEY\"" \
   --define:DATABASE_CONNECTION="\"$DATABASE_CONNECTION\"" \
   --define:DATABASE_TOKEN="\"$DATABASE_TOKEN\"" \
   --define:DATABASE_URL="\"$DATABASE_URL\"" \
