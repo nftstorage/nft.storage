@@ -7,10 +7,12 @@
   "main": "dist/worker.js",
   "scripts": {
     "deploy": "wrangler publish --env production",
+    "predev": "./scripts/cli.js db --start && ./scripts/cli.js db-sql --cargo --testing --reset",
+    "dev": "miniflare --watch --debug --env ../../.env",
     "clean": "./scripts/cli.js db --clean && rm -rf docker/compose",
+    "build": "scripts/cli.js build",
     "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js",
-    "db-types": "./scripts/cli.js db-types",
-    "start": "node --experimental-json-modules ./dist/index.js"
+    "db-types": "./scripts/cli.js db-types"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
   "license": "(Apache-2.0 OR MIT)",
