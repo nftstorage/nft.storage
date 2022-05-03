@@ -45,9 +45,6 @@ services:
     volumes:
       - ../src:/app/src
   db:
-    # volumes:
-    # - ./db_data:/var/lib/postgresql/data
-
     build:
       context: ./postgres
     environment:
