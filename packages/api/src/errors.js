@@ -139,6 +139,19 @@ export class ErrorInvalidCid extends Error {
 }
 ErrorInvalidCid.CODE = 'ERROR_INVALID_CID'
 
+export class InvalidCarError extends Error {
+  /**
+   * @param {string} reason
+   */
+  constructor(reason) {
+    super(`Invalid CAR file received: ${reason}`)
+    this.name = 'InvalidCar'
+    this.status = 400
+    this.code = InvalidCarError.CODE
+  }
+}
+InvalidCarError.CODE = 'ERROR_INVALID_CAR'
+
 export class ErrorMetaplexTokenNotFound extends Error {
   constructor(msg = 'Metaplex token not found.') {
     super(msg)

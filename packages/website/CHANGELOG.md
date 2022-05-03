@@ -1,5 +1,19 @@
 # Changelog
 
+### [1.49.1](https://github.com/nftstorage/nft.storage/compare/website-v1.49.0...website-v1.49.1) (2022-05-02)
+
+
+### Bug Fixes
+
+* redirect to home page from files on refresh ([#1846](https://github.com/nftstorage/nft.storage/issues/1846)) ([c8fd5b9](https://github.com/nftstorage/nft.storage/commit/c8fd5b96a760c20209df473173a55c70e75380c4))
+
+## [1.49.0](https://github.com/nftstorage/nft.storage/compare/website-v1.48.0...website-v1.49.0) (2022-04-29)
+
+
+### Features
+
+* gateways and gatekeepers post ([#1873](https://github.com/nftstorage/nft.storage/issues/1873)) ([8f7407c](https://github.com/nftstorage/nft.storage/commit/8f7407c096a313b321054934bf114d2e4562fc98))
+
 ## [1.48.0](https://github.com/nftstorage/nft.storage/compare/website-v1.47.0...website-v1.48.0) (2022-04-27)
 
 
