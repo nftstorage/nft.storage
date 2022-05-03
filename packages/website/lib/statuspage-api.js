@@ -1,4 +1,5 @@
-export const API = 'https://status.nft.storage/api/v2'
+export const API =
+  process.env.NEXT_PUBLIC_STATUS_PAGE_API || 'https://status.nft.storage/api/v2'
 
 export async function getStatusPageSummary() {
   const route = '/summary.json'
