@@ -4472,6 +4472,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/git-rev-sync@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/git-rev-sync/-/git-rev-sync-2.0.0.tgz#9de6e18cb01e65f769de77175bbe93254664023e"
+  integrity sha512-qGYApbb0m8Ofy3pwYks+kYVIZQAN/cqNucJGbl5O5GpLw9JSzp74rkTWDhPv3brrJfJb5/ixtimLJpo4tfh2QA==
+
 "@types/glob@*", "@types/glob@^7.1.1":
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@types/glob/-/glob-7.2.0.tgz#bc1b5bf3aa92f25bd5dd39f35c57361bdce5b2eb"
@@ -10026,7 +10031,7 @@ get-value@^2.0.3, get-value@^2.0.6:
   resolved "https://registry.yarnpkg.com/get-value/-/get-value-2.0.6.tgz#dc15ca1c672387ca76bd37ac0a395ba2042a2c28"
   integrity sha1-3BXKHGcjh8p2vTesCjlbogQqLCg=
 
-git-rev-sync@^3.0.1:
+git-rev-sync@^3.0.1, git-rev-sync@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/git-rev-sync/-/git-rev-sync-3.0.2.tgz#9763c730981187c3419b75dd270088cc5f0e161b"
   integrity sha512-Nd5RiYpyncjLv0j6IONy0lGzAqdRXUaBctuGBbrEA2m6Bn4iDrN/9MeQTXuiquw8AEKL9D2BW0nw5m/lQvxqnQ==
@@ -15994,15 +15999,10 @@ prepend-http@^2.0.0:
   resolved "https://registry.yarnpkg.com/prepend-http/-/prepend-http-2.0.0.tgz#e92434bfa5ea8c19f41cdfd401d741a3c819d897"
   integrity sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc=
 
-prettier@2.5.1, prettier@^2.5.1:
+prettier@2.5.1, "prettier@>=2.2.1 <=2.3.0", prettier@^2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.5.1.tgz#fff75fa9d519c54cf0fce328c1017d94546bc56a"
   integrity sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==
-
-"prettier@>=2.2.1 <=2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.3.0.tgz#b6a5bf1284026ae640f17f7ff5658a7567fc0d18"
-  integrity sha512-kXtO4s0Lz/DW/IJ9QdWhAf7/NmPWQXkFr/r/WkR3vyI+0v8amTDxiaQSLzs8NBlytfLWX/7uQUMIW677yLKl4w==
 
 pretty-error@^2.1.1:
   version "2.1.2"
@@ -18957,12 +18957,7 @@ typedoc@^0.22.14:
     minimatch "^5.0.1"
     shiki "^0.10.1"
 
-typescript@4.4.4:
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.4.tgz#2cd01a1a1f160704d3101fd5a58ff0f9fcb8030c"
-  integrity sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==
-
-typescript@4.5.3:
+typescript@4.4.4, typescript@4.5.3:
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.5.3.tgz#afaa858e68c7103317d89eb90c5d8906268d353c"
   integrity sha512-eVYaEHALSt+s9LbvgEv4Ef+Tdq7hBiIZgii12xXJnukryt3pMgJf6aKhoCZ3FWQsu6sydEnkg11fYXLzhLBjeQ==

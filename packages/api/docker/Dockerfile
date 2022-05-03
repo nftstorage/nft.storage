@@ -15,8 +15,8 @@ WORKDIR /app
 
 # Install dependencies in separate layer for speed.
 COPY ./package.json .
-RUN yarn install
+RUN yarn install --verbose
 
-COPY . .
+COPY ./db ./docker/scripts ./src .
 
 ENTRYPOINT ["nodemon", "--watch", "src/", "--exec", "'./scripts/run-miniflare.sh'" ]
