@@ -1,7 +1,3 @@
-#
-# Docker NodeJS Typescript Starter
-# Example Dockerfile
-#
 FROM node:16-alpine3.12
 
 # Intall missing dependencies

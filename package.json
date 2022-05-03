@@ -4,7 +4,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:api": "cd packages/api && yarn dev",
+    "dev:api": "cd packages/api && ./scripts/start-dev.sh",
+    "dev:api:persist": "cd packages/api && ./scripts/start-dev-persist.sh",
     "dev:website": "cd packages/website && yarn dev",
     "test": "run-s test:*",
     "test:client": "yarn --cwd packages/client test",

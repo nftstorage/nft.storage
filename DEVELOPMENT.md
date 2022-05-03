@@ -2,7 +2,7 @@
 
 This doc should contain everything you need to know to get a working development environment up and running. If it doesn't and you know what's missing, please open a PR or issue to update the guide!
 
-## Pre-requisites
+## Prerequisites
 
 You'll need at least the following:
 
@@ -25,8 +25,10 @@ We use `yarn` in this project and commit the `yarn.lock` file.
    ```
 2. Setup your local environment with a `.env` file. See [intructions](#local-environment-configuration).
 3. Run locally by starting the following processes.
-   1. API server (`yarn dev:api`).
-   2. Web server (`yarn dev:website`).
+   1. Web server (`yarn dev:website`).
+   2. API server (`yarn dev:api`).
+      - Note: This starts the API server in a Docker container, and does not persist database state between runs.
+      - If you would like to persist database state between runs, you can use the `dev:api:persist` command instead.
 
 The site should now be available at http://localhost:4000
 
