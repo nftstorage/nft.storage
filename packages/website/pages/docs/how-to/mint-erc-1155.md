@@ -119,7 +119,7 @@ async function storeExampleNFT() {
   const metadata = await client.store(nft)
 
   console.log('NFT data stored!')
-  console.log('Metadata URI: ', metadatal.url)
+  console.log('Metadata URI: ', metadata.url)
 }
 
 storeExampleNFT()
