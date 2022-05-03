@@ -11,7 +11,7 @@ WORKDIR /app
 
 # Install dependencies in separate layer for speed.
 COPY ./package.json .
-RUN yarn install --verbose
+RUN yarn install
 
 COPY ./docker/scripts ./scripts
 COPY ./db ./db
