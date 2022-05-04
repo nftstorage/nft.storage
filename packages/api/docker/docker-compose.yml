@@ -14,7 +14,7 @@ services:
     build:
       dockerfile: './docker/Dockerfile'
       context: '../'
-    entrypoint: 'psql $DATABASE_CONNECTION -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql'
+    entrypoint: 'psql $DATABASE_CONNECTION -v "ON_ERROR_STOP=1" -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql'
     depends_on:
       - db
     environment:
