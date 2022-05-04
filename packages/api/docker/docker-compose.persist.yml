@@ -2,4 +2,4 @@ version: '3.6'
 services:
   db:
     volumes:
-      - ./db_data:/var/lib/postgresql/data
+      - ../../tmp/db_data:/var/lib/postgresql/data
