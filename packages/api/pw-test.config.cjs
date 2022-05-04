@@ -12,6 +12,7 @@ dotenv.config({
 
 const cli = path.join(__dirname, 'scripts/cli.js')
 const dockerStart = path.join(__dirname, 'scripts/start-test.sh')
+const dockerStop = path.join(__dirname, 'scripts/stop-test.sh')
 /** @type {import('esbuild').Plugin} */
 const nodeBuiltinsPlugin = {
   name: 'node builtins',
@@ -48,7 +49,7 @@ module.exports = {
 
     // execa(dockerStart)
     console.log('⚡️ Immutable Service Started.')
-    await delay(2000)
+    await delay(10000)
     return { mock }
   },
   afterTests: async (
@@ -58,7 +59,7 @@ module.exports = {
     console.log('⚡️ Shutting down mock servers.')
 
     beforeTests.mock.proc.kill()
-    // await execa(dockerStopDev)
+    // await execa(dockerStop)
   },
 }
 
