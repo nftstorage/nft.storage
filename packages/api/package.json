@@ -7,8 +7,7 @@
   "main": "dist/worker.js",
   "scripts": {
     "deploy": "wrangler publish --env production",
-    "predev": "./scripts/cli.js db --start && ./scripts/cli.js db-sql --cargo --testing --reset",
-    "dev": "miniflare --watch --debug --env ../../.env",
+    "dev": "./scripts/start-dev.sh",
     "clean": "./scripts/cli.js db --clean && rm -rf docker/compose",
     "build": "scripts/cli.js build",
     "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js",
