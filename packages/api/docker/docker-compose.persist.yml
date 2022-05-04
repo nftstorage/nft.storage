@@ -3,3 +3,5 @@ services:
   db:
     volumes:
       - ../../tmp/db_data:/var/lib/postgresql/data
+  db-init:
+    entrypoint: 'psql $DATABASE_CONNECTION -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql'

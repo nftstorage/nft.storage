@@ -1,9 +1,8 @@
 version: '3.6'
 services:
-  test:
-    build:
-      dockerfile: './docker/Dockerfile'
-      context: '../'
-    entrypoint: 'tsc && ./node_modules/playwright-test/cli.js \"test/**/*.spec.js\" --sw src/index.js'
-    depends_on:
-      - api
+  db:
+    ports:
+      - '5432:5432'
+  post-rest:
+    ports:
+      - '3000:3000'
