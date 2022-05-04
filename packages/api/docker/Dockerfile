@@ -2,7 +2,7 @@ FROM node:16-alpine3.12
 
 # Intall missing dependencies
 RUN apk add --update bash curl vim tmux postgresql-client
-RUN npm i -g nodemon
+RUN npm i -g nodemon typescript
 # Create App dir
 RUN mkdir -p /app
 
@@ -13,8 +13,10 @@ WORKDIR /app
 COPY ./package.json .
 RUN yarn install
 
+COPY  ./tsconfig.json .
+COPY ./pw-test.config.cjs .
 COPY ./docker/scripts ./scripts
 COPY ./db ./db
-COPY ./src/ .
+COPY ./src/ ./src
 
 ENTRYPOINT ["nodemon", "--watch", "src/", "--exec", "'./scripts/run-miniflare.sh'" ]
