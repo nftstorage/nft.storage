@@ -11,17 +11,13 @@ dotenv.config({
 })
 
 const cli = path.join(__dirname, 'scripts/cli.js')
-
+const dockerStart = path.join(__dirname, 'scripts/start-test.sh')
 /** @type {import('esbuild').Plugin} */
 const nodeBuiltinsPlugin = {
   name: 'node builtins',
   setup(build) {
     build.onResolve({ filter: /^stream$/ }, () => {
       return { path: require.resolve('readable-stream') }
-    })
-
-    build.onResolve({ filter: /^cross-fetch$/ }, () => {
-      return { path: path.resolve(__dirname, 'scripts/fetch.js') }
     })
   },
 }
@@ -32,7 +28,7 @@ module.exports = {
     inject: [path.join(__dirname, './scripts/node-globals.js')],
     plugins: [nodeBuiltinsPlugin],
     define: {
-      DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
+      DATABASE_URL: JSON.stringify(process.env.PW_DATABASE_URL),
       DATABASE_TOKEN: JSON.stringify(process.env.DATABASE_TOKEN),
     },
   },
@@ -43,19 +39,15 @@ module.exports = {
     ],
     plugins: [nodeBuiltinsPlugin],
     define: {
-      DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
+      DATABASE_URL: JSON.stringify(process.env.PW_DATABASE_URL),
       DATABASE_TOKEN: JSON.stringify(process.env.DATABASE_TOKEN),
     },
   },
   beforeTests: async () => {
     const mock = await startMockServer('AWS S3', 9095, 'test/mocks/aws-s3')
 
-    await execa(cli, ['db', '--start'])
-    console.log('⚡️ Cluster and Postgres started.')
-
-    await execa(cli, ['db-sql', '--cargo', '--testing', '--reset'])
-    console.log('⚡️ SQL schema loaded.')
-
+    // execa(dockerStart)
+    console.log('⚡️ Immutable Service Started.')
     await delay(2000)
     return { mock }
   },
@@ -66,7 +58,7 @@ module.exports = {
     console.log('⚡️ Shutting down mock servers.')
 
     beforeTests.mock.proc.kill()
-    await execa(cli, ['db', '--clean'])
+    // await execa(dockerStopDev)
   },
 }
 
