@@ -8,12 +8,17 @@ import { useQuery } from 'react-query'
 import { useUser } from '../lib/user'
 
 const MaintenanceBanner = () => {
-  let maintenanceMessage = ''
+  let bannerMessage = ''
 
   const { data: statusPageData, error: statusPageError } = useQuery(
     'get-statuspage-summary',
     () => getStatusPageSummary()
   )
+
+  const incidents = (statusPageData?.incidents || []).filter(
+    (/** @type {{ resolved_at: string; }} */ incident) => !incident.resolved_at
+  )
+
   const scheduledMaintenances =
     statusPageData?.scheduled_maintenances.filter(
       (/** @type {{ status: string; }} */ maintenance) =>
@@ -31,13 +36,15 @@ const MaintenanceBanner = () => {
   )
 
   if (scheduledMaintenances.length > 0) {
-    maintenanceMessage =
-      statusPageData.scheduled_maintenances[0].incident_updates[0].body
+    bannerMessage = scheduledMaintenances[0].incident_updates[0].body
   }
 
-  if (apiVersionData && apiVersionData.mode !== 'rw' && !maintenanceMessage) {
-    maintenanceMessage =
-      'The NFT.Storage API is currently undergoing maintenance...'
+  if (apiVersionData && apiVersionData.mode !== 'rw' && !bannerMessage) {
+    bannerMessage = 'The NFT.Storage API is currently undergoing maintenance...'
+  }
+
+  if (incidents.length > 0) {
+    bannerMessage = incidents[0].incident_updates?.[0]?.body
   }
 
   if (statusPageError) {
@@ -48,11 +55,11 @@ const MaintenanceBanner = () => {
     console.log(apiVersionError)
   }
 
-  if (maintenanceMessage) {
+  if (bannerMessage) {
     return (
       <div className="bg-yellow border border-solid border-black z-50">
         <div className="leading-normal max-w-7xl text-center mx-auto py-4 px-4">
-          <span className="text-xl">⚠</span> {maintenanceMessage}
+          <span className="text-xl">⚠</span> {bannerMessage}
         </div>
       </div>
     )
