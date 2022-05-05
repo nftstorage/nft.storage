@@ -1,11 +1,6 @@
 version: '3.6'
 services:
-  db:
-    ports:
-      - '5432:5432'
-  post-rest:
-    ports:
-      - '3000:3000'
-  ipfs-cluster:
-    ports:
-      - '9094:9094'
+  playwright:
+    build:
+      dockerfile: ./docker/test.Dockerfile
+      context: ../

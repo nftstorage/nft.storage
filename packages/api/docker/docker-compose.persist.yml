@@ -2,6 +2,7 @@ version: '3.6'
 services:
   db:
     volumes:
-      - ../tmp/db_data:/var/lib/postgresql/data
+      #This needs to be outside of the docker context, due to root user permissions on the db data folder
+      - ../../../tmp/db_data:/var/lib/postgresql/data
   db-init:
     restart: 'no'

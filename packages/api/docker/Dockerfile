@@ -16,7 +16,6 @@ COPY ./package.json .
 RUN yarn install
 
 COPY  ./tsconfig.json .
-COPY ./pw-test.config.cjs .
 COPY ./docker/scripts ./scripts
 COPY ./db ./db
 COPY ./src/ ./src
