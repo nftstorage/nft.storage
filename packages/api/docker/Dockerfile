@@ -1,15 +1,14 @@
 FROM node:16-alpine3.12
 
-# Intall missing dependencies
+# Install some utilities to make life easier
 RUN apk add --update bash curl vim tmux postgresql-client
+
 RUN npm i -g nodemon typescript
-# Create App dir
 RUN mkdir -p /app
 
-# Set working directory to App dir
 WORKDIR /app
 
-# Install dependencies in separate layer for speed.
+# Make your docker builds 100x faster with this one trick :)
 COPY ./package.json .
 RUN yarn install
 
