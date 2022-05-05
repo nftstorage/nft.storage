@@ -1,5 +1,19 @@
 # Changelog
 
+### [1.49.3](https://github.com/nftstorage/nft.storage/compare/website-v1.49.2...website-v1.49.3) (2022-05-03)
+
+
+### Bug Fixes
+
+* add incidents to banner ([#1834](https://github.com/nftstorage/nft.storage/issues/1834)) ([1b3c6f2](https://github.com/nftstorage/nft.storage/commit/1b3c6f2a6055aa1a82b4beb484e08696462332f5))
+
+### [1.49.2](https://github.com/nftstorage/nft.storage/compare/website-v1.49.1...website-v1.49.2) (2022-05-03)
+
+
+### Bug Fixes
+
+* better language for post ([#1885](https://github.com/nftstorage/nft.storage/issues/1885)) ([a09f13e](https://github.com/nftstorage/nft.storage/commit/a09f13e77dfeca9ef089fc571a388e6eb6660f36))
+
 ### [1.49.1](https://github.com/nftstorage/nft.storage/compare/website-v1.49.0...website-v1.49.1) (2022-05-02)
 
 
