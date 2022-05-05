@@ -22,7 +22,6 @@ const nextConfig = withBundleAnalyzer({
   },
   exportPathMap: async function () {
     return {
-      '/404.html': { page: '/404' },
       '/ipfs-404.html': { page: '/404' },
       '/docs/': { page: '/docs/quickstart', statusCode: 301 },
       '/docs/why-nft-storage': { page: '/docs/why-nft-storage' },

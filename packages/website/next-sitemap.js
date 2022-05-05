@@ -1,7 +1,6 @@
 // overrides and explicit exclusion of routes to sitemap and robots file
 const routes = [
   { loc: '/', priority: 1 },
-  { loc: '/404.html', priority: 0.9 },
   { loc: '/docs', priority: 0.8 },
   { loc: '/api-docs', priority: 0.8 },
   { loc: '/faq', priority: 0.8 },
