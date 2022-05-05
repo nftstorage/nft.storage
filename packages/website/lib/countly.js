@@ -47,6 +47,7 @@ export const ui = {
   NEW_FILE: 'new-file',
   NEW_TOKEN: 'new-token',
   TOKENS: 'tokens',
+  NFT_UP: 'nft-up',
 }
 
 /**

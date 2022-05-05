@@ -339,6 +339,28 @@ export default function Files({ user }) {
                 <div className="flex-auto chicagoflf my-4">
                   <h1>Files</h1>
                 </div>
+                <Tooltip
+                  placement="bottom"
+                  overlay={
+                    <span>
+                      NFTUp is the easiest way for content creators to upload
+                      their metadata and assets, ready to be minted into NFTs by
+                      smart contracts and then traded on marketplaces, and
+                      browsed in galleries.
+                    </span>
+                  }
+                  overlayClassName="ns-tooltip"
+                  id="learn-more-nftup-info"
+                >
+                  <a
+                    href="/docs/how-to/nftup"
+                    className="items-center mr-4 mb-2 btn button-reset select-none black py-2 px-4 hologram chicagoflf interactive light"
+                    id="learn-more-nftup"
+                  >
+                    <VscQuestion size={16} className="mr-2" /> Upload
+                    directories easily with NFTUp
+                  </a>
+                </Tooltip>
                 {user?.tags.HasAccountRestriction ? (
                   <Tooltip
                     id="blocked-upload-file-booltip"
