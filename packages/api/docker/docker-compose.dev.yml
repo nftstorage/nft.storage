@@ -1,0 +1,7 @@
+version: '3.6'
+services:
+  api:
+    ports:
+      - '8787:8787'
+    volumes:
+      - ../src:/app/src

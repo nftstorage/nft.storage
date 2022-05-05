@@ -3,10 +3,10 @@
 
 # We're moving this script around a lot, and it's pretty cwd-dependent.
 ENV_FILE=../../.env
-COMPOSE_FILE=./docker/docker-compose.yml
+COMPOSE_FILES="-f ./docker/docker-compose.yml -f ./docker/docker-compose.dev.yml"
 
 cat $ENV_FILE && \
-docker-compose -f "$COMPOSE_FILE" down --remove-orphans && \
-docker-compose -f "$COMPOSE_FILE" build && \
-docker-compose -f "$COMPOSE_FILE" --env-file="$ENV_FILE" config && \
-docker-compose -f "$COMPOSE_FILE" --env-file="$ENV_FILE" up
+docker-compose $COMPOSE_FILES down --remove-orphans && \
+docker-compose $COMPOSE_FILES build && \
+docker-compose $COMPOSE_FILES --env-file="$ENV_FILE" config && \
+docker-compose $COMPOSE_FILES --env-file="$ENV_FILE" up
