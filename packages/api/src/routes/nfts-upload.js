@@ -12,6 +12,7 @@ import { JSONResponse } from '../utils/json-response.js'
 import { checkAuth } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 
+const LOCAL_ADD_BLOCKS_THRESHOLD = 1000 // Use local:true when block count exceeds this number.
 const MAX_BLOCK_SIZE = 1 << 21 // Maximum permitted block size in bytes (2MiB).
 const decoders = [pb, raw, cbor]
 
@@ -135,7 +136,7 @@ export async function uploadCarWithStat(
 ) {
   const [added, backupUrl] = await Promise.all([
     cluster.addCar(car, {
-      local: false,
+      local: stat.blocks >= LOCAL_ADD_BLOCKS_THRESHOLD,
     }),
     ctx.backup
       ? ctx.backup.backupCar(user.id, stat.rootCid, car, stat.structure)
@@ -205,7 +206,7 @@ export async function nftUpdateUpload(event, ctx) {
  * The DAG size will be returned ONLY IF the root node is dag-pb or raw.
  *
  * @typedef {import('multiformats').CID} CID
- * @typedef {{ size?: number, rootCid: CID, structure?: DagStructure }} CarStat
+ * @typedef {{ size?: number, rootCid: CID, structure?: DagStructure, blocks: number }} CarStat
  * @param {Blob} carBlob
  * @param {Object} [options]
  * @param {DagStructure} [options.structure]
@@ -278,7 +279,7 @@ export async function carStat(carBlob, { structure } = {}) {
       }
     }
   }
-  return { rootCid, size, structure }
+  return { rootCid, size, structure, blocks: blocks.length }
 }
 
 /**
