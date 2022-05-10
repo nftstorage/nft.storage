@@ -353,7 +353,7 @@ export default function Files({ user }) {
                   >
                     <a
                       href="/docs/how-to/nftup"
-                      className="items-center mr-4 mb-2 btn button-reset select-none black py-2 px-4 hologram chicagoflf interactive light"
+                      className="items-center mr-4 btn button-reset select-none black py-2 px-3 hologram chicagoflf interactive light"
                       id="learn-more-nftup"
                     >
                       <VscQuestion size={16} className="mr-2" /> Upload
