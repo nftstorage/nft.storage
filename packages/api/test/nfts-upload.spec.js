@@ -1,6 +1,9 @@
 import assert from 'assert'
+import { CID } from 'multiformats/cid'
+import { sha256, sha512 } from 'multiformats/hashes/sha2'
+import * as pb from '@ipld/dag-pb'
+import { CarWriter } from '@ipld/car'
 import { packToBlob } from 'ipfs-car/pack/blob'
-import { sha256 } from 'multiformats/hashes/sha2'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import {
   createClientWithUser,
@@ -75,6 +78,21 @@ describe('NFT Upload ', () => {
       'bafybeifrkxqq5bbn4fkykfyggoltlb7vn3moyhr3pldzx3me6yiukcfsem',
       'Server responded with expected CID'
     )
+  })
+
+  it('should fail to upload files without Content-Type', async () => {
+    const body = new FormData()
+    const file = 'hello world! 1'
+    body.append('file', file)
+    const res = await fetch('upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body,
+    })
+    assert(res, 'Server responded')
+    assert.equal(res.status, 400, 'Server responded with HTTP 400 status')
+    const { error } = await res.json()
+    assert.equal(error.message, 'missing Content-Type in multipart part')
   })
 
   it('should upload multiple blobs without name', async () => {
@@ -168,6 +186,80 @@ describe('NFT Upload ', () => {
     assert.equal(data.source_cid, cid)
     assert.equal(data.deleted_at, null)
     assert.equal(data.content.dag_size, 15, 'correct dag size')
+  })
+
+  it('should allow a CAR with unsupported hash function', async () => {
+    const bytes = pb.encode({ Data: new Uint8Array(), Links: [] })
+    // we dont support sha512 yet!
+    const hash = await sha512.digest(bytes)
+    const cid = CID.create(1, pb.code, hash)
+
+    const { writer, out } = CarWriter.create([cid])
+    writer.put({ cid, bytes })
+    writer.close()
+
+    const carBytes = []
+    for await (const chunk of out) {
+      carBytes.push(chunk)
+    }
+
+    const res = await fetch('upload', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${client.token}`,
+        'Content-Type': 'application/car',
+      },
+      body: new Blob(carBytes, { type: 'application/car' }),
+    })
+
+    assert(res, 'Server responded')
+    assert(res.ok, 'Server response ok')
+    const { ok, value } = await res.json()
+    assert(ok, 'Server response payload has `ok` property')
+    assert.strictEqual(
+      value.cid,
+      cid.toString(),
+      'Server responded with expected CID'
+    )
+    assert.strictEqual(
+      value.type,
+      'application/car',
+      'type should match blob mime-type'
+    )
+  })
+
+  it('should throw for CAR with a block where the bytes do not match the CID', async () => {
+    const bytes = pb.encode({ Data: new Uint8Array(), Links: [] })
+    const hash = await sha256.digest(bytes)
+    const cid = CID.create(1, pb.code, hash)
+
+    const { writer, out } = CarWriter.create([cid])
+    bytes[bytes.length - 1] = bytes[bytes.length - 1] + 1 // mangle a byte
+    writer.put({ cid, bytes })
+    writer.close()
+
+    const carBytes = []
+    for await (const chunk of out) {
+      carBytes.push(chunk)
+    }
+
+    const res = await fetch('upload', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${client.token}`,
+        'Content-Type': 'application/car',
+      },
+      body: new Blob(carBytes),
+    })
+
+    assert(res, 'Server responded')
+    assert.strictEqual(res.ok, false)
+    const { error } = await res.json()
+    assert.strictEqual(
+      error.code,
+      'ERROR_INVALID_CAR',
+      'Server responded with an INVALID_CAR Error'
+    )
   })
 
   it('should re-upload same data and update mime-type', async () => {

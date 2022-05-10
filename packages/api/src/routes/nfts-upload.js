@@ -1,16 +1,18 @@
 import { packToBlob } from 'ipfs-car/pack/blob'
 import { CarBlockIterator } from '@ipld/car'
+import { equals } from 'uint8arrays'
 import * as raw from 'multiformats/codecs/raw'
 import * as cbor from '@ipld/dag-cbor'
 import * as pb from '@ipld/dag-pb'
 import { Block } from 'multiformats/block'
-import { HTTPError } from '../errors.js'
+import { sha256 } from 'multiformats/hashes/sha2'
+import { HTTPError, InvalidCarError } from '../errors.js'
 import * as cluster from '../cluster.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { checkAuth } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
 
-const MAX_BLOCK_SIZE = 1 << 20 // Maximum permitted block size in bytes (1MiB).
+const MAX_BLOCK_SIZE = 1 << 21 // Maximum permitted block size in bytes (2MiB).
 const decoders = [pb, raw, cbor]
 
 /**
@@ -34,10 +36,16 @@ export async function nftUpload(event, ctx) {
     // encoded as binary, which is why we can expect that each part here is
     // a file (and not a stirng).
     const files = /** @type {File[]} */ (form.getAll('file'))
+    const input = files.map((f) => {
+      if (typeof f === 'string') {
+        throw new HTTPError('missing Content-Type in multipart part', 400)
+      }
+      return { path: f.name, content: f.stream() }
+    })
 
     const { car } = await packToBlob({
       // @ts-ignore nodejs readable stream type inconsistencies
-      input: files.map((f) => ({ path: f.name, content: f.stream() })),
+      input,
       wrapWithDirectory: true,
     })
 
@@ -195,7 +203,7 @@ export async function nftUpdateUpload(event, ctx) {
  *
  * - Missing root CIDs
  * - >1 root CID
- * - Any block bigger than MAX_BLOCK_SIZE (1MiB)
+ * - Any block bigger than MAX_BLOCK_SIZE (2MiB)
  * - 0 blocks
  * - Missing root block
  * - Missing non-root blocks (when root block has links)
@@ -227,6 +235,14 @@ export async function carStat(carBlob, { structure } = {}) {
     const blockSize = block.bytes.byteLength
     if (blockSize > MAX_BLOCK_SIZE) {
       throw new Error(`block too big: ${blockSize} > ${MAX_BLOCK_SIZE}`)
+    }
+    if (block.cid.multihash.code === sha256.code) {
+      const ourHash = await sha256.digest(block.bytes)
+      if (!equals(ourHash.digest, block.cid.multihash.digest)) {
+        throw new InvalidCarError(
+          `block data does not match CID for ${block.cid.toString()}`
+        )
+      }
     }
     if (!rawRootBlock && block.cid.equals(rootCid)) {
       rawRootBlock = block

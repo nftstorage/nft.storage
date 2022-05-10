@@ -1,5 +1,40 @@
 # Changelog
 
+### [1.49.4](https://github.com/nftstorage/nft.storage/compare/website-v1.49.3...website-v1.49.4) (2022-05-10)
+
+
+### Bug Fixes
+
+* typo in how to mint ERC 1155 token ([#1884](https://github.com/nftstorage/nft.storage/issues/1884)) ([7515e39](https://github.com/nftstorage/nft.storage/commit/7515e396753a5c986decc3a6df2a08c6343b5147))
+
+### [1.49.3](https://github.com/nftstorage/nft.storage/compare/website-v1.49.2...website-v1.49.3) (2022-05-03)
+
+
+### Bug Fixes
+
+* add incidents to banner ([#1834](https://github.com/nftstorage/nft.storage/issues/1834)) ([1b3c6f2](https://github.com/nftstorage/nft.storage/commit/1b3c6f2a6055aa1a82b4beb484e08696462332f5))
+
+### [1.49.2](https://github.com/nftstorage/nft.storage/compare/website-v1.49.1...website-v1.49.2) (2022-05-03)
+
+
+### Bug Fixes
+
+* better language for post ([#1885](https://github.com/nftstorage/nft.storage/issues/1885)) ([a09f13e](https://github.com/nftstorage/nft.storage/commit/a09f13e77dfeca9ef089fc571a388e6eb6660f36))
+
+### [1.49.1](https://github.com/nftstorage/nft.storage/compare/website-v1.49.0...website-v1.49.1) (2022-05-02)
+
+
+### Bug Fixes
+
+* redirect to home page from files on refresh ([#1846](https://github.com/nftstorage/nft.storage/issues/1846)) ([c8fd5b9](https://github.com/nftstorage/nft.storage/commit/c8fd5b96a760c20209df473173a55c70e75380c4))
+
+## [1.49.0](https://github.com/nftstorage/nft.storage/compare/website-v1.48.0...website-v1.49.0) (2022-04-29)
+
+
+### Features
+
+* gateways and gatekeepers post ([#1873](https://github.com/nftstorage/nft.storage/issues/1873)) ([8f7407c](https://github.com/nftstorage/nft.storage/commit/8f7407c096a313b321054934bf114d2e4562fc98))
+
 ## [1.48.0](https://github.com/nftstorage/nft.storage/compare/website-v1.47.0...website-v1.48.0) (2022-04-27)
 
 

@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.23.0](https://github.com/nftstorage/nft.storage/compare/api-v2.22.0...api-v2.23.0) (2022-05-10)
+
+
+### Features
+
+* add super hot access tag to user tags endpoint ([#1871](https://github.com/nftstorage/nft.storage/issues/1871)) ([04a17aa](https://github.com/nftstorage/nft.storage/commit/04a17aac0f3f7a041324bb4bd65d4ec13b49f3f9))
+
+
+### Bug Fixes
+
+* bump MAX_BLOCK_SIZE to 2MiB limit imposed by bitswap ([#1863](https://github.com/nftstorage/nft.storage/issues/1863)) ([d96ca30](https://github.com/nftstorage/nft.storage/commit/d96ca304421f8ae7789dd2ee3e73c2f45c7dc20c))
+* invalid multipart data error ([#1901](https://github.com/nftstorage/nft.storage/issues/1901)) ([536769c](https://github.com/nftstorage/nft.storage/commit/536769cab3f01d7c0ad04fe91e66a78f8105b171))
+* verify CIDs match data in CAR uploads ([#1866](https://github.com/nftstorage/nft.storage/issues/1866)) ([5012b4a](https://github.com/nftstorage/nft.storage/commit/5012b4a29e06cef4c0124bb87a880aac0d5bbf26))
+
 ## [2.22.0](https://github.com/nftstorage/nft.storage/compare/api-v2.21.0...api-v2.22.0) (2022-04-28)
 
 

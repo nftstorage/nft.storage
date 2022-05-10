@@ -19,7 +19,6 @@ export function getStaticProps() {
       title: 'Manage API Keys - NFT Storage',
       description: 'Manage your NFT.Storage account',
       navBgColor: 'bg-nsgreen',
-      redirectTo: '/',
       needsUser: true,
       altLogo: true,
     },

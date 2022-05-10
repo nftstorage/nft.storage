@@ -49,60 +49,62 @@ export async function dbCmd(opts) {
   const composePath = path.join(__dirname, '../../docker/docker-compose.yml')
 
   if (opts.init) {
-    await execa('docker-compose', [
-      '--file',
-      composePath,
-      'build',
-      '--no-cache',
-    ])
+    await execa(
+      'docker-compose',
+      ['--file', composePath, 'build', '--no-cache'],
+      { stdio: 'inherit' }
+    )
 
-    await execa('docker-compose', [
-      '--file',
-      composePath,
-      '--project-name',
-      opts.project,
-      'up',
-      '--build',
-      '--no-start',
-      '--renew-anon-volumes',
-    ])
+    await execa(
+      'docker-compose',
+      [
+        '--file',
+        composePath,
+        '--project-name',
+        opts.project,
+        'up',
+        '--build',
+        '--no-start',
+        '--renew-anon-volumes',
+      ],
+      { stdio: 'inherit' }
+    )
   }
 
   if (opts.start) {
     if ((await isPortReachable(5432)) || (await isPortReachable(3000))) {
       console.error('⚠️ Docker project is already running.')
     }
-    await execa('docker-compose', [
-      '--file',
-      composePath,
-      '--project-name',
-      opts.project,
-      'up',
-      '--detach',
-    ])
+    await execa(
+      'docker-compose',
+      ['--file', composePath, '--project-name', opts.project, 'up', '--detach'],
+      { stdio: 'inherit' }
+    )
   }
 
   if (opts.stop) {
-    await execa('docker-compose', [
-      '--file',
-      composePath,
-      '--project-name',
-      opts.project,
-      'stop',
-    ])
+    await execa(
+      'docker-compose',
+      ['--file', composePath, '--project-name', opts.project, 'stop'],
+      { stdio: 'inherit' }
+    )
   }
 
   if (opts.clean) {
-    await execa('docker-compose', [
-      '--file',
-      composePath,
-      '--project-name',
-      opts.project,
-      'down',
-      '--rmi',
-      'local',
-      '-v',
-      '--remove-orphans',
-    ])
+    await execa(
+      'docker-compose',
+      [
+        '--file',
+        composePath,
+        '--project-name',
+        opts.project,
+        'down',
+        '--rmi',
+        'local',
+        '-v',
+        '--remove-orphans',
+      ],
+      { stdio: 'inherit' }
+    )
   }
 }

@@ -32,20 +32,25 @@ Create a file called `storeDirectory.mjs` and add the following code:
 ```js
 import { NFTStorage, File } from 'nft.storage'
 import { getFilesFromPath } from 'files-from-path'
+import path from 'path'
 
 const token = 'YOUR_API_TOKEN'
 
 async function main() {
-  const path = process.argv.slice(2)
-  const files = await getFilesFromPath(path)
+  // you'll probably want more sophisticated argument parsing in a real app
+  if (process.argv.length !== 3) {
+    console.error(`usage: ${process.argv[0]} ${process.argv[1]} <directory-path>`)
+  }
+  const directoryPath = process.argv[2]
+  const files = await getFilesFromPath(path, {
+      pathPrefix: path.resolve(directoryPath), // see the note about pathPrefix below
+      hidden: true // use the default of false if you want to ignore files that start with '.'
+  })
 
   const storage = new NFTStorage({ token })
 
   console.log(`storing ${files.length} file(s) from ${path}`)
-  const cid = await storage.storeDirectory(files, {
-      pathPrefix: path // see the note about pathPrefix below
-      hidden: true // use the default of false if you want to ignore files that start with '.'
-  })
+  const cid = await storage.storeDirectory(files)
   console.log({ cid })
 
   const status = await storage.status(cid)
@@ -57,6 +62,8 @@ main()
 The `getFilesFromPath` function is provided by the [`files-from-path` package][npm-files-from-path]. It will read the contents of a directory into `File` objects that can be passed into the NFT.Storage client.
 
 The `pathPrefix` option tells `getFilesFromPath` to remove the input `path` from the filenames of the `File` objects it creates. For example, if you're reading in files from a directory called `example`, calling `getFilesFromPath` _without_ the `pathPrefix` argument would result in `File` objects with filenames like `example/file1.txt`, `example/file2.txt`, and so on. If you set the `pathPrefix` option to `example`, you'll get `file1.txt`, `file2.txt`, etc. instead. This results in a final IPFS URI of `ipfs://<directory-cid>/file1.txt` instead of `ipfs://<directory-cid>/example/file1.txt`.
+
+Notice that we're calling [`path.resolve`](https://nodejs.org/api/path.html#pathresolvepaths) on the `directoryPath` argument before using it as our `pathPrefix`. `getFilesFromPath` will compare the `pathPrefix` we give it to the absolute path of the file, so using `path.resolve` ensures that we give it the correct input, even if the user passed in a relative path at the command line.
 
 <Callout emoji="💡">
 If your directory contains a lot of files, or if the files themselves are very large, you may want to use `filesFromPath` instead of `getFilesFromPath`. This will avoid buffering all the files into memory, but will require you to handle each `File` object individually as you pull from the returned `AsyncIterator`.
