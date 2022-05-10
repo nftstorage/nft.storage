@@ -1,5 +1,12 @@
 # Changelog
 
+### [1.49.4](https://github.com/nftstorage/nft.storage/compare/website-v1.49.3...website-v1.49.4) (2022-05-10)
+
+
+### Bug Fixes
+
+* typo in how to mint ERC 1155 token ([#1884](https://github.com/nftstorage/nft.storage/issues/1884)) ([7515e39](https://github.com/nftstorage/nft.storage/commit/7515e396753a5c986decc3a6df2a08c6343b5147))
+
 ### [1.49.3](https://github.com/nftstorage/nft.storage/compare/website-v1.49.2...website-v1.49.3) (2022-05-03)
 
 
