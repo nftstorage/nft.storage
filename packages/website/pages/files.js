@@ -363,7 +363,8 @@ export default function Files({ user }) {
                   {user?.tags.HasAccountRestriction ? (
                     <Tooltip
                       id="blocked-upload-file-booltip"
-                      placement="left"
+                      placement="bottom"
+                      overlayClassName="ns-tooltip"
                       overlay={
                         <span style={{ width: 160 }}>
                           You are unable to upload files when your account is
