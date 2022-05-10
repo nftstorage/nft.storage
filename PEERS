@@ -7,12 +7,10 @@
 # Note: this list may be incorrect, may change, or become out of date at any
 # time without notice.
 
-# IpfsCluster3
-
-# nft3-storage-am6-1
-/ip4/145.40.96.233/tcp/4001/p2p/12D3KooWEGeZ19Q79NdzS6CJBoCwFZwujqi5hoK8BtRcLa48fJdu
-# nft3-storage-am6-2
-/ip4/147.75.87.85/tcp/4001/p2p/12D3KooWBnmsaeNRP6SCdNbhzaNHihQQBPDhmDvjVGsR1EbswncV
+# nft3-storage-am6-10
+/ip4/147.75.85.47/tcp/4001/p2p/12D3KooWKd92H37a8gCDZPDAAGTYvEGAq7CNk1TcaCkcZedkTwFG
+# nft3-storage-am6-11
+/ip4/147.75.84.155/tcp/4001/p2p/12D3KooWJ59N9z5CyLTtcUTnuTKnRTEVxiztijiEAYbP16aZjQ3D
 # nft3-storage-am6-3
 /ip4/147.75.81.81/tcp/4001/p2p/12D3KooWLsSWaRsoCejZ6RMsGqdftpKbohczNqs3jvNfPgRwrMp2
 # nft3-storage-am6-4
@@ -21,10 +19,14 @@
 /ip4/147.75.33.253/tcp/4001/p2p/12D3KooWAuBxG5uMBkeyFwHD9JyHaJGTqn7NhJbmmukNDPHSLKts
 # nft3-storage-am6-6
 /ip4/147.75.87.165/tcp/4001/p2p/12D3KooWGRJo1vLDBtfS8a4cVss2QVqvbCaPgtmwwgpUtW675QRa
-# nft3-storage-dc13-1
-/ip4/136.144.57.203/tcp/4001/p2p/12D3KooWDLYiAdzUdM7iJHhWu5KjmCN62aWd7brQEQGRWbv8QcVb
+# nft3-storage-am6-7
+/ip4/145.40.96.83/tcp/4001/p2p/12D3KooWCMMw5BKA5XHDJiuFitwparaYbMkidmxTCsJa8vXjt3yW
+# nft3-storage-am6-8
+/ip4/147.75.87.157/tcp/4001/p2p/12D3KooWDyGLvdtArZXZmf9JzPPCALXBHdUxzGYbMuHahWkUjFaf
+# nft3-storage-am6-9
+/ip4/147.75.85.127/tcp/4001/p2p/12D3KooWPzJxqGQWfaNqR9ft66e5c6NoBhDezXogLHeJQgD62Gvf
 # nft3-storage-dc13-2
-/ip4/145.40.69.29/tcp/4001/p2p/12D3KooWFZmGztVoo2K1BcAoDEUmnp7zWFhaK5LcRHJ8R735T3eY
+/ip4/86.109.7.87/tcp/4001/p2p/12D3KooWFZmGztVoo2K1BcAoDEUmnp7zWFhaK5LcRHJ8R735T3eY
 # nft3-storage-dc13-3
 /ip4/136.144.57.171/tcp/4001/p2p/12D3KooWKKcYZGRtQVdZVrTuARdJHLSBymB7dNN1R6PWwUT24qK4
 # nft3-storage-dc13-4
@@ -33,10 +35,14 @@
 /ip4/147.28.147.167/tcp/4001/p2p/12D3KooWBeb4VBQ7mfYEmLKkjcgvtfo6hZHCtyWdR2p8YeWFYD8P
 # nft3-storage-dc13-6
 /ip4/145.40.89.165/tcp/4001/p2p/12D3KooWGGyvEomXVi5YHqXdfGHx1GKHjVrUo313pWCs5uSfkoHK
-# nft3-storage-sv15-1
-/ip4/139.178.70.235/tcp/4001/p2p/12D3KooWRJpsEsBtJ1TNik2zgdirqD4KFq5V4ar2vKCrEXUqFXPP
-# nft3-storage-sv15-2
-/ip4/145.40.67.89/tcp/4001/p2p/12D3KooWNxUGEN1SzRuwkJdbMDnHEVViXkRQEFCSuHRTdjFvD5uw
+# nft3-storage-dc13-7
+/ip4/147.75.50.79/tcp/4001/p2p/12D3KooWADEseR47whZxWrsmZMubonArpgCqtKdsth5orYHsvWjD
+# nft3-storage-dc13-8
+/ip4/147.28.147.173/tcp/4001/p2p/12D3KooWE8L7kAi4wTVcnSVgmHRxykpYX24Ck9toAifA9Dn2Q4Rw
+# nft3-storage-sv15-10
+/ip4/145.40.67.73/tcp/4001/p2p/12D3KooWBszbJcQut3gW8CYPNgXsECiiRCMGm17xUb4Lr2iKQZEh
+# nft3-storage-sv15-11
+/ip4/139.178.88.103/tcp/4001/p2p/12D3KooWQzwTxWF82GkjCCvU8RR55FjfTtoUTPYLJtJUPsHEN1VS
 # nft3-storage-sv15-3
 /ip4/147.75.108.229/tcp/4001/p2p/12D3KooWHXKaRAKgQbPNqgpJwojmcHUajSFnQvHdKjPRbVHRhobC
 # nft3-storage-sv15-4
@@ -45,27 +51,9 @@
 /ip4/139.178.68.73/tcp/4001/p2p/12D3KooWK2q1YYRBchmyAyyfLhKjvXMvYByt2zn6pbM3yA8Z2DJZ
 # nft3-storage-sv15-6
 /ip4/147.75.108.191/tcp/4001/p2p/12D3KooWLSMVRxtFrRWofS6MjysgWnPh7iiFEGYeEAeBQceNrf4G
-
-# IpfsCluster2
-
-# nft2-storage-dc13-1
-/ip4/145.40.69.133/tcp/4001/p2p/12D3KooWMZmMp9QwmfJdq3aXXstMbTCCB3FTWv9SNLdQGqyPMdUw
-# nft2-storage-dc13-2
-/ip4/145.40.69.171/tcp/4001/p2p/12D3KooWCpu8Nk4wmoXSsVeVSVzVHmrwBnEoC9jpcVpeWP7n67Bt
-# nft2-storage-sv15-1
-/ip4/145.40.90.235/tcp/4001/p2p/12D3KooWGx5pFFG7W2EG8N6FFwRLh34nHcCLMzoBSMSSpHcJYN7G
-# nft2-storage-sv15-2
-/ip4/139.178.69.135/tcp/4001/p2p/12D3KooWQsVxhA43ZjGNUDfF9EEiNYxb1PVEgCBMNj87E9cg92vT
-# nft2-storage-am6-1
-/ip4/147.75.32.99/tcp/4001/p2p/12D3KooWMSrRXHgbBTsNGfxG1E44fLB6nJ5wpjavXj4VGwXKuz9X
-# nft2-storage-am6-2
-/ip4/147.75.86.227/tcp/4001/p2p/12D3KooWE48wcXK7brQY1Hw7LhjF3xdiFegLnCAibqDtyrgdxNgn
-
-# IpfsCluster
-
-# nft-storage-sv15
-/ip4/136.144.55.33/tcp/4001/p2p/12D3KooWSGCJYbM6uCvCF7cGWSitXSJTgEb7zjVCaxDyYNASTa8i
-# nft-storage-dc13
-/ip4/136.144.57.127/tcp/4001/p2p/12D3KooWJbARcvvEEF4AAqvAEaVYRkEUNPC3Rv3joebqfPh4LaKq
-# nft-storage-am6
-/ip4/147.75.87.249/tcp/4001/p2p/12D3KooWNcshtC1XTbPxew2kq3utG2rRGLeMN8y5vSfAMTJMV7fE
+# nft3-storage-sv15-7
+/ip4/147.75.108.145/tcp/4001/p2p/12D3KooWQYb2nGCfqq4krBSZFRiFwjwZ8fjxsVpeMeGZoCJHR8Ch
+# nft3-storage-sv15-8
+/ip4/139.178.94.209/tcp/4001/p2p/12D3KooWCMMw5BKA5XHDJiuFitwparaYbMkidmxTCsJa8vXjt3yW
+# nft3-storage-sv15-9
+/ip4/139.178.88.53/tcp/4001/p2p/12D3KooWBKx6Neuxph5yedV1F3YD6Cxd1eqGib6xUzT7BjdeaAao
