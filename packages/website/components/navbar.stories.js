@@ -1,6 +1,6 @@
 import React from 'react'
 import NavBar from './navbar'
-import { useUser } from 'lib/user.js'
+import { useQueryClient, QueryClientProvider } from 'react-query'
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -31,16 +31,31 @@ const Template = (
   /** @type {{
    * logo: string;
    * bgColor: string;
+   * user: boolean;
    * }} */
   args
 ) => {
-  const { user } = useUser()
+  const queryClient = useQueryClient()
+  const userMock = {
+    email: 'foo@bar.com',
+    isMfaEnabled: false,
+    issuer: 'did:ethr:0x6CA660ec2116Bd792AB7Cd5A10e1Eb8310F6f125',
+    phoneNumber: null,
+    publicAddress: '0x6CA660ec2116Bd792AB7Cd5A10e1Eb8310F6f125',
+    tags: {
+      HasAccountRestriction: false,
+      HasPsaAccess: false,
+      HasSuperHotAccess: false,
+    },
+  }
   return (
-    <NavBar
-      logo={{ src: args.logo, isDark: true }}
-      bgColor={args.bgColor}
-      user={user}
-    />
+    <QueryClientProvider client={queryClient}>
+      <NavBar
+        logo={{ src: args.logo, isDark: true }}
+        bgColor={args.bgColor}
+        user={args.user ? userMock : null}
+      />
+    </QueryClientProvider>
   )
 }
 
