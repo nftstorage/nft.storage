@@ -47,9 +47,15 @@ module.exports = {
   beforeTests: async () => {
     const mock = await startMockServer('AWS S3', 9095, 'test/mocks/aws-s3')
 
-    // execa(dockerStart)
-    console.log('⚡️ Immutable Service Started.')
-    await delay(10000)
+    await execa(cli, ['db', '--start'], { stdio: 'inherit' })
+    console.log('⚡️ Cluster and Postgres started.')
+
+    await execa(cli, ['db-sql', '--cargo', '--testing', '--reset'], {
+      stdio: 'inherit',
+    })
+    console.log('⚡️ SQL schema loaded.')
+
+    await delay(2000)
     return { mock }
   },
   afterTests: async (

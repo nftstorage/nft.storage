@@ -29,6 +29,16 @@ Module not found: Can't resolve 'ipfs-car/blockstore/memory' in '/workspace/Unst
 
 If possible, upgrading your project to use Webpack 5 or adopting an alternative bundler like [Vite](https://vitejs.dev/) should fix the issue. If your project was built using an older version of [create-react-app](https://create-react-app.dev/) and has not been "ejected" to use a custom configuration, you should be able to update to the latest `react-scripts` dependency by following [the update documentation](https://create-react-app.dev/docs/updating-to-new-releases/).
 
+You may see similar errors when using Jest to run unit tests for projects built on NestJS. A working example using NestJS and Jest is available on [GitHub](https://github.com/alanshaw/nest-nftstorage).
+
+Try the following to resolve: 
+
+1. Install the dependency: ```npm i -D enhanced-resolve```
+2. Add the file located [here](https://github.com/alanshaw/nest-nftstorage/blob/main/test/export-maps-resolver.js)
+3. Configure it as a [resolver](https://github.com/alanshaw/nest-nftstorage/blob/main/package.json#L72)
+
+You can read more about the Jest [fix](https://github.com/facebook/jest/issues/9771#issuecomment-841624042) for this issue. Jest v28 is expected to incorporate this fix once a stable release is available. 
+
 If you don't want to change your build setup, you can import a pre-bundled and minified version of the package by changing the import statement:
 
 ```js

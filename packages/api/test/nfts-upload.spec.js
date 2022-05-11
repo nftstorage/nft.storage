@@ -80,6 +80,21 @@ describe('NFT Upload ', () => {
     )
   })
 
+  it('should fail to upload files without Content-Type', async () => {
+    const body = new FormData()
+    const file = 'hello world! 1'
+    body.append('file', file)
+    const res = await fetch('upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body,
+    })
+    assert(res, 'Server responded')
+    assert.equal(res.status, 400, 'Server responded with HTTP 400 status')
+    const { error } = await res.json()
+    assert.equal(error.message, 'missing Content-Type in multipart part')
+  })
+
   it('should upload multiple blobs without name', async () => {
     const body = new FormData()
 

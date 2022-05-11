@@ -36,10 +36,16 @@ export async function nftUpload(event, ctx) {
     // encoded as binary, which is why we can expect that each part here is
     // a file (and not a stirng).
     const files = /** @type {File[]} */ (form.getAll('file'))
+    const input = files.map((f) => {
+      if (typeof f === 'string') {
+        throw new HTTPError('missing Content-Type in multipart part', 400)
+      }
+      return { path: f.name, content: f.stream() }
+    })
 
     const { car } = await packToBlob({
       // @ts-ignore nodejs readable stream type inconsistencies
-      input: files.map((f) => ({ path: f.name, content: f.stream() })),
+      input,
       wrapWithDirectory: true,
     })
 
