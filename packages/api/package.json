@@ -12,7 +12,7 @@
     "clean": "./scripts/cli.js db --clean && rm -rf docker/compose",
     "build": "./scripts/cli.js build",
     "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js",
-    "test:docker": "playwright-test \"test/**/*.spec.js\" --sw tmp/worker.js",
+    "test:docker": "echo 'hi' && playwright-test \"test/**/*.spec.js\" --sw /app/dist/worker.js",
     "db-types": "./scripts/cli.js db-types"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
