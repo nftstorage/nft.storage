@@ -1,6 +1,6 @@
 FROM mcr.microsoft.com/playwright:v1.21.0-focal
 
-RUN npm i -g nodemon
+RUN npm i -g nodemon typescript
 RUN mkdir -p /app
 
 WORKDIR /app
