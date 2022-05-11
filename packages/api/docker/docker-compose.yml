@@ -40,8 +40,6 @@ services:
       - CLUSTER_BASIC_AUTH_TOKEN
     depends_on:
       - post-rest
-    ports:
-      - '8787:8787'
     volumes:
       - ../src:/app/src
   db:
