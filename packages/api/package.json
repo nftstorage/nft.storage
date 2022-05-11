@@ -10,9 +10,9 @@
     "dev": "./scripts/start-dev.sh",
     "dev:persist": "./scripts/start-dev-persist.sh",
     "clean": "./scripts/cli.js db --clean && rm -rf docker/compose",
-    "build": "scripts/cli.js build",
+    "build": "./scripts/cli.js build",
     "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js",
-    "test:docker": "tsc && playwright-test \"test/**/*.spec.js\" --sw tmp/worker.js",
+    "test:docker": "playwright-test \"test/**/*.spec.js\" --sw tmp/worker.js",
     "db-types": "./scripts/cli.js db-types"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",

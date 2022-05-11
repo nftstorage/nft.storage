@@ -15,4 +15,4 @@ COPY ./docker/scripts ./scripts
 COPY ./db ./db
 COPY ./src/ ./src
 
-ENTRYPOINT ["yarn", "test" ]
+ENTRYPOINT ["yarn", "test:docker" ]
