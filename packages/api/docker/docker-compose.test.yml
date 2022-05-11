@@ -1,6 +1,8 @@
 version: '3.6'
 services:
   playwright:
+    depends_on:
+      - api
     build:
       dockerfile: ./docker/test.Dockerfile
       context: ../
