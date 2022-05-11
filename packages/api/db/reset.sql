@@ -12,6 +12,7 @@ DROP TABLE IF EXISTS auth_key_history;
 DROP TABLE IF EXISTS auth_key;
 DROP TABLE IF EXISTS public.user_tag;
 DROP TABLE IF EXISTS public.user CASCADE;
+DROP TABLE IF EXISTS metric CASCADE;
 
 DROP TABLE IF EXISTS cargo.aggregate_entries;
 DROP TABLE IF EXISTS cargo.aggregates;
