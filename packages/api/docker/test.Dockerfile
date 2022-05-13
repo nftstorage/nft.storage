@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.21.0-focal
+FROM mcr.microsoft.com/playwright:v1.20.0-focal
 
 RUN npm i -g nodemon typescript
 RUN mkdir -p /app
