@@ -25,19 +25,19 @@ import { userDIDRegister } from './routes/user-did-register.js'
 import { userTags } from './routes/user-tags.js'
 import { ucanToken } from './routes/ucan-token.js'
 import { did } from './routes/did.js'
+import { getServiceConfig } from './config.js'
 
 import {
   withMode,
   READ_ONLY as RO,
   READ_WRITE as RW,
-  DEFAULT_MODE,
   setMaintenanceModeGetter,
 } from './middleware/maintenance.js'
 import { getContext } from './utils/context.js'
 import { withAuth } from './middleware/auth.js'
 
-const getMaintenanceMode = () =>
-  typeof MAINTENANCE_MODE !== 'undefined' ? MAINTENANCE_MODE : DEFAULT_MODE
+const getMaintenanceMode = () => getServiceConfig().maintenanceMode
+
 setMaintenanceModeGetter(getMaintenanceMode)
 
 const r = new Router(getContext, {
@@ -62,11 +62,12 @@ r.add(
   'get',
   '/version',
   (event) => {
+    const { version, maintenanceMode } = getServiceConfig()
     return new JSONResponse({
-      version: VERSION,
-      commit: COMMITHASH,
-      branch: BRANCH,
-      mode: getMaintenanceMode(),
+      version: version.semver,
+      commit: version.commitHash,
+      branch: version.branch,
+      mode: maintenanceMode,
     })
   },
   [postCors]

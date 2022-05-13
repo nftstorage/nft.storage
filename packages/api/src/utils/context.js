@@ -1,20 +1,23 @@
 import Toucan from 'toucan-js'
 import { DBClient } from './db-client.js'
 import { S3BackupClient } from './s3-backup-client.js'
-import { secrets, database, isDebug, s3 as s3Config } from '../constants.js'
+import { getServiceConfig } from '../config.js'
 import { Logging } from './logs.js'
 import pkg from '../../package.json'
 import { Service } from 'ucan-storage/service'
 
-const db = new DBClient(database.url, secrets.database)
+const { runtimeEnvironment, version, isDebugBuild, secrets, external } =
+  getServiceConfig()
 
-const backup = s3Config.accessKeyId
+const db = new DBClient(external.database.url, external.database.authToken)
+
+const backup = external.s3.accessKeyId
   ? new S3BackupClient(
-      s3Config.region,
-      s3Config.accessKeyId,
-      s3Config.secretAccessKey,
-      s3Config.bucketName,
-      { endpoint: s3Config.endpoint, appName: 'nft' }
+      external.s3.region,
+      external.s3.accessKeyId,
+      external.s3.secretAccessKey,
+      external.s3.bucketName,
+      { endpoint: external.s3.endpoint, appName: 'nft' }
     )
   : undefined
 
@@ -23,15 +26,15 @@ if (!backup) {
 }
 
 const sentryOptions = {
-  dsn: secrets.sentry,
+  dsn: external.sentry.dsn,
   allowedHeaders: ['user-agent', 'x-client'],
   allowedSearchParams: /(.*)/,
   debug: false,
-  environment: ENV,
+  environment: runtimeEnvironment,
   rewriteFrames: {
     root: '/',
   },
-  release: VERSION,
+  release: version.semver,
   pkg,
 }
 
@@ -48,11 +51,11 @@ export async function getContext(event, params) {
     ...sentryOptions,
   })
   const log = new Logging(event, {
-    token: secrets.logtail,
-    debug: isDebug,
+    token: external.logtail.authToken,
+    debug: isDebugBuild,
     sentry,
   })
 
-  const ucanService = await Service.fromPrivateKey(secrets.privateKey)
+  const ucanService = await Service.fromPrivateKey(secrets.ucanPrivateKey)
   return { params, db, backup, log, ucanService }
 }
