@@ -1,7 +1,7 @@
 import { checkAuth } from '../utils/auth.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { signJWT } from '../utils/jwt.js'
-import { secrets } from '../constants.js'
+import { getServiceConfig } from '../config.js'
 
 /** @type {import('../bindings').Handler} */
 export const tokensCreate = async (event, ctx) => {
@@ -18,7 +18,7 @@ export const tokensCreate = async (event, ctx) => {
         iat: created.valueOf(),
         name: body.name,
       },
-      secrets.salt
+      getServiceConfig().secrets.salt
     )
 
     const key = await db.createKey({

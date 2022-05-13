@@ -6,9 +6,7 @@ const { once } = require('events')
 
 /** @typedef {{ proc: execa.ExecaChildProcess<string> }} ProcessObject */
 
-dotenv.config({
-  path: path.join(__dirname, '../../.env'),
-})
+dotenv.config({ path: path.join(__dirname, '../../.env') })
 
 const cli = path.join(__dirname, 'scripts/cli.js')
 
@@ -31,21 +29,10 @@ module.exports = {
   buildConfig: {
     inject: [path.join(__dirname, './scripts/node-globals.js')],
     plugins: [nodeBuiltinsPlugin],
-    define: {
-      DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
-      DATABASE_TOKEN: JSON.stringify(process.env.DATABASE_TOKEN),
-    },
   },
   buildSWConfig: {
-    inject: [
-      path.join(__dirname, './scripts/node-globals.js'),
-      path.join(__dirname, './test/scripts/worker-globals.js'),
-    ],
+    inject: [path.join(__dirname, './scripts/node-globals.js')],
     plugins: [nodeBuiltinsPlugin],
-    define: {
-      DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
-      DATABASE_TOKEN: JSON.stringify(process.env.DATABASE_TOKEN),
-    },
   },
   beforeTests: async () => {
     const mock = await startMockServer('AWS S3', 9095, 'test/mocks/aws-s3')

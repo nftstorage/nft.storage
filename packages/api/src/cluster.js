@@ -1,9 +1,15 @@
 import { Cluster } from '@nftstorage/ipfs-cluster'
-import { cluster } from './constants.js'
+import { getServiceConfig } from './config.js'
 import { HTTPError } from './errors.js'
 
-const client = new Cluster(cluster.apiUrl, {
-  headers: { Authorization: `Basic ${cluster.basicAuthToken}` },
+const {
+  external: { cluster: clusterConfig },
+} = getServiceConfig()
+
+const client = new Cluster(clusterConfig.url, {
+  headers: {
+    Authorization: `Basic ${clusterConfig.basicAuthToken}`,
+  },
 })
 
 /**

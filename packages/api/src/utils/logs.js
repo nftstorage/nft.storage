@@ -1,5 +1,7 @@
 import { nanoid } from 'nanoid/non-secure'
+import { getServiceConfig } from '../config'
 
+const { version } = getServiceConfig()
 const logtailApiURL = 'https://in.logtail.com/'
 
 const buildMetadataFromHeaders = (/** @type {Headers} */ headers) => {
@@ -53,9 +55,9 @@ export class Logging {
         cf: rCf,
       },
       cloudflare_worker: {
-        version: VERSION,
-        commit: COMMITHASH,
-        branch: BRANCH,
+        version: version.semver,
+        commit: version.commitHash,
+        branch: version.branch,
         worker_id: nanoid(10),
         worker_started: this.startTs,
       },

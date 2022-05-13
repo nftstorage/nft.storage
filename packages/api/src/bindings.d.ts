@@ -7,30 +7,60 @@ import { UserOutput, UserOutputKey } from './utils/db-client-types.js'
 import { DBClient } from './utils/db-client.js'
 import { Logging } from './utils/logs.js'
 
-declare global {
-  const SALT: string
-  const DEBUG: string
-  const CLUSTER_SERVICE: 'IpfsCluster' | 'IpfsCluster2' | 'IpfsCluster3'
-  const CLUSTER_API_URL: string
-  const CLUSTER_BASIC_AUTH_TOKEN: string
-  const MAGIC_SECRET_KEY: string
-  const DATABASE_URL: string
-  const DATABASE_TOKEN: string
-  const MAILCHIMP_API_KEY: string
-  const LOGTAIL_TOKEN: string
-  const ENV: 'dev' | 'staging' | 'production'
-  const SENTRY_DSN: string
-  const BRANCH: string
-  const VERSION: string
-  const COMMITHASH: string
-  const MAINTENANCE_MODE: Mode
-  const METAPLEX_AUTH_TOKEN: string
-  const S3_ENDPOINT: string
-  const S3_REGION: string
-  const S3_ACCESS_KEY_ID: string
-  const S3_SECRET_ACCESS_KEY: string
-  const S3_BUCKET_NAME: string
-  const PRIVATE_KEY: string
+export type RuntimeEnvironmentName = 'test' | 'dev' | 'staging' | 'production'
+
+export interface ServiceConfiguration {
+  isDebugBuild: boolean
+  runtimeEnvironment: RuntimeEnvironmentName
+  version: {
+    semver: string
+    branch: string
+    commitHash: string
+  }
+
+  maintenanceMode: Mode
+
+  secrets: {
+    salt: string
+    metaplexAuthToken: string
+    ucanPrivateKey: string
+  }
+
+  external: {
+    cluster: {
+      url: string
+      basicAuthToken: string
+    }
+
+    database: {
+      url: string
+      authToken: string
+    }
+
+    s3: {
+      endpoint: string
+      region: string
+      accessKeyId: string
+      secretAccessKey: string
+      bucketName: string
+    }
+
+    magicLink: {
+      secret: string
+    }
+
+    logtail: {
+      authToken: string
+    }
+
+    sentry: {
+      dsn: string
+    }
+
+    mailchimp: {
+      apiKey: string
+    }
+  }
 }
 
 export interface Ucan {

@@ -1,5 +1,5 @@
 import { Magic } from '@magic-sdk/admin'
-import { secrets } from '../constants.js'
+import { getServiceConfig } from '../config.js'
 import {
   HTTPError,
   ErrorUserNotFound,
@@ -8,7 +8,7 @@ import {
   ErrorTokenBlocked,
 } from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
-export const magic = new Magic(secrets.magic)
+export const magic = new Magic(getServiceConfig().external.magicLink.secret)
 import * as Ucan from 'ucan-storage/ucan-storage'
 
 /**
@@ -51,7 +51,7 @@ export async function validate(event, { log, db, ucanService }, options) {
   }
 
   // validate access tokens
-  if (await verifyJWT(token, secrets.salt)) {
+  if (await verifyJWT(token, getServiceConfig().secrets.salt)) {
     const decoded = parseJWT(token)
     const user = await db.getUser(decoded.sub)
 

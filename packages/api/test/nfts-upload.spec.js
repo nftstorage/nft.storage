@@ -12,9 +12,9 @@ import {
   rawClient,
 } from './scripts/helpers.js'
 import { createCar } from './scripts/car.js'
-import { S3_ENDPOINT, S3_BUCKET_NAME } from './scripts/worker-globals.js'
 import { build } from 'ucan-storage/ucan-storage'
 import { KeyPair } from 'ucan-storage/keypair'
+import { getServiceConfig } from '../src/config.js'
 
 describe('NFT Upload ', () => {
   /** @type{DBTestClient} */
