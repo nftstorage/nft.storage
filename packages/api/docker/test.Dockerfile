@@ -17,4 +17,4 @@ COPY ./db ./db
 COPY ./src/ ./src
 COPY ./test/ ./test
 
-ENTRYPOINT ["./scripts/run-playwright.sh'" ]
+ENTRYPOINT ["./scripts/run-playwright.sh" ]
