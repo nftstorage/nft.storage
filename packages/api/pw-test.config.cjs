@@ -11,8 +11,6 @@ dotenv.config({
 })
 
 const cli = path.join(__dirname, 'scripts/cli.js')
-const dockerStart = path.join(__dirname, 'scripts/start-test.sh')
-const dockerStop = path.join(__dirname, 'scripts/stop-test.sh')
 /** @type {import('esbuild').Plugin} */
 const nodeBuiltinsPlugin = {
   name: 'node builtins',
@@ -26,7 +24,7 @@ const nodeBuiltinsPlugin = {
 /** @type {import('playwright-test').RunnerOptions} */
 module.exports = {
   buildConfig: {
-    inject: [path.join(__dirname, './scripts/node-globals.js')],
+    // inject: [path.join(__dirname, './scripts/node-globals.js')],
     plugins: [nodeBuiltinsPlugin],
     define: {
       DATABASE_URL: JSON.stringify(process.env.PW_DATABASE_URL),
@@ -47,12 +45,12 @@ module.exports = {
   beforeTests: async () => {
     const mock = await startMockServer('AWS S3', 9095, 'test/mocks/aws-s3')
 
-    await execa(cli, ['db', '--start'], { stdio: 'inherit' })
-    console.log('⚡️ Cluster and Postgres started.')
+    // await execa(cli, ['db', '--start'], { stdio: 'inherit' })
+    // console.log('⚡️ Cluster and Postgres started.')
 
-    await execa(cli, ['db-sql', '--cargo', '--testing', '--reset'], {
-      stdio: 'inherit',
-    })
+    // await execa(cli, ['db-sql', '--cargo', '--testing', '--reset'], {
+    //   stdio: 'inherit',
+    // })
     console.log('⚡️ SQL schema loaded.')
 
     await delay(2000)

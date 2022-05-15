@@ -17,5 +17,4 @@ COPY ./db ./db
 COPY ./src/ ./src
 COPY ./test/ ./test
 
-RUN ./scripts/constants-injection.sh
-ENTRYPOINT ["yarn", "test:docker" ]
+ENTRYPOINT ["./scripts/run-playwright.sh'" ]
