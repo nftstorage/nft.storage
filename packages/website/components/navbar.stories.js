@@ -1,6 +1,11 @@
 import React from 'react'
 import NavBar from './navbar'
-import { useQueryClient, QueryClientProvider } from 'react-query'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { UserContext } from 'lib/user'
+
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: 60 * 1000 } },
+})
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -35,7 +40,6 @@ const Template = (
    * }} */
   args
 ) => {
-  const queryClient = useQueryClient()
   const userMock = {
     email: 'foo@bar.com',
     isMfaEnabled: false,
@@ -48,13 +52,22 @@ const Template = (
       HasSuperHotAccess: false,
     },
   }
+
+  function handleClearUser() {
+    console.info('clear user fake')
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
-      <NavBar
-        logo={{ src: args.logo, isDark: true }}
-        bgColor={args.bgColor}
-        user={args.user ? userMock : null}
-      />
+      <UserContext.Provider
+        value={{ user: args.user ? userMock : null, handleClearUser }}
+      >
+        <NavBar
+          logo={{ src: args.logo, isDark: true }}
+          bgColor={args.bgColor}
+          user={args.user ? userMock : null}
+        />
+      </UserContext.Provider>
     </QueryClientProvider>
   )
 }
