@@ -12,19 +12,32 @@ export default {
   component: NavBar,
   title: 'NavBar',
   parameters: {
-    layout: 'centered',
+    // layout: 'centered',
   },
   argTypes: {
     bgColor: {
-      options: ['bg-forest', 'bg-yellow', 'bg-green', 'bg-peach', 'bg-ltblue'],
+      options: [
+        'bg-orange',
+        'bg-forest',
+        'bg-yellow',
+        'bg-green',
+        'bg-peach',
+        'bg-ltblue',
+      ],
+      defaultValue: 'bg-orange',
       control: { type: 'select' },
     },
-    logo: {
-      options: [
-        '/images/logo-nft-storage-inline-dark.svg',
-        '/images/logo-nft-storage-inline.svg',
-      ],
-      control: { type: 'select' },
+    // logo: {
+    //   options: [
+    //     '/images/logo-nft-storage-inline-dark.svg',
+    //     '/images/logo-nft-storage-inline.svg',
+    //   ],
+    //   default: '/images/logo-nft-storage-inline.svg',
+    //   control: { type: 'select' },
+    // },
+    dark: {
+      control: { type: 'boolean' },
+      defaultValue: false,
     },
     user: {
       control: { type: 'boolean' },
@@ -34,9 +47,9 @@ export default {
 
 const Template = (
   /** @type {{
-   * logo: string;
    * bgColor: string;
    * user: boolean;
+   * dark: boolean;
    * }} */
   args
 ) => {
@@ -63,7 +76,7 @@ const Template = (
         value={{ user: args.user ? userMock : null, handleClearUser }}
       >
         <NavBar
-          logo={{ src: args.logo, isDark: true }}
+          logo={{ src: '', isDark: args.dark }}
           bgColor={args.bgColor}
           user={args.user ? userMock : null}
         />
