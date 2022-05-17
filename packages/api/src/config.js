@@ -221,11 +221,11 @@ function maintenanceModeFromString(s) {
 }
 
 /**
- * Returns `true` if the string `s` is (case insensitive) equal to `"true"`, or `false` for any other value.
+ * Returns `true` if the string `s` is "truthy" in the javascript sense (is non-empty)
  *
  * @param {string} s
  * @returns {boolean}
  */
 function boolValue(s) {
-  return s.toLowerCase() === 'true'
+  return !!s
 }
