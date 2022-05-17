@@ -102,6 +102,12 @@ export function loadServiceConfig() {
   const env = runtimeEnvFromString(vars['ENV'])
   if (allowDefaultConfigValues(env)) {
     mergeWithDefaultValues(vars, env)
+
+    // special case for VERSION, because ucan-storage defines a VERSION global
+    // that seems to be clobbering ours if no VERSION var is defined by cloudflare.
+    if (vars['VERSION'] === '0.8.0') {
+      vars['VERSION'] = DEFAULT_CONFIG_VALUES.VERSION
+    }
   } else {
     ensureAllVarsAreDefined(vars, env)
   }
