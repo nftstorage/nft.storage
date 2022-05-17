@@ -1,5 +1,73 @@
 import * as assert from 'assert'
-import { serviceConfigFromVariables } from '../src/config.js'
+import {
+  serviceConfigFromVariables,
+  DEFAULT_CONFIG_VALUES,
+  loadConfigVariables,
+  loadServiceConfig,
+} from '../src/config.js'
+
+/** @type Record<string, unknown> */
+const globals = globalThis
+
+/**
+ * Helper to remove all the config variables we care about from the global context.
+ */
+const scrubGlobals = () => {
+  for (const name of Object.keys(DEFAULT_CONFIG_VALUES)) {
+    delete globals[name]
+  }
+}
+
+/**
+ * @param {Record<string, string>} vars
+ */
+const defineGlobals = (vars) => {
+  for (const [name, value] of Object.entries(vars)) {
+    globals[name] = value
+  }
+}
+
+describe('loadServiceConfig', () => {
+  beforeEach(scrubGlobals)
+  afterEach(scrubGlobals)
+
+  it('fails if config vars are missing when ENV == "staging" or "production"', () => {
+    const strictEnvs = ['staging', 'production']
+    for (const env of strictEnvs) {
+      defineGlobals({ ENV: env })
+      assert.throws(() => loadServiceConfig(), /Missing configuration variable/)
+    }
+  })
+
+  it('uses default config values for missing vars when ENV == "test" or "dev"', () => {
+    const lenientEnvs = ['test', 'dev']
+    for (const env of lenientEnvs) {
+      defineGlobals({ ENV: env })
+      const cfg = loadServiceConfig()
+      assert.equal(cfg.runtimeEnvironment, env)
+      assert.ok(cfg.maintenanceMode)
+    }
+  })
+})
+
+describe('loadConfigVariables', () => {
+  beforeEach(scrubGlobals)
+  afterEach(scrubGlobals)
+
+  it('looks up values on the globalThis object', () => {
+    globals['SALT'] = 'extra-salty'
+    const vars = loadConfigVariables()
+    assert.equal(vars.SALT, 'extra-salty')
+  })
+
+  it('only includes variables with keys in DEFAULT_CONFIG_VALUES', () => {
+    globals['FOO'] = 'ignored'
+    globals['SALT'] = 'extra-salty'
+    const vars = loadConfigVariables()
+    assert.equal(vars.SALT, 'extra-salty')
+    assert.equal(vars['FOO'], undefined)
+  })
+})
 
 describe('serviceConfigFromVariables', () => {
   it('sets isDebugBuild to true if DEBUG is equal to "true" or "1"', () => {
