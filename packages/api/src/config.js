@@ -90,9 +90,11 @@ export function loadServiceConfig() {
  * Parse a {@link ServiceConfiguration} out of the given `configVars` map.
  * @param {Record<string, string>} configVars map of variable names to values.
  *
+ * Exported for testing. See {@link getServiceConfig} for main public accessor.
+ *
  * @returns {ServiceConfiguration}
  */
-function serviceConfigFromVariables(configVars) {
+export function serviceConfigFromVariables(configVars) {
   let clusterUrl = configVars.CLUSTER_API_URL
   if (configVars.CLUSTER_SERVICE) {
     const serviceUrl = CLUSTER_SERVICE_URLS[configVars.CLUSTER_SERVICE]
@@ -189,6 +191,10 @@ function loadConfigVariables() {
  * @returns {RuntimeEnvironmentName}
  */
 function runtimeEnvFromString(s) {
+  if (!s) {
+    return 'test'
+  }
+
   switch (s) {
     case 'test':
     case 'dev':
