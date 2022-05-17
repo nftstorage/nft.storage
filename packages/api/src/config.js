@@ -17,7 +17,7 @@ import {
  * look for when loading the runtime config.
  *
  * @type Record<string, string> */
-const DEFAULT_CONFIG_VALUES = {
+export const DEFAULT_CONFIG_VALUES = {
   SALT: 'secret',
   DEBUG: 'true',
   DATABASE_URL: 'http://localhost:3000',
@@ -55,6 +55,12 @@ const CLUSTER_SERVICE_URLS = {
 }
 
 /**
+ * @param {RuntimeEnvironmentName} env
+ * @returns {boolean} true if the named runtime environment should fallback to values from DEFAULT_CONFIG_VALUES if no config var is present.
+ */
+const allowDefaultConfigValues = (env) => env === 'test' || env === 'dev'
+
+/**
  * Returns a {@link ServiceConfiguration} object containing the runtime config options for the API service.
  * Includes anything injected by the environment (secrets, URLs for services we call out to, maintenance flag, etc).
  *
@@ -76,14 +82,31 @@ let _globalConfig
 /**
  * Load a {@link ServiceConfiguration} from the global environment.
  *
+ * Exported for testing. See {@link getServiceConfig} for main public accessor.
+ *
  * Config values are resolved by looking for global variables with the names matching the keys of {@link DEFAULT_CONFIG_VALUES}.
- * If no global value is found, a default suitable for testing will be used.
+ *
+ * If no global value is found for a variable, an error will be thrown if the runtimeEnvironment (ENV variable)
+ * is set to a "production like" environment.
+ *
+ * If {@link allowDefaultConfigValues} returns true for the current environment, the value from {@link DEFAULT_CONFIG_VALUES} will be
+ * used if a variable is missing.
  *
  * @returns {ServiceConfiguration}
  */
 export function loadServiceConfig() {
-  const env = loadConfigVariables()
-  return serviceConfigFromVariables(env)
+  const vars = loadConfigVariables()
+
+  // in "strict" environments (staging & production), we force all config variables
+  // to have a defined value. In dev & test, we allow falling back to default config values.
+  const env = runtimeEnvFromString(vars['ENV'])
+  if (allowDefaultConfigValues(env)) {
+    mergeWithDefaultValues(vars, env)
+  } else {
+    ensureAllVarsAreDefined(vars, env)
+  }
+
+  return serviceConfigFromVariables(vars)
 }
 
 /**
@@ -163,25 +186,55 @@ export function serviceConfigFromVariables(configVars) {
  * Loads configuration variables from the global environment and returns a JS object
  * keyed by variable names.
  *
- * @returns {Record<string, string>} a map of variable names to string values
+ * Exported for testing. See {@link getServiceConfig} for main config accessor.
+ *
+ * @returns { Record<string, string>} an object with `vars` containing all found variables and their values, and a `notFound` array of variables that were not defined
  */
-function loadConfigVariables() {
+export function loadConfigVariables() {
   /** @type Record<string, string> */
-  const env = {}
+  const vars = {}
 
   /** @type Record<string, unknown> */
   const globals = globalThis
 
-  for (const [name, defaultVal] of Object.entries(DEFAULT_CONFIG_VALUES)) {
+  for (const name of Object.keys(DEFAULT_CONFIG_VALUES)) {
     const val = globals[name]
     if (typeof val === 'string') {
-      env[name] = val
+      vars[name] = val
     }
-
-    console.warn(`Missing config variable ${name}, using default value.`)
-    env[name] = defaultVal
   }
-  return env
+  return vars
+}
+
+/**
+ *
+ * @param {Record<string, string>} vars
+ * @param {string} runtimeEnv
+ */
+function ensureAllVarsAreDefined(vars, runtimeEnv) {
+  for (const name of Object.keys(DEFAULT_CONFIG_VALUES)) {
+    if (typeof vars[name] !== 'string') {
+      throw new Error(
+        `Missing configuration variable ${name}. required when runtime env == ${runtimeEnv}`
+      )
+    }
+  }
+}
+
+/**
+ * Mutates `vars` in-place, using values from {@link DEFAULT_CONFIG_VALUES} if any are missing in the input.
+ * @param {Record<string, string>} vars
+ * @param {string} runtimeEnv
+ */
+function mergeWithDefaultValues(vars, runtimeEnv) {
+  for (const [name, defaultVal] of Object.entries(DEFAULT_CONFIG_VALUES)) {
+    if (typeof vars[name] !== 'string') {
+      console.warn(
+        `Using default value for configuration variable ${name}. Allowed because runtime env == ${runtimeEnv}`
+      )
+      vars[name] = defaultVal
+    }
+  }
 }
 
 /**
