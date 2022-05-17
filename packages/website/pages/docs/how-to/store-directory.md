@@ -42,7 +42,7 @@ async function main() {
     console.error(`usage: ${process.argv[0]} ${process.argv[1]} <directory-path>`)
   }
   const directoryPath = process.argv[2]
-  const files = await getFilesFromPath(path, {
+  const files = await getFilesFromPath(directoryPath, {
       pathPrefix: path.resolve(directoryPath), // see the note about pathPrefix below
       hidden: true // use the default of false if you want to ignore files that start with '.'
   })
