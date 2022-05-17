@@ -2,22 +2,22 @@ import * as assert from 'assert'
 import { serviceConfigFromVariables } from '../src/config.js'
 
 describe('serviceConfigFromVariables', () => {
-  it('sets isDebugBuild to true if DEBUG has any truthy value', () => {
-    const cfg = serviceConfigFromVariables({
-      DEBUG: 'yep',
-    })
-    assert.equal(cfg.isDebugBuild, true)
+  it('sets isDebugBuild to true if DEBUG is equal to "true" or "1"', () => {
+    const truthyValues = ['true', 'TRUE', '1']
+    for (const t of truthyValues) {
+      const cfg = serviceConfigFromVariables({ DEBUG: t })
+      assert.equal(cfg.isDebugBuild, true)
+    }
   })
 
-  it('sets isDebugBuild to false if DEBUG is missing or has an empty string value', () => {
-    assert.equal(
-      serviceConfigFromVariables({ ENV: 'test' }).isDebugBuild,
-      false
-    )
-    assert.equal(
-      serviceConfigFromVariables({ ENV: 'test', DEBUG: '' }).isDebugBuild,
-      false
-    )
+  it('sets isDebugBuild to false if DEBUG is missing or has a falsy string value ("false", "0", "")', () => {
+    assert.equal(serviceConfigFromVariables({}).isDebugBuild, false)
+
+    const falsyValues = ['false', 'FALSE', '0', '']
+
+    for (const f of falsyValues) {
+      assert.equal(serviceConfigFromVariables({ DEBUG: f }).isDebugBuild, false)
+    }
   })
 
   it('defaults runtimeEnvironment to "test" if ENV is not set', () => {
