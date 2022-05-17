@@ -5,10 +5,23 @@ import {
   ErrorUserNotFound,
   ErrorTokenNotFound,
   ErrorUnauthenticated,
+  ErrorTokenBlocked,
 } from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
 export const magic = new Magic(secrets.magic)
 import * as Ucan from 'ucan-storage/ucan-storage'
+
+/**
+ *
+ * @param {import('./db-client-types.js').UserOutput} user
+ * @returns
+ */
+function filterDeletedKeys(user) {
+  return {
+    ...user,
+    keys: user.keys.filter((k) => k.deleted_at === null),
+  }
+}
 
 /**
  * Validate auth
@@ -27,7 +40,7 @@ export async function validate(event, { log, db, ucanService }, options) {
     const user = await db.getUser(root.audience())
     if (user) {
       return {
-        user: user,
+        user: filterDeletedKeys(user),
         db,
         ucan: { token, root: root._decoded.payload, cap },
         type: 'ucan',
@@ -45,11 +58,21 @@ export async function validate(event, { log, db, ucanService }, options) {
     if (user) {
       const key = user.keys.find((k) => k?.secret === token)
       if (key) {
+        if (key.deleted_at) {
+          const isBlocked = await db.checkIfTokenBlocked(key)
+
+          if (isBlocked) {
+            throw new ErrorTokenBlocked()
+          } else {
+            throw new ErrorUserNotFound()
+          }
+        }
+
         log.setUser({
           id: user.id,
         })
         return {
-          user: user,
+          user: filterDeletedKeys(user),
           key,
           db,
           type: 'key',
@@ -72,7 +95,7 @@ export async function validate(event, { log, db, ucanService }, options) {
       })
 
       return {
-        user,
+        user: filterDeletedKeys(user),
         db,
         type: 'session',
       }

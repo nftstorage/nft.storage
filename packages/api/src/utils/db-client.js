@@ -91,13 +91,11 @@ export class DBClient {
     magic_link_id,
     github_id,
     did,
-    keys:auth_key_user_id_fkey(user_id,id,name,secret),
+    keys:auth_key_user_id_fkey(user_id,id,name,secret,deleted_at),
     tags:user_tag_user_id_fkey(user_id,id,tag,value)
     `
       )
       .or(`magic_link_id.eq.${id},github_id.eq.${id},did.eq.${id}`)
-      // @ts-ignore
-      .filter('keys.deleted_at', 'is', null)
       // @ts-ignore
       .filter('tags.deleted_at', 'is', null)
 
@@ -111,6 +109,25 @@ export class DBClient {
     }
 
     return data
+  }
+
+  /**
+   *
+   * @param {import('./db-client-types').UserOutputKey} key
+   */
+  async checkIfTokenBlocked(key) {
+    const { data, error } = await this.client
+      .from('auth_key_history')
+      .select('status')
+      .eq('auth_key_id', key.id)
+      .filter('deleted_at', 'is', null)
+      .single()
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    return data?.status === 'Blocked'
   }
 
   /**

@@ -11,7 +11,7 @@ describe('DB Client', () => {
     client = await createClientWithUser()
   })
 
-  it('getUser should list only active keys', async () => {
+  it('getUser should list all keys', async () => {
     const issuer1 = `did:eth:0x73573${Date.now()}`
     const token1 = await signJWT(
       {
@@ -51,7 +51,7 @@ describe('DB Client', () => {
       throw new Error('no user data')
     }
     const keys = user.keys
-    assert.equal(keys.length, 2)
+    assert.equal(keys.length, 3)
     assert.equal(keys[1].name, 'key1')
   })
 })
