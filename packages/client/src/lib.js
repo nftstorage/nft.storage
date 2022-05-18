@@ -675,7 +675,7 @@ class NFTStorage {
 
 /**
  * Cast an iterable to an asyncIterable
- * @template {File|FileObject} T
+ * @template T
  * @param {Iterable<T>} iterable
  * @returns {AsyncIterable<T>}
  */
