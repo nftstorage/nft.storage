@@ -96,21 +96,7 @@ let _globalConfig
  */
 export function loadServiceConfig() {
   const vars = loadConfigVariables()
-
-  // in "strict" environments (staging & production), we force all config variables
-  // to have a defined value. In dev & test, we allow falling back to default config values.
-  const env = runtimeEnvFromString(vars['ENV'])
-  if (allowDefaultConfigValues(env)) {
-    mergeWithDefaultValues(vars, env)
-
-    // special case for VERSION, because ucan-storage defines a VERSION global
-    // that seems to be clobbering ours if no VERSION var is defined by cloudflare.
-    if (vars['VERSION'] === '0.8.0') {
-      vars['VERSION'] = DEFAULT_CONFIG_VALUES.VERSION
-    }
-  } else {
-    ensureAllVarsAreDefined(vars, env)
-  }
+  mergeDefaultValuesIfAllowed(vars)
 
   return serviceConfigFromVariables(vars)
 }
@@ -213,17 +199,51 @@ export function loadConfigVariables() {
 }
 
 /**
+ * Merges `vars` with default values if any keys are missing, iff default values
+ * are allowed in the current runtime env (see {@link allowDefaultConfigValues}).
+ *
+ * In "strict" environments (staging & production), this function will throw
+ * if `vars` does not contain a value for each key in {@link DEFAULT_CONFIG_VALUES}.
+ *
+ * In "lenient" environments (test & dev), this function will mutate `vars` in-place
+ * and set any missing keys to the value from {@link DEFAULT_CONFIG_VALUES}.
+ *
+ * @param {Record<string, string>} vars
+ */
+function mergeDefaultValuesIfAllowed(vars) {
+  // in "strict" environments (staging & production), we force all config variables
+  // to have a defined value. In dev & test, we allow falling back to default config values.
+  const env = runtimeEnvFromString(vars['ENV'])
+  if (allowDefaultConfigValues(env)) {
+    mergeWithDefaultValues(vars, env)
+
+    // special case for VERSION, because ucan-storage defines a VERSION global
+    // that seems to be clobbering ours if no VERSION var is defined by cloudflare.
+    if (vars['VERSION'] === '0.8.0') {
+      vars['VERSION'] = DEFAULT_CONFIG_VALUES.VERSION
+    }
+  } else {
+    ensureAllVarsAreDefined(vars, env)
+  }
+}
+
+/**
  *
  * @param {Record<string, string>} vars
  * @param {string} runtimeEnv
  */
 function ensureAllVarsAreDefined(vars, runtimeEnv) {
+  const missing = []
   for (const name of Object.keys(DEFAULT_CONFIG_VALUES)) {
     if (typeof vars[name] !== 'string') {
-      throw new Error(
-        `Missing configuration variable ${name}. required when runtime env == ${runtimeEnv}`
-      )
+      missing.push(name)
     }
+  }
+  if (missing.length !== 0) {
+    throw new Error(
+      `Missing configuration variables (required when runtime env == ${runtimeEnv}): ` +
+        missing.join(', ')
+    )
   }
 }
 
@@ -233,13 +253,18 @@ function ensureAllVarsAreDefined(vars, runtimeEnv) {
  * @param {string} runtimeEnv
  */
 function mergeWithDefaultValues(vars, runtimeEnv) {
+  const missing = []
   for (const [name, defaultVal] of Object.entries(DEFAULT_CONFIG_VALUES)) {
     if (typeof vars[name] !== 'string') {
-      console.warn(
-        `Using default value for configuration variable ${name}. Allowed because runtime env == ${runtimeEnv}`
-      )
+      missing.push(name)
       vars[name] = defaultVal
     }
+  }
+  if (missing.length !== 0) {
+    console.warn(
+      `Using default value for configuration variables (allowed when runtime env == ${runtimeEnv}): ` +
+        missing.join(', ')
+    )
   }
 }
 
