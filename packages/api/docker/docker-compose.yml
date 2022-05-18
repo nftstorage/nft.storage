@@ -3,7 +3,7 @@ services:
   post-rest:
     image: postgrest/postgrest:v9.0.0
     depends_on:
-      - db
+      - db-init
     environment:
       PGRST_DB_URI: $DATABASE_CONNECTION
       PGRST_DB_SCHEMAS: public,cargo

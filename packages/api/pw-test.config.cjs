@@ -27,13 +27,13 @@ module.exports = {
     // inject: [path.join(__dirname, './scripts/node-globals.js')],
     plugins: [nodeBuiltinsPlugin],
     define: {
-      DATABASE_URL: JSON.stringify(process.env.PW_DATABASE_URL),
+      DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
       DATABASE_TOKEN: JSON.stringify(process.env.DATABASE_TOKEN),
     },
   },
   buildSWConfig: {
     inject: [
-      path.join(__dirname, './scripts/node-globals.js'),
+      // path.join(__dirname, './scripts/node-globals.js'),
       path.join(__dirname, './test/scripts/worker-globals.js'),
     ],
     plugins: [nodeBuiltinsPlugin],

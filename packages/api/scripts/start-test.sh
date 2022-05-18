@@ -9,4 +9,4 @@ cat $ENV_FILE && \
 docker-compose $COMPOSE_FILES down --remove-orphans && \
 docker-compose $COMPOSE_FILES build && \
 docker-compose $COMPOSE_FILES --env-file="$ENV_FILE" config && \
-docker-compose $COMPOSE_FILES --env-file="$ENV_FILE" run playwright
+docker-compose $COMPOSE_FILES --env-file="$ENV_FILE" up

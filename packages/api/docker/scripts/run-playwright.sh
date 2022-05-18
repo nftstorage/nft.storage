@@ -3,5 +3,6 @@
 env > .env
 ./scripts/constants-injection.sh \
 && tsc \
-&& npx playwright-test \"test/**/*.spec.js\" --sw dist/worker.js \
+&& ls test \
+&& npx playwright-test 'test/**/*.spec.js' --sw dist/worker.js \
 ;
