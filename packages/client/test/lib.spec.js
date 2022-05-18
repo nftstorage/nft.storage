@@ -9,6 +9,7 @@ import { pack } from 'ipfs-car/pack'
 import { CarWriter } from '@ipld/car'
 import * as dagJson from '@ipld/dag-json'
 import { randomCar } from './helpers.js'
+import { toAsyncIterable } from '../src/lib.js'
 
 const GATEWAY_LINK = 'nftstorage.link'
 
@@ -215,6 +216,24 @@ describe('client', () => {
           'metadata.json'
         ),
       ])
+
+      assert.equal(
+        cid,
+        'bafybeigkms36pnnjsa7t2mq2g4mx77s4no2hilirs4wqx3eebbffy2ay3a'
+      )
+    })
+
+    it('upload multiple files as asyncIterable', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const cid = await client.storeDirectory(
+        toAsyncIterable([
+          new File(['hello world'], 'hello.txt'),
+          new File(
+            [JSON.stringify({ from: 'incognito' }, null, 2)],
+            'metadata.json'
+          ),
+        ])
+      )
 
       assert.equal(
         cid,

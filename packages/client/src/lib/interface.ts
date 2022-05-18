@@ -100,7 +100,7 @@ export interface API {
    * be within the same directory, otherwise error is raised e.g. `foo/bar.png`,
    * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
    */
-  storeDirectory(service: Service, files: Iterable<File>): Promise<CIDString>
+  storeDirectory(service: Service, files: Iterable<File>|AsyncIterable<File>): Promise<CIDString>
   /**
    * Returns current status of the stored NFT by its CID. Note the NFT must
    * have previously been stored by this account.

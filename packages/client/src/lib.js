@@ -24,6 +24,7 @@ import * as Token from './token.js'
 import { fetch, File, Blob, FormData, Blockstore } from './platform.js'
 import { toGatewayURL } from './gateway.js'
 import { BlockstoreCarReader } from './bs-car-reader.js'
+import pipe from 'it-pipe'
 
 const MAX_STORE_RETRIES = 5
 const MAX_CONCURRENT_UPLOADS = 3
@@ -215,7 +216,7 @@ class NFTStorage {
    * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
    *
    * @param {Service} service
-   * @param {Iterable<File>} files
+   * @param {Iterable<File>|AsyncIterable<File>} files
    * @returns {Promise<CIDString>}
    */
   static async storeDirectory(service, files) {
@@ -455,29 +456,32 @@ class NFTStorage {
    * await client.storeCar(car)
    * ```
    *
-   * @param {Iterable<File>} files
+   * @param {Iterable<File>|AsyncIterable<File>} files
    * @param {object} [options]
    * @param {BlockstoreI} [options.blockstore]
    * @returns {Promise<{ cid: CID, car: CarReader }>}
    */
   static async encodeDirectory(files, { blockstore } = {}) {
-    const input = []
     let size = 0
-    for (const file of files) {
-      input.push(toImportCandidate(file.name, file))
-      size += file.size
-    }
-
+    const input = pipe(
+      isIterable(files) ? toAsyncIterable(files) : files,
+      async function* (files) {
+        for await (const file of files) {
+          yield toImportCandidate(file.name, file)
+          size += file.size
+        }
+      }
+    )
+    const packed = await packCar(input, {
+      blockstore,
+      wrapWithDirectory: true,
+    })
     if (size === 0) {
       throw new Error(
         'Total size of files should exceed 0, make sure to provide some content'
       )
     }
-
-    return packCar(input, {
-      blockstore,
-      wrapWithDirectory: true,
-    })
+    return packed
   }
 
   // Just a sugar so you don't have to pass around endpoint and token around.
@@ -557,7 +561,7 @@ class NFTStorage {
    * Argument can be a [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList)
    * instance as well, in which case directory structure will be retained.
    *
-   * @param {Iterable<File>} files
+   * @param {AsyncIterable<File>|Iterable<File>} files
    */
   storeDirectory(files) {
     return NFTStorage.storeDirectory(this, files)
@@ -655,6 +659,29 @@ class NFTStorage {
 }
 
 /**
+ * type guard checking for Iterable
+ * @param {any} x;
+ * @returns {x is Iterable<unknown>}
+ */
+function isIterable(x) {
+  return Symbol.iterator in x
+}
+
+/**
+ * Cast an iterable to an asyncIterable
+ * @template T
+ * @param {Iterable<T>} iterable
+ * @returns {AsyncIterable<T>}
+ */
+export function toAsyncIterable(iterable) {
+  return (async function* () {
+    for (const item of iterable) {
+      yield item
+    }
+  })()
+}
+
+/**
  * @template {import('./lib/interface.js').TokenInput} T
  * @param {T} metadata
  */
@@ -686,7 +713,7 @@ For more context please see ERC-721 specification https://eips.ethereum.org/EIPS
 }
 
 /**
- * @param {Array<{ path: string, content: import('./platform.js').ReadableStream }>} input
+ * @param {import('ipfs-car/pack').ImportCandidateStream|Array<{ path: string, content: import('./platform.js').ReadableStream }>} input
  * @param {object} [options]
  * @param {BlockstoreI} [options.blockstore]
  * @param {boolean} [options.wrapWithDirectory]
