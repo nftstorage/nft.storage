@@ -1,5 +1,12 @@
 # Changelog
 
+### [2.24.1](https://github.com/nftstorage/nft.storage/compare/api-v2.24.0...api-v2.24.1) (2022-05-18)
+
+
+### Bug Fixes
+
+* Adding additional message details to account is blocked error ([#1898](https://github.com/nftstorage/nft.storage/issues/1898)) ([#1922](https://github.com/nftstorage/nft.storage/issues/1922)) ([48597c2](https://github.com/nftstorage/nft.storage/commit/48597c20f7b6a1bcf5f43f871a3a04db6cac9aea))
+
 ## [2.24.0](https://github.com/nftstorage/nft.storage/compare/api-v2.23.0...api-v2.24.0) (2022-05-17)
 
 
