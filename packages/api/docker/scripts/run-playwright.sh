@@ -3,5 +3,5 @@
 env > .env
 ./scripts/constants-injection.sh \
 && tsc \
-&& yarn run test:docker \
+&& npx playwright-test \"test/**/*.spec.js\" --sw dist/worker.js \
 ;
