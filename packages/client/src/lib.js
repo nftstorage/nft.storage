@@ -24,6 +24,7 @@ import * as Token from './token.js'
 import { fetch, File, Blob, FormData, Blockstore } from './platform.js'
 import { toGatewayURL } from './gateway.js'
 import { BlockstoreCarReader } from './bs-car-reader.js'
+import pipe from 'it-pipe'
 
 const MAX_STORE_RETRIES = 5
 const MAX_CONCURRENT_UPLOADS = 3
@@ -461,25 +462,26 @@ class NFTStorage {
    * @returns {Promise<{ cid: CID, car: CarReader }>}
    */
   static async encodeDirectory(files, { blockstore } = {}) {
-    const input = []
     let size = 0
-    const asyncFiles = isIterable(files) ? toAsyncIterable(files) : files
-
-    for await (const file of asyncFiles) {
-      input.push(toImportCandidate(file.name, file))
-      size += file.size
-    }
-
+    const input = pipe(
+      isIterable(files) ? toAsyncIterable(files) : files,
+      async function* (files) {
+        for await (const file of files) {
+          yield toImportCandidate(file.name, file)
+          size += file.size
+        }
+      }
+    )
+    const packed = await packCar(input, {
+      blockstore,
+      wrapWithDirectory: true,
+    })
     if (size === 0) {
       throw new Error(
         'Total size of files should exceed 0, make sure to provide some content'
       )
     }
-
-    return packCar(input, {
-      blockstore,
-      wrapWithDirectory: true,
-    })
+    return packed
   }
 
   // Just a sugar so you don't have to pass around endpoint and token around.
@@ -711,7 +713,7 @@ For more context please see ERC-721 specification https://eips.ethereum.org/EIPS
 }
 
 /**
- * @param {Array<{ path: string, content: import('./platform.js').ReadableStream }>} input
+ * @param {import('ipfs-car/pack').ImportCandidateStream|Array<{ path: string, content: import('./platform.js').ReadableStream }>} input
  * @param {object} [options]
  * @param {BlockstoreI} [options.blockstore]
  * @param {boolean} [options.wrapWithDirectory]
