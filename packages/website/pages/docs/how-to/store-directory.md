@@ -42,14 +42,10 @@ async function main() {
     console.error(`usage: ${process.argv[0]} ${process.argv[1]} <directory-path>`)
   }
   const directoryPath = process.argv[2]
-  const files = (async function* () {
-    for await (const file of filesFromPath(directoryPath, {
-      pathPrefix: path.resolve(directoryPath), // see the note about pathPrefix below
-      hidden: true, // use the default of false if you want to ignore files that start with '.'
-    })) {
-      yield new File([file.stream()], file.name);
-    }
-  })();
+  const files = filesFromPath(directoryPath, {
+    pathPrefix: path.resolve(directoryPath), // see the note about pathPrefix below
+    hidden: true, // use the default of false if you want to ignore files that start with '.'
+  })
 
   const storage = new NFTStorage({ token })
 
