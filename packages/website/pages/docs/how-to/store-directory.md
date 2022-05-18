@@ -65,9 +65,9 @@ main()
 
 The `filesFromPath` function is provided by the [`files-from-path` package][npm-files-from-path]. It will read the contents of a directory into `File` objects that can be passed into the NFT.Storage client.
 
-The `pathPrefix` option tells `getFilesFromPath` to remove the input `path` from the filenames of the `File` objects it creates. For example, if you're reading in files from a directory called `example`, calling `getFilesFromPath` _without_ the `pathPrefix` argument would result in `File` objects with filenames like `example/file1.txt`, `example/file2.txt`, and so on. If you set the `pathPrefix` option to `example`, you'll get `file1.txt`, `file2.txt`, etc. instead. This results in a final IPFS URI of `ipfs://<directory-cid>/file1.txt` instead of `ipfs://<directory-cid>/example/file1.txt`.
+The `pathPrefix` option tells `filesFromPath` to remove the input `path` from the filenames of the `File` objects it creates. For example, if you're reading in files from a directory called `example`, calling `filesFromPath` _without_ the `pathPrefix` argument would result in `File` objects with filenames like `example/file1.txt`, `example/file2.txt`, and so on. If you set the `pathPrefix` option to `example`, you'll get `file1.txt`, `file2.txt`, etc. instead. This results in a final IPFS URI of `ipfs://<directory-cid>/file1.txt` instead of `ipfs://<directory-cid>/example/file1.txt`.
 
-Notice that we're calling [`path.resolve`](https://nodejs.org/api/path.html#pathresolvepaths) on the `directoryPath` argument before using it as our `pathPrefix`. `getFilesFromPath` will compare the `pathPrefix` we give it to the absolute path of the file, so using `path.resolve` ensures that we give it the correct input, even if the user passed in a relative path at the command line.
+Notice that we're calling [`path.resolve`](https://nodejs.org/api/path.html#pathresolvepaths) on the `directoryPath` argument before using it as our `pathPrefix`. `filesFromPath` will compare the `pathPrefix` we give it to the absolute path of the file, so using `path.resolve` ensures that we give it the correct input, even if the user passed in a relative path at the command line.
 
 You'll need to replace `YOUR_API_TOKEN` with your NFT.Storage API key. If you don't yet have an API key, see the [Quickstart guide][quickstart].
 
