@@ -215,7 +215,7 @@ class NFTStorage {
    * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
    *
    * @param {Service} service
-   * @param {Iterable<File>} files
+   * @param {Iterable<File>|AsyncIterable<File>} files
    * @returns {Promise<CIDString>}
    */
   static async storeDirectory(service, files) {
@@ -455,7 +455,7 @@ class NFTStorage {
    * await client.storeCar(car)
    * ```
    *
-   * @param {Iterable<File>} files
+   * @param {Iterable<File>|AsyncIterable<File>} files
    * @param {object} [options]
    * @param {BlockstoreI} [options.blockstore]
    * @returns {Promise<{ cid: CID, car: CarReader }>}
@@ -463,7 +463,9 @@ class NFTStorage {
   static async encodeDirectory(files, { blockstore } = {}) {
     const input = []
     let size = 0
-    for (const file of files) {
+    const asyncFiles = isIterable(files) ? toAsyncIterable(files) : files
+
+    for await (const file of asyncFiles) {
       input.push(toImportCandidate(file.name, file))
       size += file.size
     }
@@ -557,7 +559,7 @@ class NFTStorage {
    * Argument can be a [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList)
    * instance as well, in which case directory structure will be retained.
    *
-   * @param {Iterable<File>} files
+   * @param {AsyncIterable<File>|Iterable<File>} files
    */
   storeDirectory(files) {
     return NFTStorage.storeDirectory(this, files)
@@ -652,6 +654,29 @@ class NFTStorage {
   store(token) {
     return NFTStorage.store(this, token)
   }
+}
+
+/**
+ * type guard checking for Iterable
+ * @param {any} x;
+ * @returns {x is Iterable<unknown>}
+ */
+function isIterable(x) {
+  return Symbol.iterator in x
+}
+
+/**
+ * Cast an iterable to an asyncIterable
+ * @template T
+ * @param {Iterable<T>} iterable
+ * @returns {AsyncIterable<T>}
+ */
+export function toAsyncIterable(iterable) {
+  return (async function* () {
+    for (const item of iterable) {
+      yield item
+    }
+  })()
 }
 
 /**
