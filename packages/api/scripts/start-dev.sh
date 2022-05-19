@@ -9,5 +9,6 @@ docker compose $COMPOSE_FILES --env-file="$ENV_FILE" up \
   --always-recreate-deps \
   --force-recreate \
   --remove-orphans \
-  --renew-anon-volumes
+  --renew-anon-volumes \
   --build \
+;
