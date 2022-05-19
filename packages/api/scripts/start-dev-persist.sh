@@ -6,10 +6,7 @@ ENV_FILE=../../.env
 COMPOSE_FILES="--file ./docker/docker-compose.yml --file ./docker/docker-compose.dev.yml --file ./docker/docker-compose.persist.yml"
 
 docker compose \
-  --project-name="nft-storage-api" \
+  --project-name="nft-storage-api-persist" \
   $COMPOSE_FILES --env-file="$ENV_FILE" up \
-  --always-recreate-deps \
-  --force-recreate \
-  --renew-anon-volumes \
   --build \
 ;

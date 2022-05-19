@@ -3,9 +3,5 @@ services:
     depends_on:
       db-init:
         condition: service_started
-  db:
-    volumes:
-      #This needs to be outside of the docker context, due to root user permissions on the db data folder
-      - ../../../tmp/db_data:/var/lib/postgresql/data
   db-init:
     restart: 'no'
