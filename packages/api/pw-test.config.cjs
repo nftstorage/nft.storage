@@ -24,7 +24,6 @@ const nodeBuiltinsPlugin = {
 /** @type {import('playwright-test').RunnerOptions} */
 module.exports = {
   buildConfig: {
-    // inject: [path.join(__dirname, './scripts/node-globals.js')],
     plugins: [nodeBuiltinsPlugin],
     define: {
       DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
@@ -32,10 +31,6 @@ module.exports = {
     },
   },
   buildSWConfig: {
-    inject: [
-      // path.join(__dirname, './scripts/node-globals.js'),
-      path.join(__dirname, './test/scripts/worker-globals.js'),
-    ],
     plugins: [nodeBuiltinsPlugin],
     define: {
       DATABASE_URL: JSON.stringify(process.env.PW_DATABASE_URL),
@@ -44,16 +39,6 @@ module.exports = {
   },
   beforeTests: async () => {
     const mock = await startMockServer('AWS S3', 9095, 'test/mocks/aws-s3')
-
-    // await execa(cli, ['db', '--start'], { stdio: 'inherit' })
-    // console.log('⚡️ Cluster and Postgres started.')
-
-    // await execa(cli, ['db-sql', '--cargo', '--testing', '--reset'], {
-    //   stdio: 'inherit',
-    // })
-    console.log('⚡️ SQL schema loaded.')
-
-    await delay(2000)
     return { mock }
   },
   afterTests: async (
@@ -63,7 +48,6 @@ module.exports = {
     console.log('⚡️ Shutting down mock servers.')
 
     beforeTests.mock.proc.kill()
-    // await execa(dockerStop)
   },
 }
 
