@@ -7,6 +7,7 @@ docker compose --profile="test" --file ./docker/docker-compose.yml --env-file="$
   --always-recreate-deps \
   --force-recreate \
   --remove-orphans \
-  --renew-anon-volumes
+  --renew-anon-volumes \
   --build \
+  --exit-code-from "playwright"
 ;
