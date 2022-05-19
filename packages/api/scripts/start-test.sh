@@ -3,11 +3,14 @@
 
 # We're moving this script around a lot, and it's pretty cwd-dependent.
 ENV_FILE=../../.env
-docker compose --profile="test" --file ./docker/docker-compose.yml --env-file="$ENV_FILE" up \
+docker compose \
+  --profile="test" --file ./docker/docker-compose.yml --env-file="$ENV_FILE" up \
   --always-recreate-deps \
   --force-recreate \
   --remove-orphans \
   --renew-anon-volumes \
   --build \
-  --exit-code-from "playwright"
+  --attach "playwright" \
+  --exit-code-from "playwright" \
+  --no-log-prefix \
 ;
