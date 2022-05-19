@@ -66,3 +66,23 @@ services:
       CLUSTER_RESTAPI_CORSALLOWEDMETHODS: GET,POST,OPTIONS
       CLUSTER_RESTAPI_CORSALLOWEDHEADERS: authorization
       CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
+  playwright:
+    profiles:
+      - test
+    depends_on:
+      - api
+    build:
+      dockerfile: ./docker/test.Dockerfile
+      context: ../
+    environment:
+      - PRIVATE_KEY
+      - DATABASE_URL
+      - DATABASE_TOKEN
+      - DATABASE_CONNECTION
+      - SALT
+      - MAGIC_SECRET_KEY
+      - SENTRY_DSN
+      - MAILCHIMP_API_KEY
+      - LOGTAIL_TOKEN
+      - CLUSTER_API_URL
+      - CLUSTER_BASIC_AUTH_TOKEN
