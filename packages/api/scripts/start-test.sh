@@ -6,7 +6,7 @@ ENV_FILE=../../.env
 COMPOSE_FILES="-f ./docker/docker-compose.yml -f ./docker/docker-compose.test.yml"
 
 cat $ENV_FILE && \
-docker-compose $COMPOSE_FILES down --remove-orphans && \
-docker-compose $COMPOSE_FILES build && \
-docker-compose $COMPOSE_FILES --env-file="$ENV_FILE" config && \
-docker-compose $COMPOSE_FILES --env-file="$ENV_FILE" up
+docker compose $COMPOSE_FILES down --remove-orphans && \
+docker compose $COMPOSE_FILES build && \
+docker compose $COMPOSE_FILES --env-file="$ENV_FILE" config && \
+docker compose $COMPOSE_FILES --env-file="$ENV_FILE" up

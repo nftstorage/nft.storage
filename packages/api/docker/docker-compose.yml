@@ -1,4 +1,3 @@
-version: '3.6'
 services:
   post-rest:
     image: postgrest/postgrest:v9.0.0
