@@ -1,4 +1,8 @@
 services:
+  post-rest:
+    depends_on:
+      db-init:
+        condition: service_started
   db:
     volumes:
       #This needs to be outside of the docker context, due to root user permissions on the db data folder
