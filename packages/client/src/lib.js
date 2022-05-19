@@ -25,7 +25,6 @@ import { fetch, File, Blob, FormData, Blockstore } from './platform.js'
 import { toGatewayURL } from './gateway.js'
 import { BlockstoreCarReader } from './bs-car-reader.js'
 import pipe from 'it-pipe'
-import all from 'it-all'
 
 const MAX_STORE_RETRIES = 5
 const MAX_CONCURRENT_UPLOADS = 3
@@ -224,25 +223,9 @@ class NFTStorage {
    */
   static async storeDirectory(service, filesSource) {
     const blockstore = new Blockstore()
-    /** @type {AsyncIterable<File>} */
-    const files = pipe(
-      async function* () {
-        yield* filesSource
-      },
-      async function* (files) {
-        for await (const fileObject of files) {
-          /** @type {File} */
-          const file =
-            fileObject instanceof File
-              ? fileObject
-              : new File(await all(fileObject.stream()), fileObject.name)
-          yield file
-        }
-      }
-    )
     let cidString
     try {
-      const { cid, car } = await NFTStorage.encodeDirectory(files, {
+      const { cid, car } = await NFTStorage.encodeDirectory(filesSource, {
         blockstore,
       })
       await NFTStorage.storeCar(service, car)
@@ -474,7 +457,7 @@ class NFTStorage {
    * await client.storeCar(car)
    * ```
    *
-   * @param {Iterable<File>|AsyncIterable<File>} files
+   * @param {FilesSource} files
    * @param {object} [options]
    * @param {BlockstoreI} [options.blockstore]
    * @returns {Promise<{ cid: CID, car: CarReader }>}
@@ -764,10 +747,11 @@ const decodePin = (pin) => ({ ...pin, created: new Date(pin.created) })
  * the stream is created only when needed.
  *
  * @param {string} path
- * @param {Blob} blob
+ * @param {Pick<Blob, 'stream'>|{ stream: () => AsyncIterable<Uint8Array> }} blob
+ * @returns {import('ipfs-core-types/src/utils.js').ImportCandidate}
  */
 function toImportCandidate(path, blob) {
-  /** @type {ReadableStream} */
+  /** @type {AsyncIterable<Uint8Array>} */
   let stream
   return {
     path,

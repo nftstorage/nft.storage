@@ -29,7 +29,11 @@ export interface FileObject {
   stream: () => AsyncIterable<any>
 }
 
-export type FilesSource = Iterable<File>|Iterable<FileObject>|AsyncIterable<File>|AsyncIterable<FileObject>
+export type FilesSource =
+| Iterable<File>
+| Iterable<FileObject>
+| AsyncIterable<File>
+| AsyncIterable<FileObject>
 
 /**
  * CID in string representation
