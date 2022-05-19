@@ -51,7 +51,7 @@ export class S3BackupClient {
   }
 
   /**
-   * Gets a base32 encoded sha256 hash of the passed data.
+   * Gets a sha256 multihash digest of a blob.
    * @param {Blob} blob
    */
   async _getMultihash(blob) {
