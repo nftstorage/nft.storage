@@ -3,10 +3,10 @@
 
 # We're moving this script around a lot, and it's pretty cwd-dependent.
 ENV_FILE=../../.env
-COMPOSE_FILES="-f ./docker/docker-compose.yml"
-
-cat $ENV_FILE && \
-docker compose $COMPOSE_FILES down --remove-orphans && \
-docker compose $COMPOSE_FILES build && \
-docker compose $COMPOSE_FILES --env-file="$ENV_FILE" config && \
-docker compose $COMPOSE_FILES --env-file="$ENV_FILE" --profile="test" up
+docker compose --file ./docker/docker-compose.yml --env-file="$ENV_FILE" up \
+  --always-recreate-deps \
+  --force-recreate \
+  --remove-orphans \
+  --renew-anon-volumes \
+  --build \
+;
