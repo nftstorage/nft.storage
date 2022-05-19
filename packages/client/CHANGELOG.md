@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.3.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.2.0...nft.storage-v6.3.0) (2022-05-19)
+
+
+### Features
+
+* storeDirectory accepts files as AsyncIterable<File> ([#1920](https://github.com/nftstorage/nft.storage/issues/1920)) ([27394f6](https://github.com/nftstorage/nft.storage/commit/27394f6435ebfbead8cad609b2e92be4b69b4661))
+* storeDirectory accepts iter of file objects ([#1924](https://github.com/nftstorage/nft.storage/issues/1924)) ([377b045](https://github.com/nftstorage/nft.storage/commit/377b045995460ac24faac0b5b21eff7e213a6274))
+
 ## [6.2.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.1.0...nft.storage-v6.2.0) (2022-04-08)
 
 
