@@ -8,10 +8,9 @@ docker compose \
   --profile="test" --file ./docker/docker-compose.yml --env-file="$ENV_FILE" up \
   --always-recreate-deps \
   --force-recreate \
-  --remove-orphans \
   --renew-anon-volumes \
   --build \
-  --attach "playwright" \
   --exit-code-from "playwright" \
+  --attach "playwright" \
   --no-log-prefix \
 ;
