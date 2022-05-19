@@ -36,6 +36,8 @@ const RATE_LIMIT_PERIOD = 10 * 1000
  * @typedef {import('./lib/interface.js').Service} Service
  * @typedef {import('./lib/interface.js').CIDString} CIDString
  * @typedef {import('./lib/interface.js').Deal} Deal
+ * @typedef {import('./lib/interface.js').FileObject} FileObject
+ * @typedef {import('./lib/interface.js').FilesSource} FilesSource
  * @typedef {import('./lib/interface.js').Pin} Pin
  * @typedef {import('./lib/interface.js').CarReader} CarReader
  * @typedef {import('ipfs-car/blockstore').Blockstore} BlockstoreI
@@ -216,15 +218,14 @@ class NFTStorage {
    * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
    *
    * @param {Service} service
-   * @param {Iterable<File>|AsyncIterable<File>} files
+   * @param {FilesSource} filesSource
    * @returns {Promise<CIDString>}
    */
-  static async storeDirectory(service, files) {
+  static async storeDirectory(service, filesSource) {
     const blockstore = new Blockstore()
     let cidString
-
     try {
-      const { cid, car } = await NFTStorage.encodeDirectory(files, {
+      const { cid, car } = await NFTStorage.encodeDirectory(filesSource, {
         blockstore,
       })
       await NFTStorage.storeCar(service, car)
@@ -456,22 +457,19 @@ class NFTStorage {
    * await client.storeCar(car)
    * ```
    *
-   * @param {Iterable<File>|AsyncIterable<File>} files
+   * @param {FilesSource} files
    * @param {object} [options]
    * @param {BlockstoreI} [options.blockstore]
    * @returns {Promise<{ cid: CID, car: CarReader }>}
    */
   static async encodeDirectory(files, { blockstore } = {}) {
     let size = 0
-    const input = pipe(
-      isIterable(files) ? toAsyncIterable(files) : files,
-      async function* (files) {
-        for await (const file of files) {
-          yield toImportCandidate(file.name, file)
-          size += file.size
-        }
+    const input = pipe(files, async function* (files) {
+      for await (const file of files) {
+        yield toImportCandidate(file.name, file)
+        size += file.size
       }
-    )
+    })
     const packed = await packCar(input, {
       blockstore,
       wrapWithDirectory: true,
@@ -561,7 +559,7 @@ class NFTStorage {
    * Argument can be a [FileList](https://developer.mozilla.org/en-US/docs/Web/API/FileList)
    * instance as well, in which case directory structure will be retained.
    *
-   * @param {AsyncIterable<File>|Iterable<File>} files
+   * @param {FilesSource} files
    */
   storeDirectory(files) {
     return NFTStorage.storeDirectory(this, files)
@@ -659,15 +657,6 @@ class NFTStorage {
 }
 
 /**
- * type guard checking for Iterable
- * @param {any} x;
- * @returns {x is Iterable<unknown>}
- */
-function isIterable(x) {
-  return Symbol.iterator in x
-}
-
-/**
  * Cast an iterable to an asyncIterable
  * @template T
  * @param {Iterable<T>} iterable
@@ -758,10 +747,11 @@ const decodePin = (pin) => ({ ...pin, created: new Date(pin.created) })
  * the stream is created only when needed.
  *
  * @param {string} path
- * @param {Blob} blob
+ * @param {Pick<Blob, 'stream'>|{ stream: () => AsyncIterable<Uint8Array> }} blob
+ * @returns {import('ipfs-core-types/src/utils.js').ImportCandidate}
  */
 function toImportCandidate(path, blob) {
-  /** @type {ReadableStream} */
+  /** @type {AsyncIterable<Uint8Array>} */
   let stream
   return {
     path,
