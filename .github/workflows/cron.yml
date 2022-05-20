@@ -1,0 +1,22 @@
+name: cron
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/cron/**'
+      - '.github/workflows/cron.yml'
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    # This condition is not required, but leaving it here to safeguard against future new triggers
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v3
+        id: tag-release
+        with:
+          path: packages/cron
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
+          monorepo-tags: true
+          package-name: cron
