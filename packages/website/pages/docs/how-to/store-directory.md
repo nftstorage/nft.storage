@@ -30,7 +30,7 @@ npm install nft.storage files-from-path
 Create a file called `storeDirectory.mjs` and add the following code:
 
 ```js
-import { NFTStorage, File } from 'nft.storage'
+import { NFTStorage } from 'nft.storage'
 import { filesFromPath } from 'files-from-path'
 import path from 'path'
 
