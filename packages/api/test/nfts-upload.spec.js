@@ -361,9 +361,7 @@ describe('NFT Upload ', () => {
   })
 
   it('should create S3 backup', async () => {
-    const {
-      external: { s3: s3Config },
-    } = getServiceConfig()
+    const { S3_ENDPOINT, S3_BUCKET_NAME } = getServiceConfig()
     const { root, car } = await packToBlob({ input: 'S3 backup' })
     const res = await fetch('upload', {
       method: 'POST',
@@ -389,7 +387,7 @@ describe('NFT Upload ', () => {
     // construct the expected backup URL
     const carBuf = await car.arrayBuffer()
     const carHash = await getHash(new Uint8Array(carBuf))
-    const backupUrl = `${s3Config.endpoint}/${s3Config.bucketName}/raw/${root}/nft-${client.userId}/${carHash}.car`
+    const backupUrl = `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${client.userId}/${carHash}.car`
 
     assert.equal(upload.backup_urls[0], backupUrl)
   })

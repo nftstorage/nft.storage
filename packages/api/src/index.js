@@ -31,14 +31,9 @@ import {
   withMode,
   READ_ONLY as RO,
   READ_WRITE as RW,
-  setMaintenanceModeGetter,
 } from './middleware/maintenance.js'
 import { getContext } from './utils/context.js'
 import { withAuth } from './middleware/auth.js'
-
-const getMaintenanceMode = () => getServiceConfig().maintenanceMode
-
-setMaintenanceModeGetter(getMaintenanceMode)
 
 const r = new Router(getContext, {
   onError(req, err, ctx) {
@@ -62,12 +57,12 @@ r.add(
   'get',
   '/version',
   (event) => {
-    const { version, maintenanceMode } = getServiceConfig()
+    const { VERSION, COMMITHASH, BRANCH, MAINTENANCE_MODE } = getServiceConfig()
     return new JSONResponse({
-      version: version.semver,
-      commit: version.commitHash,
-      branch: version.branch,
-      mode: maintenanceMode,
+      version: VERSION,
+      commit: COMMITHASH,
+      branch: BRANCH,
+      mode: MAINTENANCE_MODE,
     })
   },
   [postCors]

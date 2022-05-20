@@ -6,18 +6,16 @@ import { Logging } from './logs.js'
 import pkg from '../../package.json'
 import { Service } from 'ucan-storage/service'
 
-const { runtimeEnvironment, version, isDebugBuild, secrets, external } =
-  getServiceConfig()
+const config = getServiceConfig()
+const db = new DBClient(config.DATABASE_URL, config.DATABASE_TOKEN)
 
-const db = new DBClient(external.database.url, external.database.authToken)
-
-const backup = external.s3.accessKeyId
+const backup = config.S3_ACCESS_KEY_ID
   ? new S3BackupClient(
-      external.s3.region,
-      external.s3.accessKeyId,
-      external.s3.secretAccessKey,
-      external.s3.bucketName,
-      { endpoint: external.s3.endpoint, appName: 'nft' }
+      config.S3_REGION,
+      config.S3_ACCESS_KEY_ID,
+      config.S3_SECRET_ACCESS_KEY,
+      config.S3_BUCKET_NAME,
+      { endpoint: config.S3_ENDPOINT, appName: 'nft' }
     )
   : undefined
 
@@ -26,15 +24,15 @@ if (!backup) {
 }
 
 const sentryOptions = {
-  dsn: external.sentry.dsn,
+  dsn: config.SENTRY_DSN,
   allowedHeaders: ['user-agent', 'x-client'],
   allowedSearchParams: /(.*)/,
   debug: false,
-  environment: runtimeEnvironment,
+  environment: config.ENV,
   rewriteFrames: {
     root: '/',
   },
-  release: version.semver,
+  release: config.VERSION,
   pkg,
 }
 
@@ -51,11 +49,11 @@ export async function getContext(event, params) {
     ...sentryOptions,
   })
   const log = new Logging(event, {
-    token: external.logtail.authToken,
-    debug: isDebugBuild,
+    token: config.LOGTAIL_TOKEN,
+    debug: config.DEBUG,
     sentry,
   })
 
-  const ucanService = await Service.fromPrivateKey(secrets.ucanPrivateKey)
+  const ucanService = await Service.fromPrivateKey(config.PRIVATE_KEY)
   return { params, db, backup, log, ucanService }
 }

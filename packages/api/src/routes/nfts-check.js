@@ -5,10 +5,8 @@ import { DBClient } from '../utils/db-client'
 import { parseCid } from '../utils/utils.js'
 import { toCheckNftResponse } from '../utils/db-transforms.js'
 
-const {
-  external: { database: dbConfig },
-} = getServiceConfig()
-const db = new DBClient(dbConfig.url, dbConfig.authToken)
+const { DATABASE_URL, DATABASE_TOKEN } = getServiceConfig()
+const db = new DBClient(DATABASE_URL, DATABASE_TOKEN)
 
 /** @type {import('../bindings').Handler} */
 export const nftCheck = async (event, { params }) => {

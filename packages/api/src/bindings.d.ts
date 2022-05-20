@@ -10,58 +10,126 @@ import { Logging } from './utils/logs.js'
 export type RuntimeEnvironmentName = 'test' | 'dev' | 'staging' | 'production'
 
 export interface ServiceConfiguration {
-  isDebugBuild: boolean
-  runtimeEnvironment: RuntimeEnvironmentName
-  version: {
-    semver: string
-    branch: string
-    commitHash: string
-  }
+  /** Is this a debug build? */
+  DEBUG: boolean
 
-  maintenanceMode: Mode
+  /** Target runtime environment */
+  ENV: RuntimeEnvironmentName
 
-  secrets: {
-    salt: string
-    metaplexAuthToken: string
-    ucanPrivateKey: string
-  }
+  /** Semantic version for current build */
+  VERSION: string
 
-  external: {
-    cluster: {
-      url: string
-      basicAuthToken: string
-    }
+  /** Git branch name of current build */
+  BRANCH: string
 
-    database: {
-      url: string
-      authToken: string
-    }
+  /** Git commit hash of current build */
+  COMMITHASH: string
 
-    s3: {
-      endpoint: string
-      region: string
-      accessKeyId: string
-      secretAccessKey: string
-      bucketName: string
-    }
+  /** Current maintenance mode */
+  MAINTENANCE_MODE: Mode
 
-    magicLink: {
-      secret: string
-    }
+  /** Salt for API key generation */
+  SALT: string
 
-    logtail: {
-      authToken: string
-    }
+  /** API key for special metaplex upload account */
+  METAPLEX_AUTH_TOKEN: string
 
-    sentry: {
-      dsn: string
-    }
+  /** UCAN private signing key */
+  PRIVATE_KEY: string
 
-    mailchimp: {
-      apiKey: string
-    }
-  }
+  /** API url for active IPFS cluster endpoint */
+  CLUSTER_API_URL: string
+
+  /** Auth token for IPFS culster */
+  CLUSTER_BASIC_AUTH_TOKEN: string
+
+  /** Postgrest endpoint URL */
+  DATABASE_URL: string
+
+  /** Postgrest auth token */
+  DATABASE_TOKEN: string
+
+  /** S3 endpoint URL */
+  S3_ENDPOINT: string
+
+  /** S3 region */
+  S3_REGION: string
+
+  /** S3 access key id */
+  S3_ACCESS_KEY_ID: string
+
+  /** S3 secret key */
+  S3_SECRET_ACCESS_KEY: string
+
+  /** S3 bucket name */
+  S3_BUCKET_NAME: string
+
+  /** Magic link secret key */
+  MAGIC_SECRET_KEY: string
+
+  /** Logtail auth token */
+  LOGTAIL_TOKEN: string
+
+  /** Sentry DSN */
+  SENTRY_DSN: string
+
+  /** Mailchimp api key */
+  MAILCHIMP_API_KEY: string
 }
+
+// export interface ServiceConfiguration {
+//   isDebugBuild: boolean
+//   runtimeEnvironment: RuntimeEnvironmentName
+//   version: {
+//     semver: string
+//     branch: string
+//     commitHash: string
+//   }
+
+//   maintenanceMode: Mode
+
+//   secrets: {
+//     salt: string
+//     metaplexAuthToken: string
+//     ucanPrivateKey: string
+//   }
+
+//   external: {
+//     cluster: {
+//       url: string
+//       basicAuthToken: string
+//     }
+
+//     database: {
+//       url: string
+//       authToken: string
+//     }
+
+//     s3: {
+//       endpoint: string
+//       region: string
+//       accessKeyId: string
+//       secretAccessKey: string
+//       bucketName: string
+//     }
+
+//     magicLink: {
+//       secret: string
+//     }
+
+//     logtail: {
+//       authToken: string
+//     }
+
+//     sentry: {
+//       dsn: string
+//     }
+
+//     mailchimp: {
+//       apiKey: string
+//     }
+//   }
+// }
 
 export interface Ucan {
   token: string

@@ -3,7 +3,7 @@ import { getServiceConfig } from '../config.js'
 
 const SERVER_PREFIX = 'us5'
 const LIST_ID = '64f6e3fd11'
-const API_KEY = getServiceConfig().external.mailchimp.apiKey
+const API_KEY = getServiceConfig().MAILCHIMP_API_KEY
 const TOKEN = btoa(`:${API_KEY}`)
 
 const headers = {

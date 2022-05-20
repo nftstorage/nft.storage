@@ -18,7 +18,7 @@ export const tokensCreate = async (event, ctx) => {
         iat: created.valueOf(),
         name: body.name,
       },
-      getServiceConfig().secrets.salt
+      getServiceConfig().SALT
     )
 
     const key = await db.createKey({

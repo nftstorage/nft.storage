@@ -11,8 +11,8 @@ describe('DB Client', () => {
     client = await createClientWithUser()
   })
 
-it('getUser should list only active keys', async () => {
-    const { secrets } = getServiceConfig()
+  it('getUser should list only active keys', async () => {
+    const config = getServiceConfig()
     const issuer1 = `did:eth:0x73573${Date.now()}`
     const token1 = await signJWT(
       {
@@ -21,7 +21,7 @@ it('getUser should list only active keys', async () => {
         iat: Date.now(),
         name: 'key1',
       },
-      secrets.salt
+      config.SALT
     )
     await client.client.createKey({
       name: 'key1',
@@ -36,7 +36,7 @@ it('getUser should list only active keys', async () => {
         iat: Date.now(),
         name: 'key2',
       },
-      secrets.salt
+      config.SALT
     )
     const key2 = await client.client.createKey({
       name: 'key2',

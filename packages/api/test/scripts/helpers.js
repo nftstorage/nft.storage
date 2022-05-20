@@ -4,22 +4,19 @@ import { PostgrestClient } from '@supabase/postgrest-js'
 import { DBClient } from '../../src/utils/db-client.js'
 import { getServiceConfig } from '../../src/config.js'
 
-const { external, secrets } = getServiceConfig()
+const config = getServiceConfig()
 
-export const cluster = new Cluster(external.cluster.url, {
-  headers: { Authorization: `Basic ${external.cluster.basicAuthToken}` },
+export const cluster = new Cluster(config.CLUSTER_API_URL, {
+  headers: { Authorization: `Basic ${config.CLUSTER_BASIC_AUTH_TOKEN}` },
 })
 
-export const rawClient = new PostgrestClient(external.database.url, {
+export const rawClient = new PostgrestClient(config.DATABASE_URL, {
   headers: {
-    Authorization: `Bearer ${external.database.authToken}`,
+    Authorization: `Bearer ${config.DATABASE_TOKEN}`,
   },
 })
 
-export const client = new DBClient(
-  external.database.url,
-  external.database.authToken
-)
+export const client = new DBClient(config.DATABASE_URL, config.DATABASE_TOKEN)
 
 /**
  * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
@@ -36,7 +33,7 @@ export async function createTestUser({
       iat: Date.now(),
       name: 'test',
     },
-    secrets.salt
+    config.SALT
   )
 
   return createTestUserWithFixedToken({ token, publicAddress, issuer, name })
