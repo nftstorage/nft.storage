@@ -9,21 +9,16 @@ import {
  */
 
 /**
- * Defines all configuration keys that are read from the environment,
- * along with a default value that can be used in unit tests.
+ * Default configuration values to be used in test and dev if no explicit definition is found.
  *
- * To define a new configuration variable, you MUST add a default value
- * to this object, as the keys are used to figure out which variables to
- * look for when loading the runtime config.
- *
- * @type Record<string, string> */
+ * @type Record<string, string>
+ */
 export const DEFAULT_CONFIG_VALUES = {
   SALT: 'secret',
   DEBUG: 'true',
   DATABASE_URL: 'http://localhost:3000',
   DATABASE_TOKEN:
     'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYwMzk2ODgzNCwiZXhwIjoyNTUwNjUzNjM0LCJyb2xlIjoic2VydmljZV9yb2xlIn0.necIJaiP7X2T2QjGeV-FhpkizcNTX8HjDDBAxpgQTEI',
-  CLUSTER_SERVICE: '',
   CLUSTER_API_URL: 'http://localhost:9094',
   CLUSTER_BASIC_AUTH_TOKEN: 'dGVzdDp0ZXN0', // test:test
   MAGIC_SECRET_KEY: 'test',
@@ -96,81 +91,51 @@ let _globalConfig
  */
 export function loadServiceConfig() {
   const vars = loadConfigVariables()
-  mergeDefaultValuesIfAllowed(vars)
-
   return serviceConfigFromVariables(vars)
 }
 
 /**
  * Parse a {@link ServiceConfiguration} out of the given `configVars` map.
- * @param {Record<string, string>} configVars map of variable names to values.
+ * @param {Record<string, string>} vars map of variable names to values.
  *
  * Exported for testing. See {@link getServiceConfig} for main public accessor.
  *
  * @returns {ServiceConfiguration}
  */
-export function serviceConfigFromVariables(configVars) {
-  let clusterUrl = configVars.CLUSTER_API_URL
-  if (configVars.CLUSTER_SERVICE) {
-    const serviceUrl = CLUSTER_SERVICE_URLS[configVars.CLUSTER_SERVICE]
+export function serviceConfigFromVariables(vars) {
+  let clusterUrl = vars.CLUSTER_API_URL
+  if (vars.CLUSTER_SERVICE) {
+    const serviceUrl = CLUSTER_SERVICE_URLS[vars.CLUSTER_SERVICE]
     if (!serviceUrl) {
-      throw new Error(`unknown cluster service: ${configVars.CLUSTER_SERVICE}`)
+      throw new Error(`unknown cluster service: ${vars.CLUSTER_SERVICE}`)
     }
     clusterUrl = serviceUrl
   }
 
   return {
-    isDebugBuild: boolValue(configVars.DEBUG),
-    runtimeEnvironment: runtimeEnvFromString(configVars.ENV),
-    version: {
-      semver: configVars.VERSION,
-      branch: configVars.BRANCH,
-      commitHash: configVars.COMMITHASH,
-    },
+    ENV: parseRuntimeEnv(vars.ENV),
+    DEBUG: boolValue(vars.DEBUG),
+    MAINTENANCE_MODE: maintenanceModeFromString(vars.MAINTENANCE_MODE),
 
-    maintenanceMode: maintenanceModeFromString(configVars.MAINTENANCE_MODE),
-
-    secrets: {
-      salt: configVars.SALT,
-      metaplexAuthToken: configVars.METAPLEX_AUTH_TOKEN,
-      ucanPrivateKey: configVars.PRIVATE_KEY,
-    },
-
-    external: {
-      cluster: {
-        url: clusterUrl,
-        basicAuthToken: configVars.CLUSTER_BASIC_AUTH_TOKEN,
-      },
-
-      database: {
-        url: configVars.DATABASE_URL,
-        authToken: configVars.DATABASE_TOKEN,
-      },
-
-      s3: {
-        endpoint: configVars.S3_ENDPOINT,
-        region: configVars.S3_REGION,
-        accessKeyId: configVars.S3_ACCESS_KEY_ID,
-        secretAccessKey: configVars.S3_SECRET_ACCESS_KEY,
-        bucketName: configVars.S3_BUCKET_NAME,
-      },
-
-      magicLink: {
-        secret: configVars.MAGIC_SECRET_KEY,
-      },
-
-      logtail: {
-        authToken: configVars.LOGTAIL_TOKEN,
-      },
-
-      sentry: {
-        dsn: configVars.SENTRY_DSN,
-      },
-
-      mailchimp: {
-        apiKey: configVars.MAILCHIMP_API_KEY,
-      },
-    },
+    SALT: vars.SALT,
+    DATABASE_URL: vars.DATABASE_URL,
+    DATABASE_TOKEN: vars.DATABASE_TOKEN,
+    CLUSTER_API_URL: clusterUrl,
+    CLUSTER_BASIC_AUTH_TOKEN: vars.CLUSTER_BASIC_AUTH_TOKEN,
+    MAGIC_SECRET_KEY: vars.MAGIC_SECRET_KEY,
+    SENTRY_DSN: vars.SENTRY_DSN,
+    BRANCH: vars.BRANCH,
+    VERSION: vars.VERSION,
+    COMMITHASH: vars.COMMITHASH,
+    METAPLEX_AUTH_TOKEN: vars.METAPLEX_AUTH_TOKEN,
+    MAILCHIMP_API_KEY: vars.MAILCHIMP_API_KEY,
+    LOGTAIL_TOKEN: vars.LOGTAIL_TOKEN,
+    S3_ENDPOINT: vars.S3_ENDPOINT,
+    S3_REGION: vars.S3_REGION,
+    S3_ACCESS_KEY_ID: vars.S3_ACCESS_KEY_ID,
+    S3_SECRET_ACCESS_KEY: vars.S3_SECRET_ACCESS_KEY,
+    S3_BUCKET_NAME: vars.S3_BUCKET_NAME,
+    PRIVATE_KEY: vars.PRIVATE_KEY,
   }
 }
 
@@ -180,7 +145,8 @@ export function serviceConfigFromVariables(configVars) {
  *
  * Exported for testing. See {@link getServiceConfig} for main config accessor.
  *
- * @returns { Record<string, string>} an object with `vars` containing all found variables and their values, and a `notFound` array of variables that were not defined
+ * @returns { Record<string, string>} an object with `vars` containing all config variables and their values. guaranteed to have a value for each key defined in DEFAULT_CONFIG_VALUES
+ * @throws if a config variable is missing, unless ENV is 'test' or 'dev', in which case the default value will be used for missing vars.
  */
 export function loadConfigVariables() {
   /** @type Record<string, string> */
@@ -189,92 +155,42 @@ export function loadConfigVariables() {
   /** @type Record<string, unknown> */
   const globals = globalThis
 
+  const notFound = []
   for (const name of Object.keys(DEFAULT_CONFIG_VALUES)) {
     const val = globals[name]
     if (typeof val === 'string') {
       vars[name] = val
+    } else {
+      notFound.push(name)
     }
   }
-  return vars
-}
 
-/**
- * Merges `vars` with default values if any keys are missing, iff default values
- * are allowed in the current runtime env (see {@link allowDefaultConfigValues}).
- *
- * In "strict" environments (staging & production), this function will throw
- * if `vars` does not contain a value for each key in {@link DEFAULT_CONFIG_VALUES}.
- *
- * In "lenient" environments (test & dev), this function will mutate `vars` in-place
- * and set any missing keys to the value from {@link DEFAULT_CONFIG_VALUES}.
- *
- * @param {Record<string, string>} vars
- */
-function mergeDefaultValuesIfAllowed(vars) {
-  // in "strict" environments (staging & production), we force all config variables
-  // to have a defined value. In dev & test, we allow falling back to default config values.
-  const env = runtimeEnvFromString(vars['ENV'])
-  if (allowDefaultConfigValues(env)) {
-    mergeWithDefaultValues(vars, env)
-
-    // special case for VERSION, because ucan-storage defines a VERSION global
-    // that seems to be clobbering ours if no VERSION var is defined by cloudflare.
-    if (vars['VERSION'] === '0.8.0') {
-      vars['VERSION'] = DEFAULT_CONFIG_VALUES.VERSION
+  if (notFound.length !== 0) {
+    const env = parseRuntimeEnv(vars.ENV)
+    if (!allowDefaultConfigValues(env)) {
+      throw new Error(
+        'Missing required config variables: ' + notFound.join(', ')
+      )
     }
-  } else {
-    ensureAllVarsAreDefined(vars, env)
-  }
-}
-
-/**
- *
- * @param {Record<string, string>} vars
- * @param {string} runtimeEnv
- */
-function ensureAllVarsAreDefined(vars, runtimeEnv) {
-  const missing = []
-  for (const name of Object.keys(DEFAULT_CONFIG_VALUES)) {
-    if (typeof vars[name] !== 'string') {
-      missing.push(name)
-    }
-  }
-  if (missing.length !== 0) {
-    throw new Error(
-      `Missing configuration variables (required when runtime env == ${runtimeEnv}): ` +
-        missing.join(', ')
-    )
-  }
-}
-
-/**
- * Mutates `vars` in-place, using values from {@link DEFAULT_CONFIG_VALUES} if any are missing in the input.
- * @param {Record<string, string>} vars
- * @param {string} runtimeEnv
- */
-function mergeWithDefaultValues(vars, runtimeEnv) {
-  const missing = []
-  for (const [name, defaultVal] of Object.entries(DEFAULT_CONFIG_VALUES)) {
-    if (typeof vars[name] !== 'string') {
-      missing.push(name)
-      vars[name] = defaultVal
-    }
-  }
-  if (missing.length !== 0) {
     console.warn(
-      `Using default value for configuration variables (allowed when runtime env == ${runtimeEnv}): ` +
-        missing.join(', ')
+      'Using default values for config variables: ',
+      notFound.join(', ')
     )
+    for (const name of notFound) {
+      vars[name] = DEFAULT_CONFIG_VALUES[name]
+    }
   }
+
+  return vars
 }
 
 /**
  * Validates that `s` is a defined runtime environment name and returns it.
  *
- * @param {string} s
+ * @param {unknown} s
  * @returns {RuntimeEnvironmentName}
  */
-function runtimeEnvFromString(s) {
+function parseRuntimeEnv(s) {
   if (!s) {
     return 'test'
   }

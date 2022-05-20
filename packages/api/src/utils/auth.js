@@ -8,8 +8,10 @@ import {
   ErrorTokenBlocked,
 } from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
-export const magic = new Magic(getServiceConfig().external.magicLink.secret)
 import * as Ucan from 'ucan-storage/ucan-storage'
+
+const { MAGIC_SECRET_KEY, SALT } = getServiceConfig()
+export const magic = new Magic(MAGIC_SECRET_KEY)
 
 /**
  *
@@ -51,7 +53,7 @@ export async function validate(event, { log, db, ucanService }, options) {
   }
 
   // validate access tokens
-  if (await verifyJWT(token, getServiceConfig().secrets.salt)) {
+  if (await verifyJWT(token, SALT)) {
     const decoded = parseJWT(token)
     const user = await db.getUser(decoded.sub)
 
