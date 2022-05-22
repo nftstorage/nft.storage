@@ -9,6 +9,7 @@ docker compose \
   --project-name="nft-storage-api" \
   $COMPOSE_FILES --env-file="$ENV_FILE" up \
   --always-recreate-deps \
+  --remove-orphans \
   --force-recreate \
   --renew-anon-volumes \
   --build \
