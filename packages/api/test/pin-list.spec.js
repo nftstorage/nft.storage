@@ -1,5 +1,9 @@
 import assert from 'assert'
-import { createClientWithUser, DBTestClient } from './scripts/helpers.js'
+import {
+  createClientWithUser,
+  DBTestClient,
+  rawClient,
+} from './scripts/helpers.js'
 
 describe('Pin list ', () => {
   /** @type{DBTestClient} */
@@ -72,46 +76,20 @@ describe('Pin list ', () => {
   })
 
   it('should list pinned items when querying without filters', async () => {
-    // List
-    const resEmptyPinList = await fetch('pins', {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${client.token}` },
-    })
-    const valueEmptyPinList = await resEmptyPinList.json()
-    assert.strictEqual(
-      valueEmptyPinList.count,
-      0,
-      'Server response with empty pin requests'
-    )
+    // Pin request (unavailable on IPFS)
+    const cid = 'bafkreiaoqabl7yiracpil3m7rgbgygky2wwqtvzom2lkdhy2pxchkjixae'
+    await client.addPin({ cid, name: 'test' })
 
-    // Pin request
-    const cid = 'bafkreihwlixzeusjrd5avlg53yidaoonf5r5srzumu7y5uuumtt7rxxbrm'
-    const resPinCreate = await fetch('pins', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${client.token}` },
-      body: JSON.stringify({ cid }),
-    })
-    assert.ok(resPinCreate.ok, 'Server responde ok')
+    // Make this CID 'Pinned' in our DB
+    await rawClient
+      .from('pin')
+      .update({ status: 'Pinned', updated_at: new Date().toISOString() })
+      .eq('content_cid', cid)
 
-    // Upload
-    const file = new Blob(['hello world!'], { type: 'application/text' })
-    const res = await fetch('upload', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${client.token}` },
-      body: file,
-    })
-    assert(res.ok, 'Server response ok')
-
-    // List
-    const resPinList = await fetch('pins', {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${client.token}` },
-    })
-    const valuePinList = await resPinList.json()
-    assert.strictEqual(
-      valuePinList.count,
-      1,
-      'Server response with 1 successful pin request'
-    )
+    const headers = { Authorization: `Bearer ${client.token}` }
+    const res = await fetch('pins', { headers })
+    const { count, results } = await res.json()
+    assert.strictEqual(count, 1)
+    assert.strictEqual(results[0].pin.cid, cid)
   })
 })
