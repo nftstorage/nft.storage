@@ -75,6 +75,17 @@ export const getServiceConfig = () => {
 }
 
 /**
+ * Override the global service configuration for testing purposes.
+ * Note that some files call {@link getServiceConfig} at module scope,
+ * so they may not pick up the overriden config.
+ *
+ * @param {ServiceConfiguration} config
+ */
+export const overrideServiceConfigForTesting = (config) => {
+  _globalConfig = config
+}
+
+/**
  * Load a {@link ServiceConfiguration} from the global environment.
  *
  * Exported for testing. See {@link getServiceConfig} for main public accessor.
