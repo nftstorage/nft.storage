@@ -17,13 +17,13 @@ export interface ServiceConfiguration {
   ENV: RuntimeEnvironmentName
 
   /** Semantic version for current build */
-  VERSION: string
+  NFT_STORAGE_VERSION: string
 
   /** Git branch name of current build */
-  BRANCH: string
+  NFT_STORAGE_BRANCH: string
 
   /** Git commit hash of current build */
-  COMMITHASH: string
+  NFT_STORAGE_COMMITHASH: string
 
   /** Current maintenance mode */
   MAINTENANCE_MODE: Mode

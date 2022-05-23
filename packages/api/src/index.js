@@ -57,11 +57,16 @@ r.add(
   'get',
   '/version',
   (event) => {
-    const { VERSION, COMMITHASH, BRANCH, MAINTENANCE_MODE } = getServiceConfig()
+    const {
+      NFT_STORAGE_VERSION,
+      NFT_STORAGE_COMMITHASH,
+      NFT_STORAGE_BRANCH,
+      MAINTENANCE_MODE,
+    } = getServiceConfig()
     return new JSONResponse({
-      version: VERSION,
-      commit: COMMITHASH,
-      branch: BRANCH,
+      version: NFT_STORAGE_VERSION,
+      commit: NFT_STORAGE_COMMITHASH,
+      branch: NFT_STORAGE_BRANCH,
       mode: MAINTENANCE_MODE,
     })
   },

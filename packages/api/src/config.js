@@ -24,9 +24,9 @@ export const DEFAULT_CONFIG_VALUES = {
   MAGIC_SECRET_KEY: 'test',
   ENV: 'test',
   SENTRY_DSN: 'https://test@test.ingest.sentry.io/0000000',
-  BRANCH: 'test',
-  VERSION: 'test',
-  COMMITHASH: 'test',
+  NFT_STORAGE_BRANCH: 'test',
+  NFT_STORAGE_VERSION: 'test',
+  NFT_STORAGE_COMMITHASH: 'test',
   MAINTENANCE_MODE: 'rw',
   METAPLEX_AUTH_TOKEN: 'metaplex-test-token',
   MAILCHIMP_API_KEY: '',
@@ -55,6 +55,9 @@ const CLUSTER_SERVICE_URLS = {
  */
 const allowDefaultConfigValues = (env) => env === 'test' || env === 'dev'
 
+/** @type ServiceConfiguration|undefined */
+let _globalConfig
+
 /**
  * Returns a {@link ServiceConfiguration} object containing the runtime config options for the API service.
  * Includes anything injected by the environment (secrets, URLs for services we call out to, maintenance flag, etc).
@@ -70,9 +73,6 @@ export const getServiceConfig = () => {
   _globalConfig = loadServiceConfig()
   return _globalConfig
 }
-
-/** @type ServiceConfiguration|undefined */
-let _globalConfig
 
 /**
  * Load a {@link ServiceConfiguration} from the global environment.
@@ -124,9 +124,9 @@ export function serviceConfigFromVariables(vars) {
     CLUSTER_BASIC_AUTH_TOKEN: vars.CLUSTER_BASIC_AUTH_TOKEN,
     MAGIC_SECRET_KEY: vars.MAGIC_SECRET_KEY,
     SENTRY_DSN: vars.SENTRY_DSN,
-    BRANCH: vars.BRANCH,
-    VERSION: vars.VERSION,
-    COMMITHASH: vars.COMMITHASH,
+    NFT_STORAGE_BRANCH: vars.NFT_STORAGE_BRANCH,
+    NFT_STORAGE_VERSION: vars.NFT_STORAGE_VERSION,
+    NFT_STORAGE_COMMITHASH: vars.NFT_STORAGE_COMMITHASH,
     METAPLEX_AUTH_TOKEN: vars.METAPLEX_AUTH_TOKEN,
     MAILCHIMP_API_KEY: vars.MAILCHIMP_API_KEY,
     LOGTAIL_TOKEN: vars.LOGTAIL_TOKEN,
