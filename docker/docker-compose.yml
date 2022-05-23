@@ -13,7 +13,7 @@ services:
     restart: on-failure
     build:
       dockerfile: './docker/Dockerfile'
-      context: '../'
+      context: '../packages/api'
     entrypoint: 'psql $DATABASE_CONNECTION -v "ON_ERROR_STOP=1" -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql -f ./db/functions.sql'
     depends_on:
       - db
@@ -25,7 +25,7 @@ services:
     restart: on-failure
     build:
       dockerfile: ./docker/Dockerfile
-      context: ../
+      context: ../packages/api
     environment:
       - PRIVATE_KEY
       - DATABASE_URL
@@ -41,10 +41,11 @@ services:
     depends_on:
       - post-rest
     volumes:
-      - ../src:/app/src
+      # volume paths are relative to the compose file, not the build context
+      - ../packages/api/src:/app/src:ro
   db:
     build:
-      context: ./postgres
+      context: ../packages/api/docker/postgres
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -75,7 +76,7 @@ services:
         condition: service_healthy
     build:
       dockerfile: ./docker/test.Dockerfile
-      context: ../
+      context: ../packages/api
     environment:
       - PRIVATE_KEY
       - DATABASE_URL

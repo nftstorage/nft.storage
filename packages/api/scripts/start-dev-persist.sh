@@ -1,9 +1,11 @@
 #!/usr/bin/env sh
 # This script force builds docker images, src the env, kills the old containers, and starts the new containers.
 
-# We're moving this script around a lot, and it's pretty cwd-dependent.
-ENV_FILE=../../.env
-COMPOSE_FILES="--file ./docker/docker-compose.yml --file ./docker/docker-compose.dev.yml --file ./docker/docker-compose.persist.yml"
+REPO_ROOT=$(git rev-parse --show-toplevel)
+ENV_FILE=$REPO_ROOT/.env
+COMPOSE_DIR=$REPO_ROOT/docker
+
+COMPOSE_FILES="--file $COMPOSE_DIR/docker-compose.yml --file $COMPOSE_DIR/docker-compose.dev.yml --file $COMPOSE_DIR/docker-compose.persist.yml"
 docker compose \
   --project-name="nft-storage-api" \
   $COMPOSE_FILES --env-file="$ENV_FILE" up \

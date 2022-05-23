@@ -3,4 +3,4 @@ services:
     ports:
       - '8787:8787'
     volumes:
-      - ../src:/app/src
+      - ../packages/api/src:/app/src:ro
