@@ -58,9 +58,9 @@ prog
         inject: [path.join(__dirname, 'node-globals.js')],
         plugins: [PluginAlias],
         define: {
-          VERSION: JSON.stringify(version),
-          COMMITHASH: JSON.stringify(git.long(__dirname)),
-          BRANCH: JSON.stringify(git.branch(__dirname)),
+          NFT_STORAGE_VERSION: JSON.stringify(version),
+          NFT_STORAGE_COMMITHASH: JSON.stringify(git.long(__dirname)),
+          NFT_STORAGE_BRANCH: JSON.stringify(git.branch(__dirname)),
           global: 'globalThis',
         },
         minify: opts.env === 'dev' ? false : true,

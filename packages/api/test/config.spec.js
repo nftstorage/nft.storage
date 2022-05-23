@@ -125,9 +125,9 @@ describe('serviceConfigFromVariables', () => {
 
   describe('uses unaltered values for string config variables', () => {
     const stringValuedVars = [
-      'VERSION',
-      'BRANCH',
-      'COMMITHASH',
+      'NFT_STORAGE_VERSION',
+      'NFT_STORAGE_BRANCH',
+      'NFT_STORAGE_COMMITHASH',
       'SALT',
       'METAPLEX_AUTH_TOKEN',
       'PRIVATE_KEY',

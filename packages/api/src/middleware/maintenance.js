@@ -30,7 +30,7 @@ export const modes = Object.freeze([NO_READ_OR_WRITE, READ_ONLY, READ_WRITE])
 export const DEFAULT_MODE = READ_WRITE
 
 /** @type {() => Mode} */
-const getMaintenanceMode = () => getServiceConfig().MAINTENANCE_MODE
+let getMaintenanceMode = () => getServiceConfig().MAINTENANCE_MODE
 
 /**
  * Specify the mode (permissions) a request hander requires to operate e.g.
