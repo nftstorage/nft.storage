@@ -67,7 +67,9 @@ export async function nftUpload(event, ctx) {
       throw new HTTPError('empty payload', 400)
     }
 
-    const isCar = contentType.includes('application/car')
+    const isCar =
+      contentType.includes('application/car') ||
+      contentType.includes('application/vnd.ipld.car')
     /** @type {'Car'|'Blob'} */
     let uploadType
     /** @type {DagStructure} */

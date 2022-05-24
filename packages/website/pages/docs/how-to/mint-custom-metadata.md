@@ -131,7 +131,7 @@ The `------WebKitFormBoundary5peilISl2YOOweQy` tokens in the example above set t
 
 The `/upload` endpoint has some special support for IPFS Content Archives (CARs) that can be used to upload files larger than the 100 MiB single-request limit. 
 
-Uploading CAR files works just like uploading a single file. Send a `POST` request to `/upload`, with the `Content-Type` header set to `application/car` and the binary file data as the request body.
+Uploading CAR files works just like uploading a single file. Send a `POST` request to `/upload`, with the `Content-Type` header set to `application/vnd.ipld.car` and the binary file data as the request body.
 
 To upload files larger than 100 MiB, you can pack them into a CAR file and split the CAR into chunks, uploading each chunk in a separate HTTP request. See the [CAR file guide][guide-car-files] to learn more.
 
