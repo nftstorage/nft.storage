@@ -21,5 +21,3 @@ export const {
   S3_BUCKET_NAME = '',
   PRIVATE_KEY = '',
 } = process.env
-
-console.log(process.env)
