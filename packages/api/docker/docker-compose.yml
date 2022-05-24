@@ -54,7 +54,7 @@ services:
     image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
 
   ipfs-cluster:
-    image: ipfs/ipfs-cluster:latest
+    image: ipfs/ipfs-cluster:v1.0.0-rc4
     depends_on:
       - ipfs
     environment:
