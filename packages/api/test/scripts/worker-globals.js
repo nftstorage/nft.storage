@@ -1,22 +1,25 @@
-export const SALT = 'secret'
-export const DEBUG = 'true'
-export const CLUSTER_API_URL = 'http://localhost:9094'
-// will be used with we can active auth in cluster base64 of test:test
-export const CLUSTER_BASIC_AUTH_TOKEN = 'dGVzdDp0ZXN0'
-export const CLUSTER_SERVICE = ''
-export const MAGIC_SECRET_KEY = 'test'
-export const ENV = 'test'
-export const SENTRY_DSN = 'https://test@test.ingest.sentry.io/0000000'
-export const BRANCH = 'test'
-export const VERSION = 'test'
-export const COMMITHASH = 'test'
-export const MAINTENANCE_MODE = 'rw'
-export const METAPLEX_AUTH_TOKEN = 'metaplex-test-token'
-export const MAILCHIMP_API_KEY = ''
-export const LOGTAIL_TOKEN = ''
-export const S3_ENDPOINT = 'http://localhost:9095'
-export const S3_REGION = 'test'
-export const S3_ACCESS_KEY_ID = 'test'
-export const S3_SECRET_ACCESS_KEY = 'test'
-export const S3_BUCKET_NAME = 'test'
-export const PRIVATE_KEY = 'xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY='
+export const {
+  SALT = '',
+  DEBUG = '',
+  CLUSTER_API_URL = '',
+  CLUSTER_BASIC_AUTH_TOKEN = '',
+  CLUSTER_SERVICE = '',
+  MAGIC_SECRET_KEY = '',
+  ENV = '',
+  SENTRY_DSN = '',
+  BRANCH = '',
+  VERSION = '',
+  COMMITHASH = '',
+  MAINTENANCE_MODE = '',
+  METAPLEX_AUTH_TOKEN = '',
+  MAILCHIMP_API_KEY = '',
+  LOGTAIL_TOKEN = '',
+  S3_ENDPOINT = '',
+  S3_REGION = '',
+  S3_ACCESS_KEY_ID = '',
+  S3_SECRET_ACCESS_KEY = '',
+  S3_BUCKET_NAME = '',
+  PRIVATE_KEY = '',
+} = process.env
+
+console.log(process.env)
