@@ -35,4 +35,5 @@ $ESBUILD_CMD \
   --define:VERSION="'development'" \
   --define:COMMITHASH="'development'" \
   --define:BRANCH="'development'" \
+  --define:METAPLEX_AUTH_TOKEN="\"$METAPLEX_AUTH_TOKEN\"" \
  $ENTRYPOINT > $OUT_DIR/worker.js
