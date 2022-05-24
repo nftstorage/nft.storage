@@ -360,7 +360,7 @@ describe('NFT Upload ', () => {
     assert.equal(data.content.pin[0].service, 'IpfsCluster3')
   })
 
-  it('should create S3 backup', async () => {
+  it.only('should create S3 backup', async () => {
     const { root, car } = await packToBlob({ input: 'S3 backup' })
     const res = await fetch('upload', {
       method: 'POST',
@@ -388,7 +388,7 @@ describe('NFT Upload ', () => {
     const carHash = await getHash(new Uint8Array(carBuf))
     const backupUrl = `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${client.userId}/${carHash}.car`
 
-    assert.equal(upload.backup_urls[0], backupUrl)
+    assert.equal(upload.backup_urls, backupUrl)
   })
 
   it('should upload a single file using ucan', async () => {
