@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.51.0](https://github.com/nftstorage/nft.storage/compare/website-v1.50.0...website-v1.51.0) (2022-05-24)
+
+
+### Features
+
+* superhot blog post ([#1938](https://github.com/nftstorage/nft.storage/issues/1938)) ([966916b](https://github.com/nftstorage/nft.storage/commit/966916b006ea1df481a2563be82414e6326e8d67))
+
 ## [1.50.0](https://github.com/nftstorage/nft.storage/compare/website-v1.49.4...website-v1.50.0) (2022-05-10)
 
 
