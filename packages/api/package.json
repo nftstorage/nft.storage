@@ -29,7 +29,7 @@
     "merge-options": "^3.0.4",
     "multiformats": "^9.6.4",
     "nanoid": "^3.1.30",
-    "nft.storage": "^6.0.0",
+    "nft.storage": "^6.3.0",
     "regexparam": "^2.0.0",
     "toucan-js": "^2.4.1",
     "ucan-storage": "^1.0.0",
