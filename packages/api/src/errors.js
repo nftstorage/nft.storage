@@ -116,6 +116,16 @@ export class ErrorUserNotFound extends Error {
 }
 ErrorUserNotFound.CODE = 'ERROR_USER_NOT_FOUND'
 
+export class ErrorTokenBlocked extends Error {
+  constructor(msg = 'API Key is blocked. Please contact support@nft.storage') {
+    super(msg)
+    this.name = 'TokenBlocked'
+    this.status = 403
+    this.code = ErrorTokenBlocked.CODE
+  }
+}
+ErrorTokenBlocked.CODE = 'ERROR_TOKEN_BLOCKED'
+
 export class ErrorTokenNotFound extends Error {
   constructor(msg = 'API Key not found.') {
     super(msg)

@@ -1,11 +1,15 @@
 import assert from 'assert'
-import { createClientWithUser, DBTestClient } from './scripts/helpers.js'
+import {
+  createClientWithUser,
+  DBTestClient,
+  rawClient,
+} from './scripts/helpers.js'
 
 describe('Pin list ', () => {
   /** @type{DBTestClient} */
   let client
 
-  before(async () => {
+  beforeEach(async () => {
     client = await createClientWithUser()
   })
 
@@ -69,5 +73,23 @@ describe('Pin list ', () => {
       cid,
       'Server response with pin requests created'
     )
+  })
+
+  it('should list pinned items when querying without filters', async () => {
+    // Pin request (unavailable on IPFS)
+    const cid = 'bafkreiaoqabl7yiracpil3m7rgbgygky2wwqtvzom2lkdhy2pxchkjixae'
+    await client.addPin({ cid, name: 'test' })
+
+    // Make this CID 'Pinned' in our DB
+    await rawClient
+      .from('pin')
+      .update({ status: 'Pinned', updated_at: new Date().toISOString() })
+      .eq('content_cid', cid)
+
+    const headers = { Authorization: `Bearer ${client.token}` }
+    const res = await fetch('pins', { headers })
+    const { count, results } = await res.json()
+    assert.strictEqual(count, 1)
+    assert.strictEqual(results[0].pin.cid, cid)
   })
 })

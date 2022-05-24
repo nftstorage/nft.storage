@@ -9,6 +9,7 @@ import { pack } from 'ipfs-car/pack'
 import { CarWriter } from '@ipld/car'
 import * as dagJson from '@ipld/dag-json'
 import { randomCar } from './helpers.js'
+import { toAsyncIterable } from '../src/lib.js'
 
 const GATEWAY_LINK = 'nftstorage.link'
 
@@ -222,6 +223,54 @@ describe('client', () => {
       )
     })
 
+    it('upload multiple files as asyncIterable', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const cid = await client.storeDirectory(
+        toAsyncIterable([
+          new File(['hello world'], 'hello.txt'),
+          new File(
+            [JSON.stringify({ from: 'incognito' }, null, 2)],
+            'metadata.json'
+          ),
+        ])
+      )
+
+      assert.equal(
+        cid,
+        'bafybeigkms36pnnjsa7t2mq2g4mx77s4no2hilirs4wqx3eebbffy2ay3a'
+      )
+    })
+
+    it('upload multiple FileObject from files-from-path as asyncIterable', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const file1Buffer = new TextEncoder().encode('hello world')
+      const file2Buffer = new TextEncoder().encode(
+        JSON.stringify({ from: 'incognito' }, null, 2)
+      )
+      const cid = await client.storeDirectory(
+        toAsyncIterable([
+          {
+            name: 'hello.txt',
+            size: file1Buffer.length,
+            stream: async function* () {
+              yield file1Buffer
+            },
+          },
+          {
+            name: 'metadata.json',
+            size: file2Buffer.length,
+            stream: async function* () {
+              yield file2Buffer
+            },
+          },
+        ])
+      )
+
+      assert.equal(
+        cid,
+        'bafybeigkms36pnnjsa7t2mq2g4mx77s4no2hilirs4wqx3eebbffy2ay3a'
+      )
+    })
     it('upload empty files', async () => {
       const client = new NFTStorage({ token, endpoint })
       try {
@@ -722,6 +771,23 @@ describe('client', () => {
         const error = /** @type {Error} */ (err)
         assert.ok(error.message.match(/not found/))
       }
+    })
+  })
+
+  describe('static encodeDirectory', () => {
+    it('can encode multiple FileObject as iterable', async () => {
+      const files = [
+        new File(['hello world'], 'hello.txt'),
+        new File(
+          [JSON.stringify({ from: 'incognito' }, null, 2)],
+          'metadata.json'
+        ),
+      ]
+      const { cid } = await NFTStorage.encodeDirectory(files)
+      assert.equal(
+        cid.toString(),
+        'bafybeigkms36pnnjsa7t2mq2g4mx77s4no2hilirs4wqx3eebbffy2ay3a'
+      )
     })
   })
 })

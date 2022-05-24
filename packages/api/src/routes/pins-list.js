@@ -123,6 +123,10 @@ function parseSearchParams(params) {
     out.status = /** @type {ListUploadsOptions["status"]}*/ (
       statusParam.split(',').map(toDbPinStatus)
     )
+  } else {
+    // "when no filter is provided, only successful pins are returned"
+    // https://ipfs.github.io/pinning-services-api-spec/#tag/pins/paths/~1pins/get
+    out.status = ['Pinned']
   }
 
   const afterParam = params.get('after')

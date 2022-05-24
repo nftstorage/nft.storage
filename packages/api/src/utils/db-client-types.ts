@@ -15,7 +15,7 @@ export type UpsertUserInput = Pick<
 
 export type UserOutputKey = Pick<
   definitions['auth_key'],
-  'user_id' | 'id' | 'name' | 'secret'
+  'user_id' | 'id' | 'name' | 'secret' | 'deleted_at'
 >
 
 export type UserOutputTag = Pick<
