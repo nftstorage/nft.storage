@@ -1,6 +1,6 @@
 FROM node:16-alpine3.12
 
-HEALTHCHECK --interval=20s --timeout=5s --retries=3 \
+HEALTHCHECK --interval=5s --timeout=5s --retries=3 \
   CMD curl -f http://localhost:8787/stats || exit 1
 
 # Install some utilities to make debugging easier
