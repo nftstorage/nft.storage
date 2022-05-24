@@ -11,7 +11,8 @@
     "dev:persist": "./scripts/start-dev-persist.sh",
     "clean": "./scripts/cli.js db --clean && rm -rf docker/compose",
     "build": "./scripts/cli.js build",
-    "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw dist/worker.js",
+    "test": "./scripts/start-test.sh ",
+    "test:watch": "nodemon --watch ./src --watch test --exec ./scripts/start-test.sh",
     "db-types": "./scripts/cli.js db-types"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
