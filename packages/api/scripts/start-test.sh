@@ -6,7 +6,7 @@ ENV_FILE=../../.env
 DOCKER_COMMAND="docker compose --project-name=nft-storage-api-test --profile=test --file ./docker/docker-compose.yml --env-file=$ENV_FILE"
 $DOCKER_COMMAND build
 $DOCKER_COMMAND down
-$DOCKER_COMMAND run --rm playwright
+$DOCKER_COMMAND run playwright
 test_exit_code=$?
 
 $DOCKER_COMMAND down
