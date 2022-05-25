@@ -1,3 +1,4 @@
+import fs from 'fs'
 import { S3Client } from '@aws-sdk/client-s3'
 import { ListObjectsV2Command } from '@aws-sdk/client-s3'
 import { getDbClient } from './cmds/db-sql.js'
@@ -15,11 +16,32 @@ async function entryPoint() {
   // bug was introduced in https://github.com/nftstorage/nft.storage/pull/1664
   // which was merged on 2022-03-17.
   const startDate = new Date('2022-03-17')
-  const endDate = new Date()
+  const endDate = new Date() // FIXME: limit for testing
 
   const uploads = await findUploadsWithMissingURLS(context, startDate, endDate)
   console.log(`Found ${uploads.length} uploads to check.`)
-  console.log('here is the first one: ', uploads[0])
+
+  // TODO: make output file path configurable
+  const outpath = `./backup-urls-${startDate}-${endDate}.csv`
+  const outFile = fs.createWriteStream(outpath, 'utf-8')
+  outFile.write('upload_id,backup_urls\n')
+
+  for (const upload of uploads) {
+    const urls = await getBackupURLsFromS3(
+      context,
+      upload.source_cid,
+      upload.user_id
+    )
+    if (urls.length < 2) {
+      continue
+    }
+
+    const row = `${upload.id}\t${urls.join(' ')}\n`
+    outFile.write(row)
+    console.log(row)
+  }
+  // TODO: update DB with discovered URLs
+  outFile.close()
 
   process.exit(0)
 }
@@ -113,9 +135,9 @@ async function findUploadsWithMissingURLS(context, startDate, endDate) {
  * @param {string} userId
  * @param {string} appName - name of uploading app. always "nft" for production uploads
  *
- * @returns {AsyncGenerator<URL>} all discovered backup URLs for the given cid+userId
+ * @returns {Promise<URL[]>} all discovered backup URLs for the given cid+userId
  */
-async function* getBackupURLsFromS3(
+async function getBackupURLsFromS3(
   context,
   sourceCid,
   userId,
@@ -123,9 +145,12 @@ async function* getBackupURLsFromS3(
 ) {
   const uploadDirPrefix = `raw/${sourceCid}/${appName}-${userId}/`
 
+  const urls = []
   for await (const key of listObjects(context, uploadDirPrefix)) {
-    yield new URL(key, context.s3BaseURL.toString())
+    urls.push(new URL(key, context.s3BaseURL.toString()))
   }
+
+  return urls
 }
 
 /**
