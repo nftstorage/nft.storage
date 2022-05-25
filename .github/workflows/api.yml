@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: '16'
       - run: 'cp .env.tpl .env'
+      - run: 'source .env'
       - run: yarn test:api
   deploy-dev:
     name: Deploy Dev
