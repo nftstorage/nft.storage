@@ -12,11 +12,13 @@
   },
   "scripts": {
     "start": "run-s start:*",
+    "start:nft-ttr": "node src/bin/nft-ttr.js",
     "start:pins": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/pins.js",
     "start:pins-failed": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/pins-failed.js",
     "start:pinata": "node src/bin/pinata.js",
     "start:dagcargo:sizes": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo-sizes.js",
-    "start:metrics": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/metrics.js"
+    "start:metrics": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/metrics.js",
+    "test": "jest"
   },
   "author": "Alan Shaw",
   "license": "(Apache-2.0 OR MIT)",
@@ -26,6 +28,7 @@
     "debug": "^4.3.2",
     "dotenv": "^10.0.0",
     "form-data": "^4.0.0",
+    "jest": "^28.1.0",
     "limiter": "2.0.1",
     "nft.storage": "^6.0.0",
     "p-retry": "^4.6.1",
