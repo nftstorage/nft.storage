@@ -12,4 +12,7 @@ docker compose \
   --force-recreate \
   --renew-anon-volumes \
   --build \
+  --exit-code-from "playwright" \
+  --attach "playwright" \
+  --no-log-prefix \
 ;
