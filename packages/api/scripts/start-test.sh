@@ -9,7 +9,9 @@ docker compose \
   --always-recreate-deps \
   --force-recreate \
   --renew-anon-volumes \
+  --remove-orphans \
   --build \
   --attach "playwright" \
-  ;
+  --no-log-prefix \
+;
 
