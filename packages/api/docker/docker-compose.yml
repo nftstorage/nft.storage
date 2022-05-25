@@ -14,7 +14,7 @@ services:
     build:
       dockerfile: './docker/Dockerfile'
       context: '../'
-    entrypoint: 'psql $DATABASE_CONNECTION -v "ON_ERROR_STOP=1" -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql -f ./db/functions.sql && echo done && tail -f /dev/null'
+    entrypoint: 'psql $DATABASE_CONNECTION -v "ON_ERROR_STOP=1" -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql -f ./db/functions.sql'
     depends_on:
       - db
     environment:
@@ -54,6 +54,7 @@ services:
 
     depends_on:
       - post-rest
+      - ipfs-cluster
   db:
     build:
       context: ./postgres
