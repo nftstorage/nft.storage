@@ -4,6 +4,8 @@ import {
   SALT,
   CLUSTER_API_URL,
   CLUSTER_BASIC_AUTH_TOKEN,
+  DATABASE_URL,
+  DATABASE_TOKEN,
 } from './worker-globals.js'
 import { PostgrestClient } from '@supabase/postgrest-js'
 import { DBClient } from '../../src/utils/db-client.js'

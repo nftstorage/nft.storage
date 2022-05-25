@@ -23,20 +23,6 @@ const nodeBuiltinsPlugin = {
 
 /** @type {import('playwright-test').RunnerOptions} */
 module.exports = {
-  buildConfig: {
-    plugins: [nodeBuiltinsPlugin],
-    define: {
-      DATABASE_URL: JSON.stringify(process.env.DATABASE_URL),
-      DATABASE_TOKEN: JSON.stringify(process.env.DATABASE_TOKEN),
-    },
-  },
-  buildSWConfig: {
-    plugins: [nodeBuiltinsPlugin],
-    define: {
-      DATABASE_URL: JSON.stringify(process.env.PW_DATABASE_URL),
-      DATABASE_TOKEN: JSON.stringify(process.env.DATABASE_TOKEN),
-    },
-  },
   beforeTests: async () => {
     const mock = await startMockServer('AWS S3', 9095, 'test/mocks/aws-s3')
     return { mock }

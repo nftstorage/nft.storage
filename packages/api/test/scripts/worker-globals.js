@@ -4,6 +4,8 @@ export const {
   CLUSTER_API_URL = '',
   CLUSTER_BASIC_AUTH_TOKEN = '',
   CLUSTER_SERVICE = '',
+  DATABASE_URL = '',
+  DATABASE_TOKEN = '',
   MAGIC_SECRET_KEY = '',
   ENV = '',
   SENTRY_DSN = '',
