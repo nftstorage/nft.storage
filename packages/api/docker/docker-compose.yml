@@ -54,8 +54,6 @@ services:
 
     depends_on:
       - post-rest
-    volumes:
-      - ../src:/app/src
   db:
     build:
       context: ./postgres
