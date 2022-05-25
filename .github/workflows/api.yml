@@ -23,6 +23,7 @@ jobs:
           node-version: '16'
       - run: 'cp .env.tpl .env'
       - run: 'source .env' # override any environment that may be set
+      - uses: satackey/action-docker-layer-caching@v0.0.11 # cache docker layers
       - run: yarn test:api
   deploy-dev:
     name: Deploy Dev
