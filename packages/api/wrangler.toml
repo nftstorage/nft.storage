@@ -9,14 +9,6 @@ type = "javascript"
 compatibility_date = "2021-08-23"
 compatibility_flags = [ "formdata_parser_supports_files" ]
 
-[vars]
-ENV = "dev"
-DEBUG = "true"
-DATABASE_URL = "http://localhost:3000"
-CLUSTER_SERVICE = "" # This should be empty to fallback to CLUSTER_API_URL
-CLUSTER_API_URL = "http://localhost:9094"
-CLUSTER_BASIC_AUTH_TOKEN = "dGVzdDp0ZXN0"
-
 [build]
 command = "scripts/cli.js build"
 watch_dir = "src"
@@ -25,7 +17,8 @@ watch_dir = "src"
 format = "service-worker"
 
 [miniflare]
-env_path = "./../../.env"
+host = "0.0.0.0"
+port = "8787"
 
 # Staging
 

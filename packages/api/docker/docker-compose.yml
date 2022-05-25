@@ -62,7 +62,7 @@ services:
     image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
 
   ipfs-cluster:
-    image: ipfs/ipfs-cluster:v1.0.0-rc4
+    image: ipfs/ipfs-cluster:v1.0.0-rc4 # we need to use this image tag, as nft.storage expects CIDs to come back in a certain format
     depends_on:
       - ipfs
     environment:
