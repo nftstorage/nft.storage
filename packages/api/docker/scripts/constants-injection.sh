@@ -36,4 +36,9 @@ $ESBUILD_CMD \
   --define:COMMITHASH="'development'" \
   --define:BRANCH="'development'" \
   --define:METAPLEX_AUTH_TOKEN="\"$METAPLEX_AUTH_TOKEN\"" \
+  --define:S3_ACCESS_KEY_ID="\"$S3_ACCESS_KEY_ID\"" \
+  --define:S3_BUCKET_NAME="\"$S3_BUCKET_NAME\"" \
+  --define:S3_ENDPOINT="\"$S3_ENDPOINT\"" \
+  --define:S3_REGION="\"$S3_REGION\"" \
+  --define:S3_SECRET_ACCESS_KEY="\"$S3_SECRET_ACCESS_KEY\"" \
  $ENTRYPOINT > $OUT_DIR/worker.js
