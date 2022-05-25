@@ -363,8 +363,7 @@ describe('NFT Upload ', () => {
 
   it('should create S3 backup', async () => {
     const { root, car } = await packToBlob({
-      input: 'S3 backup',
-      wrapWithDirectory: false,
+      input: [{ path: 'test.txt', content: 'S3 backup' }],
     })
     const res = await fetch('upload', {
       method: 'POST',
@@ -403,7 +402,6 @@ describe('NFT Upload ', () => {
       input: files,
       maxChunkSize: chunkSize,
     })
-    console.log('chunked car root cid:', root.toString())
     const splitter = await TreewalkCarSplitter.fromBlob(car, chunkSize)
 
     const backupUrls = []
@@ -425,12 +423,10 @@ describe('NFT Upload ', () => {
       backupUrls.push(expectedBackupUrl(root, client.userId, carHash))
     }
 
-    // expect 1 chunk's worth of overhead from CAR header, unixfs, etc
-    assert.equal(backupUrls.length, nChunks + 1)
-
     const upload = await client.client.getUpload(root.toString(), client.userId)
     assert(upload)
     assert(upload.backup_urls)
+    assert(upload.backup_urls.length >= nChunks) // using >= to account for CAR / UnixFS overhead
     assert.equal(
       upload.backup_urls.length,
       backupUrls.length,
