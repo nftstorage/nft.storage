@@ -23,9 +23,17 @@ SENTRY_DSN=https://000000@0000000.ingest.sentry.io/00000
 SENTRY_TOKEN=secret
 SENTRY_UPLOAD=false
 
+## S3
 MAINTENANCE_MODE=rw
-S3_ENDPOINT = 'http://localhost:9095'
-S3_REGION = 'test'
-S3_ACCESS_KEY_ID = 'test'
-S3_SECRET_ACCESS_KEY = 'test'
-S3_BUCKET_NAME = 'test'
+S3_ENDPOINT='http://localhost:9095'
+S3_REGION='test'
+S3_ACCESS_KEY_ID='test'
+S3_SECRET_ACCESS_KEY='test'
+S3_BUCKET_NAME='test'
+
+
+## Git
+VERSION=development
+COMMITHASH=development-hash
+BRANCH=development
+

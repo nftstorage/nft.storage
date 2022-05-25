@@ -31,10 +31,10 @@ $ESBUILD_CMD \
   --define:MAILCHIMP_API_KEY="\"$MAILCHIMP_API_KEY\"" \
   --define:CLUSTER_API_URL="\"$CLUSTER_API_URL\"" \
   --define:CLUSTER_BASIC_AUTH_TOKEN="\"$CLUSTER_BASIC_AUTH_TOKEN\"" \
-  --define:DEBUG='true' \
-  --define:VERSION="'development'" \
-  --define:COMMITHASH="'development'" \
-  --define:BRANCH="'development'" \
+  --define:DEBUG="\"$DEBUG\"" \
+  --define:VERSION="\"$VERSION\"" \
+  --define:COMMITHASH="\"$COMMITHASH\"" \
+  --define:BRANCH="\"$BRANCH\"" \
   --define:METAPLEX_AUTH_TOKEN="\"$METAPLEX_AUTH_TOKEN\"" \
   --define:S3_ACCESS_KEY_ID="\"$S3_ACCESS_KEY_ID\"" \
   --define:S3_BUCKET_NAME="\"$S3_BUCKET_NAME\"" \
