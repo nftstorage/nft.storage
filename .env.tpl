@@ -11,7 +11,7 @@ LOGTAIL_TOKEN=secret
 
 
 # needs to be real so create a personal magic.link account or use the staging key
-MAGIC_SECRET_KEY=<INSERT_MAGIC_SECRET_KEY>
+MAGIC_SECRET_KEY=INSERT_MAGIC_SECRET_KEY
 
 MAILCHIMP_API_KEY=secret
 METAPLEX_AUTH_TOKEN=metaplex-test-token
