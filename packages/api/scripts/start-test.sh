@@ -13,6 +13,4 @@ docker compose \
   --renew-anon-volumes \
   --build \
   --exit-code-from "playwright" \
-  --attach "playwright" \
-  --no-log-prefix \
-;
+  ;
