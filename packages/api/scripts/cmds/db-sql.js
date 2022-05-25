@@ -63,7 +63,7 @@ export async function dbSqlCmd(opts) {
 /**
  * @param {string|undefined} connectionString
  */
-function getDbClient(connectionString) {
+export function getDbClient(connectionString) {
   return retry(
     async () => {
       const c = new Client({ connectionString })
