@@ -77,60 +77,6 @@ export interface ServiceConfiguration {
   MAILCHIMP_API_KEY: string
 }
 
-// export interface ServiceConfiguration {
-//   isDebugBuild: boolean
-//   runtimeEnvironment: RuntimeEnvironmentName
-//   version: {
-//     semver: string
-//     branch: string
-//     commitHash: string
-//   }
-
-//   maintenanceMode: Mode
-
-//   secrets: {
-//     salt: string
-//     metaplexAuthToken: string
-//     ucanPrivateKey: string
-//   }
-
-//   external: {
-//     cluster: {
-//       url: string
-//       basicAuthToken: string
-//     }
-
-//     database: {
-//       url: string
-//       authToken: string
-//     }
-
-//     s3: {
-//       endpoint: string
-//       region: string
-//       accessKeyId: string
-//       secretAccessKey: string
-//       bucketName: string
-//     }
-
-//     magicLink: {
-//       secret: string
-//     }
-
-//     logtail: {
-//       authToken: string
-//     }
-
-//     sentry: {
-//       dsn: string
-//     }
-
-//     mailchimp: {
-//       apiKey: string
-//     }
-//   }
-// }
-
 export interface Ucan {
   token: string
   root: any
