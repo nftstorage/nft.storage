@@ -4,6 +4,7 @@ import { sha256, sha512 } from 'multiformats/hashes/sha2'
 import * as pb from '@ipld/dag-pb'
 import { CarWriter } from '@ipld/car'
 import { packToBlob } from 'ipfs-car/pack/blob'
+import { TreewalkCarSplitter } from 'carbites/treewalk'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import {
   createClientWithUser,
@@ -361,7 +362,9 @@ describe('NFT Upload ', () => {
   })
 
   it('should create S3 backup', async () => {
-    const { root, car } = await packToBlob({ input: 'S3 backup' })
+    const { root, car } = await packToBlob({
+      input: [{ path: 'test.txt', content: 'S3 backup' }],
+    })
     const res = await fetch('upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
@@ -375,20 +378,70 @@ describe('NFT Upload ', () => {
     assert(upload)
     assert(upload.backup_urls)
 
-    /**
-     * @param {Uint8Array} data
-     */
-    const getHash = async (data) => {
-      const hash = await sha256.digest(new Uint8Array(data))
-      return uint8ArrayToString(hash.bytes, 'base32')
-    }
-
     // construct the expected backup URL
     const carBuf = await car.arrayBuffer()
     const carHash = await getHash(new Uint8Array(carBuf))
-    const backupUrl = `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${client.userId}/${carHash}.car`
+    const backupUrl = expectedBackupUrl(root, client.userId, carHash)
 
     assert.equal(upload.backup_urls[0], backupUrl)
+  })
+
+  it('should backup chunked uploads, preserving backup_urls for each chunk', async () => {
+    const chunkSize = 1024
+    const nChunks = 5
+
+    const files = []
+    for (let i = 0; i < nChunks; i++) {
+      files.push({
+        path: `/dir/file-${i}.bin`,
+        content: getRandomBytes(chunkSize),
+      })
+    }
+
+    const { root, car } = await packToBlob({
+      input: files,
+      maxChunkSize: chunkSize,
+    })
+    const splitter = await TreewalkCarSplitter.fromBlob(car, chunkSize)
+
+    const backupUrls = []
+    for await (const chunk of splitter.cars()) {
+      const carParts = []
+      for await (const part of chunk) {
+        carParts.push(part)
+      }
+      const carFile = new Blob(carParts, { type: 'application/car' })
+      const res = await fetch('upload', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${client.token}` },
+        body: carFile,
+      })
+
+      const { value } = await res.json()
+      assert.equal(root.toString(), value.cid)
+      const carHash = await getHash(new Uint8Array(await carFile.arrayBuffer()))
+      backupUrls.push(expectedBackupUrl(root, client.userId, carHash))
+    }
+
+    const upload = await client.client.getUpload(root.toString(), client.userId)
+    assert(upload)
+    assert(upload.backup_urls)
+    assert(upload.backup_urls.length >= nChunks) // using >= to account for CAR / UnixFS overhead
+    assert.equal(
+      upload.backup_urls.length,
+      backupUrls.length,
+      `expected ${backupUrls.length} backup urls, got: ${upload.backup_urls.length}`
+    )
+
+    /** @type string[] */
+    // @ts-expect-error upload.backup_urls has type unknown[], but it's really string[]
+    const resultUrls = upload.backup_urls
+    for (const url of resultUrls) {
+      assert(
+        backupUrls.includes(url),
+        `upload is missing expected backup url ${url}`
+      )
+    }
   })
 
   it('should upload a single file using ucan', async () => {
@@ -507,3 +560,36 @@ describe('NFT Upload ', () => {
     assert.equal(uploadData.name, name)
   })
 })
+
+/**
+ * @param {Uint8Array} data
+ */
+const getHash = async (data) => {
+  const hash = await sha256.digest(new Uint8Array(data))
+  return uint8ArrayToString(hash.bytes, 'base32')
+}
+
+/**
+ *
+ * @param {number} n
+ * @returns {Uint8Array}
+ */
+function getRandomBytes(n) {
+  const a = new Uint8Array(n)
+  const QUOTA = 65536
+  for (let i = 0; i < n; i += QUOTA) {
+    crypto.getRandomValues(a.subarray(i, i + Math.min(n - i, QUOTA)))
+  }
+  return a
+}
+
+/**
+ *
+ * @param {CID|string} root
+ * @param {number} userId
+ * @param {string} carHash
+ * @returns
+ */
+function expectedBackupUrl(root, userId, carHash) {
+  return `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${userId}/${carHash}.car`
+}
