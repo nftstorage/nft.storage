@@ -41,7 +41,7 @@ BEGIN
     from json_populate_recordset(null::upload_pin_type, (data ->> 'pins')::json)
     on conflict (content_cid, service) do nothing;
 
-    insert into upload (user_id,
+    insert into upload as upld (user_id,
                         key_id,
                         content_cid,
                         source_cid,
@@ -74,7 +74,8 @@ BEGIN
                       meta       = (data ->> 'meta')::jsonb,
                       origins    = (data ->> 'origins')::jsonb,
                       mime_type  = data ->> 'mime_type',
-                      type       = (data ->> 'type')::upload_type
+                      type       = (data ->> 'type')::upload_type,
+                      backup_urls = upld.backup_urls || json_arr_to_text_arr(data -> 'backup_urls')
     RETURNING id INTO inserted_upload_id;
 END
 $$;
