@@ -1,0 +1,43 @@
+name: cron
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/cron/**'
+      - '.github/workflows/cron.yml'
+      - 'yarn.lock'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'packages/cron/**'
+      - '.github/workflows/cron.yml'
+      - 'yarn.lock'
+
+jobs:
+  check:
+    name: Typecheck cron
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - uses: bahmutov/npm-install@v1
+      - name: Typecheck
+        uses: gozala/typescript-error-reporter-action@v1.0.8
+        with:
+          project: packages/cron/tsconfig.json
+
+  test:
+    name: Test cron
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - uses: bahmutov/npm-install@v1
+      - name: Test (ES)
+        run: yarn --cwd packages/cron test
