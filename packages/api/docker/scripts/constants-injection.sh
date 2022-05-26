@@ -1,20 +1,15 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 
 # Introduced these variables mostly to debug the env templating in a container vs the host.
 
-THIS_DIR="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-API_DIR="$THIS_DIR/../.."
-pushd $API_DIR
-
 # Variables for use in docker.
-# ESBUILD_CMD="node_modules/esbuild/bin/esbuild"
+ESBUILD_CMD="node_modules/esbuild/bin/esbuild"
 ENTRYPOINT="./src/index.js"
-OUT_DIR="./dist/"
+OUT_DIR="dist"
 
 # variables for use in the host for debugging, etc.
 ESBUILD_CMD="npx esbuild"
-# ENTRYPOINT="./src/constants.js"
 # OUT_DIR="./tmp"
 
 # End host debug section
