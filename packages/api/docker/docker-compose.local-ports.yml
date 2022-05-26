@@ -7,4 +7,4 @@ services:
       - '5432:5432'
   ipfs-cluster:
     ports:
-      - '5001:5001'
+      - '9094:9094'
