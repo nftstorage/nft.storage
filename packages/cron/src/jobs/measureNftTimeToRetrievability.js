@@ -7,20 +7,50 @@ import fetch from '@web-std/fetch'
 import { NFTStorage } from 'nft.storage'
 import { EnvironmentLoader } from 'safe-env-vars'
 import { Milliseconds, now } from '../lib/time.js'
+import { buffer } from 'streaming-iterables'
+import { File } from '@web-std/file'
 
 const env = new EnvironmentLoader()
 const NFT_STORAGE_API_KEY = env.string.get('NFT_STORAGE_API_KEY')
-const EXAMPLE_NFT_IMG_URL =
+export const EXAMPLE_NFT_IMG_URL = new URL(
   'https://bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4.ipfs.dweb.link/1681.png'
+)
 
 /**
  * @typedef RetrieveLog
  * @property {"retrieve"}   type
+ * @property {string}       image
  * @property {URL}          url
  * @property {number}       contentLength
  * @property {Date}         startTime
  * @property {Milliseconds} duration
  */
+
+/**
+ * @returns {AsyncIterable<File>}
+ */
+export function TestImages(count = 1) {
+  return (async function* () {
+    while (count--) {
+      yield new File([Uint8Array.from([1, 2, 3])], 'image.png', {
+        type: 'image/png',
+      })
+    }
+  })()
+}
+
+/**
+ * @param  {...URL} urls
+ * @returns {AsyncIterable<Blob>}
+ */
+export function UrlImages(...urls) {
+  return (async function* () {
+    for (const url of urls) {
+      const resp = await fetch(url.toString())
+      yield resp.blob()
+    }
+  })()
+}
 
 /**
  * Job that tests/measures steps
@@ -32,8 +62,10 @@ const EXAMPLE_NFT_IMG_URL =
  * @param {string} [config.metricsPushGateway] - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
  * @param {string} [config.metricsPushGatewayBasicAuthUser] - authorization for metricsPushGateway
  * @param {string} [config.nftStorageToken] - API Token for nft.storage
+ * @param {import('../lib/log.js').LogFunction} config.log - logger
+ * @param {AsyncIterable<Blob>} config.images - images to upload/retrieve
  */
-export async function measureNftTimeToRetrievability(config = {}) {
+export async function measureNftTimeToRetrievability(config) {
   const start = {
     type: 'start',
     job: 'measureNftTimeToRetrievability',
@@ -42,69 +74,78 @@ export async function measureNftTimeToRetrievability(config = {}) {
       url: config.url,
     },
   }
-  console.log(JSON.stringify(start))
+  config.log('info', start)
   const testStartDate = new Date()
   const testStart = now()
   const dir = await createRandomDir()
-  const imageResponse = await fetch(EXAMPLE_NFT_IMG_URL)
-  const image = await imageResponse.blob()
-  const nft = {
-    image, // use image Blob as `image` field
-    name: 'Example NFT',
-    description: 'Example NFT used by nft.storage cron nft-ttr',
-  }
-  const client = new NFTStorage({
-    token: config.nftStorageToken ?? NFT_STORAGE_API_KEY,
-  })
-  const storeStartedDate = new Date()
-  const storeStartedAt = now()
-  const metadata = await client.store(nft)
-  const storeEndAt = now()
-  const store = {
-    type: 'store',
-    startTime: storeStartedDate,
-    duration: new Milliseconds(
-      storeEndAt.toNumber() - storeStartedAt.toNumber()
-    ),
-  }
-  console.log(JSON.stringify(store))
-  const retrievalUrl = new URL(
-    `https://${metadata.ipnft}.ipfs.nftstorage.link/image/blob`
-  )
-  const retrieveFetchDate = new Date()
-  const retrieveFetchStart = now()
-  const retrieveImageResponse = await fetch(retrievalUrl.toString())
-  const retrieveFetchEnd = now()
-  const retrieveReadStart = now()
-  const retrievedImage = await retrieveImageResponse.blob()
-  const retrieveReadEnd = now()
-  const retrievalDuration = new Milliseconds(
-    retrieveReadEnd.toNumber() - retrieveFetchStart.toNumber()
-  )
-  /** @type {RetrieveLog} */
-  const retrieve = {
-    type: 'retrieve',
-    url: retrievalUrl,
-    contentLength: retrievedImage.size,
-    startTime: retrieveFetchDate,
-    duration: retrievalDuration,
-  }
-  console.log(JSON.stringify(retrieve))
-  const { metricsPushGateway, metricsPushGatewayBasicAuthUser } = config
-  if (metricsPushGateway) {
-    assert.ok(
-      metricsPushGatewayBasicAuthUser,
-      'expected metricsPushGatewayBasicAuthUser'
+  for await (const image of config.images) {
+    const imageId = Number(new Date()).toString()
+    const nft = {
+      image: /** @type {Blob} */ (image), // use image Blob as `image` field
+      name: 'Example NFT',
+      description: 'Example NFT used by nft.storage cron nft-ttr',
+    }
+    const client = new NFTStorage({
+      token: config.nftStorageToken ?? NFT_STORAGE_API_KEY,
+    })
+    const storeStartedDate = new Date()
+    const storeStartedAt = now()
+    const metadata = await client.store(nft)
+    const storeEndAt = now()
+    const store = {
+      type: 'store',
+      image: imageId,
+      startTime: storeStartedDate,
+      duration: new Milliseconds(
+        storeEndAt.toNumber() - storeStartedAt.toNumber()
+      ),
+    }
+    config.log('info', store)
+    const retrievalUrl = new URL(
+      `https://${metadata.ipnft}.ipfs.nftstorage.link/image/blob`
     )
-    await pushRetrieveMetrics(
-      { metricsPushGateway, metricsPushGatewayBasicAuthUser },
-      retrieve
+    const retrieveFetchDate = new Date()
+    const retrieveFetchStart = now()
+    const retrieveImageResponse = await fetch(retrievalUrl.toString())
+    const retrieveFetchEnd = now()
+    const retrieveReadStart = now()
+    const retrievedImage = await retrieveImageResponse.blob()
+    const retrieveReadEnd = now()
+    const retrievalDuration = new Milliseconds(
+      retrieveReadEnd.toNumber() - retrieveFetchStart.toNumber()
     )
-  } else {
-    console.warn(
-      'skipping pushRetrieveMetrics because no metricsPushGateway is configured'
-    )
+    /** @type {RetrieveLog} */
+    const retrieve = {
+      type: 'retrieve',
+      image: imageId,
+      url: retrievalUrl,
+      contentLength: retrievedImage.size,
+      startTime: retrieveFetchDate,
+      duration: retrievalDuration,
+    }
+    config.log('info', retrieve)
+    const { metricsPushGateway, metricsPushGatewayBasicAuthUser } = config
+    if (metricsPushGateway) {
+      assert.ok(
+        metricsPushGatewayBasicAuthUser,
+        'expected metricsPushGatewayBasicAuthUser'
+      )
+      await pushRetrieveMetrics(
+        {
+          metricsPushGateway,
+          metricsPushGatewayBasicAuthUser,
+          log: config.log,
+        },
+        retrieve
+      )
+    } else {
+      config.log(
+        'warn',
+        'skipping pushRetrieveMetrics because no metricsPushGateway is configured'
+      )
+    }
   }
+  config.log('info', { type: 'finish' })
 }
 
 /**
@@ -112,6 +153,7 @@ export async function measureNftTimeToRetrievability(config = {}) {
  * @param {object} config
  * @param {string} config.metricsPushGateway - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
  * @param {string} config.metricsPushGatewayBasicAuthUser - authorization for metricsPushGateway
+ * @param {import('../lib/log.js').LogFunction} config.log - logger
  * @param {RetrieveLog} retrieval
  */
 async function pushRetrieveMetrics(config, retrieval) {
@@ -131,13 +173,11 @@ async function pushRetrieveMetrics(config, retrieval) {
   ]
   const pushResponse = await fetch.apply(null, pushRequest)
   if (![200, 201].includes(pushResponse.status)) {
-    console.warn(
-      JSON.stringify({
-        type: 'error',
-        message: 'unsuccessful metrics push',
-        text: await pushResponse.text(),
-      })
-    )
+    config.log('warn', {
+      type: 'error',
+      message: 'unsuccessful metrics push',
+      text: await pushResponse.text(),
+    })
   }
   assert.equal(pushResponse.status, 201)
 }
@@ -164,7 +204,7 @@ function formatRetrievalMetrics(retrieval) {
   return [
     '# HELP nftstorage_retrieval_duration_seconds How long it took to retrieve an nft image',
     '# TYPE nftstorage_retrieval_duration_seconds gauge',
-    `nftstorage_retrieval_duration_seconds{url="${retrieval.url}",size="${retrieval.contentLength}"} ${durationSeconds}`,
+    `nftstorage_retrieval_duration_seconds{image="${retrieval.image}",url="${retrieval.url}",size="${retrieval.contentLength}"} ${durationSeconds}`,
   ].join('\n')
 }
 

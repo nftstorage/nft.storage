@@ -6,10 +6,16 @@ import dotenv from 'dotenv'
 import fetch from '@web-std/fetch'
 import { updatePendingPinStatuses } from '../jobs/pins.js'
 import { getPg, getCluster1, getCluster2, getCluster3 } from '../lib/utils.js'
-import { measureNftTimeToRetrievability } from '../jobs/measureNftTimeToRetrievability.js'
+import {
+  EXAMPLE_NFT_IMG_URL,
+  measureNftTimeToRetrievability,
+  TestImages,
+  UrlImages,
+} from '../jobs/measureNftTimeToRetrievability.js'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { EnvironmentLoader } from 'safe-env-vars'
+import { ConsoleLog, JSONLogger } from '../lib/log.js'
 const env = new EnvironmentLoader()
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -31,6 +37,8 @@ async function main(...argv) {
             type: 'string',
           },
         }).argv),
+        log: JSONLogger(ConsoleLog()),
+        images: UrlImages(EXAMPLE_NFT_IMG_URL),
         metricsPushGatewayBasicAuthUser: env.optional.string.get(
           'PUSHGATEWAY_BASIC_AUTH'
         ),
