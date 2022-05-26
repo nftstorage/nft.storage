@@ -35,6 +35,7 @@
     "p-retry": "^4.6.1",
     "p-settle": "^5.0.0",
     "pg": "^8.7.1",
+    "safe-env-vars": "^1.0.4",
     "streaming-iterables": "^6.0.0",
     "yargs": "^17.5.1"
   },
