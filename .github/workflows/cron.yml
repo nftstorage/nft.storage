@@ -54,6 +54,6 @@ jobs:
           node-version: 16
       - uses: bahmutov/npm-install@v1
       - name: Test (ES)
-        run: yarn --cwd packages/cron test
+        run: '[[ -z "${NFT_STORAGE_API_KEY}" ]] && yarn --cwd packages/cron test || echo "NFT_STORAGE_API_KEY is empty"'
         env:
           NFT_STORAGE_API_KEY: ${{ secrets.NFT_STORAGE_API_KEY }}
