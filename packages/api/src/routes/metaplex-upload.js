@@ -14,7 +14,7 @@ import {
   ErrorMetaplexTokenNotFound,
   ErrorInvalidMetaplexToken,
 } from '../errors.js'
-import { secrets } from '../constants.js'
+import { getServiceConfig } from '../config.js'
 import { uploadCarWithStat, carStat } from './nfts-upload.js'
 
 /**
@@ -72,7 +72,8 @@ export async function metaplexUpload(event, ctx) {
  * @param {import('../utils/db-client').DBClient} db
  */
 async function validate(db) {
-  if (!secrets.metaplexAuth) {
+  const { METAPLEX_AUTH_TOKEN } = getServiceConfig()
+  if (!METAPLEX_AUTH_TOKEN) {
     throw new Error('missing metaplex auth key')
   }
   // note: we need to specify the foreign key to use in the select statement below
@@ -81,7 +82,7 @@ async function validate(db) {
   const { error, data } = await db.client
     .from('auth_key')
     .select('id,user:auth_key_user_id_fkey(id)')
-    .eq('secret', secrets.metaplexAuth)
+    .eq('secret', METAPLEX_AUTH_TOKEN)
     .single()
 
   if (error) {

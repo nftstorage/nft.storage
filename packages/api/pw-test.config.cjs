@@ -6,9 +6,7 @@ const { once } = require('events')
 
 /** @typedef {{ proc: execa.ExecaChildProcess<string> }} ProcessObject */
 
-dotenv.config({
-  path: path.join(__dirname, '../../.env'),
-})
+dotenv.config({ path: path.join(__dirname, '../../.env') })
 
 const cli = path.join(__dirname, 'scripts/cli.js')
 /** @type {import('esbuild').Plugin} */
@@ -23,6 +21,14 @@ const nodeBuiltinsPlugin = {
 
 /** @type {import('playwright-test').RunnerOptions} */
 module.exports = {
+  buildConfig: {
+    inject: [path.join(__dirname, './scripts/node-globals.js')],
+    plugins: [nodeBuiltinsPlugin],
+  },
+  buildSWConfig: {
+    inject: [path.join(__dirname, './scripts/node-globals.js')],
+    plugins: [nodeBuiltinsPlugin],
+  },
   beforeTests: async () => {
     const mock = await startMockServer('AWS S3', 9095, 'test/mocks/aws-s3')
     return { mock }
