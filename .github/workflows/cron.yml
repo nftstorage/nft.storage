@@ -25,8 +25,6 @@ jobs:
         with:
           node-version: '16'
       - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: packages/cron
       - run: yarn workspace cron lint
 
   check:
@@ -39,7 +37,7 @@ jobs:
           node-version: '16'
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: packages/cron
+          install-command: yarn
       - name: Typecheck
         uses: gozala/typescript-error-reporter-action@v1.0.8
         with:
@@ -54,7 +52,5 @@ jobs:
         with:
           node-version: 16
       - uses: bahmutov/npm-install@v1
-        with:
-          working-directory: packages/cron
       - name: Test (ES)
         run: yarn --cwd packages/cron test
