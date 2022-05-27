@@ -36,6 +36,8 @@ jobs:
         with:
           node-version: '16'
       - uses: bahmutov/npm-install@v1
+      - run: ls -alh node_modules | grep 'nft.storage'
+      - run: ls -alh packages/cron/node_modules | grep 'nft.storage'
       - run: yarn workspace cron typecheck
 
   test:
