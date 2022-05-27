@@ -36,12 +36,7 @@ jobs:
         with:
           node-version: '16'
       - uses: bahmutov/npm-install@v1
-        with:
-          install-command: yarn
-      - name: Typecheck
-        uses: gozala/typescript-error-reporter-action@v1.0.8
-        with:
-          project: packages/cron/tsconfig.json
+      - run: yarn workspace cron typecheck
 
   test:
     name: Test cron
