@@ -36,6 +36,8 @@ jobs:
         with:
           node-version: '16'
       - uses: bahmutov/npm-install@v1
+      - run: yarn workspace nft.storage install
+      - run: yarn workspace cron install
       - run: ls -alh node_modules | grep 'nft.storage' || true
       - run: ls -alh packages/cron/node_modules | grep 'nft.storage' || true
       - run: ls -alh packages/client || true

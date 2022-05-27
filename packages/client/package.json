@@ -48,8 +48,7 @@
     "build:esm": "rollup --config rollup.esm.config.js",
     "coverage": "nyc report --reporter=text-lcov > coverage.lcov && npx codecov",
     "typedoc": "typedoc",
-    "prepare": "npm run build",
-    "prepack": "npm run build"
+    "prepare": "npm run build"
   },
   "dependencies": {
     "@ipld/car": "^3.2.3",
