@@ -1,8 +1,17 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "@cloudflare/workers-types",
+      "@types/jest",
+      "@types/mocha",
+      "@types/node",
+      "@types/webpack-env"
+    ]
+  },
   "scripts": {
     "dev:api": "cd packages/api && yarn dev",
     "dev:website": "cd packages/website && yarn dev",

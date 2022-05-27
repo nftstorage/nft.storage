@@ -2,7 +2,7 @@ import {
   measureNftTimeToRetrievability,
   TestImages,
 } from './measureNftTimeToRetrievability.js'
-import { jest } from '@jest/globals'
+import { jest, describe, it } from '@jest/globals'
 import * as assert from 'assert'
 
 /** @type {import('../lib/log.js').LogFunction} */
