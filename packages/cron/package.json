@@ -33,7 +33,6 @@
     "form-data": "^4.0.0",
     "jest": "^28.1.0",
     "limiter": "2.0.1",
-    "mime-types": "^2.1.35",
     "nft.storage": "^6.0.0",
     "p-retry": "^4.6.1",
     "p-settle": "^5.0.0",
