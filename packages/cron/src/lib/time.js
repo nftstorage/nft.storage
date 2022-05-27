@@ -10,6 +10,7 @@ export class Milliseconds {
     symbol: 'ms',
     name: 'millisecond',
   }
+
   /**
    * @param {number} numberMs
    */
@@ -20,12 +21,15 @@ export class Milliseconds {
     }
     this.#size = numberMs
   }
+
   get size() {
     return this.#size
   }
+
   toNumber() {
     return this.size
   }
+
   toJSON() {
     return {
       unit: this.unit,

@@ -1,13 +1,8 @@
-import { tmpdir } from 'os'
-import * as path from 'path'
-import { mkdtemp, writeFile } from 'node:fs/promises'
 import * as assert from 'assert'
-import mime from 'mime-types'
 import fetch from '@web-std/fetch'
 import { NFTStorage } from 'nft.storage'
 import { EnvironmentLoader } from 'safe-env-vars'
 import { Milliseconds, now } from '../lib/time.js'
-import { buffer } from 'streaming-iterables'
 import { File } from '@web-std/file'
 
 const env = new EnvironmentLoader()
@@ -24,6 +19,19 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
  * @property {number}       contentLength
  * @property {Date}         startTime
  * @property {Milliseconds} duration
+ */
+
+/**
+ * @typedef {import('nft.storage/dist/src/token').TokenInput} TokenInput
+ */
+
+/**
+ * @template {TokenInput} T
+ * @typedef {import('nft.storage').TokenType<T>} TokenType
+ */
+
+/**
+ * @typedef {(token: TokenInput) => Promise<Pick<TokenType<TokenInput>, 'ipnft'>>} StoreFunction
  */
 
 /**
@@ -57,27 +65,24 @@ export function UrlImages(...urls) {
  * * prepare a sample image
  * * upload to nft.storage
  * * retrieve image through ipfs gateway
+ * @template {import('nft.storage/dist/src/lib/interface').TokenInput} T
  * @param {object} config
+ * @param {AsyncIterable<Blob>} config.images - images to upload/retrieve
+ * @param {StoreFunction} [config.store] - function to store nft
  * @param {string} [config.url] - URL to nft.storage to measure
  * @param {string} [config.metricsPushGateway] - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
- * @param {string} [config.metricsPushGatewayBasicAuthUser] - authorization for metricsPushGateway
- * @param {string} [config.nftStorageToken] - API Token for nft.storage
  * @param {import('../lib/log.js').LogFunction} config.log - logger
- * @param {AsyncIterable<Blob>} config.images - images to upload/retrieve
+ * @param {object} secrets
+ * @param {string} secrets.nftStorageToken - API Token for nft.storage
+ * @param {string} [secrets.metricsPushGatewayBasicAuthUser] - authorization for metricsPushGateway
  */
-export async function measureNftTimeToRetrievability(config) {
+export async function measureNftTimeToRetrievability(config, secrets) {
   const start = {
     type: 'start',
     job: 'measureNftTimeToRetrievability',
-    config: {
-      metricsPushGateway: config.metricsPushGateway,
-      url: config.url,
-    },
+    config,
   }
   config.log('info', start)
-  const testStartDate = new Date()
-  const testStart = now()
-  const dir = await createRandomDir()
   for await (const image of config.images) {
     const imageId = Number(new Date()).toString()
     const nft = {
@@ -86,13 +91,15 @@ export async function measureNftTimeToRetrievability(config) {
       description: 'Example NFT used by nft.storage cron nft-ttr',
     }
     const client = new NFTStorage({
-      token: config.nftStorageToken ?? NFT_STORAGE_API_KEY,
+      token: secrets.nftStorageToken,
     })
     const storeStartedDate = new Date()
     const storeStartedAt = now()
-    const metadata = await client.store(nft)
+    /** @type {StoreFunction} */
+    const store = config.store || ((nft) => client.store(nft))
+    const metadata = await store(nft)
     const storeEndAt = now()
-    const store = {
+    const storeLog = {
       type: 'store',
       image: imageId,
       startTime: storeStartedDate,
@@ -100,15 +107,13 @@ export async function measureNftTimeToRetrievability(config) {
         storeEndAt.toNumber() - storeStartedAt.toNumber()
       ),
     }
-    config.log('info', store)
+    config.log('info', storeLog)
     const retrievalUrl = new URL(
       `https://${metadata.ipnft}.ipfs.nftstorage.link/image/blob`
     )
     const retrieveFetchDate = new Date()
     const retrieveFetchStart = now()
     const retrieveImageResponse = await fetch(retrievalUrl.toString())
-    const retrieveFetchEnd = now()
-    const retrieveReadStart = now()
     const retrievedImage = await retrieveImageResponse.blob()
     const retrieveReadEnd = now()
     const retrievalDuration = new Milliseconds(
@@ -124,7 +129,8 @@ export async function measureNftTimeToRetrievability(config) {
       duration: retrievalDuration,
     }
     config.log('info', retrieve)
-    const { metricsPushGateway, metricsPushGatewayBasicAuthUser } = config
+    const { metricsPushGateway } = config
+    const { metricsPushGatewayBasicAuthUser } = secrets
     if (metricsPushGateway) {
       assert.ok(
         metricsPushGatewayBasicAuthUser,
@@ -206,34 +212,4 @@ function formatRetrievalMetrics(retrieval) {
     '# TYPE nftstorage_retrieval_duration_seconds gauge',
     `nftstorage_retrieval_duration_seconds{image="${retrieval.image}",url="${retrieval.url}",size="${retrieval.contentLength}"} ${durationSeconds}`,
   ].join('\n')
-}
-
-/**
- * Create a new dir on the fs that can be used to test in
- * @returns fs path to dir
- */
-async function createRandomDir() {
-  const randomDir = await mkdtemp(`${tmpdir()}${path.sep}nft-ttr-`)
-  return randomDir
-}
-
-/**
- * Download a file from a source url to the filesystem
- * @param {URL} source
- * @param {(o: { ext: string }) => string} createTargetPath
- */
-async function downloadFile(source, createTargetPath) {
-  const response = await fetch(source.toString(), {
-    headers: {
-      accept: 'image/*',
-    },
-  })
-  assert.ok(response.body)
-  const ct = response.headers.get('content-type')
-  assert.ok(ct, 'unable to determine response content-type')
-  const ext = mime.extension(ct)
-  assert.ok(ext, 'unable to determine file extension from mimetype')
-  const target = createTargetPath({ ext })
-  writeFile(target, response.body)
-  return { target }
 }

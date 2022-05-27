@@ -16,6 +16,17 @@ on:
       - 'yarn.lock'
 
 jobs:
+  lint:
+    name: lint cron
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - uses: bahmutov/npm-install@v1
+      - run: yarn workspace cron lint
+
   check:
     name: Typecheck cron
     runs-on: ubuntu-latest
