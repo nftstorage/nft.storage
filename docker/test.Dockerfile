@@ -11,9 +11,10 @@ COPY  ./tsconfig.json .
 RUN yarn install
 
 COPY ./pw-test.config.cjs .
-COPY ./docker/scripts ./scripts
+COPY ./scripts ./scripts
+COPY ./docker/scripts ./docker-scripts
 COPY ./db ./db
 COPY ./src/ ./src
 COPY ./test/ ./test
 
-ENTRYPOINT ["./scripts/run-playwright.sh" ]
+ENTRYPOINT ["./docker-scripts/run-playwright.sh" ]

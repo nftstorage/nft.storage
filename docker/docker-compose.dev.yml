@@ -1,0 +1,43 @@
+services:
+  playwright:
+    profiles:
+      - test
+    depends_on:
+      - post-rest
+      - ipfs-cluster
+    build:
+      dockerfile: ./docker/test.Dockerfile
+      context: ../
+
+  api:
+    restart: on-failure
+    build:
+      dockerfile: ./docker/Dockerfile
+      context: ../
+    environment:
+      - BRANCH
+      - CLUSTER_API_URL
+      - CLUSTER_BASIC_AUTH_TOKEN
+      - CLUSTER_SERVICE
+      - COMMITHASH
+      - DATABASE_CONNECTION
+      - DATABASE_TOKEN
+      - DATABASE_URL
+      - DEBUG
+      - ENV
+      - LOGTAIL_TOKEN
+      - MAGIC_SECRET_KEY
+      - MAILCHIMP_API_KEY
+      - MAINTENANCE_MODE
+      - METAPLEX_AUTH_TOKEN
+      - PRIVATE_KEY
+      - SALT
+      - SENTRY_DSN
+      - VERSION
+
+    depends_on:
+      - post-rest
+      - ipfs-cluster
+
+    volumes:
+      - ../src:/app/src

@@ -9,47 +9,25 @@ services:
       PGRST_DB_SCHEMAS: public,cargo
       PGRST_DB_ANON_ROLE: postgres
       PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+
+  # db-init runs initial database migrations against the db container.
+  # always applies cargo.testing.sql, since this compose file assumes dev or testing
+  # are the intended use cases. A production compose setup would need to set up
+  # the FDW connection to the production dag-cargo tables, using credentials from the
+  # environment. See packages/api/scripts/cli/cmds/db-sql.js for production set up.
   db-init:
     restart: on-failure
     build:
       dockerfile: './docker/Dockerfile'
       context: '../'
-    entrypoint: 'psql $DATABASE_CONNECTION -v "ON_ERROR_STOP=1" -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql -f ./db/functions.sql'
+    entrypoint: 'psql $DATABASE_CONNECTION -v "ON_ERROR_STOP=1" -f ./packages/api/db/config.sql -f ./packages/api/db/tables.sql -f ./packages/api/db/functions.sql -f ./packages/api/db/cargo.testing.sql'
     depends_on:
       - db
     environment:
       - DATABASE_CONNECTION
       - DATABASE_URL
       - DATABASE_TOKEN
-  api:
-    restart: on-failure
-    build:
-      dockerfile: ./docker/Dockerfile
-      context: ../
-    environment:
-      - BRANCH
-      - CLUSTER_API_URL
-      - CLUSTER_BASIC_AUTH_TOKEN
-      - CLUSTER_SERVICE
-      - COMMITHASH
-      - DATABASE_CONNECTION
-      - DATABASE_TOKEN
-      - DATABASE_URL
-      - DEBUG
-      - ENV
-      - LOGTAIL_TOKEN
-      - MAGIC_SECRET_KEY
-      - MAILCHIMP_API_KEY
-      - MAINTENANCE_MODE
-      - METAPLEX_AUTH_TOKEN
-      - PRIVATE_KEY
-      - SALT
-      - SENTRY_DSN
-      - VERSION
 
-    depends_on:
-      - post-rest
-      - ipfs-cluster
   db:
     build:
       context: ./postgres
@@ -75,37 +53,3 @@ services:
       CLUSTER_RESTAPI_CORSALLOWEDMETHODS: GET,POST,OPTIONS
       CLUSTER_RESTAPI_CORSALLOWEDHEADERS: authorization
       CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
-  playwright:
-    profiles:
-      - test
-    depends_on:
-      api:
-        condition: service_healthy
-    build:
-      dockerfile: ./docker/test.Dockerfile
-      context: ../
-    environment:
-      - BRANCH
-      - CLUSTER_API_URL
-      - CLUSTER_BASIC_AUTH_TOKEN
-      - CLUSTER_SERVICE
-      - COMMITHASH
-      - DATABASE_CONNECTION
-      - DATABASE_TOKEN
-      - DATABASE_URL
-      - DEBUG
-      - ENV
-      - LOGTAIL_TOKEN
-      - MAGIC_SECRET_KEY
-      - MAILCHIMP_API_KEY
-      - MAINTENANCE_MODE
-      - METAPLEX_AUTH_TOKEN
-      - PRIVATE_KEY
-      - S3_ACCESS_KEY_ID
-      - S3_BUCKET_NAME
-      - S3_ENDPOINT
-      - S3_REGION
-      - S3_SECRET_ACCESS_KEY
-      - SALT
-      - SENTRY_DSN
-      - VERSION
