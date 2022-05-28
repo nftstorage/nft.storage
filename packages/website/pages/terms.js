@@ -98,7 +98,7 @@ export default function TermsOfService() {
         </p>
 
         <h2 className="chicagoflf">
-          <HashLink id="storage-term">NFT.Storage Gateway</HashLink>
+          <HashLink id="gateway">NFT.Storage Gateway</HashLink>
         </h2>
         <p className="leading-normal my-2">
           Use of the NFT.Storage Gateway (“the Gateway”) is subject to the Terms
@@ -132,6 +132,29 @@ export default function TermsOfService() {
             DMCA Policy
           </a>
           .
+        </p>
+
+        <h2 className="chicagoflf">
+          <HashLink id="superhot">SuperHot Caching Service</HashLink>
+        </h2>
+        <p className="leading-normal my-2">
+          Use of the SuperHot caching service (“Superhot”) is also subject to the Terms 
+          of Service of{' '}
+          <a className="black" href="https://discuss.ipfs.io/tos">
+            IPFS.io
+          </a>
+          .
+        </p>
+        <p className="leading-normal my-2">
+          Protocol Labs reserves the right to delete cached content from servers 
+          managed or controlled by Protocol Labs if we determine that the content 
+          violates the Terms of Service of IPFS.io.  For severe violations, or if 
+          we determine you are a repeat infringer of others’ copyrighted content, 
+          we reserve the right to suspend or terminate your use of SuperHot and/or 
+          all Services. Protocol Labs may collect analytics data on your use of 
+          SuperHot, including data on requests, retrieval speeds, CIDs, and other 
+          performance data. Protocol Labs reserves all rights in and to such 
+          performance data and analytics.
         </p>
       </div>
     </main>
