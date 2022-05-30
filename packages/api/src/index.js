@@ -46,8 +46,9 @@ const r = new Router(getContext, {
   },
 })
 
-const checkHasPsaAccess = true
 const checkHasAccountRestriction = true
+const checkHasDeleteRestriction = true
+const checkHasPsaAccess = true
 const checkUcan = true
 
 // Monitoring
@@ -116,7 +117,10 @@ r.add(
 r.add(
   'delete',
   '/pins/:requestid',
-  withAuth(withMode(pinsDelete, RW), { checkHasPsaAccess }),
+  withAuth(withMode(pinsDelete, RW), {
+    checkHasDeleteRestriction,
+    checkHasPsaAccess,
+  }),
   [postCors]
 )
 
@@ -145,7 +149,12 @@ r.add(
   withAuth(withMode(nftStore, RW), { checkHasAccountRestriction }),
   [postCors]
 )
-r.add('delete', '/:cid', withAuth(withMode(nftDelete, RW)), [postCors])
+r.add(
+  'delete',
+  '/:cid',
+  withAuth(withMode(nftDelete, RW), { checkHasDeleteRestriction }),
+  [postCors]
+)
 
 // Temporary Metaplex upload route, mapped to metaplex user account.
 r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
@@ -167,9 +176,12 @@ r.add(
   withAuth(withMode(tokensCreate, RW), { checkHasAccountRestriction }),
   [postCors]
 )
-r.add('delete', '/internal/tokens', withAuth(withMode(tokensDelete, RW)), [
-  postCors,
-])
+r.add(
+  'delete',
+  '/internal/tokens',
+  withAuth(withMode(tokensDelete, RW), { checkHasDeleteRestriction }),
+  [postCors]
+)
 
 // Blog
 r.add('post', '/internal/blog/subscribe', blogSubscribe, [postCors])
@@ -208,7 +220,10 @@ r.add(
 r.add(
   'delete',
   '/api/pins/:requestid',
-  withAuth(withMode(pinsDelete, RW), { checkHasPsaAccess }),
+  withAuth(withMode(pinsDelete, RW), {
+    checkHasDeleteRestriction,
+    checkHasPsaAccess,
+  }),
   [postCors]
 )
 
@@ -222,7 +237,12 @@ r.add(
   withAuth(withMode(nftUpload, RW), { checkUcan, checkHasAccountRestriction }),
   [postCors]
 )
-r.add('delete', '/api/:cid', withAuth(withMode(nftDelete, RW)), [postCors])
+r.add(
+  'delete',
+  '/api/:cid',
+  withAuth(withMode(nftDelete, RW), { checkHasDeleteRestriction }),
+  [postCors]
+)
 
 r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))

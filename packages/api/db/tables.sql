@@ -12,6 +12,7 @@ CREATE TYPE auth_key_blocked_status_type AS ENUM (
 CREATE TYPE user_tag_type AS ENUM
 (
   'HasAccountRestriction',
+  'HasDeleteRestriction',
   'HasPsaAccess',
   'HasSuperHotAccess',
   'StorageLimitBytes'

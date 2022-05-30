@@ -50,6 +50,7 @@ export interface Auth {
 export interface AuthOptions {
   checkUcan?: boolean
   checkHasAccountRestriction?: boolean
+  checkHasDeleteRestriction?: boolean
   checkHasPsaAccess?: boolean
 }
 

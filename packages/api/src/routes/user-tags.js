@@ -9,6 +9,7 @@ export const userTags = async (event, ctx) => {
   const tags = {
     HasAccountRestriction: hasTag(user, 'HasAccountRestriction', 'true'),
     HasPsaAccess: hasTag(user, 'HasPsaAccess', 'true'),
+    HasDeleteRestriction: hasTag(user, 'HasDeleteRestriction', 'true'),
     HasSuperHotAccess: hasTag(user, 'HasSuperHotAccess', 'true'),
     StorageLimitBytes: getTagValue(user, 'StorageLimitBytes', ''),
   }
