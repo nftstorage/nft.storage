@@ -24,6 +24,7 @@ jobs:
           DEBUG: '*'
           ENV: ${{ matrix.env }}
           NFT_STORAGE_API_KEY: ${{ secrets.NFT_STORAGE_API_KEY }}
+          PUSHGATEWAY_BASIC_AUTH: ${{ secrets.PUSHGATEWAY_BASIC_AUTH }}
         run: |
           yarn workspace --silent cron run --silent start:nft-ttr measure --logConfigAndExit
           yarn workspace --silent cron run --silent start:nft-ttr measure \
