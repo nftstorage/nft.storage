@@ -32,7 +32,7 @@ describe('measureNftTimeToRetrievability', () => {
       {
         log,
         images: TestImages(1),
-        gateways: ['https://nftstorage.link'],
+        gateways: [new URL('https://nftstorage.link')],
         store: (n) => storer.store(n),
       },
       {
