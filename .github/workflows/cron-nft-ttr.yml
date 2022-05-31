@@ -26,7 +26,10 @@ jobs:
           NFT_STORAGE_API_KEY: ${{ secrets.NFT_STORAGE_API_KEY }}
         run: |
           yarn workspace --silent cron run --silent start:nft-ttr measure --logConfigAndExit
-          yarn workspace --silent cron run --silent start:nft-ttr measure --min-image-size-bytes=10000000
+          yarn workspace --silent cron run --silent start:nft-ttr measure \
+            --min-image-size-bytes=10000000 \
+            --gateways https://nftstorage.link https://dweb.link \
+
       - name: Heartbeat
         if: ${{ success() }}
         run: ./packages/tools/cli.js heartbeat --token ${{ secrets.OPSGENIE_KEY }} --name cron-nft-ttr
