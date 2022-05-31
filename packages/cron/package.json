@@ -31,6 +31,7 @@
     "debug": "^4.3.2",
     "dotenv": "^10.0.0",
     "form-data": "^4.0.0",
+    "it-to-buffer": "^2.0.2",
     "jest": "^28.1.0",
     "limiter": "2.0.1",
     "nft.storage": "^6.0.0",
@@ -38,6 +39,8 @@
     "p-settle": "^5.0.0",
     "pg": "^8.7.1",
     "safe-env-vars": "^1.0.4",
+    "sharp": "^0.30.6",
+    "stream-mime-type": "^1.0.2",
     "streaming-iterables": "^6.0.0",
     "yargs": "^17.5.1"
   },
@@ -46,6 +49,7 @@
     "@types/jest": "^27.5.1",
     "@types/mime-types": "^2.1.1",
     "@types/node": "^17.0.35",
+    "@types/sharp": "^0.30.2",
     "npm-run-all": "^4.1.5"
   },
   "eslintConfig": {
