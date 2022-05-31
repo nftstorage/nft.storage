@@ -36,3 +36,18 @@ export const JSONLogger = (log) => {
     return log(level, ...stringifiedLoggables)
   }
 }
+
+/**
+ * @returns {{log: import('../lib/log.js').LogFunction, info: any[]}}
+ */
+export const recordedLog = () => {
+  /** @type {any[]} */
+  const info = []
+  /** @type {import('../lib/log.js').LogFunction} */
+  const log = (level, ...loggables) => {
+    if (level === 'info') {
+      info.push(loggables)
+    }
+  }
+  return { log, info }
+}

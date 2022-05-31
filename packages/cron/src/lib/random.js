@@ -1,5 +1,9 @@
+import { Blob } from '@web-std/fetch'
+import toBuffer from 'it-to-buffer'
 import { randomBytes } from 'node:crypto'
+import { Readable } from 'node:stream'
 import sharp from 'sharp'
+import { getMimeType } from 'stream-mime-type'
 
 export const bytesBitCount = 8
 
@@ -42,4 +46,15 @@ export function RandomImage(options) {
     const image = await sharp({ create }).jpeg({ quality: 100 }).toBuffer()
     yield image
   })()
+}
+
+/**
+ * @param {AsyncIterable<Uint8Array>} imageBytes
+ * @returns {Promise<Blob>}
+ */
+export async function RandomImageBlob(imageBytes) {
+  const imageBytesReadable = Readable.from(imageBytes)
+  const { mime, stream } = await getMimeType(imageBytesReadable)
+  const allBytes = await toBuffer(Readable.from(stream))
+  return new Blob([allBytes], { type: mime })
 }
