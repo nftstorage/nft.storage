@@ -7,10 +7,9 @@
   "main": "dist/worker.js",
   "scripts": {
     "deploy": "wrangler publish --env production",
-    "predev": "../../",
     "dev": "miniflare --watch --debug --env ../../.env",
     "build": "./scripts/cli.js build",
-    "test": "./scripts/start-test.sh ",
+    "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js",
     "test:watch": "nodemon --watch ./src --watch ./test --watch ./scripts --exec ./scripts/start-test.sh",
     "test:local": "./scripts/start-test-local.sh",
     "db-types": "./scripts/cli.js db-types"

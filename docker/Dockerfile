@@ -1,23 +1,14 @@
-FROM node:16-alpine3.12
+FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:16
 
-HEALTHCHECK --interval=5s --timeout=5s --retries=3 \
-  CMD curl -f http://localhost:8787/stats || exit 1
+RUN npm i -g nodemon 
+RUN mkdir -p /nft.storage
+RUN mkdir -p /root/.cache/ms-playwright
 
-# Install some utilities to make debugging easier
-RUN apk add --update bash curl vim tmux postgresql-client
+WORKDIR /nft.storage
 
-RUN npm i -g nodemon
-RUN mkdir -p /app
-
-WORKDIR /app
-
-# Make your docker builds 100x faster with this one trick :)
 COPY ./package.json .
+COPY ./yarn.lock .
+COPY ./packages ./packages
 RUN yarn install
 
-COPY  ./tsconfig.json .
-COPY ./docker/scripts ./scripts
-COPY ./db ./db
-COPY ./src/ ./src
-
-ENTRYPOINT ["nodemon", "--watch", "src/", "--exec", "'./scripts/run-miniflare.sh'" ]
+CMD [ "/bin/sh", "-c", "'while true; do sleep 1000; done'" ]

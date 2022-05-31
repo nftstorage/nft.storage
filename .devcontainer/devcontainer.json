@@ -1,0 +1,17 @@
+{
+  "name": "nft.storage",
+  "dockerComposeFile": [
+    "../docker/docker-compose.yml",
+    "../docker/docker-compose.dev.yml"
+  ],
+  "service": "devcontainer",
+  "workspaceFolder": "/nft.storage",
+  "shutdownAction": "stopCompose",
+  "features": {
+    "docker-from-docker": {
+      "version": "latest",
+      "moby": true,
+      "dockerDashComposeVersion": "v2"
+    }
+  }
+}
