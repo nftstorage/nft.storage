@@ -70,6 +70,7 @@ export function UrlImages(...urls) {
  * @param {AsyncIterable<Blob>} config.images - images to upload/retrieve
  * @param {StoreFunction} [config.store] - function to store nft
  * @param {string} [config.url] - URL to nft.storage to measure
+ * @param {boolean} [config.logConfigAndExit] - if true, log config and exit
  * @param {string} [config.metricsPushGateway] - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
  * @param {import('../lib/log.js').LogFunction} config.log - logger
  * @param {object} secrets
@@ -77,6 +78,10 @@ export function UrlImages(...urls) {
  * @param {string} [secrets.metricsPushGatewayBasicAuthUser] - authorization for metricsPushGateway
  */
 export async function measureNftTimeToRetrievability(config, secrets) {
+  if (config.logConfigAndExit) {
+    config.log('info', config)
+    return
+  }
   const start = {
     type: 'start',
     job: 'measureNftTimeToRetrievability',

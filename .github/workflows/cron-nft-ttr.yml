@@ -23,15 +23,10 @@ jobs:
         env:
           DEBUG: '*'
           ENV: ${{ matrix.env }}
-          STAGING_DATABASE_CONNECTION: ${{ secrets.STAGING_DATABASE_CONNECTION }}
-          PROD_DATABASE_CONNECTION: ${{ secrets.PROD_DATABASE_CONNECTION }}
-          CLUSTER1_API_URL: ${{ secrets.CLUSTER1_API_URL }}
-          CLUSTER1_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER1_BASIC_AUTH_TOKEN }}
-          CLUSTER2_API_URL: ${{ secrets.CLUSTER2_API_URL }}
-          CLUSTER2_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER2_BASIC_AUTH_TOKEN }}
-          CLUSTER3_API_URL: ${{ secrets.CLUSTER3_API_URL }}
-          CLUSTER3_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER3_BASIC_AUTH_TOKEN }}
-        run: yarn --cwd packages/cron start:nft-ttr
+          NFT_STORAGE_API_KEY: ${{ secrets.NFT_STORAGE_API_KEY }}
+        run: |
+          yarn workspace --silent cron run --silent start:nft-ttr measure --logConfigAndExit
+          yarn workspace --silent cron run --silent start:nft-ttr measure --min-image-size-bytes=10000000
       - name: Heartbeat
         if: ${{ success() }}
         run: ./packages/tools/cli.js heartbeat --token ${{ secrets.OPSGENIE_KEY }} --name cron-nft-ttr

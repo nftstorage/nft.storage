@@ -18,12 +18,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 /** @ts-ignore */
 global.fetch = fetch
 
+/** @type {import('../lib/log.js').LogFunction} */
+const defaultLog = (level, ...loggables) => {
+  JSONLogger(ConsoleLog())(level, ...loggables)
+}
+
 /**
  * @param {string[]} argv
  * @param {object} [options]
  * @param {import('../lib/log.js').LogFunction} options.log
  */
-export async function main(argv, options = { log: JSONLogger(ConsoleLog) }) {
+export async function main(argv, options = { log: defaultLog }) {
   const [command, ...commandArgv] = argv
   /**
    * @param  {string[]} commandArgv
@@ -40,6 +45,10 @@ export async function main(argv, options = { log: JSONLogger(ConsoleLog) }) {
       minImageSizeBytes: {
         type: 'number',
         default: 1000,
+      },
+      logConfigAndExit: {
+        type: 'boolean',
+        default: false,
       },
     }).argv
     /** @type {AsyncIterable<Blob>} */
