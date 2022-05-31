@@ -72,6 +72,7 @@ export function UrlImages(...urls) {
  * @param {string} [config.url] - URL to nft.storage to measure
  * @param {boolean} [config.logConfigAndExit] - if true, log config and exit
  * @param {string} [config.metricsPushGateway] - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
+ * @param {URL[]} config.gateways - IPFS Gateway to test retrieval from
  * @param {import('../lib/log.js').LogFunction} config.log - logger
  * @param {object} secrets
  * @param {string} secrets.nftStorageToken - API Token for nft.storage
@@ -113,47 +114,77 @@ export async function measureNftTimeToRetrievability(config, secrets) {
       ),
     }
     config.log('info', storeLog)
-    const retrievalUrl = new URL(
-      `https://${metadata.ipnft}.ipfs.nftstorage.link/image/blob`
-    )
-    const retrieveFetchDate = new Date()
-    const retrieveFetchStart = now()
-    const retrieveImageResponse = await fetch(retrievalUrl.toString())
-    const retrievedImage = await retrieveImageResponse.blob()
-    const retrieveReadEnd = now()
-    const retrievalDuration = new Milliseconds(
-      retrieveReadEnd.toNumber() - retrieveFetchStart.toNumber()
-    )
-    /** @type {RetrieveLog} */
-    const retrieve = {
-      type: 'retrieve',
-      image: imageId,
-      url: retrievalUrl,
-      contentLength: retrievedImage.size,
-      startTime: retrieveFetchDate,
-      duration: retrievalDuration,
+    /**
+     * @param {URL} gatewayUrl
+     * @param {import('nft.storage').CIDString} ipnftCid
+     * @returns {URL}
+     */
+    function GatewayRetrievalUrl(gatewayUrl, ipnftCid) {
+      return new URL(`/ipfs/${ipnftCid}/image/blob`, gatewayUrl.toString())
     }
-    config.log('info', retrieve)
-    const { metricsPushGateway } = config
-    const { metricsPushGatewayBasicAuthUser } = secrets
-    if (metricsPushGateway) {
-      assert.ok(
-        metricsPushGatewayBasicAuthUser,
-        'expected metricsPushGatewayBasicAuthUser'
+    const { gateways } = config
+    const gatewaysRetrievals = await Promise.allSettled(
+      config.gateways.map(async (g) => {
+        try {
+          await retrieve(g, {
+            log: config.log,
+            metricsPushGateway: config.metricsPushGateway,
+          })
+        } catch (error) {
+          console.error('error retrieving', error)
+          throw error
+        }
+      })
+    )
+    config.log('debug', { gateways, gatewaysRetrievals })
+    /**
+     * retrieve from gateway and log
+     * @param {URL} gateway
+     * @param {object} config
+     * @param {import('../lib/log.js').LogFunction} config.log
+     * @param {string} [config.metricsPushGateway] - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
+     */
+    async function retrieve(gateway, config) {
+      const retrievalUrl = GatewayRetrievalUrl(gateway, metadata.ipnft)
+      const retrieveFetchDate = new Date()
+      const retrieveFetchStart = now()
+      const retrieveImageResponse = await fetch(retrievalUrl.toString())
+      const retrievedImage = await retrieveImageResponse.blob()
+      const retrieveReadEnd = now()
+      const retrievalDuration = new Milliseconds(
+        retrieveReadEnd.toNumber() - retrieveFetchStart.toNumber()
       )
-      await pushRetrieveMetrics(
-        {
-          metricsPushGateway,
+      /** @type {RetrieveLog} */
+      const retrieveLog = {
+        type: 'retrieve',
+        image: imageId,
+        url: retrievalUrl,
+        contentLength: retrievedImage.size,
+        startTime: retrieveFetchDate,
+        duration: retrievalDuration,
+      }
+      config.log('info', retrieveLog)
+      const { metricsPushGateway } = config
+      const { metricsPushGatewayBasicAuthUser } = secrets
+      if (metricsPushGateway) {
+        assert.ok(
           metricsPushGatewayBasicAuthUser,
-          log: config.log,
-        },
-        retrieve
-      )
-    } else {
-      config.log(
-        'warn',
-        'skipping pushRetrieveMetrics because no metricsPushGateway is configured'
-      )
+          'expected metricsPushGatewayBasicAuthUser'
+        )
+        await pushRetrieveMetrics(
+          {
+            metricsPushGateway,
+            metricsPushGatewayBasicAuthUser,
+            log: config.log,
+          },
+          retrieveLog
+        )
+      } else {
+        config.log(
+          'debug',
+          'skipping pushRetrieveMetrics because no metricsPushGateway is configured'
+        )
+      }
     }
   }
   config.log('info', { type: 'finish' })

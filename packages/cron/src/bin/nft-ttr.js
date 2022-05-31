@@ -50,6 +50,12 @@ export async function main(argv, options = { log: defaultLog }) {
         type: 'boolean',
         default: false,
       },
+      gateways: {
+        alias: 'gateway',
+        type: 'string',
+        array: true,
+        default: 'https://nftstorage.link',
+      },
     }).argv
     /** @type {AsyncIterable<Blob>} */
     const images = (async function* () {
@@ -66,8 +72,14 @@ export async function main(argv, options = { log: defaultLog }) {
         yield blob
       }
     })()
+    const { gateways: gatewaysYargs } = commandArgs
+    /** @type {URL[]} */
+    const gateways = (
+      Array.isArray(gatewaysYargs) ? gatewaysYargs : [gatewaysYargs]
+    ).map((s) => new URL(s))
     return {
       ...commandArgs,
+      gateways,
       log: options.log,
       images,
     }
