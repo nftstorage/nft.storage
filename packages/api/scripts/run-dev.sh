@@ -12,9 +12,12 @@ is_running_in_docker() {
     cat /proc/1/cgroup | grep docker >/dev/null
 }
 
+BINDINGS=""
+
 if is_running_in_docker; then
   export NFT_STORAGE_DEV_EXPOSE_PORTS=none
+  export NFT_STORAGE_DEV_DEVCONTAINER_NETWORK=true
+  BINDINGS="--binding DATABASE_URL=$DATABASE_URL --binding CLUSTER_API_URL=$CLUSTER_API_URL"
 fi
 
-
-exec $DIR_PATH/run-with-dependencies.sh npx miniflare --watch --debug --env $ENV_FILE
+exec $DIR_PATH/run-with-dependencies.sh npx miniflare --watch --debug --env $ENV_FILE $BINDINGS

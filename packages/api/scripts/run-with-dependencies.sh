@@ -14,8 +14,10 @@ set -eo pipefail
 #   accepted values:
 #     - "none": don't expose anything
 #     - "test": map service ports to the host ports defined in docker-compose.test-local-ports.yml
-#     - default (any other value, including no value): expose the default service ports to the host, unless this script is being run from inside docker
+#     - default (any other value, including no value): expose the default service ports to the host
 #
+# - NFT_STORAGE_DEV_DEVCONTAINER_NETWORK: if set to any value except "false" or "0", sets the default network to the one used by the devcontainer.
+# - NFT_STORAGE_DEV_DEVCONTAINER_TEST_HOSTNAMES: if set to any value except "false" or "0", overrides the default service hostnames inside the docker network
 # - NFT_STORAGE_DEV_PERSIST_VOLUMES: if set to any value except "false" or "0", uses data volumes (db state, etc) from previous invocation and does not delete them on exit
 
 is_truthy () {
@@ -36,6 +38,7 @@ REPO_ROOT=$(realpath $DIR_PATH/../../..)
 
 PERSIST_VOLUMES=${NFT_STORAGE_DEV_PERSIST_VOLUMES:-false}
 
+COMPOSE_FILES="--file $REPO_ROOT/docker/docker-compose.yml"
 
 EXPOSE_PORTS=true
 PORT_EXPOSE_COMPOSE_FILE="$REPO_ROOT/docker/docker-compose.local-ports.yml"
@@ -49,9 +52,18 @@ elif [ "$NFT_STORAGE_DEV_EXPOSE_PORTS" = "test" ]; then
   export CLUSTER_API_URL=http://localhost:9994
 fi
 
-COMPOSE_FILES="--file $REPO_ROOT/docker/docker-compose.yml"
 if is_truthy $EXPOSE_PORTS; then
   COMPOSE_FILES="$COMPOSE_FILES --file $PORT_EXPOSE_COMPOSE_FILE"
+fi
+
+if is_truthy ${NFT_STORAGE_DEV_DEVCONTAINER_NETWORK-:false}; then
+  COMPOSE_FILES="$COMPOSE_FILES --file $REPO_ROOT/docker/docker-compose.devcontainer-network.yml"
+fi
+
+if is_truthy ${NFT_STORAGE_DEV_DEVCONTAINER_TEST_HOSTNAMES:-false}; then
+  COMPOSE_FILES="$COMPOSE_FILES --file $REPO_ROOT/docker/docker-compose.test-container-names.yml"
+  export DATABASE_URL=http://post-rest-test:3000
+  export CLUSTER_API_URL=http://ipfs-cluster-test:9094
 fi
 
 COMPOSE_PROJECT=${NFT_STORAGE_DEV_PROJECT:-"nft-storage-dev"}

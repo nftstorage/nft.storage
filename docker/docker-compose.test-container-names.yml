@@ -1,0 +1,13 @@
+services:
+  post-rest:
+    container_name: post-rest-test
+    environment:
+      PGRST_DB_URI: postgresql://postgres:postgres@db-test:5432/postgres
+  db:
+    container_name: db-test
+  ipfs:
+    container_name: ipfs-test
+  ipfs-cluster:
+    container_name: ipfs-cluster-test
+    environment:
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs-test/tcp/5001

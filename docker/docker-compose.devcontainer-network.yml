@@ -1,0 +1,4 @@
+networks:
+  default:
+    name: nftstorage_devcontainer_default
+    external: true

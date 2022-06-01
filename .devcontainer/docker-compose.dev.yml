@@ -1,6 +1,6 @@
 services:
   devcontainer:
-    restart: on-failure
+    user: node
     build:
       dockerfile: ./.devcontainer/Dockerfile
       context: ../
@@ -10,6 +10,7 @@ services:
     ports:
       - '8787:8787'
       - '4000:4000'
-
+    init: true
     volumes:
       - ..:/nft.storage:delegated
+      - /var/run/docker.sock:/var/run/docker-host.sock
