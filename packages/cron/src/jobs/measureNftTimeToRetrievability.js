@@ -1,12 +1,9 @@
 import * as assert from 'assert'
 import fetch from '@web-std/fetch'
 import { NFTStorage } from 'nft.storage'
-import { EnvironmentLoader } from 'safe-env-vars'
 import { Milliseconds, now } from '../lib/time.js'
 import { File } from '@web-std/file'
 
-const env = new EnvironmentLoader()
-const NFT_STORAGE_API_KEY = env.string.get('NFT_STORAGE_API_KEY')
 export const EXAMPLE_NFT_IMG_URL = new URL(
   'https://bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4.ipfs.dweb.link/1681.png'
 )
@@ -43,19 +40,6 @@ export function TestImages(count = 1) {
       yield new File([Uint8Array.from([1, 2, 3])], 'image.png', {
         type: 'image/png',
       })
-    }
-  })()
-}
-
-/**
- * @param  {...URL} urls
- * @returns {AsyncIterable<Blob>}
- */
-export function UrlImages(...urls) {
-  return (async function* () {
-    for (const url of urls) {
-      const resp = await fetch(url.toString())
-      yield resp.blob()
     }
   })()
 }
