@@ -17,7 +17,7 @@ globalThis.DATABASE_URL = "${process.env.DATABASE_URL}"
 globalThis.CLUSTER_API_URL = "${process.env.CLUSTER_API_URL || ''}"
 `
 
-// temp.track()
+temp.track()
 const { path: configOverridePath, fd: configOverrideFile } = temp.openSync({
   prefix: 'nftstorage-test',
   suffix: '.js',
