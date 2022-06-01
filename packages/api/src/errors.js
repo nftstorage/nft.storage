@@ -197,6 +197,15 @@ export class ErrorPinningUnauthorized extends HTTPError {
 }
 ErrorPinningUnauthorized.CODE = 'ERROR_PINNING_UNAUTHORIZED'
 
+export class ErrorDeleteRestricted extends HTTPError {
+  constructor(msg = 'Delete operations restricted.') {
+    super(msg, 403)
+    this.name = 'DeleteRestricted'
+    this.code = ErrorDeleteRestricted.CODE
+  }
+}
+ErrorDeleteRestricted.CODE = 'ERROR_DELETE_RESTRICTED'
+
 export class ErrorAccountRestricted extends HTTPError {
   constructor(msg = 'Account restricted.') {
     super(msg, 403)
