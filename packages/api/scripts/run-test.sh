@@ -9,8 +9,8 @@ die() {
     exit 1
 }
 
-is_running_in_docker() {
-    cat /proc/1/cgroup | grep docker >/dev/null
+is_in_devcontainer() {
+    [ "$NFT_STORAGE_DEVCONTAINER" = "true" ]
 }
 
 cd $REPO_ROOT/packages/api
@@ -18,7 +18,7 @@ npx tsc || die "typescript error, aborting."
 
 export NFT_STORAGE_DEV_PROJECT=nft-storage-test
 
-if is_running_in_docker; then
+if is_in_devcontainer; then
   export NFT_STORAGE_DEV_COMPOSE_OVERRIDE=test.container
 else
   export NFT_STORAGE_DEV_COMPOSE_OVERRIDE=test.local

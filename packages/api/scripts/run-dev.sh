@@ -8,12 +8,11 @@ if [ "$1" = "--persist" ]; then
   export NFT_STORAGE_DEV_PERSIST_VOLUMES=true
 fi
 
-is_running_in_docker() {
-    cat /proc/1/cgroup | grep docker >/dev/null
+is_in_devcontainer() {
+    [ "$NFT_STORAGE_DEVCONTAINER" = "true" ]
 }
 
-
-if is_running_in_docker; then
+if is_in_devcontainer; then
   export NFT_STORAGE_DEV_COMPOSE_OVERRIDE=dev.container
 
   # miniflare will always use the values from the .env file, ignoring the local
