@@ -12,9 +12,9 @@ import {
   rawClient,
 } from './scripts/helpers.js'
 import { createCar } from './scripts/car.js'
-import { S3_ENDPOINT, S3_BUCKET_NAME } from './scripts/worker-globals.js'
 import { build } from 'ucan-storage/ucan-storage'
 import { KeyPair } from 'ucan-storage/keypair'
+import { getServiceConfig } from '../src/config.js'
 
 describe('NFT Upload ', () => {
   /** @type{DBTestClient} */
@@ -591,5 +591,6 @@ function getRandomBytes(n) {
  * @returns
  */
 function expectedBackupUrl(root, userId, carHash) {
+  const { S3_ENDPOINT, S3_BUCKET_NAME } = getServiceConfig()
   return `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${userId}/${carHash}.car`
 }

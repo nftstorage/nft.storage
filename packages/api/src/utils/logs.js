@@ -1,5 +1,8 @@
 import { nanoid } from 'nanoid/non-secure'
+import { getServiceConfig } from '../config'
 
+const { NFT_STORAGE_VERSION, NFT_STORAGE_COMMITHASH, NFT_STORAGE_BRANCH } =
+  getServiceConfig()
 const logtailApiURL = 'https://in.logtail.com/'
 
 const buildMetadataFromHeaders = (/** @type {Headers} */ headers) => {
@@ -53,9 +56,9 @@ export class Logging {
         cf: rCf,
       },
       cloudflare_worker: {
-        version: VERSION,
-        commit: COMMITHASH,
-        branch: BRANCH,
+        version: NFT_STORAGE_VERSION,
+        commit: NFT_STORAGE_COMMITHASH,
+        branch: NFT_STORAGE_BRANCH,
         worker_id: nanoid(10),
         worker_started: this.startTs,
       },
