@@ -8,7 +8,7 @@
  */
 
 /** @return {LogFunction<DefaultLogLevel>} */
-export const ConsoleLog =
+export const createConsoleLog =
   () =>
   (level, ...loggables) => {
     switch (level) {
@@ -30,7 +30,7 @@ export const ConsoleLog =
  * @param {LogFunction} log;
  * @returns {LogFunction}
  */
-export const JSONLogger = (log) => {
+export const createJSONLogger = (log) => {
   return (level, ...loggables) => {
     const stringifiedLoggables = loggables.map((o) => JSON.stringify(o))
     return log(level, ...stringifiedLoggables)

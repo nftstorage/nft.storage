@@ -11,20 +11,19 @@ import {
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { EnvironmentLoader } from 'safe-env-vars'
-import { ConsoleLog, JSONLogger } from '../lib/log.js'
+import { createConsoleLog, createJSONLogger } from '../lib/log.js'
 import process from 'process'
-import { RandomImage, RandomImageBlob } from '../lib/random.js'
+import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 import assert from 'assert'
 
 const env = new EnvironmentLoader()
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-/** @ts-ignore */
+const dirname = path.dirname(fileURLToPath(import.meta.url))
 global.fetch = fetch
 
 /** @type {import('../lib/log.js').LogFunction} */
 const defaultLog = (level, ...loggables) => {
-  JSONLogger(ConsoleLog())(level, ...loggables)
+  createJSONLogger(createConsoleLog())(level, ...loggables)
 }
 
 /**
@@ -66,8 +65,8 @@ export async function main(argv, options = { log: defaultLog }) {
       let count = 1
       while (count--) {
         /** @type {Blob} */
-        const blob = await RandomImageBlob(
-          RandomImage({
+        const blob = await createRandomImageBlob(
+          createRandomImage({
             bytes: {
               min: commandArgs.minImageSizeBytes,
             },
@@ -127,6 +126,6 @@ function parseBasicAuth(basicAuthEnvVarString) {
 const isProcessEntrypoint = process.argv[1] === fileURLToPath(import.meta.url)
 if (isProcessEntrypoint) {
   // invoke main script
-  dotenv.config({ path: path.join(__dirname, '../../../../.env') })
+  dotenv.config({ path: path.join(dirname, '../../../../.env') })
   main(hideBin(process.argv))
 }

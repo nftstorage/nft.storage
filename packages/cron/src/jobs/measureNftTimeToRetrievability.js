@@ -3,7 +3,7 @@ import fetch from '@web-std/fetch'
 import { NFTStorage } from 'nft.storage'
 import { Milliseconds, now } from '../lib/time.js'
 import { File } from '@web-std/file'
-import { RandomImage, RandomImageBlob } from '../lib/random.js'
+import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 
 export const EXAMPLE_NFT_IMG_URL = new URL(
   'https://bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4.ipfs.dweb.link/1681.png'
@@ -11,8 +11,8 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
 
 /**
  * @typedef RetrieveLog
- * @property {"retrieve"}   type
  * @property {string}       image
+ * @property {"retrieve"}   type
  * @property {URL}          url
  * @property {number}       contentLength
  * @property {Date}         startTime
@@ -39,8 +39,8 @@ export async function* createTestImages(count = 1) {
   console.log('start createTestImages', count)
   while (count--) {
     console.log('createTestImages creating RandomImageBlob')
-    const blob = await RandomImageBlob(
-      RandomImage({
+    const blob = await createRandomImageBlob(
+      createRandomImage({
         bytes: { min: 1 },
       })
     )
@@ -108,22 +108,18 @@ export async function measureNftTimeToRetrievability(config, secrets) {
       ),
     }
     config.log('info', storeLog)
-    /**
-     * @param {URL} gatewayUrl
-     * @param {import('nft.storage').CIDString} ipnftCid
-     * @returns {URL}
-     */
-    function GatewayRetrievalUrl(gatewayUrl, ipnftCid) {
-      return new URL(`/ipfs/${ipnftCid}/image/blob`, gatewayUrl.toString())
-    }
     const { gateways } = config
     const retrievals = await Promise.allSettled(
       config.gateways.map(async (g) => {
         try {
-          await retrieve(g, {
-            log: config.log,
-            metricsPushGateway: config.metricsPushGateway,
-          })
+          await retrieve(
+            {
+              image: imageId,
+              ...config,
+              retrievalUrl: createGatewayRetrievalUrl(g, metadata.ipnft),
+            },
+            secrets
+          )
         } catch (error) {
           console.error('error retrieving', error)
           throw error
@@ -131,57 +127,70 @@ export async function measureNftTimeToRetrievability(config, secrets) {
       })
     )
     config.log('debug', { type: 'retrievalsSummary', gateways, retrievals })
-    /**
-     * retrieve from gateway and log
-     * @param {URL} gateway
-     * @param {object} config
-     * @param {import('../lib/log.js').LogFunction} config.log
-     * @param {string} [config.metricsPushGateway] - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
-     */
-    async function retrieve(gateway, config) {
-      const retrievalUrl = GatewayRetrievalUrl(gateway, metadata.ipnft)
-      const retrieveFetchDate = new Date()
-      const retrieveFetchStart = now()
-      const retrieveImageResponse = await fetch(retrievalUrl.toString())
-      const retrievedImage = await retrieveImageResponse.blob()
-      const retrieveReadEnd = now()
-      const retrievalDuration = new Milliseconds(
-        retrieveReadEnd.toNumber() - retrieveFetchStart.toNumber()
-      )
-      /** @type {RetrieveLog} */
-      const retrieveLog = {
-        type: 'retrieve',
-        image: imageId,
-        url: retrievalUrl,
-        contentLength: retrievedImage.size,
-        startTime: retrieveFetchDate,
-        duration: retrievalDuration,
-      }
-      config.log('info', retrieveLog)
-      const { metricsPushGateway } = config
-      const { metricsPushGatewayAuthorization } = secrets
-      if (metricsPushGateway) {
-        assert.ok(
-          metricsPushGatewayAuthorization,
-          'expected metricsPushGatewayAuthorization'
-        )
-        await pushRetrieveMetrics(
-          {
-            metricsPushGateway,
-            metricsPushGatewayAuthorization,
-            log: config.log,
-          },
-          retrieveLog
-        )
-      } else {
-        config.log(
-          'debug',
-          'skipping pushRetrieveMetrics because no metricsPushGateway is configured'
-        )
-      }
-    }
   }
   config.log('info', { type: 'finish' })
+}
+
+/**
+ * retrieve from gateway and log
+ * @param {object} config
+ * @param {import('../lib/log.js').LogFunction} config.log
+ * @param {string} config.image
+ * @param {string} [config.metricsPushGateway] - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
+ * @param {URL} config.retrievalUrl
+ * @param {object} secrets
+ * @param {string} secrets.nftStorageToken - API Token for nft.storage
+ * @param {HttpAuthorization} secrets.metricsPushGatewayAuthorization - authorization for metricsPushGateway
+ */
+async function retrieve(config, secrets) {
+  const retrieveFetchDate = new Date()
+  const retrieveFetchStart = now()
+  const retrieveImageResponse = await fetch(config.retrievalUrl.toString())
+  const retrievedImage = await retrieveImageResponse.blob()
+  const retrieveReadEnd = now()
+  const retrievalDuration = new Milliseconds(
+    retrieveReadEnd.toNumber() - retrieveFetchStart.toNumber()
+  )
+  /** @type {RetrieveLog} */
+  const retrieveLog = {
+    type: 'retrieve',
+    url: config.retrievalUrl,
+    image: config.image,
+    contentLength: retrievedImage.size,
+    startTime: retrieveFetchDate,
+    duration: retrievalDuration,
+  }
+  config.log('info', retrieveLog)
+  const { metricsPushGateway } = config
+  const { metricsPushGatewayAuthorization } = secrets
+  if (metricsPushGateway) {
+    assert.ok(
+      metricsPushGatewayAuthorization,
+      'expected metricsPushGatewayAuthorization'
+    )
+    await pushRetrieveMetrics(
+      {
+        metricsPushGateway,
+        metricsPushGatewayAuthorization,
+        log: config.log,
+      },
+      retrieveLog
+    )
+  } else {
+    config.log(
+      'debug',
+      'skipping pushRetrieveMetrics because no metricsPushGateway is configured'
+    )
+  }
+}
+
+/**
+ * @param {URL} gatewayUrl
+ * @param {import('nft.storage').CIDString} ipnftCid
+ * @returns {URL}
+ */
+function createGatewayRetrievalUrl(gatewayUrl, ipnftCid) {
+  return new URL(`/ipfs/${ipnftCid}/image/blob`, gatewayUrl.toString())
 }
 
 /**
@@ -200,6 +209,7 @@ async function pushRetrieveMetrics(config, retrieval) {
       method: 'post',
       headers: {
         authorization: config.metricsPushGatewayAuthorization.authorization,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'content-type': 'application/octet-stream',
       },
       body: formatRetrievalMetrics(retrieval),

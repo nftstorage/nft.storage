@@ -1,14 +1,14 @@
 import { describe, it } from '@jest/globals'
 import assert from 'assert'
 import toBuffer from 'it-to-buffer'
-import { RandomBytes, RandomImage } from './random.js'
+import { createRandomBytes, createRandomImage } from './random.js'
 import { getMimeType } from 'stream-mime-type'
 import { Readable } from 'node:stream'
 
 describe('RandomBytes', () => {
   it('has a test', async () => {
     const tenMegabytesByteCount = 10 * 1e6
-    const randomness = RandomBytes(tenMegabytesByteCount)
+    const randomness = createRandomBytes(tenMegabytesByteCount)
     const randomnessBuffered = await toBuffer(randomness)
     assert.equal(randomnessBuffered.length, tenMegabytesByteCount)
   })
@@ -20,7 +20,9 @@ describe('RandomImage', () => {
     await Promise.all(
       minMb.map(async (minMbSize) => {
         const minBytesSize = minMbSize * 1e6
-        const imageBytesAsync = RandomImage({ bytes: { min: minBytesSize } })
+        const imageBytesAsync = createRandomImage({
+          bytes: { min: minBytesSize },
+        })
         const imageBytesAsyncReadable = Readable.from(imageBytesAsync)
         const { mime, stream } = await getMimeType(imageBytesAsyncReadable)
         assert.equal(

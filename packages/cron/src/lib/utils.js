@@ -13,7 +13,7 @@ export function getCluster1(env) {
   const basicAuthToken = env.CLUSTER1_BASIC_AUTH_TOKEN
   if (!basicAuthToken) throw new Error('missing IPFS Cluster credentials')
   return new Cluster(clusterApiUrl, {
-    headers: { Authorization: `Basic ${basicAuthToken}` },
+    headers: { authorization: `Basic ${basicAuthToken}` },
   })
 }
 
@@ -27,7 +27,7 @@ export function getCluster2(env) {
   const basicAuthToken = env.CLUSTER2_BASIC_AUTH_TOKEN
   if (!basicAuthToken) throw new Error('missing IPFS Cluster credentials')
   return new Cluster(clusterApiUrl, {
-    headers: { Authorization: `Basic ${basicAuthToken}` },
+    headers: { authorization: `Basic ${basicAuthToken}` },
   })
 }
 
@@ -41,7 +41,7 @@ export function getCluster3(env) {
   const basicAuthToken = env.CLUSTER3_BASIC_AUTH_TOKEN
   if (!basicAuthToken) throw new Error('missing IPFS Cluster credentials')
   return new Cluster(clusterApiUrl, {
-    headers: { Authorization: `Basic ${basicAuthToken}` },
+    headers: { authorization: `Basic ${basicAuthToken}` },
   })
 }
 
@@ -122,3 +122,15 @@ function getPgConnString(env, mode = 'rw') {
 }
 
 export const MAX_CONCURRENT_QUERIES = 10
+
+/**
+ * @template {unknown} X
+ * @template {PropertyKey} Y
+ * @param {X} obj
+ * @param {Y} prop
+ * @returns {obj is X & Record<Y, unknown>}
+ * https://fettblog.eu/typescript-hasownproperty/
+ */
+export function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop)
+}

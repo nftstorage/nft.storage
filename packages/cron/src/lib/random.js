@@ -12,7 +12,7 @@ export const bytesBitCount = 8
  * @param {number} byteCount - number of bytes of randomness
  * @returns {AsyncIterable<Uint8Array>}
  */
-export function RandomBytes(byteCount) {
+export function createRandomBytes(byteCount) {
   return (async function* () {
     const bytes = randomBytes(byteCount)
     yield bytes
@@ -26,7 +26,7 @@ export function RandomBytes(byteCount) {
  * @param {number} options.bytes.min;
  * @returns {AsyncIterable<Uint8Array>}
  */
-export function RandomImage(options) {
+export function createRandomImage(options) {
   return (async function* () {
     // 100x100 creates approx 11000 bytes
     const tileCount = options.bytes.min / 11000
@@ -52,7 +52,7 @@ export function RandomImage(options) {
  * @param {AsyncIterable<Uint8Array>} imageBytes
  * @returns {Promise<Blob>}
  */
-export async function RandomImageBlob(imageBytes) {
+export async function createRandomImageBlob(imageBytes) {
   const imageBytesReadable = Readable.from(imageBytes)
   const { mime, stream } = await getMimeType(imageBytesReadable)
   const allBytes = await toBuffer(Readable.from(stream))
