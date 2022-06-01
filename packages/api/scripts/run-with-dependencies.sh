@@ -78,7 +78,7 @@ COMPOSE_ARGS=(
     "--build"
 )
 
-if [ "$PERSIST_VOLUMES" != "false" ]; then
+if ! is_truthy $PERSIST_VOLUMES; then
   COMPOSE_ARGS+=(
       "--renew-anon-volumes"
   )
