@@ -151,7 +151,7 @@ export default function TermsOfService() {
           violates the Terms of Service of IPFS.io.  For severe violations, or if 
           we determine you are a repeat infringer of others’ copyrighted content, 
           we reserve the right to suspend or terminate your use of SuperHot and/or 
-          all Services. Protocol Labs may collect analytics data on your use of 
+          all Services. Protocol Labs may collect analytics data on the usage of 
           SuperHot, including data on requests, retrieval speeds, CIDs, and other 
           performance data. Protocol Labs reserves all rights in and to such 
           performance data and analytics.
