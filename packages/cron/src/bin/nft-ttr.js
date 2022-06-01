@@ -45,8 +45,6 @@ export async function main(argv, options = { log: defaultLog }) {
       },
       metricsPushGateway: {
         type: 'string',
-        default:
-          'https://pushgateway.k8s.locotorp.info/metrics/job/web3storage_ci/instance/github_action',
       },
       minImageSizeBytes: {
         type: 'number',

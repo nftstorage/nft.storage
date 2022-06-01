@@ -141,7 +141,7 @@ export async function measureNftTimeToRetrievability(config, secrets) {
         }
       })
     )
-    config.log('debug', { gateways, retrievals })
+    config.log('debug', { type: 'retrievalsSummary', gateways, retrievals })
     /**
      * retrieve from gateway and log
      * @param {URL} gateway
@@ -230,6 +230,10 @@ async function pushRetrieveMetrics(config, retrieval) {
     true,
     'metrics push response code should indicate success'
   )
+  config.log('info', {
+    type: 'metricsPushed',
+    target: config.metricsPushGateway,
+  })
 }
 
 /**
