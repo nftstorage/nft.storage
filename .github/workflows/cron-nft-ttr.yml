@@ -29,7 +29,7 @@ jobs:
         run: |
           yarn workspace --silent cron run --silent start:nft-ttr measure --logConfigAndExit
           yarn workspace --silent cron run --silent start:nft-ttr measure \
-            --min-image-size-bytes=10000000 \
+            --minImageSizeBytes=10000000 \
             --gateways https://nftstorage.link https://dweb.link \
             --metricsPushGateway $PUSHGATEWAY_URL \
 
