@@ -1,6 +1,6 @@
 import {
+  createTestImages,
   measureNftTimeToRetrievability,
-  TestImages,
 } from './measureNftTimeToRetrievability.js'
 import { jest } from '@jest/globals'
 import * as assert from 'assert'
@@ -31,7 +31,7 @@ describe('measureNftTimeToRetrievability', () => {
     await measureNftTimeToRetrievability(
       {
         log,
-        images: TestImages(1),
+        images: createTestImages(1),
         gateways: [new URL('https://nftstorage.link')],
         store: (n) => storer.store(n),
       },

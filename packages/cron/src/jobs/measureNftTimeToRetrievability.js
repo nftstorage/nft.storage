@@ -34,7 +34,7 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
 /**
  * @returns {AsyncIterable<File>}
  */
-export function TestImages(count = 1) {
+export function createTestImages(count = 1) {
   return (async function* () {
     while (count--) {
       yield new File([Uint8Array.from([1, 2, 3])], 'image.png', {
