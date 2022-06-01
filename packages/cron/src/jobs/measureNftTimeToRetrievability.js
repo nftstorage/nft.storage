@@ -55,24 +55,55 @@ export async function* createTestImages(count = 1) {
  */
 
 /**
+ * @typedef {object} MeasureTtrSecrets
+ * @property {string} nftStorageToken - API Token for nft.storage
+ * @property {HttpAuthorization} metricsPushGatewayAuthorization - authorization header value for metricsPushGateway
+ */
+
+/**
+ * @typedef {object} MeasureTtrOptions
+ * @property {AsyncIterable<Blob>} images - images to upload/retrieve
+ * @property {StoreFunction} [store] - function to store nft
+ * @property {string} [url] - URL to nft.storage to measure
+ * @property {boolean} [logConfigAndExit] - if true, log config and exit
+ * @property {string} [metricsPushGateway] - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
+ * @property {URL[]} gateways - IPFS Gateway to test retrieval from
+ * @property {import('../lib/log.js').LogFunction} log - logger
+ * @property {MeasureTtrSecrets} secrets
+ */
+
+/**
+ * OptionsParts - ReturnValue of readMeasureTtrOptions
+ * @template Config
+ * @template Secrets
+ * @typedef OptionsParts<{secrets: Secrets} & Config>
+ * @property {Config} config
+ * @property {Secrets} secrets
+ */
+
+/**
+ * @template Secrets
+ * @template {{secrets: Secrets}} Options
+ * @param {Options} options
+ * @returns {OptionsParts<Omit<Options,'secrets'>, Secrets>}
+ */
+function readMeasureTtrOptions(options) {
+  const secrets = options.secrets
+  const config = { ...options, secrets: undefined }
+  return { secrets, config }
+}
+
+/**
  * Job that tests/measures steps
  * * prepare a sample image
  * * upload to nft.storage
  * * retrieve image through ipfs gateway
  * @template {import('nft.storage/dist/src/lib/interface').TokenInput} T
- * @param {object} config
- * @param {AsyncIterable<Blob>} config.images - images to upload/retrieve
- * @param {StoreFunction} [config.store] - function to store nft
- * @param {string} [config.url] - URL to nft.storage to measure
- * @param {boolean} [config.logConfigAndExit] - if true, log config and exit
- * @param {string} [config.metricsPushGateway] - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
- * @param {URL[]} config.gateways - IPFS Gateway to test retrieval from
- * @param {import('../lib/log.js').LogFunction} config.log - logger
- * @param {object} secrets
- * @param {string} secrets.nftStorageToken - API Token for nft.storage
- * @param {HttpAuthorization} secrets.metricsPushGatewayAuthorization - authorization header value for metricsPushGateway
+ * @param {MeasureTtrOptions} options
  */
-export async function measureNftTimeToRetrievability(config, secrets) {
+export async function measureNftTimeToRetrievability(options) {
+  // separate secrets and config to avoid logging secrets
+  const { secrets, config } = readMeasureTtrOptions(options)
   if (config.logConfigAndExit) {
     config.log('info', config)
     return
@@ -112,14 +143,10 @@ export async function measureNftTimeToRetrievability(config, secrets) {
     const retrievals = await Promise.allSettled(
       config.gateways.map(async (g) => {
         try {
-          await retrieve(
-            {
-              image: imageId,
-              ...config,
-              retrievalUrl: createGatewayRetrievalUrl(g, metadata.ipnft),
-            },
-            secrets
-          )
+          await retrieve(options, {
+            id: imageId,
+            url: createGatewayRetrievalUrl(g, metadata.ipnft),
+          })
         } catch (error) {
           console.error('error retrieving', error)
           throw error
@@ -133,19 +160,15 @@ export async function measureNftTimeToRetrievability(config, secrets) {
 
 /**
  * retrieve from gateway and log
- * @param {object} config
- * @param {import('../lib/log.js').LogFunction} config.log
- * @param {string} config.image
- * @param {string} [config.metricsPushGateway] - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
- * @param {URL} config.retrievalUrl
- * @param {object} secrets
- * @param {string} secrets.nftStorageToken - API Token for nft.storage
- * @param {HttpAuthorization} secrets.metricsPushGatewayAuthorization - authorization for metricsPushGateway
+ * @param {MeasureTtrOptions} options
+ * @param {object} image
+ * @param {string} image.id
+ * @param {URL}   image.url
  */
-async function retrieve(config, secrets) {
+async function retrieve(options, image) {
   const retrieveFetchDate = new Date()
   const retrieveFetchStart = now()
-  const retrieveImageResponse = await fetch(config.retrievalUrl.toString())
+  const retrieveImageResponse = await fetch(image.url.toString())
   const retrievedImage = await retrieveImageResponse.blob()
   const retrieveReadEnd = now()
   const retrievalDuration = new Milliseconds(
@@ -154,15 +177,15 @@ async function retrieve(config, secrets) {
   /** @type {RetrieveLog} */
   const retrieveLog = {
     type: 'retrieve',
-    url: config.retrievalUrl,
-    image: config.image,
+    url: image.url,
+    image: image.id,
     contentLength: retrievedImage.size,
     startTime: retrieveFetchDate,
     duration: retrievalDuration,
   }
-  config.log('info', retrieveLog)
-  const { metricsPushGateway } = config
-  const { metricsPushGatewayAuthorization } = secrets
+  options.log('info', retrieveLog)
+  const { metricsPushGateway } = options
+  const { metricsPushGatewayAuthorization } = options.secrets
   if (metricsPushGateway) {
     assert.ok(
       metricsPushGatewayAuthorization,
@@ -172,12 +195,12 @@ async function retrieve(config, secrets) {
       {
         metricsPushGateway,
         metricsPushGatewayAuthorization,
-        log: config.log,
+        log: options.log,
       },
       retrieveLog
     )
   } else {
-    config.log(
+    options.log(
       'debug',
       'skipping pushRetrieveMetrics because no metricsPushGateway is configured'
     )

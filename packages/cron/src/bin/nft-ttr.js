@@ -80,29 +80,25 @@ export async function main(argv, options = { log: defaultLog }) {
     const gateways = (
       Array.isArray(gatewaysYargs) ? gatewaysYargs : [gatewaysYargs]
     ).map((s) => new URL(s))
+    const PUSHGATEWAY_BASIC_AUTH = env.optional.string.get(
+      'PUSHGATEWAY_BASIC_AUTH'
+    )
     return {
       ...commandArgs,
       gateways,
       log: options.log,
       images,
+      secrets: {
+        nftStorageToken: env.string.get('NFT_STORAGE_API_KEY'),
+        metricsPushGatewayAuthorization: PUSHGATEWAY_BASIC_AUTH
+          ? parseBasicAuth(PUSHGATEWAY_BASIC_AUTH)
+          : { authorization: 'bearer no-auth' },
+      },
     }
   }
-  const PUSHGATEWAY_BASIC_AUTH = env.optional.string.get(
-    'PUSHGATEWAY_BASIC_AUTH'
-  )
   switch (command) {
     case 'measure':
-      await measureNftTimeToRetrievability(
-        {
-          ...(await measureArgs(...commandArgv)),
-        },
-        {
-          nftStorageToken: env.string.get('NFT_STORAGE_API_KEY'),
-          metricsPushGatewayAuthorization: PUSHGATEWAY_BASIC_AUTH
-            ? parseBasicAuth(PUSHGATEWAY_BASIC_AUTH)
-            : { authorization: 'bearer no-auth' },
-        }
-      )
+      await measureNftTimeToRetrievability(await measureArgs(...commandArgv))
       break
     default:
       throw new Error(`unexpected command ${command}`)

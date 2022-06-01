@@ -21,18 +21,19 @@ describe('measureNftTimeToRetrievability', () => {
       },
     }
     const storeSpy = jest.spyOn(storer, 'store')
-    await measureNftTimeToRetrievability(
-      {
-        log,
-        images: createTestImages(1),
-        gateways: [new URL('https://nftstorage.link')],
-        store: (n) => storer.store(n),
-      },
-      {
+    /** @param {import('nft.storage/dist/src/token').TokenInput} n */
+    const store = (n) => storer.store(n)
+    const options = {
+      log,
+      images: createTestImages(1),
+      gateways: [new URL('https://nftstorage.link')],
+      store,
+      secrets: {
         nftStorageToken: 'TODO',
         metricsPushGatewayAuthorization: { authorization: 'bearer todo' },
-      }
-    )
+      },
+    }
+    await measureNftTimeToRetrievability(options)
     assert.equal(storeSpy.mock.calls.length, 1)
     const start = info.find((logs) => logs[0]?.type === 'start')[0]
     assert.ok(start)
