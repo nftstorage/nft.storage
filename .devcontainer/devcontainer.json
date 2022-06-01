@@ -1,9 +1,6 @@
 {
   "name": "nft.storage",
-  "dockerComposeFile": [
-    "../docker/docker-compose.yml",
-    "../docker/docker-compose.dev.yml"
-  ],
+  "dockerComposeFile": ["./docker-compose.dev.yml"],
   "service": "devcontainer",
   "workspaceFolder": "/nft.storage",
   "shutdownAction": "stopCompose",

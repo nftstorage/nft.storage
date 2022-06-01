@@ -1,0 +1,15 @@
+services:
+  devcontainer:
+    restart: on-failure
+    build:
+      dockerfile: ./.devcontainer/Dockerfile
+      context: ../
+    env_file:
+      - ../.env
+      - ./docker-dev.env
+    ports:
+      - '8787:8787'
+      - '4000:4000'
+
+    volumes:
+      - ..:/nft.storage:delegated

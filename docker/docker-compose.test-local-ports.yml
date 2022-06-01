@@ -1,0 +1,10 @@
+services:
+  post-rest:
+    ports:
+      - '3001:3000'
+  db:
+    ports:
+      - '5433:5432'
+  ipfs-cluster:
+    ports:
+      - '9994:9094'

@@ -3,10 +3,27 @@ const dotenv = require('dotenv')
 const execa = require('execa')
 const delay = require('delay')
 const { once } = require('events')
+const temp = require('temp')
+const fs = require('fs')
 
 /** @typedef {{ proc: execa.ExecaChildProcess<string> }} ProcessObject */
 
 dotenv.config({ path: path.join(__dirname, '../../.env') })
+
+// write DATABASE_URL and CLUSTER_API_URL from the environment
+// to a js file that can be injected using esbuild.
+const configOverridesJs = `
+globalThis.DATABASE_URL = "${process.env.DATABASE_URL}"
+globalThis.CLUSTER_API_URL = "${process.env.CLUSTER_API_URL || ''}"
+`
+
+// temp.track()
+const { path: configOverridePath, fd: configOverrideFile } = temp.openSync({
+  prefix: 'nftstorage-test',
+  suffix: '.js',
+})
+fs.writeSync(configOverrideFile, configOverridesJs)
+fs.closeSync(configOverrideFile)
 
 const cli = path.join(__dirname, 'scripts/cli.js')
 /** @type {import('esbuild').Plugin} */
@@ -22,11 +39,17 @@ const nodeBuiltinsPlugin = {
 /** @type {import('playwright-test').RunnerOptions} */
 module.exports = {
   buildConfig: {
-    inject: [path.join(__dirname, './scripts/node-globals.js')],
+    inject: [
+      path.join(__dirname, './scripts/node-globals.js'),
+      configOverridePath,
+    ],
     plugins: [nodeBuiltinsPlugin],
   },
   buildSWConfig: {
-    inject: [path.join(__dirname, './scripts/node-globals.js')],
+    inject: [
+      path.join(__dirname, './scripts/node-globals.js'),
+      configOverridePath,
+    ],
     plugins: [nodeBuiltinsPlugin],
   },
   beforeTests: async () => {
