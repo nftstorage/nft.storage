@@ -12,6 +12,16 @@ export class Milliseconds {
   }
 
   /**
+   * subtract two milliseconds
+   * @param {Milliseconds} m1
+   * @param {Milliseconds} m2
+   * @returns {Milliseconds}
+   */
+  static subtract(m1, m2) {
+    return new Milliseconds(m1.toNumber() - m2.toNumber())
+  }
+
+  /**
    * @param {number} numberMs
    */
   constructor(numberMs) {

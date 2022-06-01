@@ -134,9 +134,7 @@ export async function measureNftTimeToRetrievability(options) {
       type: 'store',
       image: imageId,
       startTime: storeStartedDate,
-      duration: new Milliseconds(
-        storeEndAt.toNumber() - storeStartedAt.toNumber()
-      ),
+      duration: Milliseconds.subtract(storeEndAt, storeStartedAt),
     }
     config.log('info', storeLog)
     const { gateways } = config
