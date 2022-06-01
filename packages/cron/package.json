@@ -96,7 +96,6 @@
           "./src/bin/metrics.js",
           "./src/bin/pins-failed.js"
         ],
-        "excludedFiles": "*.test.js",
         "rules": {
           "@typescript-eslint/naming-convention": "off"
         }
