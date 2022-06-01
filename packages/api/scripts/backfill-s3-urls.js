@@ -22,9 +22,8 @@ async function entryPoint() {
   console.log(`Found ${uploads.length} uploads to check.`)
 
   // TODO: make output file path configurable
-  const outpath = `./backup-urls-${startDate}-${endDate}.csv`
+  const outpath = `./backup-urls-${startDate.toISOString()}-${endDate.toISOString()}.ndjson`
   const outFile = fs.createWriteStream(outpath, 'utf-8')
-  outFile.write('upload_id,backup_urls\n')
 
   for (const upload of uploads) {
     const urls = await getBackupURLsFromS3(
@@ -36,12 +35,12 @@ async function entryPoint() {
       continue
     }
 
-    const row = `${upload.id}\t${urls.join(' ')}\n`
-    outFile.write(row)
-    console.log(row)
+    const entry = { upload, backup_urls: urls }
+    outFile.write(JSON.stringify(entry) + '\n')
   }
-  // TODO: update DB with discovered URLs
   outFile.close()
+
+  // TODO: update DB with discovered URLs
 
   process.exit(0)
 }
