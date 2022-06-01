@@ -124,7 +124,9 @@ function parseBasicAuth(basicAuthEnvVarString) {
   }
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+const isProcessEntrypoint = process.argv[1] === fileURLToPath(import.meta.url)
+if (isProcessEntrypoint) {
+  // invoke main script
   dotenv.config({ path: path.join(__dirname, '../../../../.env') })
   main(hideBin(process.argv))
 }
