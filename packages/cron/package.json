@@ -94,10 +94,19 @@
           "./src/*/pinata.js",
           "./src/*/pins.js",
           "./src/bin/metrics.js",
-          "./src/bin/pins-failed.js"
+          "./src/bin/pins-failed.js",
+          "./src/jobs/dagcargo.js"
         ],
         "rules": {
           "@typescript-eslint/naming-convention": "off"
+        }
+      },
+      {
+        "files": [
+          "./src/jobs/dagcargo.js"
+        ],
+        "rules": {
+          "camelcase": "off"
         }
       }
     ]

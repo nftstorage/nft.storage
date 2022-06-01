@@ -1,7 +1,5 @@
 import debug from 'debug'
 
-/* eslint-disable */
-
 const COUNT_CONTENT_WITHOUT_SIZE = `
 SELECT COUNT(*)
   FROM public.content
