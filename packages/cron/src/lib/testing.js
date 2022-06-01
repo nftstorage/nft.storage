@@ -4,20 +4,24 @@ export { it, describe } from '@jest/globals'
 
 /**
  * Conditionally run/skip a test
- * @param {boolean} condition
+ * @param {() => boolean} condition
  * @returns function like 'it' but may invoke it.skip if conditional is falsy
  * @see https://github.com/facebook/jest/issues/7245
  */
 export function testIf(condition) {
   /**
    * @param {string} name
-   * @param {() => Promise<void>} doTest
+   * @param {() => Promise<unknown>} doTest
    */
   return function (name, doTest) {
-    if (condition) {
-      return it(name, doTest)
+    const conditionValue = condition()
+    const testFn = async () => {
+      await doTest()
+    }
+    if (conditionValue) {
+      it(name, testFn)
     } else {
-      it.skip(name, doTest)
+      it.skip(name, testFn)
     }
   }
 }

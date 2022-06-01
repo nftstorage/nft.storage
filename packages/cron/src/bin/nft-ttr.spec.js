@@ -6,13 +6,13 @@ import * as assert from 'node:assert'
 const defaultTestMinImageSizeBytes = 10 * 1e6
 
 describe('bin/nft-ttr', () => {
-  testIf(testsCanUseNetwork())(
-    `works with --min-image-size-bytes=${defaultTestMinImageSizeBytes} and multiple gateways`,
+  testIf(testsCanUseNetwork)(
+    `works with --minImageSizeBytes=${defaultTestMinImageSizeBytes} and multiple gateways`,
     async () => {
       const { log, info } = recordedLog()
       const minImageSizeBytes = defaultTestMinImageSizeBytes
       const gateways = ['https://nftstorage.link', 'https://dweb.link']
-      const command = `measure --min-image-size-bytes=${minImageSizeBytes} --gateways ${gateways.join(
+      const command = `measure --minImageSizeBytes=${minImageSizeBytes} --gateways ${gateways.join(
         ' '
       )}`
       await binNftTtr(command.split(' '), { log })

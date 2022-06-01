@@ -3,6 +3,7 @@ import fetch from '@web-std/fetch'
 import { NFTStorage } from 'nft.storage'
 import { Milliseconds, now } from '../lib/time.js'
 import { File } from '@web-std/file'
+import { RandomImage, RandomImageBlob } from '../lib/random.js'
 
 export const EXAMPLE_NFT_IMG_URL = new URL(
   'https://bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4.ipfs.dweb.link/1681.png'
@@ -34,14 +35,18 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
 /**
  * @returns {AsyncIterable<File>}
  */
-export function createTestImages(count = 1) {
-  return (async function* () {
-    while (count--) {
-      yield new File([Uint8Array.from([1, 2, 3])], 'image.png', {
-        type: 'image/png',
+export async function* createTestImages(count = 1) {
+  console.log('start createTestImages', count)
+  while (count--) {
+    console.log('createTestImages creating RandomImageBlob')
+    const blob = await RandomImageBlob(
+      RandomImage({
+        bytes: { min: 1 },
       })
-    }
-  })()
+    )
+    console.log('createTestImages did create RandomImageBlob')
+    yield new File([blob], 'image.jpg', blob)
+  }
 }
 
 /**
