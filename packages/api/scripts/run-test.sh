@@ -19,11 +19,9 @@ npx tsc || die "typescript error, aborting."
 export NFT_STORAGE_DEV_PROJECT=nft-storage-test
 
 if is_running_in_docker; then
-  export NFT_STORAGE_DEV_EXPOSE_PORTS=none
-  export NFT_STORAGE_DEV_DEVCONTAINER_NETWORK=true
-  export NFT_STORAGE_DEV_DEVCONTAINER_TEST_HOSTNAMES=true
+  export NFT_STORAGE_DEV_COMPOSE_OVERRIDE=test.container
 else
-  export NFT_STORAGE_DEV_EXPOSE_PORTS=test
+  export NFT_STORAGE_DEV_COMPOSE_OVERRIDE=test.local
 fi
 
 exec $DIR_PATH/run-with-dependencies.sh  npx playwright-test "test/**/*.spec.js" --sw src/index.js

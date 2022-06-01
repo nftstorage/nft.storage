@@ -1,4 +1,10 @@
-FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:16-bullseye
+# This Dockerfile is based on the docker-from-docker devcontainer template: 
+# https://github.com/microsoft/vscode-dev-containers/tree/main/containers/docker-from-docker
+# 
+# It uses the typescript-node devcontainer as a base and allows access to the host's Docker environment.
+# This lets you call `docker compose` from inside the container, which is needed in order for `yarn dev`
+# and `yarn test` to work.
+FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:16-bullseye AS dev-base
 
 # [Option] Install zsh
 ARG INSTALL_ZSH="true"
@@ -40,15 +46,38 @@ CMD [ "sleep", "infinity" ]
 # install playwright and tell it to download chromium
 RUN sudo -u node npx playwright@1.20.0 install --with-deps chromium
 
+# This build stage copies over the source tree and removes everything except package.json files,
+# allowing the final image to cache the result of `yarn install` before copying in any source files.
+# The end result is that changes to source files won't cause the cached dependencies to be invalidated,
+# and rebuilding the image will only cause a `yarn install` if any package.json or the yarn.lock file
+# changes.
+# Thanks to https://stackoverflow.com/a/63142468 for inspiration.
+FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:16-bullseye AS prepare-package-tree
 
-RUN npm i -g nodemon 
 RUN mkdir -p /nft.storage
 RUN chown node /nft.storage
-
 WORKDIR /nft.storage
 
 COPY ./package.json .
 COPY ./yarn.lock .
 COPY ./packages ./packages
-RUN yarn install
 
+# find and remove everything except package.json files
+RUN find packages \! -name "package.json" -mindepth 2 -maxdepth 2 -print | xargs rm -rf
+
+# The final stage uses the previously built dev-base layer and copies over the bare source tree
+# (with just the package.json files and yarn.lock). It runs yarn install to cache the result,
+# then copies over the whole source tree.
+FROM dev-base AS devcontainer
+
+RUN mkdir -p /nft.storage
+RUN chown node /nft.storage
+WORKDIR /nft.storage
+
+# copy the files from the previous stage and run yarn install
+COPY --from=prepare-package-tree /nft.storage .
+RUN yarn install --frozen-lockfile
+
+# now copy over the whole source tree and yarn install again, to restore workspace symlinks
+COPY . .
+RUN yarn install --frozen-lockfile

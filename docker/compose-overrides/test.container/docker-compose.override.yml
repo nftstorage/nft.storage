@@ -11,3 +11,8 @@ services:
     container_name: ipfs-cluster-test
     environment:
       CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs-test/tcp/5001
+
+networks:
+  default:
+    name: nftstorage_devcontainer_default
+    external: true

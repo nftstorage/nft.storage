@@ -10,14 +10,13 @@ set -eo pipefail
 #
 # - NFT_STORAGE_DEV_PROJECT: docker compose project name. defaults to "nft-storage-dev"
 #
-# - NFT_STORAGE_DEV_EXPOSE_PORTS: controls whether to expose service ports to the host.
+# - NFT_STORAGE_DEV_COMPOSE_OVERRIDE:
 #   accepted values:
-#     - "none": don't expose anything
-#     - "test": map service ports to the host ports defined in docker-compose.test-local-ports.yml
-#     - default (any other value, including no value): expose the default service ports to the host
+#     - "dev.local": (default if var not set) expose database and cluster API ports to the host, using the default port numbers
+#     - "test.local": expose database and cluster API on non-standard ports for testing, to avoid conflict with dev.local
+#     - "dev.container": don't expose ports to the host, but do use the devcontainer docker network as the default so we can find the services by container name
+#     - "test.container": like dev.in-container, but with "-test" appended to service container names (db-test, etc.) to avoid conflicts with dev.in-container
 #
-# - NFT_STORAGE_DEV_DEVCONTAINER_NETWORK: if set to any value except "false" or "0", sets the default network to the one used by the devcontainer.
-# - NFT_STORAGE_DEV_DEVCONTAINER_TEST_HOSTNAMES: if set to any value except "false" or "0", overrides the default service hostnames inside the docker network
 # - NFT_STORAGE_DEV_PERSIST_VOLUMES: if set to any value except "false" or "0", uses data volumes (db state, etc) from previous invocation and does not delete them on exit
 
 is_truthy () {
@@ -30,40 +29,36 @@ cleanup () {
       VOL_FLAG=""
     fi
     docker compose --project-name=$COMPOSE_PROJECT down $VOL_FLAG
+    echo "shutdown docker project $COMPOSE_PROJECT successfully"
 }
 trap cleanup EXIT
 
 DIR_PATH=$(cd $(dirname "${BASH_SOURCE:-$0}") && pwd)
 REPO_ROOT=$(realpath $DIR_PATH/../../..)
+DOCKER_DIR="$REPO_ROOT/docker"
 
 PERSIST_VOLUMES=${NFT_STORAGE_DEV_PERSIST_VOLUMES:-false}
 
-COMPOSE_FILES="--file $REPO_ROOT/docker/docker-compose.yml"
+COMPOSE_FILES="--file $DOCKER_DIR/docker-compose.yml"
 
-EXPOSE_PORTS=true
-PORT_EXPOSE_COMPOSE_FILE="$REPO_ROOT/docker/docker-compose.local-ports.yml"
+COMPOSE_OVERRIDE=${NFT_STORAGE_DEV_COMPOSE_OVERRIDE:-dev.local}
+COMPOSE_OVERRIDE_DIR="$DOCKER_DIR/compose-overrides/$COMPOSE_OVERRIDE"
 
-if [ "$NFT_STORAGE_DEV_EXPOSE_PORTS" = "none" ]; then
-  EXPOSE_PORTS=false
-elif [ "$NFT_STORAGE_DEV_EXPOSE_PORTS" = "test" ]; then
-  EXPOSE_PORTS=true
-  PORT_EXPOSE_COMPOSE_FILE="$REPO_ROOT/docker/docker-compose.test-local-ports.yml"
-  export DATABASE_URL=http://localhost:3001
-  export CLUSTER_API_URL=http://localhost:9994
-fi
+if [[ ! -d "$COMPOSE_OVERRIDE_DIR" ]]; then
+  echo "warning: ignoring invalid value for NFT_STORAGE_DEV_COMPOSE_OVERRIDE: $NFT_STORAGE_DEV_COMPOSE_OVERRIDE"
+else
+  COMPOSE_OVERRIDE_FILE="$COMPOSE_OVERRIDE_DIR/docker-compose.override.yml"
+  if [[ -f "$COMPOSE_OVERRIDE_FILE" ]]; then
+    COMPOSE_FILES="$COMPOSE_FILES --file $COMPOSE_OVERRIDE_FILE"
+  else
+    echo "error: docker compose override directory ${COMPOSE_OVERRIDE_DIR} exists, but does not contain required file docker-compose.override.yml"
+    exit 1
+  fi
 
-if is_truthy $EXPOSE_PORTS; then
-  COMPOSE_FILES="$COMPOSE_FILES --file $PORT_EXPOSE_COMPOSE_FILE"
-fi
-
-if is_truthy ${NFT_STORAGE_DEV_DEVCONTAINER_NETWORK-:false}; then
-  COMPOSE_FILES="$COMPOSE_FILES --file $REPO_ROOT/docker/docker-compose.devcontainer-network.yml"
-fi
-
-if is_truthy ${NFT_STORAGE_DEV_DEVCONTAINER_TEST_HOSTNAMES:-false}; then
-  COMPOSE_FILES="$COMPOSE_FILES --file $REPO_ROOT/docker/docker-compose.test-container-names.yml"
-  export DATABASE_URL=http://post-rest-test:3000
-  export CLUSTER_API_URL=http://ipfs-cluster-test:9094
+  HOST_ENV_FILE="$COMPOSE_OVERRIDE_DIR/host-env.sh"
+  if [[ -f "$HOST_ENV_FILE" ]]; then
+    source $HOST_ENV_FILE
+  fi
 fi
 
 COMPOSE_PROJECT=${NFT_STORAGE_DEV_PROJECT:-"nft-storage-dev"}
