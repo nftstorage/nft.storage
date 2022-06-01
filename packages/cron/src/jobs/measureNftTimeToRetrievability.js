@@ -61,6 +61,11 @@ export function UrlImages(...urls) {
 }
 
 /**
+ * @typedef HttpAuthorization
+ * @property {string} authorization
+ */
+
+/**
  * Job that tests/measures steps
  * * prepare a sample image
  * * upload to nft.storage
@@ -76,7 +81,7 @@ export function UrlImages(...urls) {
  * @param {import('../lib/log.js').LogFunction} config.log - logger
  * @param {object} secrets
  * @param {string} secrets.nftStorageToken - API Token for nft.storage
- * @param {string} [secrets.metricsPushGatewayBasicAuthUser] - authorization for metricsPushGateway
+ * @param {HttpAuthorization} secrets.metricsPushGatewayAuthorization - authorization header value for metricsPushGateway
  */
 export async function measureNftTimeToRetrievability(config, secrets) {
   if (config.logConfigAndExit) {
@@ -123,7 +128,7 @@ export async function measureNftTimeToRetrievability(config, secrets) {
       return new URL(`/ipfs/${ipnftCid}/image/blob`, gatewayUrl.toString())
     }
     const { gateways } = config
-    const gatewaysRetrievals = await Promise.allSettled(
+    const retrievals = await Promise.allSettled(
       config.gateways.map(async (g) => {
         try {
           await retrieve(g, {
@@ -136,7 +141,7 @@ export async function measureNftTimeToRetrievability(config, secrets) {
         }
       })
     )
-    config.log('debug', { gateways, gatewaysRetrievals })
+    config.log('debug', { gateways, retrievals })
     /**
      * retrieve from gateway and log
      * @param {URL} gateway
@@ -165,16 +170,16 @@ export async function measureNftTimeToRetrievability(config, secrets) {
       }
       config.log('info', retrieveLog)
       const { metricsPushGateway } = config
-      const { metricsPushGatewayBasicAuthUser } = secrets
+      const { metricsPushGatewayAuthorization } = secrets
       if (metricsPushGateway) {
         assert.ok(
-          metricsPushGatewayBasicAuthUser,
-          'expected metricsPushGatewayBasicAuthUser'
+          metricsPushGatewayAuthorization,
+          'expected metricsPushGatewayAuthorization'
         )
         await pushRetrieveMetrics(
           {
             metricsPushGateway,
-            metricsPushGatewayBasicAuthUser,
+            metricsPushGatewayAuthorization,
             log: config.log,
           },
           retrieveLog
@@ -194,7 +199,7 @@ export async function measureNftTimeToRetrievability(config, secrets) {
  * Push retrieval metrics to a pushgateway
  * @param {object} config
  * @param {string} config.metricsPushGateway - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
- * @param {string} config.metricsPushGatewayBasicAuthUser - authorization for metricsPushGateway
+ * @param {HttpAuthorization} config.metricsPushGatewayAuthorization - authorization for metricsPushGateway
  * @param {import('../lib/log.js').LogFunction} config.log - logger
  * @param {RetrieveLog} retrieval
  */
@@ -205,32 +210,48 @@ async function pushRetrieveMetrics(config, retrieval) {
     {
       method: 'post',
       headers: {
-        authorization: basicAuthorizationHeaderValue(
-          config.metricsPushGatewayBasicAuthUser
-        ),
+        authorization: config.metricsPushGatewayAuthorization.authorization,
         'content-type': 'application/octet-stream',
       },
-      body: [formatRetrievalMetrics(retrieval)].join('/n'),
+      body: formatRetrievalMetrics(retrieval),
     },
   ]
   const pushResponse = await fetch.apply(null, pushRequest)
-  if (![200, 201].includes(pushResponse.status)) {
+  const pushSuccessfulStatusCodes = [200, 201]
+  if (!pushSuccessfulStatusCodes.includes(pushResponse.status)) {
     config.log('warn', {
       type: 'error',
       message: 'unsuccessful metrics push',
       text: await pushResponse.text(),
     })
   }
-  assert.equal(pushResponse.status, 201)
+  assert.equal(
+    pushSuccessfulStatusCodes.includes(pushResponse.status),
+    true,
+    'metrics push response code should indicate success'
+  )
 }
 
 /**
- * @param {string} [user]
- * @param {string} [password]
+ * @typedef BasicAuthOptions
+ * @property {string} basicAuth - base64-encoded user:pass
+ */
+
+/**
+ * @typedef UserPassOptions
+ * @property {string} username - username
+ * @property {string} password - password
+ */
+
+/**
+ * @param {BasicAuthOptions|UserPassOptions} options
  * @returns {`Basic ${string}`} - http Authorization header value
  */
-function basicAuthorizationHeaderValue(user = '', password = '') {
-  const basicAuthValue = btoa(`${user}:${password}`)
+export function basicAuthorizationHeaderValue(options) {
+  const basicAuthValue =
+    'basicAuth' in options
+      ? options.basicAuth
+      : btoa(`${options.username}:${options.password}`)
   const headerValue = /** @type {const} */ (`Basic ${basicAuthValue}`)
   return headerValue
 }
@@ -243,9 +264,11 @@ function basicAuthorizationHeaderValue(user = '', password = '') {
  */
 function formatRetrievalMetrics(retrieval) {
   const durationSeconds = retrieval.duration.size / 1000
-  return [
-    '# HELP nftstorage_retrieval_duration_seconds How long it took to retrieve an nft image',
-    '# TYPE nftstorage_retrieval_duration_seconds gauge',
-    `nftstorage_retrieval_duration_seconds{image="${retrieval.image}",url="${retrieval.url}",size="${retrieval.contentLength}"} ${durationSeconds}`,
-  ].join('\n')
+  return (
+    [
+      '# TYPE nftstorage_retrieval_duration_seconds gauge',
+      '# HELP nftstorage_retrieval_duration_seconds How long it took to retrieve an nft image',
+      `nftstorage_retrieval_duration_seconds{image="${retrieval.image}",url="${retrieval.url}",size="${retrieval.contentLength}"} ${durationSeconds}`,
+    ].join('\n') + '\n'
+  )
 }

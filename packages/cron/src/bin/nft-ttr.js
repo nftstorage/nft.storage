@@ -4,13 +4,17 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 import fetch from '@web-std/fetch'
-import { measureNftTimeToRetrievability } from '../jobs/measureNftTimeToRetrievability.js'
+import {
+  basicAuthorizationHeaderValue,
+  measureNftTimeToRetrievability,
+} from '../jobs/measureNftTimeToRetrievability.js'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { EnvironmentLoader } from 'safe-env-vars'
 import { ConsoleLog, JSONLogger } from '../lib/log.js'
 import process from 'process'
 import { RandomImage, RandomImageBlob } from '../lib/random.js'
+import assert from 'assert'
 
 const env = new EnvironmentLoader()
 
@@ -41,6 +45,8 @@ export async function main(argv, options = { log: defaultLog }) {
       },
       metricsPushGateway: {
         type: 'string',
+        default:
+          'https://pushgateway.k8s.locotorp.info/metrics/job/web3storage_ci/instance/github_action',
       },
       minImageSizeBytes: {
         type: 'number',
@@ -84,6 +90,9 @@ export async function main(argv, options = { log: defaultLog }) {
       images,
     }
   }
+  const PUSHGATEWAY_BASIC_AUTH = env.optional.string.get(
+    'PUSHGATEWAY_BASIC_AUTH'
+  )
   switch (command) {
     case 'measure':
       await measureNftTimeToRetrievability(
@@ -92,14 +101,28 @@ export async function main(argv, options = { log: defaultLog }) {
         },
         {
           nftStorageToken: env.string.get('NFT_STORAGE_API_KEY'),
-          metricsPushGatewayBasicAuthUser: env.optional.string.get(
-            'PUSHGATEWAY_BASIC_AUTH'
-          ),
+          metricsPushGatewayAuthorization: PUSHGATEWAY_BASIC_AUTH
+            ? parseBasicAuth(PUSHGATEWAY_BASIC_AUTH)
+            : { authorization: 'bearer no-auth' },
         }
       )
       break
     default:
       throw new Error(`unexpected command ${command}`)
+  }
+}
+
+/**
+ * Parse PUSHGATEWAY_BASIC_AUTH auth value
+ * @param {string} basicAuthEnvVarString
+ * @returns {import('../jobs/measureNftTimeToRetrievability.js').HttpAuthorization}
+ */
+function parseBasicAuth(basicAuthEnvVarString) {
+  assert.ok(basicAuthEnvVarString)
+  const [username, ...passwordParts] = basicAuthEnvVarString.split(':')
+  const password = passwordParts.join(':')
+  return {
+    authorization: basicAuthorizationHeaderValue({ username, password }),
   }
 }
 

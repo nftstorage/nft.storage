@@ -37,7 +37,7 @@ describe('measureNftTimeToRetrievability', () => {
       },
       {
         nftStorageToken: 'TODO',
-        metricsPushGatewayBasicAuthUser: '',
+        metricsPushGatewayAuthorization: { authorization: 'bearer todo' },
       }
     )
     assert.equal(storeSpy.mock.calls.length, 1)
