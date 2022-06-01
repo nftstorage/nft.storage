@@ -591,5 +591,6 @@ function getRandomBytes(n) {
  * @returns
  */
 function expectedBackupUrl(root, userId, carHash) {
+  const { S3_ENDPOINT, S3_BUCKET_NAME } = getServiceConfig()
   return `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${userId}/${carHash}.car`
 }
