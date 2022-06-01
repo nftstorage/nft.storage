@@ -15,7 +15,7 @@ set -eo pipefail
 #     - "dev.local": (default if var not set) expose database and cluster API ports to the host, using the default port numbers
 #     - "test.local": expose database and cluster API on non-standard ports for testing, to avoid conflict with dev.local
 #     - "dev.container": don't expose ports to the host, but do use the devcontainer docker network as the default so we can find the services by container name
-#     - "test.container": like dev.in-container, but with "-test" appended to service container names (db-test, etc.) to avoid conflicts with dev.in-container
+#     - "test.container": like dev.container, but with "-test" appended to service container names (db-test, etc.) to avoid conflicts with dev.container
 #
 # - NFT_STORAGE_DEV_PERSIST_VOLUMES: if set to any value except "false" or "0", uses data volumes (db state, etc) from previous invocation and does not delete them on exit
 
