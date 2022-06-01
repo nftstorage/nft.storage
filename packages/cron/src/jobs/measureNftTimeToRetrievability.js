@@ -237,8 +237,7 @@ async function pushRetrieveMetrics(config, retrieval) {
     },
   ]
   const pushResponse = await fetch.apply(null, pushRequest)
-  const pushSuccessfulStatusCodes = [200, 201]
-  if (!pushSuccessfulStatusCodes.includes(pushResponse.status)) {
+  if (!pushResponse.ok) {
     config.log('warn', {
       type: 'error',
       message: 'unsuccessful metrics push',
@@ -246,7 +245,7 @@ async function pushRetrieveMetrics(config, retrieval) {
     })
   }
   assert.equal(
-    pushSuccessfulStatusCodes.includes(pushResponse.status),
+    pushResponse.ok,
     true,
     'metrics push response code should indicate success'
   )
