@@ -32,7 +32,7 @@ const sentryOptions = {
   rewriteFrames: {
     root: '/',
   },
-  release: config.NFT_STORAGE_VERSION,
+  release: config.VERSION,
   pkg,
 }
 

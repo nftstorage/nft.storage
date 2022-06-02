@@ -76,6 +76,8 @@ wrangler secret put S3_ACCESS_KEY_ID --env production # Get from Amazon S3 (not 
 wrangler secret put S3_SECRET_ACCESS_KEY --env production # Get from Amazon S3 (not required for dev)
 wrangler secret put S3_BUCKET_NAME --env production # e.g nft.storage-staging-us-east-2 (not required for dev)
 wrangler secret put PRIVATE_KEY --env production # Get from 1password
+wrangler secret put MAINTENANCE_MODE --env production # default value is "rw"
+
 wrangler publish --env production
 ```
 
