@@ -9,37 +9,6 @@ import {
  */
 
 /**
- * Default configuration values to be used in test and dev if no explicit definition is found.
- *
- * @type Record<string, string>
- */
-export const DEFAULT_CONFIG_VALUES = {
-  SALT: 'secret',
-  DEBUG: 'true',
-  DATABASE_URL: 'http://localhost:3000',
-  DATABASE_TOKEN:
-    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYwMzk2ODgzNCwiZXhwIjoyNTUwNjUzNjM0LCJyb2xlIjoic2VydmljZV9yb2xlIn0.necIJaiP7X2T2QjGeV-FhpkizcNTX8HjDDBAxpgQTEI',
-  CLUSTER_API_URL: 'http://localhost:9094',
-  CLUSTER_BASIC_AUTH_TOKEN: 'dGVzdDp0ZXN0', // test:test
-  MAGIC_SECRET_KEY: 'test',
-  ENV: 'test',
-  SENTRY_DSN: 'https://test@test.ingest.sentry.io/0000000',
-  NFT_STORAGE_BRANCH: 'test',
-  NFT_STORAGE_VERSION: 'test',
-  NFT_STORAGE_COMMITHASH: 'test',
-  MAINTENANCE_MODE: 'rw',
-  METAPLEX_AUTH_TOKEN: 'metaplex-test-token',
-  MAILCHIMP_API_KEY: '',
-  LOGTAIL_TOKEN: '',
-  S3_ENDPOINT: 'http://localhost:9095',
-  S3_REGION: 'test',
-  S3_ACCESS_KEY_ID: 'test',
-  S3_SECRET_ACCESS_KEY: 'test',
-  S3_BUCKET_NAME: 'test',
-  PRIVATE_KEY: 'xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY=',
-}
-
-/**
  * If the CLUSTER_SERVICE variable is set, the service URL will be resolved from here.
  *
  * @type Record<string, string> */
@@ -48,12 +17,6 @@ const CLUSTER_SERVICE_URLS = {
   IpfsCluster2: 'https://nft2.storage.ipfscluster.io/api/',
   IpfsCluster3: 'https://nft3.storage.ipfscluster.io/api/',
 }
-
-/**
- * @param {RuntimeEnvironmentName} env
- * @returns {boolean} true if the named runtime environment should fallback to values from DEFAULT_CONFIG_VALUES if no config var is present.
- */
-const allowDefaultConfigValues = (env) => env === 'test' || env === 'dev'
 
 /** @type ServiceConfiguration|undefined */
 let _globalConfig
@@ -90,14 +53,6 @@ export const overrideServiceConfigForTesting = (config) => {
  *
  * Exported for testing. See {@link getServiceConfig} for main public accessor.
  *
- * Config values are resolved by looking for global variables with the names matching the keys of {@link DEFAULT_CONFIG_VALUES}.
- *
- * If no global value is found for a variable, an error will be thrown if the runtimeEnvironment (ENV variable)
- * is set to a "production like" environment.
- *
- * If {@link allowDefaultConfigValues} returns true for the current environment, the value from {@link DEFAULT_CONFIG_VALUES} will be
- * used if a variable is missing.
- *
  * @returns {ServiceConfiguration}
  */
 export function loadServiceConfig() {
@@ -114,13 +69,14 @@ export function loadServiceConfig() {
  * @returns {ServiceConfiguration}
  */
 export function serviceConfigFromVariables(vars) {
-  let clusterUrl = vars.CLUSTER_API_URL
-  if (vars.CLUSTER_SERVICE) {
-    const serviceUrl = CLUSTER_SERVICE_URLS[vars.CLUSTER_SERVICE]
-    if (!serviceUrl) {
+  let clusterUrl
+  if (!vars.CLUSTER_SERVICE) {
+    clusterUrl = vars.CLUSTER_API_URL
+  } else {
+    clusterUrl = CLUSTER_SERVICE_URLS[vars.CLUSTER_SERVICE]
+    if (!clusterUrl) {
       throw new Error(`unknown cluster service: ${vars.CLUSTER_SERVICE}`)
     }
-    clusterUrl = serviceUrl
   }
 
   return {
@@ -135,9 +91,6 @@ export function serviceConfigFromVariables(vars) {
     CLUSTER_BASIC_AUTH_TOKEN: vars.CLUSTER_BASIC_AUTH_TOKEN,
     MAGIC_SECRET_KEY: vars.MAGIC_SECRET_KEY,
     SENTRY_DSN: vars.SENTRY_DSN,
-    NFT_STORAGE_BRANCH: vars.NFT_STORAGE_BRANCH,
-    NFT_STORAGE_VERSION: vars.NFT_STORAGE_VERSION,
-    NFT_STORAGE_COMMITHASH: vars.NFT_STORAGE_COMMITHASH,
     METAPLEX_AUTH_TOKEN: vars.METAPLEX_AUTH_TOKEN,
     MAILCHIMP_API_KEY: vars.MAILCHIMP_API_KEY,
     LOGTAIL_TOKEN: vars.LOGTAIL_TOKEN,
@@ -147,6 +100,13 @@ export function serviceConfigFromVariables(vars) {
     S3_SECRET_ACCESS_KEY: vars.S3_SECRET_ACCESS_KEY,
     S3_BUCKET_NAME: vars.S3_BUCKET_NAME,
     PRIVATE_KEY: vars.PRIVATE_KEY,
+    // These are injected in esbuild
+    // @ts-ignore
+    BRANCH: NFT_STORAGE_BRANCH,
+    // @ts-ignore
+    VERSION: NFT_STORAGE_VERSION,
+    // @ts-ignore
+    COMMITHASH: NFT_STORAGE_COMMITHASH,
   }
 }
 
@@ -166,29 +126,45 @@ export function loadConfigVariables() {
   /** @type Record<string, unknown> */
   const globals = globalThis
 
-  const notFound = []
-  for (const name of Object.keys(DEFAULT_CONFIG_VALUES)) {
+  const required = [
+    'ENV',
+    'DEBUG',
+    'SALT',
+    'DATABASE_URL',
+    'DATABASE_TOKEN',
+    'MAGIC_SECRET_KEY',
+    'MAILCHIMP_API_KEY',
+    'METAPLEX_AUTH_TOKEN',
+    'LOGTAIL_TOKEN',
+    'PRIVATE_KEY',
+    'SENTRY_DSN',
+    'CLUSTER_BASIC_AUTH_TOKEN',
+    'MAINTENANCE_MODE',
+    'S3_REGION',
+    'S3_ACCESS_KEY_ID',
+    'S3_SECRET_ACCESS_KEY',
+    'S3_BUCKET_NAME',
+  ]
+
+  for (const name of required) {
     const val = globals[name]
     if (typeof val === 'string') {
       vars[name] = val
     } else {
-      notFound.push(name)
+      throw new Error(
+        `Missing required config variables: ${name}. Check your .env, testing globals or cloudflare vars.`
+      )
     }
   }
 
-  if (notFound.length !== 0) {
-    const env = parseRuntimeEnv(vars.ENV)
-    if (!allowDefaultConfigValues(env)) {
-      throw new Error(
-        'Missing required config variables: ' + notFound.join(', ')
-      )
-    }
-    console.warn(
-      'Using default values for config variables: ',
-      notFound.join(', ')
-    )
-    for (const name of notFound) {
-      vars[name] = DEFAULT_CONFIG_VALUES[name]
+  const optional = ['CLUSTER_SERVICE', 'CLUSTER_API_URL', 'S3_ENDPOINT']
+
+  for (const name of optional) {
+    const val = globals[name]
+    if (typeof val === 'string') {
+      vars[name] = val
+    } else {
+      console.warn(`Missing optional config variables: ${name}`)
     }
   }
 

@@ -24,16 +24,23 @@ const nodeBuiltinsPlugin = {
   },
 }
 
+const config = {
+  inject: [
+    path.join(__dirname, './scripts/node-globals.js'),
+    path.join(__dirname, './test/scripts/globals.js'),
+  ],
+  define: {
+    NFT_STORAGE_VERSION: JSON.stringify('0.1.0'),
+    NFT_STORAGE_COMMITHASH: JSON.stringify('322332'),
+    NFT_STORAGE_BRANCH: JSON.stringify('main'),
+  },
+  plugins: [nodeBuiltinsPlugin],
+}
+
 /** @type {import('playwright-test').RunnerOptions} */
 module.exports = {
-  buildConfig: {
-    inject: [path.join(__dirname, './scripts/node-globals.js')],
-    plugins: [nodeBuiltinsPlugin],
-  },
-  buildSWConfig: {
-    inject: [path.join(__dirname, './scripts/node-globals.js')],
-    plugins: [nodeBuiltinsPlugin],
-  },
+  buildConfig: config,
+  buildSWConfig: config,
   beforeTests: async () => {
     const mock = await startMockServer('AWS S3', 9095, 'test/mocks/aws-s3')
 
