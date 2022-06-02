@@ -37,7 +37,7 @@ describe('Metaplex Upload', () => {
     })
 
     assert(res, 'Server responded')
-    assert(res.ok, 'Server response ok')
+    assert(res.ok, 'Server response ok. status:' + res.status)
     const { ok, value } = await res.json()
     assert(ok, 'Server response payload has `ok` property')
     assert.strictEqual(value.cid, cid, 'Server responded with expected CID')

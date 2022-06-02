@@ -10,41 +10,36 @@ const { once } = require('events')
 
 dotenv.config({ path: path.join(__dirname, '../../.env') })
 
-const configKeys = [
-  'ENV',
-  'PRIVATE_KEY',
-  'DATABASE_CONNECTION',
-  'DATABASE_TOKEN',
-  'DATABASE_URL',
-  'LOGTAIL_TOKEN',
-  'MAGIC_SECRET_KEY',
-  'SALT',
-  'SENTRY_DSN',
-  'MAILCHIMP_API_KEY',
-  'CLUSTER_API_URL',
-  'CLUSTER_BASIC_AUTH_TOKEN',
-  'DEBUG',
-  'NFT_STORAGE_VERSION',
-  'NFT_STORAGE_COMMITHASH',
-  'NFT_STORAGE_BRANCH',
-  'METAPLEX_AUTH_TOKEN',
-  'S3_ACCESS_KEY_ID',
-  'S3_ENDPOINT',
-  'S3_REGION',
-  'S3_SECRET_ACCESS_KEY',
-]
-
-const configEnv = Object.fromEntries(
-  Object.entries(process.env).filter(([key]) => configKeys.includes(key))
-)
-
 const defineGlobalsJs = `
-const injectedEnv = JSON.parse('${JSON.stringify(configEnv)}')
+globalThis.ENV = '${process.env.ENV || ''}'
+globalThis.DEBUG = '${process.env.DEBUG || ''}'
+globalThis.SALT = '${process.env.SALT || ''}'
+globalThis.DATABASE_URL = '${process.env.DATABASE_URL || ''}'
+globalThis.DATABASE_TOKEN = '${process.env.DATABASE_TOKEN || ''}'
 
-for (const [key, val] of Object.entries(injectedEnv)) {
-  globalThis[key] = val
-}
+globalThis.MAGIC_SECRET_KEY = '${process.env.MAGIC_SECRET_KEY || ''}'
+globalThis.MAILCHIMP_API_KEY = '${process.env.MAILCHIMP_API_KEY || ''}'
+globalThis.METAPLEX_AUTH_TOKEN = '${process.env.METAPLEX_AUTH_TOKEN || ''}'
+globalThis.LOGTAIL_TOKEN = '${process.env.LOGTAIL_TOKEN || ''}'
+globalThis.PRIVATE_KEY = '${process.env.PRIVATE_KEY || ''}'
+globalThis.SENTRY_DSN = '${process.env.SENTRY_DSN || ''}'
+
+globalThis.CLUSTER_API_URL = '${process.env.CLUSTER_API_URL || ''}'
+globalThis.CLUSTER_BASIC_AUTH_TOKEN = '${
+  process.env.CLUSTER_BASIC_AUTH_TOKEN || ''
+}'
+globalThis.CLUSTER_SERVICE = '${process.env.CLUSTER_SERVICE || ''}'
+
+globalThis.MAINTENANCE_MODE = '${process.env.MAINTENANCE_MODE || ''}'
+
+globalThis.S3_ENDPOINT = '${process.env.S3_ENDPOINT || ''}'
+globalThis.S3_REGION = '${process.env.S3_REGION || ''}'
+globalThis.S3_ACCESS_KEY_ID = '${process.env.S3_ACCESS_KEY_ID || ''}'
+globalThis.S3_SECRET_ACCESS_KEY = '${process.env.S3_SECRET_ACCESS_KEY || ''}'
+globalThis.S3_BUCKET_NAME = '${process.env.S3_BUCKET_NAME || ''}'
 `
+
+console.log(defineGlobalsJs)
 
 temp.track()
 const injectGlobalsTempfile = temp.openSync({
