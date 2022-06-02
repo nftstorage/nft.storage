@@ -20,6 +20,10 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
  */
 
 /**
+ * @typedef {import('prom-client').Pushgateway} Pushgateway
+ */
+
+/**
  * @typedef {import('nft.storage/dist/src/token').TokenInput} TokenInput
  */
 
@@ -36,15 +40,12 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
  * @returns {AsyncIterable<File>}
  */
 export async function* createTestImages(count = 1) {
-  console.log('start createTestImages', count)
   while (count--) {
-    console.log('createTestImages creating RandomImageBlob')
     const blob = await createRandomImageBlob(
       createRandomImage({
         bytes: { min: 1 },
       })
     )
-    console.log('createTestImages did create RandomImageBlob')
     yield new File([blob], 'image.jpg', blob)
   }
 }
@@ -70,12 +71,10 @@ export async function* createTestImages(count = 1) {
  */
 
 /**
- * @typedef {object} MetricDescriptor
- */
-
-/**
  * @typedef {object} MeasureTtrOptions
- * @property {Record<string, MetricDescriptor>} metrics - metrics
+ * @property {{
+ *   timeToRetrievability: import('../lib/metrics').MetricDescriptor
+ * }} metrics - metrics
  * @property {RetrievalMetricsLogger} pushRetrieveMetrics - fn to push metrics
  * @property {AsyncIterable<Blob>} images - images to upload/retrieve
  * @property {StoreFunction} [store] - function to store nft
@@ -127,7 +126,6 @@ export async function measureNftTimeToRetrievability(options) {
   const start = {
     type: 'start',
     job: 'measureNftTimeToRetrievability',
-    config,
   }
   config.log('info', start)
   for await (const image of config.images) {
@@ -269,18 +267,24 @@ export function createStubbedRetrievalMetricsLogger() {
 /**
  * @param {import('prom-client').PromClient} _registry
  * @param {import('../lib/metrics.js').RetrievalDurationSecondsMetric} retrievalDurationSeconds
+ * @param {Pushgateway} pushgateway
+ * @param {string} metricsPushGatewayJobName
  * @returns {RetrievalMetricsLogger}
  */
 export function createPromClientRetrievalMetricsLogger(
   _registry,
-  retrievalDurationSeconds
+  retrievalDurationSeconds,
+  pushgateway,
+  metricsPushGatewayJobName
 ) {
   /** @type {RetrievalMetricsLogger} */
   const push = async (options, retrieval) => {
-    options.log('info', {
-      type: 'promClientPush',
-    })
     retrievalDurationSeconds.observe(retrieval.duration.toNumber() / 1000)
+    const pushAddArgs = {
+      jobName: metricsPushGatewayJobName,
+    }
+    await pushgateway.pushAdd(pushAddArgs)
+    options.log('debug', { type: 'pushgateway.pushAdd', args: pushAddArgs })
   }
   return push
 }

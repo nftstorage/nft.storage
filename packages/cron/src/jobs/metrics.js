@@ -151,6 +151,7 @@ async function withTimeLog(name, fn) {
 }
 
 /**
- * @typedef {unknown} MetricDescriptor
+ * @template Metric
+ * @typedef {object} MetricDescriptor
  * @property {Metric} metric
  */

@@ -1,7 +1,7 @@
 import fetch from '@web-std/fetch'
 import retry from 'p-retry'
 import debug from 'debug'
-import { hasOwnProperty } from './utils'
+import { hasOwnProperty } from './utils.js'
 
 const log = debug('fetchJSON')
 

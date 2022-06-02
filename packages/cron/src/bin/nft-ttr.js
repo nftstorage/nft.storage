@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/naming-convention */
 
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -17,12 +19,29 @@ import { createConsoleLog, createJSONLogger } from '../lib/log.js'
 import process from 'process'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 import assert from 'assert'
-import { Pushgateway, PromClient, Histogram } from 'prom-client'
-import { timeToRetrievability } from '../lib/metrics'
+import * as promClient from 'prom-client'
+import { timeToRetrievability } from '../lib/metrics.js'
+import { hasOwnProperty } from '../lib/utils.js'
+
 const env = new EnvironmentLoader()
 
 /**
- * @typedef {import('prom-client').PromClient} Registry
+ * @name Registry
+ * @typedef {typeof import('prom-client').register} RegistryTypedef
+ */
+
+assert.equal(typeof promClient, 'object')
+assert(hasOwnProperty(promClient, 'Registry'))
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const Registry = /* @type {any} */ promClient.Registry
+assert.ok(typeof Registry === 'function')
+assert.equal(typeof Registry, 'function')
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const { Histogram, Pushgateway } = promClient
+
+/**
+ * @typedef {import('prom-client').PromClient} PromClient
  */
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -41,6 +60,7 @@ const defaultLog = (level, ...loggables) => {
 export async function main(argv, options = { log: defaultLog }) {
   const [command, ...commandArgv] = argv
   /**
+   * @template Metric
    * @param  {string[]} commandArgv
    */
   const measureArgs = async (...commandArgv) => {
@@ -109,9 +129,11 @@ export async function main(argv, options = { log: defaultLog }) {
      * @param {string} [options.metricsPushGatewayJobName]
      */
     function createPushgatewayRegistry(options) {
-      const registry = new PromClient()
+      // @ts-ignore
+      const registry = new /* @type {any} */ Registry()
+      let pushgateway
       if (options.metricsPushGateway) {
-        const pushgateway = new Pushgateway(
+        pushgateway = new Pushgateway(
           options.metricsPushGateway,
           {
             headers: {
@@ -121,15 +143,11 @@ export async function main(argv, options = { log: defaultLog }) {
           },
           registry
         )
-        if (options.metricsPushGatewayJobName) {
-          pushgateway.pushAdd({
-            jobName: options.metricsPushGatewayJobName,
-          })
-        }
       }
-      return registry
+      assert.ok(pushgateway)
+      return { registry, pushgateway }
     }
-    const promClientRegistry = createPushgatewayRegistry({
+    const PromClientRegistry = createPushgatewayRegistry({
       metricsPushGatewayAuthorization,
       metricsPushGateway: commandArgs.metricsPushGateway,
     })
@@ -137,20 +155,24 @@ export async function main(argv, options = { log: defaultLog }) {
     const retrievalDurationSecondsMetric = new Histogram({
       name: 'retrieval_duration_seconds',
       help: 'How long, in seconds, it took to retrieve an nft image after uploading',
-      registers: [promClientRegistry],
+      registers: [PromClientRegistry.registry],
       labelNames: ['byteLength'],
     })
     /** @type {import('../jobs/measureNftTimeToRetrievability.js').RetrievalMetricsLogger} */
     const pushRetrieveMetrics = commandArgs.stubMetricsPushTarget
       ? createStubbedRetrievalMetricsLogger()
       : createPromClientRetrievalMetricsLogger(
-          promClientRegistry,
-          retrievalDurationSecondsMetric
+          PromClientRegistry.registry,
+          retrievalDurationSecondsMetric,
+          PromClientRegistry.pushgateway,
+          commandArgs.metricsPushGatewayJobName
         )
     const metrics = {
       timeToRetrievability,
     }
-    /** @type {import('../jobs/measureNftTimeToRetrievability.js').MeasureTtrOptions} */
+    /**
+     * @type {import('../jobs/measureNftTimeToRetrievability.js').MeasureTtrOptions}
+     */
     const args = {
       ...commandArgs,
       pushRetrieveMetrics,
