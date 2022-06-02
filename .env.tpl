@@ -28,3 +28,18 @@ DATABASE_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlh
 
 # Postgres Database
 DATABASE_CONNECTION=postgresql://postgres:postgres@localhost:5432/postgres
+
+# Cluster 
+CLUSTER_BASIC_AUTH_TOKEN = dGVzdDp0ZXN0
+CLUSTER_SERVICE = 
+CLUSTER_API_URL = http://localhost:9094
+
+# Maintenance Mode
+MAINTENANCE_MODE = rw
+
+# S3
+S3_ENDPOINT = http://localhost:9095
+S3_REGION = test
+S3_ACCESS_KEY_ID = test
+S3_SECRET_ACCESS_KEY = test
+S3_BUCKET_NAME = test
