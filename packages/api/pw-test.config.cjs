@@ -1,5 +1,7 @@
 const path = require('path')
+const fs = require('fs')
 const dotenv = require('dotenv')
+const temp = require('temp')
 const execa = require('execa')
 const delay = require('delay')
 const { once } = require('events')
@@ -7,6 +9,50 @@ const { once } = require('events')
 /** @typedef {{ proc: execa.ExecaChildProcess<string> }} ProcessObject */
 
 dotenv.config({ path: path.join(__dirname, '../../.env') })
+
+const configKeys = [
+  'ENV',
+  'PRIVATE_KEY',
+  'DATABASE_CONNECTION',
+  'DATABASE_TOKEN',
+  'DATABASE_URL',
+  'LOGTAIL_TOKEN',
+  'MAGIC_SECRET_KEY',
+  'SALT',
+  'SENTRY_DSN',
+  'MAILCHIMP_API_KEY',
+  'CLUSTER_API_URL',
+  'CLUSTER_BASIC_AUTH_TOKEN',
+  'DEBUG',
+  'NFT_STORAGE_VERSION',
+  'NFT_STORAGE_COMMITHASH',
+  'NFT_STORAGE_BRANCH',
+  'METAPLEX_AUTH_TOKEN',
+  'S3_ACCESS_KEY_ID',
+  'S3_ENDPOINT',
+  'S3_REGION',
+  'S3_SECRET_ACCESS_KEY',
+]
+
+const configEnv = Object.fromEntries(
+  Object.entries(process.env).filter(([key]) => configKeys.includes(key))
+)
+
+const defineGlobalsJs = `
+const injectedEnv = JSON.parse('${JSON.stringify(configEnv)}')
+
+for (const [key, val] of Object.entries(injectedEnv)) {
+  globalThis[key] = val
+}
+`
+
+temp.track()
+const injectGlobalsTempfile = temp.openSync({
+  prefix: 'nftstorage-test-',
+  suffix: '.js',
+})
+fs.writeSync(injectGlobalsTempfile.fd, defineGlobalsJs)
+fs.closeSync(injectGlobalsTempfile.fd)
 
 const cli = path.join(__dirname, 'scripts/cli.js')
 /** @type {import('esbuild').Plugin} */
@@ -21,6 +67,12 @@ const nodeBuiltinsPlugin = {
 
 /** @type {import('playwright-test').RunnerOptions} */
 module.exports = {
+  buildConfig: {
+    inject: [injectGlobalsTempfile.path],
+  },
+  buildSWConfig: {
+    inject: [injectGlobalsTempfile.path],
+  },
   beforeTests: async () => {
     const mock = await startMockServer('AWS S3', 9095, 'test/mocks/aws-s3')
     return { mock }

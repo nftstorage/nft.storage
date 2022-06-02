@@ -16,8 +16,9 @@ COPY ./package.json .
 RUN yarn install
 
 COPY  ./tsconfig.json .
-COPY ./docker/scripts ./scripts
+COPY ./docker/scripts ./docker-scripts
+COPY ./scripts ./scripts
 COPY ./db ./db
 COPY ./src/ ./src
 
-ENTRYPOINT ["nodemon", "--watch", "src/", "--exec", "'./scripts/run-miniflare.sh'" ]
+ENTRYPOINT ["nodemon", "--watch", "src/", "--exec", "'./docker-scripts/run-miniflare.sh'" ]

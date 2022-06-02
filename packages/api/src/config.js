@@ -16,10 +16,10 @@ import {
 export const DEFAULT_CONFIG_VALUES = {
   SALT: 'secret',
   DEBUG: 'true',
-  DATABASE_URL: 'http://localhost:3000',
+  DATABASE_URL: 'http://post-rest:3000',
   DATABASE_TOKEN:
     'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYwMzk2ODgzNCwiZXhwIjoyNTUwNjUzNjM0LCJyb2xlIjoic2VydmljZV9yb2xlIn0.necIJaiP7X2T2QjGeV-FhpkizcNTX8HjDDBAxpgQTEI',
-  CLUSTER_API_URL: 'http://localhost:9094',
+  CLUSTER_API_URL: 'http://ipfs-cluster:9094',
   CLUSTER_BASIC_AUTH_TOKEN: 'dGVzdDp0ZXN0', // test:test
   MAGIC_SECRET_KEY: 'test',
   ENV: 'test',
@@ -38,7 +38,7 @@ export const DEFAULT_CONFIG_VALUES = {
   S3_BUCKET_NAME: 'test',
   PRIVATE_KEY: 'xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY=',
 }
-
+// export const DEFAULT_CONFIG_VALUES = process && process.env ? process.env : {}
 /**
  * If the CLUSTER_SERVICE variable is set, the service URL will be resolved from here.
  *

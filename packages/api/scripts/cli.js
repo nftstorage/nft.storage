@@ -46,10 +46,20 @@ prog
   .describe('Build the worker.')
   .option('--env', 'Environment', 'dev')
   .action(async (opts) => {
+    let shortCommit = 'unknown'
+    let branch = 'unknown-branch'
+    let commit = 'unknown-commit'
+
     try {
-      const version = `${pkg.name}@${pkg.version}-${opts.env}+${git.short(
-        __dirname
-      )}`
+      shortCommit += git.short(__dirname)
+      commit = git.long(__dirname)
+      branch = git.branch(__dirname)
+    } catch (e) {
+      console.warn('no git version info available')
+    }
+
+    try {
+      const version = `${pkg.name}@${pkg.version}-${opts.env}+${shortCommit}`
       await build({
         entryPoints: [path.join(__dirname, '../src/index.js')],
         bundle: true,
@@ -59,8 +69,8 @@ prog
         plugins: [PluginAlias],
         define: {
           NFT_STORAGE_VERSION: JSON.stringify(version),
-          NFT_STORAGE_COMMITHASH: JSON.stringify(git.long(__dirname)),
-          NFT_STORAGE_BRANCH: JSON.stringify(git.branch(__dirname)),
+          NFT_STORAGE_COMMITHASH: JSON.stringify(commit),
+          NFT_STORAGE_BRANCH: JSON.stringify(branch),
           global: 'globalThis',
         },
         minify: opts.env === 'dev' ? false : true,

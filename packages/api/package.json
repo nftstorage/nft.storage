@@ -45,6 +45,7 @@
     "@types/git-rev-sync": "^2.0.0",
     "@types/mocha": "^9.0.0",
     "@types/pg": "^8.6.1",
+    "@types/temp": "^0.9.1",
     "assert": "^2.0.0",
     "buffer": "^6.0.3",
     "carbites": "^1.0.6",
@@ -66,6 +67,7 @@
     "readable-stream": "^3.6.0",
     "sade": "^1.7.4",
     "smoke": "^3.1.1",
+    "temp": "^0.9.4",
     "tweetnacl": "^1.0.3"
   }
 }
