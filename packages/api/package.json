@@ -11,9 +11,9 @@
     "dev:persist": "./scripts/start-dev-persist.sh",
     "dev:clean": "./scripts/clean-dev-persist.sh",
     "build": "./scripts/cli.js build",
-    "test": "./scripts/start-test.sh ",
+    "test": "./scripts/start-test-local.sh",
+    "test:docker": "./scripts/start-test.sh ",
     "test:watch": "nodemon --watch ./src --watch ./test --watch ./scripts --exec ./scripts/start-test.sh",
-    "test:local": "./scripts/start-test-local.sh",
     "db-types": "./scripts/cli.js db-types"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",

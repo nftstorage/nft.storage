@@ -10,6 +10,7 @@
     "test": "run-s test:*",
     "test:client": "yarn --cwd packages/client test",
     "test:api": "yarn --cwd packages/api test",
+    "test:api:docker": "yarn --cwd packages/api test:docker",
     "test:website": "yarn --cwd packages/website test",
     "build:client:docs": "yarn --cwd packages/client typedoc",
     "build:website": "yarn --cwd packages/website build",

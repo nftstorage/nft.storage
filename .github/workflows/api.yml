@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: '16'
       - run: 'cp .env.tpl .env'
-      - run: yarn test:api
+      - run: yarn test:api:docker
   deploy-staging:
     name: Deploy Staging
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
