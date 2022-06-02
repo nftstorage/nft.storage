@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-env
-
 npx miniflare --debug \
   --build-command "npm run build" \
   --binding ENV="$ENV" \

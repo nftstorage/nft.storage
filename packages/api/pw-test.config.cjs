@@ -39,8 +39,6 @@ globalThis.S3_SECRET_ACCESS_KEY = '${process.env.S3_SECRET_ACCESS_KEY || ''}'
 globalThis.S3_BUCKET_NAME = '${process.env.S3_BUCKET_NAME || ''}'
 `
 
-console.log(defineGlobalsJs)
-
 temp.track()
 const injectGlobalsTempfile = temp.openSync({
   prefix: 'nftstorage-test-',
