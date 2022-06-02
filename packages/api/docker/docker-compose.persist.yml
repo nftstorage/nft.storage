@@ -1,7 +1,0 @@
-services:
-  post-rest:
-    depends_on:
-      db-init:
-        condition: service_started
-  db-init:
-    restart: 'no'

@@ -2,21 +2,20 @@ services:
   post-rest:
     image: postgrest/postgrest:v9.0.0
     depends_on:
-      db-init:
-        condition: service_completed_successfully
+      - db-init
     environment:
       PGRST_DB_URI: $DATABASE_CONNECTION
       PGRST_DB_SCHEMAS: public,cargo
       PGRST_DB_ANON_ROLE: postgres
       PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
   db-init:
-    restart: on-failure
     build:
       dockerfile: './docker/Dockerfile'
       context: '../'
     entrypoint: 'psql $DATABASE_CONNECTION -v "ON_ERROR_STOP=1" -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql -f ./db/functions.sql'
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - DATABASE_CONNECTION
       - DATABASE_URL
@@ -51,9 +50,25 @@ services:
       - post-rest
       - ipfs-cluster
   db:
+    restart: on-failure
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'psql',
+          '$DATABASE_CONNECTION',
+          '-v',
+          'ON_ERROR_STOP=1',
+          '-c',
+          'SELECT 1',
+        ]
+      interval: '1s'
+      timeout: '1s'
+      retries: 100
     build:
       context: ./postgres
     environment:
+      DATABASE_CONNECTION: $DATABASE_CONNECTION
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
