@@ -4,8 +4,6 @@ import { NFTStorage } from 'nft.storage'
 import { Milliseconds, now } from '../lib/time.js'
 import { File } from '@web-std/file'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as _PromClient from 'prom-client'
 
 export const EXAMPLE_NFT_IMG_URL = new URL(
   'https://bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4.ipfs.dweb.link/1681.png'
@@ -63,7 +61,21 @@ export async function* createTestImages(count = 1) {
  */
 
 /**
+ * @typedef {import('../lib/metrics.js').RetrievalDurationSecondsMetric} TimeToRetrievabilityMetric
+ */
+
+/**
+ * @typedef MeasureTtrMetrics
+ * @property {TimeToRetrievabilityMetric} timeToRetrievability
+ */
+
+/**
+ * @typedef {object} MetricDescriptor
+ */
+
+/**
  * @typedef {object} MeasureTtrOptions
+ * @property {Record<string, MetricDescriptor>} metrics - metrics
  * @property {RetrievalMetricsLogger} pushRetrieveMetrics - fn to push metrics
  * @property {AsyncIterable<Blob>} images - images to upload/retrieve
  * @property {StoreFunction} [store] - function to store nft
@@ -255,8 +267,8 @@ export function createStubbedRetrievalMetricsLogger() {
 }
 
 /**
- * @param {_PromClient.Registry} _registry
- * @param {_PromClient.Histogram<string>} retrievalDurationSeconds
+ * @param {import('prom-client').PromClient} _registry
+ * @param {import('../lib/metrics.js').RetrievalDurationSecondsMetric} retrievalDurationSeconds
  * @returns {RetrievalMetricsLogger}
  */
 export function createPromClientRetrievalMetricsLogger(

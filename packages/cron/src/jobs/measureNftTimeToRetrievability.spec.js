@@ -7,6 +7,7 @@ import { jest } from '@jest/globals'
 import * as assert from 'assert'
 import { it, describe } from '../lib/testing.js'
 import { recordedLog } from '../lib/log.js'
+import { timeToRetrievability } from '../lib/metrics.js'
 
 describe('measureNftTimeToRetrievability', () => {
   it('has a unit test', async () => {
@@ -34,6 +35,9 @@ describe('measureNftTimeToRetrievability', () => {
       secrets: {
         nftStorageToken: 'TODO',
         metricsPushGatewayAuthorization: { authorization: 'bearer todo' },
+      },
+      metrics: {
+        timeToRetrievability,
       },
     })
     assert.equal(storeSpy.mock.calls.length, 1)

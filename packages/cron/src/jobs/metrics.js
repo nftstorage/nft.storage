@@ -149,3 +149,8 @@ async function withTimeLog(name, fn) {
     log(`${name} took: ${Date.now() - start}ms`)
   }
 }
+
+/**
+ * @typedef {unknown} MetricDescriptor
+ * @property {Metric} metric
+ */

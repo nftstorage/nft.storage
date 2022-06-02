@@ -17,9 +17,13 @@ import { createConsoleLog, createJSONLogger } from '../lib/log.js'
 import process from 'process'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 import assert from 'assert'
-import PromClient from 'prom-client'
-
+import { Pushgateway, PromClient, Histogram } from 'prom-client'
+import { timeToRetrievability } from '../lib/metrics'
 const env = new EnvironmentLoader()
+
+/**
+ * @typedef {import('prom-client').PromClient} Registry
+ */
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 global.fetch = fetch
@@ -103,12 +107,11 @@ export async function main(argv, options = { log: defaultLog }) {
      * @param {string} [options.metricsPushGateway]
      * @param {import('../jobs/measureNftTimeToRetrievability.js').HttpAuthorization} options.metricsPushGatewayAuthorization
      * @param {string} [options.metricsPushGatewayJobName]
-     * @returns {PromClient.Registry}
      */
     function createPushgatewayRegistry(options) {
-      const registry = new PromClient.Registry()
+      const registry = new PromClient()
       if (options.metricsPushGateway) {
-        const pushgateway = new PromClient.Pushgateway(
+        const pushgateway = new Pushgateway(
           options.metricsPushGateway,
           {
             headers: {
@@ -130,18 +133,23 @@ export async function main(argv, options = { log: defaultLog }) {
       metricsPushGatewayAuthorization,
       metricsPushGateway: commandArgs.metricsPushGateway,
     })
+    /** @type {import("../lib/metrics.js").RetrievalDurationSecondsMetric} */
+    const retrievalDurationSecondsMetric = new Histogram({
+      name: 'retrieval_duration_seconds',
+      help: 'How long, in seconds, it took to retrieve an nft image after uploading',
+      registers: [promClientRegistry],
+      labelNames: ['byteLength'],
+    })
     /** @type {import('../jobs/measureNftTimeToRetrievability.js').RetrievalMetricsLogger} */
     const pushRetrieveMetrics = commandArgs.stubMetricsPushTarget
       ? createStubbedRetrievalMetricsLogger()
       : createPromClientRetrievalMetricsLogger(
           promClientRegistry,
-          new PromClient.Histogram({
-            name: 'retrieval_duration_seconds',
-            help: 'How long, in seconds, it took to retrieve an nft image after uploading',
-            registers: [promClientRegistry],
-            labelNames: ['byteLength'],
-          })
+          retrievalDurationSecondsMetric
         )
+    const metrics = {
+      timeToRetrievability,
+    }
     /** @type {import('../jobs/measureNftTimeToRetrievability.js').MeasureTtrOptions} */
     const args = {
       ...commandArgs,
@@ -153,6 +161,7 @@ export async function main(argv, options = { log: defaultLog }) {
         nftStorageToken: env.string.get('NFT_STORAGE_API_KEY'),
         metricsPushGatewayAuthorization,
       },
+      metrics,
     }
     return args
   }
