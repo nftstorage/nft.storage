@@ -1,5 +1,14 @@
 # Changelog
 
+### [2.24.2](https://github.com/nftstorage/nft.storage/compare/api-v2.24.1...api-v2.24.2) (2022-06-01)
+
+
+### Bug Fixes
+
+* default PSA pin status filter ([#1936](https://github.com/nftstorage/nft.storage/issues/1936)) ([235a308](https://github.com/nftstorage/nft.storage/commit/235a30820906d6c66bcac1a1a6d9e220932d5145))
+* preserve all backup_urls for chunked uploads ([#1940](https://github.com/nftstorage/nft.storage/issues/1940)) ([9084d87](https://github.com/nftstorage/nft.storage/commit/9084d87d51c89ade8c991dcba1f983645bda39c0))
+* send checksum on s3 upload ([#1926](https://github.com/nftstorage/nft.storage/issues/1926)) ([3738f77](https://github.com/nftstorage/nft.storage/commit/3738f77fcb629c49fc11daac8e55a5a0500d4769))
+
 ### [2.24.1](https://github.com/nftstorage/nft.storage/compare/api-v2.24.0...api-v2.24.1) (2022-05-18)
 
 
