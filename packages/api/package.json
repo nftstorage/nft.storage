@@ -9,6 +9,7 @@
     "deploy": "wrangler publish --env production",
     "dev": "./scripts/start-dev.sh",
     "dev:persist": "./scripts/start-dev-persist.sh",
+    "dev:clean": "./scripts/clean-dev-persist.sh",
     "build": "./scripts/cli.js build",
     "test": "./scripts/start-test.sh ",
     "test:watch": "nodemon --watch ./src --watch ./test --watch ./scripts --exec ./scripts/start-test.sh",
