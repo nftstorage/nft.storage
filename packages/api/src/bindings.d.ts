@@ -7,30 +7,74 @@ import { UserOutput, UserOutputKey } from './utils/db-client-types.js'
 import { DBClient } from './utils/db-client.js'
 import { Logging } from './utils/logs.js'
 
-declare global {
-  const SALT: string
-  const DEBUG: string
-  const CLUSTER_SERVICE: 'IpfsCluster' | 'IpfsCluster2' | 'IpfsCluster3'
-  const CLUSTER_API_URL: string
-  const CLUSTER_BASIC_AUTH_TOKEN: string
-  const MAGIC_SECRET_KEY: string
-  const DATABASE_URL: string
-  const DATABASE_TOKEN: string
-  const MAILCHIMP_API_KEY: string
-  const LOGTAIL_TOKEN: string
-  const ENV: 'dev' | 'staging' | 'production'
-  const SENTRY_DSN: string
-  const BRANCH: string
-  const VERSION: string
-  const COMMITHASH: string
-  const MAINTENANCE_MODE: Mode
-  const METAPLEX_AUTH_TOKEN: string
-  const S3_ENDPOINT: string
-  const S3_REGION: string
-  const S3_ACCESS_KEY_ID: string
-  const S3_SECRET_ACCESS_KEY: string
-  const S3_BUCKET_NAME: string
-  const PRIVATE_KEY: string
+export type RuntimeEnvironmentName = 'test' | 'dev' | 'staging' | 'production'
+
+export interface ServiceConfiguration {
+  /** Is this a debug build? */
+  DEBUG: boolean
+
+  /** Target runtime environment */
+  ENV: RuntimeEnvironmentName
+
+  /** Semantic version for current build */
+  NFT_STORAGE_VERSION: string
+
+  /** Git branch name of current build */
+  NFT_STORAGE_BRANCH: string
+
+  /** Git commit hash of current build */
+  NFT_STORAGE_COMMITHASH: string
+
+  /** Current maintenance mode */
+  MAINTENANCE_MODE: Mode
+
+  /** Salt for API key generation */
+  SALT: string
+
+  /** API key for special metaplex upload account */
+  METAPLEX_AUTH_TOKEN: string
+
+  /** UCAN private signing key */
+  PRIVATE_KEY: string
+
+  /** API url for active IPFS cluster endpoint */
+  CLUSTER_API_URL: string
+
+  /** Auth token for IPFS culster */
+  CLUSTER_BASIC_AUTH_TOKEN: string
+
+  /** Postgrest endpoint URL */
+  DATABASE_URL: string
+
+  /** Postgrest auth token */
+  DATABASE_TOKEN: string
+
+  /** S3 endpoint URL */
+  S3_ENDPOINT: string
+
+  /** S3 region */
+  S3_REGION: string
+
+  /** S3 access key id */
+  S3_ACCESS_KEY_ID: string
+
+  /** S3 secret key */
+  S3_SECRET_ACCESS_KEY: string
+
+  /** S3 bucket name */
+  S3_BUCKET_NAME: string
+
+  /** Magic link secret key */
+  MAGIC_SECRET_KEY: string
+
+  /** Logtail auth token */
+  LOGTAIL_TOKEN: string
+
+  /** Sentry DSN */
+  SENTRY_DSN: string
+
+  /** Mailchimp api key */
+  MAILCHIMP_API_KEY: string
 }
 
 export interface Ucan {
@@ -50,6 +94,7 @@ export interface Auth {
 export interface AuthOptions {
   checkUcan?: boolean
   checkHasAccountRestriction?: boolean
+  checkHasDeleteRestriction?: boolean
   checkHasPsaAccess?: boolean
 }
 

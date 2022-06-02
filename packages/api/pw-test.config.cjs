@@ -6,9 +6,7 @@ const { once } = require('events')
 
 /** @typedef {{ proc: execa.ExecaChildProcess<string> }} ProcessObject */
 
-dotenv.config({
-  path: path.join(__dirname, '../../.env'),
-})
+dotenv.config({ path: path.join(__dirname, '../../.env') })
 
 const cli = path.join(__dirname, 'scripts/cli.js')
 /** @type {import('esbuild').Plugin} */

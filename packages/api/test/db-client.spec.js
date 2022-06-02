@@ -1,7 +1,7 @@
 import assert from 'assert'
 import { signJWT } from '../src/utils/jwt.js'
 import { createClientWithUser, DBTestClient } from './scripts/helpers.js'
-import { SALT } from './scripts/worker-globals.js'
+import { getServiceConfig } from '../src/config.js'
 
 describe('DB Client', () => {
   /** @type{DBTestClient} */
@@ -11,7 +11,8 @@ describe('DB Client', () => {
     client = await createClientWithUser()
   })
 
-  it('getUser should list all keys', async () => {
+  it('getUser should list only active keys', async () => {
+    const config = getServiceConfig()
     const issuer1 = `did:eth:0x73573${Date.now()}`
     const token1 = await signJWT(
       {
@@ -20,7 +21,7 @@ describe('DB Client', () => {
         iat: Date.now(),
         name: 'key1',
       },
-      SALT
+      config.SALT
     )
     await client.client.createKey({
       name: 'key1',
@@ -35,7 +36,7 @@ describe('DB Client', () => {
         iat: Date.now(),
         name: 'key2',
       },
-      SALT
+      config.SALT
     )
     const key2 = await client.client.createKey({
       name: 'key2',

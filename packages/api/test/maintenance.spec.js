@@ -1,14 +1,31 @@
 import assert from 'assert'
 import {
-  modes,
   withMode,
   READ_ONLY,
   READ_WRITE,
   NO_READ_OR_WRITE,
-  setMaintenanceModeGetter,
 } from '../src/middleware/maintenance.js'
 
+import {
+  getServiceConfig,
+  overrideServiceConfigForTesting,
+} from '../src/config.js'
+
+const baseConfig = getServiceConfig()
+
+/** @param {import('../src/middleware/maintenance.js').Mode} mode */
+const setMode = (mode) => {
+  overrideServiceConfigForTesting({
+    ...baseConfig,
+    MAINTENANCE_MODE: mode,
+  })
+}
+
 describe('maintenance middleware', () => {
+  afterEach(() => {
+    overrideServiceConfigForTesting(baseConfig)
+  })
+
   it('should throw error when in maintenance', () => {
     /** @type {import('../src/bindings').Handler} */
     let handler
@@ -16,21 +33,20 @@ describe('maintenance middleware', () => {
       // @ts-expect-error not passing params to our test handler
       handler()
     }
-
     handler = withMode(() => new Response(), READ_ONLY)
-    setMaintenanceModeGetter(() => READ_WRITE)
+    setMode(READ_WRITE)
     assert.doesNotThrow(block)
-    setMaintenanceModeGetter(() => READ_ONLY)
+    setMode(READ_ONLY)
     assert.doesNotThrow(block)
-    setMaintenanceModeGetter(() => NO_READ_OR_WRITE)
+    setMode(NO_READ_OR_WRITE)
     assert.throws(block, /API undergoing maintenance/)
 
     handler = withMode(() => new Response(), READ_WRITE)
-    setMaintenanceModeGetter(() => READ_WRITE)
+    setMode(READ_WRITE)
     assert.doesNotThrow(block)
-    setMaintenanceModeGetter(() => READ_ONLY)
+    setMode(READ_ONLY)
     assert.throws(block, /API undergoing maintenance/)
-    setMaintenanceModeGetter(() => NO_READ_OR_WRITE)
+    setMode(NO_READ_OR_WRITE)
     assert.throws(block, /API undergoing maintenance/)
   })
 
@@ -45,7 +61,7 @@ describe('maintenance middleware', () => {
     const invalidModes = ['', null, undefined, ['r', '-'], 'rwx']
     invalidModes.forEach((m) => {
       // @ts-expect-error purposely passing invalid mode
-      setMaintenanceModeGetter(() => m)
+      setMode(m)
       assert.throws(block, /invalid maintenance mode/)
     })
   })
