@@ -24,6 +24,7 @@ jobs:
           DEBUG: '*'
           ENV: ${{ matrix.env }}
           NFT_STORAGE_API_KEY: ${{ secrets.NFT_STORAGE_API_KEY }}
+          PUSHGATEWAY_JOBNAME: nftstorage_ci/instance/github_action
           PUSHGATEWAY_URL: https://pushgateway.k8s.locotorp.info/metrics/job/nftstorage_ci/instance/github_action
           PUSHGATEWAY_BASIC_AUTH: ${{ secrets.PUSHGATEWAY_BASIC_AUTH }}
         run: |
@@ -32,6 +33,7 @@ jobs:
             --minImageSizeBytes=10000000 \
             --gateways https://nftstorage.link https://dweb.link \
             --metricsPushGateway $PUSHGATEWAY_URL \
+            --metricsPushGatewayJobName $PUSHGATEWAY_JOBNAME \
 
       - name: Heartbeat
         if: ${{ success() }}

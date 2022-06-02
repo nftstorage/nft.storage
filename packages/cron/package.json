@@ -38,6 +38,7 @@
     "p-retry": "^4.6.1",
     "p-settle": "^5.0.0",
     "pg": "^8.7.1",
+    "prom-client": "^14.0.1",
     "safe-env-vars": "^1.0.4",
     "sharp": "^0.30.6",
     "stream-mime-type": "^1.0.2",

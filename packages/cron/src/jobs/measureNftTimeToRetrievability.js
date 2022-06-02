@@ -4,6 +4,8 @@ import { NFTStorage } from 'nft.storage'
 import { Milliseconds, now } from '../lib/time.js'
 import { File } from '@web-std/file'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import * as _PromClient from 'prom-client'
 
 export const EXAMPLE_NFT_IMG_URL = new URL(
   'https://bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4.ipfs.dweb.link/1681.png'
@@ -62,6 +64,7 @@ export async function* createTestImages(count = 1) {
 
 /**
  * @typedef {object} MeasureTtrOptions
+ * @property {RetrievalMetricsLogger} pushRetrieveMetrics - fn to push metrics
  * @property {AsyncIterable<Blob>} images - images to upload/retrieve
  * @property {StoreFunction} [store] - function to store nft
  * @property {string} [url] - URL to nft.storage to measure
@@ -70,6 +73,7 @@ export async function* createTestImages(count = 1) {
  * @property {URL[]} gateways - IPFS Gateway to test retrieval from
  * @property {import('../lib/log.js').LogFunction} log - logger
  * @property {MeasureTtrSecrets} secrets
+ * @property {string} metricsPushGatewayJobName
  */
 
 /**
@@ -189,11 +193,13 @@ async function retrieve(options, image) {
       metricsPushGatewayAuthorization,
       'expected metricsPushGatewayAuthorization'
     )
+    /** @type {RetrievalMetricsLogger} */
+    const pushRetrieveMetrics = options.pushRetrieveMetrics.bind(options)
     await pushRetrieveMetrics(
       {
+        ...options,
         metricsPushGateway,
         metricsPushGatewayAuthorization,
-        log: options.log,
       },
       retrieveLog
     )
@@ -215,14 +221,64 @@ function createGatewayRetrievalUrl(gatewayUrl, ipnftCid) {
 }
 
 /**
+ * @typedef RetrievalMetricsLoggerOptions
+ * @property {import('../lib/log.js').LogFunction} log - logger
+ * @property {string} metricsPushGateway
+ * @property {HttpAuthorization} metricsPushGatewayAuthorization
+ * @property {string} metricsPushGatewayJobName
+ */
+
+/**
+ * @typedef {(
+ *    options: RetrievalMetricsLoggerOptions,
+ *    retrieval: RetrieveLog,
+ * ) => Promise<void>} RetrievalMetricsLogger
+ */
+
+/**
+ * @returns {RetrievalMetricsLogger}
+ */
+export const createRetrievalMetricsPusher =
+  () => async (options, retrieval) => {
+    return pushRetrieveMetricsViaFetch(options, retrieval)
+  }
+
+/**
+ * @returns {RetrievalMetricsLogger}
+ */
+export function createStubbedRetrievalMetricsLogger() {
+  /** @type {RetrievalMetricsLogger} */
+  const push = async (options, retrieval) => {
+    options.log('debug', { type: 'stubbedRetrievalMetricsLogger', retrieval })
+  }
+  return push
+}
+
+/**
+ * @param {_PromClient.Registry} _registry
+ * @param {_PromClient.Histogram<string>} retrievalDurationSeconds
+ * @returns {RetrievalMetricsLogger}
+ */
+export function createPromClientRetrievalMetricsLogger(
+  _registry,
+  retrievalDurationSeconds
+) {
+  /** @type {RetrievalMetricsLogger} */
+  const push = async (options, retrieval) => {
+    options.log('info', {
+      type: 'promClientPush',
+    })
+    retrievalDurationSeconds.observe(retrieval.duration.toNumber() / 1000)
+  }
+  return push
+}
+
+/**
  * Push retrieval metrics to a pushgateway
- * @param {object} config
- * @param {string} config.metricsPushGateway - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
- * @param {HttpAuthorization} config.metricsPushGatewayAuthorization - authorization for metricsPushGateway
- * @param {import('../lib/log.js').LogFunction} config.log - logger
+ * @param {RetrievalMetricsLoggerOptions} config
  * @param {RetrieveLog} retrieval
  */
-async function pushRetrieveMetrics(config, retrieval) {
+export async function pushRetrieveMetricsViaFetch(config, retrieval) {
   /** @type [string, RequestInit] */
   const pushRequest = [
     config.metricsPushGateway,
@@ -275,7 +331,8 @@ export function basicAuthorizationHeaderValue(options) {
     'basicAuth' in options
       ? options.basicAuth
       : btoa(`${options.username}:${options.password}`)
-  const headerValue = /** @type {const} */ (`Basic ${basicAuthValue}`)
+  /** @type {`Basic ${string}`} */
+  const headerValue = `Basic ${basicAuthValue}`
   return headerValue
 }
 
@@ -291,7 +348,7 @@ function formatRetrievalMetrics(retrieval) {
     [
       '# TYPE nftstorage_retrieval_duration_seconds gauge',
       '# HELP nftstorage_retrieval_duration_seconds How long it took to retrieve an nft image',
-      `nftstorage_retrieval_duration_seconds{image="${retrieval.image}",url="${retrieval.url}",size="${retrieval.contentLength}"} ${durationSeconds}`,
+      `nftstorage_retrieval_duration_seconds{byteLength="${retrieval.contentLength}"} ${durationSeconds}`,
     ].join('\n') + '\n'
   )
 }

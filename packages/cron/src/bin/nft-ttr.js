@@ -7,6 +7,8 @@ import fetch from '@web-std/fetch'
 import {
   basicAuthorizationHeaderValue,
   measureNftTimeToRetrievability,
+  createStubbedRetrievalMetricsLogger,
+  createPromClientRetrievalMetricsLogger,
 } from '../jobs/measureNftTimeToRetrievability.js'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
@@ -15,6 +17,7 @@ import { createConsoleLog, createJSONLogger } from '../lib/log.js'
 import process from 'process'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 import assert from 'assert'
+import PromClient from 'prom-client'
 
 const env = new EnvironmentLoader()
 
@@ -45,6 +48,11 @@ export async function main(argv, options = { log: defaultLog }) {
       metricsPushGateway: {
         type: 'string',
       },
+      metricsPushGatewayJobName: {
+        type: 'string',
+        default: 'nft-ttr',
+        require: true,
+      },
       minImageSizeBytes: {
         type: 'number',
         default: 1000,
@@ -58,6 +66,10 @@ export async function main(argv, options = { log: defaultLog }) {
         type: 'string',
         array: true,
         default: 'https://nftstorage.link',
+      },
+      stubMetricsPushTarget: {
+        type: 'boolean',
+        default: false,
       },
     }).argv
     /** @type {AsyncIterable<Blob>} */
@@ -83,18 +95,66 @@ export async function main(argv, options = { log: defaultLog }) {
     const PUSHGATEWAY_BASIC_AUTH = env.optional.string.get(
       'PUSHGATEWAY_BASIC_AUTH'
     )
-    return {
+    const metricsPushGatewayAuthorization = PUSHGATEWAY_BASIC_AUTH
+      ? parseBasicAuth(PUSHGATEWAY_BASIC_AUTH)
+      : { authorization: 'bearer no-auth' }
+    /**
+     * @param {object} options
+     * @param {string} [options.metricsPushGateway]
+     * @param {import('../jobs/measureNftTimeToRetrievability.js').HttpAuthorization} options.metricsPushGatewayAuthorization
+     * @param {string} [options.metricsPushGatewayJobName]
+     * @returns {PromClient.Registry}
+     */
+    function createPushgatewayRegistry(options) {
+      const registry = new PromClient.Registry()
+      if (options.metricsPushGateway) {
+        const pushgateway = new PromClient.Pushgateway(
+          options.metricsPushGateway,
+          {
+            headers: {
+              authorization:
+                options.metricsPushGatewayAuthorization.authorization,
+            },
+          },
+          registry
+        )
+        if (options.metricsPushGatewayJobName) {
+          pushgateway.pushAdd({
+            jobName: options.metricsPushGatewayJobName,
+          })
+        }
+      }
+      return registry
+    }
+    const promClientRegistry = createPushgatewayRegistry({
+      metricsPushGatewayAuthorization,
+      metricsPushGateway: commandArgs.metricsPushGateway,
+    })
+    /** @type {import('../jobs/measureNftTimeToRetrievability.js').RetrievalMetricsLogger} */
+    const pushRetrieveMetrics = commandArgs.stubMetricsPushTarget
+      ? createStubbedRetrievalMetricsLogger()
+      : createPromClientRetrievalMetricsLogger(
+          promClientRegistry,
+          new PromClient.Histogram({
+            name: 'retrieval_duration_seconds',
+            help: 'How long, in seconds, it took to retrieve an nft image after uploading',
+            registers: [promClientRegistry],
+            labelNames: ['byteLength'],
+          })
+        )
+    /** @type {import('../jobs/measureNftTimeToRetrievability.js').MeasureTtrOptions} */
+    const args = {
       ...commandArgs,
+      pushRetrieveMetrics,
       gateways,
       log: options.log,
       images,
       secrets: {
         nftStorageToken: env.string.get('NFT_STORAGE_API_KEY'),
-        metricsPushGatewayAuthorization: PUSHGATEWAY_BASIC_AUTH
-          ? parseBasicAuth(PUSHGATEWAY_BASIC_AUTH)
-          : { authorization: 'bearer no-auth' },
+        metricsPushGatewayAuthorization,
       },
     }
+    return args
   }
   switch (command) {
     case 'measure':
