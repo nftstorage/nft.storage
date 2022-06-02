@@ -62,7 +62,6 @@ const config = {
   inject: [
     path.join(__dirname, './scripts/node-globals.js'),
     injectGlobalsTempfile.path,
-    // path.join(__dirname, './test/scripts/globals.js'),
   ],
   define: {
     NFT_STORAGE_VERSION: JSON.stringify('0.1.0'),
