@@ -72,6 +72,7 @@ export async function* createTestImages(count = 1) {
 
 /**
  * @typedef {object} MeasureTtrOptions
+ * @property {RetrieveImageOptions['fetchImage']} fetchImage
  * @property {{
  *   timeToRetrievability: import('../lib/metrics').MetricDescriptor
  * }} metrics - metrics
@@ -142,6 +143,12 @@ export async function measureNftTimeToRetrievability(options) {
     const storeStartedAt = now()
     /** @type {StoreFunction} */
     const store = config.store || ((nft) => client.store(nft))
+    const storeBforeLog = {
+      type: 'store/before',
+      image: imageId,
+      startTime: new Date(),
+    }
+    config.log('info', storeBforeLog)
     const metadata = await store(nft)
     const storeEndAt = now()
     const storeLog = {
@@ -171,8 +178,27 @@ export async function measureNftTimeToRetrievability(options) {
 }
 
 /**
+ * @typedef {(url: URL) => Promise<Blob>} ImageFetcher
+ */
+
+/**
+ * @returns {ImageFetcher}
+ * @param {Fetcher['fetch']} fetch
+ */
+export const httpImageFetcher = (fetch) => async (url) => {
+  const response = fetch(url.toString())
+  const blob = (await response).blob()
+  return blob
+}
+
+/**
+ * @typedef {object }RetrieveImageOptions
+ * @property {ImageFetcher} fetchImage
+ */
+
+/**
  * retrieve from gateway and log
- * @param {MeasureTtrOptions} options
+ * @param {MeasureTtrOptions & RetrieveImageOptions} options
  * @param {object} image
  * @param {string} image.id
  * @param {URL}   image.url
@@ -180,8 +206,7 @@ export async function measureNftTimeToRetrievability(options) {
 async function retrieve(options, image) {
   const retrieveFetchDate = new Date()
   const retrieveFetchStart = now()
-  const retrieveImageResponse = await fetch(image.url.toString())
-  const retrievedImage = await retrieveImageResponse.blob()
+  const retrievedImage = await options.fetchImage(image.url)
   const retrieveReadEnd = now()
   const retrievalDuration = new Milliseconds(
     retrieveReadEnd.toNumber() - retrieveFetchStart.toNumber()

@@ -8,6 +8,7 @@ import * as assert from 'assert'
 import { it, describe } from '../lib/testing.js'
 import { recordedLog } from '../lib/log.js'
 import { timeToRetrievability } from '../lib/metrics.js'
+import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 
 describe('measureNftTimeToRetrievability', () => {
   it('has a unit test', async () => {
@@ -38,6 +39,9 @@ describe('measureNftTimeToRetrievability', () => {
       },
       metrics: {
         timeToRetrievability,
+      },
+      fetchImage: async () => {
+        return createRandomImageBlob(createRandomImage({ bytes: { min: 1 } }))
       },
     })
     assert.equal(storeSpy.mock.calls.length, 1)
