@@ -131,6 +131,75 @@ export class DBClient {
   }
 
   /**
+   * Gets user tag change requests
+   *
+   * @param {number} userId
+   */
+  async getUserRequests(userId) {
+    const { data, error } = await this.client
+      .from('user_tag_proposal')
+      .select('*')
+      .match({ user_id: userId })
+      .is('deleted_at', null)
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    return data
+  }
+
+  /**
+   * Creates a user tag change request
+   *
+   * @param {number} userId
+   * @param {string} tagName
+   * @param {string} requestedTagValue
+   * @param {JSON} userProposalForm
+   * @returns
+   */
+  async createUserRequest(
+    userId,
+    tagName,
+    requestedTagValue,
+    userProposalForm
+  ) {
+    const { data: deleteData, status: deleteStatus } = await this.client
+      .from('user_tag_proposal')
+      .update({
+        deleted_at: new Date().toISOString(),
+      })
+      .match({ user_id: userId, tag: tagName })
+      .is('deleted_at', null)
+
+    if (
+      deleteStatus === 200 ||
+      ((deleteStatus === 406 || deleteStatus === 404) && !deleteData)
+    ) {
+      const { error: insertError, status: insertStatus } = await this.client
+        .from('user_tag_proposal')
+        .insert({
+          user_id: userId,
+          tag: tagName,
+          proposed_tag_value: requestedTagValue,
+          inserted_at: new Date().toISOString(),
+          user_proposal_form: userProposalForm,
+        })
+        .single()
+
+      if (insertError) {
+        throw new DBError(insertError)
+      }
+
+      if (insertStatus === 201) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  /**
    * Create upload with content and pins
    *
    * @param {import('./db-client-types').UpdateUploadInput} data

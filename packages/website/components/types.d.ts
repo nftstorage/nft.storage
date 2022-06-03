@@ -57,8 +57,13 @@ export interface UserTag {
   HasPsaAccess?: boolean
 }
 
+export interface TagProposal {
+  HasPsaAccess?: boolean
+}
+
 export interface User extends MagicUser {
   tags: UserTag
+  pendingTagProposals: TagProposal
 }
 
 export interface LayoutChildrenProps {

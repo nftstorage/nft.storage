@@ -97,3 +97,14 @@ export function hasTag(user, tagName, value) {
     )
   )
 }
+
+export function getPendingProposals(proposals) {
+  if (Array.isArray(proposals)) {
+    return proposals.reduce((acc, p) => {
+      acc[p.tag] = !p.admin_decision_type
+      return acc
+    }, {})
+  }
+
+  return {}
+}
