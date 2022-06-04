@@ -6,7 +6,6 @@ import { jest } from '@jest/globals'
 import * as assert from 'assert'
 import { it, describe } from '../lib/testing.js'
 import { recordedLog } from '../lib/log.js'
-import { timeToRetrievability } from '../lib/metrics.js'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 
 /**
@@ -54,9 +53,6 @@ describe('measureNftTimeToRetrievability', () => {
       secrets: {
         nftStorageToken: 'TODO',
         metricsPushGatewayAuthorization: { authorization: 'bearer todo' },
-      },
-      metrics: {
-        timeToRetrievability,
       },
       fetchImage: async () => {
         return createRandomImageBlob(createRandomImage({ bytes: { min: 1 } }))

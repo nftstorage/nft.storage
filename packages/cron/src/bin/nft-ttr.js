@@ -21,20 +21,12 @@ import process from 'process'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 import assert from 'assert'
 import * as promClient from 'prom-client'
-import { timeToRetrievability } from '../lib/metrics.js'
-import { hasOwnProperty } from '../lib/utils.js'
+import { createRetrievalDurationSecondsMetric } from '../lib/metrics.js'
 
 const env = new EnvironmentLoader()
 
 /**
- * @typedef {typeof import('prom-client').register} Registry
- */
-
-assert.equal(typeof promClient, 'object')
-assert.ok(hasOwnProperty(promClient, 'Registry'))
-assert.ok(typeof promClient.Registry === 'function')
-/**
- * @returns {PromClient}
+ * @returns {Registry}
  */
 const createPromClientRegistry = () => {
   // unfortunately needed due to promclient types?
@@ -43,34 +35,12 @@ const createPromClientRegistry = () => {
   return Registry
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const { Histogram } = promClient
-
-/**
- * @typedef {import('prom-client').PromClient} PromClient
- */
-
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 global.fetch = fetch
 
 /** @type {import('../lib/log.js').LogFunction} */
 const defaultLog = (level, ...loggables) => {
   createJSONLogger(createConsoleLog())(level, ...loggables)
-}
-
-/**
- * @param {Registry} registry
- * @returns {import("../lib/metrics.js").RetrievalDurationSecondsMetric}
- */
-function createRetrievalDurationSecondsMetric(registry) {
-  /** @type {import("../lib/metrics.js").RetrievalDurationSecondsMetric} */
-  const metric = new Histogram({
-    name: 'retrieval_duration_seconds',
-    help: 'How long, in seconds, it took to retrieve an nft image after uploading',
-    registers: [registry],
-    labelNames: ['byteLength'],
-  })
-  return metric
 }
 
 /**
@@ -169,9 +139,6 @@ export async function main(argv, options = { log: defaultLog }) {
       secrets: {
         nftStorageToken: env.string.get('NFT_STORAGE_API_KEY'),
         metricsPushGatewayAuthorization,
-      },
-      metrics: {
-        timeToRetrievability,
       },
       fetchImage: httpImageFetcher(fetch),
     }
