@@ -1,6 +1,5 @@
 import {
   createStubbedRetrievalMetricsLogger,
-  createTestImages,
   measureNftTimeToRetrievability,
 } from './measureNftTimeToRetrievability.js'
 import { jest } from '@jest/globals'
@@ -10,10 +9,25 @@ import { recordedLog } from '../lib/log.js'
 import { timeToRetrievability } from '../lib/metrics.js'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 
+/**
+ * @returns {AsyncIterable<File>}
+ */
+export async function* createTestImages(count = 1) {
+  while (count--) {
+    const blob = await createRandomImageBlob(
+      createRandomImage({
+        bytes: { min: 1 },
+      })
+    )
+    yield new File([blob], 'image.jpg', blob)
+  }
+}
+
 describe('measureNftTimeToRetrievability', () => {
   it('has a unit test', async () => {
     /** this is meant to be a test that doesn't use the network (e.g. inject stubs) */
     const { info, log } = recordedLog()
+
     const storer = {
       /** @param {import('nft.storage/dist/src/token').TokenInput} nft */
       store: async (nft) => {
@@ -24,15 +38,19 @@ describe('measureNftTimeToRetrievability', () => {
       },
     }
     const storeSpy = jest.spyOn(storer, 'store')
-    /** @param {import('nft.storage/dist/src/token').TokenInput} n */
-    const store = (n) => storer.store(n)
+
+    const metricsPusher = {
+      push: createStubbedRetrievalMetricsLogger(),
+    }
+    const metricsPushSpy = jest.spyOn(metricsPusher, 'push')
+
     await measureNftTimeToRetrievability({
       log,
       images: createTestImages(1),
       gateways: [new URL('https://nftstorage.link')],
-      store,
+      store: (n) => storer.store(n),
       metricsPushGatewayJobName: 'integration-tests',
-      pushRetrieveMetrics: createStubbedRetrievalMetricsLogger(),
+      pushRetrieveMetrics: (...args) => metricsPusher.push(...args),
       secrets: {
         nftStorageToken: 'TODO',
         metricsPushGatewayAuthorization: { authorization: 'bearer todo' },
@@ -56,6 +74,8 @@ describe('measureNftTimeToRetrievability', () => {
       'number',
       'expected retrieve duration size to be a number'
     )
+    // did call pushRetrieveMetrics
+    assert.equal(metricsPushSpy.mock.calls.length, 1)
     const finish = info.find((logs) => logs[0]?.type === 'finish')[0]
     assert.ok(finish)
   })

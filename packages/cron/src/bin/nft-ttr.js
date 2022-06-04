@@ -44,7 +44,7 @@ const createPromClientRegistry = () => {
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const { Histogram, Pushgateway } = promClient
+const { Histogram } = promClient
 
 /**
  * @typedef {import('prom-client').PromClient} PromClient
@@ -144,28 +144,18 @@ export async function main(argv, options = { log: defaultLog }) {
       ? parseBasicAuth(PUSHGATEWAY_BASIC_AUTH)
       : { authorization: 'bearer no-auth' }
     const promClientRegistry = createPromClientRegistry()
-    const pushgateway =
-      commandArgs.metricsPushGateway &&
-      new Pushgateway(
-        commandArgs.metricsPushGateway,
-        {
-          headers: {
-            authorization: metricsPushGatewayAuthorization.authorization,
-          },
-        },
-        promClientRegistry
-      )
     const retrievalDurationSecondsMetric =
       createRetrievalDurationSecondsMetric(promClientRegistry)
     /** @type {import('../jobs/measureNftTimeToRetrievability.js').RetrievalMetricsLogger} */
     const pushRetrieveMetrics =
-      commandArgs.stubMetricsPushTarget || !pushgateway
+      commandArgs.stubMetricsPushTarget || !commandArgs.metricsPushGateway
         ? createStubbedRetrievalMetricsLogger()
         : createPromClientRetrievalMetricsLogger(
             promClientRegistry,
             retrievalDurationSecondsMetric,
-            pushgateway,
-            commandArgs.metricsPushGatewayJobName
+            commandArgs.metricsPushGatewayJobName,
+            new URL(commandArgs.metricsPushGateway),
+            metricsPushGatewayAuthorization
           )
     /**
      * @type {import('../jobs/measureNftTimeToRetrievability.js').MeasureTtrOptions}

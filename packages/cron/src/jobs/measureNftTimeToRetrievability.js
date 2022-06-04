@@ -1,9 +1,7 @@
 import * as assert from 'assert'
-import fetch from '@web-std/fetch'
 import { NFTStorage } from 'nft.storage'
 import { Milliseconds, now } from '../lib/time.js'
-import { File } from '@web-std/file'
-import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
+import { Pushgateway } from 'prom-client'
 
 export const EXAMPLE_NFT_IMG_URL = new URL(
   'https://bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4.ipfs.dweb.link/1681.png'
@@ -20,10 +18,6 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
  */
 
 /**
- * @typedef {import('prom-client').Pushgateway} Pushgateway
- */
-
-/**
  * @typedef {import('nft.storage/dist/src/token').TokenInput} TokenInput
  */
 
@@ -35,20 +29,6 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
 /**
  * @typedef {(token: TokenInput) => Promise<Pick<TokenType<TokenInput>, 'ipnft'>>} StoreFunction
  */
-
-/**
- * @returns {AsyncIterable<File>}
- */
-export async function* createTestImages(count = 1) {
-  while (count--) {
-    const blob = await createRandomImageBlob(
-      createRandomImage({
-        bytes: { min: 1 },
-      })
-    )
-    yield new File([blob], 'image.jpg', blob)
-  }
-}
 
 /**
  * @typedef HttpAuthorization
@@ -114,7 +94,6 @@ function readMeasureTtrOptions(options) {
  * * prepare a sample image
  * * upload to nft.storage
  * * retrieve image through ipfs gateway
- * @template {import('nft.storage/dist/src/lib/interface').TokenInput} T
  * @param {MeasureTtrOptions} options
  */
 export async function measureNftTimeToRetrievability(options) {
@@ -143,12 +122,12 @@ export async function measureNftTimeToRetrievability(options) {
     const storeStartedAt = now()
     /** @type {StoreFunction} */
     const store = config.store || ((nft) => client.store(nft))
-    const storeBforeLog = {
+    const storeBeforeLog = {
       type: 'store/before',
       image: imageId,
       startTime: new Date(),
     }
-    config.log('info', storeBforeLog)
+    config.log('info', storeBeforeLog)
     const metadata = await store(nft)
     const storeEndAt = now()
     const storeLog = {
@@ -194,11 +173,12 @@ export const httpImageFetcher = (fetch) => async (url) => {
 /**
  * @typedef {object }RetrieveImageOptions
  * @property {ImageFetcher} fetchImage
+ * @property {RetrievalMetricsLogger} pushRetrieveMetrics
  */
 
 /**
  * retrieve from gateway and log
- * @param {MeasureTtrOptions & RetrieveImageOptions} options
+ * @param {RetrieveImageOptions & HasLog} options
  * @param {object} image
  * @param {string} image.id
  * @param {URL}   image.url
@@ -221,29 +201,7 @@ async function retrieve(options, image) {
     duration: retrievalDuration,
   }
   options.log('info', retrieveLog)
-  const { metricsPushGateway } = options
-  const { metricsPushGatewayAuthorization } = options.secrets
-  if (metricsPushGateway) {
-    assert.ok(
-      metricsPushGatewayAuthorization,
-      'expected metricsPushGatewayAuthorization'
-    )
-    /** @type {RetrievalMetricsLogger} */
-    const pushRetrieveMetrics = options.pushRetrieveMetrics.bind(options)
-    await pushRetrieveMetrics(
-      {
-        ...options,
-        metricsPushGateway,
-        metricsPushGatewayAuthorization,
-      },
-      retrieveLog
-    )
-  } else {
-    options.log(
-      'debug',
-      'skipping pushRetrieveMetrics because no metricsPushGateway is configured'
-    )
-  }
+  await options.pushRetrieveMetrics(options, retrieveLog)
 }
 
 /**
@@ -256,27 +214,16 @@ function createGatewayRetrievalUrl(gatewayUrl, ipnftCid) {
 }
 
 /**
- * @typedef RetrievalMetricsLoggerOptions
+ * @typedef HasLog
  * @property {import('../lib/log.js').LogFunction} log - logger
- * @property {string} metricsPushGateway
- * @property {HttpAuthorization} metricsPushGatewayAuthorization
- * @property {string} metricsPushGatewayJobName
  */
 
 /**
  * @typedef {(
- *    options: RetrievalMetricsLoggerOptions,
+ *    options: HasLog,
  *    retrieval: RetrieveLog,
  * ) => Promise<void>} RetrievalMetricsLogger
  */
-
-/**
- * @returns {RetrievalMetricsLogger}
- */
-export const createRetrievalMetricsPusher =
-  () => async (options, retrieval) => {
-    return pushRetrieveMetricsViaFetch(options, retrieval)
-  }
 
 /**
  * @returns {RetrievalMetricsLogger}
@@ -290,21 +237,32 @@ export function createStubbedRetrievalMetricsLogger() {
 }
 
 /**
- * @param {import('prom-client').PromClient} _registry
- * @param {import('../lib/metrics.js').RetrievalDurationSecondsMetric} retrievalDurationSeconds
- * @param {Pushgateway} pushgateway
+ * @param {import('prom-client').PromClient} registry
+ * @param {import('../lib/metrics.js').RetrievalDurationSecondsMetric} metric
  * @param {string} metricsPushGatewayJobName
+ * @param {URL} pushGatewayUrl
+ * @param {HttpAuthorization} pushGatewayAuthorization
  * @returns {RetrievalMetricsLogger}
  */
 export function createPromClientRetrievalMetricsLogger(
-  _registry,
-  retrievalDurationSeconds,
-  pushgateway,
-  metricsPushGatewayJobName
+  registry,
+  metric,
+  metricsPushGatewayJobName,
+  pushGatewayUrl,
+  pushGatewayAuthorization
 ) {
+  const pushgateway = new Pushgateway(
+    pushGatewayUrl.toString(),
+    {
+      headers: {
+        authorization: pushGatewayAuthorization.authorization,
+      },
+    },
+    registry
+  )
   /** @type {RetrievalMetricsLogger} */
   const push = async (options, retrieval) => {
-    retrievalDurationSeconds.observe(retrieval.duration.toNumber() / 1000)
+    metric.observe(retrieval.duration.toNumber() / 1000)
     const pushAddArgs = {
       jobName: metricsPushGatewayJobName,
     }
@@ -316,40 +274,45 @@ export function createPromClientRetrievalMetricsLogger(
 
 /**
  * Push retrieval metrics to a pushgateway
- * @param {RetrievalMetricsLoggerOptions} config
- * @param {RetrieveLog} retrieval
+ * @param {object} config
+ * @param {string} config.metricsPushGateway
+ * @param {HttpAuthorization} config.metricsPushGatewayAuthorization
+ * @param {Fetcher['fetch']} config.fetch
+ * @returns {RetrievalMetricsLogger}
  */
-export async function pushRetrieveMetricsViaFetch(config, retrieval) {
-  /** @type [string, RequestInit] */
-  const pushRequest = [
-    config.metricsPushGateway,
-    {
-      method: 'post',
-      headers: {
-        authorization: config.metricsPushGatewayAuthorization.authorization,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        'content-type': 'application/octet-stream',
+export function createFetchMetricsLogger(config) {
+  return async function (options, retrieval) {
+    /** @type [string, RequestInit] */
+    const pushRequest = [
+      config.metricsPushGateway,
+      {
+        method: 'post',
+        headers: {
+          authorization: config.metricsPushGatewayAuthorization.authorization,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'content-type': 'application/octet-stream',
+        },
+        body: formatRetrievalMetrics(retrieval),
       },
-      body: formatRetrievalMetrics(retrieval),
-    },
-  ]
-  const pushResponse = await fetch.apply(null, pushRequest)
-  if (!pushResponse.ok) {
-    config.log('warn', {
-      type: 'error',
-      message: 'unsuccessful metrics push',
-      text: await pushResponse.text(),
+    ]
+    const pushResponse = await config.fetch.apply(null, pushRequest)
+    if (!pushResponse.ok) {
+      options.log('warn', {
+        type: 'error',
+        message: 'unsuccessful metrics push',
+        text: await pushResponse.text(),
+      })
+    }
+    assert.equal(
+      pushResponse.ok,
+      true,
+      'metrics push response code should indicate success'
+    )
+    options.log('info', {
+      type: 'metricsPushed',
+      target: config.metricsPushGateway,
     })
   }
-  assert.equal(
-    pushResponse.ok,
-    true,
-    'metrics push response code should indicate success'
-  )
-  config.log('info', {
-    type: 'metricsPushed',
-    target: config.metricsPushGateway,
-  })
 }
 
 /**
