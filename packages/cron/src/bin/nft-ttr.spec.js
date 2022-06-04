@@ -12,10 +12,12 @@ describe('bin/nft-ttr', () => {
       const { log, info } = recordedLog()
       const minImageSizeBytes = defaultTestMinImageSizeBytes
       const gateways = ['https://nftstorage.link', 'https://dweb.link']
-      const command = `measure --minImageSizeBytes=${minImageSizeBytes} --gateways ${gateways.join(
-        ' '
-      )}`
-      await binNftTtr(command.split(' '), { log })
+      const command = [
+        'measure',
+        `--minImageSizeBytes=${minImageSizeBytes}`,
+        `--gateways ${gateways.join(' ')}`,
+      ]
+      await binNftTtr(command, { log })
       /** @type {import('../jobs/measureNftTimeToRetrievability').RetrieveLog[]} */
       const retrieves = info.flatMap((logs) =>
         logs[0]?.type === 'retrieve' ? [logs[0]] : []

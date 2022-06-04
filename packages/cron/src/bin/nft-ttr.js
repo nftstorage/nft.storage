@@ -11,6 +11,7 @@ import {
   measureNftTimeToRetrievability,
   createStubbedRetrievalMetricsLogger,
   createPromClientRetrievalMetricsLogger,
+  httpImageFetcher,
 } from '../jobs/measureNftTimeToRetrievability.js'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
@@ -26,16 +27,21 @@ import { hasOwnProperty } from '../lib/utils.js'
 const env = new EnvironmentLoader()
 
 /**
- * @name Registry
- * @typedef {typeof import('prom-client').register} RegistryTypedef
+ * @typedef {typeof import('prom-client').register} Registry
  */
 
 assert.equal(typeof promClient, 'object')
-assert(hasOwnProperty(promClient, 'Registry'))
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const Registry = /* @type {any} */ promClient.Registry
-assert.ok(typeof Registry === 'function')
-assert.equal(typeof Registry, 'function')
+assert.ok(hasOwnProperty(promClient, 'Registry'))
+assert.ok(typeof promClient.Registry === 'function')
+/**
+ * @returns {PromClient}
+ */
+const createPromClientRegistry = () => {
+  // unfortunately needed due to promclient types?
+  // @ts-ignore
+  const Registry = new promClient.Registry()
+  return Registry
+}
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { Histogram, Pushgateway } = promClient
@@ -50,6 +56,21 @@ global.fetch = fetch
 /** @type {import('../lib/log.js').LogFunction} */
 const defaultLog = (level, ...loggables) => {
   createJSONLogger(createConsoleLog())(level, ...loggables)
+}
+
+/**
+ * @param {Registry} registry
+ * @returns {import("../lib/metrics.js").RetrievalDurationSecondsMetric}
+ */
+function createRetrievalDurationSecondsMetric(registry) {
+  /** @type {import("../lib/metrics.js").RetrievalDurationSecondsMetric} */
+  const metric = new Histogram({
+    name: 'retrieval_duration_seconds',
+    help: 'How long, in seconds, it took to retrieve an nft image after uploading',
+    registers: [registry],
+    labelNames: ['byteLength'],
+  })
+  return metric
 }
 
 /**
@@ -122,54 +143,30 @@ export async function main(argv, options = { log: defaultLog }) {
     const metricsPushGatewayAuthorization = PUSHGATEWAY_BASIC_AUTH
       ? parseBasicAuth(PUSHGATEWAY_BASIC_AUTH)
       : { authorization: 'bearer no-auth' }
-    /**
-     * @param {object} options
-     * @param {string} [options.metricsPushGateway]
-     * @param {import('../jobs/measureNftTimeToRetrievability.js').HttpAuthorization} options.metricsPushGatewayAuthorization
-     * @param {string} [options.metricsPushGatewayJobName]
-     */
-    function createPushgatewayRegistry(options) {
-      // @ts-ignore
-      const registry = new /* @type {any} */ Registry()
-      let pushgateway
-      if (options.metricsPushGateway) {
-        pushgateway = new Pushgateway(
-          options.metricsPushGateway,
-          {
-            headers: {
-              authorization:
-                options.metricsPushGatewayAuthorization.authorization,
-            },
+    const promClientRegistry = createPromClientRegistry()
+    const pushgateway =
+      commandArgs.metricsPushGateway &&
+      new Pushgateway(
+        commandArgs.metricsPushGateway,
+        {
+          headers: {
+            authorization: metricsPushGatewayAuthorization.authorization,
           },
-          registry
-        )
-      }
-      assert.ok(pushgateway)
-      return { registry, pushgateway }
-    }
-    const PromClientRegistry = createPushgatewayRegistry({
-      metricsPushGatewayAuthorization,
-      metricsPushGateway: commandArgs.metricsPushGateway,
-    })
-    /** @type {import("../lib/metrics.js").RetrievalDurationSecondsMetric} */
-    const retrievalDurationSecondsMetric = new Histogram({
-      name: 'retrieval_duration_seconds',
-      help: 'How long, in seconds, it took to retrieve an nft image after uploading',
-      registers: [PromClientRegistry.registry],
-      labelNames: ['byteLength'],
-    })
+        },
+        promClientRegistry
+      )
+    const retrievalDurationSecondsMetric =
+      createRetrievalDurationSecondsMetric(promClientRegistry)
     /** @type {import('../jobs/measureNftTimeToRetrievability.js').RetrievalMetricsLogger} */
-    const pushRetrieveMetrics = commandArgs.stubMetricsPushTarget
-      ? createStubbedRetrievalMetricsLogger()
-      : createPromClientRetrievalMetricsLogger(
-          PromClientRegistry.registry,
-          retrievalDurationSecondsMetric,
-          PromClientRegistry.pushgateway,
-          commandArgs.metricsPushGatewayJobName
-        )
-    const metrics = {
-      timeToRetrievability,
-    }
+    const pushRetrieveMetrics =
+      commandArgs.stubMetricsPushTarget || !pushgateway
+        ? createStubbedRetrievalMetricsLogger()
+        : createPromClientRetrievalMetricsLogger(
+            promClientRegistry,
+            retrievalDurationSecondsMetric,
+            pushgateway,
+            commandArgs.metricsPushGatewayJobName
+          )
     /**
      * @type {import('../jobs/measureNftTimeToRetrievability.js').MeasureTtrOptions}
      */
@@ -183,7 +180,10 @@ export async function main(argv, options = { log: defaultLog }) {
         nftStorageToken: env.string.get('NFT_STORAGE_API_KEY'),
         metricsPushGatewayAuthorization,
       },
-      metrics,
+      metrics: {
+        timeToRetrievability,
+      },
+      fetchImage: httpImageFetcher(fetch),
     }
     return args
   }
