@@ -1,6 +1,6 @@
 import { it } from '@jest/globals'
 
-export { it, describe } from '@jest/globals'
+export { it, describe, jest } from '@jest/globals'
 
 /**
  * Conditionally run/skip a test

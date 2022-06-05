@@ -2,25 +2,11 @@ import {
   createStubbedRetrievalMetricsLogger,
   measureNftTimeToRetrievability,
 } from './measureNftTimeToRetrievability.js'
-import { jest } from '@jest/globals'
 import * as assert from 'assert'
-import { it, describe } from '../lib/testing.js'
+import { it, describe, jest } from '../lib/testing.js'
 import { recordedLog } from '../lib/log.js'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
-
-/**
- * @returns {AsyncIterable<File>}
- */
-export async function* createTestImages(count = 1) {
-  while (count--) {
-    const blob = await createRandomImageBlob(
-      createRandomImage({
-        bytes: { min: 1 },
-      })
-    )
-    yield new File([blob], 'image.jpg', blob)
-  }
-}
+import { createTestImages } from '../bin/nft-ttr.js'
 
 describe('measureNftTimeToRetrievability', () => {
   it('has a unit test', async () => {

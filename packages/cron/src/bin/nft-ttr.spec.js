@@ -13,6 +13,8 @@ describe('bin/nft-ttr', () => {
       const minImageSizeBytes = defaultTestMinImageSizeBytes
       const gateways = ['https://nftstorage.link', 'https://dweb.link']
       const command = [
+        'fakeNodePath',
+        'fakeScriptPath',
         'measure',
         `--minImageSizeBytes=${minImageSizeBytes}`,
         `--gateways ${gateways.join(' ')}`,

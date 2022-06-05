@@ -59,7 +59,7 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
  * @property {StoreFunction} [store] - function to store nft
  * @property {string} [url] - URL to nft.storage to measure
  * @property {boolean} [logConfigAndExit] - if true, log config and exit
- * @property {string} [metricsPushGateway] - Server to send metrics to. should be a https://github.com/prometheus/pushgateway
+ * @property {URL} [metricsPushGateway] - Server to send metrics to. should reference a https://github.com/prometheus/pushgateway
  * @property {URL[]} gateways - IPFS Gateway to test retrieval from
  * @property {import('../lib/log.js').LogFunction} log - logger
  * @property {MeasureTtrSecrets} secrets

@@ -41,7 +41,6 @@
     "singleQuote": true
   },
   "devDependencies": {
-    "@types/yargs": "^17.0.10",
     "lint-staged": "^12.3.4",
     "npm-run-all": "^4.1.5",
     "prettier": "2.5.1",

@@ -5195,7 +5195,7 @@
 
 "@types/sade@^1.7.2":
   version "1.7.4"
-  resolved "https://registry.npmjs.org/@types/sade/-/sade-1.7.4.tgz"
+  resolved "https://registry.yarnpkg.com/@types/sade/-/sade-1.7.4.tgz#85913258f8cdac7bf3b416ceabc87ae7ec53a42e"
   integrity sha512-6ys13kmtlY0aIOz4KtMdeBD9BHs6vSE3aRcj4vAZqXjypT2el8WZt6799CMjElVgh1cbOH/t3vrpQ4IpwytcPA==
   dependencies:
     "@types/mri" "*"
@@ -5335,7 +5335,7 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@types/yargs@^17.0.10", "@types/yargs@^17.0.8":
+"@types/yargs@^17.0.8":
   version "17.0.10"
   resolved "https://registry.npmjs.org/@types/yargs/-/yargs-17.0.10.tgz"
   integrity sha512-gmEaFwpj/7f/ROdtIlci1R1VYU1J4j95m8T+Tj3iBgiBFKg1foE/PSl93bBd5T9LDXNPo8UlNN6W0qwD8O5OaA==
@@ -21492,7 +21492,7 @@ yargs@^15.0.2:
     y18n "^4.0.0"
     yargs-parser "^18.1.2"
 
-yargs@^17.3.1, yargs@^17.5.1:
+yargs@^17.3.1:
   version "17.5.1"
   resolved "https://registry.npmjs.org/yargs/-/yargs-17.5.1.tgz"
   integrity sha512-t6YAJcxDkNX7NFYiVtKvWUz8l+PaKTLiL63mJYWR2GnHq2gjEWISzsLp9wg3aY36dY1j+gfIEL3pIF+XlJJfbA==
