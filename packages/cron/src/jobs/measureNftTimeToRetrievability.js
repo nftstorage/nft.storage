@@ -3,6 +3,7 @@ import { NFTStorage } from 'nft.storage'
 import { Milliseconds, now } from '../lib/time.js'
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 import { Registry, Pushgateway } from 'prom-client'
+import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 
 export const EXAMPLE_NFT_IMG_URL = new URL(
   'https://bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4.ipfs.dweb.link/1681.png'
@@ -30,6 +31,17 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
 /**
  * @typedef {(token: TokenInput) => Promise<Pick<TokenType<TokenInput>, 'ipnft'>>} StoreFunction
  */
+
+/**
+ * @returns {StoreFunction}
+ */
+export function createStubStoreFunction() {
+  return async () => {
+    return {
+      ipnft: 'fake-ret-from-createStubStoreFunction',
+    }
+  }
+}
 
 /**
  * @typedef HttpAuthorization
@@ -157,6 +169,18 @@ export async function measureNftTimeToRetrievability(options) {
 /**
  * @typedef {(url: URL) => Promise<Blob>} ImageFetcher
  */
+
+/**
+ * @returns {ImageFetcher}
+ * @param {number} [minImageSizeBytes]
+ */
+export function createStubbedImageFetcher(minImageSizeBytes = 1) {
+  return async () => {
+    return createRandomImageBlob(
+      createRandomImage({ bytes: { min: minImageSizeBytes } })
+    )
+  }
+}
 
 /**
  * @returns {ImageFetcher}

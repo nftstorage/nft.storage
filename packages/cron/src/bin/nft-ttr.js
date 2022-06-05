@@ -89,17 +89,16 @@ function createMeasureSecretsFromEnv(env) {
  * @returns {Omit<MeasureTtrOptions, "secrets">}
  */
 function createMeasureOptionsFromSade(sadeOptions, secrets) {
-  console.log('createMeasureOptionsFromSade', sadeOptions)
-
   // build gateways
   assert.ok(
     hasOwnProperty(sadeOptions, 'gateways'),
     'expected sadeOptions to have gateways'
   )
   const gatewaysArgv = sadeOptions.gateways
+  assert.ok(Array.isArray(gatewaysArgv) || typeof gatewaysArgv === 'string')
   const gatewaysArgvsArray = Array.isArray(gatewaysArgv)
     ? gatewaysArgv
-    : [gatewaysArgv]
+    : [...gatewaysArgv.split(' ')]
   const gateways = gatewaysArgvsArray.map((g) => {
     try {
       return new URL(g)
@@ -184,6 +183,8 @@ function defaultMeasureOptions() {
  * @param {string[]} argv
  * @param {object} [options]
  * @param {import('../lib/log.js').LogFunction} options.log
+ * @param {import('../jobs/measureNftTimeToRetrievability.js').StoreFunction} [options.store]
+ * @param {import('../jobs/measureNftTimeToRetrievability.js').ImageFetcher} [options.fetchImage]
  */
 export async function main(argv, options = { log: defaultLog }) {
   if (argv.length < 3) {

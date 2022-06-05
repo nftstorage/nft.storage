@@ -1,11 +1,11 @@
 import {
+  createStubbedImageFetcher,
   createStubbedRetrievalMetricsLogger,
   measureNftTimeToRetrievability,
 } from './measureNftTimeToRetrievability.js'
 import * as assert from 'assert'
 import { it, describe, jest } from '../lib/testing.js'
 import { recordedLog } from '../lib/log.js'
-import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 import { createTestImages } from '../bin/nft-ttr.js'
 
 describe('measureNftTimeToRetrievability', () => {
@@ -40,9 +40,7 @@ describe('measureNftTimeToRetrievability', () => {
         nftStorageToken: 'TODO',
         metricsPushGatewayAuthorization: { authorization: 'bearer todo' },
       },
-      fetchImage: async () => {
-        return createRandomImageBlob(createRandomImage({ bytes: { min: 1 } }))
-      },
+      fetchImage: createStubbedImageFetcher(),
     })
     assert.equal(storeSpy.mock.calls.length, 1)
     const start = info.find((logs) => logs[0]?.type === 'start')[0]
