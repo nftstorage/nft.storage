@@ -4,7 +4,7 @@
     "allowJs": true,
     "checkJs": true,
     "target": "esnext",
-    "module": "ESNext",
+    "module": "ES2020",
     "lib": ["ESNext"],
     "strict": true,
     "moduleResolution": "node",

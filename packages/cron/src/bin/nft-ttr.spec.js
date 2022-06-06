@@ -1,52 +1,49 @@
-import { describe } from '../lib/testing'
-import { main as binNftTtr } from './nft-ttr'
-import { recordedLog } from '../lib/log'
-import * as assert from 'node:assert'
+import { test } from '../lib/testing.js'
+import { main as binNftTtr } from './nft-ttr.js'
+import { recordedLog } from '../lib/log.js'
 import {
   createStubbedImageFetcher,
   createStubStoreFunction,
-} from '../jobs/measureNftTimeToRetrievability'
+} from '../jobs/measureNftTimeToRetrievability.js'
 
 const defaultTestMinImageSizeBytes = 10 * 1e6
 
-describe('bin/nft-ttr', () => {
-  it(`works with --minImageSizeBytes=${defaultTestMinImageSizeBytes} and multiple gateways`, async () => {
-    const { log, info } = recordedLog()
-    const minImageSizeBytes = defaultTestMinImageSizeBytes
-    const gateways = ['https://nftstorage.link', 'https://dweb.link']
-    const command = [
-      'fakeNodePath',
-      'fakeScriptPath',
-      'measure',
-      `--minImageSizeBytes=${minImageSizeBytes}`,
-      `--gateways=${gateways.join(' ')}`,
-    ]
-    await binNftTtr(command, {
-      log,
-      store: createStubStoreFunction(),
-      fetchImage: createStubbedImageFetcher(minImageSizeBytes),
-    })
-    /** @type {import('../jobs/measureNftTimeToRetrievability').RetrieveLog[]} */
-    const retrieves = info.flatMap((logs) =>
-      logs[0]?.type === 'retrieve' ? [logs[0]] : []
+test(`bin/nft-ttr works with --minImageSizeBytes=${defaultTestMinImageSizeBytes} and multiple gateways`, async (t) => {
+  const { log, info } = recordedLog()
+  const minImageSizeBytes = defaultTestMinImageSizeBytes
+  const gateways = ['https://nftstorage.link', 'https://dweb.link']
+  const command = [
+    'fakeNodePath',
+    'fakeScriptPath',
+    'measure',
+    `--minImageSizeBytes=${minImageSizeBytes}`,
+    `--gateways=${gateways.join(' ')}`,
+  ]
+  await binNftTtr(command, {
+    log,
+    store: createStubStoreFunction(),
+    fetchImage: createStubbedImageFetcher(minImageSizeBytes),
+  })
+  /** @type {import('../jobs/measureNftTimeToRetrievability').RetrieveLog[]} */
+  const retrieves = info.flatMap((logs) =>
+    logs[0]?.type === 'retrieve' ? [logs[0]] : []
+  )
+  t.is(retrieves.length, gateways.length)
+  const gatewaysNeedingRetrieval = new Set(gateways)
+  for (const retrieve of retrieves) {
+    t.assert(retrieve)
+    t.is(
+      typeof retrieve.duration.size,
+      'number',
+      'expected retrieve duration size to be a number'
     )
-    assert.equal(retrieves.length, gateways.length)
-    const gatewaysNeedingRetrieval = new Set(gateways)
-    for (const retrieve of retrieves) {
-      assert.ok(retrieve)
-      assert.equal(
-        typeof retrieve.duration.size,
-        'number',
-        'expected retrieve duration size to be a number'
-      )
-      assert.ok(retrieve.contentLength > minImageSizeBytes)
-      for (const gateway of gatewaysNeedingRetrieval) {
-        if (retrieve.url.toString().startsWith(gateway)) {
-          gatewaysNeedingRetrieval.delete(gateway)
-          break
-        }
+    t.assert(retrieve.contentLength > minImageSizeBytes)
+    for (const gateway of gatewaysNeedingRetrieval) {
+      if (retrieve.url.toString().startsWith(gateway)) {
+        gatewaysNeedingRetrieval.delete(gateway)
+        break
       }
     }
-    assert.equal(gatewaysNeedingRetrieval.size, 0)
-  })
+  }
+  t.is(gatewaysNeedingRetrieval.size, 0)
 })
