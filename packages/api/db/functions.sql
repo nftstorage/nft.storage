@@ -143,7 +143,7 @@ INSERT INTO upload (
   origins, 
   meta, 
   backup_urls, 
-  updated_at, -- should probably use the current time instead
+  updated_at,
   inserted_at
 )
 SELECT  new_user_id, u.content_cid, u.source_cid, u.mime_type, u.type, u.name, u.files, u.origins, u.meta, u.backup_urls, u.updated_at, u.inserted_at
