@@ -20,7 +20,7 @@
     "start:pinata": "node src/bin/pinata.js",
     "start:dagcargo:sizes": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo-sizes.js",
     "start:metrics": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/metrics.js",
-    "test": "NODE_OPTIONS=--experimental-vm-modules ava",
+    "test": "c8 ava",
     "typecheck": "npx tsc --build tsconfig.json"
   },
   "author": "Alan Shaw",
@@ -51,6 +51,7 @@
     "@types/node": "^17.0.35",
     "@types/sharp": "^0.30.2",
     "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "c8": "^7.11.3",
     "eslint-plugin-prettier": "^4.0.0",
     "npm-run-all": "^4.1.5"
   },
