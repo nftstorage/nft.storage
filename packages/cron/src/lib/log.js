@@ -3,7 +3,7 @@
  */
 
 /**
- * @template {string} [LogLevel=DefaultLogLevel]
+ * @template {string} LogLevel
  * @typedef {(level: LogLevel, ...loggables: any[]) => void} LogFunction
  */
 
@@ -27,8 +27,9 @@ export const createConsoleLog =
   }
 
 /**
- * @param {LogFunction} log;
- * @returns {LogFunction}
+ * @template {string} LogLevel
+ * @param {LogFunction<LogLevel>} log;
+ * @returns {LogFunction<LogLevel>}
  */
 export const createJSONLogger = (log) => {
   return (level, ...loggables) => {
@@ -38,12 +39,13 @@ export const createJSONLogger = (log) => {
 }
 
 /**
- * @returns {{log: import('../lib/log.js').LogFunction, info: any[]}}
+ * @template {string} LogLevel
+ * @returns {{log: LogFunction<LogLevel>, info: any[]}}
  */
 export const recordedLog = () => {
   /** @type {any[]} */
   const info = []
-  /** @type {import('../lib/log.js').LogFunction} */
+  /** @type {LogFunction<LogLevel>} */
   const log = (level, ...loggables) => {
     if (level === 'info') {
       info.push(loggables)

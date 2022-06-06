@@ -10,6 +10,14 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
 )
 
 /**
+ * @typedef {import('../lib/log.js').DefaultLogLevel} MeasureNftTtrLogLevel
+ */
+
+/**
+ * @typedef {import('../lib/log.js').LogFunction<MeasureNftTtrLogLevel>} MeasureNftTtrLogFunction
+ */
+
+/**
  * @typedef RetrieveLog
  * @property {string}       image
  * @property {"retrieve"}   type
@@ -73,7 +81,7 @@ export function createStubStoreFunction() {
  * @property {boolean} [logConfigAndExit] - if true, log config and exit
  * @property {URL} [metricsPushGateway] - Server to send metrics to. should reference a https://github.com/prometheus/pushgateway
  * @property {URL[]} gateways - IPFS Gateway to test retrieval from
- * @property {import('../lib/log.js').LogFunction} log - logger
+ * @property {MeasureNftTtrLogFunction} log - logger
  * @property {MeasureTtrSecrets} secrets
  * @property {string} metricsPushGatewayJobName
  */
@@ -100,23 +108,45 @@ function readMeasureTtrOptions(options) {
 }
 
 /**
+ * @template {string} Type
+ * @typedef Activity
+ * @property {Type} type
+ */
+
+/**
+ * @typedef StoreLog
+ * @property {"store"} type
+ * @property {string} image
+ * @property {Date} startTime
+ * @property {Milliseconds} duration
+ */
+
+/**
+ * @typedef {StoreLog|Activity<"start"|"finish">|RetrieveLog} MeasureTtrLog
+ */
+
+/**
  * Job that tests/measures steps
  * * prepare a sample image
  * * upload to nft.storage
  * * retrieve image through ipfs gateway
  * @param {MeasureTtrOptions} options
+ * @returns {AsyncIterable<
+ * StoreLog|Activity<"start"|"finish">|RetrieveLog
+ * >}
  */
-export async function measureNftTimeToRetrievability(options) {
+export async function* measureNftTimeToRetrievability(options) {
   // separate secrets and config to avoid logging secrets
   const { secrets, config } = readMeasureTtrOptions(options)
   if (config.logConfigAndExit) {
     config.log('info', config)
     return
   }
+  /** @type {Activity<"start">} */
   const start = {
     type: 'start',
-    job: 'measureNftTimeToRetrievability',
   }
+  yield start
   config.log('info', start)
   for await (const image of config.images) {
     const imageId = Number(new Date()).toString()
@@ -140,30 +170,33 @@ export async function measureNftTimeToRetrievability(options) {
     config.log('info', storeBeforeLog)
     const metadata = await store(nft)
     const storeEndAt = now()
+    /** @type {StoreLog} */
     const storeLog = {
       type: 'store',
       image: imageId,
       startTime: storeStartedDate,
       duration: Milliseconds.subtract(storeEndAt, storeStartedAt),
     }
+    yield storeLog
     config.log('info', storeLog)
-    const { gateways } = config
-    const retrievals = await Promise.allSettled(
-      config.gateways.map(async (g) => {
-        try {
-          await retrieve(options, {
-            id: imageId,
-            url: createGatewayRetrievalUrl(g, metadata.ipnft),
-          })
-        } catch (error) {
-          console.error('error retrieving', error)
-          throw error
-        }
-      })
-    )
-    config.log('debug', { type: 'retrievalsSummary', gateways, retrievals })
+    for (const gateway of config.gateways) {
+      /** @type {RetrieveLog} */
+      let retrieval
+      try {
+        retrieval = await retrieve(options, {
+          id: imageId,
+          url: createGatewayRetrievalUrl(gateway, metadata.ipnft),
+        })
+      } catch (error) {
+        console.error('error retrieving', error)
+        throw error
+      }
+      yield retrieval
+      await options.pushRetrieveMetrics(options, retrieval)
+    }
   }
-  config.log('info', { type: 'finish' })
+  /** @type {Activity<"finish">} */
+  yield { type: 'finish' }
 }
 
 /**
@@ -222,8 +255,7 @@ async function retrieve(options, image) {
     startTime: retrieveFetchDate,
     duration: retrievalDuration,
   }
-  options.log('info', retrieveLog)
-  await options.pushRetrieveMetrics(options, retrieveLog)
+  return retrieveLog
 }
 
 /**
@@ -237,7 +269,7 @@ function createGatewayRetrievalUrl(gatewayUrl, ipnftCid) {
 
 /**
  * @typedef HasLog
- * @property {import('../lib/log.js').LogFunction} log - logger
+ * @property {MeasureNftTtrLogFunction} log - logger
  */
 
 /**

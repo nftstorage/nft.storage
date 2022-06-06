@@ -4,12 +4,11 @@ import {
   measureNftTimeToRetrievability,
 } from './measureNftTimeToRetrievability.js'
 import { test } from '../lib/testing.js'
-import { recordedLog } from '../lib/log.js'
 import { createTestImages } from '../bin/nft-ttr.js'
+import all from 'it-all'
 
 test('measureNftTimeToRetrievability', async (t) => {
   /** this is meant to be a test that doesn't use the network (e.g. inject stubs) */
-  const { info, log } = recordedLog()
 
   let storeCallCount = 0
   const storer = {
@@ -32,33 +31,44 @@ test('measureNftTimeToRetrievability', async (t) => {
     },
   }
 
-  await measureNftTimeToRetrievability({
-    log,
-    images: createTestImages(1),
-    gateways: [new URL('https://nftstorage.link')],
-    store: (n) => storer.store(n),
-    metricsPushGatewayJobName: 'integration-tests',
-    pushRetrieveMetrics: (...args) => metricsPusher.push(...args),
-    secrets: {
-      nftStorageToken: 'TODO',
-      metricsPushGatewayAuthorization: { authorization: 'bearer todo' },
-    },
-    fetchImage: createStubbedImageFetcher(),
-  })
+  const results = await all(
+    measureNftTimeToRetrievability({
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      log: () => {},
+      images: createTestImages(1),
+      gateways: [new URL('https://nftstorage.link')],
+      store: (n) => storer.store(n),
+      metricsPushGatewayJobName: 'integration-tests',
+      pushRetrieveMetrics: (...args) => metricsPusher.push(...args),
+      secrets: {
+        nftStorageToken: 'TODO',
+        metricsPushGatewayAuthorization: { authorization: 'bearer todo' },
+      },
+      fetchImage: createStubbedImageFetcher(),
+    })
+  )
+  t.assert(results.length > 0)
   t.is(storeCallCount, 1)
-  const start = info.find((logs) => logs[0]?.type === 'start')[0]
+
+  const start = results.find((log) => log.type === 'start')
   t.assert(start)
-  const storeLog = info.find((logs) => logs[0]?.type === 'store')[0]
+
+  const storeLog = results.find((log) => log.type === 'store')
   t.assert(storeLog)
-  const retrieve = info.find((logs) => logs[0]?.type === 'retrieve')[0]
-  t.assert(retrieve)
+
+  const retrieve = results.find(
+    /** @returns {log is import('./measureNftTimeToRetrievability.js').RetrieveLog} */
+    (log) => log.type === 'retrieve'
+  )
   t.is(
     typeof retrieve?.duration?.size,
     'number',
     'expected retrieve duration size to be a number'
   )
+
   // did call pushRetrieveMetrics
   t.is(pushCallCount, 1)
-  const finish = info.find((logs) => logs[0]?.type === 'finish')[0]
+
+  const finish = results.find((log) => log.type === 'finish')
   t.assert(finish)
 })

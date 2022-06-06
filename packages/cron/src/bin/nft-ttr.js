@@ -42,7 +42,7 @@ export async function* createTestImages(count = 1, minImageSizeBytes = 1) {
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 global.fetch = fetch
 
-/** @type {import('../lib/log.js').LogFunction} */
+/** @type {import('../lib/log.js').LogFunction<import('../lib/log.js').DefaultLogLevel>} */
 const defaultLog = (level, ...loggables) => {
   createJSONLogger(createConsoleLog())(level, ...loggables)
 }
@@ -182,11 +182,11 @@ function defaultMeasureOptions() {
 /**
  * @param {string[]} argv
  * @param {object} [options]
- * @param {import('../lib/log.js').LogFunction} options.log
+ * @param {import('../lib/log.js').LogFunction<import('../lib/log.js').DefaultLogLevel>} options.log
  * @param {import('../jobs/measureNftTimeToRetrievability.js').StoreFunction} [options.store]
  * @param {import('../jobs/measureNftTimeToRetrievability.js').ImageFetcher} [options.fetchImage]
  */
-export async function main(argv, options = { log: defaultLog }) {
+export async function* main(argv, options = { log: defaultLog }) {
   if (argv.length < 3) {
     throw new Error(
       'nft-ttr argv must be at least length 3: [node, script, ...nftTtrArgv]'
@@ -194,6 +194,8 @@ export async function main(argv, options = { log: defaultLog }) {
   }
   const secrets = createMeasureSecretsFromEnv(process.env)
   const argParser = sade('nft-ttr')
+  /** @type {undefined|ReturnType<typeof measureNftTimeToRetrievability>} */
+  let measure
   argParser
     .command('measure')
     .describe('measure the time to retrievability of an upload to nft.storage')
@@ -222,15 +224,18 @@ export async function main(argv, options = { log: defaultLog }) {
       'min byte size of sample images used to test upload/retrieval',
       1000
     )
-    .action(async (_commandName, opts) => {
-      await measureNftTimeToRetrievability({
+    .action(async (opts) => {
+      measure = measureNftTimeToRetrievability({
         secrets,
         ...createMeasureOptionsFromSade(opts, secrets),
         ...options,
       })
     })
-  const { handler, name, args } = await sadeParseWithoutExit(argParser, argv)
-  await handler(name, ...args)
+  await sadeParseWithoutExit(argParser, argv)
+  if (measure) {
+    console.log('yielding from measure', measure)
+    yield* measure
+  }
 }
 
 /**
@@ -249,7 +254,7 @@ async function sadeParseWithoutExit(prog, argv) {
     // console.debug('fake process.exit() called with code', _code);
   }
   process.exit = fakeExit
-  const parsed = prog.parse(argv, { lazy: true })
+  const parsed = prog.parse(argv)
   process.exit = origExit
   return parsed
 }

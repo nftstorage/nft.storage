@@ -5,11 +5,12 @@ import {
   createStubbedImageFetcher,
   createStubStoreFunction,
 } from '../jobs/measureNftTimeToRetrievability.js'
+import all from 'it-all'
 
 const defaultTestMinImageSizeBytes = 10 * 1e6
 
 test(`bin/nft-ttr works with --minImageSizeBytes=${defaultTestMinImageSizeBytes} and multiple gateways`, async (t) => {
-  const { log, info } = recordedLog()
+  const { log } = recordedLog()
   const minImageSizeBytes = defaultTestMinImageSizeBytes
   const gateways = ['https://nftstorage.link', 'https://dweb.link']
   const command = [
@@ -19,18 +20,21 @@ test(`bin/nft-ttr works with --minImageSizeBytes=${defaultTestMinImageSizeBytes}
     `--minImageSizeBytes=${minImageSizeBytes}`,
     `--gateways=${gateways.join(' ')}`,
   ]
-  await binNftTtr(command, {
-    log,
-    store: createStubStoreFunction(),
-    fetchImage: createStubbedImageFetcher(minImageSizeBytes),
-  })
-  /** @type {import('../jobs/measureNftTimeToRetrievability').RetrieveLog[]} */
-  const retrieves = info.flatMap((logs) =>
-    logs[0]?.type === 'retrieve' ? [logs[0]] : []
+  const activities = await all(
+    binNftTtr(command, {
+      log,
+      store: createStubStoreFunction(),
+      fetchImage: createStubbedImageFetcher(minImageSizeBytes),
+    })
   )
-  t.is(retrieves.length, gateways.length)
+  let retrieveCount = 0
   const gatewaysNeedingRetrieval = new Set(gateways)
-  for (const retrieve of retrieves) {
+  for (const activity of activities) {
+    if (activity.type !== 'retrieve') {
+      continue
+    }
+    const retrieve = activity
+    retrieveCount++
     t.assert(retrieve)
     t.is(
       typeof retrieve.duration.size,
@@ -46,4 +50,5 @@ test(`bin/nft-ttr works with --minImageSizeBytes=${defaultTestMinImageSizeBytes}
     }
   }
   t.is(gatewaysNeedingRetrieval.size, 0)
+  t.is(retrieveCount, gateways.length)
 })
