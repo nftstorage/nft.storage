@@ -40,7 +40,6 @@
     "pg": "^8.7.1",
     "prom-client": "^14.0.1",
     "sade": "^1.8.1",
-    "safe-env-vars": "^1.0.4",
     "sharp": "^0.30.6",
     "stream-mime-type": "^1.0.2",
     "streaming-iterables": "^6.0.0"
