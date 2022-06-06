@@ -75,20 +75,7 @@
       "browser": true,
       "node": true
     },
-    "rules": {
-      "no-unused-vars": [
-        "error",
-        {
-          "args": "all",
-          "argsIgnorePattern": "_",
-          "varsIgnorePattern": "_"
-        }
-      ],
-      "@next/next/no-img-element": "off",
-      "@typescript-eslint/naming-convention": [
-        "warn"
-      ]
-    },
+    "rules": {},
     "overrides": [
       {
         "files": [
