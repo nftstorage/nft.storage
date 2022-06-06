@@ -50,7 +50,7 @@ export async function createTestUser({
  * @param {string} tag.inserted_at
  * @param {string} tag.reason
  */
-async function createUserTag(tag) {
+export async function createUserTag(tag) {
   const query = rawClient.from('user_tag')
 
   const { data, error } = await query.upsert(tag).single()

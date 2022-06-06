@@ -117,3 +117,66 @@ FROM cargo.aggregate_entries ae
 WHERE ae.cid_v1 = ANY (cids)
 ORDER BY de.entry_last_updated
 $$;
+
+
+-- Copies upload history from one user id to another.
+-- If copy_tags is true, also copies all user tags from the old user account to the new one.
+-- If copy_auth_keys is true, copies all API keys from the old account to the new one. 
+--   The copied API keys will have the same name and secret, but will have new ids and will
+--   have an independent "blocked" state and auth_key_history from the original user's auth keys.
+CREATE OR REPLACE FUNCTION copy_user_data(old_user_id BIGINT, new_user_id BIGINT, copy_tags BOOLEAN, copy_auth_keys BOOLEAN) RETURNS void
+  LANGUAGE plpgsql
+  volatile
+  PARALLEL UNSAFE
+AS
+$$
+BEGIN
+
+INSERT INTO upload (
+  user_id,
+  content_cid,
+  source_cid, 
+  mime_type, 
+  type, 
+  name, 
+  files, 
+  origins, 
+  meta, 
+  backup_urls, 
+  updated_at, -- should probably use the current time instead
+  inserted_at
+)
+SELECT  new_user_id, u.content_cid, u.source_cid, u.mime_type, u.type, u.name, u.files, u.origins, u.meta, u.backup_urls, u.updated_at, u.inserted_at
+FROM upload as u
+WHERE u.user_id = old_user_id;
+
+IF copy_tags THEN
+  INSERT INTO user_tag (
+      user_id,
+      tag,
+      value,
+      reason,
+      inserted_at,
+      deleted_at
+  )
+  SELECT new_user_id, t.tag, t.value, t.reason, t.inserted_at, t.deleted_at
+  FROM user_tag as t
+  WHERE t.user_id = old_user_id;
+END IF;
+
+IF copy_auth_keys THEN
+    INSERT into auth_key (
+        name,
+        secret,
+        user_id,
+        inserted_at,
+        updated_at,
+        deleted_at
+    )
+    SELECT k.name, k.secret, new_user_id, k.inserted_at, k.updated_at, k.deleted_at
+    FROM auth_key as k
+    WHERE k.user_id = old_user_id;
+END IF;
+
+END
+$$;
