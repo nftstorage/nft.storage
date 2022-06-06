@@ -44,10 +44,10 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
  * @returns {StoreFunction}
  */
 export function createStubStoreFunction() {
-  return async () => {
-    return {
+  return () => {
+    return Promise.resolve({
       ipnft: 'fake-ret-from-createStubStoreFunction',
-    }
+    })
   }
 }
 
@@ -96,10 +96,8 @@ export function createStubStoreFunction() {
  */
 
 /**
- * @template Secrets
- * @template {{secrets: Secrets}} Options
- * @param {Options} options
- * @returns {OptionsParts<Omit<Options,'secrets'>, Secrets>}
+ * @param {MeasureTtrOptions} options
+ * @returns {OptionsParts<Omit<MeasureTtrOptions,'secrets'>, MeasureTtrOptions['secrets']>}
  */
 function readMeasureTtrOptions(options) {
   const secrets = options.secrets
@@ -286,6 +284,7 @@ export function createStubbedRetrievalMetricsLogger() {
   /** @type {RetrievalMetricsLogger} */
   const push = async (options, retrieval) => {
     options.log('debug', { type: 'stubbedRetrievalMetricsLogger', retrieval })
+    return Promise.resolve()
   }
   return push
 }

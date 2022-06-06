@@ -97,7 +97,7 @@ function createMeasureOptionsFromSade(sadeOptions, secrets) {
   const gatewaysArgv = sadeOptions.gateways
   assert.ok(Array.isArray(gatewaysArgv) || typeof gatewaysArgv === 'string')
   const gatewaysArgvsArray = Array.isArray(gatewaysArgv)
-    ? gatewaysArgv
+    ? gatewaysArgv.map(String)
     : [...gatewaysArgv.split(' ')]
   const gateways = gatewaysArgvsArray.map((g) => {
     try {
@@ -224,14 +224,14 @@ export async function* main(argv, options = { log: defaultLog }) {
       'min byte size of sample images used to test upload/retrieval',
       1000
     )
-    .action(async (opts) => {
+    .action((opts) => {
       measure = measureNftTimeToRetrievability({
         secrets,
         ...createMeasureOptionsFromSade(opts, secrets),
         ...options,
       })
     })
-  await sadeParseWithoutExit(argParser, argv)
+  sadeParseWithoutExit(argParser, argv)
   if (measure) {
     console.log('yielding from measure', measure)
     yield* measure
@@ -243,16 +243,18 @@ export async function* main(argv, options = { log: defaultLog }) {
  * @param {sade.Sade} prog
  * @param {string[]} argv
  */
-async function sadeParseWithoutExit(prog, argv) {
+function sadeParseWithoutExit(prog, argv) {
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const origExit = process.exit
   /**
    * @type {any}
-   * @param {any} [_code]
+   * @param {number} [_code]
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const fakeExit = (_code) => {
     // console.debug('fake process.exit() called with code', _code);
   }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   process.exit = fakeExit
   const parsed = prog.parse(argv)
   process.exit = origExit

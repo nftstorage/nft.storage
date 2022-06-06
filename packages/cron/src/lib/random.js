@@ -10,13 +10,11 @@ export const bytesBitCount = 8
 /**
  * Create random bytes of a certain bit size
  * @param {number} byteCount - number of bytes of randomness
- * @returns {AsyncIterable<Uint8Array>}
+ * @returns {Iterable<Uint8Array>}
  */
-export function createRandomBytes(byteCount) {
-  return (async function* () {
-    const bytes = randomBytes(byteCount)
-    yield bytes
-  })()
+export function* createRandomBytes(byteCount) {
+  const bytes = randomBytes(byteCount)
+  yield bytes
 }
 
 /**

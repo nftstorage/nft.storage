@@ -4,7 +4,7 @@
 
 /**
  * @template {string} LogLevel
- * @typedef {(level: LogLevel, ...loggables: any[]) => void} LogFunction
+ * @typedef {(level: LogLevel, ...loggables: unknown[]) => void} LogFunction
  */
 
 /** @return {LogFunction<DefaultLogLevel>} */
@@ -22,6 +22,7 @@ export const createConsoleLog =
         console.warn(...loggables)
         break
       default:
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         throw new Error(`unexpected log level ${level}`)
     }
   }

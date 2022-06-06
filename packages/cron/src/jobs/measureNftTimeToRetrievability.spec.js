@@ -1,6 +1,7 @@
 import {
   createStubbedImageFetcher,
   createStubbedRetrievalMetricsLogger,
+  createStubStoreFunction,
   measureNftTimeToRetrievability,
 } from './measureNftTimeToRetrievability.js'
 import { test } from '../lib/testing.js'
@@ -12,13 +13,10 @@ test('measureNftTimeToRetrievability', async (t) => {
 
   let storeCallCount = 0
   const storer = {
-    /** @param {import('nft.storage/dist/src/token').TokenInput} nft */
-    store: async (nft) => {
+    /** @type {import('./measureNftTimeToRetrievability.js').StoreFunction} */
+    store: (token) => {
       storeCallCount++
-      return {
-        ipnft: 'bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4',
-        nft,
-      }
+      return createStubStoreFunction()(token)
     },
   }
 
