@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: '16'
       - uses: bahmutov/npm-install@v1
+      - run: yarn workspace nft.storage prepare
       - run: yarn workspace cron lint
 
   check:
@@ -36,8 +37,7 @@ jobs:
         with:
           node-version: '16'
       - uses: bahmutov/npm-install@v1
-      - run: yarn workspace nft.storage install
-      - run: yarn workspace cron install
+      - run: yarn workspace nft.storage prepare
       - run: yarn workspace cron typecheck
 
   test:

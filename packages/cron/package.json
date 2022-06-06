@@ -69,8 +69,7 @@
     "parserOptions": {
       "ecmaVersion": 13,
       "project": [
-        "./tsconfig.json",
-        "./packages/cron/tsconfig.json"
+        "./tsconfig.json"
       ]
     },
     "env": {
