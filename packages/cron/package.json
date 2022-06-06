@@ -175,8 +175,6 @@
     ]
   },
   "eslintIgnore": [
-    "node_modules",
-    ".next",
-    "out"
+    "node_modules"
   ]
 }
