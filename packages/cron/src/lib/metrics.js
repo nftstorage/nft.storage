@@ -16,7 +16,6 @@ export function createRetrievalDurationSecondsMetric(registry) {
     name: 'retrieval_duration_seconds',
     help: 'How long, in seconds, it took to retrieve an nft image after uploading',
     registers: [registry],
-    labelNames: ['byteLength'],
   })
   return metric
 }
