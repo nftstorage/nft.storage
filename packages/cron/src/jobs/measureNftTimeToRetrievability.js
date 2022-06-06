@@ -1,4 +1,3 @@
-import * as assert from 'assert'
 import { NFTStorage } from 'nft.storage'
 import { Milliseconds, now } from '../lib/time.js'
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -326,49 +325,6 @@ export function createPromClientRetrievalMetricsLogger(
 }
 
 /**
- * Push retrieval metrics to a pushgateway
- * @param {object} config
- * @param {string} config.metricsPushGateway
- * @param {HttpAuthorization} config.metricsPushGatewayAuthorization
- * @param {Fetcher['fetch']} config.fetch
- * @returns {RetrievalMetricsLogger}
- */
-export function createFetchMetricsLogger(config) {
-  return async function (options, retrieval) {
-    /** @type [string, RequestInit] */
-    const pushRequest = [
-      config.metricsPushGateway,
-      {
-        method: 'post',
-        headers: {
-          authorization: config.metricsPushGatewayAuthorization.authorization,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          'content-type': 'application/octet-stream',
-        },
-        body: formatRetrievalMetrics(retrieval),
-      },
-    ]
-    const pushResponse = await config.fetch.apply(null, pushRequest)
-    if (!pushResponse.ok) {
-      options.log('warn', {
-        type: 'error',
-        message: 'unsuccessful metrics push',
-        text: await pushResponse.text(),
-      })
-    }
-    assert.equal(
-      pushResponse.ok,
-      true,
-      'metrics push response code should indicate success'
-    )
-    options.log('info', {
-      type: 'metricsPushed',
-      target: config.metricsPushGateway,
-    })
-  }
-}
-
-/**
  * @typedef BasicAuthOptions
  * @property {string} basicAuth - base64-encoded user:pass
  */
@@ -391,21 +347,4 @@ export function basicAuthorizationHeaderValue(options) {
   /** @type {`Basic ${string}`} */
   const headerValue = `Basic ${basicAuthValue}`
   return headerValue
-}
-
-/**
- * Format metrics about a retrieval into a format that a prometheus pushgateway expects.
- * Example output: https://github.com/web3-storage/web3.storage/blob/main/.github/workflows/cron-test.yml#L38
- * @param {RetrieveLog} retrieval
- * @returns {string} prometheus metrics string
- */
-function formatRetrievalMetrics(retrieval) {
-  const durationSeconds = retrieval.duration.size / 1000
-  return (
-    [
-      '# TYPE nftstorage_retrieval_duration_seconds gauge',
-      '# HELP nftstorage_retrieval_duration_seconds How long it took to retrieve an nft image',
-      `nftstorage_retrieval_duration_seconds{byteLength="${retrieval.contentLength}"} ${durationSeconds}`,
-    ].join('\n') + '\n'
-  )
 }
