@@ -1,7 +1,4 @@
 #!/usr/bin/env node
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import path from 'path'
 import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
