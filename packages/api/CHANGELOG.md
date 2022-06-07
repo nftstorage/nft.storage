@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.26.0](https://github.com/nftstorage/nft.storage/compare/api-v2.25.0...api-v2.26.0) (2022-06-07)
+
+
+### Features
+
+* optimize metrics query ([#1906](https://github.com/nftstorage/nft.storage/issues/1906)) ([dd8d3bd](https://github.com/nftstorage/nft.storage/commit/dd8d3bdcf9e373efe2b26c67c68ad47a96fe7ecb))
+
 ## [2.25.0](https://github.com/nftstorage/nft.storage/compare/api-v2.24.2...api-v2.25.0) (2022-06-07)
 
 
