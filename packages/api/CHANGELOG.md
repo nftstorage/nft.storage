@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.25.0](https://github.com/nftstorage/nft.storage/compare/api-v2.24.2...api-v2.25.0) (2022-06-07)
+
+
+### Features
+
+* Adding admin ability to search by github_id ([#1960](https://github.com/nftstorage/nft.storage/issues/1960)) ([65b551c](https://github.com/nftstorage/nft.storage/commit/65b551c791ea8dc27c4c6e3e8a56188a4b391e54))
+* DB schema and API for user_tag_proposal. ([#1410](https://github.com/nftstorage/nft.storage/issues/1410)) ([#1402](https://github.com/nftstorage/nft.storage/issues/1402)) ([0fa240d](https://github.com/nftstorage/nft.storage/commit/0fa240d5612c130ad60b24bb2953853eb80101a2))
+
+
+### Bug Fixes
+
+* config loading required vars ([#1955](https://github.com/nftstorage/nft.storage/issues/1955)) ([ad5773c](https://github.com/nftstorage/nft.storage/commit/ad5773c55fb67b56af2f5a43fec08182f85d1510))
+
 ### [2.24.2](https://github.com/nftstorage/nft.storage/compare/api-v2.24.1...api-v2.24.2) (2022-06-01)
 
 
