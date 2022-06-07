@@ -22,8 +22,8 @@ CREATE
 USER MAPPING FOR ${NFT_STORAGE_USER}
   SERVER dag_cargo_server
   OPTIONS (
-      user 'DAG_CARGO_USER', 
-      password 'DAG_CARGO_PASSWORD'
+      user '${DAG_CARGO_USER}', 
+      password '${DAG_CARGO_PASSWORD}'
     );
 
 CREATE
