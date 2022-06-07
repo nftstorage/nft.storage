@@ -223,6 +223,7 @@ CREATE VIEW admin_search as
 select
   u.id::text as user_id,
   u.email as email,
+  u.github_id as github_id,
   ak.secret as token,
   ak.id::text as token_id,
   ak.deleted_at as deleted_at,
