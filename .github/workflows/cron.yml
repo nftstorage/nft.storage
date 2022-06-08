@@ -6,6 +6,7 @@ on:
     paths:
       - 'packages/cron/**'
       - '.github/workflows/cron.yml'
+jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
