@@ -47,7 +47,7 @@ module.exports = {
     await execa(cli, ['db', '--start'], { stdio: 'inherit' })
     console.log('⚡️ Cluster and Postgres started.')
 
-    await execa(cli, ['db-sql', '--cargo', '--testing', '--reset'], {
+    await execa('yarn', ['run', 'db-migrate'], {
       stdio: 'inherit',
     })
     console.log('⚡️ SQL schema loaded.')
