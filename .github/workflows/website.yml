@@ -92,4 +92,4 @@ jobs:
         if: ${{ steps.tag-release.outputs.releases_created }}
       - name: Website - Deploy
         if: ${{ steps.tag-release.outputs.releases_created }}
-        run: ./packages/tools/cli.js deploy-website --email ${{ secrets.CF_EMAIL }} --key ${{secrets.CF_KEY}} --zone ${{ secrets.CF_ZONE }} --account ${{secrets.CF_ACCOUNT}}
+        run: npx wrangler pages publish --project-name nft-storage --branch main ./packages/website/out
