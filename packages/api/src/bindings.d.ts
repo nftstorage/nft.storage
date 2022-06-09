@@ -75,6 +75,9 @@ export interface ServiceConfiguration {
 
   /** Mailchimp api key */
   MAILCHIMP_API_KEY: string
+
+  /** PSA quota with number of in flight requests possible */
+  PSA_QUOTA: number
 }
 
 export interface Ucan {
@@ -96,6 +99,7 @@ export interface AuthOptions {
   checkHasAccountRestriction?: boolean
   checkHasDeleteRestriction?: boolean
   checkHasPsaAccess?: boolean
+  checkHasPsaQuota?: boolean
 }
 
 export interface RouteContext {

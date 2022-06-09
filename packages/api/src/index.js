@@ -44,6 +44,7 @@ const r = new Router(getContext, {
 const checkHasAccountRestriction = true
 const checkHasDeleteRestriction = true
 const checkHasPsaAccess = true
+const checkHasPsaQuota = true
 const checkUcan = true
 
 // Monitoring
@@ -98,6 +99,7 @@ r.add(
   withAuth(withMode(pinsAdd, RW), {
     checkHasPsaAccess,
     checkHasAccountRestriction,
+    checkHasPsaQuota,
   }),
   [postCors]
 )
@@ -107,6 +109,7 @@ r.add(
   withAuth(withMode(pinsReplace, RW), {
     checkHasPsaAccess,
     checkHasAccountRestriction,
+    checkHasPsaQuota,
   }),
   [postCors]
 )
