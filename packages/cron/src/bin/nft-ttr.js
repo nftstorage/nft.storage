@@ -49,34 +49,21 @@ const defaultLog = (level, ...loggables) => {
  */
 
 /**
- * @param {Record<string,unknown>} env
+ * @param {Record<string,string|undefined>} env
  * @returns {MeasureTtrOptions['secrets']}
  */
 function createMeasureSecretsFromEnv(env) {
-  // env.PUSHGATEWAY_BASIC_AUTH
-  const PUSHGATEWAY_BASIC_AUTH =
-    'PUSHGATEWAY_BASIC_AUTH' in env ? env.PUSHGATEWAY_BASIC_AUTH : undefined
-  if (typeof PUSHGATEWAY_BASIC_AUTH !== 'undefined') {
-    assert.ok(
-      typeof PUSHGATEWAY_BASIC_AUTH === 'string',
-      'expected PUSHGATEWAY_BASIC_AUTH to be a string'
-    )
-  }
-  // env.NFT_STORAGE_API_KEY
   assert.ok(
     typeof env.NFT_STORAGE_API_KEY === 'string',
     'expected env.NFT_STORAGE_API_KEY to be a string'
   )
-
-  const metricsPushGatewayAuthorization = PUSHGATEWAY_BASIC_AUTH
-    ? parseBasicAuth(PUSHGATEWAY_BASIC_AUTH)
+  const metricsPushGatewayAuthorization = env.PUSHGATEWAY_BASIC_AUTH
+    ? parseBasicAuth(env.PUSHGATEWAY_BASIC_AUTH)
     : { authorization: 'bearer no-auth' }
-
   const nftStorageToken = env.NFT_STORAGE_API_KEY
-
   return {
-    nftStorageToken,
     metricsPushGatewayAuthorization,
+    nftStorageToken,
   }
 }
 
