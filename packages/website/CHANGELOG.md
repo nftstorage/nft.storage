@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.52.0](https://github.com/nftstorage/nft.storage/compare/website-v1.51.0...website-v1.52.0) (2022-06-09)
+
+
+### Features
+
+* add NFTUp CTA to stats page ([#1971](https://github.com/nftstorage/nft.storage/issues/1971)) ([70f252d](https://github.com/nftstorage/nft.storage/commit/70f252da1325902381449fd82ce313e4c507641b))
+
 ## [1.51.0](https://github.com/nftstorage/nft.storage/compare/website-v1.50.0...website-v1.51.0) (2022-05-24)
 
 
