@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.26.1](https://github.com/nftstorage/nft.storage/compare/api-v2.26.0...api-v2.26.1) (2022-06-10)
+
+
+### Bug Fixes
+
+* Adding user_tag_proposal schema to reset.sql for local dev ([#1977](https://github.com/nftstorage/nft.storage/issues/1977)) ([6be18ff](https://github.com/nftstorage/nft.storage/commit/6be18ff4a42d924fb68d78d12ddbf8d42e722764))
+
 ## [2.26.0](https://github.com/nftstorage/nft.storage/compare/api-v2.25.0...api-v2.26.0) (2022-06-07)
 
 
