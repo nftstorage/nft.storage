@@ -13,8 +13,8 @@ These demos use the pre-built bundle served by https://www.jsdelivr.com/.
 
 Register an account at https://nft.storage and create a new API key.
 
-Open `store.html`/`storeBlob.html`/`storeDirectory.html` and replace `API_KEY` in the code with your key.
+Open one of the `.html` files in this directory and replace `API_KEY` in the code with your key.
 
 ## Running
 
-Open `store.html`/`storeBlob.html`/`storeDirectory.html` in your favourite web browser.
+Open one of the `.html` files in this directory in your favourite web browser.
