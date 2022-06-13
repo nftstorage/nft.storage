@@ -587,10 +587,8 @@ export class DBClient {
 
     const dagByteSizeQuery = metricsQuery
       .select('name, dimensions, value')
-      .match({
-        name: 'dagcargo_project_bytes_in_active_deals',
-        dimensions: '{{project,nft.storage}}',
-      })
+      .eq('name', 'dagcargo_project_bytes_in_active_deals')
+      .contains('dimensions', ['project', 'nft.storage'])
       .single()
 
     const weekAgo = new Date()
