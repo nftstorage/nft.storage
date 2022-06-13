@@ -76,6 +76,26 @@ export class DBClient {
   }
 
   /**
+   * Gets a user by user id
+   *
+   * @param {number} id
+   * @returns
+   */
+  async getUserById(id) {
+    const { data, error, status } = await this.client
+      .from('user')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    return data
+  }
+
+  /**
    * Get user by magic.link or old github id
    *
    * @param {string} id

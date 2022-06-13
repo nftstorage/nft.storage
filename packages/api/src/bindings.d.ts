@@ -75,6 +75,9 @@ export interface ServiceConfiguration {
 
   /** Mailchimp api key */
   MAILCHIMP_API_KEY: string
+
+  /** Slack webhook url */
+  SLACK_USER_REQUEST_WEBHOOK_URL: string
 }
 
 export interface Ucan {
@@ -225,6 +228,13 @@ export interface PinsResponse {
   }
   delegates: string[]
 }
+
+export interface RequestFormItem {
+  label: string
+  value: string
+}
+
+export type RequestForm = Array<RequestFormItem>
 
 /**
  * The known structural completeness of a given DAG. "Unknown" structure means

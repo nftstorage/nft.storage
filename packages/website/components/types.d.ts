@@ -21,6 +21,12 @@ export interface Tag {
   selected?: boolean
 }
 
+interface RequestFormItem {
+  label: string
+  value: string
+}
+
+export type RequestForm = Array<RequestFormItem>
 export interface Tags {
   tags: Tag[] | string[]
   className?: string
