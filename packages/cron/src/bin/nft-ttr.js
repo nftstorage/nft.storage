@@ -52,7 +52,7 @@ const defaultLog = (level, ...loggables) => {
  * @param {Record<string,string|undefined>} env
  * @returns {MeasureTtrOptions['secrets']}
  */
-function createMeasureSecretsFromEnv(env) {
+export function createMeasureSecretsFromEnv(env) {
   assert.ok(
     typeof env.NFT_STORAGE_API_KEY === 'string',
     'expected env.NFT_STORAGE_API_KEY to be a string'

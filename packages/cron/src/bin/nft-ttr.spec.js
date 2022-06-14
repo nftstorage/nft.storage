@@ -1,5 +1,9 @@
 import { test } from '../lib/testing.js'
-import { cli as binNftTtr, createMeasureOptionsFromSade } from './nft-ttr.js'
+import {
+  cli as binNftTtr,
+  createMeasureOptionsFromSade,
+  createMeasureSecretsFromEnv,
+} from './nft-ttr.js'
 import { recordedLog } from '../lib/log.js'
 import {
   createStubbedImageFetcher,
@@ -27,6 +31,26 @@ test('createMeasureOptionsFromSade', (t) => {
   t.is(options.gateways[0].toString(), sampleSade.gateways)
   t.is(options.metricsPushGateway?.toString(), sampleSade.metricsPushGateway)
   t.is(options.metricsPushGatewayJobName, sampleSade.metricsPushGatewayJobName)
+})
+
+test('createMeasureSecretsFromEnv', (t) => {
+  t.throws(createMeasureSecretsFromEnv.bind(null, {}), {
+    message: 'expected env.NFT_STORAGE_API_KEY to be a string',
+  })
+  const sampleStorageKey = 'foo'
+  t.is(
+    createMeasureSecretsFromEnv({ NFT_STORAGE_API_KEY: sampleStorageKey })
+      .nftStorageToken,
+    sampleStorageKey
+  )
+  const sampleUserColonPass = 'user:pass'
+  t.is(
+    createMeasureSecretsFromEnv({
+      NFT_STORAGE_API_KEY: sampleStorageKey,
+      PUSHGATEWAY_BASIC_AUTH: sampleUserColonPass,
+    }).metricsPushGatewayAuthorization,
+    'Basic dXNlcjpwYXNz'
+  )
 })
 
 test(`bin/nft-ttr works with --minImageSizeBytes=${defaultTestMinImageSizeBytes} and multiple gateways`, async (t) => {
