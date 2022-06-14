@@ -79,7 +79,6 @@
     "overrides": [
       {
         "files": [
-          "./src/bin/pins-failed.js",
           "./src/jobs/dagcargo.js"
         ],
         "rules": {
@@ -140,7 +139,6 @@
           "./src/bin/dagcargo-sizes.js",
           "./src/bin/metrics.js",
           "./src/bin/pinata.js",
-          "./src/bin/pins-failed.js",
           "./src/bin/pins.js"
         ],
         "rules": {
@@ -152,7 +150,6 @@
           "./src/bin/dagcargo-sizes.js",
           "./src/bin/metrics.js",
           "./src/bin/pinata.js",
-          "./src/bin/pins-failed.js",
           "./src/bin/pins.js",
           "./src/jobs/dagcargo.js",
           "./src/jobs/pinata.js",
