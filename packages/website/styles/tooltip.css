@@ -19,4 +19,5 @@
 .rc-tooltip.ns-tooltip .rc-tooltip-content a,
 .rc-tooltip.ns-tooltip .rc-tooltip-content a:visited {
   color: #000;
+  text-decoration: underline;
 }
