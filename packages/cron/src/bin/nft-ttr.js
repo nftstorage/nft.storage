@@ -183,7 +183,7 @@ export async function* cli(
   const secrets = createMeasureSecretsFromEnv(options.env)
   const argParser = sade('nft-ttr')
   /** @type {undefined|ReturnType<typeof measureNftTimeToRetrievability>} */
-  let measure
+  let iterable
   argParser
     .command('measure')
     .describe('measure the time to retrievability of an upload to nft.storage')
@@ -213,39 +213,15 @@ export async function* cli(
       1000
     )
     .action((opts) => {
-      measure = measureNftTimeToRetrievability({
+      iterable = measureNftTimeToRetrievability({
         secrets,
         ...createMeasureOptionsFromSade(opts, secrets),
         ...options,
       })
     })
-  sadeParseWithoutExit(argParser, argv)
-  if (measure) {
-    yield* measure
-  }
-}
-
-/**
- * Utility to use a sade instance to parse argv, but avoiding the behavior where sade may call process.exit
- * @param {sade.Sade} prog
- * @param {string[]} argv
- */
-function sadeParseWithoutExit(prog, argv) {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
-  const origExit = process.exit
-  /**
-   * @type {any}
-   * @param {number} [_code]
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const fakeExit = (_code) => {
-    // console.debug('fake process.exit() called with code', _code);
-  }
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  process.exit = fakeExit
-  const parsed = prog.parse(argv)
-  process.exit = origExit
-  return parsed
+  argParser.parse(argv)
+  assert.ok(iterable, 'expected argument parsing to result in an iterable')
+  yield* iterable
 }
 
 /**
