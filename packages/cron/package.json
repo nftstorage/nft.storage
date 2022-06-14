@@ -79,7 +79,6 @@
     "overrides": [
       {
         "files": [
-          "./src/jobs/pins.js",
           "./src/lib/ipfs.js"
         ],
         "rules": {
@@ -98,7 +97,6 @@
       {
         "files": [
           "./src/jobs/pinata.js",
-          "./src/jobs/pins.js",
           "./src/lib/ipfs.js"
         ],
         "rules": {
@@ -107,7 +105,6 @@
       },
       {
         "files": [
-          "./src/jobs/pins.js",
           "./src/lib/pinata.js"
         ],
         "rules": {
@@ -132,7 +129,6 @@
           "./src/bin/pinata.js",
           "./src/bin/pins.js",
           "./src/jobs/pinata.js",
-          "./src/jobs/pins.js",
           "./src/lib/pinata.js"
         ],
         "rules": {
