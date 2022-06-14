@@ -22,6 +22,9 @@ test(`bin/nft-ttr works with --minImageSizeBytes=${defaultTestMinImageSizeBytes}
   ]
   const activities = await all(
     binNftTtr(command, {
+      env: {
+        NFT_STORAGE_API_KEY: '',
+      },
       log,
       store: createStubStoreFunction(),
       fetchImage: createStubbedImageFetcher(minImageSizeBytes),

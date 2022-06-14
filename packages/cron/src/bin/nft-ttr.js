@@ -166,17 +166,21 @@ function defaultMeasureOptions() {
 /**
  * @param {string[]} argv
  * @param {object} [options]
+ * @param {Record<string,string|undefined>} options.env
  * @param {import('../lib/log.js').LogFunction<import('../lib/log.js').DefaultLogLevel>} options.log
  * @param {import('../jobs/measureNftTimeToRetrievability.js').StoreFunction} [options.store]
  * @param {import('../jobs/measureNftTimeToRetrievability.js').ImageFetcher} [options.fetchImage]
  */
-export async function* cli(argv, options = { log: defaultLog }) {
+export async function* cli(
+  argv,
+  options = { log: defaultLog, env: process.env }
+) {
   if (argv.length < 3) {
     throw new Error(
       'nft-ttr argv must be at least length 3: [node, script, ...nftTtrArgv]'
     )
   }
-  const secrets = createMeasureSecretsFromEnv(process.env)
+  const secrets = createMeasureSecretsFromEnv(options.env)
   const argParser = sade('nft-ttr')
   /** @type {undefined|ReturnType<typeof measureNftTimeToRetrievability>} */
   let measure
@@ -217,7 +221,6 @@ export async function* cli(argv, options = { log: defaultLog }) {
     })
   sadeParseWithoutExit(argParser, argv)
   if (measure) {
-    console.log('yielding from measure', measure)
     yield* measure
   }
 }
@@ -259,9 +262,18 @@ function parseBasicAuth(basicAuthEnvVarString) {
   }
 }
 
+/**
+ * @param {string[]} argv
+ */
+async function main(argv) {
+  // eslint-disable-next-line no-empty,@typescript-eslint/no-unused-vars,no-unused-vars
+  for await (const _ of cli(argv)) {
+  }
+}
+
 const isProcessEntrypoint = process.argv[1] === fileURLToPath(import.meta.url)
 if (isProcessEntrypoint) {
   // invoke main script
   dotenv.config({ path: path.join(dirname, '../../../../.env') })
-  cli(process.argv)
+  await main(process.argv)
 }
