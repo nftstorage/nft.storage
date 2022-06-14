@@ -79,25 +79,7 @@
     "overrides": [
       {
         "files": [
-          "./src/lib/ipfs.js"
-        ],
-        "rules": {
-          "@typescript-eslint/no-unsafe-member-access": "off"
-        }
-      },
-      {
-        "files": [
-          "./src/lib/ipfs.js"
-        ],
-        "rules": {
-          "@typescript-eslint/no-unsafe-argument": "off",
-          "@typescript-eslint/no-unsafe-assignment": "off"
-        }
-      },
-      {
-        "files": [
-          "./src/jobs/pinata.js",
-          "./src/lib/ipfs.js"
+          "./src/jobs/pinata.js"
         ],
         "rules": {
           "@typescript-eslint/restrict-template-expressions": "off"
