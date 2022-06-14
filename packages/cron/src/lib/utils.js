@@ -124,6 +124,7 @@ export function getPgConnString(env, mode = 'rw') {
 export const MAX_CONCURRENT_QUERIES = 10
 
 /**
+ * Object.hasOwnProperty as typescript type guard
  * @template {unknown} X
  * @template {PropertyKey} Y
  * @param {X} obj
