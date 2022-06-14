@@ -1,4 +1,4 @@
-FROM supabase/postgres:12.5.0
+FROM  supabase/postgres:13.3.0
 
 COPY 00-initial-schema.sql /docker-entrypoint-initdb.d/00-initial-schema.sql
 

@@ -1,5 +1,5 @@
 services:
-  post-rest:
+  postgrest:
     image: postgrest/postgrest:v9.0.0
     depends_on:
       - db-init
@@ -47,7 +47,7 @@ services:
       - VERSION
 
     depends_on:
-      - post-rest
+      - postgrest
       - ipfs-cluster
   db:
     restart: on-failure

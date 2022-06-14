@@ -1,5 +1,5 @@
 services:
-  post-rest:
+  postgrest:
     ports:
       - '3000:3000'
   db:

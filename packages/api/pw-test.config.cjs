@@ -54,7 +54,10 @@ const nodeBuiltinsPlugin = {
   setup(build) {
     build.onResolve({ filter: /^stream$/ }, () => {
       return { path: require.resolve('readable-stream') }
-    })
+    }),
+      build.onResolve({ filter: /^cross-fetch$/ }, () => {
+        return { path: path.resolve(__dirname, 'scripts/fetch.js') }
+      })
   },
 }
 
