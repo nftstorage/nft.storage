@@ -1,4 +1,6 @@
 import debug from 'debug'
+import assert from 'node:assert'
+import { hasOwnProperty } from '../lib/utils'
 
 const COUNT_CONTENT_WITHOUT_SIZE = `
 SELECT COUNT(*)
@@ -47,7 +49,12 @@ export async function updateDagSizes({ pg, after }) {
   const countRes = await pg.query(COUNT_CONTENT_WITHOUT_SIZE, [
     after.toISOString(),
   ])
-  const total = countRes.rows[0].count
+  assert.ok(countRes.rows[0])
+  const countResFirstRow = /** @type {unknown} */ (countRes.rows[0])
+  assert.ok(typeof countResFirstRow === 'object')
+  assert.ok(hasOwnProperty(countResFirstRow, 'count'))
+  assert.ok(typeof countResFirstRow.count === 'number')
+  const total = countResFirstRow.count
   log(`ℹ️ ${total} records without dag_size`)
 
   let offset = 0
@@ -60,12 +67,21 @@ export async function updateDagSizes({ pg, after }) {
     ])
     if (!contents.length) break
 
-    const cids = contents.map((c) => c.cid)
+    const cids = /** @type {unknown[]} */ (contents).map((c) => {
+      assert.ok(typeof c === 'object')
+      assert.ok(hasOwnProperty(c, 'cid'))
+      assert.ok(typeof c.cid === 'string')
+      return c.cid
+    })
     const { rows: sizes } = await pg.query(FIND_DAG_SIZES, [cids])
 
-    for (const { cid_v1, size_actual } of sizes) {
-      log(`💪 ${cid_v1} ${size_actual} bytes`)
-      await pg.query(UPDATE_CONTENT_DAG_SIZE, [size_actual, cid_v1])
+    for (const s of /** @type {unknown[]} */ (sizes)) {
+      assert.ok(s)
+      assert.ok(hasOwnProperty(s, 'cid_v1'))
+      assert.ok(hasOwnProperty(s, 'size_actual'))
+      assert.ok(typeof s.cid_v1 === 'string')
+      log(`💪 ${s.cid_v1} ${String(s.size_actual)} bytes`)
+      await pg.query(UPDATE_CONTENT_DAG_SIZE, [s.size_actual, s.cid_v1])
     }
 
     log(`ℹ️ ${offset + contents.length} of ${total} processed in total`)

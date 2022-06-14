@@ -79,23 +79,6 @@
     "overrides": [
       {
         "files": [
-          "./src/jobs/dagcargo.js"
-        ],
-        "rules": {
-          "@typescript-eslint/no-unsafe-assignment": "off"
-        }
-      },
-      {
-        "files": [
-          "./src/jobs/dagcargo.js"
-        ],
-        "rules": {
-          "camelcase": "off"
-        }
-      },
-      {
-        "files": [
-          "./src/jobs/dagcargo.js",
           "./src/jobs/metrics.js",
           "./src/jobs/pins.js",
           "./src/lib/ipfs.js"
@@ -115,7 +98,6 @@
       },
       {
         "files": [
-          "./src/jobs/dagcargo.js",
           "./src/jobs/pinata.js",
           "./src/jobs/pins.js",
           "./src/lib/ipfs.js"
@@ -126,7 +108,6 @@
       },
       {
         "files": [
-          "./src/jobs/dagcargo.js",
           "./src/jobs/pins.js",
           "./src/lib/pinata.js"
         ],
@@ -151,7 +132,6 @@
           "./src/bin/metrics.js",
           "./src/bin/pinata.js",
           "./src/bin/pins.js",
-          "./src/jobs/dagcargo.js",
           "./src/jobs/pinata.js",
           "./src/jobs/pins.js",
           "./src/lib/pinata.js"
