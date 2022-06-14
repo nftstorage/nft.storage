@@ -32,7 +32,7 @@ export async function fetchJSON(limiter, url, init) {
             { response: res }
           )
         }
-        return text === '' ? null : JSON.parse(text)
+        return text === '' ? null : /** @type {unknown} */ (JSON.parse(text))
       } finally {
         clearTimeout(abortID)
       }

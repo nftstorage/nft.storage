@@ -116,14 +116,6 @@
       },
       {
         "files": [
-          "./src/lib/fetch.js"
-        ],
-        "rules": {
-          "@typescript-eslint/no-unsafe-assignment": "off"
-        }
-      },
-      {
-        "files": [
           "./src/jobs/dagcargo.js",
           "./src/jobs/pinata.js",
           "./src/jobs/pins.js",
@@ -137,7 +129,6 @@
         "files": [
           "./src/jobs/dagcargo.js",
           "./src/jobs/pins.js",
-          "./src/lib/fetch.js",
           "./src/lib/pinata.js"
         ],
         "rules": {
