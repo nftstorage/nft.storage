@@ -62,7 +62,7 @@ export function createStubStoreFunction() {
  */
 
 /**
- * @typedef {import('../lib/metrics.js').RetrievalDurationSecondsMetric} TimeToRetrievabilityMetric
+ * @typedef {import('../lib/metrics.js').RetrievalDurationMetric} TimeToRetrievabilityMetric
  */
 
 /**
@@ -248,6 +248,7 @@ async function retrieve(options, image) {
     type: 'retrieve',
     url: image.url,
     image: image.id,
+    /** length in bytes */
     contentLength: retrievedImage.size,
     startTime: retrieveFetchDate,
     duration: retrievalDuration,
@@ -290,7 +291,7 @@ export function createStubbedRetrievalMetricsLogger() {
 
 /**
  * @param {Registry} registry
- * @param {import('../lib/metrics.js').RetrievalDurationSecondsMetric} metric
+ * @param {import('../lib/metrics.js').RetrievalDurationMetric} metric
  * @param {string} metricsPushGatewayJobName
  * @param {URL} pushGatewayUrl
  * @param {HttpAuthorization} pushGatewayAuthorization
@@ -314,7 +315,12 @@ export function createPromClientRetrievalMetricsLogger(
   )
   /** @type {RetrievalMetricsLogger} */
   const push = async (options, retrieval) => {
-    metric.observe(retrieval.duration.toNumber() / 1000)
+    metric.observe(
+      {
+        byteLength: retrieval.contentLength.toString(),
+      },
+      retrieval.duration
+    )
     const pushAddArgs = {
       jobName: metricsPushGatewayJobName,
     }

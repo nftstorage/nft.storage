@@ -15,7 +15,7 @@ import process from 'process'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 import assert from 'assert'
 import * as promClient from 'prom-client'
-import { createRetrievalDurationSecondsMetric } from '../lib/metrics.js'
+import { createRetrievalDurationMetric } from '../lib/metrics.js'
 import sade from 'sade'
 import { hasOwnProperty } from '../lib/utils.js'
 import { File } from '@web-std/file'
@@ -133,7 +133,7 @@ function createMeasureOptionsFromSade(sadeOptions, secrets) {
     ? createStubbedRetrievalMetricsLogger()
     : createPromClientRetrievalMetricsLogger(
         promClientRegistry,
-        createRetrievalDurationSecondsMetric(promClientRegistry),
+        createRetrievalDurationMetric(promClientRegistry),
         metricsPushGatewayJobName,
         metricsPushGateway,
         secrets.metricsPushGatewayAuthorization

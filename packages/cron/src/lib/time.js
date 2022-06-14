@@ -22,6 +22,15 @@ export class Milliseconds {
   }
 
   /**
+   * Return number of seconds in a Milliseconds instance
+   * @param {Milliseconds} ms - ms to get seconds of
+   * @returns {number} number of seconds in ms
+   */
+  static toSeconds(ms) {
+    return ms.#size / 1000
+  }
+
+  /**
    * @param {number} numberMs
    */
   constructor(numberMs) {
