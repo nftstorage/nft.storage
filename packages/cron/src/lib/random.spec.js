@@ -23,7 +23,6 @@ test('RandomImage creates bytes corresponding to random image with minBytesSize'
       const { mime, stream } = await getMimeType(imageBytesAsyncReadable)
       t.is(mime.startsWith('image/'), true, 'mimetype startsWith image/')
       const imageBytes = await toBuffer(Readable.from(stream))
-      // console.log('imageBytes', { target: minBytesSize, actual: imageBytes.length });
       t.assert(
         imageBytes.length >= minBytesSize,
         'expected image byte length to be greater than minBytesSize'
