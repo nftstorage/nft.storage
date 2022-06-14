@@ -170,7 +170,7 @@ function defaultMeasureOptions() {
  * @param {import('../jobs/measureNftTimeToRetrievability.js').StoreFunction} [options.store]
  * @param {import('../jobs/measureNftTimeToRetrievability.js').ImageFetcher} [options.fetchImage]
  */
-export async function* main(argv, options = { log: defaultLog }) {
+export async function* cli(argv, options = { log: defaultLog }) {
   if (argv.length < 3) {
     throw new Error(
       'nft-ttr argv must be at least length 3: [node, script, ...nftTtrArgv]'
@@ -263,5 +263,5 @@ const isProcessEntrypoint = process.argv[1] === fileURLToPath(import.meta.url)
 if (isProcessEntrypoint) {
   // invoke main script
   dotenv.config({ path: path.join(dirname, '../../../../.env') })
-  main(process.argv)
+  cli(process.argv)
 }

@@ -1,5 +1,5 @@
 import { test } from '../lib/testing.js'
-import { main as binNftTtr } from './nft-ttr.js'
+import { cli as binNftTtr } from './nft-ttr.js'
 import { recordedLog } from '../lib/log.js'
 import {
   createStubbedImageFetcher,
