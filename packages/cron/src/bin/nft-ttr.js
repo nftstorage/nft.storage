@@ -10,7 +10,6 @@ import {
   createPromClientRetrievalMetricsLogger,
   httpImageFetcher,
 } from '../jobs/measureNftTimeToRetrievability.js'
-import { createConsoleLog, createJSONLogger } from '../lib/log.js'
 import process from 'process'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 import assert from 'assert'
@@ -38,11 +37,6 @@ export async function* createTestImages(count = 1, minImageSizeBytes = 1) {
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 global.fetch = fetch
-
-/** @type {import('../lib/log.js').LogFunction<import('../lib/log.js').DefaultLogLevel>} */
-const defaultLog = (level, ...loggables) => {
-  createJSONLogger(createConsoleLog())(level, ...loggables)
-}
 
 /**
  * @typedef {import('../jobs/measureNftTimeToRetrievability').MeasureTtrOptions} MeasureTtrOptions
@@ -153,13 +147,13 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets) {
 }
 
 /**
- * @returns {Pick<MeasureTtrOptions, 'fetchImage'|'log'>}
+ * @returns {Pick<MeasureTtrOptions, 'fetchImage'|'console'>}
  */
 function defaultMeasureOptions() {
   const fetchImage = httpImageFetcher(fetch)
   return {
     fetchImage,
-    log: defaultLog,
+    console,
   }
 }
 
@@ -167,13 +161,13 @@ function defaultMeasureOptions() {
  * @param {string[]} argv
  * @param {object} [options]
  * @param {Record<string,string|undefined>} options.env
- * @param {import('../lib/log.js').LogFunction<import('../lib/log.js').DefaultLogLevel>} options.log
+ * @param {Console} options.console
  * @param {import('../jobs/measureNftTimeToRetrievability.js').StoreFunction} [options.store]
  * @param {import('../jobs/measureNftTimeToRetrievability.js').ImageFetcher} [options.fetchImage]
  */
 export async function* cli(
   argv,
-  options = { log: defaultLog, env: process.env }
+  options = { console: console, env: process.env }
 ) {
   if (argv.length < 3) {
     throw new Error(

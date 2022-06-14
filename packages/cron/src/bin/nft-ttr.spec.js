@@ -4,12 +4,12 @@ import {
   createMeasureOptionsFromSade,
   createMeasureSecretsFromEnv,
 } from './nft-ttr.js'
-import { recordedLog } from '../lib/log.js'
 import {
   createStubbedImageFetcher,
   createStubStoreFunction,
 } from '../jobs/measureNftTimeToRetrievability.js'
 import all from 'it-all'
+import { Writable } from 'node:stream'
 
 const defaultTestMinImageSizeBytes = 10 * 1e6
 
@@ -54,7 +54,6 @@ test('createMeasureSecretsFromEnv', (t) => {
 })
 
 test(`bin/nft-ttr works with --minImageSizeBytes=${defaultTestMinImageSizeBytes} and multiple gateways`, async (t) => {
-  const { log } = recordedLog()
   const minImageSizeBytes = defaultTestMinImageSizeBytes
   const gateways = ['https://nftstorage.link', 'https://dweb.link']
   const command = [
@@ -66,10 +65,10 @@ test(`bin/nft-ttr works with --minImageSizeBytes=${defaultTestMinImageSizeBytes}
   ]
   const activities = await all(
     binNftTtr(command, {
+      console: new console.Console(new Writable(), new Writable()),
       env: {
         NFT_STORAGE_API_KEY: '',
       },
-      log,
       store: createStubStoreFunction(),
       fetchImage: createStubbedImageFetcher(minImageSizeBytes),
     })

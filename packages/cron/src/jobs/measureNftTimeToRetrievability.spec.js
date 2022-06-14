@@ -7,6 +7,7 @@ import {
 import { test } from '../lib/testing.js'
 import { createTestImages } from '../bin/nft-ttr.js'
 import all from 'it-all'
+import { Writable } from 'node:stream'
 
 test('measureNftTimeToRetrievability', async (t) => {
   /** this is meant to be a test that doesn't use the network (e.g. inject stubs) */
@@ -31,8 +32,7 @@ test('measureNftTimeToRetrievability', async (t) => {
 
   const results = await all(
     measureNftTimeToRetrievability({
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      log: () => {},
+      console: new console.Console(new Writable(), new Writable()),
       images: createTestImages(1),
       gateways: [new URL('https://nftstorage.link')],
       store: (n) => storer.store(n),
@@ -40,7 +40,7 @@ test('measureNftTimeToRetrievability', async (t) => {
       pushRetrieveMetrics: (...args) => metricsPusher.push(...args),
       secrets: {
         nftStorageToken: 'TODO',
-        metricsPushGatewayAuthorization: { authorization: 'bearer todo' },
+        metricsPushGatewayAuthorization: 'bearer todo',
       },
       fetchImage: createStubbedImageFetcher(),
     })

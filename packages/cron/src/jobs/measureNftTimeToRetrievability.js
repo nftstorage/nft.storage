@@ -9,14 +9,6 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
 )
 
 /**
- * @typedef {import('../lib/log.js').DefaultLogLevel} MeasureNftTtrLogLevel
- */
-
-/**
- * @typedef {import('../lib/log.js').LogFunction<MeasureNftTtrLogLevel>} MeasureNftTtrLogFunction
- */
-
-/**
  * @typedef RetrieveLog
  * @property {string}       image
  * @property {"retrieve"}   type
@@ -79,7 +71,7 @@ export function createStubStoreFunction() {
  * @property {boolean} [logConfigAndExit] - if true, log config and exit
  * @property {URL} [metricsPushGateway] - Server to send metrics to. should reference a https://github.com/prometheus/pushgateway
  * @property {URL[]} gateways - IPFS Gateway to test retrieval from
- * @property {MeasureNftTtrLogFunction} log - logger
+ * @property {Console} console - logger
  * @property {MeasureTtrSecrets} secrets
  * @property {string} metricsPushGatewayJobName
  */
@@ -135,15 +127,15 @@ export async function* measureNftTimeToRetrievability(options) {
   // separate secrets and config to avoid logging secrets
   const { secrets, config } = readMeasureTtrOptions(options)
   if (config.logConfigAndExit) {
-    config.log('info', config)
+    config.console.log(config)
     return
   }
   /** @type {Activity<"start">} */
   const start = {
     type: 'start',
   }
+  config.console.debug(start)
   yield start
-  config.log('info', start)
   for await (const image of config.images) {
     const imageId = Number(new Date()).toString()
     const nft = {
@@ -163,7 +155,7 @@ export async function* measureNftTimeToRetrievability(options) {
       image: imageId,
       startTime: new Date(),
     }
-    config.log('info', storeBeforeLog)
+    config.console.debug(storeBeforeLog)
     const metadata = await store(nft)
     const storeEndAt = now()
     /** @type {StoreLog} */
@@ -174,7 +166,7 @@ export async function* measureNftTimeToRetrievability(options) {
       duration: Milliseconds.subtract(storeEndAt, storeStartedAt),
     }
     yield storeLog
-    config.log('info', storeLog)
+    config.console.debug(storeLog)
     for (const gateway of config.gateways) {
       /** @type {RetrieveLog} */
       let retrieval
@@ -225,11 +217,12 @@ export const httpImageFetcher = (fetch) => async (url) => {
  * @typedef {object }RetrieveImageOptions
  * @property {ImageFetcher} fetchImage
  * @property {RetrievalMetricsLogger} pushRetrieveMetrics
+ * @property {Console} console
  */
 
 /**
  * retrieve from gateway and log
- * @param {RetrieveImageOptions & HasLog} options
+ * @param {RetrieveImageOptions} options
  * @param {object} image
  * @param {string} image.id
  * @param {URL}   image.url
@@ -265,13 +258,10 @@ function createGatewayRetrievalUrl(gatewayUrl, ipnftCid) {
 }
 
 /**
- * @typedef HasLog
- * @property {MeasureNftTtrLogFunction} log - logger
- */
-
-/**
  * @typedef {(
- *    options: HasLog,
+ *    options: {
+ *      console: Console
+ *    },
  *    retrieval: RetrieveLog,
  * ) => Promise<void>} RetrievalMetricsLogger
  */
@@ -282,7 +272,7 @@ function createGatewayRetrievalUrl(gatewayUrl, ipnftCid) {
 export function createStubbedRetrievalMetricsLogger() {
   /** @type {RetrievalMetricsLogger} */
   const push = async (options, retrieval) => {
-    options.log('debug', { type: 'stubbedRetrievalMetricsLogger', retrieval })
+    options.console.debug({ type: 'stubbedRetrievalMetricsLogger', retrieval })
     return Promise.resolve()
   }
   return push
@@ -321,7 +311,7 @@ export function createPromClientRetrievalMetricsLogger(
       jobName: metricsPushGatewayJobName,
     }
     await pushgateway.pushAdd(pushAddArgs)
-    options.log('debug', { type: 'pushgateway.pushAdd', args: pushAddArgs })
+    options.console.debug({ type: 'pushgateway.pushAdd', args: pushAddArgs })
   }
   return push
 }
