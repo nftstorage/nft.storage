@@ -87,8 +87,7 @@ function createMeasureOptionsFromSade(sadeOptions, secrets) {
     try {
       return new URL(g)
     } catch (error) {
-      console.warn(`Unable to parse gateway to URL`, g)
-      throw error
+      throw new Error(`Unable to parse gateway to URL: ${g}`, { cause: error })
     }
   })
 
