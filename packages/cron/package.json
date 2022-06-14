@@ -79,7 +79,6 @@
     "overrides": [
       {
         "files": [
-          "./src/jobs/metrics.js",
           "./src/jobs/pins.js",
           "./src/lib/ipfs.js"
         ],
