@@ -1,7 +1,6 @@
 import { NFTStorage } from 'nft.storage'
 import { Milliseconds, now } from '../lib/time.js'
-// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-import { Registry, Pushgateway } from 'prom-client'
+import { Pushgateway } from 'prom-client'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 
 export const EXAMPLE_NFT_IMG_URL = new URL(
@@ -279,7 +278,7 @@ export function createStubbedRetrievalMetricsLogger() {
 }
 
 /**
- * @param {Registry} registry
+ * @param {import('prom-client').Registry} registry
  * @param {import('../lib/metrics.js').RetrievalDurationMetric} metric
  * @param {string} metricsPushGatewayJobName
  * @param {URL} pushGatewayUrl
