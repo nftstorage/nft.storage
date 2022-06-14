@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 import { Histogram, Registry } from 'prom-client'
-import { Milliseconds } from './time'
+import { Milliseconds } from './time.js'
 
 /**
  * @typedef {"byteLength"} RetrievalDurationMetricLabels

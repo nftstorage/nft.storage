@@ -51,14 +51,13 @@ export function createStubStoreFunction() {
 }
 
 /**
- * @typedef HttpAuthorization
- * @property {string} authorization
+ * @typedef {string} HttpAuthorizationHeaderValue
  */
 
 /**
  * @typedef {object} MeasureTtrSecrets
  * @property {string} nftStorageToken - API Token for nft.storage
- * @property {HttpAuthorization} metricsPushGatewayAuthorization - authorization header value for metricsPushGateway
+ * @property {HttpAuthorizationHeaderValue} metricsPushGatewayAuthorization - authorization header value for metricsPushGateway
  */
 
 /**
@@ -294,7 +293,7 @@ export function createStubbedRetrievalMetricsLogger() {
  * @param {import('../lib/metrics.js').RetrievalDurationMetric} metric
  * @param {string} metricsPushGatewayJobName
  * @param {URL} pushGatewayUrl
- * @param {HttpAuthorization} pushGatewayAuthorization
+ * @param {HttpAuthorizationHeaderValue} pushGatewayAuthorization
  * @returns {RetrievalMetricsLogger}
  */
 export function createPromClientRetrievalMetricsLogger(
@@ -308,19 +307,16 @@ export function createPromClientRetrievalMetricsLogger(
     pushGatewayUrl.toString(),
     {
       headers: {
-        authorization: pushGatewayAuthorization.authorization,
+        authorization: pushGatewayAuthorization,
       },
     },
     registry
   )
   /** @type {RetrievalMetricsLogger} */
   const push = async (options, retrieval) => {
-    metric.observe(
-      {
-        byteLength: retrieval.contentLength.toString(),
-      },
-      retrieval.duration
-    )
+    metric.observe(retrieval.duration, {
+      byteLength: retrieval.contentLength,
+    })
     const pushAddArgs = {
       jobName: metricsPushGatewayJobName,
     }

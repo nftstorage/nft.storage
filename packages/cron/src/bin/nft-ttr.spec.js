@@ -1,5 +1,5 @@
 import { test } from '../lib/testing.js'
-import { cli as binNftTtr } from './nft-ttr.js'
+import { cli as binNftTtr, createMeasureOptionsFromSade } from './nft-ttr.js'
 import { recordedLog } from '../lib/log.js'
 import {
   createStubbedImageFetcher,
@@ -8,6 +8,26 @@ import {
 import all from 'it-all'
 
 const defaultTestMinImageSizeBytes = 10 * 1e6
+
+test('createMeasureOptionsFromSade', (t) => {
+  const sampleSade = {
+    _: [],
+    minImageSizeBytes: 1,
+    metricsPushGateway:
+      'https://pushgateway.k8s.locotorp.info/metrics/job/nftstorage_ci/instance/github_action',
+    url: 'https://nft.storage',
+    metricsPushGatewayJobName: 'nft-ttr',
+    gateways: 'https://nftstorage.link/',
+  }
+  const options = createMeasureOptionsFromSade(sampleSade, {
+    metricsPushGatewayAuthorization: '',
+  })
+  t.assert(options)
+  t.is(options.gateways.length, 1)
+  t.is(options.gateways[0].toString(), sampleSade.gateways)
+  t.is(options.metricsPushGateway?.toString(), sampleSade.metricsPushGateway)
+  t.is(options.metricsPushGatewayJobName, sampleSade.metricsPushGatewayJobName)
+})
 
 test(`bin/nft-ttr works with --minImageSizeBytes=${defaultTestMinImageSizeBytes} and multiple gateways`, async (t) => {
   const { log } = recordedLog()

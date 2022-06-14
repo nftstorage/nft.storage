@@ -59,7 +59,7 @@ function createMeasureSecretsFromEnv(env) {
   )
   const metricsPushGatewayAuthorization = env.PUSHGATEWAY_BASIC_AUTH
     ? parseBasicAuth(env.PUSHGATEWAY_BASIC_AUTH)
-    : { authorization: 'bearer no-auth' }
+    : 'bearer no-auth'
   const nftStorageToken = env.NFT_STORAGE_API_KEY
   return {
     metricsPushGatewayAuthorization,
@@ -69,10 +69,10 @@ function createMeasureSecretsFromEnv(env) {
 
 /**
  * @param {unknown} sadeOptions
- * @param {MeasureTtrOptions['secrets']} secrets
+ * @param {Pick<MeasureTtrOptions['secrets'], 'metricsPushGatewayAuthorization'>} secrets
  * @returns {Omit<MeasureTtrOptions, "secrets">}
  */
-function createMeasureOptionsFromSade(sadeOptions, secrets) {
+export function createMeasureOptionsFromSade(sadeOptions, secrets) {
   // build gateways
   assert.ok(
     hasOwnProperty(sadeOptions, 'gateways'),
@@ -251,15 +251,13 @@ function sadeParseWithoutExit(prog, argv) {
 /**
  * Parse PUSHGATEWAY_BASIC_AUTH auth value
  * @param {string} basicAuthEnvVarString
- * @returns {import('../jobs/measureNftTimeToRetrievability.js').HttpAuthorization}
+ * @returns {import('../jobs/measureNftTimeToRetrievability.js').HttpAuthorizationHeaderValue}
  */
 function parseBasicAuth(basicAuthEnvVarString) {
   assert.ok(basicAuthEnvVarString)
   const [username, ...passwordParts] = basicAuthEnvVarString.split(':')
   const password = passwordParts.join(':')
-  return {
-    authorization: basicAuthorizationHeaderValue({ username, password }),
-  }
+  return basicAuthorizationHeaderValue({ username, password })
 }
 
 /**
