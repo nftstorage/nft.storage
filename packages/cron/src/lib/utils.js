@@ -101,7 +101,7 @@ export function getPgPool(env, mode = 'rw') {
  * @param {Record<string, string|undefined>} env
  * @param {'ro'|'rw'} [mode]
  */
-function getPgConnString(env, mode = 'rw') {
+export function getPgConnString(env, mode = 'rw') {
   let connectionString
   if (env.ENV === 'production') {
     connectionString =
