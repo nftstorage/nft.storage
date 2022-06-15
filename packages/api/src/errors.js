@@ -197,6 +197,17 @@ export class ErrorPinningUnauthorized extends HTTPError {
 }
 ErrorPinningUnauthorized.CODE = 'ERROR_PINNING_UNAUTHORIZED'
 
+export class ErrorPinningQuotaExceeded extends HTTPError {
+  constructor(
+    msg = 'Pinning quota exceeded for this user, please wait for in flight pinning requests to end or delete failed ones.'
+  ) {
+    super(msg, 429)
+    this.name = 'PinningQuotaExceeded'
+    this.code = ErrorPinningQuotaExceeded.CODE
+  }
+}
+ErrorPinningQuotaExceeded.CODE = 'ERROR_PINNING_QUOTA_EXCEEDED'
+
 export class ErrorDeleteRestricted extends HTTPError {
   constructor(msg = 'Delete operations restricted.') {
     super(msg, 403)

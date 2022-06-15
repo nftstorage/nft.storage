@@ -17,7 +17,7 @@ describe('Pin add ', () => {
   /** @type{DBTestClient} */
   let client
 
-  before(async () => {
+  beforeEach(async () => {
     client = await createClientWithUser()
   })
 
@@ -228,5 +228,32 @@ describe('Pin add ', () => {
     const { pin } = await res.json()
     assert.strictEqual(pin.meta.invalid, undefined)
     assert.strictEqual(pin.meta.valid, 'string')
+  })
+
+  it('should restrict requests to quota', async () => {
+    const cids = [
+      'bafkreidyeivj7adnnac6ljvzj2e3rd5xdw3revw4da7mx2ckrstapoupoq',
+      'bafybeih74zqc6kamjpruyra4e4pblnwdpickrvk4hvturisbtveghflovq',
+    ]
+
+    await Promise.all(
+      cids.map(async (cid) => {
+        const res = await fetch('pins', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${client.token}` },
+          body: JSON.stringify({ cid }),
+        })
+        assert.strictEqual(res.status, 200)
+      })
+    )
+
+    const extraQuotaCid =
+      'bafkreihbjbbccwxn7hzv5hun5pxuswide7q3lhjvfbvmd7r3kf2sodybgi'
+    const res = await fetch('pins', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: JSON.stringify({ cid: extraQuotaCid }),
+    })
+    assert.strictEqual(res.status, 429)
   })
 })

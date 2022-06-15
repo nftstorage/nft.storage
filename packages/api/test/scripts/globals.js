@@ -24,3 +24,5 @@ globalThis.S3_REGION = 'test'
 globalThis.S3_ACCESS_KEY_ID = 'test'
 globalThis.S3_SECRET_ACCESS_KEY = 'test'
 globalThis.S3_BUCKET_NAME = 'test'
+
+globalThis.PSA_QUOTA = '2'

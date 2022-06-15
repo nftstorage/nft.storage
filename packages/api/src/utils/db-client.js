@@ -15,6 +15,7 @@ export const PIN_SERVICES = [
 ]
 /** @type {Array<definitions['pin']['status']>} */
 export const PIN_STATUSES = ['PinQueued', 'Pinning', 'Pinned', 'PinError']
+export const PIN_IN_FLIGHT_STATUSES = ['PinQueued', 'Pinning', 'PinError']
 
 export class DBClient {
   /**
@@ -634,6 +635,27 @@ export class DBClient {
     stats.deals_size_total_prev = dagSizeHistRes.data.value
 
     return stats
+  }
+
+  /**
+   * @param {number} userId
+   */
+  async getPendingPsaRequestsCount(userId) {
+    const { error, count } = await this.client
+      .from('upload')
+      .select(this.uploadQuery, { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .is('deleted_at', null)
+      .in('content.pin.status', PIN_IN_FLIGHT_STATUSES)
+      .in('type', ['Remote'])
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    console.log('count: ' + count)
+
+    return count || 0
   }
 }
 

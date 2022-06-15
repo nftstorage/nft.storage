@@ -18,6 +18,8 @@ const CLUSTER_SERVICE_URLS = {
   IpfsCluster3: 'https://nft3.storage.ipfscluster.io/api/',
 }
 
+const DEFAULT_PSA_QUOTA = 100
+
 /** @type ServiceConfiguration|undefined */
 let _globalConfig
 
@@ -99,6 +101,7 @@ export function serviceConfigFromVariables(vars) {
     S3_ACCESS_KEY_ID: vars.S3_ACCESS_KEY_ID,
     S3_SECRET_ACCESS_KEY: vars.S3_SECRET_ACCESS_KEY,
     S3_BUCKET_NAME: vars.S3_BUCKET_NAME,
+    PSA_QUOTA: vars.PSA_QUOTA ? Number(vars.PSA_QUOTA) : DEFAULT_PSA_QUOTA,
     PRIVATE_KEY: vars.PRIVATE_KEY,
     // These are injected in esbuild
     // @ts-ignore
@@ -144,6 +147,7 @@ export function loadConfigVariables() {
     'S3_ACCESS_KEY_ID',
     'S3_SECRET_ACCESS_KEY',
     'S3_BUCKET_NAME',
+    'PSA_QUOTA',
   ]
 
   for (const name of required) {
