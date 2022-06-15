@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.53.0](https://github.com/nftstorage/nft.storage/compare/website-v1.52.0...website-v1.53.0) (2022-06-15)
+
+
+### Features
+
+* update ToS with abuse email ([#1982](https://github.com/nftstorage/nft.storage/issues/1982)) ([f68debf](https://github.com/nftstorage/nft.storage/commit/f68debfc81755df478aa2d5bc111683b613bd4c8))
+
 ## [1.52.0](https://github.com/nftstorage/nft.storage/compare/website-v1.51.0...website-v1.52.0) (2022-06-09)
 
 
