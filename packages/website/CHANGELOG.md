@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.53.1](https://github.com/nftstorage/nft.storage/compare/website-v1.53.0...website-v1.53.1) (2022-06-15)
+
+
+### Bug Fixes
+
+* update paths to start from root ([#1970](https://github.com/nftstorage/nft.storage/issues/1970)) ([b9523d1](https://github.com/nftstorage/nft.storage/commit/b9523d14127a7e3f3888f6ff4190e5a2190957a5))
+
 ## [1.53.0](https://github.com/nftstorage/nft.storage/compare/website-v1.52.0...website-v1.53.0) (2022-06-15)
 
 
