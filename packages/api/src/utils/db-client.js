@@ -635,20 +635,6 @@ export class DBClient {
 
     return stats
   }
-
-  /**
-   * Copies upload history and (optionally) user tags and API keys from one
-   * user account to another. Does not modify the original user account or
-   * upload entries.
-   *
-   * @param {import('./db-client-types').CopyUserDataInput} input
-   */
-  async copyUserData(input) {
-    const rsp = await this.client.rpc('copy_user_data', input)
-    if (rsp.error) {
-      throw new DBError(rsp.error)
-    }
-  }
 }
 
 export class DBError extends Error {

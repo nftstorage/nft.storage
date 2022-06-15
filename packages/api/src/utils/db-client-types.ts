@@ -101,10 +101,3 @@ export type StatsPayload = {
   uploads_past_7_total: number
   uploads_remote_total: number
 }
-
-export type CopyUserDataInput = {
-  old_user_id: number
-  new_user_id: number
-  copy_tags: boolean
-  copy_auth_keys: boolean
-}
