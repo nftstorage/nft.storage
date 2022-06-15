@@ -8,7 +8,7 @@ import Router, { useRouter } from 'next/router'
 import countly from '../lib/countly'
 import { getUserTags } from '../lib/api'
 import { useCallback, useEffect, useState } from 'react'
-import { isLoggedIn } from 'lib/magic'
+import { getMagicUserMetadata } from 'lib/magic'
 import * as Sentry from '@sentry/nextjs'
 import { UserContext } from 'lib/user'
 import BlockedUploadsModal from 'components/blockedUploadsModal.js'
@@ -30,7 +30,7 @@ export default function App({ Component, pageProps }) {
     useState(false)
 
   const handleIsLoggedIn = useCallback(async () => {
-    const data = await isLoggedIn()
+    const data = await getMagicUserMetadata()
     if (!data) return
     if (data) {
       // @ts-ignore

@@ -78,6 +78,7 @@ export default function ManageKeys({ user }) {
     setCopied(key)
   }
 
+  /** @type [string, string, number][] */
   const keys = []
 
   for (const key of data || []) {

@@ -144,11 +144,11 @@ export type NFT = {
    */
   pin?: { name?: string; meta?: Record<string, string> }
   /**
-   * Name of the JWT token used to create this NFT.
+   * Optional name of the file(s) uploaded as NFT.
    */
   name?: string
   /**
-   * Optional name of the file(s) uploaded as NFT.
+   * Name of the JWT token used to create this NFT.
    */
   scope: string
   /**
