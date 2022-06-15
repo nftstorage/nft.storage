@@ -118,10 +118,20 @@ export default function TermsOfService() {
           optimizing the Gateway user experience.
         </p>
         <p className="leading-normal">
-          If you encounter content that you believe needs to be blocked on the 
-          Gateway (e.g., phishing content), please reach out to abuse@ipfs.io 
-          with the offending CIDs, and the corresponding content will be added 
-          to the Gateway denylist promptly.
+          If you encounter content that violates the{' '}
+          <a className="black" href="https://discuss.ipfs.io/tos">
+            Terms of Service of IPFS.io
+          </a> 
+          (e.g., spam/phishing content or DMCA violations), please reach out to 
+          abuse@ipfs.io, making sure to include the relevant URL. If we determine 
+          that the content violates our Terms of Service we will remove or disable 
+          access to that content. If your complaint is copyright-related, please 
+          make sure your DMCA Notice contains the required information listed in 
+          our{' '}
+          <a className="black" href="https://ipfs.io/legal/">
+            DMCA Policy
+          </a>
+          .
         </p>
       </div>
     </main>
