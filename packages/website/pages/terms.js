@@ -117,6 +117,12 @@ export default function TermsOfService() {
           analytics collected in the course of providing the Gateway for
           optimizing the Gateway user experience.
         </p>
+        <p className="leading-normal">
+          If you encounter content that you believe needs to be blocked on the 
+          Gateway (e.g., phishing content), please reach out to abuse@ipfs.io 
+          with the offending CIDs, and the corresponding content will be added 
+          to the Gateway denylist promptly.
+        </p>
       </div>
     </main>
   )
