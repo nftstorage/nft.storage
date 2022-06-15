@@ -33,7 +33,7 @@ export async function pinToPinata({ db, pinata }) {
     throw Object.assign(new Error(), countError)
   }
 
-  log(`🎯 Updating ${count} pin statuses`)
+  log(`🎯 Updating ${count ?? 0} pin statuses`)
 
   let offset = 0
   const limit = 1000
@@ -91,7 +91,7 @@ export async function pinToPinata({ db, pinata }) {
     }
 
     log(`🗂 ${pins.length} processed, ${updatedPins.length} updated`)
-    log(`ℹ️ ${offset + pins.length} of ${count} processed in total`)
+    log(`ℹ️ ${offset + pins.length} of ${count ?? 0} processed in total`)
 
     offset += limit
   }

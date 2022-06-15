@@ -79,22 +79,6 @@
     "overrides": [
       {
         "files": [
-          "./src/jobs/pinata.js"
-        ],
-        "rules": {
-          "@typescript-eslint/restrict-template-expressions": "off"
-        }
-      },
-      {
-        "files": [
-          "./src/lib/pinata.js"
-        ],
-        "rules": {
-          "@typescript-eslint/no-unsafe-return": "off"
-        }
-      },
-      {
-        "files": [
           "./src/bin/dagcargo-sizes.js",
           "./src/bin/metrics.js",
           "./src/bin/pinata.js",
@@ -109,9 +93,7 @@
           "./src/bin/dagcargo-sizes.js",
           "./src/bin/metrics.js",
           "./src/bin/pinata.js",
-          "./src/bin/pins.js",
-          "./src/jobs/pinata.js",
-          "./src/lib/pinata.js"
+          "./src/bin/pins.js"
         ],
         "rules": {
           "@typescript-eslint/naming-convention": "off"
