@@ -75,31 +75,7 @@
       "browser": true,
       "node": true
     },
-    "rules": {},
-    "overrides": [
-      {
-        "files": [
-          "./src/bin/dagcargo-sizes.js",
-          "./src/bin/metrics.js",
-          "./src/bin/pinata.js",
-          "./src/bin/pins.js"
-        ],
-        "rules": {
-          "@typescript-eslint/no-floating-promises": "off"
-        }
-      },
-      {
-        "files": [
-          "./src/bin/dagcargo-sizes.js",
-          "./src/bin/metrics.js",
-          "./src/bin/pinata.js",
-          "./src/bin/pins.js"
-        ],
-        "rules": {
-          "@typescript-eslint/naming-convention": "off"
-        }
-      }
-    ]
+    "rules": {}
   },
   "eslintIgnore": [
     "node_modules"
