@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.53.2](https://github.com/nftstorage/nft.storage/compare/website-v1.53.1...website-v1.53.2) (2022-06-15)
+
+
+### Bug Fixes
+
+* add underline style to tooltip hyperlinks ([#1980](https://github.com/nftstorage/nft.storage/issues/1980)) ([0c0fb7a](https://github.com/nftstorage/nft.storage/commit/0c0fb7aeb361380c063ba1f76e3548682fbeb9e8))
+
 ## [1.53.1](https://github.com/nftstorage/nft.storage/compare/website-v1.53.0...website-v1.53.1) (2022-06-15)
 
 
