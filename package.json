@@ -1,8 +1,10 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "scripts": {
     "dev:api": "yarn --cwd packages/api dev",
     "dev:api:persist": "yarn --cwd packages/api dev:persist",

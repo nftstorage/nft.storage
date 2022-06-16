@@ -99,6 +99,7 @@ export function serviceConfigFromVariables(vars) {
     S3_ACCESS_KEY_ID: vars.S3_ACCESS_KEY_ID,
     S3_SECRET_ACCESS_KEY: vars.S3_SECRET_ACCESS_KEY,
     S3_BUCKET_NAME: vars.S3_BUCKET_NAME,
+    SLACK_USER_REQUEST_WEBHOOK_URL: vars.SLACK_USER_REQUEST_WEBHOOK_URL,
     PRIVATE_KEY: vars.PRIVATE_KEY,
     // These are injected in esbuild
     // @ts-ignore
@@ -157,7 +158,12 @@ export function loadConfigVariables() {
     }
   }
 
-  const optional = ['CLUSTER_SERVICE', 'CLUSTER_API_URL', 'S3_ENDPOINT']
+  const optional = [
+    'CLUSTER_SERVICE',
+    'CLUSTER_API_URL',
+    'S3_ENDPOINT',
+    'SLACK_USER_REQUEST_WEBHOOK_URL',
+  ]
 
   for (const name of optional) {
     const val = globals[name]

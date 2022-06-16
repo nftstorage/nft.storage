@@ -37,6 +37,9 @@ globalThis.S3_REGION = '${process.env.S3_REGION || ''}'
 globalThis.S3_ACCESS_KEY_ID = '${process.env.S3_ACCESS_KEY_ID || ''}'
 globalThis.S3_SECRET_ACCESS_KEY = '${process.env.S3_SECRET_ACCESS_KEY || ''}'
 globalThis.S3_BUCKET_NAME = '${process.env.S3_BUCKET_NAME || ''}'
+globalThis.SLACK_USER_REQUEST_WEBHOOK_URL = ${
+  process.env.SLACK_USER_REQUEST_WEBHOOK_URL || ''
+}
 `
 
 temp.track()

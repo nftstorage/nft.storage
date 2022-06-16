@@ -6,7 +6,7 @@ import Callout from 'nextra-theme-docs/callout';
 import { Tabs, TabItem } from 'components/mdx/tabs';
 
 # Store and mint NFTs using custom metadata
-If your metadata conforms to the popular ERC-721 or ERC-1155 standards, you can [upload all your NFT assets and prepare your metadata all in one HTTP request](../mint-erc-1155/). 
+If your metadata conforms to the popular ERC-721 or ERC-1155 standards, you can [upload all your NFT assets and prepare your metadata all in one HTTP request](/docs/how-to/mint-erc-1155/).
 
 If you want to customize your metadata in a way that's not compatible with ERC-1155, or if you know you'll be using the same off-chain assets in many NFTs, you can store your files separately and get their IPFS URIs. You can then use these IPFS URIs and put them into a JSON file however you'd like to create your metadata. This metadata can then be stored, resulting in an IPFS URI that you can store in your token's on-chain record.
 
@@ -191,14 +191,14 @@ While it's true that a binary CID uses a bit less memory than the equivalent str
 We recommend using URIs of the form `ipfs://<cid>/<path>` when linking from on-chain records to IPFS data. This gives you flexible addresses that can include human-friendly filenames in the path, and using strings instead of binary links makes debugging a lot simpler.
 
 
-[guide-car-files]: ../../concepts/car-files/
+[guide-car-files]: /docs/concepts/car-files/
 
 [reference-http-api]: https://nft.storage/api-docs/
 [reference-js-client]: https://nftstorage.github.io/nft.storage/client
 [reference-js-storeblob]: https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#storeBlob
 [reference-js-storedirectory]: https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#storeDirectory
 [reference-js-storecar]: https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#storeCar
-[howto-retrieve]: ../retrieve/
+[howto-retrieve]: /docs/how-to/retrieve/
 
 [nft-school-flow]: https://nftschool.dev/tutorial/flow-nft-marketplace/
 

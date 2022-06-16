@@ -8,6 +8,7 @@ import Tooltip from '../components/tooltip.js'
 import countly from '../lib/countly.js'
 import { VscMail } from 'react-icons/vsc'
 import { Popover, ArrowContainer } from 'react-tiny-popover'
+import Link from 'next/link'
 
 /**
  *
@@ -109,33 +110,37 @@ export default function ManageKeys({ user }) {
             <div className="flex flex-wrap items-center mb-4">
               <h1 className="flex-auto chicagoflf my-8">API Keys</h1>
               <div className="flex flex-wrap items-center mt-2">
-                {!user?.tags.HasAccountRestriction && !user?.tags.HasPsaAccess && (
-                  <Tooltip
-                    placement="bottom"
-                    overlay={
-                      <span>
-                        The Pinning Service API is for users who want to take
-                        data that is not yet stored with NFT.Storage but already
-                        available on the IPFS network and store additional
-                        copies via NFT.Storage. You do not need to request
-                        Pinning Service API access if you are just looking to
-                        upload your data to NFT.Storage. Check out the docs for
-                        more details.
-                      </span>
-                    }
-                    overlayClassName="ns-tooltip"
-                    id="request-api-pinning-info"
-                  >
-                    <a
-                      href="mailto:support@nft.storage?cc=&bcc=&subject=Request%3A%20Pinning%20Service%20API%20Allowlist%20Access&body=Why%20you%20are%20looking%20for%20pinning%20service%20API%20access%20(e.g.%20you're%20an%20artist%20looking%20for%20extra%20redundancy)%3A%0A%0A%3CANSWER%20HERE%3E%0A%0APlease%20provide%20a%20sample%20of%205-10%20CIDs%20of%20NFTs%20%2F%20metadata%20you%20are%20looking%20to%20pin%3A%0A%0A%3CANSWER%20HERE%3E%0A%0APlease%20provide%20your%20profile%20on%20an%20NFT%20service%20(artist%20profile%2C%20collector%2C%20etc.)%3A%0A%0A%3CANSWER%20HERE%3E%0A%0AThanks%2C%0A%3CINSERT%20YOUR%20NAME%3E"
-                      className="items-center mr-4 mb-2 btn button-reset select-none black py-2 px-4 hologram chicagoflf interactive light"
-                      id="request-api-pinning"
+                {!user?.tags.HasAccountRestriction &&
+                  !user?.tags.HasPsaAccess &&
+                  !user?.pendingTagProposals?.HasPsaAccess && (
+                    <Tooltip
+                      placement="bottom"
+                      overlay={
+                        <span>
+                          The Pinning Service API is for users who want to take
+                          data that is not yet stored with NFT.Storage but
+                          already available on the IPFS network and store
+                          additional copies via NFT.Storage. You do not need to
+                          request Pinning Service API access if you are just
+                          looking to upload your data to NFT.Storage. Check out
+                          the docs for more details.
+                        </span>
+                      }
+                      overlayClassName="ns-tooltip"
+                      id="request-api-pinning-info"
                     >
-                      <VscMail size={12} className="mr-2" /> Request API Pinning
-                      Access
-                    </a>
-                  </Tooltip>
-                )}
+                      <Link href="/pinning-request">
+                        <a
+                          href="#"
+                          className="items-center mr-4 btn button-reset select-none black py-2 px-4 hologram chicagoflf interactive light"
+                          id="request-api-pinning"
+                        >
+                          <VscMail size={12} className="mr-2" /> Request API
+                          Pinning Access
+                        </a>
+                      </Link>
+                    </Tooltip>
+                  )}
 
                 {user?.tags.HasAccountRestriction ? (
                   <Tooltip

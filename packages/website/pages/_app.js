@@ -6,7 +6,7 @@ import Layout from '../components/layout.js'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import Router, { useRouter } from 'next/router'
 import countly from '../lib/countly'
-import { getUserTags } from '../lib/api'
+import { getUserTags, getUserRequests } from '../lib/api'
 import { useCallback, useEffect, useState } from 'react'
 import { isLoggedIn } from 'lib/magic'
 import * as Sentry from '@sentry/nextjs'
@@ -37,6 +37,8 @@ export default function App({ Component, pageProps }) {
       Sentry.setUser(user)
     }
     const tags = await getUserTags()
+    const pendingTagProposals = await getUserRequests()
+
     if (tags.HasAccountRestriction && !sessionStorage.hasSeenUserBlockedModal) {
       sessionStorage.hasSeenUserBlockedModal = true
       setIsUserBlockedModalShowing(true)
@@ -46,6 +48,7 @@ export default function App({ Component, pageProps }) {
       ...data,
       // @ts-ignore
       tags,
+      pendingTagProposals,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

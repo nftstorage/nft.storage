@@ -23,8 +23,8 @@ export class Pinata {
     return fetchJSON(this.limiter, url.toString(), {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${this.apiToken}`,
-        'Content-Type': 'application/json',
+        authorization: `Bearer ${this.apiToken}`,
+        'content-type': 'application/json',
       },
       body: JSON.stringify({ hashToPin: cid, ...(options || {}) }),
     })
