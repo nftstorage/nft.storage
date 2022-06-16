@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.27.0](https://github.com/nftstorage/nft.storage/compare/api-v2.26.1...api-v2.27.0) (2022-06-16)
+
+
+### Features
+
+* add support for user requests ([#1959](https://github.com/nftstorage/nft.storage/issues/1959)) ([485a304](https://github.com/nftstorage/nft.storage/commit/485a304748f1319eb72d678b65227ec054767d64))
+
 ## [2.26.1](https://github.com/nftstorage/nft.storage/compare/api-v2.26.0...api-v2.26.1) (2022-06-10)
 
 
