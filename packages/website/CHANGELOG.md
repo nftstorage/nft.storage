@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.54.0](https://github.com/nftstorage/nft.storage/compare/website-v1.53.2...website-v1.54.0) (2022-06-16)
+
+
+### Features
+
+* add support for user requests ([#1959](https://github.com/nftstorage/nft.storage/issues/1959)) ([485a304](https://github.com/nftstorage/nft.storage/commit/485a304748f1319eb72d678b65227ec054767d64))
+
 ## [1.53.2](https://github.com/nftstorage/nft.storage/compare/website-v1.53.1...website-v1.53.2) (2022-06-15)
 
 
