@@ -35,7 +35,7 @@ DATABASE_CONNECTION=postgresql://postgres:postgres@db:5432/postgres
 # Cluster
 CLUSTER_BASIC_AUTH_TOKEN = dGVzdDp0ZXN0
 CLUSTER_SERVICE =
-CLUSTER_API_URL=http://ipfs-cluster:9094
+CLUSTER_API_URL = http://ipfs-cluster:9094
 
 # Maintenance Mode
 MAINTENANCE_MODE = rw
@@ -46,9 +46,6 @@ S3_REGION = test
 S3_ACCESS_KEY_ID = test
 S3_SECRET_ACCESS_KEY = test
 S3_BUCKET_NAME = test
-
-## Flags
-MAINTENANCE_MODE=rw
 
 ## Git
 VERSION=development
