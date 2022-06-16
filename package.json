@@ -1,8 +1,10 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "scripts": {
     "dev:api": "cd packages/api && yarn dev",
     "dev:website": "cd packages/website && yarn dev",

@@ -1,0 +1,40 @@
+name: Measure NFT Time to Retrievability (nft-ttr)
+
+on:
+  schedule:
+    - cron: '30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  measure:
+    name: measure nft time to retrievability
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env: ['staging', 'production']
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - uses: bahmutov/npm-install@v1
+      - name: Run job
+        env:
+          DEBUG: '*'
+          ENV: ${{ matrix.env }}
+          NFT_STORAGE_API_KEY: ${{ secrets.NFT_STORAGE_API_KEY }}
+          PUSHGATEWAY_JOBNAME: nftstorage_ci/instance/github_action
+          PUSHGATEWAY_URL: https://pushgateway.k8s.locotorp.info/metrics/job/nftstorage_ci/instance/github_action
+          PUSHGATEWAY_BASIC_AUTH: ${{ secrets.PUSHGATEWAY_BASIC_AUTH }}
+        run: |
+          yarn workspace cron run start:nft-ttr measure --logConfigAndExit
+          yarn workspace cron run start:nft-ttr measure \
+            --minImageSizeBytes=10000000 \
+            --gateways https://nftstorage.link https://dweb.link \
+            --metricsPushGateway $PUSHGATEWAY_URL \
+            --metricsPushGatewayJobName $PUSHGATEWAY_JOBNAME \
+
+      - name: Heartbeat
+        if: ${{ success() }}
+        run: ./packages/tools/cli.js heartbeat --token ${{ secrets.OPSGENIE_KEY }} --name cron-nft-ttr

@@ -8,7 +8,6 @@ import { updatePendingPinStatuses } from '../jobs/pins.js'
 import { getPg, getCluster1, getCluster2, getCluster3 } from '../lib/utils.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-/** @ts-ignore */
 global.fetch = fetch
 
 async function main() {
