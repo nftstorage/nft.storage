@@ -32,6 +32,7 @@ export const events = {
   TOKEN_COPY: 'tokenCopy',
   TOKEN_DELETE: 'tokenDelete',
   NOT_FOUND: 'notFound',
+  PINNING_REQUEST: 'pinningRequest',
 }
 
 /** @constant */
@@ -46,6 +47,7 @@ export const ui = {
   FILES: 'files',
   NEW_FILE: 'new-file',
   NEW_TOKEN: 'new-token',
+  PINNING_REQUEST: 'pinning-request',
   TOKENS: 'tokens',
   NFT_UP: 'nft-up',
 }

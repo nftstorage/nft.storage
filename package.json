@@ -3,13 +3,6 @@
   "workspaces": {
     "packages": [
       "packages/*"
-    ],
-    "nohoist": [
-      "@cloudflare/workers-types",
-      "@types/jest",
-      "@types/mocha",
-      "@types/node",
-      "@types/webpack-env"
     ]
   },
   "scripts": {

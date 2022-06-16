@@ -11,6 +11,7 @@ globalThis.METAPLEX_AUTH_TOKEN = 'metaplex-test-token'
 globalThis.LOGTAIL_TOKEN = ''
 globalThis.PRIVATE_KEY = 'xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY='
 globalThis.SENTRY_DSN = 'https://test@test.ingest.sentry.io/0000000'
+globalThis.SLACK_USER_REQUEST_WEBHOOK_URL = 'test'
 
 globalThis.CLUSTER_API_URL = 'http://localhost:9094'
 // will be used with we can active auth in cluster base64 of test:test

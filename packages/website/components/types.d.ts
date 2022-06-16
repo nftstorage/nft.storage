@@ -21,6 +21,12 @@ export interface Tag {
   selected?: boolean
 }
 
+interface RequestFormItem {
+  label: string
+  value: string
+}
+
+export type RequestForm = Array<RequestFormItem>
 export interface Tags {
   tags: Tag[] | string[]
   className?: string
@@ -57,8 +63,13 @@ export interface UserTag {
   HasPsaAccess?: boolean
 }
 
+export interface TagProposal {
+  HasPsaAccess?: boolean
+}
+
 export interface User extends MagicUser {
   tags: UserTag
+  pendingTagProposals: TagProposal
 }
 
 export interface LayoutChildrenProps {
