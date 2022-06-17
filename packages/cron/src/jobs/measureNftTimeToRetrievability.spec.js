@@ -32,6 +32,7 @@ test('measureNftTimeToRetrievability', async (t) => {
 
   const results = await all(
     measureNftTimeToRetrievability({
+      logConfigAndExit: false,
       console: new console.Console(new Writable(), new Writable()),
       images: createTestImages(1),
       gateways: [new URL('https://nftstorage.link')],

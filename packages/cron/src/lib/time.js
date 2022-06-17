@@ -5,7 +5,7 @@ import { performance } from 'perf_hooks'
  */
 export class Milliseconds {
   /** @type {number} */
-  #size = 0
+  size = 0
   unit = {
     symbol: 'ms',
     name: 'millisecond',
@@ -27,7 +27,7 @@ export class Milliseconds {
    * @returns {number} number of seconds in ms
    */
   static toSeconds(ms) {
-    return ms.#size / 1000
+    return ms.size / 1000
   }
 
   /**
@@ -38,11 +38,7 @@ export class Milliseconds {
       symbol: 'ms',
       name: 'milliseconds',
     }
-    this.#size = numberMs
-  }
-
-  get size() {
-    return this.#size
+    this.size = numberMs
   }
 
   toNumber() {

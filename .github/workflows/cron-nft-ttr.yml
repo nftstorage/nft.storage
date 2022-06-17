@@ -28,10 +28,10 @@ jobs:
           PUSHGATEWAY_URL: https://pushgateway.k8s.locotorp.info/metrics/job/nftstorage_ci/instance/github_action
           PUSHGATEWAY_BASIC_AUTH: ${{ secrets.PUSHGATEWAY_BASIC_AUTH }}
         run: |
-          yarn workspace cron run start:nft-ttr measure --logConfigAndExit
           yarn workspace cron run start:nft-ttr measure \
             --minImageSizeBytes=10000000 \
-            --gateways https://nftstorage.link https://dweb.link \
+            --gateway https://nftstorage.link \
+            --gateway https://dweb.link \
             --metricsPushGateway $PUSHGATEWAY_URL \
             --metricsPushGatewayJobName $PUSHGATEWAY_JOBNAME \
 

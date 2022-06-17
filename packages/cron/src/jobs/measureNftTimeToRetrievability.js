@@ -67,7 +67,7 @@ export function createStubStoreFunction() {
  * @property {AsyncIterable<Blob>} images - images to upload/retrieve
  * @property {StoreFunction} [store] - function to store nft
  * @property {string} [url] - URL to nft.storage to measure
- * @property {boolean} [logConfigAndExit] - if true, log config and exit
+ * @property {boolean} logConfigAndExit - if true, log config and exit
  * @property {URL} [metricsPushGateway] - Server to send metrics to. should reference a https://github.com/prometheus/pushgateway
  * @property {URL[]} gateways - IPFS Gateway to test retrieval from
  * @property {Console} console - logger
@@ -101,15 +101,18 @@ function readMeasureTtrOptions(options) {
  */
 
 /**
+ * @typedef StoreStartLog
+ * @property {"store/start"} type
+ * @property {string} image
+ * @property {Date} startTime
+ */
+
+/**
  * @typedef StoreLog
  * @property {"store"} type
  * @property {string} image
  * @property {Date} startTime
  * @property {Milliseconds} duration
- */
-
-/**
- * @typedef {StoreLog|Activity<"start"|"finish">|RetrieveLog} MeasureTtrLog
  */
 
 /**
@@ -119,7 +122,10 @@ function readMeasureTtrOptions(options) {
  * * retrieve image through ipfs gateway
  * @param {MeasureTtrOptions} options
  * @returns {AsyncIterable<
- * StoreLog|Activity<"start"|"finish">|RetrieveLog
+ *   | StoreStartLog
+ *   | StoreLog
+ *   | Activity<"start"|"finish">
+ *   | RetrieveLog
  * >}
  */
 export async function* measureNftTimeToRetrievability(options) {
@@ -133,7 +139,6 @@ export async function* measureNftTimeToRetrievability(options) {
   const start = {
     type: 'start',
   }
-  config.console.debug(start)
   yield start
   for await (const image of config.images) {
     const imageId = Number(new Date()).toString()
@@ -149,12 +154,13 @@ export async function* measureNftTimeToRetrievability(options) {
     const storeStartedAt = now()
     /** @type {StoreFunction} */
     const store = config.store || ((nft) => client.store(nft))
-    const storeBeforeLog = {
-      type: 'store/before',
+    /** @type {StoreStartLog} */
+    const storeStartLog = {
+      type: 'store/start',
       image: imageId,
       startTime: new Date(),
     }
-    config.console.debug(storeBeforeLog)
+    yield storeStartLog
     const metadata = await store(nft)
     const storeEndAt = now()
     /** @type {StoreLog} */
@@ -165,7 +171,6 @@ export async function* measureNftTimeToRetrievability(options) {
       duration: Milliseconds.subtract(storeEndAt, storeStartedAt),
     }
     yield storeLog
-    config.console.debug(storeLog)
     for (const gateway of config.gateways) {
       /** @type {RetrieveLog} */
       let retrieval
@@ -303,14 +308,26 @@ export function createPromClientRetrievalMetricsLogger(
   )
   /** @type {RetrievalMetricsLogger} */
   const push = async (options, retrieval) => {
-    metric.observe(retrieval.duration, {
+    const value = retrieval.duration
+    const labels = {
       byteLength: retrieval.contentLength,
-    })
+    }
+    metric.observe(value, labels)
     const pushAddArgs = {
       jobName: metricsPushGatewayJobName,
     }
     await pushgateway.pushAdd(pushAddArgs)
-    options.console.debug({ type: 'pushgateway.pushAdd', args: pushAddArgs })
+    options.console.debug({
+      type: 'metricPushed',
+      metric: {
+        name: metric.name,
+      },
+      observation: {
+        value,
+        labels,
+      },
+      pushgateway: pushAddArgs,
+    })
   }
   return push
 }

@@ -9,6 +9,7 @@ import { Milliseconds } from './time.js'
 /**
  * @exports
  * @typedef RetrievalDurationMetric
+ * @property {string} name
  * @property {(value: import('./time').Milliseconds, labels: Record<RetrievalDurationMetricLabels, string|number>) => void} observe
  */
 
@@ -17,13 +18,15 @@ import { Milliseconds } from './time.js'
  * @returns {RetrievalDurationMetric}
  */
 export function createRetrievalDurationMetric(registry) {
+  const name = 'retrieval_duration_seconds'
   const histogram = new Histogram({
-    name: 'retrieval_duration_seconds',
+    name,
     help: 'How long, in seconds, it took to retrieve an nft image after uploading',
     registers: [registry],
     labelNames: ['byteLength'],
   })
   return {
+    name,
     observe(value, labels) {
       histogram.observe(labels, Milliseconds.toSeconds(value))
     },
