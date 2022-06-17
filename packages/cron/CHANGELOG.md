@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/nftstorage/nft.storage/compare/cron-v3.1.0...cron-v3.2.0) (2022-06-16)
+
+
+### Features
+
+* create cron nft-ttr to measure nft time to retrievability ([#1945](https://github.com/nftstorage/nft.storage/issues/1945)) ([b8274f4](https://github.com/nftstorage/nft.storage/commit/b8274f467f5e85d569c2635e179e255c29c8b1af))
+
 ## [3.1.0](https://github.com/nftstorage/nft.storage/compare/cron-v3.0.0...cron-v3.1.0) (2022-06-08)
 
 
