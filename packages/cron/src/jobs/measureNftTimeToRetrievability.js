@@ -11,6 +11,7 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
  * @typedef RetrieveLog
  * @property {string}       image
  * @property {"retrieve"}   type
+ * @property {URL}          gateway
  * @property {URL}          url
  * @property {number}       contentLength
  * @property {Date}         startTime
@@ -175,10 +176,13 @@ export async function* measureNftTimeToRetrievability(options) {
       /** @type {RetrieveLog} */
       let retrieval
       try {
-        retrieval = await retrieve(options, {
-          id: imageId,
-          url: createGatewayRetrievalUrl(gateway, metadata.ipnft),
-        })
+        retrieval = await retrieve(
+          { ...options, gateway },
+          {
+            id: imageId,
+            url: createGatewayRetrievalUrl(gateway, metadata.ipnft),
+          }
+        )
       } catch (error) {
         console.error('error retrieving', error)
         throw error
@@ -219,8 +223,8 @@ export const httpImageFetcher = (fetch) => async (url) => {
 
 /**
  * @typedef {object }RetrieveImageOptions
+ * @property {URL} gateway
  * @property {ImageFetcher} fetchImage
- * @property {RetrievalMetricsLogger} pushRetrieveMetrics
  * @property {Console} console
  */
 
@@ -242,6 +246,7 @@ async function retrieve(options, image) {
   /** @type {RetrieveLog} */
   const retrieveLog = {
     type: 'retrieve',
+    gateway: options.gateway,
     url: image.url,
     image: image.id,
     /** length in bytes */
@@ -309,10 +314,7 @@ export function createPromClientRetrievalMetricsLogger(
   /** @type {RetrievalMetricsLogger} */
   const push = async (options, retrieval) => {
     const value = retrieval.duration
-    const labels = {
-      byteLength: retrieval.contentLength,
-    }
-    metric.observe(value, labels)
+    metric.observe(value, {})
     const pushAddArgs = {
       jobName: metricsPushGatewayJobName,
     }
@@ -324,7 +326,6 @@ export function createPromClientRetrievalMetricsLogger(
       },
       observation: {
         value,
-        labels,
       },
       pushgateway: pushAddArgs,
     })

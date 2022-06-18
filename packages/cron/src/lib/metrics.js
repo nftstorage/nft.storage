@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-import { Histogram, Registry } from 'prom-client'
+import { Histogram, Registry, linearBuckets } from 'prom-client'
 import { Milliseconds } from './time.js'
 
 /**
- * @typedef {"byteLength"} RetrievalDurationMetricLabels
+ * @typedef {string} RetrievalDurationMetricLabels
  */
 
 /**
@@ -23,7 +23,7 @@ export function createRetrievalDurationMetric(registry) {
     name,
     help: 'How long, in seconds, it took to retrieve an nft image after uploading',
     registers: [registry],
-    labelNames: ['byteLength'],
+    labelNames: [],
   })
   return {
     name,
