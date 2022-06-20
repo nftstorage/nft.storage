@@ -1,6 +1,5 @@
 import { URL } from 'url'
 import fetch from '@web-std/fetch'
-import assert from 'assert'
 import { hasOwnProperty } from './utils'
 
 export class IPFS {
@@ -39,11 +38,12 @@ export class IPFS {
         )
       }
       const data = /** @type {unknown} */ (await response.json())
-      assert.ok(hasOwnProperty(data, 'Size'))
-      assert.ok(typeof data.Size === 'string')
-      const size = parseInt(data.Size)
+      if (!hasOwnProperty(data, 'Size')) {
+        throw new Error('expected response json to have Size')
+      }
+      const size = parseInt(String(data.Size))
       if (isNaN(size)) {
-        throw new Error(`invalid DAG size for ${cid}: ${data.Size}`)
+        throw new Error(`invalid DAG size for ${cid}: ${String(data.Size)}`)
       }
       return size
     } finally {
