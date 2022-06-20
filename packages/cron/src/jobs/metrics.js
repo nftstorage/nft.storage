@@ -5,8 +5,7 @@ import {
   PIN_SERVICES,
   PIN_STATUSES,
 } from '../../../api/src/utils/db-client.js'
-import { hasOwnProperty, MAX_CONCURRENT_QUERIES } from '../lib/utils.js'
-import assert from 'node:assert'
+import { MAX_CONCURRENT_QUERIES } from '../lib/utils.js'
 
 const log = debug('metrics:updateMetrics')
 
@@ -81,10 +80,9 @@ export async function updateMetrics({ roPg, rwPg }) {
  * @param {Client} rwPg
  */
 async function updateContentRootDagSizeSum(roPg, rwPg) {
-  const result = await roPg.query(SUM_CONTENT_DAG_SIZE)
-  const rows = /** @type {unknown[]} */ (result.rows)
+  /** @type {import('pg').QueryResult<{ total: number }>} */
+  const { rows } = await roPg.query(SUM_CONTENT_DAG_SIZE)
   if (!rows.length) throw new Error('no rows returned counting users')
-  assert.ok(hasOwnProperty(rows[0], 'total'))
   await rwPg.query(UPDATE_METRIC, ['content_dag_size_total', rows[0].total])
 }
 
@@ -93,10 +91,9 @@ async function updateContentRootDagSizeSum(roPg, rwPg) {
  * @param {Client} rwPg
  */
 async function updateUsersCount(roPg, rwPg) {
-  const result = await roPg.query(COUNT_USERS)
-  const rows = /** @type {unknown[]} */ (result.rows)
+  /** @type {import('pg').QueryResult<{ total: number }>} */
+  const { rows } = await roPg.query(COUNT_USERS)
   if (!rows.length) throw new Error('no rows returned counting users')
-  assert.ok(hasOwnProperty(rows[0], 'total'))
   await rwPg.query(UPDATE_METRIC, ['users_total', rows[0].total])
 }
 
@@ -105,10 +102,9 @@ async function updateUsersCount(roPg, rwPg) {
  * @param {Client} rwPg
  */
 async function updateTotalUploadPast7(roPg, rwPg) {
-  const result = await roPg.query(UPLOADS_PAST_7_TOTAL)
-  const rows = /** @type {unknown[]} */ (result.rows)
+  /** @type {import('pg').QueryResult<{ count: number }>} */
+  const { rows } = await roPg.query(UPLOADS_PAST_7_TOTAL)
   if (!rows.length) throw new Error('no rows returned counting uploads')
-  assert.ok(hasOwnProperty(rows[0], 'count'))
   await rwPg.query(UPDATE_METRIC, ['uploads_past_7_total', rows[0].count])
 }
 
@@ -118,10 +114,9 @@ async function updateTotalUploadPast7(roPg, rwPg) {
  * @param {string} type
  */
 async function updateUploadsCount(roPg, rwPg, type) {
-  const result = await roPg.query(COUNT_UPLOADS, [type])
-  const rows = /** @type {unknown[]} */ (result.rows)
+  /** @type {import('pg').QueryResult<{ total: number }>} */
+  const { rows } = await roPg.query(COUNT_UPLOADS, [type])
   if (!rows.length) throw new Error(`no rows returned counting ${type} uploads`)
-  assert.ok(hasOwnProperty(rows[0], 'total'))
   await rwPg.query(UPDATE_METRIC, [
     `uploads_${type.toLowerCase()}_total`,
     rows[0].total,
@@ -135,11 +130,10 @@ async function updateUploadsCount(roPg, rwPg, type) {
  * @param {string} status
  */
 async function updatePinsCount(roPg, rwPg, service, status) {
-  const result = await roPg.query(COUNT_PINS, [service, status])
-  const rows = /** @type {unknown[]} */ (result.rows)
+  /** @type {import('pg').QueryResult<{ total: number }>} */
+  const { rows } = await roPg.query(COUNT_PINS, [service, status])
   if (!rows.length)
     throw new Error(`no rows returned counting ${service} ${status} pins`)
-  assert.ok(hasOwnProperty(rows[0], 'total'))
   await rwPg.query(UPDATE_METRIC, [
     `pins_${service.toLowerCase()}_${status.toLowerCase()}_total`,
     rows[0].total,
