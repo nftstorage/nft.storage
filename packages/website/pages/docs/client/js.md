@@ -9,7 +9,7 @@ The JavaScript client uses the [HTTP API][reference-http-api] to send your data 
 
 Encoding the data locally has another benefit of reducing the trust required of the NFT.Storage service. By calculating all of the [Content Identifiers (CIDs)][concepts-cid] for your data yourself, you can make sure that the data you send is exactly what gets provided to the network. Any alteration of your data by the NFT.Storage service or a third party "monster in the middle" would result in a different CID, which the client will reject as an error.
 
-This guide will cover the basics of creating a client object, as well as the most common and useful operations. For more details, see the complete [client API documentation][reference-nftstorage-class]. For fewer, see the [Quickstart guide][quickstart]!
+This guide will cover the basics of creating a client object, as well as the most common and useful operations. For more details, see the complete [client API documentation][reference-nftstorage-class]. For less, see the [Quickstart guide][quickstart]!
 
 ## Installation and importing
 
