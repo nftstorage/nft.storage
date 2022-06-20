@@ -69,14 +69,14 @@ export function createMeasureSecretsFromEnv(env) {
 export function createMeasureOptionsFromSade(sadeOptions, secrets) {
   // build gateways
   assert.ok(
-    hasOwnProperty(sadeOptions, 'gateways'),
-    'expected sadeOptions to have gateways'
+    hasOwnProperty(sadeOptions, 'gateway'),
+    'expected sadeOptions to have gateway'
   )
-  const gatewaysArgv = sadeOptions.gateways
-  assert.ok(Array.isArray(gatewaysArgv) || typeof gatewaysArgv === 'string')
-  const gatewaysArgvsArray = Array.isArray(gatewaysArgv)
-    ? gatewaysArgv.map(String)
-    : [...gatewaysArgv.split(' ')]
+  const gatewayArgv = sadeOptions.gateway
+  assert.ok(Array.isArray(gatewayArgv) || typeof gatewayArgv === 'string')
+  const gatewaysArgvsArray = Array.isArray(gatewayArgv)
+    ? gatewayArgv.map(String)
+    : gatewayArgv.split(' ')
   const gateways = gatewaysArgvsArray.map((g) => {
     try {
       return new URL(g)
@@ -117,6 +117,10 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets) {
   const metricsPushGatewayJobName =
     hasOwnProperty(sadeOptions, 'metricsPushGatewayJobName') &&
     sadeOptions.metricsPushGatewayJobName
+  assert.ok(
+    metricsPushGatewayJobName,
+    'expected metricsPushGatewayJobName to be set'
+  )
   assert.ok(typeof metricsPushGatewayJobName === 'string')
 
   // build pushRetrieveMetrics
@@ -197,8 +201,8 @@ export async function* cli(
       false
     )
     .option(
-      '--gateways',
-      'IPFS gateway(s) to use to measure time to retrieval of the upload',
+      '--gateway',
+      'IPFS gateway to use to measure time to retrieval of the upload',
       'https://nftstorage.link'
     )
     .option(
