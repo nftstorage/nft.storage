@@ -96,5 +96,6 @@ test(`bin/nft-ttr works with --minImageSizeBytes=${defaultTestMinImageSizeBytes}
     }
   }
   t.is(gatewaysNeedingRetrieval.size, 0)
+  t.is(typeof retrieveCount, 'number')
   t.is(retrieveCount, gateways.length)
 })
