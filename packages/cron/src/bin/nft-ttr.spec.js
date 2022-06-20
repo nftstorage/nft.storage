@@ -1,16 +1,17 @@
 import { test } from '../lib/testing.js'
 import {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
   cli as binNftTtr,
   createMeasureOptionsFromSade,
   createMeasureSecretsFromEnv,
 } from './nft-ttr.js'
 import {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
   createStubbedImageFetcher,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
   createStubStoreFunction,
 } from '../jobs/measureNftTimeToRetrievability.js'
+import all from 'it-all'
+import { Writable } from 'node:stream'
+
+const defaultTestMinImageSizeBytes = 10 * 1e6
 
 test('createMeasureOptionsFromSade', (t) => {
   const sampleSade = {
@@ -51,4 +52,51 @@ test('createMeasureSecretsFromEnv', (t) => {
     }).metricsPushGatewayAuthorization,
     'Basic dXNlcjpwYXNz'
   )
+})
+
+test(`bin/nft-ttr works with --minImageSizeBytes=${defaultTestMinImageSizeBytes} and multiple gateways`, async (t) => {
+  const minImageSizeBytes = defaultTestMinImageSizeBytes
+  const gateways = ['https://nftstorage.link', 'https://dweb.link']
+  const command = [
+    'fakeNodePath',
+    'fakeScriptPath',
+    'measure',
+    `--minImageSizeBytes=${minImageSizeBytes}`,
+    ...gateways.flatMap((g) => [`--gateway`, g]),
+  ]
+  const activities = await all(
+    binNftTtr(command, {
+      console: new console.Console(new Writable(), new Writable()),
+      env: {
+        NFT_STORAGE_API_KEY: '',
+      },
+      store: createStubStoreFunction(),
+      fetchImage: createStubbedImageFetcher(minImageSizeBytes),
+    })
+  )
+  let retrieveCount = 0
+  const gatewaysNeedingRetrieval = new Set(gateways)
+  for (const activity of activities) {
+    if (activity.type !== 'retrieve') {
+      continue
+    }
+    const retrieve = activity
+    retrieveCount++
+    t.assert(retrieve)
+    t.is(
+      typeof retrieve.duration.size,
+      'number',
+      'expected retrieve duration size to be a number'
+    )
+    t.assert(retrieve.contentLength > minImageSizeBytes)
+    for (const gateway of gatewaysNeedingRetrieval) {
+      if (retrieve.url.toString().startsWith(gateway)) {
+        gatewaysNeedingRetrieval.delete(gateway)
+        break
+      }
+    }
+  }
+  t.is(gatewaysNeedingRetrieval.size, 0)
+  t.is(typeof retrieveCount, 'number')
+  t.is(retrieveCount, gateways.length)
 })
