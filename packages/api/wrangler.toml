@@ -1,18 +1,18 @@
 # Development
 
-name = "nft-storage-dev"
 account_id = "fffa4b4363a7e5250af8357087263b3a"
-workers_dev = true
+name = "nft-storage-dev"
 type = "javascript"
+workers_dev = true
 
 # Compatibility flags https://github.com/cloudflare/wrangler/pull/2009
 compatibility_date = "2021-08-23"
-compatibility_flags = [ "formdata_parser_supports_files" ]
+compatibility_flags = ["formdata_parser_supports_files"]
 
 [vars]
-ENV = "dev"
-DEBUG = "true"
 DATABASE_URL = "http://localhost:3000"
+DEBUG = "true"
+ENV = "dev"
 
 [build]
 command = "scripts/cli.js build"
@@ -22,20 +22,21 @@ watch_dir = "src"
 format = "service-worker"
 
 [miniflare]
-env_path = "./../../.env"
+host = "0.0.0.0"
+port = "8787"
 
 # Staging
 
 [env.staging]
 name = "nft-storage-staging"
 route = "api-staging.nft.storage/*"
-zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"
 usage_model = "unbound"
+zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"
 
 [env.staging.vars]
-ENV = "staging"
-DEBUG = "true"
 DATABASE_URL = "https://nft-storage-pgrest-staging.herokuapp.com"
+DEBUG = "true"
+ENV = "staging"
 
 [env.staging.build]
 command = "scripts/cli.js build --env staging"
@@ -49,13 +50,13 @@ format = "service-worker"
 [env.production]
 name = "nft-storage"
 route = "api.nft.storage/*"
-zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"
 usage_model = "unbound"
+zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"
 
 [env.production.vars]
-ENV = "production"
-DEBUG = "false"
 DATABASE_URL = "https://nft-storage-pgrest-prod.herokuapp.com"
+DEBUG = "false"
+ENV = "production"
 
 [env.production.build]
 command = "scripts/cli.js build --env production"

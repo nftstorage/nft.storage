@@ -26,16 +26,16 @@ SENTRY_UPLOAD=false
 SLACK_USER_REQUEST_WEBHOOK_URL=
 
 ## API PostgREST
-DATABASE_URL=http://localhost:3000
+DATABASE_URL=http://postgrest:3000
 DATABASE_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYwMzk2ODgzNCwiZXhwIjoyNTUwNjUzNjM0LCJyb2xlIjoic2VydmljZV9yb2xlIn0.necIJaiP7X2T2QjGeV-FhpkizcNTX8HjDDBAxpgQTEI
 
 # Postgres Database
-DATABASE_CONNECTION=postgresql://postgres:postgres@localhost:5432/postgres
+DATABASE_CONNECTION=postgresql://postgres:postgres@db:5432/postgres
 
-# Cluster 
+# Cluster
 CLUSTER_BASIC_AUTH_TOKEN = dGVzdDp0ZXN0
-CLUSTER_SERVICE = 
-CLUSTER_API_URL = http://localhost:9094
+CLUSTER_SERVICE =
+CLUSTER_API_URL = http://ipfs-cluster:9094
 
 # Maintenance Mode
 MAINTENANCE_MODE = rw
@@ -46,3 +46,8 @@ S3_REGION = test
 S3_ACCESS_KEY_ID = test
 S3_SECRET_ACCESS_KEY = test
 S3_BUCKET_NAME = test
+
+## Git
+VERSION=development
+COMMITHASH=development-hash
+BRANCH=development

@@ -1,57 +1,126 @@
-version: '3.6'
 services:
-  rest:
+  postgrest:
     image: postgrest/postgrest:v9.0.0
     depends_on:
-      - db
-    restart: always
-    ports:
-      - 3000:3000/tcp
+      - db-init
     environment:
-      PGRST_DB_URI: postgres://postgres:postgres@db:5432/postgres
+      PGRST_DB_URI: $DATABASE_CONNECTION
       PGRST_DB_SCHEMAS: public,cargo
       PGRST_DB_ANON_ROLE: postgres
       PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
+  db-init:
+    build:
+      dockerfile: './docker/Dockerfile'
+      context: '../'
+    entrypoint: 'psql $DATABASE_CONNECTION -v "ON_ERROR_STOP=1" -f ./db/config.sql -f ./db/tables.sql -f ./db/cargo.testing.sql -f ./db/functions.sql'
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_CONNECTION
+      - DATABASE_URL
+      - DATABASE_TOKEN
+  api:
+    restart: on-failure
+    build:
+      dockerfile: ./docker/Dockerfile
+      context: ../
+    environment:
+      - BRANCH
+      - CLUSTER_API_URL
+      - CLUSTER_BASIC_AUTH_TOKEN
+      - CLUSTER_SERVICE
+      - COMMITHASH
+      - DATABASE_CONNECTION
+      - DATABASE_TOKEN
+      - DATABASE_URL
+      - DEBUG
+      - ENV
+      - LOGTAIL_TOKEN
+      - MAGIC_SECRET_KEY
+      - MAILCHIMP_API_KEY
+      - MAINTENANCE_MODE
+      - METAPLEX_AUTH_TOKEN
+      - PRIVATE_KEY
+      - SALT
+      - SENTRY_DSN
+      - VERSION
+
+    depends_on:
+      - postgrest
+      - ipfs-cluster
   db:
+    restart: on-failure
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'psql',
+          '$DATABASE_CONNECTION',
+          '-v',
+          'ON_ERROR_STOP=1',
+          '-c',
+          'SELECT 1',
+        ]
+      interval: '1s'
+      timeout: '1s'
+      retries: 100
     build:
       context: ./postgres
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 2G
-        reservations:
-          cpus: '1'
-          memory: 1G
-    ports:
-      - 5432:5432
     environment:
+      DATABASE_CONNECTION: $DATABASE_CONNECTION
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_PORT: 5432
-  ipfs0:
-    container_name: ipfs0
+  ipfs:
     image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
-    volumes:
-      - ./compose/ipfs0:/data/ipfs
 
-  cluster0:
-    container_name: cluster0
-    image: ipfs/ipfs-cluster:v1.0.0-rc4
+  ipfs-cluster:
+    image: ipfs/ipfs-cluster:v1.0.0-rc4 # we need to use this image tag, as nft.storage expects CIDs to come back in a certain format
     depends_on:
-      - ipfs0
+      - ipfs
     environment:
-      CLUSTER_PEERNAME: cluster0
+      CLUSTER_PEERNAME: cluster
       CLUSTER_SECRET: ${CLUSTER_SECRET} # From shell variable if set
-      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs0/tcp/5001
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs/tcp/5001
       CLUSTER_CRDT_TRUSTEDPEERS: '*' # Trust all peers in Cluster
       CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9094 # Expose API
       CLUSTER_RESTAPI_BASICAUTHCREDENTIALS: test:test
       CLUSTER_RESTAPI_CORSALLOWEDMETHODS: GET,POST,OPTIONS
       CLUSTER_RESTAPI_CORSALLOWEDHEADERS: authorization
       CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
-    ports:
-      - '127.0.0.1:9094:9094'
-    volumes:
-      - ./compose/cluster0:/data/ipfs-cluster
+  playwright:
+    profiles:
+      - test
+    depends_on:
+      api:
+        condition: service_healthy
+    build:
+      dockerfile: ./docker/test.Dockerfile
+      context: ../
+    environment:
+      - BRANCH
+      - CLUSTER_API_URL
+      - CLUSTER_BASIC_AUTH_TOKEN
+      - CLUSTER_SERVICE
+      - COMMITHASH
+      - DATABASE_CONNECTION
+      - DATABASE_TOKEN
+      - DATABASE_URL
+      - DEBUG
+      - ENV
+      - LOGTAIL_TOKEN
+      - MAGIC_SECRET_KEY
+      - MAILCHIMP_API_KEY
+      - MAINTENANCE_MODE
+      - METAPLEX_AUTH_TOKEN
+      - PRIVATE_KEY
+      - S3_ACCESS_KEY_ID
+      - S3_BUCKET_NAME
+      - S3_ENDPOINT
+      - S3_REGION
+      - S3_SECRET_ACCESS_KEY
+      - SALT
+      - SENTRY_DSN
+      - VERSION

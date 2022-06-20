@@ -26,7 +26,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDY1MDA3QTczOWFiN0F
 In the case you need to clean up docker after failed tests or debugging session you can just run the command below.
 
 ```bash
-yarn clean
+yarn dev:clean
 ```
 
 ### Dev CLI scripts

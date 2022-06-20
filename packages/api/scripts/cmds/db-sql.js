@@ -39,7 +39,6 @@ export async function dbSqlCmd(opts) {
     )
 
   const client = await getDbClient(env.DATABASE_CONNECTION)
-
   if (opts.reset) {
     await client.query(reset)
   }
