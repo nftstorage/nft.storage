@@ -1,8 +1,16 @@
 import { test } from '../lib/testing.js'
 import {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
+  cli as binNftTtr,
   createMeasureOptionsFromSade,
   createMeasureSecretsFromEnv,
 } from './nft-ttr.js'
+import {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
+  createStubbedImageFetcher,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
+  createStubStoreFunction,
+} from '../jobs/measureNftTimeToRetrievability.js'
 
 test('createMeasureOptionsFromSade', (t) => {
   const sampleSade = {
