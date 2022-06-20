@@ -133,7 +133,7 @@ The entry for the data will be removed from your account's file listing page, an
 
 ## API reference
 
-Full [API reference documentation](reference-nftstorage-class).
+Full [API reference documentation][reference-nftstorage-class].
 
 [quickstart]: /docs/
 [reference-http-api]: /api-docs/
