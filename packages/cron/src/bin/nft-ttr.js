@@ -209,7 +209,9 @@ export async function* cli(
       iterable = measureNftTimeToRetrievability({
         secrets,
         ...createMeasureOptionsFromSade(opts, secrets),
-        ...options,
+        ...(options.fetchImage ? { fetchImage: options.fetchImage } : {}),
+        ...(options.store ? { store: options.store } : {}),
+        console: options.console,
       })
     })
   argParser.parse(argv)
@@ -233,8 +235,8 @@ function parseBasicAuth(basicAuthEnvVarString) {
  * @param {string[]} argv
  */
 async function main(argv) {
-  // eslint-disable-next-line no-empty,@typescript-eslint/no-unused-vars,no-unused-vars
-  for await (const _ of cli(argv)) {
+  for await (const _ of cli(argv, { console, env: process.env })) {
+    console.debug(_)
   }
 }
 

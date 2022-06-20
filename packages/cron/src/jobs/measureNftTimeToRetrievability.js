@@ -12,6 +12,7 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
  * @property {string}       image
  * @property {"retrieve"}   type
  * @property {URL}          url
+ * @property {URL}          gateway
  * @property {number}       contentLength
  * @property {Date}         startTime
  * @property {Milliseconds} duration
@@ -100,6 +101,13 @@ function readMeasureTtrOptions(options) {
  */
 
 /**
+ * @typedef StoreStartLog
+ * @property {"store/start"} type
+ * @property {string} image
+ * @property {Date} startTime
+ */
+
+/**
  * @typedef StoreLog
  * @property {"store"} type
  * @property {string} image
@@ -108,18 +116,12 @@ function readMeasureTtrOptions(options) {
  */
 
 /**
- * @typedef {StoreLog|Activity<"start"|"finish">|RetrieveLog} MeasureTtrLog
- */
-
-/**
  * Job that tests/measures steps
  * * prepare a sample image
  * * upload to nft.storage
  * * retrieve image through ipfs gateway
  * @param {MeasureTtrOptions} options
- * @returns {AsyncIterable<
- * StoreLog|Activity<"start"|"finish">|RetrieveLog
- * >}
+ * @returns {AsyncIterable<StoreStartLog|StoreLog|Activity<"start"|"finish">|RetrieveLog>}
  */
 export async function* measureNftTimeToRetrievability(options) {
   // separate secrets and config to avoid logging secrets
@@ -128,7 +130,6 @@ export async function* measureNftTimeToRetrievability(options) {
   const start = {
     type: 'start',
   }
-  config.console.debug(start)
   yield start
   for await (const image of config.images) {
     const imageId = Number(new Date()).toString()
@@ -144,12 +145,13 @@ export async function* measureNftTimeToRetrievability(options) {
     const storeStartedAt = now()
     /** @type {StoreFunction} */
     const store = config.store || ((nft) => client.store(nft))
-    const storeBeforeLog = {
-      type: 'store/before',
+    /** @type {StoreStartLog} */
+    const storeStartLog = {
+      type: 'store/start',
       image: imageId,
       startTime: new Date(),
     }
-    config.console.debug(storeBeforeLog)
+    yield storeStartLog
     const metadata = await store(nft)
     const storeEndAt = now()
     /** @type {StoreLog} */
@@ -160,7 +162,6 @@ export async function* measureNftTimeToRetrievability(options) {
       duration: Milliseconds.subtract(storeEndAt, storeStartedAt),
     }
     yield storeLog
-    config.console.debug(storeLog)
     for (const gateway of config.gateways) {
       /** @type {RetrieveLog} */
       let retrieval
@@ -168,6 +169,7 @@ export async function* measureNftTimeToRetrievability(options) {
         retrieval = await retrieve(options, {
           id: imageId,
           url: createGatewayRetrievalUrl(gateway, metadata.ipnft),
+          gateway,
         })
       } catch (error) {
         console.error('error retrieving', error)
@@ -220,6 +222,7 @@ export const httpImageFetcher = (fetch) => async (url) => {
  * @param {object} image
  * @param {string} image.id
  * @param {URL}   image.url
+ * @param {URL}   image.gateway
  */
 async function retrieve(options, image) {
   const retrieveFetchDate = new Date()
@@ -234,6 +237,7 @@ async function retrieve(options, image) {
     type: 'retrieve',
     url: image.url,
     image: image.id,
+    gateway: image.gateway,
     /** length in bytes */
     contentLength: retrievedImage.size,
     startTime: retrieveFetchDate,
