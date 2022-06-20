@@ -1,7 +1,5 @@
 import debug from 'debug'
 import { consume, transform, pipeline } from 'streaming-iterables'
-import assert from 'node:assert'
-import { hasOwnProperty } from '../lib/utils'
 
 const log = debug('pins:updatePinStatuses')
 const CONCURRENCY = 5
@@ -49,11 +47,9 @@ export async function updatePendingPinStatuses(config) {
    * @returns {Promise<number>}
    */
   const countPins = async () => {
-    const result = await config.pg.query(COUNT_PENDING_PINS)
-    const rows = /** @type {unknown[]} */ (result.rows)
+    /** @type {import('pg').QueryResult<{ count: number }>} */
+    const { rows } = await config.pg.query(COUNT_PENDING_PINS)
     if (!rows.length) throw new Error('no rows returned counting pins')
-    assert.ok(hasOwnProperty(rows[0], 'count'))
-    assert.ok(typeof rows[0].count === 'number')
     return rows[0].count
   }
 
@@ -63,9 +59,9 @@ export async function updatePendingPinStatuses(config) {
    * @returns {Promise<Pin[]>}
    */
   const fetchPins = async (offset, limit) => {
+    /** @type {import('pg').QueryResult<Pin>} */
     const { rows } = await config.pg.query(FETCH_PENDING_PINS, [offset, limit])
-    const pins = /** @type {Pin[]} */ (rows)
-    return pins
+    return rows
   }
 
   await updatePinStatuses({ ...config, countPins, fetchPins })
@@ -104,11 +100,9 @@ export async function checkFailedPinStatuses(config) {
    * @returns {Promise<number>}
    */
   const countPins = async () => {
-    const result = await pg.query(COUNT_FAILED_PINS, [after.toISOString()])
-    const rows = /** @type {unknown[]} */ (result.rows)
+    /** @type {import('pg').QueryResult<{ count: number }>} */
+    const { rows } = await pg.query(COUNT_FAILED_PINS, [after.toISOString()])
     if (!rows.length) throw new Error('no rows returned counting pins')
-    assert.ok(hasOwnProperty(rows[0], 'count'))
-    assert.ok(typeof rows[0].count === 'number')
     return rows[0].count
   }
 
@@ -118,13 +112,13 @@ export async function checkFailedPinStatuses(config) {
    * @returns {Promise<Pin[]>}
    */
   const fetchPins = async (offset, limit) => {
+    /** @type {import('pg').QueryResult<Pin>} */
     const { rows } = await config.pg.query(FETCH_FAILED_PINS, [
       after.toISOString(),
       offset,
       limit,
     ])
-    const pins = /** @type {Pin[]} */ (rows)
-    return pins
+    return rows
   }
 
   log(`⏰ Checking pins created after ${after.toISOString()}`)
