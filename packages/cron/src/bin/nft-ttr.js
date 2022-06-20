@@ -196,11 +196,6 @@ export async function* cli(
       'nft-ttr'
     )
     .option(
-      '--logConfigAndExit',
-      'if provided, this job will log the config and exit without doing much else. Intended for debugging',
-      false
-    )
-    .option(
       '--gateway',
       'IPFS gateway to use to measure time to retrieval of the upload',
       'https://nftstorage.link'

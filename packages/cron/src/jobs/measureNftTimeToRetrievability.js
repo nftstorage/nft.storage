@@ -67,7 +67,6 @@ export function createStubStoreFunction() {
  * @property {AsyncIterable<Blob>} images - images to upload/retrieve
  * @property {StoreFunction} [store] - function to store nft
  * @property {string} [url] - URL to nft.storage to measure
- * @property {boolean} [logConfigAndExit] - if true, log config and exit
  * @property {URL} [metricsPushGateway] - Server to send metrics to. should reference a https://github.com/prometheus/pushgateway
  * @property {URL[]} gateways - IPFS Gateway to test retrieval from
  * @property {Console} console - logger
@@ -125,10 +124,6 @@ function readMeasureTtrOptions(options) {
 export async function* measureNftTimeToRetrievability(options) {
   // separate secrets and config to avoid logging secrets
   const { secrets, config } = readMeasureTtrOptions(options)
-  if (config.logConfigAndExit) {
-    config.console.log(config)
-    return
-  }
   /** @type {Activity<"start">} */
   const start = {
     type: 'start',
