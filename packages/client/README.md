@@ -57,11 +57,11 @@ Run the script:
 node index.mjs # or index.js
 ```
 
-For more examples please see the [API documentation](https://nftstorage.github.io/nft.storage/client/) or the [examples directory in the project repository][examples directory], which contains sample projects for both [browsers][examples.browser] and [Node.js][examples.node].
+For more examples please see the [API documentation](https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html) or the [examples directory in the project repository][examples directory], which contains sample projects for both [browsers][examples.browser] and [Node.js][examples.node].
 
 [raw http api]: https://nft.storage/api-docs/
 [node.js]: https://nodejs.org/
-[api documentation]: https://nftstorage.github.io/nft.storage/client/
+[api documentation]: https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html
 [examples directory]: https://github.com/nftstorage/nft.storage/tree/main/examples/client
 [examples.node]: https://github.com/nftstorage/nft.storage/tree/main/examples/client/node.js
 [examples.browser]: https://github.com/nftstorage/nft.storage/tree/main/examples/client/browser

@@ -9,7 +9,7 @@ The JavaScript client uses the [HTTP API][reference-http-api] to send your data 
 
 Encoding the data locally has another benefit of reducing the trust required of the NFT.Storage service. By calculating all of the [Content Identifiers (CIDs)][concepts-cid] for your data yourself, you can make sure that the data you send is exactly what gets provided to the network. Any alteration of your data by the NFT.Storage service or a third party "monster in the middle" would result in a different CID, which the client will reject as an error.
 
-This guide will cover the basics of creating a client object, as well as the most common and useful operations. For more details, see the complete [client API documentation][reference-client-api]. For fewer, see the [Quickstart guide][quickstart]!
+This guide will cover the basics of creating a client object, as well as the most common and useful operations. For more details, see the complete [client API documentation][reference-nftstorage-class]. For fewer, see the [Quickstart guide][quickstart]!
 
 ## Installation and importing
 
@@ -131,6 +131,10 @@ The [`delete`][reference-delete] method can remove uploaded data from your accou
 
 The entry for the data will be removed from your account's file listing page, and the NFT.Storage service may stop providing the data to the IPFS network and managing Filecoin storage deals. However, any peers in the storage networks who have obtained a copy of the data may continue to store it and may continue to provide the data to the network at their discretion.
 
+## API reference
+
+Full [API reference documentation](reference-nftstorage-class).
+
 [quickstart]: /docs/
 [reference-http-api]: /api-docs/
 [concepts-car]: /docs/concepts/car-files/
@@ -140,7 +144,6 @@ The entry for the data will be removed from your account's file listing page, an
 
 
 { /* TODO: update links once API docs are moved into the main site */ }
-[reference-client-api]: https://nftstorage.github.io/nft.storage/client/
 [reference-nftstorage-class]: https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html
 [reference-store]: https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#store
 [reference-storeBlob]: https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html#storeBlob
