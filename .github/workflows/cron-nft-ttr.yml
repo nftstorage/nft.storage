@@ -26,8 +26,8 @@ jobs:
         env:
           DEBUG: '*'
           NFT_STORAGE_API_KEY: ${{ secrets.NFT_STORAGE_API_KEY }}
-          PUSHGATEWAY_JOBNAME: nftstorage_ci/instance/github_action
-          PUSHGATEWAY_URL: https://pushgateway.k8s.locotorp.info/metrics/job/nftstorage_ci/instance/github_action
+          PUSHGATEWAY_JOBNAME: nftstorage_ci
+          PUSHGATEWAY_URL: https://pushgateway.k8s.locotorp.info
           PUSHGATEWAY_BASIC_AUTH: ${{ secrets.PUSHGATEWAY_BASIC_AUTH }}
         run: |
           yarn workspace cron run start:nft-ttr measure --logConfigAndExit
