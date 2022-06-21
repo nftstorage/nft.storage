@@ -182,6 +182,23 @@ describe('Pin add ', () => {
     })
   })
 
+  it('should error pinning with non-multiaddr origins', async () => {
+    // expected CID for the above data
+    const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+    const res = await fetch('pins', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: JSON.stringify({ cid, origins: ['garlic-barber'] }),
+    })
+    const value = await res.json()
+    assert.deepStrictEqual(value, {
+      error: {
+        reason: 'INVALID_PIN_DATA',
+        details: 'invalid origins',
+      },
+    })
+  })
+
   it('should pin to cluster by source CID', async () => {
     const cidv0 = 'QmXRdb4vemfS7Z6EL2p47XdjRatZ5Ne8DEnwr5uaHqXnak'
     const cidv1 = CID.parse(cidv0).toV1().toString()
