@@ -24,6 +24,7 @@ export function createRetrievalDurationMetric(registry) {
     help: 'How long, in seconds, it took to retrieve an nft image after uploading',
     registers: [registry],
     labelNames: [],
+    buckets: linearBuckets(0, 0.5, 20),
   })
   return {
     name,
