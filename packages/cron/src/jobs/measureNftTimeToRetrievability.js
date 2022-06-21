@@ -2,6 +2,7 @@ import { NFTStorage } from 'nft.storage'
 import { Milliseconds, now } from '../lib/time.js'
 import { Pushgateway } from 'prom-client'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
+import { pipeline, parallelMerge, flatten } from 'streaming-iterables'
 
 export const EXAMPLE_NFT_IMG_URL = new URL(
   'https://bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4.ipfs.dweb.link/1681.png'
@@ -172,24 +173,30 @@ export async function* measureNftTimeToRetrievability(options) {
       duration: Milliseconds.subtract(storeEndAt, storeStartedAt),
     }
     yield storeLog
-    for (const gateway of config.gateways) {
-      /** @type {RetrieveLog} */
-      let retrieval
-      try {
-        retrieval = await retrieve(
-          { ...options, gateway },
-          {
-            id: imageId,
-            url: createGatewayRetrievalUrl(gateway, metadata.ipnft),
-          }
-        )
-      } catch (error) {
-        console.error('error retrieving', error)
-        throw error
-      }
-      yield retrieval
-      await options.pushRetrieveMetrics(options, retrieval)
-    }
+    yield* pipeline(
+      () =>
+        parallelMerge(
+          config.gateways.map(async function* (gateway) {
+            /** @type {RetrieveLog} */
+            let retrieval
+            try {
+              retrieval = await retrieve(
+                { ...options, gateway },
+                {
+                  id: imageId,
+                  url: createGatewayRetrievalUrl(gateway, metadata.ipnft),
+                }
+              )
+            } catch (error) {
+              console.error('error retrieving', error)
+              throw error
+            }
+            yield retrieval
+            await options.pushRetrieveMetrics(options, retrieval)
+          })
+        ),
+      flatten
+    )
   }
   /** @type {Activity<"finish">} */
   yield { type: 'finish' }
@@ -222,7 +229,7 @@ export const httpImageFetcher = (fetch) => async (url) => {
 }
 
 /**
- * @typedef {object }RetrieveImageOptions
+ * @typedef {object} RetrieveImageOptions
  * @property {URL} gateway
  * @property {ImageFetcher} fetchImage
  * @property {Console} console
@@ -280,8 +287,7 @@ function createGatewayRetrievalUrl(gatewayUrl, ipnftCid) {
  */
 export function createStubbedRetrievalMetricsLogger() {
   /** @type {RetrievalMetricsLogger} */
-  const push = async (options, retrieval) => {
-    options.console.debug({ type: 'stubbedRetrievalMetricsLogger', retrieval })
+  const push = async () => {
     return Promise.resolve()
   }
   return push
