@@ -6,6 +6,7 @@ on:
     paths:
       - 'packages/cron/**'
       - '.github/workflows/cron.yml'
+      - '.github/workflows/cron-nft-ttr.yml'
       - 'yarn.lock'
   pull_request:
     branches:
