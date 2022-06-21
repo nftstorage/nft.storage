@@ -1,5 +1,6 @@
 import assert from 'assert'
 import { CID } from 'multiformats'
+import { Multiaddr } from 'multiaddr'
 import {
   createClientWithUser,
   DBTestClient,
@@ -182,8 +183,33 @@ describe('Pin add ', () => {
     })
   })
 
+  it('should be ok pinning with an empty origins array', async () => {
+    const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+    const res = await fetch('pins', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: JSON.stringify({ cid, origins: [] }),
+    })
+    const value = await res.json()
+    assert.deepStrictEqual(value.status, 'queued')
+  })
+
+  it.only('should be ok pinning an origins array with multiaddresses', async () => {
+    const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+    const multiOrigin = Multiaddr.fromNodeAddress(
+      { address: '127.0.0.1', port: 4001, family: 4 },
+      'tcp'
+    )
+    const res = await fetch('pins', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client.token}` },
+      body: JSON.stringify({ cid, origins: [multiOrigin] }),
+    })
+    const value = await res.json()
+    assert.deepStrictEqual(value, 'queued')
+  })
+
   it('should error pinning with non-multiaddr origins', async () => {
-    // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
     const res = await fetch('pins', {
       method: 'POST',
@@ -194,7 +220,8 @@ describe('Pin add ', () => {
     assert.deepStrictEqual(value, {
       error: {
         reason: 'INVALID_PIN_DATA',
-        details: 'invalid origins',
+        details:
+          'invalid origins: one or more of the origins are not a multiaddr',
       },
     })
   })
