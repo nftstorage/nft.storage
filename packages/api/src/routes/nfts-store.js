@@ -45,7 +45,7 @@ export async function nftStore(event, ctx) {
 
   const blob = new Blob([JSON.stringify(data)])
   const metadata = await cluster.add(blob, {
-    local: false,
+    local: true,
   })
   const block = await Block.encode({
     value: {
@@ -58,7 +58,7 @@ export async function nftStore(event, ctx) {
   })
   const car = await CAR.encode([block.cid], [block])
   const { cid, bytes } = await cluster.addCar(car, {
-    local: false,
+    local: true,
   })
 
   await db.createUpload({

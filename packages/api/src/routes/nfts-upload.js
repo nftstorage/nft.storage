@@ -141,7 +141,7 @@ export async function uploadCarWithStat(
 ) {
   const [added, backupUrl] = await Promise.all([
     cluster.addCar(car, {
-      local: false,
+      local: true,
     }),
     ctx.backup
       ? ctx.backup.backupCar(user.id, stat.rootCid, car, stat.structure)
