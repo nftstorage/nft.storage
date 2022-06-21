@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.28.1](https://github.com/nftstorage/nft.storage/compare/api-v2.28.0...api-v2.28.1) (2022-06-21)
+
+
+### Bug Fixes
+
+* switch to cluster local add ([#2012](https://github.com/nftstorage/nft.storage/issues/2012)) ([635314f](https://github.com/nftstorage/nft.storage/commit/635314f1ad822db562f6fbea25b007f14d0e6f94))
+
 ## [2.28.0](https://github.com/nftstorage/nft.storage/compare/api-v2.27.0...api-v2.28.0) (2022-06-21)
 
 
