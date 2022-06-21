@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.28.1](https://github.com/nftstorage/nft.storage/compare/api-v2.28.0...api-v2.28.1) (2022-06-21)
+
+
+### Bug Fixes
+
+* switch to cluster local add ([#2012](https://github.com/nftstorage/nft.storage/issues/2012)) ([635314f](https://github.com/nftstorage/nft.storage/commit/635314f1ad822db562f6fbea25b007f14d0e6f94))
+
+## [2.28.0](https://github.com/nftstorage/nft.storage/compare/api-v2.27.0...api-v2.28.0) (2022-06-21)
+
+
+### Features
+
+* add copy_upload_history db function to migrate user data ([#1964](https://github.com/nftstorage/nft.storage/issues/1964)) ([7edca7b](https://github.com/nftstorage/nft.storage/commit/7edca7bd91fcb6f39d3008b07a9fc27824f721cd))
+
+
+### Bug Fixes
+
+* upgrade wrangler ([#1972](https://github.com/nftstorage/nft.storage/issues/1972)) ([7088712](https://github.com/nftstorage/nft.storage/commit/70887129ccba3af8c11c7103cd15b209929122ba))
+
 ## [2.27.0](https://github.com/nftstorage/nft.storage/compare/api-v2.26.1...api-v2.27.0) (2022-06-16)
 
 

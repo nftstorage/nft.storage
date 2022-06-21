@@ -9,12 +9,15 @@ jobs:
   measure:
     name: measure nft time to retrievability
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        env: ['staging', 'production']
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Checkout latest cron release tag
+        run: |
+          LATEST_TAG=$(git describe --tags --abbrev=0 --match='cron-*')
+          git checkout $LATEST_TAG
       - uses: actions/setup-node@v2
         with:
           node-version: 16
@@ -22,7 +25,6 @@ jobs:
       - name: Run job
         env:
           DEBUG: '*'
-          ENV: ${{ matrix.env }}
           NFT_STORAGE_API_KEY: ${{ secrets.NFT_STORAGE_API_KEY }}
           PUSHGATEWAY_JOBNAME: nftstorage_ci/instance/github_action
           PUSHGATEWAY_URL: https://pushgateway.k8s.locotorp.info/metrics/job/nftstorage_ci/instance/github_action
