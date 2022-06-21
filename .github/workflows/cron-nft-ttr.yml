@@ -26,7 +26,7 @@ jobs:
         env:
           DEBUG: '*'
           NFT_STORAGE_API_KEY: ${{ secrets.NFT_STORAGE_API_KEY }}
-          PUSHGATEWAY_JOBNAME: nftstorage_ci
+          PUSHGATEWAY_JOBNAME: nftstorage_ci_nft_ttr
           PUSHGATEWAY_URL: https://pushgateway.k8s.locotorp.info
           PUSHGATEWAY_BASIC_AUTH: ${{ secrets.PUSHGATEWAY_BASIC_AUTH }}
         run: |
