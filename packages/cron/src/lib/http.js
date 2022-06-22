@@ -9,7 +9,7 @@ import * as nodeHttp from 'http'
 export async function withHttpServer(listener, useServer) {
   const httpServer = nodeHttp.createServer(listener)
   // listen on unused port
-  await new Promise((resolve, _reject) => {
+  await new Promise((resolve) => {
     httpServer.listen(0, () => {
       resolve(true)
     })
@@ -21,7 +21,7 @@ export async function withHttpServer(listener, useServer) {
   try {
     await useServer(baseUrl)
   } finally {
-    await new Promise((resolve, _reject) => {
+    await new Promise((resolve) => {
       httpServer.close(resolve)
     })
   }
