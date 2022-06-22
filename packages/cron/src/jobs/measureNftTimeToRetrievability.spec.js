@@ -1,4 +1,5 @@
 import {
+  createPromClientRetrievalMetricsLogger,
   createStubbedImageFetcher,
   createStubbedRetrievalMetricsLogger,
   createStubStoreFunction,
@@ -8,6 +9,11 @@ import { test } from '../lib/testing.js'
 import { createTestImages } from '../bin/nft-ttr.js'
 import all from 'it-all'
 import { Writable } from 'node:stream'
+import { Registry } from 'prom-client'
+import { createRetrievalDurationMetric } from '../lib/metrics.js'
+import { withHttpServer } from '../lib/http.js'
+import { Milliseconds } from '../lib/time.js'
+import { Console } from 'node:console'
 
 test('measureNftTimeToRetrievability', async (t) => {
   /** this is meant to be a test that doesn't use the network (e.g. inject stubs) */
@@ -70,4 +76,44 @@ test('measureNftTimeToRetrievability', async (t) => {
 
   const finish = results.find((log) => log.type === 'finish')
   t.assert(finish)
+})
+
+test('createPromClientRetrievalMetricsLogger', async (t) => {
+  const registry = new Registry()
+  const metric = createRetrievalDurationMetric(registry)
+  const metricsPushGatewayJobName =
+    'test-job-createPromClientRetrievalMetricsLogger'
+  const pushGatewayAuthorization = 'bearer fake-auth'
+  /** @type {import('http').IncomingMessage[]} */
+  const fakePushGatewayRequests = []
+  /** @type {import('http').RequestListener} */
+  const fakePushGateway = (req, res) => {
+    fakePushGatewayRequests.push(req)
+    res.writeHead(200)
+    res.end()
+  }
+  const silentConsole = new Console(new Writable())
+  /** @type {import('./measureNftTimeToRetrievability.js').RetrieveLog} */
+  const fakeRetrieve = {
+    type: 'retrieve',
+    image: 'fake-image',
+    gateway: new URL('https://example.com/fake-gateway'),
+    url: new URL('https://example.com/fake-gateway/fake-image'),
+    contentLength: 1,
+    startTime: new Date(),
+    duration: new Milliseconds(1000),
+  }
+  await withHttpServer(fakePushGateway, async (pushGatewayUrl) => {
+    const metricsLogger = createPromClientRetrievalMetricsLogger(
+      registry,
+      metric,
+      metricsPushGatewayJobName,
+      pushGatewayUrl,
+      pushGatewayAuthorization
+    )
+    await metricsLogger({ console: silentConsole }, fakeRetrieve)
+  })
+  t.is(fakePushGatewayRequests.length, 1)
+  const [firstRequest] = fakePushGatewayRequests
+  t.is(firstRequest.url, `/metrics/job/${metricsPushGatewayJobName}`)
 })
