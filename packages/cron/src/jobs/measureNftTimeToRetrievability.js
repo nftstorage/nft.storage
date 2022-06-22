@@ -2,6 +2,7 @@ import { NFTStorage } from 'nft.storage'
 import { Milliseconds, now } from '../lib/time.js'
 import { Pushgateway } from 'prom-client'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
+import { pipeline, parallelMerge, flatten } from 'streaming-iterables'
 
 export const EXAMPLE_NFT_IMG_URL = new URL(
   'https://bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4.ipfs.dweb.link/1681.png'
@@ -11,6 +12,7 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
  * @typedef RetrieveLog
  * @property {string}       image
  * @property {"retrieve"}   type
+ * @property {URL}          gateway
  * @property {URL}          url
  * @property {number}       contentLength
  * @property {Date}         startTime
@@ -67,7 +69,7 @@ export function createStubStoreFunction() {
  * @property {AsyncIterable<Blob>} images - images to upload/retrieve
  * @property {StoreFunction} [store] - function to store nft
  * @property {string} [url] - URL to nft.storage to measure
- * @property {boolean} [logConfigAndExit] - if true, log config and exit
+ * @property {boolean} logConfigAndExit - if true, log config and exit
  * @property {URL} [metricsPushGateway] - Server to send metrics to. should reference a https://github.com/prometheus/pushgateway
  * @property {URL[]} gateways - IPFS Gateway to test retrieval from
  * @property {Console} console - logger
@@ -101,15 +103,18 @@ function readMeasureTtrOptions(options) {
  */
 
 /**
+ * @typedef StoreStartLog
+ * @property {"store/start"} type
+ * @property {string} image
+ * @property {Date} startTime
+ */
+
+/**
  * @typedef StoreLog
  * @property {"store"} type
  * @property {string} image
  * @property {Date} startTime
  * @property {Milliseconds} duration
- */
-
-/**
- * @typedef {StoreLog|Activity<"start"|"finish">|RetrieveLog} MeasureTtrLog
  */
 
 /**
@@ -119,7 +124,10 @@ function readMeasureTtrOptions(options) {
  * * retrieve image through ipfs gateway
  * @param {MeasureTtrOptions} options
  * @returns {AsyncIterable<
- * StoreLog|Activity<"start"|"finish">|RetrieveLog
+ *   | StoreStartLog
+ *   | StoreLog
+ *   | Activity<"start"|"finish">
+ *   | RetrieveLog
  * >}
  */
 export async function* measureNftTimeToRetrievability(options) {
@@ -133,7 +141,6 @@ export async function* measureNftTimeToRetrievability(options) {
   const start = {
     type: 'start',
   }
-  config.console.debug(start)
   yield start
   for await (const image of config.images) {
     const imageId = Number(new Date()).toString()
@@ -149,12 +156,13 @@ export async function* measureNftTimeToRetrievability(options) {
     const storeStartedAt = now()
     /** @type {StoreFunction} */
     const store = config.store || ((nft) => client.store(nft))
-    const storeBeforeLog = {
-      type: 'store/before',
+    /** @type {StoreStartLog} */
+    const storeStartLog = {
+      type: 'store/start',
       image: imageId,
       startTime: new Date(),
     }
-    config.console.debug(storeBeforeLog)
+    yield storeStartLog
     const metadata = await store(nft)
     const storeEndAt = now()
     /** @type {StoreLog} */
@@ -165,22 +173,30 @@ export async function* measureNftTimeToRetrievability(options) {
       duration: Milliseconds.subtract(storeEndAt, storeStartedAt),
     }
     yield storeLog
-    config.console.debug(storeLog)
-    for (const gateway of config.gateways) {
-      /** @type {RetrieveLog} */
-      let retrieval
-      try {
-        retrieval = await retrieve(options, {
-          id: imageId,
-          url: createGatewayRetrievalUrl(gateway, metadata.ipnft),
-        })
-      } catch (error) {
-        console.error('error retrieving', error)
-        throw error
-      }
-      yield retrieval
-      await options.pushRetrieveMetrics(options, retrieval)
-    }
+    yield* pipeline(
+      () =>
+        parallelMerge(
+          config.gateways.map(async function* (gateway) {
+            /** @type {RetrieveLog} */
+            let retrieval
+            try {
+              retrieval = await retrieve(
+                { ...options, gateway },
+                {
+                  id: imageId,
+                  url: createGatewayRetrievalUrl(gateway, metadata.ipnft),
+                }
+              )
+            } catch (error) {
+              console.error('error retrieving', error)
+              throw error
+            }
+            yield retrieval
+            await options.pushRetrieveMetrics(options, retrieval)
+          })
+        ),
+      flatten
+    )
   }
   /** @type {Activity<"finish">} */
   yield { type: 'finish' }
@@ -213,9 +229,9 @@ export const httpImageFetcher = (fetch) => async (url) => {
 }
 
 /**
- * @typedef {object }RetrieveImageOptions
+ * @typedef {object} RetrieveImageOptions
+ * @property {URL} gateway
  * @property {ImageFetcher} fetchImage
- * @property {RetrievalMetricsLogger} pushRetrieveMetrics
  * @property {Console} console
  */
 
@@ -237,6 +253,7 @@ async function retrieve(options, image) {
   /** @type {RetrieveLog} */
   const retrieveLog = {
     type: 'retrieve',
+    gateway: options.gateway,
     url: image.url,
     image: image.id,
     /** length in bytes */
@@ -270,8 +287,7 @@ function createGatewayRetrievalUrl(gatewayUrl, ipnftCid) {
  */
 export function createStubbedRetrievalMetricsLogger() {
   /** @type {RetrievalMetricsLogger} */
-  const push = async (options, retrieval) => {
-    options.console.debug({ type: 'stubbedRetrievalMetricsLogger', retrieval })
+  const push = async () => {
     return Promise.resolve()
   }
   return push
@@ -303,14 +319,22 @@ export function createPromClientRetrievalMetricsLogger(
   )
   /** @type {RetrievalMetricsLogger} */
   const push = async (options, retrieval) => {
-    metric.observe(retrieval.duration, {
-      byteLength: retrieval.contentLength,
-    })
+    const value = retrieval.duration
+    metric.observe(value, {})
     const pushAddArgs = {
       jobName: metricsPushGatewayJobName,
     }
     await pushgateway.pushAdd(pushAddArgs)
-    options.console.debug({ type: 'pushgateway.pushAdd', args: pushAddArgs })
+    options.console.debug({
+      type: 'metricPushed',
+      metric: {
+        name: metric.name,
+      },
+      observation: {
+        value,
+      },
+      pushgateway: pushAddArgs,
+    })
   }
   return push
 }

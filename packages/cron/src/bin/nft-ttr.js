@@ -69,14 +69,14 @@ export function createMeasureSecretsFromEnv(env) {
 export function createMeasureOptionsFromSade(sadeOptions, secrets) {
   // build gateways
   assert.ok(
-    hasOwnProperty(sadeOptions, 'gateways'),
-    'expected sadeOptions to have gateways'
+    hasOwnProperty(sadeOptions, 'gateway'),
+    'expected sadeOptions to have gateway'
   )
-  const gatewaysArgv = sadeOptions.gateways
-  assert.ok(Array.isArray(gatewaysArgv) || typeof gatewaysArgv === 'string')
-  const gatewaysArgvsArray = Array.isArray(gatewaysArgv)
-    ? gatewaysArgv.map(String)
-    : [...gatewaysArgv.split(' ')]
+  const gatewayArgv = sadeOptions.gateway
+  assert.ok(Array.isArray(gatewayArgv) || typeof gatewayArgv === 'string')
+  const gatewaysArgvsArray = Array.isArray(gatewayArgv)
+    ? gatewayArgv.map(String)
+    : [...gatewayArgv.split(' ')]
   const gateways = gatewaysArgvsArray.map((g) => {
     try {
       return new URL(g)
@@ -133,11 +133,17 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets) {
         secrets.metricsPushGatewayAuthorization
       )
 
+  const logConfigAndExit = Boolean(
+    hasOwnProperty(sadeOptions, 'logConfigAndExit') &&
+      sadeOptions.logConfigAndExit
+  )
+
   // build final options
   const options = {
     ...defaultMeasureOptions(),
     gateways,
     images: createTestImages(1, minImageSizeBytes),
+    logConfigAndExit,
     metricsPushGateway,
     metricsPushGatewayJobName,
     minImageSizeBytes,
@@ -197,8 +203,8 @@ export async function* cli(
       false
     )
     .option(
-      '--gateways',
-      'IPFS gateway(s) to use to measure time to retrieval of the upload',
+      '--gateway',
+      'IPFS gateway to use to measure time to retrieval of the upload',
       'https://nftstorage.link'
     )
     .option(
@@ -210,7 +216,7 @@ export async function* cli(
       iterable = measureNftTimeToRetrievability({
         secrets,
         ...createMeasureOptionsFromSade(opts, secrets),
-        ...options,
+        console: options.console,
       })
     })
   argParser.parse(argv)
@@ -235,7 +241,8 @@ function parseBasicAuth(basicAuthEnvVarString) {
  */
 async function main(argv) {
   // eslint-disable-next-line no-empty,@typescript-eslint/no-unused-vars,no-unused-vars
-  for await (const _ of cli(argv)) {
+  for await (const _ of cli(argv, { console, env: process.env })) {
+    console.debug(_)
   }
 }
 
