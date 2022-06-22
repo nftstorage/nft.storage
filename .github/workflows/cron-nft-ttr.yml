@@ -36,6 +36,7 @@ jobs:
             --gateway https://dweb.link \
             --metricsPushGateway $PUSHGATEWAY_URL \
             --metricsPushGatewayJobName $PUSHGATEWAY_JOBNAME \
+            --metricsLabelsJson '{"instance": "github_action"}' \
 
       - name: Heartbeat
         if: ${{ success() }}
