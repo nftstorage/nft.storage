@@ -324,7 +324,14 @@ export function createPromClientRetrievalMetricsLogger(
     const pushAddArgs = {
       jobName: metricsPushGatewayJobName,
     }
-    await pushgateway.pushAdd(pushAddArgs)
+    const pushAddResult = await pushgateway.pushAdd(pushAddArgs)
+    const pushAddResponse = /** @type {import('http').IncomingMessage} */ (
+      pushAddResult.resp
+    )
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const pushAddRequest = /** @type {import('http').ClientRequest} */ (
+      /** @type {any} */ (pushAddResponse).req
+    )
     options.console.debug({
       type: 'metricPushed',
       metric: {
@@ -334,6 +341,16 @@ export function createPromClientRetrievalMetricsLogger(
         value,
       },
       pushgateway: pushAddArgs,
+      request: {
+        url: new URL(
+          `${pushAddRequest.protocol}//${String(
+            pushAddRequest.getHeader('host')
+          )}${pushAddRequest.path}`
+        ).toString(),
+      },
+      response: {
+        status: pushAddResponse.statusCode,
+      },
     })
   }
   return push
