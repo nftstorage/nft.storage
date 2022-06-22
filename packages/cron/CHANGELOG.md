@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/nftstorage/nft.storage/compare/cron-v3.2.0...cron-v3.3.0) (2022-06-22)
+
+
+### Features
+
+* followup fixes for [#1945](https://github.com/nftstorage/nft.storage/issues/1945) after testing nft-ttr cron  ([#2000](https://github.com/nftstorage/nft.storage/issues/2000)) ([0765548](https://github.com/nftstorage/nft.storage/commit/0765548a4f46ebd2ccd1f5358e68686e766af1d8))
+
 ## [3.2.0](https://github.com/nftstorage/nft.storage/compare/cron-v3.1.0...cron-v3.2.0) (2022-06-16)
 
 
