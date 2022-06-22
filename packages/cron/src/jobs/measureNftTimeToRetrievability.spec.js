@@ -83,6 +83,9 @@ test('createPromClientRetrievalMetricsLogger', async (t) => {
   const metric = createRetrievalDurationMetric(registry)
   const metricsPushGatewayJobName =
     'test-job-createPromClientRetrievalMetricsLogger'
+  const metricLabels = {
+    instance: 'instance-createPromClientRetrievalMetricsLogger',
+  }
   const pushGatewayAuthorization = 'bearer fake-auth'
   /** @type {import('http').IncomingMessage[]} */
   const fakePushGatewayRequests = []
@@ -108,6 +111,7 @@ test('createPromClientRetrievalMetricsLogger', async (t) => {
       registry,
       metric,
       metricsPushGatewayJobName,
+      metricLabels,
       pushGatewayUrl,
       pushGatewayAuthorization
     )
@@ -115,5 +119,13 @@ test('createPromClientRetrievalMetricsLogger', async (t) => {
   })
   t.is(fakePushGatewayRequests.length, 1)
   const [firstRequest] = fakePushGatewayRequests
-  t.is(firstRequest.url, `/metrics/job/${metricsPushGatewayJobName}`)
+  t.assert(
+    firstRequest.url?.startsWith(`/metrics/job/${metricsPushGatewayJobName}`)
+  )
+  for (const [label, value] of Object.entries(metricLabels)) {
+    t.assert(
+      firstRequest.url?.includes([label, value].join('/')),
+      `expected metric push request url to contain label '${label}'`
+    )
+  }
 })

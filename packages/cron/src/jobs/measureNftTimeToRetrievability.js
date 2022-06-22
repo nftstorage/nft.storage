@@ -297,6 +297,7 @@ export function createStubbedRetrievalMetricsLogger() {
  * @param {import('prom-client').Registry} registry
  * @param {import('../lib/metrics.js').RetrievalDurationMetric} metric
  * @param {string} metricsPushGatewayJobName
+ * @param {Record<string,string>} metricLabels
  * @param {URL} pushGatewayUrl
  * @param {HttpAuthorizationHeaderValue} pushGatewayAuthorization
  * @returns {RetrievalMetricsLogger}
@@ -305,6 +306,7 @@ export function createPromClientRetrievalMetricsLogger(
   registry,
   metric,
   metricsPushGatewayJobName,
+  metricLabels,
   pushGatewayUrl,
   pushGatewayAuthorization
 ) {
@@ -323,6 +325,7 @@ export function createPromClientRetrievalMetricsLogger(
     metric.observe(value, {})
     const pushAddArgs = {
       jobName: metricsPushGatewayJobName,
+      groupings: metricLabels,
     }
     const pushAddResult = await pushgateway.pushAdd(pushAddArgs)
     const pushAddResponse = /** @type {import('http').IncomingMessage} */ (

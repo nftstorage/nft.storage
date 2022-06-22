@@ -129,6 +129,7 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets) {
         promClientRegistry,
         createRetrievalDurationMetric(promClientRegistry),
         metricsPushGatewayJobName,
+        {},
         metricsPushGateway,
         secrets.metricsPushGatewayAuthorization
       )
