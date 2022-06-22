@@ -793,6 +793,10 @@ pre > div code span {
   padding-right: 20px;
 }
 
+.post img.align-center {
+  margin: 0 auto;
+}
+
 .post code {
   padding: 0.2em 0.4em;
   margin: 0;
