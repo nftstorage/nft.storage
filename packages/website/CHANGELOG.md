@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.55.0](https://github.com/nftstorage/nft.storage/compare/website-v1.54.0...website-v1.55.0) (2022-06-23)
+
+
+### Features
+
+* Q3'22 integration blog post ([#2011](https://github.com/nftstorage/nft.storage/issues/2011)) ([476f9c1](https://github.com/nftstorage/nft.storage/commit/476f9c130e1a1b802a25a71b7f930a0c0fbdecab))
+
 ## [1.54.0](https://github.com/nftstorage/nft.storage/compare/website-v1.53.2...website-v1.54.0) (2022-06-16)
 
 
