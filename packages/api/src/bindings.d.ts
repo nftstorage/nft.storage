@@ -105,7 +105,7 @@ export interface RouteContext {
   params: Record<string, string>
   db: DBClient
   log: Logging
-  backup?: BackupClient
+  uploader: Uploader
   ucanService: Service
   auth?: Auth
 }
@@ -244,15 +244,15 @@ export type RequestForm = Array<RequestFormItem>
 export type DagStructure = 'Unknown' | 'Partial' | 'Complete'
 
 /**
- * A client to a service that backups up a CAR file.
+ * A client to a service that acepts CAR file uploads.
  */
-export interface BackupClient {
+export interface Uploader {
   /**
    * Uploads the CAR file to the service and returns the URL.
    */
-  backupCar(
+  uploadCar(
     userId: number,
-    rootCid: CID,
+    sourceCid: string,
     car: Blob,
     structure?: DagStructure
   ): Promise<URL>

@@ -1,7 +1,7 @@
 import path from 'path'
 import { fileURLToPath } from 'node:url'
 import execa from 'execa'
-import { dbCmd } from './db.js'
+import { servicesStartCmd, servicesStopCmd } from './services.js'
 import delay from 'delay'
 import { dbSqlCmd } from './db-sql.js'
 
@@ -9,7 +9,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export async function dbTypesCmd() {
   const project = `nft-storage-db-types-${Date.now()}`
-  await dbCmd({ start: true, project })
+  await servicesStartCmd({ project })
   await delay(2000)
 
   try {
@@ -30,6 +30,6 @@ export async function dbTypesCmd() {
       }
     )
   } finally {
-    await dbCmd({ clean: true, project })
+    await servicesStopCmd({ clean: true, project })
   }
 }

@@ -139,14 +139,13 @@ export async function uploadCarWithStat(
   { event, ctx, user, key, car, uploadType = 'Car', mimeType, files, meta },
   stat
 ) {
-  const [added, backupUrl] = await Promise.all([
-    cluster.addCar(car, {
-      local: true,
-    }),
-    ctx.backup
-      ? ctx.backup.backupCar(user.id, stat.rootCid, car, stat.structure)
-      : Promise.resolve(null),
-  ])
+  const sourceCid = stat.rootCid.toString()
+  const backupUrl = await ctx.uploader.uploadCar(
+    user.id,
+    sourceCid,
+    car,
+    stat.structure
+  )
 
   const xName = event.request.headers.get('x-name')
   let name = xName && decodeURIComponent(xName)
@@ -158,15 +157,28 @@ export async function uploadCarWithStat(
     mime_type: mimeType,
     type: uploadType,
     content_cid: stat.rootCid.toV1().toString(),
-    source_cid: stat.rootCid.toString(),
-    dag_size: stat.structure === 'Complete' ? added.bytes : stat.size,
+    source_cid: sourceCid,
+    dag_size: stat.size,
     user_id: user.id,
     files,
     meta,
     key_id: key?.id,
-    backup_urls: backupUrl ? [backupUrl] : [],
+    backup_urls: [backupUrl],
     name,
   })
+
+  if (event.waitUntil) {
+    event.waitUntil(
+      (async () => {
+        try {
+          await cluster.pin(sourceCid)
+        } catch (err) {
+          console.warn('failed to pin to cluster', err)
+        }
+        await cluster.addCar(car, { local: true })
+      })()
+    )
+  }
 
   return upload
 }

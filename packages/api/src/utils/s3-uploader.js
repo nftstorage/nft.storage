@@ -6,10 +6,10 @@ import { sha256 } from 'multiformats/hashes/sha2'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 
 /**
- * @typedef {import('../bindings').BackupClient} BackupClient
- * @implements {BackupClient}
+ * @typedef {import('../bindings').Uploader} Uploader
+ * @implements {Uploader}
  */
-export class S3BackupClient {
+export class S3Uploader {
   /**
    * @param {string} region
    * @param {string} accessKeyId
@@ -72,14 +72,14 @@ export class S3BackupClient {
   /**
    * Backup given CAR file keyed by /raw/${rootCid}/${appName}-${userId}/${carHash}.car
    * @param {number} userId
-   * @param {import('multiformats').CID} rootCid
+   * @param {string} sourceCid
    * @param {Blob} car
    * @param {import('../bindings').DagStructure} [structure]
    */
-  async backupCar(userId, rootCid, car, structure = 'Unknown') {
+  async uploadCar(userId, sourceCid, car, structure = 'Unknown') {
     const multihash = await this._getMultihash(car)
     const hashStr = uint8ArrayToString(multihash.bytes, 'base32')
-    const key = `raw/${rootCid}/${this._appName}-${userId}/${hashStr}.car`
+    const key = `raw/${sourceCid}/${this._appName}-${userId}/${hashStr}.car`
     const cmdParams = {
       Bucket: this._bucketName,
       Key: key,
@@ -89,7 +89,6 @@ export class S3BackupClient {
       // see: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html#AmazonS3-PutObject-request-header-ChecksumSHA256
       ChecksumSHA256: this._getAwsChecksum(multihash),
     }
-    /** @type {import('@aws-sdk/client-s3').PutObjectCommand} */
 
     try {
       await this._s3.send(new PutObjectCommand(cmdParams))
