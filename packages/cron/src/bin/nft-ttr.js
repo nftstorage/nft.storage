@@ -64,7 +64,7 @@ export function createMeasureSecretsFromEnv(env) {
 /**
  * @param {unknown} sadeOptions
  * @param {Pick<MeasureTtrOptions['secrets'], 'metricsPushGatewayAuthorization'>} secrets
- * @returns {Omit<MeasureTtrOptions, "secrets">}
+ * @returns {Omit<MeasureTtrOptions, "secrets"> & { metricsLabels: Record<string,string> }}
  */
 export function createMeasureOptionsFromSade(sadeOptions, secrets) {
   // build gateways
@@ -119,6 +119,13 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets) {
     sadeOptions.metricsPushGatewayJobName
   assert.ok(typeof metricsPushGatewayJobName === 'string')
 
+  const metricsLabelsJson = hasOwnProperty(sadeOptions, 'metricsLabelsJson')
+    ? String(sadeOptions.metricsLabelsJson)
+    : undefined
+  const metricsLabels = metricsLabelsJson
+    ? /** @type {Record<string,string>} */ (JSON.parse(metricsLabelsJson))
+    : {}
+
   // build pushRetrieveMetrics
   const promClientRegistry = new promClient.Registry()
 
@@ -129,6 +136,7 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets) {
         promClientRegistry,
         createRetrievalDurationMetric(promClientRegistry),
         metricsPushGatewayJobName,
+        metricsLabels,
         metricsPushGateway,
         secrets.metricsPushGatewayAuthorization
       )
@@ -148,6 +156,7 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets) {
     metricsPushGatewayJobName,
     minImageSizeBytes,
     pushRetrieveMetrics,
+    metricsLabels,
   }
   return options
 }

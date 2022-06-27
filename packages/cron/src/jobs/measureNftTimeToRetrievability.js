@@ -297,6 +297,7 @@ export function createStubbedRetrievalMetricsLogger() {
  * @param {import('prom-client').Registry} registry
  * @param {import('../lib/metrics.js').RetrievalDurationMetric} metric
  * @param {string} metricsPushGatewayJobName
+ * @param {Record<string,string>} metricLabels
  * @param {URL} pushGatewayUrl
  * @param {HttpAuthorizationHeaderValue} pushGatewayAuthorization
  * @returns {RetrievalMetricsLogger}
@@ -305,6 +306,7 @@ export function createPromClientRetrievalMetricsLogger(
   registry,
   metric,
   metricsPushGatewayJobName,
+  metricLabels,
   pushGatewayUrl,
   pushGatewayAuthorization
 ) {
@@ -323,8 +325,16 @@ export function createPromClientRetrievalMetricsLogger(
     metric.observe(value, {})
     const pushAddArgs = {
       jobName: metricsPushGatewayJobName,
+      groupings: metricLabels,
     }
-    await pushgateway.pushAdd(pushAddArgs)
+    const pushAddResult = await pushgateway.pushAdd(pushAddArgs)
+    const pushAddResponse = /** @type {import('http').IncomingMessage} */ (
+      pushAddResult.resp
+    )
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const pushAddRequest = /** @type {import('http').ClientRequest} */ (
+      /** @type {any} */ (pushAddResponse).req
+    )
     options.console.debug({
       type: 'metricPushed',
       metric: {
@@ -334,6 +344,16 @@ export function createPromClientRetrievalMetricsLogger(
         value,
       },
       pushgateway: pushAddArgs,
+      request: {
+        url: new URL(
+          `${pushAddRequest.protocol}//${String(
+            pushAddRequest.getHeader('host')
+          )}${pushAddRequest.path}`
+        ).toString(),
+      },
+      response: {
+        status: pushAddResponse.statusCode,
+      },
     })
   }
   return push

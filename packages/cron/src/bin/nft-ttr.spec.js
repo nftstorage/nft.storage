@@ -15,6 +15,7 @@ test('createMeasureOptionsFromSade', (t) => {
     metricsPushGatewayJobName: 'nft-ttr',
     gateway: sampleGateways,
     logConfigAndExit: true,
+    metricsLabelsJson: '{"instance": "github_action"}',
   }
   const secrets = {
     metricsPushGatewayAuthorization: '',
@@ -27,6 +28,7 @@ test('createMeasureOptionsFromSade', (t) => {
   t.is(options.metricsPushGateway?.toString(), sampleSade.metricsPushGateway)
   t.is(options.metricsPushGatewayJobName, sampleSade.metricsPushGatewayJobName)
   t.is(options.logConfigAndExit, true)
+  t.is(options.metricsLabels.instance, 'github_action')
 
   // ensure single gateway is parsed correctly
   const options2 = createMeasureOptionsFromSade(
