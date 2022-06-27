@@ -24,13 +24,21 @@ export class S3Uploader {
     if (!accessKeyId) throw new Error('missing access key ID')
     if (!secretAccessKey) throw new Error('missing secret access key')
     if (!bucketName) throw new Error('missing bucket name')
+
+    // https://github.com/aws/aws-sdk-js-v3/issues/1941
+    let endpoint
+    if (options.endpoint) {
+      const endpointUrl = new URL(options.endpoint)
+      endpoint = { protocol: endpointUrl.protocol, hostname: endpointUrl.host }
+    }
+
     /**
      * @private
      * @type {import('@aws-sdk/client-s3').S3Client}
      */
     this._s3 = new S3Client({
-      endpoint: options.endpoint,
-      forcePathStyle: !!options.endpoint, // Force path if endpoint provided
+      endpoint,
+      forcePathStyle: !!endpoint, // Force path if endpoint provided
       region,
       credentials: { accessKeyId, secretAccessKey },
     })

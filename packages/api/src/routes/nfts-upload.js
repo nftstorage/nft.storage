@@ -158,7 +158,7 @@ export async function uploadCarWithStat(
     type: uploadType,
     content_cid: stat.rootCid.toV1().toString(),
     source_cid: sourceCid,
-    dag_size: stat.size,
+    dag_size: stat.structure === 'Complete' ? stat.blocksSize : stat.size,
     user_id: user.id,
     files,
     meta,
@@ -167,18 +167,16 @@ export async function uploadCarWithStat(
     name,
   })
 
-  if (event.waitUntil) {
-    event.waitUntil(
-      (async () => {
-        try {
-          await cluster.pin(sourceCid)
-        } catch (err) {
-          console.warn('failed to pin to cluster', err)
-        }
-        await cluster.addCar(car, { local: true })
-      })()
-    )
-  }
+  event.waitUntil(
+    (async () => {
+      try {
+        await cluster.pin(sourceCid)
+      } catch (err) {
+        console.warn('failed to pin to cluster', err)
+      }
+      await cluster.addCar(car, { local: true })
+    })()
+  )
 
   return upload
 }
@@ -222,8 +220,11 @@ export async function nftUpdateUpload(event, ctx) {
  *
  * The DAG size will be returned ONLY IF the root node is dag-pb or raw.
  *
- * @typedef {import('multiformats').CID} CID
- * @typedef {{ size?: number, rootCid: CID, structure?: DagStructure }} CarStat
+ * @typedef {Object} CarStat
+ * @property {number} [size] DAG size in bytes
+ * @property {import('multiformats').CID} rootCid Root CID of the DAG
+ * @property {DagStructure} [structure] Completeness of the DAG within the CAR
+ * @property {number} blocksSize Size in bytes of all blocks in the CAR
  * @param {Blob} carBlob
  * @param {Object} [options]
  * @param {DagStructure} [options.structure]
@@ -243,11 +244,13 @@ export async function carStat(carBlob, { structure } = {}) {
   let rawRootBlock
   /** @type {import('@ipld/car/api').Block[]} */
   const blocks = []
+  let blocksSize = 0
   for await (const block of blocksIterator) {
     const blockSize = block.bytes.byteLength
     if (blockSize > MAX_BLOCK_SIZE) {
       throw new Error(`block too big: ${blockSize} > ${MAX_BLOCK_SIZE}`)
     }
+    blocksSize += blockSize
     if (block.cid.multihash.code === sha256.code) {
       const ourHash = await sha256.digest(block.bytes)
       if (!equals(ourHash.digest, block.cid.multihash.digest)) {
@@ -296,7 +299,7 @@ export async function carStat(carBlob, { structure } = {}) {
       }
     }
   }
-  return { rootCid, size, structure }
+  return { rootCid, size, structure, blocksSize }
 }
 
 /**
