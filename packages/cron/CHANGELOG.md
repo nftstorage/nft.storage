@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/nftstorage/nft.storage/compare/cron-v3.3.0...cron-v3.4.0) (2022-06-27)
+
+
+### Features
+
+* **cron:** send instance=github_action label with retrieval_duration_seconds metric ([#2020](https://github.com/nftstorage/nft.storage/issues/2020)) ([5e95d27](https://github.com/nftstorage/nft.storage/commit/5e95d27c94f7253dac00db0591992b5502cdacc2))
+
 ## [3.3.0](https://github.com/nftstorage/nft.storage/compare/cron-v3.2.0...cron-v3.3.0) (2022-06-22)
 
 
