@@ -8,7 +8,6 @@ const delay = require('delay')
 dotenv.config({ path: path.join(__dirname, '../../.env') })
 
 const cli = path.join(__dirname, 'scripts/cli.js')
-const project = 'nft-storage-test'
 
 /** @type {import('esbuild').Plugin} */
 const nodeBuiltinsPlugin = {
@@ -36,6 +35,8 @@ const config = {
   },
   plugins: [nodeBuiltinsPlugin],
 }
+
+const project = 'nft-storage-test'
 
 /** @type {import('playwright-test').RunnerOptions} */
 module.exports = {
