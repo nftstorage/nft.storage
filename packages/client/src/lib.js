@@ -42,6 +42,7 @@ const RATE_LIMIT_PERIOD = 10 * 1000
  * @typedef {import('./lib/interface.js').CarReader} CarReader
  * @typedef {import('ipfs-car/blockstore').Blockstore} BlockstoreI
  * @typedef {import('./lib/interface.js').RateLimiter} RateLimiter
+ * @typedef {import('./lib/interface.js').RequestOptions} RequestOptions
  */
 
 /**
@@ -127,15 +128,16 @@ class NFTStorage {
    *
    * @param {Service} service
    * @param {Blob} blob
+   * @param {RequestOptions} [options]
    * @returns {Promise<CIDString>}
    */
-  static async storeBlob(service, blob) {
+  static async storeBlob(service, blob, options) {
     const blockstore = new Blockstore()
     let cidString
 
     try {
       const { cid, car } = await NFTStorage.encodeBlob(blob, { blockstore })
-      await NFTStorage.storeCar(service, car)
+      await NFTStorage.storeCar(service, car, options)
       cidString = cid.toString()
     } finally {
       await blockstore.close()
@@ -155,7 +157,7 @@ class NFTStorage {
   static async storeCar(
     { endpoint, token, rateLimiter = globalRateLimiter },
     car,
-    { onStoredChunk, maxRetries, decoders } = {}
+    { onStoredChunk, maxRetries, decoders, signal } = {}
   ) {
     const url = new URL('upload/', endpoint)
     const headers = NFTStorage.auth(token)
@@ -176,11 +178,20 @@ class NFTStorage {
         const cid = await pRetry(
           async () => {
             await rateLimiter()
-            const response = await fetch(url.toString(), {
-              method: 'POST',
-              headers,
-              body: carFile,
-            })
+            /** @type {Response} */
+            let response
+            try {
+              response = await fetch(url.toString(), {
+                method: 'POST',
+                headers,
+                body: carFile,
+                signal,
+              })
+            } catch (/** @type {any} */ err) {
+              // TODO: remove me and test when client accepts custom fetch impl
+              /* c8 ignore next 1 */
+              throw signal && signal.aborted ? new AbortError(err) : err
+            }
             /* c8 ignore next 3 */
             if (response.status === 429) {
               throw new Error('rate limited')
@@ -219,16 +230,17 @@ class NFTStorage {
    *
    * @param {Service} service
    * @param {FilesSource} filesSource
+   * @param {RequestOptions} [options]
    * @returns {Promise<CIDString>}
    */
-  static async storeDirectory(service, filesSource) {
+  static async storeDirectory(service, filesSource, options) {
     const blockstore = new Blockstore()
     let cidString
     try {
       const { cid, car } = await NFTStorage.encodeDirectory(filesSource, {
         blockstore,
       })
-      await NFTStorage.storeCar(service, car)
+      await NFTStorage.storeCar(service, car, options)
       cidString = cid.toString()
     } finally {
       await blockstore.close()
@@ -258,11 +270,12 @@ class NFTStorage {
    * @template {import('./lib/interface.js').TokenInput} T
    * @param {Service} service
    * @param {T} metadata
+   * @param {RequestOptions} [options]
    * @returns {Promise<TokenType<T>>}
    */
-  static async store(service, metadata) {
+  static async store(service, metadata, options) {
     const { token, car } = await NFTStorage.encodeNFT(metadata)
-    await NFTStorage.storeCar(service, car)
+    await NFTStorage.storeCar(service, car, options)
     return token
   }
 
@@ -272,17 +285,20 @@ class NFTStorage {
    *
    * @param {Service} service
    * @param {string} cid
+   * @param {RequestOptions} [options]
    * @returns {Promise<import('./lib/interface.js').StatusResult>}
    */
   static async status(
     { endpoint, token, rateLimiter = globalRateLimiter },
-    cid
+    cid,
+    options
   ) {
     const url = new URL(`${cid}/`, endpoint)
     await rateLimiter()
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: NFTStorage.auth(token),
+      signal: options && options.signal,
     })
     /* c8 ignore next 3 */
     if (response.status === 429) {
@@ -308,12 +324,19 @@ class NFTStorage {
    *
    * @param {import('./lib/interface.js').PublicService} service
    * @param {string} cid
+   * @param {RequestOptions} [options]
    * @returns {Promise<import('./lib/interface.js').CheckResult>}
    */
-  static async check({ endpoint, rateLimiter = globalRateLimiter }, cid) {
+  static async check(
+    { endpoint, rateLimiter = globalRateLimiter },
+    cid,
+    options
+  ) {
     const url = new URL(`check/${cid}/`, endpoint)
     await rateLimiter()
-    const response = await fetch(url.toString())
+    const response = await fetch(url.toString(), {
+      signal: options && options.signal,
+    })
     /* c8 ignore next 3 */
     if (response.status === 429) {
       throw new Error('rate limited')
@@ -338,17 +361,20 @@ class NFTStorage {
    *
    * @param {Service} service
    * @param {string} cid
+   * @param {RequestOptions} [options]
    * @returns {Promise<void>}
    */
   static async delete(
     { endpoint, token, rateLimiter = globalRateLimiter },
-    cid
+    cid,
+    options
   ) {
     const url = new URL(`${cid}/`, endpoint)
     await rateLimiter()
     const response = await fetch(url.toString(), {
       method: 'DELETE',
       headers: NFTStorage.auth(token),
+      signal: options && options.signal,
     })
     /* c8 ignore next 3 */
     if (response.status === 429) {
@@ -498,9 +524,10 @@ class NFTStorage {
    * ```
    *
    * @param {Blob} blob
+   * @param {RequestOptions} [options]
    */
-  storeBlob(blob) {
-    return NFTStorage.storeBlob(this, blob)
+  storeBlob(blob, options) {
+    return NFTStorage.storeBlob(this, blob, options)
   }
 
   /**
@@ -560,9 +587,10 @@ class NFTStorage {
    * instance as well, in which case directory structure will be retained.
    *
    * @param {FilesSource} files
+   * @param {RequestOptions} [options]
    */
-  storeDirectory(files) {
-    return NFTStorage.storeDirectory(this, files)
+  storeDirectory(files, options) {
+    return NFTStorage.storeDirectory(this, files, options)
   }
 
   /**
@@ -575,9 +603,10 @@ class NFTStorage {
    * ```
    *
    * @param {string} cid
+   * @param {RequestOptions} [options]
    */
-  status(cid) {
-    return NFTStorage.status(this, cid)
+  status(cid, options) {
+    return NFTStorage.status(this, cid, options)
   }
 
   /**
@@ -592,9 +621,10 @@ class NFTStorage {
    * ```
    *
    * @param {string} cid
+   * @param {RequestOptions} [options]
    */
-  delete(cid) {
-    return NFTStorage.delete(this, cid)
+  delete(cid, options) {
+    return NFTStorage.delete(this, cid, options)
   }
 
   /**
@@ -607,9 +637,10 @@ class NFTStorage {
    * ```
    *
    * @param {string} cid
+   * @param {RequestOptions} [options]
    */
-  check(cid) {
-    return NFTStorage.check(this, cid)
+  check(cid, options) {
+    return NFTStorage.check(this, cid, options)
   }
 
   /**
@@ -650,9 +681,10 @@ class NFTStorage {
    *
    * @template {import('./lib/interface.js').TokenInput} T
    * @param {T} token
+   * @param {RequestOptions} [options]
    */
-  store(token) {
-    return NFTStorage.store(this, token)
+  store(token, options) {
+    return NFTStorage.store(this, token, options)
   }
 }
 
