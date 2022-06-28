@@ -279,8 +279,7 @@ export async function carStat(carBlob, { structure } = {}) {
       }
       // get Structure if not already known
       if (!structure || structure === 'Unknown') {
-        const isComplete = iterateDag(rawRootBlock, blocks)
-        structure = isComplete ? 'Complete' : 'Partial'
+        structure = getDagStructure(rawRootBlock, blocks)
       }
     }
   }
@@ -288,16 +287,17 @@ export async function carStat(carBlob, { structure } = {}) {
 }
 
 /**
- * Iterate over a dag starting on the raw block and using the CAR blocks.
- * Returns whether the DAG is complete.
+ * Iterate over a DAG starting on the raw block and using the CAR blocks.
+ * Returns the known completeness of the DAG.
  *
  * @param {import('@ipld/car/api').Block} rawRootBlock
  * @param {import('@ipld/car/api').Block[]} blocks
+ * @returns {DagStructure}
  */
-function iterateDag(rawRootBlock, blocks) {
+function getDagStructure(rawRootBlock, blocks) {
   const decoder = decoders.find((d) => d.code === rawRootBlock.cid.code)
   if (!decoder) {
-    return false
+    return 'Unknown'
   }
 
   const rBlock = new Block({
@@ -305,23 +305,20 @@ function iterateDag(rawRootBlock, blocks) {
     bytes: rawRootBlock.bytes,
     value: decoder.decode(rawRootBlock.bytes),
   })
-  const bLinks = Array.from(rBlock.links())
-  for (const link of bLinks) {
+  for (const link of rBlock.links()) {
     const existingBlock = blocks.find((b) => b.cid.equals(link[1]))
-
-    // Incomplete Dag
     if (!existingBlock) {
-      return false
+      return 'Partial'
     }
 
-    // Incomplete Dag
-    if (!iterateDag(existingBlock, blocks)) {
-      return false
+    // Get structure of remaining DAG
+    const structure = getDagStructure(existingBlock, blocks)
+    if (structure !== 'Complete') {
+      return structure
     }
   }
 
-  // Complete Dag
-  return true
+  return 'Complete'
 }
 
 /**
