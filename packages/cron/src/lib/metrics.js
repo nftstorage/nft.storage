@@ -51,7 +51,7 @@ export function createRetrievalDurationMetric(registry) {
  * @returns {StoreDurationMetric}
  */
 export function createStoreDurationMetric(registry) {
-  const name = 'storage_duration_seconds'
+  const name = 'store_duration_seconds'
   const histogram = new Histogram({
     name,
     help: 'How long, in seconds, it took to store a file',

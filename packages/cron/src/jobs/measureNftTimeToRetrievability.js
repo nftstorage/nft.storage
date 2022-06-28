@@ -339,7 +339,7 @@ export function createStoreMetricsLogger(
   labels,
   console
 ) {
-  const pushStorageDuration = createPushgatewayMetricLogger(
+  const pushStoreDuration = createPushgatewayMetricLogger(
     pushgateway,
     storeDurationMetric,
     jobName,
@@ -347,7 +347,7 @@ export function createStoreMetricsLogger(
     console
   )
   return async (storeLog) => {
-    await pushStorageDuration(storeLog.duration)
+    await pushStoreDuration(storeLog.duration)
   }
 }
 
@@ -366,7 +366,7 @@ export function createRetrievalMetricsLogger(
   labels,
   console
 ) {
-  const pushStorageDuration = createPushgatewayMetricLogger(
+  const pushRetrievalDurationMetric = createPushgatewayMetricLogger(
     pushgateway,
     retrievalDurationMetric,
     jobName,
@@ -374,6 +374,6 @@ export function createRetrievalMetricsLogger(
     console
   )
   return async (options, retrieval) => {
-    await pushStorageDuration(retrieval.duration)
+    await pushRetrievalDurationMetric(retrieval.duration)
   }
 }
