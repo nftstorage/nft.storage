@@ -13,7 +13,7 @@ There are currently two methods of authenticating uploads to NFT.Storage, and wh
 
 ### API Keys
 
-The most common way to authenticate is using an **API Key**, which can be generated on your [account management page](https://nft.storage/manage/) on the NFT.Storage website. Once you've generated a key, you can use it to authenticate the [JavaScript client][reference-js-client] or attach the key to an `Authentication` header in requests to the [HTTP API][reference-http].
+The most common way to authenticate is using an **API Key**, which can be generated on your [account management page](https://nft.storage/manage/) on the NFT.Storage website. Once you've generated a key, you can use it to authenticate the [JavaScript client][reference-nftstorage-class] or attach the key to an `Authentication` header in requests to the [HTTP API][reference-http].
 
 While API keys are easy to use, they need to be protected and kept secret to avoid giving access to your NFT.Storage account. As a result, we strongly advise against including your API key in web apps or other client applications where the key may be exposed and potentially extracted and misused.
 
@@ -70,7 +70,7 @@ Because public gateways are a shared resource, you may prefer to [run your own d
 Another potential optimization is to store redundant copies of your NFT data on a traditional storage service and deliver them via HTTP. This side-steps the IPFS retrieval entirely and may be more performant in some cases, but you'll need to do some bookkeeping to keep track of the HTTP locations of each piece of data. When pursuing this option, we strongly recommend exposing the original `ipfs://` URLs to your users, so that they have multiple options for retrieval and aren't dependent on your custom HTTP service.
 
 
-[reference-js-client]: https://nftstorage.github.io/nft.storage/client
+[reference-nftstorage-class]: https://nftstorage.github.io/nft.storage/client/classes/lib.NFTStorage.html
 [reference-http]: https://nft.storage/api-docs/
 [brave-ipfs]: https://brave.com/ipfs-support/
 [public-gateway-checker]: https://ipfs.github.io/public-gateway-checker/
