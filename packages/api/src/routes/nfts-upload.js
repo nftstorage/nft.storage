@@ -34,7 +34,7 @@ export async function nftUpload(event, ctx) {
     const form = await event.request.formData()
     // Our API schema requires that all file parts be named `file` and
     // encoded as binary, which is why we can expect that each part here is
-    // a file (and not a stirng).
+    // a file (and not a string).
     const files = /** @type {File[]} */ (form.getAll('file'))
     const input = files.map((f) => {
       if (typeof f === 'string') {
@@ -158,7 +158,7 @@ export async function uploadCarWithStat(
     type: uploadType,
     content_cid: stat.rootCid.toV1().toString(),
     source_cid: sourceCid,
-    dag_size: stat.structure === 'Complete' ? stat.blocksSize : stat.size,
+    dag_size: stat.size,
     user_id: user.id,
     files,
     meta,
@@ -224,7 +224,6 @@ export async function nftUpdateUpload(event, ctx) {
  * @property {number} [size] DAG size in bytes
  * @property {import('multiformats').CID} rootCid Root CID of the DAG
  * @property {DagStructure} [structure] Completeness of the DAG within the CAR
- * @property {number} blocksSize Size in bytes of all blocks in the CAR
  * @param {Blob} carBlob
  * @param {Object} [options]
  * @param {DagStructure} [options.structure]
@@ -244,13 +243,11 @@ export async function carStat(carBlob, { structure } = {}) {
   let rawRootBlock
   /** @type {import('@ipld/car/api').Block[]} */
   const blocks = []
-  let blocksSize = 0
   for await (const block of blocksIterator) {
     const blockSize = block.bytes.byteLength
     if (blockSize > MAX_BLOCK_SIZE) {
       throw new Error(`block too big: ${blockSize} > ${MAX_BLOCK_SIZE}`)
     }
-    blocksSize += blockSize
     if (block.cid.multihash.code === sha256.code) {
       const ourHash = await sha256.digest(block.bytes)
       if (!equals(ourHash.digest, block.cid.multihash.digest)) {
@@ -299,7 +296,7 @@ export async function carStat(carBlob, { structure } = {}) {
       }
     }
   }
-  return { rootCid, size, structure, blocksSize }
+  return { rootCid, size, structure }
 }
 
 /**

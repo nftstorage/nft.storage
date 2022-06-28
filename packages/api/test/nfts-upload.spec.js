@@ -96,6 +96,8 @@ describe('NFT Upload ', () => {
     assert.equal(error.message, 'missing Content-Type in multipart part')
   })
 
+  // FIXME: this should fail because two files in the same directory should not
+  // occupy the same name. https://github.com/ipfs/js-ipfs-unixfs/issues/232
   it('should upload multiple blobs without name', async () => {
     const body = new FormData()
 
@@ -116,7 +118,7 @@ describe('NFT Upload ', () => {
       { name: 'blob', type: 'application/octet-stream' },
     ])
     assert.ok(value.type === 'directory', 'should be directory')
-    assert.equal(value.size, 80, 'should have correct size')
+    assert.equal(value.size, 66, 'should have correct size')
     assert.strictEqual(
       value.cid,
       'bafybeiaowg4ssqzemwgdlisgphib54clq62arief7ssabov5r3pbfh7vje',
@@ -386,7 +388,9 @@ describe('NFT Upload ', () => {
     assert.equal(upload.backup_urls[0], backupUrl)
   })
 
-  it('should backup chunked uploads, preserving backup_urls for each chunk', async () => {
+  it('should backup chunked uploads, preserving backup_urls for each chunk', async function () {
+    this.timeout(10_000)
+
     const chunkSize = 1024
     const nChunks = 5
 
