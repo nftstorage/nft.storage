@@ -1,4 +1,4 @@
-import { test } from '../lib/testing.js'
+import { createTestConsole, test } from '../lib/testing.js'
 import {
   createMeasureOptionsFromSade,
   createMeasureSecretsFromEnv,
@@ -20,7 +20,11 @@ test('createMeasureOptionsFromSade', (t) => {
   const secrets = {
     metricsPushGatewayAuthorization: '',
   }
-  const options = createMeasureOptionsFromSade(sampleSade, secrets)
+  const options = createMeasureOptionsFromSade(
+    sampleSade,
+    secrets,
+    createTestConsole()
+  )
   t.assert(options)
   t.is(options.gateways.length, 2)
   t.is(options.gateways[0].toString(), sampleGateways[0])
@@ -33,7 +37,8 @@ test('createMeasureOptionsFromSade', (t) => {
   // ensure single gateway is parsed correctly
   const options2 = createMeasureOptionsFromSade(
     { ...sampleSade, gateway: sampleGateways[0] },
-    secrets
+    secrets,
+    createTestConsole()
   )
   t.is(options2.gateways.length, 1)
   t.is(options2.gateways[0].toString(), sampleGateways[0])
