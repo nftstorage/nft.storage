@@ -7,9 +7,9 @@ import {
   basicAuthorizationHeaderValue,
   measureNftTimeToRetrievability,
   createStubbedRetrievalMetricsLogger,
-  createPromClientRetrievalMetricsLogger,
   httpImageFetcher,
   createStoreMetricsLogger,
+  createRetrievalMetricsLogger,
 } from '../jobs/measureNftTimeToRetrievability.js'
 import process from 'process'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
@@ -134,27 +134,29 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets, console) {
 
   // build pushRetrieveMetrics
   const promClientRegistry = new promClient.Registry()
+  const pushgateway =
+    metricsPushGateway &&
+    createPushgateway(
+      metricsPushGateway,
+      secrets.metricsPushGatewayAuthorization,
+      promClientRegistry
+    )
 
   /** @type {import('../jobs/measureNftTimeToRetrievability.js').RetrievalMetricsLogger} */
-  const pushRetrieveMetrics = !metricsPushGateway
+  const pushRetrieveMetrics = !pushgateway
     ? createStubbedRetrievalMetricsLogger()
-    : createPromClientRetrievalMetricsLogger(
-        promClientRegistry,
+    : createRetrievalMetricsLogger(
+        pushgateway,
         createRetrievalDurationMetric(promClientRegistry),
         metricsPushGatewayJobName,
         metricsLabels,
-        metricsPushGateway,
-        secrets.metricsPushGatewayAuthorization
+        console
       )
 
   /** @type {import('../jobs/measureNftTimeToRetrievability.js').StoreMetricsLogger} */
-  const pushStoreMetrics = metricsPushGateway
+  const pushStoreMetrics = pushgateway
     ? createStoreMetricsLogger(
-        createPushgateway(
-          metricsPushGateway,
-          secrets.metricsPushGatewayAuthorization,
-          promClientRegistry
-        ),
+        pushgateway,
         createStoreDurationMetric(promClientRegistry),
         metricsPushGatewayJobName,
         metricsLabels,

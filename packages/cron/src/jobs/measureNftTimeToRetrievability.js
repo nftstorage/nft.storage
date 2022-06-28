@@ -2,10 +2,7 @@ import { NFTStorage } from 'nft.storage'
 import { Milliseconds, now } from '../lib/time.js'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 import { pipeline, parallelMerge, flatten } from 'streaming-iterables'
-import {
-  createPushgateway,
-  createPushgatewayMetricLogger,
-} from '../lib/metrics.js'
+import { createPushgatewayMetricLogger } from '../lib/metrics.js'
 
 export const EXAMPLE_NFT_IMG_URL = new URL(
   'https://bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4.ipfs.dweb.link/1681.png'
@@ -303,35 +300,6 @@ export function createStubbedRetrievalMetricsLogger() {
 }
 
 /**
- * @param {import('prom-client').Registry} registry
- * @param {import('../lib/metrics.js').RetrievalDurationMetric} metric
- * @param {string} metricsPushGatewayJobName
- * @param {Record<string,string>} metricLabels
- * @param {URL} pushGatewayUrl
- * @param {HttpAuthorizationHeaderValue} pushGatewayAuthorization
- * @returns {RetrievalMetricsLogger}
- */
-export function createPromClientRetrievalMetricsLogger(
-  registry,
-  metric,
-  metricsPushGatewayJobName,
-  metricLabels,
-  pushGatewayUrl,
-  pushGatewayAuthorization
-) {
-  return async (options, retrieval) => {
-    const push = createPushgatewayMetricLogger(
-      createPushgateway(pushGatewayUrl, pushGatewayAuthorization, registry),
-      metric,
-      metricsPushGatewayJobName,
-      metricLabels,
-      options.console
-    )
-    await push(retrieval.duration)
-  }
-}
-
-/**
  * @typedef BasicAuthOptions
  * @property {string} basicAuth - base64-encoded user:pass
  */
@@ -380,5 +348,32 @@ export function createStoreMetricsLogger(
   )
   return async (storeLog) => {
     await pushStorageDuration(storeLog.duration)
+  }
+}
+
+/**
+ * @param {import('prom-client').Pushgateway} pushgateway
+ * @param {import('../lib/metrics.js').RetrievalDurationMetric} retrievalDurationMetric
+ * @param {string} jobName
+ * @param {Record<string,string>} labels
+ * @param {Console} console
+ * @returns {RetrievalMetricsLogger}
+ */
+export function createRetrievalMetricsLogger(
+  pushgateway,
+  retrievalDurationMetric,
+  jobName,
+  labels,
+  console
+) {
+  const pushStorageDuration = createPushgatewayMetricLogger(
+    pushgateway,
+    retrievalDurationMetric,
+    jobName,
+    labels,
+    console
+  )
+  return async (options, retrieval) => {
+    await pushStorageDuration(retrieval.duration)
   }
 }
