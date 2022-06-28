@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.4.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.3.0...nft.storage-v6.4.0) (2022-06-28)
+
+
+### Features
+
+* abortable requests ([#2027](https://github.com/nftstorage/nft.storage/issues/2027)) ([44e6a06](https://github.com/nftstorage/nft.storage/commit/44e6a0649be7719570c2bdbc3634853395d9376e))
+
 ## [6.3.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.2.0...nft.storage-v6.3.0) (2022-05-19)
 
 
