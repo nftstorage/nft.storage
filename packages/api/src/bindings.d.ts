@@ -244,7 +244,7 @@ export type RequestForm = Array<RequestFormItem>
 export type DagStructure = 'Unknown' | 'Partial' | 'Complete'
 
 /**
- * A client to a service that acepts CAR file uploads.
+ * A client to a service that accepts CAR file uploads.
  */
 export interface Uploader {
   /**
