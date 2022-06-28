@@ -33,12 +33,11 @@ yarn clean
 
 The `packages/api/scripts` directory contains a small `cli.js` utility script for building the API workers and managing the local development database. These scripts are invoked automatically when running `yarn dev` but may also be useful to run manually when debugging, etc.
 
-Running `node scripts/cli.js db` gives you some knobs for controlling the state of the local database:
+Running `node scripts/cli.js services` gives you some knobs for controlling the state of the local services:
 
-- `db --init` will re-build the docker-compose setup, ignoring any previously cached images
-- `db --start` starts the docker-compose setup
-- `db --stop` stops all running containers
-- `db --clean` removes all docker containers, volumes, and other artifacts related to the database
+- `services start` starts the docker-compose setup
+- `services stop` stops all running containers
+- `services stop --clean` as above, but also removes all docker containers, volumes, and other artifacts
 
 Each of the above can have a `--project` flag added, which sets the name of the [docker-compose project](https://docs.docker.com/compose/#multiple-isolated-environments-on-a-single-host). This can be useful if you want to create a custom environment that won't be automatically reset.
 
@@ -47,6 +46,8 @@ The `db-sql` subcommand populates the database schema, using the `.sql` files in
 For local development, you probably want `cli.js db-sql --reset --cargo --testing`, which will reset everything to a clean state.
 
 The `--cargo` flag adds support for querying foreign tables provided by the [dagcargo](https://github.com/nftstorage/dagcargo) database. In production this will set up a [foreign data wrapper](https://wiki.postgresql.org/wiki/Foreign_data_wrappers) to a live database using credentials from the environment. For local development, you should set the `--testing` flag as well, which seeds the db with test data instead of importing from a live host.
+
+The `minio` subcommand allows simple management of Minio buckets.
 
 ## Manual deploy to Cloudflare
 

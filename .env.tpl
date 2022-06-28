@@ -35,14 +35,14 @@ DATABASE_CONNECTION=postgresql://postgres:postgres@localhost:5432/postgres
 # Cluster 
 CLUSTER_BASIC_AUTH_TOKEN = dGVzdDp0ZXN0
 CLUSTER_SERVICE = 
-CLUSTER_API_URL = http://localhost:9094
+CLUSTER_API_URL = http://127.0.0.1:9094
 
 # Maintenance Mode
 MAINTENANCE_MODE = rw
 
 # S3
-S3_ENDPOINT = http://localhost:9095
-S3_REGION = test
-S3_ACCESS_KEY_ID = test
-S3_SECRET_ACCESS_KEY = test
-S3_BUCKET_NAME = test
+S3_ENDPOINT = http://127.0.0.1:9000
+S3_REGION = us-east-1
+S3_ACCESS_KEY_ID = minioadmin
+S3_SECRET_ACCESS_KEY = minioadmin
+S3_BUCKET_NAME = dotstorage-dev-0

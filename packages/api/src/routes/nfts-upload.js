@@ -34,7 +34,7 @@ export async function nftUpload(event, ctx) {
     const form = await event.request.formData()
     // Our API schema requires that all file parts be named `file` and
     // encoded as binary, which is why we can expect that each part here is
-    // a file (and not a stirng).
+    // a file (and not a string).
     const files = /** @type {File[]} */ (form.getAll('file'))
     const input = files.map((f) => {
       if (typeof f === 'string') {
@@ -139,14 +139,13 @@ export async function uploadCarWithStat(
   { event, ctx, user, key, car, uploadType = 'Car', mimeType, files, meta },
   stat
 ) {
-  const [added, backupUrl] = await Promise.all([
-    cluster.addCar(car, {
-      local: true,
-    }),
-    ctx.backup
-      ? ctx.backup.backupCar(user.id, stat.rootCid, car, stat.structure)
-      : Promise.resolve(null),
-  ])
+  const sourceCid = stat.rootCid.toString()
+  const backupUrl = await ctx.uploader.uploadCar(
+    user.id,
+    sourceCid,
+    car,
+    stat.structure
+  )
 
   const xName = event.request.headers.get('x-name')
   let name = xName && decodeURIComponent(xName)
@@ -158,15 +157,26 @@ export async function uploadCarWithStat(
     mime_type: mimeType,
     type: uploadType,
     content_cid: stat.rootCid.toV1().toString(),
-    source_cid: stat.rootCid.toString(),
-    dag_size: stat.structure === 'Complete' ? added.bytes : stat.size,
+    source_cid: sourceCid,
+    dag_size: stat.size,
     user_id: user.id,
     files,
     meta,
     key_id: key?.id,
-    backup_urls: backupUrl ? [backupUrl] : [],
+    backup_urls: [backupUrl],
     name,
   })
+
+  event.waitUntil(
+    (async () => {
+      try {
+        await cluster.pin(sourceCid)
+      } catch (err) {
+        console.warn('failed to pin to cluster', err)
+      }
+      await cluster.addCar(car, { local: true })
+    })()
+  )
 
   return upload
 }
@@ -210,8 +220,10 @@ export async function nftUpdateUpload(event, ctx) {
  *
  * The DAG size will be returned ONLY IF the root node is dag-pb or raw.
  *
- * @typedef {import('multiformats').CID} CID
- * @typedef {{ size?: number, rootCid: CID, structure?: DagStructure }} CarStat
+ * @typedef {Object} CarStat
+ * @property {number} [size] DAG size in bytes
+ * @property {import('multiformats').CID} rootCid Root CID of the DAG
+ * @property {DagStructure} [structure] Completeness of the DAG within the CAR
  * @param {Blob} carBlob
  * @param {Object} [options]
  * @param {DagStructure} [options.structure]
