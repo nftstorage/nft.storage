@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.0.0](https://github.com/nftstorage/nft.storage/compare/api-v2.28.1...api-v3.0.0) (2022-06-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* uploaded files are no longer instantly available via gateways or on the DHT. They may take a few seconds to become indexed by Elastic IPFS.
+
+### Features
+
+* switch to Elastic IPFS ([#2026](https://github.com/nftstorage/nft.storage/issues/2026)) ([b51fa4e](https://github.com/nftstorage/nft.storage/commit/b51fa4e7424d1bfe54a61022880ff1be7beef92c))
+
+
+### Bug Fixes
+
+* dag structure check ([#2036](https://github.com/nftstorage/nft.storage/issues/2036)) ([8ec6ecf](https://github.com/nftstorage/nft.storage/commit/8ec6ecf7d1ec94ebfb354de932872e8f6816b2da))
+
 ## [2.28.1](https://github.com/nftstorage/nft.storage/compare/api-v2.28.0...api-v2.28.1) (2022-06-21)
 
 
