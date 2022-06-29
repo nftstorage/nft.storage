@@ -6,7 +6,6 @@ import fetch from '@web-std/fetch'
 import {
   basicAuthorizationHeaderValue,
   measureNftTimeToRetrievability,
-  createStubbedRetrievalMetricsLogger,
   httpImageFetcher,
   createStoreMetricsLogger,
   createRetrievalMetricsLogger,
@@ -132,9 +131,8 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets, console) {
     : {}
 
   /** @type {import('../jobs/measureNftTimeToRetrievability.js').RetrievalMetricsLogger} */
-  const pushRetrieveMetrics = !metricsPushGateway
-    ? createStubbedRetrievalMetricsLogger()
-    : createRetrievalMetricsLogger(
+  const pushRetrieveMetrics = metricsPushGateway
+    ? createRetrievalMetricsLogger(
         createPushgateway(
           metricsPushGateway,
           secrets.metricsPushGatewayAuthorization
@@ -144,6 +142,7 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets, console) {
         metricsLabels,
         console
       )
+    : () => Promise.resolve()
 
   /** @type {import('../jobs/measureNftTimeToRetrievability.js').StoreMetricsLogger} */
   const pushStoreMetrics = metricsPushGateway

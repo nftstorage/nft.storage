@@ -290,17 +290,6 @@ function createGatewayRetrievalUrl(gatewayUrl, ipnftCid) {
  */
 
 /**
- * @returns {RetrievalMetricsLogger}
- */
-export function createStubbedRetrievalMetricsLogger() {
-  /** @type {RetrievalMetricsLogger} */
-  const push = async () => {
-    return Promise.resolve()
-  }
-  return push
-}
-
-/**
  * @typedef BasicAuthOptions
  * @property {string} basicAuth - base64-encoded user:pass
  */

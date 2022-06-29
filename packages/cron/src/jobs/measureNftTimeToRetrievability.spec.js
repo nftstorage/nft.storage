@@ -1,6 +1,5 @@
 import {
   createStubbedImageFetcher,
-  createStubbedRetrievalMetricsLogger,
   createStubStoreFunction,
   measureNftTimeToRetrievability,
 } from './measureNftTimeToRetrievability.js'
@@ -31,9 +30,9 @@ test('measureNftTimeToRetrievability', async (t) => {
   let pushRetrieveCallCount = 0
   const retrieveMetricsPusher = {
     /** @type {import('./measureNftTimeToRetrievability.js').RetrievalMetricsLogger} */
-    push(...args) {
+    push() {
       pushRetrieveCallCount++
-      return createStubbedRetrievalMetricsLogger()(...args)
+      return Promise.resolve()
     },
   }
 
