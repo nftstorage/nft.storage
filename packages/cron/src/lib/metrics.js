@@ -3,26 +3,20 @@ import { Histogram, Registry, linearBuckets, Pushgateway } from 'prom-client'
 import { Milliseconds } from './time.js'
 
 /**
- * @typedef {string} RetrievalDurationMetricLabels
- */
-
-/**
- * @template MetricValue
  * @typedef Metric
  * @property {string} name
- * @property {(value: MetricValue, labels: Record<string, string|number>) => void} observe
+ * @property {(value: Value, labels: Labels) => void} observe
+ * @template Value
+ * @template Labels
  */
 
 /**
  * @exports
- * @typedef {Metric<Milliseconds>} RetrievalDurationMetric
- * @property {string} name
- * @property {(value: import('./time').Milliseconds, labels: Record<RetrievalDurationMetricLabels, string|number>) => void} observe
+ * @typedef {Metric<Milliseconds, { gateway: string }>} RetrievalDurationMetric
  */
 
 /**
  * @param {Registry} registry
- * @returns {RetrievalDurationMetric}
  */
 export function createRetrievalDurationMetric(registry) {
   const name = 'retrieval_duration_seconds'
@@ -30,11 +24,16 @@ export function createRetrievalDurationMetric(registry) {
     name,
     help: 'How long, in seconds, it took to retrieve an nft image after uploading',
     registers: [registry],
-    labelNames: [],
+    labelNames: ['gateway'],
     buckets: linearBuckets(0, 0.5, 20),
   })
   return {
     name,
+    /**
+     * @param {Milliseconds} value
+     * @param {object} labels
+     * @param {string} labels.gateway
+     */
     observe(value, labels) {
       histogram.observe(labels, Milliseconds.toSeconds(value))
     },
@@ -43,7 +42,7 @@ export function createRetrievalDurationMetric(registry) {
 
 /**
  * @exports
- * @typedef {Metric<Milliseconds>} StoreDurationMetric
+ * @typedef {Metric<Milliseconds, {}>} StoreDurationMetric
  */
 
 /**
@@ -72,7 +71,11 @@ export function createStoreDurationMetric(registry) {
  * @param {string} authorization
  * @param {import('prom-client').Registry} registry
  */
-export function createPushgateway(pushGatewayUrl, authorization, registry) {
+export function createPushgateway(
+  pushGatewayUrl,
+  authorization,
+  registry = new Registry()
+) {
   const pushgateway = new Pushgateway(
     pushGatewayUrl.toString(),
     {
@@ -87,13 +90,14 @@ export function createPushgateway(pushGatewayUrl, authorization, registry) {
 
 /**
  * Create a function that will push metric observations to a prometheus pushgateway
- * @template MetricValue
  * @param {import('prom-client').Pushgateway} pushgateway
- * @param {Metric<MetricValue>} metric
+ * @param {Metric<MetricValue, MetricLabels>} metric
  * @param {string} jobName
  * @param {Record<string,string>} metricLabels
  * @param {Console} console
- * @returns {(value: MetricValue) => Promise<void>}
+ * @template MetricValue
+ * @template MetricLabels
+ * @returns {(value: MetricValue, labels: MetricLabels) => Promise<void>}
  */
 export function createPushgatewayMetricLogger(
   pushgateway,
@@ -102,8 +106,8 @@ export function createPushgatewayMetricLogger(
   metricLabels,
   console
 ) {
-  return async (value) => {
-    metric.observe(value, {})
+  return async (value, labels) => {
+    metric.observe(value, labels)
     const pushAddOptions = {
       jobName,
       groupings: metricLabels,
@@ -123,6 +127,7 @@ export function createPushgatewayMetricLogger(
       },
       observation: {
         value,
+        labels,
       },
       pushgateway: pushAddOptions,
       request: {

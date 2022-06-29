@@ -107,7 +107,7 @@ test('createPushgatewayMetricLogger', async (t) => {
   }
   const silentConsole = new Console(new Writable())
 
-  /** @type {import('../lib/metrics.js').Metric<number>} */
+  /** @type {import('../lib/metrics.js').Metric<number, {}>} */
   const metric = {
     name: 'sample_metric',
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -122,7 +122,7 @@ test('createPushgatewayMetricLogger', async (t) => {
       metricLabels,
       silentConsole
     )
-    await metricsLogger(1)
+    await metricsLogger(1, {})
   })
   t.is(fakePushGatewayRequests.length, 1)
   const [firstRequest] = fakePushGatewayRequests

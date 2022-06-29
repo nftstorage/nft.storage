@@ -14,7 +14,6 @@ import {
 import process from 'process'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 import assert from 'assert'
-import * as promClient from 'prom-client'
 import {
   createPushgateway,
   createRetrievalDurationMetric,
@@ -132,32 +131,28 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets, console) {
     ? /** @type {Record<string,string>} */ (JSON.parse(metricsLabelsJson))
     : {}
 
-  // build pushRetrieveMetrics
-  const promClientRegistry = new promClient.Registry()
-  const pushgateway =
-    metricsPushGateway &&
-    createPushgateway(
-      metricsPushGateway,
-      secrets.metricsPushGatewayAuthorization,
-      promClientRegistry
-    )
-
   /** @type {import('../jobs/measureNftTimeToRetrievability.js').RetrievalMetricsLogger} */
-  const pushRetrieveMetrics = !pushgateway
+  const pushRetrieveMetrics = !metricsPushGateway
     ? createStubbedRetrievalMetricsLogger()
     : createRetrievalMetricsLogger(
-        pushgateway,
-        createRetrievalDurationMetric(promClientRegistry),
+        createPushgateway(
+          metricsPushGateway,
+          secrets.metricsPushGatewayAuthorization
+        ),
+        createRetrievalDurationMetric,
         metricsPushGatewayJobName,
         metricsLabels,
         console
       )
 
   /** @type {import('../jobs/measureNftTimeToRetrievability.js').StoreMetricsLogger} */
-  const pushStoreMetrics = pushgateway
+  const pushStoreMetrics = metricsPushGateway
     ? createStoreMetricsLogger(
-        pushgateway,
-        createStoreDurationMetric(promClientRegistry),
+        createPushgateway(
+          metricsPushGateway,
+          secrets.metricsPushGatewayAuthorization
+        ),
+        createStoreDurationMetric,
         metricsPushGatewayJobName,
         metricsLabels,
         console

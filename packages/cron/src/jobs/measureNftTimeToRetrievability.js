@@ -9,6 +9,10 @@ export const EXAMPLE_NFT_IMG_URL = new URL(
 )
 
 /**
+ * @typedef {import('prom-client').Registry} Registry
+ */
+
+/**
  * @typedef RetrieveLog
  * @property {string}       image
  * @property {"retrieve"}   type
@@ -194,7 +198,7 @@ export async function* measureNftTimeToRetrievability(options) {
               throw error
             }
             yield retrieval
-            await options.pushRetrieveMetrics(options, retrieval)
+            await options.pushRetrieveMetrics(retrieval)
           })
         ),
       flatten
@@ -277,9 +281,6 @@ function createGatewayRetrievalUrl(gatewayUrl, ipnftCid) {
 
 /**
  * @typedef {(
- *    options: {
- *      console: Console
- *    },
  *    retrieval: RetrieveLog,
  * ) => Promise<void>} RetrievalMetricsLogger
  */
@@ -325,8 +326,9 @@ export function basicAuthorizationHeaderValue(options) {
 }
 
 /**
+ * Create a function that will take a StoreLog and push metrics about it to a prometheus Pushgateway
  * @param {import('prom-client').Pushgateway} pushgateway
- * @param {import('../lib/metrics.js').StoreDurationMetric} storeDurationMetric
+ * @param {(registry: Registry) => import('../lib/metrics.js').StoreDurationMetric} createStoreDurationMetric
  * @param {string} jobName
  * @param {Record<string,string>} labels
  * @param {Console} console
@@ -334,26 +336,27 @@ export function basicAuthorizationHeaderValue(options) {
  */
 export function createStoreMetricsLogger(
   pushgateway,
-  storeDurationMetric,
+  createStoreDurationMetric,
   jobName,
   labels,
   console
 ) {
   const pushStoreDuration = createPushgatewayMetricLogger(
     pushgateway,
-    storeDurationMetric,
+    createStoreDurationMetric(pushgateway.registry),
     jobName,
     labels,
     console
   )
   return async (storeLog) => {
-    await pushStoreDuration(storeLog.duration)
+    await pushStoreDuration(storeLog.duration, {})
   }
 }
 
 /**
+ * Create a function that will take a RetrieveLog and push metrics about it to a prometheus Pushgateway
  * @param {import('prom-client').Pushgateway} pushgateway
- * @param {import('../lib/metrics.js').RetrievalDurationMetric} retrievalDurationMetric
+ * @param {(registry: Registry) => import('../lib/metrics.js').RetrievalDurationMetric} createRetrievalDurationMetric
  * @param {string} jobName
  * @param {Record<string,string>} labels
  * @param {Console} console
@@ -361,19 +364,21 @@ export function createStoreMetricsLogger(
  */
 export function createRetrievalMetricsLogger(
   pushgateway,
-  retrievalDurationMetric,
+  createRetrievalDurationMetric,
   jobName,
   labels,
   console
 ) {
   const pushRetrievalDurationMetric = createPushgatewayMetricLogger(
     pushgateway,
-    retrievalDurationMetric,
+    createRetrievalDurationMetric(pushgateway.registry),
     jobName,
     labels,
     console
   )
-  return async (options, retrieval) => {
-    await pushRetrievalDurationMetric(retrieval.duration)
+  return async (retrieval) => {
+    await pushRetrievalDurationMetric(retrieval.duration, {
+      gateway: retrieval.gateway.toString(),
+    })
   }
 }
