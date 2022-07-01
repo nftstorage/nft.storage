@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.0](https://github.com/nftstorage/nft.storage/compare/cron-v3.4.0...cron-v3.5.0) (2022-07-01)
+
+
+### Features
+
+* **cron:** nft-ttr logs store_duration_seconds to prometheus ([#2040](https://github.com/nftstorage/nft.storage/issues/2040)) ([d2889f4](https://github.com/nftstorage/nft.storage/commit/d2889f4a69de52482ce2c165c940171d74810fa6))
+
 ## [3.4.0](https://github.com/nftstorage/nft.storage/compare/cron-v3.3.0...cron-v3.4.0) (2022-06-27)
 
 
