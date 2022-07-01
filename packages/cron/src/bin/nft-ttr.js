@@ -6,15 +6,18 @@ import fetch from '@web-std/fetch'
 import {
   basicAuthorizationHeaderValue,
   measureNftTimeToRetrievability,
-  createStubbedRetrievalMetricsLogger,
-  createPromClientRetrievalMetricsLogger,
   httpImageFetcher,
+  createStoreMetricsLogger,
+  createRetrievalMetricsLogger,
 } from '../jobs/measureNftTimeToRetrievability.js'
 import process from 'process'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 import assert from 'assert'
-import * as promClient from 'prom-client'
-import { createRetrievalDurationMetric } from '../lib/metrics.js'
+import {
+  createPushgateway,
+  createRetrievalDurationMetric,
+  createStoreDurationMetric,
+} from '../lib/metrics.js'
 import sade from 'sade'
 import { hasOwnProperty } from '../lib/utils.js'
 import { File } from '@web-std/file'
@@ -64,9 +67,10 @@ export function createMeasureSecretsFromEnv(env) {
 /**
  * @param {unknown} sadeOptions
  * @param {Pick<MeasureTtrOptions['secrets'], 'metricsPushGatewayAuthorization'>} secrets
+ * @param {Console} console
  * @returns {Omit<MeasureTtrOptions, "secrets"> & { metricsLabels: Record<string,string> }}
  */
-export function createMeasureOptionsFromSade(sadeOptions, secrets) {
+export function createMeasureOptionsFromSade(sadeOptions, secrets, console) {
   // build gateways
   assert.ok(
     hasOwnProperty(sadeOptions, 'gateway'),
@@ -126,20 +130,33 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets) {
     ? /** @type {Record<string,string>} */ (JSON.parse(metricsLabelsJson))
     : {}
 
-  // build pushRetrieveMetrics
-  const promClientRegistry = new promClient.Registry()
-
   /** @type {import('../jobs/measureNftTimeToRetrievability.js').RetrievalMetricsLogger} */
-  const pushRetrieveMetrics = !metricsPushGateway
-    ? createStubbedRetrievalMetricsLogger()
-    : createPromClientRetrievalMetricsLogger(
-        promClientRegistry,
-        createRetrievalDurationMetric(promClientRegistry),
+  const pushRetrieveMetrics = metricsPushGateway
+    ? createRetrievalMetricsLogger(
+        createPushgateway(
+          metricsPushGateway,
+          secrets.metricsPushGatewayAuthorization
+        ),
+        createRetrievalDurationMetric,
         metricsPushGatewayJobName,
         metricsLabels,
-        metricsPushGateway,
-        secrets.metricsPushGatewayAuthorization
+        console
       )
+    : () => Promise.resolve()
+
+  /** @type {import('../jobs/measureNftTimeToRetrievability.js').StoreMetricsLogger} */
+  const pushStoreMetrics = metricsPushGateway
+    ? createStoreMetricsLogger(
+        createPushgateway(
+          metricsPushGateway,
+          secrets.metricsPushGatewayAuthorization
+        ),
+        createStoreDurationMetric,
+        metricsPushGatewayJobName,
+        metricsLabels,
+        console
+      )
+    : () => Promise.resolve()
 
   const logConfigAndExit = Boolean(
     hasOwnProperty(sadeOptions, 'logConfigAndExit') &&
@@ -156,6 +173,7 @@ export function createMeasureOptionsFromSade(sadeOptions, secrets) {
     metricsPushGatewayJobName,
     minImageSizeBytes,
     pushRetrieveMetrics,
+    pushStoreMetrics,
     metricsLabels,
   }
   return options
@@ -224,7 +242,7 @@ export async function* cli(
     .action((opts) => {
       iterable = measureNftTimeToRetrievability({
         secrets,
-        ...createMeasureOptionsFromSade(opts, secrets),
+        ...createMeasureOptionsFromSade(opts, secrets, options.console),
         console: options.console,
       })
     })

@@ -1,12 +1,16 @@
 import { NFTStorage } from 'nft.storage'
 import { Milliseconds, now } from '../lib/time.js'
-import { Pushgateway } from 'prom-client'
 import { createRandomImage, createRandomImageBlob } from '../lib/random.js'
 import { pipeline, parallelMerge, flatten } from 'streaming-iterables'
+import { createPushgatewayMetricLogger } from '../lib/metrics.js'
 
 export const EXAMPLE_NFT_IMG_URL = new URL(
   'https://bafybeiarmhq3d7msony7zfq67gmn46syuv6jrc6dagob2wflunxiyaksj4.ipfs.dweb.link/1681.png'
 )
+
+/**
+ * @typedef {import('prom-client').Registry} Registry
+ */
 
 /**
  * @typedef RetrieveLog
@@ -65,7 +69,8 @@ export function createStubStoreFunction() {
 /**
  * @typedef {object} MeasureTtrOptions
  * @property {RetrieveImageOptions['fetchImage']} fetchImage
- * @property {RetrievalMetricsLogger} pushRetrieveMetrics - fn to push metrics
+ * @property {RetrievalMetricsLogger} pushRetrieveMetrics - fn to push metrics about retrieving stored image
+ * @property {StoreMetricsLogger} pushStoreMetrics - fn to push metrics about storing an image
  * @property {AsyncIterable<Blob>} images - images to upload/retrieve
  * @property {StoreFunction} [store] - function to store nft
  * @property {string} [url] - URL to nft.storage to measure
@@ -173,6 +178,7 @@ export async function* measureNftTimeToRetrievability(options) {
       duration: Milliseconds.subtract(storeEndAt, storeStartedAt),
     }
     yield storeLog
+    await options.pushStoreMetrics(storeLog)
     yield* pipeline(
       () =>
         parallelMerge(
@@ -192,7 +198,7 @@ export async function* measureNftTimeToRetrievability(options) {
               throw error
             }
             yield retrieval
-            await options.pushRetrieveMetrics(options, retrieval)
+            await options.pushRetrieveMetrics(retrieval)
           })
         ),
       flatten
@@ -275,89 +281,13 @@ function createGatewayRetrievalUrl(gatewayUrl, ipnftCid) {
 
 /**
  * @typedef {(
- *    options: {
- *      console: Console
- *    },
  *    retrieval: RetrieveLog,
  * ) => Promise<void>} RetrievalMetricsLogger
  */
 
 /**
- * @returns {RetrievalMetricsLogger}
+ * @typedef {(storeLog: StoreLog) => Promise<void>} StoreMetricsLogger
  */
-export function createStubbedRetrievalMetricsLogger() {
-  /** @type {RetrievalMetricsLogger} */
-  const push = async () => {
-    return Promise.resolve()
-  }
-  return push
-}
-
-/**
- * @param {import('prom-client').Registry} registry
- * @param {import('../lib/metrics.js').RetrievalDurationMetric} metric
- * @param {string} metricsPushGatewayJobName
- * @param {Record<string,string>} metricLabels
- * @param {URL} pushGatewayUrl
- * @param {HttpAuthorizationHeaderValue} pushGatewayAuthorization
- * @returns {RetrievalMetricsLogger}
- */
-export function createPromClientRetrievalMetricsLogger(
-  registry,
-  metric,
-  metricsPushGatewayJobName,
-  metricLabels,
-  pushGatewayUrl,
-  pushGatewayAuthorization
-) {
-  const pushgateway = new Pushgateway(
-    pushGatewayUrl.toString(),
-    {
-      headers: {
-        authorization: pushGatewayAuthorization,
-      },
-    },
-    registry
-  )
-  /** @type {RetrievalMetricsLogger} */
-  const push = async (options, retrieval) => {
-    const value = retrieval.duration
-    metric.observe(value, {})
-    const pushAddArgs = {
-      jobName: metricsPushGatewayJobName,
-      groupings: metricLabels,
-    }
-    const pushAddResult = await pushgateway.pushAdd(pushAddArgs)
-    const pushAddResponse = /** @type {import('http').IncomingMessage} */ (
-      pushAddResult.resp
-    )
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const pushAddRequest = /** @type {import('http').ClientRequest} */ (
-      /** @type {any} */ (pushAddResponse).req
-    )
-    options.console.debug({
-      type: 'metricPushed',
-      metric: {
-        name: metric.name,
-      },
-      observation: {
-        value,
-      },
-      pushgateway: pushAddArgs,
-      request: {
-        url: new URL(
-          `${pushAddRequest.protocol}//${String(
-            pushAddRequest.getHeader('host')
-          )}${pushAddRequest.path}`
-        ).toString(),
-      },
-      response: {
-        status: pushAddResponse.statusCode,
-      },
-    })
-  }
-  return push
-}
 
 /**
  * @typedef BasicAuthOptions
@@ -382,4 +312,62 @@ export function basicAuthorizationHeaderValue(options) {
   /** @type {`Basic ${string}`} */
   const headerValue = `Basic ${basicAuthValue}`
   return headerValue
+}
+
+/**
+ * Create a function that will take a StoreLog and push metrics about it to a prometheus Pushgateway
+ * @param {import('prom-client').Pushgateway} pushgateway
+ * @param {(registry: Registry) => import('../lib/metrics.js').StoreDurationMetric} createStoreDurationMetric
+ * @param {string} jobName
+ * @param {Record<string,string>} labels
+ * @param {Console} console
+ * @returns {StoreMetricsLogger}
+ */
+export function createStoreMetricsLogger(
+  pushgateway,
+  createStoreDurationMetric,
+  jobName,
+  labels,
+  console
+) {
+  const pushStoreDuration = createPushgatewayMetricLogger(
+    pushgateway,
+    createStoreDurationMetric(pushgateway.registry),
+    jobName,
+    labels,
+    console
+  )
+  return async (storeLog) => {
+    await pushStoreDuration(storeLog.duration, {})
+  }
+}
+
+/**
+ * Create a function that will take a RetrieveLog and push metrics about it to a prometheus Pushgateway
+ * @param {import('prom-client').Pushgateway} pushgateway
+ * @param {(registry: Registry) => import('../lib/metrics.js').RetrievalDurationMetric} createRetrievalDurationMetric
+ * @param {string} jobName
+ * @param {Record<string,string>} labels
+ * @param {Console} console
+ * @returns {RetrievalMetricsLogger}
+ */
+export function createRetrievalMetricsLogger(
+  pushgateway,
+  createRetrievalDurationMetric,
+  jobName,
+  labels,
+  console
+) {
+  const pushRetrievalDurationMetric = createPushgatewayMetricLogger(
+    pushgateway,
+    createRetrievalDurationMetric(pushgateway.registry),
+    jobName,
+    labels,
+    console
+  )
+  return async (retrieval) => {
+    await pushRetrievalDurationMetric(retrieval.duration, {
+      gateway: retrieval.gateway.toString(),
+    })
+  }
 }

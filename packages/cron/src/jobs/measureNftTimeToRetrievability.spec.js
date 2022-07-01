@@ -1,7 +1,5 @@
 import {
-  createPromClientRetrievalMetricsLogger,
   createStubbedImageFetcher,
-  createStubbedRetrievalMetricsLogger,
   createStubStoreFunction,
   measureNftTimeToRetrievability,
 } from './measureNftTimeToRetrievability.js'
@@ -10,9 +8,11 @@ import { createTestImages } from '../bin/nft-ttr.js'
 import all from 'it-all'
 import { Writable } from 'node:stream'
 import { Registry } from 'prom-client'
-import { createRetrievalDurationMetric } from '../lib/metrics.js'
+import {
+  createPushgateway,
+  createPushgatewayMetricLogger,
+} from '../lib/metrics.js'
 import { withHttpServer } from '../lib/http.js'
-import { Milliseconds } from '../lib/time.js'
 import { Console } from 'node:console'
 
 test('measureNftTimeToRetrievability', async (t) => {
@@ -27,12 +27,21 @@ test('measureNftTimeToRetrievability', async (t) => {
     },
   }
 
-  let pushCallCount = 0
-  const metricsPusher = {
+  let pushRetrieveCallCount = 0
+  const retrieveMetricsPusher = {
     /** @type {import('./measureNftTimeToRetrievability.js').RetrievalMetricsLogger} */
-    push(...args) {
-      pushCallCount++
-      return createStubbedRetrievalMetricsLogger()(...args)
+    push() {
+      pushRetrieveCallCount++
+      return Promise.resolve()
+    },
+  }
+
+  let pushStoreMetricsCallCount = 0
+  const storeMetricsPusher = {
+    /** @type {import('./measureNftTimeToRetrievability.js').StoreMetricsLogger} */
+    push: () => {
+      pushStoreMetricsCallCount++
+      return Promise.resolve()
     },
   }
 
@@ -44,7 +53,8 @@ test('measureNftTimeToRetrievability', async (t) => {
       gateways: [new URL('https://nftstorage.link')],
       store: (n) => storer.store(n),
       metricsPushGatewayJobName: 'integration-tests',
-      pushRetrieveMetrics: (...args) => metricsPusher.push(...args),
+      pushStoreMetrics: (...args) => storeMetricsPusher.push(...args),
+      pushRetrieveMetrics: (...args) => retrieveMetricsPusher.push(...args),
       secrets: {
         nftStorageToken: 'TODO',
         metricsPushGatewayAuthorization: 'bearer todo',
@@ -61,6 +71,8 @@ test('measureNftTimeToRetrievability', async (t) => {
   const storeLog = results.find((log) => log.type === 'store')
   t.assert(storeLog)
 
+  t.is(pushStoreMetricsCallCount, 1)
+
   const retrieve = results.find(
     /** @returns {log is import('./measureNftTimeToRetrievability.js').RetrieveLog} */
     (log) => log.type === 'retrieve'
@@ -72,21 +84,18 @@ test('measureNftTimeToRetrievability', async (t) => {
   )
 
   // did call pushRetrieveMetrics
-  t.is(pushCallCount, 1)
+  t.is(pushRetrieveCallCount, 1)
 
   const finish = results.find((log) => log.type === 'finish')
   t.assert(finish)
 })
 
-test('createPromClientRetrievalMetricsLogger', async (t) => {
+test('createPushgatewayMetricLogger', async (t) => {
   const registry = new Registry()
-  const metric = createRetrievalDurationMetric(registry)
-  const metricsPushGatewayJobName =
-    'test-job-createPromClientRetrievalMetricsLogger'
+  const jobName = 'test-job-createPushgatewayMetricLogger'
   const metricLabels = {
-    instance: 'instance-createPromClientRetrievalMetricsLogger',
+    instance: 'instance-createPushgatewayMetricLogger',
   }
-  const pushGatewayAuthorization = 'bearer fake-auth'
   /** @type {import('http').IncomingMessage[]} */
   const fakePushGatewayRequests = []
   /** @type {import('http').RequestListener} */
@@ -96,32 +105,27 @@ test('createPromClientRetrievalMetricsLogger', async (t) => {
     res.end()
   }
   const silentConsole = new Console(new Writable())
-  /** @type {import('./measureNftTimeToRetrievability.js').RetrieveLog} */
-  const fakeRetrieve = {
-    type: 'retrieve',
-    image: 'fake-image',
-    gateway: new URL('https://example.com/fake-gateway'),
-    url: new URL('https://example.com/fake-gateway/fake-image'),
-    contentLength: 1,
-    startTime: new Date(),
-    duration: new Milliseconds(1000),
+
+  /** @type {import('../lib/metrics.js').Metric<number, {}>} */
+  const metric = {
+    name: 'sample_metric',
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    observe() {},
   }
+
   await withHttpServer(fakePushGateway, async (pushGatewayUrl) => {
-    const metricsLogger = createPromClientRetrievalMetricsLogger(
-      registry,
+    const metricsLogger = createPushgatewayMetricLogger(
+      createPushgateway(pushGatewayUrl, 'baerer fake-auth', registry),
       metric,
-      metricsPushGatewayJobName,
+      jobName,
       metricLabels,
-      pushGatewayUrl,
-      pushGatewayAuthorization
+      silentConsole
     )
-    await metricsLogger({ console: silentConsole }, fakeRetrieve)
+    await metricsLogger(1, {})
   })
   t.is(fakePushGatewayRequests.length, 1)
   const [firstRequest] = fakePushGatewayRequests
-  t.assert(
-    firstRequest.url?.startsWith(`/metrics/job/${metricsPushGatewayJobName}`)
-  )
+  t.assert(firstRequest.url?.startsWith(`/metrics/job/${jobName}`))
   for (const [label, value] of Object.entries(metricLabels)) {
     t.assert(
       firstRequest.url?.includes([label, value].join('/')),
