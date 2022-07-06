@@ -1,8 +1,8 @@
 ---
 title: 'New infrastructure, who dis? Elastic IPFS in production for NFT.Storage'
 description: Elastic IPFS in production for NFT.Storage today. See and feel the difference!
-author: David Choi, Mikeal Rogers, Alan Shaw, Benjamin Goering
-thumbnail: 
+author: Mikeal Rogers, Alan Shaw, Benjamin Goering, David Choi
+thumbnail: https://user-images.githubusercontent.com/102551503/177439167-7f94f062-0c4b-4055-b461-7edf24468294.png
 date: Jul 7, 2022
 tags:
   - ipfs
@@ -40,7 +40,7 @@ As a result, in parallel to our ipfs-cluster scaling, our team has been working 
 
 And at the end of June, after much testing, we rolled out this new infrastructure to the [Web3.Storage](http://Web3.Storage) platform (which includes NFT.Storage). We saw immediate improvements to NFT.Storage’s performance, and we’re ready to share this huge win for the entire NFT Ecosystem!
 
-For NFT.Storage in particular, we saw a **99.9% decrease in 5xx errors to uploads**, as well as huge drops in request time and perf variance across the board (**mean from 3-8s to 2-3s, 99th% from 1-10 min to <10s**).
+For NFT.Storage in particular, we saw a <em>99.9% decrease in 5xx errors to uploads</em>, as well as huge drops in request time and perf variance across the board (<em>mean from 3-8s to 2-3s, 99th% from 1-10 min to \<10s</em>).
 
 ![image](https://user-images.githubusercontent.com/11778450/177436680-dd5e7877-ac47-4b55-a187-d05e934ae07e.png)
 <span style={{ display: 'block', textAlign: 'center', fontStyle: 'italic', marginBottom: 20, fontSize: 14 }}>
@@ -55,10 +55,10 @@ What does this mean for NFT.Storage users? Uploads of all sizes being much faste
 
 More literature on how Elastic IPFS works will be coming in the future. However, here are some notes on how it diverges significantly from the two major IPFS implementations today, go-ipfs and [js-ipfs](https://js.ipfs.io/). And all the [code is open source](https://github.com/ipfs-elastic-provider), so you can always dive into it yourself!
 
-- **No Blockstore**: Blocks are retrieved directly from CAR files uploaded by users.
-- **Single peer ID**: We run the service as a single peer ID across cloud service regions, leaning into off-the-shelf redundancy and load balancing from the cloud provider.
-- **Elastic Horizontal Scalability**: New writes trigger serverless functions which index each CAR file into a DynamoDB table. Bitswap implementation is in Node.js managed by Kubernetes, and WebSocket load balancer distributes requests to individual BitSwap processes.
-- **No DHT re-providing**: We leverage the [Indexer Nodes](https://filecoin.io/blog/posts/introducing-the-network-indexer/) to make provider records (i.e., records of who has the content) available to DHT queries via the [hydra node](https://github.com/libp2p/hydra-booster) bridge.
+- No Blockstore: Blocks are retrieved directly from CAR files uploaded by users.
+- Single peer ID: We run the service as a single peer ID across cloud service regions, leaning into off-the-shelf redundancy and load balancing from the cloud provider.
+- Elastic Horizontal Scalability: New writes trigger serverless functions which index each CAR file into a DynamoDB table. Bitswap implementation is in Node.js managed by Kubernetes, and WebSocket load balancer distributes requests to individual BitSwap processes.
+- No DHT re-providing: We leverage the [Indexer Nodes](https://filecoin.io/blog/posts/introducing-the-network-indexer/) to make provider records (i.e., records of who has the content) available to DHT queries via the [hydra node](https://github.com/libp2p/hydra-booster) bridge.
 
 ## Moving the needle
 
