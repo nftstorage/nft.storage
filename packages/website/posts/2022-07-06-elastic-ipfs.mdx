@@ -18,7 +18,7 @@ Since its inception in mid-2021, [NFT.Storage](http://NFT.Storage) has serviced 
 
 Currently, [NFT.Storage](http://NFT.Storage) is run on the [Web3.Storage](http://Web3.Storage) platform, which involves the following steps:
 
-1. The user (usually) converts data into a [DAG]([https://docs.ipfs.io/concepts/merkle-dag/](https://docs.ipfs.io/concepts/merkle-dag/)), generating the upload’s content ID ([CID](https://docs.ipfs.io/concepts/content-addressing/)) locally (so the user can verify that the content is not tampered with). This is then packaged into a [CAR file](https://ipld.io/specs/transport/car/) for uploading
+1. The user (usually) converts data into a [DAG](https://docs.ipfs.io/concepts/merkle-dag/), generating the upload’s content ID ([CID](https://docs.ipfs.io/concepts/content-addressing/)) locally (so the user can verify that the content is not tampered with). This is then packaged into a [CAR file](https://ipld.io/specs/transport/car/) for uploading
 2. The upload gets sent to the NFT.Storage API
 3. The upload gets stored on NFT.Storage’s hosted IPFS infrastructure, making this data performantly available on the public IPFS network, including via IPFS gateways like nftstorage.link
 4. The upload is asynchronously put into a Filecoin [storage deal](https://filecoin.io/blog/posts/how-storage-and-retrieval-deals-work-on-filecoin/), and stored with multiple independent Filecoin Storage Providers, with users able to cryptographically verify that the data is actually being stored by these Storage Providers (who are submitting validated proofs to the Filecoin blockchain)
