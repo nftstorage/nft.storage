@@ -5,10 +5,7 @@ import {
   loadServiceConfig,
 } from '../src/config.js'
 
-import {
-  setupMiniflareContext,
-  defineGlobals,
-} from './scripts/miniflare-context.js'
+import { setupMiniflareContext, defineGlobals } from './scripts/test-context.js'
 
 test.beforeEach(async (t) => {
   await setupMiniflareContext(t)
