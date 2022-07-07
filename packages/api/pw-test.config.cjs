@@ -44,7 +44,7 @@ module.exports = {
   buildSWConfig: config,
   beforeTests: async () => {
     console.log('⚡️ Starting Cluster, PostgreSQL, PostgREST and Minio')
-    await execa(cli, ['services', 'start', '--project', project], {
+    await execa(cli, ['services', 'start', '--project', project, '--clean'], {
       stdio: 'inherit',
     })
 

@@ -102,6 +102,7 @@ prog
     'Run docker compose to setup Cluster, PostgreSQL, PostgREST and Minio'
   )
   .option('--project', 'Project name', 'nft-storage-dev')
+  .option('--clean', 'remove persistent containers and volumes', false)
   .action(servicesStartCmd)
   .command('services stop')
   .describe(
