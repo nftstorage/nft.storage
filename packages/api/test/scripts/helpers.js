@@ -2,6 +2,7 @@ import { Cluster } from '@nftstorage/ipfs-cluster'
 import { signJWT } from '../../src/utils/jwt.js'
 import { PostgrestClient } from '@supabase/postgrest-js'
 import { DBClient } from '../../src/utils/db-client.js'
+import { getMiniflareContext, getTestServiceConfig } from './test-context.js'
 
 /**
  * @typedef {import('../../src/config.js').ServiceConfiguration} ServiceConfiguration
@@ -179,11 +180,13 @@ export async function createTestUserWithFixedToken(
 export class DBTestClient {
   /**
    * @param {ServiceConfiguration} config
+   * @param {import('miniflare').Miniflare} mf
    * @param {{ token: string; userId: number; githubId: string }} opts
    */
-  constructor(config, opts) {
+  constructor(config, mf, opts) {
     this.rawClient = getRawClient(config)
     this.client = getDBClient(config)
+    this.mf = mf
     this.token = opts.token
     this.userId = opts.userId
     this.githubId = opts.githubId
@@ -195,7 +198,7 @@ export class DBTestClient {
    * @param {{ cid: string; name: string; }} data
    */
   async addPin(data) {
-    const res = await fetch('pins', {
+    const res = await this.mf.dispatchFetch('http://localhost:8787/pins', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.token}`,
@@ -212,11 +215,13 @@ export class DBTestClient {
   }
 }
 /**
- * @param {ServiceConfiguration} serviceConfig
+ * @param {import('ava').ExecutionContext<unknown>} t
  * @param {{publicAddress?: string, issuer?: string, name?: string}} [userInfo]
  */
-export async function createClientWithUser(serviceConfig, userInfo) {
+export async function createClientWithUser(t, userInfo) {
+  const serviceConfig = await getTestServiceConfig(t)
+  const mf = await getMiniflareContext(t)
   const user = await createTestUser(serviceConfig, userInfo)
 
-  return new DBTestClient(serviceConfig, user)
+  return new DBTestClient(serviceConfig, mf, user)
 }
