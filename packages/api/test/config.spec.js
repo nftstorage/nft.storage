@@ -5,28 +5,13 @@ import {
   loadServiceConfig,
 } from '../src/config.js'
 
-import { makeMiniflare } from './scripts/miniflare-context.js'
-
-/** @type Record<string, unknown> */
-const globals = globalThis
-
-/**
- * @param {Record<string, string>} vars
- */
-const defineGlobals = (vars) => {
-  for (const [k, v] of Object.entries(vars)) {
-    globals[k] = v
-  }
-}
+import {
+  setupMiniflareContext,
+  defineGlobals,
+} from './scripts/miniflare-context.js'
 
 test.beforeEach(async (t) => {
-  // Create a new Miniflare environment for each test
-  const mf = makeMiniflare()
-  t.context = { mf }
-
-  // pull cloudflare bindings into the global scope of the test runner
-  const bindings = await mf.getBindings()
-  defineGlobals(bindings)
+  await setupMiniflareContext(t)
 })
 
 test('loadServiceConfig uses default config values for missing vars when ENV == "test" or "dev"', (t) => {

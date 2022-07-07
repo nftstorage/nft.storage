@@ -17,3 +17,27 @@ export function makeMiniflare() {
     buildCommand: undefined,
   })
 }
+
+/**
+ * @param {Record<string, string>} vars
+ */
+export const defineGlobals = (vars) => {
+  /** @type Record<string, unknown> */
+  const globals = globalThis
+  for (const [k, v] of Object.entries(vars)) {
+    globals[k] = v
+  }
+}
+
+/**
+ *
+ * @param {import('ava').ExecutionContext<unknown>} t
+ */
+export async function setupMiniflareContext(t) {
+  const mf = makeMiniflare()
+  t.context = { mf }
+
+  // pull cloudflare bindings into the global scope of the test runner
+  const bindings = await mf.getBindings()
+  defineGlobals(bindings)
+}
