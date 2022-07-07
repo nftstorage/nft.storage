@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.56.0](https://github.com/nftstorage/nft.storage/compare/website-v1.55.0...website-v1.56.0) (2022-07-07)
+
+
+### Features
+
+* elastic ipfs blog post ([#2057](https://github.com/nftstorage/nft.storage/issues/2057)) ([a76f6bb](https://github.com/nftstorage/nft.storage/commit/a76f6bb3cf81720f87fef40b75af876960b66fdd))
+* update ToS for superhot ([#1948](https://github.com/nftstorage/nft.storage/issues/1948)) ([ccd0c69](https://github.com/nftstorage/nft.storage/commit/ccd0c690af94e88a2a4f390341cf7fc27f276c20))
+
+
+### Bug Fixes
+
+* add tailwind typography to faq content. ([#2060](https://github.com/nftstorage/nft.storage/issues/2060)) ([24d0720](https://github.com/nftstorage/nft.storage/commit/24d07206a2b8fc0549ff1e83b932767c1348bc3f))
+* link to NFTStorage constructor in API reference docs ([#2005](https://github.com/nftstorage/nft.storage/issues/2005)) ([4eddd01](https://github.com/nftstorage/nft.storage/commit/4eddd01a78e4948d4b1e39ba88f4dee05140f512))
+
 ## [1.55.0](https://github.com/nftstorage/nft.storage/compare/website-v1.54.0...website-v1.55.0) (2022-06-23)
 
 
