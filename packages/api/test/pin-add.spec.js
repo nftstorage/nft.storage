@@ -3,8 +3,8 @@ import { CID } from 'multiformats'
 import {
   createClientWithUser,
   DBTestClient,
-  rawClient,
-  cluster,
+  getRawClient,
+  getCluster,
 } from './scripts/helpers.js'
 import {
   TrackerStatusPinned,
@@ -38,6 +38,7 @@ describe('Pin add ', () => {
     )
     assert.equal(value.status, 'queued')
 
+    const rawClient = getRawClient()
     const { data } = await rawClient
       .from('upload')
       .select('*')
@@ -74,6 +75,7 @@ describe('Pin add ', () => {
       'Server responded with expected data for pin'
     )
 
+    const rawClient = getRawClient()
     const { data } = await rawClient
       .from('upload')
       .select('*')
@@ -194,6 +196,7 @@ describe('Pin add ', () => {
     const data = await res.json()
     assert.strictEqual(data.pin.cid, cidv0)
 
+    const cluster = getCluster()
     // should be being pinned by the source CID
     let status = await cluster.status(cidv0)
     const goodStatuses = [

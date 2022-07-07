@@ -2,7 +2,7 @@ import assert from 'assert'
 import {
   createClientWithUser,
   DBTestClient,
-  rawClient,
+  getRawClient,
 } from './scripts/helpers.js'
 
 describe('Auth Keys', () => {
@@ -70,7 +70,7 @@ describe('Auth Keys', () => {
     const deleteData = await resDelete.json()
     assert.ok(deleteData.ok, 'delete key')
 
-    const { data, error } = await rawClient
+    const { data, error } = await getRawClient()
       .from('auth_key')
       .select('*')
       .eq('id', value.id)

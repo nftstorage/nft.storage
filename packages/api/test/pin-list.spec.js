@@ -2,7 +2,7 @@ import assert from 'assert'
 import {
   createClientWithUser,
   DBTestClient,
-  rawClient,
+  getRawClient,
 } from './scripts/helpers.js'
 
 describe('Pin list ', () => {
@@ -81,7 +81,7 @@ describe('Pin list ', () => {
     await client.addPin({ cid, name: 'test' })
 
     // Make this CID 'Pinned' in our DB
-    await rawClient
+    await getRawClient()
       .from('pin')
       .update({ status: 'Pinned', updated_at: new Date().toISOString() })
       .eq('content_cid', cid)
