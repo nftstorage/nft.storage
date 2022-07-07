@@ -65,6 +65,7 @@
     "readable-stream": "^3.6.0",
     "sade": "^1.7.4",
     "smoke": "^3.1.1",
+    "testcontainers": "^8.11.0",
     "tweetnacl": "^1.0.3"
   }
 }
