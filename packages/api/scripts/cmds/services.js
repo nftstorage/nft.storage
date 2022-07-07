@@ -22,8 +22,16 @@ export async function servicesStartCmd({ project }) {
     console.error('⚠️ Services are already running.')
   }
   await execa(
-    'docker-compose',
-    ['--file', composePath, '--project-name', project, 'up', '--detach'],
+    'docker',
+    [
+      'compose',
+      '--file',
+      composePath,
+      '--project-name',
+      project,
+      'up',
+      '--detach',
+    ],
     { stdio: 'inherit' }
   )
 }
@@ -33,15 +41,16 @@ export async function servicesStartCmd({ project }) {
  */
 export async function servicesStopCmd({ project, clean }) {
   await execa(
-    'docker-compose',
-    ['--file', composePath, '--project-name', project, 'stop'],
+    'docker',
+    ['compose', '--file', composePath, '--project-name', project, 'stop'],
     { stdio: 'inherit' }
   )
 
   if (clean) {
     await execa(
-      'docker-compose',
+      'docker',
       [
+        'compose',
         '--file',
         composePath,
         '--project-name',
