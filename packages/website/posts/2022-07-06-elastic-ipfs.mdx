@@ -29,11 +29,14 @@ Focusing on step 3 above, since launch, we have been managing and running our ow
 
 ## Announcing Elastic IPFS
 
-![image](https://user-images.githubusercontent.com/11778450/177436605-d7d2db00-a184-44b1-b1e1-90e7a7f8c010.png)
+<div style={{ display: 'flex', justifyContent: 'center', maxWidth: '200px', margin: '0 auto 1rem' }}>
+  ![image](https://user-images.githubusercontent.com/11778450/177436605-d7d2db00-a184-44b1-b1e1-90e7a7f8c010.png)
+</div>
 
 As a result, in parallel to our ipfs-cluster scaling, our team has been working hard on building a new open source IPFS implementation - one that is designed for our level of scale, architected in a cloud-native way - called [Elastic IPFS](https://github.com/ipfs-elastic-provider). It is *designed* to be able to be run on most cloud infrastructure providers (we currently run in AWS), taking advantage of the scalability, efficiency, and cost of off-the-shelf infrastructure but centered around IPFS CIDs, meaning the data layer remains totally verifiable and decentralized.
 
-![image](https://user-images.githubusercontent.com/11778450/177436641-9f8b717d-40dd-4e09-9c09-1ae7feb17792.png)
+<a href="https://user-images.githubusercontent.com/11778450/177436641-9f8b717d-40dd-4e09-9c09-1ae7feb17792.png" target="_blank">![image](https://user-images.githubusercontent.com/11778450/177436641-9f8b717d-40dd-4e09-9c09-1ae7feb17792.png)</a>
+
 <span style={{ display: 'block', textAlign: 'center', fontStyle: 'italic', marginBottom: 20, fontSize: 14 }}>
   Architecture diagram of the current Elastic IPFS implementation in AWS.
 </span>
@@ -42,7 +45,12 @@ And at the end of June, after much testing, we rolled out this new infrastructur
 
 For NFT.Storage in particular, we saw a <em>99.9% decrease in 5xx errors to uploads</em>, as well as huge drops in request time and perf variance across the board (<em>mean from 3-8s to 2-3s, 99th% from 1-10 min to \<10s</em>).
 
-![image](https://user-images.githubusercontent.com/11778450/177436680-dd5e7877-ac47-4b55-a187-d05e934ae07e.png)
+![image](https://user-images.githubusercontent.com/1189523/177662933-40451acb-becb-4a52-a1d2-c066f33da352.png)
+
+![image](https://user-images.githubusercontent.com/1189523/177662931-53164a40-f70b-49ec-bd6f-f3db7d7a9815.png)
+
+![image](https://user-images.githubusercontent.com/1189523/177662927-d19c1519-b081-40df-b90f-a297f1a9f850.png)
+
 <span style={{ display: 'block', textAlign: 'center', fontStyle: 'italic', marginBottom: 20, fontSize: 14 }}>
   Immediately after rolling out Elastic IPFS, we saw huge drops in upload times and variance of upload time.
 </span>
