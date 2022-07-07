@@ -1,60 +1,72 @@
+import test from 'ava'
 import assert from 'assert'
 import { createClientWithUser } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
+import {
+  setupMiniflareContext,
+  getTestServiceConfig,
+  getMiniflareContext,
+} from './scripts/test-context.js'
 
-describe('Check NFT', () => {
-  it('should return proper response for cid v1', async () => {
-    const client = await createClientWithUser()
-    const cid = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
-    await client.addPin({
-      cid,
-      name: 'test-file11',
-    })
-
-    const res = await fetch(`check/${cid}`)
-    const { ok, value } = await res.json()
-
-    assert.equal(value.cid, cid)
-    assert.equal(value.pin.status, 'queued')
-    assert.deepStrictEqual(value.deals, fixtures.dealsV0andV1)
-  })
-
-  it('should return proper response for cid v0', async () => {
-    const client = await createClientWithUser()
-    const cid = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
-    await client.addPin({
-      cid,
-      name: 'test-file-cid-v0',
-    })
-
-    const res = await fetch(`check/${cid}`)
-    const { ok, value } = await res.json()
-    assert.equal(value.cid, cid)
-    assert.equal(value.pin.status, 'queued')
-    assert.deepStrictEqual(value.deals, fixtures.dealsV0andV1)
-  })
-
-  it('should error on invalid cid', async () => {
-    const cid = 'asdhjkahsdja'
-    const res = await fetch(`check/${cid}`)
-    const { ok, value, error } = await res.json()
-
-    assert.equal(ok, false)
-    assert.deepStrictEqual(error, {
-      code: 'ERROR_INVALID_CID',
-      message: `Invalid CID: ${cid}`,
-    })
-  })
-
-  it('should error on not found', async () => {
-    const cid = 'bafybeia22kh3smc7p67oa76pcleaxp4u5zatsvcndi3xrqod5vtxq5avpa'
-    const res = await fetch(`check/${cid}`)
-    const { ok, value, error } = await res.json()
-
-    assert.equal(ok, false)
-    assert.deepStrictEqual(error, {
-      code: 'HTTP_ERROR',
-      message: `NFT not found`,
-    })
-  })
+test.beforeEach(async (t) => {
+  await setupMiniflareContext(t)
 })
+
+test('should return proper response for cid v1', async (t) => {
+  const mf = getMiniflareContext(t)
+  const client = await createClientWithUser(t)
+  const cid = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
+  await client.addPin({
+    cid,
+    name: 'test-file11',
+  })
+
+  const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
+  const { ok, value } = await res.json()
+
+  t.is(value.cid, cid)
+  t.is(value.pin.status, 'queued')
+  t.deepEqual(value.deals, fixtures.dealsV0andV1)
+})
+
+// test('should return proper response for cid v0', async (t) => {
+//   const mf = getMiniflareContext(t)
+//   const client = await createClientWithUser(t)
+//   const cid = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
+//   await client.addPin({
+//     cid,
+//     name: 'test-file-cid-v0',
+//   })
+
+//   const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
+//   const { ok, value } = await res.json()
+//   t.is(value.cid, cid)
+//   t.is(value.pin.status, 'queued')
+//   t.deepEqual(value.deals, fixtures.dealsV0andV1)
+// })
+
+// test('should error on invalid cid', async (t) => {
+//   const mf = getMiniflareContext(t)
+//   const cid = 'asdhjkahsdja'
+//   const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
+//   const { ok, value, error } = await res.json()
+
+//   t.false(ok)
+//   t.deepEqual(error, {
+//     code: 'ERROR_INVALID_CID',
+//     message: `Invalid CID: ${cid}`,
+//   })
+// })
+
+// test('should error on not found', async (t) => {
+//   const mf = getMiniflareContext(t)
+//   const cid = 'bafybeia22kh3smc7p67oa76pcleaxp4u5zatsvcndi3xrqod5vtxq5avpa'
+//   const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
+//   const { ok, value, error } = await res.json()
+
+//   t.false(ok)
+//   t.deepEqual(error, {
+//     code: 'HTTP_ERROR',
+//     message: `NFT not found`,
+//   })
+// })

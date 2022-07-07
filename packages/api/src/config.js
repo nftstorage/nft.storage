@@ -18,9 +18,6 @@ const CLUSTER_SERVICE_URLS = {
   IpfsCluster3: 'https://nft3.storage.ipfscluster.io/api/',
 }
 
-/** @type ServiceConfiguration|undefined */
-let _globalConfig
-
 /**
  * Returns a {@link ServiceConfiguration} object containing the runtime config options for the API service.
  * Includes anything injected by the environment (secrets, URLs for services we call out to, maintenance flag, etc).
@@ -28,24 +25,10 @@ let _globalConfig
  * Loaded from global variables injected by CloudFlare Worker runtime.
  *
  * Lazily loaded and cached on first access.
+ * TODO: remove this and explicitly call loadServiceConfig
  */
 export const getServiceConfig = () => {
-  if (_globalConfig) {
-    return _globalConfig
-  }
-  _globalConfig = loadServiceConfig()
-  return _globalConfig
-}
-
-/**
- * Override the global service configuration for testing purposes.
- * Note that some files call {@link getServiceConfig} at module scope,
- * so they may not pick up the overriden config.
- *
- * @param {ServiceConfiguration} config
- */
-export const overrideServiceConfigForTesting = (config) => {
-  _globalConfig = config
+  return loadServiceConfig()
 }
 
 /**
