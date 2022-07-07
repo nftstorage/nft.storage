@@ -1,6 +1,7 @@
 import { Miniflare } from 'miniflare'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { serviceConfigFromVariables } from '../../src/config.js'
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 import { startTestContainers } from './containers.js'
@@ -39,22 +40,35 @@ export const defineGlobals = (vars) => {
 /**
  *
  * @param {import('ava').ExecutionContext<unknown>} t
+ * @param {object} opts
+ * @param {boolean} [opts.bindGlobals]
+ * @param {boolean} [opts.noContainers]
  */
-export async function setupMiniflareContext(t) {
+export async function setupMiniflareContext(
+  t,
+  { bindGlobals = false, noContainers = false } = {}
+) {
   t.timeout(600 * 1000, 'timed out pulling / starting test containers')
-  // start database containers
-  const { postgrest } = await startTestContainers()
 
-  const overrides = {
-    DATABASE_URL: postgrest.url,
+  /** @type Record<string, string> */
+  const overrides = {}
+
+  if (!noContainers) {
+    // start database containers
+    const { postgrest } = await startTestContainers()
+    overrides.DATABASE_URL = postgrest.url
   }
 
   const mf = makeMiniflare(overrides)
-  t.context = { mf }
 
   // pull cloudflare bindings into the global scope of the test runner
   const bindings = await mf.getBindings()
-  defineGlobals(bindings)
+  // console.log('miniflare bindings', bindings)
+  const serviceConfig = serviceConfigFromVariables(bindings)
+  if (bindGlobals) {
+    defineGlobals(bindings)
+  }
+  t.context = { mf, serviceConfig }
 }
 
 /**
@@ -71,4 +85,20 @@ export function getMiniflareContext(t) {
     )
   }
   return mf
+}
+
+/**
+ *
+ * @param {import('ava').ExecutionContext<unknown>} t
+ * @returns {import('../../src/config.js').ServiceConfiguration}
+ */
+export function getTestServiceConfig(t) {
+  // @ts-ignore
+  const { serviceConfig } = t.context
+  if (!serviceConfig) {
+    throw new Error(
+      'no service config found in test context. make sure to call setupMiniflareContext in a before hook'
+    )
+  }
+  return serviceConfig
 }

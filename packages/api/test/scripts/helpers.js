@@ -2,17 +2,26 @@ import { Cluster } from '@nftstorage/ipfs-cluster'
 import { signJWT } from '../../src/utils/jwt.js'
 import { PostgrestClient } from '@supabase/postgrest-js'
 import { DBClient } from '../../src/utils/db-client.js'
-import { getServiceConfig } from '../../src/config.js'
 
-export const getCluster = () => {
-  const config = getServiceConfig()
+/**
+ * @typedef {import('../../src/config.js').ServiceConfiguration} ServiceConfiguration
+ */
+
+/**
+ * @param {ServiceConfiguration} config
+ * @returns {Cluster}
+ */
+export const getCluster = (config) => {
   return new Cluster(config.CLUSTER_API_URL, {
     headers: { Authorization: `Basic ${config.CLUSTER_BASIC_AUTH_TOKEN}` },
   })
 }
 
-export const getRawClient = () => {
-  const config = getServiceConfig()
+/**
+ * @param {ServiceConfiguration} config
+ * @returns {PostgrestClient}
+ */
+export const getRawClient = (config) => {
   return new PostgrestClient(config.DATABASE_URL, {
     headers: {
       Authorization: `Bearer ${config.DATABASE_TOKEN}`,
@@ -20,20 +29,26 @@ export const getRawClient = () => {
   })
 }
 
-export const getDBClient = () => {
-  const config = getServiceConfig()
+/**
+ * @param {ServiceConfiguration} config
+ * @returns {DBClient}
+ */
+export const getDBClient = (config) => {
   return new DBClient(config.DATABASE_URL, config.DATABASE_TOKEN)
 }
 
 /**
+ * @param {ServiceConfiguration} config
  * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
  */
-export async function createTestUser({
-  publicAddress = `0x73573${Date.now()}`,
-  issuer = `did:eth:${publicAddress}`,
-  name = 'A Tester',
-} = {}) {
-  const config = getServiceConfig()
+export async function createTestUser(
+  config,
+  {
+    publicAddress = `0x73573${Date.now()}`,
+    issuer = `did:eth:${publicAddress}`,
+    name = 'A Tester',
+  } = {}
+) {
   const token = await signJWT(
     {
       sub: issuer,
@@ -44,11 +59,18 @@ export async function createTestUser({
     config.SALT
   )
 
-  return createTestUserWithFixedToken({ token, publicAddress, issuer, name })
+  return createTestUserWithFixedToken(config, {
+    token,
+    publicAddress,
+    issuer,
+    name,
+  })
 }
 
 /**
  * Create a new user tag
+ *
+ * @param {PostgrestClient} rawClient
  *
  * @param {Object} tag
  * @param {number} tag.user_id
@@ -58,8 +80,7 @@ export async function createTestUser({
  * @param {string} tag.inserted_at
  * @param {string} tag.reason
  */
-async function createUserTag(tag) {
-  const rawClient = getRawClient()
+async function createUserTag(rawClient, tag) {
   const query = rawClient.from('user_tag')
 
   const { data, error } = await query.upsert(tag).single()
@@ -76,16 +97,21 @@ async function createUserTag(tag) {
 }
 
 /**
+ * @param {ServiceConfiguration} config
  * @param {{publicAddress?: string, issuer?: string, name?: string, token?: string, addAccountRestriction?: boolean}} userInfo
  */
-export async function createTestUserWithFixedToken({
-  token = '',
-  publicAddress = `0x73573${Date.now()}`,
-  issuer = `did:eth:${publicAddress}`,
-  name = 'A Tester',
-  addAccountRestriction = false,
-} = {}) {
-  const client = getDBClient()
+export async function createTestUserWithFixedToken(
+  config,
+  {
+    token = '',
+    publicAddress = `0x73573${Date.now()}`,
+    issuer = `did:eth:${publicAddress}`,
+    name = 'A Tester',
+    addAccountRestriction = false,
+  } = {}
+) {
+  const client = getDBClient(config)
+  const rawClient = getRawClient(config)
   const { data: user, error } = await client
     .upsertUser({
       email: 'a.tester@example.org',
@@ -110,7 +136,7 @@ export async function createTestUserWithFixedToken({
     secret: token,
     userId: user.id,
   })
-  await createUserTag({
+  await createUserTag(rawClient, {
     user_id: user.id,
     tag: 'HasPsaAccess',
     value: 'true',
@@ -118,7 +144,7 @@ export async function createTestUserWithFixedToken({
     inserted_at: new Date().toISOString(),
   })
 
-  await createUserTag({
+  await createUserTag(rawClient, {
     user_id: user.id,
     tag: 'HasAccountRestriction',
     value: 'false',
@@ -127,7 +153,7 @@ export async function createTestUserWithFixedToken({
   })
 
   // Add some deleted tags to ensure our filtering works
-  await createUserTag({
+  await createUserTag(rawClient, {
     user_id: user.id,
     tag: 'HasPsaAccess',
     value: 'false',
@@ -137,7 +163,7 @@ export async function createTestUserWithFixedToken({
   })
 
   if (addAccountRestriction) {
-    await createUserTag({
+    await createUserTag(rawClient, {
       user_id: user.id,
       tag: 'HasAccountRestriction',
       value: 'true',
@@ -152,11 +178,12 @@ export async function createTestUserWithFixedToken({
 
 export class DBTestClient {
   /**
+   * @param {ServiceConfiguration} config
    * @param {{ token: string; userId: number; githubId: string }} opts
    */
-  constructor(opts) {
-    this.rawClient = getRawClient()
-    this.client = getDBClient()
+  constructor(config, opts) {
+    this.rawClient = getRawClient(config)
+    this.client = getDBClient(config)
     this.token = opts.token
     this.userId = opts.userId
     this.githubId = opts.githubId
@@ -185,10 +212,11 @@ export class DBTestClient {
   }
 }
 /**
+ * @param {ServiceConfiguration} serviceConfig
  * @param {{publicAddress?: string, issuer?: string, name?: string}} [userInfo]
  */
-export async function createClientWithUser(userInfo) {
-  const user = await createTestUser(userInfo)
+export async function createClientWithUser(serviceConfig, userInfo) {
+  const user = await createTestUser(serviceConfig, userInfo)
 
-  return new DBTestClient(user)
+  return new DBTestClient(serviceConfig, user)
 }

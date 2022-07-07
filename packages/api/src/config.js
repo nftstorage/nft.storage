@@ -103,11 +103,11 @@ export function serviceConfigFromVariables(vars) {
     PRIVATE_KEY: vars.PRIVATE_KEY,
     // These are injected in esbuild
     // @ts-ignore
-    BRANCH: NFT_STORAGE_BRANCH,
+    BRANCH: vars.NFT_STORAGE_BRANCH || NFT_STORAGE_BRANCH,
     // @ts-ignore
-    VERSION: NFT_STORAGE_VERSION,
+    VERSION: vars.NFT_STORAGE_VERSION || NFT_STORAGE_VERSION,
     // @ts-ignore
-    COMMITHASH: NFT_STORAGE_COMMITHASH,
+    COMMITHASH: vars.NFT_STORAGE_COMMITHASH || NFT_STORAGE_COMMITHASH,
   }
 }
 
