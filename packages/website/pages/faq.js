@@ -126,7 +126,9 @@ export const FAQ = ({ limit = faqs.length }) => {
               )}
             </HashLink>
           </h2>
-          <div className="leading-normal text-white my-2">{faq.content}</div>
+          <div className="prose prose-invert max-w-none text-white my-2">
+            {faq.content}
+          </div>
         </div>
       ))}
     </>
