@@ -1,9 +1,11 @@
-import assert from 'assert'
+import test from 'ava'
 import {
   serviceConfigFromVariables,
   loadConfigVariables,
   loadServiceConfig,
 } from '../src/config.js'
+
+import { makeMiniflare } from './scripts/miniflare-context.js'
 
 /** @type Record<string, unknown> */
 const globals = globalThis
@@ -12,117 +14,118 @@ const globals = globalThis
  * @param {Record<string, string>} vars
  */
 const defineGlobals = (vars) => {
-  for (const [name, value] of Object.entries(vars)) {
-    globals[name] = value
+  for (const [k, v] of Object.entries(vars)) {
+    globals[k] = v
   }
 }
 
-describe('loadServiceConfig', () => {
-  it('uses default config values for missing vars when ENV == "test" or "dev"', () => {
-    const lenientEnvs = ['test', 'dev']
-    for (const env of lenientEnvs) {
-      defineGlobals({ ENV: env })
-      const cfg = loadServiceConfig()
-      assert.equal(cfg.ENV, env)
-      assert.ok(cfg.MAINTENANCE_MODE)
-    }
-  })
+test.beforeEach(async (t) => {
+  // Create a new Miniflare environment for each test
+  const mf = makeMiniflare()
+  t.context = { mf }
+
+  // pull cloudflare bindings into the global scope of the test runner
+  const bindings = await mf.getBindings()
+  defineGlobals(bindings)
 })
 
-describe('loadConfigVariables', () => {
-  it('looks up values on the globalThis object', () => {
-    globals['SALT'] = 'extra-salty'
-    const vars = loadConfigVariables()
-    assert.equal(vars.SALT, 'extra-salty')
-  })
-
-  it('only includes variables with keys in DEFAULT_CONFIG_VALUES', () => {
-    globals['FOO'] = 'ignored'
-    globals['SALT'] = 'extra-salty'
-    const vars = loadConfigVariables()
-    assert.equal(vars.SALT, 'extra-salty')
-    assert.equal(vars['FOO'], undefined)
-  })
+test('loadServiceConfig uses default config values for missing vars when ENV == "test" or "dev"', (t) => {
+  const lenientEnvs = ['test', 'dev']
+  for (const env of lenientEnvs) {
+    defineGlobals({ ENV: env })
+    const cfg = loadServiceConfig()
+    t.is(cfg.ENV.toString(), env)
+    t.truthy(cfg.MAINTENANCE_MODE)
+  }
 })
 
-describe('serviceConfigFromVariables', () => {
-  it('sets DEBUG to true if DEBUG is equal to "true" or "1"', () => {
-    const truthyValues = ['true', 'TRUE', '1']
-    for (const t of truthyValues) {
-      const cfg = serviceConfigFromVariables({ DEBUG: t })
-      assert.equal(cfg.DEBUG, true)
-    }
-  })
+test('loadConfigVariables looks up values on the globalThis object', (t) => {
+  defineGlobals({ SALT: 'extra-salty' })
+  const vars = loadConfigVariables()
+  t.is(vars.SALT, 'extra-salty')
+})
 
-  it('sets isDebugBuild to false if DEBUG is missing or has a falsy string value ("false", "0", "")', () => {
-    assert.equal(serviceConfigFromVariables({}).DEBUG, false)
+test('loadConfigVariables only includes known configuration variables', (t) => {
+  defineGlobals({ FOO: 'ignored', SALT: 'extra-salty' })
+  const vars = loadConfigVariables()
+  t.is(vars.SALT, 'extra-salty')
+  t.false('FOO' in vars)
+})
 
-    const falsyValues = ['false', 'FALSE', '0', '']
+test('serviceConfigFromVariables sets DEBUG to true if DEBUG is equal to "true" or "1"', (t) => {
+  const truthyValues = ['true', 'TRUE', '1']
+  for (const v of truthyValues) {
+    const cfg = serviceConfigFromVariables({ DEBUG: v })
+    t.true(cfg.DEBUG)
+  }
+})
 
-    for (const f of falsyValues) {
-      assert.equal(serviceConfigFromVariables({ DEBUG: f }).DEBUG, false)
-    }
-  })
+test('serviceConfigFromVariables sets isDebugBuild to false if DEBUG is missing or has a falsy string value ("false", "0", "")', (t) => {
+  t.false(serviceConfigFromVariables({}).DEBUG)
 
-  it('defaults ENV to "test" if ENV is not set', () => {
-    assert.equal(serviceConfigFromVariables({}).ENV, 'test')
-  })
+  const falsyValues = ['false', 'FALSE', '0', '']
 
-  it('fails if ENV is set to an unknown environment name', () => {
-    assert.throws(
-      () => serviceConfigFromVariables({ ENV: 'not-a-real-env' }),
-      /invalid/
+  for (const f of falsyValues) {
+    t.false(serviceConfigFromVariables({ DEBUG: f }).DEBUG)
+  }
+})
+
+test('serviceConfigFromVariables defaults ENV to "test" if ENV is not set', (t) => {
+  t.is(serviceConfigFromVariables({}).ENV, 'test')
+})
+
+test('serviceConfigFromVariables fails if ENV is set to an unknown environment name', (t) => {
+  t.throws(() => serviceConfigFromVariables({ ENV: 'not-a-real-env' }))
+})
+
+test('serviceConfigFromVariables sets ENV if it contains a valid environment name', (t) => {
+  const envs = ['test', 'dev', 'staging', 'production']
+  for (const e of envs) {
+    t.is(serviceConfigFromVariables({ ENV: e }).ENV.toString(), e)
+  }
+})
+
+test('serviceConfigFromVariables fails if MAINTENANCE_MODE is set to an invalid mode string', (t) => {
+  t.throws(() =>
+    serviceConfigFromVariables({ MAINTENANCE_MODE: 'not-a-real-mode' })
+  )
+})
+
+test('serviceConfigFromVariables sets MAINTENANCE_MODE if it contains a valid mode string', (t) => {
+  const modes = ['--', 'r-', 'rw']
+  for (const m of modes) {
+    t.is(
+      serviceConfigFromVariables({
+        MAINTENANCE_MODE: m,
+      }).MAINTENANCE_MODE.toString(),
+      m
     )
-  })
+  }
+})
 
-  it('sets ENV if it contains a valid environment name', () => {
-    const envs = ['test', 'dev', 'staging', 'production']
-    for (const e of envs) {
-      assert.equal(serviceConfigFromVariables({ ENV: e }).ENV, e)
-    }
-  })
+test('serviceConfigFromVariables uses unaltered values for string config variables', (t) => {
+  const stringValuedVars = [
+    'SALT',
+    'METAPLEX_AUTH_TOKEN',
+    'PRIVATE_KEY',
+    'CLUSTER_API_URL',
+    'CLUSTER_BASIC_AUTH_TOKEN',
+    'DATABASE_URL',
+    'DATABASE_TOKEN',
+    'S3_ENDPOINT',
+    'S3_REGION',
+    'S3_ACCESS_KEY_ID',
+    'S3_BUCKET_NAME',
+    'MAGIC_SECRET_KEY',
+    'LOGTAIL_TOKEN',
+    'SENTRY_DSN',
+    'MAILCHIMP_API_KEY',
+  ]
 
-  it('fails if MAINTENANCE_MODE is set to an invalid mode string', () => {
-    assert.throws(
-      () => serviceConfigFromVariables({ MAINTENANCE_MODE: 'not-a-real-mode' }),
-      /invalid/
-    )
-  })
-
-  it('sets MAINTENANCE_MODE if it contains a valid mode string', () => {
-    const modes = ['--', 'r-', 'rw']
-    for (const m of modes) {
-      assert.equal(
-        serviceConfigFromVariables({ MAINTENANCE_MODE: m }).MAINTENANCE_MODE,
-        m
-      )
-    }
-  })
-
-  describe('uses unaltered values for string config variables', () => {
-    const stringValuedVars = [
-      'SALT',
-      'METAPLEX_AUTH_TOKEN',
-      'PRIVATE_KEY',
-      'CLUSTER_API_URL',
-      'CLUSTER_BASIC_AUTH_TOKEN',
-      'DATABASE_URL',
-      'DATABASE_TOKEN',
-      'S3_ENDPOINT',
-      'S3_REGION',
-      'S3_ACCESS_KEY_ID',
-      'S3_BUCKET_NAME',
-      'MAGIC_SECRET_KEY',
-      'LOGTAIL_TOKEN',
-      'SENTRY_DSN',
-      'MAILCHIMP_API_KEY',
-    ]
-
-    for (const key of stringValuedVars) {
-      const val = `value for ${key}`
-      const cfg = serviceConfigFromVariables({ [key]: val })
-      // @ts-expect-error TS doesn't like us indexing the config object with arbitrary strings
-      assert.equal(cfg[key], val)
-    }
-  })
+  for (const key of stringValuedVars) {
+    const val = `value for ${key}`
+    const cfg = serviceConfigFromVariables({ [key]: val })
+    // @ts-expect-error TS doesn't like us indexing the config object with arbitrary strings
+    t.is(cfg[key], val)
+  }
 })
