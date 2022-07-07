@@ -8,7 +8,7 @@
   "scripts": {
     "deploy": "wrangler publish --env production",
     "predev": "./scripts/cli.js services start && ./scripts/cli.js db-sql --cargo --testing --reset && ./scripts/cli.js minio bucket create dotstorage-dev-0",
-    "dev": "miniflare dist/worker.js --watch --debug --env ../../.env",
+    "dev": "./scripts/start-dev.sh",
     "clean": "./scripts/cli.js services stop --clean",
     "build": "scripts/cli.js build",
     "test": "tsc && playwright-test \"test/**/*.spec.js\" --sw src/index.js",

@@ -3,7 +3,6 @@ services:
     image: postgrest/postgrest:v9.0.0
     depends_on:
       - db
-    restart: always
     ports:
       - 3000:3000/tcp
     environment:
