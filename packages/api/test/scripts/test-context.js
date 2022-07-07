@@ -56,3 +56,19 @@ export async function setupMiniflareContext(t) {
   const bindings = await mf.getBindings()
   defineGlobals(bindings)
 }
+
+/**
+ *
+ * @param {import('ava').ExecutionContext<unknown>} t
+ * @returns {Miniflare}
+ */
+export function getMiniflareContext(t) {
+  // @ts-ignore
+  const { mf } = t.context
+  if (!mf) {
+    throw new Error(
+      'no Miniflare context found. make sure you call setupMiniflareContext in a before hook!'
+    )
+  }
+  return mf
+}
