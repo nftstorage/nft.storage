@@ -1,4 +1,0 @@
-
-export default {
-  require: ['./test/scripts/miniflare-context.js']
-}

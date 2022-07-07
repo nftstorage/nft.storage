@@ -29,7 +29,7 @@ function schemaPath(filename) {
  * @returns {Promise<DBContainerInfo>}
  */
 async function makeNftStorageDbContainer(networkName) {
-  console.log('starting nft.storage DB container...')
+  // console.log('starting nft.storage DB container...')
   const initialSchemaFilename = path.join(
     __dirname,
     '..',
@@ -106,7 +106,7 @@ export async function startTestContainers() {
   const network = await new Network().start()
   const db = await makeNftStorageDbContainer(network.getName())
 
-  console.log('started postgres. connection string: ', db.connectionString)
+  // console.log('started postgres. connection string: ', db.connectionString)
   const postgrest = await makePostgrestContainer(network.getName(), db)
 
   return { db, postgrest }
