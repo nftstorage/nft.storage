@@ -1,7 +1,7 @@
 import test from 'ava'
 import { signJWT } from '../src/utils/jwt.js'
 import { createClientWithUser, DBTestClient } from './scripts/helpers.js'
-import { setupMiniflareContext } from './scripts/miniflare-context.js'
+import { setupMiniflareContext } from './scripts/test-context.js'
 import { getServiceConfig } from '../src/config.js'
 
 /** @type{DBTestClient} */
