@@ -2,7 +2,7 @@ import assert from 'assert'
 import { CID } from 'multiformats'
 // @ts-ignore
 import * as Token from 'nft.storage/src/token.js'
-import { createTestUser, rawClient } from './scripts/helpers.js'
+import { createTestUser, getRawClient } from './scripts/helpers.js'
 
 describe('NFT store', () => {
   it('should store image', async () => {
@@ -61,7 +61,7 @@ describe('NFT store', () => {
       'response structure'
     )
 
-    const { data, error } = await rawClient
+    const { data, error } = await getRawClient()
       .from('upload')
       .select('*, content(cid, dag_size, pin(content_cid, status, service))')
       .match({ content_cid: result.ipnft, user_id: userId })
@@ -120,7 +120,7 @@ describe('NFT store', () => {
       'response structure'
     )
 
-    const { data, error } = await rawClient
+    const { data, error } = await getRawClient()
       .from('upload')
       .select('*, content(cid, dag_size, pin(content_cid, status, service))')
       .match({ content_cid: result.ipnft, user_id: userId })

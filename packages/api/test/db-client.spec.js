@@ -1,58 +1,60 @@
-import assert from 'assert'
+import test from 'ava'
 import { signJWT } from '../src/utils/jwt.js'
 import { createClientWithUser, DBTestClient } from './scripts/helpers.js'
+import { setupMiniflareContext } from './scripts/miniflare-context.js'
 import { getServiceConfig } from '../src/config.js'
 
-describe('DB Client', () => {
-  /** @type{DBTestClient} */
-  let client
+/** @type{DBTestClient} */
+let client
 
-  before(async () => {
-    client = await createClientWithUser()
-  })
+test.beforeEach(async (t) => {
+  console.log('before each hook')
+  await setupMiniflareContext(t)
+  client = await createClientWithUser()
+})
 
-  it('getUser should list only active keys', async () => {
-    const config = getServiceConfig()
-    const issuer1 = `did:eth:0x73573${Date.now()}`
-    const token1 = await signJWT(
-      {
-        sub: issuer1,
-        iss: 'nft-storage',
-        iat: Date.now(),
-        name: 'key1',
-      },
-      config.SALT
-    )
-    await client.client.createKey({
+test('getUser should list only active keys', async (t) => {
+  console.log('test')
+  const config = getServiceConfig()
+  const issuer1 = `did:eth:0x73573${Date.now()}`
+  const token1 = await signJWT(
+    {
+      sub: issuer1,
+      iss: 'nft-storage',
+      iat: Date.now(),
       name: 'key1',
-      secret: token1,
-      userId: client.userId,
-    })
-    const issuer2 = `did:eth:0x73573${Date.now()}`
-    const token2 = await signJWT(
-      {
-        sub: issuer2,
-        iss: 'nft-storage',
-        iat: Date.now(),
-        name: 'key2',
-      },
-      config.SALT
-    )
-    const key2 = await client.client.createKey({
-      name: 'key2',
-      secret: token2,
-      userId: client.userId,
-    })
-
-    await client.client.deleteKey(client.userId, key2.id)
-
-    const user = await client.client.getUser(client.githubId)
-
-    if (!user) {
-      throw new Error('no user data')
-    }
-    const keys = user.keys
-    assert.equal(keys.length, 3)
-    assert.equal(keys[1].name, 'key1')
+    },
+    config.SALT
+  )
+  await client.client.createKey({
+    name: 'key1',
+    secret: token1,
+    userId: client.userId,
   })
+  const issuer2 = `did:eth:0x73573${Date.now()}`
+  const token2 = await signJWT(
+    {
+      sub: issuer2,
+      iss: 'nft-storage',
+      iat: Date.now(),
+      name: 'key2',
+    },
+    config.SALT
+  )
+  const key2 = await client.client.createKey({
+    name: 'key2',
+    secret: token2,
+    userId: client.userId,
+  })
+
+  await client.client.deleteKey(client.userId, key2.id)
+
+  const user = await client.client.getUser(client.githubId)
+
+  if (!user) {
+    throw new Error('no user data')
+  }
+  const keys = user.keys
+  t.is(keys.length, 3)
+  t.is(keys[1].name, 'key1')
 })

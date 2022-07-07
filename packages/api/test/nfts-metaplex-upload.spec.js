@@ -2,7 +2,7 @@ import assert from 'assert'
 import {
   createTestUserWithFixedToken,
   DBTestClient,
-  rawClient,
+  getRawClient,
 } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import { createCar } from './scripts/car.js'
@@ -47,7 +47,7 @@ describe('Metaplex Upload', () => {
       'type should match blob mime-type'
     )
 
-    const { data } = await rawClient
+    const { data } = await getRawClient()
       .from('upload')
       .select('*, content(*)')
       .match({ source_cid: cid, user_id: client.userId })
@@ -97,7 +97,7 @@ describe('Metaplex Upload', () => {
       'type should match blob mime-type'
     )
 
-    const { data } = await rawClient
+    const { data } = await getRawClient()
       .from('upload')
       .select('*, content(*)')
       .match({ source_cid: cid, user_id: client.userId })
