@@ -9,7 +9,7 @@ import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import {
   createClientWithUser,
   DBTestClient,
-  rawClient,
+  getRawClient,
 } from './scripts/helpers.js'
 import { createCar } from './scripts/car.js'
 import { build } from 'ucan-storage/ucan-storage'
@@ -42,7 +42,7 @@ describe('NFT Upload ', () => {
       'type should match blob mime-type'
     )
 
-    const { data } = await rawClient
+    const { data } = await getRawClient()
       .from('upload')
       .select('*')
       .match({ source_cid: cid, user_id: client.userId })
@@ -179,7 +179,7 @@ describe('NFT Upload ', () => {
       'type should match blob mime-type'
     )
 
-    const { data } = await rawClient
+    const { data } = await getRawClient()
       .from('upload')
       .select('*, content(*)')
       .match({ source_cid: cid, user_id: client.userId })
@@ -291,7 +291,7 @@ describe('NFT Upload ', () => {
     assert.equal(data2.value.cid, cid)
     assert.equal(data2.value.type, 'application/car', 'car')
 
-    const { data } = await rawClient
+    const { data } = await getRawClient()
       .from('upload')
       .select('*')
       .match({ source_cid: cid, user_id: client.userId })
@@ -323,7 +323,7 @@ describe('NFT Upload ', () => {
     const reupRsp = await reup.json()
     assert.ok(reupRsp.ok)
 
-    const { data } = await rawClient
+    const { data } = await getRawClient()
       .from('upload')
       .select('*')
       .match({ source_cid: cid, user_id: client.userId })
@@ -349,7 +349,7 @@ describe('NFT Upload ', () => {
     })
     const { ok } = await res.json()
     assert(ok, 'upload created')
-    const { data } = await rawClient
+    const { data } = await getRawClient()
       .from('upload')
       .select('*,content(dag_size, pin(status, service, inserted_at))')
       .match({ source_cid: cid, user_id: client.userId })
@@ -496,7 +496,7 @@ describe('NFT Upload ', () => {
     const { ok, value } = await res.json()
     assert(ok, 'Server response payload has `ok` property')
 
-    const { data } = await rawClient
+    const { data } = await getRawClient()
       .from('upload')
       .select('*')
       .match({ source_cid: cid, user_id: client.userId })
@@ -517,7 +517,7 @@ describe('NFT Upload ', () => {
       body: file,
     })
 
-    const { data } = await rawClient
+    const { data } = await getRawClient()
       .from('upload')
       .select('*')
       .match({ content_cid: cid, user_id: client.userId })
@@ -554,7 +554,7 @@ describe('NFT Upload ', () => {
       'type should match blob mime-type'
     )
 
-    const { data: uploadData } = await rawClient
+    const { data: uploadData } = await getRawClient()
       .from('upload')
       .select('*')
       .match({ id: data.id })

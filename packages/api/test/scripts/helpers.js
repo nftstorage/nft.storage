@@ -4,19 +4,26 @@ import { PostgrestClient } from '@supabase/postgrest-js'
 import { DBClient } from '../../src/utils/db-client.js'
 import { getServiceConfig } from '../../src/config.js'
 
-const config = getServiceConfig()
+export const getCluster = () => {
+  const config = getServiceConfig()
+  return new Cluster(config.CLUSTER_API_URL, {
+    headers: { Authorization: `Basic ${config.CLUSTER_BASIC_AUTH_TOKEN}` },
+  })
+}
 
-export const cluster = new Cluster(config.CLUSTER_API_URL, {
-  headers: { Authorization: `Basic ${config.CLUSTER_BASIC_AUTH_TOKEN}` },
-})
+export const getRawClient = () => {
+  const config = getServiceConfig()
+  return new PostgrestClient(config.DATABASE_URL, {
+    headers: {
+      Authorization: `Bearer ${config.DATABASE_TOKEN}`,
+    },
+  })
+}
 
-export const rawClient = new PostgrestClient(config.DATABASE_URL, {
-  headers: {
-    Authorization: `Bearer ${config.DATABASE_TOKEN}`,
-  },
-})
-
-export const client = new DBClient(config.DATABASE_URL, config.DATABASE_TOKEN)
+export const getDBClient = () => {
+  const config = getServiceConfig()
+  return new DBClient(config.DATABASE_URL, config.DATABASE_TOKEN)
+}
 
 /**
  * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
@@ -26,6 +33,7 @@ export async function createTestUser({
   issuer = `did:eth:${publicAddress}`,
   name = 'A Tester',
 } = {}) {
+  const config = getServiceConfig()
   const token = await signJWT(
     {
       sub: issuer,
@@ -51,6 +59,7 @@ export async function createTestUser({
  * @param {string} tag.reason
  */
 async function createUserTag(tag) {
+  const rawClient = getRawClient()
   const query = rawClient.from('user_tag')
 
   const { data, error } = await query.upsert(tag).single()
@@ -76,6 +85,7 @@ export async function createTestUserWithFixedToken({
   name = 'A Tester',
   addAccountRestriction = false,
 } = {}) {
+  const client = getDBClient()
   const { data: user, error } = await client
     .upsertUser({
       email: 'a.tester@example.org',
@@ -145,8 +155,8 @@ export class DBTestClient {
    * @param {{ token: string; userId: number; githubId: string }} opts
    */
   constructor(opts) {
-    this.rawClient = rawClient
-    this.client = client
+    this.rawClient = getRawClient()
+    this.client = getDBClient()
     this.token = opts.token
     this.userId = opts.userId
     this.githubId = opts.githubId

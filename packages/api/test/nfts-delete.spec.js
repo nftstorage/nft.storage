@@ -2,7 +2,7 @@ import assert from 'assert'
 import {
   createClientWithUser,
   DBTestClient,
-  rawClient,
+  getRawClient,
 } from './scripts/helpers.js'
 
 describe('Delete NFT', () => {
@@ -31,7 +31,7 @@ describe('Delete NFT', () => {
     const { ok } = await res.json()
     assert.ok(ok)
 
-    const { data, error } = await rawClient
+    const { data, error } = await getRawClient()
       .from('upload')
       .select('*')
       .match({ source_cid: cid, user_id: client.userId })
@@ -78,7 +78,7 @@ describe('Delete NFT', () => {
     const { ok } = await res.json()
     assert.ok(ok)
 
-    const { data } = await rawClient
+    const { data } = await getRawClient()
       .from('upload')
       .select('*')
       .match({ source_cid: cidv0, user_id: client.userId })
@@ -113,7 +113,7 @@ describe('Delete NFT', () => {
     const { ok } = await res.json()
     assert.ok(ok)
 
-    const { data } = await rawClient
+    const { data } = await getRawClient()
       .from('upload')
       .select('*')
       .match({ source_cid: cidv1, user_id: client.userId })
@@ -172,7 +172,7 @@ describe('Delete NFT', () => {
     assert.ok(ok)
 
     const getNftData = async () => {
-      const { data } = await rawClient
+      const { data } = await getRawClient()
         .from('upload')
         .select('*')
         .match({ source_cid: cid, user_id: client.userId })
