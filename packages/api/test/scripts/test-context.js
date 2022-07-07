@@ -43,29 +43,28 @@ export const defineGlobals = (vars) => {
  * @param {object} opts
  * @param {boolean} [opts.bindGlobals]
  * @param {boolean} [opts.noContainers]
+ * @param {Record<string, string>} [opts.overrides]
  */
 export async function setupMiniflareContext(
   t,
-  { bindGlobals = false, noContainers = false } = {}
+  { bindGlobals = false, noContainers = false, overrides = {} } = {}
 ) {
   t.timeout(600 * 1000, 'timed out pulling / starting test containers')
 
-  /** @type Record<string, string> */
-  const overrides = {}
-
   if (!noContainers) {
     // start database containers
-    const { postgrest } = await startTestContainers()
+    const { postgrest, cluster } = await startTestContainers()
     overrides.DATABASE_URL = postgrest.url
+    overrides.CLUSTER_API_URL = cluster.url
   }
 
   const mf = makeMiniflare(overrides)
 
-  // pull cloudflare bindings into the global scope of the test runner
   const bindings = await mf.getBindings()
   // console.log('miniflare bindings', bindings)
   const serviceConfig = serviceConfigFromVariables(bindings)
   if (bindGlobals) {
+    // optionally pull cloudflare bindings into the global scope of the test runner
     defineGlobals(bindings)
   }
   t.context = { mf, serviceConfig }

@@ -82,7 +82,7 @@ async function makeNftStorageDbContainer(networkName) {
  * @param {DBContainerInfo} dbInfo
  * @returns {Promise<PostgrestContainerInfo>}
  */
-export async function makePostgrestContainer(networkName, dbInfo) {
+async function makePostgrestContainer(networkName, dbInfo) {
   const container = await new GenericContainer('postgrest/postgrest:v9.0.0')
     .withExposedPorts(3000)
     .withWaitStrategy(Wait.forLogMessage('Listening on port'))
@@ -102,6 +102,49 @@ export async function makePostgrestContainer(networkName, dbInfo) {
   return { container, url }
 }
 
+/**
+ *
+ * @param {string} networkName
+ */
+async function makeIpfsContainer(networkName) {
+  const container = await new GenericContainer('ipfs/go-ipfs:v0.10.0')
+    .withNetworkMode(networkName)
+    .withNetworkAliases('ipfs')
+    .withExposedPorts(5001)
+    .start()
+
+  const ip = container.getIpAddress(networkName)
+  const port = container.getMappedPort(5001)
+
+  const multiaddr = `/ip4/${ip}/tcp/${port}`
+  return { container, multiaddr }
+}
+
+/**
+ *
+ * @param {string} networkName
+ * @param {string} ipfsMultiaddr
+ */
+async function makeClusterContainer(networkName, ipfsMultiaddr) {
+  const container = await new GenericContainer('ipfs/ipfs-cluster:v1.0.0-rc4')
+    .withNetworkMode(networkName)
+    .withNetworkAliases('cluster')
+    .withExposedPorts(9094)
+    .withEnv('CLUSTER_PEERNAME', 'cluster')
+    .withEnv('CLUSTER_IPFSHTTP_NODEMULTIADDRESS', ipfsMultiaddr)
+    .withEnv('CLUSTER_CRDT_TRUSTEDPEERS', '*')
+    .withEnv('CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS', '/ip4/0.0.0.0/tcp/9094')
+    .withEnv('CLUSTER_RESTAPI_BASICAUTHCREDENTIALS', 'test:test')
+    .withEnv('CLUSTER_RESTAPI_CORSALLOWEDMETHODS', 'GET,POST,OPTIONS')
+    .withEnv('CLUSTER_RESTAPI_CORSALLOWEDHEADERS', 'authorization')
+    .withEnv('CLUSTER_MONITORPINGINTERVAL', '2s')
+    .start()
+
+  const port = container.getMappedPort(9094)
+  const url = `http://localhost:${port}`
+  return { container, url }
+}
+
 export async function startTestContainers() {
   const network = await new Network().start()
   const db = await makeNftStorageDbContainer(network.getName())
@@ -109,5 +152,8 @@ export async function startTestContainers() {
   // console.log('started postgres. connection string: ', db.connectionString)
   const postgrest = await makePostgrestContainer(network.getName(), db)
 
-  return { db, postgrest }
+  const ipfs = await makeIpfsContainer(network.getName())
+  const cluster = await makeClusterContainer(network.getName(), ipfs.multiaddr)
+
+  return { db, postgrest, ipfs, cluster }
 }
