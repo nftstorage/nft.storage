@@ -216,12 +216,15 @@ export class DBTestClient {
 }
 /**
  * @param {import('ava').ExecutionContext<unknown>} t
- * @param {{publicAddress?: string, issuer?: string, name?: string}} [userInfo]
+ * @param {{publicAddress?: string, issuer?: string, name?: string, token?: string}} [userInfo]
  */
 export async function createClientWithUser(t, userInfo) {
   const serviceConfig = await getTestServiceConfig(t)
   const mf = await getMiniflareContext(t)
-  const user = await createTestUser(serviceConfig, userInfo)
+  const user =
+    userInfo && userInfo.token
+      ? await createTestUserWithFixedToken(serviceConfig, userInfo)
+      : await createTestUser(serviceConfig, userInfo)
 
   return new DBTestClient(serviceConfig, mf, user)
 }
