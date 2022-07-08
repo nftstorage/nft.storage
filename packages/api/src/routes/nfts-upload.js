@@ -152,7 +152,6 @@ export async function uploadCarWithStat(
   if (!name || typeof name !== 'string') {
     name = `Upload at ${new Date().toISOString()}`
   }
-
   const upload = await ctx.db.createUpload({
     mime_type: mimeType,
     type: uploadType,
