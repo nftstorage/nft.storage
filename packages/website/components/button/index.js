@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 
 import Link from 'next/link'
 import clsx from 'clsx'
-import countly from '../lib/countly'
+import countly from 'lib/countly'
 
 /**
  * @typedef {Object} TrackingProp

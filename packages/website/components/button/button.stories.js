@@ -1,5 +1,5 @@
 import React from 'react'
-import Button from './button'
+import Button from '.'
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
@@ -28,10 +28,10 @@ export default {
       options: ['light', 'dark', 'tag', 'caution'],
       control: { type: 'select' },
     },
-    small: {
+    disabled: {
       control: 'boolean',
     },
-    disabled: {
+    small: {
       control: 'boolean',
     },
     hologram: {

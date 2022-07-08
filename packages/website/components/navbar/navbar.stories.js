@@ -1,5 +1,5 @@
 import React from 'react'
-import NavBar from './navbar'
+import Navbar from '.'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { UserContext } from 'lib/user'
 
@@ -9,8 +9,8 @@ const queryClient = new QueryClient({
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  component: NavBar,
-  title: 'NavBar',
+  component: Navbar,
+  title: 'Navbar',
   parameters: {
     // layout: 'centered',
   },
@@ -75,7 +75,7 @@ const Template = (
       <UserContext.Provider
         value={{ user: args.user ? userMock : null, handleClearUser }}
       >
-        <NavBar
+        <Navbar
           logo={{ src: '', isDark: args.dark }}
           bgColor={args.bgColor}
           user={args.user ? userMock : null}

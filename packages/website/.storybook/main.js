@@ -8,6 +8,8 @@ module.exports = {
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     'storybook-addon-next-router',
+    '@storybook/addon-a11y',
+    '@storybook/addon-interactions',
     {
       name: '@storybook/addon-postcss',
       options: {
@@ -20,4 +22,7 @@ module.exports = {
       },
     },
   ],
+  features: {
+    interactionsDebugger: true, // 👈 Enable playback controls
+  },
 }

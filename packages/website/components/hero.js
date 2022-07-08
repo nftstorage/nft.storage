@@ -1,5 +1,5 @@
 import countly from '../lib/countly'
-import Button from './button.js'
+import Button from './button/index.js'
 
 export default function Hero() {
   return (

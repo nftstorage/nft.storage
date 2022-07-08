@@ -1,5 +1,5 @@
 import React from 'react'
-import { TrustedBy } from './trustedByLogos'
+import { TrustedBy } from '.'
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
