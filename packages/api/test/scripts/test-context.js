@@ -1,3 +1,4 @@
+import delay from 'delay'
 import { Miniflare } from 'miniflare'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -51,12 +52,27 @@ export async function setupMiniflareContext(
 ) {
   t.timeout(600 * 1000, 'timed out pulling / starting test containers')
 
+  let cleanup = async () => {}
   if (!noContainers) {
     // start database containers
-    const { postgrest, cluster, minio } = await startTestContainers()
-    overrides.DATABASE_URL = postgrest.url
-    overrides.CLUSTER_API_URL = cluster.url
-    overrides.S3_ENDPOINT = minio.url
+    const { containers, network } = await startTestContainers()
+    overrides.DATABASE_URL = containers.postgrest.url
+    overrides.CLUSTER_API_URL = containers.cluster.url
+    overrides.S3_ENDPOINT = containers.minio.url
+
+    cleanup = async () => {
+      const promises = [
+        containers.postgrest.container
+          .stop()
+          .then(() => containers.db.container.stop()),
+        containers.cluster.container
+          .stop()
+          .then(() => containers.ipfs.container.stop()),
+        containers.minio.container.stop(),
+      ]
+      await Promise.all(promises)
+      await network.stop()
+    }
   }
 
   const mf = makeMiniflare(overrides)
@@ -68,7 +84,19 @@ export async function setupMiniflareContext(
     // optionally pull cloudflare bindings into the global scope of the test runner
     defineGlobals(bindings)
   }
-  t.context = { mf, serviceConfig }
+  t.context = { mf, serviceConfig, cleanup }
+}
+
+/**
+ *
+ * @param {import('ava').ExecutionContext<unknown>} t
+ */
+export async function cleanupTestContext(t) {
+  // @ts-ignore
+  const { cleanup } = t.context
+  if (typeof cleanup === 'function') {
+    await cleanup()
+  }
 }
 
 /**
