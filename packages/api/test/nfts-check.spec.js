@@ -1,20 +1,13 @@
 import test from 'ava'
-import assert from 'assert'
 import { createClientWithUser } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import {
   setupMiniflareContext,
-  getTestServiceConfig,
   getMiniflareContext,
-  cleanupTestContext,
 } from './scripts/test-context.js'
 
 test.before(async (t) => {
   await setupMiniflareContext(t)
-})
-
-test.after(async (t) => {
-  await cleanupTestContext(t)
 })
 
 test.serial('should return proper response for cid v1', async (t) => {

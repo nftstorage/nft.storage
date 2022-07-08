@@ -4,15 +4,10 @@ import { createClientWithUser } from './scripts/helpers.js'
 import {
   setupMiniflareContext,
   getTestServiceConfig,
-  cleanupTestContext,
 } from './scripts/test-context.js'
 
 test.before(async (t) => {
   await setupMiniflareContext(t)
-})
-
-test.after(async (t) => {
-  await cleanupTestContext(t)
 })
 
 test.serial('getUser should list only active keys', async (t) => {

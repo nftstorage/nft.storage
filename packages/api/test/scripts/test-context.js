@@ -1,4 +1,4 @@
-import delay from 'delay'
+import { registerSharedWorker } from 'ava/plugin'
 import { Miniflare } from 'miniflare'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -52,26 +52,25 @@ export async function setupMiniflareContext(
 ) {
   t.timeout(600 * 1000, 'timed out pulling / starting test containers')
 
-  let cleanup = async () => {}
   if (!noContainers) {
-    // start database containers
-    const { containers, network } = await startTestContainers()
-    overrides.DATABASE_URL = containers.postgrest.url
-    overrides.CLUSTER_API_URL = containers.cluster.url
-    overrides.S3_ENDPOINT = containers.minio.url
+    const sharedWorker = await registerSharedWorker({
+      filename: path.resolve(__dirname, 'containers.js'),
+      supportedProtocols: ['ava-4'],
+    })
 
-    cleanup = async () => {
-      const promises = [
-        containers.postgrest.container
-          .stop()
-          .then(() => containers.db.container.stop()),
-        containers.cluster.container
-          .stop()
-          .then(() => containers.ipfs.container.stop()),
-        containers.minio.container.stop(),
-      ]
-      await Promise.all(promises)
-      await network.stop()
+    // wait for the shared worker to publish an object with env var overrides
+    for await (const message of sharedWorker.subscribe()) {
+      // console.log('got message from ava shared worker', message)
+      if (!message.data || typeof message.data !== 'object') {
+        continue
+      }
+      if (!('overrides' in message.data)) {
+        continue
+      }
+      // console.log('setting environment overrides', message.data)
+      // @ts-ignore
+      overrides = { ...overrides, ...message.data.overrides }
+      break
     }
   }
 
@@ -84,19 +83,7 @@ export async function setupMiniflareContext(
     // optionally pull cloudflare bindings into the global scope of the test runner
     defineGlobals(bindings)
   }
-  t.context = { mf, serviceConfig, cleanup }
-}
-
-/**
- *
- * @param {import('ava').ExecutionContext<unknown>} t
- */
-export async function cleanupTestContext(t) {
-  // @ts-ignore
-  const { cleanup } = t.context
-  if (typeof cleanup === 'function') {
-    await cleanup()
-  }
+  t.context = { mf, serviceConfig }
 }
 
 /**
