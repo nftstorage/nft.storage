@@ -32,7 +32,7 @@ jobs:
       - uses: actions/setup-node@v2
         if: ${{ steps.tag-release.outputs.releases_created }}
         with:
-          node-version: '16'
+          node-version: '18.4.0'
           registry-url: https://registry.npmjs.org/
       - uses: bahmutov/npm-install@v1
         if: ${{ steps.tag-release.outputs.releases_created }}
