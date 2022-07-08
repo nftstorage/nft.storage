@@ -116,11 +116,8 @@ async function makeIpfsContainer(networkName) {
 /**
  *
  * @param {string} networkName
- * @param {StartedTestContainer} ipfsContainer
  */
-async function makeClusterContainer(networkName, ipfsContainer) {
-  const ipfsIP = ipfsContainer.getIpAddress(networkName)
-  const ipfsAddr = `/ip4/${ipfsIP}/tcp/5001`
+async function makeClusterContainer(networkName) {
   const container = await new GenericContainer('ipfs/ipfs-cluster:v1.0.0-rc4')
     .withName(uniqueName('test-cluster'))
     .withNetworkAliases('test-cluster')
@@ -128,7 +125,7 @@ async function makeClusterContainer(networkName, ipfsContainer) {
     .withExposedPorts(9094)
     .withWaitStrategy(Wait.forLogMessage('IPFS Cluster is READY'))
     .withEnv('CLUSTER_PEERNAME', 'cluster')
-    .withEnv('CLUSTER_IPFSHTTP_NODEMULTIADDRESS', ipfsAddr)
+    .withEnv('CLUSTER_IPFSHTTP_NODEMULTIADDRESS', '/dns4/test-ipfs/tcp/5001')
     .withEnv('CLUSTER_CRDT_TRUSTEDPEERS', '*')
     .withEnv('CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS', '/ip4/0.0.0.0/tcp/9094')
     .withEnv('CLUSTER_RESTAPI_BASICAUTHCREDENTIALS', 'test:test')
@@ -196,7 +193,7 @@ async function makeDBContainers(networkName) {
  */
 async function makeIpfsContainers(networkName) {
   const ipfs = await makeIpfsContainer(networkName)
-  const cluster = await makeClusterContainer(networkName, ipfs.container)
+  const cluster = await makeClusterContainer(networkName)
   return { ipfs, cluster }
 }
 
@@ -220,3 +217,29 @@ function uniqueName(name) {
   const suffix = `-${new Date().getTime()}`
   return name + suffix
 }
+
+/**
+ * AVA plugin to allow all test workers to share the same containers.
+ *
+ * @param {{negotiateProtocol: Function}} opts
+ */
+const avaPlugin = async ({ negotiateProtocol }) => {
+  const main = negotiateProtocol(['ava-4'])
+
+  const { containers } = await startTestContainers()
+  const overrides = {
+    DATABASE_URL: containers.postgrest.url,
+    CLUSTER_API_URL: containers.cluster.url,
+    S3_ENDPOINT: containers.minio.url,
+  }
+
+  main.ready()
+
+  // when a new test worker starts, send them the env vars they
+  // need to connect to the dockerized services
+  for await (const _testWorker of main.testWorkers()) {
+    main.broadcast({ overrides })
+  }
+}
+
+export default avaPlugin

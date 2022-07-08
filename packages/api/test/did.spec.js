@@ -2,15 +2,10 @@ import test from 'ava'
 import {
   setupMiniflareContext,
   getMiniflareContext,
-  cleanupTestContext,
 } from './scripts/test-context.js'
 
 test.before(async (t) => {
   await setupMiniflareContext(t, { noContainers: true })
-})
-
-test.after(async (t) => {
-  await cleanupTestContext(t)
 })
 
 test('/did should return the service DID', async (t) => {

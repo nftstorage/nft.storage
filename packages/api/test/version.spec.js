@@ -1,6 +1,5 @@
 import test from 'ava'
 import {
-  cleanupTestContext,
   getMiniflareContext,
   getTestServiceConfig,
   setupMiniflareContext,
@@ -8,10 +7,6 @@ import {
 
 test.before(async (t) => {
   await setupMiniflareContext(t, { noContainers: true })
-})
-
-test.after(async (t) => {
-  await cleanupTestContext(t)
 })
 
 // FIXME: esbuild is setting the real version number in the worker, but we don't have access to it in the test scope...
