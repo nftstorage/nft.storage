@@ -3,17 +3,22 @@ import {
   setupMiniflareContext,
   getMiniflareContext,
   getTestServiceConfig,
+  cleanupTestContext,
 } from './scripts/test-context.js'
 import { createClientWithUser, getRawClient } from './scripts/helpers.js'
 
-test.beforeEach(async (t) => {
+test.before(async (t) => {
   await setupMiniflareContext(t)
 })
 
-test('should list just the default key', async (t) => {
+test.after(async (t) => {
+  await cleanupTestContext(t)
+})
+
+test.serial('should list just the default key', async (t) => {
   const mf = getMiniflareContext(t)
   const config = getTestServiceConfig(t)
-  const client = await createClientWithUser(config)
+  const client = await createClientWithUser(t)
   const res = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
     headers: { Authorization: `Bearer ${client.token}` },
   })
@@ -23,10 +28,10 @@ test('should list just the default key', async (t) => {
   t.is(value[0].name, 'test')
 })
 
-test('should create a key', async (t) => {
+test.serial('should create a key', async (t) => {
   const mf = getMiniflareContext(t)
   const config = getTestServiceConfig(t)
-  const client = await createClientWithUser(config)
+  const client = await createClientWithUser(t)
   const res = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
@@ -40,28 +45,34 @@ test('should create a key', async (t) => {
   t.is(value.deleted_at, null)
 })
 
-test('should error creating a key when name is not provided', async (t) => {
+test.serial(
+  'should error creating a key when name is not provided',
+  async (t) => {
+    const mf = getMiniflareContext(t)
+    const config = getTestServiceConfig(t)
+    const client = await createClientWithUser(t)
+    const res = await mf.dispatchFetch(
+      `http://localhost:8787/internal/tokens`,
+      {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${client.token}` },
+        body: JSON.stringify({}),
+      }
+    )
+    const { ok, error } = await res.json()
+
+    t.falsy(ok)
+    t.deepEqual(error, {
+      code: 'Error',
+      message: 'Token name is required.',
+    })
+  }
+)
+
+test.serial('should delete a key', async (t) => {
   const mf = getMiniflareContext(t)
   const config = getTestServiceConfig(t)
-  const client = await createClientWithUser(config)
-  const res = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${client.token}` },
-    body: JSON.stringify({}),
-  })
-  const { ok, error } = await res.json()
-
-  t.falsy(ok)
-  t.deepEqual(error, {
-    code: 'Error',
-    message: 'Token name is required.',
-  })
-})
-
-test('should delete a key', async (t) => {
-  const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
-  const client = await createClientWithUser(config)
+  const client = await createClientWithUser(t)
   const res = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
@@ -104,30 +115,31 @@ test('should delete a key', async (t) => {
   )
 })
 
-test('should error deleting a key when id is not provided', async (t) => {
-  const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
-  const client = await createClientWithUser(config)
-  const resDelete = await mf.dispatchFetch(
-    `http://localhost:8787/internal/tokens`,
-    {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${client.token}` },
-      body: JSON.stringify({}),
-    }
-  )
-  const deleteData = await resDelete.json()
-  t.falsy(deleteData.ok)
-  t.deepEqual(deleteData.error, {
-    code: 'Error',
-    message: 'Token id is required.',
-  })
-})
+test.serial(
+  'should error deleting a key when id is not provided',
+  async (t) => {
+    const mf = getMiniflareContext(t)
+    const client = await createClientWithUser(t)
+    const resDelete = await mf.dispatchFetch(
+      `http://localhost:8787/internal/tokens`,
+      {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${client.token}` },
+        body: JSON.stringify({}),
+      }
+    )
+    const deleteData = await resDelete.json()
+    t.falsy(deleteData.ok)
+    t.deepEqual(deleteData.error, {
+      code: 'Error',
+      message: 'Token id is required.',
+    })
+  }
+)
 
-test('should not list deleted keys', async (t) => {
+test.serial('should not list deleted keys', async (t) => {
   const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
-  const client = await createClientWithUser(config)
+  const client = await createClientWithUser(t)
   const res1 = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
@@ -164,11 +176,10 @@ test('should not list deleted keys', async (t) => {
   t.is(value[1].name, 'test-key-1')
 })
 
-test("should not be able to delete another user's key", async (t) => {
+test.serial("should not be able to delete another user's key", async (t) => {
   const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
-  const client0 = await createClientWithUser(config)
-  const client1 = await createClientWithUser(config)
+  const client0 = await createClientWithUser(t)
+  const client1 = await createClientWithUser(t)
 
   const resCreate = await mf.dispatchFetch(
     `http://localhost:8787/internal/tokens`,
@@ -205,10 +216,10 @@ test("should not be able to delete another user's key", async (t) => {
   t.is(value[1].name, 'test-key-1')
 })
 
-test('should not delete a deleted key', async (t) => {
+test.serial('should not delete a deleted key', async (t) => {
   const mf = getMiniflareContext(t)
   const config = getTestServiceConfig(t)
-  const client = await createClientWithUser(config)
+  const client = await createClientWithUser(t)
 
   const resCreate = await mf.dispatchFetch(
     `http://localhost:8787/internal/tokens`,

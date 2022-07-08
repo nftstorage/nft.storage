@@ -1,20 +1,22 @@
 import test from 'ava'
 import { signJWT } from '../src/utils/jwt.js'
-import { createClientWithUser, DBTestClient } from './scripts/helpers.js'
+import { createClientWithUser } from './scripts/helpers.js'
 import {
   setupMiniflareContext,
   getTestServiceConfig,
+  cleanupTestContext,
 } from './scripts/test-context.js'
 
-/** @type{DBTestClient} */
-let client
-
-test.beforeEach(async (t) => {
+test.before(async (t) => {
   await setupMiniflareContext(t)
-  client = await createClientWithUser(t)
 })
 
-test('getUser should list only active keys', async (t) => {
+test.after(async (t) => {
+  await cleanupTestContext(t)
+})
+
+test.serial('getUser should list only active keys', async (t) => {
+  const client = await createClientWithUser(t)
   console.log('test')
   const config = getTestServiceConfig(t)
   const issuer1 = `did:eth:0x73573${Date.now()}`

@@ -3,12 +3,17 @@ import { createClientWithUser } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import delay from 'delay'
 import {
+  cleanupTestContext,
   getMiniflareContext,
   setupMiniflareContext,
 } from './scripts/test-context.js'
 
 test.beforeEach(async (t) => {
   await setupMiniflareContext(t)
+})
+
+test.afterEach(async (t) => {
+  await cleanupTestContext(t)
 })
 
 test('should list 2 nfts with no params and validate deals', async (t) => {
