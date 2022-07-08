@@ -116,6 +116,16 @@ export class ErrorUserNotFound extends Error {
 }
 ErrorUserNotFound.CODE = 'ERROR_USER_NOT_FOUND'
 
+export class ErrorTokenBlocked extends Error {
+  constructor(msg = 'API Key is blocked. Please contact support@nft.storage') {
+    super(msg)
+    this.name = 'TokenBlocked'
+    this.status = 403
+    this.code = ErrorTokenBlocked.CODE
+  }
+}
+ErrorTokenBlocked.CODE = 'ERROR_TOKEN_BLOCKED'
+
 export class ErrorTokenNotFound extends Error {
   constructor(msg = 'API Key not found.') {
     super(msg)
@@ -186,6 +196,15 @@ export class ErrorPinningUnauthorized extends HTTPError {
   }
 }
 ErrorPinningUnauthorized.CODE = 'ERROR_PINNING_UNAUTHORIZED'
+
+export class ErrorDeleteRestricted extends HTTPError {
+  constructor(msg = 'Delete operations restricted.') {
+    super(msg, 403)
+    this.name = 'DeleteRestricted'
+    this.code = ErrorDeleteRestricted.CODE
+  }
+}
+ErrorDeleteRestricted.CODE = 'ERROR_DELETE_RESTRICTED'
 
 export class ErrorAccountRestricted extends HTTPError {
   constructor(msg = 'Account restricted.') {

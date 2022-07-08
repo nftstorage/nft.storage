@@ -1,0 +1,69 @@
+name: cron
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'packages/cron/**'
+      - '.github/workflows/cron.yml'
+      - '.github/workflows/cron-nft-ttr.yml'
+      - 'yarn.lock'
+  pull_request:
+    paths:
+      - 'packages/cron/**'
+      - '.github/workflows/cron.yml'
+      - 'yarn.lock'
+
+jobs:
+  lint:
+    name: lint cron
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - uses: bahmutov/npm-install@v1
+      - run: yarn workspace nft.storage prepare
+      - run: yarn workspace cron lint
+
+  check:
+    name: Typecheck cron
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - uses: bahmutov/npm-install@v1
+      - run: yarn workspace nft.storage prepare
+      - run: yarn workspace cron typecheck
+
+  test:
+    name: Test cron
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - uses: bahmutov/npm-install@v1
+      - name: Test (ES)
+        run: yarn --cwd packages/cron test
+        env:
+          NFT_STORAGE_API_KEY: ${{ secrets.NFT_STORAGE_API_KEY }}
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    # This condition is not required, but leaving it here to safeguard against future new triggers
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v3
+        id: tag-release
+        with:
+          path: packages/cron
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
+          monorepo-tags: true
+          package-name: cron

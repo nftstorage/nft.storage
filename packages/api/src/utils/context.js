@@ -1,37 +1,32 @@
 import Toucan from 'toucan-js'
 import { DBClient } from './db-client.js'
-import { S3BackupClient } from './s3-backup-client.js'
-import { secrets, database, isDebug, s3 as s3Config } from '../constants.js'
+import { S3Uploader } from './s3-uploader.js'
+import { getServiceConfig } from '../config.js'
 import { Logging } from './logs.js'
 import pkg from '../../package.json'
 import { Service } from 'ucan-storage/service'
 
-const db = new DBClient(database.url, secrets.database)
+const config = getServiceConfig()
+const db = new DBClient(config.DATABASE_URL, config.DATABASE_TOKEN)
 
-const backup = s3Config.accessKeyId
-  ? new S3BackupClient(
-      s3Config.region,
-      s3Config.accessKeyId,
-      s3Config.secretAccessKey,
-      s3Config.bucketName,
-      { endpoint: s3Config.endpoint, appName: 'nft' }
-    )
-  : undefined
-
-if (!backup) {
-  console.warn('⚠️ AWS S3 backups disabled')
-}
+const uploader = new S3Uploader(
+  config.S3_REGION,
+  config.S3_ACCESS_KEY_ID,
+  config.S3_SECRET_ACCESS_KEY,
+  config.S3_BUCKET_NAME,
+  { endpoint: config.S3_ENDPOINT, appName: 'nft' }
+)
 
 const sentryOptions = {
-  dsn: secrets.sentry,
+  dsn: config.SENTRY_DSN,
   allowedHeaders: ['user-agent', 'x-client'],
   allowedSearchParams: /(.*)/,
   debug: false,
-  environment: ENV,
+  environment: config.ENV,
   rewriteFrames: {
     root: '/',
   },
-  release: VERSION,
+  release: config.VERSION,
   pkg,
 }
 
@@ -48,11 +43,11 @@ export async function getContext(event, params) {
     ...sentryOptions,
   })
   const log = new Logging(event, {
-    token: secrets.logtail,
-    debug: isDebug,
+    token: config.LOGTAIL_TOKEN,
+    debug: config.DEBUG,
     sentry,
   })
 
-  const ucanService = await Service.fromPrivateKey(secrets.privateKey)
-  return { params, db, backup, log, ucanService }
+  const ucanService = await Service.fromPrivateKey(config.PRIVATE_KEY)
+  return { params, db, uploader, log, ucanService }
 }

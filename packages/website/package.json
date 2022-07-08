@@ -1,6 +1,6 @@
 {
   "name": "website",
-  "version": "1.49.4",
+  "version": "1.56.0",
   "description": "nft.storage website",
   "private": true,
   "license": "(Apache-2.0 OR MIT)",
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@magic-ext/oauth": "^0.11.2",
+    "@tailwindcss/typography": "^0.5.2",
     "bytes": "^3.1.0",
     "clsx": "^1.1.1",
     "gray-matter": "^4.0.3",

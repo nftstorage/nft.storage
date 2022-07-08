@@ -21,7 +21,7 @@ export default function TermsOfService() {
         <h1 className="chicagoflf">
           <HashLink id="terms-of-service">Terms of Service</HashLink>
         </h1>
-        <p className="leading-normal">
+        <p className="leading-normal my-2">
           The following terms and conditions govern all use of the{' '}
           <a className="black" href="https://nft.storage">
             NFT.Storage
@@ -38,7 +38,7 @@ export default function TermsOfService() {
           </a>
           .
         </p>
-        <p className="leading-normal">
+        <p className="leading-normal my-2">
           If you do not agree to all the terms and conditions of this agreement,
           then you may not access the Website or use any services.
         </p>
@@ -46,7 +46,7 @@ export default function TermsOfService() {
         <h3 className="chicagoflf">
           <HashLink id="data-limits">Data Limits</HashLink>
         </h3>
-        <p className="leading-normal">
+        <p className="leading-normal my-2">
           The Service is offered for the creation and storage of NFTs. Use of
           the Service to store other types of data is not permitted. The Service
           accepts uploads of up to 31GiB in size per individual upload.
@@ -59,7 +59,7 @@ export default function TermsOfService() {
         <h2 className="chicagoflf">
           <HashLink id="storage-term">Storage Term</HashLink>
         </h2>
-        <p className="leading-normal">
+        <p className="leading-normal my-2">
           Data stored on the Service is stored on the Filecoin network in
           long-term deals with independent Filecoin storage providers, and may
           also be stored redundantly by other means to support the functionality
@@ -68,7 +68,7 @@ export default function TermsOfService() {
           deal varies, and the number of deals that will support storage of
           given data are variable.
         </p>
-        <p className="leading-normal">
+        <p className="leading-normal my-2">
           Filecoin deals are public, and anyone can access information about
           them (e.g., content address, duration, expiration, price, etc.) and
           renew or create new deals storing the underlying data. Data will be
@@ -86,7 +86,7 @@ export default function TermsOfService() {
           information about any Filecoin deals containing this data for users
           who want to continue storing this data in Filecoin deals.
         </p>
-        <p className="leading-normal">
+        <p className="leading-normal my-2">
           All data uploaded via the Service is available to anyone who requests
           it using the correct content identifier. Users should not store any
           private or sensitive information in an unencrypted form using the
@@ -98,9 +98,9 @@ export default function TermsOfService() {
         </p>
 
         <h2 className="chicagoflf">
-          <HashLink id="storage-term">NFT.Storage Gateway</HashLink>
+          <HashLink id="gateway">NFT.Storage Gateway</HashLink>
         </h2>
-        <p className="leading-normal">
+        <p className="leading-normal my-2">
           Use of the NFT.Storage Gateway (“the Gateway”) is subject to the Terms
           of Service of{' '}
           <a className="black" href="https://discuss.ipfs.io/tos">
@@ -108,7 +108,7 @@ export default function TermsOfService() {
           </a>
           .
         </p>
-        <p className="leading-normal">
+        <p className="leading-normal my-2">
           When you access content via the Gateway, Protocol Labs may cache that
           content or the associated CID for performance reasons. Protocol Labs
           may also collect analytics data on use of the Gateway, including data
@@ -116,6 +116,45 @@ export default function TermsOfService() {
           Protocol Labs reserves all rights in and to any performance data and
           analytics collected in the course of providing the Gateway for
           optimizing the Gateway user experience.
+        </p>
+        <p className="leading-normal my-2">
+          If you encounter content that violates the{' '}
+          <a className="black" href="https://discuss.ipfs.io/tos">
+            Terms of Service of IPFS.io
+          </a>
+          (e.g., spam/phishing content or your unauthorized copyrighted
+          content), please reach out to abuse@ipfs.io, making sure to include
+          the relevant URL. If we determine that the content violates our Terms
+          of Service we will remove or disable access to that content. If your
+          complaint is copyright-related, please make sure your DMCA Notice
+          contains the required information listed in our{' '}
+          <a className="black" href="https://ipfs.io/legal/">
+            DMCA Policy
+          </a>
+          .
+        </p>
+
+        <h2 className="chicagoflf">
+          <HashLink id="superhot">SuperHot Caching Service</HashLink>
+        </h2>
+        <p className="leading-normal my-2">
+          Use of the SuperHot caching service (“Superhot”) is also subject to
+          the Terms of Service of{' '}
+          <a className="black" href="https://discuss.ipfs.io/tos">
+            IPFS.io
+          </a>
+          .
+        </p>
+        <p className="leading-normal my-2">
+          Protocol Labs reserves the right to delete cached content from servers
+          managed or controlled by Protocol Labs if we determine that the
+          content violates the Terms of Service of IPFS.io. For severe
+          violations, or if we determine you are a repeat infringer of others’
+          copyrighted content, we reserve the right to suspend or terminate your
+          use of SuperHot and/or all Services. Protocol Labs may collect
+          analytics data on the usage of SuperHot, including data on requests,
+          retrieval speeds, CIDs, and other performance data. Protocol Labs
+          reserves all rights in and to such performance data and analytics.
         </p>
       </div>
     </main>

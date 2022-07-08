@@ -9,9 +9,10 @@ import Sentry from '@sentry/cli'
 import { createRequire } from 'module'
 // @ts-ignore
 import git from 'git-rev-sync'
-import { dbCmd } from './cmds/db.js'
+import { servicesStartCmd, servicesStopCmd } from './cmds/services.js'
 import { dbSqlCmd } from './cmds/db-sql.js'
 import { dbTypesCmd } from './cmds/db-types.js'
+import { minioBucketCreateCmd, minioBucketRemoveCmd } from './cmds/minio.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(__dirname)
@@ -58,9 +59,9 @@ prog
         inject: [path.join(__dirname, 'node-globals.js')],
         plugins: [PluginAlias],
         define: {
-          VERSION: JSON.stringify(version),
-          COMMITHASH: JSON.stringify(git.long(__dirname)),
-          BRANCH: JSON.stringify(git.branch(__dirname)),
+          NFT_STORAGE_VERSION: JSON.stringify(version),
+          NFT_STORAGE_COMMITHASH: JSON.stringify(git.long(__dirname)),
+          NFT_STORAGE_BRANCH: JSON.stringify(git.branch(__dirname)),
           global: 'globalThis',
         },
         minify: opts.env === 'dev' ? false : true,
@@ -96,22 +97,33 @@ prog
       process.exit(1)
     }
   })
+  .command('services start')
+  .describe(
+    'Run docker compose to setup Cluster, PostgreSQL, PostgREST and Minio'
+  )
+  .option('--project', 'Project name', 'nft-storage-dev')
+  .action(servicesStartCmd)
+  .command('services stop')
+  .describe(
+    'Run docker compose to setup Cluster, PostgreSQL, PostgREST and Minio'
+  )
+  .option('--project', 'Project name', 'nft-storage-dev')
+  .option('--clean', 'Clean all dockers artifacts', false)
+  .action(servicesStopCmd)
   .command('db-sql')
   .describe('Database scripts')
   .option('--reset', 'Reset db before running SQL.', false)
   .option('--cargo', 'Import cargo data.', false)
   .option('--testing', 'Tweak schema for testing.', false)
   .action(dbSqlCmd)
-  .command('db')
-  .describe('Run docker compose to setup pg and pgrest')
-  .option('--init', 'Init docker container', false)
-  .option('--start', 'Start docker container', false)
-  .option('--stop', 'Stop docker container', false)
-  .option('--project', 'Project name', 'nft-storage')
-  .option('--clean', 'Clean all dockers artifacts', false)
-  .action(dbCmd)
   .command('db-types')
   .describe('Database openapi types')
   .action(dbTypesCmd)
+  .command('minio bucket create <name>')
+  .describe('Create a new bucket')
+  .action(minioBucketCreateCmd)
+  .command('minio bucket remove <name>')
+  .describe('Remove a bucket, automatically removing all contents')
+  .action(minioBucketRemoveCmd)
 
 prog.parse(process.argv)

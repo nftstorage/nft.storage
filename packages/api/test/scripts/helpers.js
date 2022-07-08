@@ -1,24 +1,22 @@
 import { Cluster } from '@nftstorage/ipfs-cluster'
 import { signJWT } from '../../src/utils/jwt.js'
-import {
-  SALT,
-  CLUSTER_API_URL,
-  CLUSTER_BASIC_AUTH_TOKEN,
-} from './worker-globals.js'
 import { PostgrestClient } from '@supabase/postgrest-js'
 import { DBClient } from '../../src/utils/db-client.js'
+import { getServiceConfig } from '../../src/config.js'
 
-export const cluster = new Cluster(CLUSTER_API_URL, {
-  headers: { Authorization: `Basic ${CLUSTER_BASIC_AUTH_TOKEN}` },
+const config = getServiceConfig()
+
+export const cluster = new Cluster(config.CLUSTER_API_URL, {
+  headers: { Authorization: `Basic ${config.CLUSTER_BASIC_AUTH_TOKEN}` },
 })
 
-export const rawClient = new PostgrestClient(DATABASE_URL, {
+export const rawClient = new PostgrestClient(config.DATABASE_URL, {
   headers: {
-    Authorization: `Bearer ${DATABASE_TOKEN}`,
+    Authorization: `Bearer ${config.DATABASE_TOKEN}`,
   },
 })
 
-export const client = new DBClient(DATABASE_URL, DATABASE_TOKEN)
+export const client = new DBClient(config.DATABASE_URL, config.DATABASE_TOKEN)
 
 /**
  * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
@@ -35,7 +33,7 @@ export async function createTestUser({
       iat: Date.now(),
       name: 'test',
     },
-    SALT
+    config.SALT
   )
 
   return createTestUserWithFixedToken({ token, publicAddress, issuer, name })
@@ -89,8 +87,12 @@ export async function createTestUserWithFixedToken({
     })
     .single()
 
-  if (error || !user) {
-    throw new Error('error creating user')
+  if (error) {
+    throw error
+  }
+
+  if (!user) {
+    throw new Error('error creating user: no error returned, but user is null')
   }
 
   await client.createKey({

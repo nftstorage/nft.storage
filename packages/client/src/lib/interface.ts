@@ -23,6 +23,18 @@ export interface PublicService {
   rateLimiter?: RateLimiter
 }
 
+export interface FileObject {
+  name: string
+  size: number
+  stream: () => AsyncIterable<any>
+}
+
+export type FilesSource =
+| Iterable<File>
+| Iterable<FileObject>
+| AsyncIterable<File>
+| AsyncIterable<FileObject>
+
 /**
  * CID in string representation
  */
@@ -82,11 +94,11 @@ export interface API {
    * will be transformed into a URL that looks like
    * `ipfs://bafy...hash/image/blob`.
    */
-  store<T extends TokenInput>(service: Service, token: T): Promise<Token<T>>
+  store<T extends TokenInput>(service: Service, token: T, options?: RequestOptions): Promise<Token<T>>
   /**
    * Stores a single file and returns it's CID.
    */
-  storeBlob(service: Service, content: Blob | File): Promise<CIDString>
+  storeBlob(service: Service, content: Blob | File, options?: RequestOptions): Promise<CIDString>
   /**
    * Stores a CAR file and returns it's root CID.
    */
@@ -100,25 +112,32 @@ export interface API {
    * be within the same directory, otherwise error is raised e.g. `foo/bar.png`,
    * `foo/bla/baz.json` is ok but `foo/bar.png`, `bla/baz.json` is not.
    */
-  storeDirectory(service: Service, files: Iterable<File>): Promise<CIDString>
+  storeDirectory(service: Service, files: FilesSource, options?: RequestOptions): Promise<CIDString>
   /**
    * Returns current status of the stored NFT by its CID. Note the NFT must
    * have previously been stored by this account.
    */
-  status(service: Service, cid: string): Promise<StatusResult>
+  status(service: Service, cid: string, options?: RequestOptions): Promise<StatusResult>
   /**
    * Removes stored content by its CID from this account. Please note that
    * even if content is removed from the service other nodes that have
    * replicated it might still continue providing it.
    */
-  delete(service: Service, cid: string): Promise<void>
+  delete(service: Service, cid: string, options?: RequestOptions): Promise<void>
   /**
    * Check if a CID of an NFT is being stored by NFT.Storage.
    */
-  check(service: PublicService, cid: string): Promise<CheckResult>
+  check(service: PublicService, cid: string, options?: RequestOptions): Promise<CheckResult>
 }
 
-export interface CarStorerOptions {
+export interface RequestOptions {
+  /**
+   * A signal that can be used to abort the request.
+   */
+  signal?: AbortSignal
+}
+
+export interface CarStorerOptions extends RequestOptions {
   /**
    * Callback called after each chunk of data has been uploaded. By default,
    * data is split into chunks of around 10MB. It is passed the actual chunk

@@ -9,6 +9,7 @@ import { pack } from 'ipfs-car/pack'
 import { CarWriter } from '@ipld/car'
 import * as dagJson from '@ipld/dag-json'
 import { randomCar } from './helpers.js'
+import { toAsyncIterable } from '../src/lib.js'
 
 const GATEWAY_LINK = 'nftstorage.link'
 
@@ -88,6 +89,21 @@ describe('client', () => {
       } catch (err) {
         const error = /** @type {Error} */ (err)
         assert.match(error.message, /provide some content/)
+      }
+    })
+
+    it('aborts', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const controller = new AbortController()
+      controller.abort()
+      try {
+        await client.storeBlob(new Blob(['data']), {
+          signal: controller.signal,
+        })
+        assert.unreachable('request should not have succeeded')
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
+        assert.equal(error.name, 'AbortError')
       }
     })
   })
@@ -191,6 +207,23 @@ describe('client', () => {
         assert.is(error.message, 'throwing an error for tests')
       }
     })
+
+    it('aborts', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const bytes = new TextEncoder().encode('data')
+      const hash = await sha256.digest(bytes)
+      const cid = CID.create(1, raw.code, hash)
+      const carReader = new CarReader(1, [cid], [{ cid, bytes }])
+      const controller = new AbortController()
+      controller.abort()
+      try {
+        await client.storeCar(carReader, { signal: controller.signal })
+        assert.unreachable('request should not have succeeded')
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
+        assert.equal(error.name, 'AbortError')
+      }
+    })
   })
 
   describe('upload dir', () => {
@@ -222,6 +255,54 @@ describe('client', () => {
       )
     })
 
+    it('upload multiple files as asyncIterable', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const cid = await client.storeDirectory(
+        toAsyncIterable([
+          new File(['hello world'], 'hello.txt'),
+          new File(
+            [JSON.stringify({ from: 'incognito' }, null, 2)],
+            'metadata.json'
+          ),
+        ])
+      )
+
+      assert.equal(
+        cid,
+        'bafybeigkms36pnnjsa7t2mq2g4mx77s4no2hilirs4wqx3eebbffy2ay3a'
+      )
+    })
+
+    it('upload multiple FileObject from files-from-path as asyncIterable', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const file1Buffer = new TextEncoder().encode('hello world')
+      const file2Buffer = new TextEncoder().encode(
+        JSON.stringify({ from: 'incognito' }, null, 2)
+      )
+      const cid = await client.storeDirectory(
+        toAsyncIterable([
+          {
+            name: 'hello.txt',
+            size: file1Buffer.length,
+            stream: async function* () {
+              yield file1Buffer
+            },
+          },
+          {
+            name: 'metadata.json',
+            size: file2Buffer.length,
+            stream: async function* () {
+              yield file2Buffer
+            },
+          },
+        ])
+      )
+
+      assert.equal(
+        cid,
+        'bafybeigkms36pnnjsa7t2mq2g4mx77s4no2hilirs4wqx3eebbffy2ay3a'
+      )
+    })
     it('upload empty files', async () => {
       const client = new NFTStorage({ token, endpoint })
       try {
@@ -279,6 +360,21 @@ describe('client', () => {
         const error = /** @type {Error} */ (err)
         assert.ok(error instanceof Error)
         assert.match(error.message, /Unauthorized/)
+      }
+    })
+
+    it('aborts', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const controller = new AbortController()
+      controller.abort()
+      try {
+        await client.storeDirectory([new File(['data'], 'foo.txt')], {
+          signal: controller.signal,
+        })
+        assert.unreachable('request should not have succeeded')
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
+        assert.equal(error.name, 'AbortError')
       }
     })
   })
@@ -535,6 +631,26 @@ describe('client', () => {
       assert.ok(result.data.animation_url instanceof URL)
       assert.ok(result.data.animation_url.protocol, 'ipfs:')
     })
+
+    it('aborts', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const controller = new AbortController()
+      controller.abort()
+      try {
+        await client.store(
+          {
+            name: 'name',
+            description: 'stuff',
+            image: new File(['fake image'], 'cat.png', { type: 'image/png' }),
+          },
+          { signal: controller.signal }
+        )
+        assert.unreachable('request should not have succeeded')
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
+        assert.equal(error.name, 'AbortError')
+      }
+    })
   })
 
   describe('status', () => {
@@ -636,6 +752,20 @@ describe('client', () => {
         },
       ])
     })
+
+    it('aborts', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const controller = new AbortController()
+      controller.abort()
+      const cid = 'bafyreigdcnuc6w7stviim6a5m7uwqdw6p3z5zrqr22xt3num3ozra4ciqi'
+      try {
+        await client.status(cid, { signal: controller.signal })
+        assert.unreachable('request should not have succeeded')
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
+        assert.equal(error.name, 'AbortError')
+      }
+    })
   })
 
   describe('delete', () => {
@@ -687,6 +817,20 @@ describe('client', () => {
         assert.is(error.message, 'missing token')
       }
     })
+
+    it('aborts', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const controller = new AbortController()
+      controller.abort()
+      const cid = 'bafyreigdcnuc6w7stviim6a5m7uwqdw6p3z5zrqr22xt3num3ozra4ciqi'
+      try {
+        await client.delete(cid, { signal: controller.signal })
+        assert.unreachable('request should not have succeeded')
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
+        assert.equal(error.name, 'AbortError')
+      }
+    })
   })
 
   describe('check', () => {
@@ -722,6 +866,37 @@ describe('client', () => {
         const error = /** @type {Error} */ (err)
         assert.ok(error.message.match(/not found/))
       }
+    })
+
+    it('aborts', async () => {
+      const client = new NFTStorage({ token, endpoint })
+      const controller = new AbortController()
+      controller.abort()
+      const cid = 'bafyreigdcnuc6w7stviim6a5m7uwqdw6p3z5zrqr22xt3num3ozra4ciqi'
+      try {
+        await client.check(cid, { signal: controller.signal })
+        assert.unreachable('request should not have succeeded')
+      } catch (err) {
+        const error = /** @type {Error} */ (err)
+        assert.equal(error.name, 'AbortError')
+      }
+    })
+  })
+
+  describe('static encodeDirectory', () => {
+    it('can encode multiple FileObject as iterable', async () => {
+      const files = [
+        new File(['hello world'], 'hello.txt'),
+        new File(
+          [JSON.stringify({ from: 'incognito' }, null, 2)],
+          'metadata.json'
+        ),
+      ]
+      const { cid } = await NFTStorage.encodeDirectory(files)
+      assert.equal(
+        cid.toString(),
+        'bafybeigkms36pnnjsa7t2mq2g4mx77s4no2hilirs4wqx3eebbffy2ay3a'
+      )
     })
   })
 })

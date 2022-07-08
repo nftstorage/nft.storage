@@ -1,6 +1,7 @@
 import fetch from '@web-std/fetch'
 import retry from 'p-retry'
 import debug from 'debug'
+import { hasOwnProperty } from './utils.js'
 
 const log = debug('fetchJSON')
 
@@ -21,7 +22,6 @@ export async function fetchJSON(limiter, url, init) {
       const controller = new AbortController()
       const abortID = setTimeout(() => controller.abort(), REQUEST_TIMEOUT)
       init = init || {}
-      // @ts-ignore
       init.signal = controller.signal
       try {
         const res = await fetch(url, init)
@@ -39,8 +39,11 @@ export async function fetchJSON(limiter, url, init) {
     },
     {
       onFailedAttempt: async (err) => {
-        // @ts-ignore
-        if (err.response && err.response.status === 429) {
+        if (
+          hasOwnProperty(err, 'response') &&
+          hasOwnProperty(err.response, 'status') &&
+          err.response.status === 429
+        ) {
           log(`🚦 rate limited ${url}`)
         } else {
           log(`💥 fetch ${url}`, err)

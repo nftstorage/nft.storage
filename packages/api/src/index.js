@@ -23,22 +23,18 @@ import { metaplexUpload } from './routes/metaplex-upload.js'
 import { blogSubscribe } from './routes/blog-subscribe.js'
 import { userDIDRegister } from './routes/user-did-register.js'
 import { userTags } from './routes/user-tags.js'
+import { userRequestsAdd, userRequestsGet } from './routes/user-requests.js'
 import { ucanToken } from './routes/ucan-token.js'
 import { did } from './routes/did.js'
+import { getServiceConfig } from './config.js'
 
 import {
   withMode,
   READ_ONLY as RO,
   READ_WRITE as RW,
-  DEFAULT_MODE,
-  setMaintenanceModeGetter,
 } from './middleware/maintenance.js'
 import { getContext } from './utils/context.js'
 import { withAuth } from './middleware/auth.js'
-
-const getMaintenanceMode = () =>
-  typeof MAINTENANCE_MODE !== 'undefined' ? MAINTENANCE_MODE : DEFAULT_MODE
-setMaintenanceModeGetter(getMaintenanceMode)
 
 const r = new Router(getContext, {
   onError(req, err, ctx) {
@@ -46,8 +42,9 @@ const r = new Router(getContext, {
   },
 })
 
-const checkHasPsaAccess = true
 const checkHasAccountRestriction = true
+const checkHasDeleteRestriction = true
+const checkHasPsaAccess = true
 const checkUcan = true
 
 // Monitoring
@@ -62,11 +59,12 @@ r.add(
   'get',
   '/version',
   (event) => {
+    const { VERSION, COMMITHASH, BRANCH, MAINTENANCE_MODE } = getServiceConfig()
     return new JSONResponse({
       version: VERSION,
       commit: COMMITHASH,
       branch: BRANCH,
-      mode: getMaintenanceMode(),
+      mode: MAINTENANCE_MODE,
     })
   },
   [postCors]
@@ -116,7 +114,10 @@ r.add(
 r.add(
   'delete',
   '/pins/:requestid',
-  withAuth(withMode(pinsDelete, RW), { checkHasPsaAccess }),
+  withAuth(withMode(pinsDelete, RW), {
+    checkHasDeleteRestriction,
+    checkHasPsaAccess,
+  }),
   [postCors]
 )
 
@@ -145,7 +146,12 @@ r.add(
   withAuth(withMode(nftStore, RW), { checkHasAccountRestriction }),
   [postCors]
 )
-r.add('delete', '/:cid', withAuth(withMode(nftDelete, RW)), [postCors])
+r.add(
+  'delete',
+  '/:cid',
+  withAuth(withMode(nftDelete, RW), { checkHasDeleteRestriction }),
+  [postCors]
+)
 
 // Temporary Metaplex upload route, mapped to metaplex user account.
 r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
@@ -159,6 +165,13 @@ r.add(
 )
 r.add('get', '/user/tags', withAuth(withMode(userTags, RO)), [postCors])
 
+r.add('post', '/user/request', withAuth(withMode(userRequestsAdd, RW)), [
+  postCors,
+])
+r.add('get', '/user/request', withAuth(withMode(userRequestsGet, RW)), [
+  postCors,
+])
+
 // Tokens
 r.add('get', '/internal/tokens', withAuth(withMode(tokensList, RO)), [postCors])
 r.add(
@@ -167,9 +180,12 @@ r.add(
   withAuth(withMode(tokensCreate, RW), { checkHasAccountRestriction }),
   [postCors]
 )
-r.add('delete', '/internal/tokens', withAuth(withMode(tokensDelete, RW)), [
-  postCors,
-])
+r.add(
+  'delete',
+  '/internal/tokens',
+  withAuth(withMode(tokensDelete, RW), { checkHasDeleteRestriction }),
+  [postCors]
+)
 
 // Blog
 r.add('post', '/internal/blog/subscribe', blogSubscribe, [postCors])
@@ -208,7 +224,10 @@ r.add(
 r.add(
   'delete',
   '/api/pins/:requestid',
-  withAuth(withMode(pinsDelete, RW), { checkHasPsaAccess }),
+  withAuth(withMode(pinsDelete, RW), {
+    checkHasDeleteRestriction,
+    checkHasPsaAccess,
+  }),
   [postCors]
 )
 
@@ -222,7 +241,12 @@ r.add(
   withAuth(withMode(nftUpload, RW), { checkUcan, checkHasAccountRestriction }),
   [postCors]
 )
-r.add('delete', '/api/:cid', withAuth(withMode(nftDelete, RW)), [postCors])
+r.add(
+  'delete',
+  '/api/:cid',
+  withAuth(withMode(nftDelete, RW), { checkHasDeleteRestriction }),
+  [postCors]
+)
 
 r.add('all', '*', notFound)
 addEventListener('fetch', r.listen.bind(r))

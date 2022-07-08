@@ -15,11 +15,6 @@
 - [HTTP API](#http-api)
 - [Developer Tools](#developer-tools)
 - [Development](#development)
-  - [Getting Started](#getting-started)
-  - [Local environment configuration](#local-environment-configuration)
-  - [Release](#release)
-    - [What's a Release PR?](#whats-a-release-pr)
-    - [How should I write my commits?](#how-should-i-write-my-commits)
 - [Contributing](#contributing)
 - [License](#license)
 

@@ -30,21 +30,18 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_PORT: 5432
-  ipfs0:
-    container_name: ipfs0
+  ipfs:
     image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
     volumes:
-      - ./compose/ipfs0:/data/ipfs
-
-  cluster0:
-    container_name: cluster0
+      - ./compose/ipfs:/data/ipfs
+  cluster:
     image: ipfs/ipfs-cluster:v1.0.0-rc4
     depends_on:
-      - ipfs0
+      - ipfs
     environment:
-      CLUSTER_PEERNAME: cluster0
+      CLUSTER_PEERNAME: cluster
       CLUSTER_SECRET: ${CLUSTER_SECRET} # From shell variable if set
-      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs0/tcp/5001
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs/tcp/5001
       CLUSTER_CRDT_TRUSTEDPEERS: '*' # Trust all peers in Cluster
       CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9094 # Expose API
       CLUSTER_RESTAPI_BASICAUTHCREDENTIALS: test:test
@@ -54,4 +51,15 @@ services:
     ports:
       - '127.0.0.1:9094:9094'
     volumes:
-      - ./compose/cluster0:/data/ipfs-cluster
+      - ./compose/cluster:/data/ipfs-cluster
+  minio:
+    image: quay.io/minio/minio
+    command: server /data/minio --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - ./compose/minio:/data/minio
+    ports:
+      - '9000:9000'
+      - '9001:9001'

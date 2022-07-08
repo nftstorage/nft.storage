@@ -1,5 +1,76 @@
 # Changelog
 
+## [1.56.0](https://github.com/nftstorage/nft.storage/compare/website-v1.55.0...website-v1.56.0) (2022-07-07)
+
+
+### Features
+
+* elastic ipfs blog post ([#2057](https://github.com/nftstorage/nft.storage/issues/2057)) ([a76f6bb](https://github.com/nftstorage/nft.storage/commit/a76f6bb3cf81720f87fef40b75af876960b66fdd))
+* update ToS for superhot ([#1948](https://github.com/nftstorage/nft.storage/issues/1948)) ([ccd0c69](https://github.com/nftstorage/nft.storage/commit/ccd0c690af94e88a2a4f390341cf7fc27f276c20))
+
+
+### Bug Fixes
+
+* add tailwind typography to faq content. ([#2060](https://github.com/nftstorage/nft.storage/issues/2060)) ([24d0720](https://github.com/nftstorage/nft.storage/commit/24d07206a2b8fc0549ff1e83b932767c1348bc3f))
+* link to NFTStorage constructor in API reference docs ([#2005](https://github.com/nftstorage/nft.storage/issues/2005)) ([4eddd01](https://github.com/nftstorage/nft.storage/commit/4eddd01a78e4948d4b1e39ba88f4dee05140f512))
+
+## [1.55.0](https://github.com/nftstorage/nft.storage/compare/website-v1.54.0...website-v1.55.0) (2022-06-23)
+
+
+### Features
+
+* Q3'22 integration blog post ([#2011](https://github.com/nftstorage/nft.storage/issues/2011)) ([476f9c1](https://github.com/nftstorage/nft.storage/commit/476f9c130e1a1b802a25a71b7f930a0c0fbdecab))
+
+## [1.54.0](https://github.com/nftstorage/nft.storage/compare/website-v1.53.2...website-v1.54.0) (2022-06-16)
+
+
+### Features
+
+* add support for user requests ([#1959](https://github.com/nftstorage/nft.storage/issues/1959)) ([485a304](https://github.com/nftstorage/nft.storage/commit/485a304748f1319eb72d678b65227ec054767d64))
+
+## [1.53.2](https://github.com/nftstorage/nft.storage/compare/website-v1.53.1...website-v1.53.2) (2022-06-15)
+
+
+### Bug Fixes
+
+* add underline style to tooltip hyperlinks ([#1980](https://github.com/nftstorage/nft.storage/issues/1980)) ([0c0fb7a](https://github.com/nftstorage/nft.storage/commit/0c0fb7aeb361380c063ba1f76e3548682fbeb9e8))
+
+## [1.53.1](https://github.com/nftstorage/nft.storage/compare/website-v1.53.0...website-v1.53.1) (2022-06-15)
+
+
+### Bug Fixes
+
+* update paths to start from root ([#1970](https://github.com/nftstorage/nft.storage/issues/1970)) ([b9523d1](https://github.com/nftstorage/nft.storage/commit/b9523d14127a7e3f3888f6ff4190e5a2190957a5))
+
+## [1.53.0](https://github.com/nftstorage/nft.storage/compare/website-v1.52.0...website-v1.53.0) (2022-06-15)
+
+
+### Features
+
+* update ToS with abuse email ([#1982](https://github.com/nftstorage/nft.storage/issues/1982)) ([f68debf](https://github.com/nftstorage/nft.storage/commit/f68debfc81755df478aa2d5bc111683b613bd4c8))
+
+## [1.52.0](https://github.com/nftstorage/nft.storage/compare/website-v1.51.0...website-v1.52.0) (2022-06-09)
+
+
+### Features
+
+* add NFTUp CTA to stats page ([#1971](https://github.com/nftstorage/nft.storage/issues/1971)) ([70f252d](https://github.com/nftstorage/nft.storage/commit/70f252da1325902381449fd82ce313e4c507641b))
+
+## [1.51.0](https://github.com/nftstorage/nft.storage/compare/website-v1.50.0...website-v1.51.0) (2022-05-24)
+
+
+### Features
+
+* superhot blog post ([#1938](https://github.com/nftstorage/nft.storage/issues/1938)) ([966916b](https://github.com/nftstorage/nft.storage/commit/966916b006ea1df481a2563be82414e6326e8d67))
+
+## [1.50.0](https://github.com/nftstorage/nft.storage/compare/website-v1.49.4...website-v1.50.0) (2022-05-10)
+
+
+### Features
+
+* add nftup link on files page ([#1892](https://github.com/nftstorage/nft.storage/issues/1892)) ([4a5e8f4](https://github.com/nftstorage/nft.storage/commit/4a5e8f424d5b2bbbb2ebcd31676e7a948a012aa0))
+* update 404 page with sweet graphic ([#1828](https://github.com/nftstorage/nft.storage/issues/1828)) ([ef4c14a](https://github.com/nftstorage/nft.storage/commit/ef4c14a8ad4db194141e3f30277754b028044a00))
+
 ### [1.49.4](https://github.com/nftstorage/nft.storage/compare/website-v1.49.3...website-v1.49.4) (2022-05-10)
 
 

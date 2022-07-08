@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { TrustedBy } from '../components/trustedByLogos'
+import { NftUpCta } from '../components/nftUpCta'
 import fs from 'fs'
 import { calculateStats } from '../lib/statsUtils'
 import Img from '../components/cloudflareImage'
@@ -196,6 +197,13 @@ export default function Stats({ logos }) {
         <div className="stats-trusted-wrapper max-w-7xl mx-auto py-4 px-6 sm:px-16">
           <div>
             <TrustedBy logos={logos} />
+          </div>
+        </div>
+      </div>
+      <div className="bg-nsyellow">
+        <div className="stats-trusted-wrapper max-w-7xl mx-auto py-4 px-6 sm:px-16">
+          <div>
+            <NftUpCta />
           </div>
         </div>
       </div>

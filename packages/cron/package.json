@@ -1,6 +1,6 @@
 {
   "name": "cron",
-  "version": "2.1.0",
+  "version": "3.5.0",
   "description": "NFT Storage Cron Jobs",
   "private": true,
   "main": "src/index.js",
@@ -11,29 +11,173 @@
     "nftstorage-pinata": "src/bin/pinata.js"
   },
   "scripts": {
+    "lint": "eslint 'src/**/*.js'",
+    "lint:fix": "npm run lint -- --fix",
     "start": "run-s start:*",
+    "start:nft-ttr": "node src/bin/nft-ttr.js",
     "start:pins": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/pins.js",
     "start:pins-failed": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/pins-failed.js",
     "start:pinata": "node src/bin/pinata.js",
     "start:dagcargo:sizes": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo-sizes.js",
-    "start:metrics": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/metrics.js"
+    "start:metrics": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/metrics.js",
+    "test": "c8 ava",
+    "typecheck": "npx tsc --build tsconfig.json"
   },
   "author": "Alan Shaw",
   "license": "(Apache-2.0 OR MIT)",
   "dependencies": {
     "@nftstorage/ipfs-cluster": "^5.0.1",
     "@web-std/fetch": "^4.0.0",
-    "debug": "^4.3.2",
+    "ava": "^4.3.0",
     "dotenv": "^10.0.0",
     "form-data": "^4.0.0",
+    "it-to-buffer": "^2.0.2",
     "limiter": "2.0.1",
     "nft.storage": "^6.0.0",
     "p-retry": "^4.6.1",
     "p-settle": "^5.0.0",
     "pg": "^8.7.1",
+    "prom-client": "^14.0.1",
+    "sade": "^1.8.1",
+    "sharp": "^0.30.6",
+    "stream-mime-type": "^1.0.2",
     "streaming-iterables": "^6.0.0"
   },
   "devDependencies": {
+    "@types/mime-types": "^2.1.1",
+    "@types/node": "^17.0.35",
+    "@types/sharp": "^0.30.2",
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "c8": "^7.11.3",
+    "eslint-plugin-prettier": "^4.0.0",
     "npm-run-all": "^4.1.5"
-  }
+  },
+  "ava": {
+    "workerThreads": false
+  },
+  "eslintConfig": {
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking",
+      "standard",
+      "plugin:prettier/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 13,
+      "project": [
+        "./tsconfig.json"
+      ]
+    },
+    "env": {
+      "es2022": true,
+      "browser": true,
+      "node": true
+    },
+    "rules": {},
+    "overrides": [
+      {
+        "files": [
+          "./src/bin/pins-failed.js",
+          "./src/jobs/dagcargo.js"
+        ],
+        "rules": {
+          "@typescript-eslint/no-unsafe-assignment": "off"
+        }
+      },
+      {
+        "files": [
+          "./src/jobs/dagcargo.js"
+        ],
+        "rules": {
+          "camelcase": "off"
+        }
+      },
+      {
+        "files": [
+          "./src/jobs/dagcargo.js",
+          "./src/jobs/metrics.js",
+          "./src/jobs/pins.js",
+          "./src/lib/ipfs.js"
+        ],
+        "rules": {
+          "@typescript-eslint/no-unsafe-member-access": "off"
+        }
+      },
+      {
+        "files": [
+          "./src/lib/ipfs.js"
+        ],
+        "rules": {
+          "@typescript-eslint/no-unsafe-argument": "off",
+          "@typescript-eslint/no-unsafe-assignment": "off"
+        }
+      },
+      {
+        "files": [
+          "./src/lib/fetch.js"
+        ],
+        "rules": {
+          "@typescript-eslint/no-unsafe-assignment": "off"
+        }
+      },
+      {
+        "files": [
+          "./src/jobs/dagcargo.js",
+          "./src/jobs/pinata.js",
+          "./src/jobs/pins.js",
+          "./src/lib/ipfs.js"
+        ],
+        "rules": {
+          "@typescript-eslint/restrict-template-expressions": "off"
+        }
+      },
+      {
+        "files": [
+          "./src/jobs/dagcargo.js",
+          "./src/jobs/pins.js",
+          "./src/lib/fetch.js",
+          "./src/lib/pinata.js"
+        ],
+        "rules": {
+          "@typescript-eslint/no-unsafe-return": "off"
+        }
+      },
+      {
+        "files": [
+          "./src/bin/dagcargo-sizes.js",
+          "./src/bin/metrics.js",
+          "./src/bin/pinata.js",
+          "./src/bin/pins-failed.js",
+          "./src/bin/pins.js"
+        ],
+        "rules": {
+          "@typescript-eslint/no-floating-promises": "off"
+        }
+      },
+      {
+        "files": [
+          "./src/bin/dagcargo-sizes.js",
+          "./src/bin/metrics.js",
+          "./src/bin/pinata.js",
+          "./src/bin/pins-failed.js",
+          "./src/bin/pins.js",
+          "./src/jobs/dagcargo.js",
+          "./src/jobs/pinata.js",
+          "./src/jobs/pins.js",
+          "./src/lib/pinata.js"
+        ],
+        "rules": {
+          "@typescript-eslint/naming-convention": "off"
+        }
+      }
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules"
+  ]
 }

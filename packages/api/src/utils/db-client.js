@@ -76,6 +76,26 @@ export class DBClient {
   }
 
   /**
+   * Gets a user by user id
+   *
+   * @param {number} id
+   * @returns
+   */
+  async getUserById(id) {
+    const { data, error, status } = await this.client
+      .from('user')
+      .select('*')
+      .eq('id', id)
+      .single()
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    return data
+  }
+
+  /**
    * Get user by magic.link or old github id
    *
    * @param {string} id
@@ -91,13 +111,11 @@ export class DBClient {
     magic_link_id,
     github_id,
     did,
-    keys:auth_key_user_id_fkey(user_id,id,name,secret),
+    keys:auth_key_user_id_fkey(user_id,id,name,secret,deleted_at),
     tags:user_tag_user_id_fkey(user_id,id,tag,value)
     `
       )
       .or(`magic_link_id.eq.${id},github_id.eq.${id},did.eq.${id}`)
-      // @ts-ignore
-      .filter('keys.deleted_at', 'is', null)
       // @ts-ignore
       .filter('tags.deleted_at', 'is', null)
 
@@ -111,6 +129,94 @@ export class DBClient {
     }
 
     return data
+  }
+
+  /**
+   *
+   * @param {import('./db-client-types').UserOutputKey} key
+   */
+  async checkIfTokenBlocked(key) {
+    const { data, error } = await this.client
+      .from('auth_key_history')
+      .select('status')
+      .eq('auth_key_id', key.id)
+      .filter('deleted_at', 'is', null)
+      .single()
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    return data?.status === 'Blocked'
+  }
+
+  /**
+   * Gets user tag change requests
+   *
+   * @param {number} userId
+   */
+  async getUserRequests(userId) {
+    const { data, error } = await this.client
+      .from('user_tag_proposal')
+      .select('*')
+      .match({ user_id: userId })
+      .is('deleted_at', null)
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    return data
+  }
+
+  /**
+   * Creates a user tag change request
+   *
+   * @param {number} userId
+   * @param {string} tagName
+   * @param {string} requestedTagValue
+   * @param {JSON} userProposalForm
+   * @returns
+   */
+  async createUserRequest(
+    userId,
+    tagName,
+    requestedTagValue,
+    userProposalForm
+  ) {
+    const { data: deleteData, status: deleteStatus } = await this.client
+      .from('user_tag_proposal')
+      .update({
+        deleted_at: new Date().toISOString(),
+      })
+      .match({ user_id: userId, tag: tagName })
+      .is('deleted_at', null)
+
+    if (
+      deleteStatus === 200 ||
+      ((deleteStatus === 406 || deleteStatus === 404) && !deleteData)
+    ) {
+      const { error: insertError, status: insertStatus } = await this.client
+        .from('user_tag_proposal')
+        .insert({
+          user_id: userId,
+          tag: tagName,
+          proposed_tag_value: requestedTagValue,
+          inserted_at: new Date().toISOString(),
+          user_proposal_form: userProposalForm,
+        })
+        .single()
+
+      if (insertError) {
+        throw new DBError(insertError)
+      }
+
+      if (insertStatus === 201) {
+        return true
+      }
+    }
+
+    return false
   }
 
   /**
@@ -570,10 +676,8 @@ export class DBClient {
 
     const dagByteSizeQuery = metricsQuery
       .select('name, dimensions, value')
-      .match({
-        name: 'dagcargo_project_bytes_in_active_deals',
-        dimensions: '{{project,nft.storage}}',
-      })
+      .eq('name', 'dagcargo_project_bytes_in_active_deals')
+      .contains('dimensions', ['project', 'nft.storage'])
       .single()
 
     const weekAgo = new Date()

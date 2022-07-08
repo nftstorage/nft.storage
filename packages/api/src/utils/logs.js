@@ -1,5 +1,7 @@
 import { nanoid } from 'nanoid/non-secure'
+import { getServiceConfig } from '../config'
 
+const { VERSION, COMMITHASH, BRANCH } = getServiceConfig()
 const logtailApiURL = 'https://in.logtail.com/'
 
 const buildMetadataFromHeaders = (/** @type {Headers} */ headers) => {

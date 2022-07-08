@@ -1,4 +1,8 @@
-import { ErrorAccountRestricted, ErrorPinningUnauthorized } from '../errors'
+import {
+  ErrorAccountRestricted,
+  ErrorDeleteRestricted,
+  ErrorPinningUnauthorized,
+} from '../errors'
 import { validate } from '../utils/auth'
 import { hasTag } from '../utils/utils'
 
@@ -17,6 +21,13 @@ export function withAuth(handler, options) {
       hasTag(auth.user, 'HasAccountRestriction', 'true')
     ) {
       throw new ErrorAccountRestricted()
+    }
+
+    if (
+      options?.checkHasDeleteRestriction &&
+      hasTag(auth.user, 'HasDeleteRestriction', 'true')
+    ) {
+      throw new ErrorDeleteRestricted()
     }
 
     if (

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<form>
+  <label> Name: <input type="text" /> </label>
+  <label> URL: <input type="url" /> </label>
+  <div>
+    <button type="submit">Store</button>
+  </div>
+</form>
+<pre id="out"></pre>
+<script type="module">
+  import { NFTStorage } from 'https://cdn.jsdelivr.net/npm/nft.storage/dist/bundle.esm.min.js'
+
+  const token =
+    new URLSearchParams(window.location.search).get('key') || 'API_KEY' // your API key from https://nft.storage/manage
+
+  function log(msg) {
+    msg = JSON.stringify(msg, null, 2)
+    document.getElementById('out').innerHTML += `${msg}\n`
+  }
+
+  document.querySelector('form').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const name = document.querySelector('input[type="text"]').value
+    if (!name) return log('Missing name')
+
+    const urlEl = document.querySelector('input[type="url"]')
+    if (!urlEl.value) return log('Missing URL')
+
+    const url = new URL(urlEl.value)
+    const res = await fetch(url.toString())
+    const fileName = url.pathname.endsWith('/')
+      ? 'blob'
+      : url.pathname.split('/').pop()
+    const data = await res.blob()
+    const image = new File([data], fileName)
+    const description = 'Example store by fetching from URL.'
+
+    const storage = new NFTStorage({ token })
+    try {
+      const metadata = await storage.store({ name, description, image })
+      log({ 'IPFS URL for the metadata': metadata.url })
+      log({ 'metadata.json contents': metadata.data })
+      log({ 'metadata.json contents with IPFS gateway URLs': metadata.embed() })
+    } catch (err) {
+      console.error(err)
+      log(err.message)
+    }
+  })
+</script>

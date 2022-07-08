@@ -1,8 +1,10 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "scripts": {
     "dev:api": "cd packages/api && yarn dev",
     "dev:website": "cd packages/website && yarn dev",
@@ -38,7 +40,8 @@
     "rimraf": "^3.0.2",
     "simple-git-hooks": "^2.3.1",
     "typescript": "4.5.3",
-    "webpack": "^5.72.0"
+    "webpack": "^5.72.0",
+    "wrangler": "^2.0.6"
   },
   "resolutions": {
     "prettier": "2.5.1",

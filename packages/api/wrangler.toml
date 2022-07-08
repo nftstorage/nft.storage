@@ -1,9 +1,9 @@
 # Development
 
 name = "nft-storage-dev"
+main = "./dist/worker.js"
 account_id = "fffa4b4363a7e5250af8357087263b3a"
 workers_dev = true
-type = "javascript"
 
 # Compatibility flags https://github.com/cloudflare/wrangler/pull/2009
 compatibility_date = "2021-08-23"
@@ -13,26 +13,15 @@ compatibility_flags = [ "formdata_parser_supports_files" ]
 ENV = "dev"
 DEBUG = "true"
 DATABASE_URL = "http://localhost:3000"
-CLUSTER_SERVICE = "" # This should be empty to fallback to CLUSTER_API_URL
-CLUSTER_API_URL = "http://localhost:9094"
-CLUSTER_BASIC_AUTH_TOKEN = "dGVzdDp0ZXN0"
 
 [build]
 command = "scripts/cli.js build"
-watch_dir = "src"
-
-[build.upload]
-format = "service-worker"
-
-[miniflare]
-env_path = "./../../.env"
 
 # Staging
 
 [env.staging]
 name = "nft-storage-staging"
 route = "api-staging.nft.storage/*"
-zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"
 usage_model = "unbound"
 
 [env.staging.vars]
@@ -52,7 +41,6 @@ format = "service-worker"
 [env.production]
 name = "nft-storage"
 route = "api.nft.storage/*"
-zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9"
 usage_model = "unbound"
 
 [env.production.vars]

@@ -337,9 +337,14 @@ function GettingStarted() {
                     Create an NFT.Storage account
                   </a>
                 </Link>{' '}
-                and start uploading your files to IPFS. Your data will be
-                accessible on the IPFS network where it is perpetually and
-                verifiably stored by multiple Filecoin storage providers!
+                and start uploading your files to IPFS. Or download and use our{' '}
+                <Link href="/docs/how-to/nftup">
+                  <a className="nsnavy">NFTUp application</a>
+                </Link>
+                {'. '}
+                Your data will be accessible on the IPFS network where it is
+                perpetually and verifiably stored by multiple Filecoin storage
+                providers!
               </p>
             </li>
             <li>

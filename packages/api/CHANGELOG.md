@@ -1,5 +1,97 @@
 # Changelog
 
+## [3.0.0](https://github.com/nftstorage/nft.storage/compare/api-v2.28.1...api-v3.0.0) (2022-06-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* uploaded files are no longer instantly available via gateways or on the DHT. They may take a few seconds to become indexed by Elastic IPFS.
+
+### Features
+
+* switch to Elastic IPFS ([#2026](https://github.com/nftstorage/nft.storage/issues/2026)) ([b51fa4e](https://github.com/nftstorage/nft.storage/commit/b51fa4e7424d1bfe54a61022880ff1be7beef92c))
+
+
+### Bug Fixes
+
+* dag structure check ([#2036](https://github.com/nftstorage/nft.storage/issues/2036)) ([8ec6ecf](https://github.com/nftstorage/nft.storage/commit/8ec6ecf7d1ec94ebfb354de932872e8f6816b2da))
+
+## [2.28.1](https://github.com/nftstorage/nft.storage/compare/api-v2.28.0...api-v2.28.1) (2022-06-21)
+
+
+### Bug Fixes
+
+* switch to cluster local add ([#2012](https://github.com/nftstorage/nft.storage/issues/2012)) ([635314f](https://github.com/nftstorage/nft.storage/commit/635314f1ad822db562f6fbea25b007f14d0e6f94))
+
+## [2.28.0](https://github.com/nftstorage/nft.storage/compare/api-v2.27.0...api-v2.28.0) (2022-06-21)
+
+
+### Features
+
+* add copy_upload_history db function to migrate user data ([#1964](https://github.com/nftstorage/nft.storage/issues/1964)) ([7edca7b](https://github.com/nftstorage/nft.storage/commit/7edca7bd91fcb6f39d3008b07a9fc27824f721cd))
+
+
+### Bug Fixes
+
+* upgrade wrangler ([#1972](https://github.com/nftstorage/nft.storage/issues/1972)) ([7088712](https://github.com/nftstorage/nft.storage/commit/70887129ccba3af8c11c7103cd15b209929122ba))
+
+## [2.27.0](https://github.com/nftstorage/nft.storage/compare/api-v2.26.1...api-v2.27.0) (2022-06-16)
+
+
+### Features
+
+* add support for user requests ([#1959](https://github.com/nftstorage/nft.storage/issues/1959)) ([485a304](https://github.com/nftstorage/nft.storage/commit/485a304748f1319eb72d678b65227ec054767d64))
+
+## [2.26.1](https://github.com/nftstorage/nft.storage/compare/api-v2.26.0...api-v2.26.1) (2022-06-10)
+
+
+### Bug Fixes
+
+* Adding user_tag_proposal schema to reset.sql for local dev ([#1977](https://github.com/nftstorage/nft.storage/issues/1977)) ([6be18ff](https://github.com/nftstorage/nft.storage/commit/6be18ff4a42d924fb68d78d12ddbf8d42e722764))
+
+## [2.26.0](https://github.com/nftstorage/nft.storage/compare/api-v2.25.0...api-v2.26.0) (2022-06-07)
+
+
+### Features
+
+* optimize metrics query ([#1906](https://github.com/nftstorage/nft.storage/issues/1906)) ([dd8d3bd](https://github.com/nftstorage/nft.storage/commit/dd8d3bdcf9e373efe2b26c67c68ad47a96fe7ecb))
+
+## [2.25.0](https://github.com/nftstorage/nft.storage/compare/api-v2.24.2...api-v2.25.0) (2022-06-07)
+
+
+### Features
+
+* Adding admin ability to search by github_id ([#1960](https://github.com/nftstorage/nft.storage/issues/1960)) ([65b551c](https://github.com/nftstorage/nft.storage/commit/65b551c791ea8dc27c4c6e3e8a56188a4b391e54))
+* DB schema and API for user_tag_proposal. ([#1410](https://github.com/nftstorage/nft.storage/issues/1410)) ([#1402](https://github.com/nftstorage/nft.storage/issues/1402)) ([0fa240d](https://github.com/nftstorage/nft.storage/commit/0fa240d5612c130ad60b24bb2953853eb80101a2))
+
+
+### Bug Fixes
+
+* config loading required vars ([#1955](https://github.com/nftstorage/nft.storage/issues/1955)) ([ad5773c](https://github.com/nftstorage/nft.storage/commit/ad5773c55fb67b56af2f5a43fec08182f85d1510))
+
+### [2.24.2](https://github.com/nftstorage/nft.storage/compare/api-v2.24.1...api-v2.24.2) (2022-06-01)
+
+
+### Bug Fixes
+
+* default PSA pin status filter ([#1936](https://github.com/nftstorage/nft.storage/issues/1936)) ([235a308](https://github.com/nftstorage/nft.storage/commit/235a30820906d6c66bcac1a1a6d9e220932d5145))
+* preserve all backup_urls for chunked uploads ([#1940](https://github.com/nftstorage/nft.storage/issues/1940)) ([9084d87](https://github.com/nftstorage/nft.storage/commit/9084d87d51c89ade8c991dcba1f983645bda39c0))
+* send checksum on s3 upload ([#1926](https://github.com/nftstorage/nft.storage/issues/1926)) ([3738f77](https://github.com/nftstorage/nft.storage/commit/3738f77fcb629c49fc11daac8e55a5a0500d4769))
+
+### [2.24.1](https://github.com/nftstorage/nft.storage/compare/api-v2.24.0...api-v2.24.1) (2022-05-18)
+
+
+### Bug Fixes
+
+* Adding additional message details to account is blocked error ([#1898](https://github.com/nftstorage/nft.storage/issues/1898)) ([#1922](https://github.com/nftstorage/nft.storage/issues/1922)) ([48597c2](https://github.com/nftstorage/nft.storage/commit/48597c20f7b6a1bcf5f43f871a3a04db6cac9aea))
+
+## [2.24.0](https://github.com/nftstorage/nft.storage/compare/api-v2.23.0...api-v2.24.0) (2022-05-17)
+
+
+### Features
+
+* return unique error message when using a blocked key ([#1898](https://github.com/nftstorage/nft.storage/issues/1898)) ([6fcd389](https://github.com/nftstorage/nft.storage/commit/6fcd38923506965012505473b57afde2ce22973e))
+
 ## [2.23.0](https://github.com/nftstorage/nft.storage/compare/api-v2.22.0...api-v2.23.0) (2022-05-10)
 
 

@@ -314,7 +314,7 @@ export default function Files({ user }) {
       href={{
         pathname: '/new-file',
       }}
-      className="flex-none"
+      className="flex-none mb-2"
       id="upload"
       tracking={{
         ui: countly.ui.FILES,
@@ -335,28 +335,51 @@ export default function Files({ user }) {
           </When>
           <When condition={status !== 'loading'}>
             <>
-              <div className="flex items-center mb-4">
-                <div className="flex-auto chicagoflf my-4">
-                  <h1>Files</h1>
-                </div>
-                {user?.tags.HasAccountRestriction ? (
+              <div className="flex flex-wrap items-center mb-4">
+                <h1 className="flex-auto chicagoflf my-8">Files</h1>
+                <div className="flex flex-wrap items-center mt-2">
                   <Tooltip
-                    id="blocked-upload-file-booltip"
-                    placement="left"
+                    placement="bottom"
                     overlay={
-                      <span style={{ width: 160 }}>
-                        You are unable to upload files when your account is
-                        blocked. Please contact support@nft.storage
+                      <span>
+                        NFTUp is the easiest way for content creators to upload
+                        their metadata and assets, ready to be minted into NFTs
+                        by smart contracts and then traded on marketplaces, and
+                        browsed in galleries.
                       </span>
                     }
+                    overlayClassName="ns-tooltip"
+                    id="learn-more-nftup-info"
                   >
-                    <span style={{ paddingLeft: 10 }}>
-                      <UploadFileButton />
-                    </span>
+                    <a
+                      href="/docs/how-to/nftup"
+                      className="items-center mr-4 mb-2 btn button-reset select-none black py-2 px-3 hologram chicagoflf interactive light"
+                      id="learn-more-nftup"
+                    >
+                      <VscQuestion size={16} className="mr-2" /> Upload
+                      directories easily with NFTUp
+                    </a>
                   </Tooltip>
-                ) : (
-                  <UploadFileButton />
-                )}
+                  {user?.tags.HasAccountRestriction ? (
+                    <Tooltip
+                      id="blocked-upload-file-booltip"
+                      placement="bottom"
+                      overlayClassName="ns-tooltip"
+                      overlay={
+                        <span style={{ width: 160 }}>
+                          You are unable to upload files when your account is
+                          blocked. Please contact support@nft.storage
+                        </span>
+                      }
+                    >
+                      <span style={{ paddingLeft: 10 }}>
+                        <UploadFileButton />
+                      </span>
+                    </Tooltip>
+                  ) : (
+                    <UploadFileButton />
+                  )}
+                </div>
               </div>
               <div className="table-responsive">
                 <When condition={hasZeroNfts}>

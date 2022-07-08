@@ -1,0 +1,38 @@
+---
+title: "Announcing: NFT.Storage Gateway SuperHot perma-cache"
+author: Vasco Santos, David Choi
+description: Ensure the NFTs you care about can be accessed super quickly
+thumbnail: https://user-images.githubusercontent.com/1189523/170104146-5e5a86f1-c059-40f9-b40d-8d007e7f0e50.png
+date: May 24, 2022
+tags:
+  - ipfs
+  - gateway
+  - premium
+---
+
+We [launched the NFT.Storage Gateway](https://nft.storage/blog/post/2022-03-08-gateway-release/) at [nftstorage.link](http://nftstorage.link) 10 weeks ago. It’s already being used millions of times per day, with its CDN and caching layers able to still provide users with a lightning-fast read experience for NFTs stored on decentralized storage.
+
+To give you an idea the impact of the NFT.Storage Gateway just a few months after launch, check out these stats:
+
+- ~175,000,000 requests in last 7 days for almost 300 TiB of content
+- ~700,000,000 requests in last 30 days for over 1.5 PiB of content
+- Median response time of ~8ms and 95th% response time of 95ms
+
+So the [NFT.Storage](http://NFT.Storage) Gateway is already making an impact for those who want to interact with NFT data stored on decentralized storage. But we’ve also been working on ways to make this better!
+
+Today, we’re soft launching SuperHot Gateway, a feature that allows users to pay to perma-cache data on a global CDN with over 270 points of presence. As a wider variety of content is accessed through the [NFT.Storage](http://NFT.Storage) Gateway, users might want to guarantee that the content they care about is always performantly available on the edge. This feature is currently in Private Beta.
+
+This is something that users were asking for right after initially launching the [NFT.Storage](http://NFT.Storage) Gateway. Read performance of off-chain NFT data is something that many users, from NFT tooling providers to marketplaces, have been dealing with, often spinning up entirely new infrastructure efforts just to provide good performance to their end-users. SuperHot allows these users focus less on infra and more on delivering innovation in the NFT space. Not to mention that pricing is best-in-class, given that our costs to do this caching can be amortized across multiple users!
+
+Some benefits include:
+
+- Ensuring data is always cached (rather than only after data is recently requested)
+- Caching files up to 5GB content length (vs. free tier limited to 512 MB), with this increasing over time
+- Globally caching worldwide (vs. free tier caching in individual data centers when content is recently requested)
+
+At the moment, we are rolling this out with Enterprise users, but will soon automate sign-ups and payments so that any user, from artists to collectors, can guarantee fast reads of the NFTs they care about. If you are interested, check out these resources:
+
+- [API docs](https://nftstorage.link/api-docs)
+- [Form to ask for more information or be added to Private Beta](https://nftstorage.link/#superhot)
+
+There are more features coming to the Gateway, including image resizing, caching of centralized URLs, and auto-caching IPNS records. Stay tuned!
