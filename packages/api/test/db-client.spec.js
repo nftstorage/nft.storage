@@ -11,8 +11,7 @@ let client
 
 test.beforeEach(async (t) => {
   await setupMiniflareContext(t)
-  const config = getTestServiceConfig(t)
-  client = await createClientWithUser(config)
+  client = await createClientWithUser(t)
 })
 
 test('getUser should list only active keys', async (t) => {
