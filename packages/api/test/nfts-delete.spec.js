@@ -1,7 +1,6 @@
 import test from 'ava'
 import { createClientWithUser, getRawClient } from './scripts/helpers.js'
 import {
-  cleanupTestContext,
   getMiniflareContext,
   getTestServiceConfig,
   setupMiniflareContext,
@@ -9,10 +8,6 @@ import {
 
 test.before(async (t) => {
   await setupMiniflareContext(t)
-})
-
-test.after(async (t) => {
-  await cleanupTestContext(t)
 })
 
 test.serial('should delete nft', async (t) => {

@@ -1,7 +1,6 @@
 import test from 'ava'
 import { createClientWithUser, getRawClient } from './scripts/helpers.js'
 import {
-  cleanupTestContext,
   getMiniflareContext,
   getTestServiceConfig,
   setupMiniflareContext,
@@ -9,10 +8,6 @@ import {
 
 test.beforeEach(async (t) => {
   await setupMiniflareContext(t)
-})
-
-test.afterEach(async (t) => {
-  await cleanupTestContext(t)
 })
 
 test('should pin with just cid', async (t) => {

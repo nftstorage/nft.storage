@@ -1,17 +1,12 @@
 import test from 'ava'
 import { createClientWithUser } from './scripts/helpers.js'
 import {
-  cleanupTestContext,
   getMiniflareContext,
   setupMiniflareContext,
 } from './scripts/test-context.js'
 
 test.beforeEach(async (t) => {
   await setupMiniflareContext(t)
-})
-
-test.afterEach(async (t) => {
-  await cleanupTestContext(t)
 })
 
 test('Should return proper response for /stats route, based on seeded demoData', async (t) => {

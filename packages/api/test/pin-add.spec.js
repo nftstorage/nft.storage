@@ -13,7 +13,6 @@ import {
   TrackerStatusUnpinned,
 } from '@nftstorage/ipfs-cluster'
 import {
-  cleanupTestContext,
   getMiniflareContext,
   getTestServiceConfig,
   setupMiniflareContext,
@@ -25,10 +24,6 @@ let client
 test.before(async (t) => {
   await setupMiniflareContext(t)
   client = await createClientWithUser(t)
-})
-
-test.after(async (t) => {
-  await cleanupTestContext(t)
 })
 
 test.serial('should pin with just cid', async (t) => {

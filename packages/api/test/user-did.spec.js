@@ -2,7 +2,6 @@ import test from 'ava'
 import { createClientWithUser, DBTestClient } from './scripts/helpers.js'
 import { KeyPair } from 'ucan-storage/keypair'
 import {
-  cleanupTestContext,
   getMiniflareContext,
   setupMiniflareContext,
 } from './scripts/test-context.js'
@@ -13,10 +12,6 @@ let client
 test.before(async (t) => {
   await setupMiniflareContext(t)
   client = await createClientWithUser(t)
-})
-
-test.after(async (t) => {
-  await cleanupTestContext(t)
 })
 
 test.serial('should register new did ', async (t) => {

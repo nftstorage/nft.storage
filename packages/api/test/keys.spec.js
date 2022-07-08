@@ -3,16 +3,11 @@ import {
   setupMiniflareContext,
   getMiniflareContext,
   getTestServiceConfig,
-  cleanupTestContext,
 } from './scripts/test-context.js'
 import { createClientWithUser, getRawClient } from './scripts/helpers.js'
 
 test.before(async (t) => {
   await setupMiniflareContext(t)
-})
-
-test.after(async (t) => {
-  await cleanupTestContext(t)
 })
 
 test.serial('should list just the default key', async (t) => {

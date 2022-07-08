@@ -3,17 +3,12 @@ import { createClientWithUser, DBTestClient } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import delay from 'delay'
 import {
-  cleanupTestContext,
   getMiniflareContext,
   setupMiniflareContext,
 } from './scripts/test-context.js'
 
 test.before(async (t) => {
   await setupMiniflareContext(t)
-})
-
-test.after(async (t) => {
-  await cleanupTestContext(t)
 })
 
 test.serial('should list 0 nfts with date before any uploads', async (t) => {

@@ -7,7 +7,6 @@ import {
 import { fixtures } from './scripts/fixtures.js'
 import { createCar } from './scripts/car.js'
 import {
-  cleanupTestContext,
   getMiniflareContext,
   getTestServiceConfig,
   setupMiniflareContext,
@@ -19,10 +18,6 @@ let client
 test.before(async (t) => {
   await setupMiniflareContext(t)
   client = await createClientWithUser(t, { token: 'metaplex-test-token' })
-})
-
-test.after(async (t) => {
-  await cleanupTestContext(t)
 })
 
 test.serial(

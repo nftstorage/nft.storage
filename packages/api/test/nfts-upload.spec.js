@@ -11,7 +11,6 @@ import { createCar } from './scripts/car.js'
 import { build } from 'ucan-storage/ucan-storage'
 import { KeyPair } from 'ucan-storage/keypair'
 import {
-  cleanupTestContext,
   getMiniflareContext,
   getTestServiceConfig,
   setupMiniflareContext,
@@ -21,10 +20,6 @@ import crypto from 'node:crypto'
 
 test.before(async (t) => {
   await setupMiniflareContext(t)
-})
-
-test.after(async (t) => {
-  await cleanupTestContext(t)
 })
 
 test.serial('should upload a single file', async (t) => {

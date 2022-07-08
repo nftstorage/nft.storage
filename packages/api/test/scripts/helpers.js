@@ -42,14 +42,12 @@ export const getDBClient = (config) => {
  * @param {ServiceConfiguration} config
  * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
  */
-export async function createTestUser(
-  config,
-  {
-    publicAddress = `0x73573${Date.now()}`,
-    issuer = `did:eth:${publicAddress}`,
-    name = 'A Tester',
-  } = {}
-) {
+export async function createTestUser(config, userInfo = {}) {
+  const publicAddress =
+    userInfo.publicAddress || `0x73573${Date.now() + Math.random()}`
+  const issuer = userInfo.issuer || `did:eth:${publicAddress}`
+  const name = userInfo.name || 'A Tester'
+
   const token = await signJWT(
     {
       sub: issuer,
