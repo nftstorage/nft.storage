@@ -53,9 +53,10 @@ export async function setupMiniflareContext(
 
   if (!noContainers) {
     // start database containers
-    const { postgrest, cluster } = await startTestContainers()
+    const { postgrest, cluster, minio } = await startTestContainers()
     overrides.DATABASE_URL = postgrest.url
     overrides.CLUSTER_API_URL = cluster.url
+    overrides.S3_ENDPOINT = minio.url
   }
 
   const mf = makeMiniflare(overrides)
