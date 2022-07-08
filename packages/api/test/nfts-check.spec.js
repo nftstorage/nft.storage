@@ -6,13 +6,18 @@ import {
   setupMiniflareContext,
   getTestServiceConfig,
   getMiniflareContext,
+  cleanupTestContext,
 } from './scripts/test-context.js'
 
-test.beforeEach(async (t) => {
+test.before(async (t) => {
   await setupMiniflareContext(t)
 })
 
-test('should return proper response for cid v1', async (t) => {
+test.after(async (t) => {
+  await cleanupTestContext(t)
+})
+
+test.serial('should return proper response for cid v1', async (t) => {
   const mf = getMiniflareContext(t)
   const client = await createClientWithUser(t)
   const cid = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
@@ -29,44 +34,44 @@ test('should return proper response for cid v1', async (t) => {
   t.deepEqual(value.deals, fixtures.dealsV0andV1)
 })
 
-// test('should return proper response for cid v0', async (t) => {
-//   const mf = getMiniflareContext(t)
-//   const client = await createClientWithUser(t)
-//   const cid = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
-//   await client.addPin({
-//     cid,
-//     name: 'test-file-cid-v0',
-//   })
+test.serial('should return proper response for cid v0', async (t) => {
+  const mf = getMiniflareContext(t)
+  const client = await createClientWithUser(t)
+  const cid = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
+  await client.addPin({
+    cid,
+    name: 'test-file-cid-v0',
+  })
 
-//   const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
-//   const { ok, value } = await res.json()
-//   t.is(value.cid, cid)
-//   t.is(value.pin.status, 'queued')
-//   t.deepEqual(value.deals, fixtures.dealsV0andV1)
-// })
+  const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
+  const { ok, value } = await res.json()
+  t.is(value.cid, cid)
+  t.is(value.pin.status, 'queued')
+  t.deepEqual(value.deals, fixtures.dealsV0andV1)
+})
 
-// test('should error on invalid cid', async (t) => {
-//   const mf = getMiniflareContext(t)
-//   const cid = 'asdhjkahsdja'
-//   const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
-//   const { ok, value, error } = await res.json()
+test.serial('should error on invalid cid', async (t) => {
+  const mf = getMiniflareContext(t)
+  const cid = 'asdhjkahsdja'
+  const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
+  const { ok, value, error } = await res.json()
 
-//   t.false(ok)
-//   t.deepEqual(error, {
-//     code: 'ERROR_INVALID_CID',
-//     message: `Invalid CID: ${cid}`,
-//   })
-// })
+  t.false(ok)
+  t.deepEqual(error, {
+    code: 'ERROR_INVALID_CID',
+    message: `Invalid CID: ${cid}`,
+  })
+})
 
-// test('should error on not found', async (t) => {
-//   const mf = getMiniflareContext(t)
-//   const cid = 'bafybeia22kh3smc7p67oa76pcleaxp4u5zatsvcndi3xrqod5vtxq5avpa'
-//   const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
-//   const { ok, value, error } = await res.json()
+test.serial('should error on not found', async (t) => {
+  const mf = getMiniflareContext(t)
+  const cid = 'bafybeia22kh3smc7p67oa76pcleaxp4u5zatsvcndi3xrqod5vtxq5avpa'
+  const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
+  const { ok, value, error } = await res.json()
 
-//   t.false(ok)
-//   t.deepEqual(error, {
-//     code: 'HTTP_ERROR',
-//     message: `NFT not found`,
-//   })
-// })
+  t.false(ok)
+  t.deepEqual(error, {
+    code: 'HTTP_ERROR',
+    message: `NFT not found`,
+  })
+})

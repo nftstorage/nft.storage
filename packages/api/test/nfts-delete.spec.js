@@ -1,16 +1,21 @@
 import test from 'ava'
 import { createClientWithUser, getRawClient } from './scripts/helpers.js'
 import {
+  cleanupTestContext,
   getMiniflareContext,
   getTestServiceConfig,
   setupMiniflareContext,
 } from './scripts/test-context.js'
 
-test.beforeEach(async (t) => {
+test.before(async (t) => {
   await setupMiniflareContext(t)
 })
 
-test('Delete NFT - should delete nft', async (t) => {
+test.after(async (t) => {
+  await cleanupTestContext(t)
+})
+
+test.serial('should delete nft', async (t) => {
   const cid = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
   const client = await createClientWithUser(t)
   const config = getTestServiceConfig(t)
@@ -53,7 +58,7 @@ test('Delete NFT - should delete nft', async (t) => {
   )
 })
 
-test('should delete correct cid version 0', async (t) => {
+test.serial('should delete correct cid version 0', async (t) => {
   const cidv1 = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
   const cidv0 = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
   const client = await createClientWithUser(t)
@@ -91,7 +96,7 @@ test('should delete correct cid version 0', async (t) => {
   t.not(data.deleted_at, null)
 })
 
-test('should delete correct cid version 1', async (t) => {
+test.serial('should delete correct cid version 1', async (t) => {
   const cidv1 = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
   const cidv0 = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
   const client = await createClientWithUser(t)
@@ -129,7 +134,7 @@ test('should delete correct cid version 1', async (t) => {
   t.not(data.deleted_at, null)
 })
 
-test('should error deleting invalid cid', async (t) => {
+test.serial('should error deleting invalid cid', async (t) => {
   const cid = 'bafybeissss'
   const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
@@ -146,7 +151,7 @@ test('should error deleting invalid cid', async (t) => {
   })
 })
 
-test('should error deleting unknown cid', async (t) => {
+test.serial('should error deleting unknown cid', async (t) => {
   const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
   const cid = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
@@ -163,7 +168,7 @@ test('should error deleting unknown cid', async (t) => {
   })
 })
 
-test('should not delete already deleted nft', async (t) => {
+test.serial('should not delete already deleted nft', async (t) => {
   const cid = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
   const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
