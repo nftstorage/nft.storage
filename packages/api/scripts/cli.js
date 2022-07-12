@@ -66,7 +66,6 @@ prog
         },
         minify: opts.env === 'dev' ? false : true,
         sourcemap: true,
-        external: ['node:crypto'], // imported in test code when webcrypto does not exist (outside of miniflare env)
       })
 
       // Sentry release and sourcemap upload
