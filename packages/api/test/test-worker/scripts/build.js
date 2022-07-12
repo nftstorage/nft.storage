@@ -17,10 +17,10 @@ const PluginAlias = {
     })
 
     build.onResolve({ filter: /^node-fetch$/ }, () => {
-      return { path: path.resolve(__dirname, 'fetch.js') }
+      return { path: path.resolve(__dirname, '../../../scripts/fetch.js') }
     })
     build.onResolve({ filter: /^cross-fetch$/ }, () => {
-      return { path: path.resolve(__dirname, 'fetch.js') }
+      return { path: path.resolve(__dirname, '../../../scripts/fetch.js') }
     })
   },
 }
@@ -44,6 +44,7 @@ const builder = async () => {
       },
       minify: false,
       sourcemap: true,
+      external: ['node:crypto'], // TODO: remove this (and the one in main build script) once all crypto code is running in miniflare
     })
   } catch (err) {
     console.error(err)
