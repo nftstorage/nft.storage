@@ -205,7 +205,9 @@ test.serial("should not be able to delete another user's key", async (t) => {
   const { ok, value } = await resList.json()
 
   t.is(value.length, 2, 'should still have the default key and key1')
-  t.is(value[1].name, 'test-key-1')
+  t.true(
+    value.some((/** @type {{ name: string }} */ v) => v.name === 'test-key-1')
+  )
 })
 
 test.serial('should not delete a deleted key', async (t) => {
