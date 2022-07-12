@@ -23,9 +23,7 @@ async function dispatch(event) {
     case '/sign-jwt':
       return handleSignJWT(event)
     default:
-      return new Response('no handler for requested path ' + url.pathname, {
-        status: 404,
-      })
+      return errorResponse(404, 'no handler for requested path ' + url.pathname)
   }
 }
 
@@ -59,11 +57,24 @@ async function handleCreateUser(event) {
 async function handleSignJWT(event) {
   const input = await event.request.json()
   if (!('payload' in input) || !('secret' in input)) {
-    return new Response('invalid input: must contain "payload" and "secret"', {
-      status: 400,
-    })
+    return errorResponse(
+      400,
+      'invalid input: must contain "payload" and "secret"'
+    )
   }
   const { payload, secret } = input
   const token = await signJWT(payload, secret)
   return new Response(JSON.stringify({ token }))
+}
+
+/**
+ *
+ * @param {number} status
+ * @param {string} message
+ */
+function errorResponse(status, message) {
+  return new Response(JSON.stringify({ status, error: { message } }), {
+    status,
+    statusText: message,
+  })
 }
