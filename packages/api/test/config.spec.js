@@ -2,7 +2,7 @@ import test from 'ava'
 import {
   serviceConfigFromVariables,
   loadConfigVariables,
-  loadServiceConfig,
+  getServiceConfig,
 } from '../src/config.js'
 
 import { setupMiniflareContext, defineGlobals } from './scripts/test-context.js'
@@ -12,12 +12,12 @@ test.beforeEach(async (t) => {
 })
 
 test.serial(
-  'loadServiceConfig uses default config values for missing vars when ENV == "test" or "dev"',
+  'getServiceConfig uses default config values for missing vars when ENV == "test" or "dev"',
   (t) => {
     const lenientEnvs = ['test', 'dev']
     for (const env of lenientEnvs) {
       defineGlobals({ ENV: env })
-      const cfg = loadServiceConfig()
+      const cfg = getServiceConfig()
       t.is(cfg.ENV.toString(), env)
       t.truthy(cfg.MAINTENANCE_MODE)
     }
