@@ -19,15 +19,15 @@ const CLOUDFLARE_ED25519 = {
  * @returns {Promise<boolean>} true if the signature is valid, false if invalid
  */
 export async function verifyEd25519Signature(message, sig, pubkey) {
-  if (typeof crypto === 'undefined' || typeof crypto.subtle === 'undefined') {
-    return verifyEd25519SignatureWithJSCrypto(message, sig, pubkey)
-  }
-
   try {
-    return await verifyEd25519SignatureWithNativeCrypto(message, sig, pubkey)
+    return await verifyEd25519SignatureWithCloudflareCrypto(
+      message,
+      sig,
+      pubkey
+    )
   } catch (e) {
     if (e instanceof Error && e.name === 'NotSupportedError') {
-      return await verifyEd25519SignatureWithJSCrypto(message, sig, pubkey)
+      return await verifyEd25519SignatureWithNodeCrypto(message, sig, pubkey)
     }
     throw e
   }
@@ -38,6 +38,8 @@ export async function verifyEd25519Signature(message, sig, pubkey) {
  * by the CloudFlare Workers runtime API.
  * See https://developers.cloudflare.com/workers/runtime-apis/web-crypto#footnote%201
  *
+ * Note: this _should_ work in miniflare, but doesn't seem to. That's why
+ *
  * @param {Uint8Array} message the message that was signed
  * @param {Uint8Array} sig the signature bytes
  * @param {Uint8Array} pubkey the Ed25519 public key that can verify the signature
@@ -45,7 +47,11 @@ export async function verifyEd25519Signature(message, sig, pubkey) {
  * @throws an Error with `name === 'NotSupportedError` if the NODE-ED25519 algorithm is unavailable,
  * or if running in an environment where WebCrypto is unavailable entirely.
  */
-async function verifyEd25519SignatureWithNativeCrypto(message, sig, pubkey) {
+async function verifyEd25519SignatureWithCloudflareCrypto(
+  message,
+  sig,
+  pubkey
+) {
   const key = await crypto.subtle.importKey(
     'raw',
     pubkey,
@@ -58,22 +64,24 @@ async function verifyEd25519SignatureWithNativeCrypto(message, sig, pubkey) {
 }
 
 /**
- * Verifies an Ed25519 signature using a javascript implementation (tweetnacl).
+ * Verifies an Ed25519 signature using nodejs's standard algorithm name 'Ed25519'
+ * instead of the non-standard NODE-ED25519 used by the CF Worker runtime.
  *
  * This method is used as a fallback when running unit tests or otherwise executing
- * outside of the CloudFlare Worker runtime environment.
+ * outside of the CloudFlare Worker runtime environment. Theoretically should not
+ * be needed, but apparently so.
  *
  * @param {Uint8Array} message
  * @param {Uint8Array} sig
  * @param {Uint8Array} pubkey
  * @returns {Promise<boolean>}
  */
-async function verifyEd25519SignatureWithJSCrypto(message, sig, pubkey) {
-  console.warn(
-    'using tweetnacl for ed25519 - you should not see this message when running in the CloudFlare worker runtime'
-  )
-  const { default: nacl } = await import('tweetnacl')
-  return nacl.sign.detached.verify(message, sig, pubkey)
+async function verifyEd25519SignatureWithNodeCrypto(message, sig, pubkey) {
+  const key = await crypto.subtle.importKey('raw', pubkey, 'Ed25519', false, [
+    'verify',
+  ])
+
+  return crypto.subtle.verify('Ed25519', key, sig, message)
 }
 
 /**

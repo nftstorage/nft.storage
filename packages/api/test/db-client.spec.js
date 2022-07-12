@@ -1,21 +1,12 @@
 import test from 'ava'
-import { signJWT } from '../src/utils/jwt.js'
-import { createClientWithUser } from './scripts/helpers.js'
+import { createClientWithUser, signJWT } from './scripts/helpers.js'
 import {
   setupMiniflareContext,
   getTestServiceConfig,
-  getMiniflareContext,
 } from './scripts/test-context.js'
 
 test.before(async (t) => {
   await setupMiniflareContext(t)
-})
-
-test.serial('wip: test worker thing', async (t) => {
-  const mf = getMiniflareContext(t)
-  const res = await mf.dispatchFetch('http://test.mf/hello')
-  t.true(res.ok)
-  console.log('from test worker: ', await res.text())
 })
 
 test.serial('getUser should list only active keys', async (t) => {
@@ -24,6 +15,7 @@ test.serial('getUser should list only active keys', async (t) => {
   const config = getTestServiceConfig(t)
   const issuer1 = `did:eth:0x73573${Date.now()}`
   const token1 = await signJWT(
+    t,
     {
       sub: issuer1,
       iss: 'nft-storage',
@@ -39,6 +31,7 @@ test.serial('getUser should list only active keys', async (t) => {
   })
   const issuer2 = `did:eth:0x73573${Date.now()}`
   const token2 = await signJWT(
+    t,
     {
       sub: issuer2,
       iss: 'nft-storage',

@@ -1,9 +1,5 @@
 import test from 'ava'
-import {
-  createClientWithUser,
-  DBTestClient,
-  getRawClient,
-} from './scripts/helpers.js'
+import { createClientWithUser, getRawClient } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import { createCar } from './scripts/car.js'
 import {

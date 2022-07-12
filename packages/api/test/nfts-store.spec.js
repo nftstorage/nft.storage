@@ -17,7 +17,7 @@ test.beforeEach(async (t) => {
 test('should store image', async (t) => {
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
-  const { token, userId } = await createTestUser(config)
+  const { token, userId } = await createTestUser(t)
 
   const trick =
     'ipfs://bafyreiemweb3jxougg7vaovg7wyiohwqszmgwry5xwitw3heepucg6vyd4'
@@ -105,7 +105,7 @@ test('should store image', async (t) => {
 test.skip('should store dir wrapped image', async (t) => {
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
-  const { token, userId } = await createTestUser(config)
+  const { token, userId } = await createTestUser(t)
 
   const metadata = {
     name: 'name',

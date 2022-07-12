@@ -12,7 +12,6 @@ test.before(async (t) => {
 
 test.serial('should list just the default key', async (t) => {
   const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
   const client = await createClientWithUser(t)
   const res = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
     headers: { Authorization: `Bearer ${client.token}` },
@@ -25,7 +24,6 @@ test.serial('should list just the default key', async (t) => {
 
 test.serial('should create a key', async (t) => {
   const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
   const client = await createClientWithUser(t)
   const res = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
     method: 'POST',
@@ -44,7 +42,6 @@ test.serial(
   'should error creating a key when name is not provided',
   async (t) => {
     const mf = getMiniflareContext(t)
-    const config = getTestServiceConfig(t)
     const client = await createClientWithUser(t)
     const res = await mf.dispatchFetch(
       `http://localhost:8787/internal/tokens`,

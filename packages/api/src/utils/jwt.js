@@ -1,12 +1,3 @@
-async function getSubtleAPI() {
-  if (typeof crypto !== 'undefined') {
-    return crypto.subtle
-  }
-  const nodeCrypto = await import('node:crypto')
-  // @ts-ignore
-  return nodeCrypto.webcrypto.subtle
-}
-
 /** @type {Record<string, any>} */
 const algorithms = {
   HS256: {
@@ -91,13 +82,16 @@ export async function verifyJWT(token, secret, alg = 'HS256') {
   }
 
   const keyData = utf8ToUint8Array(secret)
-  const subtle = await getSubtleAPI()
-  const key = await subtle.importKey('raw', keyData, importAlgorithm, false, [
-    'sign',
-  ])
+  const key = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    importAlgorithm,
+    false,
+    ['sign']
+  )
   const headerPayload = tokenParts.slice(0, 2).join('.')
   const signature = tokenParts[2]
-  const signedHeaderPayload = await subtle.sign(
+  const signedHeaderPayload = await crypto.subtle.sign(
     importAlgorithm.name,
     key,
     utf8ToUint8Array(headerPayload)
@@ -130,7 +124,6 @@ export async function signJWT(payload, secret, alg = 'HS256') {
     throw new Error('algorithm not found')
   }
 
-  const subtle = await getSubtleAPI()
   const payloadAsJSON = JSON.stringify(payload)
   const headerAsJSON = JSON.stringify({ alg: alg, typ: 'JWT' })
   const headerPayload =
@@ -138,11 +131,15 @@ export async function signJWT(payload, secret, alg = 'HS256') {
     '.' +
     Base64URL.stringify(utf8ToUint8Array(payloadAsJSON))
   const keyData = utf8ToUint8Array(secret)
-  const key = await subtle.importKey('raw', keyData, importAlgorithm, false, [
-    'sign',
-  ])
+  const key = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    importAlgorithm,
+    false,
+    ['sign']
+  )
   const headerPayloadBuffer = utf8ToUint8Array(headerPayload)
-  const signature = await subtle.sign(
+  const signature = await crypto.subtle.sign(
     importAlgorithm.name,
     key,
     headerPayloadBuffer
