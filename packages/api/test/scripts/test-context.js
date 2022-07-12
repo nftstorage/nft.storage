@@ -5,8 +5,6 @@ import { fileURLToPath } from 'url'
 import { serviceConfigFromVariables } from '../../src/config.js'
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
-import { startTestContainers } from './containers.js'
-
 /**
  *
  * @param {Record<string, string>} bindings
@@ -14,9 +12,10 @@ import { startTestContainers } from './containers.js'
  */
 export function makeMiniflare(bindings = {}) {
   // Create a new Miniflare environment for each test
+  const envPath = path.join(__dirname, 'test.env')
   return new Miniflare({
     // Autoload configuration from `.env`, `package.json` and `wrangler.toml`
-    envPath: path.join(__dirname, 'test.env'),
+    envPath,
     packagePath: true,
     wranglerConfigPath: true,
     // We don't want to rebuild our worker for each test, we're already doing
@@ -24,6 +23,17 @@ export function makeMiniflare(bindings = {}) {
     // This will override the option in wrangler.toml.
     buildCommand: undefined,
     bindings,
+
+    // mount our test helper code as a separate miniflare worker
+    mounts: {
+      'nft-storage-test-worker': {
+        rootPath: path.join(__dirname, '../test-worker'),
+        packagePath: true,
+        wranglerConfigPath: true,
+        envPath,
+        bindings,
+      },
+    },
   })
 }
 
