@@ -11,7 +11,7 @@
     "dev": "miniflare dist/worker.js --watch --debug --env ../../.env",
     "clean": "./scripts/cli.js services stop --clean && rm -rf docker/compose",
     "build": "scripts/cli.js build",
-    "test": "tsc && scripts/cli.js build && ava \"test/*.spec.js\"",
+    "test": "tsc && scripts/cli.js build --env=test && ava \"test/*.spec.js\"",
     "db-types": "./scripts/cli.js db-types"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
