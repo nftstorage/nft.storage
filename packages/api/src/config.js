@@ -19,26 +19,10 @@ const CLUSTER_SERVICE_URLS = {
 }
 
 /**
- * Returns a {@link ServiceConfiguration} object containing the runtime config options for the API service.
- * Includes anything injected by the environment (secrets, URLs for services we call out to, maintenance flag, etc).
- *
- * Loaded from global variables injected by CloudFlare Worker runtime.
- *
- * Lazily loaded and cached on first access.
- * TODO: remove this and explicitly call loadServiceConfig
- */
-export const getServiceConfig = () => {
-  return loadServiceConfig()
-}
-
-/**
  * Load a {@link ServiceConfiguration} from the global environment.
- *
- * Exported for testing. See {@link getServiceConfig} for main public accessor.
- *
  * @returns {ServiceConfiguration}
  */
-export function loadServiceConfig() {
+export const getServiceConfig = () => {
   const vars = loadConfigVariables()
   return serviceConfigFromVariables(vars)
 }
