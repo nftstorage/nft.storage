@@ -44,7 +44,6 @@ const builder = async () => {
       },
       minify: false,
       sourcemap: true,
-      external: ['node:crypto'], // TODO: remove this (and the one in main build script) once all crypto code is running in miniflare
     })
   } catch (err) {
     console.error(err)
