@@ -48,9 +48,14 @@ prog
   .option('--env', 'Environment', 'dev')
   .action(async (opts) => {
     try {
-      const version = `${pkg.name}@${pkg.version}-${opts.env}+${git.short(
-        __dirname
-      )}`
+      const isTest = opts.env === 'test'
+
+      const version = isTest
+        ? 'test-version'
+        : `${pkg.name}@${pkg.version}-${opts.env}+${git.short(__dirname)}`
+      const commit = isTest ? 'test-commit' : git.long(__dirname)
+      const branch = isTest ? 'test-branch' : git.branch(__dirname)
+
       await build({
         entryPoints: [path.join(__dirname, '../src/index.js')],
         bundle: true,
@@ -60,11 +65,11 @@ prog
         plugins: [PluginAlias],
         define: {
           NFT_STORAGE_VERSION: JSON.stringify(version),
-          NFT_STORAGE_COMMITHASH: JSON.stringify(git.long(__dirname)),
-          NFT_STORAGE_BRANCH: JSON.stringify(git.branch(__dirname)),
+          NFT_STORAGE_COMMITHASH: JSON.stringify(commit),
+          NFT_STORAGE_BRANCH: JSON.stringify(branch),
           global: 'globalThis',
         },
-        minify: opts.env === 'dev' ? false : true,
+        minify: opts.env === 'dev' || isTest ? false : true,
         sourcemap: true,
       })
 
