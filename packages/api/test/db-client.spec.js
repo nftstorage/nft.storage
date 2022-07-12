@@ -4,10 +4,18 @@ import { createClientWithUser } from './scripts/helpers.js'
 import {
   setupMiniflareContext,
   getTestServiceConfig,
+  getMiniflareContext,
 } from './scripts/test-context.js'
 
 test.before(async (t) => {
   await setupMiniflareContext(t)
+})
+
+test.serial('wip: test worker thing', async (t) => {
+  const mf = getMiniflareContext(t)
+  const res = await mf.dispatchFetch('http://test.mf/hello')
+  t.true(res.ok)
+  console.log('from test worker: ', await res.text())
 })
 
 test.serial('getUser should list only active keys', async (t) => {
