@@ -8,7 +8,7 @@ import Tooltip from '../components/tooltip.js'
 import countly from '../lib/countly.js'
 import { VscMail } from 'react-icons/vsc'
 import { Popover, ArrowContainer } from 'react-tiny-popover'
-import Link from 'next/link'
+import Link from '../components/link'
 
 /**
  *
@@ -129,15 +129,13 @@ export default function ManageKeys({ user }) {
                       overlayClassName="ns-tooltip"
                       id="request-api-pinning-info"
                     >
-                      <Link href="/pinning-request">
-                        <a
-                          href="#"
-                          className="items-center mr-4 btn button-reset select-none black py-2 px-4 hologram chicagoflf interactive light"
-                          id="request-api-pinning"
-                        >
-                          <VscMail size={12} className="mr-2" /> Request API
-                          Pinning Access
-                        </a>
+                      <Link
+                        href="/pinning-request"
+                        className="items-center mr-4 btn button-reset select-none black py-2 px-4 hologram chicagoflf interactive light"
+                        id="request-api-pinning"
+                      >
+                        <VscMail size={12} className="mr-2" /> Request API
+                        Pinning Access
                       </Link>
                     </Tooltip>
                   )}
