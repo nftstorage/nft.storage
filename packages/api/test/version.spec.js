@@ -11,7 +11,7 @@ test.before(async (t) => {
 
 test('should get version information', async (t) => {
   const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
 
   const res = await mf.dispatchFetch('http://localhost:8787/version')
   t.truthy(res)

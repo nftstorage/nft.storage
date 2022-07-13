@@ -63,7 +63,7 @@ test.serial(
 
 test.serial('should delete a key', async (t) => {
   const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const client = await createClientWithUser(t)
   const res = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
     method: 'POST',
@@ -212,7 +212,6 @@ test.serial("should not be able to delete another user's key", async (t) => {
 
 test.serial('should not delete a deleted key', async (t) => {
   const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
   const client = await createClientWithUser(t)
 
   const resCreate = await mf.dispatchFetch(

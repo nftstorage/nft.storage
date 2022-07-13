@@ -1,7 +1,5 @@
-import {
-  modes as MaintenanceModes,
-  DEFAULT_MODE,
-} from './middleware/maintenance.js'
+const MaintenanceModes = ['rw', 'r-', '--']
+const DEFAULT_MODE = 'rw'
 
 /**
  * @typedef {import('./bindings').ServiceConfiguration} ServiceConfiguration
@@ -178,6 +176,7 @@ function maintenanceModeFromString(s) {
   }
   for (const m of MaintenanceModes) {
     if (s === m) {
+      // @ts-ignore
       return m
     }
   }

@@ -12,7 +12,7 @@ test.before(async (t) => {
 test.serial('getUser should list only active keys', async (t) => {
   const client = await createClientWithUser(t)
   console.log('test')
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const issuer1 = `did:eth:0x73573${Date.now()}`
   const token1 = await signJWT(
     t,

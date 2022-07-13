@@ -26,9 +26,14 @@ export async function verifyEd25519Signature(message, sig, pubkey) {
       pubkey
     )
   } catch (e) {
-    if (e instanceof Error && e.name === 'NotSupportedError') {
-      return await verifyEd25519SignatureWithNodeCrypto(message, sig, pubkey)
+    if (
+      e instanceof Error &&
+      (e.name === 'NotSupportedError' ||
+        e.message.includes('Unsupported key usage'))
+    ) {
+      return await verifyEd25519SignatureWithJSCrypto(message, sig, pubkey)
     }
+    console.error('ed25519 error:', e)
     throw e
   }
 }
@@ -65,23 +70,20 @@ async function verifyEd25519SignatureWithCloudflareCrypto(
 }
 
 /**
- * Verifies an Ed25519 signature using nodejs's standard algorithm name 'Ed25519'
- * instead of the non-standard NODE-ED25519 used by the CF Worker runtime.
- *
- * This can be removed if/when https://github.com/cloudflare/miniflare/pull/311
- * is merged.
+ * Verifies an Ed25519 signature using a JS implementation supported by node 16+
+ * (tweetnacl). Should only be invoked in test mode, when NODE-ED25519 is not available.
  *
  * @param {Uint8Array} message
  * @param {Uint8Array} sig
  * @param {Uint8Array} pubkey
  * @returns {Promise<boolean>}
  */
-async function verifyEd25519SignatureWithNodeCrypto(message, sig, pubkey) {
-  const key = await crypto.subtle.importKey('raw', pubkey, 'Ed25519', false, [
-    'verify',
-  ])
-
-  return crypto.subtle.verify('Ed25519', key, sig, message)
+async function verifyEd25519SignatureWithJSCrypto(message, sig, pubkey) {
+  console.warn(
+    'using tweetnacl for ed25519 - this should only appear in tests!'
+  )
+  const { default: nacl } = await import('tweetnacl')
+  return nacl.sign.detached.verify(message, sig, pubkey)
 }
 
 /**

@@ -4,7 +4,7 @@ import {
   createClientWithUser,
   DBTestClient,
   getRawClient,
-  getCluster,
+  getClusterStatus,
 } from './scripts/helpers.js'
 import {
   TrackerStatusPinned,
@@ -27,7 +27,7 @@ test.before(async (t) => {
 })
 
 test.serial('should pin with just cid', async (t) => {
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
 
   // expected CID for the above data
@@ -55,7 +55,7 @@ test.serial('should pin with just cid', async (t) => {
 })
 
 test.serial('should pin with everything', async (t) => {
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   // expected CID for the above data
   const cid = 'bafkreigu63ufwrs6d7zkybgdm36orqwe6opiseut4b6ehhwi5mtgryklzi'
@@ -208,9 +208,8 @@ test.serial('should pin to cluster by source CID', async (t) => {
   const data = await res.json()
   t.is(data.pin.cid, cidv0)
 
-  const cluster = getCluster(config)
   // should be being pinned by the source CID
-  let status = await cluster.status(cidv0)
+  let status = await getClusterStatus(t, cidv0)
   const goodStatuses = [
     TrackerStatusPinQueued,
     TrackerStatusPinning,
@@ -224,7 +223,7 @@ test.serial('should pin to cluster by source CID', async (t) => {
   })
 
   // should not be pinned by normalized v1 CID
-  status = await cluster.status(cidv1)
+  status = await getClusterStatus(t, cidv1)
   Object.values(status.peerMap).forEach(({ status }) => {
     t.is(status, TrackerStatusUnpinned)
   })

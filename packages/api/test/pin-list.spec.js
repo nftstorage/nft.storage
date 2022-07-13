@@ -5,6 +5,7 @@ import {
   getTestServiceConfig,
   setupMiniflareContext,
 } from './scripts/test-context.js'
+import { Blob } from '@web-std/blob'
 
 test.beforeEach(async (t) => {
   await setupMiniflareContext(t)
@@ -74,7 +75,7 @@ test('should pin with just cid', async (t) => {
 
 test('should list pinned items when querying without filters', async (t) => {
   const client = await createClientWithUser(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   // Pin request (unavailable on IPFS)
   const cid = 'bafkreiaoqabl7yiracpil3m7rgbgygky2wwqtvzom2lkdhy2pxchkjixae'

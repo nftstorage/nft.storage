@@ -14,7 +14,7 @@ let metaplexUserId
 test.before(async (t) => {
   await setupMiniflareContext(t)
 
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const rawClient = getRawClient(config)
 
   const { data } = await rawClient
@@ -28,7 +28,7 @@ test.before(async (t) => {
 
 test('should upload a single CAR file with a CID-specific token', async (t) => {
   const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const { root, car } = await createCar('hello world car')
   // expected CID for the above data
   const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
@@ -75,9 +75,8 @@ test('should upload a single CAR file with a CID-specific token', async (t) => {
 })
 
 test.serial('should support payloads without mintingAgent tag', async (t) => {
-  const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const { root, car } = await createCar('hello world car')
   // expected CID for the above data
   const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'

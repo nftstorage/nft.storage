@@ -88,12 +88,11 @@ export async function setupMiniflareContext(
 
   const bindings = await mf.getBindings()
   // console.log('miniflare bindings', bindings)
-  const serviceConfig = serviceConfigFromVariables(bindings)
   if (bindGlobals) {
     // optionally pull cloudflare bindings into the global scope of the test runner
     defineGlobals(bindings)
   }
-  t.context = { mf, serviceConfig }
+  t.context = { mf }
 }
 
 /**
@@ -115,15 +114,10 @@ export function getMiniflareContext(t) {
 /**
  *
  * @param {import('ava').ExecutionContext<unknown>} t
- * @returns {import('../../src/config.js').ServiceConfiguration}
+ * @returns {Promise<import('../../src/config.js').ServiceConfiguration>}
  */
-export function getTestServiceConfig(t) {
-  // @ts-ignore
-  const { serviceConfig } = t.context
-  if (!serviceConfig) {
-    throw new Error(
-      'no service config found in test context. make sure to call setupMiniflareContext in a before hook'
-    )
-  }
-  return serviceConfig
+export async function getTestServiceConfig(t) {
+  const mf = getMiniflareContext(t)
+  const bindings = await mf.getBindings()
+  return serviceConfigFromVariables(bindings)
 }

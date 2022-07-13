@@ -15,7 +15,7 @@ import {
   getTestServiceConfig,
   setupMiniflareContext,
 } from './scripts/test-context.js'
-import { File } from 'nft.storage/src/platform.js'
+import { FormData, File, Blob } from 'nft.storage/src/platform.js'
 import crypto from 'node:crypto'
 
 test.before(async (t) => {
@@ -24,7 +24,7 @@ test.before(async (t) => {
 
 test.serial('should upload a single file', async (t) => {
   const client = await createClientWithUser(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
 
   const file = new Blob(['hello world!'], { type: 'application/text' })
@@ -166,7 +166,7 @@ test.serial('should upload multiple files with name', async (t) => {
 
 test.serial('should upload a single CAR file', async (t) => {
   const client = await createClientWithUser(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const { root, car } = await createCar('hello world car')
   // expected CID for the above data
@@ -275,7 +275,7 @@ test.serial(
 
 test.serial('should re-upload same data and update mime-type', async (t) => {
   const client = await createClientWithUser(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const file = new Blob(['hello world!'], { type: 'application/text' })
   // expected CID for the above data
@@ -315,7 +315,7 @@ test.serial(
   'should re-upload nft turning a deleted nft into an active nft again',
   async (t) => {
     const client = await createClientWithUser(t)
-    const config = getTestServiceConfig(t)
+    const config = await getTestServiceConfig(t)
     const mf = getMiniflareContext(t)
     const file = new Blob(['hello world!'])
     // expected CID for the above data
@@ -355,7 +355,7 @@ test.serial(
 
 test.serial('should upload to cluster 2', async (t) => {
   const client = await createClientWithUser(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const file = new Blob(['should upload to cluster 2'], {
     type: 'application/text',
@@ -385,7 +385,7 @@ test.serial('should upload to cluster 2', async (t) => {
 
 test.serial('should create S3 backup', async (t) => {
   const client = await createClientWithUser(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const { root, car } = await packToBlob({
     input: [{ path: 'test.txt', content: 'S3 backup' }],
@@ -417,7 +417,7 @@ test.serial(
   async (t) => {
     t.timeout(10_000)
     const client = await createClientWithUser(t)
-    const config = getTestServiceConfig(t)
+    const config = await getTestServiceConfig(t)
     const mf = getMiniflareContext(t)
     const chunkSize = 1024
     const nChunks = 5
@@ -480,7 +480,7 @@ test.serial(
 
 test.serial('should upload a single file using ucan', async (t) => {
   const client = await createClientWithUser(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const kp = await KeyPair.create()
   // Register DID
@@ -541,7 +541,7 @@ test.serial('should upload a single file using ucan', async (t) => {
 
 test.serial('should update a single file', async (t) => {
   const client = await createClientWithUser(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const file = new Blob(['hello world!'], { type: 'application/text' })
   // expected CID for the above data

@@ -13,7 +13,7 @@ test.before(async (t) => {
 test.serial('should delete nft', async (t) => {
   const cid = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
   const client = await createClientWithUser(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   await client.client.createUpload({
     content_cid: cid,
@@ -58,7 +58,7 @@ test.serial('should delete correct cid version 0', async (t) => {
   const cidv0 = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
   const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   await client.client.createUpload({
     content_cid: cidv1,
     source_cid: cidv0,
@@ -96,7 +96,7 @@ test.serial('should delete correct cid version 1', async (t) => {
   const cidv0 = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
   const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   await client.client.createUpload({
     content_cid: cidv1,
     source_cid: cidv0,
@@ -167,7 +167,7 @@ test.serial('should not delete already deleted nft', async (t) => {
   const cid = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
   const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
-  const config = getTestServiceConfig(t)
+  const config = await getTestServiceConfig(t)
   await client.client.createUpload({
     content_cid: cid,
     source_cid: cid,

@@ -1,6 +1,10 @@
 import { getServiceConfig } from '../../../src/config'
 import { signJWT } from '../../../src/utils/jwt'
-import { createTestUser, createTestUserWithFixedToken } from './helpers'
+import {
+  createTestUser,
+  createTestUserWithFixedToken,
+  getCluster,
+} from './helpers'
 
 const config = getServiceConfig()
 
@@ -22,6 +26,8 @@ async function dispatch(event) {
       return handleCreateUser(event)
     case '/sign-jwt':
       return handleSignJWT(event)
+    case '/cluster-status':
+      return handleClusterGetStatus(event)
     default:
       return errorResponse(404, 'no handler for requested path ' + url.pathname)
   }
@@ -65,6 +71,22 @@ async function handleSignJWT(event) {
   const { payload, secret } = input
   const token = await signJWT(payload, secret)
   return new Response(JSON.stringify({ token }))
+}
+
+/**
+ *
+ * @param {FetchEvent} event
+ * @returns {Promise<Response>}
+ */
+async function handleClusterGetStatus(event) {
+  const input = await event.request.json()
+  if (!('cid' in input)) {
+    return errorResponse(400, 'invalid input: must contain "cid"')
+  }
+  const { cid } = input
+  const cluster = getCluster(config)
+  const status = await cluster.status(cid)
+  return new Response(JSON.stringify({ status }))
 }
 
 /**

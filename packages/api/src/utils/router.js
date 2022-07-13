@@ -10,7 +10,7 @@ import { getServiceConfig } from '../config.js'
  */
 
 /**
- * @typedef {(event: FetchEvent, ctx: RouteContext) => Promise<Response> | Response} Handler
+ * @typedef {import('../bindings').Handler} Handler
  */
 
 /**

@@ -29,9 +29,6 @@ export const modes = Object.freeze([NO_READ_OR_WRITE, READ_ONLY, READ_WRITE])
  */
 export const DEFAULT_MODE = READ_WRITE
 
-/** @type {() => Mode} */
-let getMaintenanceMode = () => getServiceConfig().MAINTENANCE_MODE
-
 /**
  * Specify the mode (permissions) a request hander requires to operate e.g.
  * r- = only needs read permission so enabled in read-only AND read+write modes.
@@ -46,7 +43,7 @@ export function withMode(handler, mode) {
     throw new Error('invalid mode')
   }
   const enabled = () => {
-    const currentMode = getMaintenanceMode()
+    const currentMode = getServiceConfig().MAINTENANCE_MODE
     const currentModeBits = modeBits(currentMode)
     return modeBits(mode).every((bit, i) => {
       if (bit === '-') return true

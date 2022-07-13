@@ -8,13 +8,19 @@ import { getMiniflareContext, getTestServiceConfig } from './test-context.js'
  */
 
 /**
- * @param {ServiceConfiguration} config
- * @returns {Cluster}
+ * @param {import('ava').ExecutionContext<unknown>} t
+ * @param {string} cid
+ * @returns {Promise<import('@nftstorage/ipfs-cluster').API.StatusResponse>}
  */
-export const getCluster = (config) => {
-  return new Cluster(config.CLUSTER_API_URL, {
-    headers: { Authorization: `Basic ${config.CLUSTER_BASIC_AUTH_TOKEN}` },
+export async function getClusterStatus(t, cid) {
+  const mf = await getMiniflareContext(t)
+  const res = await mf.dispatchFetch('http://test.mf/cluster-status', {
+    method: 'POST',
+    body: JSON.stringify({ cid }),
   })
+  t.true(res.ok, `fetch error: [${res.status}] ${res.statusText}`)
+  const { status } = await res.json()
+  return status
 }
 
 /**
@@ -94,7 +100,7 @@ export class DBTestClient {
  */
 export async function createClientWithUser(t, userInfo) {
   const serviceConfig = await getTestServiceConfig(t)
-  const mf = await getMiniflareContext(t)
+  const mf = getMiniflareContext(t)
 
   const user = await createTestUser(t, userInfo)
   return new DBTestClient(serviceConfig, mf, user)
@@ -108,7 +114,7 @@ export async function createClientWithUser(t, userInfo) {
  * @returns {Promise<string>}
  */
 export async function signJWT(t, payload, secret) {
-  const mf = await getMiniflareContext(t)
+  const mf = getMiniflareContext(t)
   const res = await mf.dispatchFetch('http://test.mf/sign-jwt', {
     method: 'POST',
     body: JSON.stringify({ payload, secret }),

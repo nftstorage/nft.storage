@@ -1,5 +1,6 @@
 import { CID } from 'multiformats'
 import { CarWriter } from '@ipld/car'
+import { Blob } from '@web-std/blob'
 
 /**
  * @typedef {import('multiformats/block').Block<unknown>} Block
