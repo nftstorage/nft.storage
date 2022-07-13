@@ -11,7 +11,7 @@ const CLOUDFLARE_ED25519 = {
  * Verifies an Ed25519 signature over a given `message`.
  *
  * Will try to use the native Ed25519 implementation provided by the CloudFlare Worker API
- * if possible, falling back to js-based verification if not running in a CF Worker (e.g. in tests).
+ * if possible, falling back to node's builtin 'Ed25519' algorithm if that fails.
  *
  * @param {Uint8Array} message the message that was signed
  * @param {Uint8Array} sig the signature bytes
@@ -38,7 +38,8 @@ export async function verifyEd25519Signature(message, sig, pubkey) {
  * by the CloudFlare Workers runtime API.
  * See https://developers.cloudflare.com/workers/runtime-apis/web-crypto#footnote%201
  *
- * Note: this _should_ work in miniflare, but doesn't seem to. That's why
+ * Note: this _should_ work in miniflare, but doesn't seem to.
+ * See https://github.com/cloudflare/miniflare/pull/311
  *
  * @param {Uint8Array} message the message that was signed
  * @param {Uint8Array} sig the signature bytes
@@ -67,9 +68,8 @@ async function verifyEd25519SignatureWithCloudflareCrypto(
  * Verifies an Ed25519 signature using nodejs's standard algorithm name 'Ed25519'
  * instead of the non-standard NODE-ED25519 used by the CF Worker runtime.
  *
- * This method is used as a fallback when running unit tests or otherwise executing
- * outside of the CloudFlare Worker runtime environment. Theoretically should not
- * be needed, but apparently so.
+ * This can be removed if/when https://github.com/cloudflare/miniflare/pull/311
+ * is merged.
  *
  * @param {Uint8Array} message
  * @param {Uint8Array} sig

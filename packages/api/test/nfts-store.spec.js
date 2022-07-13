@@ -100,8 +100,8 @@ test('should store image', async (t) => {
   ])
 })
 
-// FIXME: no clue why this doesn't work with miniflare/ava, but it now ignores the leading `dir/` and produces the
-// wrong CIDs. Possibly a difference between @web-std/file and Playwright's DOM implementation?
+// Miniflare doesn't currently preserve pathnames in File objects uploaded via FormData.
+// TODO: re-enable this test once https://github.com/cloudflare/miniflare/pull/309 is merged
 test.skip('should store dir wrapped image', async (t) => {
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
