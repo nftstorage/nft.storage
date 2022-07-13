@@ -10,11 +10,11 @@ import {
 } from './scripts/test-context.js'
 import { File, Blob } from 'nft.storage/src/platform.js'
 
-test.beforeEach(async (t) => {
+test.before(async (t) => {
   await setupMiniflareContext(t)
 })
 
-test('should store image', async (t) => {
+test.serial('should store image', async (t) => {
   const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const { token, userId } = await createTestUser(t)
@@ -102,7 +102,7 @@ test('should store image', async (t) => {
 
 // Miniflare doesn't currently preserve pathnames in File objects uploaded via FormData.
 // TODO: re-enable this test once https://github.com/cloudflare/miniflare/pull/309 is merged
-test.skip('should store dir wrapped image', async (t) => {
+test.serial.skip('should store dir wrapped image', async (t) => {
   const config = await getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const { token, userId } = await createTestUser(t)
