@@ -7,8 +7,7 @@
   "main": "dist/worker.js",
   "scripts": {
     "deploy": "wrangler publish --env production",
-    "predev": "./scripts/cli.js services start && ./scripts/cli.js db-sql --cargo --testing --reset && ./scripts/cli.js minio bucket create dotstorage-dev-0",
-    "dev": "miniflare dist/worker.js --watch --debug --env ../../.env",
+    "dev": "./scripts/dev.js",
     "clean": "./scripts/cli.js services stop --clean && rm -rf docker/compose",
     "build": "scripts/cli.js build",
     "test": "tsc && ./scripts/cli.js build --env=test && ava",

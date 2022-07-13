@@ -1,0 +1,14 @@
+version: '3.6'
+services:
+  db:
+    volumes:
+      - ./compose/db:/var/lib/postgresql/data
+  ipfs:
+    volumes:
+      - ./compose/ipfs:/data/ipfs
+  cluster:
+    volumes:
+      - ./compose/cluster:/data/ipfs-cluster
+  minio:
+    volumes:
+      - ./compose/minio:/data/minio
