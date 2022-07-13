@@ -7,11 +7,11 @@ import {
 } from './scripts/test-context.js'
 import { Blob } from '@web-std/blob'
 
-test.beforeEach(async (t) => {
+test.before(async (t) => {
   await setupMiniflareContext(t)
 })
 
-test('should pin with just cid', async (t) => {
+test.serial('should pin with just cid', async (t) => {
   // List
   const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
@@ -73,23 +73,28 @@ test('should pin with just cid', async (t) => {
   )
 })
 
-test('should list pinned items when querying without filters', async (t) => {
-  const client = await createClientWithUser(t)
-  const config = await getTestServiceConfig(t)
-  const mf = getMiniflareContext(t)
-  // Pin request (unavailable on IPFS)
-  const cid = 'bafkreiaoqabl7yiracpil3m7rgbgygky2wwqtvzom2lkdhy2pxchkjixae'
-  await client.addPin({ cid, name: 'test' })
+test.serial(
+  'should list pinned items when querying without filters',
+  async (t) => {
+    const client = await createClientWithUser(t)
+    const config = await getTestServiceConfig(t)
+    const mf = getMiniflareContext(t)
+    // Pin request (unavailable on IPFS)
+    const cid = 'bafkreiaoqabl7yiracpil3m7rgbgygky2wwqtvzom2lkdhy2pxchkjixae'
+    await client.addPin({ cid, name: 'test' })
 
-  // Make this CID 'Pinned' in our DB
-  await getRawClient(config)
-    .from('pin')
-    .update({ status: 'Pinned', updated_at: new Date().toISOString() })
-    .eq('content_cid', cid)
+    // Make this CID 'Pinned' in our DB
+    await getRawClient(config)
+      .from('pin')
+      .update({ status: 'Pinned', updated_at: new Date().toISOString() })
+      .eq('content_cid', cid)
 
-  const headers = { Authorization: `Bearer ${client.token}` }
-  const res = await mf.dispatchFetch('http://localhost:8787/pins', { headers })
-  const { count, results } = await res.json()
-  t.is(count, 1)
-  t.is(results[0].pin.cid, cid)
-})
+    const headers = { Authorization: `Bearer ${client.token}` }
+    const res = await mf.dispatchFetch('http://localhost:8787/pins', {
+      headers,
+    })
+    const { count, results } = await res.json()
+    t.is(count, 1)
+    t.is(results[0].pin.cid, cid)
+  }
+)
