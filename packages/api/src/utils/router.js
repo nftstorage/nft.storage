@@ -49,6 +49,7 @@ class Router {
    * @param {(e: FetchEvent, params: Record<string, string>) => Promise<RouteContext>} getRouteContext
    * @param {object} [options]
    * @param {BasicHandler} [options.onNotFound]
+   * @param {BasicHandler} [options.onMethodNotAllowed]
    * @param {ErrorHandler} [options.onError]
    */
   constructor(getRouteContext, options) {
@@ -62,6 +63,12 @@ class Router {
         return new Response(null, {
           status: 404,
           statusText: 'Not Found',
+        })
+      },
+      onMethodNotAllowed() {
+        return new Response(null, {
+          status: 405,
+          statusText: 'Method Not Allowed',
         })
       },
       onError() {
@@ -123,6 +130,8 @@ class Router {
       conditions: [methodCondition, routeCondition],
       handler,
       postHandlers,
+      method,
+      route,
     })
   }
 
@@ -138,7 +147,9 @@ class Router {
       const { conditions, handler, postHandlers } = this.routes[i]
       const method = conditions[0](req)
       const routeParams = conditions[1](req)
+      console.log('resolve', this.routes[i].method, this.routes[i].route)
       if (method && typeof routeParams !== 'boolean') {
+        console.log('match', this.routes[i].method, this.routes[i].route)
         return [handler, routeParams, postHandlers]
       }
     }
@@ -158,6 +169,7 @@ class Router {
     ctx.log.time('request')
 
     if (handler) {
+      console.log('handler FOUND', req.method, req.url, handler)
       try {
         rsp = await handler(event, ctx)
       } catch (err) {
@@ -165,6 +177,18 @@ class Router {
         rsp = this.options.onError(req, err, ctx)
       }
     } else {
+      console.log('no handler found')
+      const routeMatch = this.routes.some(({ conditions }) => {
+        const [methodCondition, routeCondition] = conditions
+        const method = methodCondition(req)
+        const routeParams = routeCondition(req)
+        // we know this route, but request used wrong method.
+        return typeof routeParams !== 'boolean'
+      })
+      console.log('route match', routeMatch)
+      if (routeMatch) {
+        rsp = this.options.onMethodNotAllowed(req)
+      }
       rsp = this.options.onNotFound(req)
     }
 
