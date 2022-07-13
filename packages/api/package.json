@@ -61,7 +61,6 @@
     "openapi-typescript": "^4.0.2",
     "p-retry": "^4.6.1",
     "pg": "^8.7.1",
-    "playwright-test": "^7.2.1",
     "process": "^0.11.10",
     "readable-stream": "^3.6.0",
     "sade": "^1.7.4",
