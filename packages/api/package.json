@@ -32,7 +32,8 @@
     "regexparam": "^2.0.0",
     "toucan-js": "^2.4.1",
     "ucan-storage": "^1.0.0",
-    "uint8arrays": "^3.0.0"
+    "uint8arrays": "^3.0.0",
+    "undici": "^5.7.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.3.1",
@@ -65,9 +66,10 @@
     "readable-stream": "^3.6.0",
     "sade": "^1.7.4",
     "smoke": "^3.1.1",
-    "testcontainers": "^8.11.0"
+    "testcontainers": "^8.11.0",
+    "tweetnacl": "^1.0.3"
   },
   "engines": {
-    "node": ">= 18.4.0"
+    "node": ">= 16"
   }
 }
