@@ -34,7 +34,7 @@ async function main() {
   await mf.startServer()
 
   console.log('🚢📦 Containers started.\n')
-  console.log('🌎 Envionment overrides: ')
+  console.log('🌎 Environment overrides: ')
   console.log(formatEnvVars(overrides) + '\n')
   console.log('📡 Dev API server listening on http://localhost:8787')
 }
