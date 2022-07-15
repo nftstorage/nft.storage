@@ -15,6 +15,7 @@ dotenv.config({ path: envPath })
 async function main() {
   // simplest arg parsing ever, lol
   const persistentVolumes = process.argv.includes('--persist')
+  console.log('🚢📦 Starting service containers...')
   const { overrides } = await startServiceContainers({ persistentVolumes })
 
   const mf = new Miniflare({
@@ -31,8 +32,21 @@ async function main() {
     port: 8787,
   })
   await mf.startServer()
-  console.log('Dev API server listening on :8787')
-  console.log('Env overrides: ', overrides)
+
+  console.log('🚢📦 Containers started.\n')
+  console.log('🌎 Envionment overrides: ')
+  console.log(formatEnvVars(overrides) + '\n')
+  console.log('📡 Dev API server listening on http://localhost:8787')
+}
+
+/**
+ * Format environment overrides for easier copy/paste to shell or .env file
+ * @param {Record<string, string>} vars
+ */
+function formatEnvVars(vars) {
+  return Object.entries(vars)
+    .map(([k, v]) => `export ${k}=${v}`)
+    .join('\n')
 }
 
 // call entry point fn

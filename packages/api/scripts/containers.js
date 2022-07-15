@@ -22,25 +22,26 @@ export async function startServiceContainers({ persistentVolumes } = {}) {
     composeFileDir,
     composeFilenames
   )
-    .withWaitStrategy('rest_1', Wait.forLogMessage('Listening on port'))
-    .withWaitStrategy('ipfs_1', Wait.forLogMessage('Daemon is ready'))
-    .withWaitStrategy('cluster_1', Wait.forLogMessage('IPFS Cluster is READY'))
-    .withWaitStrategy('minio_1', Wait.forLogMessage('1 Online'))
+    .withBuild()
+    .withWaitStrategy('rest-1', Wait.forLogMessage('Listening on port'))
+    .withWaitStrategy('ipfs-1', Wait.forLogMessage('Daemon is ready'))
+    .withWaitStrategy('cluster-1', Wait.forLogMessage('IPFS Cluster is READY'))
+    .withWaitStrategy('minio-11', Wait.forLogMessage('1 Online'))
     .up()
 
-  const minioContainer = comp.getContainer('minio_1')
+  const minioContainer = comp.getContainer('minio-1')
   const minioPort = minioContainer.getMappedPort(9000)
   const S3_ENDPOINT = `http://localhost:${minioPort}`
 
-  const dbContainer = comp.getContainer('db_1')
+  const dbContainer = comp.getContainer('db-1')
   const dbPort = dbContainer.getMappedPort(5432)
   const DATABASE_CONNECTION = `postgresql://postgres:postgres@localhost:${dbPort}/postgres`
 
-  const postgrestContainer = comp.getContainer('rest_1')
+  const postgrestContainer = comp.getContainer('rest-1')
   const postgrestPort = postgrestContainer.getMappedPort(3000)
   const DATABASE_URL = `http://localhost:${postgrestPort}`
 
-  const clusterContainer = comp.getContainer('cluster_1')
+  const clusterContainer = comp.getContainer('cluster-1')
   const clusterPort = clusterContainer.getMappedPort(9094)
   const CLUSTER_API_URL = `http://localhost:${clusterPort}`
 
