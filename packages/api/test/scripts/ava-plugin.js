@@ -8,7 +8,9 @@ import { startServiceContainers } from '../../scripts/containers.js'
 const avaPlugin = async ({ negotiateProtocol }) => {
   const main = negotiateProtocol(['ava-4'])
 
-  const { overrides } = await startServiceContainers()
+  const { overrides } = await startServiceContainers({
+    minioBucket: 'dotstorage-test-0',
+  })
   main.ready()
 
   // when a new test worker starts, send them the env vars they

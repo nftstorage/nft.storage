@@ -10,8 +10,12 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url))
 /**
  * @param {object} opts
  * @param {boolean} [opts.persistentVolumes]
+ * @param {string} [opts.minioBucket]
  */
-export async function startServiceContainers({ persistentVolumes } = {}) {
+export async function startServiceContainers({
+  persistentVolumes,
+  minioBucket,
+} = {}) {
   const composeFileDir = path.resolve(__dirname, '../docker')
   const composeFilenames = ['docker-compose.yml']
   if (persistentVolumes) {
@@ -47,7 +51,7 @@ export async function startServiceContainers({ persistentVolumes } = {}) {
 
   try {
     await initDBSchema(DATABASE_CONNECTION)
-    await createMinioBucket(minioPort)
+    await createMinioBucket(minioPort, minioBucket)
   } catch (e) {
     if (!persistentVolumes) {
       throw e
@@ -88,9 +92,10 @@ function loadSql(file) {
 /**
  *
  * @param {number} minioPort
+ * @param {string} [minioBucket]
  */
-async function createMinioBucket(minioPort) {
-  const name = process.env.S3_BUCKET_NAME || 'dotstorage-dev-0'
+async function createMinioBucket(minioPort, minioBucket) {
+  const name = minioBucket || process.env.S3_BUCKET_NAME || 'dotstorage-dev-0'
   const region = process.env.S3_REGION || 'us-east-1'
   const client = new Minio({
     useSSL: false,

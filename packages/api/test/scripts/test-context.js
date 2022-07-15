@@ -64,7 +64,7 @@ export async function setupMiniflareContext(
 
   if (!noContainers) {
     const sharedWorker = await registerSharedWorker({
-      filename: path.resolve(__dirname, 'containers.js'),
+      filename: path.resolve(__dirname, 'ava-plugin.js'),
       supportedProtocols: ['ava-4'],
     })
 
