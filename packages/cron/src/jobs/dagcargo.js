@@ -44,6 +44,7 @@ export async function updateDagSizes({ pg, after }) {
 
   log(`🎯 Updating DAG sizes for content inserted after ${after.toISOString()}`)
 
+  /** @type {import('pg').QueryResult<{ count: number }> } */
   const countRes = await pg.query(COUNT_CONTENT_WITHOUT_SIZE, [
     after.toISOString(),
   ])
@@ -53,6 +54,7 @@ export async function updateDagSizes({ pg, after }) {
   let offset = 0
   const limit = 1000
   while (true) {
+    /** @type {import('pg').QueryResult<{ cid: string }>} */
     const { rows: contents } = await pg.query(FIND_CONTENT_WITHOUT_SIZE, [
       after.toISOString(),
       offset,
@@ -61,11 +63,12 @@ export async function updateDagSizes({ pg, after }) {
     if (!contents.length) break
 
     const cids = contents.map((c) => c.cid)
+    /** @type {import('pg').QueryResult<{ cid_v1: string, size_actual: number }>} */
     const { rows: sizes } = await pg.query(FIND_DAG_SIZES, [cids])
 
-    for (const { cid_v1, size_actual } of sizes) {
-      log(`💪 ${cid_v1} ${size_actual} bytes`)
-      await pg.query(UPDATE_CONTENT_DAG_SIZE, [size_actual, cid_v1])
+    for (const s of sizes) {
+      log(`💪 ${s.cid_v1} ${String(s.size_actual)} bytes`)
+      await pg.query(UPDATE_CONTENT_DAG_SIZE, [s.size_actual, s.cid_v1])
     }
 
     log(`ℹ️ ${offset + contents.length} of ${total} processed in total`)

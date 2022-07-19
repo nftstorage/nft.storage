@@ -13,7 +13,7 @@ const RETRY_ATTEMPTS = 5
  * @param {import('limiter').RateLimiter} limiter
  * @param {string} url
  * @param {RequestInit} [init]
- * @returns {Promise<any>}
+ * @returns {Promise<unknown>}
  */
 export async function fetchJSON(limiter, url, init) {
   await limiter.removeTokens(1)
@@ -32,7 +32,7 @@ export async function fetchJSON(limiter, url, init) {
             { response: res }
           )
         }
-        return text === '' ? null : JSON.parse(text)
+        return text === '' ? null : /** @type {unknown} */ (JSON.parse(text))
       } finally {
         clearTimeout(abortID)
       }

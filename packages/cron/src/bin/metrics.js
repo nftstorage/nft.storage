@@ -21,4 +21,4 @@ async function main() {
 }
 
 dotenv.config({ path: path.join(__dirname, '../../../../.env') })
-main()
+await main()

@@ -47,6 +47,7 @@ export async function updatePendingPinStatuses(config) {
    * @returns {Promise<number>}
    */
   const countPins = async () => {
+    /** @type {import('pg').QueryResult<{ count: number }>} */
     const { rows } = await config.pg.query(COUNT_PENDING_PINS)
     if (!rows.length) throw new Error('no rows returned counting pins')
     return rows[0].count
@@ -58,6 +59,7 @@ export async function updatePendingPinStatuses(config) {
    * @returns {Promise<Pin[]>}
    */
   const fetchPins = async (offset, limit) => {
+    /** @type {import('pg').QueryResult<Pin>} */
     const { rows } = await config.pg.query(FETCH_PENDING_PINS, [offset, limit])
     return rows
   }
@@ -98,6 +100,7 @@ export async function checkFailedPinStatuses(config) {
    * @returns {Promise<number>}
    */
   const countPins = async () => {
+    /** @type {import('pg').QueryResult<{ count: number }>} */
     const { rows } = await pg.query(COUNT_FAILED_PINS, [after.toISOString()])
     if (!rows.length) throw new Error('no rows returned counting pins')
     return rows[0].count
@@ -109,6 +112,7 @@ export async function checkFailedPinStatuses(config) {
    * @returns {Promise<Pin[]>}
    */
   const fetchPins = async (offset, limit) => {
+    /** @type {import('pg').QueryResult<Pin>} */
     const { rows } = await config.pg.query(FETCH_FAILED_PINS, [
       after.toISOString(),
       offset,
@@ -129,10 +133,12 @@ function getUpdatePinStatusesSql(pins) {
 UPDATE pin AS p
    SET status = c.status,
        updated_at = c.updated_at
-  FROM (VALUES ${pins.map(
-    (p) =>
-      `(${p.id}, '${p.status}'::pin_status_type, '${p.updated_at}'::timestamp)`
-  )}) AS c(id, status, updated_at) 
+  FROM (VALUES ${pins
+    .map(
+      (p) =>
+        `(${p.id}, '${p.status}'::pin_status_type, '${p.updated_at}'::timestamp)`
+    )
+    .join(',')}) AS c(id, status, updated_at) 
  WHERE c.id = p.id`.trim()
 }
 
