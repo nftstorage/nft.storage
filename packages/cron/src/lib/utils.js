@@ -1,6 +1,5 @@
 import { Cluster } from '@nftstorage/ipfs-cluster'
 import pg from 'pg'
-import { Pinata } from './pinata.js'
 import { DBClient } from '../../../api/src/utils/db-client.js'
 
 /**
@@ -43,16 +42,6 @@ export function getCluster3(env) {
   return new Cluster(clusterApiUrl, {
     headers: { authorization: `Basic ${basicAuthToken}` },
   })
-}
-
-/**
- * Create a new IPFS client instance from the passed environment variables.
- * @param {Record<string, string|undefined>} env
- */
-export function getPinata(env) {
-  const apiToken = env.PINATA_JWT
-  if (!apiToken) throw new Error('missing Pinata API token')
-  return new Pinata({ apiToken })
 }
 
 /**

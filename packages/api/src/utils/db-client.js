@@ -267,10 +267,6 @@ export class DBClient {
         status: 'PinQueued',
         service: 'IpfsCluster3',
       },
-      {
-        status: 'PinQueued',
-        service: 'Pinata',
-      },
     ]
 
     const now = new Date().toISOString()

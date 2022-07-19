@@ -64,7 +64,6 @@ Go to `/packages/api/src/constants.js` _uncomment_ the first line and run `wrang
 # production secrets
 wrangler secret put MAGIC_SECRET_KEY --env production # Get from magic.link account
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
-wrangler secret put PINATA_JWT --env production # Get from Pinata
 wrangler secret put SENTRY_DSN --env USER # Get from Sentry
 wrangler secret put DATABASE_TOKEN --env production # Get from database account
 wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password

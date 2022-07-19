@@ -80,12 +80,6 @@ describe('NFT store', () => {
         status: 'PinQueued',
         service: 'IpfsCluster3',
       },
-      {
-        content_cid:
-          'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
-        status: 'PinQueued',
-        service: 'Pinata',
-      },
     ])
   })
 
