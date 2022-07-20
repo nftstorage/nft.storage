@@ -4,7 +4,7 @@ import countly from '../lib/countly.js'
 import Hero from '../components/hero.js'
 import HashLink from '../components/hashlink.js'
 import Step from '../components/step.js'
-import Link from 'next/link'
+import Link from '../components/link'
 import Button from '../components/button'
 import { TrustedBy } from '../components/trustedByLogos'
 
@@ -332,14 +332,12 @@ function GettingStarted() {
             <li>
               <Step>1</Step>
               <p className="chicagoflf text-base sm:text-xl mx-auto mb-8 leading-normal">
-                <Link href="/login">
-                  <a className="nsnavy" onClick={onClickHandler}>
-                    Create an NFT.Storage account
-                  </a>
+                <Link href="/login" className="nsnavy" onClick={onClickHandler}>
+                  Create an NFT.Storage account
                 </Link>{' '}
                 and start uploading your files to IPFS. Or download and use our{' '}
-                <Link href="/docs/how-to/nftup">
-                  <a className="nsnavy">NFTUp application</a>
+                <Link href="/docs/how-to/nftup" className="nsnavy">
+                  NFTUp application
                 </Link>
                 {'. '}
                 Your data will be accessible on the IPFS network where it is

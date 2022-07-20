@@ -1,8 +1,8 @@
 import Button from '../button'
-import Link from 'next/link'
 import React from 'react'
 import Tags from '../tags'
 import countly from '../../lib/countly'
+import Link from '../link'
 import Img from '../cloudflareImage'
 
 // custom styles from /styles/blog.css
@@ -16,33 +16,34 @@ import Img from '../cloudflareImage'
  */
 
 export const Card = ({ post }) => (
-  <Link href={`/blog/post/${post.slug}`}>
-    <a className="bg-white justify-self-center w-card hologram card right interactive cursor-pointer">
-      <Img
-        src={post.thumbnail}
-        alt={`Banner for ${post.title}`}
-        className="object-cover object-center w-full card-thumb aspect-video"
-      />
-      <div className="p-5 flex flex-col flex-auto">
-        <div className="mb-2">{post.tags && <Tags tags={post.tags} />}</div>
-        <div className="overflow-hidden mb-2">
-          <h1 className="chicagoflf text-xl" title={post.title}>
-            {post.title}
-          </h1>
-        </div>
-        <p className="line-clamp-2 mb-2 text-base" title={post.description}>
-          {post.description}
-        </p>
-        <div className="blog-card-meta">
-          <span className="darker-gray text-sm mr-2 block sm:inline-block">
-            {post.author}
-          </span>
-          <span className="darker-gray text-sm block sm:inline-block">
-            {post.date}
-          </span>
-        </div>
+  <Link
+    href={`/blog/post/${post.slug}`}
+    className="bg-white justify-self-center w-card hologram card right interactive cursor-pointer"
+  >
+    <Img
+      src={post.thumbnail}
+      alt={`Banner for ${post.title}`}
+      className="object-cover object-center w-full card-thumb aspect-video"
+    />
+    <div className="p-5 flex flex-col flex-auto">
+      <div className="mb-2">{post.tags && <Tags tags={post.tags} />}</div>
+      <div className="overflow-hidden mb-2">
+        <h1 className="chicagoflf text-xl" title={post.title}>
+          {post.title}
+        </h1>
       </div>
-    </a>
+      <p className="line-clamp-2 mb-2 text-base" title={post.description}>
+        {post.description}
+      </p>
+      <div className="blog-card-meta">
+        <span className="darker-gray text-sm mr-2 block sm:inline-block">
+          {post.author}
+        </span>
+        <span className="darker-gray text-sm block sm:inline-block">
+          {post.date}
+        </span>
+      </div>
+    </div>
   </Link>
 )
 
