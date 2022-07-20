@@ -39,6 +39,6 @@ describe('Stats Utils unit tests', () => {
     const stats = calculateStats(infinityData.data)
 
     // passing in 0/0 should return 0, not infinity
-    expect(stats.growthRate).toBe(0)
+    expect(stats.growthRate).toBe('0')
   })
 })

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { useQueryClient } from 'react-query'
 import Box from '../components/box.js'
-import Button from '../components/button.js'
+import Button from '../components/button/index.js'
 import { createPinningRequest } from '../lib/api.js'
 import countly from '../lib/countly.js'
 
