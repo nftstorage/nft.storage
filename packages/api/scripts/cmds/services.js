@@ -5,7 +5,17 @@ import { MINIO_API_PORT } from './minio.js'
 import { isPortReachable } from '../utils.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const composePath = path.join(__dirname, '../../docker/docker-compose.yml')
+const composeDir = path.join(__dirname, '../../docker')
+const composeFiles = [
+  'docker-compose.yml',
+  'docker-compose-local-ports.yml',
+  'docker-compose-volumes.yml',
+]
+
+const composeFileArgs = composeFiles.flatMap((filename) => [
+  '--file',
+  path.join(composeDir, filename),
+])
 
 const PG_PORT = 3000
 const PGRST_PORT = 5432
@@ -23,7 +33,7 @@ export async function servicesStartCmd({ project }) {
   }
   await execa(
     'docker-compose',
-    ['--file', composePath, '--project-name', project, 'up', '--detach'],
+    [...composeFileArgs, '--project-name', project, 'up', '--detach'],
     { stdio: 'inherit' }
   )
 }
@@ -34,7 +44,7 @@ export async function servicesStartCmd({ project }) {
 export async function servicesStopCmd({ project, clean }) {
   await execa(
     'docker-compose',
-    ['--file', composePath, '--project-name', project, 'stop'],
+    [...composeFileArgs, '--project-name', project, 'stop'],
     { stdio: 'inherit' }
   )
 
@@ -42,8 +52,7 @@ export async function servicesStopCmd({ project, clean }) {
     await execa(
       'docker-compose',
       [
-        '--file',
-        composePath,
+        ...composeFileArgs,
         '--project-name',
         project,
         'down',
