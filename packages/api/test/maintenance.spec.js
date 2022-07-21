@@ -36,7 +36,6 @@ test('maintenance middleware should throw error when in maintenance mode', async
   await setMode(t, READ_ONLY)
   t.notThrows(block)
   await setMode(t, NO_READ_OR_WRITE)
-  console.log('mode global:', globalThis.MAINTENANCE_MODE)
   t.throws(block, { message: /API undergoing maintenance/ })
 
   handler = withMode(() => new Response(), READ_WRITE)
