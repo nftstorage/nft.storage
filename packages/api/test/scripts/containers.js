@@ -20,6 +20,13 @@ export async function startTestContainers() {
     .withBuild()
     // testcontainers seems to need this to avoid waiting forever... TODO: investigate why
     .withWaitStrategy('rest-1', Wait.forLogMessage('Listening on port'))
+    .withWaitStrategy(
+      'db-1',
+      Wait.forLogMessage('PostgreSQL init process complete')
+    )
+    .withWaitStrategy('ipfs-1', Wait.forLogMessage('Daemon is ready'))
+    .withWaitStrategy('cluster-1', Wait.forLogMessage('IPFS Cluster is READY'))
+    .withWaitStrategy('minio-1', Wait.forLogMessage('1 Online'))
     .up()
 
   const ports = {
