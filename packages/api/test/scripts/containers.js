@@ -10,12 +10,13 @@ const composeDir = path.join(__dirname, '..', '..', 'docker')
 const schemaDir = path.join(__dirname, '..', '..', 'db')
 
 export async function startTestContainers() {
-  console.log('starting services')
   const compose = await new DockerComposeEnvironment(
     composeDir,
     'docker-compose.yml'
   )
-    .withBuild()
+    // testcontainers has an issue with the default port-based healthcheck
+    // that seems related to https://github.com/testcontainers/testcontainers-node/issues/40
+    // using log-message wait strategy avoids this
     .withWaitStrategy('postgrest', Wait.forLogMessage('Listening on port'))
     .withWaitStrategy(
       'postgresql',
