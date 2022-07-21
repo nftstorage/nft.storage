@@ -9,7 +9,11 @@ import Sentry from '@sentry/cli'
 import { createRequire } from 'module'
 // @ts-ignore
 import git from 'git-rev-sync'
-import { servicesStartCmd, servicesStopCmd } from './cmds/services.js'
+import {
+  servicesStartCmd,
+  servicesStopCmd,
+  servicesPullCmd,
+} from './cmds/services.js'
 import { dbSqlCmd } from './cmds/db-sql.js'
 import { dbTypesCmd } from './cmds/db-types.js'
 import { minioBucketCreateCmd, minioBucketRemoveCmd } from './cmds/minio.js'
@@ -113,6 +117,9 @@ prog
   .option('--project', 'Project name', 'nft-storage-dev')
   .option('--clean', 'Clean all dockers artifacts', false)
   .action(servicesStopCmd)
+  .command('services pull')
+  .describe('pull and build all docker images used for dev/test')
+  .action(servicesPullCmd)
   .command('db-sql')
   .describe('Database scripts')
   .option('--reset', 'Reset db before running SQL.', false)

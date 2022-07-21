@@ -21,6 +21,15 @@ const PG_PORT = 3000
 const PGRST_PORT = 5432
 const CLUSTER_PORT = 9094
 
+export async function servicesPullCmd() {
+  await execa('docker-compose', [...composeFileArgs, 'build'], {
+    stdio: 'inherit',
+  })
+  await execa('docker-compose', [...composeFileArgs, 'pull'], {
+    stdio: 'inherit',
+  })
+}
+
 /**
  * @param {{ project: string }} opts
  */
