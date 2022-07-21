@@ -48,13 +48,11 @@ prog
   .option('--env', 'Environment', 'dev')
   .action(async (opts) => {
     try {
-      const isTest = opts.env === 'test'
-
-      const version = isTest
-        ? 'test-version'
-        : `${pkg.name}@${pkg.version}-${opts.env}+${git.short(__dirname)}`
-      const commit = isTest ? 'test-commit' : git.long(__dirname)
-      const branch = isTest ? 'test-branch' : git.branch(__dirname)
+      const version = `${pkg.name}@${pkg.version}-${opts.env}+${git.short(
+        __dirname
+      )}`
+      const commit = git.long(__dirname)
+      const branch = git.branch(__dirname)
 
       await build({
         entryPoints: [path.join(__dirname, '../src/index.js')],
@@ -69,7 +67,7 @@ prog
           NFT_STORAGE_BRANCH: JSON.stringify(branch),
           global: 'globalThis',
         },
-        minify: opts.env === 'dev' || isTest ? false : true,
+        minify: opts.env === 'dev' || opts.env === 'test' ? false : true,
         sourcemap: true,
       })
 
