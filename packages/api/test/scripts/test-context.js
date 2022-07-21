@@ -23,17 +23,6 @@ export function makeMiniflare(bindings = {}) {
     // This will override the option in wrangler.toml.
     buildCommand: undefined,
     bindings,
-
-    // mount our test helper code as a separate miniflare worker
-    mounts: {
-      'nft-storage-test-worker': {
-        rootPath: path.join(__dirname, '../test-worker'),
-        packagePath: true,
-        wranglerConfigPath: true,
-        envPath,
-        bindings,
-      },
-    },
   })
 }
 

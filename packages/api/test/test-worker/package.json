@@ -1,9 +1,0 @@
-{
-  "name": "nft-storage-test-worker",
-  "version": "1.0.0",
-  "type": "module",
-  "main": "dist/worker.js",
-  "scripts": {
-    "build": "node scripts/build.js"
-  }
-}
