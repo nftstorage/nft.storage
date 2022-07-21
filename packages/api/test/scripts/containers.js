@@ -10,30 +10,27 @@ const composeDir = path.join(__dirname, '..', '..', 'docker')
 const schemaDir = path.join(__dirname, '..', '..', 'db')
 
 export async function startTestContainers() {
-  const testEnvFile = path.join(__dirname, 'test.env')
   console.log('starting services')
   const compose = await new DockerComposeEnvironment(
     composeDir,
     'docker-compose.yml'
   )
-    .withEnvFile(testEnvFile)
     .withBuild()
-    // testcontainers seems to need this to avoid waiting forever... TODO: investigate why
-    .withWaitStrategy('rest-1', Wait.forLogMessage('Listening on port'))
+    .withWaitStrategy('postgrest', Wait.forLogMessage('Listening on port'))
     .withWaitStrategy(
-      'db-1',
+      'postgresql',
       Wait.forLogMessage('PostgreSQL init process complete')
     )
-    .withWaitStrategy('ipfs-1', Wait.forLogMessage('Daemon is ready'))
-    .withWaitStrategy('cluster-1', Wait.forLogMessage('IPFS Cluster is READY'))
-    .withWaitStrategy('minio-1', Wait.forLogMessage('1 Online'))
+    .withWaitStrategy('ipfs', Wait.forLogMessage('Daemon is ready'))
+    .withWaitStrategy('cluster', Wait.forLogMessage('IPFS Cluster is READY'))
+    .withWaitStrategy('minio', Wait.forLogMessage('1 Online'))
     .up()
 
   const ports = {
-    minio: compose.getContainer('minio-1').getMappedPort(9000),
-    postgrest: compose.getContainer('rest-1').getMappedPort(3000),
-    cluster: compose.getContainer('cluster-1').getMappedPort(9094),
-    db: compose.getContainer('db-1').getMappedPort(5432),
+    minio: compose.getContainer('minio').getMappedPort(9000),
+    postgrest: compose.getContainer('postgrest').getMappedPort(3000),
+    cluster: compose.getContainer('cluster').getMappedPort(9094),
+    db: compose.getContainer('db').getMappedPort(5432),
   }
 
   const overrides = {
