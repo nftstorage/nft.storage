@@ -146,7 +146,13 @@ test.serial('should fail if token has an invalid signature', async (t) => {
   })
 
   t.truthy(res, 'Server responded')
-  t.is(res.status, 401, 'Expected auth error, but response was ok')
+  t.is(
+    res.status,
+    401,
+    `expected 401 response, got [${res.status}]: ${
+      res.statusText
+    } ${await res.text()}`
+  )
 })
 
 test.serial('should fail if token payload is modified', async (t) => {

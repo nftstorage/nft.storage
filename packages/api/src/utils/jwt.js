@@ -1,3 +1,5 @@
+import { webcrypto } from 'one-webcrypto'
+
 /** @type {Record<string, any>} */
 const algorithms = {
   HS256: {
@@ -82,7 +84,7 @@ export async function verifyJWT(token, secret, alg = 'HS256') {
   }
 
   const keyData = utf8ToUint8Array(secret)
-  const key = await crypto.subtle.importKey(
+  const key = await webcrypto.subtle.importKey(
     'raw',
     keyData,
     importAlgorithm,
@@ -91,7 +93,7 @@ export async function verifyJWT(token, secret, alg = 'HS256') {
   )
   const headerPayload = tokenParts.slice(0, 2).join('.')
   const signature = tokenParts[2]
-  const signedHeaderPayload = await crypto.subtle.sign(
+  const signedHeaderPayload = await webcrypto.subtle.sign(
     importAlgorithm.name,
     key,
     utf8ToUint8Array(headerPayload)
@@ -131,7 +133,7 @@ export async function signJWT(payload, secret, alg = 'HS256') {
     '.' +
     Base64URL.stringify(utf8ToUint8Array(payloadAsJSON))
   const keyData = utf8ToUint8Array(secret)
-  const key = await crypto.subtle.importKey(
+  const key = await webcrypto.subtle.importKey(
     'raw',
     keyData,
     importAlgorithm,
@@ -139,7 +141,7 @@ export async function signJWT(payload, secret, alg = 'HS256') {
     ['sign']
   )
   const headerPayloadBuffer = utf8ToUint8Array(headerPayload)
-  const signature = await crypto.subtle.sign(
+  const signature = await webcrypto.subtle.sign(
     importAlgorithm.name,
     key,
     headerPayloadBuffer
