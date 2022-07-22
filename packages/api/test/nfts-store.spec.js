@@ -91,12 +91,6 @@ test('should store image', async (t) => {
       status: 'PinQueued',
       service: 'IpfsCluster3',
     },
-    {
-      content_cid:
-        'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
-      status: 'PinQueued',
-      service: 'Pinata',
-    },
   ])
 })
 
@@ -159,12 +153,6 @@ test.skip('should store dir wrapped image', async (t) => {
         'bafyreibubvuqeh5lm2ccose7uq54wweeajtjuhcj4pciogeq2lhbw2a23y',
       status: 'PinQueued',
       service: 'IpfsCluster3',
-    },
-    {
-      content_cid:
-        'bafyreibubvuqeh5lm2ccose7uq54wweeajtjuhcj4pciogeq2lhbw2a23y',
-      status: 'PinQueued',
-      service: 'Pinata',
     },
   ])
 })
