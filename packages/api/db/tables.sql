@@ -39,13 +39,13 @@ CREATE TYPE pin_status_type AS ENUM (
 
 -- Service type is the place/location/organisation that is pinning the content.
 CREATE TYPE service_type AS ENUM (
-    -- The NFT.Storage cluster in Pinata.
+    -- The NFT.Storage cluster in Pinata (LEGACY).
     'Pinata',
     -- The original NFT.Storage cluster.
     'IpfsCluster',
-    -- The current cluster, originally commissioned for niftysave.
+    -- An IPFS Cluster originally commissioned for niftysave.
     'IpfsCluster2',
-    -- New cluster with flatfs and better DHT
+    -- New cluster with flatfs and better DHT.
     'IpfsCluster3'
     );
 

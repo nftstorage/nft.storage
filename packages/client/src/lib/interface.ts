@@ -249,8 +249,6 @@ export interface FinalizedDeal extends DealInfo {
 }
 
 export interface Pin {
-  // Pinata does not provide this
-  // requestid: string
   cid: CIDString
   name?: string
   status: PinStatus
