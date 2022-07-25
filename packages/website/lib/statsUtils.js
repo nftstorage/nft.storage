@@ -63,3 +63,55 @@ export function calculateStats(stats) {
 
   return { ...stats, totalUploads, growthRate, dealsSizeGrowthRate }
 }
+
+/**
+ * Aggregate stats from NFTPort
+ * @param {any} stats
+ * @returns {any}
+ */
+export function calculateMarketStats(stats) {
+  const statsToCalculate = [
+    'animation_uri_stats',
+    'image_uri_stats',
+    'metadata_uri_stats',
+  ]
+  const calculated = Object.keys(stats)
+    .filter((stat) => statsToCalculate.includes(stat))
+    .reduce(
+      (a, c) => {
+        for (const prop in stats[c]) {
+          if (prop === 'missing') {
+            a.totalMissing += stats[c][prop].count_failed
+            a.totalNfts += stats[c][prop].count_failed
+            a.missingMarketValue += stats[c][prop].floor_price_failed
+            continue
+          }
+          a.totalNfts += stats[c][prop].count_successful
+          a.totalMarketValue += stats[c][prop].floor_price_successful
+        }
+        return a
+      },
+      {
+        totalNfts: 0,
+        totalMarketValue: 0.0,
+        totalMissing: 0,
+        missingMarketValue: 0.0,
+        missingPercentage: 0.0,
+      }
+    )
+
+  calculated.totalNfts = parseFloat(calculated.totalNfts.toFixed(0))
+  calculated.totalMarketValue = parseFloat(
+    calculated.totalMarketValue.toFixed(2)
+  )
+  calculated.missingMarketValue = parseFloat(
+    calculated.missingMarketValue.toFixed(2)
+  )
+  calculated.missingPercentage = (() => {
+    return parseFloat(
+      ((calculated.totalMissing / calculated.totalNfts) * 100).toFixed(1)
+    )
+  })()
+
+  return calculated
+}
