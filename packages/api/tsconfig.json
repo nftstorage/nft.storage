@@ -26,5 +26,5 @@
     "test",
     "scripts"
   ],
-  "exclude": ["node_modules/", "dist/", "test/test-worker"]
+  "exclude": ["node_modules/", "dist/"]
 }

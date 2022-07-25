@@ -59,14 +59,12 @@ export async function setupMiniflareContext(
 
     // wait for the shared worker to publish an object with env var overrides
     for await (const message of sharedWorker.subscribe()) {
-      // console.log('got message from ava shared worker', message)
       if (!message.data || typeof message.data !== 'object') {
         continue
       }
       if (!('overrides' in message.data)) {
         continue
       }
-      // console.log('setting environment overrides', message.data)
       // @ts-ignore
       overrides = { ...overrides, ...message.data.overrides }
       break
@@ -76,7 +74,6 @@ export async function setupMiniflareContext(
   const mf = makeMiniflare(overrides)
 
   const bindings = await mf.getBindings()
-  // console.log('miniflare bindings', bindings)
   const serviceConfig = serviceConfigFromVariables(bindings)
   if (bindGlobals) {
     // optionally pull cloudflare bindings into the global scope of the test runner
