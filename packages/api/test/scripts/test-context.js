@@ -46,27 +46,15 @@ function versionInfo(env = 'test') {
 }
 
 /**
- * @param {Record<string, string>} vars
- */
-export const defineGlobals = (vars) => {
-  /** @type Record<string, unknown> */
-  const globals = globalThis
-  for (const [k, v] of Object.entries(vars)) {
-    globals[k] = v
-  }
-}
-
-/**
  *
  * @param {import('ava').ExecutionContext<unknown>} t
  * @param {object} opts
- * @param {boolean} [opts.bindGlobals]
  * @param {boolean} [opts.noContainers]
  * @param {Record<string, string>} [opts.overrides]
  */
 export async function setupMiniflareContext(
   t,
-  { bindGlobals = false, noContainers = false, overrides = {} } = {}
+  { noContainers = false, overrides = {} } = {}
 ) {
   t.timeout(600 * 1000, 'timed out pulling / starting test containers')
 
@@ -95,12 +83,6 @@ export async function setupMiniflareContext(
   const bindings = await mf.getBindings()
   const configGlobals = { ...versionInfo(), ...bindings }
   const serviceConfig = serviceConfigFromVariables(configGlobals)
-  if (bindGlobals) {
-    // optionally pull cloudflare bindings into the global scope of the test runner
-    // to allow testing configuration loading code (see config.spec.js)
-    // TODO: figure out a way to test config loading without altering test runner globals
-    defineGlobals(configGlobals)
-  }
   t.context = { mf, serviceConfig }
 }
 
