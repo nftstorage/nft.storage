@@ -1,7 +1,6 @@
 version: '3.6'
 services:
   rest:
-    container_name: postgrest
     image: postgrest/postgrest:v9.0.0
     depends_on:
       - db
@@ -14,7 +13,6 @@ services:
       PGRST_DB_ANON_ROLE: postgres
       PGRST_JWT_SECRET: super-secret-jwt-token-with-at-least-32-characters-long
   db:
-    container_name: db
     build:
       context: ./postgres
     deploy:
@@ -33,11 +31,9 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_PORT: 5432
   ipfs:
-    container_name: ipfs
     image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
 
   cluster:
-    container_name: cluster
     image: ipfs/ipfs-cluster:v1.0.0-rc4
     depends_on:
       - ipfs
@@ -54,7 +50,6 @@ services:
     ports:
       - 9094
   minio:
-    container_name: minio
     image: quay.io/minio/minio
     command: server /data/minio --console-address ":9001"
     environment:
