@@ -28,7 +28,7 @@ export const TrustedBy = ({ logos }) => {
       <div className="grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,_minmax(150px,_1fr))] gap-4 p-5 justify-center mx-auto">
         {logos.map((logo) => (
           <Logo
-            key={`marketplace-logo-${logo}`}
+            key={`marketplace-logo-${logo.src}`}
             src={logo.src}
             alt={logo.alt}
           />
