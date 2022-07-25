@@ -1,9 +1,16 @@
 import { registerSharedWorker } from 'ava/plugin'
 import { Miniflare } from 'miniflare'
 import path from 'path'
+import fs from 'fs'
 import { fileURLToPath } from 'url'
 import { serviceConfigFromVariables } from '../../src/config.js'
+// @ts-ignore
+import git from 'git-rev-sync'
+
 const __dirname = fileURLToPath(new URL('.', import.meta.url))
+const pkg = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '..', '..', 'package.json'), 'utf8')
+)
 
 /**
  *
@@ -11,8 +18,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url))
  * @returns
  */
 export function makeMiniflare(bindings = {}) {
-  // Create a new Miniflare environment for each test
-  const envPath = path.join(__dirname, 'test.env')
+  const envPath = path.join(__dirname, '../../../../.env')
   return new Miniflare({
     // Autoload configuration from `.env`, `package.json` and `wrangler.toml`
     envPath,
@@ -24,6 +30,19 @@ export function makeMiniflare(bindings = {}) {
     buildCommand: undefined,
     bindings,
   })
+}
+
+/** Re-create the version information injected by esbuild, which is not available via the Miniflare API.
+ *  This allows us to create a valid {@link ServiceConfiguration} object outside of the miniflare environment.
+ */
+function versionInfo(env = 'test') {
+  const NFT_STORAGE_VERSION = `${pkg.name}@${pkg.version}-${env}+${git.short(
+    __dirname
+  )}`
+  const NFT_STORAGE_COMMITHASH = git.long(__dirname)
+  const NFT_STORAGE_BRANCH = git.branch(__dirname)
+
+  return { NFT_STORAGE_VERSION, NFT_STORAGE_BRANCH, NFT_STORAGE_COMMITHASH }
 }
 
 /**
@@ -74,10 +93,13 @@ export async function setupMiniflareContext(
   const mf = makeMiniflare(overrides)
 
   const bindings = await mf.getBindings()
-  const serviceConfig = serviceConfigFromVariables(bindings)
+  const configGlobals = { ...versionInfo(), ...bindings }
+  const serviceConfig = serviceConfigFromVariables(configGlobals)
   if (bindGlobals) {
     // optionally pull cloudflare bindings into the global scope of the test runner
-    defineGlobals(bindings)
+    // to allow testing configuration loading code (see config.spec.js)
+    // TODO: figure out a way to test config loading without altering test runner globals
+    defineGlobals(configGlobals)
   }
   t.context = { mf, serviceConfig }
 }

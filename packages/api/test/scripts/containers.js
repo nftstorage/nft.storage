@@ -68,10 +68,9 @@ async function initDBSchema(connectionString) {
 /**
  *
  * @param {number} minioPort
- * @param {string} [minioBucket]
  */
-async function createMinioBucket(minioPort, minioBucket) {
-  const name = minioBucket || process.env.S3_BUCKET_NAME || 'dotstorage-dev-0'
+async function createMinioBucket(minioPort) {
+  const name = process.env.S3_BUCKET_NAME || 'dotstorage-dev-0'
   const region = process.env.S3_REGION || 'us-east-1'
   const client = new Minio({
     useSSL: false,
@@ -94,7 +93,7 @@ const avaPlugin = async ({ negotiateProtocol }) => {
   const { ports, overrides } = await startTestContainers()
 
   await initDBSchema(overrides.DATABASE_CONNECTION)
-  await createMinioBucket(ports.minio, 'dotstorage-test-0')
+  await createMinioBucket(ports.minio)
 
   main.ready()
 
