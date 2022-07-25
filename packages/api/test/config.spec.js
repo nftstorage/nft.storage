@@ -57,7 +57,7 @@ function omit(...keys) {
 }
 
 /**
- * Retursn BASE_CONFIG, overridden with the given vars
+ * Returns BASE_CONFIG, overridden with the given vars
  * @param {Record<string, string>} vars
  */
 function override(vars) {
