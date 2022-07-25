@@ -10,6 +10,10 @@ const composeDir = path.join(__dirname, '..', '..', 'docker')
 const schemaDir = path.join(__dirname, '..', '..', 'db')
 
 export async function startTestContainers() {
+  // setting COMPOSE_COMPATIBILITY = true
+  // forces docker-compose v2 to use names with underscores, e.g. db_1
+  // and means we don't need to care which version is in use
+  process.env.COMPOSE_COMPATIBILITY = 'true'
   const compose = await new DockerComposeEnvironment(
     composeDir,
     'docker-compose.yml'
@@ -17,21 +21,21 @@ export async function startTestContainers() {
     // testcontainers has an issue with the default port-based healthcheck
     // that seems related to https://github.com/testcontainers/testcontainers-node/issues/40
     // using log-message wait strategy avoids this
-    .withWaitStrategy('postgrest', Wait.forLogMessage('Listening on port'))
+    .withWaitStrategy('rest_1', Wait.forLogMessage('Listening on port'))
     .withWaitStrategy(
-      'postgresql',
+      'db_1',
       Wait.forLogMessage('PostgreSQL init process complete')
     )
-    .withWaitStrategy('ipfs', Wait.forLogMessage('Daemon is ready'))
-    .withWaitStrategy('cluster', Wait.forLogMessage('IPFS Cluster is READY'))
-    .withWaitStrategy('minio', Wait.forLogMessage('1 Online'))
+    .withWaitStrategy('ipfs_1', Wait.forLogMessage('Daemon is ready'))
+    .withWaitStrategy('cluster_1', Wait.forLogMessage('IPFS Cluster is READY'))
+    .withWaitStrategy('minio_1', Wait.forLogMessage('1 Online'))
     .up()
 
   const ports = {
-    minio: compose.getContainer('minio').getMappedPort(9000),
-    postgrest: compose.getContainer('postgrest').getMappedPort(3000),
-    cluster: compose.getContainer('cluster').getMappedPort(9094),
-    db: compose.getContainer('db').getMappedPort(5432),
+    minio: compose.getContainer('minio_1').getMappedPort(9000),
+    postgrest: compose.getContainer('rest_1').getMappedPort(3000),
+    cluster: compose.getContainer('cluster_1').getMappedPort(9094),
+    db: compose.getContainer('db_1').getMappedPort(5432),
   }
 
   const overrides = {
