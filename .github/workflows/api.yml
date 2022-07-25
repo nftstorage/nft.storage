@@ -22,6 +22,7 @@ jobs:
         with:
           node-version: '18.4.0'
       - uses: bahmutov/npm-install@v1
+      - run: cp .env.tpl .env
       - run: yarn test:api
         env:
           DATABASE_URL: http://localhost:3000
