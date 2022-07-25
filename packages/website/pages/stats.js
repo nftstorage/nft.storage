@@ -229,7 +229,7 @@ export default function Stats({ logos }) {
   const MarketStatCards = () => {
     return (
       <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
-        <div className="mb-16 pl-8 grid gap-x-4 gap-y-[8vw] md:grid-cols-4">
+        <div className="mb-16 pl-8 grid gap-x-4 gap-y-[8vw] md:grid-cols-2 xl:grid-cols-4">
           <MarketStatCard title="Total Count of NFTS">
             <figure className="chicagoflf text-[clamp(16px,_3.2rem,_5vw)] text-yellow">
               {statsLoading && <Loading />}
