@@ -1,54 +1,86 @@
 import test from 'ava'
 import {
-  withMode,
   READ_ONLY,
   READ_WRITE,
   NO_READ_OR_WRITE,
 } from '../src/middleware/maintenance.js'
+import { createClientWithUser } from './scripts/helpers.js'
 
-import { setupMiniflareContext } from './scripts/test-context.js'
+import {
+  getMiniflareContext,
+  setupMiniflareContext,
+} from './scripts/test-context.js'
 
 /** @typedef {import('../src/middleware/maintenance.js').Mode} Mode */
+
+test.before(async (t) => {
+  await setupMiniflareContext(t)
+})
 
 /**
  * @param {import('ava').ExecutionContext<unknown>} t
  * @param {Mode} mode
  */
 const setMode = async (t, mode) => {
-  const overrides = { MAINTENANCE_MODE: mode }
-  await setupMiniflareContext(t, {
-    bindGlobals: true,
-    noContainers: true,
-    overrides,
+  const mf = getMiniflareContext(t)
+  const bindings = await mf.getBindings()
+  await mf.setOptions({
+    bindings: {
+      ...bindings,
+      MAINTENANCE_MODE: mode,
+    },
   })
+  await mf.reload()
 }
 
 test('maintenance middleware should throw error when in maintenance mode', async (t) => {
-  /** @type {import('../src/bindings').Handler} */
-  let handler
-  const block = () => {
-    // @ts-expect-error not passing params to our test handler
-    handler()
-  }
-  handler = withMode(() => new Response(), READ_ONLY)
-  await setMode(t, READ_WRITE)
-  t.notThrows(block)
-  await setMode(t, READ_ONLY)
-  t.notThrows(block)
-  await setMode(t, NO_READ_OR_WRITE)
-  t.throws(block, { message: /API undergoing maintenance/ })
+  const { token } = await createClientWithUser(t)
 
-  handler = withMode(() => new Response(), READ_WRITE)
+  const expectedError = { message: /API undergoing maintenance/ }
+
   await setMode(t, READ_WRITE)
-  t.notThrows(block)
+  await t.notThrowsAsync(tryRead(t, token))
+  await t.notThrowsAsync(tryWrite(t, token))
+
   await setMode(t, READ_ONLY)
-  t.throws(block, { message: /API undergoing maintenance/ })
+  await t.notThrowsAsync(tryRead(t, token))
+  await t.throwsAsync(tryWrite(t, token), expectedError)
+
   await setMode(t, NO_READ_OR_WRITE)
-  t.throws(block, { message: /API undergoing maintenance/ })
+  await t.throwsAsync(tryRead(t, token), expectedError)
+  await t.throwsAsync(tryWrite(t, token), expectedError)
 })
 
-test('maintenance middleware should not allow invalid handler mode', (t) => {
-  t.throws(() => withMode(() => new Response(), NO_READ_OR_WRITE), {
-    message: /invalid mode/,
+/**
+ *
+ * @param {import('ava').ExecutionContext} t
+ * @param {string} token
+ */
+async function tryWrite(t, token) {
+  const mf = getMiniflareContext(t)
+  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+    headers: { authorization: `Bearer ${token}` },
+    method: 'POST',
+    body: new Blob(['hello there ', new Date().toISOString()]),
   })
-})
+  if (!res.ok) {
+    const { error } = await res.json()
+    throw new Error(error.message)
+  }
+}
+
+/**
+ *
+ * @param {import('ava').ExecutionContext} t
+ * @param {string} token
+ */
+async function tryRead(t, token) {
+  const mf = getMiniflareContext(t)
+  const res = await mf.dispatchFetch('http://localhost:8787/', {
+    headers: { authorization: `Bearer ${token}` },
+  })
+  if (!res.ok) {
+    const { error } = await res.json()
+    throw new Error(error.message)
+  }
+}

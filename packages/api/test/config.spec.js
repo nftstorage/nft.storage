@@ -2,32 +2,72 @@ import test from 'ava'
 import {
   serviceConfigFromVariables,
   loadConfigVariables,
-  getServiceConfig,
 } from '../src/config.js'
 
-import { setupMiniflareContext, defineGlobals } from './scripts/test-context.js'
+import { setupMiniflareContext } from './scripts/test-context.js'
 
-test.beforeEach(async (t) => {
-  await setupMiniflareContext(t, { bindGlobals: true, noContainers: true })
+test.before(async (t) => {
+  await setupMiniflareContext(t, { noContainers: true })
 })
 
-test.serial(
-  'getServiceConfig uses default config values for missing vars when ENV == "test" or "dev"',
-  (t) => {
-    const lenientEnvs = ['test', 'dev']
-    for (const env of lenientEnvs) {
-      defineGlobals({ ENV: env })
-      const cfg = getServiceConfig()
-      t.is(cfg.ENV.toString(), env)
-      t.truthy(cfg.MAINTENANCE_MODE)
-    }
-  }
-)
+const BASE_CONFIG = {
+  ENV: 'test',
+  MAGIC_SECRET_KEY: 'secret',
+  DEBUG: 'true',
+  SALT: 'secret',
+  MAILCHIMP_API_KEY: 'secret',
+  METAPLEX_AUTH_TOKEN: 'metaplex-test-token',
+  LOGTAIL_TOKEN: 'secret',
+  PRIVATE_KEY: 'xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY=',
+  SENTRY_DSN: 'https://000000@0000000.ingest.sentry.io/00000',
+  SENTRY_TOKEN: 'secret',
+  SENTRY_UPLOAD: 'false',
+  DATABASE_URL: 'http://localhost:3000',
+  DATABASE_TOKEN:
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYwMzk2ODgzNCwiZXhwIjoyNTUwNjUzNjM0LCJyb2xlIjoic2VydmljZV9yb2xlIn0.necIJaiP7X2T2QjGeV-FhpkizcNTX8HjDDBAxpgQTEI',
+  DATABASE_CONNECTION: 'postgresql://postgres:postgres@localhost:5432/postgres',
+  CLUSTER_BASIC_AUTH_TOKEN: 'dGVzdDp0ZXN0',
+  MAINTENANCE_MODE: 'rw',
+  S3_REGION: 'us-east-1',
+  S3_ACCESS_KEY_ID: 'minioadmin',
+  S3_SECRET_ACCESS_KEY: 'minioadmin',
+  S3_BUCKET_NAME: 'dotstorage-dev-0',
+  CLUSTER_SERVICE: '',
+  CLUSTER_API_URL: 'http://127.0.0.1:9094',
+  S3_ENDPOINT: 'http://127.0.0.1:9000',
+  SLACK_USER_REQUEST_WEBHOOK_URL: '',
+
+  // Since we're calling serviceConfigFromVariables outside of the test worker scope,
+  // we need to define these version constants. In worker scope, they are injected by
+  // esbuild.
+  NFT_STORAGE_VERSION: 'test',
+  NFT_STORAGE_BRANCH: 'test',
+  NFT_STORAGE_COMMITHASH: 'test',
+}
+
+/**
+ * Returns BASE_CONFIG with the given key omitted
+ * @param {string[]} keys
+ * @returns {Record<string, string>}
+ */
+function omit(...keys) {
+  return Object.fromEntries(
+    Object.entries(BASE_CONFIG).filter(([key]) => !keys.includes(key))
+  )
+}
+
+/**
+ * Retursn BASE_CONFIG, overridden with the given vars
+ * @param {Record<string, string>} vars
+ */
+function override(vars) {
+  return { ...BASE_CONFIG, ...vars }
+}
 
 test.serial(
   'loadConfigVariables looks up values on the globalThis object',
   (t) => {
-    defineGlobals({ SALT: 'extra-salty' })
+    defineGlobals({ ...BASE_CONFIG, SALT: 'extra-salty' })
     const vars = loadConfigVariables()
     t.is(vars.SALT, 'extra-salty')
   }
@@ -36,7 +76,7 @@ test.serial(
 test.serial(
   'loadConfigVariables only includes known configuration variables',
   (t) => {
-    defineGlobals({ FOO: 'ignored', SALT: 'extra-salty' })
+    defineGlobals({ ...BASE_CONFIG, FOO: 'ignored', SALT: 'extra-salty' })
     const vars = loadConfigVariables()
     t.is(vars.SALT, 'extra-salty')
     t.false('FOO' in vars)
@@ -48,7 +88,7 @@ test.serial(
   (t) => {
     const truthyValues = ['true', 'TRUE', '1']
     for (const v of truthyValues) {
-      const cfg = serviceConfigFromVariables({ DEBUG: v })
+      const cfg = serviceConfigFromVariables(override({ DEBUG: v }))
       t.true(cfg.DEBUG)
     }
   }
@@ -57,27 +97,22 @@ test.serial(
 test.serial(
   'serviceConfigFromVariables sets isDebugBuild to false if DEBUG is missing or has a falsy string value ("false", "0", "")',
   (t) => {
-    t.false(serviceConfigFromVariables({}).DEBUG)
+    t.false(serviceConfigFromVariables(omit('DEBUG')).DEBUG)
 
     const falsyValues = ['false', 'FALSE', '0', '']
 
     for (const f of falsyValues) {
-      t.false(serviceConfigFromVariables({ DEBUG: f }).DEBUG)
+      t.false(serviceConfigFromVariables(override({ DEBUG: f })).DEBUG)
     }
-  }
-)
-
-test.serial(
-  'serviceConfigFromVariables defaults ENV to "test" if ENV is not set',
-  (t) => {
-    t.is(serviceConfigFromVariables({}).ENV, 'test')
   }
 )
 
 test.serial(
   'serviceConfigFromVariables fails if ENV is set to an unknown environment name',
   (t) => {
-    t.throws(() => serviceConfigFromVariables({ ENV: 'not-a-real-env' }))
+    t.throws(() =>
+      serviceConfigFromVariables(override({ ENV: 'not-a-real-env' }))
+    )
   }
 )
 
@@ -86,7 +121,7 @@ test.serial(
   (t) => {
     const envs = ['test', 'dev', 'staging', 'production']
     for (const e of envs) {
-      t.is(serviceConfigFromVariables({ ENV: e }).ENV.toString(), e)
+      t.is(serviceConfigFromVariables(override({ ENV: e })).ENV.toString(), e)
     }
   }
 )
@@ -95,7 +130,9 @@ test.serial(
   'serviceConfigFromVariables fails if MAINTENANCE_MODE is set to an invalid mode string',
   (t) => {
     t.throws(() =>
-      serviceConfigFromVariables({ MAINTENANCE_MODE: 'not-a-real-mode' })
+      serviceConfigFromVariables(
+        override({ MAINTENANCE_MODE: 'not-a-real-mode' })
+      )
     )
   }
 )
@@ -106,9 +143,11 @@ test.serial(
     const modes = ['--', 'r-', 'rw']
     for (const m of modes) {
       t.is(
-        serviceConfigFromVariables({
-          MAINTENANCE_MODE: m,
-        }).MAINTENANCE_MODE.toString(),
+        serviceConfigFromVariables(
+          override({
+            MAINTENANCE_MODE: m,
+          })
+        ).MAINTENANCE_MODE.toString(),
         m
       )
     }
@@ -138,9 +177,20 @@ test.serial(
 
     for (const key of stringValuedVars) {
       const val = `value for ${key}`
-      const cfg = serviceConfigFromVariables({ [key]: val })
+      const cfg = serviceConfigFromVariables(override({ [key]: val }))
       // @ts-expect-error TS doesn't like us indexing the config object with arbitrary strings
       t.is(cfg[key], val)
     }
   }
 )
+
+/**
+ * @param {Record<string, string>} vars
+ */
+const defineGlobals = (vars) => {
+  /** @type Record<string, unknown> */
+  const globals = globalThis
+  for (const [k, v] of Object.entries(vars)) {
+    globals[k] = v
+  }
+}
