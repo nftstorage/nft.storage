@@ -68,13 +68,14 @@ export default function Stats({ logos }) {
         redirect: 'follow',
       })
       const data = await nftPortStats.json()
-      setMarketStats(calculateMarketStats(data.report))
+      setMarketStats(await calculateMarketStats(data.report))
     } catch (e) {
       const fakeData = {
-        totalNfts: 80000000,
-        totalMarketValue: 16000000,
-        totalMissing: 70000000,
-        missingPercentage: 47.7,
+        totalNfts: 55000000,
+        totalMarketValue: 1400000000000,
+        totalMissing: 11500000,
+        missingPercentage: 30.7,
+        missingMarketValue: 265100000000,
       }
       setMarketStats(fakeData)
     }
@@ -257,7 +258,7 @@ export default function Stats({ logos }) {
                 notation: 'compact',
                 compactDisplay: 'short',
                 maximumFractionDigits: 1,
-              }).format(marketStats.totalMissing || 0)}
+              }).format(marketStats.missingMarketValue || 0)}
             </figure>
           </MarketStatCard>
           <MarketStatCard title="Percentage of NFTs deemed missing">

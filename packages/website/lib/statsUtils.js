@@ -67,26 +67,26 @@ export function calculateStats(stats) {
 /**
  * Aggregate stats from NFTPort
  * @param {any} stats
- * @returns {any}
+ * @returns {Promise<any>}
  */
-export function calculateMarketStats(stats) {
-  const statsToCalculate = [
-    'animation_uri_stats',
-    'image_uri_stats',
-    'metadata_uri_stats',
-  ]
+export async function calculateMarketStats(stats) {
+  const ethConversionRate = await (
+    await fetch(
+      'https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD',
+      { method: 'GET' }
+    )
+  ).json()
+  const ethConversionCents = ethConversionRate.USD * 100
+  const statsToCalculate = ['image_uri_stats']
   const calculated = Object.keys(stats)
     .filter((stat) => statsToCalculate.includes(stat))
     .reduce(
       (a, c) => {
         for (const prop in stats[c]) {
-          if (prop === 'missing') {
-            a.totalMissing += stats[c][prop].count_failed
-            a.totalNfts += stats[c][prop].count_failed
-            a.missingMarketValue += stats[c][prop].floor_price_failed
-            continue
-          }
           a.totalNfts += stats[c][prop].count_successful
+          a.totalNfts += stats[c][prop].count_failed
+          a.totalMissing += stats[c][prop].count_failed
+          a.missingMarketValue += stats[c][prop].floor_price_failed
           a.totalMarketValue += stats[c][prop].floor_price_successful
         }
         return a
@@ -99,14 +99,17 @@ export function calculateMarketStats(stats) {
         missingPercentage: 0.0,
       }
     )
-
   calculated.totalNfts = parseFloat(calculated.totalNfts.toFixed(0))
-  calculated.totalMarketValue = parseFloat(
-    calculated.totalMarketValue.toFixed(2)
-  )
-  calculated.missingMarketValue = parseFloat(
-    calculated.missingMarketValue.toFixed(2)
-  )
+  calculated.totalMarketValue =
+    (parseFloat(calculated.totalMarketValue.toFixed(2)) *
+      100 *
+      ethConversionCents) /
+    100
+  calculated.missingMarketValue =
+    (parseFloat(calculated.missingMarketValue.toFixed(2)) *
+      100 *
+      ethConversionCents) /
+    100
   calculated.missingPercentage = (() => {
     return parseFloat(
       ((calculated.totalMissing / calculated.totalNfts) * 100).toFixed(1)
