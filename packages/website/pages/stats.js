@@ -232,7 +232,7 @@ export default function Stats({ logos }) {
       <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
         <div className="mb-16 pl-8 grid gap-x-4 gap-y-[8vw] md:grid-cols-2 xl:grid-cols-4">
           <MarketStatCard title="Total Count of NFTS">
-            <figure className="chicagoflf text-[clamp(16px,_3.2rem,_5vw)] text-yellow">
+            <figure className="chicagoflf text-[clamp(2rem,2.6rem,3.3rem)] text-yellow">
               {statsLoading && <Loading />}
               {new Intl.NumberFormat('en-GB', {
                 notation: 'compact',
@@ -242,7 +242,7 @@ export default function Stats({ logos }) {
             </figure>
           </MarketStatCard>
           <MarketStatCard title="Total market value of NFTs">
-            <figure className="chicagoflf text-[clamp(16px,_3.2rem,_5vw)] text-navy">
+            <figure className="chicagoflf text-[clamp(2rem,2.6rem,3.3rem)] text-navy">
               {statsLoading && <Loading />}$
               {new Intl.NumberFormat('en-GB', {
                 notation: 'compact',
@@ -252,7 +252,7 @@ export default function Stats({ logos }) {
             </figure>
           </MarketStatCard>
           <MarketStatCard title="Market value of missing NFTs">
-            <figure className="chicagoflf text-[clamp(16px,_3.2rem,_5vw)] text-forest">
+            <figure className="chicagoflf text-[clamp(2rem,2.6rem,3.3rem)] text-forest">
               {statsLoading && <Loading />}$
               {new Intl.NumberFormat('en-GB', {
                 notation: 'compact',
@@ -262,7 +262,7 @@ export default function Stats({ logos }) {
             </figure>
           </MarketStatCard>
           <MarketStatCard title="Percentage of NFTs deemed missing">
-            <figure className="chicagoflf text-[clamp(16px,_3.2rem,_5vw)] text-orange">
+            <figure className="chicagoflf text-[clamp(2rem,2.6rem,3.3rem)] text-orange">
               {statsLoading && <Loading />}
               {marketStats.missingPercentage ?? 0}%
             </figure>
