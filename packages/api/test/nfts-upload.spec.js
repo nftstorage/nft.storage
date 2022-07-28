@@ -498,7 +498,7 @@ describe('NFT Upload ', () => {
       assert.equal(res.status, 400)
       const { ok, error } = await res.json()
       assert.equal(ok, false)
-      assert.match(error.message, /Invalid route/)
+      assert.ok(error.message.match(/Invalid route/))
     }
 
     {
@@ -511,7 +511,7 @@ describe('NFT Upload ', () => {
       assert.equal(res.status, 401)
       const { ok, error } = await res.json()
       assert.equal(ok, false)
-      assert.match(error.message, /x-agent-did/)
+      assert.ok(error.message.match(/x-agent-did/))
     }
 
     {
@@ -528,7 +528,9 @@ describe('NFT Upload ', () => {
       assert.equal(res.status, 401)
       const { ok, error } = await res.json()
       assert.equal(ok, false)
-      assert.match(error.message, /Expected x-agent-did to be UCAN issuer DID/)
+      assert.ok(
+        error.message.match(/Expected x-agent-did to be UCAN issuer DID/)
+      )
     }
 
     const res = await fetch('ucan-upload', {
