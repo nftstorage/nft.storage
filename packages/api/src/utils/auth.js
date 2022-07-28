@@ -41,6 +41,7 @@ export async function validate(event, { log, db, ucanService }, options) {
     const { root, cap } = await ucanService.validateFromCaps(token)
     const user = await db.getUser(root.audience())
     if (user) {
+      log.setUser({ id: user.id })
       return {
         user: filterDeletedKeys(user),
         db,
