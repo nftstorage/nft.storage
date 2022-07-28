@@ -130,6 +130,14 @@ r.add(
   '/upload',
   withAuth(withMode(nftUpload, RW), {
     checkHasAccountRestriction,
+  }),
+  [postCors]
+)
+r.add(
+  'post',
+  '/ucan-upload',
+  withAuth(withMode(nftUpload, RW), {
+    checkHasAccountRestriction,
     checkUcan,
   }),
   [postCors]
