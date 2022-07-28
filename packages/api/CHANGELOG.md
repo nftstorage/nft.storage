@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/nftstorage/nft.storage/compare/api-v3.0.0...api-v3.0.1) (2022-07-28)
+
+
+### Bug Fixes
+
+* set user for UCAN authentication ([#2090](https://github.com/nftstorage/nft.storage/issues/2090)) ([068f41e](https://github.com/nftstorage/nft.storage/commit/068f41e769c2a9d970449742ee49ac35558c8e2e))
+
 ## [3.0.0](https://github.com/nftstorage/nft.storage/compare/api-v2.28.1...api-v3.0.0) (2022-06-28)
 
 
