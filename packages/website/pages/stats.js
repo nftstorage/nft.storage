@@ -243,22 +243,32 @@ export default function Stats({ logos }) {
           </MarketStatCard>
           <MarketStatCard title="Total market value of NFTs">
             <figure className="chicagoflf text-[clamp(2rem,2.6rem,3.3rem)] text-navy">
-              {statsLoading && <Loading />}$
+              {statsLoading && <Loading />}
+              {marketStats.totalMarketValueUSD > 0 ? '$' : 'Ξ'}
               {new Intl.NumberFormat('en-GB', {
                 notation: 'compact',
                 compactDisplay: 'short',
                 maximumFractionDigits: 1,
-              }).format(marketStats.totalMarketValue || 0)}
+              }).format(
+                marketStats.missingMarketValueUSD > 0
+                  ? marketStats.totalMarketValueUSD
+                  : marketStats.totalMarketValue || 0
+              )}
             </figure>
           </MarketStatCard>
           <MarketStatCard title="Market value of missing NFTs">
             <figure className="chicagoflf text-[clamp(2rem,2.6rem,3.3rem)] text-forest">
-              {statsLoading && <Loading />}$
+              {statsLoading && <Loading />}
+              {marketStats.missingMarketValueUSD > 0 ? '$' : 'Ξ'}
               {new Intl.NumberFormat('en-GB', {
                 notation: 'compact',
                 compactDisplay: 'short',
                 maximumFractionDigits: 1,
-              }).format(marketStats.missingMarketValue || 0)}
+              }).format(
+                marketStats.missingMarketValueUSD > 0
+                  ? marketStats.missingMarketValueUSD
+                  : marketStats.missingMarketValue || 0
+              )}
             </figure>
           </MarketStatCard>
           <MarketStatCard title="Percentage of NFTs deemed missing">
