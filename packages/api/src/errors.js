@@ -243,3 +243,20 @@ export class ErrorDIDNotFound extends HTTPError {
   }
 }
 ErrorMaintenance.CODE = 'ERROR_DID_NOT_FOUND'
+
+export class ErrorAgentDIDRequired extends HTTPError {
+  constructor(
+    msg = 'UCAN authorized request must be supplied with x-agent-did header set to the DID of the UCAN issuer',
+    status = 401
+  ) {
+    super(msg, status)
+    this.name = 'ErrorAgentDIDRequired'
+    this.code = ErrorUnauthenticated.CODE
+  }
+}
+
+export class ErrorInvalidRoute extends HTTPError {
+  constructor(msg = 'Invalid route for the request', status = 400) {
+    super(msg, status)
+  }
+}
