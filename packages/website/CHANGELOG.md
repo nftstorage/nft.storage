@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/nftstorage/nft.storage/compare/website-v2.0.0...website-v2.1.0) (2022-07-29)
+
+
+### Features
+
+* add rarible logo ([#2086](https://github.com/nftstorage/nft.storage/issues/2086)) ([ef78f5c](https://github.com/nftstorage/nft.storage/commit/ef78f5cc5b22d070df96bff12472d3c619968782))
+
 ## [2.0.0](https://github.com/nftstorage/nft.storage/compare/website-v1.56.0...website-v2.0.0) (2022-07-29)
 
 
