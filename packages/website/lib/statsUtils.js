@@ -89,6 +89,7 @@ export async function calculateMarketStats(stats) {
           a.totalMissing += stats[c][prop].count_failed
           a.missingMarketValue += stats[c][prop].floor_price_failed
           a.totalMarketValue += stats[c][prop].floor_price_successful
+          a.totalMarketValue += stats[c][prop].floor_price_failed
         }
 
         return a
