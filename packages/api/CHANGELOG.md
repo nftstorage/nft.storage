@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.0.0](https://github.com/nftstorage/nft.storage/compare/api-v3.0.1...api-v4.0.0) (2022-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* rate-limit ucan auth requests (#2097)
+* rate limiting by ucan agent did (#2093)
+
+### Features
+
+* rate limiting by ucan agent did ([#2093](https://github.com/nftstorage/nft.storage/issues/2093)) ([b29d3d5](https://github.com/nftstorage/nft.storage/commit/b29d3d5a431f4775fabd147bc66353956511e8f9)), closes [#2092](https://github.com/nftstorage/nft.storage/issues/2092)
+* rate-limit ucan auth requests ([#2097](https://github.com/nftstorage/nft.storage/issues/2097)) ([1e43a31](https://github.com/nftstorage/nft.storage/commit/1e43a31d7a0d9ba96dda50bc492aca7352d42a17))
+
+
+### Bug Fixes
+
+* fix error sourcemaps with wrangler ([#2094](https://github.com/nftstorage/nft.storage/issues/2094)) ([ae799be](https://github.com/nftstorage/nft.storage/commit/ae799be62faa524e2e86d03a45bd1ef84769bed2))
+
 ## [3.0.1](https://github.com/nftstorage/nft.storage/compare/api-v3.0.0...api-v3.0.1) (2022-07-28)
 
 
