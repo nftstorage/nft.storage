@@ -153,6 +153,10 @@ Send a `GET` request to `https://api.nft.storage/did`, which should return a JSO
 
 The `value` field contains the service DID, which is used when [creating request tokens][ucan-storage-typedoc-creating-a-request-token].
 
+## Sending requests
+
+You can send upload requests with UCAN auth token to `https://api.nft.storage/ucan-upload` endpoint. Requests to that endpoint must have additional `x-agent-did` HTTP header with a value set to a DID token was issued/signed by.
+
 ## Getting help
 
 Use of UCANs to delegate upload permissions in NFT.Storage is currently a Preview Feature. If you find issues with the integration, need help with tooling, or have suggestions for improving the API for your use cases, please leave feedback in [this Github Discussion](https://github.com/nftstorage/nft.storage/discussions/1591). We're excited to see what you'll build!
