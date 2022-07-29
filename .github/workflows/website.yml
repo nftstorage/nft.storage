@@ -94,5 +94,5 @@ jobs:
         if: ${{ steps.tag-release.outputs.releases_created }}
         run: npx wrangler pages publish --project-name nft-storage --branch main ./packages/website/out
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_GATEWAY_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT }}
