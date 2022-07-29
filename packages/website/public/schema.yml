@@ -145,6 +145,14 @@ paths:
         This API imposes rate limits to ensure quality of service. You may receive a 429 "Too many requests" error if you make more than 30 requests with the same API token within a ten second window. Upon receiving a response with a 429 status, clients should retry the failed request after a small delay. To avoid 429 responses, you may wish to implement client-side request throttling to stay within the limits (note: the JS client automatically does this).
 
       operationId: upload
+      parameters:
+        - in: header
+          name: x-agent-did
+          description: DID that issued / signed UCAN authorization token (required if UCAN token is used)
+          schema:
+            type: string
+            format: DID
+            required: false
       requestBody:
         required: true
         content:

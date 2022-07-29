@@ -39,35 +39,29 @@ export async function validate(event, { log, db, ucanService }, options) {
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
 
-  if (Ucan.isUcan(token)) {
-    if (options?.checkUcan) {
-      const agentDID = event.request.headers.get('x-agent-did') || ''
-      if (!agentDID.startsWith('did:key:')) {
-        throw new ErrorAgentDIDRequired()
-      }
+  if (options?.checkUcan && Ucan.isUcan(token)) {
+    const agentDID = event.request.headers.get('x-agent-did') || ''
+    if (!agentDID.startsWith('did:key:')) {
+      throw new ErrorAgentDIDRequired()
+    }
 
-      const { root, cap, issuer } = await ucanService.validateFromCaps(token)
-      if (issuer !== agentDID) {
-        throw new ErrorAgentDIDRequired(
-          `Expected x-agent-did to be UCAN issuer DID: ${issuer}, instead got ${agentDID}`
-        )
-      }
-      const user = await db.getUser(root.audience())
-      if (user) {
-        log.setUser({ id: user.id })
-        return {
-          user: filterDeletedKeys(user),
-          db,
-          ucan: { token, root: root._decoded.payload, cap },
-          type: 'ucan',
-        }
-      } else {
-        throw new ErrorTokenNotFound()
+    const { root, cap, issuer } = await ucanService.validateFromCaps(token)
+    if (issuer !== agentDID) {
+      throw new ErrorAgentDIDRequired(
+        `Expected x-agent-did to be UCAN issuer DID: ${issuer}, instead got ${agentDID}`
+      )
+    }
+    const user = await db.getUser(root.audience())
+    if (user) {
+      log.setUser({ id: user.id })
+      return {
+        user: filterDeletedKeys(user),
+        db,
+        ucan: { token, root: root._decoded.payload, cap },
+        type: 'ucan',
       }
     } else {
-      throw new ErrorInvalidRoute(
-        `Invalid route, UCAN authorized requests must be directed to /ucan-upload instead`
-      )
+      throw new ErrorTokenNotFound()
     }
   }
 
