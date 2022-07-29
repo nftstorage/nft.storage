@@ -1,5 +1,16 @@
 # Changelog
 
+## [7.0.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.4.1...nft.storage-v7.0.0) (2022-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* rate-limit ucan auth requests (#2097)
+
+### Features
+
+* rate-limit ucan auth requests ([#2097](https://github.com/nftstorage/nft.storage/issues/2097)) ([1e43a31](https://github.com/nftstorage/nft.storage/commit/1e43a31d7a0d9ba96dda50bc492aca7352d42a17))
+
 ## [6.4.1](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.4.0...nft.storage-v6.4.1) (2022-07-18)
 
 
