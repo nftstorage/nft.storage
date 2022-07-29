@@ -66,7 +66,7 @@ const globalRateLimiter = createRateLimiter()
  */
 
 /**
- * @implements Service
+ * @implements {Service}
  */
 class NFTStorage {
   /**
@@ -90,10 +90,11 @@ class NFTStorage {
    * })
    * ```
    *
-   * @param {{token: string, endpoint?: URL, rateLimiter?: RateLimiter}} options
+   * @param {{token: string, endpoint?: URL, rateLimiter?: RateLimiter, did?: string}} options
    */
   constructor({
     token,
+    did,
     endpoint = new URL('https://api.nft.storage'),
     rateLimiter,
   }) {
@@ -112,15 +113,26 @@ class NFTStorage {
      * @readonly
      */
     this.rateLimiter = rateLimiter || createRateLimiter()
+
+    /**
+     * @readonly
+     */
+    this.did = did
   }
 
   /**
    * @hidden
-   * @param {string} token
+   * @param {object} options
+   * @param {string} options.token
+   * @param {string} [options.did]
    */
-  static auth(token) {
+  static auth({ token, did }) {
     if (!token) throw new Error('missing token')
-    return { Authorization: `Bearer ${token}`, 'X-Client': 'nft.storage/js' }
+    return {
+      Authorization: `Bearer ${token}`,
+      'X-Client': 'nft.storage/js',
+      ...(did ? { 'x-agent-did': did } : {}),
+    }
   }
 
   /**
@@ -155,7 +167,7 @@ class NFTStorage {
    * @returns {Promise<CIDString>}
    */
   static async storeCar(
-    { endpoint, token, rateLimiter = globalRateLimiter },
+    { endpoint, rateLimiter = globalRateLimiter, ...token },
     car,
     { onStoredChunk, maxRetries, decoders, signal } = {}
   ) {
@@ -289,7 +301,7 @@ class NFTStorage {
    * @returns {Promise<import('./lib/interface.js').StatusResult>}
    */
   static async status(
-    { endpoint, token, rateLimiter = globalRateLimiter },
+    { endpoint, rateLimiter = globalRateLimiter, ...token },
     cid,
     options
   ) {
@@ -365,7 +377,7 @@ class NFTStorage {
    * @returns {Promise<void>}
    */
   static async delete(
-    { endpoint, token, rateLimiter = globalRateLimiter },
+    { endpoint, rateLimiter = globalRateLimiter, ...token },
     cid,
     options
   ) {

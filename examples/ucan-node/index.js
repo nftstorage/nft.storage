@@ -98,7 +98,11 @@ async function main() {
   // Sign a new request UCAN
   const ucan = await signRequestUCAN(kp, serviceDID, rootUCAN)
 
-  const storage = new NFTStorage({ endpoint, token: ucan })
+  const storage = new NFTStorage({
+    endpoint,
+    token: ucan,
+    did: kp.did(),
+  })
   const data = await fs.promises.readFile('pinpie.jpg')
   const cid = await storage.storeBlob(new Blob([data]))
   console.log({ cid })
