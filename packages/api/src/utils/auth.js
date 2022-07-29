@@ -7,7 +7,6 @@ import {
   ErrorUnauthenticated,
   ErrorTokenBlocked,
   ErrorAgentDIDRequired,
-  ErrorInvalidRoute,
 } from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
 import * as Ucan from 'ucan-storage/ucan-storage'
