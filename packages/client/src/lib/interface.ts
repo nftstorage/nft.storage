@@ -15,6 +15,8 @@ export type Tagged<T, Tag> = T & { tag?: Tag }
 export interface Service {
   endpoint: URL
   token: string
+
+  did?: string
   rateLimiter?: RateLimiter
 }
 

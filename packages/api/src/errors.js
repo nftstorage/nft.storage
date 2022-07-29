@@ -239,10 +239,10 @@ export class ErrorDIDNotFound extends HTTPError {
   constructor(msg = 'User does not have a DID registered.') {
     super(msg, 400)
     this.name = 'DIDNotFound'
-    this.code = ErrorMaintenance.CODE
+    this.code = ErrorDIDNotFound.CODE
   }
 }
-ErrorMaintenance.CODE = 'ERROR_DID_NOT_FOUND'
+ErrorDIDNotFound.CODE = 'ERROR_DID_NOT_FOUND'
 
 export class ErrorAgentDIDRequired extends HTTPError {
   constructor(
@@ -251,12 +251,8 @@ export class ErrorAgentDIDRequired extends HTTPError {
   ) {
     super(msg, status)
     this.name = 'ErrorAgentDIDRequired'
-    this.code = ErrorUnauthenticated.CODE
+    this.name = 'AgentDIDRequired'
+    this.code = ErrorAgentDIDRequired.CODE
   }
 }
-
-export class ErrorInvalidRoute extends HTTPError {
-  constructor(msg = 'Invalid route for the request', status = 400) {
-    super(msg, status)
-  }
-}
+ErrorAgentDIDRequired.CODE = 'ERROR_AGENT_DID_REQUIRED'

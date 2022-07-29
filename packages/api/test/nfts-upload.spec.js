@@ -488,21 +488,9 @@ describe('NFT Upload ', () => {
     const file = new Blob(['hello world!'], { type: 'application/text' })
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+
     {
       const res = await fetch('upload', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${opUcan}` },
-        body: file,
-      })
-
-      assert.equal(res.status, 400)
-      const { ok, error } = await res.json()
-      assert.equal(ok, false)
-      assert.ok(error.message.match(/Invalid route/))
-    }
-
-    {
-      const res = await fetch('ucan-upload', {
         method: 'POST',
         headers: { Authorization: `Bearer ${opUcan}` },
         body: file,
@@ -516,7 +504,7 @@ describe('NFT Upload ', () => {
 
     {
       const badkp = await KeyPair.create()
-      const res = await fetch('ucan-upload', {
+      const res = await fetch('upload', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${opUcan}`,
@@ -533,7 +521,7 @@ describe('NFT Upload ', () => {
       )
     }
 
-    const res = await fetch('ucan-upload', {
+    const res = await fetch('upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${opUcan}`, 'x-agent-did': kp.did() },
       body: file,

@@ -155,7 +155,7 @@ The `value` field contains the service DID, which is used when [creating request
 
 ## Sending requests
 
-You can send upload requests with UCAN auth token to `https://api.nft.storage/ucan-upload` endpoint. Requests to that endpoint must have additional `x-agent-did` HTTP header with a value set to a DID token was issued/signed by.
+HTTP requests that use UCAN auth token must additionally set `x-agent-did` HTTP header to a DID that issued/signed the token.
 
 ## Getting help
 
