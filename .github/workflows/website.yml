@@ -5,10 +5,12 @@ on:
       - main
     paths:
       - 'packages/website/**'
+      - '.github/workflows/website.yml'
       - 'yarn.lock'
   pull_request:
     paths:
       - 'packages/website/**'
+      - '.github/workflows/website.yml'
       - 'yarn.lock'
 
 jobs:
