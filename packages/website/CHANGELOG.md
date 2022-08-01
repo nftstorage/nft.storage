@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/nftstorage/nft.storage/compare/website-v2.1.0...website-v2.1.1) (2022-08-01)
+
+
+### Bug Fixes
+
+* trigger website release ([e036741](https://github.com/nftstorage/nft.storage/commit/e03674171063edc575be932d4fba5f77d1dde705))
+
 ## [2.1.0](https://github.com/nftstorage/nft.storage/compare/website-v2.0.0...website-v2.1.0) (2022-07-29)
 
 
