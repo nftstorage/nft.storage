@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.3](https://github.com/nftstorage/nft.storage/compare/website-v2.1.2...website-v2.1.3) (2022-08-01)
+
+
+### Bug Fixes
+
+* use cf pages token ([db63ad1](https://github.com/nftstorage/nft.storage/commit/db63ad1035ef30c4f7e295676aa90cbbcfcb08f2))
+
 ## [2.1.2](https://github.com/nftstorage/nft.storage/compare/website-v2.1.1...website-v2.1.2) (2022-08-01)
 
 
