@@ -73,6 +73,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     name: Changelog
     runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.tag-release.outputs.releases_created }}
     steps:
       - uses: GoogleCloudPlatform/release-please-action@v3
         id: tag-release

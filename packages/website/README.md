@@ -10,7 +10,7 @@ In particular, make sure to add your Magic Link publishable key to a `.env.local
 
 The `.env.development` file will be automatically loaded when running locally using `yarn dev`, and it is configured to connect to the default local development API server URL. If you're running the API on a different port or targetting a different environment, add an override for the `NEXT_PUBLIC_API` variable to your `.env.local` file and set it to the correct URL.
 
-For production, SENTRY environment configuration must also be set.
+For production, Sentry environment configuration must also be set.
 
 ### Running Locally
 
