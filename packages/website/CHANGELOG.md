@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/nftstorage/nft.storage/compare/website-v2.1.3...website-v2.2.0) (2022-08-01)
+
+
+### Features
+
+* rarible announcement post ([#2080](https://github.com/nftstorage/nft.storage/issues/2080)) ([eb7baa2](https://github.com/nftstorage/nft.storage/commit/eb7baa2e5cbb866db743df3581b9d77f3357b951))
+
 ## [2.1.3](https://github.com/nftstorage/nft.storage/compare/website-v2.1.2...website-v2.1.3) (2022-08-01)
 
 
