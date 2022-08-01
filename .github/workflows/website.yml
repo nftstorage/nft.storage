@@ -115,5 +115,5 @@ jobs:
       - name: Website - Deploy
         run: npx wrangler pages publish --project-name nft-storage --branch main ./packages/website/out
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_PAGES_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT }}
