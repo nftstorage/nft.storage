@@ -498,25 +498,29 @@ export class DBClient {
    * @param {string[]} cids
    */
   async getDealsForCids(cids = []) {
-    const rsp = await this.client.rpc('find_deals_by_content_cids', {
-      cids,
-    })
-    if (rsp.error) {
+    try {
+      const rsp = await this.client.rpc('find_deals_by_content_cids', {
+        cids,
+      })
+      if (rsp.error) {
+        throw new DBError(rsp.error)
+      }
+
+      /** @type {Record<string, import('./../bindings').Deal[]>} */
+      const result = {}
+      for (const d of rsp.data) {
+        const { contentCid: cid, ...rest } = d
+        if (!Array.isArray(result[cid])) {
+          result[cid] = [rest]
+        } else {
+          result[cid].push(rest)
+        }
+      }
+
+      return result
+    } catch (err) {
       return {}
     }
-
-    /** @type {Record<string, import('./../bindings').Deal[]>} */
-    const result = {}
-    for (const d of rsp.data) {
-      const { contentCid: cid, ...rest } = d
-      if (!Array.isArray(result[cid])) {
-        result[cid] = [rest]
-      } else {
-        result[cid].push(rest)
-      }
-    }
-
-    return result
   }
 
   /**
