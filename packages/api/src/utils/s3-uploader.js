@@ -99,19 +99,14 @@ export class S3Uploader {
     }
 
     try {
-      await this._s3.send(new PutObjectCommand(cmdParams))
-    } catch (/** @type {any} */ err) {
-      if (err.name === 'BadDigest') {
-        // s3 returns a 400 Bad Request `BadDigest` error if the hash does not match their calculation.
-        // see: https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html#RESTErrorResponses
-        // see: https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/index.html#troubleshooting
-        console.log(
-          'BadDigest: sha256 of data recieved did not match what we sent. Maybe bits flipped in transit. Retrying once.'
-        )
+      try {
         await this._s3.send(new PutObjectCommand(cmdParams))
-      } else {
-        throw err
+      } catch (err) {
+        console.warn('Failed to upload CAR, retrying once...', err)
+        await this._s3.send(new PutObjectCommand(cmdParams))
       }
+    } catch (/** @type {any} */ err) {
+      throw new Error('Failed to upload CAR', { cause: err })
     }
 
     return new URL(key, this._baseUrl.toString())
