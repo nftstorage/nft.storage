@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/nftstorage/nft.storage/compare/api-v4.0.0...api-v4.0.1) (2022-08-02)
+
+
+### Bug Fixes
+
+* fdw fault tolerance ([#2108](https://github.com/nftstorage/nft.storage/issues/2108)) ([31f39a5](https://github.com/nftstorage/nft.storage/commit/31f39a5a2d994b49c2c9c49023a744d64598cbc1))
+
 ## [4.0.0](https://github.com/nftstorage/nft.storage/compare/api-v3.0.1...api-v4.0.0) (2022-07-29)
 
 
