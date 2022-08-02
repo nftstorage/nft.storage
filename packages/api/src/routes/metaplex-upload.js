@@ -52,7 +52,7 @@ export async function metaplexUpload(event, ctx) {
       user,
       key,
       car: blob,
-      mimeType: 'application/car',
+      mimeType: 'application/vnd.ipld.car',
       files: [],
       structure: 'Unknown',
       meta,

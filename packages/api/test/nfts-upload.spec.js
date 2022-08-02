@@ -155,40 +155,44 @@ describe('NFT Upload ', () => {
   })
 
   it('should upload a single CAR file', async () => {
-    const { root, car } = await createCar('hello world car')
-    // expected CID for the above data
-    const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
-    assert.strictEqual(root.toString(), cid, 'car file has correct root')
-    const res = await fetch('upload', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${client.token}`,
-        'Content-Type': 'application/car',
-      },
-      body: car,
-    })
+    // check both accepted content-types for CARs
+    const contentTypes = ['application/car', 'application/vnd.ipld.car']
+    for (const contentType of contentTypes) {
+      const { root, car } = await createCar('hello world car')
+      // expected CID for the above data
+      const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
+      assert.strictEqual(root.toString(), cid, 'car file has correct root')
+      const res = await fetch('upload', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${client.token}`,
+          'Content-Type': contentType,
+        },
+        body: car,
+      })
 
-    assert(res, 'Server responded')
-    assert(res.ok, 'Server response ok')
-    const { ok, value } = await res.json()
-    assert(ok, 'Server response payload has `ok` property')
-    assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
-    assert.strictEqual(
-      value.type,
-      'application/car',
-      'type should match blob mime-type'
-    )
+      assert(res, 'Server responded')
+      assert(res.ok, 'Server response ok')
+      const { ok, value } = await res.json()
+      assert(ok, 'Server response payload has `ok` property')
+      assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
+      assert.strictEqual(
+        value.type,
+        contentType,
+        'type should match request mime-type'
+      )
 
-    const { data } = await rawClient
-      .from('upload')
-      .select('*, content(*)')
-      .match({ source_cid: cid, user_id: client.userId })
-      .single()
+      const { data } = await rawClient
+        .from('upload')
+        .select('*, content(*)')
+        .match({ source_cid: cid, user_id: client.userId })
+        .single()
 
-    // @ts-ignore
-    assert.equal(data.source_cid, cid)
-    assert.equal(data.deleted_at, null)
-    assert.equal(data.content.dag_size, 15, 'correct dag size')
+      // @ts-ignore
+      assert.equal(data.source_cid, cid)
+      assert.equal(data.deleted_at, null)
+      assert.equal(data.content.dag_size, 15, 'correct dag size')
+    }
   })
 
   it('should allow a CAR with unsupported hash function', async () => {
@@ -210,9 +214,9 @@ describe('NFT Upload ', () => {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${client.token}`,
-        'Content-Type': 'application/car',
+        'Content-Type': 'application/vnd.ipld.car',
       },
-      body: new Blob(carBytes, { type: 'application/car' }),
+      body: new Blob(carBytes, { type: 'application/vnd.ipld.car' }),
     })
 
     assert(res, 'Server responded')
@@ -226,7 +230,7 @@ describe('NFT Upload ', () => {
     )
     assert.strictEqual(
       value.type,
-      'application/car',
+      'application/vnd.ipld.car',
       'type should match blob mime-type'
     )
   })
@@ -250,7 +254,7 @@ describe('NFT Upload ', () => {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${client.token}`,
-        'Content-Type': 'application/car',
+        'Content-Type': 'application/vnd.ipld.car',
       },
       body: new Blob(carBytes),
     })
@@ -283,13 +287,13 @@ describe('NFT Upload ', () => {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${client.token}`,
-        'Content-Type': 'application/car',
+        'Content-Type': 'application/vnd.ipld.car',
       },
       body: car,
     })
     const data2 = await res2.json()
     assert.equal(data2.value.cid, cid)
-    assert.equal(data2.value.type, 'application/car', 'car')
+    assert.equal(data2.value.type, 'application/vnd.ipld.car', 'car')
 
     const { data } = await rawClient
       .from('upload')

@@ -117,7 +117,10 @@ paths:
         ```
 
         ### Content Addressed Archive (CAR) files
-        You can also upload a CAR file, by setting the request body as a single CAR Blob/File object and providing the request header `Content-Type: application/car`
+        You can also upload a CAR file, by setting the request body as a single CAR Blob/File object and providing the request header `Content-Type: application/vnd.ipld.car`.
+        The Content-Type `application/car` is also supported for compatibility with an earlier version of this API, however the IANA media type
+        `application/vnd.ipld.car` should be preferred.
+
         Providing a CAR file allows you to pre-compute the root CID for 1 or more files, ensures that NFT.Storage will store and provide your assets with the same CID.
 
         ### Size limitations
@@ -210,6 +213,10 @@ paths:
               type: string
               format: binary
           application/car:
+            schema:
+              type: string
+              format: binary
+          application/vnd.ipld.car:
             schema:
               type: string
               format: binary

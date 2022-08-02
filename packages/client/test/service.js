@@ -20,7 +20,10 @@ const headers = ({ headers }) => ({
  */
 const importUpload = async (request) => {
   const contentType = request.headers.get('content-type') || ''
-  if (!contentType.includes('application/car')) {
+  const isCar =
+    contentType.includes('application/car') ||
+    contentType.includes('application/vnd.ipld.car')
+  if (!isCar) {
     throw new Error(`unexpected content type: ${contentType}`)
   }
   const content = await request.arrayBuffer()

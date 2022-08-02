@@ -186,7 +186,7 @@ class NFTStorage {
         for await (const part of car) {
           carParts.push(part)
         }
-        const carFile = new Blob(carParts, { type: 'application/car' })
+        const carFile = new Blob(carParts, { type: 'application/vnd.ipld.car' })
         const cid = await pRetry(
           async () => {
             await rateLimiter()

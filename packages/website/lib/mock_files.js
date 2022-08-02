@@ -2,7 +2,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeic3a6txgjsavv57lvfud67y7zvz2eq2acp3wzbk5tey4xy72zvuyu',
     created: '2021-12-17T17:27:24.605+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     name: 'super special name for mocks',
     files: [],
@@ -18,7 +18,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafkreibe235afeycijr36lc5r3xjw7lrucbzilmx4eewv5666dlas2hxia',
     created: '2021-12-11T14:26:23.205+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     name: 'super special name 2 for mocks',
     files: [],
@@ -80,7 +80,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeiefibctpwu7tm25nxgcn3b5ywwskowkgccl4cbwnvtrgv6rsqjpxa',
     created: '2021-12-02T17:20:06.685+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     name: 'super special name 2 for mocks',
@@ -142,7 +142,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafkreidewg7t752npyue5wbhuwq53dfcxpms3yp7vfr7jn4l5noulyf2eu',
     created: '2021-11-11T19:53:37.954+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 215085,
@@ -233,7 +233,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafkreie3tjgq2phyctf2fippi5hbvhfu74qvagwn5yakq5xnmyv77azw7u',
     created: '2021-11-11T19:50:16.825+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 25342,
@@ -324,7 +324,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafkreifn43pu4gv45m46qopifih6khe3rxsnpgbnvpotb7julek7f2pcga',
     created: '2021-11-11T14:35:33.89+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 117704,
@@ -429,7 +429,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeid4fkhuzacw26xzd5zsm5w5zoh5ich7ujug6mfap2jseeucu6iqia',
     created: '2021-11-11T14:34:56.112+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 1096377,
@@ -534,7 +534,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeiagkmu65y4l6wvxolhgwrma3hplgl7aqm3rmyjgfpak6wuzclpgka',
     created: '2021-11-11T14:34:40.703+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 1095138,
@@ -639,7 +639,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeigp3wixuxy5jyssmvmpvxsde6tfnbvz73zlbd75n3vw5fbstahd6e',
     created: '2021-11-11T14:34:27.176+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 1094733,
@@ -744,7 +744,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeihxt2sua5pvhyfjoxwl6qkdk5s3yxo7flxtjemkuq7rhlnrobz63u',
     created: '2021-11-11T14:34:15.756+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 1089162,
@@ -849,7 +849,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeicdabe3cd366hjpwvtzgu7bdpz2tnc5gjulil53ynkowzn2h6hxai',
     created: '2021-11-11T14:34:03.956+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 1094558,
@@ -954,7 +954,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeidvorqswzkixzupzya4m37burj5oxswa3rf65nghybvfec2zubgya',
     created: '2021-11-11T14:33:49.415+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 1086294,
@@ -1059,7 +1059,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafkreibocn3taii22mjzxwcyczu2xxqlxjxpbymwc45nkeawixfmmjf5qi',
     created: '2021-11-11T14:33:11.606+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 179330,
@@ -1164,7 +1164,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafkreia4klzyfw4nqycdn3re7fggeimvnle3zylh5zba3aln3gtesje4u4',
     created: '2021-11-11T14:32:53.399+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 100721,
@@ -1419,7 +1419,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafkreiawfi33sq52ssimkml2htuhl2poq3sym5jk6mz23nh46hlb3mycbq',
     created: '2021-11-11T14:32:36.434+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 205142,
@@ -1524,7 +1524,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeihl3bkck7v56ta237bpkjymzcfc6gsge32nhh2f2tmttgegfn4x3q',
     created: '2021-11-11T14:32:16.619+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 776278,
@@ -1629,7 +1629,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeiemnso4riinbghkenyw2xvrui5frxbmkcyvlulflk54jpbubnbwaq',
     created: '2021-11-11T14:31:50.759+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 793259,
@@ -1734,7 +1734,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeidcikrfoerfbgbrkkf2etyjhaws6f2qf7hlvocwlrcygknq245uka',
     created: '2021-11-11T14:31:21.604+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 1015204,
@@ -1839,7 +1839,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeig3wxdo2xeipundiozlmqjmtp3epvktcwbo53h276ferzcwtuacbi',
     created: '2021-11-11T14:30:52.816+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 5160525,
@@ -1944,7 +1944,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeicsxx354iiuvpaypcdtpu2sct2wjonmh4y5kjipxls6ima7ju2g34',
     created: '2021-11-11T14:30:07.33+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 5751188,
@@ -2049,7 +2049,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeigmgqsmwy3wprkmsbpt3mwtcfsyleymhhlyzu7qieu2tezszvv6dy',
     created: '2021-11-11T14:29:40.718+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 2005672,
@@ -2259,7 +2259,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeifpsn6trnutbt434v2gph6zvlwicqssxrnrsbmu5n35ocg6u7s6ri',
     created: '2021-11-11T14:29:20.203+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 5622049,
@@ -2364,7 +2364,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafkreihggdz4hwbeh5vrffq42eo5w36my2dz6y6bl2sdjjakfsc4zml6hu',
     created: '2021-11-11T14:28:56.466+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 93475,
@@ -2574,7 +2574,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeif73pezyrz5ug5aacjnjxujctc2dyoem2g5injvr3y7mk45aatw4y',
     created: '2021-11-11T14:28:36.024+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 394675,
@@ -2949,7 +2949,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafkreiccjdgsev2zkqlvr6t64sicz3eaj2xibyehvyp2ty6h55qfruf5qu',
     created: '2021-11-11T14:28:19.996+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 61536,
@@ -3054,7 +3054,7 @@ export const MOCK_FILES = [
   {
     cid: 'bafybeibvlmcr7o6hwe2htf7nr3xypmv5f6sxi2jnjclk3xjero3fbxhdj4',
     created: '2021-11-11T14:28:03.331+00:00',
-    type: 'application/car',
+    type: 'application/vnd.ipld.car',
     scope: 'session',
     files: [],
     size: 2800699,

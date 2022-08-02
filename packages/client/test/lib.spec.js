@@ -138,7 +138,7 @@ describe('client', () => {
       for await (const part of out) {
         carParts.push(part)
       }
-      const car = new Blob(carParts, { type: 'application/car' })
+      const car = new Blob(carParts, { type: 'application/vnd.ipld.car' })
       const cid = await client.storeCar(car)
       assert.equal(cid, expectedCid)
     })

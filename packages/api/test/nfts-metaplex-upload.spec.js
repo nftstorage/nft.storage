@@ -31,7 +31,7 @@ describe('Metaplex Upload', () => {
       method: 'POST',
       headers: {
         'x-web3auth': `Metaplex ${fixture.token}`,
-        'Content-Type': 'application/car',
+        'Content-Type': 'application/vnd.ipld.car',
       },
       body: car,
     })
@@ -43,7 +43,7 @@ describe('Metaplex Upload', () => {
     assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
     assert.strictEqual(
       value.type,
-      'application/car',
+      'application/vnd.ipld.car',
       'type should match blob mime-type'
     )
 
@@ -81,7 +81,7 @@ describe('Metaplex Upload', () => {
       method: 'POST',
       headers: {
         'x-web3auth': `Metaplex ${fixture.token}`,
-        'Content-Type': 'application/car',
+        'Content-Type': 'application/vnd.ipld.car',
       },
       body: car,
     })
@@ -93,7 +93,7 @@ describe('Metaplex Upload', () => {
     assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
     assert.strictEqual(
       value.type,
-      'application/car',
+      'application/vnd.ipld.car',
       'type should match blob mime-type'
     )
 
@@ -134,7 +134,7 @@ describe('Metaplex Upload', () => {
       method: 'POST',
       headers: {
         'x-web3auth': `Metaplex ${alteredToken}`,
-        'Content-Type': 'application/car',
+        'Content-Type': 'application/vnd.ipld.car',
       },
       body: car,
     })
@@ -160,7 +160,7 @@ describe('Metaplex Upload', () => {
       method: 'POST',
       headers: {
         'x-web3auth': `Metaplex ${alteredToken}`,
-        'Content-Type': 'application/car',
+        'Content-Type': 'application/vnd.ipld.car',
       },
       body: car,
     })
@@ -183,7 +183,7 @@ describe('Metaplex Upload', () => {
       method: 'POST',
       headers: {
         'x-web3auth': `Metaplex ${fixture.token}`,
-        'Content-Type': 'application/car',
+        'Content-Type': 'application/vnd.ipld.car',
       },
       body: car,
     })

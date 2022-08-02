@@ -8,7 +8,7 @@ import { CarWriter } from '@ipld/car'
 /**
  * @param {CID[]} roots
  * @param {AsyncIterable<Block>|Iterable<Block>} blocks
- * @returns {Promise<Blob & { type: 'application/car' }>}
+ * @returns {Promise<Blob & { type: 'application/vnd.ipld.car' }>}
  */
 export const encode = async (roots, blocks) => {
   const { out, writer } = CarWriter.create(roots)
@@ -22,9 +22,9 @@ export const encode = async (roots, blocks) => {
     parts.push(part)
   }
 
-  return /** @type {Blob & {type: 'application/car'}} */ (
+  return /** @type {Blob & {type: 'application/vnd.ipld.car'}} */ (
     new Blob(parts, {
-      type: 'application/car',
+      type: 'application/vnd.ipld.car',
     })
   )
 }
