@@ -25,6 +25,8 @@ services:
           memory: 1G
     ports:
       - 5432
+    volumes:
+      - nftstorage-pg-data:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -32,6 +34,8 @@ services:
       POSTGRES_PORT: 5432
   ipfs:
     image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
+    volumes:
+      - nftstorage-ipfs-data:/data/ipfs
 
   cluster:
     image: ipfs/ipfs-cluster:v1.0.0-rc4
@@ -49,6 +53,8 @@ services:
       CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
     ports:
       - 9094
+    volumes:
+      - nftstorage-cluster-data:/data/ipfs-cluster
   minio:
     image: quay.io/minio/minio
     command: server /data/minio --console-address ":9001"
@@ -58,3 +64,11 @@ services:
     ports:
       - 9000
       - 9001
+    volumes:
+      - nftstorage-minio-data:/data/minio
+
+volumes:
+  nftstorage-pg-data:
+  nftstorage-cluster-data:
+  nftstorage-ipfs-data:
+  nftstorage-minio-data:

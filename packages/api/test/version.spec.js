@@ -6,7 +6,7 @@ import {
 } from './scripts/test-context.js'
 
 test.before(async (t) => {
-  await setupMiniflareContext(t, { noContainers: true })
+  await setupMiniflareContext(t)
 })
 
 test('should get version information', async (t) => {

@@ -19,6 +19,9 @@ const pkg = JSON.parse(
  */
 export function makeMiniflare(bindings = {}) {
   const envPath = path.join(__dirname, '../../../../.env')
+
+  const { DATABASE_URL, CLUSTER_API_URL, S3_ENDPOINT } = process.env
+
   return new Miniflare({
     // Autoload configuration from `.env`, `package.json` and `wrangler.toml`
     envPath,
@@ -28,7 +31,12 @@ export function makeMiniflare(bindings = {}) {
     // it once before we run all tests in package.json, so disable it here.
     // This will override the option in wrangler.toml.
     buildCommand: undefined,
-    bindings,
+    bindings: {
+      ...bindings,
+      DATABASE_URL,
+      CLUSTER_API_URL,
+      S3_ENDPOINT,
+    },
   })
 }
 
@@ -49,34 +57,10 @@ function versionInfo(env = 'test') {
  *
  * @param {import('ava').ExecutionContext<unknown>} t
  * @param {object} opts
- * @param {boolean} [opts.noContainers]
  * @param {Record<string, string>} [opts.overrides]
  */
-export async function setupMiniflareContext(
-  t,
-  { noContainers = false, overrides = {} } = {}
-) {
+export async function setupMiniflareContext(t, { overrides = {} } = {}) {
   t.timeout(600 * 1000, 'timed out pulling / starting test containers')
-
-  if (!noContainers) {
-    const sharedWorker = await registerSharedWorker({
-      filename: path.resolve(__dirname, 'containers.js'),
-      supportedProtocols: ['ava-4'],
-    })
-
-    // wait for the shared worker to publish an object with env var overrides
-    for await (const message of sharedWorker.subscribe()) {
-      if (!message.data || typeof message.data !== 'object') {
-        continue
-      }
-      if (!('overrides' in message.data)) {
-        continue
-      }
-      // @ts-ignore
-      overrides = { ...overrides, ...message.data.overrides }
-      break
-    }
-  }
 
   const mf = makeMiniflare(overrides)
 
