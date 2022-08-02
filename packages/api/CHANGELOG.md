@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.2](https://github.com/nftstorage/nft.storage/compare/api-v4.0.1...api-v4.0.2) (2022-08-02)
+
+
+### Bug Fixes
+
+* always retry s3 upload ([#2111](https://github.com/nftstorage/nft.storage/issues/2111)) ([99e7ce5](https://github.com/nftstorage/nft.storage/commit/99e7ce50d823954be1a5335de21ac3b9be9301ba))
+
 ## [4.0.1](https://github.com/nftstorage/nft.storage/compare/api-v4.0.0...api-v4.0.1) (2022-08-02)
 
 
