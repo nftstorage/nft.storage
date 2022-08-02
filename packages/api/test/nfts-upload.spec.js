@@ -523,7 +523,7 @@ test.serial('should upload a single file using ucan', async (t) => {
   const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
 
   {
-    const res = await fetch('upload', {
+    const res = await mf.dispatchFetch('http://localhost:8787/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${opUcan}` },
       body: file,
@@ -537,7 +537,7 @@ test.serial('should upload a single file using ucan', async (t) => {
 
   {
     const badkp = await KeyPair.create()
-    const res = await fetch('upload', {
+    const res = await mf.dispatchFetch('http://localhost:8787/upload', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${opUcan}`,
@@ -554,7 +554,7 @@ test.serial('should upload a single file using ucan', async (t) => {
     )
   }
 
-  const res = await fetch('upload', {
+  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${opUcan}`, 'x-agent-did': kp.did() },
     body: file,
@@ -570,7 +570,7 @@ test.serial('should upload a single file using ucan', async (t) => {
     .single()
 
   // @ts-ignore
-  assert.equal(data.meta.ucan.token, opUcan)
+  t.is(data.meta.ucan.token, opUcan)
 })
 
 test.serial('should update a single file', async (t) => {
