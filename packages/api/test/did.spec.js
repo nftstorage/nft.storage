@@ -5,7 +5,7 @@ import {
 } from './scripts/test-context.js'
 
 test.before(async (t) => {
-  await setupMiniflareContext(t, { noContainers: true })
+  await setupMiniflareContext(t)
 })
 
 test('/did should return the service DID', async (t) => {

@@ -7,7 +7,7 @@ import {
 import { setupMiniflareContext } from './scripts/test-context.js'
 
 test.before(async (t) => {
-  await setupMiniflareContext(t, { noContainers: true })
+  await setupMiniflareContext(t)
 })
 
 const BASE_CONFIG = {

@@ -480,6 +480,7 @@ test.serial(
 
 test.serial('should upload a single file using ucan', async (t) => {
   const client = await createClientWithUser(t)
+  console.log('nfts-upload ucan test - user id:', client.userId)
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const kp = await KeyPair.create()
@@ -549,9 +550,7 @@ test.serial('should upload a single file using ucan', async (t) => {
     t.is(res.status, 401)
     const { ok, error } = await res.json()
     t.false(ok)
-    t.truthy(
-      error.message.match(/Expected x-agent-did to be UCAN issuer DID/)
-    )
+    t.truthy(error.message.match(/Expected x-agent-did to be UCAN issuer DID/))
   }
 
   const res = await mf.dispatchFetch('http://localhost:8787/upload', {
