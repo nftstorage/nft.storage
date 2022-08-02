@@ -106,6 +106,7 @@ export class S3Uploader {
         await this._s3.send(new PutObjectCommand(cmdParams))
       }
     } catch (/** @type {any} */ err) {
+      // @ts-ignore TS does not know about `cause` yet.
       throw new Error('Failed to upload CAR', { cause: err })
     }
 
