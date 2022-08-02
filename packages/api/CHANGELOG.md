@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.3](https://github.com/nftstorage/nft.storage/compare/api-v4.0.2...api-v4.0.3) (2022-08-02)
+
+
+### Bug Fixes
+
+* check for token blocked ([#2045](https://github.com/nftstorage/nft.storage/issues/2045)) ([6c075dd](https://github.com/nftstorage/nft.storage/commit/6c075dd57cef24bca415b92a5cbbfd7731798c52))
+
 ## [4.0.2](https://github.com/nftstorage/nft.storage/compare/api-v4.0.1...api-v4.0.2) (2022-08-02)
 
 
