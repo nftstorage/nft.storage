@@ -141,13 +141,16 @@ export class DBClient {
       .select('status')
       .eq('auth_key_id', key.id)
       .filter('deleted_at', 'is', null)
-      .single()
 
     if (error) {
       throw new DBError(error)
     }
 
-    return data?.status === 'Blocked'
+    if (!data || !data.length) {
+      return false
+    }
+
+    return data[0].status === 'Blocked'
   }
 
   /**
