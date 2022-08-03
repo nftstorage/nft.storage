@@ -10,7 +10,7 @@ DEBUG=true
 # the salt is literally secret, not a random string, just 'secret'
 SALT=secret
 MAILCHIMP_API_KEY=secret
-METAPLEX_AUTH_TOKEN=secret
+METAPLEX_AUTH_TOKEN=metaplex-test-token
 
 LOGTAIL_TOKEN=secret
 # Dev private key for ucan auth

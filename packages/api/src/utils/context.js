@@ -6,30 +6,6 @@ import { Logging } from './logs.js'
 import pkg from '../../package.json'
 import { Service } from 'ucan-storage/service'
 
-const config = getServiceConfig()
-const db = new DBClient(config.DATABASE_URL, config.DATABASE_TOKEN)
-
-const uploader = new S3Uploader(
-  config.S3_REGION,
-  config.S3_ACCESS_KEY_ID,
-  config.S3_SECRET_ACCESS_KEY,
-  config.S3_BUCKET_NAME,
-  { endpoint: config.S3_ENDPOINT, appName: 'nft' }
-)
-
-const sentryOptions = {
-  dsn: config.SENTRY_DSN,
-  allowedHeaders: ['user-agent', 'x-client'],
-  allowedSearchParams: /(.*)/,
-  debug: false,
-  environment: config.ENV,
-  rewriteFrames: {
-    root: '/',
-  },
-  release: config.VERSION,
-  pkg,
-}
-
 /**
  * Obtains a route context object.
  *
@@ -38,6 +14,30 @@ const sentryOptions = {
  * @returns {Promise<import('../bindings').RouteContext>}
  */
 export async function getContext(event, params) {
+  const config = getServiceConfig()
+  const db = new DBClient(config.DATABASE_URL, config.DATABASE_TOKEN)
+
+  const uploader = new S3Uploader(
+    config.S3_REGION,
+    config.S3_ACCESS_KEY_ID,
+    config.S3_SECRET_ACCESS_KEY,
+    config.S3_BUCKET_NAME,
+    { endpoint: config.S3_ENDPOINT, appName: 'nft' }
+  )
+
+  const sentryOptions = {
+    dsn: config.SENTRY_DSN,
+    allowedHeaders: ['user-agent', 'x-client'],
+    allowedSearchParams: /(.*)/,
+    debug: false,
+    environment: config.ENV,
+    rewriteFrames: {
+      root: '/',
+    },
+    release: config.VERSION,
+    pkg,
+  }
+
   const sentry = new Toucan({
     event,
     ...sentryOptions,

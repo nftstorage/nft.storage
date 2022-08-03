@@ -2,7 +2,9 @@ import { Client as Minio } from 'minio'
 import retry from 'p-retry'
 import { isPortReachable } from '../utils.js'
 
-export const MINIO_API_PORT = 9000
+export const MINIO_API_PORT = process.env.MINIO_API_PORT
+  ? Number.parseInt(process.env.MINIO_API_PORT)
+  : 9000
 
 const minioConfig = {
   useSSL: false,

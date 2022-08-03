@@ -1,194 +1,213 @@
-import assert from 'assert'
-import {
-  createTestUserWithFixedToken,
-  DBTestClient,
-  rawClient,
-} from './scripts/helpers.js'
+import test from 'ava'
+import { createClientWithUser, getRawClient } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import { createCar } from './scripts/car.js'
+import {
+  getMiniflareContext,
+  getTestServiceConfig,
+  setupMiniflareContext,
+} from './scripts/test-context.js'
 
-describe('Metaplex Upload', () => {
-  /** @type{DBTestClient} */
-  let client
+/** @type {number} */
+let metaplexUserId
 
-  before(async () => {
-    const user = await createTestUserWithFixedToken({
-      token: 'metaplex-test-token',
-    })
-    client = new DBTestClient(user)
+test.before(async (t) => {
+  await setupMiniflareContext(t)
+
+  const config = getTestServiceConfig(t)
+  const rawClient = getRawClient(config)
+
+  const { data } = await rawClient
+    .from('auth_key')
+    .select('*')
+    .eq('secret', 'metaplex-test-token')
+    .single()
+
+  metaplexUserId = data.id
+})
+
+test('should upload a single CAR file with a CID-specific token', async (t) => {
+  const mf = getMiniflareContext(t)
+  const config = getTestServiceConfig(t)
+  const { root, car } = await createCar('hello world car')
+  // expected CID for the above data
+  const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
+  t.is(root.toString(), cid, 'car file has correct root')
+
+  const fixture = fixtures.metaplexAuth.v1[cid]
+  t.not(fixture, null, 'no fixture for cid ' + cid)
+
+  const res = await mf.dispatchFetch('http://miniflare.test/metaplex/upload', {
+    method: 'POST',
+    headers: {
+      'x-web3auth': `Metaplex ${fixture.token}`,
+      'Content-Type': 'application/car',
+    },
+    body: car,
   })
 
-  it('should upload a single CAR file with a CID-specific token', async () => {
-    const { root, car } = await createCar('hello world car')
-    // expected CID for the above data
-    const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
-    assert.strictEqual(root.toString(), cid, 'car file has correct root')
+  t.truthy(res, 'Server responded')
+  t.true(res.ok, `response error: ${res.status}`)
+  const { ok, value } = await res.json()
+  t.truthy(ok, 'Server response payload has `ok` property')
+  t.is(value.cid, cid, 'Server responded with expected CID')
+  t.is(value.type, 'application/car', 'type should match blob mime-type')
 
-    const fixture = fixtures.metaplexAuth.v1[cid]
-    assert.notEqual(fixture, null, 'no fixture for cid ' + cid)
+  const { data } = await getRawClient(config)
+    .from('upload')
+    .select('*, content(*)')
+    .match({ source_cid: cid, user_id: metaplexUserId })
+    .single()
 
-    const res = await fetch('metaplex/upload', {
-      method: 'POST',
-      headers: {
-        'x-web3auth': `Metaplex ${fixture.token}`,
-        'Content-Type': 'application/car',
-      },
-      body: car,
-    })
+  // @ts-ignore
+  t.is(data.source_cid, cid)
+  t.is(data.deleted_at, null)
+  t.is(data.content.dag_size, 15, 'correct dag size')
 
-    assert(res, 'Server responded')
-    assert(res.ok, 'Server response ok')
-    const { ok, value } = await res.json()
-    assert(ok, 'Server response payload has `ok` property')
-    assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
-    assert.strictEqual(
-      value.type,
-      'application/car',
-      'type should match blob mime-type'
-    )
+  const expectedMeta = {
+    iss: fixture.meta.iss,
+    rootCID: fixture.meta.req.put.rootCID,
+    solanaCluster: fixture.meta.req.put.tags.solanaCluster,
+    mintingAgent: fixture.meta.req.put.tags.mintingAgent,
+    agentVersion: fixture.meta.req.put.tags.agentVersion,
+  }
+  t.deepEqual(data.meta, expectedMeta, 'metadata matches jwt payload')
+})
 
-    const { data } = await rawClient
-      .from('upload')
-      .select('*, content(*)')
-      .match({ source_cid: cid, user_id: client.userId })
-      .single()
+test.serial('should support payloads without mintingAgent tag', async (t) => {
+  const client = await createClientWithUser(t)
+  const mf = getMiniflareContext(t)
+  const config = getTestServiceConfig(t)
+  const { root, car } = await createCar('hello world car')
+  // expected CID for the above data
+  const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
+  t.is(root.toString(), cid, 'car file has correct root')
 
-    // @ts-ignore
-    assert.equal(data.source_cid, cid)
-    assert.equal(data.deleted_at, null)
-    assert.equal(data.content.dag_size, 15, 'correct dag size')
+  const fixture = fixtures.metaplexAuth.v0[cid]
+  t.not(fixture, null, 'no fixture for cid ' + cid)
 
-    const expectedMeta = {
-      iss: fixture.meta.iss,
-      rootCID: fixture.meta.req.put.rootCID,
-      solanaCluster: fixture.meta.req.put.tags.solanaCluster,
-      mintingAgent: fixture.meta.req.put.tags.mintingAgent,
-      agentVersion: fixture.meta.req.put.tags.agentVersion,
-    }
-    assert.deepEqual(data.meta, expectedMeta, 'metadata matches jwt payload')
+  const res = await mf.dispatchFetch('http://miniflare.test/metaplex/upload', {
+    method: 'POST',
+    headers: {
+      'x-web3auth': `Metaplex ${fixture.token}`,
+      'Content-Type': 'application/car',
+    },
+    body: car,
   })
 
-  it('should support payloads without mintingAgent tag', async () => {
-    const { root, car } = await createCar('hello world car')
-    // expected CID for the above data
-    const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
-    assert.strictEqual(root.toString(), cid, 'car file has correct root')
+  t.truthy(res, 'Server responded')
+  t.true(res.ok, 'Server response ok')
+  const { ok, value } = await res.json()
+  t.truthy(ok, 'Server response payload has `ok` property')
+  t.is(value.cid, cid, 'Server responded with expected CID')
+  t.is(value.type, 'application/car', 'type should match blob mime-type')
 
-    const fixture = fixtures.metaplexAuth.v0[cid]
-    assert.notEqual(fixture, null, 'no fixture for cid ' + cid)
+  const { data } = await getRawClient(config)
+    .from('upload')
+    .select('*, content(*)')
+    .match({ source_cid: cid, user_id: metaplexUserId })
+    .single()
 
-    const res = await fetch('metaplex/upload', {
-      method: 'POST',
-      headers: {
-        'x-web3auth': `Metaplex ${fixture.token}`,
-        'Content-Type': 'application/car',
-      },
-      body: car,
-    })
+  // @ts-ignore
+  t.is(data.source_cid, cid)
+  t.is(data.deleted_at, null)
+  t.is(data.content.dag_size, 15, 'correct dag size')
 
-    assert(res, 'Server responded')
-    assert(res.ok, 'Server response ok')
-    const { ok, value } = await res.json()
-    assert(ok, 'Server response payload has `ok` property')
-    assert.strictEqual(value.cid, cid, 'Server responded with expected CID')
-    assert.strictEqual(
-      value.type,
-      'application/car',
-      'type should match blob mime-type'
-    )
+  const expectedMeta = {
+    iss: fixture.meta.iss,
+    rootCID: fixture.meta.req.put.rootCID,
+    solanaCluster: fixture.meta.req.put.tags['solana-cluster'],
+    mintingAgent: 'unknown',
+  }
+  t.deepEqual(data.meta, expectedMeta, 'metadata matches jwt payload')
+})
 
-    const { data } = await rawClient
-      .from('upload')
-      .select('*, content(*)')
-      .match({ source_cid: cid, user_id: client.userId })
-      .single()
+test.serial('should fail if token has an invalid signature', async (t) => {
+  const mf = getMiniflareContext(t)
+  const { root, car } = await createCar('hello world car')
+  // expected CID for the above data
+  const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
+  t.is(root.toString(), cid, 'car file has correct root')
 
-    // @ts-ignore
-    assert.equal(data.source_cid, cid)
-    assert.equal(data.deleted_at, null)
-    assert.equal(data.content.dag_size, 15, 'correct dag size')
+  const fixture = fixtures.metaplexAuth.v1[cid]
+  t.not(fixture, null, 'no fixture for cid ' + cid)
 
-    const expectedMeta = {
-      iss: fixture.meta.iss,
-      rootCID: fixture.meta.req.put.rootCID,
-      solanaCluster: fixture.meta.req.put.tags['solana-cluster'],
-      mintingAgent: 'unknown',
-    }
-    assert.deepEqual(data.meta, expectedMeta, 'metadata matches jwt payload')
+  const tokenParts = fixture.token.split('.')
+  tokenParts[2] = tokenParts[2].replace('0', '1')
+  const alteredToken = tokenParts.join('.')
+
+  const res = await mf.dispatchFetch('http://miniflare.test/metaplex/upload', {
+    method: 'POST',
+    headers: {
+      'x-web3auth': `Metaplex ${alteredToken}`,
+      'Content-Type': 'application/car',
+    },
+    body: car,
   })
 
-  it('should fail if token has an invalid signature', async () => {
-    const { root, car } = await createCar('hello world car')
-    // expected CID for the above data
-    const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
-    assert.strictEqual(root.toString(), cid, 'car file has correct root')
+  t.truthy(res, 'Server responded')
+  t.is(
+    res.status,
+    401,
+    `expected 401 response, got [${res.status}]: ${
+      res.statusText
+    } ${await res.text()}`
+  )
+})
 
-    const fixture = fixtures.metaplexAuth.v1[cid]
-    assert.notEqual(fixture, null, 'no fixture for cid ' + cid)
+test.serial('should fail if token payload is modified', async (t) => {
+  const mf = getMiniflareContext(t)
+  const { root, car } = await createCar('hello world car')
+  // expected CID for the above data
+  const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
+  t.is(root.toString(), cid, 'car file has correct root')
 
-    const tokenParts = fixture.token.split('.')
-    tokenParts[2] = tokenParts[2].replace('0', '1')
-    const alteredToken = tokenParts.join('.')
+  const fixture = fixtures.metaplexAuth.v1[cid]
+  t.not(fixture, null, 'no fixture for cid ' + cid)
 
-    const res = await fetch('metaplex/upload', {
-      method: 'POST',
-      headers: {
-        'x-web3auth': `Metaplex ${alteredToken}`,
-        'Content-Type': 'application/car',
-      },
-      body: car,
-    })
+  const tokenParts = fixture.token.split('.')
+  tokenParts[1] = tokenParts[1].replace('0', '1')
+  const alteredToken = tokenParts.join('.')
 
-    assert(res, 'Server responded')
-    assert.equal(res.status, 401, 'Expected auth error, but response was ok')
+  const res = await mf.dispatchFetch('http://miniflare.test/metaplex/upload', {
+    method: 'POST',
+    headers: {
+      'x-web3auth': `Metaplex ${alteredToken}`,
+      'Content-Type': 'application/car',
+    },
+    body: car,
   })
 
-  it('should fail if token payload is modified', async () => {
-    const { root, car } = await createCar('hello world car')
-    // expected CID for the above data
-    const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
-    assert.strictEqual(root.toString(), cid, 'car file has correct root')
+  t.truthy(res, 'Server responded')
+  t.is(res.status, 401, 'Expected auth error, but response was ok')
+})
 
-    const fixture = fixtures.metaplexAuth.v1[cid]
-    assert.notEqual(fixture, null, 'no fixture for cid ' + cid)
-
-    const tokenParts = fixture.token.split('.')
-    tokenParts[1] = tokenParts[1].replace('0', '1')
-    const alteredToken = tokenParts.join('.')
-
-    const res = await fetch('metaplex/upload', {
-      method: 'POST',
-      headers: {
-        'x-web3auth': `Metaplex ${alteredToken}`,
-        'Content-Type': 'application/car',
-      },
-      body: car,
-    })
-
-    assert(res, 'Server responded')
-    assert.equal(res.status, 401, 'Expected auth error, but response was ok')
-  })
-
-  it('should fail if uploaded CAR has different CID than specified in token', async () => {
+test.serial(
+  'should fail if uploaded CAR has different CID than specified in token',
+  async (t) => {
+    const mf = getMiniflareContext(t)
     // cid for the "hello world car". we have a valid token saved for this CID as a fixture
     const signedCID =
       'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
     const fixture = fixtures.metaplexAuth.v1[signedCID]
-    assert.notEqual(fixture, null, 'no fixture for cid ' + signedCID)
+    t.not(fixture, null, 'no fixture for cid ' + signedCID)
 
     const { root, car } = await createCar('a different car')
-    assert.notEqual(root.toString(), signedCID)
+    t.not(root.toString(), signedCID)
 
-    const res = await fetch('metaplex/upload', {
-      method: 'POST',
-      headers: {
-        'x-web3auth': `Metaplex ${fixture.token}`,
-        'Content-Type': 'application/car',
-      },
-      body: car,
-    })
+    const res = await mf.dispatchFetch(
+      'http://localhost:8787/metaplex/upload',
+      {
+        method: 'POST',
+        headers: {
+          'x-web3auth': `Metaplex ${fixture.token}`,
+          'Content-Type': 'application/car',
+        },
+        body: car,
+      }
+    )
 
-    assert(res, 'Server responded')
-    assert.equal(res.status, 401, 'Expected auth error, but response was ok')
-  })
-})
+    t.truthy(res, 'Server responded')
+    t.is(res.status, 401, 'Expected auth error, but response was ok')
+  }
+)
