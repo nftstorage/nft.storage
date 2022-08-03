@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 import { TrustedBy } from '../components/trustedByLogos'
 import { NftUpCta } from '../components/nftUpCta'
 import fs from 'fs'
-import { calculateStats } from '../lib/statsUtils'
+import { calculateStats, calculateMarketStats } from '../lib/statsUtils'
 import Img from '../components/cloudflareImage'
 import { API } from '../lib/api'
 import Loading from '../components/loading'
 import bytes from 'bytes'
+import { NFT_PORT_ENDPOINT, NFT_PORT_API_KEY } from '../lib/constants'
 
 /**
  *
@@ -47,6 +48,8 @@ export function getStaticProps() {
 export default function Stats({ logos }) {
   /** @type [any, any] */
   const [stats, setStats] = useState({})
+  /** @type [any, any] */
+  const [marketStats, setMarketStats] = useState({})
   const [statsLoading, setStatsLoading] = useState(false)
 
   useEffect(() => {
@@ -55,6 +58,27 @@ export default function Stats({ logos }) {
 
   async function fetchStats() {
     setStatsLoading(true)
+    try {
+      const nftPortStats = await fetch(NFT_PORT_ENDPOINT, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: NFT_PORT_API_KEY,
+        },
+        redirect: 'follow',
+      })
+      const data = await nftPortStats.json()
+      setMarketStats(await calculateMarketStats(data.report))
+    } catch (e) {
+      const fakeData = {
+        totalNfts: 55000000,
+        totalMarketValue: 1400000000000,
+        totalMissing: 11500000,
+        missingPercentage: 30.7,
+        missingMarketValue: 265100000000,
+      }
+      setMarketStats(fakeData)
+    }
     try {
       const stats = await fetch(`${API}/stats`, {
         method: 'GET',
@@ -106,6 +130,20 @@ export default function Stats({ logos }) {
         <div className="stat-card-inner relative flex flex-1 z-10 -translate-x-8 translate-y-8">
           {children}
         </div>
+      </div>
+    )
+  }
+
+  /**
+   * @param {Object} props
+   * @param {string} [props.title]
+   * @param {any} [props.children]
+   */
+  const MarketStatCard = ({ title, children }) => {
+    return (
+      <div className="market-stats-card bg-white text-center border border-black h-full box-content flex flex-col justify-center p-4">
+        <div>{children}</div>
+        <div className="text-lg">{title}</div>
       </div>
     )
   }
@@ -189,10 +227,78 @@ export default function Stats({ logos }) {
     )
   }
 
+  const MarketStatCards = () => {
+    return (
+      <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
+        <div className="mb-16 pl-8 grid gap-x-4 gap-y-[8vw] md:grid-cols-2 xl:grid-cols-4">
+          <MarketStatCard title="Total Count of NFTS">
+            <figure className="chicagoflf text-[clamp(2rem,2.6rem,3.3rem)] text-yellow">
+              {statsLoading && <Loading />}
+              {new Intl.NumberFormat('en-GB', {
+                notation: 'compact',
+                compactDisplay: 'short',
+                maximumFractionDigits: 1,
+              }).format(marketStats.totalNfts || 0)}
+            </figure>
+          </MarketStatCard>
+          <MarketStatCard title="Total market value of NFTs">
+            <figure className="chicagoflf text-[clamp(2rem,2.6rem,3.3rem)] text-navy">
+              {statsLoading && <Loading />}
+              {marketStats.totalMarketValueUSD > 0 ? '$' : 'Ξ'}
+              {new Intl.NumberFormat('en-GB', {
+                notation: 'compact',
+                compactDisplay: 'short',
+                maximumFractionDigits: 1,
+              }).format(
+                marketStats.missingMarketValueUSD > 0
+                  ? marketStats.totalMarketValueUSD
+                  : marketStats.totalMarketValue || 0
+              )}
+            </figure>
+          </MarketStatCard>
+          <MarketStatCard title="Market value of missing NFTs">
+            <figure className="chicagoflf text-[clamp(2rem,2.6rem,3.3rem)] text-forest">
+              {statsLoading && <Loading />}
+              {marketStats.missingMarketValueUSD > 0 ? '$' : 'Ξ'}
+              {new Intl.NumberFormat('en-GB', {
+                notation: 'compact',
+                compactDisplay: 'short',
+                maximumFractionDigits: 1,
+              }).format(
+                marketStats.missingMarketValueUSD > 0
+                  ? marketStats.missingMarketValueUSD
+                  : marketStats.missingMarketValue || 0
+              )}
+            </figure>
+          </MarketStatCard>
+          <MarketStatCard title="Percentage of NFTs deemed missing">
+            <figure className="chicagoflf text-[clamp(2rem,2.6rem,3.3rem)] text-orange">
+              {statsLoading && <Loading />}
+              {marketStats.missingPercentage ?? 0}%
+            </figure>
+          </MarketStatCard>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <main className="bg-nsgreen">
       <Marquee />
       <StatCards />
+      <div className="bg-nspeach">
+        <div className="relative w-screen flex items-center justify-center">
+          <div className="text-center">
+            <p className="chicagoflf p-4 m-0 mt-5 text-[clamp(14px,_2rem,_6vw)]">
+              NFT Market By the Numbers
+            </p>
+            <p className="chicagoflf p-4 m-0 mt-5 text-[clamp(12px,_1.6rem,_6vw)]">
+              The Price of Missing NFTS
+            </p>
+          </div>
+        </div>
+        <MarketStatCards />
+      </div>
       <div className="bg-nsblue">
         <div className="stats-trusted-wrapper max-w-7xl mx-auto py-4 px-6 sm:px-16">
           <div>
