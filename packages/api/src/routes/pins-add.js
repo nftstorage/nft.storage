@@ -3,6 +3,7 @@ import * as cluster from '../cluster.js'
 import { checkAuth, validate } from '../utils/auth.js'
 import { parseCidPinning } from '../utils/utils.js'
 import { toPinsResponse } from '../utils/db-transforms.js'
+import { Multiaddr } from 'multiaddr'
 
 /** @type {import('../bindings').Handler} */
 export async function pinsAdd(event, ctx) {
@@ -45,11 +46,28 @@ export async function pinsAdd(event, ctx) {
       Object.entries(pinData.meta).filter(([, v]) => typeof v === 'string')
     )
   }
-
+  // validate origins
+  if (pinData.origins && pinData.origins.length !== 0) {
+    for (const o of pinData.origins) {
+      try {
+        const multi = new Multiaddr(o)
+        continue
+      } catch {
+        return new JSONResponse(
+          {
+            error: {
+              reason: 'INVALID_PIN_DATA',
+              details: `invalid origins: ${o} is not a multiaddr`,
+            },
+          },
+          { status: 400 }
+        )
+      }
+    }
+  }
   await cluster.pin(cid.sourceCid, {
     origins: pinData.origins,
   })
-
   const upload = await db.createUpload({
     type: 'Remote',
     content_cid: cid.contentCid,
