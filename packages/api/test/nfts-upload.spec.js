@@ -480,7 +480,6 @@ test.serial(
 
 test.serial('should upload a single file using ucan', async (t) => {
   const client = await createClientWithUser(t)
-  console.log('nfts-upload ucan test - user id:', client.userId)
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const kp = await KeyPair.create()
