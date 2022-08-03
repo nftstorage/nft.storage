@@ -16,7 +16,7 @@ test.before(async (t) => {
 
 test.serial('should fail to create ucan when no did registered', async (t) => {
   const mf = getMiniflareContext(t)
-  const res = await mf.dispatchFetch(`http://localhost:8787/ucan/token`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/ucan/token`, {
     headers: { Authorization: `Bearer ${client.token}` },
     method: 'POST',
   })
@@ -27,7 +27,7 @@ test.serial('should fail to create ucan when no did registered', async (t) => {
 test.serial('should create new ucan using api key', async (t) => {
   const mf = getMiniflareContext(t)
   const did = 'did:key:z6MkkxgkZhCLmibS6EwfYvvtjjBfGjwqd8uc3F1jZ4TLMPCg'
-  await mf.dispatchFetch(`http://localhost:8787/user/did`, {
+  await mf.dispatchFetch(`http://miniflare.test/user/did`, {
     headers: { Authorization: `Bearer ${client.token}` },
     method: 'POST',
     body: JSON.stringify({
@@ -35,7 +35,7 @@ test.serial('should create new ucan using api key', async (t) => {
     }),
   })
 
-  const res = await mf.dispatchFetch(`http://localhost:8787/ucan/token`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/ucan/token`, {
     headers: { Authorization: `Bearer ${client.token}` },
     method: 'POST',
   })

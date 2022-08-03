@@ -36,7 +36,7 @@ test('should store image', async (t) => {
   }
   const body = Token.encode(metadata)
 
-  const res = await mf.dispatchFetch('http://localhost:8787/store', {
+  const res = await mf.dispatchFetch('http://miniflare.test/store', {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
     body,
@@ -108,7 +108,7 @@ test.skip('should store dir wrapped image', async (t) => {
   }
   const body = Token.encode(metadata)
 
-  const res = await mf.dispatchFetch('http://localhost:8787/store', {
+  const res = await mf.dispatchFetch('http://miniflare.test/store', {
     method: 'POST',
     headers: { Authorization: `Bearer ${token}` },
     body,

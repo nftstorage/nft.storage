@@ -26,7 +26,7 @@ test('should pin with just cid', async (t) => {
 
   // Pin request
   const cid = 'bafkreihwlixzeusjrd5avlg53yidaoonf5r5srzumu7y5uuumtt7rxxbrm'
-  const resPinCreate = await mf.dispatchFetch('http://localhost:8787/pins', {
+  const resPinCreate = await mf.dispatchFetch('http://miniflare.test/pins', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({
@@ -47,7 +47,7 @@ test('should pin with just cid', async (t) => {
 
   // Upload
   const file = new Blob(['hello world!'], { type: 'application/text' })
-  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: file,
@@ -87,7 +87,7 @@ test('should list pinned items when querying without filters', async (t) => {
     .eq('content_cid', cid)
 
   const headers = { Authorization: `Bearer ${client.token}` }
-  const res = await mf.dispatchFetch('http://localhost:8787/pins', { headers })
+  const res = await mf.dispatchFetch('http://miniflare.test/pins', { headers })
   const { count, results } = await res.json()
   t.is(count, 1)
   t.is(results[0].pin.cid, cid)

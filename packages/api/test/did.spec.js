@@ -10,7 +10,7 @@ test.before(async (t) => {
 
 test('/did should return the service DID', async (t) => {
   const mf = getMiniflareContext(t)
-  const res = await mf.dispatchFetch(`http://localhost:8787/did`)
+  const res = await mf.dispatchFetch(`http://miniflare.test/did`)
   const { ok, value } = await res.json()
 
   t.true(ok)

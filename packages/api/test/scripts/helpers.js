@@ -197,7 +197,7 @@ export class DBTestClient {
    * @param {{ cid: string; name: string; }} data
    */
   async addPin(data) {
-    const res = await this.mf.dispatchFetch('http://localhost:8787/pins', {
+    const res = await this.mf.dispatchFetch('http://miniflare.test/pins', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.token}`,

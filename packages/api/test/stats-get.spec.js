@@ -22,7 +22,7 @@ test('Should return proper response for /stats route, based on seeded demoData',
     uploads_past_7_total: 2011366,
     uploads_remote_total: 11077834,
   }
-  const res = await mf.dispatchFetch('http://localhost:8787/stats', {
+  const res = await mf.dispatchFetch('http://miniflare.test/stats', {
     headers: { Authorization: `Bearer ${client.token}` },
   })
 

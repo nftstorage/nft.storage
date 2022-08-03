@@ -58,7 +58,7 @@ test('maintenance middleware should throw error when in maintenance mode', async
  */
 async function tryWrite(t, token) {
   const mf = getMiniflareContext(t)
-  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     headers: { authorization: `Bearer ${token}` },
     method: 'POST',
     body: new Blob(['hello there ', new Date().toISOString()]),
@@ -76,7 +76,7 @@ async function tryWrite(t, token) {
  */
 async function tryRead(t, token) {
   const mf = getMiniflareContext(t)
-  const res = await mf.dispatchFetch('http://localhost:8787/', {
+  const res = await mf.dispatchFetch('http://miniflare.test/', {
     headers: { authorization: `Bearer ${token}` },
   })
   if (!res.ok) {

@@ -13,7 +13,7 @@ test('should get version information', async (t) => {
   const mf = getMiniflareContext(t)
   const config = getTestServiceConfig(t)
 
-  const res = await mf.dispatchFetch('http://localhost:8787/version')
+  const res = await mf.dispatchFetch('http://miniflare.test/version')
   t.truthy(res)
   t.true(res.ok)
   const { version, commit, branch, mode } = await res.json()

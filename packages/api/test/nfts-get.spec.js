@@ -19,7 +19,7 @@ test.serial('should return proper response for cid v1', async (t) => {
     name: 'test-file11',
   })
 
-  const res = await mf.dispatchFetch(`http://localhost:8787/${cid}`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/${cid}`, {
     headers: { Authorization: `Bearer ${client.token}` },
   })
   const { ok, value } = await res.json()
@@ -39,7 +39,7 @@ test.serial('should return proper response for cid v0', async (t) => {
     name: 'test-file-cid-v0',
   })
 
-  const res = await mf.dispatchFetch(`http://localhost:8787/${cid}`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/${cid}`, {
     headers: { Authorization: `Bearer ${client.token}` },
   })
   const { ok, value } = await res.json()
@@ -52,7 +52,7 @@ test.serial('should error on invalid cid', async (t) => {
   const cid = 'asdhjkahsdja'
   const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
-  const res = await mf.dispatchFetch(`http://localhost:8787/${cid}`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/${cid}`, {
     headers: { Authorization: `Bearer ${client.token}` },
   })
   const { ok, value, error } = await res.json()
@@ -68,7 +68,7 @@ test.serial('should error on not found', async (t) => {
   const cid = 'bafybeia22kh3smc7p67oa76pcleaxp4u5zatsvcndi3xrqod5vtxq5avpa'
   const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
-  const res = await mf.dispatchFetch(`http://localhost:8787/${cid}`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/${cid}`, {
     headers: { Authorization: `Bearer ${client.token}` },
   })
   const { ok, value, error } = await res.json()
@@ -96,7 +96,7 @@ test.serial('should error on not found for a deleted nft', async (t) => {
   t.truthy(deleted)
   t.is(deleted && deleted.source_cid, cidv1)
 
-  const res = await mf.dispatchFetch(`http://localhost:8787/${cidv1}`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/${cidv1}`, {
     headers: { Authorization: `Bearer ${client.token}` },
   })
   const { ok, error } = await res.json()

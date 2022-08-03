@@ -24,7 +24,7 @@ test.serial('should delete nft', async (t) => {
   })
 
   const testTs = Date.now()
-  const res = await mf.dispatchFetch(`http://localhost:8787/${cid}`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/${cid}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${client.token}` },
   })
@@ -74,7 +74,7 @@ test.serial('should delete correct cid version 0', async (t) => {
     dag_size: 100,
   })
 
-  const res = await mf.dispatchFetch(`http://localhost:8787/${cidv0}`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/${cidv0}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${client.token}` },
   })
@@ -112,7 +112,7 @@ test.serial('should delete correct cid version 1', async (t) => {
     dag_size: 100,
   })
 
-  const res = await mf.dispatchFetch(`http://localhost:8787/${cidv1}`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/${cidv1}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${client.token}` },
   })
@@ -134,7 +134,7 @@ test.serial('should error deleting invalid cid', async (t) => {
   const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
 
-  const res = await mf.dispatchFetch(`http://localhost:8787/${cid}`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/${cid}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${client.token}` },
   })
@@ -151,7 +151,7 @@ test.serial('should error deleting unknown cid', async (t) => {
   const mf = getMiniflareContext(t)
   const cid = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
 
-  const res = await mf.dispatchFetch(`http://localhost:8787/${cid}`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/${cid}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${client.token}` },
   })
@@ -176,7 +176,7 @@ test.serial('should not delete already deleted nft', async (t) => {
     dag_size: 100,
   })
 
-  const res = await mf.dispatchFetch(`http://localhost:8787/${cid}`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/${cid}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${client.token}` },
   })
@@ -195,7 +195,7 @@ test.serial('should not delete already deleted nft', async (t) => {
   const nftData0 = await getNftData()
   t.truthy(nftData0.deleted_at, 'deleted_at was set')
 
-  const res2 = await mf.dispatchFetch(`http://localhost:8787/${cid}`, {
+  const res2 = await mf.dispatchFetch(`http://miniflare.test/${cid}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${client.token}` },
   })

@@ -37,7 +37,7 @@ test('should upload a single CAR file with a CID-specific token', async (t) => {
   const fixture = fixtures.metaplexAuth.v1[cid]
   t.not(fixture, null, 'no fixture for cid ' + cid)
 
-  const res = await mf.dispatchFetch('http://localhost:8787/metaplex/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/metaplex/upload', {
     method: 'POST',
     headers: {
       'x-web3auth': `Metaplex ${fixture.token}`,
@@ -86,7 +86,7 @@ test.serial('should support payloads without mintingAgent tag', async (t) => {
   const fixture = fixtures.metaplexAuth.v0[cid]
   t.not(fixture, null, 'no fixture for cid ' + cid)
 
-  const res = await mf.dispatchFetch('http://localhost:8787/metaplex/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/metaplex/upload', {
     method: 'POST',
     headers: {
       'x-web3auth': `Metaplex ${fixture.token}`,
@@ -136,7 +136,7 @@ test.serial('should fail if token has an invalid signature', async (t) => {
   tokenParts[2] = tokenParts[2].replace('0', '1')
   const alteredToken = tokenParts.join('.')
 
-  const res = await mf.dispatchFetch('http://localhost:8787/metaplex/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/metaplex/upload', {
     method: 'POST',
     headers: {
       'x-web3auth': `Metaplex ${alteredToken}`,
@@ -169,7 +169,7 @@ test.serial('should fail if token payload is modified', async (t) => {
   tokenParts[1] = tokenParts[1].replace('0', '1')
   const alteredToken = tokenParts.join('.')
 
-  const res = await mf.dispatchFetch('http://localhost:8787/metaplex/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/metaplex/upload', {
     method: 'POST',
     headers: {
       'x-web3auth': `Metaplex ${alteredToken}`,

@@ -28,7 +28,7 @@ test.serial('should list 0 nfts with date before any uploads', async (t) => {
   })
 
   await delay(300)
-  const res = await mf.dispatchFetch(`http://localhost:8787/?before=${date}`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/?before=${date}`, {
     headers: { Authorization: `Bearer ${client.token}` },
   })
   const { ok, value } = await res.json()
@@ -54,7 +54,7 @@ test.serial(
     })
 
     await delay(300)
-    const res = await mf.dispatchFetch('http://localhost:8787', {
+    const res = await mf.dispatchFetch('http://miniflare.test', {
       headers: { Authorization: `Bearer ${client.token}` },
     })
     const { ok, value } = await res.json()
@@ -85,7 +85,7 @@ test.serial('should list 1 nft with param limit=1', async (t) => {
   })
 
   await delay(300)
-  const res = await mf.dispatchFetch('http://localhost:8787/?limit=1', {
+  const res = await mf.dispatchFetch('http://miniflare.test/?limit=1', {
     headers: { Authorization: `Bearer ${client.token}` },
   })
   const { ok, value } = await res.json()
@@ -107,7 +107,7 @@ test.serial('should list the default 10 nfts with no params', async (t) => {
   }
 
   await delay(300)
-  const res = await mf.dispatchFetch('http://localhost:8787', {
+  const res = await mf.dispatchFetch('http://miniflare.test', {
     headers: { Authorization: `Bearer ${client.token}` },
   })
   const { ok, value } = await res.json()
@@ -166,14 +166,14 @@ test.serial('should list only active nfts', async (t) => {
     dag_size: 100,
   })
 
-  const deleteRsp = await mf.dispatchFetch(`http://localhost:8787/${cidv0}`, {
+  const deleteRsp = await mf.dispatchFetch(`http://miniflare.test/${cidv0}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${client.token}` },
   })
   const deleteData = await deleteRsp.json()
   t.true(deleteData.ok)
 
-  const res = await mf.dispatchFetch('http://localhost:8787', {
+  const res = await mf.dispatchFetch('http://miniflare.test', {
     headers: { Authorization: `Bearer ${client.token}` },
   })
   const { ok, value } = await res.json()

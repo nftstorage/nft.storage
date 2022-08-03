@@ -30,7 +30,7 @@ test.serial('should upload a single file', async (t) => {
   const file = new Blob(['hello world!'], { type: 'application/text' })
   // expected CID for the above data
   const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
-  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: file,
@@ -60,7 +60,7 @@ test.serial('should upload multiple blobs', async (t) => {
   const file2 = new Blob(['hello world! 2'])
   body.append('file', file1, 'name1')
   body.append('file', file2, 'name2')
-  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     // @ts-ignore minor type mismatch between miniflare fetch and node-fetch
@@ -88,7 +88,7 @@ test.serial('should fail to upload files without Content-Type', async (t) => {
   const body = new FormData()
   const file = 'hello world! 1'
   body.append('file', file)
-  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     // @ts-ignore FormData type mismatch
@@ -111,7 +111,7 @@ test.serial('should upload multiple blobs without name', async (t) => {
   const file2 = new Blob(['hello world! 2'])
   body.append('file', file1)
   body.append('file', file2)
-  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     // @ts-ignore FormData type mismatch
@@ -142,7 +142,7 @@ test.serial('should upload multiple files with name', async (t) => {
   const file2 = new Blob(['hello world! 2'])
   body.append('file', new File([file1], 'name1.png'))
   body.append('file', new File([file2], 'name2.png'))
-  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     // @ts-ignore FormData type mismatch
@@ -172,7 +172,7 @@ test.serial('should upload a single CAR file', async (t) => {
   // expected CID for the above data
   const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
   t.is(root.toString(), cid, 'car file has correct root')
-  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${client.token}`,
@@ -217,7 +217,7 @@ test.serial('should allow a CAR with unsupported hash function', async (t) => {
     carBytes.push(chunk)
   }
 
-  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${client.token}`,
@@ -253,7 +253,7 @@ test.serial(
       carBytes.push(chunk)
     }
 
-    const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+    const res = await mf.dispatchFetch('http://miniflare.test/upload', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${client.token}`,
@@ -280,7 +280,7 @@ test.serial('should re-upload same data and update mime-type', async (t) => {
   const file = new Blob(['hello world!'], { type: 'application/text' })
   // expected CID for the above data
   const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
-  const res1 = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res1 = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: file,
@@ -290,7 +290,7 @@ test.serial('should re-upload same data and update mime-type', async (t) => {
   t.is(data1.value.type, 'application/text', 'text')
 
   const { root, car } = await createCar('hello world!')
-  const res2 = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res2 = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${client.token}`,
@@ -320,7 +320,7 @@ test.serial(
     const file = new Blob(['hello world!'])
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
-    const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+    const res = await mf.dispatchFetch('http://miniflare.test/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: file,
@@ -331,7 +331,7 @@ test.serial(
     t.not(deleted?.deleted_at, null)
 
     const testTs = Date.now()
-    const reup = await mf.dispatchFetch('http://localhost:8787/upload', {
+    const reup = await mf.dispatchFetch('http://miniflare.test/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${client.token}` },
       body: file,
@@ -362,7 +362,7 @@ test.serial('should upload to cluster 2', async (t) => {
   })
   // expected CID for the above data
   const cid = 'bafkreicoihdprzusqwmabenu7tsec7xffsaqbdpw4f3eputfcornkiytva'
-  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: file,
@@ -390,7 +390,7 @@ test.serial('should create S3 backup', async (t) => {
   const { root, car } = await packToBlob({
     input: [{ path: 'test.txt', content: 'S3 backup' }],
   })
-  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: car,
@@ -443,7 +443,7 @@ test.serial(
         carParts.push(part)
       }
       const carFile = new Blob(carParts, { type: 'application/car' })
-      const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+      const res = await mf.dispatchFetch('http://miniflare.test/upload', {
         method: 'POST',
         headers: { Authorization: `Bearer ${client.token}` },
         body: carFile,
@@ -484,7 +484,7 @@ test.serial('should upload a single file using ucan', async (t) => {
   const mf = getMiniflareContext(t)
   const kp = await KeyPair.create()
   // Register DID
-  await mf.dispatchFetch(`http://localhost:8787/user/did`, {
+  await mf.dispatchFetch(`http://miniflare.test/user/did`, {
     headers: { Authorization: `Bearer ${client.token}` },
     method: 'POST',
     body: JSON.stringify({
@@ -493,14 +493,14 @@ test.serial('should upload a single file using ucan', async (t) => {
   })
 
   // Get root UCAN
-  const ucanRsp = await mf.dispatchFetch(`http://localhost:8787/ucan/token`, {
+  const ucanRsp = await mf.dispatchFetch(`http://miniflare.test/ucan/token`, {
     headers: { Authorization: `Bearer ${client.token}` },
     method: 'POST',
   })
   const { value: rootUcan } = await ucanRsp.json()
 
   // Get service DID
-  const didRsp = await mf.dispatchFetch(`http://localhost:8787/did`)
+  const didRsp = await mf.dispatchFetch(`http://miniflare.test/did`)
   const { value: serviceDID } = await didRsp.json()
 
   // Signed new ucan with service as audience
@@ -523,7 +523,7 @@ test.serial('should upload a single file using ucan', async (t) => {
   const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
 
   {
-    const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+    const res = await mf.dispatchFetch('http://miniflare.test/upload', {
       method: 'POST',
       headers: { Authorization: `Bearer ${opUcan}` },
       body: file,
@@ -537,7 +537,7 @@ test.serial('should upload a single file using ucan', async (t) => {
 
   {
     const badkp = await KeyPair.create()
-    const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+    const res = await mf.dispatchFetch('http://miniflare.test/upload', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${opUcan}`,
@@ -552,7 +552,7 @@ test.serial('should upload a single file using ucan', async (t) => {
     t.truthy(error.message.match(/Expected x-agent-did to be UCAN issuer DID/))
   }
 
-  const res = await mf.dispatchFetch('http://localhost:8787/upload', {
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${opUcan}`, 'x-agent-did': kp.did() },
     body: file,
@@ -579,7 +579,7 @@ test.serial('should update a single file', async (t) => {
   // expected CID for the above data
   const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
 
-  await mf.dispatchFetch('http://localhost:8787/upload', {
+  await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: file,

@@ -13,7 +13,7 @@ test.before(async (t) => {
 test.serial('should list just the default key', async (t) => {
   const mf = getMiniflareContext(t)
   const client = await createClientWithUser(t)
-  const res = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/internal/tokens`, {
     headers: { Authorization: `Bearer ${client.token}` },
   })
   const { ok, value } = await res.json()
@@ -25,7 +25,7 @@ test.serial('should list just the default key', async (t) => {
 test.serial('should create a key', async (t) => {
   const mf = getMiniflareContext(t)
   const client = await createClientWithUser(t)
-  const res = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/internal/tokens`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({ name: 'test2' }),
@@ -65,7 +65,7 @@ test.serial('should delete a key', async (t) => {
   const mf = getMiniflareContext(t)
   const config = getTestServiceConfig(t)
   const client = await createClientWithUser(t)
-  const res = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/internal/tokens`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({ name: 'test-delete' }),
@@ -132,7 +132,7 @@ test.serial(
 test.serial('should not list deleted keys', async (t) => {
   const mf = getMiniflareContext(t)
   const client = await createClientWithUser(t)
-  const res1 = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
+  const res1 = await mf.dispatchFetch(`http://miniflare.test/internal/tokens`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({ name: 'test-key-1' }),
@@ -140,7 +140,7 @@ test.serial('should not list deleted keys', async (t) => {
   const key1 = await res1.json()
   t.truthy(key1.ok, 'create key 1')
 
-  const res2 = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
+  const res2 = await mf.dispatchFetch(`http://miniflare.test/internal/tokens`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({ name: 'test-key-2' }),
@@ -159,7 +159,7 @@ test.serial('should not list deleted keys', async (t) => {
   const deleteData = await resDelete.json()
   t.truthy(deleteData.ok, 'delete key 2')
 
-  const res = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/internal/tokens`, {
     headers: { Authorization: `Bearer ${client.token}` },
   })
   const { ok, value } = await res.json()
@@ -239,7 +239,7 @@ test.serial('should not delete a deleted key', async (t) => {
   let deleteData = await resDelete.json()
   t.truthy(deleteData.ok)
 
-  resDelete = await mf.dispatchFetch(`http://localhost:8787/internal/tokens`, {
+  resDelete = await mf.dispatchFetch(`http://miniflare.test/internal/tokens`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({ id: key.value.id }),

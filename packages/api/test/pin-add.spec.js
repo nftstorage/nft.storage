@@ -32,7 +32,7 @@ test.serial('should pin with just cid', async (t) => {
 
   // expected CID for the above data
   const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
-  const res = await mf.dispatchFetch('http://localhost:8787/pins', {
+  const res = await mf.dispatchFetch('http://miniflare.test/pins', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({ cid }),
@@ -59,7 +59,7 @@ test.serial('should pin with everything', async (t) => {
   const mf = getMiniflareContext(t)
   // expected CID for the above data
   const cid = 'bafkreigu63ufwrs6d7zkybgdm36orqwe6opiseut4b6ehhwi5mtgryklzi'
-  const res = await mf.dispatchFetch('http://localhost:8787/pins', {
+  const res = await mf.dispatchFetch('http://miniflare.test/pins', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({
@@ -98,7 +98,7 @@ test.serial('should pin twice and update data', async (t) => {
   // expected CID for the above data
   const cid = 'bafkreihwlixzeusjrd5avlg53yidaoonf5r5srzumu7y5uuumtt7rxxbrm'
 
-  const res1 = await mf.dispatchFetch('http://localhost:8787/pins', {
+  const res1 = await mf.dispatchFetch('http://miniflare.test/pins', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({
@@ -117,7 +117,7 @@ test.serial('should pin twice and update data', async (t) => {
     },
     'Server responded with expected data for first pin'
   )
-  const res2 = await mf.dispatchFetch('http://localhost:8787/pins', {
+  const res2 = await mf.dispatchFetch('http://miniflare.test/pins', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({
@@ -144,7 +144,7 @@ test.serial('should error pinning with invalid cid', async (t) => {
   const mf = getMiniflareContext(t)
   // expected CID for the above data
   const cid = 'bafkreidvbhs33ighmljlvr7zbv2y'
-  const res = await mf.dispatchFetch('http://localhost:8787/pins', {
+  const res = await mf.dispatchFetch('http://miniflare.test/pins', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({ cid }),
@@ -162,7 +162,7 @@ test.serial('should error pinning with invalid name', async (t) => {
   const mf = getMiniflareContext(t)
   // expected CID for the above data
   const cid = 'bafkreihwlixzeusjrd5avlg53yidaoonf5r5srzumu7y5uuumtt7rxxbrm'
-  const res = await mf.dispatchFetch('http://localhost:8787/pins', {
+  const res = await mf.dispatchFetch('http://miniflare.test/pins', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({ cid, name: 3333 }),
@@ -180,7 +180,7 @@ test.serial('should error pinning with invalid meta', async (t) => {
   const mf = getMiniflareContext(t)
   // expected CID for the above data
   const cid = 'bafkreihwlixzeusjrd5avlg53yidaoonf5r5srzumu7y5uuumtt7rxxbrm'
-  const res = await mf.dispatchFetch('http://localhost:8787/pins', {
+  const res = await mf.dispatchFetch('http://miniflare.test/pins', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({ cid, meta: ['dd'] }),
@@ -200,7 +200,7 @@ test.serial('should pin to cluster by source CID', async (t) => {
   const cidv0 = 'QmXRdb4vemfS7Z6EL2p47XdjRatZ5Ne8DEnwr5uaHqXnak'
   const cidv1 = CID.parse(cidv0).toV1().toString()
 
-  const res = await mf.dispatchFetch('http://localhost:8787/pins', {
+  const res = await mf.dispatchFetch('http://miniflare.test/pins', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({ cid: cidv0 }),
@@ -233,7 +233,7 @@ test.serial('should pin to cluster by source CID', async (t) => {
 test.serial('should filter non-string meta values', async (t) => {
   const mf = getMiniflareContext(t)
   const cid = 'bafkreihwlixzeusjrd5avlg53yidaoonf5r5srzumu7y5uuumtt7rxxbrm'
-  const res = await mf.dispatchFetch('http://localhost:8787/pins', {
+  const res = await mf.dispatchFetch('http://miniflare.test/pins', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
     body: JSON.stringify({

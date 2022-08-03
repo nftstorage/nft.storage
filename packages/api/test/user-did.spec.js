@@ -17,7 +17,7 @@ test.before(async (t) => {
 test.serial('should register new did ', async (t) => {
   const mf = getMiniflareContext(t)
   const kp = await KeyPair.create()
-  const res = await mf.dispatchFetch(`http://localhost:8787/user/did`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/user/did`, {
     headers: { Authorization: `Bearer ${client.token}` },
     method: 'POST',
     body: JSON.stringify({
@@ -31,7 +31,7 @@ test.serial('should register new did ', async (t) => {
 test.serial('should error with bad DID', async (t) => {
   const mf = getMiniflareContext(t)
   const did = 'did:key:z'
-  const res = await mf.dispatchFetch(`http://localhost:8787/user/did`, {
+  const res = await mf.dispatchFetch(`http://miniflare.test/user/did`, {
     headers: { Authorization: `Bearer ${client.token}` },
     method: 'POST',
     body: JSON.stringify({

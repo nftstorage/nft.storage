@@ -19,7 +19,7 @@ test.serial('should return proper response for cid v1', async (t) => {
     name: 'test-file11',
   })
 
-  const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
+  const res = await mf.dispatchFetch(`http://miniflare.test/check/${cid}`)
   const { ok, value } = await res.json()
 
   t.is(value.cid, cid)
@@ -36,7 +36,7 @@ test.serial('should return proper response for cid v0', async (t) => {
     name: 'test-file-cid-v0',
   })
 
-  const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
+  const res = await mf.dispatchFetch(`http://miniflare.test/check/${cid}`)
   const { ok, value } = await res.json()
   t.is(value.cid, cid)
   t.is(value.pin.status, 'queued')
@@ -46,7 +46,7 @@ test.serial('should return proper response for cid v0', async (t) => {
 test.serial('should error on invalid cid', async (t) => {
   const mf = getMiniflareContext(t)
   const cid = 'asdhjkahsdja'
-  const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
+  const res = await mf.dispatchFetch(`http://miniflare.test/check/${cid}`)
   const { ok, value, error } = await res.json()
 
   t.false(ok)
@@ -59,7 +59,7 @@ test.serial('should error on invalid cid', async (t) => {
 test.serial('should error on not found', async (t) => {
   const mf = getMiniflareContext(t)
   const cid = 'bafybeia22kh3smc7p67oa76pcleaxp4u5zatsvcndi3xrqod5vtxq5avpa'
-  const res = await mf.dispatchFetch(`http://localhost:8787/check/${cid}`)
+  const res = await mf.dispatchFetch(`http://miniflare.test/check/${cid}`)
   const { ok, value, error } = await res.json()
 
   t.false(ok)
