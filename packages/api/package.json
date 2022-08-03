@@ -7,7 +7,8 @@
   "main": "dist/worker.js",
   "scripts": {
     "deploy": "wrangler publish --env production",
-    "dev": "./docker/run-with-dependencies.sh ./scripts/run-dev.sh",
+    "predev": "./scripts/cli.js services start && ./scripts/cli.js db-sql --cargo --testing --reset && ./scripts/cli.js minio bucket create dotstorage-dev-0",
+    "dev": "miniflare dist/worker.js --watch --debug --env ../../.env",
     "dev:persist": "PERSIST_VOLUMES=true npm run dev",
     "dev:clean": "./docker/clean-persistent-data.sh",
     "build": "scripts/cli.js build",
