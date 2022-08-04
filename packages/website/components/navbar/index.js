@@ -1,10 +1,9 @@
 import Router, { useRouter } from 'next/router'
 import { useCallback, useMemo, useRef, useState } from 'react'
-
 import Button from '../button'
 import Cross from '../../icons/cross'
 import Hamburger from '../../icons/hamburger'
-import Link from 'next/link'
+import Link from '../link'
 import clsx from 'clsx'
 import countly from 'lib/countly'
 import { getMagic } from '../../lib/magic.js'
@@ -153,13 +152,12 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
             <Hamburger className="w-4 m2" aria-label="Toggle Navbar" />
           </Button>
         </div>
-        <Link href={{ pathname: '/', query: version ? { version } : null }}>
-          <a
-            className="nav-logo-link flex no-underline align-middle"
-            onClick={onLinkClick}
-          >
-            <Logo dark={logo.isDark} />
-          </a>
+        <Link
+          className="nav-logo-link flex no-underline align-middle"
+          href={{ pathname: '/', query: version ? { version } : null }}
+          onClick={onLinkClick}
+        >
+          <Logo dark={logo.isDark} />
         </Link>
         <div className="flex items-center">
           <div className="desktop-nav-items">
@@ -170,17 +168,16 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                   key={`nav-link-${index}`}
                   onClick={item.onClick}
                 >
-                  <Link href={item.link || ''}>
-                    <a
-                      key={item.name}
-                      className={clsx(
-                        'text-xl text-black no-underline underline-hover align-middle',
-                        { mr4: index === ITEMS.length - 1 }
-                      )}
-                      onClick={item.tracking ? item.tracking : onLinkClick}
-                    >
-                      {item.name}
-                    </a>
+                  <Link
+                    href={item.link || ''}
+                    key={item.name}
+                    className={clsx(
+                      'text-xl text-black no-underline underline-hover align-middle',
+                      { mr4: index === ITEMS.length - 1 }
+                    )}
+                    onClick={item.tracking ? item.tracking : onLinkClick}
+                  >
+                    {item.name}
                   </Link>
                   {index !== ITEMS.length - 2 && (
                     <span className="mx-2 align-middle font-bold text-black">
@@ -231,10 +228,11 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
         aria-hidden={isMenuOpen}
       >
         <div className="flex flex-col items-center text-center mt-8">
-          <Link href="/">
-            <a className="mobile-nav-menu-logo flex no-underline align-middle">
-              <Logo dark={logo.isDark} />
-            </a>
+          <Link
+            href="/"
+            className="mobile-nav-menu-logo flex no-underline align-middle"
+          >
+            <Logo dark={logo.isDark} />
           </Link>
         </div>
         <div className="mobile-nav-items text-center flex flex-col items-center justify-center flex-auto overflow-y-scroll">
@@ -245,16 +243,15 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                 key={`menu-nav-link-${index}`}
                 onClick={item.onClick}
               >
-                <Link href={item.link || ''}>
-                  <a
-                    className={clsx(
-                      'mobile-nav-link align-middle chicagoflf',
-                      logo.isDark ? 'black' : 'white'
-                    )}
-                    onClick={item.tracking ? item.tracking : onMobileLinkClick}
-                  >
-                    {item.name}
-                  </a>
+                <Link
+                  href={item.link || ''}
+                  className={clsx(
+                    'mobile-nav-link align-middle chicagoflf',
+                    logo.isDark ? 'black' : 'white'
+                  )}
+                  onClick={item.tracking ? item.tracking : onMobileLinkClick}
+                >
+                  {item.name}
                 </Link>
               </div>
             ))}

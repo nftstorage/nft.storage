@@ -488,11 +488,45 @@ describe('NFT Upload ', () => {
     const file = new Blob(['hello world!'], { type: 'application/text' })
     // expected CID for the above data
     const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+
+    {
+      const res = await fetch('upload', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${opUcan}` },
+        body: file,
+      })
+
+      assert.equal(res.status, 401)
+      const { ok, error } = await res.json()
+      assert.equal(ok, false)
+      assert.ok(error.message.match(/x-agent-did/))
+    }
+
+    {
+      const badkp = await KeyPair.create()
+      const res = await fetch('upload', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${opUcan}`,
+          'x-agent-did': badkp.did(),
+        },
+        body: file,
+      })
+
+      assert.equal(res.status, 401)
+      const { ok, error } = await res.json()
+      assert.equal(ok, false)
+      assert.ok(
+        error.message.match(/Expected x-agent-did to be UCAN issuer DID/)
+      )
+    }
+
     const res = await fetch('upload', {
       method: 'POST',
-      headers: { Authorization: `Bearer ${opUcan}` },
+      headers: { Authorization: `Bearer ${opUcan}`, 'x-agent-did': kp.did() },
       body: file,
     })
+
     const { ok, value } = await res.json()
     assert(ok, 'Server response payload has `ok` property')
 

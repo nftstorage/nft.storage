@@ -141,13 +141,16 @@ export class DBClient {
       .select('status')
       .eq('auth_key_id', key.id)
       .filter('deleted_at', 'is', null)
-      .single()
 
     if (error) {
       throw new DBError(error)
     }
 
-    return data?.status === 'Blocked'
+    if (!data || !data.length) {
+      return false
+    }
+
+    return data[0].status === 'Blocked'
   }
 
   /**
@@ -266,10 +269,6 @@ export class DBClient {
       {
         status: 'PinQueued',
         service: 'IpfsCluster3',
-      },
-      {
-        status: 'PinQueued',
-        service: 'Pinata',
       },
     ]
 
@@ -502,25 +501,29 @@ export class DBClient {
    * @param {string[]} cids
    */
   async getDealsForCids(cids = []) {
-    const rsp = await this.client.rpc('find_deals_by_content_cids', {
-      cids,
-    })
-    if (rsp.error) {
+    try {
+      const rsp = await this.client.rpc('find_deals_by_content_cids', {
+        cids,
+      })
+      if (rsp.error) {
+        throw new DBError(rsp.error)
+      }
+
+      /** @type {Record<string, import('./../bindings').Deal[]>} */
+      const result = {}
+      for (const d of rsp.data) {
+        const { contentCid: cid, ...rest } = d
+        if (!Array.isArray(result[cid])) {
+          result[cid] = [rest]
+        } else {
+          result[cid].push(rest)
+        }
+      }
+
+      return result
+    } catch (err) {
       return {}
     }
-
-    /** @type {Record<string, import('./../bindings').Deal[]>} */
-    const result = {}
-    for (const d of rsp.data) {
-      const { contentCid: cid, ...rest } = d
-      if (!Array.isArray(result[cid])) {
-        result[cid] = [rest]
-      } else {
-        result[cid].push(rest)
-      }
-    }
-
-    return result
   }
 
   /**

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from '../components/link'
 import HashLink from '../components/hashlink.js'
 import InlineCode from '../components/inline-code.js'
 import faqContent from '../lib/faqContent'
@@ -93,10 +93,12 @@ const faqs = [
 const TOC = () => (
   <div className="flex flex-col py-1 max-w-3xl">
     {faqs.map((faq, index) => (
-      <Link href={`/faq/#${hashify(faq.question)}`} key={`faq-item${index}`}>
-        <a className="text-white my-2 underline">
-          {faq.error ? `Why am I seeing: ${faq.error}` : faq.question}
-        </a>
+      <Link
+        href={`/faq/#${hashify(faq.question)}`}
+        key={`faq-item${index}`}
+        className="text-white my-2 underline"
+      >
+        {faq.error ? `Why am I seeing: ${faq.error}` : faq.question}
       </Link>
     ))}
   </div>

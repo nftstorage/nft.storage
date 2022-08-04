@@ -9,7 +9,7 @@ import { When } from 'react-if'
 import Box from '../components/box.js'
 import Alert from '../components/alert.js'
 import Button from '../components/button/index.js'
-import Link from 'next/link'
+import Link from '../components/link'
 import Cross from '../icons/cross'
 import Tooltip from '../components/tooltip/index.js'
 
@@ -203,12 +203,12 @@ export default function NewFile({ user }) {
             <div>
               <p className="leading-normal text-xs">
                 You can also upload files using the{' '}
-                <Link href="/docs/client/js/">
-                  <a className="black">JS Client Library</a>
+                <Link href="/docs/client/js/" className="black">
+                  JS Client Library
                 </Link>{' '}
                 or{' '}
-                <Link href="https://nft.storage/api-docs/">
-                  <a className="black">Raw HTTP Requests</a>
+                <Link href="https://nft.storage/api-docs/" className="black">
+                  Raw HTTP Requests
                 </Link>
               </p>
             </div>
@@ -240,8 +240,11 @@ export default function NewFile({ user }) {
             <h3 className="notification-header mt-4">♾️ Permanent data</h3>
             <p className="my-2 text-sm">
               Deleting files from the NFT.Storage site’s{' '}
-              <Link href="/files">
-                <a className="black no-underline underline-hover">Files</a>
+              <Link
+                href="/files"
+                className="black no-underline underline-hover"
+              >
+                Files
               </Link>{' '}
               page will remove them from the file listing for your account, but
               that doesn’t prevent nodes on the decentralized storage network

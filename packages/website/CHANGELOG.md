@@ -1,5 +1,53 @@
 # Changelog
 
+## [2.2.0](https://github.com/nftstorage/nft.storage/compare/website-v2.1.3...website-v2.2.0) (2022-08-01)
+
+
+### Features
+
+* rarible announcement post ([#2080](https://github.com/nftstorage/nft.storage/issues/2080)) ([eb7baa2](https://github.com/nftstorage/nft.storage/commit/eb7baa2e5cbb866db743df3581b9d77f3357b951))
+
+## [2.1.3](https://github.com/nftstorage/nft.storage/compare/website-v2.1.2...website-v2.1.3) (2022-08-01)
+
+
+### Bug Fixes
+
+* use cf pages token ([db63ad1](https://github.com/nftstorage/nft.storage/commit/db63ad1035ef30c4f7e295676aa90cbbcfcb08f2))
+
+## [2.1.2](https://github.com/nftstorage/nft.storage/compare/website-v2.1.1...website-v2.1.2) (2022-08-01)
+
+
+### Bug Fixes
+
+* website release changelog trigger with output ([533ba94](https://github.com/nftstorage/nft.storage/commit/533ba94c5be7ce0aff3093840583c0ba1b17b4dd))
+
+## [2.1.1](https://github.com/nftstorage/nft.storage/compare/website-v2.1.0...website-v2.1.1) (2022-08-01)
+
+
+### Bug Fixes
+
+* trigger website release ([e036741](https://github.com/nftstorage/nft.storage/commit/e03674171063edc575be932d4fba5f77d1dde705))
+
+## [2.1.0](https://github.com/nftstorage/nft.storage/compare/website-v2.0.0...website-v2.1.0) (2022-07-29)
+
+
+### Features
+
+* add rarible logo ([#2086](https://github.com/nftstorage/nft.storage/issues/2086)) ([ef78f5c](https://github.com/nftstorage/nft.storage/commit/ef78f5cc5b22d070df96bff12472d3c619968782))
+
+## [2.0.0](https://github.com/nftstorage/nft.storage/compare/website-v1.56.0...website-v2.0.0) (2022-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* rate-limit ucan auth requests (#2097)
+* rate limiting by ucan agent did (#2093)
+
+### Features
+
+* rate limiting by ucan agent did ([#2093](https://github.com/nftstorage/nft.storage/issues/2093)) ([b29d3d5](https://github.com/nftstorage/nft.storage/commit/b29d3d5a431f4775fabd147bc66353956511e8f9)), closes [#2092](https://github.com/nftstorage/nft.storage/issues/2092)
+* rate-limit ucan auth requests ([#2097](https://github.com/nftstorage/nft.storage/issues/2097)) ([1e43a31](https://github.com/nftstorage/nft.storage/commit/1e43a31d7a0d9ba96dda50bc492aca7352d42a17))
+
 ## [1.56.0](https://github.com/nftstorage/nft.storage/compare/website-v1.55.0...website-v1.56.0) (2022-07-07)
 
 

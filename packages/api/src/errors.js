@@ -239,7 +239,20 @@ export class ErrorDIDNotFound extends HTTPError {
   constructor(msg = 'User does not have a DID registered.') {
     super(msg, 400)
     this.name = 'DIDNotFound'
-    this.code = ErrorMaintenance.CODE
+    this.code = ErrorDIDNotFound.CODE
   }
 }
-ErrorMaintenance.CODE = 'ERROR_DID_NOT_FOUND'
+ErrorDIDNotFound.CODE = 'ERROR_DID_NOT_FOUND'
+
+export class ErrorAgentDIDRequired extends HTTPError {
+  constructor(
+    msg = 'UCAN authorized request must be supplied with x-agent-did header set to the DID of the UCAN issuer',
+    status = 401
+  ) {
+    super(msg, status)
+    this.name = 'ErrorAgentDIDRequired'
+    this.name = 'AgentDIDRequired'
+    this.code = ErrorAgentDIDRequired.CODE
+  }
+}
+ErrorAgentDIDRequired.CODE = 'ERROR_AGENT_DID_REQUIRED'

@@ -3,7 +3,6 @@ import {
   getDBClient,
   getPgConnString,
   getPgPool,
-  getPinata,
   hasOwnProperty,
 } from './utils.js'
 
@@ -56,14 +55,6 @@ test('getPgConnString', (t) => {
 
 test('getPgPool', (t) => {
   t.assert(getPgPool({ DATABASE_CONNECTION: 'postgres://' }))
-})
-
-test('getPinata', (t) => {
-  t.assert(
-    getPinata({
-      PINATA_JWT: 'fakejwt',
-    })
-  )
 })
 
 test('hasOwnProperty', (t) => {

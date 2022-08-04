@@ -6,6 +6,7 @@ import {
   ErrorTokenNotFound,
   ErrorUnauthenticated,
   ErrorTokenBlocked,
+  ErrorAgentDIDRequired,
 } from '../errors.js'
 import { parseJWT, verifyJWT } from './jwt.js'
 import * as Ucan from 'ucan-storage/ucan-storage'
@@ -38,9 +39,20 @@ export async function validate(event, { log, db, ucanService }, options) {
   const token = magic.utils.parseAuthorizationHeader(auth)
 
   if (options?.checkUcan && Ucan.isUcan(token)) {
-    const { root, cap } = await ucanService.validateFromCaps(token)
+    const agentDID = event.request.headers.get('x-agent-did') || ''
+    if (!agentDID.startsWith('did:key:')) {
+      throw new ErrorAgentDIDRequired()
+    }
+
+    const { root, cap, issuer } = await ucanService.validateFromCaps(token)
+    if (issuer !== agentDID) {
+      throw new ErrorAgentDIDRequired(
+        `Expected x-agent-did to be UCAN issuer DID: ${issuer}, instead got ${agentDID}`
+      )
+    }
     const user = await db.getUser(root.audience())
     if (user) {
+      log.setUser({ id: user.id })
       return {
         user: filterDeletedKeys(user),
         db,
