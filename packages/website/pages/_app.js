@@ -13,6 +13,7 @@ import * as Sentry from '@sentry/nextjs'
 import { UserContext } from 'lib/user'
 import BlockedUploadsModal from 'components/blockedUploadsModal.js'
 import Loading from 'components/loading'
+import constants from 'lib/constants'
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 60 * 1000 } },
@@ -26,32 +27,51 @@ const queryClient = new QueryClient({
 export default function App({ Component, pageProps }) {
   const router = useRouter()
   const [user, setUser] = useState(null)
+  const [isUserInitialized, setIsUserInitialized] = useState(false)
   const [isUserBlockedModalShowing, setIsUserBlockedModalShowing] =
     useState(false)
 
   const handleIsLoggedIn = useCallback(async () => {
     const data = await isLoggedIn()
-    if (!data) return
+    if (!data) {
+      setIsUserInitialized(true)
+      return
+    }
+
     if (data) {
       // @ts-ignore
       Sentry.setUser(user)
     }
-    const tags = await getUserTags()
-    const pendingTagProposals = await getUserRequests()
 
-    if (tags.HasAccountRestriction && !sessionStorage.hasSeenUserBlockedModal) {
-      sessionStorage.hasSeenUserBlockedModal = true
-      setIsUserBlockedModalShowing(true)
+    try {
+      const tags = await getUserTags()
+      const pendingTagProposals = await getUserRequests()
+      if (
+        tags.HasAccountRestriction &&
+        !sessionStorage.hasSeenUserBlockedModal
+      ) {
+        sessionStorage.hasSeenUserBlockedModal = true
+        setIsUserBlockedModalShowing(true)
+      }
+      setUser({
+        ...data,
+        // @ts-ignore
+        tags,
+        pendingTagProposals,
+      })
+    } catch (e) {
+      // do nothing
     }
+
     // @ts-ignore
-    setUser({
-      ...data,
-      // @ts-ignore
-      tags,
-      pendingTagProposals,
-    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (user) {
+      setIsUserInitialized(true)
+    }
+  }, [user])
 
   useEffect(() => {
     handleIsLoggedIn()
@@ -67,14 +87,39 @@ export default function App({ Component, pageProps }) {
       // If redirectIfFound is also set, redirect if the user was found
       (pageProps.redirectIfFound && user)
     ) {
-      router.push(pageProps.redirectTo)
+      router.push(router.query.returnUrl ?? pageProps.redirectTo)
     }
-  }, [pageProps, user, router])
+  }, [pageProps, user, router, isUserInitialized])
+
+  const [pendingAuthCheckRoute, setPendingAuthCheckRoute] = useState('')
+
+  useEffect(() => {
+    if (pendingAuthCheckRoute && isUserInitialized) {
+      const str = pendingAuthCheckRoute.replace(/(^\/+|\/+$)/g, '')
+
+      if (
+        !user &&
+        Object.values(constants.AUTHENTICATED_ROUTES).includes(str)
+      ) {
+        router.push({
+          pathname: '/login',
+          query: {
+            returnUrl: str,
+          },
+        })
+      }
+      setPendingAuthCheckRoute('')
+    }
+  }, [pendingAuthCheckRoute, isUserInitialized, user, router])
 
   useEffect(() => {
     Router.events.on('routeChangeComplete', (route) => {
       countly.trackPageView(route)
+      setPendingAuthCheckRoute(route.split('?')[0].toLowerCase())
     })
+    setPendingAuthCheckRoute(
+      window.location.pathname.split('?')[0].toLowerCase()
+    )
   }, [])
 
   function handleClearUser() {
@@ -106,7 +151,7 @@ export default function App({ Component, pageProps }) {
       <QueryClientProvider client={queryClient}>
         <UserContext.Provider
           // @ts-ignore
-          value={{ user, handleClearUser }}
+          value={{ user, handleClearUser, handleIsLoggedIn }}
         >
           <Layout {...pageProps}>
             {(props) => <Component {...pageProps} {...props} />}

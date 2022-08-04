@@ -59,11 +59,15 @@ export async function isLoggedIn() {
  * Login with email
  *
  * @param {string} email
+ * @param {string} [redirectPath]
  */
-export async function loginEmail(email) {
+export async function loginEmail(email, redirectPath) {
   const didToken = await getMagic().auth.loginWithMagicLink({
     email: email,
-    redirectURI: new URL('/callback', window.location.origin).href,
+    redirectURI: new URL(
+      `/callback${redirectPath ? '/' + redirectPath : ''}`,
+      window.location.origin
+    ).href,
   })
 
   if (didToken) {
@@ -78,11 +82,15 @@ export async function loginEmail(email) {
  * Login with social
  *
  * @param {import('@magic-ext/oauth').OAuthProvider} provider
+ * @param {string} [redirectPath]
  */
-export async function loginSocial(provider) {
+export async function loginSocial(provider, redirectPath) {
   await getMagic().oauth.loginWithRedirect({
     provider,
-    redirectURI: new URL('/callback', window.location.origin).href,
+    redirectURI: new URL(
+      `/callback${redirectPath ? '/' + redirectPath : ''}`,
+      window.location.origin
+    ).href,
   })
 }
 
