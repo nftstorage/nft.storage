@@ -44,7 +44,6 @@ export async function metaplexUpload(event, ctx) {
   if (stat.rootCid.toString() !== meta.rootCID) {
     throw new ErrorInvalidMetaplexToken('CID in token does not match content')
   }
-
   const upload = await uploadCarWithStat(
     {
       event,
@@ -59,7 +58,6 @@ export async function metaplexUpload(event, ctx) {
     },
     stat
   )
-
   return new JSONResponse({
     ok: true,
     value: toNFTResponse(upload, meta.rootCID),
