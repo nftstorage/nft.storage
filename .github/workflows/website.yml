@@ -107,6 +107,7 @@ jobs:
           NEXT_PUBLIC_COUNTLY_URL: ${{ secrets.NEXT_PUBLIC_COUNTLY_URL }}
           NEXT_PUBLIC_ENV: production
           NEXT_PUBLIC_API: https://api.nft.storage
+          NEXT_PUBLIC_NFT_PORT_API_KEY: ${{ secrets.NEXT_PUBLIC_NFT_PORT_API_KEY }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_TOKEN }}
           SENTRY_ORG: protocol-labs-it
           SENTRY_PROJECT: frontend
