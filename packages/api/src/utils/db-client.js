@@ -187,36 +187,23 @@ export class DBClient {
     requestedTagValue,
     userProposalForm
   ) {
-    const { data: deleteData, status: deleteStatus } = await this.client
+    const { error: insertError, status: insertStatus } = await this.client
       .from('user_tag_proposal')
-      .update({
-        deleted_at: new Date().toISOString(),
+      .insert({
+        user_id: userId,
+        tag: tagName,
+        proposed_tag_value: requestedTagValue,
+        inserted_at: new Date().toISOString(),
+        user_proposal_form: userProposalForm,
       })
-      .match({ user_id: userId, tag: tagName })
-      .is('deleted_at', null)
+      .single()
 
-    if (
-      deleteStatus === 200 ||
-      ((deleteStatus === 406 || deleteStatus === 404) && !deleteData)
-    ) {
-      const { error: insertError, status: insertStatus } = await this.client
-        .from('user_tag_proposal')
-        .insert({
-          user_id: userId,
-          tag: tagName,
-          proposed_tag_value: requestedTagValue,
-          inserted_at: new Date().toISOString(),
-          user_proposal_form: userProposalForm,
-        })
-        .single()
+    if (insertError) {
+      throw new DBError(insertError)
+    }
 
-      if (insertError) {
-        throw new DBError(insertError)
-      }
-
-      if (insertStatus === 201) {
-        return true
-      }
+    if (insertStatus === 201) {
+      return true
     }
 
     return false
