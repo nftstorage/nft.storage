@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.4](https://github.com/nftstorage/nft.storage/compare/api-v4.0.3...api-v4.0.4) (2022-08-09)
+
+
+### Bug Fixes
+
+* Handling deleted_at on user requests from admin.storage (see nftstorage/admin.storage/issues/92) ([#2126](https://github.com/nftstorage/nft.storage/issues/2126)) ([dd8ca39](https://github.com/nftstorage/nft.storage/commit/dd8ca39b65f0cdbda91d1313e363ffbb6bd295af))
+
 ## [4.0.3](https://github.com/nftstorage/nft.storage/compare/api-v4.0.2...api-v4.0.3) (2022-08-02)
 
 
