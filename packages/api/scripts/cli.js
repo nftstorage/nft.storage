@@ -9,11 +9,7 @@ import Sentry from '@sentry/cli'
 import { createRequire } from 'module'
 // @ts-ignore
 import git from 'git-rev-sync'
-import {
-  servicesStartCmd,
-  servicesStopCmd,
-  servicesPullCmd,
-} from './cmds/services.js'
+import { servicesExecCmd, servicesPullCmd } from './cmds/services.js'
 import { dbSqlCmd } from './cmds/db-sql.js'
 import { dbTypesCmd } from './cmds/db-types.js'
 import { minioBucketCreateCmd, minioBucketRemoveCmd } from './cmds/minio.js'
@@ -104,19 +100,12 @@ prog
       process.exit(1)
     }
   })
-  .command('services start')
+  .command('services exec [command]')
   .describe(
-    'Run docker compose to setup Cluster, PostgreSQL, PostgREST and Minio'
+    'Run docker compose to setup Cluster, PostgreSQL, PostgREST and Minio. Executes your command while services are running, then tears down the docker env.'
   )
-  .option('--project', 'Project name', 'nft-storage-dev')
-  .action(servicesStartCmd)
-  .command('services stop')
-  .describe(
-    'Run docker compose to setup Cluster, PostgreSQL, PostgREST and Minio'
-  )
-  .option('--project', 'Project name', 'nft-storage-dev')
-  .option('--clean', 'Clean all dockers artifacts', false)
-  .action(servicesStopCmd)
+  .option('--persist', 'Whether to enable persistent data volumes', false)
+  .action(servicesExecCmd)
   .command('services pull')
   .describe('pull and build all docker images used for dev/test')
   .action(servicesPullCmd)
