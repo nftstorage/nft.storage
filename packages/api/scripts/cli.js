@@ -13,6 +13,8 @@ import { servicesExecCmd, servicesPullCmd } from './cmds/services.js'
 import { dbSqlCmd } from './cmds/db-sql.js'
 import { dbTypesCmd } from './cmds/db-types.js'
 import { minioBucketCreateCmd, minioBucketRemoveCmd } from './cmds/minio.js'
+import { runTestSuiteCmd } from './cmds/run-test.js'
+import { runDevServerCmd } from './cmds/run-dev.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(__dirname)
@@ -104,7 +106,7 @@ prog
   .describe(
     'Run docker compose to setup Cluster, PostgreSQL, PostgREST and Minio. Executes your command while services are running, then tears down the docker env.'
   )
-  .option('--persist', 'Whether to enable persistent data volumes', false)
+  .option('--persistent', 'Whether to enable persistent data volumes', false)
   .action(servicesExecCmd)
   .command('services pull')
   .describe('pull and build all docker images used for dev/test')
@@ -124,5 +126,14 @@ prog
   .command('minio bucket remove <name>')
   .describe('Remove a bucket, automatically removing all contents')
   .action(minioBucketRemoveCmd)
+  .command('run test')
+  .describe('Run the test suite, with services in docker')
+  .action(runTestSuiteCmd)
+  .command('run dev')
+  .describe(
+    'Run the development API server using miniflare, with services in docker'
+  )
+  .option('--persistent', 'Whether to enable persistent data volumes', false)
+  .action(runDevServerCmd)
 
 prog.parse(process.argv)

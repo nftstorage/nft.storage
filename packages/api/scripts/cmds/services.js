@@ -22,6 +22,7 @@ export async function servicesPullCmd() {
  *
  * Overrides the following environment variables for the child process:
  * - DATABASE_CONNECTION
+ * - MINIO_API_PORT
  * - DATABASE_URL
  * - CLUSTER_API_URL
  * - S3_ENDPOINT
@@ -42,12 +43,10 @@ export async function servicesExecCmd(command, { persistent }) {
 /**
  *
  * @param {() => Promise<unknown>} action an async action to perform while services are running
- * @param {{ persistent?: boolean }} args
+ * @param {object} args
+ * @param {boolean} [args.persistent]
  */
-export async function runWithServices(
-  action,
-  { persistent } = { persistent: false }
-) {
+export async function runWithServices(action, { persistent } = {}) {
   const project = generateProjectName(persistent)
 
   const composeFiles = ['docker-compose.yml']
@@ -58,6 +57,7 @@ export async function runWithServices(
 
   const originalEnv = getCurrentEnvVariableValues(
     'DATABASE_CONNECTION',
+    'MINIO_API_PORT',
     'DATABASE_URL',
     'CLUSTER_API_URL',
     'S3_ENDPOINT'
@@ -84,6 +84,7 @@ export async function runWithServices(
 
   const ports = await getServicePorts({ project })
   const overrides = getConfigOverrides(ports)
+  console.log('env overrides:', overrides)
 
   // override environment with vars containing dynamic port numbers.
   // note that the original env will be restored in the cleanup hook
@@ -138,6 +139,7 @@ async function getServicePorts({ project }) {
 function getConfigOverrides(ports) {
   return {
     DATABASE_CONNECTION: `postgres://postgres:postgres@localhost:${ports.db}/postgres`,
+    MINIO_API_PORT: ports.minio.toString(),
     DATABASE_URL: `http://localhost:${ports.postgrest}`,
     CLUSTER_API_URL: `http://localhost:${ports.cluster}`,
     S3_ENDPOINT: `http://localhost:${ports.minio}`,
@@ -222,6 +224,8 @@ function generateProjectName(persistent = false) {
  * @param {() => Promise<void>} cleanup an async cleanup function
  */
 function registerCleanupHook(cleanup) {
+  let started = false
+
   const events = [
     `exit`,
     `SIGINT`,
@@ -232,6 +236,10 @@ function registerCleanupHook(cleanup) {
   ]
   events.forEach((eventType) => {
     process.on(eventType, () => {
+      if (started) {
+        return
+      }
+      started = true
       cleanup()
         .then(() => {
           process.exit(0)
