@@ -6,10 +6,11 @@ import { minioBucketCreateCmd } from './minio.js'
 /**
  *
  * @param {object} opts
+ * @param {boolean} opts.services
  * @param {string[]} opts._
  */
 export async function runTestSuiteCmd(opts) {
-  await runWithServices(async () => {
+  const action = async () => {
     console.log('initializing DB schema')
     await dbSqlCmd({ cargo: true, testing: true })
 
@@ -18,7 +19,13 @@ export async function runTestSuiteCmd(opts) {
 
     console.log('running tests')
     await runAva(opts._)
-  })
+  }
+
+  if (opts.services) {
+    await runWithServices(action)
+  } else {
+    await action()
+  }
 }
 
 /**

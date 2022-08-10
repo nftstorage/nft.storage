@@ -13,9 +13,10 @@ const envFilePath = path.join(__dirname, '../../../../.env')
 /**
  *
  * @param {object} opts
+ * @param {boolean} opts.services
  * @param {boolean} opts.persistent
  */
-export async function runDevServerCmd({ persistent }) {
+export async function runDevServerCmd({ persistent, services }) {
   const action = async () => {
     console.log('initializing DB schema')
     await dbSqlCmd({ cargo: true, testing: true, reset: true })
@@ -27,7 +28,11 @@ export async function runDevServerCmd({ persistent }) {
     await runMiniflare(workerPath, '--watch', '--debug', '--env', envFilePath)
   }
 
-  await runWithServices(action, { persistent })
+  if (services) {
+    await runWithServices(action, { persistent })
+  } else {
+    await action()
+  }
 }
 
 /**

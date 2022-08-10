@@ -127,13 +127,27 @@ prog
   .describe('Remove a bucket, automatically removing all contents')
   .action(minioBucketRemoveCmd)
   .command('run test')
-  .describe('Run the test suite, with services in docker')
+  .describe(
+    'Run the test suite. Any unrecognized positional args will be passed on to the test runner.'
+  )
+  .option(
+    '--services',
+    'Run service dependencies using docker compose and cleanup after the dev server exits. Set to false if running in a custom environment',
+    true
+  )
   .action(runTestSuiteCmd)
   .command('run dev')
-  .describe(
-    'Run the development API server using miniflare, with services in docker'
+  .describe('Run the development API server using miniflare')
+  .option(
+    '--services',
+    'Run service dependencies using docker compose and cleanup after the dev server exits. Set to false if running in a custom environment',
+    true
   )
-  .option('--persistent', 'Whether to enable persistent data volumes', false)
+  .option(
+    '--persistent',
+    'Whether to enable persistent data volumes. Only has an effect when --services=true',
+    false
+  )
   .action(runDevServerCmd)
 
 prog.parse(process.argv)
