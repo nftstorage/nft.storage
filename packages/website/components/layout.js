@@ -1,7 +1,7 @@
 import Footer from './footer.js'
 import Head from 'next/head'
 import Loading from './loading'
-import Navbar from './navbar.js'
+import Navbar from './navbar/index.js'
 import { getStatusPageSummary } from '../lib/statuspage-api'
 import { getVersion } from '../lib/api'
 import { useQuery } from 'react-query'

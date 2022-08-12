@@ -8,10 +8,10 @@ import { useState } from 'react'
 import { When } from 'react-if'
 import Box from '../components/box.js'
 import Alert from '../components/alert.js'
-import Button from '../components/button.js'
+import Button from '../components/button/index.js'
 import Link from '../components/link'
 import Cross from '../icons/cross'
-import Tooltip from '../components/tooltip.js'
+import Tooltip from '../components/tooltip/index.js'
 
 export function getStaticProps() {
   return {

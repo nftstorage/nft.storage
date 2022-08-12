@@ -1,15 +1,14 @@
 import Router, { useRouter } from 'next/router'
 import { useCallback, useMemo, useRef, useState } from 'react'
-
-import Button from './button.js'
-import Cross from '../icons/cross'
-import Hamburger from '../icons/hamburger'
-import Link from './link'
+import Button from '../button'
+import Cross from '../../icons/cross'
+import Hamburger from '../../icons/hamburger'
+import Link from '../link'
 import clsx from 'clsx'
-import countly from '../lib/countly'
-import { getMagic } from '../lib/magic.js'
+import countly from 'lib/countly'
+import { getMagic } from '../../lib/magic.js'
 import { useQueryClient } from 'react-query'
-import Logo from '../components/logo'
+import Logo from '../logo'
 import { useUser } from 'lib/user.js'
 
 /**
@@ -26,7 +25,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   const queryClient = useQueryClient()
   const { handleClearUser } = useUser()
   const [isMenuOpen, setMenuOpen] = useState(false)
-  const { query } = useRouter()
+  const { query } = useRouter() || { query: { version: '' } }
   const version = /** @type {string} */ (query.version)
 
   const logout = useCallback(async () => {

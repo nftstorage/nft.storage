@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react'
 
-import Link from './link'
+import Link from '../link'
 import clsx from 'clsx'
-import countly from '../lib/countly'
+import countly from 'lib/countly'
 
 /**
  * @typedef {Object} TrackingProp
@@ -74,7 +74,7 @@ export default function Button({
       'py-2 px-3',
       variant !== 'tag' && hologram && 'hologram chicagoflf',
       small && 'small',
-      disabled ? 'o-60' : 'interactive',
+      disabled ? 'opacity-60' : 'interactive',
       variant
     )
   }

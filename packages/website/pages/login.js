@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Router from 'next/router'
 import { loginEmail, loginSocial } from '../lib/magic.js'
 import countly from '../lib/countly'
-import Button from '../components/button.js'
+import Button from '../components/button/index.js'
 import { useQueryClient } from 'react-query'
 
 export function getStaticProps() {

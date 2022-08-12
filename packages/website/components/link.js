@@ -13,12 +13,7 @@ import Link from 'next/link'
  */
 const WrappedLink = ({ tabIndex = 0, href = '', children, ...otherProps }) => (
   <Link href={href} {...otherProps}>
-    <a
-      href="replace"
-      {...otherProps}
-      tabIndex={tabIndex}
-      onClick={otherProps.onClick}
-    >
+    <a {...otherProps} tabIndex={tabIndex} onClick={otherProps.onClick}>
       {children}
     </a>
   </Link>

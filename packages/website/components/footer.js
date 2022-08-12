@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import Link from './link'
+import Link from '../components/link'
 import Discord from '../icons/discord'
 import Twitter from '../icons/twitter'
 import Github from '../icons/github'

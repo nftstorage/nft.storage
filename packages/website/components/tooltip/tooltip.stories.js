@@ -1,6 +1,7 @@
 import React from 'react'
-import Tooltip from './tooltip'
-
+import Tooltip from '.'
+import { within, userEvent, screen } from '@storybook/testing-library'
+import { expect } from '@storybook/jest'
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   component: Tooltip,
@@ -49,3 +50,15 @@ const Template = (
 )
 
 export const Default = Template.bind({})
+export const Active = Template.bind({})
+
+// @ts-ignore
+Active.play = async ({ canvasElement }) => {
+  // Starts querying the component from its root element
+  const canvas = await within(canvasElement).findByRole('button')
+  // See https://storybook.js.org/docs/react/essentials/actions#automatically-matching-args to learn how to setup logging in the Actions panel
+  await userEvent.hover(canvas)
+
+  // 👇 Assert DOM structure
+  expect(screen.getByText('Some Tooltip Content')).toBeInTheDocument()
+}

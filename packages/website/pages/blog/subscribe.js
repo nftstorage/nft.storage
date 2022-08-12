@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import Button from '../../components/button.js'
+import Button from '../../components/button/index.js'
 import countly from '../../lib/countly.js'
 import { subscribe } from '../../lib/subscribe.js'
 import { useRouter } from 'next/router'
