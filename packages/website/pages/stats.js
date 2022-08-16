@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { TrustedBy } from '../components/trustedByLogos'
 import { NftUpCta } from '../components/nftUpCta'
 import fs from 'fs'
 import { calculateStats } from '../lib/statsUtils'
@@ -7,6 +6,8 @@ import Img from '../components/cloudflareImage'
 import { API } from '../lib/api'
 import Loading from '../components/loading'
 import bytes from 'bytes'
+import NetlifyPartial from '../components/netlifyPartial'
+import { TrustedBy } from 'components/trustedByLogos'
 
 /**
  *
@@ -196,7 +197,11 @@ export default function Stats({ logos }) {
       <div className="bg-nsblue">
         <div className="stats-trusted-wrapper max-w-7xl mx-auto py-4 px-6 sm:px-16">
           <div>
-            <TrustedBy logos={logos} />
+            <NetlifyPartial
+              route="trusted-by-stats-page"
+              className="max-w-4xl mx-auto py-8 px-6 sm:px-16 text-center chicagoflf"
+              fallback={<TrustedBy logos={logos} />}
+            />
           </div>
         </div>
       </div>
