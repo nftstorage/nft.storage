@@ -2,7 +2,7 @@ name: Measure NFT Time to Retrievability (nft-ttr)
 
 on:
   schedule:
-    - cron: '30 * * * *'
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 jobs:
