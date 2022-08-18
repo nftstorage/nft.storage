@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.3.0](https://github.com/nftstorage/nft.storage/compare/website-v2.2.0...website-v2.3.0) (2022-08-18)
+
+
+### Features
+
+* update pinning request verbiage ([#2131](https://github.com/nftstorage/nft.storage/issues/2131)) ([5a631b0](https://github.com/nftstorage/nft.storage/commit/5a631b0341d37a482802fcb0204150d2533dc26c))
+
+
+### Bug Fixes
+
+* block navigation to authenticated routes ([#2120](https://github.com/nftstorage/nft.storage/issues/2120)) ([87afd27](https://github.com/nftstorage/nft.storage/commit/87afd27b78ad0b008814e57854e8a26eb9832920))
+* link to elastic ipfs github ([#2118](https://github.com/nftstorage/nft.storage/issues/2118)) ([a115edb](https://github.com/nftstorage/nft.storage/commit/a115edb6d6529af2813d2ee3680ec660d0b5c24e))
+
 ## [2.2.0](https://github.com/nftstorage/nft.storage/compare/website-v2.1.3...website-v2.2.0) (2022-08-01)
 
 
