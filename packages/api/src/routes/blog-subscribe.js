@@ -98,9 +98,19 @@ const updateSubscriber = async (email) => {
 /** @type {import('../bindings').Handler} */
 export const blogSubscribe = async (event) => {
   const body = await event.request.json()
+
+  var t = Date.now()
   ;(await isChimpUser(body.email))
     ? await updateSubscriber(body.email)
     : await addSubscriber(body.email)
+  try {
+    console.log(
+      JSON.stringify({
+        timeTaken: Date.now() - t,
+        method: 'blogSubscribe',
+      })
+    )
+  } catch (e) {}
   return new JSONResponse({
     ok: true,
   })
