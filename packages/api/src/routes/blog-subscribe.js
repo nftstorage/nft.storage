@@ -1,5 +1,6 @@
 import { JSONResponse } from '../utils/json-response.js'
 import { getServiceConfig } from '../config.js'
+import { Context } from 'mocha'
 
 const SERVER_PREFIX = 'us5'
 const LIST_ID = '64f6e3fd11'
@@ -14,8 +15,9 @@ const headers = {
 
 /**
  *  @param {string} email
+ *  @param {import('../bindings').RouteContext} ctx
  */
-export const isChimpUser = async (email) => {
+export const isChimpUser = async (email, ctx) => {
   const url = `${urlPrefix}${encodeURIComponent(email)}`
 
   var t = Date.now()
@@ -24,7 +26,7 @@ export const isChimpUser = async (email) => {
     headers,
   })
   try {
-    console.log(
+    ctx.log.info(
       JSON.stringify({
         timeTaken: Date.now() - t,
         method: 'GET',
@@ -38,8 +40,9 @@ export const isChimpUser = async (email) => {
 
 /**
  *  @param {string} email
+ *  @param {import('../bindings').RouteContext} ctx
  */
-export const addSubscriber = async (email) => {
+export const addSubscriber = async (email, ctx) => {
   const url = urlPrefix
   const body = JSON.stringify({
     email_address: email,
@@ -53,7 +56,7 @@ export const addSubscriber = async (email) => {
     body,
   })
   try {
-    console.log(
+    ctx.log.info(
       JSON.stringify({
         timeTaken: Date.now() - t,
         mailChimp: false,
@@ -68,8 +71,9 @@ export const addSubscriber = async (email) => {
 
 /**
  *  @param {string} email
+ *  @param {import('../bindings').RouteContext} ctx
  */
-const updateSubscriber = async (email) => {
+const updateSubscriber = async (email, ctx) => {
   const url = `${urlPrefix}${encodeURIComponent(email)}/tags`
 
   const body = JSON.stringify({
@@ -82,7 +86,7 @@ const updateSubscriber = async (email) => {
     body,
   })
   try {
-    console.log(
+    ctx.log.info(
       JSON.stringify({
         timeTaken: Date.now() - t,
         mailChimp: true,
@@ -96,15 +100,15 @@ const updateSubscriber = async (email) => {
 }
 
 /** @type {import('../bindings').Handler} */
-export const blogSubscribe = async (event) => {
+export const blogSubscribe = async (event, ctx) => {
   const body = await event.request.json()
 
   var t = Date.now()
-  ;(await isChimpUser(body.email))
-    ? await updateSubscriber(body.email)
-    : await addSubscriber(body.email)
+  ;(await isChimpUser(body.email, ctx))
+    ? await updateSubscriber(body.email, ctx)
+    : await addSubscriber(body.email, ctx)
   try {
-    console.log(
+    ctx.log.info(
       JSON.stringify({
         timeTaken: Date.now() - t,
         method: 'blogSubscribe',
