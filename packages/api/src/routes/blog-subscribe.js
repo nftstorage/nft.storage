@@ -1,6 +1,5 @@
 import { JSONResponse } from '../utils/json-response.js'
 import { getServiceConfig } from '../config.js'
-import { Context } from 'mocha'
 
 const SERVER_PREFIX = 'us5'
 const LIST_ID = '64f6e3fd11'
