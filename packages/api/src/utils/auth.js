@@ -35,7 +35,7 @@ function filterDeletedKeys(user) {
  * @returns {Promise<import('../bindings').Auth>}
  */
 export async function validate(event, { log, db, ucanService }, options) {
-  var t = Date.now()
+  log.time('timeTaken')
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
 
@@ -53,13 +53,13 @@ export async function validate(event, { log, db, ucanService }, options) {
         `Expected x-agent-did to be UCAN issuer DID: ${issuer}, instead got ${agentDID}`
       )
     }
-    var dbTime = Date.now()
+    log.time('dbTime')
     const user = await db.getUser(root.audience())
-    dbTime = Date.now() - dbTime
+    var dbTime = log.timeEnd('dbTime')
 
     if (user) {
       log.setUser({ id: user.id })
-      logInfo('validate', 'Ok', log, t, dbTime, null)
+      logInfo('validate', 'Ok', log, dbTime, null)
 
       return {
         user: filterDeletedKeys(user),
@@ -68,7 +68,7 @@ export async function validate(event, { log, db, ucanService }, options) {
         type: 'ucan',
       }
     } else {
-      logInfo('validate', 'ErrorTokenNotFound', log, t, null, null)
+      logInfo('validate', 'ErrorTokenNotFound', log, null, null)
       throw new ErrorTokenNotFound()
     }
   }
@@ -77,9 +77,9 @@ export async function validate(event, { log, db, ucanService }, options) {
   if (await verifyJWT(token, SALT)) {
     const decoded = parseJWT(token)
 
-    var dbTime = Date.now()
+    log.time('dbTime')
     const user = await db.getUser(decoded.sub)
-    dbTime = Date.now() - dbTime
+    var dbTime = log.timeEnd('dbTime')
 
     if (user) {
       const key = user.keys.find((k) => k?.secret === token)
@@ -88,10 +88,10 @@ export async function validate(event, { log, db, ucanService }, options) {
           const isBlocked = await db.checkIfTokenBlocked(key)
 
           if (isBlocked) {
-            logInfo('validate', 'ErrorTokenBlocked', log, t, dbTime, null)
+            logInfo('validate', 'ErrorTokenBlocked', log, dbTime, null)
             throw new ErrorTokenBlocked()
           } else {
-            logInfo('validate', 'ErrorUserNotFound', log, t, dbTime, null)
+            logInfo('validate', 'ErrorUserNotFound', log, dbTime, null)
             throw new ErrorUserNotFound()
           }
         }
@@ -99,7 +99,7 @@ export async function validate(event, { log, db, ucanService }, options) {
         log.setUser({
           id: user.id,
         })
-        logInfo('validate', 'Ok', log, t, dbTime, null)
+        logInfo('validate', 'Ok', log, dbTime, null)
 
         return {
           user: filterDeletedKeys(user),
@@ -108,11 +108,11 @@ export async function validate(event, { log, db, ucanService }, options) {
           type: 'key',
         }
       } else {
-        logInfo('validate', 'ErrorTokenNotFound', log, t, dbTime, null)
+        logInfo('validate', 'ErrorTokenNotFound', log, dbTime, null)
         throw new ErrorTokenNotFound()
       }
     } else {
-      logInfo('validate ErrorUserNotFound', log, t, dbTime, null)
+      logInfo('validate ErrorUserNotFound', log, dbTime, null)
       throw new ErrorUserNotFound()
     }
   } else {
@@ -120,16 +120,16 @@ export async function validate(event, { log, db, ucanService }, options) {
     magic.token.validate(token)
     const [proof, claim] = magic.token.decode(token)
 
-    var dbTime = Date.now()
+    log.time('dbTime')
     const user = await db.getUser(claim.iss)
-    dbTime = Date.now() - dbTime
+    var dbTime = log.timeEnd('dbTime')
 
     if (user) {
       log.setUser({
         id: user.id,
       })
 
-      logInfo('validate', 'Ok', log, t, dbTime, null)
+      logInfo('validate', 'Ok', log, dbTime, null)
 
       return {
         user: filterDeletedKeys(user),
@@ -137,7 +137,7 @@ export async function validate(event, { log, db, ucanService }, options) {
         type: 'session',
       }
     } else {
-      logInfo('validate', 'ErrorUserNotFound', log, t, dbTime, null)
+      logInfo('validate', 'ErrorUserNotFound', log, dbTime, null)
       throw new ErrorUserNotFound()
     }
   }
@@ -150,14 +150,14 @@ export async function validate(event, { log, db, ucanService }, options) {
  * @param {import('../bindings').RouteContext} ctx
  */
 export async function loginOrRegister(event, data, { db, log }) {
-  var t = Date.now()
+  log.time('timeTaken')
   const auth = event.request.headers.get('Authorization') || ''
   const token = magic.utils.parseAuthorizationHeader(auth)
 
   magic.token.validate(token)
-  var magicTime = Date.now()
+  log.time('magicTime')
   const metadata = await magic.users.getMetadataByToken(token)
-  magicTime = Date.now() - magicTime
+  var magicTime = log.timeEnd('magicTime')
 
   if (metadata.issuer) {
     const parsed =
@@ -165,7 +165,7 @@ export async function loginOrRegister(event, data, { db, log }) {
         ? await parseGithub(data.data, metadata)
         : parseMagic(metadata)
 
-    var dbTime = Date.now()
+    log.time('dbTime')
     const upsert = await db.upsertUser({
       email: parsed.email,
       github_id: parsed.sub,
@@ -175,24 +175,24 @@ export async function loginOrRegister(event, data, { db, log }) {
       picture: parsed.picture,
       github: parsed.github,
     })
-    dbTime = Date.now() - dbTime
+    var dbTime = log.timeEnd('dbTime')
 
     if (upsert.error) {
-      logInfo('loginOrRegister', 'UpsertError', log, t, dbTime, magicTime)
+      logInfo('loginOrRegister', 'UpsertError', log, dbTime, magicTime)
       // @ts-ignore
       throw new Error(`DB error: ${JSON.stringify(upsert.error)}`)
     }
 
     if (upsert.data === null) {
-      logInfo('loginOrRegister', 'UpsertDataNull', log, t, dbTime, magicTime)
+      logInfo('loginOrRegister', 'UpsertDataNull', log, dbTime, magicTime)
       throw new Error('Could not retrieve user from db.')
     }
 
     const user = upsert.data[0]
-    logInfo('loginOrRegister', 'Ok', log, t, dbTime, magicTime)
+    logInfo('loginOrRegister', 'Ok', log, dbTime, magicTime)
     return { user, tokenName: 'session' }
   } else {
-    logInfo('loginOrRegister', 'IssuerError', log, t, null, magicTime)
+    logInfo('loginOrRegister', 'IssuerError', log, null, magicTime)
     throw new HTTPError(
       'Login or register failed. Issuer could not be fetched.'
     )
@@ -264,12 +264,12 @@ export function checkAuth(ctx) {
   return ctx.auth
 }
 
-function logInfo(method, resultMsg, log, t, dbTime, magicTime) {
+function logInfo(method, resultMsg, log, dbTime, magicTime) {
   try {
     log.info(
       JSON.stringify({
         magic: {
-          timeTaken: Date.now() - t,
+          timeTaken: log.timeEnd('timeTaken'),
           dbUserTimeTaken: dbTime,
           magicTimeTaken: magicTime,
           method: method,
