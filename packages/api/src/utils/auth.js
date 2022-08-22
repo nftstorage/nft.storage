@@ -42,13 +42,13 @@ export async function validate(event, { log, db, ucanService }, options) {
   if (options?.checkUcan && Ucan.isUcan(token)) {
     const agentDID = event.request.headers.get('x-agent-did') || ''
     if (!agentDID.startsWith('did:key:')) {
-      logInfo('validate', 'ErrorAgentDIDRequired', log, t, null, null)
+      logInfo('validate', 'ErrorAgentDIDRequired', log, null, null)
       throw new ErrorAgentDIDRequired()
     }
 
     const { root, cap, issuer } = await ucanService.validateFromCaps(token)
     if (issuer !== agentDID) {
-      logInfo('validate', 'ErrorAgentDIDRequired', log, t, null, null)
+      logInfo('validate', 'ErrorAgentDIDRequired', log, null, null)
       throw new ErrorAgentDIDRequired(
         `Expected x-agent-did to be UCAN issuer DID: ${issuer}, instead got ${agentDID}`
       )
