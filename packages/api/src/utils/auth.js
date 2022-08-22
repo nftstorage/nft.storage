@@ -269,9 +269,9 @@ function logInfo(method, resultMsg, log, dbTime, magicTime) {
     log.info(
       JSON.stringify({
         magic: {
-          timeTaken: log.timeEnd('timeTaken'),
-          dbUserTimeTaken: dbTime,
-          magicTimeTaken: magicTime,
+          timeTaken: log.timeEnd('timeTaken').value,
+          dbUserTimeTaken: dbTime != null ? dbTime.value : null,
+          magicTimeTaken: magicTime != null ? magicTime.value : null,
           method: method,
           resultMessage: resultMsg,
         },
