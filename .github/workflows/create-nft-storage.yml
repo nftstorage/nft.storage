@@ -39,7 +39,7 @@ jobs:
       - name: NPM Publish
         if: ${{ steps.tag-release.outputs.releases_created }}
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         run: |
           cd packages/create-nft-storage
           npm publish --access=public
