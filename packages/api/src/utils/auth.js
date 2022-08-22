@@ -112,7 +112,7 @@ export async function validate(event, { log, db, ucanService }, options) {
         throw new ErrorTokenNotFound()
       }
     } else {
-      logInfo('validate ErrorUserNotFound', log, dbTime, null)
+      logInfo('validate', 'ErrorUserNotFound', log, dbTime, null)
       throw new ErrorUserNotFound()
     }
   } else {
