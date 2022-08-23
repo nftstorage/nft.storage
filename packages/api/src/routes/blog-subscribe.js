@@ -17,9 +17,9 @@ const headers = {
  *  @param {import('../bindings').RouteContext} ctx
  */
 export const isChimpUser = async (email, ctx) => {
+  ctx.log.time('isChimpUser')
   const url = `${urlPrefix}${encodeURIComponent(email)}`
 
-  var t = Date.now()
   const res = await fetch(url, {
     method: 'GET',
     headers,
@@ -27,8 +27,8 @@ export const isChimpUser = async (email, ctx) => {
   try {
     ctx.log.info(
       JSON.stringify({
-        timeTaken: Date.now() - t,
-        method: 'GET',
+        timeTaken: ctx.log.timeEnd('isChimpUser').value,
+        method: 'isChimpUser',
         url: urlPrefix + 'email',
         status: res.status,
       })
@@ -42,6 +42,7 @@ export const isChimpUser = async (email, ctx) => {
  *  @param {import('../bindings').RouteContext} ctx
  */
 export const addSubscriber = async (email, ctx) => {
+  ctx.log.time('addSubscriber')
   const url = urlPrefix
   const body = JSON.stringify({
     email_address: email,
@@ -57,9 +58,9 @@ export const addSubscriber = async (email, ctx) => {
   try {
     ctx.log.info(
       JSON.stringify({
-        timeTaken: Date.now() - t,
+        timeTaken: ctx.log.timeEnd('addSubscriber').value,
         mailChimp: false,
-        method: 'POST',
+        method: 'addSubscriber',
         url: url,
         status: res.status,
       })
@@ -73,23 +74,25 @@ export const addSubscriber = async (email, ctx) => {
  *  @param {import('../bindings').RouteContext} ctx
  */
 const updateSubscriber = async (email, ctx) => {
+  ctx.log.time('updateSubscriber')
   const url = `${urlPrefix}${encodeURIComponent(email)}/tags`
 
   const body = JSON.stringify({
     tags: [{ name: 'nft_storage_blog_subscriber', status: 'active' }],
   })
-  var t = Date.now()
+
   const res = await fetch(url, {
     method: 'POST',
     headers,
     body,
   })
+
   try {
     ctx.log.info(
       JSON.stringify({
-        timeTaken: Date.now() - t,
+        timeTaken: ctx.log.timeEnd('updateSubscriber').value,
         mailChimp: true,
-        method: 'POST',
+        method: 'updateSubscriber',
         url: urlPrefix + 'email/tags',
         status: res.status,
       })
@@ -100,16 +103,17 @@ const updateSubscriber = async (email, ctx) => {
 
 /** @type {import('../bindings').Handler} */
 export const blogSubscribe = async (event, ctx) => {
+  ctx.log.time('blogSubscribe')
   const body = await event.request.json()
 
-  var t = Date.now()
   ;(await isChimpUser(body.email, ctx))
     ? await updateSubscriber(body.email, ctx)
     : await addSubscriber(body.email, ctx)
+
   try {
     ctx.log.info(
       JSON.stringify({
-        timeTaken: Date.now() - t,
+        timeTaken: ctx.log.timeEnd('blogSubscribe').value,
         method: 'blogSubscribe',
       })
     )
