@@ -59,7 +59,6 @@ export const addSubscriber = async (email, ctx) => {
     ctx.log.info(
       JSON.stringify({
         timeTaken: ctx.log.timeEnd('addSubscriber').value,
-        mailChimp: false,
         method: 'addSubscriber',
         url: url,
         status: res.status,
@@ -91,7 +90,6 @@ const updateSubscriber = async (email, ctx) => {
     ctx.log.info(
       JSON.stringify({
         timeTaken: ctx.log.timeEnd('updateSubscriber').value,
-        mailChimp: true,
         method: 'updateSubscriber',
         url: urlPrefix + 'email/tags',
         status: res.status,
