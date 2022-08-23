@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.2](https://github.com/nftstorage/nft.storage/compare/website-v2.3.1...website-v2.3.2) (2022-08-23)
+
+
+### Bug Fixes
+
+* broken e-ipfs link ([#2149](https://github.com/nftstorage/nft.storage/issues/2149)) ([fd1c86c](https://github.com/nftstorage/nft.storage/commit/fd1c86c41b37245dfc478b9b29f0bc343e160dc4))
+
 ## [2.3.1](https://github.com/nftstorage/nft.storage/compare/website-v2.3.0...website-v2.3.1) (2022-08-23)
 
 
