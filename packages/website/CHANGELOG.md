@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/nftstorage/nft.storage/compare/website-v2.3.0...website-v2.3.1) (2022-08-23)
+
+
+### Bug Fixes
+
+* add href to child a element ([#2136](https://github.com/nftstorage/nft.storage/issues/2136)) ([0029430](https://github.com/nftstorage/nft.storage/commit/0029430bb7fc1369f8b5a60bbf1f190e5d1b9578))
+
 ## [2.3.0](https://github.com/nftstorage/nft.storage/compare/website-v2.2.0...website-v2.3.0) (2022-08-18)
 
 
