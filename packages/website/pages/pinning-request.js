@@ -5,6 +5,7 @@ import Box from '../components/box.js'
 import Button from '../components/button.js'
 import { createPinningRequest } from '../lib/api.js'
 import countly from '../lib/countly.js'
+import Link from 'components/link.js'
 
 /**
  * Static Props
@@ -14,7 +15,7 @@ import countly from '../lib/countly.js'
 export function getStaticProps() {
   return {
     props: {
-      title: 'Request API Pinning Access - NFT Storage',
+      title: 'Request Bulk Pinning API Access - NFT Storage',
       navBgColor: 'bg-nsgreen',
       needsUser: true,
       redirectTo: '/manage',
@@ -61,8 +62,16 @@ export default function NewKey() {
           wrapperClassName="center mv4 mw6"
         >
           <h1 className="chicagoflf text-xl font-normal">
-            Request API Pinning Access
+            Request Bulk Pinning API Access
           </h1>
+          <p>
+            NFT.Storage is capable of efficiently ingesting billions of records.
+            Whether or not your data is already on PDFS, we have simple APIs for
+            bulk data import. You do not need to request bulk API access if you
+            are just looking to upload your data to NFT.Storage. Check out{' '}
+            <Link href="/docs/how-to/pinning-service/">the docs</Link> for more
+            details.
+          </p>
           <form onSubmit={handleRequestPinningAccess}>
             <div className="my-4">
               <label htmlFor="reason" className="inline-block mb-2">

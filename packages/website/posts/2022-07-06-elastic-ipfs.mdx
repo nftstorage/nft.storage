@@ -61,7 +61,7 @@ What does this mean for NFT.Storage users? Uploads of all sizes being much faste
 
 ## Elastic IPFS under the hood
 
-More literature on how Elastic IPFS works will be coming in the future. However, here are some notes on how it diverges significantly from the two major IPFS implementations today, go-ipfs and [js-ipfs](https://js.ipfs.io/). And all the [code is open source](https://github.com/ipfs-elastic-provider), so you can always dive into it yourself!
+More literature on how Elastic IPFS works will be coming in the future. However, here are some notes on how it diverges significantly from the two major IPFS implementations today, go-ipfs and [js-ipfs](https://js.ipfs.io/). And all the [code is open source](https://github.com/elastic-ipfs/), so you can always dive into it yourself!
 
 - No Blockstore: Blocks are retrieved directly from CAR files uploaded by users.
 - Single peer ID: We run the service as a single peer ID across cloud service regions, leaning into off-the-shelf redundancy and load balancing from the cloud provider.

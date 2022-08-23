@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 /**
  * @param {Object} props
- * @param {object | string} props.href
+ * @param {any} props.href
  * @param {string} [props.className]
  * @param {number} [props.tabIndex]
  * @param {string} [props.id]
@@ -14,7 +14,7 @@ import Link from 'next/link'
 const WrappedLink = ({ tabIndex = 0, href = '', children, ...otherProps }) => (
   <Link href={href} {...otherProps}>
     <a
-      href="replace"
+      href={href.pathname || href}
       {...otherProps}
       tabIndex={tabIndex}
       onClick={otherProps.onClick}
