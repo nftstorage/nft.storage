@@ -13,6 +13,21 @@ const buildMetadataFromHeaders = (/** @type {Headers} */ headers) => {
   return responseMetadata
 }
 
+/**
+ * @typedef {'log' | 'debug' | 'info' | 'warn' | 'error' | 'time'} Level
+ * @typedef {{
+ * dt: string;
+ * level: Level;
+ * context?: any;
+ * metadata: any;
+ * message: string;
+ * stack?: string;
+ * duration?: number}} LogEntry
+ */
+
+/**
+ * Logging
+ */
 export class Logging {
   /**
    * @param {FetchEvent} event
@@ -24,13 +39,17 @@ export class Logging {
   constructor(event, opts) {
     this.event = event
     this.opts = opts
+    /**
+     * @private
+     */
     this._times = new Map()
     /**
      * @type {string[]}
+     * @private
      */
     this._timesOrder = []
     /**
-     * @type {any[]}
+     * @type {LogEntry[]}
      */
     this.logEventsBatch = []
     this.startTs = Date.now()
@@ -77,6 +96,11 @@ export class Logging {
     })
   }
 
+  /**
+   * Fake date for log order purposes
+   *
+   * @private
+   */
   _date() {
     const now = Date.now()
     if (now === this.currentTs) {
@@ -98,12 +122,16 @@ export class Logging {
   /**
    * Add log entry to batch
    *
-   * @param {any} body
+   * @private
+   * @param {LogEntry} logEntry
    */
-  _add(body) {
-    this.logEventsBatch.push(body)
+  _add(logEntry) {
+    this.logEventsBatch.push(logEntry)
   }
 
+  /**
+   * @private
+   */
   async postBatch() {
     if (this.logEventsBatch.length > 0) {
       const batchInFlight = [...this.logEventsBatch]
@@ -141,6 +169,7 @@ export class Logging {
     const run = async () => {
       const dt = this._date()
       const duration = Date.now() - this.startTs
+      /** @type {LogEntry} */
       const log = {
         message: '',
         dt,
@@ -166,11 +195,11 @@ export class Logging {
    * Log
    *
    * @param {string | Error} message
-   * @param {'debug' | 'info' | 'warn' | 'error'} level
+   * @param {'log' | 'debug' | 'info' | 'warn' | 'error'} level
    * @param {any} [context]
    * @param {any} [metadata]
    */
-  log(message, level, context, metadata) {
+  log(message, level = 'log', context, metadata) {
     const dt = this._date()
     let log = {
       dt,
@@ -237,19 +266,22 @@ export class Logging {
    * @param {string} name
    * @param {any} [description]
    */
-  time(name, description) {
+  time(name, description, context = {}) {
     this._times.set(name, {
       name: name,
       description: description,
       start: Date.now(),
+      context,
     })
     this._timesOrder.push(name)
   }
 
   /**
    * @param {string} name
+   * @param {boolean} [shouldLog]
+   * @param {any} [context]
    */
-  timeEnd(name) {
+  timeEnd(name, shouldLog, context) {
     const timeObj = this._times.get(name)
     if (!timeObj) {
       return console.warn(`No such name ${name}`)
@@ -257,8 +289,6 @@ export class Logging {
 
     const end = Date.now()
     const duration = end - timeObj.start
-    const value = duration
-    timeObj.value = value
     this._times.set(name, {
       ...timeObj,
       end,
@@ -268,9 +298,25 @@ export class Logging {
     if (this.opts?.debug) {
       console.log(`[${this._date()}] `, `${name}: ${duration} ms`)
     }
-    return timeObj
+
+    if (shouldLog) {
+      this._add({
+        dt: this._date(),
+        level: 'time',
+        message: name,
+        metadata: this.metadata,
+        duration,
+        context: {
+          ...timeObj.context,
+          ...context,
+        },
+      })
+    }
   }
 
+  /**
+   * @private
+   */
   _timersString() {
     const result = []
     for (const key of this._timesOrder) {
