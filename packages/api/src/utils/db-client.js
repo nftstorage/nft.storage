@@ -525,6 +525,18 @@ export class DBClient {
     /** @type {PostgrestQueryBuilder<definitions['auth_key']>} */
     const query = this.client.from('auth_key')
 
+    const { data: dataExists } = await query
+      .select()
+      .match({
+        user_id: key.userId,
+        name: key.name,
+      })
+      .is('deleted_at', null)
+
+    if (dataExists?.length) {
+      throw new Error('Duplicate key name.')
+    }
+
     const { data, error } = await query
       .upsert({
         name: key.name,
