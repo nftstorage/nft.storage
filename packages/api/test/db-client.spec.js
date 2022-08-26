@@ -55,3 +55,39 @@ test.serial('getUser should list only active keys', async (t) => {
   t.is(keys.length, 3)
   t.is(keys[1].name, 'key1')
 })
+
+test.serial('createKey should not allow duplicates', async (t) => {
+  // Arrange
+  const client = await createClientWithUser(t)
+  const config = getTestServiceConfig(t)
+  const issuer1 = `did:eth:0x73573${Date.now()}`
+  const token1 = await signJWT(
+    {
+      sub: issuer1,
+      iss: 'nft-storage',
+      iat: Date.now(),
+      name: 'key1',
+    },
+    config.SALT
+  )
+  await client.client.createKey({
+    name: 'key1',
+    secret: token1,
+    userId: client.userId,
+  })
+  let threw = false
+
+  // Act
+  try {
+    await client.client.createKey({
+      name: 'key1',
+      secret: token1,
+      userId: client.userId,
+    })
+  } catch (e) {
+    threw = true
+  }
+
+  // Assert
+  t.true(threw)
+})
