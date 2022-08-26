@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Router from 'next/router'
+import { useRouter } from 'next/router'
 import { loginEmail, loginSocial } from '../lib/magic.js'
 import countly from '../lib/countly'
 import Button from '../components/button.js'
@@ -21,6 +21,11 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState('')
   const [disabled, setDisabled] = useState(false)
   const [isRedirecting, setIsRedirecting] = useState(false)
+  const router = useRouter()
+  const returnPath =
+    typeof router.query.returnUrl === 'string'
+      ? router.query.returnUrl
+      : undefined
 
   /**
    * @param {import('react').ChangeEvent<HTMLFormElement>} e
@@ -32,9 +37,9 @@ export default function Login() {
     setDisabled(true)
 
     try {
-      await loginEmail(e.currentTarget.email.value)
+      await loginEmail(e.currentTarget.email.value, returnPath)
       await queryClient.invalidateQueries('magic-user')
-      Router.push('/files')
+      router.push(returnPath ?? '/files')
     } catch (/** @type {any} */ error) {
       setDisabled(false)
       console.error('An unexpected error happened occurred:', error)
@@ -55,7 +60,7 @@ export default function Login() {
             className="w-64"
             onClick={() => {
               setIsRedirecting(true)
-              loginSocial('github')
+              loginSocial('github', returnPath)
             }}
             tracking={{
               event: countly.events.LOGIN_CLICK,

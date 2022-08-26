@@ -1,31 +1,54 @@
 import { Cluster } from '@nftstorage/ipfs-cluster'
-import { signJWT } from '../../src/utils/jwt.js'
 import { PostgrestClient } from '@supabase/postgrest-js'
 import { DBClient } from '../../src/utils/db-client.js'
-import { getServiceConfig } from '../../src/config.js'
-
-const config = getServiceConfig()
-
-export const cluster = new Cluster(config.CLUSTER_API_URL, {
-  headers: { Authorization: `Basic ${config.CLUSTER_BASIC_AUTH_TOKEN}` },
-})
-
-export const rawClient = new PostgrestClient(config.DATABASE_URL, {
-  headers: {
-    Authorization: `Bearer ${config.DATABASE_TOKEN}`,
-  },
-})
-
-export const client = new DBClient(config.DATABASE_URL, config.DATABASE_TOKEN)
+import { signJWT } from '../../src/utils/jwt.js'
+import { getMiniflareContext, getTestServiceConfig } from './test-context.js'
 
 /**
+ * @typedef {import('../../src/config.js').ServiceConfiguration} ServiceConfiguration
+ */
+
+/**
+ * @param {ServiceConfiguration} config
+ * @returns {Cluster}
+ */
+export const getCluster = (config) => {
+  return new Cluster(config.CLUSTER_API_URL, {
+    headers: { Authorization: `Basic ${config.CLUSTER_BASIC_AUTH_TOKEN}` },
+  })
+}
+
+/**
+ * @param {ServiceConfiguration} config
+ * @returns {PostgrestClient}
+ */
+export const getRawClient = (config) => {
+  return new PostgrestClient(config.DATABASE_URL, {
+    headers: {
+      Authorization: `Bearer ${config.DATABASE_TOKEN}`,
+    },
+  })
+}
+
+/**
+ * @param {ServiceConfiguration} config
+ * @returns {DBClient}
+ */
+export const getDBClient = (config) => {
+  return new DBClient(config.DATABASE_URL, config.DATABASE_TOKEN)
+}
+
+/**
+ * @param {import('ava').ExecutionContext} t
  * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
  */
-export async function createTestUser({
-  publicAddress = `0x73573${Date.now()}`,
-  issuer = `did:eth:${publicAddress}`,
-  name = 'A Tester',
-} = {}) {
+export async function createTestUser(t, userInfo = {}) {
+  const config = getTestServiceConfig(t)
+  const publicAddress =
+    userInfo.publicAddress || `0x73573${Date.now() + Math.random()}`
+  const issuer = userInfo.issuer || `did:eth:${publicAddress}`
+  const name = userInfo.name || 'A Tester'
+
   const token = await signJWT(
     {
       sub: issuer,
@@ -36,11 +59,18 @@ export async function createTestUser({
     config.SALT
   )
 
-  return createTestUserWithFixedToken({ token, publicAddress, issuer, name })
+  return createTestUserWithFixedToken(config, {
+    token,
+    publicAddress,
+    issuer,
+    name,
+  })
 }
 
 /**
  * Create a new user tag
+ *
+ * @param {PostgrestClient} rawClient
  *
  * @param {Object} tag
  * @param {number} tag.user_id
@@ -50,7 +80,7 @@ export async function createTestUser({
  * @param {string} tag.inserted_at
  * @param {string} tag.reason
  */
-async function createUserTag(tag) {
+async function createUserTag(rawClient, tag) {
   const query = rawClient.from('user_tag')
 
   const { data, error } = await query.upsert(tag).single()
@@ -67,15 +97,21 @@ async function createUserTag(tag) {
 }
 
 /**
+ * @param {ServiceConfiguration} config
  * @param {{publicAddress?: string, issuer?: string, name?: string, token?: string, addAccountRestriction?: boolean}} userInfo
  */
-export async function createTestUserWithFixedToken({
-  token = '',
-  publicAddress = `0x73573${Date.now()}`,
-  issuer = `did:eth:${publicAddress}`,
-  name = 'A Tester',
-  addAccountRestriction = false,
-} = {}) {
+export async function createTestUserWithFixedToken(
+  config,
+  {
+    token = '',
+    publicAddress = `0x73573${Date.now()}`,
+    issuer = `did:eth:${publicAddress}`,
+    name = 'A Tester',
+    addAccountRestriction = false,
+  } = {}
+) {
+  const client = getDBClient(config)
+  const rawClient = getRawClient(config)
   const { data: user, error } = await client
     .upsertUser({
       email: 'a.tester@example.org',
@@ -100,7 +136,7 @@ export async function createTestUserWithFixedToken({
     secret: token,
     userId: user.id,
   })
-  await createUserTag({
+  await createUserTag(rawClient, {
     user_id: user.id,
     tag: 'HasPsaAccess',
     value: 'true',
@@ -108,7 +144,7 @@ export async function createTestUserWithFixedToken({
     inserted_at: new Date().toISOString(),
   })
 
-  await createUserTag({
+  await createUserTag(rawClient, {
     user_id: user.id,
     tag: 'HasAccountRestriction',
     value: 'false',
@@ -117,7 +153,7 @@ export async function createTestUserWithFixedToken({
   })
 
   // Add some deleted tags to ensure our filtering works
-  await createUserTag({
+  await createUserTag(rawClient, {
     user_id: user.id,
     tag: 'HasPsaAccess',
     value: 'false',
@@ -127,7 +163,7 @@ export async function createTestUserWithFixedToken({
   })
 
   if (addAccountRestriction) {
-    await createUserTag({
+    await createUserTag(rawClient, {
       user_id: user.id,
       tag: 'HasAccountRestriction',
       value: 'true',
@@ -142,11 +178,14 @@ export async function createTestUserWithFixedToken({
 
 export class DBTestClient {
   /**
+   * @param {ServiceConfiguration} config
+   * @param {import('miniflare').Miniflare} mf
    * @param {{ token: string; userId: number; githubId: string }} opts
    */
-  constructor(opts) {
-    this.rawClient = rawClient
-    this.client = client
+  constructor(config, mf, opts) {
+    this.rawClient = getRawClient(config)
+    this.client = getDBClient(config)
+    this.mf = mf
     this.token = opts.token
     this.userId = opts.userId
     this.githubId = opts.githubId
@@ -158,7 +197,7 @@ export class DBTestClient {
    * @param {{ cid: string; name: string; }} data
    */
   async addPin(data) {
-    const res = await fetch('pins', {
+    const res = await this.mf.dispatchFetch('http://miniflare.test/pins', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.token}`,
@@ -175,10 +214,13 @@ export class DBTestClient {
   }
 }
 /**
- * @param {{publicAddress?: string, issuer?: string, name?: string}} [userInfo]
+ * @param {import('ava').ExecutionContext<unknown>} t
+ * @param {{publicAddress?: string, issuer?: string, name?: string, token?: string}} [userInfo]
  */
-export async function createClientWithUser(userInfo) {
-  const user = await createTestUser(userInfo)
+export async function createClientWithUser(t, userInfo) {
+  const serviceConfig = await getTestServiceConfig(t)
+  const mf = await getMiniflareContext(t)
 
-  return new DBTestClient(user)
+  const user = await createTestUser(t, userInfo)
+  return new DBTestClient(serviceConfig, mf, user)
 }

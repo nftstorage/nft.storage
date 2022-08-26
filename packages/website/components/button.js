@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 
-import Link from 'next/link'
+import Link from './link'
 import clsx from 'clsx'
 import countly from '../lib/countly'
 

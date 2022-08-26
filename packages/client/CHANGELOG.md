@@ -1,5 +1,25 @@
 # Changelog
 
+## [7.0.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.4.1...nft.storage-v7.0.0) (2022-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* rate-limit ucan auth requests (#2097)
+
+### Features
+
+* rate-limit ucan auth requests ([#2097](https://github.com/nftstorage/nft.storage/issues/2097)) ([1e43a31](https://github.com/nftstorage/nft.storage/commit/1e43a31d7a0d9ba96dda50bc492aca7352d42a17))
+
+## [6.4.1](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.4.0...nft.storage-v6.4.1) (2022-07-18)
+
+
+### Bug Fixes
+
+* add missing dep it-pipe ([#2076](https://github.com/nftstorage/nft.storage/issues/2076)) ([8df636c](https://github.com/nftstorage/nft.storage/commit/8df636c50400d1c97f5d4e57b816f4c8e7df00dc))
+* file import in some ts configurations ([#1915](https://github.com/nftstorage/nft.storage/issues/1915)) ([878a113](https://github.com/nftstorage/nft.storage/commit/878a113403d2be1331bda8077407ba5edaca16ba))
+* link to NFTStorage constructor in API reference docs ([#2005](https://github.com/nftstorage/nft.storage/issues/2005)) ([4eddd01](https://github.com/nftstorage/nft.storage/commit/4eddd01a78e4948d4b1e39ba88f4dee05140f512))
+
 ## [6.4.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.3.0...nft.storage-v6.4.0) (2022-06-28)
 
 

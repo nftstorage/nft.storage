@@ -1,5 +1,58 @@
 # Changelog
 
+## [4.0.4](https://github.com/nftstorage/nft.storage/compare/api-v4.0.3...api-v4.0.4) (2022-08-09)
+
+
+### Bug Fixes
+
+* Handling deleted_at on user requests from admin.storage (see nftstorage/admin.storage/issues/92) ([#2126](https://github.com/nftstorage/nft.storage/issues/2126)) ([dd8ca39](https://github.com/nftstorage/nft.storage/commit/dd8ca39b65f0cdbda91d1313e363ffbb6bd295af))
+
+## [4.0.3](https://github.com/nftstorage/nft.storage/compare/api-v4.0.2...api-v4.0.3) (2022-08-02)
+
+
+### Bug Fixes
+
+* check for token blocked ([#2045](https://github.com/nftstorage/nft.storage/issues/2045)) ([6c075dd](https://github.com/nftstorage/nft.storage/commit/6c075dd57cef24bca415b92a5cbbfd7731798c52))
+
+## [4.0.2](https://github.com/nftstorage/nft.storage/compare/api-v4.0.1...api-v4.0.2) (2022-08-02)
+
+
+### Bug Fixes
+
+* always retry s3 upload ([#2111](https://github.com/nftstorage/nft.storage/issues/2111)) ([99e7ce5](https://github.com/nftstorage/nft.storage/commit/99e7ce50d823954be1a5335de21ac3b9be9301ba))
+
+## [4.0.1](https://github.com/nftstorage/nft.storage/compare/api-v4.0.0...api-v4.0.1) (2022-08-02)
+
+
+### Bug Fixes
+
+* fdw fault tolerance ([#2108](https://github.com/nftstorage/nft.storage/issues/2108)) ([31f39a5](https://github.com/nftstorage/nft.storage/commit/31f39a5a2d994b49c2c9c49023a744d64598cbc1))
+
+## [4.0.0](https://github.com/nftstorage/nft.storage/compare/api-v3.0.1...api-v4.0.0) (2022-07-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* rate-limit ucan auth requests (#2097)
+* rate limiting by ucan agent did (#2093)
+
+### Features
+
+* rate limiting by ucan agent did ([#2093](https://github.com/nftstorage/nft.storage/issues/2093)) ([b29d3d5](https://github.com/nftstorage/nft.storage/commit/b29d3d5a431f4775fabd147bc66353956511e8f9)), closes [#2092](https://github.com/nftstorage/nft.storage/issues/2092)
+* rate-limit ucan auth requests ([#2097](https://github.com/nftstorage/nft.storage/issues/2097)) ([1e43a31](https://github.com/nftstorage/nft.storage/commit/1e43a31d7a0d9ba96dda50bc492aca7352d42a17))
+
+
+### Bug Fixes
+
+* fix error sourcemaps with wrangler ([#2094](https://github.com/nftstorage/nft.storage/issues/2094)) ([ae799be](https://github.com/nftstorage/nft.storage/commit/ae799be62faa524e2e86d03a45bd1ef84769bed2))
+
+## [3.0.1](https://github.com/nftstorage/nft.storage/compare/api-v3.0.0...api-v3.0.1) (2022-07-28)
+
+
+### Bug Fixes
+
+* set user for UCAN authentication ([#2090](https://github.com/nftstorage/nft.storage/issues/2090)) ([068f41e](https://github.com/nftstorage/nft.storage/commit/068f41e769c2a9d970449742ee49ac35558c8e2e))
+
 ## [3.0.0](https://github.com/nftstorage/nft.storage/compare/api-v2.28.1...api-v3.0.0) (2022-06-28)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "website",
-  "version": "1.56.0",
+  "version": "2.3.2",
   "description": "nft.storage website",
   "private": true,
   "license": "(Apache-2.0 OR MIT)",
@@ -27,8 +27,8 @@
     "magic-sdk": "^6.2.1",
     "multiformats": "^9.6.4",
     "next-mdx-remote": "^4.0.0-rc.1",
-    "nextra": "^2.0.0-beta.5",
-    "nextra-theme-docs": "^2.0.0-beta.5",
+    "nextra": "2.0.0-beta.5",
+    "nextra-theme-docs": "2.0.0-beta.5",
     "nft.storage": "^6.0.0",
     "rc-tooltip": "^5.1.1",
     "react": "17.0.2",

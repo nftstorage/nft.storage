@@ -32,6 +32,25 @@ describe('client', () => {
     assert.equal(typeof NFTStorage.status, 'function')
     assert.equal(typeof NFTStorage.delete, 'function')
   })
+
+  describe('headers', () => {
+    it('sets Authorization & X-Client headers', () => {
+      const client = new NFTStorage({ token: 'secret' })
+      assert.equal(NFTStorage.auth(client), {
+        Authorization: 'Bearer secret',
+        'X-Client': 'nft.storage/js',
+      })
+    })
+
+    it('sets x-agent-did header', () => {
+      const client = new NFTStorage({ token: 'secret', did: 'did:key:zAlice' })
+      assert.equal(NFTStorage.auth(client), {
+        Authorization: 'Bearer secret',
+        'X-Client': 'nft.storage/js',
+        'x-agent-did': 'did:key:zAlice',
+      })
+    })
+  })
   describe('upload', () => {
     it('upload blob', async () => {
       const client = new NFTStorage({ token, endpoint })

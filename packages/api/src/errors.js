@@ -1,6 +1,20 @@
-import { ErrorCode as MagicErrors } from '@magic-sdk/admin'
 import { JSONResponse } from './utils/json-response.js'
 import { DBError } from './utils/db-client.js'
+
+// FIXME: ava gives an error when trying to import ErrorCode from @magic-sdk/admin:
+// SyntaxError: The requested module '@magic-sdk/admin' does not provide an export named 'ErrorCode'
+// Re-declaring here to make progress, but it would be good to figure out how to import it correctly.
+const MagicErrors = {
+  MissingAuthHeader: 'ERROR_MISSING_AUTH_HEADER',
+  TokenExpired: 'ERROR_DIDT_EXPIRED',
+  TokenCannotBeUsedYet: 'ERROR_DIDT_CANNOT_BE_USED_YET',
+  IncorrectSignerAddress: 'ERROR_INCORRECT_SIGNER_ADDR',
+  FailedRecoveryProof: 'ERROR_FAILED_RECOVERING_PROOF',
+  ApiKeyMissing: 'ERROR_SECRET_API_KEY_MISSING',
+  MalformedTokenError: 'ERROR_MALFORMED_TOKEN',
+  ServiceError: 'SERVICE_ERROR',
+  ExpectedBearerString: 'EXPECTED_BEARER_STRING',
+}
 
 /** @typedef {{ code: string }} Coded */
 
@@ -239,7 +253,20 @@ export class ErrorDIDNotFound extends HTTPError {
   constructor(msg = 'User does not have a DID registered.') {
     super(msg, 400)
     this.name = 'DIDNotFound'
-    this.code = ErrorMaintenance.CODE
+    this.code = ErrorDIDNotFound.CODE
   }
 }
-ErrorMaintenance.CODE = 'ERROR_DID_NOT_FOUND'
+ErrorDIDNotFound.CODE = 'ERROR_DID_NOT_FOUND'
+
+export class ErrorAgentDIDRequired extends HTTPError {
+  constructor(
+    msg = 'UCAN authorized request must be supplied with x-agent-did header set to the DID of the UCAN issuer',
+    status = 401
+  ) {
+    super(msg, status)
+    this.name = 'ErrorAgentDIDRequired'
+    this.name = 'AgentDIDRequired'
+    this.code = ErrorAgentDIDRequired.CODE
+  }
+}
+ErrorAgentDIDRequired.CODE = 'ERROR_AGENT_DID_REQUIRED'

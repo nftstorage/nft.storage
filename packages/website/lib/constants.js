@@ -25,8 +25,17 @@ if (globalThis.window) {
   }
 }
 
+const AUTHENTICATED_ROUTES = {
+  MANAGE: 'manage',
+  FILES: 'files',
+  NEW_FILE: 'new-file',
+  NEW_KEY: 'new-key',
+  PINNING_REQUEST: 'pinning-request',
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
+  AUTHENTICATED_ROUTES,
   API: API,
   MAGIC_TOKEN: MAGIC_TOKEN,
   NFT_PORT_ENDPOINT: NFT_PORT_ENDPOINT,

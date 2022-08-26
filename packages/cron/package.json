@@ -7,8 +7,7 @@
   "type": "module",
   "bin": {
     "nftstorage-metrics": "src/bin/metrics.js",
-    "nftstorage-pins": "src/bin/pins.js",
-    "nftstorage-pinata": "src/bin/pinata.js"
+    "nftstorage-pins": "src/bin/pins.js"
   },
   "scripts": {
     "lint": "eslint 'src/**/*.js'",
@@ -17,7 +16,6 @@
     "start:nft-ttr": "node src/bin/nft-ttr.js",
     "start:pins": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/pins.js",
     "start:pins-failed": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/pins-failed.js",
-    "start:pinata": "node src/bin/pinata.js",
     "start:dagcargo:sizes": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/dagcargo-sizes.js",
     "start:metrics": "NODE_TLS_REJECT_UNAUTHORIZED=0 node src/bin/metrics.js",
     "test": "c8 ava",
@@ -32,7 +30,6 @@
     "dotenv": "^10.0.0",
     "form-data": "^4.0.0",
     "it-to-buffer": "^2.0.2",
-    "limiter": "2.0.1",
     "nft.storage": "^6.0.0",
     "p-retry": "^4.6.1",
     "p-settle": "^5.0.0",
@@ -128,7 +125,6 @@
       {
         "files": [
           "./src/jobs/dagcargo.js",
-          "./src/jobs/pinata.js",
           "./src/jobs/pins.js",
           "./src/lib/ipfs.js"
         ],
@@ -140,8 +136,7 @@
         "files": [
           "./src/jobs/dagcargo.js",
           "./src/jobs/pins.js",
-          "./src/lib/fetch.js",
-          "./src/lib/pinata.js"
+          "./src/lib/fetch.js"
         ],
         "rules": {
           "@typescript-eslint/no-unsafe-return": "off"
@@ -151,7 +146,6 @@
         "files": [
           "./src/bin/dagcargo-sizes.js",
           "./src/bin/metrics.js",
-          "./src/bin/pinata.js",
           "./src/bin/pins-failed.js",
           "./src/bin/pins.js"
         ],
@@ -163,13 +157,10 @@
         "files": [
           "./src/bin/dagcargo-sizes.js",
           "./src/bin/metrics.js",
-          "./src/bin/pinata.js",
           "./src/bin/pins-failed.js",
           "./src/bin/pins.js",
           "./src/jobs/dagcargo.js",
-          "./src/jobs/pinata.js",
-          "./src/jobs/pins.js",
-          "./src/lib/pinata.js"
+          "./src/jobs/pins.js"
         ],
         "rules": {
           "@typescript-eslint/naming-convention": "off"

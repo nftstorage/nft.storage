@@ -9,7 +9,11 @@ import Sentry from '@sentry/cli'
 import { createRequire } from 'module'
 // @ts-ignore
 import git from 'git-rev-sync'
-import { servicesStartCmd, servicesStopCmd } from './cmds/services.js'
+import {
+  servicesStartCmd,
+  servicesStopCmd,
+  servicesPullCmd,
+} from './cmds/services.js'
 import { dbSqlCmd } from './cmds/db-sql.js'
 import { dbTypesCmd } from './cmds/db-types.js'
 import { minioBucketCreateCmd, minioBucketRemoveCmd } from './cmds/minio.js'
@@ -51,6 +55,9 @@ prog
       const version = `${pkg.name}@${pkg.version}-${opts.env}+${git.short(
         __dirname
       )}`
+      const commit = git.long(__dirname)
+      const branch = git.branch(__dirname)
+
       await build({
         entryPoints: [path.join(__dirname, '../src/index.js')],
         bundle: true,
@@ -60,11 +67,11 @@ prog
         plugins: [PluginAlias],
         define: {
           NFT_STORAGE_VERSION: JSON.stringify(version),
-          NFT_STORAGE_COMMITHASH: JSON.stringify(git.long(__dirname)),
-          NFT_STORAGE_BRANCH: JSON.stringify(git.branch(__dirname)),
+          NFT_STORAGE_COMMITHASH: JSON.stringify(commit),
+          NFT_STORAGE_BRANCH: JSON.stringify(branch),
           global: 'globalThis',
         },
-        minify: opts.env === 'dev' ? false : true,
+        minify: opts.env === 'dev' || opts.env === 'test' ? false : true,
         sourcemap: true,
       })
 
@@ -110,6 +117,9 @@ prog
   .option('--project', 'Project name', 'nft-storage-dev')
   .option('--clean', 'Clean all dockers artifacts', false)
   .action(servicesStopCmd)
+  .command('services pull')
+  .describe('pull and build all docker images used for dev/test')
+  .action(servicesPullCmd)
   .command('db-sql')
   .describe('Database scripts')
   .option('--reset', 'Reset db before running SQL.', false)

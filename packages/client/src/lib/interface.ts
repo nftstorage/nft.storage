@@ -15,6 +15,8 @@ export type Tagged<T, Tag> = T & { tag?: Tag }
 export interface Service {
   endpoint: URL
   token: string
+
+  did?: string
   rateLimiter?: RateLimiter
 }
 
@@ -249,8 +251,6 @@ export interface FinalizedDeal extends DealInfo {
 }
 
 export interface Pin {
-  // Pinata does not provide this
-  // requestid: string
   cid: CIDString
   name?: string
   status: PinStatus

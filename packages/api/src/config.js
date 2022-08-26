@@ -18,44 +18,11 @@ const CLUSTER_SERVICE_URLS = {
   IpfsCluster3: 'https://nft3.storage.ipfscluster.io/api/',
 }
 
-/** @type ServiceConfiguration|undefined */
-let _globalConfig
-
-/**
- * Returns a {@link ServiceConfiguration} object containing the runtime config options for the API service.
- * Includes anything injected by the environment (secrets, URLs for services we call out to, maintenance flag, etc).
- *
- * Loaded from global variables injected by CloudFlare Worker runtime.
- *
- * Lazily loaded and cached on first access.
- */
-export const getServiceConfig = () => {
-  if (_globalConfig) {
-    return _globalConfig
-  }
-  _globalConfig = loadServiceConfig()
-  return _globalConfig
-}
-
-/**
- * Override the global service configuration for testing purposes.
- * Note that some files call {@link getServiceConfig} at module scope,
- * so they may not pick up the overriden config.
- *
- * @param {ServiceConfiguration} config
- */
-export const overrideServiceConfigForTesting = (config) => {
-  _globalConfig = config
-}
-
 /**
  * Load a {@link ServiceConfiguration} from the global environment.
- *
- * Exported for testing. See {@link getServiceConfig} for main public accessor.
- *
  * @returns {ServiceConfiguration}
  */
-export function loadServiceConfig() {
+export const getServiceConfig = () => {
   const vars = loadConfigVariables()
   return serviceConfigFromVariables(vars)
 }
@@ -103,11 +70,11 @@ export function serviceConfigFromVariables(vars) {
     PRIVATE_KEY: vars.PRIVATE_KEY,
     // These are injected in esbuild
     // @ts-ignore
-    BRANCH: NFT_STORAGE_BRANCH,
+    BRANCH: vars.NFT_STORAGE_BRANCH || NFT_STORAGE_BRANCH,
     // @ts-ignore
-    VERSION: NFT_STORAGE_VERSION,
+    VERSION: vars.NFT_STORAGE_VERSION || NFT_STORAGE_VERSION,
     // @ts-ignore
-    COMMITHASH: NFT_STORAGE_COMMITHASH,
+    COMMITHASH: vars.NFT_STORAGE_COMMITHASH || NFT_STORAGE_COMMITHASH,
   }
 }
 

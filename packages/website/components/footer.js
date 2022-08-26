@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import Link from 'next/link'
+import Link from './link'
 import Discord from '../icons/discord'
 import Twitter from '../icons/twitter'
 import Github from '../icons/github'
@@ -69,35 +69,32 @@ export default function Footer() {
         </span>
         <Dot />
         <span className="block lg:inline-block my-4">
-          <Link href="/terms">
-            <a
-              className="nspink no-underline underline-hover align-middle"
-              onClick={onLinkClick}
-            >
-              Terms of Service
-            </a>
+          <Link
+            className="nspink no-underline underline-hover align-middle"
+            onClick={onLinkClick}
+            href="/terms"
+          >
+            Terms of Service
           </Link>
         </span>
         <Dot />
         <span className="block lg:inline-block my-4">
-          <Link href="/faq">
-            <a
-              className="nspink no-underline underline-hover align-middle"
-              onClick={onLinkClick}
-            >
-              FAQ
-            </a>
+          <Link
+            href="/faq"
+            className="nspink no-underline underline-hover align-middle"
+            onClick={onLinkClick}
+          >
+            FAQ
           </Link>
         </span>
         <Dot />
         <span className="block lg:inline-block my-4">
-          <Link href="/stats">
-            <a
-              className="nspink no-underline underline-hover align-middle"
-              onClick={onLinkClick}
-            >
-              Stats
-            </a>
+          <Link
+            href="/stats"
+            className="nspink no-underline underline-hover align-middle"
+            onClick={onLinkClick}
+          >
+            Stats
           </Link>
         </span>
         <Dot />

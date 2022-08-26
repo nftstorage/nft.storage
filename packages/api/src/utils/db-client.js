@@ -141,13 +141,16 @@ export class DBClient {
       .select('status')
       .eq('auth_key_id', key.id)
       .filter('deleted_at', 'is', null)
-      .single()
 
     if (error) {
       throw new DBError(error)
     }
 
-    return data?.status === 'Blocked'
+    if (!data || !data.length) {
+      return false
+    }
+
+    return data[0].status === 'Blocked'
   }
 
   /**
@@ -184,36 +187,23 @@ export class DBClient {
     requestedTagValue,
     userProposalForm
   ) {
-    const { data: deleteData, status: deleteStatus } = await this.client
+    const { error: insertError, status: insertStatus } = await this.client
       .from('user_tag_proposal')
-      .update({
-        deleted_at: new Date().toISOString(),
+      .insert({
+        user_id: userId,
+        tag: tagName,
+        proposed_tag_value: requestedTagValue,
+        inserted_at: new Date().toISOString(),
+        user_proposal_form: userProposalForm,
       })
-      .match({ user_id: userId, tag: tagName })
-      .is('deleted_at', null)
+      .single()
 
-    if (
-      deleteStatus === 200 ||
-      ((deleteStatus === 406 || deleteStatus === 404) && !deleteData)
-    ) {
-      const { error: insertError, status: insertStatus } = await this.client
-        .from('user_tag_proposal')
-        .insert({
-          user_id: userId,
-          tag: tagName,
-          proposed_tag_value: requestedTagValue,
-          inserted_at: new Date().toISOString(),
-          user_proposal_form: userProposalForm,
-        })
-        .single()
+    if (insertError) {
+      throw new DBError(insertError)
+    }
 
-      if (insertError) {
-        throw new DBError(insertError)
-      }
-
-      if (insertStatus === 201) {
-        return true
-      }
+    if (insertStatus === 201) {
+      return true
     }
 
     return false
@@ -266,10 +256,6 @@ export class DBClient {
       {
         status: 'PinQueued',
         service: 'IpfsCluster3',
-      },
-      {
-        status: 'PinQueued',
-        service: 'Pinata',
       },
     ]
 
@@ -502,25 +488,29 @@ export class DBClient {
    * @param {string[]} cids
    */
   async getDealsForCids(cids = []) {
-    const rsp = await this.client.rpc('find_deals_by_content_cids', {
-      cids,
-    })
-    if (rsp.error) {
+    try {
+      const rsp = await this.client.rpc('find_deals_by_content_cids', {
+        cids,
+      })
+      if (rsp.error) {
+        throw new DBError(rsp.error)
+      }
+
+      /** @type {Record<string, import('./../bindings').Deal[]>} */
+      const result = {}
+      for (const d of rsp.data) {
+        const { contentCid: cid, ...rest } = d
+        if (!Array.isArray(result[cid])) {
+          result[cid] = [rest]
+        } else {
+          result[cid].push(rest)
+        }
+      }
+
+      return result
+    } catch (err) {
       return {}
     }
-
-    /** @type {Record<string, import('./../bindings').Deal[]>} */
-    const result = {}
-    for (const d of rsp.data) {
-      const { contentCid: cid, ...rest } = d
-      if (!Array.isArray(result[cid])) {
-        result[cid] = [rest]
-      } else {
-        result[cid].push(rest)
-      }
-    }
-
-    return result
   }
 
   /**

@@ -1,5 +1,5 @@
 import InlineCode from '../components/inline-code'
-import Link from 'next/link'
+import Link from '../components/link'
 
 const faqContent = {
   longTermVision: (
@@ -40,8 +40,8 @@ const faqContent = {
       Data will be available in IPFS indefinitely as well as stored in
       long-term, redundant Filecoin storage deals with the global community of
       miners. See the{' '}
-      <Link href="/terms">
-        <a className="text-white">Terms of Service</a>
+      <Link href="/terms" className="text-white">
+        Terms of Service
       </Link>{' '}
       for details.
     </p>
@@ -52,8 +52,8 @@ const faqContent = {
       per individual upload! Each upload can include a single file or a
       directory of files. (If you are using the HTTP API, you&apos;ll need to do
       some manual splitting for files over 100MB. See the{' '}
-      <Link href="/api-docs">
-        <a className="text-white">HTTP API docs</a>
+      <Link href="/api-docs" className="text-white">
+        HTTP API docs
       </Link>{' '}
       for details.) Currently, the rate limit will be triggered if the API
       receives more than 30 requests using the same API key within a 10 second
@@ -159,8 +159,8 @@ const faqContent = {
     <p className="lh-copy text-white mb4">
       <strong>Try updating to Node version 14 or later</strong>. We no longer
       offer support for versions prior to v14 (
-      <Link href="/faq/#why-no-support-for-node-pre-14">
-        <a className="text-white">see here</a>
+      <Link href="/faq/#why-no-support-for-node-pre-14" className="text-white">
+        see here
       </Link>
       ). This error can occur when attempting to use{' '}
       <a
@@ -179,8 +179,8 @@ const faqContent = {
       <strong>Try updating to Node version 14 or later</strong>. This error can
       occur because of having an old version of Node. We no longer offer support
       for Node versions prior to v14 (
-      <Link href="/faq/#why-no-support-for-node-pre-14">
-        <a className="text-white">see here</a>
+      <Link href="/faq/#why-no-support-for-node-pre-14" className="text-white">
+        see here
       </Link>
       ). With Node v14 or greater, you should be able to use{' '}
       <InlineCode>import</InlineCode> if you are using ESM Modules, otherwise

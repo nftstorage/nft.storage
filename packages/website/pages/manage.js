@@ -8,7 +8,7 @@ import Tooltip from '../components/tooltip.js'
 import countly from '../lib/countly.js'
 import { VscMail } from 'react-icons/vsc'
 import { Popover, ArrowContainer } from 'react-tiny-popover'
-import Link from 'next/link'
+import Link from '../components/link'
 
 /**
  *
@@ -117,27 +117,28 @@ export default function ManageKeys({ user }) {
                       placement="bottom"
                       overlay={
                         <span>
-                          The Pinning Service API is for users who want to take
-                          data that is not yet stored with NFT.Storage but
-                          already available on the IPFS network and store
-                          additional copies via NFT.Storage. You do not need to
-                          request Pinning Service API access if you are just
-                          looking to upload your data to NFT.Storage. Check out
-                          the docs for more details.
+                          NFT.Storage is capable of efficiently ingesting
+                          billions of records. Whether or not your data is
+                          already on PDFS, we have simple APIs for bulk data
+                          import. You do not need to request bulk API access if
+                          you are just looking to upload your data to
+                          NFT.Storage. Check out{' '}
+                          <Link href="/docs/how-to/pinning-service/">
+                            the docs
+                          </Link>{' '}
+                          for more details.
                         </span>
                       }
                       overlayClassName="ns-tooltip"
                       id="request-api-pinning-info"
                     >
-                      <Link href="/pinning-request">
-                        <a
-                          href="#"
-                          className="items-center mr-4 btn button-reset select-none black py-2 px-4 hologram chicagoflf interactive light"
-                          id="request-api-pinning"
-                        >
-                          <VscMail size={12} className="mr-2" /> Request API
-                          Pinning Access
-                        </a>
+                      <Link
+                        href="/pinning-request"
+                        className="items-center mr-4 btn button-reset select-none black py-2 px-4 hologram chicagoflf interactive light"
+                        id="request-api-pinning"
+                      >
+                        <VscMail size={12} className="mr-2" /> Request bulk
+                        pinning API access
                       </Link>
                     </Tooltip>
                   )}

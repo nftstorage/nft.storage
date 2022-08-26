@@ -1,0 +1,15 @@
+version: '3.6'
+services:
+  rest:
+    ports:
+      - 3000:3000/tcp
+  db:
+    ports:
+      - 5432:5432
+  cluster:
+    ports:
+      - '127.0.0.1:9094:9094'
+  minio:
+    ports:
+      - '9000:9000'
+      - '9001:9001'

@@ -66,7 +66,6 @@ The vars below are used by the API and/or GitHub cron actions and should be set 
 | STAGING_DATABASE_TOKEN      | Auth token for staging Postgrest API                   |                                          |
 | PROD_DATABASE_CONNECTION    | Connection string for prodction db (used by cron jobs) |                                          |
 | STAGING_DATABASE_CONNECTION | Connection string for staging db (used by cron jobs)   |                                          |
-| PINATA_JWT                  | Auth token for pinning to Pinata cluster               |                                          |
 | DAG_CARGO_HOST              | Endpoint for dag cargo API                             |                                          |
 | DAG_CARGO_DATABASE          | dag cargo database name                                |                                          |
 | DAG_CARGO_USER              | dag cargo db username                                  |                                          |

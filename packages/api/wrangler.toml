@@ -7,7 +7,8 @@ workers_dev = true
 
 # Compatibility flags https://github.com/cloudflare/wrangler/pull/2009
 compatibility_date = "2021-08-23"
-compatibility_flags = [ "formdata_parser_supports_files" ]
+compatibility_flags = ["formdata_parser_supports_files"]
+no_bundle = true
 
 [vars]
 ENV = "dev"

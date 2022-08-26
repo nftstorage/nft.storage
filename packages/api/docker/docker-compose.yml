@@ -6,7 +6,7 @@ services:
       - db
     restart: always
     ports:
-      - 3000:3000/tcp
+      - 3000
     environment:
       PGRST_DB_URI: postgres://postgres:postgres@db:5432/postgres
       PGRST_DB_SCHEMAS: public,cargo
@@ -24,7 +24,7 @@ services:
           cpus: '1'
           memory: 1G
     ports:
-      - 5432:5432
+      - 5432
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -32,8 +32,7 @@ services:
       POSTGRES_PORT: 5432
   ipfs:
     image: ipfs/go-ipfs:v0.10.0 # update this when go-ipfs M1 macs https://github.com/ipfs/go-ipfs/issues/8645
-    volumes:
-      - ./compose/ipfs:/data/ipfs
+
   cluster:
     image: ipfs/ipfs-cluster:v1.0.0-rc4
     depends_on:
@@ -49,17 +48,13 @@ services:
       CLUSTER_RESTAPI_CORSALLOWEDHEADERS: authorization
       CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
     ports:
-      - '127.0.0.1:9094:9094'
-    volumes:
-      - ./compose/cluster:/data/ipfs-cluster
+      - 9094
   minio:
     image: quay.io/minio/minio
     command: server /data/minio --console-address ":9001"
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
-    volumes:
-      - ./compose/minio:/data/minio
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - 9000
+      - 9001

@@ -145,6 +145,63 @@ paths:
         This API imposes rate limits to ensure quality of service. You may receive a 429 "Too many requests" error if you make more than 30 requests with the same API token within a ten second window. Upon receiving a response with a 429 status, clients should retry the failed request after a small delay. To avoid 429 responses, you may wish to implement client-side request throttling to stay within the limits (note: the JS client automatically does this).
 
       operationId: upload
+      parameters:
+        - in: header
+          name: x-agent-did
+          description: DID that issued / signed UCAN authorization token (required if UCAN token is used)
+          schema:
+            type: string
+            format: DID
+            required: false
+      requestBody:
+        required: true
+        content:
+          image/*:
+            schema:
+              type: string
+              format: binary
+          application/car:
+            schema:
+              type: string
+              format: binary
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+          '*/*':
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '403':
+          $ref: '#/components/responses/forbidden'
+        '500':
+          $ref: '#/components/responses/internalServerError'
+  /ucan-upload:
+    post:
+      tags:
+        - NFT Storage
+      summary: Store a file
+      description: |
+        Just like `/upload` endpoint but [using UCAN authorization tokens](https://nft.storage/docs/how-to/ucan/#using-ucans-with-nftstorage).
+        You must set `x-agent-did` header to a DID that signed the token.
+
+      operationId: ucan-upload
       requestBody:
         required: true
         content:

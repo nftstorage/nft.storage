@@ -143,7 +143,7 @@ export type NFT = {
    */
   files: Array<{ name?: string; type?: string } | undefined>
   /**
-   * Pinata pin name and meta.
+   * Pin name and meta.
    */
   pin?: { name?: string; meta?: Record<string, string> }
   /**
