@@ -87,9 +87,9 @@ export async function calculateMarketStats(stats) {
           a.totalNfts += stats[c][prop].count_successful
           a.totalNfts += stats[c][prop].count_failed
           a.totalMissing += stats[c][prop].count_failed
-          a.missingMarketValue += stats[c][prop].floor_price_failed
-          a.totalMarketValue += stats[c][prop].floor_price_successful
-          a.totalMarketValue += stats[c][prop].floor_price_failed
+          a.missingMarketValue += stats[c][prop].estimated_price_failed
+          a.totalMarketValue += stats[c][prop].estimated_price_successful
+          a.totalMarketValue += stats[c][prop].estimated_price_failed
         }
 
         return a
