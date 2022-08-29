@@ -9,6 +9,7 @@ import {
   setupMiniflareContext,
 } from './scripts/test-context.js'
 import { File, Blob } from 'nft.storage/src/platform.js'
+import { FormData } from 'undici'
 
 test.beforeEach(async (t) => {
   await setupMiniflareContext(t)
@@ -34,7 +35,7 @@ test('should store image', async (t) => {
       ],
     },
   }
-  const body = Token.encode(metadata)
+  const body = fixFormData(Token.encode(metadata))
 
   const res = await mf.dispatchFetch('http://miniflare.test/store', {
     method: 'POST',
@@ -94,9 +95,7 @@ test('should store image', async (t) => {
   ])
 })
 
-// Miniflare doesn't currently preserve pathnames in File objects uploaded via FormData.
-// TODO: re-enable this test once https://github.com/cloudflare/miniflare/pull/309 is merged
-test.skip('should store dir wrapped image', async (t) => {
+test('should store dir wrapped image', async (t) => {
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const { token, userId } = await createTestUser(t)
@@ -104,9 +103,14 @@ test.skip('should store dir wrapped image', async (t) => {
   const metadata = {
     name: 'name',
     description: 'stuff',
-    image: new File(['fake image'], '/dir/cat.png', { type: 'image/png' }),
+    // Note that the multipart form parser used by miniflare does not remove
+    // leading '/' characters, so putting `/dir/cat.png` here results in an
+    // image uri of `ipfs://<cid>//dir/cat.png`, with `//` after the cid instead
+    // of `/'. This seems to be inconsistent with the production CF worker env,
+    // which does strip the leading slash.
+    image: new File(['fake image'], 'dir/cat.png', { type: 'image/png' }),
   }
-  const body = Token.encode(metadata)
+  const body = fixFormData(Token.encode(metadata))
 
   const res = await mf.dispatchFetch('http://miniflare.test/store', {
     method: 'POST',
@@ -156,3 +160,20 @@ test.skip('should store dir wrapped image', async (t) => {
     },
   ])
 })
+
+/**
+ * Current versions of Miniflare (2.7.1 as of this writing) don't set the
+ * correct content type when given an instance of FormData from the `@web-std/form-data`
+ * package. Until we sort out the root cause, this just converts from the `@web-std` FormData
+ * object to the one from `undici`, which is what miniflare uses internally.
+ *
+ * @param {FormData} fd
+ */
+function fixFormData(fd) {
+  const out = new FormData()
+  fd.entries()
+  fd.forEach((val, key) => {
+    out.append(key, val)
+  })
+  return out
+}
