@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.3](https://github.com/nftstorage/nft.storage/compare/website-v2.3.2...website-v2.3.3) (2022-08-29)
+
+
+### Bug Fixes
+
+* duplicate key name ([#2158](https://github.com/nftstorage/nft.storage/issues/2158)) ([0c6eb47](https://github.com/nftstorage/nft.storage/commit/0c6eb479c6b398fda2ca9b71ec8b151c933a246b))
+
 ## [2.3.2](https://github.com/nftstorage/nft.storage/compare/website-v2.3.1...website-v2.3.2) (2022-08-23)
 
 
