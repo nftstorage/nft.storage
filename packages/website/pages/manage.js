@@ -99,6 +99,14 @@ export default function ManageKeys({ user }) {
     </Button>
   )
 
+  /**
+   * @param {string} keyName
+   * @param {number} keyIndex
+   */
+  const getButtonKey = (keyName, keyIndex) => {
+    return `${keyName}-${keyIndex}`
+  }
+
   return (
     <main className="bg-nsgreen grow">
       <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
@@ -190,7 +198,7 @@ export default function ManageKeys({ user }) {
                         </td>
                         <td className="shrink-cell center-cell">
                           <Popover
-                            isOpen={isActionMenuOpen === t[0]}
+                            isOpen={isActionMenuOpen === getButtonKey(t[0], k)}
                             onClickOutside={(e) => {
                               if (e.currentTarget !== null) {
                                 if (
@@ -262,13 +270,15 @@ export default function ManageKeys({ user }) {
                             )}
                           >
                             <button
-                              onClick={() => setIsActionMenuOpen(t[0])}
+                              onClick={() =>
+                                setIsActionMenuOpen(getButtonKey(t[0], k))
+                              }
                               className={`${
-                                isActionMenuOpen === t[0]
+                                isActionMenuOpen === getButtonKey(t[0], k)
                                   ? 'actions-trigger--active'
                                   : ''
                               } btn small actions-trigger`}
-                              data-key={t[0]}
+                              data-key={getButtonKey(t[0], k)}
                             >
                               Actions
                             </button>
