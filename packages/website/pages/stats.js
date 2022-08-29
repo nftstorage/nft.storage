@@ -71,11 +71,13 @@ export default function Stats({ logos }) {
       setMarketStats(await calculateMarketStats(data.report))
     } catch (e) {
       const fakeData = {
-        totalNfts: 55000000,
-        totalMarketValue: 1400000000000,
-        totalMissing: 11500000,
-        missingPercentage: 30.7,
-        missingMarketValue: 265100000000,
+        totalNfts: 91100000,
+        totalMarketValueUSD: 26800000000,
+        totalMarketValue: 0,
+        totalMissing: 1150000,
+        missingPercentage: 22.3,
+        missingMarketValueUSD: 874700000,
+        missingMarketValue: 0,
       }
       setMarketStats(fakeData)
     }
