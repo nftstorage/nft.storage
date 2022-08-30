@@ -171,7 +171,6 @@ test('should store dir wrapped image', async (t) => {
  */
 function fixFormData(fd) {
   const out = new FormData()
-  fd.entries()
   fd.forEach((val, key) => {
     out.append(key, val)
   })
