@@ -22,7 +22,7 @@ export default function NetlifyPartial({ route, className, fallback }) {
     // TODO: Update fallback when we have the blog in production.
     const host =
       process.env.NEXT_PUBLIC_NETLIFY_CMS_ENDPOINT ||
-      'https://ubiquitous-frangipane-4e7c91.netlify.app'
+      'https://endearing-gingersnap-805a15.netlify.app'
     fetch(`${host}/api/partials/${route}`)
       .then(async (response) => {
         return await response.text()
