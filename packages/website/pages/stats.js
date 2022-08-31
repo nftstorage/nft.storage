@@ -180,9 +180,11 @@ export default function Stats({ logos }) {
                   </figure>
                   <p
                     className={`chicagoflf ${
-                      stats.growthRate > 0
-                        ? `text-forest before:content-['+']`
-                        : 'text-red'
+                      stats.growthRate >= 0
+                        ? `text-forest ${
+                            stats.growthRate > 0 ? "before:content-['+']" : ''
+                          }`
+                        : `text-red before:content-['-']`
                     }`}
                   >
                     {stats.growthRate || 0}%
@@ -212,9 +214,11 @@ export default function Stats({ logos }) {
                   </figure>
                   <p
                     className={`chicagoflf ${
-                      stats.deals_total > 0
-                        ? `text-forest before:content-['+']`
-                        : 'text-red'
+                      stats.deals_total >= 0
+                        ? `text-forest ${
+                            stats.deals_total > 0 ? "before:content-['+']" : ''
+                          }`
+                        : `text-red before:content-['-']`
                     }`}
                   >
                     {stats.dealsSizeGrowthRate || 0}%
