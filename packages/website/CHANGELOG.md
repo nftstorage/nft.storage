@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/nftstorage/nft.storage/compare/website-v2.3.3...website-v2.4.0) (2022-09-01)
+
+
+### Features
+
+* fetch and calculate stats from NFTPort ([#2085](https://github.com/nftstorage/nft.storage/issues/2085)) ([a3b6116](https://github.com/nftstorage/nft.storage/commit/a3b6116b2e2771c438f150d166f1e5276da674ec))
+
 ## [2.3.3](https://github.com/nftstorage/nft.storage/compare/website-v2.3.2...website-v2.3.3) (2022-08-29)
 
 
