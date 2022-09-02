@@ -25,6 +25,16 @@ const nextConfig = withBundleAnalyzer({
   images: {
     loader: 'custom',
   },
+  redirects: async function () {
+    return [
+      {
+        source: '/blog/post/:path*',
+        destination:
+          'https://endearing-gingersnap-805a15.netlify.app/posts/:path*',
+        permanent: false,
+      },
+    ]
+  },
   exportPathMap: async function () {
     return {
       '/ipfs-404.html': { page: '/404' },
