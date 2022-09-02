@@ -61,7 +61,7 @@ For the examples below, we'll use metadata that looks like this:
 }
 ```
 
-This metadata object describes [a post on the NFT.Storage blog](https://nft.storage/blog/post/2021-11-30-hello-world-nft-storage/) using some custom metadata in the `properties` field that was made up for this example. 
+This metadata object describes [a post on the NFT.Storage blog](/blog/post/2021-11-30-hello-world-nft-storage/) using some custom metadata in the `properties` field that was made up for this example.
 
 Although wallets and other clients won't understand the meaning of our custom fields like `type` or `origins`, they will be able to show the name, description and image, since those all conform to the ERC-1155 and ERC-721 spec.
 
