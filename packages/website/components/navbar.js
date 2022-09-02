@@ -11,6 +11,9 @@ import { getMagic } from '../lib/magic.js'
 import { useQueryClient } from 'react-query'
 import Logo from '../components/logo'
 import { useUser } from 'lib/user.js'
+import constants from 'lib/constants'
+
+const BLOG_URL = constants.BLOG_URL
 
 /**
  * Navbar Component
@@ -95,8 +98,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
       },
       {
         link: {
-          pathname: '/blog',
-          query: version ? { version } : null,
+          pathname: BLOG_URL,
         },
         name: 'Blog',
       },

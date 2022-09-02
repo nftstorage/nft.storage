@@ -1,5 +1,8 @@
 let API = /** @type {string} **/ process.env.NEXT_PUBLIC_API || ''
 let MAGIC_TOKEN = /** @type {string} **/ process.env.NEXT_PUBLIC_MAGIC || ''
+const BLOG_URL =
+  /** @type {string} **/ process.env.NEXT_PUBLIC_BLOG_URL ||
+  'https://endearing-gingersnap-805a15.netlify.app/'
 
 if (globalThis.window) {
   switch (location.host) {
@@ -33,4 +36,5 @@ export default {
   AUTHENTICATED_ROUTES,
   API: API,
   MAGIC_TOKEN: MAGIC_TOKEN,
+  BLOG_URL: BLOG_URL,
 }
