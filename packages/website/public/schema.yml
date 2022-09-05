@@ -192,55 +192,6 @@ paths:
           $ref: '#/components/responses/forbidden'
         '500':
           $ref: '#/components/responses/internalServerError'
-  /ucan-upload:
-    post:
-      tags:
-        - NFT Storage
-      summary: Store a file
-      description: |
-        Just like `/upload` endpoint but [using UCAN authorization tokens](https://nft.storage/docs/how-to/ucan/#using-ucans-with-nftstorage).
-        You must set `x-agent-did` header to a DID that signed the token.
-
-      operationId: ucan-upload
-      requestBody:
-        required: true
-        content:
-          image/*:
-            schema:
-              type: string
-              format: binary
-          application/car:
-            schema:
-              type: string
-              format: binary
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-          '*/*':
-            schema:
-              type: string
-              format: binary
-      responses:
-        '200':
-          description: OK
-          content:
-            'application/json':
-              schema:
-                $ref: '#/components/schemas/UploadResponse'
-        '400':
-          $ref: '#/components/responses/badRequest'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '403':
-          $ref: '#/components/responses/forbidden'
-        '500':
-          $ref: '#/components/responses/internalServerError'
   /:
     get:
       tags:
