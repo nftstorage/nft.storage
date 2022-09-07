@@ -353,6 +353,7 @@ You may already be using `dag-cbor` without knowing it! When using the client li
 
 
 
+[howto-store]: https://nft.storage/docs/how-to/mint-custom-metadata/
 [reference-client-library]: https://nftstorage.github.io/nft.storage/client/
 [reference-http-api]: https://nft.storage/api-docs/
 [github-ipfs-car]: https://github.com/web3-storage/ipfs-car

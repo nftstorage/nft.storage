@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.4.1](https://github.com/nftstorage/nft.storage/compare/website-v2.4.0...website-v2.4.1) (2022-09-06)
+
+
+### Bug Fixes
+
+* broken docs link ([#2163](https://github.com/nftstorage/nft.storage/issues/2163)) ([8a4f732](https://github.com/nftstorage/nft.storage/commit/8a4f732fca3b3ffd3eca7c9d82c3edb8601e9dc0))
+* remove ucan-upload route from schema ([#2168](https://github.com/nftstorage/nft.storage/issues/2168)) ([310dd00](https://github.com/nftstorage/nft.storage/commit/310dd00bff2ff1b7b96694102b39836c262fa4ed))
+
+## [2.4.0](https://github.com/nftstorage/nft.storage/compare/website-v2.3.3...website-v2.4.0) (2022-09-01)
+
+
+### Features
+
+* fetch and calculate stats from NFTPort ([#2085](https://github.com/nftstorage/nft.storage/issues/2085)) ([a3b6116](https://github.com/nftstorage/nft.storage/commit/a3b6116b2e2771c438f150d166f1e5276da674ec))
+
+## [2.3.3](https://github.com/nftstorage/nft.storage/compare/website-v2.3.2...website-v2.3.3) (2022-08-29)
+
+
+### Bug Fixes
+
+* duplicate key name ([#2158](https://github.com/nftstorage/nft.storage/issues/2158)) ([0c6eb47](https://github.com/nftstorage/nft.storage/commit/0c6eb479c6b398fda2ca9b71ec8b151c933a246b))
+
 ## [2.3.2](https://github.com/nftstorage/nft.storage/compare/website-v2.3.1...website-v2.3.2) (2022-08-23)
 
 

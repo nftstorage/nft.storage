@@ -3,6 +3,11 @@ let MAGIC_TOKEN = /** @type {string} **/ process.env.NEXT_PUBLIC_MAGIC || ''
 const BLOG_URL =
   /** @type {string} **/ process.env.NEXT_PUBLIC_BLOG_URL ||
   'https://endearing-gingersnap-805a15.netlify.app/'
+export const NFT_PORT_ENDPOINT =
+  /** @type {string} **/ process.env.NEXT_PUBLIC_NFT_PORT_ENDPOINT ||
+  'https://api.nftport.xyz/v0/reports/uris'
+export const NFT_PORT_API_KEY =
+  /** @type {string} **/ process.env.NEXT_PUBLIC_NFT_PORT_API_KEY || ''
 
 if (globalThis.window) {
   switch (location.host) {
@@ -37,4 +42,6 @@ export default {
   API: API,
   MAGIC_TOKEN: MAGIC_TOKEN,
   BLOG_URL: BLOG_URL,
+  NFT_PORT_ENDPOINT: NFT_PORT_ENDPOINT,
+  NFT_PORT_API_KEY: NFT_PORT_API_KEY,
 }
