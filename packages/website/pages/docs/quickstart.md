@@ -75,7 +75,7 @@ NFTUp is the easiest way for content creators to upload their metadata and asset
 1. Drag and drop some files or folders on it. You might be prompted for your NFT.Storage API key. You can [get your key on your account page](https://nft.storage/manage/).
 1. Upload any file structure you want. If you are doing something like a HashLips build, you can upload the assets and metadata at the same time by dragging them both to the upload box.
 1. Once the upload is complete, you'll get a link to your content. Click it to fetch your data from the IPFS network.
-1. Set your [smart contract base URL](/blog/post/2022-02-15-base-url-apis/), or otherwise share your content with NFT minting services.
+1. Set your [smart contract base URL](https://blog.nft.storage/blog/post/2022-02-15-base-url-apis/), or otherwise share your content with NFT minting services.
 1. Contribute on [GitHub.](https://github.com/nftstorage/nftup)
 
 ### Get an API Token

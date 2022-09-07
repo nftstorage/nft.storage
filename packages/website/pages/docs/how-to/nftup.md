@@ -43,6 +43,6 @@ Once the upload is complete, you'll get a link to your content. Click it to fetc
 
 <img width="992" alt="Screenshot 2022-03-31 at 15 19 49" src="https://user-images.githubusercontent.com/253/161602972-9fc4fee3-d22c-45b2-8289-3d63279c0962.png"/>
 
-Now you are ready to set your [smart contract base URL](/blog/post/2022-02-15-base-url-apis/), or otherwise share your content with NFT minting services.
+Now you are ready to set your [smart contract base URL](https://blog.nft.storage/blog/post/2022-02-15-base-url-apis/), or otherwise share your content with NFT minting services.
 
 Enjoy NFTUp, and if you want to contribute, [the code is available on GitHub.](https://github.com/nftstorage/nftup)

@@ -76,7 +76,7 @@ function About() {
         that data is stored as promised). And NFT.Storage will continue to{' '}
         <a
           className="black"
-          href="/blog/post/2022-01-20-decentralizing-nft-storage/"
+          href="https://blog.nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/"
           target="_blank"
           rel="noreferrer"
         >
@@ -243,7 +243,7 @@ function About() {
                 , to other storage networks like Arweave or Storj. And as time
                 goes on, NFT.Storage will increasingly{' '}
                 <a
-                  href="/blog/post/2022-01-20-decentralizing-nft-storage/"
+                  href="https://blog.nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/"
                   className="black"
                   target="_blank"
                   rel="noreferrer"
