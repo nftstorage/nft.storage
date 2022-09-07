@@ -112,6 +112,7 @@ jobs:
           SENTRY_ORG: protocol-labs-it
           SENTRY_PROJECT: frontend
           SENTRY_URL: https://sentry.io/
+          NEXT_PUBLIC_BLOG_URL: https://blog.nft.storage
         run: yarn build:website
       - name: Website - Deploy
         run: npx wrangler pages publish --project-name nft-storage --branch main ./packages/website/out

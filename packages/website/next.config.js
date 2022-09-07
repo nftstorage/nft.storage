@@ -29,8 +29,7 @@ const nextConfig = withBundleAnalyzer({
     return [
       {
         source: '/blog/post/:path*',
-        destination:
-          'https://endearing-gingersnap-805a15.netlify.app/posts/:path*',
+        destination: `${process.env.NEXT_PUBLIC_BLOG_URL}/posts/:path*`,
         permanent: false,
       },
     ]
