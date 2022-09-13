@@ -24,7 +24,6 @@ export const events = {
   // Other custom action events
   LOGIN_CLICK: 'loginClick',
   LOGOUT_CLICK: 'logoutClick',
-  BLOG_SUBSCRIBE_CLICK: 'blogSubscribeClick',
   FILE_UPLOAD_CLICK: 'fileUploadClick',
   FILE_DELETE_CLICK: 'fileDeleteClick',
   FILES_NAVIGATION_CLICK: 'filesNavigationClick',
@@ -41,9 +40,6 @@ export const ui = {
   HOME_GET_STARTED: 'home/get-started',
   NAVBAR: 'navbar',
   LOGIN: 'login',
-  BLOG_CARD: 'blog/card',
-  BLOG_POST: 'blog/post',
-  BLOG_SUBSCRIBE: 'blog/subscribe',
   FILES: 'files',
   NEW_FILE: 'new-file',
   NEW_TOKEN: 'new-token',

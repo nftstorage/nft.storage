@@ -21,8 +21,7 @@ export default function NetlifyPartial({ route, className, fallback }) {
   useEffect(() => {
     // TODO: Update fallback when we have the blog in production.
     const host =
-      process.env.NEXT_PUBLIC_NETLIFY_CMS_ENDPOINT ||
-      'https://endearing-gingersnap-805a15.netlify.app'
+      process.env.NEXT_PUBLIC_NETLIFY_CMS_ENDPOINT || 'https://blog.nft.storage'
     fetch(`${host}/api/partials/${route}`)
       .then(async (response) => {
         return await response.text()
