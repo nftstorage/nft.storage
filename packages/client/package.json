@@ -16,16 +16,19 @@
     ".": {
       "browser": "./src/lib.js",
       "require": "./dist/src/lib.cjs",
+      "types": "./dist/src/lib.d.ts",
       "node": "./src/lib.js"
     },
     "./src/platform.js": {
       "browser": "./src/platform.web.js",
       "require": "./dist/src/platform.cjs",
+      "types": "./dist/src/platform.cjs",
       "node": "./src/platform.js"
     },
     "./src/token.js": {
       "browser": "./src/token.js",
       "require": "./dist/src/token.cjs",
+      "types": "./dist/src/token.cjs",
       "node": "./src/token.js"
     },
     "./dist/bundle.esm.min.js": {
