@@ -17,7 +17,7 @@ The best practice is to use URIs that contain [IPFS content IDs](https://docs.ip
 
 Using NFT.Storage also makes it easy to store your data on the public IPFS network. The beauty of IPFS is that it's unopinionated on where data physically sits, since it references data by its CID. As a result, IPFS guarantees that, if at least one copy of the data is being broadcast to the network (whether it's stored on a storage service, on decentralized storage, or on your local computer), you can get a copy back. 
 
-NFT.Storage functions as a great long-term home for NFT data, with data being broadcasted to the IPFS network and stored trustlessly on Filecoin (with a vision to [fully decentralize itself as a service](https://nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/)). And the storage and retrieval infrastructure behind NFT.Storage is designed to, and will increasingly, utilize innovations from both Web2 and web3 to provide the performance that end-users expect.
+NFT.Storage functions as a great long-term home for NFT data, with data being broadcasted to the IPFS network and stored trustlessly on Filecoin (with a vision to [fully decentralize itself as a service](https://blog.nft.storage/blog/post/2022-01-20-decentralizing-nft-storage/)). And the storage and retrieval infrastructure behind NFT.Storage is designed to, and will increasingly, utilize innovations from both Web2 and web3 to provide the performance that end-users expect.
 
 
 ## Pitfalls with using HTTP URLs
@@ -57,7 +57,7 @@ The Filecoin network is a great building block for any decentralized storage sys
 
 When storing data on Filecoin, you enter storage "deals" that have a finite duration. NFT.Storage service currently renews deals for you to ensure your data deals never expire. However, there are also improvements underway to ensure multi-genereational persistence with no dependency on NFT.Storage, with the mission to store all NFT data as a public good. Filecoin's unique combination of verifiable proof of storage and open market protocols allow for solutions that can ensure persistence through smart contract interactions. The current plan is to create a "data DAO" that funds smart contracts that perpetually ensure many copies of data uploaded to NFT.Storage exist, and create new storage deals if storage deals expire or copies go away. Using NFT.Storage today positions you to take advantage of these future upgrades with no extra work from your end!
 
-But since more copies on the IPFS network only increases redundancy, you should store your off-chain NFT data all the places that you need to in order to feel comfortable (we call this ["Storage Layer Maximalism"](https://nft.storage/blog/post/2021-12-14-storage-layer-maximalism/)). We hope that NFT marketplaces, tools, artists, and buyers all feel the shared responsibility to keep copies of their NFT data, alongside our efforts to store NFT data as a public good - but this starts with using IPFS CIDs in NFTs.
+But since more copies on the IPFS network only increases redundancy, you should store your off-chain NFT data all the places that you need to in order to feel comfortable (we call this ["Storage Layer Maximalism"](https://blog.nft.storage/blog/post/2021-12-14-storage-layer-maximalism/)). We hope that NFT marketplaces, tools, artists, and buyers all feel the shared responsibility to keep copies of their NFT data, alongside our efforts to store NFT data as a public good - but this starts with using IPFS CIDs in NFTs.
 
 ## Infrastructure for Web2.5
 

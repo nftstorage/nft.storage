@@ -25,6 +25,15 @@ const nextConfig = withBundleAnalyzer({
   images: {
     loader: 'custom',
   },
+  redirects: async function () {
+    return [
+      {
+        source: '/blog/post/:path*',
+        destination: `${process.env.NEXT_PUBLIC_BLOG_URL}/posts/:path*`,
+        permanent: false,
+      },
+    ]
+  },
   exportPathMap: async function () {
     return {
       '/ipfs-404.html': { page: '/404' },

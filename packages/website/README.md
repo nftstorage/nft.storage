@@ -31,7 +31,7 @@ To add a new FAQ, add an entry to the `faqContent` object in `lib/faqContent.js`
 
 ### Blog
 
-Blog post content lives in [`posts`](./posts/). To create a new blog post, create a new Markdown in that folder, with a YAML "front matter" block to define some metadata. You can copy an existing post to get an idea of the metadata format.
+Blog posts are managed at blog.nft.storage, a separate application managed by Netlify.
 
 ### ToS
 

@@ -7,7 +7,6 @@
 @import './animations.css';
 @import './stats.css';
 @import './button.css';
-@import './blog.css';
 @import './markdown.css';
 @import './nft-storage.swagger-ui.css';
 @import './nextra-theme.css';
@@ -18,6 +17,7 @@
 @import './modal.css';
 @import './footer.css';
 @import './tooltip.css';
+@import './netlify-partials.css';
 
 html {
   scroll-behavior: smooth;
