@@ -17,6 +17,7 @@
 @import './modal.css';
 @import './footer.css';
 @import './tooltip.css';
+@import './netlify-partials.css';
 
 html {
   scroll-behavior: smooth;

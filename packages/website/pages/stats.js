@@ -311,7 +311,7 @@ export default function Stats({ logos }) {
           <div>
             <NetlifyPartial
               route="trusted-by-stats-page"
-              className="max-w-4xl mx-auto py-8 px-6 sm:px-16 text-center chicagoflf"
+              className="netlify-partial-trusted-by-stats-page max-w-4xl mx-auto py-8 px-6 sm:px-16 text-center chicagoflf"
               fallback={<TrustedBy logos={logos} />}
             />
           </div>
