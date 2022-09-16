@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/nftstorage/nft.storage/compare/website-v2.4.1...website-v2.5.0) (2022-09-15)
+
+
+### Features
+
+* add netlify partial component ([#2134](https://github.com/nftstorage/nft.storage/issues/2134)) ([0d004a4](https://github.com/nftstorage/nft.storage/commit/0d004a42f2c15f077bc678ccca36a33de936eac3))
+
 ## [2.4.1](https://github.com/nftstorage/nft.storage/compare/website-v2.4.0...website-v2.4.1) (2022-09-06)
 
 
