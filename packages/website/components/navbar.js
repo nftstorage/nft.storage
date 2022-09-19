@@ -29,7 +29,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   const queryClient = useQueryClient()
   const { handleClearUser } = useUser()
   const [isMenuOpen, setMenuOpen] = useState(false)
-  const { query } = useRouter()
+  const { query, asPath } = useRouter()
   const version = /** @type {string} */ (query.version)
 
   const logout = useCallback(async () => {
@@ -86,6 +86,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
         link: {
           pathname: '/stats',
           query: version ? { version } : null,
+          activeClass: '!text-forest',
         },
         name: 'Stats',
       },
@@ -93,12 +94,14 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
         link: {
           pathname: '/faq',
           query: version ? { version } : null,
+          activeClass: '!text-blue',
         },
         name: 'FAQ',
       },
       {
         link: {
           pathname: BLOG_URL,
+          activeClass: '!text-forest',
         },
         name: 'Blog',
       },
@@ -164,8 +167,13 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
         </Link>
         <div className="flex items-center">
           <div className="desktop-nav-items">
-            {ITEMS.map((item, index) =>
-              item.mobileOnly ? null : (
+            {ITEMS.map((item, index) => {
+              const isActive =
+                item.link &&
+                item.link.pathname !== '/' &&
+                asPath.startsWith(item.link.pathname)
+
+              return item.mobileOnly ? null : (
                 <div
                   className="select-none"
                   key={`nav-link-${index}`}
@@ -174,9 +182,13 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                   <Link
                     href={item.link || ''}
                     key={item.name}
+                    aria-current={isActive ? 'page' : undefined}
                     className={clsx(
                       'text-xl text-black no-underline underline-hover align-middle',
-                      { mr4: index === ITEMS.length - 1 }
+                      {
+                        mr4: index === ITEMS.length - 1,
+                        [item.link?.activeClass || '!text-white']: isActive,
+                      }
                     )}
                     onClick={item.tracking ? item.tracking : onLinkClick}
                   >
@@ -189,7 +201,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                   )}
                 </div>
               )
-            )}
+            })}
             {user ? (
               <Button
                 onClick={logout}
