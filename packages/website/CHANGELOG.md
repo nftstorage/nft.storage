@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/nftstorage/nft.storage/compare/website-v2.5.0...website-v2.5.1) (2022-09-21)
+
+
+### Bug Fixes
+
+* add active state to nav links ([#2189](https://github.com/nftstorage/nft.storage/issues/2189)) ([ad7e99f](https://github.com/nftstorage/nft.storage/commit/ad7e99f320650d47cfdd6c9161a7d87c4ebbceb1))
+
 ## [2.5.0](https://github.com/nftstorage/nft.storage/compare/website-v2.4.1...website-v2.5.0) (2022-09-15)
 
 
