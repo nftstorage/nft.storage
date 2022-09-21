@@ -202,7 +202,7 @@ ErrorInvalidMetaplexToken.CODE = 'ERROR_INVALID_METAPLEX_TOKEN'
 
 export class ErrorPinningUnauthorized extends HTTPError {
   constructor(
-    msg = 'Pinning not authorized for this user, email support@nft.storage to request authorization.'
+    msg = 'Pinning not authorized for this user, visit https://nft.storage/docs/how-to/pinning-service/ for instructions on how to request authorization.'
   ) {
     super(msg, 401)
     this.name = 'PinningUnauthorized'
