@@ -1,1 +1,3 @@
 /blog/post/* https://blog.nft.storage/posts/:splat 302
+/blog/ https://blog.nft.storage 302
+/blog https://blog.nft.storage 302
