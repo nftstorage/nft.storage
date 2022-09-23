@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/nftstorage/nft.storage/compare/website-v2.5.1...website-v2.6.0) (2022-09-23)
+
+
+### Features
+
+* redirect slash blog ([#2199](https://github.com/nftstorage/nft.storage/issues/2199)) ([abd2566](https://github.com/nftstorage/nft.storage/commit/abd2566d59cd7e7a8b2b3851ca44341d5fa728b2))
+
 ## [2.5.1](https://github.com/nftstorage/nft.storage/compare/website-v2.5.0...website-v2.5.1) (2022-09-21)
 
 
