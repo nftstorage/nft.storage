@@ -9,6 +9,7 @@ import bytes from 'bytes'
 import NetlifyPartial from '../components/netlifyPartial'
 import { TrustedBy } from 'components/trustedByLogos'
 import { NFT_PORT_ENDPOINT, NFT_PORT_API_KEY } from '../lib/constants'
+import Link from 'components/link'
 
 /**
  *
@@ -33,7 +34,6 @@ export function getStaticProps() {
     props: {
       title: 'Stats - NFT Storage',
       description: 'NFT.Storage usage stats',
-      navBgColor: 'bg-nsgreen',
       needsUser: false,
       logos: logosWithDir,
     },
@@ -109,30 +109,97 @@ export default function Stats({ logos }) {
     setStatsLoading(false)
   }
 
-  const Marquee = () => {
+  const DescriptionSection = () => {
+    const pClass = 'my-8 text-xl leading-8'
     return (
-      <div className="relative w-screen max-w-100 h-[100px] border-y border-black flex items-center justify-center">
-        <p className="chicagoflf p-4 m-0 text-[clamp(16px,_2.6rem,_6vw)]">
-          NFT.Storage is storing...
-        </p>
+      <div className="max-w-7xl mx-auto py-16 px-6 sm:px-16 flex flex-col lg:flex-row">
+        <div className="lg:w-1/2 pr-2 leading">
+          <h1 className="text-4xl md:text-5xl chicagoflf">
+            The Case for{' '}
+            <span className="sm:whitespace-nowrap">Decentralized Storage</span>
+          </h1>
+          <div>
+            <p className={pClass}>
+              NFTs represent a new era in verifiable and trustless ownership,
+              but what if that awesome 1/1 art piece you bought wasn’t using a
+              decentralized persistent storage solution?
+            </p>
+            <p className={pClass}>
+              Well...the proof of your purchase doesn’t mean as much now does it
+              if the art can simply be changed or moved somewhere else?
+            </p>
+            <p className={pClass}>
+              Of course NFTs can be more than just art, but NFTs without
+              trustless storage fall into the same traps that web3 is aiming to
+              solve.
+            </p>
+          </div>
+        </div>
+        <div className="flex lg:w-1/2 items-center justify-center pl-2">
+          <Img
+            src="/images/decentralized.png"
+            alt="decentralized storage"
+            height={300}
+            width={300}
+          />
+        </div>
       </div>
     )
   }
+
+  /* TODO: uncomment this when we have copy */
+  // const WhyItMattersSection = () => {
+  //   return (
+  //     <div className="max-w-7xl mx-auto py-16 px-6 sm:px-16">
+  //       <h2 className="text-3xl md:text-[2.375rem] chicagoflf mb-7">
+  //         Why it matters...
+  //       </h2>
+  //       <div className="why-it-matters-card p-5 md:p-16 lg:p-20 md:flex flex-col lg:flex-row">
+  //         <div className="lg:w-1/2">
+  //           <h3 className="chicagoflf text-2xl md:text-[1.875rem]">
+  //             For Creators/Artists
+  //           </h3>
+  //           <ul className="checked pr-14 mt-7">
+  //             <li>strengthening argument number 1</li>
+  //             <li>
+  //               strengthening argument number 2 with a lot more text that maybe
+  //               goes on for a few lines or a whole paragraph
+  //             </li>
+  //             <li>strengthening argument number 3</li>
+  //             <li>
+  //               strengthening argument number 4 with a lot more text that maybe
+  //               goes on for a few lines or a whole paragraph maybe goes on for a
+  //               few lines or a whole paragraph
+  //             </li>
+  //           </ul>
+  //         </div>
+  //         <div className="lg:w-1/2">
+  //           <h3 className="chicagoflf text-2xl md:text-[1.875rem]">
+  //             For Collectors
+  //           </h3>
+  //           <ul className="checked mt-7">
+  //             <li>strengthening argument number 1</li>
+  //             <li>
+  //               strengthening argument number 2 with a lot more text that maybe
+  //               goes on for a few lines or a whole paragraph
+  //             </li>
+  //             <li>strengthening argument number 3</li>
+  //           </ul>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   )
+  // }
 
   /**
    * @param {Object} props
    * @param {string} [props.title]
    * @param {any} [props.children]
    */
-  const StatCard = ({ title, children }) => {
+  const StatCard = ({ children }) => {
     return (
-      <div className="bg-yellow text-center border border-black h-full box-content flex flex-col justify-between">
-        <h2 className="text-2xl sm:text-4xl text-white mb-4 mt-8 flex-initial chicagoflf">
-          {title}
-        </h2>
-        <div className="stat-card-inner relative flex flex-1 z-10 -translate-x-8 translate-y-8">
-          {children}
-        </div>
+      <div className="stats-card relative text-center flex flex-1 z-10 p-0">
+        {children}
       </div>
     )
   }
@@ -158,8 +225,8 @@ export default function Stats({ logos }) {
     return (
       <div className="stat-cards-wrapper">
         <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
-          <div className="stat-cards -mt-24 mb-16 pl-8 grid gap-x-16 gap-y-[8vw] md:grid-cols-2">
-            <StatCard title="Upload Count">
+          <div className="stat-cards -mt-24 mb-16 md:pl-8 grid gap-x-16 gap-y-[8vw] md:grid-cols-2">
+            <StatCard>
               <div className={statInnerClass}>
                 <Img
                   src={'/images/stats-upload-count.svg'}
@@ -179,18 +246,6 @@ export default function Stats({ logos }) {
                       maximumFractionDigits: 1,
                     }).format(stats.totalUploads || 0)}
                   </figure>
-                  <p
-                    className={`chicagoflf ${
-                      stats.growthRate >= 0
-                        ? `text-forest ${
-                            stats.growthRate > 0 ? "before:content-['+']" : ''
-                          }`
-                        : `text-red before:content-['-']`
-                    }`}
-                  >
-                    {stats.growthRate || 0}%
-                  </p>
-                  <p>[Week over week change]</p>
                 </div>
               </div>
             </StatCard>
@@ -213,18 +268,6 @@ export default function Stats({ logos }) {
                     {statsLoading && <Loading />}
                     {bytes(stats.deals_size_total || 0, { decimalPlaces: 2 })}
                   </figure>
-                  <p
-                    className={`chicagoflf ${
-                      stats.deals_total >= 0
-                        ? `text-forest ${
-                            stats.deals_total > 0 ? "before:content-['+']" : ''
-                          }`
-                        : `text-red before:content-['-']`
-                    }`}
-                  >
-                    {stats.dealsSizeGrowthRate || 0}%
-                  </p>
-                  <p>[Week over week change]</p>
                 </div>
               </div>
             </StatCard>
@@ -237,7 +280,7 @@ export default function Stats({ logos }) {
   const MarketStatCards = () => {
     return (
       <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
-        <div className="mb-16 pl-8 grid gap-x-4 gap-y-[8vw] md:grid-cols-2 xl:grid-cols-4">
+        <div className="mb-16 md:pl-8 grid gap-x-4 gap-y-[8vw] md:grid-cols-2 xl:grid-cols-4">
           <MarketStatCard title="Total Count of NFTS">
             <figure className="chicagoflf text-[clamp(2rem,2.6rem,3.3rem)] text-navy">
               {statsLoading && <Loading />}
@@ -289,38 +332,58 @@ export default function Stats({ logos }) {
     )
   }
 
+  const NftUpSection = () => (
+    <div className="bg-white py-16 relative">
+      <div className="absolute left-0 h-[13px] right-0 top-0 bg-[url('/images/sawtooth-border.png')]" />
+      <div className="absolute left-0 h-[13px] right-0 bottom-0 bg-[url('/images/sawtooth-border.png')]" />
+      <div className="max-w-7xl mx-auto py-4 px-6 sm:px-16">
+        <NftUpCta />
+      </div>
+    </div>
+  )
+
   return (
-    <main className="bg-nsgreen">
-      <Marquee />
-      <StatCards />
+    <main className="bg-peach">
+      <DescriptionSection />
+      {/* TODO: Uncomment this when we have copy, and probably move it to the CMS */}
+      {/* <WhyItMattersSection /> */}
       <div className="bg-nspeach">
         <div className="relative w-screen flex items-center justify-center">
           <div className="text-center">
-            <p className="chicagoflf p-4 m-0 mt-5 text-[clamp(14px,_2rem,_6vw)]">
+            <p className="chicagoflf p-4 m-0 mt-5 text-[2.375rem]">
               NFT Market By the Numbers
             </p>
-            <p className="chicagoflf p-4 m-0 mt-5 text-[clamp(12px,_1.6rem,_6vw)]">
-              The Price of Missing NFTS
+            <p className="chicagoflf p-4 m-0 mt-5 text-[1.75rem]">
+              The Price of Missing NFTS (
+              <Link
+                className="underline text-navy"
+                href="https://blog.nft.storage/posts/2022-04-04-missing-nfts"
+              >
+                reference
+              </Link>
+              )
             </p>
           </div>
         </div>
         <MarketStatCards />
       </div>
-      <div className="bg-nsblue">
-        <div className="stats-trusted-wrapper max-w-7xl mx-auto py-4 px-6 sm:px-16">
-          <div>
+
+      <div className="max-w-7xl mx-auto text-center mt-12">
+        <h2 className="chicagoflf text-[2.375rem]">
+          NFT.Storage by the numbers
+        </h2>
+        <StatCards />
+      </div>
+      <NftUpSection />
+
+      <div>
+        <div className="stats-trusted-wrapper max-w-7xl mx-auto py-20 px-6 sm:px-16">
+          <div className="stats-card bg-white border-2 border-black">
             <NetlifyPartial
               route="trusted-by-stats-page"
               className="netlify-partial-trusted-by-stats-page max-w-4xl mx-auto py-8 px-6 sm:px-16 text-center chicagoflf"
               fallback={<TrustedBy logos={logos} />}
             />
-          </div>
-        </div>
-      </div>
-      <div className="bg-nsyellow">
-        <div className="stats-trusted-wrapper max-w-7xl mx-auto py-4 px-6 sm:px-16">
-          <div>
-            <NftUpCta />
           </div>
         </div>
       </div>
