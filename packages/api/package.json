@@ -31,6 +31,7 @@
     "multiformats": "^9.6.4",
     "nanoid": "^3.1.30",
     "one-webcrypto": "^1.0.3",
+    "p-retry": "^5.1.1",
     "regexparam": "^2.0.0",
     "toucan-js": "^2.4.1",
     "ucan-storage": "^1.3.0",

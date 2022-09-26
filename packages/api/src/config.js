@@ -4,6 +4,7 @@ import {
 } from './middleware/maintenance.js'
 
 /**
+ * @typedef {import('./bindings').RawEnvConfiguration} RawEnvConfiguration
  * @typedef {import('./bindings').ServiceConfiguration} ServiceConfiguration
  * @typedef {import('./bindings').RuntimeEnvironmentName} RuntimeEnvironmentName
  */
@@ -29,7 +30,7 @@ export const getServiceConfig = () => {
 
 /**
  * Parse a {@link ServiceConfiguration} out of the given `configVars` map.
- * @param {Record<string, string>} vars map of variable names to values.
+ * @param {RawEnvConfiguration} vars map of variable names to values.
  *
  * Exported for testing. See {@link getServiceConfig} for main public accessor.
  *
@@ -52,6 +53,8 @@ export function serviceConfigFromVariables(vars) {
     MAINTENANCE_MODE: maintenanceModeFromString(vars.MAINTENANCE_MODE),
 
     SALT: vars.SALT,
+    CARPARK: vars.CARPARK,
+    CARPARK_URL: vars.CARPARK_URL,
     DATABASE_URL: vars.DATABASE_URL,
     DATABASE_TOKEN: vars.DATABASE_TOKEN,
     CLUSTER_API_URL: clusterUrl,
@@ -60,6 +63,7 @@ export function serviceConfigFromVariables(vars) {
     SENTRY_DSN: vars.SENTRY_DSN,
     METAPLEX_AUTH_TOKEN: vars.METAPLEX_AUTH_TOKEN,
     MAILCHIMP_API_KEY: vars.MAILCHIMP_API_KEY,
+    LINKDEX_URL: vars.LINKDEX_URL,
     LOGTAIL_TOKEN: vars.LOGTAIL_TOKEN,
     S3_ENDPOINT: vars.S3_ENDPOINT,
     S3_REGION: vars.S3_REGION,
@@ -84,11 +88,11 @@ export function serviceConfigFromVariables(vars) {
  *
  * Exported for testing. See {@link getServiceConfig} for main config accessor.
  *
- * @returns { Record<string, string>} an object with `vars` containing all config variables and their values. guaranteed to have a value for each key defined in DEFAULT_CONFIG_VALUES
+ * @returns { RawEnvConfiguration } an object with `vars` containing all config variables and their values. guaranteed to have a value for each key defined in DEFAULT_CONFIG_VALUES
  * @throws if a config variable is missing, unless ENV is 'test' or 'dev', in which case the default value will be used for missing vars.
  */
 export function loadConfigVariables() {
-  /** @type Record<string, string> */
+  /** @type Record<string, string | R2Bucket> */
   const vars = {}
 
   /** @type Record<string, unknown> */
@@ -98,6 +102,8 @@ export function loadConfigVariables() {
     'ENV',
     'DEBUG',
     'SALT',
+    'CARPARK',
+    'CARPARK_URL',
     'DATABASE_URL',
     'DATABASE_TOKEN',
     'MAGIC_SECRET_KEY',
@@ -118,6 +124,9 @@ export function loadConfigVariables() {
     const val = globals[name]
     if (typeof val === 'string') {
       vars[name] = val
+    } else if (val !== null && typeof val === 'object') {
+      // @ts-expect-error some env vars are objects like R2Bucket that are set by cloudflare
+      vars[name] = val
     } else {
       throw new Error(
         `Missing required config variables: ${name}. Check your .env, testing globals or cloudflare vars.`
@@ -128,6 +137,7 @@ export function loadConfigVariables() {
   const optional = [
     'CLUSTER_SERVICE',
     'CLUSTER_API_URL',
+    'LINKDEX_URL',
     'S3_ENDPOINT',
     'SLACK_USER_REQUEST_WEBHOOK_URL',
   ]
@@ -141,6 +151,7 @@ export function loadConfigVariables() {
     }
   }
 
+  // @ts-expect-error
   return vars
 }
 

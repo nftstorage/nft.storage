@@ -1,12 +1,12 @@
+import pRetry from 'p-retry'
 // @ts-ignore missing types
 import { S3Client } from '@aws-sdk/client-s3/dist-es/S3Client.js'
 // @ts-ignore missing types
 import { PutObjectCommand } from '@aws-sdk/client-s3/dist-es/commands/PutObjectCommand.js'
-import { sha256 } from 'multiformats/hashes/sha2'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 
 /**
- * @typedef {import('../bindings').Uploader} Uploader
+ * @typedef {import('../../bindings').Uploader} Uploader
  * @implements {Uploader}
  */
 export class S3Uploader {
@@ -59,57 +59,37 @@ export class S3Uploader {
   }
 
   /**
-   * Gets a sha256 multihash digest of a blob.
-   * @param {Blob} blob
-   */
-  async _getMultihash(blob) {
-    const buf = await blob.arrayBuffer()
-    return sha256.digest(new Uint8Array(buf))
-  }
-
-  /**
-   * Gets base64pad-encoded string from a multihash
-   * @param {import('multiformats').digest.MultihashDigest} multihash
-   */
-  _getAwsChecksum(multihash) {
-    // strip the multihash varint prefix to get the raw sha256 digest for aws upload integrity check
-    const rawSha256 = multihash.bytes.subarray(2)
-    return uint8ArrayToString(rawSha256, 'base64pad')
-  }
-
-  /**
    * Backup given CAR file keyed by /raw/${rootCid}/${appName}-${userId}/${carHash}.car
+   * @param {Uint8Array} carBytes
+   * @param {import('multiformats').CID} carCid
    * @param {number} userId
-   * @param {string} sourceCid
-   * @param {Blob} car
-   * @param {import('../bindings').DagStructure} [structure]
+   * @param {Record<string, string>} metadata
    */
-  async uploadCar(userId, sourceCid, car, structure = 'Unknown') {
-    const multihash = await this._getMultihash(car)
-    const hashStr = uint8ArrayToString(multihash.bytes, 'base32')
-    const key = `raw/${sourceCid}/${this._appName}-${userId}/${hashStr}.car`
+  async uploadCar(carBytes, carCid, userId, metadata) {
+    const carHash = uint8ArrayToString(carCid.multihash.bytes, 'base32')
+    const key = `raw/${metadata.rootCid}/${this._appName}-${userId}/${carHash}.car`
+
+    /** @type {import('@aws-sdk/client-s3').PutObjectCommandInput} */
     const cmdParams = {
       Bucket: this._bucketName,
       Key: key,
-      Body: car,
-      Metadata: { structure },
+      Body: carBytes,
+      Metadata: metadata,
       // ChecksumSHA256 specifies the base64-encoded, 256-bit SHA-256 digest of the object, used as a data integrity check to verify that the data received is the same data that was originally sent.
       // see: https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html#AmazonS3-PutObject-request-header-ChecksumSHA256
-      ChecksumSHA256: this._getAwsChecksum(multihash),
+      ChecksumSHA256: uint8ArrayToString(carCid.multihash.digest, 'base64pad'),
     }
 
     try {
-      try {
-        await this._s3.send(new PutObjectCommand(cmdParams))
-      } catch (err) {
-        console.warn('Failed to upload CAR, retrying once...', err)
-        await this._s3.send(new PutObjectCommand(cmdParams))
+      await pRetry(() => this._s3.send(new PutObjectCommand(cmdParams)), {
+        retries: 3,
+      })
+      return {
+        key,
+        url: new URL(key, this._baseUrl.toString()),
       }
-    } catch (/** @type {any} */ err) {
-      // @ts-ignore TS does not know about `cause` yet.
-      throw new Error('Failed to upload CAR', { cause: err })
+    } catch (cause) {
+      throw new Error('Failed to upload CAR to S3', { cause })
     }
-
-    return new URL(key, this._baseUrl.toString())
   }
 }

@@ -5,16 +5,18 @@ import { Service } from 'ucan-storage/service'
 import { Mode } from './middleware/maintenance.js'
 import { UserOutput, UserOutputKey } from './utils/db-client-types.js'
 import { DBClient } from './utils/db-client.js'
+import { LinkdexApi } from './utils/linkdex.js'
 import { Logging } from './utils/logs.js'
 
 export type RuntimeEnvironmentName = 'test' | 'dev' | 'staging' | 'production'
 
-export interface ServiceConfiguration {
+/** Raw env config, before we do any vaidation */
+export interface RawEnvConfiguration {
   /** Is this a debug build? */
-  DEBUG: boolean
+  DEBUG: string
 
   /** Target runtime environment */
-  ENV: RuntimeEnvironmentName
+  ENV: string
 
   /** Semantic version for current build */
   VERSION: string
@@ -26,10 +28,19 @@ export interface ServiceConfiguration {
   COMMITHASH: string
 
   /** Current maintenance mode */
-  MAINTENANCE_MODE: Mode
+  MAINTENANCE_MODE: string
 
   /** Salt for API key generation */
   SALT: string
+
+  /** R2Bucket binding */
+  CARPARK: R2Bucket
+
+  /** Public URL prefix for CARPARK R2 Bucket */
+  CARPARK_URL: string
+
+  /** URL for linkdex-api */
+  LINKDEX_URL?: string
 
   /** API key for special metaplex upload account */
   METAPLEX_AUTH_TOKEN: string
@@ -37,8 +48,11 @@ export interface ServiceConfiguration {
   /** UCAN private signing key */
   PRIVATE_KEY: string
 
-  /** API url for active IPFS cluster endpoint */
-  CLUSTER_API_URL: string
+  /** key for active IPFS cluster endpoint */
+  CLUSTER_SERVICE?: string
+
+  /** URL for active IPFS cluster endpoint */
+  CLUSTER_API_URL?: string
 
   /** Auth token for IPFS culster */
   CLUSTER_BASIC_AUTH_TOKEN: string
@@ -80,6 +94,18 @@ export interface ServiceConfiguration {
   SLACK_USER_REQUEST_WEBHOOK_URL: string
 }
 
+/** Validated config */
+export interface ServiceConfiguration extends RawEnvConfiguration {
+  /** Is this a debug build? */
+  DEBUG: boolean
+
+  /** Target runtime environment */
+  ENV: RuntimeEnvironmentName
+
+  /** Current maintenance mode */
+  MAINTENANCE_MODE: Mode
+}
+
 export interface Ucan {
   token: string
   root: any
@@ -105,7 +131,9 @@ export interface RouteContext {
   params: Record<string, string>
   db: DBClient
   log: Logging
-  uploader: Uploader
+  linkdexApi?: LinkdexApi
+  s3Uploader: Uploader
+  r2Uploader: Uploader
   ucanService: Service
   auth?: Auth
 }
@@ -243,6 +271,17 @@ export type RequestForm = Array<RequestFormItem>
  */
 export type DagStructure = 'Unknown' | 'Partial' | 'Complete'
 
+export interface Backup {
+  key: string
+  url: URL
+}
+
+export interface BackupMetadata {
+  structure: DagStructure
+  rootCid: string
+  carCid: string
+}
+
 /**
  * A client to a service that accepts CAR file uploads.
  */
@@ -251,9 +290,9 @@ export interface Uploader {
    * Uploads the CAR file to the service and returns the URL.
    */
   uploadCar(
+    carBytes: Uint8Array,
+    carCid: CID,
     userId: number,
-    sourceCid: string,
-    car: Blob,
-    structure?: DagStructure
-  ): Promise<URL>
+    metadata: Record<BackupMetadata>
+  ): Promise<Backup>
 }
