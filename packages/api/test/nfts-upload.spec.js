@@ -1,5 +1,6 @@
 import test from 'ava'
 import { CID } from 'multiformats/cid'
+import * as Block from 'multiformats/block'
 import { sha256, sha512 } from 'multiformats/hashes/sha2'
 import * as pb from '@ipld/dag-pb'
 import { CarWriter } from '@ipld/car'
@@ -13,6 +14,7 @@ import { KeyPair } from 'ucan-storage/keypair'
 import {
   getMiniflareContext,
   getTestServiceConfig,
+  getMiniflareFetchMock,
   setupMiniflareContext,
 } from './scripts/test-context.js'
 import { File } from 'nft.storage/src/platform.js'
@@ -168,6 +170,7 @@ test.serial('should upload a single CAR file', async (t) => {
   const client = await createClientWithUser(t)
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
+
   const { root, car } = await createCar('hello world car')
   // expected CID for the above data
   const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
@@ -199,6 +202,94 @@ test.serial('should upload a single CAR file', async (t) => {
   t.is(data.deleted_at, null)
   t.is(data.content.dag_size, 15, 'correct dag size')
 })
+
+test.serial(
+  'should check dag completness with linkdex-api for partial CAR',
+  async (t) => {
+    const client = await createClientWithUser(t)
+    const config = getTestServiceConfig(t)
+    const mf = getMiniflareContext(t)
+    const fetchMock = getMiniflareFetchMock(t)
+
+    const leaf1 = await Block.encode({
+      value: pb.prepare({ Data: 'leaf1' }),
+      codec: pb,
+      hasher: sha256,
+    })
+    const leaf2 = await Block.encode({
+      value: pb.prepare({ Data: 'leaf2' }),
+      codec: pb,
+      hasher: sha256,
+    })
+    const parent = await Block.encode({
+      value: pb.prepare({ Links: [leaf1.cid, leaf2.cid] }),
+      codec: pb,
+      hasher: sha256,
+    })
+
+    const { writer, out } = CarWriter.create(parent.cid)
+    writer.put(parent)
+    writer.put(leaf1)
+    // leave out leaf2 to make patial car
+    writer.close()
+
+    const carBytes = []
+    for await (const chunk of out) {
+      carBytes.push(chunk)
+    }
+
+    // @ts-expect-error LINDEX_URL will be set here.
+    const linkdexMock = fetchMock.get(config.LINKDEX_URL)
+    linkdexMock
+      .intercept({ path: /^\/\?key=/, method: 'GET' })
+      .reply(
+        200,
+        { structure: 'Complete' },
+        { headers: { 'content-type': 'application/json' } }
+      )
+
+    const res = await mf.dispatchFetch('http://miniflare.test/upload', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${client.token}`,
+        'Content-Type': 'application/car',
+      },
+      body: new Blob(carBytes),
+    })
+
+    linkdexMock.destroy()
+
+    t.truthy(res, 'Server responded')
+    t.true(res.ok, 'Server response ok')
+    const { ok, value } = await res.json()
+    t.truthy(ok, 'Server response payload has `ok` property')
+    t.is(value.cid, parent.cid.toString(), 'Server responded with expected CID')
+    t.is(value.type, 'application/car', 'type should match blob mime-type')
+
+    const db = await getRawClient(config)
+
+    const { data: upload } = await db
+      .from('upload')
+      .select('*, content(*)')
+      .match({ source_cid: parent.cid.toString(), user_id: client.userId })
+      .single()
+
+    // @ts-ignore
+    t.is(upload.source_cid, cid)
+    t.is(upload.deleted_at, null)
+    t.is(upload.content.dag_size, 15, 'correct dag size')
+    t.is(upload.pins.length, 1)
+
+    const { data: pin } = await db
+      .from('pin')
+      .select('*')
+      .match({ id: upload.pins[0].id })
+      .single()
+
+    t.is(pin.service, 'ElasticIpfs')
+    t.is(pin.status, 'Pinned')
+  }
+)
 
 test.serial('should allow a CAR with unsupported hash function', async (t) => {
   const client = await createClientWithUser(t)

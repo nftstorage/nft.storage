@@ -2679,7 +2679,7 @@
     undici "5.5.1"
     urlpattern-polyfill "^4.0.3"
 
-"@miniflare/core@2.9.0":
+"@miniflare/core@2.9.0", "@miniflare/core@^2.9.0":
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/@miniflare/core/-/core-2.9.0.tgz#f64f9cd4567b868b281cbca051e91fff60934a33"
   integrity sha512-QqSwF6oHvgrFvN5lnrLc6EEagFlZWW+UMU8QdrE8305cNGHrIOxKCA2nte4PVFZUVw/Ts13a0tVhUk3a2fAyxQ==
