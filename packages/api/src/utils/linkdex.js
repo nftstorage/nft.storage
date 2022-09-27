@@ -18,20 +18,18 @@ export class LinkdexApi {
    * @returns {Promise<import('../bindings').DagStructure>}
    */
   async getDagStructure(s3Key) {
-    return pRetry(
-      async () => {
-        const url = new URL(`/?key=${s3Key}`, this.linkdexUrl.toString())
-        const res = await fetch(url.toString())
-        if (!res.ok) {
-          throw new LinkdexError(res.status, res.statusText)
-        }
-        const report = await res.json()
-        if (!report.structure) {
-          throw new Error('linkdex-api report missing structure property')
-        }
-        return report.structure
-      },
-      { retries: 3 }
-    )
+    const fetchFromApi = async () => {
+      const url = new URL(`/?key=${s3Key}`, this.linkdexUrl.toString())
+      const res = await fetch(url.toString())
+      if (!res.ok) {
+        throw new LinkdexError(res.status, res.statusText)
+      }
+      const report = await res.json()
+      if (!report.structure) {
+        throw new Error('linkdex-api report missing structure property')
+      }
+      return report.structure
+    }
+    return pRetry(fetchFromApi, { retries: 3 })
   }
 }

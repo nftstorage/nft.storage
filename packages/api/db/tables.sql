@@ -46,7 +46,9 @@ CREATE TYPE service_type AS ENUM (
     -- An IPFS Cluster originally commissioned for niftysave.
     'IpfsCluster2',
     -- New cluster with flatfs and better DHT.
-    'IpfsCluster3'
+    'IpfsCluster3',
+    -- The big one.
+    'ElasticIpfs'
     );
 
 -- Upload type is the type of received upload data.

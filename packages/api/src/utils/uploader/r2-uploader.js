@@ -30,32 +30,24 @@ export class R2Uploader {
    * @param {Uint8Array} carBytes
    * @param {import('multiformats').CID} carCid
    * @param {number} userId
-   * @param {string} rootCid
-   * @param {import('../../bindings').DagStructure} [structure]
+   * @param {import('../../bindings').BackupMetadata} metadata
    */
-  async uploadCar(carBytes, carCid, userId, rootCid, structure = 'Unknown') {
+  async uploadCar(carBytes, carCid, userId, metadata) {
     const key = `${carCid}/${carCid}.car`
+    const url = new URL(key, this._publicUrl.toString())
 
     /** @type R2PutOptions */
     const opts = {
       // @ts-expect-error `sha256` is not added to @cloudflare/workers-types yet but is real
       sha256: uint8ArrayToString(carCid.multihash.digest, 'base16'), // put fails if hash not match
-      customMetadata: {
-        structure,
-        rootCid,
-        carCid: carCid.toString(),
-      },
+      customMetadata: metadata,
     }
 
+    const put = () => this._bucket.put(key, carBytes, opts)
+
     try {
-      // assuming mostly unique cars, but could check for existence here before writing.
-      await pRetry(async () => this._bucket.put(key, carBytes, opts), {
-        retries: 3,
-      })
-      return {
-        key,
-        url: new URL(key, this._publicUrl.toString()),
-      }
+      await pRetry(put, { retries: 3 })
+      return { key, url }
     } catch (cause) {
       throw new Error('Failed to upload CAR to R2', { cause })
     }

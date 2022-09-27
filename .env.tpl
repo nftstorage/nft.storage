@@ -46,3 +46,6 @@ S3_REGION = us-east-1
 S3_ACCESS_KEY_ID = minioadmin
 S3_SECRET_ACCESS_KEY = minioadmin
 S3_BUCKET_NAME = dotstorage-dev-0
+
+# R2
+CARPARK_URL = https://carpark-dev.web3.storage

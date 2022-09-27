@@ -1,4 +1,3 @@
-import pRetry from 'p-retry'
 import { packToBlob } from 'ipfs-car/pack/blob'
 import { CarBlockIterator } from '@ipld/car'
 import { equals } from 'uint8arrays'
@@ -7,7 +6,6 @@ import * as cbor from '@ipld/dag-cbor'
 import * as pb from '@ipld/dag-pb'
 import { Block } from 'multiformats/block'
 import { sha256 } from 'multiformats/hashes/sha2'
-import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import { HTTPError, InvalidCarError } from '../errors.js'
 import { createCarCid } from '../utils/car.js'
 import { JSONResponse } from '../utils/json-response.js'
@@ -148,10 +146,11 @@ export async function uploadCarWithStat(
   const sourceCid = stat.rootCid.toString()
   const carCid = await createCarCid(carBytes)
   const metadata = {
-    structure: stat.structure,
+    structure: stat.structure || 'Unknown',
     rootCid: sourceCid,
     carCid: carCid.toString(),
   }
+
   const [s3Backup, r2Backup] = await Promise.all([
     ctx.s3Uploader.uploadCar(carBytes, carCid, user.id, metadata),
     ctx.r2Uploader.uploadCar(carBytes, carCid, user.id, metadata),
@@ -162,6 +161,17 @@ export async function uploadCarWithStat(
   if (!name || typeof name !== 'string') {
     name = `Upload at ${new Date().toISOString()}`
   }
+
+  /**
+   * Create a pin entry for elastic ipfs
+   * @param {import('../bindings').DagStructure | undefined} structure
+   * @returns {import('../utils/db-client-types').CreateUploadInputPin}
+   */
+  const elasticPin = (structure) => ({
+    status: structure === 'Complete' ? 'Pinned' : 'Pinning',
+    service: 'ElasticIpfs',
+  })
+
   const upload = await ctx.db.createUpload({
     mime_type: mimeType,
     type: uploadType,
@@ -174,22 +184,20 @@ export async function uploadCarWithStat(
     key_id: key?.id,
     backup_urls: [s3Backup.url, r2Backup.url],
     name,
+    pins: [elasticPin(stat.structure)],
   })
 
   // ask linkdex for the dag structure across the set of CARs in S3 for this upload.
-  const checkDagStructureTask = () =>
-    pRetry(
-      async () => {
-        const report = ctx.linkdexService.get(s3Backup.key)
-        if (report.structure === 'Complete') {
-          return env.db.upsertPins([elasticPin(report.structure)])
-        }
-      },
-      { retries: 3 }
-    )
+  const checkDagStructureTask = async () => {
+    const structure = await ctx.linkdexApi?.getDagStructure(s3Backup.key)
+    console.log('linkdex-api', s3Backup.key, structure)
+    if (structure === 'Complete') {
+      return ctx.db.updatePinStatus(upload.content_cid, elasticPin(structure))
+    }
+  }
 
   // no need to ask linkdex if it's Complete or Unknown
-  if (stat.structure === 'Partial' && env.LINKDEX_URL) {
+  if (stat.structure === 'Partial' && ctx.linkdexApi) {
     event.waitUntil(checkDagStructureTask())
   }
 

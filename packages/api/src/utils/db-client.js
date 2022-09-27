@@ -210,6 +210,35 @@ export class DBClient {
   }
 
   /**
+   * @param {string} contentCid
+   * @param {import('./db-client-types').CreateUploadInputPin} newPin
+   * @returns
+   */
+  async updatePinStatus(contentCid, { service, status: newStatus }) {
+    const now = new Date().toISOString()
+
+    const query = this.client.from('pin')
+
+    const { data: pin, status } = await query
+      .update({
+        status: newStatus,
+        updated_at: now,
+      })
+      .match({ contentCid, service })
+      .single()
+
+    if (status === 406) {
+      throw new Error(`Status 406, cannot update pin ${service} ${contentCid}`)
+    }
+
+    if (!pin) {
+      throw new Error(`Cannot update pin ${service} ${contentCid} ${status}`)
+    }
+
+    return pin
+  }
+
+  /**
    * Create upload with content and pins
    *
    * @param {import('./db-client-types').UpdateUploadInput} data

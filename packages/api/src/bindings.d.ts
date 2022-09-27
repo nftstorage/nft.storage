@@ -271,12 +271,13 @@ export type RequestForm = Array<RequestFormItem>
  */
 export type DagStructure = 'Unknown' | 'Partial' | 'Complete'
 
-export interface Backup {
+export type Backup = {
   key: string
   url: URL
 }
 
-export interface BackupMetadata {
+// needs to be a type so it can be assigned to Record<string, string>
+export type BackupMetadata = {
   structure: DagStructure
   rootCid: string
   carCid: string
@@ -293,6 +294,6 @@ export interface Uploader {
     carBytes: Uint8Array,
     carCid: CID,
     userId: number,
-    metadata: Record<BackupMetadata>
+    metadata: BackupMetadata
   ): Promise<Backup>
 }

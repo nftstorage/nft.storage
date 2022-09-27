@@ -18,6 +18,7 @@ export interface paths {
         query: {
           user_id?: parameters['rowFilter.admin_search.user_id']
           email?: parameters['rowFilter.admin_search.email']
+          github_id?: parameters['rowFilter.admin_search.github_id']
           token?: parameters['rowFilter.admin_search.token']
           token_id?: parameters['rowFilter.admin_search.token_id']
           deleted_at?: parameters['rowFilter.admin_search.deleted_at']
@@ -904,40 +905,114 @@ export interface paths {
       }
     }
   }
-  '/rpc/pgrst_watch': {
-    post: {
+  '/user_tag_proposal': {
+    get: {
       parameters: {
-        body: {
-          args: { [key: string]: unknown }
+        query: {
+          id?: parameters['rowFilter.user_tag_proposal.id']
+          user_id?: parameters['rowFilter.user_tag_proposal.user_id']
+          tag?: parameters['rowFilter.user_tag_proposal.tag']
+          proposed_tag_value?: parameters['rowFilter.user_tag_proposal.proposed_tag_value']
+          user_proposal_form?: parameters['rowFilter.user_tag_proposal.user_proposal_form']
+          admin_decision_message?: parameters['rowFilter.user_tag_proposal.admin_decision_message']
+          admin_decision_type?: parameters['rowFilter.user_tag_proposal.admin_decision_type']
+          inserted_at?: parameters['rowFilter.user_tag_proposal.inserted_at']
+          deleted_at?: parameters['rowFilter.user_tag_proposal.deleted_at']
+          /** Filtering Columns */
+          select?: parameters['select']
+          /** Ordering */
+          order?: parameters['order']
+          /** Limiting and Pagination */
+          offset?: parameters['offset']
+          /** Limiting and Pagination */
+          limit?: parameters['limit']
         }
         header: {
+          /** Limiting and Pagination */
+          Range?: parameters['range']
+          /** Limiting and Pagination */
+          'Range-Unit'?: parameters['rangeUnit']
           /** Preference */
-          Prefer?: parameters['preferParams']
+          Prefer?: parameters['preferCount']
         }
       }
       responses: {
         /** OK */
-        200: unknown
+        200: {
+          schema: definitions['user_tag_proposal'][]
+        }
+        /** Partial Content */
+        206: unknown
       }
     }
-  }
-  '/rpc/find_deals_by_content_cids': {
     post: {
       parameters: {
         body: {
-          args: {
-            /** Format: text[] */
-            cids: string
-          }
+          /** user_tag_proposal */
+          user_tag_proposal?: definitions['user_tag_proposal']
+        }
+        query: {
+          /** Filtering Columns */
+          select?: parameters['select']
         }
         header: {
           /** Preference */
-          Prefer?: parameters['preferParams']
+          Prefer?: parameters['preferReturn']
         }
       }
       responses: {
-        /** OK */
-        200: unknown
+        /** Created */
+        201: unknown
+      }
+    }
+    delete: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.user_tag_proposal.id']
+          user_id?: parameters['rowFilter.user_tag_proposal.user_id']
+          tag?: parameters['rowFilter.user_tag_proposal.tag']
+          proposed_tag_value?: parameters['rowFilter.user_tag_proposal.proposed_tag_value']
+          user_proposal_form?: parameters['rowFilter.user_tag_proposal.user_proposal_form']
+          admin_decision_message?: parameters['rowFilter.user_tag_proposal.admin_decision_message']
+          admin_decision_type?: parameters['rowFilter.user_tag_proposal.admin_decision_type']
+          inserted_at?: parameters['rowFilter.user_tag_proposal.inserted_at']
+          deleted_at?: parameters['rowFilter.user_tag_proposal.deleted_at']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
+      }
+    }
+    patch: {
+      parameters: {
+        query: {
+          id?: parameters['rowFilter.user_tag_proposal.id']
+          user_id?: parameters['rowFilter.user_tag_proposal.user_id']
+          tag?: parameters['rowFilter.user_tag_proposal.tag']
+          proposed_tag_value?: parameters['rowFilter.user_tag_proposal.proposed_tag_value']
+          user_proposal_form?: parameters['rowFilter.user_tag_proposal.user_proposal_form']
+          admin_decision_message?: parameters['rowFilter.user_tag_proposal.admin_decision_message']
+          admin_decision_type?: parameters['rowFilter.user_tag_proposal.admin_decision_type']
+          inserted_at?: parameters['rowFilter.user_tag_proposal.inserted_at']
+          deleted_at?: parameters['rowFilter.user_tag_proposal.deleted_at']
+        }
+        body: {
+          /** user_tag_proposal */
+          user_tag_proposal?: definitions['user_tag_proposal']
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferReturn']
+        }
+      }
+      responses: {
+        /** No Content */
+        204: never
       }
     }
   }
@@ -981,6 +1056,67 @@ export interface paths {
       }
     }
   }
+  '/rpc/find_deals_by_content_cids': {
+    post: {
+      parameters: {
+        body: {
+          args: {
+            /** Format: text[] */
+            cids: string
+          }
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferParams']
+        }
+      }
+      responses: {
+        /** OK */
+        200: unknown
+      }
+    }
+  }
+  '/rpc/pgrst_watch': {
+    post: {
+      parameters: {
+        body: {
+          args: { [key: string]: unknown }
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferParams']
+        }
+      }
+      responses: {
+        /** OK */
+        200: unknown
+      }
+    }
+  }
+  '/rpc/copy_upload_history': {
+    post: {
+      parameters: {
+        body: {
+          args: {
+            /** Format: bigint */
+            new_auth_key_id: number
+            /** Format: bigint */
+            new_user_id: number
+            /** Format: bigint */
+            old_user_id: number
+          }
+        }
+        header: {
+          /** Preference */
+          Prefer?: parameters['preferParams']
+        }
+      }
+      responses: {
+        /** OK */
+        200: unknown
+      }
+    }
+  }
 }
 
 export interface definitions {
@@ -989,6 +1125,8 @@ export interface definitions {
     user_id?: string
     /** Format: text */
     email?: string
+    /** Format: text */
+    github_id?: string
     /** Format: text */
     token?: string
     /** Format: text */
@@ -1113,7 +1251,12 @@ export interface definitions {
      */
     content_cid: string
     /** Format: public.service_type */
-    service: 'Pinata' | 'IpfsCluster' | 'IpfsCluster2' | 'IpfsCluster3'
+    service:
+      | 'Pinata'
+      | 'IpfsCluster'
+      | 'IpfsCluster2'
+      | 'IpfsCluster3'
+      | 'ElasticIpfs'
     /**
      * Format: timestamp with time zone
      * @default timezone('utc'::text, now())
@@ -1229,6 +1372,7 @@ export interface definitions {
     /** Format: public.user_tag_type */
     tag:
       | 'HasAccountRestriction'
+      | 'HasDeleteRestriction'
       | 'HasPsaAccess'
       | 'HasSuperHotAccess'
       | 'StorageLimitBytes'
@@ -1236,6 +1380,42 @@ export interface definitions {
     value: string
     /** Format: text */
     reason: string
+    /**
+     * Format: timestamp with time zone
+     * @default timezone('utc'::text, now())
+     */
+    inserted_at: string
+    /** Format: timestamp with time zone */
+    deleted_at?: string
+  }
+  user_tag_proposal: {
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Primary Key.<pk/>
+     */
+    id: number
+    /**
+     * Format: bigint
+     * @description Note:
+     * This is a Foreign Key to `user.id`.<fk table='user' column='id'/>
+     */
+    user_id: number
+    /** Format: public.user_tag_type */
+    tag:
+      | 'HasAccountRestriction'
+      | 'HasDeleteRestriction'
+      | 'HasPsaAccess'
+      | 'HasSuperHotAccess'
+      | 'StorageLimitBytes'
+    /** Format: text */
+    proposed_tag_value: string
+    /** Format: jsonb */
+    user_proposal_form: string
+    /** Format: text */
+    admin_decision_message?: string
+    /** Format: public.user_tag_proposal_decision_type */
+    admin_decision_type?: 'Approved' | 'Declined'
     /**
      * Format: timestamp with time zone
      * @default timezone('utc'::text, now())
@@ -1276,6 +1456,8 @@ export interface parameters {
   'rowFilter.admin_search.user_id': string
   /** Format: text */
   'rowFilter.admin_search.email': string
+  /** Format: text */
+  'rowFilter.admin_search.github_id': string
   /** Format: text */
   'rowFilter.admin_search.token': string
   /** Format: text */
@@ -1424,6 +1606,26 @@ export interface parameters {
   'rowFilter.user_tag.inserted_at': string
   /** Format: timestamp with time zone */
   'rowFilter.user_tag.deleted_at': string
+  /** @description user_tag_proposal */
+  'body.user_tag_proposal': definitions['user_tag_proposal']
+  /** Format: bigint */
+  'rowFilter.user_tag_proposal.id': string
+  /** Format: bigint */
+  'rowFilter.user_tag_proposal.user_id': string
+  /** Format: public.user_tag_type */
+  'rowFilter.user_tag_proposal.tag': string
+  /** Format: text */
+  'rowFilter.user_tag_proposal.proposed_tag_value': string
+  /** Format: jsonb */
+  'rowFilter.user_tag_proposal.user_proposal_form': string
+  /** Format: text */
+  'rowFilter.user_tag_proposal.admin_decision_message': string
+  /** Format: public.user_tag_proposal_decision_type */
+  'rowFilter.user_tag_proposal.admin_decision_type': string
+  /** Format: timestamp with time zone */
+  'rowFilter.user_tag_proposal.inserted_at': string
+  /** Format: timestamp with time zone */
+  'rowFilter.user_tag_proposal.deleted_at': string
 }
 
 export interface operations {}

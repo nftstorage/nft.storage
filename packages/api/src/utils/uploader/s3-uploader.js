@@ -63,14 +63,15 @@ export class S3Uploader {
    * @param {Uint8Array} carBytes
    * @param {import('multiformats').CID} carCid
    * @param {number} userId
-   * @param {Record<string, string>} metadata
+   * @param {import('../../bindings').BackupMetadata} metadata
    */
   async uploadCar(carBytes, carCid, userId, metadata) {
     const carHash = uint8ArrayToString(carCid.multihash.bytes, 'base32')
     const key = `raw/${metadata.rootCid}/${this._appName}-${userId}/${carHash}.car`
+    const url = new URL(key, this._baseUrl.toString())
 
     /** @type {import('@aws-sdk/client-s3').PutObjectCommandInput} */
-    const cmdParams = {
+    const opts = {
       Bucket: this._bucketName,
       Key: key,
       Body: carBytes,
@@ -80,14 +81,11 @@ export class S3Uploader {
       ChecksumSHA256: uint8ArrayToString(carCid.multihash.digest, 'base64pad'),
     }
 
+    const put = () => this._s3.send(new PutObjectCommand(opts))
+
     try {
-      await pRetry(() => this._s3.send(new PutObjectCommand(cmdParams)), {
-        retries: 3,
-      })
-      return {
-        key,
-        url: new URL(key, this._baseUrl.toString()),
-      }
+      await pRetry(put, { retries: 3 })
+      return { key, url }
     } catch (cause) {
       throw new Error('Failed to upload CAR to S3', { cause })
     }
