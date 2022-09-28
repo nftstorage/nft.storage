@@ -1,4 +1,5 @@
 import test from 'ava'
+import pRetry from 'p-retry'
 import { CID } from 'multiformats/cid'
 import * as Block from 'multiformats/block'
 import { sha256, sha512 } from 'multiformats/hashes/sha2'
@@ -203,7 +204,7 @@ test.serial('should upload a single CAR file', async (t) => {
   t.is(data.content.dag_size, 15, 'correct dag size')
 })
 
-test.serial(
+test.serial.only(
   'should check dag completness with linkdex-api for partial CAR',
   async (t) => {
     const client = await createClientWithUser(t)
@@ -226,19 +227,22 @@ test.serial(
       codec: pb,
       hasher: sha256,
     })
-
+    const cid = parent.cid.toString()
     const { writer, out } = CarWriter.create(parent.cid)
     writer.put(parent)
     writer.put(leaf1)
     // leave out leaf2 to make patial car
     writer.close()
-
     const carBytes = []
     for await (const chunk of out) {
       carBytes.push(chunk)
     }
+    const body = new Blob(carBytes)
 
-    // @ts-expect-error LINDEX_URL will be set here.
+    if (!config.LINKDEX_URL) {
+      throw new Error('LINDEX_URL should be set in test config')
+    }
+
     const linkdexMock = fetchMock.get(config.LINKDEX_URL)
     linkdexMock
       .intercept({ path: /^\/\?key=/, method: 'GET' })
@@ -254,7 +258,7 @@ test.serial(
         Authorization: `Bearer ${client.token}`,
         'Content-Type': 'application/car',
       },
-      body: new Blob(carBytes),
+      body,
     })
 
     linkdexMock.destroy()
@@ -263,28 +267,35 @@ test.serial(
     t.true(res.ok, 'Server response ok')
     const { ok, value } = await res.json()
     t.truthy(ok, 'Server response payload has `ok` property')
-    t.is(value.cid, parent.cid.toString(), 'Server responded with expected CID')
+    t.is(value.cid, cid, 'Server responded with expected CID')
     t.is(value.type, 'application/car', 'type should match blob mime-type')
 
-    const db = await getRawClient(config)
+    const db = getRawClient(config)
 
     const { data: upload } = await db
       .from('upload')
-      .select('*, content(*)')
-      .match({ source_cid: parent.cid.toString(), user_id: client.userId })
+      .select('*')
+      .match({ source_cid: cid, user_id: client.userId })
       .single()
 
     // @ts-ignore
     t.is(upload.source_cid, cid)
     t.is(upload.deleted_at, null)
-    t.is(upload.content.dag_size, 15, 'correct dag size')
-    t.is(upload.pins.length, 1)
 
-    const { data: pin } = await db
-      .from('pin')
-      .select('*')
-      .match({ id: upload.pins[0].id })
-      .single()
+    const pin = await pRetry(
+      async () => {
+        const { data: pin } = await db
+          .from('pin')
+          .select('*')
+          .match({ content_cid: cid, service: 'ElasticIpfs' })
+          .single()
+        if (pin.status !== 'Pinned') {
+          throw new Error('retry, the status is updated in a waitUntil')
+        }
+        return pin
+      },
+      { retries: 3 }
+    )
 
     t.is(pin.service, 'ElasticIpfs')
     t.is(pin.status, 'Pinned')

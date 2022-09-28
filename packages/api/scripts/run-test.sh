@@ -9,10 +9,6 @@ $CLI db-sql --cargo --testing --reset
 echo "creating minio bucket..."
 $CLI minio bucket create dotstorage-dev-0
 
-cd $THIS_DIR/..
-echo "typechecking..."
-npx tsc
-
 echo "building worker..."
 $CLI build --env=test
 

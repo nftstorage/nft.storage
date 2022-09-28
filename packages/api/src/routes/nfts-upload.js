@@ -190,7 +190,6 @@ export async function uploadCarWithStat(
   // ask linkdex for the dag structure across the set of CARs in S3 for this upload.
   const checkDagStructureTask = async () => {
     const structure = await ctx.linkdexApi?.getDagStructure(s3Backup.key)
-    console.log('linkdex-api', s3Backup.key, structure)
     if (structure === 'Complete') {
       return ctx.db.updatePinStatus(upload.content_cid, elasticPin(structure))
     }

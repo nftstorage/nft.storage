@@ -216,15 +216,13 @@ export class DBClient {
    */
   async updatePinStatus(contentCid, { service, status: newStatus }) {
     const now = new Date().toISOString()
-
     const query = this.client.from('pin')
-
     const { data: pin, status } = await query
       .update({
         status: newStatus,
         updated_at: now,
       })
-      .match({ contentCid, service })
+      .match({ content_cid: contentCid, service })
       .single()
 
     if (status === 406) {
@@ -341,7 +339,7 @@ export class DBClient {
         // @ts-ignore
         'content.pin.service',
         'in',
-        '(IpfsCluster,IpfsCluster2,IpfsCluster3)'
+        '(IpfsCluster,IpfsCluster2,IpfsCluster3,ElasticIpfs)'
       )
       .single()
 
@@ -373,7 +371,7 @@ export class DBClient {
         // @ts-ignore
         'content.pin.service',
         'in',
-        '(IpfsCluster,IpfsCluster2,IpfsCluster3)'
+        '(IpfsCluster,IpfsCluster2,IpfsCluster3,ElasticIpfs)'
       )
       .limit(opts.limit || 10)
       .order('inserted_at', { ascending: false })
@@ -484,7 +482,11 @@ export class DBClient {
         pins:pin(status, service, inserted_at)`
       )
       // @ts-ignore
-      .filter('pins.service', 'in', '(IpfsCluster,IpfsCluster2,IpfsCluster3)')
+      .filter(
+        'pins.service',
+        'in',
+        '(IpfsCluster,IpfsCluster2,IpfsCluster3,ElasticIpfs)'
+      )
       .eq('cid', cid)
       .single()
 

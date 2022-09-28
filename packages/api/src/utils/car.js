@@ -1,4 +1,4 @@
-import { CID } from 'multiformats'
+import { CID } from 'multiformats/cid'
 import { CarWriter } from '@ipld/car'
 import { sha256 } from 'multiformats/hashes/sha2'
 
