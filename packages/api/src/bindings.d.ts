@@ -10,13 +10,14 @@ import { Logging } from './utils/logs.js'
 
 export type RuntimeEnvironmentName = 'test' | 'dev' | 'staging' | 'production'
 
-/** Raw env config, before we do any vaidation */
-export interface RawEnvConfiguration {
+export type RawEnvConfiguration = Record<string, any>
+
+export interface ServiceConfiguration {
   /** Is this a debug build? */
-  DEBUG: string
+  DEBUG: boolean
 
   /** Target runtime environment */
-  ENV: string
+  ENV: RuntimeEnvironmentName
 
   /** Semantic version for current build */
   VERSION: string
@@ -28,7 +29,7 @@ export interface RawEnvConfiguration {
   COMMITHASH: string
 
   /** Current maintenance mode */
-  MAINTENANCE_MODE: string
+  MAINTENANCE_MODE: Mode
 
   /** Salt for API key generation */
   SALT: string
@@ -48,11 +49,8 @@ export interface RawEnvConfiguration {
   /** UCAN private signing key */
   PRIVATE_KEY: string
 
-  /** key for active IPFS cluster endpoint */
-  CLUSTER_SERVICE?: string
-
-  /** URL for active IPFS cluster endpoint */
-  CLUSTER_API_URL?: string
+  /** API url for active IPFS cluster endpoint */
+  CLUSTER_API_URL: string
 
   /** Auth token for IPFS culster */
   CLUSTER_BASIC_AUTH_TOKEN: string
@@ -92,18 +90,6 @@ export interface RawEnvConfiguration {
 
   /** Slack webhook url */
   SLACK_USER_REQUEST_WEBHOOK_URL: string
-}
-
-/** Validated config */
-export interface ServiceConfiguration extends RawEnvConfiguration {
-  /** Is this a debug build? */
-  DEBUG: boolean
-
-  /** Target runtime environment */
-  ENV: RuntimeEnvironmentName
-
-  /** Current maintenance mode */
-  MAINTENANCE_MODE: Mode
 }
 
 export interface Ucan {

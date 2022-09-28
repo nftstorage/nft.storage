@@ -36,6 +36,8 @@ const BASE_CONFIG = {
   CLUSTER_API_URL: 'http://127.0.0.1:9094',
   S3_ENDPOINT: 'http://127.0.0.1:9000',
   SLACK_USER_REQUEST_WEBHOOK_URL: '',
+  CARPARK_URL: 'http://example.org',
+  LINKDEX_URL: 'http://example.org',
 
   // Since we're calling serviceConfigFromVariables outside of the test worker scope,
   // we need to define these version constants. In worker scope, they are injected by
@@ -48,7 +50,7 @@ const BASE_CONFIG = {
 /**
  * Returns BASE_CONFIG with the given key omitted
  * @param {string[]} keys
- * @returns {Record<string, string>}
+ * @return {import('../src/config.js').RawEnvConfiguration}
  */
 function omit(...keys) {
   return Object.fromEntries(
@@ -59,6 +61,7 @@ function omit(...keys) {
 /**
  * Returns BASE_CONFIG, overridden with the given vars
  * @param {Record<string, string>} vars
+ * @return {import('../src/config.js').RawEnvConfiguration}
  */
 function override(vars) {
   return { ...BASE_CONFIG, ...vars }

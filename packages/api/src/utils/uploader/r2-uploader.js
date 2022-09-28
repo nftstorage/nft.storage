@@ -49,6 +49,7 @@ export class R2Uploader {
       await pRetry(put, { retries: 3 })
       return { key, url }
     } catch (cause) {
+      // @ts-expect-error wen ts understand Error object?
       throw new Error('Failed to upload CAR to R2', { cause })
     }
   }

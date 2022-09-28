@@ -481,8 +481,8 @@ export class DBClient {
         updated_at,
         pins:pin(status, service, inserted_at)`
       )
-      // @ts-ignore
       .filter(
+        // @ts-ignore
         'pins.service',
         'in',
         '(IpfsCluster,IpfsCluster2,IpfsCluster3,ElasticIpfs)'

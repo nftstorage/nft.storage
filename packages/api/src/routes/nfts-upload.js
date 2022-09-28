@@ -124,27 +124,23 @@ export async function nftUpload(event, ctx) {
  * @param {UploadCarInput} params
  */
 export async function uploadCar(params) {
-  // load the car into memory just the once here
-  const carBytes = new Uint8Array(await params.car.arrayBuffer())
-  const stat = await carStat(carBytes, {
+  const stat = await carStat(params.car, {
     structure: params.structure,
   })
 
-  return uploadCarWithStat(carBytes, params, stat)
+  return uploadCarWithStat(params, stat)
 }
 
 /**
- * @param {Uint8Array} carBytes
  * @param {UploadCarInput} data
  * @param {CarStat} stat
  */
 export async function uploadCarWithStat(
-  carBytes,
   { event, ctx, user, key, uploadType = 'Car', mimeType, files, meta },
   stat
 ) {
   const sourceCid = stat.rootCid.toString()
-  const carCid = await createCarCid(carBytes)
+  const carCid = await createCarCid(stat.carBytes)
   const metadata = {
     structure: stat.structure || 'Unknown',
     rootCid: sourceCid,
@@ -152,8 +148,8 @@ export async function uploadCarWithStat(
   }
 
   const [s3Backup, r2Backup] = await Promise.all([
-    ctx.s3Uploader.uploadCar(carBytes, carCid, user.id, metadata),
-    ctx.r2Uploader.uploadCar(carBytes, carCid, user.id, metadata),
+    ctx.s3Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
+    ctx.r2Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
   ])
 
   const xName = event.request.headers.get('x-name')
@@ -246,12 +242,15 @@ export async function nftUpdateUpload(event, ctx) {
  * @property {number} [size] DAG size in bytes
  * @property {import('multiformats').CID} rootCid Root CID of the DAG
  * @property {DagStructure} [structure] Completeness of the DAG within the CAR
- * @param {Uint8Array} carBytes
+ * @property {Uint8Array} carBytes
+ *
+ * @param {Blob} car
  * @param {Object} [options]
  * @param {DagStructure} [options.structure]
  * @returns {Promise<CarStat>}
  */
-export async function carStat(carBytes, { structure } = {}) {
+export async function carStat(car, { structure } = {}) {
+  const carBytes = new Uint8Array(await car.arrayBuffer())
   const blocksIterator = await CarBlockIterator.fromBytes(carBytes)
   const roots = await blocksIterator.getRoots()
   if (roots.length === 0) {
@@ -316,7 +315,7 @@ export async function carStat(carBytes, { structure } = {}) {
       }
     }
   }
-  return { rootCid, size, structure }
+  return { rootCid, size, structure, carBytes }
 }
 
 /**

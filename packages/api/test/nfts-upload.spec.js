@@ -204,7 +204,7 @@ test.serial('should upload a single CAR file', async (t) => {
   t.is(data.content.dag_size, 15, 'correct dag size')
 })
 
-test.serial.only(
+test.serial(
   'should check dag completness with linkdex-api for partial CAR',
   async (t) => {
     const client = await createClientWithUser(t)

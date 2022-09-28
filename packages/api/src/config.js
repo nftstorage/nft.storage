@@ -38,13 +38,19 @@ export const getServiceConfig = () => {
  */
 export function serviceConfigFromVariables(vars) {
   let clusterUrl
-  if (!vars.CLUSTER_SERVICE) {
-    clusterUrl = vars.CLUSTER_API_URL
-  } else {
+  if (vars.CLUSTER_SERVICE) {
     clusterUrl = CLUSTER_SERVICE_URLS[vars.CLUSTER_SERVICE]
     if (!clusterUrl) {
       throw new Error(`unknown cluster service: ${vars.CLUSTER_SERVICE}`)
     }
+  }
+  if (vars.CLUSTER_API_URL) {
+    clusterUrl = vars.CLUSTER_API_URL
+  }
+  if (!clusterUrl || (vars.CLUSTER_SERVICE && vars.CLUSTER_API_URL)) {
+    throw new Error(
+      `One of CLUSTER_SERVICE or CLUSTER_API_URL must be set in ENV`
+    )
   }
 
   return {
@@ -92,7 +98,7 @@ export function serviceConfigFromVariables(vars) {
  * @throws if a config variable is missing, unless ENV is 'test' or 'dev', in which case the default value will be used for missing vars.
  */
 export function loadConfigVariables() {
-  /** @type Record<string, string | R2Bucket> */
+  /** @type RawEnvConfiguration */
   const vars = {}
 
   /** @type Record<string, unknown> */
@@ -125,7 +131,7 @@ export function loadConfigVariables() {
     if (typeof val === 'string') {
       vars[name] = val
     } else if (val !== null && typeof val === 'object') {
-      // @ts-expect-error some env vars are objects like R2Bucket that are set by cloudflare
+      // some globals are objects like an R2Bucket, bound for us by Cloudflare
       vars[name] = val
     } else {
       throw new Error(
@@ -151,7 +157,6 @@ export function loadConfigVariables() {
     }
   }
 
-  // @ts-expect-error
   return vars
 }
 
