@@ -244,13 +244,13 @@ export async function nftUpdateUpload(event, ctx) {
  * @property {DagStructure} [structure] Completeness of the DAG within the CAR
  * @property {Uint8Array} carBytes
  *
- * @param {Blob} car
+ * @param {Blob} carBlob
  * @param {Object} [options]
  * @param {DagStructure} [options.structure]
  * @returns {Promise<CarStat>}
  */
-export async function carStat(car, { structure } = {}) {
-  const carBytes = new Uint8Array(await car.arrayBuffer())
+export async function carStat(carBlob, { structure } = {}) {
+  const carBytes = new Uint8Array(await carBlob.arrayBuffer())
   const blocksIterator = await CarBlockIterator.fromBytes(carBytes)
   const roots = await blocksIterator.getRoots()
   if (roots.length === 0) {

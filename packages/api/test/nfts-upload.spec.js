@@ -478,11 +478,11 @@ test.serial('should upload to cluster 2', async (t) => {
     .filter(
       'content.pin.service',
       'in',
-      '(IpfsCluster,IpfsCluster2,IpfsCluster3)'
+      '(IpfsCluster,IpfsCluster2,IpfsCluster3,ElasticIpfs)'
     )
     .single()
 
-  t.is(data.content.pin[0].service, 'IpfsCluster3')
+  t.is(data.content.pin[0].service, 'ElasticIpfs')
 })
 
 test.serial('should create S3 backup', async (t) => {
@@ -509,9 +509,13 @@ test.serial('should create S3 backup', async (t) => {
   // construct the expected backup URL
   const carBuf = await car.arrayBuffer()
   const carHash = await getHash(new Uint8Array(carBuf))
-  const backupUrl = expectedBackupUrl(config, root, client.userId, carHash)
+  const carCid = await getCarCid(new Uint8Array(carBuf))
 
-  t.is(backup_urls[0], backupUrl)
+  t.is(
+    backup_urls[0],
+    expectedS3BackupUrl(config, root, client.userId, carHash)
+  )
+  t.is(backup_urls[1], expectedR2BackupUrl(config, carCid))
 })
 
 test.serial(
@@ -553,8 +557,12 @@ test.serial(
 
       const { value } = await res.json()
       t.is(root.toString(), value.cid)
+      const carCid = await getCarCid(
+        new Uint8Array(await carFile.arrayBuffer())
+      )
       const carHash = await getHash(new Uint8Array(await carFile.arrayBuffer()))
-      backupUrls.push(expectedBackupUrl(config, root, client.userId, carHash))
+      backupUrls.push(expectedS3BackupUrl(config, root, client.userId, carHash))
+      backupUrls.push(expectedR2BackupUrl(config, carCid))
     }
 
     const upload = await client.client.getUpload(root.toString(), client.userId)
@@ -737,6 +745,11 @@ const getHash = async (data) => {
   return uint8ArrayToString(hash.bytes, 'base32')
 }
 
+/** @param {Uint8Array} data */
+const getCarCid = async (data) => {
+  return CID.createV1(0x202, await sha256.digest(data))
+}
+
 /**
  *
  * @param {number} n
@@ -755,7 +768,16 @@ function getRandomBytes(n) {
  * @param {string} carHash
  * @returns
  */
-function expectedBackupUrl(config, root, userId, carHash) {
+function expectedS3BackupUrl(config, root, userId, carHash) {
   const { S3_ENDPOINT, S3_BUCKET_NAME } = config
   return `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${userId}/${carHash}.car`
+}
+
+/**
+ * @param {import('../src/config.js').ServiceConfiguration} config
+ * @param {CID|string} carCid
+ */
+function expectedR2BackupUrl(config, carCid) {
+  const { CARPARK_URL } = config
+  return `${CARPARK_URL}/${carCid}/${carCid}.car`
 }
