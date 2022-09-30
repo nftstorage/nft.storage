@@ -103,6 +103,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
           pathname: BLOG_URL,
           activeClass: '!text-forest',
         },
+        target: '_blank',
         name: 'Blog',
       },
       ...(user
@@ -183,6 +184,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                     href={item.link || ''}
                     key={item.name}
                     aria-current={isActive ? 'page' : undefined}
+                    target={item.target}
                     className={clsx(
                       'text-xl text-black no-underline underline-hover align-middle',
                       {
@@ -264,6 +266,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
                     'mobile-nav-link align-middle chicagoflf',
                     logo.isDark ? 'black' : 'white'
                   )}
+                  target={item.target}
                   onClick={item.tracking ? item.tracking : onMobileLinkClick}
                 >
                   {item.name}
