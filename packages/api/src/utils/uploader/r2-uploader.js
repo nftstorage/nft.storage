@@ -46,7 +46,7 @@ export class R2Uploader {
     const put = () => this._bucket.put(key, carBytes, opts)
 
     try {
-      await pRetry(put, { retries: 3 })
+      await pRetry(put, { retries: 3, onFailedAttempt: console.log })
       return { key, url }
     } catch (cause) {
       // @ts-expect-error wen ts understand Error object?

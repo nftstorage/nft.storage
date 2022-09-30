@@ -84,7 +84,7 @@ export class S3Uploader {
     const put = () => this._s3.send(new PutObjectCommand(opts))
 
     try {
-      await pRetry(put, { retries: 3 })
+      await pRetry(put, { retries: 3, onFailedAttempt: console.log })
       return { key, url }
     } catch (cause) {
       // @ts-expect-error

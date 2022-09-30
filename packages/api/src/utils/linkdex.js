@@ -30,6 +30,9 @@ export class LinkdexApi {
       }
       return report.structure
     }
-    return pRetry(fetchFromApi, { retries: 3 })
+    return pRetry(fetchFromApi, {
+      retries: 3,
+      onFailedAttempt: (err) => console.log('LinkdexApi Error', err),
+    })
   }
 }
