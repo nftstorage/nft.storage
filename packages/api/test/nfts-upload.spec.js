@@ -20,6 +20,7 @@ import {
 } from './scripts/test-context.js'
 import { File } from 'nft.storage/src/platform.js'
 import crypto from 'node:crypto'
+import { FormData } from 'undici'
 
 test.before(async (t) => {
   await setupMiniflareContext(t)
@@ -65,7 +66,9 @@ test.serial('should upload multiple blobs', async (t) => {
   body.append('file', file2, 'name2')
   const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${client.token}` },
+    headers: {
+      Authorization: `Bearer ${client.token}`,
+    },
     // @ts-ignore minor type mismatch between miniflare fetch and node-fetch
     body,
   })
