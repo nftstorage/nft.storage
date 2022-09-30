@@ -215,7 +215,9 @@ export default function Files({ user }) {
           </CopyButton>
         </td>
         <td data-label="Pin Status" className="">
-          {nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
+          {nft.pin.status.toLowerCase() === 'pinned' && '📌'}
+          {nft.pin.status.toLowerCase() !== 'pinned' &&
+            nft.pin.status.charAt(0).toUpperCase() + nft.pin.status.slice(1)}
         </td>
         <td data-label="Deals">
           <div className="leading-normal">
@@ -441,15 +443,18 @@ export default function Files({ user }) {
                           </th>
                           <th>
                             <span aria-describedby="pin-status-tooltip">
-                              Pin Status
+                              Archived
                               <Tooltip
                                 placement="top"
                                 overlay={
                                   <span>
-                                    Reports the status of a file or piece of
-                                    data stored on the IPFS Cluster. Status
-                                    might not be fully up-to-date. Data is still
-                                    available even when in Queued state.
+                                    Indicates whether NFT.Storage received a
+                                    complete graph of data (e.g., a full file).
+                                    📌 indicates that NFT.Storage has
+                                    successfully received your file, and your
+                                    data is safely archived. If you
+                                    intentionally uploaded an incomplete graph,
+                                    ignore this column.
                                   </span>
                                 }
                                 overlayClassName="ns-tooltip"
