@@ -72,6 +72,6 @@
     "why-is-node-running": "^2.2.2"
   },
   "engines": {
-    "node": ">= 18.0"
+    "node": ">= 16.0"
   }
 }
