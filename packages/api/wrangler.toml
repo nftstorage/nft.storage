@@ -14,7 +14,6 @@ no_bundle = true
 ENV = "dev"
 DEBUG = "true"
 DATABASE_URL = "http://localhost:3000"
-LINKDEX_URL = "https://example.org"
 CARPARK_URL = "https://carpark-dev.web3.storage"
 
 [[r2_buckets]]

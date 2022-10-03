@@ -30,8 +30,7 @@ test.serial('should pin with just cid', async (t) => {
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
 
-  // expected CID for the above data
-  const cid = 'bafkreidvbhs33ighmljlvr7zbv2ywwzcmp5adtf4kqvlly67cy56bdtmve'
+  const cid = 'bafkreieqnv4r6vk3m2bdy5k2ddgpiyfhya2bm7euczzbtvf5nv3h4upmfy'
   const res = await mf.dispatchFetch('http://miniflare.test/pins', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },

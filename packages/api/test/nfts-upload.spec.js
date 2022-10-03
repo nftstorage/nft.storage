@@ -15,15 +15,16 @@ import { KeyPair } from 'ucan-storage/keypair'
 import {
   getMiniflareContext,
   getTestServiceConfig,
-  getMiniflareFetchMock,
   setupMiniflareContext,
+  getMiniflareFetchMock,
 } from './scripts/test-context.js'
 import { File } from 'nft.storage/src/platform.js'
 import crypto from 'node:crypto'
 import { FormData } from 'undici'
 
 test.before(async (t) => {
-  await setupMiniflareContext(t)
+  const linkdexUrl = 'http://fake.api.net'
+  await setupMiniflareContext(t, { overrides: { LINKDEX_URL: linkdexUrl } })
 })
 
 test.serial('should upload a single file', async (t) => {
@@ -213,7 +214,6 @@ test.serial(
     const client = await createClientWithUser(t)
     const config = getTestServiceConfig(t)
     const mf = getMiniflareContext(t)
-    const fetchMock = getMiniflareFetchMock(t)
 
     const leaf1 = await Block.encode({
       value: pb.prepare({ Data: 'leaf1' }),
@@ -246,14 +246,8 @@ test.serial(
       throw new Error('LINDEX_URL should be set in test config')
     }
 
-    const linkdexMock = fetchMock.get(config.LINKDEX_URL)
-    linkdexMock
-      .intercept({ path: /^\/\?key=/, method: 'GET' })
-      .reply(
-        200,
-        { structure: 'Complete' },
-        { headers: { 'content-type': 'application/json' } }
-      )
+    const linkdexMock = getLinkdexMock(t)
+    mockLinkdexResponse(linkdexMock, 'Complete')
 
     const res = await mf.dispatchFetch('http://miniflare.test/upload', {
       method: 'POST',
@@ -263,8 +257,6 @@ test.serial(
       },
       body,
     })
-
-    linkdexMock.destroy()
 
     t.truthy(res, 'Server responded')
     t.true(res.ok, 'Server response ok')
@@ -458,7 +450,7 @@ test.serial(
   }
 )
 
-test.serial('should upload to cluster 2', async (t) => {
+test.serial('should upload to elastic ipfs', async (t) => {
   const client = await createClientWithUser(t)
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
@@ -488,13 +480,14 @@ test.serial('should upload to cluster 2', async (t) => {
   t.is(data.content.pin[0].service, 'ElasticIpfs')
 })
 
-test.serial('should create S3 backup', async (t) => {
+test.serial('should create S3 & R2 backups', async (t) => {
   const client = await createClientWithUser(t)
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const { root, car } = await packToBlob({
     input: [{ path: 'test.txt', content: 'S3 backup' }],
   })
+
   const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
@@ -544,6 +537,10 @@ test.serial(
       maxChunkSize: chunkSize,
     })
     const splitter = await TreewalkCarSplitter.fromBlob(car, chunkSize)
+    const linkdexMock = getLinkdexMock(t)
+    // return repsonse "Partial" 5 times, then 'Complete once
+    mockLinkdexResponse(linkdexMock, 'Partial', 5)
+    mockLinkdexResponse(linkdexMock, 'Complete', 1)
 
     const backupUrls = []
     for await (const chunk of splitter.cars()) {
@@ -783,4 +780,31 @@ function expectedS3BackupUrl(config, root, userId, carHash) {
 function expectedR2BackupUrl(config, carCid) {
   const { CARPARK_URL } = config
   return `${CARPARK_URL}/${carCid}/${carCid}.car`
+}
+
+/**
+ * @param {import('ava').ExecutionContext<unknown>} t
+ */
+function getLinkdexMock(t) {
+  const config = getTestServiceConfig(t)
+  const fetchMock = getMiniflareFetchMock(t)
+  console.log('LINKDEX URL', config.LINKDEX_URL)
+  // @ts-expect-error LINKDEX_URL should be set
+  return fetchMock.get(config.LINKDEX_URL)
+}
+
+/**
+ * @param {import('undici').Interceptable} mock
+ * @param {import('../src/bindings.js').DagStructure} structure
+ * @param {number} times
+ */
+function mockLinkdexResponse(mock, structure, times = 1) {
+  mock
+    .intercept({ path: /^\/\?key=/, method: 'GET' })
+    .reply(
+      200,
+      { structure: structure },
+      { headers: { 'content-type': 'application/json' } }
+    )
+    .times(times)
 }
