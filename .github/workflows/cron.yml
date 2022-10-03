@@ -67,3 +67,4 @@ jobs:
           release-type: node
           monorepo-tags: true
           package-name: cron
+          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Other Changes","hidden":false}]'
