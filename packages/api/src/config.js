@@ -153,7 +153,9 @@ export function loadConfigVariables() {
     if (typeof val === 'string') {
       vars[name] = val
     } else {
-      console.warn(`Missing optional config variables: ${name}`)
+      if (globals.DEBUG === 'true') {
+        console.warn(`Missing optional config variables: ${name}`)
+      }
     }
   }
 

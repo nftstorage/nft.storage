@@ -788,7 +788,6 @@ function expectedR2BackupUrl(config, carCid) {
 function getLinkdexMock(t) {
   const config = getTestServiceConfig(t)
   const fetchMock = getMiniflareFetchMock(t)
-  console.log('LINKDEX URL', config.LINKDEX_URL)
   // @ts-expect-error LINKDEX_URL should be set
   return fetchMock.get(config.LINKDEX_URL)
 }

@@ -12,7 +12,7 @@
     "dev:persist": "PERSIST_VOLUMES=true npm run dev",
     "build": "scripts/cli.js build",
     "test": "./docker/run-with-dependencies.sh ./scripts/run-test.sh",
-    "posttest": "npx tsc",
+    "posttest": "tsc",
     "db-types": "./scripts/cli.js db-types"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",

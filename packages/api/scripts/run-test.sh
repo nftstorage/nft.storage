@@ -14,5 +14,4 @@ $CLI build --env=test
 
 # run test suite, passing along any arguments we received
 echo "running tests"
-npx ava $@
-
+npx ava "$@"
