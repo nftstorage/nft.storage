@@ -35,6 +35,10 @@ ENV = "staging"
 DEBUG = "true"
 DATABASE_URL = "https://nft-storage-pgrest-staging.herokuapp.com"
 
+[[env.staging.r2_buckets]]
+binding = 'CARPARK'
+bucket_name = 'carpark-staging-0'
+
 [env.staging.build]
 command = "scripts/cli.js build --env staging"
 watch_dir = "src"
@@ -53,6 +57,10 @@ usage_model = "unbound"
 ENV = "production"
 DEBUG = "false"
 DATABASE_URL = "https://nft-storage-pgrest-prod.herokuapp.com"
+
+[[env.production.r2_buckets]]
+binding = 'CARPARK'
+bucket_name = 'carpark-prod-0'
 
 [env.production.build]
 command = "scripts/cli.js build --env production"

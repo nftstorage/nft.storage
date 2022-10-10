@@ -277,21 +277,19 @@ test.serial(
     t.is(upload.source_cid, cid)
     t.is(upload.deleted_at, null)
 
-    const pin = await pRetry(
-      async () => {
-        const { data: pin } = await db
-          .from('pin')
-          .select('*')
-          .match({ content_cid: cid, service: 'ElasticIpfs' })
-          .single()
-        if (pin.status !== 'Pinned') {
-          throw new Error('retry, the status is updated in a waitUntil')
-        }
-        return pin
-      },
-      { retries: 3 }
-    )
+    // wait for the call to mock linkdex-api to complete
+    await res.waitUntil()
+    const { data: pin } = await db
+      .from('pin')
+      .select('*')
+      .match({ content_cid: cid, service: 'ElasticIpfs' })
+      .single()
 
+    t.is(
+      pin.status,
+      'Pinned',
+      "Status should be pinned when linkdex-api returns 'Complete'"
+    )
     t.is(pin.service, 'ElasticIpfs')
     t.is(pin.status, 'Pinned')
   }
@@ -538,7 +536,7 @@ test.serial(
     })
     const splitter = await TreewalkCarSplitter.fromBlob(car, chunkSize)
     const linkdexMock = getLinkdexMock(t)
-    // return repsonse "Partial" 5 times, then 'Complete once
+    // respond with 'Partial' 5 times, then 'Complete' once.
     mockLinkdexResponse(linkdexMock, 'Partial', 5)
     mockLinkdexResponse(linkdexMock, 'Complete', 1)
 

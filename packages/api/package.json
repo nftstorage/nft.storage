@@ -11,8 +11,8 @@
     "dev": "miniflare dist/worker.js --watch --debug --env ../../.env --r2 CARPARK",
     "dev:persist": "PERSIST_VOLUMES=true npm run dev",
     "build": "scripts/cli.js build",
+    "pretest": "tsc",
     "test": "./docker/run-with-dependencies.sh ./scripts/run-test.sh",
-    "posttest": "tsc",
     "db-types": "./scripts/cli.js db-types"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",
