@@ -217,13 +217,21 @@ export class DBClient {
   async updatePinStatus(contentCid, { service, status: newStatus }) {
     const now = new Date().toISOString()
     const query = this.client.from('pin')
-    const { data: pin, status } = await query
+    const {
+      data: pin,
+      status,
+      error,
+    } = await query
       .update({
         status: newStatus,
         updated_at: now,
       })
       .match({ content_cid: contentCid, service })
       .single()
+
+    if (error) {
+      throw new DBError(error)
+    }
 
     if (status === 406) {
       throw new Error(`Status 406, cannot update pin ${service} ${contentCid}`)
