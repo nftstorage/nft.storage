@@ -348,7 +348,7 @@ export default function Stats({ logos }) {
       {/* TODO: Uncomment this when we have copy, and probably move it to the CMS */}
       {/* <WhyItMattersSection /> */}
       <div className="bg-nspeach">
-        <div className="relative w-screen flex items-center justify-center">
+        <div className="relative flex items-center justify-center">
           <div className="text-center">
             <p className="chicagoflf p-4 m-0 mt-5 text-[2.375rem]">
               NFT Market By the Numbers
