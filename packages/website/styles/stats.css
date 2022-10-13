@@ -1,61 +1,46 @@
 .stat-cards-wrapper {
-  background: url('/images/bg-hex.svg') repeat-x top center;
-  background-size: 140px;
-  margin-top: 10rem;
+  margin-top: 8rem;
 }
 
-.stat-card-inner:before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  z-index: -1;
-  background-color: var(--nsyellow);
-  border: 1px solid;
-  transform: translate3d(1rem, -1rem, 0);
-}
-
+.stats-card,
 .market-stats-card {
   box-sizing: border-box;
   z-index: 1;
   position: relative;
-  padding: 2rem;
   margin: 0 0.25rem;
   box-shadow: black 8px 8px 0 0;
   border-radius: 2px;
 }
 
-.market-stats-card:nth-child(even) {
-  margin-top: 1rem;
+.market-stats-card {
+  padding: 2rem;
 }
 
-.stats-trusted-wrapper > div {
-  max-width: calc(100% - 2rem);
-  margin: 4rem 0;
+@media (min-width: 768px) {
+  .market-stats-card:nth-child(even) {
+    margin-top: 1rem;
+  }
+}
+
+ul.checked li {
+  display: flex;
+  margin-bottom: 20px;
+  font-size: 1.25rem;
+}
+
+ul.checked li:before {
+  content: url(/images/check-bullet.svg);
+  margin-right: 27px;
+  padding-top: 3px;
+}
+
+.why-it-matters-card {
+  border: 3px solid #000;
+  box-sizing: border-box;
+  background-color: #f5c32c;
+  z-index: 1;
   position: relative;
-}
-
-.stats-trusted-wrapper > div > div {
-  background-color: #fff;
-  border: 1px solid #000;
-  position: relative;
-  max-width: 100%;
-}
-
-.stats-trusted-wrapper .grid {
-  max-width: 800px;
-}
-
-.stats-trusted-wrapper > div:before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  background-color: var(--nslime);
-  border: 1px solid;
-  transform: translate3d(1rem, -1rem, 0);
+  margin: 0 0.25rem;
+  box-shadow: black 8px 8px 0 0;
+  border-radius: 1px;
 }
