@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.6.1](https://github.com/nftstorage/nft.storage/compare/website-v2.6.0...website-v2.6.1) (2022-10-05)
+
+
+### Bug Fixes
+
+* open blog link in new window ([#2211](https://github.com/nftstorage/nft.storage/issues/2211)) ([2465ec6](https://github.com/nftstorage/nft.storage/commit/2465ec6ef362c3f0aba1e3736d889deff136caac))
+* remove Open API clients from docs ([#2220](https://github.com/nftstorage/nft.storage/issues/2220)) ([3f912c8](https://github.com/nftstorage/nft.storage/commit/3f912c8a0c5c6f34fa54094db255af7ae83636b1))
+* update pin status header and display a pin icon when pinned ([#2206](https://github.com/nftstorage/nft.storage/issues/2206)) ([84ce538](https://github.com/nftstorage/nft.storage/commit/84ce53800bc35f421172a0fc39305d5fb0785ec4)), closes [#2195](https://github.com/nftstorage/nft.storage/issues/2195)
+
 ## [2.6.0](https://github.com/nftstorage/nft.storage/compare/website-v2.5.1...website-v2.6.0) (2022-09-23)
 
 

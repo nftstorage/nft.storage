@@ -70,7 +70,6 @@ const nextConfig = withBundleAnalyzer({
       '/docs/how-to/nftup': { page: '/docs/how-to/nftup' },
       '/docs/client': { page: '/docs/client/js' },
       '/docs/client/https': { page: '/docs/client/http' },
-      '/docs/client/generated': { page: '/docs/client/generated' },
       '/docs/client/js': { page: '/docs/client/js' },
       '/docs/client/api-docs': { page: '/docs/client/js' },
       '/docs/client/lib': { page: '/docs/client/js' },

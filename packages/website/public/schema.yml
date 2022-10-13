@@ -19,6 +19,10 @@ paths:
         Store an [ERC-1155](https://eips.ethereum.org/EIPS/eip-1155)-compatible NFT as 
         a collection of content-addressed objects connected by IPFS CID links.
 
+        **Not recommended for performance sensitive applications**. While the `/store` endpoint is convenient, it is less performant than `/upload`, and might be deprecated in the future. If you would like to have a similar level of convenience with better performance, check out the Javascript client's [`store` method](https://nft.storage/docs/client/js/#store---store-erc1155-nft-data).
+        We recommend constructing CAR files on the client wherever possible and using the `/upload`
+        endpoint to store your data. This lets you compute the CID for your upload on the client and verify it against what the API returns.
+
         The POST request accepts `multipart/form-data` content restricted to a body size of 100MB (see "Size limitations" below for more information). The request must contain a form field named `meta`.
 
         The `meta` field must contain a JSON string that conforms to the [ERC-1155 metadata schema](https://eips.ethereum.org/EIPS/eip-1155#metadata).
