@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.1](https://github.com/nftstorage/nft.storage/compare/website-v2.7.0...website-v2.7.1) (2022-10-13)
+
+
+### Bug Fixes
+
+* remove overflow issue on stats page ([#2226](https://github.com/nftstorage/nft.storage/issues/2226)) ([99143ec](https://github.com/nftstorage/nft.storage/commit/99143ece32dab34aab33fbbb2098baecf1bbb568))
+
 ## [2.7.0](https://github.com/nftstorage/nft.storage/compare/website-v2.6.1...website-v2.7.0) (2022-10-13)
 
 
