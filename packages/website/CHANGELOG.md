@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.7.0](https://github.com/nftstorage/nft.storage/compare/website-v2.6.1...website-v2.7.0) (2022-10-13)
+
+
+### Features
+
+* update stats page ([#2205](https://github.com/nftstorage/nft.storage/issues/2205)) ([bbc5a88](https://github.com/nftstorage/nft.storage/commit/bbc5a880f02fae45222c0a732aa4cfb5ec2ff353))
+
+
+### Other Changes
+
+* add note about /store endpoint perf & recommend /upload ([#2218](https://github.com/nftstorage/nft.storage/issues/2218)) ([ce81d2a](https://github.com/nftstorage/nft.storage/commit/ce81d2a88eeaaa97344b909105900b63894c6d9b))
+
 ## [2.6.1](https://github.com/nftstorage/nft.storage/compare/website-v2.6.0...website-v2.6.1) (2022-10-05)
 
 
