@@ -116,7 +116,7 @@ export async function nftUpload(event, ctx) {
  *   key?: Pick<import('../utils/db-client-types').UserOutputKey, 'id'>
  *   car: Blob
  *   uploadType?: import('../utils/db-types').definitions['upload']['type']
- *   mimeType: string
+ *   mimeType?: string
  *   structure: DagStructure
  *   files: Array<{ name: string; type?: string }>
  *   meta?: Record<string, unknown>
@@ -132,7 +132,7 @@ export async function uploadCar(params) {
 }
 
 /**
- * @param {UploadCarInput} data
+ * @param {Omit<UploadCarInput, 'car'>} data
  * @param {CarStat} stat
  */
 export async function uploadCarWithStat(

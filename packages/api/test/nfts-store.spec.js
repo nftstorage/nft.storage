@@ -42,6 +42,7 @@ test('should store image', async (t) => {
     headers: { Authorization: `Bearer ${token}` },
     body,
   })
+
   t.truthy(res, 'Server responded')
   t.true(res.ok, 'Server response ok')
   const { ok, value } = await res.json()
@@ -84,13 +85,13 @@ test('should store image', async (t) => {
   }
 
   t.is(data.type, 'Nft', 'nft type')
-  t.is(data.content.dag_size, 324, 'nft size')
+  t.is(data.content.dag_size, 896, 'nft size')
   t.deepEqual(data.content.pin, [
     {
       content_cid:
         'bafyreicnwbboevx6g6fykitf4nebz2kqgkqz35qvlnlcgfulhrris66m6i',
-      status: 'PinQueued',
-      service: 'IpfsCluster3',
+      status: 'Pinned',
+      service: 'ElasticIpfs',
     },
   ])
 })
@@ -150,13 +151,13 @@ test('should store dir wrapped image', async (t) => {
   }
 
   t.is(data.type, 'Nft', 'nft type')
-  t.is(data.content.dag_size, 140, 'nft size')
+  t.is(data.content.dag_size, 382, 'nft size')
   t.deepEqual(data.content.pin, [
     {
       content_cid:
         'bafyreibubvuqeh5lm2ccose7uq54wweeajtjuhcj4pciogeq2lhbw2a23y',
-      status: 'PinQueued',
-      service: 'IpfsCluster3',
+      status: 'Pinned',
+      service: 'ElasticIpfs',
     },
   ])
 })
