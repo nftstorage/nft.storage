@@ -9,14 +9,12 @@ import Sentry from '@sentry/cli'
 import { createRequire } from 'module'
 // @ts-ignore
 import git from 'git-rev-sync'
-import {
-  servicesStartCmd,
-  servicesStopCmd,
-  servicesPullCmd,
-} from './cmds/services.js'
+import { servicesExecCmd, servicesPullCmd } from './cmds/services.js'
 import { dbSqlCmd } from './cmds/db-sql.js'
 import { dbTypesCmd } from './cmds/db-types.js'
 import { minioBucketCreateCmd, minioBucketRemoveCmd } from './cmds/minio.js'
+import { runTestSuiteCmd } from './cmds/run-test.js'
+import { runDevServerCmd } from './cmds/run-dev.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(__dirname)
@@ -104,19 +102,12 @@ prog
       process.exit(1)
     }
   })
-  .command('services start')
+  .command('services exec [command]')
   .describe(
-    'Run docker compose to setup Cluster, PostgreSQL, PostgREST and Minio'
+    'Run docker compose to setup Cluster, PostgreSQL, PostgREST and Minio. Executes your command while services are running, then tears down the docker env.'
   )
-  .option('--project', 'Project name', 'nft-storage-dev')
-  .action(servicesStartCmd)
-  .command('services stop')
-  .describe(
-    'Run docker compose to setup Cluster, PostgreSQL, PostgREST and Minio'
-  )
-  .option('--project', 'Project name', 'nft-storage-dev')
-  .option('--clean', 'Clean all dockers artifacts', false)
-  .action(servicesStopCmd)
+  .option('--persistent', 'Whether to enable persistent data volumes', false)
+  .action(servicesExecCmd)
   .command('services pull')
   .describe('pull and build all docker images used for dev/test')
   .action(servicesPullCmd)
@@ -135,5 +126,28 @@ prog
   .command('minio bucket remove <name>')
   .describe('Remove a bucket, automatically removing all contents')
   .action(minioBucketRemoveCmd)
+  .command('run test')
+  .describe(
+    'Run the test suite. Any unrecognized positional args will be passed on to the test runner.'
+  )
+  .option(
+    '--services',
+    'Run service dependencies using docker compose and cleanup after the dev server exits. Set to false if running in a custom environment',
+    true
+  )
+  .action(runTestSuiteCmd)
+  .command('run dev')
+  .describe('Run the development API server using miniflare')
+  .option(
+    '--services',
+    'Run service dependencies using docker compose and cleanup after the dev server exits. Set to false if running in a custom environment',
+    true
+  )
+  .option(
+    '--persistent',
+    'Whether to enable persistent data volumes. Only has an effect when --services=true',
+    false
+  )
+  .action(runDevServerCmd)
 
 prog.parse(process.argv)

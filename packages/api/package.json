@@ -7,11 +7,10 @@
   "main": "dist/worker.js",
   "scripts": {
     "deploy": "wrangler publish --env production",
-    "predev": "./scripts/cli.js services start && ./scripts/cli.js db-sql --cargo --testing --reset && ./scripts/cli.js minio bucket create dotstorage-dev-0",
-    "dev": "miniflare dist/worker.js --watch --debug --env ../../.env",
-    "dev:persist": "PERSIST_VOLUMES=true npm run dev",
-    "build": "scripts/cli.js build",
-    "test": "./docker/run-with-dependencies.sh ./scripts/run-test.sh",
+    "dev": "npm run build && ./scripts/cli.js run dev",
+    "dev:persist": "npm run build && ./scripts/cli.js run dev --persistent",
+    "build": "./scripts/cli.js build",
+    "test": "./scripts/cli.js build --env=test && scripts/cli.js run test",
     "db-types": "./scripts/cli.js db-types"
   },
   "author": "Hugo Dias <hugomrdias@gmail.com> (hugodias.me)",

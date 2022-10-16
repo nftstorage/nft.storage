@@ -1,11 +1,11 @@
 version: '3.6'
-services:
-  ipfs:
-    volumes:
-      - ./compose/ipfs:/data/ipfs
-  cluster:
-    volumes:
-      - ./compose/cluster:/data/ipfs-cluster
-  minio:
-    volumes:
-      - ./compose/minio:/data/minio
+
+volumes:
+  nftstorage-db-data:
+    external: true
+  nftstorage-ipfs-data:
+    external: true
+  nftstorage-cluster-data:
+    external: true
+  nftstorage-minio-data:
+    external: true
