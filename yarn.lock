@@ -19764,10 +19764,10 @@ totalist@^3.0.0:
   resolved "https://registry.yarnpkg.com/totalist/-/totalist-3.0.0.tgz#4ef9c58c5f095255cdc3ff2a0a55091c57a3a1bd"
   integrity sha512-eM+pCBxXO/njtF7vdFsHuqb+ElbxqtI4r5EAvk6grfAFyJ6IvWlSkfZ5T9ozC6xWw3Fj1fGoSmrl0gUs46JVIw==
 
-toucan-js@^2.4.1:
-  version "2.6.1"
-  resolved "https://registry.yarnpkg.com/toucan-js/-/toucan-js-2.6.1.tgz#358ce4251da34b72e29d764c823f1407c37a03df"
-  integrity sha512-G0D6lkfsQBWJhHgSagFCTc0QTWoAVfjouVZXGNv1L/N9YN2r41R0daqzpFHcAwbS4VrOTDgyiXzamfRDdub4sA==
+toucan-js@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/toucan-js/-/toucan-js-2.7.0.tgz#3d7e39294ed4fff1c9aaddd71ce0fdcd537040a0"
+  integrity sha512-vbvRbFfMLN2Jf9lOkwL1KwIwuCcS/ko0MVACZTYTnbdVlVjsIviwCU0inH0CRcMXCvFAS+uL8z/gSV3y7FpZUQ==
   dependencies:
     "@sentry/core" "6.19.6"
     "@sentry/hub" "6.19.6"
