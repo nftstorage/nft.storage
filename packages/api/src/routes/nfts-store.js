@@ -14,6 +14,7 @@ import { uploadCarWithStat } from './nfts-upload.js'
 /**
  * @typedef {import('../bindings').NFT} NFT
  * @typedef {import('ipfs-unixfs-importer').UserImporterOptions} UserImporterOptions
+ * @typedef {import('ipfs-unixfs-importer').ImportCandidate} ImportCandidate
  */
 
 /** @type {import('../bindings').Handler} */
@@ -37,16 +38,14 @@ export async function nftStore(event, ctx) {
   // accumlate blocks here, until we are ready to export it as a CAR
   const bs = new MemoryBlockStore()
 
-  for (const [name, content] of form.entries()) {
+  for (const [name, file] of form.entries()) {
     if (name === 'meta') {
       continue
     }
-    const file = /** @type {File} */ (content)
-
     if (typeof file === 'string') {
       throw new HTTPError('expected File part', 400)
     }
-    const cid = await unixFsEncodeFile(file, bs)
+    const cid = await unixFsEncodeDir([file], bs)
     const href = `ipfs://${cid}/${file.name}`
     const path = name.split('.')
     setIn(data, path, href)
@@ -129,7 +128,7 @@ const unixfsImporterOptionsDefault = {
 
 /**
  * Encode an ImportCandidate as UnixFS blocks and add them to the BlockStore.
- * @param {import('ipfs-unixfs-importer').ImportCandidate} ic
+ * @param {ImportCandidate | ImportCandidate[]} ic
  * @param {MemoryBlockStore} bs
  * @param {UserImporterOptions} opts
  */
@@ -149,14 +148,17 @@ async function unixFsEncode(ic, bs, opts = {}) {
 /**
  * Encode the File, wrapped with a directory, as UnixFS blocks
  * and add them to the BlockStore.
- * @param {File} file
+ * @param {File[]} files
  * @param {MemoryBlockStore} bs
  * @return {Promise<CID>} the root CID for the file
  */
-async function unixFsEncodeFile(file, bs) {
-  const content = new Uint8Array(await file.arrayBuffer())
-  const ic = { path: file.name, content }
-  return unixFsEncode(ic, bs, {
+async function unixFsEncodeDir(files, bs) {
+  const input = []
+  for (const f of files) {
+    const content = new Uint8Array(await f.arrayBuffer())
+    input.push({ path: f.name, content })
+  }
+  return unixFsEncode(input, bs, {
     wrapWithDirectory: true,
   })
 }
