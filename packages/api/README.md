@@ -77,6 +77,7 @@ wrangler secret put S3_SECRET_ACCESS_KEY --env production # Get from Amazon S3 (
 wrangler secret put S3_BUCKET_NAME --env production # e.g nft.storage-staging-us-east-2 (not required for dev)
 wrangler secret put PRIVATE_KEY --env production # Get from 1password
 wrangler secret put MAINTENANCE_MODE --env production # default value is "rw"
+wrangler secret put LINKDEX_URL --env production # URL for linkdex-api that can read the prod s3 bucket
 
 wrangler publish --env production
 ```
@@ -111,3 +112,19 @@ Common errors would be "cannot read version of schema", this typically indicates
 ## S3 Setup
 
 We use [S3](https://aws.amazon.com/s3/) for backup and disaster recovery. For production deployment an account on AWS is required.
+
+## Linkdex
+
+Our linkdex service determines if a user has uploaded a "Complete" DAG where it was split over multiple patial CARs. During CAR uplaod we query it with the S3 key _after_ writing the CAR to the bucket.
+
+The `env.LINKDEX_URL` points to the service to use. It should be for a linkdex-api deployment that has read access to the same s3 bucket as is used for uploads.
+
+It iterates all the blocks in all the CARs for that users uploads only, and where every link is a CID for a block contained in the CARs, we say the DAG is "Complete". If not, it's "Patial". If we haven't checked or any of the blocks are undecodable with the set of codecs we have currently, then it's "Unknown".
+
+see: https://github.com/web3-storage/linkdex-api
+
+## CARPARK
+
+We write Uploaded CARs to both S3 and R2 in parallel. The R2 Bucket is bound to the worker as `env.CARPARK`. The API docs for an R2Bucket instance are here: https://developers.cloudflare.com/r2/runtime-apis/#bucket-method-definitions
+
+We key our R2 uploads by CAR CID, and record them in the DB under `upload.backup_urls`. The URL prefix for CARs in R2 is set by the `env.CARPARK_URL`. This is currently pointing to a subdomain on web3.storage which we could configure when we need direct http access to the bucket, but does not exist at time of writing.
