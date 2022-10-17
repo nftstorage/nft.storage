@@ -38,7 +38,6 @@ export class R2Uploader {
 
     /** @type R2PutOptions */
     const opts = {
-      // @ts-expect-error `sha256` is not added to @cloudflare/workers-types yet but is real
       sha256: uint8ArrayToString(carCid.multihash.digest, 'base16'), // put fails if hash not match
       customMetadata: metadata,
     }

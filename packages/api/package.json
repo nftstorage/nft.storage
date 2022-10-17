@@ -40,8 +40,8 @@
     "uint8arrays": "^3.0.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^3.3.1",
-    "@miniflare/core": "^2.9.0",
+    "@cloudflare/workers-types": "^3.17.0",
+    "@miniflare/core": "^2.10.0",
     "@sentry/cli": "^1.71.0",
     "@sentry/webpack-plugin": "^1.16.0",
     "@types/assert": "^1.5.6",
