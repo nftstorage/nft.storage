@@ -50,7 +50,7 @@ You can avoid the redirect from path to subdomain URL by creating a [subdomain s
 
 IPFS gateways are a public, shared resource, and they are often in high demand. To provide equitable access to all users, the NFT.Storage gateway imposes request limits on high-volume traffic sources.
 
-The NFT.Storage gateway is currently rate limited to 200 requests per minute for a given IP address. In the event of a rate limit, the IP will be blocked for 30 seconds. 
+The NFT.Storage gateway is currently rate limited to 200 requests per minute for a given IP address. In the event of a rate limit, the IP will be blocked for a minute. 
 
 ## Types of gateway
 
