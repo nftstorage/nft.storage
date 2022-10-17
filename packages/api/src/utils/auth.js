@@ -52,7 +52,7 @@ export async function validate(event, { log, db, ucanService }, options) {
     }
     const user = await db.getUser(root.audience())
     if (user) {
-      log.setUser({ id: user.id })
+      log.setUser({ id: user.id.toString() })
       return {
         user: filterDeletedKeys(user),
         db,
@@ -83,7 +83,7 @@ export async function validate(event, { log, db, ucanService }, options) {
         }
 
         log.setUser({
-          id: user.id,
+          id: user.id.toString(),
         })
         return {
           user: filterDeletedKeys(user),
@@ -105,7 +105,7 @@ export async function validate(event, { log, db, ucanService }, options) {
     const user = await db.getUser(claim.iss)
     if (user) {
       log.setUser({
-        id: user.id,
+        id: user.id.toString(),
       })
 
       return {
