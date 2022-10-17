@@ -8,7 +8,7 @@ import { sha256 } from 'multiformats/hashes/sha2'
 
 /**
  * @param {CID[]} roots
- * @param {AsyncIterable<Block>|Iterable<Block>|AsyncGenerator<{cid: CID, bytes: Uint8Array}>} blocks
+ * @param {AsyncIterable<Block>|Iterable<Block>} blocks
  * @returns {Promise<Blob & { type: 'application/car' }>}
  */
 export const encode = async (roots, blocks) => {
