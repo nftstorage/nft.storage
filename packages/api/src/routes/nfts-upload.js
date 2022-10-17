@@ -7,7 +7,7 @@ import * as pb from '@ipld/dag-pb'
 import { Block } from 'multiformats/block'
 import { sha256 } from 'multiformats/hashes/sha2'
 import { HTTPError, InvalidCarError } from '../errors.js'
-import * as cluster from '../cluster.js'
+import { createCarCid } from '../utils/car.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { checkAuth } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
@@ -116,7 +116,7 @@ export async function nftUpload(event, ctx) {
  *   key?: Pick<import('../utils/db-client-types').UserOutputKey, 'id'>
  *   car: Blob
  *   uploadType?: import('../utils/db-types').definitions['upload']['type']
- *   mimeType: string
+ *   mimeType?: string
  *   structure: DagStructure
  *   files: Array<{ name: string; type?: string }>
  *   meta?: Record<string, unknown>
@@ -132,26 +132,42 @@ export async function uploadCar(params) {
 }
 
 /**
- * @param {UploadCarInput} data
+ * @param {Omit<UploadCarInput, 'car'>} data
  * @param {CarStat} stat
  */
 export async function uploadCarWithStat(
-  { event, ctx, user, key, car, uploadType = 'Car', mimeType, files, meta },
+  { event, ctx, user, key, uploadType = 'Car', mimeType, files, meta },
   stat
 ) {
   const sourceCid = stat.rootCid.toString()
-  const backupUrl = await ctx.uploader.uploadCar(
-    user.id,
-    sourceCid,
-    car,
-    stat.structure
-  )
+  const carCid = await createCarCid(stat.carBytes)
+  const metadata = {
+    structure: stat.structure || 'Unknown',
+    rootCid: sourceCid,
+    carCid: carCid.toString(),
+  }
+
+  const [s3Backup, r2Backup] = await Promise.all([
+    ctx.s3Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
+    ctx.r2Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
+  ])
 
   const xName = event.request.headers.get('x-name')
   let name = xName && decodeURIComponent(xName)
   if (!name || typeof name !== 'string') {
     name = `Upload at ${new Date().toISOString()}`
   }
+
+  /**
+   * Create a pin entry for elastic ipfs
+   * @param {import('../bindings').DagStructure | undefined} structure
+   * @returns {import('../utils/db-client-types').CreateUploadInputPin}
+   */
+  const elasticPin = (structure) => ({
+    status: structure === 'Complete' ? 'Pinned' : 'Pinning',
+    service: 'ElasticIpfs',
+  })
+
   const upload = await ctx.db.createUpload({
     mime_type: mimeType,
     type: uploadType,
@@ -162,20 +178,23 @@ export async function uploadCarWithStat(
     files,
     meta,
     key_id: key?.id,
-    backup_urls: [backupUrl],
+    backup_urls: [s3Backup.url, r2Backup.url],
     name,
+    pins: [elasticPin(stat.structure)],
   })
 
-  event.waitUntil(
-    (async () => {
-      try {
-        await cluster.pin(sourceCid)
-      } catch (err) {
-        console.warn('failed to pin to cluster', err)
-      }
-      await cluster.addCar(car, { local: true })
-    })()
-  )
+  // ask linkdex for the dag structure across the set of CARs in S3 for this upload.
+  const checkDagStructureTask = async () => {
+    const structure = await ctx.linkdexApi?.getDagStructure(s3Backup.key)
+    if (structure === 'Complete') {
+      return ctx.db.updatePinStatus(upload.content_cid, elasticPin(structure))
+    }
+  }
+
+  // no need to ask linkdex if it's Complete or Unknown
+  if (stat.structure === 'Partial' && ctx.linkdexApi) {
+    event.waitUntil(checkDagStructureTask())
+  }
 
   return upload
 }
@@ -223,6 +242,8 @@ export async function nftUpdateUpload(event, ctx) {
  * @property {number} [size] DAG size in bytes
  * @property {import('multiformats').CID} rootCid Root CID of the DAG
  * @property {DagStructure} [structure] Completeness of the DAG within the CAR
+ * @property {Uint8Array} carBytes
+ *
  * @param {Blob} carBlob
  * @param {Object} [options]
  * @param {DagStructure} [options.structure]
@@ -294,7 +315,7 @@ export async function carStat(carBlob, { structure } = {}) {
       }
     }
   }
-  return { rootCid, size, structure }
+  return { rootCid, size, structure, carBytes }
 }
 
 /**

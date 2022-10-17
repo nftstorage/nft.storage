@@ -6,7 +6,7 @@ This doc should contain everything you need to know to get a working development
 
 You'll need at least the following:
 
-- Node.js v16+
+- Node.js v18+
 - [yarn](https://yarnpkg.com/)
 - Docker
 - A personal account at [Magic Link](https://magic.link).

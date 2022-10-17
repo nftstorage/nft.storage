@@ -200,6 +200,20 @@ export class ErrorInvalidMetaplexToken extends Error {
 
 ErrorInvalidMetaplexToken.CODE = 'ERROR_INVALID_METAPLEX_TOKEN'
 
+export class LinkdexError extends Error {
+  /**
+   * @param {number} status
+   * @param {string} statusText
+   */
+  constructor(status, statusText) {
+    super(`linkdex-api not ok: ${status} ${statusText}`)
+    this.name = 'LinkdexError'
+    this.status = status
+    this.code = LinkdexError.CODE
+  }
+}
+LinkdexError.CODE = 'LINKDEX_NOT_OK'
+
 export class ErrorPinningUnauthorized extends HTTPError {
   constructor(
     msg = 'Pinning not authorized for this user, visit https://nft.storage/docs/how-to/pinning-service/ for instructions on how to request authorization.'

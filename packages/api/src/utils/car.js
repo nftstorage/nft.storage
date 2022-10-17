@@ -1,5 +1,6 @@
-import { CID } from 'multiformats'
+import { CID } from 'multiformats/cid'
 import { CarWriter } from '@ipld/car'
+import { sha256 } from 'multiformats/hashes/sha2'
 
 /**
  * @typedef {import('multiformats/block').Block<unknown>} Block
@@ -27,4 +28,14 @@ export const encode = async (roots, blocks) => {
       type: 'application/car',
     })
   )
+}
+
+/** multicodec code for CAR */
+export const CAR_CODE = 0x202
+
+/**
+ * @param {Uint8Array} carBytes
+ */
+export async function createCarCid(carBytes) {
+  return CID.createV1(CAR_CODE, await sha256.digest(carBytes))
 }

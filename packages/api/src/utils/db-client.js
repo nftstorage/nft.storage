@@ -210,6 +210,41 @@ export class DBClient {
   }
 
   /**
+   * @param {string} contentCid
+   * @param {import('./db-client-types').CreateUploadInputPin} newPin
+   * @returns
+   */
+  async updatePinStatus(contentCid, { service, status: newStatus }) {
+    const now = new Date().toISOString()
+    const query = this.client.from('pin')
+    const {
+      data: pin,
+      status,
+      error,
+    } = await query
+      .update({
+        status: newStatus,
+        updated_at: now,
+      })
+      .match({ content_cid: contentCid, service })
+      .single()
+
+    if (error) {
+      throw new DBError(error)
+    }
+
+    if (status === 406) {
+      throw new Error(`Status 406, cannot update pin ${service} ${contentCid}`)
+    }
+
+    if (!pin) {
+      throw new Error(`Cannot update pin ${service} ${contentCid} ${status}`)
+    }
+
+    return pin
+  }
+
+  /**
    * Create upload with content and pins
    *
    * @param {import('./db-client-types').UpdateUploadInput} data
@@ -312,7 +347,7 @@ export class DBClient {
         // @ts-ignore
         'content.pin.service',
         'in',
-        '(IpfsCluster,IpfsCluster2,IpfsCluster3)'
+        '(IpfsCluster,IpfsCluster2,IpfsCluster3,ElasticIpfs)'
       )
       .single()
 
@@ -344,7 +379,7 @@ export class DBClient {
         // @ts-ignore
         'content.pin.service',
         'in',
-        '(IpfsCluster,IpfsCluster2,IpfsCluster3)'
+        '(IpfsCluster,IpfsCluster2,IpfsCluster3,ElasticIpfs)'
       )
       .limit(opts.limit || 10)
       .order('inserted_at', { ascending: false })
@@ -454,8 +489,12 @@ export class DBClient {
         updated_at,
         pins:pin(status, service, inserted_at)`
       )
-      // @ts-ignore
-      .filter('pins.service', 'in', '(IpfsCluster,IpfsCluster2,IpfsCluster3)')
+      .filter(
+        // @ts-ignore
+        'pins.service',
+        'in',
+        '(IpfsCluster,IpfsCluster2,IpfsCluster3,ElasticIpfs)'
+      )
       .eq('cid', cid)
       .single()
 

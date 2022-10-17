@@ -1,5 +1,7 @@
 import test from 'ava'
+import pRetry from 'p-retry'
 import { CID } from 'multiformats/cid'
+import * as Block from 'multiformats/block'
 import { sha256, sha512 } from 'multiformats/hashes/sha2'
 import * as pb from '@ipld/dag-pb'
 import { CarWriter } from '@ipld/car'
@@ -14,13 +16,15 @@ import {
   getMiniflareContext,
   getTestServiceConfig,
   setupMiniflareContext,
+  getMiniflareFetchMock,
 } from './scripts/test-context.js'
 import { File } from 'nft.storage/src/platform.js'
 import crypto from 'node:crypto'
 import { FormData } from 'undici'
 
 test.before(async (t) => {
-  await setupMiniflareContext(t)
+  const linkdexUrl = 'http://fake.api.net'
+  await setupMiniflareContext(t, { overrides: { LINKDEX_URL: linkdexUrl } })
 })
 
 test.serial('should upload a single file', async (t) => {
@@ -171,6 +175,7 @@ test.serial('should upload a single CAR file', async (t) => {
   const client = await createClientWithUser(t)
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
+
   const { root, car } = await createCar('hello world car')
   // expected CID for the above data
   const cid = 'bafkreifeqjorwymdmh77ars6tbrtno74gntsdcvqvcycucidebiri2e7qy'
@@ -202,6 +207,93 @@ test.serial('should upload a single CAR file', async (t) => {
   t.is(data.deleted_at, null)
   t.is(data.content.dag_size, 15, 'correct dag size')
 })
+
+test.serial(
+  'should check dag completness with linkdex-api for partial CAR',
+  async (t) => {
+    const client = await createClientWithUser(t)
+    const config = getTestServiceConfig(t)
+    const mf = getMiniflareContext(t)
+
+    const leaf1 = await Block.encode({
+      value: pb.prepare({ Data: 'leaf1' }),
+      codec: pb,
+      hasher: sha256,
+    })
+    const leaf2 = await Block.encode({
+      value: pb.prepare({ Data: 'leaf2' }),
+      codec: pb,
+      hasher: sha256,
+    })
+    const parent = await Block.encode({
+      value: pb.prepare({ Links: [leaf1.cid, leaf2.cid] }),
+      codec: pb,
+      hasher: sha256,
+    })
+    const cid = parent.cid.toString()
+    const { writer, out } = CarWriter.create(parent.cid)
+    writer.put(parent)
+    writer.put(leaf1)
+    // leave out leaf2 to make patial car
+    writer.close()
+    const carBytes = []
+    for await (const chunk of out) {
+      carBytes.push(chunk)
+    }
+    const body = new Blob(carBytes)
+
+    if (!config.LINKDEX_URL) {
+      throw new Error('LINDEX_URL should be set in test config')
+    }
+
+    const linkdexMock = getLinkdexMock(t)
+    mockLinkdexResponse(linkdexMock, 'Complete')
+
+    const res = await mf.dispatchFetch('http://miniflare.test/upload', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${client.token}`,
+        'Content-Type': 'application/car',
+      },
+      body,
+    })
+
+    t.truthy(res, 'Server responded')
+    t.true(res.ok, 'Server response ok')
+    const { ok, value } = await res.json()
+    t.truthy(ok, 'Server response payload has `ok` property')
+    t.is(value.cid, cid, 'Server responded with expected CID')
+    t.is(value.type, 'application/car', 'type should match blob mime-type')
+
+    const db = getRawClient(config)
+
+    const { data: upload } = await db
+      .from('upload')
+      .select('*')
+      .match({ source_cid: cid, user_id: client.userId })
+      .single()
+
+    // @ts-ignore
+    t.is(upload.source_cid, cid)
+    t.is(upload.deleted_at, null)
+
+    // wait for the call to mock linkdex-api to complete
+    await res.waitUntil()
+    const { data: pin } = await db
+      .from('pin')
+      .select('*')
+      .match({ content_cid: cid, service: 'ElasticIpfs' })
+      .single()
+
+    t.is(
+      pin.status,
+      'Pinned',
+      "Status should be pinned when linkdex-api returns 'Complete'"
+    )
+    t.is(pin.service, 'ElasticIpfs')
+    t.is(pin.status, 'Pinned')
+  }
+)
 
 test.serial('should allow a CAR with unsupported hash function', async (t) => {
   const client = await createClientWithUser(t)
@@ -356,7 +448,7 @@ test.serial(
   }
 )
 
-test.serial('should upload to cluster 2', async (t) => {
+test.serial('should upload to elastic ipfs', async (t) => {
   const client = await createClientWithUser(t)
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
@@ -379,20 +471,21 @@ test.serial('should upload to cluster 2', async (t) => {
     .filter(
       'content.pin.service',
       'in',
-      '(IpfsCluster,IpfsCluster2,IpfsCluster3)'
+      '(IpfsCluster,IpfsCluster2,IpfsCluster3,ElasticIpfs)'
     )
     .single()
 
-  t.is(data.content.pin[0].service, 'IpfsCluster3')
+  t.is(data.content.pin[0].service, 'ElasticIpfs')
 })
 
-test.serial('should create S3 backup', async (t) => {
+test.serial('should create S3 & R2 backups', async (t) => {
   const client = await createClientWithUser(t)
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
   const { root, car } = await packToBlob({
     input: [{ path: 'test.txt', content: 'S3 backup' }],
   })
+
   const res = await mf.dispatchFetch('http://miniflare.test/upload', {
     method: 'POST',
     headers: { Authorization: `Bearer ${client.token}` },
@@ -410,9 +503,13 @@ test.serial('should create S3 backup', async (t) => {
   // construct the expected backup URL
   const carBuf = await car.arrayBuffer()
   const carHash = await getHash(new Uint8Array(carBuf))
-  const backupUrl = expectedBackupUrl(config, root, client.userId, carHash)
+  const carCid = await getCarCid(new Uint8Array(carBuf))
 
-  t.is(backup_urls[0], backupUrl)
+  t.is(
+    backup_urls[0],
+    expectedS3BackupUrl(config, root, client.userId, carHash)
+  )
+  t.is(backup_urls[1], expectedR2BackupUrl(config, carCid))
 })
 
 test.serial(
@@ -438,6 +535,10 @@ test.serial(
       maxChunkSize: chunkSize,
     })
     const splitter = await TreewalkCarSplitter.fromBlob(car, chunkSize)
+    const linkdexMock = getLinkdexMock(t)
+    // respond with 'Partial' 5 times, then 'Complete' once.
+    mockLinkdexResponse(linkdexMock, 'Partial', 5)
+    mockLinkdexResponse(linkdexMock, 'Complete', 1)
 
     const backupUrls = []
     for await (const chunk of splitter.cars()) {
@@ -454,8 +555,12 @@ test.serial(
 
       const { value } = await res.json()
       t.is(root.toString(), value.cid)
+      const carCid = await getCarCid(
+        new Uint8Array(await carFile.arrayBuffer())
+      )
       const carHash = await getHash(new Uint8Array(await carFile.arrayBuffer()))
-      backupUrls.push(expectedBackupUrl(config, root, client.userId, carHash))
+      backupUrls.push(expectedS3BackupUrl(config, root, client.userId, carHash))
+      backupUrls.push(expectedR2BackupUrl(config, carCid))
     }
 
     const upload = await client.client.getUpload(root.toString(), client.userId)
@@ -638,6 +743,11 @@ const getHash = async (data) => {
   return uint8ArrayToString(hash.bytes, 'base32')
 }
 
+/** @param {Uint8Array} data */
+const getCarCid = async (data) => {
+  return CID.createV1(0x202, await sha256.digest(data))
+}
+
 /**
  *
  * @param {number} n
@@ -656,7 +766,42 @@ function getRandomBytes(n) {
  * @param {string} carHash
  * @returns
  */
-function expectedBackupUrl(config, root, userId, carHash) {
+function expectedS3BackupUrl(config, root, userId, carHash) {
   const { S3_ENDPOINT, S3_BUCKET_NAME } = config
   return `${S3_ENDPOINT}/${S3_BUCKET_NAME}/raw/${root}/nft-${userId}/${carHash}.car`
+}
+
+/**
+ * @param {import('../src/config.js').ServiceConfiguration} config
+ * @param {CID|string} carCid
+ */
+function expectedR2BackupUrl(config, carCid) {
+  const { CARPARK_URL } = config
+  return `${CARPARK_URL}/${carCid}/${carCid}.car`
+}
+
+/**
+ * @param {import('ava').ExecutionContext<unknown>} t
+ */
+function getLinkdexMock(t) {
+  const config = getTestServiceConfig(t)
+  const fetchMock = getMiniflareFetchMock(t)
+  // @ts-expect-error LINKDEX_URL should be set
+  return fetchMock.get(config.LINKDEX_URL)
+}
+
+/**
+ * @param {import('undici').Interceptable} mock
+ * @param {import('../src/bindings.js').DagStructure} structure
+ * @param {number} times
+ */
+function mockLinkdexResponse(mock, structure, times = 1) {
+  mock
+    .intercept({ path: /^\/\?key=/, method: 'GET' })
+    .reply(
+      200,
+      { structure: structure },
+      { headers: { 'content-type': 'application/json' } }
+    )
+    .times(times)
 }

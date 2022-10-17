@@ -40,6 +40,13 @@ export type UploadOutput = definitions['upload'] & {
   deals: Deal[]
 }
 
+export type PinService = Pick<definitions['pin'], 'service'>
+
+export type CreateUploadInputPin = Pick<
+  definitions['pin'],
+  'service' | 'status'
+>
+
 export interface CreateUploadInput {
   user_id: definitions['upload']['user_id']
   content_cid: definitions['upload']['content_cid']
@@ -55,7 +62,7 @@ export interface CreateUploadInput {
   backup_urls?: URL[]
   inserted_at?: definitions['upload']['inserted_at']
   updated_at?: definitions['upload']['updated_at']
-  pins?: Pick<definitions['pin'], 'service' | 'status'>[]
+  pins?: CreateUploadInputPin[]
 }
 
 export interface UpdateUploadInput {

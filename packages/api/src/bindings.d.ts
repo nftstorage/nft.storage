@@ -5,9 +5,12 @@ import { Service } from 'ucan-storage/service'
 import { Mode } from './middleware/maintenance.js'
 import { UserOutput, UserOutputKey } from './utils/db-client-types.js'
 import { DBClient } from './utils/db-client.js'
+import { LinkdexApi } from './utils/linkdex.js'
 import { Logging } from './utils/logs.js'
 
 export type RuntimeEnvironmentName = 'test' | 'dev' | 'staging' | 'production'
+
+export type RawEnvConfiguration = Record<string, any>
 
 export interface ServiceConfiguration {
   /** Is this a debug build? */
@@ -30,6 +33,15 @@ export interface ServiceConfiguration {
 
   /** Salt for API key generation */
   SALT: string
+
+  /** R2Bucket binding */
+  CARPARK: R2Bucket
+
+  /** Public URL prefix for CARPARK R2 Bucket */
+  CARPARK_URL: string
+
+  /** URL for linkdex-api */
+  LINKDEX_URL?: string
 
   /** API key for special metaplex upload account */
   METAPLEX_AUTH_TOKEN: string
@@ -105,7 +117,9 @@ export interface RouteContext {
   params: Record<string, string>
   db: DBClient
   log: Logging
-  uploader: Uploader
+  linkdexApi?: LinkdexApi
+  s3Uploader: Uploader
+  r2Uploader: Uploader
   ucanService: Service
   auth?: Auth
 }
@@ -243,6 +257,18 @@ export type RequestForm = Array<RequestFormItem>
  */
 export type DagStructure = 'Unknown' | 'Partial' | 'Complete'
 
+export type Backup = {
+  key: string
+  url: URL
+}
+
+// needs to be a type so it can be assigned to Record<string, string>
+export type BackupMetadata = {
+  structure: DagStructure
+  rootCid: string
+  carCid: string
+}
+
 /**
  * A client to a service that accepts CAR file uploads.
  */
@@ -251,9 +277,9 @@ export interface Uploader {
    * Uploads the CAR file to the service and returns the URL.
    */
   uploadCar(
+    carBytes: Uint8Array,
+    carCid: CID,
     userId: number,
-    sourceCid: string,
-    car: Blob,
-    structure?: DagStructure
-  ): Promise<URL>
+    metadata: BackupMetadata
+  ): Promise<Backup>
 }

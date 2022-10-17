@@ -14,6 +14,11 @@ no_bundle = true
 ENV = "dev"
 DEBUG = "true"
 DATABASE_URL = "http://localhost:3000"
+CARPARK_URL = "https://carpark-dev.web3.storage"
+
+[[r2_buckets]]
+binding = 'CARPARK'
+bucket_name = 'carpark-dev-0'
 
 [build]
 command = "scripts/cli.js build"
@@ -29,6 +34,11 @@ usage_model = "unbound"
 ENV = "staging"
 DEBUG = "true"
 DATABASE_URL = "https://nft-storage-pgrest-staging.herokuapp.com"
+CARPARK_URL = "https://carpark-staging.web3.storage"
+
+[[env.staging.r2_buckets]]
+binding = 'CARPARK'
+bucket_name = 'carpark-staging-0'
 
 [env.staging.build]
 command = "scripts/cli.js build --env staging"
@@ -48,6 +58,11 @@ usage_model = "unbound"
 ENV = "production"
 DEBUG = "false"
 DATABASE_URL = "https://nft-storage-pgrest-prod.herokuapp.com"
+CARPARK_URL = "https://carpark.web3.storage"
+
+[[env.production.r2_buckets]]
+binding = 'CARPARK'
+bucket_name = 'carpark-prod-0'
 
 [env.production.build]
 command = "scripts/cli.js build --env production"
