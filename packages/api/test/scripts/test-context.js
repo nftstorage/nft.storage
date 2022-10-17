@@ -40,8 +40,6 @@ export function makeMiniflare(bindings, fetchMock) {
       S3_ENDPOINT,
     },
     fetchMock,
-    // workaround for https://github.com/cloudflare/miniflare/issues/292
-    globalAsyncIO: true,
   })
 }
 
