@@ -2399,6 +2399,16 @@
     multiformats "^9.5.4"
     varint "^6.0.0"
 
+"@ipld/car@^4.1.5":
+  version "4.1.6"
+  resolved "https://registry.yarnpkg.com/@ipld/car/-/car-4.1.6.tgz#81bae5c3454dbc0db6291107d99bcc8792588d7f"
+  integrity sha512-qs3Sco7rm1PRhhuGSWpCeayhqcB/0DOyIgBiqsfjV0mT0JbWs68Z+BTxksONlfindRXsM5llJOvZfAcuEJUqxw==
+  dependencies:
+    "@ipld/dag-cbor" "^7.0.0"
+    cborg "^1.9.0"
+    multiformats "^9.5.4"
+    varint "^6.0.0"
+
 "@ipld/dag-cbor@^6.0.13", "@ipld/dag-cbor@^6.0.3":
   version "6.0.15"
   resolved "https://registry.yarnpkg.com/@ipld/dag-cbor/-/dag-cbor-6.0.15.tgz#aebe7a26c391cae98c32faedb681b1519e3d2372"
@@ -7009,6 +7019,17 @@ carbites@^1.0.6:
     "@ipld/dag-pb" "^2.0.2"
     multiformats "^9.0.4"
 
+cardex@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/cardex/-/cardex-1.0.0.tgz#7f4a20811cdfce4776828f13a6ba2411c13a99c8"
+  integrity sha512-Xirpn7ZPeNEIZ7spEOH7+RnFdZP2yVGMGR0Sj3ON4eEoCFZjzsnFXCYszTk39wWekst3GLN1E/yb2vKATQTMMg==
+  dependencies:
+    "@ipld/car" "^4.1.5"
+    multiformats "^9.6.5"
+    sade "^1.8.1"
+    uint8arrays "^3.0.0"
+    varint "^6.0.0"
+
 case-sensitive-paths-webpack-plugin@^2.3.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.4.0.tgz#db64066c6422eed2e08cc14b986ca43796dbc6d4"
@@ -7026,7 +7047,7 @@ cbor@^8.1.0:
   dependencies:
     nofilter "^3.1.0"
 
-cborg@^1.0.4, cborg@^1.5.4, cborg@^1.6.0:
+cborg@^1.0.4, cborg@^1.5.4, cborg@^1.6.0, cborg@^1.9.0:
   version "1.9.5"
   resolved "https://registry.yarnpkg.com/cborg/-/cborg-1.9.5.tgz#1e3b8a8407b3665566001f8841c9d72d7a80b2d5"
   integrity sha512-fLBv8wmqtlXqy1Yu+pHzevAIkW6k2K0ZtMujNzWphLsA34vzzg9BHn+5GmZqOJkSA9V7EMKsWrf6K976c1QMjQ==
@@ -14786,6 +14807,11 @@ multiformats@^9.0.0, multiformats@^9.0.4, multiformats@^9.4.13, multiformats@^9.
   version "9.7.1"
   resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-9.7.1.tgz#ab348e5fd6f8e7fb3fd56033211bda48854e2173"
   integrity sha512-TaVmGEBt0fhxiNJMGphBfB+oGvUxFs8KgGvgl8d3C+GWtrFcvXdJ2196eg+dYhmSFClmgFfSfJEklo+SZzdNuw==
+
+multiformats@^9.6.5:
+  version "9.9.0"
+  resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-9.9.0.tgz#c68354e7d21037a8f1f8833c8ccd68618e8f1d37"
+  integrity sha512-HoMUjhH9T8DDBNT+6xzkrd9ga/XiBI4xLr58LJACwK6G3HTOPeMz4nB4KJs33L2BelrIJa7P0VuNaVF3hMYfjg==
 
 multihashes@^4.0.1, multihashes@^4.0.2:
   version "4.0.3"

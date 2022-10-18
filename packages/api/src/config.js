@@ -59,6 +59,8 @@ export function serviceConfigFromVariables(vars) {
     MAINTENANCE_MODE: maintenanceModeFromString(vars.MAINTENANCE_MODE),
 
     SALT: vars.SALT,
+    SATNAV: vars.SATNAV,
+    DUDEWHERE: vars.DUDEWHERE,
     CARPARK: vars.CARPARK,
     CARPARK_URL: vars.CARPARK_URL,
     DATABASE_URL: vars.DATABASE_URL,
@@ -108,6 +110,8 @@ export function loadConfigVariables() {
     'ENV',
     'DEBUG',
     'SALT',
+    'SATNAV',
+    'DUDEWHERE',
     'CARPARK',
     'CARPARK_URL',
     'DATABASE_URL',

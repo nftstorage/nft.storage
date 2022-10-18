@@ -27,7 +27,12 @@ export async function getContext(event, params) {
     { endpoint: config.S3_ENDPOINT, appName: 'nft' }
   )
 
-  const r2Uploader = new R2Uploader(config.CARPARK, config.CARPARK_URL)
+  const r2Uploader = new R2Uploader({
+    carpark: config.CARPARK,
+    publicUrl: config.CARPARK_URL,
+    dudewhere: config.DUDEWHERE,
+    satnav: config.SATNAV,
+  })
 
   const linkdexApi = config.LINKDEX_URL
     ? new LinkdexApi(config.LINKDEX_URL)

@@ -1,12 +1,13 @@
 import test from 'ava'
-import pRetry from 'p-retry'
 import { CID } from 'multiformats/cid'
 import * as Block from 'multiformats/block'
 import { sha256, sha512 } from 'multiformats/hashes/sha2'
 import * as pb from '@ipld/dag-pb'
 import { CarWriter } from '@ipld/car'
 import { packToBlob } from 'ipfs-car/pack/blob'
+import { MultihashIndexSortedReader } from 'cardex'
 import { TreewalkCarSplitter } from 'carbites/treewalk'
+import { equals as uint8ArrayEquals } from 'uint8arrays/equals'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import { createClientWithUser, getRawClient } from './scripts/helpers.js'
 import { createCar } from './scripts/car.js'
@@ -21,6 +22,7 @@ import {
 import { File } from 'nft.storage/src/platform.js'
 import crypto from 'node:crypto'
 import { FormData } from 'undici'
+import { createCarCid } from '../src/utils/car.js'
 
 test.before(async (t) => {
   const linkdexUrl = 'http://fake.api.net'
@@ -733,6 +735,75 @@ test.serial('should update a single file', async (t) => {
 
   // @ts-ignore
   t.is(uploadData.name, name)
+})
+
+test.serial.only('should write satnav index', async (t) => {
+  const client = await createClientWithUser(t)
+  const config = getTestServiceConfig(t)
+  const mf = getMiniflareContext(t)
+  const { root, car: carBody } = await createCar('satnav')
+  const carBytes = new Uint8Array(await carBody.arrayBuffer())
+  const carCid = await createCarCid(carBytes)
+
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${client.token}`,
+      'Content-Type': 'application/car',
+    },
+    body: carBody,
+  })
+
+  const { ok, value } = await res.json()
+  t.truthy(ok, 'Server response payload has `ok` property')
+  t.is(value.cid, root.toString(), 'Server responded with expected CID')
+  t.is(value.type, 'application/car', 'type should match car mime-type')
+
+  const r2Bucket = await mf.getR2Bucket('SATNAV')
+  const r2Object = await r2Bucket.get(`${carCid}/${carCid}.car.idx`)
+  if (!r2Object?.body) {
+    t.fail('repsonse stream must exist')
+  }
+  // @ts-expect-error
+  const reader = MultihashIndexSortedReader.fromIterable(r2Object?.body)
+  const entries = []
+  for await (const entry of reader.entries()) {
+    entries.push(entry)
+  }
+
+  t.is(entries.length, 1, 'Index contains a single entry')
+  t.true(
+    uint8ArrayEquals(entries[0].digest, root.multihash.digest),
+    'Index entry is for root data CID'
+  )
+})
+
+test.serial.only('should write dudewhere index', async (t) => {
+  const client = await createClientWithUser(t)
+  const config = getTestServiceConfig(t)
+  const mf = getMiniflareContext(t)
+  const { root, car: carBody } = await createCar('dude')
+  const carBytes = new Uint8Array(await carBody.arrayBuffer())
+  const carCid = await createCarCid(carBytes)
+
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${client.token}`,
+      'Content-Type': 'application/car',
+    },
+    body: carBody,
+  })
+
+  const { ok, value } = await res.json()
+  t.truthy(ok, 'Server response payload has `ok` property')
+  t.is(value.cid, root.toString(), 'Server responded with expected CID')
+  t.is(value.type, 'application/car', 'type should match car mime-type')
+
+  const r2Bucket = await mf.getR2Bucket('DUDEWHERE')
+  const r2Objects = await r2Bucket.list({ prefix: `${root}/` })
+  t.is(r2Objects.objects.length, 1)
+  t.is(r2Objects.objects[0].key, `${root}/${carCid}`)
 })
 
 /**
