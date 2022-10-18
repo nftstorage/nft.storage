@@ -737,7 +737,7 @@ test.serial('should update a single file', async (t) => {
   t.is(uploadData.name, name)
 })
 
-test.serial.only('should write satnav index', async (t) => {
+test.serial('should write satnav index', async (t) => {
   const client = await createClientWithUser(t)
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
@@ -778,7 +778,7 @@ test.serial.only('should write satnav index', async (t) => {
   )
 })
 
-test.serial.only('should write dudewhere index', async (t) => {
+test.serial('should write dudewhere index', async (t) => {
   const client = await createClientWithUser(t)
   const config = getTestServiceConfig(t)
   const mf = getMiniflareContext(t)
