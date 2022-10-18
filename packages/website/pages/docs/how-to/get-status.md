@@ -26,7 +26,7 @@ A `Failed` status indicates that the graph of data is incomplete. For older uplo
 
 There are several reasons why an upload may end up in the `Failed` state.
 
-If you uploaded your data directly to the NFT.Storage service using a [client library][client-js], [the HTTP API][client-http], or the [Upload page on the website][upload-page], a `Failed` status may indicate that one or more chunks of data was not recieved by the service. This may happen when uploading large files or directories containing many files and may be resolved by retrying the upload.
+If you uploaded your data directly to the NFT.Storage service using a [client library][client-js], [the HTTP API][client-http], or the [Upload page on the website][upload-page], a `Failed` status may indicate that one or more chunks of data was not received by the service. This may happen when uploading large files or directories containing many files and may be resolved by retrying the upload.
 
 If your data was pinned using the Pinning Service API, a `Failed` status usually means that the cluster wasn't able to fetch the complete content over the IPFS peer-to-peer network. These issues can be hard to diagnose due to the many variables involved, especially when original source of the data may have an unreliable connection to the network or is behind a firewall. If the data is being provided by another pinning service such as Pinata, or if you've verified that the data is retrievable using IPFS (ideally from multiple distinct locations), please [file an issue][new-issue] so we can look into the cause.
 
