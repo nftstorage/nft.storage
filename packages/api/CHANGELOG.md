@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.1.0](https://github.com/nftstorage/nft.storage/compare/api-v4.0.4...api-v4.1.0) (2022-10-17)
+
+
+### Features
+
+* put to r2 and check linkdex-api for dag structure ([#2204](https://github.com/nftstorage/nft.storage/issues/2204)) ([197e11b](https://github.com/nftstorage/nft.storage/commit/197e11b3513ef564ffcefc9db56ede812df47769))
+
+
+### Bug Fixes
+
+* duplicate key name ([#2158](https://github.com/nftstorage/nft.storage/issues/2158)) ([0c6eb47](https://github.com/nftstorage/nft.storage/commit/0c6eb479c6b398fda2ca9b71ec8b151c933a246b))
+* update toucan-js to report error cause ([#2234](https://github.com/nftstorage/nft.storage/issues/2234)) ([34930d6](https://github.com/nftstorage/nft.storage/commit/34930d631de3d8e9b43bb9902ef882bfc7bf7b2f))
+
+
+### Other Changes
+
+* re-enable skipped test & workaround miniflare formdata issue ([#2159](https://github.com/nftstorage/nft.storage/issues/2159)) ([8395569](https://github.com/nftstorage/nft.storage/commit/839556906710d13faa4b5446a9ede776b5091871))
+
 ## [4.0.4](https://github.com/nftstorage/nft.storage/compare/api-v4.0.3...api-v4.0.4) (2022-08-09)
 
 
