@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.2.0](https://github.com/nftstorage/nft.storage/compare/api-v4.1.0...api-v4.2.0) (2022-10-19)
+
+
+### Features
+
+* write DUDEWHERE link and SATNAV car indexes. ([#2238](https://github.com/nftstorage/nft.storage/issues/2238)) ([1951abb](https://github.com/nftstorage/nft.storage/commit/1951abb68bf4fd87e0a77c89409f789b8dd1b3bc))
+
+
+### Other Changes
+
+* api Logging#setUser expects user.id as string instead of number ([#2233](https://github.com/nftstorage/nft.storage/issues/2233)) ([109462f](https://github.com/nftstorage/nft.storage/commit/109462f6f2e229d9de9808379c82189b14430eb3))
+
 ## [4.1.0](https://github.com/nftstorage/nft.storage/compare/api-v4.0.4...api-v4.1.0) (2022-10-17)
 
 
