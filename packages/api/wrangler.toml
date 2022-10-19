@@ -9,16 +9,20 @@ workers_dev = true
 compatibility_date = "2021-08-23"
 compatibility_flags = ["formdata_parser_supports_files"]
 no_bundle = true
+r2_buckets = [
+   # CAR files live here.
+   { binding = "CARPARK", bucket_name = "carpark-staging-0" },
+   # Mapping root data CIDs to CAR CID(s).
+   { binding = "DUDEWHERE", bucket_name = "dudewhere-staging-0" },
+   # CARv2 indexes - a mapping of block offsets within CAR files.
+   { binding = "SATNAV", bucket_name = "satnav-staging-0" }
+]
 
 [vars]
 ENV = "dev"
 DEBUG = "true"
 DATABASE_URL = "http://localhost:3000"
 CARPARK_URL = "https://carpark-dev.web3.storage"
-
-[[r2_buckets]]
-binding = 'CARPARK'
-bucket_name = 'carpark-dev-0'
 
 [build]
 command = "scripts/cli.js build"
@@ -29,16 +33,17 @@ command = "scripts/cli.js build"
 name = "nft-storage-staging"
 route = "api-staging.nft.storage/*"
 usage_model = "unbound"
+r2_buckets = [
+   { binding = "CARPARK", bucket_name = "carpark-staging-0" },
+   { binding = "DUDEWHERE", bucket_name = "dudewhere-staging-0" },
+   { binding = "SATNAV", bucket_name = "satnav-staging-0" }
+ ]
 
 [env.staging.vars]
 ENV = "staging"
 DEBUG = "true"
 DATABASE_URL = "https://nft-storage-pgrest-staging.herokuapp.com"
 CARPARK_URL = "https://carpark-staging.web3.storage"
-
-[[env.staging.r2_buckets]]
-binding = 'CARPARK'
-bucket_name = 'carpark-staging-0'
 
 [env.staging.build]
 command = "scripts/cli.js build --env staging"
@@ -53,16 +58,17 @@ format = "service-worker"
 name = "nft-storage"
 route = "api.nft.storage/*"
 usage_model = "unbound"
+r2_buckets = [
+   { binding = "CARPARK", bucket_name = "carpark-prod-0" },
+   { binding = "DUDEWHERE", bucket_name = "dudewhere-prod-0" },
+   { binding = "SATNAV", bucket_name = "satnav-prod-0" }
+ ]
 
 [env.production.vars]
 ENV = "production"
 DEBUG = "false"
 DATABASE_URL = "https://nft-storage-pgrest-prod.herokuapp.com"
 CARPARK_URL = "https://carpark.web3.storage"
-
-[[env.production.r2_buckets]]
-binding = 'CARPARK'
-bucket_name = 'carpark-prod-0'
 
 [env.production.build]
 command = "scripts/cli.js build --env production"

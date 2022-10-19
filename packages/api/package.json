@@ -27,6 +27,7 @@
     "@nftstorage/ipfs-cluster": "^5.0.1",
     "@noble/ed25519": "^1.6.1",
     "@supabase/postgrest-js": "^0.34.1",
+    "cardex": "^1.0.0",
     "ipfs-car": "^0.6.1",
     "it-last": "^2.0.0",
     "merge-options": "^3.0.4",

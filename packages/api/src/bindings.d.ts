@@ -34,7 +34,13 @@ export interface ServiceConfiguration {
   /** Salt for API key generation */
   SALT: string
 
-  /** R2Bucket binding */
+  /** R2Bucket for CARv2 indexes mapping block offsets within CAR files. */
+  SATNAV: R2Bucket
+
+  /** R2Bucket mapping root data CIDs to CAR CID(s). */
+  DUDEWHERE: R2Bucket
+
+  /** R2Bucket for CAR files */
   CARPARK: R2Bucket
 
   /** Public URL prefix for CARPARK R2 Bucket */

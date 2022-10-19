@@ -36,6 +36,8 @@ const BASE_CONFIG = {
   CLUSTER_API_URL: 'http://127.0.0.1:9094',
   S3_ENDPOINT: 'http://127.0.0.1:9000',
   SLACK_USER_REQUEST_WEBHOOK_URL: '',
+  SATNAV: '?',
+  DUDEWHERE: '?',
   CARPARK: '?',
   CARPARK_URL: 'http://example.org',
   LINKDEX_URL: 'http://example.org',
