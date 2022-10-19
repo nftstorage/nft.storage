@@ -9,11 +9,11 @@ import { createCarIndex } from '../car.js'
  */
 export class R2Uploader {
   /**
-   * @param {object} opts
-   * @param {R2Bucket} opts.carpark
-   * @param {R2Bucket} opts.dudewhere
-   * @param {R2Bucket} opts.satnav
-   * @param {string} opts.publicUrl
+   * @param {object} config
+   * @param {R2Bucket} config.carpark
+   * @param {R2Bucket} config.dudewhere
+   * @param {R2Bucket} config.satnav
+   * @param {string} config.publicUrl
    */
   constructor({ carpark, dudewhere, satnav, publicUrl }) {
     if (!carpark) throw new Error('missing carpark R2 bucket')
