@@ -11,11 +11,11 @@ compatibility_flags = ["formdata_parser_supports_files"]
 no_bundle = true
 r2_buckets = [
    # CAR files live here.
-   { binding = "CARPARK", bucket_name = "carpark-test-0" },
+   { binding = "CARPARK", bucket_name = "carpark-staging-0" },
    # Mapping root data CIDs to CAR CID(s).
-   { binding = "DUDEWHERE", bucket_name = "dudewhere-test-0" },
+   { binding = "DUDEWHERE", bucket_name = "dudewhere-staging-0" },
    # CARv2 indexes - a mapping of block offsets within CAR files.
-   { binding = "SATNAV", bucket_name = "satnav-test-0" }
+   { binding = "SATNAV", bucket_name = "satnav-staging-0" }
 ]
 
 [vars]
