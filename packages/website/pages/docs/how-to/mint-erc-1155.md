@@ -46,7 +46,7 @@ For the examples below, we'll use metadata that looks like this:
   "properties": {
     "type": "blog-post",
     "origins": {
-      "http": "https://blog.nft.storage/blog/post/2021-11-30-hello-world-nft-storage/",
+      "http": "https://blog.nft.storage/posts/2021-11-30-hello-world-nft-storage/",
       "ipfs": "ipfs://bafybeieh4gpvatp32iqaacs6xqxqitla4drrkyyzq6dshqqsilkk3fqmti/blog/post/2021-11-30-hello-world-nft-storage/"
     },
     "authors": [
@@ -61,7 +61,7 @@ For the examples below, we'll use metadata that looks like this:
 }
 ```
 
-This metadata object describes [a post on the NFT.Storage blog](https://blog.nft.storage/blog/post/2021-11-30-hello-world-nft-storage/) using some custom metadata in the `properties` field that was made up for this example.
+This metadata object describes [a post on the NFT.Storage blog](https://blog.nft.storage/posts/2021-11-30-hello-world-nft-storage) using some custom metadata in the `properties` field that was made up for this example.
 
 Although wallets and other clients won't understand the meaning of our custom fields like `type` or `origins`, they will be able to show the name, description and image, since those all conform to the ERC-1155 and ERC-721 spec.
 
@@ -105,7 +105,7 @@ async function storeExampleNFT() {
     properties: {
       type: "blog-post",
       origins: {
-        http: "https://blog.nft.storage/blog/post/2021-11-30-hello-world-nft-storage/",
+        http: "https://blog.nft.storage/posts/2021-11-30-hello-world-nft-storage/",
         ipfs: "ipfs://bafybeieh4gpvatp32iqaacs6xqxqitla4drrkyyzq6dshqqsilkk3fqmti/blog/post/2021-11-30-hello-world-nft-storage/"
       },
       authors: [{ name: "David Choi" }],
@@ -163,7 +163,7 @@ Here's an example that uses CURL to upload an image and its metadata.
 It assumes that you have a file named `image.jpg` in your local directory. If not, you can download [this one](https://user-images.githubusercontent.com/87873179/144324736-3f09a98e-f5aa-4199-a874-13583bf31951.jpg) and save it as `image.jpg`
 
 ```bash
-curl --request POST -F image=@image.jpg -F meta='{"image":null,"name":"Storing the Worlds Most Valuable Virtual Assets with NFT.Storage","description":"The metaverse is here. Where is it all being stored?","properties":{"type":"blog-post","origins":{"http":"https://blog.nft.storage/blog/post/2021-11-30-hello-world-nft-storage/","ipfs":"ipfs://bafybeieh4gpvatp32iqaacs6xqxqitla4drrkyyzq6dshqqsilkk3fqmti/blog/post/2021-11-30-hello-world-nft-storage/"},"authors":[{"name":"David Choi"}],"content":{"text/markdown":"The last year has witnessed the explosion of NFTs onto the world’s mainstage. From fine art to collectibles to music and media, NFTs are quickly demonstrating just how quickly grassroots Web3 communities can grow, and perhaps how much closer we are to mass adoption than we may have previously thought. <... remaining content omitted ...>"}}}'
+curl --request POST -F image=@image.jpg -F meta='{"image":null,"name":"Storing the Worlds Most Valuable Virtual Assets with NFT.Storage","description":"The metaverse is here. Where is it all being stored?","properties":{"type":"blog-post","origins":{"http":"https://blog.nft.storage/posts/2021-11-30-hello-world-nft-storage/","ipfs":"ipfs://bafybeieh4gpvatp32iqaacs6xqxqitla4drrkyyzq6dshqqsilkk3fqmti/blog/post/2021-11-30-hello-world-nft-storage/"},"authors":[{"name":"David Choi"}],"content":{"text/markdown":"The last year has witnessed the explosion of NFTs onto the world’s mainstage. From fine art to collectibles to music and media, NFTs are quickly demonstrating just how quickly grassroots Web3 communities can grow, and perhaps how much closer we are to mass adoption than we may have previously thought. <... remaining content omitted ...>"}}}'
 ```
 </TabItem>
 </Tabs>
