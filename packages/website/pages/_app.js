@@ -14,6 +14,7 @@ import { UserContext } from 'lib/user'
 import BlockedUploadsModal from 'components/blockedUploadsModal.js'
 import Loading from 'components/loading'
 import constants from 'lib/constants'
+import PlausibleProvider, { usePlausible } from 'next-plausible'
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 60 * 1000 } },
@@ -30,6 +31,7 @@ export default function App({ Component, pageProps }) {
   const [isUserInitialized, setIsUserInitialized] = useState(false)
   const [isUserBlockedModalShowing, setIsUserBlockedModalShowing] =
     useState(false)
+  const plausible = usePlausible()
 
   const handleIsLoggedIn = useCallback(async () => {
     const data = await isLoggedIn()
@@ -122,6 +124,17 @@ export default function App({ Component, pageProps }) {
     )
   }, [])
 
+  useEffect(() => {
+    // @ts-ignore
+    const onHashChangeStart = (url) => {
+      plausible('anchorLinkClick', { props: { path: url } })
+    }
+    router.events.on('hashChangeStart', onHashChangeStart)
+    return () => {
+      router.events.off('hashChangeStart', onHashChangeStart)
+    }
+  }, [router.events])
+
   function handleClearUser() {
     setUser(null)
   }
@@ -153,14 +166,20 @@ export default function App({ Component, pageProps }) {
           // @ts-ignore
           value={{ user, handleClearUser, handleIsLoggedIn }}
         >
-          <Layout {...pageProps}>
-            {(props) => <Component {...pageProps} {...props} />}
-          </Layout>
-          {isUserBlockedModalShowing && (
-            <BlockedUploadsModal
-              onClose={() => setIsUserBlockedModalShowing(false)}
-            />
-          )}
+          <PlausibleProvider
+            domain="nft.storage, rollup.nft.storage"
+            enabled={true}
+            exclude="/callback"
+          >
+            <Layout {...pageProps}>
+              {(props) => <Component {...pageProps} {...props} />}
+            </Layout>
+            {isUserBlockedModalShowing && (
+              <BlockedUploadsModal
+                onClose={() => setIsUserBlockedModalShowing(false)}
+              />
+            )}
+          </PlausibleProvider>
         </UserContext.Provider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>

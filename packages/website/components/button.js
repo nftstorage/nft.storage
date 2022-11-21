@@ -3,6 +3,7 @@ import React, { useCallback } from 'react'
 import Link from './link'
 import clsx from 'clsx'
 import countly from '../lib/countly'
+import { usePlausible } from 'next-plausible'
 
 /**
  * @typedef {Object} TrackingProp
@@ -49,17 +50,20 @@ export default function Button({
   unstyled,
   ...props
 }) {
+  const plausible = usePlausible()
   const onClickHandler = useCallback(
     (event) => {
       tracking &&
-        countly.trackEvent(tracking.event || countly.events.CTA_LINK_CLICK, {
-          ui: tracking.ui,
-          action: tracking.action,
-          link:
-            typeof href === 'string'
-              ? href
-              : (href?.pathname || '') + (href?.hash || ''),
-          ...(tracking.data || {}),
+        plausible(tracking.event || countly.events.CTA_LINK_CLICK, {
+          props: {
+            ui: tracking.ui,
+            action: tracking.action,
+            link:
+              typeof href === 'string'
+                ? href
+                : (href?.pathname || '') + (href?.hash || ''),
+            ...(tracking.data || {}),
+          },
         })
       onClick && onClick(event)
     },
