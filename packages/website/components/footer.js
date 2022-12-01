@@ -5,9 +5,16 @@ import Twitter from '../icons/twitter'
 import Github from '../icons/github'
 import PLLogo from '../icons/protocolLabs'
 import countly from '../lib/countly'
+import { usePlausible } from 'next-plausible'
 
 export default function Footer() {
+  const plausible = usePlausible()
   const onLinkClick = useCallback((event) => {
+    plausible(countly.events.LINK_CLICK_FOOTER, {
+      props: {
+        target: event.currentTarget,
+      },
+    })
     countly.trackCustomLinkClick(
       countly.events.LINK_CLICK_FOOTER,
       event.currentTarget

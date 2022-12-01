@@ -12,6 +12,7 @@ import { useQueryClient } from 'react-query'
 import Logo from '../components/logo'
 import { useUser } from 'lib/user.js'
 import constants from 'lib/constants'
+import { usePlausible } from 'next-plausible'
 
 const BLOG_URL = constants.BLOG_URL
 
@@ -31,6 +32,7 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   const [isMenuOpen, setMenuOpen] = useState(false)
   const { query, asPath } = useRouter()
   const version = /** @type {string} */ (query.version)
+  const plausible = usePlausible()
 
   const logout = useCallback(async () => {
     await getMagic().user.logout()
@@ -41,6 +43,12 @@ export default function Navbar({ bgColor = 'bg-nsorange', logo, user }) {
   }, [queryClient, version])
 
   const trackLogout = useCallback(() => {
+    plausible(countly.events.LOGOUT_CLICK, {
+      props: {
+        ui: countly.ui.NAVBAR,
+        action: 'Logout',
+      },
+    })
     countly.trackEvent(countly.events.LOGOUT_CLICK, {
       ui: countly.ui.NAVBAR,
       action: 'Logout',
