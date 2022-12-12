@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.8.0](https://github.com/nftstorage/nft.storage/compare/website-v2.7.1...website-v2.8.0) (2022-12-09)
+
+
+### Features
+
+* add plausible analytics ([#2265](https://github.com/nftstorage/nft.storage/issues/2265)) ([78cdc5a](https://github.com/nftstorage/nft.storage/commit/78cdc5a845963cc0a32d64e93b2ee77acbe2c915))
+
+
+### Bug Fixes
+
+* docs with incorrect blocking duration due to rate limits ([#2231](https://github.com/nftstorage/nft.storage/issues/2231)) ([95d82cd](https://github.com/nftstorage/nft.storage/commit/95d82cd3f6208ae8f23a855c309c4569414b996c))
+* URL to blog ([#2261](https://github.com/nftstorage/nft.storage/issues/2261)) ([719058e](https://github.com/nftstorage/nft.storage/commit/719058e5da8fa93ef5213adee3236e36731090a7))
+
 ## [2.7.1](https://github.com/nftstorage/nft.storage/compare/website-v2.7.0...website-v2.7.1) (2022-10-13)
 
 
