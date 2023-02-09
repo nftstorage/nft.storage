@@ -73,6 +73,12 @@ export async function pinsReplace(event, ctx) {
   })
 
   const upload = await db.createUpload({
+    pins: [
+      {
+        status: 'PinQueued',
+        service: 'ElasticIpfs', // via pickup
+      },
+    ],
     type: 'Remote',
     content_cid: cid.contentCid,
     source_cid: cid.sourceCid,

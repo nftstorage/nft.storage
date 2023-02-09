@@ -17,6 +17,9 @@ jobs:
     strategy:
       matrix:
         env: ['production']
+        include:
+          - env: production
+            pickup_url: http://pickup.dag.haus
     steps:
       - uses: actions/checkout@v2
         with:
@@ -41,5 +44,7 @@ jobs:
           CLUSTER2_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER2_BASIC_AUTH_TOKEN }}
           CLUSTER3_API_URL: ${{ secrets.CLUSTER3_API_URL }}
           CLUSTER3_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER3_BASIC_AUTH_TOKEN }}
+          PICKUP_URL: ${{ matrix.pickup_url }}
+          PICKUP_BASIC_AUTH_TOKEN: ${{ secrets.PICKUP_BASIC_AUTH_TOKEN }}
           AFTER: ${{ github.event.inputs.after }}
         run: yarn --cwd packages/cron start:pins-failed
