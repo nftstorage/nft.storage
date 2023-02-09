@@ -4,7 +4,7 @@ You can ask NFT.Storage to archive data that is already on the [IPFS](https://ip
 
 NFT.Storage provides a pinning service that is modeled closely on the [IPFS Pinning Service API specification](https://ipfs.github.io/pinning-services-api-spec/).
 
-**You do not need to request access if you are storing data with NFT.Storage directly. Data stored with NFT.Storage is persisted indefinitely by default. This API is only useful if you are looking to store data with NFT.Storage that is already available on the IPFS network. Even in these situations, if you are able to, we recommend you generate a CAR file from a IPFS node hosting the content and directly upload that to NFT.Storage (e,g,m run `ipfs dag export` from your local node) rather than use the Pinning API.**
+**You do not need to request access if you are storing data with NFT.Storage directly. Data stored with NFT.Storage is persisted indefinitely by default. This API is only useful if you are looking to store data with NFT.Storage that is already available on the IPFS network. Even in these situations, if you are able to, we recommend you generate a CAR file from a IPFS node hosting the content and directly upload that to NFT.Storage (e.g., run `ipfs dag export` from your local node) rather than use the Pinning API.**
 
 For a full list and documentation of all the available pinning service endpoints, visit the [IPFS Pinning Service API endpoint documentation](https://ipfs.github.io/pinning-services-api-spec/#tag/pins).
 
