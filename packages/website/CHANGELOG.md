@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.1](https://github.com/nftstorage/nft.storage/compare/website-v2.8.0...website-v2.8.1) (2023-02-09)
+
+
+### Bug Fixes
+
+* emphasize when PSA is needed in docs ([#2312](https://github.com/nftstorage/nft.storage/issues/2312)) ([c8b8838](https://github.com/nftstorage/nft.storage/commit/c8b883891d2efa67e8d93217a233ae13d9ce1b3f))
+
 ## [2.8.0](https://github.com/nftstorage/nft.storage/compare/website-v2.7.1...website-v2.8.0) (2022-12-09)
 
 
