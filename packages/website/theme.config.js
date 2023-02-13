@@ -9,11 +9,7 @@ const theme = {
   footer: false,
   header: false,
   logo: <></>,
-  head: (
-    <>
-      <title>NFT.Storage Docs</title>
-    </>
-  ),
+  titleSuffix: '',
 }
 
 export default theme
