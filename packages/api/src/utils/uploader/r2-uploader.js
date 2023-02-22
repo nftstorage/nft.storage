@@ -73,7 +73,7 @@ export class R2Uploader {
         retries: 3,
       })
     } catch (cause) {
-      // @ts-expect-error wen ts understand Error object?
+      // @ts-expect-error error.cause is legit.
       throw new Error(`Failed to write satnav index to R2: ${key}`, { cause })
     }
   }
@@ -90,7 +90,7 @@ export class R2Uploader {
         retries: 3,
       })
     } catch (cause) {
-      // @ts-expect-error wen ts understand Error object?
+      // @ts-expect-error error.cause is legit.
       throw new Error(`Failed to write dudewhere index to R2: ${key}`, {
         cause,
       })
