@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.1](https://github.com/nftstorage/nft.storage/compare/api-v4.2.0...api-v4.2.1) (2023-02-22)
+
+
+### Bug Fixes
+
+* include R2 key in error message ([#2326](https://github.com/nftstorage/nft.storage/issues/2326)) ([b8d0f98](https://github.com/nftstorage/nft.storage/commit/b8d0f98821f34186cccfdf9c7e9ec7e1c79f6e7a))
+
 ## [4.2.0](https://github.com/nftstorage/nft.storage/compare/api-v4.1.0...api-v4.2.0) (2022-10-19)
 
 
