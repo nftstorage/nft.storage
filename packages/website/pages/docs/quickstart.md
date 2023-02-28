@@ -82,7 +82,7 @@ NFTUp is the easiest way for content creators to upload their metadata and asset
 
 It only takes a few moments to get a free API token from NFT.Storage. This token enables you to interact with the NFT.Storage service without using the main website, enabling you to incorporate files stored using NFT.Storage directly into your applications and services.
 
-1. Click **Account** to go to your [NFT.Storage account page](https://nft.storage/account).
+1. Click **API Keys** to go to your [NFT.Storage account page](https://nft.storage/manage/).
 1. Click **Create an API token**.
 1. Enter a descriptive name for your API token and click **Create**.
 1. Make a note of the **Token** field somewhere secure where you know you won't lose it. You can click **Copy** to copy your new API token to your clipboard.
