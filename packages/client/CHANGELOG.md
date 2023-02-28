@@ -1,5 +1,13 @@
 # Changelog
 
+## [7.0.1](https://github.com/nftstorage/nft.storage/compare/nft.storage-v7.0.0...nft.storage-v7.0.1) (2023-02-28)
+
+
+### Bug Fixes
+
+* fix typescript nodenext resolution ([#2185](https://github.com/nftstorage/nft.storage/issues/2185)) ([69a49ce](https://github.com/nftstorage/nft.storage/commit/69a49cede3f24d723582b239596eb714b178a99d))
+* set client default chunk size to 50MB ([#2331](https://github.com/nftstorage/nft.storage/issues/2331)) ([631f307](https://github.com/nftstorage/nft.storage/commit/631f307950782c01356dbf1ad574d7b1d8301eab))
+
 ## [7.0.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v6.4.1...nft.storage-v7.0.0) (2022-07-29)
 
 
