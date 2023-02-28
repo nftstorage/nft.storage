@@ -28,6 +28,7 @@ First, obtain an API token from https://nft.storage and use it in place of `API_
 
 ```js
 import { NFTStorage, File } from 'nft.storage'
+
 const client = new NFTStorage({ token: 'API_TOKEN' })
 
 async function main() {
