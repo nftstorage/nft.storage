@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.0.3](https://github.com/nftstorage/nft.storage/compare/nft.storage-v7.0.2...nft.storage-v7.0.3) (2023-02-28)
+
+
+### Bug Fixes
+
+* trigger ci ([b504852](https://github.com/nftstorage/nft.storage/commit/b504852e8634160ebda7ea81fb775fb2433a0b58))
+
 ## [7.0.2](https://github.com/nftstorage/nft.storage/compare/nft.storage-v7.0.1...nft.storage-v7.0.2) (2023-02-28)
 
 
