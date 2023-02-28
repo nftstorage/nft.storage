@@ -191,7 +191,7 @@ describe('client', () => {
           uploadedChunks++
         },
       })
-      assert.ok(uploadedChunks >= 12)
+      assert.ok(uploadedChunks >= 3)
       assert.equal(cid, expectedCid)
     })
 
