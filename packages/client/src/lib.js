@@ -28,7 +28,7 @@ import pipe from 'it-pipe'
 
 const MAX_STORE_RETRIES = 5
 const MAX_CONCURRENT_UPLOADS = 3
-const MAX_CHUNK_SIZE = 1024 * 1024 * 10 // chunk to ~10MB CARs
+const MAX_CHUNK_SIZE = 1024 * 1024 * 50 // chunk to ~50MB CARs
 const RATE_LIMIT_REQUESTS = 30
 const RATE_LIMIT_PERIOD = 10 * 1000
 
