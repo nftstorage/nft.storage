@@ -5,7 +5,13 @@ import { fileURLToPath } from 'url'
 import dotenv from 'dotenv'
 import fetch from '@web-std/fetch'
 import { updatePendingPinStatuses } from '../jobs/pins.js'
-import { getPg, getCluster1, getCluster2, getCluster3 } from '../lib/utils.js'
+import {
+  getPg,
+  getCluster1,
+  getCluster2,
+  getCluster3,
+  getPickup,
+} from '../lib/utils.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 global.fetch = fetch
@@ -18,8 +24,9 @@ async function main() {
     const cluster1 = getCluster1(process.env)
     const cluster2 = getCluster2(process.env)
     const cluster3 = getCluster3(process.env)
+    const pickup = getPickup(process.env)
 
-    await updatePendingPinStatuses({ pg, cluster1, cluster2, cluster3 })
+    await updatePendingPinStatuses({ pg, cluster1, cluster2, cluster3, pickup })
   } finally {
     await pg.end()
   }
