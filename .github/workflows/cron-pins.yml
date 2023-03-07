@@ -12,11 +12,6 @@ jobs:
     strategy:
       matrix:
         env: ['staging', 'production']
-        include:
-          - env: production
-            pickup_url: http://pickup.dag.haus
-          - env: staging
-            pickup_url: http://staging.pickup.dag.haus
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v2
@@ -42,8 +37,6 @@ jobs:
           CLUSTER2_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER2_BASIC_AUTH_TOKEN }}
           CLUSTER3_API_URL: ${{ secrets.CLUSTER3_API_URL }}
           CLUSTER3_BASIC_AUTH_TOKEN: ${{ secrets.CLUSTER3_BASIC_AUTH_TOKEN }}
-          PICKUP_URL: ${{ matrix.pickup_url }}
-          PICKUP_BASIC_AUTH_TOKEN: ${{ secrets.PICKUP_BASIC_AUTH_TOKEN }}
         run: yarn --cwd packages/cron start:pins
       - name: Heartbeat
         if: ${{ success() }}

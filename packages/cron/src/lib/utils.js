@@ -45,21 +45,6 @@ export function getCluster3(env) {
 }
 
 /**
- * Create a new IPFS Cluster instance from the passed environment variables.
- * @param {Record<string, string|undefined>} env
- */
-export function getPickup(env) {
-  const pickupUrl = env.PICKUP_URL
-  if (!pickupUrl) throw new Error('PICKUP_URL must be set in env')
-  const basicAuthToken = env.PICKUP_BASIC_AUTH_TOKEN
-  if (!basicAuthToken)
-    throw new Error('PICKUP_BASIC_AUTH_TOKEN must be set in env')
-  return new Cluster(pickupUrl, {
-    headers: { authorization: `Basic ${basicAuthToken}` },
-  })
-}
-
-/**
  * Create a new DBClient instance from the passed environment variables.
  * @param {Record<string, string|undefined>} env
  */
