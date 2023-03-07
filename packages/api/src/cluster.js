@@ -113,3 +113,23 @@ export function toPSAStatus(status) {
   if (pinInfos.some((i) => i.status === 'pin_queued')) return 'queued'
   return 'failed'
 }
+
+/**
+ * @param {import('@nftstorage/ipfs-cluster').API.StatusResponse} status
+ * @returns {import('./utils/db-client.js').definitions["pin"]["status"]} status
+ */
+export function toDBPinStatus(status) {
+  const pinInfos = Object.values(status.peerMap)
+  if (pinInfos.some((i) => i.status === 'pinned')) return 'Pinned'
+  if (pinInfos.some((i) => i.status === 'pinning')) return 'Pinning'
+  if (pinInfos.some((i) => i.status === 'pin_queued')) return 'PinQueued'
+  return 'PinError'
+}
+
+/**
+ * @param {string} cid
+ * @param {import("@nftstorage/ipfs-cluster").API.StatusOptions} [options]
+ */
+export function status(cid, options) {
+  return client.status(cid, options)
+}
