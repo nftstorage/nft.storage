@@ -3,6 +3,7 @@ import * as cluster from '../cluster.js'
 import { checkAuth, validate } from '../utils/auth.js'
 import { parseCidPinning } from '../utils/utils.js'
 import { toPinsResponse } from '../utils/db-transforms.js'
+import { PinHttpFailure } from '../errors.js'
 
 /** @type {import('../bindings').Handler} */
 export async function pinsAdd(event, ctx) {
@@ -46,9 +47,30 @@ export async function pinsAdd(event, ctx) {
     )
   }
 
-  await cluster.pin(cid.sourceCid, {
-    origins: pinData.origins,
-  })
+  try {
+    await cluster.pin(cid.sourceCid, {
+      origins: pinData.origins,
+    })
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      /400: bad request/i.test(error.message) &&
+      'response' in error &&
+      error.response &&
+      typeof error.response === 'object' &&
+      'text' in error.response &&
+      typeof error.response.text === 'function'
+    ) {
+      ctx.log.error(
+        new PinHttpFailure(
+          `cluster pin responded with unexpected 400 bad request`,
+          { cause: error },
+          await error.response.text()
+        )
+      )
+    }
+    throw error
+  }
 
   const upload = await db.createUpload({
     type: 'Remote',

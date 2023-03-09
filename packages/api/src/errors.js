@@ -284,3 +284,20 @@ export class ErrorAgentDIDRequired extends HTTPError {
   }
 }
 ErrorAgentDIDRequired.CODE = 'ERROR_AGENT_DID_REQUIRED'
+
+/**
+ * indicates unexpected http error while trying to pin via http.
+ */
+export class PinHttpFailure extends Error {
+  /**
+   *
+   * @param {string} message
+   * @param {ErrorOptions} opts
+   * @param {string} [responseText] - http response text, if available, to aid debugging
+   */
+  constructor(message, opts, responseText) {
+    super(message, opts)
+    this.name = 'HttpFailure'
+    this.responseText = responseText
+  }
+}
