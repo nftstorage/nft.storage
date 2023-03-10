@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.8.2](https://github.com/nftstorage/nft.storage/compare/website-v2.8.1...website-v2.8.2) (2023-03-10)
+
+
+### Bug Fixes
+
+* clarify docs when status is pinning ([#2343](https://github.com/nftstorage/nft.storage/issues/2343)) ([cee649b](https://github.com/nftstorage/nft.storage/commit/cee649b897d2776de0f8d411002633e47878ac15))
+* PSA language emphasizing not for production ([#2322](https://github.com/nftstorage/nft.storage/issues/2322)) ([aaee05d](https://github.com/nftstorage/nft.storage/commit/aaee05d4fef6567e66ad43cf3ee661605d50f417))
+* typo in PSA docs ([#2314](https://github.com/nftstorage/nft.storage/issues/2314)) ([5edb1d5](https://github.com/nftstorage/nft.storage/commit/5edb1d520da5839d9ab5cdf6dae65d38275574d7))
+
 ## [2.8.1](https://github.com/nftstorage/nft.storage/compare/website-v2.8.0...website-v2.8.1) (2023-02-09)
 
 
