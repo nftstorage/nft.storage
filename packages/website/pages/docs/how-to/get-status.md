@@ -14,13 +14,17 @@ The information in the file listing page is also available using the [JavaScript
 
 ## Archived?
 
-When you upload data to NFT.Storage, there might be some situations when an upload did not successfully complete. If you intended to upload a file, the **Archived?** column shows whether we received a complete graph of data. There are four possible values for the column: 📌, `Queuing`, `Pinned`, and `Failed`.
+When you upload data to NFT.Storage, there might be some situations when an upload did not successfully complete. If you intended to upload a file, the **Archived?** column shows whether we received a complete graph of data. There are five possible values for the column: 📌, `Pinning`, `Pinned`, and `Failed`.
 
 📌 status means that we have received a complete graph of data.
 
 A `Pinned` status is a legacy status from our previous architecture. It is equivalent to the `Complete` status.
 
-The `Queuing` status indicates that the completeness of the graph of data is still being validated.
+The `Pinning` status indicates that the completeness of the graph of data is still being validated.
+
+<Callout emoji="!">
+**If you have a large upload with many blocks (e.g., a directory for your 10K NFT drop), currently NFT.Storage might report the status as `Pinning` indefinitely. This is because the upload was too large for us to validate that the upload is a complete graph. You can verify that your upload is complete by spot checking individual files in your upload and making sure they're available via nftstorage.link.**
+</Callout>
 
 A `Failed` status indicates that the graph of data is incomplete. For older uploads, it can also mean an operation failed while our infrastructure was attempting to pin the data. A `Failed` pin will change to `Pinned` if the same data is uploaded successfully in a subsequent request. As long as the CID is the same for both uploads, the original upload's status will be marked as `Pinned` after a small delay.
 
