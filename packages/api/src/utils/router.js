@@ -182,8 +182,8 @@ class Router {
   listen(event) {
     const url = new URL(event.request.url)
     // Add more if needed for other backends
-    const { DATABASE_URL, CLUSTER_API_URL } = getServiceConfig()
-    const passThrough = [DATABASE_URL, CLUSTER_API_URL]
+    const { DATABASE_URL, PICKUP_URL } = getServiceConfig()
+    const passThrough = [DATABASE_URL, PICKUP_URL]
 
     // Ignore http requests from the passthrough list above
     if (!passThrough.includes(`${url.protocol}//${url.host}`)) {

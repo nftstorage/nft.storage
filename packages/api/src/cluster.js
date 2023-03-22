@@ -2,11 +2,12 @@ import { Cluster } from '@nftstorage/ipfs-cluster'
 import { getServiceConfig } from './config.js'
 import { HTTPError } from './errors.js'
 
-const { CLUSTER_API_URL, CLUSTER_BASIC_AUTH_TOKEN } = getServiceConfig()
+// pickup provides a cluster compatible api for get /pins & post /pins
+const { PICKUP_URL, PICKUP_BASIC_AUTH_TOKEN } = getServiceConfig()
 
-const client = new Cluster(CLUSTER_API_URL, {
+const client = new Cluster(PICKUP_URL, {
   headers: {
-    Authorization: `Basic ${CLUSTER_BASIC_AUTH_TOKEN}`,
+    Authorization: `Basic ${PICKUP_BASIC_AUTH_TOKEN}`,
   },
 })
 
@@ -112,4 +113,24 @@ export function toPSAStatus(status) {
   if (pinInfos.some((i) => i.status === 'pinning')) return 'pinning'
   if (pinInfos.some((i) => i.status === 'pin_queued')) return 'queued'
   return 'failed'
+}
+
+/**
+ * @param {import('@nftstorage/ipfs-cluster').API.StatusResponse} status
+ * @returns {import('./utils/db-client.js').definitions["pin"]["status"]} status
+ */
+export function toDBPinStatus(status) {
+  const pinInfos = Object.values(status.peerMap)
+  if (pinInfos.some((i) => i.status === 'pinned')) return 'Pinned'
+  if (pinInfos.some((i) => i.status === 'pinning')) return 'Pinning'
+  if (pinInfos.some((i) => i.status === 'pin_queued')) return 'PinQueued'
+  return 'PinError'
+}
+
+/**
+ * @param {string} cid
+ * @param {import("@nftstorage/ipfs-cluster").API.StatusOptions} [options]
+ */
+export function status(cid, options) {
+  return client.status(cid, options)
 }

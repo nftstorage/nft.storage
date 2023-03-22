@@ -22,7 +22,7 @@ const pkg = JSON.parse(
 export function makeMiniflare(bindings, fetchMock) {
   const envPath = path.join(__dirname, '../../../../.env')
 
-  const { DATABASE_URL, CLUSTER_API_URL, S3_ENDPOINT } = process.env
+  const { DATABASE_URL, PICKUP_URL, S3_ENDPOINT } = process.env
 
   return new Miniflare({
     // Autoload configuration from `.env`, `package.json` and `wrangler.toml`
@@ -36,7 +36,7 @@ export function makeMiniflare(bindings, fetchMock) {
     bindings: {
       ...bindings,
       DATABASE_URL,
-      CLUSTER_API_URL,
+      PICKUP_URL,
       S3_ENDPOINT,
     },
     fetchMock,

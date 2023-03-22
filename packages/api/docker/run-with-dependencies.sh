@@ -82,7 +82,7 @@ export DATABASE_CONNECTION="postgres://postgres:postgres@$DB_HOST_PORT/postgres"
 
 # The vars below are used to configure the service
 export DATABASE_URL="http://$POSTGREST_HOST_PORT"
-export CLUSTER_API_URL="http://$CLUSTER_HOST_PORT"
+export PICKUP_URL="http://$CLUSTER_HOST_PORT"
 export S3_ENDPOINT="http://$MINIO_HOST_PORT"
 
 echo "services started."
@@ -90,7 +90,7 @@ echo "environment overrides:"
 echo "MINIO_API_PORT=${MINIO_API_PORT}"
 echo "DATABASE_CONNECTION=${DATABASE_CONNECTION}"
 echo "DATABASE_URL=${DATABASE_URL}"
-echo "CLUSTER_API_URL=${CLUSTER_API_URL}"
+echo "PICKUP_URL=${PICKUP_URL}"
 echo "S3_ENDPOINT=${S3_ENDPOINT}"
 echo
 

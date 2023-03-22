@@ -10,16 +10,6 @@ import {
  */
 
 /**
- * If the CLUSTER_SERVICE variable is set, the service URL will be resolved from here.
- *
- * @type Record<string, string> */
-const CLUSTER_SERVICE_URLS = {
-  IpfsCluster: 'https://nft.storage.ipfscluster.io/api/',
-  IpfsCluster2: 'https://nft2.storage.ipfscluster.io/api/',
-  IpfsCluster3: 'https://nft3.storage.ipfscluster.io/api/',
-}
-
-/**
  * Load a {@link ServiceConfiguration} from the global environment.
  * @returns {ServiceConfiguration}
  */
@@ -37,22 +27,6 @@ export const getServiceConfig = () => {
  * @returns {ServiceConfiguration}
  */
 export function serviceConfigFromVariables(vars) {
-  let clusterUrl
-  if (vars.CLUSTER_SERVICE) {
-    clusterUrl = CLUSTER_SERVICE_URLS[vars.CLUSTER_SERVICE]
-    if (!clusterUrl) {
-      throw new Error(`unknown cluster service: ${vars.CLUSTER_SERVICE}`)
-    }
-  }
-  if (vars.CLUSTER_API_URL) {
-    clusterUrl = vars.CLUSTER_API_URL
-  }
-  if (!clusterUrl || (vars.CLUSTER_SERVICE && vars.CLUSTER_API_URL)) {
-    throw new Error(
-      `One of CLUSTER_SERVICE or CLUSTER_API_URL must be set in ENV`
-    )
-  }
-
   return {
     ENV: parseRuntimeEnv(vars.ENV),
     DEBUG: boolValue(vars.DEBUG),
@@ -65,8 +39,8 @@ export function serviceConfigFromVariables(vars) {
     CARPARK_URL: vars.CARPARK_URL,
     DATABASE_URL: vars.DATABASE_URL,
     DATABASE_TOKEN: vars.DATABASE_TOKEN,
-    CLUSTER_API_URL: clusterUrl,
-    CLUSTER_BASIC_AUTH_TOKEN: vars.CLUSTER_BASIC_AUTH_TOKEN,
+    PICKUP_URL: vars.PICKUP_URL,
+    PICKUP_BASIC_AUTH_TOKEN: vars.PICKUP_BASIC_AUTH_TOKEN,
     MAGIC_SECRET_KEY: vars.MAGIC_SECRET_KEY,
     SENTRY_DSN: vars.SENTRY_DSN,
     METAPLEX_AUTH_TOKEN: vars.METAPLEX_AUTH_TOKEN,
@@ -114,6 +88,8 @@ export function loadConfigVariables() {
     'DUDEWHERE',
     'CARPARK',
     'CARPARK_URL',
+    'PICKUP_URL',
+    'PICKUP_BASIC_AUTH_TOKEN',
     'DATABASE_URL',
     'DATABASE_TOKEN',
     'MAGIC_SECRET_KEY',
@@ -122,7 +98,6 @@ export function loadConfigVariables() {
     'LOGTAIL_TOKEN',
     'PRIVATE_KEY',
     'SENTRY_DSN',
-    'CLUSTER_BASIC_AUTH_TOKEN',
     'MAINTENANCE_MODE',
     'S3_REGION',
     'S3_ACCESS_KEY_ID',
@@ -145,8 +120,6 @@ export function loadConfigVariables() {
   }
 
   const optional = [
-    'CLUSTER_SERVICE',
-    'CLUSTER_API_URL',
     'LINKDEX_URL',
     'S3_ENDPOINT',
     'SLACK_USER_REQUEST_WEBHOOK_URL',

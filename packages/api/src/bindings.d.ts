@@ -55,11 +55,11 @@ export interface ServiceConfiguration {
   /** UCAN private signing key */
   PRIVATE_KEY: string
 
-  /** API url for active IPFS cluster endpoint */
-  CLUSTER_API_URL: string
+  /** API url for pickup endpoint */
+  PICKUP_URL: string
 
-  /** Auth token for IPFS culster */
-  CLUSTER_BASIC_AUTH_TOKEN: string
+  /** Auth token for pickup pinning service */
+  PICKUP_BASIC_AUTH_TOKEN: string
 
   /** Postgrest endpoint URL */
   DATABASE_URL: string

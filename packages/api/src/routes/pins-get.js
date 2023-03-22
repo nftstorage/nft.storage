@@ -1,4 +1,5 @@
-import { checkAuth, validate } from '../utils/auth.js'
+import * as cluster from '../cluster.js'
+import { checkAuth } from '../utils/auth.js'
 import { toPinsResponse } from '../utils/db-transforms.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { parseCidPinning } from '../utils/utils.js'
@@ -21,13 +22,27 @@ export async function pinsGet(event, ctx) {
     )
   }
 
-  const upload = await db.getUpload(cid.sourceCid, user.id)
+  let upload = await db.getUpload(cid.sourceCid, user.id)
 
   if (!upload) {
     return new JSONResponse(
       { error: { reason: 'NOT_FOUND', details: 'pin not found' } },
       { status: 404 }
     )
+  }
+
+  // check if the status has changed upstream
+  const status = upload.content.pin[0].status
+  if (status === 'Pinning' || status === 'PinQueued') {
+    const res = await cluster.status(cid.sourceCid)
+    const newStatus = cluster.toDBPinStatus(res)
+    if (status !== newStatus) {
+      await ctx.db.updatePinStatus(upload.content_cid, {
+        service: 'ElasticIpfs',
+        status: newStatus,
+      })
+      upload = (await db.getUpload(cid.sourceCid, user.id)) ?? upload
+    }
   }
 
   return new JSONResponse(toPinsResponse(upload))
