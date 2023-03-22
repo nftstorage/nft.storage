@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.3.0](https://github.com/nftstorage/nft.storage/compare/api-v4.2.1...api-v4.3.0) (2023-03-22)
+
+
+### Features
+
+* use 🛻 pickup from api ([#2310](https://github.com/nftstorage/nft.storage/issues/2310)) ([e327bb3](https://github.com/nftstorage/nft.storage/commit/e327bb38247401bee5b7bc3ff4a8cdbbc31e1a69))
+
 ## [4.2.1](https://github.com/nftstorage/nft.storage/compare/api-v4.2.0...api-v4.2.1) (2023-02-22)
 
 
