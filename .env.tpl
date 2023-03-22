@@ -32,10 +32,9 @@ DATABASE_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlh
 # Postgres Database
 DATABASE_CONNECTION=postgresql://postgres:postgres@localhost:5432/postgres
 
-# Cluster 
-CLUSTER_BASIC_AUTH_TOKEN = dGVzdDp0ZXN0
-CLUSTER_SERVICE = 
-CLUSTER_API_URL = http://127.0.0.1:9094
+# Pickup (can be mocked with ipfs-cluster for local dev) 
+PICKUP_BASIC_AUTH_TOKEN = dGVzdDp0ZXN0
+PICKUP_API_URL = http://127.0.0.1:9094
 
 # Maintenance Mode
 MAINTENANCE_MODE = rw

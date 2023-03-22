@@ -98,7 +98,6 @@ export function loadConfigVariables() {
     'LOGTAIL_TOKEN',
     'PRIVATE_KEY',
     'SENTRY_DSN',
-    'CLUSTER_BASIC_AUTH_TOKEN',
     'MAINTENANCE_MODE',
     'S3_REGION',
     'S3_ACCESS_KEY_ID',

@@ -13,10 +13,9 @@ globalThis.PRIVATE_KEY = 'xmbtWjE9eYuAxae9G65lQSkw36HV6H+0LSFq2aKqVwY='
 globalThis.SENTRY_DSN = 'https://test@test.ingest.sentry.io/0000000'
 globalThis.SLACK_USER_REQUEST_WEBHOOK_URL = 'test'
 
-globalThis.CLUSTER_API_URL = 'http://127.0.0.1:9094'
+globalThis.PICKUP_API_URL = 'http://127.0.0.1:9094'
 // will be used with we can active auth in cluster base64 of test:test
-globalThis.CLUSTER_BASIC_AUTH_TOKEN = 'dGVzdDp0ZXN0'
-globalThis.CLUSTER_SERVICE = ''
+globalThis.PICKUP_BASIC_AUTH_TOKEN = 'dGVzdDp0ZXN0'
 
 globalThis.MAINTENANCE_MODE = 'rw'
 

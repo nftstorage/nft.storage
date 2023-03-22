@@ -13,8 +13,8 @@ import { getMiniflareContext, getTestServiceConfig } from './test-context.js'
  * @returns {Cluster}
  */
 export const getCluster = (config) => {
-  return new Cluster(config.CLUSTER_API_URL, {
-    headers: { Authorization: `Basic ${config.CLUSTER_BASIC_AUTH_TOKEN}` },
+  return new Cluster(config.PICKUP_URL, {
+    headers: { Authorization: `Basic ${config.PICKUP_BASIC_AUTH_TOKEN}` },
   })
 }
 

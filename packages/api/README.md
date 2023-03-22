@@ -66,8 +66,7 @@ wrangler secret put MAGIC_SECRET_KEY --env production # Get from magic.link acco
 wrangler secret put SALT --env production # open `https://csprng.xyz/v1/api` in the browser and use the value of `Data`
 wrangler secret put SENTRY_DSN --env USER # Get from Sentry
 wrangler secret put DATABASE_TOKEN --env production # Get from database account
-wrangler secret put CLUSTER_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password
-wrangler secret put CLUSTER_SERVICE --env production # Which cluster should be used. Options 'IpfsCluster' / 'IpfsCluster2' / 'IpfsCluster3'
+wrangler secret put PICKUP_BASIC_AUTH_TOKEN --env production # Get from nft.storage vault in 1password
 wrangler secret put MAILCHIMP_API_KEY --env production # Get from mailchimp
 wrangler secret put LOGTAIL_TOKEN --env production # Get from Logtail
 wrangler secret put METAPLEX_AUTH_TOKEN --env production # User ID meteplex endpoint should use (not required for dev)
@@ -128,3 +127,12 @@ see: https://github.com/web3-storage/linkdex-api
 We write Uploaded CARs to both S3 and R2 in parallel. The R2 Bucket is bound to the worker as `env.CARPARK`. The API docs for an R2Bucket instance are here: https://developers.cloudflare.com/r2/runtime-apis/#bucket-method-definitions
 
 We key our R2 uploads by CAR CID, and record them in the DB under `upload.backup_urls`. The URL prefix for CARs in R2 is set by the `env.CARPARK_URL`. This is currently pointing to a subdomain on web3.storage which we could configure when we need direct http access to the bucket, but does not exist at time of writing.
+
+## Pickup
+
+We use [pickup](https://github.com/web3-storage/pickup) to fetch DAGs from IPFS and save them to a bucket where E-IPFS can index them. It provides a subset of the ipfs-cluster api for `GET /pins` and `POST /pins` that we use as the backend for the [pinning service](https://ipfs.github.io/pinning-services-api-spec/) implementation.
+
+- `PICKUP_URL` defines the service enpoint to use, and is set in the wrangler.toml.
+- `PICKUP_BASIC_AUTH_TOKEN` must be set as a secret in the env.
+
+For local dev, we use a local ipfs-cluster container for the same service.
