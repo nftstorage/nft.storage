@@ -44,8 +44,9 @@ export function toNFTResponse(upload, sourceCid) {
  * Transform db response into Pin response
  *
  * @param {import('./db-client-types').UploadOutput} upload
+ * @param {string[]} [delegates]
  */
-export function toPinsResponse(upload) {
+export function toPinsResponse(upload, delegates = []) {
   /** @type {import('../bindings').PinsResponse} */
   const rsp = {
     requestid: upload.source_cid,
@@ -57,7 +58,7 @@ export function toPinsResponse(upload) {
       name: upload.name,
       origins: upload.origins,
     },
-    delegates: cluster.delegates(),
+    delegates,
   }
   return rsp
 }
