@@ -46,7 +46,7 @@ export default function Footer() {
           <Discord />
         </a>
         <a
-          href="https://twitter.com/nft_storage"
+          href="https://twitter.com/nftdotstorage"
           title="@nft_storage Twitter"
           target="_blank"
           rel="noreferrer"
