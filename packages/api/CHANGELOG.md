@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.0](https://github.com/nftstorage/nft.storage/compare/api-v4.3.0...api-v4.4.0) (2023-03-22)
+
+
+### Features
+
+* send `delegates` on pin add response ([#2351](https://github.com/nftstorage/nft.storage/issues/2351)) ([f4fdbba](https://github.com/nftstorage/nft.storage/commit/f4fdbba9e5c7fd8bac009088132c239c5ea20655))
+
 ## [4.3.0](https://github.com/nftstorage/nft.storage/compare/api-v4.2.1...api-v4.3.0) (2023-03-22)
 
 
