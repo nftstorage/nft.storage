@@ -23,6 +23,7 @@ ENV = "dev"
 DEBUG = "true"
 DATABASE_URL = "http://localhost:3000"
 CARPARK_URL = "https://carpark-dev.web3.storage"
+PICKUP_URL = "https://staging.pickup.dag.haus"
 
 [build]
 command = "scripts/cli.js build"
@@ -44,6 +45,7 @@ ENV = "staging"
 DEBUG = "true"
 DATABASE_URL = "https://nft-storage-pgrest-staging.herokuapp.com"
 CARPARK_URL = "https://carpark-staging.web3.storage"
+PICKUP_URL = "https://staging.pickup.dag.haus"
 
 [env.staging.build]
 command = "scripts/cli.js build --env staging"
@@ -69,6 +71,7 @@ ENV = "production"
 DEBUG = "false"
 DATABASE_URL = "https://nft-storage-pgrest-prod.herokuapp.com"
 CARPARK_URL = "https://carpark.web3.storage"
+PICKUP_URL = "https://pickup.dag.haus"
 
 [env.production.build]
 command = "scripts/cli.js build --env production"
