@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://nft.storage"><img width="75%" src="https://nft.storage/images/logo-nft.storage.svg" alt="NFT.Storage logo" /></a>
+  <a href="https://nft.storage"><img width="75%" src="https://user-images.githubusercontent.com/11778450/227269341-b2d804a7-1829-426c-9caa-ec519f98dc9c.png" alt="NFT.Storage logo" /></a>
 </h1>
 
 <h3 align="center">Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin.</h3>
