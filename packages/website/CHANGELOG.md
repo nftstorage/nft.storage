@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.8.3](https://github.com/nftstorage/nft.storage/compare/website-v2.8.2...website-v2.8.3) (2023-03-31)
+
+
+### Bug Fixes
+
+* update footer link to the nftstorage twitter page ([#2353](https://github.com/nftstorage/nft.storage/issues/2353)) ([a0934cd](https://github.com/nftstorage/nft.storage/commit/a0934cd0b85284807ba4e84df66c2534b5a3e3dd)), closes [#2318](https://github.com/nftstorage/nft.storage/issues/2318)
+* use dynamic title in head on docs pages ([#2319](https://github.com/nftstorage/nft.storage/issues/2319)) ([5d55330](https://github.com/nftstorage/nft.storage/commit/5d5533090ef917dacfb971c9aa42de8ac71dc342))
+
 ## [2.8.2](https://github.com/nftstorage/nft.storage/compare/website-v2.8.1...website-v2.8.2) (2023-03-10)
 
 
