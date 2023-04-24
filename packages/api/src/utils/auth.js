@@ -78,7 +78,7 @@ export async function validate(event, { log, db, ucanService }, options) {
           if (isBlocked) {
             throw new ErrorTokenBlocked()
           } else {
-            throw new ErrorUserNotFound()
+            throw new ErrorTokenNotFound()
           }
         }
 
