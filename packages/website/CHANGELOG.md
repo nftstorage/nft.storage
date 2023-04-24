@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.8.4](https://github.com/nftstorage/nft.storage/compare/website-v2.8.3...website-v2.8.4) (2023-04-24)
+
+
+### Bug Fixes
+
+* broken link to API Keys page ([#2335](https://github.com/nftstorage/nft.storage/issues/2335)) ([3e89eb8](https://github.com/nftstorage/nft.storage/commit/3e89eb843d11cb727c33f0af809b5454c2e07be8))
+* typo in status docs ([#2253](https://github.com/nftstorage/nft.storage/issues/2253)) ([efcb80b](https://github.com/nftstorage/nft.storage/commit/efcb80b07f0077905ff9078af749765d24613a9e))
+
 ## [2.8.3](https://github.com/nftstorage/nft.storage/compare/website-v2.8.2...website-v2.8.3) (2023-03-31)
 
 
