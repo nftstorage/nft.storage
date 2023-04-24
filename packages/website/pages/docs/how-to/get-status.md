@@ -18,7 +18,7 @@ When you upload data to NFT.Storage, there might be some situations when an uplo
 
 📌 status means that we have received a complete graph of data.
 
-A `Pinned` status is a legacy status from our previous architecture. It is equivalent to the `Complete` status.
+A `Pinned` status is a legacy status from our previous architecture. It is equivalent to the 📌 status.
 
 The `Pinning` status indicates that the completeness of the graph of data is still being validated.
 
