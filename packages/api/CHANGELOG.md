@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.1](https://github.com/nftstorage/nft.storage/compare/api-v4.4.0...api-v4.4.1) (2023-04-25)
+
+
+### Bug Fixes
+
+* deleted token error message ([#2378](https://github.com/nftstorage/nft.storage/issues/2378)) ([10f6d7b](https://github.com/nftstorage/nft.storage/commit/10f6d7b6aba517a8bd7faa5330af9ae127fa73d5))
+
 ## [4.4.0](https://github.com/nftstorage/nft.storage/compare/api-v4.3.0...api-v4.4.0) (2023-03-22)
 
 
