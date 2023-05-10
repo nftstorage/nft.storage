@@ -19,7 +19,7 @@ jobs:
         env: ['production']
         include:
           - env: production
-            pickup_url: http://pickup.dag.haus
+            pickup_url: https://pickup.dag.haus
     steps:
       - uses: actions/checkout@v2
         with:
