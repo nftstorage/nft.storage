@@ -271,7 +271,8 @@ export type Backup = {
 // needs to be a type so it can be assigned to Record<string, string>
 export type BackupMetadata = {
   structure: DagStructure
-  rootCid: string
+  sourceCid: string
+  contentCid: string
   carCid: string
 }
 
