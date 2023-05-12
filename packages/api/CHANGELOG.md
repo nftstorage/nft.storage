@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.4.2](https://github.com/nftstorage/nft.storage/compare/api-v4.4.1...api-v4.4.2) (2023-05-12)
+
+
+### Bug Fixes
+
+* dudewhere root cid should be content cid ([#2392](https://github.com/nftstorage/nft.storage/issues/2392)) ([e1bcf5e](https://github.com/nftstorage/nft.storage/commit/e1bcf5e12c22ff6226732e16a4b926e8d6bb8311))
+
 ## [4.4.1](https://github.com/nftstorage/nft.storage/compare/api-v4.4.0...api-v4.4.1) (2023-04-25)
 
 
