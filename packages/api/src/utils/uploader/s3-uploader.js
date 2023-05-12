@@ -67,7 +67,7 @@ export class S3Uploader {
    */
   async uploadCar(carBytes, carCid, userId, metadata) {
     const carHash = uint8ArrayToString(carCid.multihash.bytes, 'base32')
-    const key = `raw/${metadata.rootCid}/${this._appName}-${userId}/${carHash}.car`
+    const key = `raw/${metadata.sourceCid}/${this._appName}-${userId}/${carHash}.car`
     const url = new URL(key, this._baseUrl.toString())
 
     /** @type {import('@aws-sdk/client-s3').PutObjectCommandInput} */

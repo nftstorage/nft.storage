@@ -140,10 +140,12 @@ export async function uploadCarWithStat(
   stat
 ) {
   const sourceCid = stat.rootCid.toString()
+  const contentCid = stat.rootCid.toV1().toString()
   const carCid = await createCarCid(stat.carBytes)
   const metadata = {
     structure: stat.structure || 'Unknown',
-    rootCid: sourceCid,
+    sourceCid,
+    contentCid,
     carCid: carCid.toString(),
   }
 
@@ -171,7 +173,7 @@ export async function uploadCarWithStat(
   const upload = await ctx.db.createUpload({
     mime_type: mimeType,
     type: uploadType,
-    content_cid: stat.rootCid.toV1().toString(),
+    content_cid: contentCid,
     source_cid: sourceCid,
     dag_size: stat.size,
     user_id: user.id,

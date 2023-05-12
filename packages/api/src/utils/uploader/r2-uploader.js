@@ -48,7 +48,7 @@ export class R2Uploader {
     try {
       await pRetry(put, { retries: 3, onFailedAttempt: console.log })
       await Promise.all([
-        this.uploadDudeWhereLink(metadata.rootCid, carCid),
+        this.uploadDudeWhereLink(metadata.contentCid, carCid),
         this.uploadSatNavIndex(carBytes, carCid),
       ])
       return { key, url }
