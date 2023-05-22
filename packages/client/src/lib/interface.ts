@@ -151,6 +151,10 @@ export interface CarStorerOptions extends RequestOptions {
    */
   maxRetries?: number
   /**
+   * Maximum chunk size to upload in bytes. Default: 52,428,800
+   */
+  maxChunkSize?: number
+  /**
    * Additional IPLD block decoders. Used to interpret the data in the CAR
    * file and split it into multiple chunks. Note these are only required if
    * the CAR file was not encoded using the default encoders: `dag-pb`,
