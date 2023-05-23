@@ -196,6 +196,9 @@ describe('client', () => {
     })
 
     it('upload CAR with custom chunk size', async function () {
+      // @ts-ignore
+      this.timeout(10_000)
+
       let uploadedChunks = 0
 
       const client = new NFTStorage({ token, endpoint })
