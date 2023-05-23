@@ -1,5 +1,17 @@
 # Changelog
 
+## [7.1.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v7.0.3...nft.storage-v7.1.0) (2023-05-23)
+
+
+### Features
+
+* custom chunk size ([#2396](https://github.com/nftstorage/nft.storage/issues/2396)) ([4e37f8e](https://github.com/nftstorage/nft.storage/commit/4e37f8e60e0e7b60657d205806693216db634947))
+
+
+### Bug Fixes
+
+* increase timeout for custom chunk size test ([77f9054](https://github.com/nftstorage/nft.storage/commit/77f905480cbdaacc77b2c703c81911ad0fe734c0))
+
 ## [7.0.3](https://github.com/nftstorage/nft.storage/compare/nft.storage-v7.0.2...nft.storage-v7.0.3) (2023-02-28)
 
 
