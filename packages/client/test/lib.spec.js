@@ -195,6 +195,29 @@ describe('client', () => {
       assert.equal(cid, expectedCid)
     })
 
+    it('upload CAR with custom chunk size', async function () {
+      let uploadedChunks = 0
+
+      const client = new NFTStorage({ token, endpoint })
+
+      const targetSize = 1024 * 1024 * 20
+      const carReader = await CarReader.fromIterable(
+        await randomCar(targetSize)
+      )
+
+      const roots = await carReader.getRoots()
+      const expectedCid = roots[0]?.toString()
+
+      const cid = await client.storeCar(carReader, {
+        maxChunkSize: 1024 * 1024 * 15,
+        onStoredChunk: () => {
+          uploadedChunks++
+        },
+      })
+      assert.equal(uploadedChunks, 2)
+      assert.equal(cid, expectedCid)
+    })
+
     it('upload CAR with non-default decoder', async () => {
       const client = new NFTStorage({ token, endpoint })
       const block = await encode({

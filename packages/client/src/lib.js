@@ -169,11 +169,11 @@ class NFTStorage {
   static async storeCar(
     { endpoint, rateLimiter = globalRateLimiter, ...token },
     car,
-    { onStoredChunk, maxRetries, decoders, signal } = {}
+    { onStoredChunk, maxRetries, maxChunkSize, decoders, signal } = {}
   ) {
     const url = new URL('upload/', endpoint)
     const headers = NFTStorage.auth(token)
-    const targetSize = MAX_CHUNK_SIZE
+    const targetSize = maxChunkSize || MAX_CHUNK_SIZE
     const splitter =
       car instanceof Blob
         ? await TreewalkCarSplitter.fromBlob(car, targetSize, { decoders })
