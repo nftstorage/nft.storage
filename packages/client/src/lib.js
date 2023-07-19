@@ -212,7 +212,6 @@ class NFTStorage {
                 signal,
               })
             } catch (/** @type {any} */ err) {
-              console.log(err)
               // TODO: remove me and test when client accepts custom fetch impl
               /* c8 ignore next 1 */
               throw signal && signal.aborted ? new AbortError(err) : err
