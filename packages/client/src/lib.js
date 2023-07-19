@@ -172,7 +172,10 @@ class NFTStorage {
     { onStoredChunk, maxRetries, maxChunkSize, decoders, signal } = {}
   ) {
     const url = new URL('upload/', endpoint)
-    const headers = NFTStorage.auth(token)
+    const headers = {
+      ...NFTStorage.auth(token),
+      'Content-Type': 'application/car',
+    }
     const targetSize = maxChunkSize || MAX_CHUNK_SIZE
     const splitter =
       car instanceof Blob
@@ -187,6 +190,15 @@ class NFTStorage {
           carParts.push(part)
         }
         const carFile = new Blob(carParts, { type: 'application/car' })
+        /** @type {Blob|ArrayBuffer} */
+        let body = carFile
+        // FIXME: should not be necessary to await arrayBuffer()!
+        // Node.js 20 hangs reading the stream (it never ends) but in
+        // older node versions and the browser it is fine to pass a blob.
+        /* c8 ignore next 3 */
+        if (parseInt(globalThis.process?.versions?.node) > 18) {
+          body = await body.arrayBuffer()
+        }
         const cid = await pRetry(
           async () => {
             await rateLimiter()
@@ -196,10 +208,11 @@ class NFTStorage {
               response = await fetch(url.toString(), {
                 method: 'POST',
                 headers,
-                body: carFile,
+                body,
                 signal,
               })
             } catch (/** @type {any} */ err) {
+              console.log(err)
               // TODO: remove me and test when client accepts custom fetch impl
               /* c8 ignore next 1 */
               throw signal && signal.aborted ? new AbortError(err) : err

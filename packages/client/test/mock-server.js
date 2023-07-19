@@ -21,21 +21,15 @@ export { fetch, Headers }
 const toReadableStream = (source) =>
   new ReadableStream({
     async pull(controller) {
-      try {
-        while (controller.desiredSize || 0 > 0) {
-          const chunk = await source.next()
-          if (chunk.done) {
-            controller.close()
-          } else {
-            const bytes =
-              typeof chunk.value === 'string'
-                ? encoder.encode(chunk.value)
-                : chunk.value
-            controller.enqueue(bytes)
-          }
-        }
-      } catch (error) {
-        controller.error(error)
+      const chunk = await source.next()
+      if (chunk.done) {
+        controller.close()
+      } else {
+        const bytes =
+          typeof chunk.value === 'string'
+            ? encoder.encode(chunk.value)
+            : chunk.value
+        controller.enqueue(bytes)
       }
     },
     cancel(reason) {
@@ -272,6 +266,8 @@ export class Service {
         // @ts-ignore - headers don't have right type
         headers: new Headers({ ...incoming.headers }),
         body: toBody(incoming),
+        // @ts-expect-error TypeError: RequestInit: duplex option is required when sending a body.
+        duplex: 'half',
       })
 
       const response = await this.handler(request, this.state)
@@ -285,6 +281,7 @@ export class Service {
 
       outgoing.end()
     } catch (err) {
+      console.error(err)
       const error = /**@type {Error &  {status: number}} */ (err)
       if (!outgoing.hasHeader) {
         outgoing.writeHead(error.status || 500)
