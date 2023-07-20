@@ -197,7 +197,7 @@ describe('client', () => {
 
     it('upload CAR with custom chunk size', async function () {
       // @ts-ignore
-      this.timeout(30_000)
+      this.timeout(20_000)
 
       let uploadedChunks = 0
 
