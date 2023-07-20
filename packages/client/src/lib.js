@@ -197,7 +197,7 @@ class NFTStorage {
         // older node versions and the browser it is fine to pass a blob.
         /* c8 ignore next 3 */
         if (parseInt(globalThis.process?.versions?.node) > 18) {
-          // body = await body.arrayBuffer()
+          body = await body.arrayBuffer()
         }
         const cid = await pRetry(
           async () => {
