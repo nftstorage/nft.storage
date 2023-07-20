@@ -281,9 +281,8 @@ export class Service {
 
       outgoing.end()
     } catch (err) {
-      console.error(err)
       const error = /**@type {Error &  {status: number}} */ (err)
-      if (!outgoing.hasHeader) {
+      if (!outgoing.headersSent) {
         outgoing.writeHead(error.status || 500)
       }
       outgoing.write(error.stack)
@@ -323,7 +322,13 @@ export const listen = (service, port = 0) =>
  * @param {(request:Request, state:State) => Promise<Response>} handler
  */
 export const activate = async (state, handler) => {
-  const service = new Service(new http.Server(), state, handler)
+  const server = new http.Server()
+  // Server keepalive timeout is 5s by default but undici sets to 60s in
+  // Node.js 18 & 20. So when client tries to reuse a conenction after 5s it
+  // gets ECONNRESET from the server.
+  // https://connectreport.com/blog/tuning-http-keep-alive-in-node-js/
+  server.keepAliveTimeout = 60_000
+  const service = new Service(server, state, handler)
   await listen(service)
   return service
 }
