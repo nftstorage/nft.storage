@@ -106,7 +106,16 @@ export class Token {
       // @ts-ignore blob may be a File!
       const name = blob.name || 'blob'
       /** @type {import('./platform.js').ReadableStream} */
-      const content = blob.stream()
+      let content
+      // FIXME: should not be necessary to await arrayBuffer()!
+      // Node.js 20 hangs reading the stream (it never ends) but in
+      // older node versions and the browser it is fine to use blob.stream().
+      /* c8 ignore next 5 */
+      if (parseInt(globalThis.process?.versions?.node) > 18) {
+        content = new Uint8Array(await blob.arrayBuffer())
+      } else {
+        content = blob.stream()
+      }
       const { root: cid } = await pack({
         input: [{ path: name, content }],
         blockstore,

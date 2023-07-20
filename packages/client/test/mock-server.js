@@ -21,21 +21,15 @@ export { fetch, Headers }
 const toReadableStream = (source) =>
   new ReadableStream({
     async pull(controller) {
-      try {
-        while (controller.desiredSize || 0 > 0) {
-          const chunk = await source.next()
-          if (chunk.done) {
-            controller.close()
-          } else {
-            const bytes =
-              typeof chunk.value === 'string'
-                ? encoder.encode(chunk.value)
-                : chunk.value
-            controller.enqueue(bytes)
-          }
-        }
-      } catch (error) {
-        controller.error(error)
+      const chunk = await source.next()
+      if (chunk.done) {
+        controller.close()
+      } else {
+        const bytes =
+          typeof chunk.value === 'string'
+            ? encoder.encode(chunk.value)
+            : chunk.value
+        controller.enqueue(bytes)
       }
     },
     cancel(reason) {
@@ -272,6 +266,8 @@ export class Service {
         // @ts-ignore - headers don't have right type
         headers: new Headers({ ...incoming.headers }),
         body: toBody(incoming),
+        // @ts-expect-error TypeError: RequestInit: duplex option is required when sending a body.
+        duplex: 'half',
       })
 
       const response = await this.handler(request, this.state)
@@ -286,7 +282,7 @@ export class Service {
       outgoing.end()
     } catch (err) {
       const error = /**@type {Error &  {status: number}} */ (err)
-      if (!outgoing.hasHeader) {
+      if (!outgoing.headersSent) {
         outgoing.writeHead(error.status || 500)
       }
       outgoing.write(error.stack)
@@ -326,7 +322,13 @@ export const listen = (service, port = 0) =>
  * @param {(request:Request, state:State) => Promise<Response>} handler
  */
 export const activate = async (state, handler) => {
-  const service = new Service(new http.Server(), state, handler)
+  const server = new http.Server()
+  // Server keepalive timeout is 5s by default but undici sets to 60s in
+  // Node.js 18 & 20. So when client tries to reuse a conenction after 5s it
+  // gets ECONNRESET from the server.
+  // https://connectreport.com/blog/tuning-http-keep-alive-in-node-js/
+  server.keepAliveTimeout = 60_000
+  const service = new Service(server, state, handler)
   await listen(service)
   return service
 }
