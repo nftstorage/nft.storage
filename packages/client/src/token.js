@@ -110,7 +110,7 @@ export class Token {
       // FIXME: should not be necessary to await arrayBuffer()!
       // Node.js 20 hangs reading the stream (it never ends) but in
       // older node versions and the browser it is fine to use blob.stream().
-      /* c8 ignore next 3 */
+      /* c8 ignore next 5 */
       if (parseInt(globalThis.process?.versions?.node) > 18) {
         content = new Uint8Array(await blob.arrayBuffer())
       } else {
