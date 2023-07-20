@@ -1,5 +1,12 @@
 # Changelog
 
+## [7.1.1](https://github.com/nftstorage/nft.storage/compare/nft.storage-v7.1.0...nft.storage-v7.1.1) (2023-07-20)
+
+
+### Bug Fixes
+
+* this param for fetch calls ([#2428](https://github.com/nftstorage/nft.storage/issues/2428)) ([ed04997](https://github.com/nftstorage/nft.storage/commit/ed04997790278a28f927a6517387bc323f914ac2))
+
 ## [7.1.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v7.0.3...nft.storage-v7.1.0) (2023-05-23)
 
 
