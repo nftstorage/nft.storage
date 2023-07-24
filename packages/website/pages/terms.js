@@ -96,6 +96,16 @@ export default function TermsOfService() {
           Filecoin deals will persist for the duration of the relevant storage
           deal.
         </p>
+        <p className="leading-normal my-2">
+          We have the right (though not the obligation) to, in our sole discretion 
+          (i) refuse or remove any Content; (ii) block uploads, or (iii) temporarily 
+          or permanently suspend access to your account if, in our reasonable opinion, 
+          there has been a breach of this TOS in any way for any reason. Additionally, 
+          we have the right to temporarily or permanently suspend access to accounts 
+          linked to temporary email addressees, email addresses created 
+          programmatically such as via bots, or hacked email addresses if we suspect 
+          these user accounts will be used in a manner that violates this TOS.
+        </p>
 
         <h2 className="chicagoflf">
           <HashLink id="gateway">NFT.Storage Gateway</HashLink>
