@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.8.5](https://github.com/nftstorage/nft.storage/compare/website-v2.8.4...website-v2.8.5) (2023-07-24)
+
+
+### Bug Fixes
+
+* make blocking explicit in ToS ([#2435](https://github.com/nftstorage/nft.storage/issues/2435)) ([63e9f10](https://github.com/nftstorage/nft.storage/commit/63e9f10487883fa53480d78291405884addee81b))
+
+
+### Other Changes
+
+* delete solona guide ([#2423](https://github.com/nftstorage/nft.storage/issues/2423)) ([2bd182f](https://github.com/nftstorage/nft.storage/commit/2bd182fe02ccdb3d512546d59c485ee504705e30))
+
 ## [2.8.4](https://github.com/nftstorage/nft.storage/compare/website-v2.8.3...website-v2.8.4) (2023-04-24)
 
 
