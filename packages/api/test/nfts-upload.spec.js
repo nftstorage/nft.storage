@@ -21,8 +21,13 @@ import {
 } from './scripts/test-context.js'
 import { File } from 'nft.storage/src/platform.js'
 import crypto from 'node:crypto'
+import fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import path from 'node:path'
 import { FormData } from 'undici'
 import { createCarCid } from '../src/utils/car.js'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 test.before(async (t) => {
   const linkdexUrl = 'http://fake.api.net'
@@ -804,6 +809,28 @@ test.serial('should write dudewhere index', async (t) => {
   const r2Objects = await r2Bucket.list({ prefix: `${root}/` })
   t.is(r2Objects.objects.length, 1)
   t.is(r2Objects.objects[0].key, `${root}/${carCid}`)
+})
+
+test.serial('should fail upload for corrupt CAR', async (t) => {
+  const client = await createClientWithUser(t)
+  const mf = getMiniflareContext(t)
+  const carBytes = await fs.promises.readFile(
+    path.join(__dirname, 'fixtures', 'corrupt.car')
+  )
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${client.token}`,
+      'Content-Type': 'application/car',
+    },
+    body: carBytes,
+  })
+
+  t.is(res.status, 400)
+  const { ok, error } = await res.json()
+  t.is(ok, false)
+
+  console.log({ ok, error })
 })
 
 /**
