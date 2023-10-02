@@ -827,10 +827,14 @@ test.serial('should fail upload for corrupt CAR', async (t) => {
   })
 
   t.is(res.status, 400)
+
   const { ok, error } = await res.json()
   t.is(ok, false)
-
-  console.log({ ok, error })
+  t.is(error.code, 'ERROR_INVALID_CAR')
+  t.is(
+    error.message,
+    'Invalid CAR file received: failed hash verification: bafk2bzaceda5oo2f5wmcwfmqbqkxzdwzszc2bhqnj4lpygliqna7bmbkmzwh4: CID hash does not match bytes'
+  )
 })
 
 /**
