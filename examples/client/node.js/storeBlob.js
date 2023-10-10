@@ -19,5 +19,10 @@ async function main() {
     const status = await storage.status(cid)
     console.log(status)
   })
+  // on error will show what happened if something goes wrong
+  readStream.on('error', (error) => {
+    console.log({ error })
+  })
+
 }
 main()
