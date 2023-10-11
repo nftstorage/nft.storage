@@ -5,7 +5,7 @@ import * as raw from 'multiformats/codecs/raw'
 import * as cbor from '@ipld/dag-cbor'
 import * as pb from '@ipld/dag-pb'
 import { Block } from 'multiformats/block'
-import { sha256 } from 'multiformats/hashes/sha2'
+import { validateBlock } from '@web3-storage/car-block-validator'
 import { HTTPError, InvalidCarError } from '../errors.js'
 import { createCarCid } from '../utils/car.js'
 import { JSONResponse } from '../utils/json-response.js'
@@ -270,13 +270,13 @@ export async function carStat(carBlob, { structure } = {}) {
     if (blockSize > MAX_BLOCK_SIZE) {
       throw new Error(`block too big: ${blockSize} > ${MAX_BLOCK_SIZE}`)
     }
-    if (block.cid.multihash.code === sha256.code) {
-      const ourHash = await sha256.digest(block.bytes)
-      if (!equals(ourHash.digest, block.cid.multihash.digest)) {
-        throw new InvalidCarError(
-          `block data does not match CID for ${block.cid.toString()}`
-        )
-      }
+    try {
+      // @ts-expect-error CID type mismatch
+      await validateBlock(block)
+    } catch (/** @type {any} */ err) {
+      throw new InvalidCarError(
+        `failed hash verification: ${block.cid.toString()}: ${err.message}`
+      )
     }
     if (!rawRootBlock && block.cid.equals(rootCid)) {
       rawRootBlock = block
