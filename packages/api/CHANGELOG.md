@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.4.3](https://github.com/nftstorage/nft.storage/compare/api-v4.4.2...api-v4.4.3) (2023-10-11)
+
+
+### Bug Fixes
+
+* this param for fetch calls ([#2428](https://github.com/nftstorage/nft.storage/issues/2428)) ([ed04997](https://github.com/nftstorage/nft.storage/commit/ed04997790278a28f927a6517387bc323f914ac2))
+* verify CAR blocks with all supported hashes ([#2460](https://github.com/nftstorage/nft.storage/issues/2460)) ([4526369](https://github.com/nftstorage/nft.storage/commit/45263692713e6173d7cdec1a69df8a284e5e293a))
+
 ## [4.4.2](https://github.com/nftstorage/nft.storage/compare/api-v4.4.1...api-v4.4.2) (2023-05-12)
 
 
