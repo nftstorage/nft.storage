@@ -156,7 +156,7 @@ paths:
           schema:
             type: string
             format: DID
-            required: false
+          required: false
       requestBody:
         required: true
         content:
