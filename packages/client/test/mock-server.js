@@ -125,7 +125,7 @@ const toFormData = async ({ body, headers }) => {
       if (filename) {
         form.append(name, new File([data], filename, { type: contentType }))
       } else {
-        form.append(name, new TextDecoder().decode(data), filename)
+        form.append(name, new Blob([new TextDecoder().decode(data)]), filename)
       }
     }
     return form
