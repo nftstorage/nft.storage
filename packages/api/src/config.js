@@ -156,6 +156,12 @@ function parseRuntimeEnv(s) {
     return 'test'
   }
 
+  if (typeof s !== 'string') {
+    throw new Error(
+      `Unable to parse non-string (${typeof s}) environment name: ${s}`
+    )
+  }
+
   switch (s) {
     case 'test':
     case 'dev':
