@@ -96,6 +96,9 @@ export interface ServiceConfiguration {
 
   /** Slack webhook url */
   SLACK_USER_REQUEST_WEBHOOK_URL: string
+
+  /** w3up connection URL (e.g. https://up.web3.storage) */
+  W3UP_URL?: string
 }
 
 export interface Ucan {
@@ -128,6 +131,7 @@ export interface RouteContext {
   r2Uploader: Uploader
   ucanService: Service
   auth?: Auth
+  W3UP_URL?: string
 }
 
 export type Handler = (

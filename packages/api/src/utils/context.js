@@ -62,5 +62,18 @@ export async function getContext(event, params) {
   })
 
   const ucanService = await Service.fromPrivateKey(config.PRIVATE_KEY)
-  return { params, db, linkdexApi, s3Uploader, r2Uploader, log, ucanService }
+
+  const w3upConfig = {
+    W3UP_URL: config.W3UP_URL,
+  }
+  return {
+    ...w3upConfig,
+    params,
+    db,
+    linkdexApi,
+    s3Uploader,
+    r2Uploader,
+    log,
+    ucanService,
+  }
 }

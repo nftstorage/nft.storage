@@ -61,6 +61,8 @@ export function serviceConfigFromVariables(vars) {
     VERSION: vars.NFT_STORAGE_VERSION || NFT_STORAGE_VERSION,
     // @ts-ignore
     COMMITHASH: vars.NFT_STORAGE_COMMITHASH || NFT_STORAGE_COMMITHASH,
+
+    W3UP_URL: vars.W3UP_URL,
   }
 }
 
@@ -123,6 +125,10 @@ export function loadConfigVariables() {
     'LINKDEX_URL',
     'S3_ENDPOINT',
     'SLACK_USER_REQUEST_WEBHOOK_URL',
+    'W3UP_URL',
+    'W3_NFTSTORAGE_SPACE',
+    'W3_NFTSTORAGE_PRINCIPAL',
+    'W3_NFTSTORAGE_PROOF',
   ]
 
   for (const name of optional) {

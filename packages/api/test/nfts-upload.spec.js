@@ -26,12 +26,27 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { FormData } from 'undici'
 import { createCarCid } from '../src/utils/car.js'
+import { createServer } from 'node:http'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+const mockW3up = createListeningMockW3up()
+
 test.before(async (t) => {
   const linkdexUrl = 'http://fake.api.net'
-  await setupMiniflareContext(t, { overrides: { LINKDEX_URL: linkdexUrl } })
+  await setupMiniflareContext(t, {
+    overrides: {
+      LINKDEX_URL: linkdexUrl,
+      W3UP_URL: (await mockW3up).url.toString(),
+      W3_NFTSTORAGE_SPACE: `did:key:zTodo`,
+      W3_NFTSTORAGE_PRINCIPAL: 'zTodo',
+      W3_NFTSTORAGE_PROOF: 'zTodo',
+    },
+  })
+})
+
+test.after(async (t) => {
+  ;(await mockW3up).close()
 })
 
 test.serial('should upload a single file', async (t) => {
@@ -61,6 +76,23 @@ test.serial('should upload a single file', async (t) => {
   // @ts-ignore
   t.is(data.source_cid, cid)
   t.is(data.deleted_at, null)
+})
+
+test.serial('should forward uploads to W3UP_URL', async (t) => {
+  const initialW3upRequestCount = (await mockW3up).requestCount
+  const client = await createClientWithUser(t)
+  const mf = getMiniflareContext(t)
+  const file = new Blob(['hello world!'], { type: 'application/text' })
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${client.token}` },
+    body: file,
+  })
+  const { ok, value } = await res.json()
+  t.truthy(ok, 'Server response payload has `ok` property')
+  const finalW3upRequestCount = (await mockW3up).requestCount
+  const w3upRequestCountDelta = finalW3upRequestCount - initialW3upRequestCount
+  t.is(w3upRequestCountDelta, 1, 'this upload sent one http request to w3up')
 })
 
 test.serial('should upload multiple blobs', async (t) => {
@@ -906,4 +938,35 @@ function mockLinkdexResponse(mock, structure, times = 1) {
       { headers: { 'content-type': 'application/json' } }
     )
     .times(times)
+}
+
+/**
+ * create a mock http server,
+ * that can act as a stand-in for up.web3.storage (aka w3up)
+ */
+async function createListeningMockW3up() {
+  let requestCount = 0
+  const server = createServer((req, res) => {
+    requestCount++
+    res.writeHead(451)
+    res.write('TODO')
+    res.end()
+  })
+  server.listen(0)
+  await new Promise((resolve, reject) => {
+    server.addListener('listening', () => resolve(undefined))
+  })
+  const serverAddress = server.address()
+  if (typeof serverAddress === 'string')
+    throw new Error('server.address() must not return a string')
+  const url = new URL(`http://localhost:${serverAddress?.port ?? ''}`)
+  return {
+    get requestCount() {
+      return requestCount
+    },
+    close() {
+      server.close()
+    },
+    url,
+  }
 }

@@ -105,6 +105,10 @@ export async function nftUpload(event, ctx) {
     })
   }
 
+  if (ctx.W3UP_URL) {
+    const w3upResponse = await fetch(ctx.W3UP_URL)
+  }
+
   return new JSONResponse({ ok: true, value: toNFTResponse(upload) })
 }
 
