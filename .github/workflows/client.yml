@@ -36,7 +36,6 @@ jobs:
     strategy:
       matrix:
         node_version:
-          - 16
           - 18
           - 20
     steps:
@@ -44,7 +43,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node_version }}
-      - run: npx yarn workspace nft.storage install --frozen-lockfile
+      - uses: bahmutov/npm-install@v1
       - name: Test (ES)
         run: yarn --cwd packages/client test:es
       - name: Test (Web)
