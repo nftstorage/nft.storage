@@ -46,7 +46,7 @@ jobs:
           node-version: ${{ matrix.node_version }}
       - uses: bahmutov/npm-install@v1
         with:
-          install-command: yarn workspace client install
+          install-command: yarn workspace nft.storage install
       - name: Test (ES)
         run: yarn --cwd packages/client test:es
       - name: Test (Web)
