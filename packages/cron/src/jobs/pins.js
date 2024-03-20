@@ -8,7 +8,11 @@ const CONCURRENCY = 5
  * http://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers
  */
 const MAX_CLUSTER_STATUS_CIDS = 120
-const CLUSTERS = ['IpfsCluster', 'IpfsCluster2', 'IpfsCluster3']
+/**
+ * @typedef {import('../../../api/src/utils/db-types').definitions} definitions
+ * @type Array<definitions["pin"]["service"]>
+ **/
+const CLUSTERS = ['IpfsCluster', 'IpfsCluster2', 'IpfsCluster3', 'ElasticIpfs']
 
 /**
  * @typedef {import('pg').Client} Client
@@ -17,8 +21,8 @@ const CLUSTERS = ['IpfsCluster', 'IpfsCluster2', 'IpfsCluster3']
  *   cluster1: import('@nftstorage/ipfs-cluster').Cluster
  *   cluster2: import('@nftstorage/ipfs-cluster').Cluster
  *   cluster3: import('@nftstorage/ipfs-cluster').Cluster
+ *   pickup: import('@nftstorage/ipfs-cluster').Cluster
  * }} Config
- * @typedef {import('../../../api/src/utils/db-types').definitions} definitions
  * @typedef {Pick<definitions['pin'], 'id'|'status'|'service'|'inserted_at'|'updated_at'> & { source_cid: string }} Pin
  * @typedef {import('@supabase/postgrest-js').PostgrestQueryBuilder<Pin>} PinQuery
  */
@@ -145,7 +149,7 @@ UPDATE pin AS p
  * }} config
  */
 async function updatePinStatuses(config) {
-  const { countPins, fetchPins, pg, cluster3 } = config
+  const { countPins, fetchPins, pg, pickup } = config
   if (!log.enabled) {
     console.log('ℹ️ Enable logging by setting DEBUG=pins:updatePinStatuses')
   }
@@ -182,7 +186,7 @@ async function updatePinStatuses(config) {
       /** @type {Pin[]} */
       const updatedPins = []
       const cids = pins.map((p) => p.source_cid)
-      const statuses = await cluster3.statusAll({ cids })
+      const statuses = await pickup.statusAll({ cids })
       const statusByCid = Object.fromEntries(statuses.map((s) => [s.cid, s]))
 
       for (const pin of pins) {
