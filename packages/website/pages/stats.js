@@ -384,6 +384,12 @@ export default function Stats({ logos }) {
               className="netlify-partial-trusted-by-stats-page max-w-4xl mx-auto py-8 px-6 sm:px-16 text-center chicagoflf"
               fallback={<TrustedBy logos={logos} />}
             />
+            {/* <NetlifyPartial
+              route="image-grids/trusted-by-home-page"
+              template="image-grids"
+              className="netlify-partial-trusted-by-stats-page max-w-4xl mx-auto py-8 px-6 sm:px-16 text-center chicagoflf"
+              fallback={<TrustedBy logos={logos} />}
+            /> */}
           </div>
         </div>
       </div>
