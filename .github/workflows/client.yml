@@ -46,8 +46,7 @@ jobs:
           node-version: ${{ matrix.node_version }}
       - uses: bahmutov/npm-install@v1
         with:
-          working-directory: packages/client
-          install-command: yarn --focus
+          install-command: yarn workspace packages/client install
       - name: Test (ES)
         run: yarn --cwd packages/client test:es
       - name: Test (Web)
