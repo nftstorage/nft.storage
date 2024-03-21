@@ -44,7 +44,7 @@ test.before(async (t) => {
       LINKDEX_URL: linkdexUrl,
       W3UP_URL: (await mockW3up).url.toString(),
       W3_NFTSTORAGE_SPACE: (await nftStorageSpace).did(),
-      W3_NFTSTORAGE_PRINCIPAL: (await nftStorageApiPrincipal).did(),
+      W3_NFTSTORAGE_PRINCIPAL: ed25519.format(await nftStorageApiPrincipal),
       W3_NFTSTORAGE_PROOF: (
         await encodeDelegationAsCid(
           await delegate({
