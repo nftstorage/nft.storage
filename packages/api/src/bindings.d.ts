@@ -106,6 +106,9 @@ export interface ServiceConfiguration {
 
   /** CID (identity codec) of CAR-encoded UCAN DAG */
   W3_NFTSTORAGE_PROOF?: string
+
+  /** did:key of the w3up space in which to store NFTs */
+  W3_NFTSTORAGE_SPACE?: string
 }
 
 export interface Ucan {

@@ -65,7 +65,11 @@ export async function getContext(event, params) {
 
   const w3upConfig = {
     W3UP_URL: config.W3UP_URL,
+    W3_NFTSTORAGE_PRINCIPAL: config.W3_NFTSTORAGE_PRINCIPAL,
+    W3_NFTSTORAGE_PROOF: config.W3_NFTSTORAGE_PROOF,
+    W3_NFTSTORAGE_SPACE: config.W3_NFTSTORAGE_SPACE,
   }
+  console.log('in getContext', w3upConfig)
   return {
     ...w3upConfig,
     params,
