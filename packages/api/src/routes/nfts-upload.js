@@ -11,6 +11,7 @@ import { createCarCid } from '../utils/car.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { checkAuth } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
+import { createW3upClientFromConfig } from '../utils/w3up.js'
 
 const MAX_BLOCK_SIZE = 1 << 21 // Maximum permitted block size in bytes (2MiB).
 const decoders = [pb, raw, cbor]
