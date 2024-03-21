@@ -7,6 +7,7 @@ import { Logging } from './logs.js'
 import pkg from '../../package.json'
 import { Service } from 'ucan-storage/service'
 import { LinkdexApi } from './linkdex.js'
+import { createW3upClientFromConfig } from './w3up.js'
 
 /**
  * Obtains a route context object.
@@ -69,7 +70,22 @@ export async function getContext(event, params) {
     W3_NFTSTORAGE_PROOF: config.W3_NFTSTORAGE_PROOF,
     W3_NFTSTORAGE_SPACE: config.W3_NFTSTORAGE_SPACE,
   }
-  console.log('in getContext', w3upConfig)
+  let w3up
+  if (
+    config.W3UP_URL &&
+    config.W3_NFTSTORAGE_PRINCIPAL &&
+    config.W3_NFTSTORAGE_PROOF
+  ) {
+    try {
+      w3up = await createW3upClientFromConfig({
+        url: config.W3UP_URL,
+        principal: config.W3_NFTSTORAGE_PRINCIPAL,
+        proof: config.W3_NFTSTORAGE_PROOF,
+      })
+    } catch (error) {
+      console.error(`error creatong w3up-client from config`, error)
+    }
+  }
   return {
     ...w3upConfig,
     params,
@@ -79,5 +95,6 @@ export async function getContext(event, params) {
     r2Uploader,
     log,
     ucanService,
+    w3up,
   }
 }

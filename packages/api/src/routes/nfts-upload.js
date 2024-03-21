@@ -112,8 +112,10 @@ export async function nftUpload(event, ctx) {
     W3_NFTSTORAGE_PROOF: ctx.W3_NFTSTORAGE_PROOF,
     W3_NFTSTORAGE_SPACE: ctx.W3_NFTSTORAGE_SPACE,
   }
-  console.log('in nfts-upload handler w/ w3up', w3upConfig)
-
+  console.log('in nfts-upload handler w/ w3up', {
+    ...w3upConfig,
+    w3up: ctx.w3up,
+  })
   if (ctx.W3UP_URL) {
     const w3upResponse = await fetch(ctx.W3UP_URL)
   }
