@@ -973,9 +973,9 @@ async function createListeningMockW3up() {
     server.addListener('listening', () => resolve(undefined))
   })
   const serverAddress = server.address()
-  if (typeof serverAddress === 'string')
+  if (typeof serverAddress === 'string' || !serverAddress)
     throw new Error('server.address() must not return a string')
-  const url = new URL(`http://localhost:${serverAddress?.port ?? ''}`)
+  const url = new URL(`http://localhost:${serverAddress.port}`)
   return {
     get requestCount() {
       return requestCount
