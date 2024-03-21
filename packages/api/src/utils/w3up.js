@@ -4,8 +4,9 @@ import { StoreMemory } from '@web3-storage/access/stores/store-memory'
 import { CID } from 'multiformats/cid'
 import { base64 } from 'multiformats/bases/base64'
 import { identity } from 'multiformats/hashes/identity'
-import { CarReader } from '@ipld/car'
+import { CarReader, CarWriter } from '@ipld/car'
 import { importDAG } from '@ucanto/core/delegation'
+import * as ucanto from '@ucanto/core'
 
 /**
  * @param {object} env
@@ -69,4 +70,34 @@ export async function readProofFromBytes(bytes) {
     console.error(`Error: failed to import proof: ${err.message}`)
     throw err
   }
+}
+
+/**
+ * @param {import('@ucanto/interface').Delegation} delegation - delegation to encode
+ */
+export async function encodeDelegationAsCid(delegation) {
+  const { writer, out } = CarWriter.create()
+  /** @type {Array<Uint8Array>} */
+  const carChunks = []
+  await Promise.all([
+    // write delegation blocks
+    (async () => {
+      for (const block of delegation.export()) {
+        // @ts-expect-error different Block types
+        await writer.put(block)
+      }
+      await writer.close()
+    })(),
+    // read out
+    (async () => {
+      for await (const chunk of out) {
+        carChunks.push(chunk)
+      }
+    })(),
+  ])
+  // now get car chunks
+  const car = new Blob(carChunks)
+  const bytes = new Uint8Array(await car.arrayBuffer())
+  const cid = CID.createV1(ucanto.CAR.code, identity.digest(bytes))
+  return cid
 }

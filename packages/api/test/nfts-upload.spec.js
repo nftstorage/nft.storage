@@ -27,9 +27,14 @@ import path from 'node:path'
 import { FormData } from 'undici'
 import { createCarCid } from '../src/utils/car.js'
 import { createServer } from 'node:http'
+import { ed25519 } from '@ucanto/principal'
+import { delegate } from '@ucanto/core'
+import { encodeDelegationAsCid } from '../src/utils/w3up.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+const nftStorageSpace = ed25519.generate()
+const nftStorageApiPrincipal = ed25519.generate()
 const mockW3up = createListeningMockW3up()
 
 test.before(async (t) => {
@@ -38,9 +43,20 @@ test.before(async (t) => {
     overrides: {
       LINKDEX_URL: linkdexUrl,
       W3UP_URL: (await mockW3up).url.toString(),
-      W3_NFTSTORAGE_SPACE: `did:key:zTodo`,
-      W3_NFTSTORAGE_PRINCIPAL: 'zTodo',
-      W3_NFTSTORAGE_PROOF: 'zTodo',
+      W3_NFTSTORAGE_SPACE: (await nftStorageSpace).did(),
+      W3_NFTSTORAGE_PRINCIPAL: (await nftStorageApiPrincipal).did(),
+      W3_NFTSTORAGE_PROOF: (
+        await encodeDelegationAsCid(
+          await delegate({
+            issuer: await nftStorageSpace,
+            audience: await nftStorageApiPrincipal,
+            capabilities: [
+              { can: 'store/add', with: (await nftStorageSpace).did() },
+              { can: 'upload/add', with: (await nftStorageSpace).did() },
+            ],
+          })
+        )
+      ).toString(),
     },
   })
 })
