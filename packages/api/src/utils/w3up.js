@@ -2,7 +2,9 @@ import * as W3UP from '@web3-storage/w3up-client'
 import * as ed25519 from '@ucanto/principal/ed25519'
 import { StoreMemory } from '@web3-storage/access/stores/store-memory'
 import { CID } from 'multiformats/cid'
+import * as bases from 'multiformats/bases/base'
 import { base64 } from 'multiformats/bases/base64'
+import { base32 } from 'multiformats/bases/base32'
 import { identity } from 'multiformats/hashes/identity'
 import { CarReader, CarWriter } from '@ipld/car'
 import { importDAG } from '@ucanto/core/delegation'
@@ -27,12 +29,12 @@ export async function getW3upClient({ principal, proof } = {}) {
 }
 
 /**
- * @param {string} proof
+ * @param {string} proof - UCAN Delegation encoded as CID (multicodec=CAR, multihash=identity)
  */
 async function parseW3Proof(proof) {
   let cid
   try {
-    cid = CID.parse(proof, base64)
+    cid = CID.parse(proof, bases.or(base64, base32))
   } catch (/** @type {any} */ err) {
     if (err?.message?.includes('Unexpected end of data')) {
       console.error(
