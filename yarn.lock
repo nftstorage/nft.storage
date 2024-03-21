@@ -5396,7 +5396,7 @@
     multiformats "^11.0.2"
     one-webcrypto "^1.0.3"
 
-"@ucanto/transport@^9.0.0":
+"@ucanto/transport@^9.0.0", "@ucanto/transport@^9.1.0":
   version "9.1.0"
   resolved "https://registry.yarnpkg.com/@ucanto/transport/-/transport-9.1.0.tgz#e37026d0cd389604cf85f62d7dc165ca5de50f06"
   integrity sha512-3pLXEg9YIH0NN1faBh0Xaioxbb2JtPL+4AFtQtmO8LnRyqGnTahZwwaM8XFL5eMBAp0pYDoZaQ6wdMce0t1cAQ==
@@ -5514,18 +5514,6 @@
     type-fest "^4.9.0"
     uint8arrays "^4.0.6"
 
-"@web3-storage/capabilities@^12.1.0":
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/@web3-storage/capabilities/-/capabilities-12.1.0.tgz#78ab87167ff0f61216853bfb8163596ce5818667"
-  integrity sha512-SlYdPqCokDHb55zlZOvh+n8uEMOrEU413Z1MzQ8HvULpbzfcEtGyOiDgrAhdNEZtPnWHqaUEtU7o829Yw2Ra5w==
-  dependencies:
-    "@ucanto/core" "^9.0.1"
-    "@ucanto/interface" "^9.0.0"
-    "@ucanto/principal" "^9.0.0"
-    "@ucanto/transport" "^9.0.0"
-    "@ucanto/validator" "^9.0.1"
-    "@web3-storage/data-segment" "^3.2.0"
-
 "@web3-storage/capabilities@^13.1.1":
   version "13.1.1"
   resolved "https://registry.yarnpkg.com/@web3-storage/capabilities/-/capabilities-13.1.1.tgz#bd14331e2f73554e105548dde07f74dee6eaf189"
@@ -5535,6 +5523,18 @@
     "@ucanto/interface" "^9.0.0"
     "@ucanto/principal" "^9.0.0"
     "@ucanto/transport" "^9.0.0"
+    "@ucanto/validator" "^9.0.1"
+    "@web3-storage/data-segment" "^3.2.0"
+
+"@web3-storage/capabilities@^13.2.0":
+  version "13.2.0"
+  resolved "https://registry.yarnpkg.com/@web3-storage/capabilities/-/capabilities-13.2.0.tgz#3f268f7e4cc41385e1dff4426968488c1c350a85"
+  integrity sha512-KYqyW4RNrDPdogSANcmME0+Ci+FLQfTCkYUMfpp67K5hymCz25e8KWSHBSR+lCO9ggSuD4q49zi1LEid8ISIQg==
+  dependencies:
+    "@ucanto/core" "^9.0.1"
+    "@ucanto/interface" "^9.0.0"
+    "@ucanto/principal" "^9.0.0"
+    "@ucanto/transport" "^9.1.0"
     "@ucanto/validator" "^9.0.1"
     "@web3-storage/data-segment" "^3.2.0"
 
@@ -5558,32 +5558,41 @@
     multiformats "^11.0.2"
     sync-multihash-sha2 "^1.0.0"
 
+"@web3-storage/data-segment@^5.1.0":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@web3-storage/data-segment/-/data-segment-5.1.0.tgz#f04505cf1b576f75de319d29cda8049a49abad8e"
+  integrity sha512-FYdmtKvNiVz+maZ++k4PdD43rfJW5DeagLpstq2y84CyOKNRBWbHLCZ/Ec5zT9iGI+0WgsCGbpC/WlG0jlrnhA==
+  dependencies:
+    "@ipld/dag-cbor" "^9.0.5"
+    multiformats "^11.0.2"
+    sync-multihash-sha2 "^1.0.0"
+
 "@web3-storage/did-mailto@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@web3-storage/did-mailto/-/did-mailto-2.1.0.tgz#4ba7bd52772e48181d78ece0bdc27728857e919e"
   integrity sha512-TRmfSXj1IhtX3ESurSNOylZSBKi0z/VJNoMLpof+AVRdovgZjjocpiePQTs2pfHKqHTHfJXc9AboWyK4IKTWMw==
 
-"@web3-storage/filecoin-client@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@web3-storage/filecoin-client/-/filecoin-client-3.2.0.tgz#d67d1dd723722df3f1f18b12c48a863cba6e8d86"
-  integrity sha512-4kSyXcN7jPAnpO2U8afheYBRJ4E/8aRJvCvPgHF+HZEtEaLHYuuQzU72Aro94qV0bm5ZRxXPNh6wRSlz/XZLlg==
+"@web3-storage/filecoin-client@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@web3-storage/filecoin-client/-/filecoin-client-3.3.0.tgz#d6fb01dca5f285c709cbf8d0c24656cc4b4cad50"
+  integrity sha512-+49+PJN6ebzJvArikZqWk7TdhkwPYRC8k+Q7d8E8drSeDIn2/WKqkokq6bgWe05U+iMxLypvn14x2QBN4AgZ7g==
   dependencies:
     "@ipld/dag-ucan" "^3.4.0"
     "@ucanto/client" "^9.0.0"
     "@ucanto/core" "^9.0.1"
     "@ucanto/interface" "^9.0.0"
-    "@ucanto/transport" "^9.0.0"
-    "@web3-storage/capabilities" "^12.1.0"
+    "@ucanto/transport" "^9.1.0"
+    "@web3-storage/capabilities" "^13.1.1"
 
 "@web3-storage/multipart-parser@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@web3-storage/multipart-parser/-/multipart-parser-1.0.0.tgz#6b69dc2a32a5b207ba43e556c25cc136a56659c4"
   integrity sha512-BEO6al7BYqcnfX15W2cnGR+Q566ACXAT9UQykORCWW80lmkpWsnEob6zJS1ZVBKsSJC8+7vJkHwlp+lXG1UCdw==
 
-"@web3-storage/upload-client@^13.0.1":
-  version "13.0.1"
-  resolved "https://registry.yarnpkg.com/@web3-storage/upload-client/-/upload-client-13.0.1.tgz#910e6e904f652f3907cca1c5c873dd42e84f630d"
-  integrity sha512-vfAtp1qIIgcoNQ21X/+jrHZjQU28af516YWWkYWbGV68dBzBd9c7r+8KjQwRDIV8kSl0Pmho6Dy1OWlhpZfE6g==
+"@web3-storage/upload-client@^13.1.0":
+  version "13.1.0"
+  resolved "https://registry.yarnpkg.com/@web3-storage/upload-client/-/upload-client-13.1.0.tgz#e29beb5ab0991682c28bcfe8c318aca42e43041c"
+  integrity sha512-RK67hUFviFG7KdupTwbMJCPdIsGEBSzpllybIOzbip3FKVH4fKDq4Sb2kXLptXeeqQfPJ86uRTmFtHTAVGVbZw==
   dependencies:
     "@ipld/car" "^5.2.2"
     "@ipld/dag-cbor" "^9.0.6"
@@ -5591,31 +5600,31 @@
     "@ipld/unixfs" "^2.1.1"
     "@ucanto/client" "^9.0.0"
     "@ucanto/interface" "^9.0.0"
-    "@ucanto/transport" "^9.0.0"
-    "@web3-storage/capabilities" "^13.1.1"
-    fr32-sha2-256-trunc254-padded-binary-tree-multihash "^3.3.0"
+    "@ucanto/transport" "^9.1.0"
+    "@web3-storage/capabilities" "^13.2.0"
+    "@web3-storage/data-segment" "^5.1.0"
+    "@web3-storage/filecoin-client" "^3.3.0"
     ipfs-utils "^9.0.14"
     multiformats "^12.1.2"
     p-retry "^5.1.2"
-    parallel-transform-web "^1.0.1"
     varint "^6.0.0"
 
-"@web3-storage/w3up-client@^12.4.1":
-  version "12.4.1"
-  resolved "https://registry.yarnpkg.com/@web3-storage/w3up-client/-/w3up-client-12.4.1.tgz#10f989c08b0961168489fb4f310f96fa9aff37b0"
-  integrity sha512-Ti4k5UScn5kdF0A5rz0WkDefD0LofUCUJNDGRYQFudw17FmaZHfQGSQvZ0CozYrCJg8K7JPTbU4/m3joWu0ufQ==
+"@web3-storage/w3up-client@^12.5.0":
+  version "12.5.0"
+  resolved "https://registry.yarnpkg.com/@web3-storage/w3up-client/-/w3up-client-12.5.0.tgz#67663f6c024bb7d198b2030f7752b139e5d3f9ae"
+  integrity sha512-SLpXXgA0TZJNSGtLHeq2kF+uwaHYfsH5068utikeRccCXJRrKQnCN1y2FpCe01H4SjLMTIQK13vga6DgSfJiuA==
   dependencies:
     "@ipld/dag-ucan" "^3.4.0"
     "@ucanto/client" "^9.0.0"
     "@ucanto/core" "^9.0.1"
     "@ucanto/interface" "^9.0.0"
     "@ucanto/principal" "^9.0.0"
-    "@ucanto/transport" "^9.0.0"
+    "@ucanto/transport" "^9.1.0"
     "@web3-storage/access" "^18.2.0"
-    "@web3-storage/capabilities" "^13.1.1"
+    "@web3-storage/capabilities" "^13.2.0"
     "@web3-storage/did-mailto" "^2.1.0"
-    "@web3-storage/filecoin-client" "^3.2.0"
-    "@web3-storage/upload-client" "^13.0.1"
+    "@web3-storage/filecoin-client" "^3.3.0"
+    "@web3-storage/upload-client" "^13.1.0"
 
 "@webassemblyjs/ast@1.11.1":
   version "1.11.1"
@@ -11173,11 +11182,6 @@ forwarded@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.2.0.tgz#2269936428aad4c15c7ebe9779a84bf0b2a81811"
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
-
-fr32-sha2-256-trunc254-padded-binary-tree-multihash@^3.3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/fr32-sha2-256-trunc254-padded-binary-tree-multihash/-/fr32-sha2-256-trunc254-padded-binary-tree-multihash-3.3.0.tgz#30e0aaa3594ea781a2d53505570604bfcd9c7085"
-  integrity sha512-O11VDxPmPvbQj5eac2BJXyieNacyd+RCMhwOzXQQM/NCI25x3c32YWB4/JwgOWPCpKnNXF6lpK/j0lj7GWOnYQ==
 
 fraction.js@^4.2.0:
   version "4.2.0"
@@ -17009,11 +17013,6 @@ pako@~1.0.5:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/pako/-/pako-1.0.11.tgz#6c9599d340d54dfd3946380252a35705a6b992bf"
   integrity sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==
-
-parallel-transform-web@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/parallel-transform-web/-/parallel-transform-web-1.0.1.tgz#db2f9650459588298b1fedc0b4a159b078e52248"
-  integrity sha512-RtPU/7IuwPZ4ePcqoPxNCpjtaXYOkCVtnhh5tW3O78wy9jqVoV2hQHms17kUeu8DTYoOP+mykFLg2agwVKlwBw==
 
 parallel-transform@^1.1.0:
   version "1.2.0"

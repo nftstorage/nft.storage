@@ -7,9 +7,9 @@ import { identity } from 'multiformats/hashes/identity'
 import { CarReader, CarWriter } from '@ipld/car'
 import { importDAG } from '@ucanto/core/delegation'
 import * as ucanto from '@ucanto/core'
-// import * as W3upClient from '@web3-storage/w3up-client'
-// import { connect } from '@ucanto/client'
-// import { CAR, HTTP } from '@ucanto/transport'
+import * as W3upClient from '@web3-storage/w3up-client'
+import { connect } from '@ucanto/client'
+import { CAR, HTTP } from '@ucanto/transport'
 
 /**
  * @param {object} env
@@ -109,27 +109,27 @@ export async function encodeDelegationAsCid(delegation) {
  * @param {string} options.proof
  */
 export async function createW3upClientFromConfig(options) {
-  // const url = new URL(options.url)
-  // const principal = ed25519.parse(options.principal)
-  // const connection = connect({
-  //   id: { did: () => 'did:web:web3.storage' },
-  //   codec: CAR.outbound,
-  //   channel: HTTP.open({
-  //     url,
-  //     method: 'POST',
-  //   }),
-  // })
-  // const store = new StoreMemory()
-  // const w3up = await W3upClient.create({
-  //   principal,
-  //   store,
-  //   serviceConf: {
-  //     upload: connection,
-  //     access: connection,
-  //     filecoin: connection,
-  //   },
-  //   receiptsEndpoint: new URL('/receipt/', options.url),
-  // })
-  // await w3up.addSpace(await parseW3Proof(options.proof))
-  // return w3up
+  const url = new URL(options.url)
+  const principal = ed25519.parse(options.principal)
+  const connection = connect({
+    id: { did: () => 'did:web:web3.storage' },
+    codec: CAR.outbound,
+    channel: HTTP.open({
+      url,
+      method: 'POST',
+    }),
+  })
+  const store = new StoreMemory()
+  const w3up = await W3upClient.create({
+    principal,
+    store,
+    serviceConf: {
+      upload: connection,
+      access: connection,
+      filecoin: connection,
+    },
+    receiptsEndpoint: new URL('/receipt/', options.url),
+  })
+  await w3up.addSpace(await parseW3Proof(options.proof))
+  return w3up
 }
