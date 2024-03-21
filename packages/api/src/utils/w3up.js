@@ -4,7 +4,6 @@ import { StoreMemory } from '@web3-storage/access/stores/store-memory'
 import { CID } from 'multiformats/cid'
 import * as bases from 'multiformats/bases/base'
 import { base64 } from 'multiformats/bases/base64'
-import { base32 } from 'multiformats/bases/base32'
 import { identity } from 'multiformats/hashes/identity'
 import { CarReader, CarWriter } from '@ipld/car'
 import { importDAG } from '@ucanto/core/delegation'
@@ -34,7 +33,7 @@ export async function getW3upClient({ principal, proof } = {}) {
 async function parseW3Proof(proof) {
   let cid
   try {
-    cid = CID.parse(proof, bases.or(base64, base32))
+    cid = CID.parse(proof, base64)
   } catch (/** @type {any} */ err) {
     if (err?.message?.includes('Unexpected end of data')) {
       console.error(

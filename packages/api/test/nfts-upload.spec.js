@@ -30,6 +30,7 @@ import { createServer } from 'node:http'
 import { ed25519 } from '@ucanto/principal'
 import { delegate } from '@ucanto/core'
 import { encodeDelegationAsCid } from '../src/utils/w3up.js'
+import { base64 } from 'multiformats/bases/base64'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -56,7 +57,7 @@ test.before(async (t) => {
             ],
           })
         )
-      ).toString(),
+      ).toString(base64),
     },
   })
 })
