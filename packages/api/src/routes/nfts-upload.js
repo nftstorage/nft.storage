@@ -11,6 +11,7 @@ import { createCarCid } from '../utils/car.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { checkAuth } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
+import { createW3upClientFromConfig } from '../utils/w3up.js'
 
 const MAX_BLOCK_SIZE = 1 << 21 // Maximum permitted block size in bytes (2MiB).
 const decoders = [pb, raw, cbor]
@@ -104,6 +105,14 @@ export async function nftUpload(event, ctx) {
       meta: type === 'ucan' ? { ucan } : undefined,
     })
   }
+
+  const w3upConfig = {
+    W3UP_URL: ctx.W3UP_URL,
+    W3_NFTSTORAGE_PRINCIPAL: ctx.W3_NFTSTORAGE_PRINCIPAL,
+    W3_NFTSTORAGE_PROOF: ctx.W3_NFTSTORAGE_PROOF,
+    W3_NFTSTORAGE_SPACE: ctx.W3_NFTSTORAGE_SPACE,
+  }
+  console.log('in nfts-upload handler w/ w3up', w3upConfig)
 
   if (ctx.W3UP_URL) {
     const w3upResponse = await fetch(ctx.W3UP_URL)

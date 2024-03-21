@@ -142,6 +142,9 @@ export interface RouteContext {
   ucanService: Service
   auth?: Auth
   W3UP_URL?: string
+  W3_NFTSTORAGE_PRINCIPAL?: string
+  W3_NFTSTORAGE_PROOF?: string
+  W3_NFTSTORAGE_SPACE?: string
   w3up?: W3upClient
 }
 
