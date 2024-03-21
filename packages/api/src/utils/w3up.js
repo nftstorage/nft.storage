@@ -7,6 +7,9 @@ import { identity } from 'multiformats/hashes/identity'
 import { CarReader, CarWriter } from '@ipld/car'
 import { importDAG } from '@ucanto/core/delegation'
 import * as ucanto from '@ucanto/core'
+import * as W3upClient from '@web3-storage/w3up-client'
+import { connect } from '@ucanto/client'
+import { CAR, HTTP } from '@ucanto/transport'
 
 /**
  * @param {object} env
@@ -40,10 +43,7 @@ async function parseW3Proof(proof) {
   }
 
   if (cid.multihash.code !== identity.code) {
-    console.error(
-      `Error: failed to read proof. Must be identity CID. Fetching of remote proof CARs not supported by this command yet`
-    )
-    process.exit(1)
+    throw new Error('expected cid to have identity code')
   }
   const delegation = await readProofFromBytes(cid.multihash.digest)
   return delegation
@@ -100,4 +100,36 @@ export async function encodeDelegationAsCid(delegation) {
   const bytes = new Uint8Array(await car.arrayBuffer())
   const cid = CID.createV1(ucanto.CAR.code, identity.digest(bytes))
   return cid
+}
+
+/**
+ * @param {object} options
+ * @param {string} options.url
+ * @param {string} options.principal
+ * @param {string} options.proof
+ */
+export async function createW3upClientFromConfig(options) {
+  const url = new URL(options.url)
+  const principal = ed25519.parse(options.principal)
+  const connection = connect({
+    id: { did: () => 'did:web:web3.storage' },
+    codec: CAR.outbound,
+    channel: HTTP.open({
+      url,
+      method: 'POST',
+    }),
+  })
+  const store = new StoreMemory()
+  const w3up = await W3upClient.create({
+    principal,
+    store,
+    serviceConf: {
+      upload: connection,
+      access: connection,
+      filecoin: connection,
+    },
+    receiptsEndpoint: new URL('/receipt/', options.url),
+  })
+  await w3up.addSpace(await parseW3Proof(options.proof))
+  return w3up
 }
