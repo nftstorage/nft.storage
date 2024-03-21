@@ -83,7 +83,7 @@ export async function getContext(event, params) {
         proof: config.W3_NFTSTORAGE_PROOF,
       })
     } catch (error) {
-      console.error(`error creatong w3up-client from config`, error)
+      console.error(`error creating w3up-client from config`, error)
     }
   }
   return {
