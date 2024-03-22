@@ -14,7 +14,9 @@ export async function createMockW3up(options = {}) {
   const service = {
     filecoin: {
       offer: Server.provide(Filecoin.offer, async (invocation) => {
-        return {}
+        return {
+          ok: {},
+        }
       }),
     },
     store: {
