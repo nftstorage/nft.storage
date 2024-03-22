@@ -122,7 +122,7 @@ test.serial('should upload a single file', async (t) => {
   t.is(data.deleted_at, null)
 })
 
-test.serial.only('should forward uploads to W3UP_URL', async (t) => {
+test.serial('should forward uploads to W3UP_URL', async (t) => {
   const initialW3upStoreAddCount = mockW3upStoreAddCount
   const initialW3upUploadAddCount = mockW3upUploadAddCount
   const client = await createClientWithUser(t, {
