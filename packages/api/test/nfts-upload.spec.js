@@ -31,19 +31,42 @@ import { ed25519 } from '@ucanto/principal'
 import { delegate } from '@ucanto/core'
 import { encodeDelegationAsCid } from '../src/utils/w3up.js'
 import { base64 } from 'multiformats/bases/base64'
+import { createMockW3up, locate } from './utils/w3up-testing.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const nftStorageSpace = ed25519.generate()
 const nftStorageApiPrincipal = ed25519.generate()
-const mockW3up = createListeningMockW3up()
+let mockW3upStoreAddCount = 0
+let mockW3upUploadAddCount = 0
+const mockW3up = Promise.resolve(
+  (async function () {
+    const server = createServer(
+      await createMockW3up({
+        async onHandleStoreAdd(invocation) {
+          mockW3upStoreAddCount++
+        },
+        async onHandleUploadAdd(invocation) {
+          mockW3upUploadAddCount++
+        },
+      })
+    )
+    server.listen(0)
+    await new Promise((resolve) =>
+      server.addListener('listening', () => resolve(undefined))
+    )
+    return {
+      server,
+    }
+  })()
+)
 
 test.before(async (t) => {
   const linkdexUrl = 'http://fake.api.net'
   await setupMiniflareContext(t, {
     overrides: {
       LINKDEX_URL: linkdexUrl,
-      W3UP_URL: (await mockW3up).url.toString(),
+      W3UP_URL: locate((await mockW3up).server).url.toString(),
       W3_NFTSTORAGE_SPACE: (await nftStorageSpace).did(),
       W3_NFTSTORAGE_PRINCIPAL: ed25519.format(await nftStorageApiPrincipal),
       W3_NFTSTORAGE_PROOF: (
@@ -63,7 +86,7 @@ test.before(async (t) => {
 })
 
 test.after(async (t) => {
-  ;(await mockW3up).close()
+  ;(await mockW3up).server.close()
 })
 
 test.serial('should upload a single file', async (t) => {
@@ -96,7 +119,8 @@ test.serial('should upload a single file', async (t) => {
 })
 
 test.serial('should forward uploads to W3UP_URL', async (t) => {
-  const initialW3upRequestCount = (await mockW3up).requestCount
+  const initialW3upStoreAddCount = mockW3upStoreAddCount
+  const initialW3upUploadAddCount = mockW3upUploadAddCount
   const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
   const file = new Blob(['hello world!'], { type: 'application/text' })
@@ -107,9 +131,22 @@ test.serial('should forward uploads to W3UP_URL', async (t) => {
   })
   const { ok, value } = await res.json()
   t.truthy(ok, 'Server response payload has `ok` property')
-  const finalW3upRequestCount = (await mockW3up).requestCount
-  const w3upRequestCountDelta = finalW3upRequestCount - initialW3upRequestCount
-  t.is(w3upRequestCountDelta, 1, 'this upload sent one http request to w3up')
+
+  const finalW3upStoreAddCount = mockW3upStoreAddCount
+  const storeAddCountDelta = finalW3upStoreAddCount - initialW3upStoreAddCount
+  t.is(
+    storeAddCountDelta,
+    1,
+    'this upload sent one valid store/add invocation to w3up'
+  )
+
+  const finalW3upUploadAddCount = mockW3upUploadAddCount
+  const uploadAddCountDelta = finalW3upUploadAddCount - initialW3upStoreAddCount
+  t.is(
+    storeAddCountDelta,
+    1,
+    'this upload sent one valid store/add invocation to w3up'
+  )
 })
 
 test.serial('should upload multiple blobs', async (t) => {

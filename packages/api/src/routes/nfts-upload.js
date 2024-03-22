@@ -31,6 +31,11 @@ export async function nftUpload(event, ctx) {
 
   /** @type {import('../utils/db-client-types').UploadOutput} */
   let upload
+  /**
+   * blob that should be stored in w3up
+   * @type {Blob}
+   */
+  let carBlobForW3up
   if (contentType.includes('multipart/form-data')) {
     const form = await event.request.formData()
     // Our API schema requires that all file parts be named `file` and
@@ -49,7 +54,7 @@ export async function nftUpload(event, ctx) {
       input,
       wrapWithDirectory: true,
     })
-
+    carBlobForW3up = car
     upload = await uploadCar({
       event,
       ctx,
@@ -91,7 +96,7 @@ export async function nftUpload(event, ctx) {
       uploadType = 'Blob'
       structure = 'Complete'
     }
-
+    carBlobForW3up = car
     upload = await uploadCar({
       event,
       ctx,
@@ -116,8 +121,18 @@ export async function nftUpload(event, ctx) {
     ...w3upConfig,
     w3up: ctx.w3up,
   })
-  if (ctx.W3UP_URL) {
-    const w3upResponse = await fetch(ctx.W3UP_URL)
+  if (ctx.w3up) {
+    try {
+      await ctx.w3up.uploadCAR(carBlobForW3up)
+      console.warn('w3up.uploadCAR() succeeded in POST /upload/ handler')
+    } catch (error) {
+      // explicitly log so we can debug w/ cause
+      console.warn('error with w3up.uploadCAR', {
+        error,
+        cause: error?.cause,
+      })
+      throw error
+    }
   }
 
   return new JSONResponse({ ok: true, value: toNFTResponse(upload) })

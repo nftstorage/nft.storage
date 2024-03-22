@@ -5396,6 +5396,16 @@
     multiformats "^11.0.2"
     one-webcrypto "^1.0.3"
 
+"@ucanto/server@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@ucanto/server/-/server-9.0.1.tgz#949d38bd2dad30991220f5839608434d400c0bfc"
+  integrity sha512-EGhgKLjPgvM39j86WxSD7UoR0rr7jpTMclCOcpOEVC9r91sob8BReW2i7cm1zPvhSNFqS8rLjlGEgUIAhdAxmg==
+  dependencies:
+    "@ucanto/core" "^9.0.0"
+    "@ucanto/interface" "^9.0.0"
+    "@ucanto/principal" "^9.0.0"
+    "@ucanto/validator" "^9.0.0"
+
 "@ucanto/transport@^9.0.0", "@ucanto/transport@^9.1.0":
   version "9.1.0"
   resolved "https://registry.yarnpkg.com/@ucanto/transport/-/transport-9.1.0.tgz#e37026d0cd389604cf85f62d7dc165ca5de50f06"
@@ -5404,7 +5414,7 @@
     "@ucanto/core" "^9.0.1"
     "@ucanto/interface" "^9.0.0"
 
-"@ucanto/validator@^9.0.1":
+"@ucanto/validator@^9.0.0", "@ucanto/validator@^9.0.1":
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/@ucanto/validator/-/validator-9.0.1.tgz#ab6458e4400365645119f1b843805fca80ea46b3"
   integrity sha512-H9GMOXHNW3vCv36eQZN1/h8zOXHEljRV5yNZ/huyOaJLVAKxt7Va1Ww8VBf2Ho/ac6P7jwvQRT7WgxaXx1/3Hg==
@@ -18002,10 +18012,15 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@2.5.1, "prettier@>=2.2.1 <=2.3.0", prettier@^2.5.1:
+prettier@2.5.1, prettier@^2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.5.1.tgz#fff75fa9d519c54cf0fce328c1017d94546bc56a"
   integrity sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==
+
+"prettier@>=2.2.1 <=2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.3.0.tgz#b6a5bf1284026ae640f17f7ff5658a7567fc0d18"
+  integrity sha512-kXtO4s0Lz/DW/IJ9QdWhAf7/NmPWQXkFr/r/WkR3vyI+0v8amTDxiaQSLzs8NBlytfLWX/7uQUMIW677yLKl4w==
 
 pretty-error@^2.1.1:
   version "2.1.2"

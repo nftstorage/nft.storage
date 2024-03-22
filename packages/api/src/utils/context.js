@@ -77,11 +77,14 @@ export async function getContext(event, params) {
     config.W3_NFTSTORAGE_PROOF
   ) {
     try {
-      w3up = await createW3upClientFromConfig({
+      const w3upWIP = await createW3upClientFromConfig({
         url: config.W3UP_URL,
         principal: config.W3_NFTSTORAGE_PRINCIPAL,
         proof: config.W3_NFTSTORAGE_PROOF,
       })
+      // @ts-expect-error todo add DID check
+      w3upWIP.setCurrentSpace(config.W3_NFTSTORAGE_SPACE)
+      w3up = w3upWIP
     } catch (error) {
       console.error(`error creating w3up-client from config`, error)
     }

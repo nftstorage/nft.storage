@@ -1,0 +1,88 @@
+import { Store, Upload, Filecoin } from '@web3-storage/capabilities'
+import * as Server from '@ucanto/server'
+import * as CAR from '@ucanto/transport/car'
+import * as consumers from 'stream/consumers'
+import { ed25519 } from '@ucanto/principal'
+
+/**
+ * create a RequestListener that can be a mock up.web3.storage
+ * @param {object} [options] - options
+ * @param {(invocation: import('@ucanto/server').ProviderInput<import('@ucanto/client').InferInvokedCapability<typeof Store.add>>) => Promise<void>} [options.onHandleStoreAdd] - called at start of store/add handler
+ * @param {(invocation: import('@ucanto/server').ProviderInput<import('@ucanto/client').InferInvokedCapability<typeof Upload.add>>) => Promise<void>} [options.onHandleUploadAdd] - called at start of upload/add handler
+ */
+export async function createMockW3up(options = {}) {
+  const service = {
+    filecoin: {
+      offer: Server.provide(Filecoin.offer, async (invocation) => {
+        return {}
+      }),
+    },
+    store: {
+      add: Server.provide(Store.add, async (invocation) => {
+        await options.onHandleStoreAdd?.(invocation)
+        /** @type {import('@web3-storage/access').StoreAddSuccessDone} */
+        const success = {
+          status: 'done',
+          allocated: invocation.capability.nb.size,
+          link: invocation.capability.nb.link,
+          with: invocation.capability.with,
+        }
+        return {
+          ok: success,
+        }
+      }),
+    },
+    upload: {
+      add: Server.provide(Upload.add, async (invocation) => {
+        await options.onHandleUploadAdd?.(invocation)
+        /** @type {import('@web3-storage/access').UploadAddSuccess} */
+        const success = {
+          root: invocation.capability.nb.root,
+        }
+        return {
+          ok: success,
+        }
+      }),
+    },
+  }
+  const serverId = (await ed25519.generate()).withDID('did:web:web3.storage')
+  const server = Server.create({
+    id: serverId,
+    service,
+    codec: CAR.inbound,
+    validateAuthorization: () => ({ ok: {} }),
+  })
+  /** @type {import('node:http').RequestListener} */
+  const listener = async (req, res) => {
+    try {
+      const requestBody = new Uint8Array(await consumers.arrayBuffer(req))
+      const response = await server.request({
+        body: requestBody,
+        // @ts-expect-error slight mismatch. ignore like w3infra does
+        headers: req.headers,
+      })
+      res.writeHead(200, response.headers)
+      res.write(response.body)
+    } catch (error) {
+      console.error('error in mock w3up', error)
+      res.writeHead(500)
+      res.write(JSON.stringify(error))
+    } finally {
+      res.end()
+    }
+  }
+  return listener
+}
+
+/**
+ * Get location of a server
+ * @param {import('http').Server} server - server that should be listening on the returned url
+ */
+export function locate(server) {
+  const address = server.address()
+  if (typeof address === 'string' || !address)
+    throw new Error(`unexpected address string`)
+  const { port } = address
+  const url = new URL(`http://localhost:${port}/`)
+  return { url }
+}
