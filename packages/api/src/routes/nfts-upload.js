@@ -111,16 +111,6 @@ export async function nftUpload(event, ctx) {
     })
   }
 
-  const w3upConfig = {
-    W3UP_URL: ctx.W3UP_URL,
-    W3_NFTSTORAGE_PRINCIPAL: ctx.W3_NFTSTORAGE_PRINCIPAL,
-    W3_NFTSTORAGE_PROOF: ctx.W3_NFTSTORAGE_PROOF,
-    W3_NFTSTORAGE_SPACE: ctx.W3_NFTSTORAGE_SPACE,
-  }
-  console.log('in nfts-upload handler w/ w3up', {
-    ...w3upConfig,
-    w3up: ctx.w3up,
-  })
   if (ctx.w3up) {
     try {
       await ctx.w3up.uploadCAR(carBlobForW3up)
@@ -129,10 +119,14 @@ export async function nftUpload(event, ctx) {
       // explicitly log so we can debug w/ cause
       console.warn('error with w3up.uploadCAR', {
         error,
-        cause: error?.cause,
+        cause: /** @type any */ (error)?.cause,
       })
       throw error
     }
+  } else {
+    console.warn(
+      'nftUpload route skipping w3up storage due to missing ctx.w3up'
+    )
   }
 
   return new JSONResponse({ ok: true, value: toNFTResponse(upload) })

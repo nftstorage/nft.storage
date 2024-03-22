@@ -141,11 +141,12 @@ test.serial('should forward uploads to W3UP_URL', async (t) => {
   )
 
   const finalW3upUploadAddCount = mockW3upUploadAddCount
-  const uploadAddCountDelta = finalW3upUploadAddCount - initialW3upStoreAddCount
+  const uploadAddCountDelta =
+    finalW3upUploadAddCount - initialW3upUploadAddCount
   t.is(
-    storeAddCountDelta,
+    uploadAddCountDelta,
     1,
-    'this upload sent one valid store/add invocation to w3up'
+    'this upload sent one valid upload/add invocation to w3up'
   )
 })
 
