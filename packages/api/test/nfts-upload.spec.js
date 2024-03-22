@@ -37,6 +37,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const nftStorageSpace = ed25519.generate()
 const nftStorageApiPrincipal = ed25519.generate()
+const nftStorageAccountEmailAllowListedForW3up = 'test+w3up@dev.nft.storage'
 let mockW3upStoreAddCount = 0
 let mockW3upUploadAddCount = 0
 const mockW3up = Promise.resolve(
@@ -81,6 +82,9 @@ test.before(async (t) => {
           })
         )
       ).toString(base64),
+      W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS: JSON.stringify([
+        nftStorageAccountEmailAllowListedForW3up,
+      ]),
     },
   })
 })
@@ -118,10 +122,13 @@ test.serial('should upload a single file', async (t) => {
   t.is(data.deleted_at, null)
 })
 
-test.serial('should forward uploads to W3UP_URL', async (t) => {
+test.serial.only('should forward uploads to W3UP_URL', async (t) => {
   const initialW3upStoreAddCount = mockW3upStoreAddCount
   const initialW3upUploadAddCount = mockW3upUploadAddCount
-  const client = await createClientWithUser(t)
+  const client = await createClientWithUser(t, {
+    // note this email should be in W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS env var
+    email: nftStorageAccountEmailAllowListedForW3up,
+  })
   const mf = getMiniflareContext(t)
   const file = new Blob(['hello world!'], { type: 'application/text' })
   const res = await mf.dispatchFetch('http://miniflare.test/upload', {
@@ -148,6 +155,20 @@ test.serial('should forward uploads to W3UP_URL', async (t) => {
     1,
     'this upload sent one valid upload/add invocation to w3up'
   )
+
+  // if similar request is made by user not in W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS allow list,
+  // that should not result in request to w3up
+  {
+    const storeAddCountBeforeClient2 = mockW3upStoreAddCount
+    const client2 = await createClientWithUser(t)
+    const response2 = await mf.dispatchFetch('http://miniflare.test/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client2.token}` },
+      body: file,
+    })
+    // should not have incremented
+    t.is(mockW3upStoreAddCount, storeAddCountBeforeClient2)
+  }
 })
 
 test.serial('should upload multiple blobs', async (t) => {

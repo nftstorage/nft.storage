@@ -109,6 +109,13 @@ export interface ServiceConfiguration {
 
   /** did:key of the w3up space in which to store NFTs */
   W3_NFTSTORAGE_SPACE?: string
+
+  /**
+   * JSON array of strings that are emails whose uploads should be uploaded via w3up.
+   * This is meant as a feature switch to test new functionality,
+   * and this configuration may be removed once the feature switch isn't needed to limit access.
+   */
+  W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS?: string
 }
 
 export interface Ucan {
@@ -145,6 +152,7 @@ export interface RouteContext {
   W3_NFTSTORAGE_PRINCIPAL?: string
   W3_NFTSTORAGE_PROOF?: string
   W3_NFTSTORAGE_SPACE?: string
+  W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS?: string
   w3up?: W3upClient
 }
 

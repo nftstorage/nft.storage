@@ -112,16 +112,19 @@ export async function nftUpload(event, ctx) {
   }
 
   if (ctx.w3up) {
-    try {
-      await ctx.w3up.uploadCAR(carBlobForW3up)
-      console.warn('w3up.uploadCAR() succeeded in POST /upload/ handler')
-    } catch (error) {
-      // explicitly log so we can debug w/ cause
-      console.warn('error with w3up.uploadCAR', {
-        error,
-        cause: /** @type any */ (error)?.cause,
-      })
-      throw error
+    if (!w3upFeatureSwitchEnabled(ctx, { user })) {
+      console.warn(`skipping w3up upload. Feature switch does not allow it.`)
+    } else {
+      try {
+        await ctx.w3up.uploadCAR(carBlobForW3up)
+      } catch (error) {
+        // explicitly log so we can debug w/ cause
+        console.warn('error with w3up.uploadCAR', {
+          error,
+          cause: /** @type any */ (error)?.cause,
+        })
+        throw error
+      }
     }
   } else {
     console.warn(
@@ -130,6 +133,24 @@ export async function nftUpload(event, ctx) {
   }
 
   return new JSONResponse({ ok: true, value: toNFTResponse(upload) })
+}
+
+/**
+ * returns whether w3up uploading feature is enabled given context + event
+ * @param {object} context - context of server operation, e.g. including configuration of feature switch
+ * @param {string} [context.W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS] - JSON array of allowed emails
+ * @param {object} event - specific event for which we should determine whether w3up feature is enabled
+ * @param {object} event.user
+ * @param {string} event.user.email - email address of user associated with event
+ */
+function w3upFeatureSwitchEnabled(context, event) {
+  const { W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS = '[]' } = context
+  const allowedEmails = JSON.parse(W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS)
+  if (!Array.isArray(allowedEmails)) return false
+  const eventHasAllowedEmail = allowedEmails.find(
+    (allowed) => allowed === event.user.email
+  )
+  return eventHasAllowedEmail
 }
 
 /**
