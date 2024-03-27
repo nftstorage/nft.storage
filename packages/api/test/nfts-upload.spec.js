@@ -29,21 +29,26 @@ import { createCarCid } from '../src/utils/car.js'
 import { createServer } from 'node:http'
 import { ed25519 } from '@ucanto/principal'
 import { delegate } from '@ucanto/core'
-import { encodeDelegationAsCid } from '../src/utils/w3up.js'
 import { base64 } from 'multiformats/bases/base64'
-import { createMockW3up, locate } from './utils/w3up-testing.js'
+import {
+  createMockW3up,
+  locate,
+  encodeDelegationAsCid,
+} from './utils/w3up-testing.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const nftStorageSpace = ed25519.generate()
 const nftStorageApiPrincipal = ed25519.generate()
 const nftStorageAccountEmailAllowListedForW3up = 'test+w3up@dev.nft.storage'
+const mockW3upDID = 'did:web:test.web3.storage'
 let mockW3upStoreAddCount = 0
 let mockW3upUploadAddCount = 0
 const mockW3up = Promise.resolve(
   (async function () {
     const server = createServer(
       await createMockW3up({
+        did: mockW3upDID,
         async onHandleStoreAdd(invocation) {
           mockW3upStoreAddCount++
         },
@@ -68,6 +73,7 @@ test.before(async (t) => {
     overrides: {
       LINKDEX_URL: linkdexUrl,
       W3UP_URL: locate((await mockW3up).server).url.toString(),
+      W3UP_DID: mockW3upDID,
       W3_NFTSTORAGE_SPACE: (await nftStorageSpace).did(),
       W3_NFTSTORAGE_PRINCIPAL: ed25519.format(await nftStorageApiPrincipal),
       W3_NFTSTORAGE_PROOF: (

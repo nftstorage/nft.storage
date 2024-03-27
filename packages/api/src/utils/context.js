@@ -8,6 +8,7 @@ import pkg from '../../package.json'
 import { Service } from 'ucan-storage/service'
 import { LinkdexApi } from './linkdex.js'
 import { createW3upClientFromConfig } from './w3up.js'
+import { DID } from '@ucanto/core'
 
 /**
  * Obtains a route context object.
@@ -66,6 +67,7 @@ export async function getContext(event, params) {
 
   const w3upConfig = {
     W3UP_URL: config.W3UP_URL,
+    W3UP_DID: config.W3UP_DID,
     W3_NFTSTORAGE_PRINCIPAL: config.W3_NFTSTORAGE_PRINCIPAL,
     W3_NFTSTORAGE_PROOF: config.W3_NFTSTORAGE_PROOF,
     W3_NFTSTORAGE_SPACE: config.W3_NFTSTORAGE_SPACE,
@@ -75,12 +77,14 @@ export async function getContext(event, params) {
   let w3up
   if (
     config.W3UP_URL &&
+    config.W3UP_DID &&
     config.W3_NFTSTORAGE_PRINCIPAL &&
     config.W3_NFTSTORAGE_PROOF
   ) {
     try {
       const w3upWIP = await createW3upClientFromConfig({
         url: config.W3UP_URL,
+        did: DID.parse(config.W3UP_DID).did(),
         principal: config.W3_NFTSTORAGE_PRINCIPAL,
         proof: config.W3_NFTSTORAGE_PROOF,
       })

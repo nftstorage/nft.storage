@@ -101,6 +101,9 @@ export interface ServiceConfiguration {
   /** w3up connection URL (e.g. https://up.web3.storage) */
   W3UP_URL?: string
 
+  /** w3up service DID (e.g. did:web:web3.storage) */
+  W3UP_DID?: string
+
   /** base64 encoded multiformats ed25519 secretKey */
   W3_NFTSTORAGE_PRINCIPAL?: string
 
@@ -148,6 +151,7 @@ export interface RouteContext {
   r2Uploader: Uploader
   ucanService: Service
   auth?: Auth
+  W3UP_DID?: string
   W3UP_URL?: string
   W3_NFTSTORAGE_PRINCIPAL?: string
   W3_NFTSTORAGE_PROOF?: string

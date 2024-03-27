@@ -3,14 +3,51 @@ import * as Server from '@ucanto/server'
 import * as CAR from '@ucanto/transport/car'
 import * as consumers from 'stream/consumers'
 import { ed25519 } from '@ucanto/principal'
+import { CarWriter } from '@ipld/car'
+import * as ucanto from '@ucanto/core'
+import { CID } from 'multiformats/cid'
+import { identity } from 'multiformats/hashes/identity'
+
+/**
+ * @param {import('@ucanto/interface').Delegation} delegation - delegation to encode
+ */
+export async function encodeDelegationAsCid(delegation) {
+  const { writer, out } = CarWriter.create()
+  /** @type {Array<Uint8Array>} */
+  const carChunks = []
+  await Promise.all([
+    // write delegation blocks
+    (async () => {
+      for (const block of delegation.export()) {
+        // @ts-expect-error different Block types
+        await writer.put(block)
+      }
+      await writer.close()
+    })(),
+    // read out
+    (async () => {
+      for await (const chunk of out) {
+        carChunks.push(chunk)
+      }
+    })(),
+  ])
+  // now get car chunks
+  const car = new Blob(carChunks)
+  const bytes = new Uint8Array(await car.arrayBuffer())
+  const cid = CID.createV1(ucanto.CAR.code, identity.digest(bytes))
+  return cid
+}
 
 /**
  * create a RequestListener that can be a mock up.web3.storage
  * @param {object} [options] - options
+ * @param {string} options.did
  * @param {(invocation: import('@ucanto/server').ProviderInput<import('@ucanto/client').InferInvokedCapability<typeof Store.add>>) => Promise<void>} [options.onHandleStoreAdd] - called at start of store/add handler
  * @param {(invocation: import('@ucanto/server').ProviderInput<import('@ucanto/client').InferInvokedCapability<typeof Upload.add>>) => Promise<void>} [options.onHandleUploadAdd] - called at start of upload/add handler
  */
-export async function createMockW3up(options = {}) {
+export async function createMockW3up(
+  options = { did: 'did:web:test.web3.storage' }
+) {
   const service = {
     filecoin: {
       offer: Server.provide(Filecoin.offer, async (invocation) => {
@@ -47,7 +84,9 @@ export async function createMockW3up(options = {}) {
       }),
     },
   }
-  const serverId = (await ed25519.generate()).withDID('did:web:web3.storage')
+  const serverId = (await ed25519.generate()).withDID(
+    ucanto.DID.parse(options.did).did()
+  )
   const server = Server.create({
     id: serverId,
     service,

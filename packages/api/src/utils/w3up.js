@@ -4,9 +4,8 @@ import { StoreMemory } from '@web3-storage/access/stores/store-memory'
 import { CID } from 'multiformats/cid'
 import { base64 } from 'multiformats/bases/base64'
 import { identity } from 'multiformats/hashes/identity'
-import { CarReader, CarWriter } from '@ipld/car'
+import { CarReader } from '@ipld/car'
 import { importDAG } from '@ucanto/core/delegation'
-import * as ucanto from '@ucanto/core'
 import * as W3upClient from '@web3-storage/w3up-client'
 import { connect } from '@ucanto/client'
 import { CAR, HTTP } from '@ucanto/transport'
@@ -17,7 +16,10 @@ import { CAR, HTTP } from '@ucanto/transport'
  * @param {string|undefined} [env.proof]
  */
 export async function getW3upClient({ principal, proof } = {}) {
-  const signer = principal ? ed25519.parse(principal) : await ed25519.generate()
+  if (!principal) {
+    throw new Error('could not get w3up client, no principal was passed')
+  }
+  const signer = ed25519.parse(principal)
   const store = new StoreMemory()
   const w3up = await W3UP.create({ principal: signer, store })
   if (proof) {
@@ -73,46 +75,17 @@ export async function readProofFromBytes(bytes) {
 }
 
 /**
- * @param {import('@ucanto/interface').Delegation} delegation - delegation to encode
- */
-export async function encodeDelegationAsCid(delegation) {
-  const { writer, out } = CarWriter.create()
-  /** @type {Array<Uint8Array>} */
-  const carChunks = []
-  await Promise.all([
-    // write delegation blocks
-    (async () => {
-      for (const block of delegation.export()) {
-        // @ts-expect-error different Block types
-        await writer.put(block)
-      }
-      await writer.close()
-    })(),
-    // read out
-    (async () => {
-      for await (const chunk of out) {
-        carChunks.push(chunk)
-      }
-    })(),
-  ])
-  // now get car chunks
-  const car = new Blob(carChunks)
-  const bytes = new Uint8Array(await car.arrayBuffer())
-  const cid = CID.createV1(ucanto.CAR.code, identity.digest(bytes))
-  return cid
-}
-
-/**
  * @param {object} options
  * @param {string} options.url
  * @param {string} options.principal
  * @param {string} options.proof
+ * @param {import('@ucanto/interface').DID} options.did
  */
 export async function createW3upClientFromConfig(options) {
   const url = new URL(options.url)
   const principal = ed25519.parse(options.principal)
   const connection = connect({
-    id: { did: () => 'did:web:web3.storage' },
+    id: { did: () => options.did },
     codec: CAR.outbound,
     channel: HTTP.open({
       url,
