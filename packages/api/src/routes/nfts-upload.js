@@ -31,11 +31,7 @@ export async function nftUpload(event, ctx) {
 
   /** @type {import('../utils/db-client-types').UploadOutput} */
   let upload
-  /**
-   * blob that should be stored in w3up
-   * @type {Blob}
-   */
-  let carBlobForW3up
+
   if (contentType.includes('multipart/form-data')) {
     const form = await event.request.formData()
     // Our API schema requires that all file parts be named `file` and
@@ -54,7 +50,7 @@ export async function nftUpload(event, ctx) {
       input,
       wrapWithDirectory: true,
     })
-    carBlobForW3up = car
+
     upload = await uploadCar({
       event,
       ctx,
@@ -96,7 +92,7 @@ export async function nftUpload(event, ctx) {
       uploadType = 'Blob'
       structure = 'Complete'
     }
-    carBlobForW3up = car
+
     upload = await uploadCar({
       event,
       ctx,
@@ -109,27 +105,6 @@ export async function nftUpload(event, ctx) {
       structure,
       meta: type === 'ucan' ? { ucan } : undefined,
     })
-  }
-
-  if (ctx.w3up) {
-    if (!w3upFeatureSwitchEnabled(ctx, { user })) {
-      console.warn(`skipping w3up upload. Feature switch does not allow it.`)
-    } else {
-      try {
-        await ctx.w3up.uploadCAR(carBlobForW3up)
-      } catch (error) {
-        // explicitly log so we can debug w/ cause
-        console.warn('error with w3up.uploadCAR', {
-          error,
-          cause: /** @type any */ (error)?.cause,
-        })
-        throw error
-      }
-    }
-  } else {
-    console.warn(
-      'nftUpload route skipping w3up storage due to missing ctx.w3up'
-    )
   }
 
   return new JSONResponse({ ok: true, value: toNFTResponse(upload) })
@@ -194,10 +169,27 @@ export async function uploadCarWithStat(
     carCid: carCid.toString(),
   }
 
-  const [s3Backup, r2Backup] = await Promise.all([
-    ctx.s3Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
-    ctx.r2Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
-  ])
+  const backupUrls = []
+  /** @type {string|undefined} */
+  let s3BackupKey
+  // @ts-expect-error email is not expected in types
+  if (ctx.w3up && w3upFeatureSwitchEnabled(ctx, { user })) {
+    /** @type {import('@web3-storage/w3up-client/types').CARLink[]} */
+    const shards = []
+    await ctx.w3up.uploadCAR(new Blob([stat.carBytes]), {
+      onShardStored: ({ cid }) => {
+        shards.push(cid)
+      },
+    })
+    backupUrls.push(...shards.map((s) => new URL(`https://w3s.link/ipfs/${s}`)))
+  } else {
+    const [s3Backup, r2Backup] = await Promise.all([
+      ctx.s3Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
+      ctx.r2Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
+    ])
+    s3BackupKey = s3Backup.key
+    backupUrls.push(s3Backup.url, r2Backup.url)
+  }
 
   const xName = event.request.headers.get('x-name')
   let name = xName && decodeURIComponent(xName)
@@ -225,21 +217,21 @@ export async function uploadCarWithStat(
     files,
     meta,
     key_id: key?.id,
-    backup_urls: [s3Backup.url, r2Backup.url],
+    backup_urls: backupUrls,
     name,
     pins: [elasticPin(stat.structure)],
   })
 
-  // ask linkdex for the dag structure across the set of CARs in S3 for this upload.
-  const checkDagStructureTask = async () => {
-    const structure = await ctx.linkdexApi?.getDagStructure(s3Backup.key)
-    if (structure === 'Complete') {
-      return ctx.db.updatePinStatus(upload.content_cid, elasticPin(structure))
-    }
-  }
-
   // no need to ask linkdex if it's Complete or Unknown
   if (stat.structure === 'Partial' && ctx.linkdexApi) {
+    // ask linkdex for the dag structure across the set of CARs in S3 for this upload.
+    const checkDagStructureTask = async () => {
+      if (!s3BackupKey) return // cannot check structure if not in S3
+      const structure = await ctx.linkdexApi?.getDagStructure(s3BackupKey)
+      if (structure === 'Complete') {
+        return ctx.db.updatePinStatus(upload.content_cid, elasticPin(structure))
+      }
+    }
     event.waitUntil(checkDagStructureTask())
   }
 
@@ -316,7 +308,6 @@ export async function carStat(carBlob, { structure } = {}) {
       throw new Error(`block too big: ${blockSize} > ${MAX_BLOCK_SIZE}`)
     }
     try {
-      // @ts-expect-error CID type mismatch
       await validateBlock(block)
     } catch (/** @type {any} */ err) {
       throw new InvalidCarError(

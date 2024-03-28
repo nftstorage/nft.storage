@@ -50,7 +50,6 @@ export async function createCarIndex(carBytes) {
   const { writer, out } = MultihashIndexSortedWriter.create()
 
   for await (const blockIndexData of indexer) {
-    // @ts-expect-error CID impl conflict
     writer.put(blockIndexData)
   }
   writer.close()
