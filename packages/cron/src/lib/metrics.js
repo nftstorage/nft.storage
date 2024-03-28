@@ -3,11 +3,11 @@ import { Histogram, Registry, linearBuckets, Pushgateway } from 'prom-client'
 import { Milliseconds } from './time.js'
 
 /**
+ * @template Value
+ * @template Labels
  * @typedef Metric
  * @property {string} name
  * @property {(value: Value, labels: Labels) => void} observe
- * @template Value
- * @template Labels
  */
 
 /**

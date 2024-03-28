@@ -7,6 +7,7 @@ import { UserOutput, UserOutputKey } from './utils/db-client-types.js'
 import { DBClient } from './utils/db-client.js'
 import { LinkdexApi } from './utils/linkdex.js'
 import { Logging } from './utils/logs.js'
+import { Client as W3upClient } from '@web3-storage/w3up-client'
 
 export type RuntimeEnvironmentName = 'test' | 'dev' | 'staging' | 'production'
 
@@ -96,6 +97,28 @@ export interface ServiceConfiguration {
 
   /** Slack webhook url */
   SLACK_USER_REQUEST_WEBHOOK_URL: string
+
+  /** w3up connection URL (e.g. https://up.web3.storage) */
+  W3UP_URL?: string
+
+  /** w3up service DID (e.g. did:web:web3.storage) */
+  W3UP_DID?: string
+
+  /** base64 encoded multiformats ed25519 secretKey */
+  W3_NFTSTORAGE_PRINCIPAL?: string
+
+  /** CID (identity codec) of CAR-encoded UCAN DAG */
+  W3_NFTSTORAGE_PROOF?: string
+
+  /** did:key of the w3up space in which to store NFTs */
+  W3_NFTSTORAGE_SPACE?: string
+
+  /**
+   * JSON array of strings that are emails whose uploads should be uploaded via w3up.
+   * This is meant as a feature switch to test new functionality,
+   * and this configuration may be removed once the feature switch isn't needed to limit access.
+   */
+  W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS?: string
 }
 
 export interface Ucan {
@@ -123,11 +146,18 @@ export interface RouteContext {
   params: Record<string, string>
   db: DBClient
   log: Logging
-  linkdexApi?: LinkdexApi
+  linkdexApi: LinkdexApi
   s3Uploader: Uploader
   r2Uploader: Uploader
   ucanService: Service
   auth?: Auth
+  W3UP_DID?: string
+  W3UP_URL?: string
+  W3_NFTSTORAGE_PRINCIPAL?: string
+  W3_NFTSTORAGE_PROOF?: string
+  W3_NFTSTORAGE_SPACE?: string
+  W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS?: string
+  w3up?: W3upClient
 }
 
 export type Handler = (

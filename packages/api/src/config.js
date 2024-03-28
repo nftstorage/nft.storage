@@ -61,6 +61,14 @@ export function serviceConfigFromVariables(vars) {
     VERSION: vars.NFT_STORAGE_VERSION || NFT_STORAGE_VERSION,
     // @ts-ignore
     COMMITHASH: vars.NFT_STORAGE_COMMITHASH || NFT_STORAGE_COMMITHASH,
+
+    W3UP_URL: vars.W3UP_URL,
+    W3UP_DID: vars.W3UP_DID,
+    W3_NFTSTORAGE_PRINCIPAL: vars.W3_NFTSTORAGE_PRINCIPAL,
+    W3_NFTSTORAGE_PROOF: vars.W3_NFTSTORAGE_PROOF,
+    W3_NFTSTORAGE_SPACE: vars.W3_NFTSTORAGE_SPACE,
+    W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS:
+      vars.W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS,
   }
 }
 
@@ -123,6 +131,12 @@ export function loadConfigVariables() {
     'LINKDEX_URL',
     'S3_ENDPOINT',
     'SLACK_USER_REQUEST_WEBHOOK_URL',
+    'W3UP_URL',
+    'W3UP_DID',
+    'W3_NFTSTORAGE_SPACE',
+    'W3_NFTSTORAGE_PRINCIPAL',
+    'W3_NFTSTORAGE_PROOF',
+    'W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS',
   ]
 
   for (const name of optional) {
@@ -148,6 +162,12 @@ export function loadConfigVariables() {
 function parseRuntimeEnv(s) {
   if (!s) {
     return 'test'
+  }
+
+  if (typeof s !== 'string') {
+    throw new Error(
+      `Unable to parse non-string (${typeof s}) environment name: ${s}`
+    )
   }
 
   switch (s) {

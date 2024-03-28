@@ -40,7 +40,7 @@ export const getDBClient = (config) => {
 
 /**
  * @param {import('ava').ExecutionContext} t
- * @param {{publicAddress?: string, issuer?: string, name?: string}} userInfo
+ * @param {{publicAddress?: string, issuer?: string, name?: string, email?: string}} userInfo
  */
 export async function createTestUser(t, userInfo = {}) {
   const config = getTestServiceConfig(t)
@@ -64,6 +64,7 @@ export async function createTestUser(t, userInfo = {}) {
     publicAddress,
     issuer,
     name,
+    email: userInfo.email,
   })
 }
 
@@ -98,7 +99,7 @@ async function createUserTag(rawClient, tag) {
 
 /**
  * @param {ServiceConfiguration} config
- * @param {{publicAddress?: string, issuer?: string, name?: string, token?: string, addAccountRestriction?: boolean}} userInfo
+ * @param {{publicAddress?: string, issuer?: string, name?: string, token?: string, addAccountRestriction?: boolean, email?: string}} userInfo
  */
 export async function createTestUserWithFixedToken(
   config,
@@ -108,13 +109,14 @@ export async function createTestUserWithFixedToken(
     issuer = `did:eth:${publicAddress}`,
     name = 'A Tester',
     addAccountRestriction = false,
+    email = 'a.tester@example.org',
   } = {}
 ) {
   const client = getDBClient(config)
   const rawClient = getRawClient(config)
   const { data: user, error } = await client
     .upsertUser({
-      email: 'a.tester@example.org',
+      email,
       github_id: issuer,
       magic_link_id: issuer,
       name,
@@ -173,7 +175,7 @@ export async function createTestUserWithFixedToken(
     })
   }
 
-  return { token, userId: user.id, githubId: user.github_id }
+  return { token, userId: user.id, githubId: user.github_id, email }
 }
 
 export class DBTestClient {
@@ -215,7 +217,7 @@ export class DBTestClient {
 }
 /**
  * @param {import('ava').ExecutionContext<unknown>} t
- * @param {{publicAddress?: string, issuer?: string, name?: string, token?: string}} [userInfo]
+ * @param {{publicAddress?: string, issuer?: string, name?: string, token?: string, email?: string}} [userInfo]
  */
 export async function createClientWithUser(t, userInfo) {
   const serviceConfig = await getTestServiceConfig(t)

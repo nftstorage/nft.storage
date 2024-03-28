@@ -11,6 +11,7 @@ import { createCarCid } from '../utils/car.js'
 import { JSONResponse } from '../utils/json-response.js'
 import { checkAuth } from '../utils/auth.js'
 import { toNFTResponse } from '../utils/db-transforms.js'
+import { MissingApiUrlCode } from '../utils/linkdex.js'
 
 const MAX_BLOCK_SIZE = 1 << 21 // Maximum permitted block size in bytes (2MiB).
 const decoders = [pb, raw, cbor]
@@ -30,6 +31,7 @@ export async function nftUpload(event, ctx) {
 
   /** @type {import('../utils/db-client-types').UploadOutput} */
   let upload
+
   if (contentType.includes('multipart/form-data')) {
     const form = await event.request.formData()
     // Our API schema requires that all file parts be named `file` and
@@ -109,6 +111,24 @@ export async function nftUpload(event, ctx) {
 }
 
 /**
+ * returns whether w3up uploading feature is enabled given context + event
+ * @param {object} context - context of server operation, e.g. including configuration of feature switch
+ * @param {string} [context.W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS] - JSON array of allowed emails
+ * @param {object} event - specific event for which we should determine whether w3up feature is enabled
+ * @param {object} event.user
+ * @param {string} event.user.email - email address of user associated with event
+ */
+function w3upFeatureSwitchEnabled(context, event) {
+  const { W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS = '[]' } = context
+  const allowedEmails = JSON.parse(W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS)
+  if (!Array.isArray(allowedEmails)) return false
+  const eventHasAllowedEmail = allowedEmails.find(
+    (allowed) => allowed === event.user.email
+  )
+  return eventHasAllowedEmail
+}
+
+/**
  * @typedef {{
  *   event: FetchEvent,
  *   ctx: import('../bindings').RouteContext
@@ -149,10 +169,67 @@ export async function uploadCarWithStat(
     carCid: carCid.toString(),
   }
 
-  const [s3Backup, r2Backup] = await Promise.all([
-    ctx.s3Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
-    ctx.r2Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
-  ])
+  /** @type {(() => Promise<void>)|undefined} */
+  let checkDagStructureTask
+  const backupUrls = []
+  // @ts-expect-error email is not expected in types
+  if (ctx.w3up && w3upFeatureSwitchEnabled(ctx, { user })) {
+    const { w3up } = ctx
+    // should only be 1 - shard size in w3up is > max upload size in CF
+    /** @type {import('@web3-storage/w3up-client/types').CARLink[]} */
+    const shards = []
+    await w3up.uploadCAR(new Blob([stat.carBytes]), {
+      onShardStored: ({ cid }) => {
+        shards.push(cid)
+      },
+    })
+    // register as gateway links to record the CAR CID - we don't have another
+    // way to know the location right now.
+    backupUrls.push(...shards.map((s) => new URL(`https://w3s.link/ipfs/${s}`)))
+
+    if (stat.structure === 'Partial') {
+      checkDagStructureTask = async () => {
+        const info = await w3up.capability.upload.get(stat.rootCid)
+        if (info.shards && info.shards.length > 1) {
+          const structure = await ctx.linkdexApi.getDagStructureForCars(
+            info.shards
+          )
+          if (structure === 'Complete') {
+            return ctx.db.updatePinStatus(
+              upload.content_cid,
+              elasticPin(structure)
+            )
+          }
+        }
+      }
+    }
+  } else {
+    const [s3Backup, r2Backup] = await Promise.all([
+      ctx.s3Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
+      ctx.r2Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
+    ])
+    backupUrls.push(s3Backup.url, r2Backup.url)
+
+    // no need to ask linkdex if it's Complete or Unknown
+    if (stat.structure === 'Partial') {
+      // ask linkdex for the dag structure across the set of CARs in S3 for this upload.
+      checkDagStructureTask = async () => {
+        try {
+          const structure = await ctx.linkdexApi.getDagStructure(s3Backup.key)
+          if (structure === 'Complete') {
+            return ctx.db.updatePinStatus(
+              upload.content_cid,
+              elasticPin(structure)
+            )
+          }
+        } catch (/** @type {any} */ err) {
+          if (err.code !== MissingApiUrlCode) {
+            throw err
+          }
+        }
+      }
+    }
+  }
 
   const xName = event.request.headers.get('x-name')
   let name = xName && decodeURIComponent(xName)
@@ -180,21 +257,13 @@ export async function uploadCarWithStat(
     files,
     meta,
     key_id: key?.id,
-    backup_urls: [s3Backup.url, r2Backup.url],
+    backup_urls: backupUrls,
     name,
     pins: [elasticPin(stat.structure)],
   })
 
-  // ask linkdex for the dag structure across the set of CARs in S3 for this upload.
-  const checkDagStructureTask = async () => {
-    const structure = await ctx.linkdexApi?.getDagStructure(s3Backup.key)
-    if (structure === 'Complete') {
-      return ctx.db.updatePinStatus(upload.content_cid, elasticPin(structure))
-    }
-  }
-
   // no need to ask linkdex if it's Complete or Unknown
-  if (stat.structure === 'Partial' && ctx.linkdexApi) {
+  if (checkDagStructureTask) {
     event.waitUntil(checkDagStructureTask())
   }
 

@@ -87,7 +87,6 @@ export class S3Uploader {
       await pRetry(put, { retries: 3, onFailedAttempt: console.log })
       return { key, url }
     } catch (cause) {
-      // @ts-expect-error
       throw new Error('Failed to upload CAR to S3', { cause })
     }
   }

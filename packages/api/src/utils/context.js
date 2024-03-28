@@ -7,6 +7,8 @@ import { Logging } from './logs.js'
 import pkg from '../../package.json'
 import { Service } from 'ucan-storage/service'
 import { LinkdexApi } from './linkdex.js'
+import { createW3upClientFromConfig } from './w3up.js'
+import { DID } from '@ucanto/core'
 
 /**
  * Obtains a route context object.
@@ -34,9 +36,10 @@ export async function getContext(event, params) {
     satnav: config.SATNAV,
   })
 
-  const linkdexApi = config.LINKDEX_URL
-    ? new LinkdexApi(config.LINKDEX_URL)
-    : undefined
+  const linkdexApi = new LinkdexApi({
+    apiUrl: config.LINKDEX_URL ? new URL(config.LINKDEX_URL) : undefined,
+    bucket: config.CARPARK,
+  })
 
   const sentryOptions = {
     dsn: config.SENTRY_DSN,
@@ -62,5 +65,46 @@ export async function getContext(event, params) {
   })
 
   const ucanService = await Service.fromPrivateKey(config.PRIVATE_KEY)
-  return { params, db, linkdexApi, s3Uploader, r2Uploader, log, ucanService }
+
+  const w3upConfig = {
+    W3UP_URL: config.W3UP_URL,
+    W3UP_DID: config.W3UP_DID,
+    W3_NFTSTORAGE_PRINCIPAL: config.W3_NFTSTORAGE_PRINCIPAL,
+    W3_NFTSTORAGE_PROOF: config.W3_NFTSTORAGE_PROOF,
+    W3_NFTSTORAGE_SPACE: config.W3_NFTSTORAGE_SPACE,
+    W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS:
+      config.W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS,
+  }
+  let w3up
+  if (
+    config.W3UP_URL &&
+    config.W3UP_DID &&
+    config.W3_NFTSTORAGE_PRINCIPAL &&
+    config.W3_NFTSTORAGE_PROOF
+  ) {
+    try {
+      const w3upWIP = await createW3upClientFromConfig({
+        url: config.W3UP_URL,
+        did: DID.parse(config.W3UP_DID).did(),
+        principal: config.W3_NFTSTORAGE_PRINCIPAL,
+        proof: config.W3_NFTSTORAGE_PROOF,
+      })
+      // @ts-expect-error todo add DID check
+      w3upWIP.setCurrentSpace(config.W3_NFTSTORAGE_SPACE)
+      w3up = w3upWIP
+    } catch (error) {
+      console.error(`error creating w3up-client from config`, error)
+    }
+  }
+  return {
+    ...w3upConfig,
+    params,
+    db,
+    linkdexApi,
+    s3Uploader,
+    r2Uploader,
+    log,
+    ucanService,
+    w3up,
+  }
 }

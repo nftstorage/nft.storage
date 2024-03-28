@@ -111,6 +111,7 @@ export class DBClient {
     magic_link_id,
     github_id,
     did,
+    email,
     keys:auth_key_user_id_fkey(user_id,id,name,secret,deleted_at),
     tags:user_tag_user_id_fkey(user_id,id,tag,value)
     `

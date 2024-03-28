@@ -26,12 +26,77 @@ import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { FormData } from 'undici'
 import { createCarCid } from '../src/utils/car.js'
+import { createServer } from 'node:http'
+import { ed25519 } from '@ucanto/principal'
+import { delegate } from '@ucanto/core'
+import { base64 } from 'multiformats/bases/base64'
+import {
+  createMockW3up,
+  locate,
+  encodeDelegationAsCid,
+} from './utils/w3up-testing.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
+const nftStorageSpace = ed25519.generate()
+const nftStorageApiPrincipal = ed25519.generate()
+const nftStorageAccountEmailAllowListedForW3up = 'test+w3up@dev.nft.storage'
+const mockW3upDID = 'did:web:test.web3.storage'
+let mockW3upStoreAddCount = 0
+let mockW3upUploadAddCount = 0
+const mockW3up = Promise.resolve(
+  (async function () {
+    const server = createServer(
+      await createMockW3up({
+        did: mockW3upDID,
+        async onHandleStoreAdd(invocation) {
+          mockW3upStoreAddCount++
+        },
+        async onHandleUploadAdd(invocation) {
+          mockW3upUploadAddCount++
+        },
+      })
+    )
+    server.listen(0)
+    await new Promise((resolve) =>
+      server.addListener('listening', () => resolve(undefined))
+    )
+    return {
+      server,
+    }
+  })()
+)
+
 test.before(async (t) => {
   const linkdexUrl = 'http://fake.api.net'
-  await setupMiniflareContext(t, { overrides: { LINKDEX_URL: linkdexUrl } })
+  await setupMiniflareContext(t, {
+    overrides: {
+      LINKDEX_URL: linkdexUrl,
+      W3UP_URL: locate((await mockW3up).server).url.toString(),
+      W3UP_DID: mockW3upDID,
+      W3_NFTSTORAGE_SPACE: (await nftStorageSpace).did(),
+      W3_NFTSTORAGE_PRINCIPAL: ed25519.format(await nftStorageApiPrincipal),
+      W3_NFTSTORAGE_PROOF: (
+        await encodeDelegationAsCid(
+          await delegate({
+            issuer: await nftStorageSpace,
+            audience: await nftStorageApiPrincipal,
+            capabilities: [
+              { can: 'store/add', with: (await nftStorageSpace).did() },
+              { can: 'upload/add', with: (await nftStorageSpace).did() },
+            ],
+          })
+        )
+      ).toString(base64),
+      W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS: JSON.stringify([
+        nftStorageAccountEmailAllowListedForW3up,
+      ]),
+    },
+  })
+})
+
+test.after(async (t) => {
+  ;(await mockW3up).server.close()
 })
 
 test.serial('should upload a single file', async (t) => {
@@ -61,6 +126,55 @@ test.serial('should upload a single file', async (t) => {
   // @ts-ignore
   t.is(data.source_cid, cid)
   t.is(data.deleted_at, null)
+})
+
+test.serial('should forward uploads to W3UP_URL', async (t) => {
+  const initialW3upStoreAddCount = mockW3upStoreAddCount
+  const initialW3upUploadAddCount = mockW3upUploadAddCount
+  const client = await createClientWithUser(t, {
+    // note this email should be in W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS env var
+    email: nftStorageAccountEmailAllowListedForW3up,
+  })
+  const mf = getMiniflareContext(t)
+  const file = new Blob(['hello world!'], { type: 'application/text' })
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${client.token}` },
+    body: file,
+  })
+  const { ok, value } = await res.json()
+  t.truthy(ok, 'Server response payload has `ok` property')
+
+  const finalW3upStoreAddCount = mockW3upStoreAddCount
+  const storeAddCountDelta = finalW3upStoreAddCount - initialW3upStoreAddCount
+  t.is(
+    storeAddCountDelta,
+    1,
+    'this upload sent one valid store/add invocation to w3up'
+  )
+
+  const finalW3upUploadAddCount = mockW3upUploadAddCount
+  const uploadAddCountDelta =
+    finalW3upUploadAddCount - initialW3upUploadAddCount
+  t.is(
+    uploadAddCountDelta,
+    1,
+    'this upload sent one valid upload/add invocation to w3up'
+  )
+
+  // if similar request is made by user not in W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS allow list,
+  // that should not result in request to w3up
+  {
+    const storeAddCountBeforeClient2 = mockW3upStoreAddCount
+    const client2 = await createClientWithUser(t)
+    const response2 = await mf.dispatchFetch('http://miniflare.test/upload', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${client2.token}` },
+      body: file,
+    })
+    // should not have incremented
+    t.is(mockW3upStoreAddCount, storeAddCountBeforeClient2)
+  }
 })
 
 test.serial('should upload multiple blobs', async (t) => {
@@ -906,4 +1020,35 @@ function mockLinkdexResponse(mock, structure, times = 1) {
       { headers: { 'content-type': 'application/json' } }
     )
     .times(times)
+}
+
+/**
+ * create a mock http server,
+ * that can act as a stand-in for up.web3.storage (aka w3up)
+ */
+async function createListeningMockW3up() {
+  let requestCount = 0
+  const server = createServer((req, res) => {
+    requestCount++
+    res.writeHead(451)
+    res.write('TODO')
+    res.end()
+  })
+  server.listen(0)
+  await new Promise((resolve, reject) => {
+    server.addListener('listening', () => resolve(undefined))
+  })
+  const serverAddress = server.address()
+  if (typeof serverAddress === 'string' || !serverAddress)
+    throw new Error('server.address() must not return a string')
+  const url = new URL(`http://localhost:${serverAddress.port}`)
+  return {
+    get requestCount() {
+      return requestCount
+    },
+    close() {
+      server.close()
+    },
+    url,
+  }
 }
