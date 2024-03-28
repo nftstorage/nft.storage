@@ -393,7 +393,7 @@ export default function Files({ user }) {
                 </When>
                 <When condition={!hasZeroNfts}>
                   <>
-                    <table className="w-full collapse">
+                    <table className="w-full border-collapse">
                       <thead>
                         <tr className="bg-nsgray">
                           <th>Date</th>
