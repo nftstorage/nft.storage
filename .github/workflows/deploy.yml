@@ -45,8 +45,8 @@ jobs:
         with:
           node-version: '18'
       - uses: bahmutov/npm-install@v1
-      - run: ./packages/tools/cli.js dns --name nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CF_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
-      - run: echo "::warning::https://nft.storage"
+      - run: ./packages/tools/cli.js dns --name classic.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CF_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
+      - run: echo "::warning::https://classic.nft.storage"
   deploy-frontend-staging:
     if: github.event.inputs.environment == 'staging'
     runs-on: ubuntu-latest
@@ -56,8 +56,8 @@ jobs:
         with:
           node-version: '18'
       - uses: bahmutov/npm-install@v1
-      - run: ./packages/tools/cli.js dns --name staging.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CF_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
-      - run: echo "::warning::https://staging.nft.storage"
+      - run: ./packages/tools/cli.js dns --name classic-staging.nft.storage --token ${{ secrets.CF_API_TOKEN }} --zone ${{ secrets.CF_ZONE }} --content ${{ github.event.inputs.frontend_cname }}
+      - run: echo "::warning::https://classic-staging.nft.storage"
   deploy-frontend-dev:
     if: github.event.inputs.environment == ''
     runs-on: ubuntu-latest
