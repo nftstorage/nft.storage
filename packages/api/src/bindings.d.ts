@@ -146,7 +146,7 @@ export interface RouteContext {
   params: Record<string, string>
   db: DBClient
   log: Logging
-  linkdexApi?: LinkdexApi
+  linkdexApi: LinkdexApi
   s3Uploader: Uploader
   r2Uploader: Uploader
   ucanService: Service

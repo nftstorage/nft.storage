@@ -36,9 +36,10 @@ export async function getContext(event, params) {
     satnav: config.SATNAV,
   })
 
-  const linkdexApi = config.LINKDEX_URL
-    ? new LinkdexApi(config.LINKDEX_URL)
-    : undefined
+  const linkdexApi = new LinkdexApi({
+    apiUrl: config.LINKDEX_URL ? new URL(config.LINKDEX_URL) : undefined,
+    bucket: config.CARPARK,
+  })
 
   const sentryOptions = {
     dsn: config.SENTRY_DSN,

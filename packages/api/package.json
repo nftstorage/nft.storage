@@ -36,6 +36,7 @@
     "cardex": "^1.0.0",
     "ipfs-car": "^0.6.1",
     "it-last": "^2.0.0",
+    "linkdex": "^3.0.0",
     "merge-options": "^3.0.4",
     "multiformats": "^9.6.4",
     "nanoid": "^3.1.30",
