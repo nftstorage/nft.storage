@@ -308,6 +308,7 @@ export async function carStat(carBlob, { structure } = {}) {
       throw new Error(`block too big: ${blockSize} > ${MAX_BLOCK_SIZE}`)
     }
     try {
+      // @ts-expect-error CID type mismatch
       await validateBlock(block)
     } catch (/** @type {any} */ err) {
       throw new InvalidCarError(
