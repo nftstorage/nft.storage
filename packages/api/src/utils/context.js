@@ -94,7 +94,6 @@ export async function getContext(event, params) {
       w3up = w3upWIP
     } catch (error) {
       console.error(`error creating w3up-client from config`, error)
-      console.error(`proof: "${config.W3_NFTSTORAGE_PROOF}"`)
     }
   }
   return {
