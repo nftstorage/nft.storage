@@ -9,7 +9,6 @@ import { importDAG } from '@ucanto/core/delegation'
 import * as W3upClient from '@web3-storage/w3up-client'
 import { connect } from '@ucanto/client'
 import { CAR, HTTP } from '@ucanto/transport'
-import * as DAGUCANCBOR from '@ipld/dag-ucan/codec/cbor'
 
 /**
  * @param {object} env
@@ -66,9 +65,6 @@ export async function readProofFromBytes(bytes) {
     console.error(`Error: failed to parse proof: ${err.message}`)
     throw err
   }
-  const proof = blocks[blocks.length - 1]
-  console.log('DECODING PROOF', proof)
-  console.log('DECODED', DAGUCANCBOR.decode(proof.bytes))
   try {
     // @ts-expect-error Block types are slightly different but it works
     return importDAG(blocks)

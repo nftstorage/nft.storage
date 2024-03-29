@@ -76,7 +76,6 @@ export async function getContext(event, params) {
       config.W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS,
   }
   let w3up
-  console.log('SETTING UP W3UP')
   if (
     config.W3UP_URL &&
     config.W3UP_DID &&
@@ -90,13 +89,11 @@ export async function getContext(event, params) {
         principal: config.W3_NFTSTORAGE_PRINCIPAL,
         proof: config.W3_NFTSTORAGE_PROOF,
       })
-      console.log('CLIENT CREATED')
       // @ts-expect-error todo add DID check
       w3upWIP.setCurrentSpace(config.W3_NFTSTORAGE_SPACE)
       w3up = w3upWIP
     } catch (error) {
       console.error(`error creating w3up-client from config`, error)
-      console.error(`proof: "${config.W3_NFTSTORAGE_PROOF}"`)
     }
   }
   return {

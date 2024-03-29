@@ -11,7 +11,6 @@ compatibility_flags = [
    "formdata_parser_supports_files",
    "streams_enable_constructors",
    "transformstream_enable_standard_constructor",
-   "url_standard"
 ]
 no_bundle = true
 r2_buckets = [
