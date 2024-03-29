@@ -83,7 +83,6 @@ export async function getContext(event, params) {
     config.W3_NFTSTORAGE_PROOF
   ) {
     try {
-      console.log('CREATING W3UP WITH', config.W3_NFTSTORAGE_PROOF)
       const w3upWIP = await createW3upClientFromConfig({
         url: config.W3UP_URL,
         did: DID.parse(config.W3UP_DID).did(),
