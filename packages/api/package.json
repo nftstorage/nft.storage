@@ -21,7 +21,7 @@
     "@aws-sdk/client-s3": "^3.37.0",
     "@cfworker/json-schema": "^1.8.3",
     "@ipld/car": "^3.1.20",
-    "@ipld/dag-cbor": "^9.2.0",
+    "@ipld/dag-cbor": "^6.0.13",
     "@ipld/dag-pb": "^2.1.16",
     "@magic-sdk/admin": "1.4.0",
     "@nftstorage/ipfs-cluster": "^5.0.1",
