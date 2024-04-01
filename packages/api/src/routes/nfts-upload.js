@@ -78,6 +78,7 @@ export async function nftUpload(event, ctx) {
     let car
     /** @type {string} */
 
+    console.log('IS CAR?', isCar)
     if (isCar) {
       car = blob
       uploadType = 'Car'
@@ -92,7 +93,7 @@ export async function nftUpload(event, ctx) {
       uploadType = 'Blob'
       structure = 'Complete'
     }
-
+    console.log('NFT UPLOADING CAR')
     upload = await uploadCar({
       event,
       ctx,
@@ -106,7 +107,7 @@ export async function nftUpload(event, ctx) {
       meta: type === 'ucan' ? { ucan } : undefined,
     })
   }
-
+  console.log('UPLOADED IT, SENDING A RESPONSE!')
   return new JSONResponse({ ok: true, value: toNFTResponse(upload) })
 }
 
@@ -144,6 +145,7 @@ function w3upFeatureSwitchEnabled(context, event) {
  * @param {UploadCarInput} params
  */
 export async function uploadCar(params) {
+  console.log('UPLOAD CAR')
   const stat = await carStat(params.car, {
     structure: params.structure,
   })
@@ -159,6 +161,7 @@ export async function uploadCarWithStat(
   { event, ctx, user, key, uploadType = 'Car', mimeType, files, meta },
   stat
 ) {
+  console.log('UCWS')
   const sourceCid = stat.rootCid.toString()
   const contentCid = stat.rootCid.toV1().toString()
   const carCid = await createCarCid(stat.carBytes)
@@ -174,6 +177,7 @@ export async function uploadCarWithStat(
   const backupUrls = []
   // @ts-expect-error email is not expected in types
   if (ctx.w3up && w3upFeatureSwitchEnabled(ctx, { user })) {
+    console.log('SWITCH ENABLED')
     const { w3up } = ctx
     // should only be 1 - shard size in w3up is > max upload size in CF
     /** @type {import('@web3-storage/w3up-client/types').CARLink[]} */
@@ -187,6 +191,7 @@ export async function uploadCarWithStat(
           },
         }),
     }
+    console.log('UPLOADING CAR')
     await w3up.uploadCAR(carBytesBlobLike, {
       onShardStored: ({ cid }) => {
         shards.push(cid)
@@ -194,11 +199,13 @@ export async function uploadCarWithStat(
       // @ts-expect-error TODO adjust upstream type
       pieceHasher: null,
     })
+    console.log('UPLOADED CAR')
     // register as gateway links to record the CAR CID - we don't have another
     // way to know the location right now.
     backupUrls.push(...shards.map((s) => new URL(`https://w3s.link/ipfs/${s}`)))
 
     if (stat.structure === 'Partial') {
+      console.log('PARTIAL')
       checkDagStructureTask = async () => {
         // @ts-expect-error - I'm not sure why this started failing TODO debug further
         const info = await w3up.capability.upload.get(stat.rootCid)
@@ -242,7 +249,7 @@ export async function uploadCarWithStat(
       }
     }
   }
-
+  console.log('UPLOADED')
   const xName = event.request.headers.get('x-name')
   let name = xName && decodeURIComponent(xName)
   if (!name || typeof name !== 'string') {
@@ -258,7 +265,7 @@ export async function uploadCarWithStat(
     status: structure === 'Complete' ? 'Pinned' : 'Pinning',
     service: 'ElasticIpfs',
   })
-
+  console.log('CREATING DB UPLOAD')
   const upload = await ctx.db.createUpload({
     mime_type: mimeType,
     type: uploadType,
@@ -276,9 +283,10 @@ export async function uploadCarWithStat(
 
   // no need to ask linkdex if it's Complete or Unknown
   if (checkDagStructureTask) {
+    console.log('CHECK DAG STRUCTURE TASK IS TRU')
     event.waitUntil(checkDagStructureTask())
   }
-
+  console.log('RETURNING')
   return upload
 }
 
