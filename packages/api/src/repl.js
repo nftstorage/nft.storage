@@ -1,5 +1,5 @@
 import { JSONResponse } from './utils/json-response.js'
-/** @type {import('../bindings').Handler} */
+/** @type {import('./bindings').Handler} */
 export const repl = async (event, ctx) => {
   const { w3up } = ctx
   const { headers } = event.request
