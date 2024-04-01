@@ -32,6 +32,7 @@
     "@ucanto/server": "^9.0.1",
     "@web3-storage/access": "^18.2.0",
     "@web3-storage/car-block-validator": "^1.2.0",
+    "@web3-storage/upload-client": "^13.2.0",
     "@web3-storage/w3up-client": "^12.5.0",
     "cardex": "^1.0.0",
     "ipfs-car": "^0.6.1",
