@@ -178,7 +178,16 @@ export async function uploadCarWithStat(
     // should only be 1 - shard size in w3up is > max upload size in CF
     /** @type {import('@web3-storage/w3up-client/types').CARLink[]} */
     const shards = []
-    await w3up.uploadCAR(new Blob([stat.carBytes]), {
+    const carBytesBlobLike = {
+      stream: () =>
+        new ReadableStream({
+          start(c) {
+            c.enqueue(stat.carBytes)
+            c.close()
+          },
+        }),
+    }
+    await w3up.uploadCAR(carBytesBlobLike, {
       onShardStored: ({ cid }) => {
         shards.push(cid)
       },
