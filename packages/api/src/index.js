@@ -50,7 +50,7 @@ const checkUcan = true
 
 // Debugging
 
-r.add('get', '/repl', repl)
+r.add('post', '/repl', repl)
 
 // Monitoring
 r.add('get', '/metrics', withMode(metrics, RO))
