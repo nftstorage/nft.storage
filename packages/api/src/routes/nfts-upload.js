@@ -181,7 +181,16 @@ export async function uploadCarWithStat(
     const { w3up } = ctx
 
     console.log('UPLOADING CAR')
-    await w3up.capability.store.add(car)
+
+    // we perform store/add and upload/add concurrently to save time.
+    await Promise.all([
+      w3up.capability.store.add(car),
+      // We create an upload for each CAR and use it's CID as a shard, which
+      // will work as expected because `upload/add` merges all shards.
+      // @ts-expect-error Link types mismatch
+      w3up.capability.upload.add(stat.rootCid, [stat.cid]),
+    ])
+
     console.log('UPLOADED CAR')
     // register as gateway links to record the CAR CID - we don't have another
     // way to know the location right now.

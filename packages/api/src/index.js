@@ -48,10 +48,6 @@ const checkHasDeleteRestriction = true
 const checkHasPsaAccess = true
 const checkUcan = true
 
-// Debugging
-
-r.add('post', '/repl', repl)
-
 // Monitoring
 r.add('get', '/metrics', withMode(metrics, RO))
 r.add('get', '/stats', withMode(getStats, RO), [postCors])
