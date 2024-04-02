@@ -11,16 +11,11 @@ export const repl = async (event, ctx) => {
       throw new HTTPError('empty payload', 400)
     }
 
-    const result = await w3up.uploadCAR(blob, {
-      onShardStored: ({ cid }) => {
-        console.log(`SHARD ${cid}`)
-      },
-      // @ts-expect-error TODO adjust upstream type
-      pieceHasher: null,
-    })
+    const car = await w3up.capability.store.add(blob)
+
     console.log('UPLOADED CAR')
 
-    return new JSONResponse({ ok: true, value: result })
+    return new JSONResponse({ ok: true, value: car })
   } else {
     throw new HTTPError(`No w3up client`, 500)
   }
