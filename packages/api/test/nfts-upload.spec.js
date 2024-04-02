@@ -153,14 +153,15 @@ test.serial('should forward uploads to W3UP_URL', async (t) => {
     'this upload sent one valid store/add invocation to w3up'
   )
 
-  const finalW3upUploadAddCount = mockW3upUploadAddCount
-  const uploadAddCountDelta =
-    finalW3upUploadAddCount - initialW3upUploadAddCount
-  t.is(
-    uploadAddCountDelta,
-    1,
-    'this upload sent one valid upload/add invocation to w3up'
-  )
+  // @todo re-enable or remove this. We may not ever need to do an upload/add, but haven't decided yet
+  // const finalW3upUploadAddCount = mockW3upUploadAddCount
+  // const uploadAddCountDelta =
+  //   finalW3upUploadAddCount - initialW3upUploadAddCount
+  // t.is(
+  //   uploadAddCountDelta,
+  //   1,
+  //   'this upload sent one valid upload/add invocation to w3up'
+  // )
 
   // if similar request is made by user not in W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS allow list,
   // that should not result in request to w3up
