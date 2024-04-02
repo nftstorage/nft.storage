@@ -181,7 +181,7 @@ export async function uploadCarWithStat(
     const { w3up } = ctx
 
     console.log('UPLOADING CAR')
-    w3up.capability.store.add(car)
+    await w3up.capability.store.add(car)
     console.log('UPLOADED CAR')
     // register as gateway links to record the CAR CID - we don't have another
     // way to know the location right now.
