@@ -4,6 +4,7 @@ import { CID } from 'multiformats'
 import { sha256 } from 'multiformats/hashes/sha2'
 import { CarWriter } from '@ipld/car/writer'
 import { MemoryBlockStore } from 'ipfs-car/blockstore/memory'
+import { createCarCid } from '../utils/car.js'
 import { importer as unixFsImporter } from 'ipfs-unixfs-importer'
 import { checkAuth } from '../utils/auth.js'
 import { setIn } from '../utils/utils.js'
@@ -66,13 +67,14 @@ export async function nftStore(event, ctx) {
   const size = totalSize(bs)
   const structure = 'Complete'
   const carBytes = await exportToCar(rootCid, bs)
+  const car = new Blob([carBytes])
 
   /** @type {import('./nfts-upload.js').CarStat} */
   const carStat = {
     rootCid,
     structure,
-    carBytes,
     size,
+    cid: await createCarCid(carBytes),
   }
 
   const upload = await uploadCarWithStat(
@@ -84,6 +86,7 @@ export async function nftStore(event, ctx) {
       uploadType: 'Nft',
       files: [],
       structure,
+      car,
     },
     carStat
   )

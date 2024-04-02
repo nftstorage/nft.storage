@@ -146,9 +146,7 @@ function w3upFeatureSwitchEnabled(context, event) {
  */
 export async function uploadCar(params) {
   console.log('UPLOAD CAR')
-  // We load whole thing into memory to derive stats but don't hold a reference
-  // so that it will get GC'd.
-  const stat = await carStat(new Uint8Array(await params.car.arrayBuffer()), {
+  const stat = await carStat(params.car, {
     structure: params.structure,
   })
 
@@ -321,12 +319,15 @@ export async function nftUpdateUpload(event, ctx) {
  * @property {import('multiformats').CID} cid CID of the CAR
  * @property {DagStructure} [structure] Completeness of the DAG within the CAR
  *
- * @param {Uint8Array} carBytes
+ * @param {Blob} carBlob
  * @param {Object} [options]
  * @param {DagStructure} [options.structure]
  * @returns {Promise<CarStat>}
  */
-export async function carStat(carBytes, { structure } = {}) {
+export async function carStat(carBlob, { structure } = {}) {
+  // We load whole thing into memory to derive stats but don't hold a reference
+  // so that it will get GC'd once function returns.
+  const carBytes = new Uint8Array(await carBlob.arrayBuffer())
   const cid = await createCarCid(carBytes)
   const blocksIterator = await CarBlockIterator.fromBytes(carBytes)
   const roots = await blocksIterator.getRoots()

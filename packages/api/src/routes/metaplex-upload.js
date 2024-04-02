@@ -54,6 +54,7 @@ export async function metaplexUpload(event, ctx) {
       files: [],
       structure: 'Unknown',
       meta,
+      car: blob,
     },
     stat
   )
