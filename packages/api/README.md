@@ -136,3 +136,55 @@ We use [pickup](https://github.com/web3-storage/pickup) to fetch DAGs from IPFS 
 - `PICKUP_BASIC_AUTH_TOKEN` must be set as a secret in the env.
 
 For local dev, we use a local ipfs-cluster container for the same service.
+
+## w3up
+
+Some uploads sent to nft.storage/api will be sent to up.web3.storage (aka 'w3up') for storage, serving on IPFS, and persistence to filecoin.
+
+All uploads sent to w3up will be stored in the same web3.storage space configured by env var `W3_NFTSTORAGE_SPACE`.
+
+### using console.web3.storage to browse uploads to w3up
+
+You can use console.web3.storage to browse uploads in the W3_NFTSTORAGE_SPACE.
+
+The DID used by your console.web3.storage session will need to be authorized to access the space.
+
+The credentials used in staging/production are in the usual vault of secrets under 'w3up credentials'.
+
+Run the cli command `w3up console ucan generate`
+
+```shell
+(
+  cd packages/api
+  node scripts/cli.js w3up console ucan generate
+)
+```
+
+If you see a prompt like "ID of subject that should be authorized":
+
+- you need to enter the ID of your console.web3.storage session. To get this, visit https://console.web3.storage/space/import. Look for "Send your DID to your friend". After that is a URI starting with `did:`. Copy that and enter it in the prompt.
+
+If you see a prompt like "space recovery key mnemonic":
+
+- look in the secrets vault for the mnemonic phrase labeled "Space Recovery Key". Copy that value into the prompt.
+
+If you see a prompt like "What name do you want to appear in console.web3.storage when this space is
+imported?":
+
+- enter whatever name you want that will help you distinguish this space from other spaces listed in console.web3.storage.
+
+If you see a prompt like "output ucan car to file /tmp/nftstorage-w3up-1712101390513.ucan.car?"
+
+- hit enter or type 'Y' to confirm
+
+Now a UCAN delegation has been written to a CAR file at a path like `/tmp/nftstorage-w3up-1712101390513.ucan.car`.
+
+To add this delegation to console.web3.storage:
+
+1. use a web browser to access https://console.web3.storage/space/import
+2. Click 'Import UCAN'. This should open a file picker
+3. Select the file generated from the last script, e.g. `/tmp/nftstorage-w3up-1712101390513.ucan.car`
+
+You should see 'Added' and a list containing the space with the name you chose when generating the UCAN CAR. Click 'View' to view the contents of the Space.
+
+After importing the space, it will also be listed in the space listing at https://console.web3.storage/.

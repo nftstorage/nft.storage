@@ -17,6 +17,7 @@ import {
 import { dbSqlCmd } from './cmds/db-sql.js'
 import { dbTypesCmd } from './cmds/db-types.js'
 import { minioBucketCreateCmd, minioBucketRemoveCmd } from './cmds/minio.js'
+import { requestW3upConsoleUcan } from './cmds/w3up-console-ucan-request.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const require = createRequire(__dirname)
@@ -135,5 +136,11 @@ prog
   .command('minio bucket remove <name>')
   .describe('Remove a bucket, automatically removing all contents')
   .action(minioBucketRemoveCmd)
+
+  .command('w3up console ucan generate')
+  .describe(
+    'request info to build and output a UCAN that can be imported into console.web3.storage to browse data nft.storage stores with w3up'
+  )
+  .action(requestW3upConsoleUcan)
 
 prog.parse(process.argv)
