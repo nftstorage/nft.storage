@@ -146,7 +146,9 @@ function w3upFeatureSwitchEnabled(context, event) {
  */
 export async function uploadCar(params) {
   console.log('UPLOAD CAR')
-  const stat = await carStat(params.car, {
+  // We load whole thing into memory to derive stats but don't hold a reference
+  // so that it will get GC'd.
+  const stat = await carStat(new Uint8Array(await params.car.arrayBuffer()), {
     structure: params.structure,
   })
 
@@ -154,22 +156,22 @@ export async function uploadCar(params) {
 }
 
 /**
- * @param {Omit<UploadCarInput, 'car'>} data
+ * @param {UploadCarInput} data
  * @param {CarStat} stat
  */
 export async function uploadCarWithStat(
-  { event, ctx, user, key, uploadType = 'Car', mimeType, files, meta },
+  { event, ctx, user, key, car, uploadType = 'Car', mimeType, files, meta },
   stat
 ) {
   console.log('UCWS')
   const sourceCid = stat.rootCid.toString()
   const contentCid = stat.rootCid.toV1().toString()
-  const carCid = await createCarCid(stat.carBytes)
+
   const metadata = {
     structure: stat.structure || 'Unknown',
     sourceCid,
     contentCid,
-    carCid: carCid.toString(),
+    carCid: stat.cid.toString(),
   }
 
   /** @type {(() => Promise<void>)|undefined} */
@@ -179,30 +181,13 @@ export async function uploadCarWithStat(
   if (ctx.w3up && w3upFeatureSwitchEnabled(ctx, { user })) {
     console.log('SWITCH ENABLED')
     const { w3up } = ctx
-    // should only be 1 - shard size in w3up is > max upload size in CF
-    /** @type {import('@web3-storage/w3up-client/types').CARLink[]} */
-    const shards = []
-    const carBytesBlobLike = {
-      stream: () =>
-        new ReadableStream({
-          start(c) {
-            c.enqueue(stat.carBytes)
-            c.close()
-          },
-        }),
-    }
+
     console.log('UPLOADING CAR')
-    await w3up.uploadCAR(carBytesBlobLike, {
-      onShardStored: ({ cid }) => {
-        shards.push(cid)
-      },
-      // @ts-expect-error TODO adjust upstream type
-      pieceHasher: null,
-    })
+    w3up.capability.store.add(car)
     console.log('UPLOADED CAR')
     // register as gateway links to record the CAR CID - we don't have another
     // way to know the location right now.
-    backupUrls.push(...shards.map((s) => new URL(`https://w3s.link/ipfs/${s}`)))
+    backupUrls.push(new URL(`https://w3s.link/ipfs/${stat.cid}`))
 
     if (stat.structure === 'Partial') {
       console.log('PARTIAL')
@@ -223,9 +208,10 @@ export async function uploadCarWithStat(
       }
     }
   } else {
+    const carBytes = new Uint8Array(await car.arrayBuffer())
     const [s3Backup, r2Backup] = await Promise.all([
-      ctx.s3Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
-      ctx.r2Uploader.uploadCar(stat.carBytes, carCid, user.id, metadata),
+      ctx.s3Uploader.uploadCar(carBytes, stat.cid, user.id, metadata),
+      ctx.r2Uploader.uploadCar(carBytes, stat.cid, user.id, metadata),
     ])
     backupUrls.push(s3Backup.url, r2Backup.url)
 
@@ -332,16 +318,16 @@ export async function nftUpdateUpload(event, ctx) {
  * @typedef {Object} CarStat
  * @property {number} [size] DAG size in bytes
  * @property {import('multiformats').CID} rootCid Root CID of the DAG
+ * @property {import('multiformats').CID} cid CID of the CAR
  * @property {DagStructure} [structure] Completeness of the DAG within the CAR
- * @property {Uint8Array} carBytes
  *
- * @param {Blob} carBlob
+ * @param {Uint8Array} carBytes
  * @param {Object} [options]
  * @param {DagStructure} [options.structure]
  * @returns {Promise<CarStat>}
  */
-export async function carStat(carBlob, { structure } = {}) {
-  const carBytes = new Uint8Array(await carBlob.arrayBuffer())
+export async function carStat(carBytes, { structure } = {}) {
+  const cid = await createCarCid(carBytes)
   const blocksIterator = await CarBlockIterator.fromBytes(carBytes)
   const roots = await blocksIterator.getRoots()
   if (roots.length === 0) {
@@ -406,7 +392,7 @@ export async function carStat(carBlob, { structure } = {}) {
       }
     }
   }
-  return { rootCid, size, structure, carBytes }
+  return { cid, rootCid, size, structure }
 }
 
 /**
