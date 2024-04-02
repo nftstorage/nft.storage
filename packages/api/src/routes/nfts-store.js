@@ -66,15 +66,14 @@ export async function nftStore(event, ctx) {
 
   const size = totalSize(bs)
   const structure = 'Complete'
-  const carBytes = await exportToCar(rootCid, bs)
-  const car = new Blob([carBytes])
+  const car = await exportToCar(rootCid, bs)
 
   /** @type {import('./nfts-upload.js').CarStat} */
   const carStat = {
     rootCid,
     structure,
     size,
-    cid: await createCarCid(carBytes),
+    cid: await createCarCid(new Uint8Array(await car.arrayBuffer())),
   }
 
   const upload = await uploadCarWithStat(
@@ -198,10 +197,8 @@ async function exportToCar(rootCid, bs) {
   for await (const part of out) {
     parts.push(part)
   }
-  const car = new Blob(parts)
-  // @ts-expect-error
-  parts = null
-  return new Uint8Array(await car.arrayBuffer())
+
+  return new Blob(parts)
 }
 
 /**
