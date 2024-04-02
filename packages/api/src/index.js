@@ -35,7 +35,6 @@ import {
 } from './middleware/maintenance.js'
 import { getContext } from './utils/context.js'
 import { withAuth } from './middleware/auth.js'
-import { repl } from './repl.js'
 
 const r = new Router(getContext, {
   onError(req, err, ctx) {
@@ -47,10 +46,6 @@ const checkHasAccountRestriction = true
 const checkHasDeleteRestriction = true
 const checkHasPsaAccess = true
 const checkUcan = true
-
-// Debugging
-
-r.add('post', '/repl', repl)
 
 // Monitoring
 r.add('get', '/metrics', withMode(metrics, RO))
