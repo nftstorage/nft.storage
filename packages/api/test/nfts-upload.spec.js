@@ -330,92 +330,91 @@ test.serial('should upload a single CAR file', async (t) => {
   t.is(data.content.dag_size, 15, 'correct dag size')
 })
 
-test.serial(
-  'should check dag completness with linkdex-api for partial CAR',
-  async (t) => {
-    const client = await createClientWithUser(t)
-    const config = getTestServiceConfig(t)
-    const mf = getMiniflareContext(t)
+// TODO verify with @alanshaw that we don't need to do this in the new upload flow
+// TODO remove this once we remove legacy uploads
+test.skip('should check dag completness with linkdex-api for partial CAR', async (t) => {
+  const client = await createClientWithUser(t)
+  const config = getTestServiceConfig(t)
+  const mf = getMiniflareContext(t)
 
-    const leaf1 = await Block.encode({
-      value: pb.prepare({ Data: 'leaf1' }),
-      codec: pb,
-      hasher: sha256,
-    })
-    const leaf2 = await Block.encode({
-      value: pb.prepare({ Data: 'leaf2' }),
-      codec: pb,
-      hasher: sha256,
-    })
-    const parent = await Block.encode({
-      value: pb.prepare({ Links: [leaf1.cid, leaf2.cid] }),
-      codec: pb,
-      hasher: sha256,
-    })
-    const cid = parent.cid.toString()
-    const { writer, out } = CarWriter.create(parent.cid)
-    writer.put(parent)
-    writer.put(leaf1)
-    // leave out leaf2 to make patial car
-    writer.close()
-    const carBytes = []
-    for await (const chunk of out) {
-      carBytes.push(chunk)
-    }
-    const body = new Blob(carBytes)
-
-    if (!config.LINKDEX_URL) {
-      throw new Error('LINDEX_URL should be set in test config')
-    }
-
-    const linkdexMock = getLinkdexMock(t)
-    mockLinkdexResponse(linkdexMock, 'Complete')
-
-    const res = await mf.dispatchFetch('http://miniflare.test/upload', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${client.token}`,
-        'Content-Type': 'application/car',
-      },
-      body,
-    })
-
-    t.truthy(res, 'Server responded')
-    t.true(res.ok, 'Server response ok')
-    const { ok, value } = await res.json()
-    t.truthy(ok, 'Server response payload has `ok` property')
-    t.is(value.cid, cid, 'Server responded with expected CID')
-    t.is(value.type, 'application/car', 'type should match blob mime-type')
-
-    const db = getRawClient(config)
-
-    const { data: upload } = await db
-      .from('upload')
-      .select('*')
-      .match({ source_cid: cid, user_id: client.userId })
-      .single()
-
-    // @ts-ignore
-    t.is(upload.source_cid, cid)
-    t.is(upload.deleted_at, null)
-
-    // wait for the call to mock linkdex-api to complete
-    await res.waitUntil()
-    const { data: pin } = await db
-      .from('pin')
-      .select('*')
-      .match({ content_cid: cid, service: 'ElasticIpfs' })
-      .single()
-
-    t.is(
-      pin.status,
-      'Pinned',
-      "Status should be pinned when linkdex-api returns 'Complete'"
-    )
-    t.is(pin.service, 'ElasticIpfs')
-    t.is(pin.status, 'Pinned')
+  const leaf1 = await Block.encode({
+    value: pb.prepare({ Data: 'leaf1' }),
+    codec: pb,
+    hasher: sha256,
+  })
+  const leaf2 = await Block.encode({
+    value: pb.prepare({ Data: 'leaf2' }),
+    codec: pb,
+    hasher: sha256,
+  })
+  const parent = await Block.encode({
+    value: pb.prepare({ Links: [leaf1.cid, leaf2.cid] }),
+    codec: pb,
+    hasher: sha256,
+  })
+  const cid = parent.cid.toString()
+  const { writer, out } = CarWriter.create(parent.cid)
+  writer.put(parent)
+  writer.put(leaf1)
+  // leave out leaf2 to make patial car
+  writer.close()
+  const carBytes = []
+  for await (const chunk of out) {
+    carBytes.push(chunk)
   }
-)
+  const body = new Blob(carBytes)
+
+  if (!config.LINKDEX_URL) {
+    throw new Error('LINDEX_URL should be set in test config')
+  }
+
+  const linkdexMock = getLinkdexMock(t)
+  mockLinkdexResponse(linkdexMock, 'Complete')
+
+  const res = await mf.dispatchFetch('http://miniflare.test/upload', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${client.token}`,
+      'Content-Type': 'application/car',
+    },
+    body,
+  })
+
+  t.truthy(res, 'Server responded')
+  t.true(res.ok, 'Server response ok')
+  const { ok, value } = await res.json()
+  t.truthy(ok, 'Server response payload has `ok` property')
+  t.is(value.cid, cid, 'Server responded with expected CID')
+  t.is(value.type, 'application/car', 'type should match blob mime-type')
+
+  const db = getRawClient(config)
+
+  const { data: upload } = await db
+    .from('upload')
+    .select('*')
+    .match({ source_cid: cid, user_id: client.userId })
+    .single()
+
+  // @ts-ignore
+  t.is(upload.source_cid, cid)
+  t.is(upload.deleted_at, null)
+
+  // wait for the call to mock linkdex-api to complete
+  await res.waitUntil()
+  const { data: pin } = await db
+    .from('pin')
+    .select('*')
+    .match({ content_cid: cid, service: 'ElasticIpfs' })
+    .single()
+
+  t.is(
+    pin.status,
+    'Pinned',
+    "Status should be pinned when linkdex-api returns 'Complete'"
+  )
+  t.is(pin.service, 'ElasticIpfs')
+  t.is(pin.status, 'Pinned')
+})
 
 test.serial('should allow a CAR with unsupported hash function', async (t) => {
   const client = await createClientWithUser(t)
