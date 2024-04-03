@@ -11,6 +11,7 @@
     "dev": "miniflare dist/worker.js --watch --debug --env ../../.env",
     "dev:persist": "PERSIST_VOLUMES=true npm run dev",
     "build": "scripts/cli.js build",
+    "w3up:console:ucan:generate": "scripts/cli.js w3up console ucan generate",
     "pretest": "tsc",
     "test": "./docker/run-with-dependencies.sh ./scripts/run-test.sh",
     "db-types": "./scripts/cli.js db-types"
@@ -50,6 +51,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.17.0",
+    "@inquirer/prompts": "^4.3.1",
     "@miniflare/core": "^2.10.0",
     "@sentry/cli": "^1.71.0",
     "@sentry/webpack-plugin": "^1.16.0",
