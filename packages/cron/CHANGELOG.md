@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.0](https://github.com/nftstorage/nft.storage/compare/cron-v3.5.0...cron-v3.6.0) (2024-04-03)
+
+
+### Features
+
+* POST /uploads can write uploads to w3up for web3 serving and dagcargoless filecoin deal-making ([#2522](https://github.com/nftstorage/nft.storage/issues/2522)) ([0c77cb3](https://github.com/nftstorage/nft.storage/commit/0c77cb3646586b1a802e8c8ca2e8c54d0a006f56))
+
 ## [3.5.0](https://github.com/nftstorage/nft.storage/compare/cron-v3.4.0...cron-v3.5.0) (2022-07-01)
 
 
