@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.9.0](https://github.com/nftstorage/nft.storage/compare/website-v2.8.5...website-v2.9.0) (2024-04-04)
+
+
+### Features
+
+* POST /uploads can write uploads to w3up for web3 serving and dagcargoless filecoin deal-making ([#2522](https://github.com/nftstorage/nft.storage/issues/2522)) ([0c77cb3](https://github.com/nftstorage/nft.storage/commit/0c77cb3646586b1a802e8c8ca2e8c54d0a006f56))
+
+
+### Bug Fixes
+
+* pin tailwind to version used in production ([#2528](https://github.com/nftstorage/nft.storage/issues/2528)) ([64239e7](https://github.com/nftstorage/nft.storage/commit/64239e73466d76031764bdfe9decd54e8b3ef9dc))
+* use correct API URL for classic.nft.storage ([#2558](https://github.com/nftstorage/nft.storage/issues/2558)) ([cca7d5b](https://github.com/nftstorage/nft.storage/commit/cca7d5b0413b72f2bb18ad75c88b12ce2f66c3d8))
+
 ## [2.8.5](https://github.com/nftstorage/nft.storage/compare/website-v2.8.4...website-v2.8.5) (2023-07-24)
 
 
