@@ -173,7 +173,7 @@ test.serial('should forward uploads to W3UP_URL', async (t) => {
       headers: { Authorization: `Bearer ${client2.token}` },
       body: file,
     })
-    // should not have incremented
+    // should have incremented because feature switch allows w3up for all uploaders
     t.is(mockW3upStoreAddCount, storeAddCountBeforeClient2 + 1)
   }
 })
