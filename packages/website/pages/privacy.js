@@ -425,10 +425,10 @@ export default function Privacy() {
             opt-out preference signal.
           </li>
           <li>
-            Do Not Track. Some browsers include a "Do Not Track" (DNT) setting
-            that can send a signal to the websites you visit indicating you do
-            not wish to be tracked. Unlike the GPC described above, there is not
-            a common understanding of how to interpret the DNT signal;
+            Do Not Track. Some browsers include a &quot;Do Not Track&quot; (DNT)
+            setting that can send a signal to the websites you visit indicating
+            you do not wish to be tracked. Unlike the GPC described above, there
+            is not a common understanding of how to interpret the DNT signal;
             therefore, our websites do not respond to browser DNT signals.
             Instead, you can use the range of other tools to control data
             collection and use, including the GPC, cookie controls, and
@@ -651,10 +651,10 @@ export default function Privacy() {
         <p>
           We will update this privacy statement when necessary to reflect
           changes in our services, how we use personal data, or the applicable
-          law. When we post changes to the statement, we will revise the "Last
-          Updated" date at the top of the statement. If we make material changes
-          to the statement, we will provide notice or obtain consent regarding
-          such changes as may be required by law.
+          law. When we post changes to the statement, we will revise the
+          &quot;Last Updated&quot; date at the top of the statement. If we make
+          material changes to the statement, we will provide notice or obtain
+          consent regarding such changes as may be required by law.
         </p>
         <p>HOW TO CONTACT US</p>
         <p>
