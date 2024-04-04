@@ -106,6 +106,16 @@ export default function Footer() {
         </span>
         <Dot />
         <span className="block lg:inline-block my-4">
+          <Link
+            href="/privacy"
+            className="nspink no-underline underline-hover align-middle"
+            onClick={onLinkClick}
+          >
+            Privacy
+          </Link>
+        </span>
+        <Dot />
+        <span className="block lg:inline-block my-4">
           <span className="align-middle">Need Help? </span>
           <a
             href="https://github.com/nftstorage/nft.storage/issues/new"

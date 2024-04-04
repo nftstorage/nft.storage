@@ -6,6 +6,7 @@ import { getStatusPageSummary } from '../lib/statuspage-api'
 import { getVersion } from '../lib/api'
 import { useQuery } from 'react-query'
 import { useUser } from '../lib/user'
+import { DeprecationBanner } from './deprecationBanner.js'
 
 const MaintenanceBanner = () => {
   let bannerMessage = ''
@@ -133,6 +134,7 @@ export default function Layout({
       ) : (
         <>
           <MaintenanceBanner />
+          <DeprecationBanner />
           <Navbar bgColor={navBgColor} logo={logo} user={user} />
           <div className="flex flex-col flex-auto">{children({ user })}</div>
           <Footer />

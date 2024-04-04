@@ -18,6 +18,10 @@ export default function TermsOfService() {
   return (
     <main className="bg-nspeach grow">
       <div className="max-w-7xl mx-auto p-8 sm:p-16">
+        <h4 className="mb-8 text-lg">
+          For the NFT.Storage ToS, see{' '}
+          <a href="https://nft.storage/terms">https://nft.storage/terms</a>
+        </h4>
         <h1 className="chicagoflf">
           <HashLink id="terms-of-service">Terms of Service</HashLink>
         </h1>
@@ -97,14 +101,15 @@ export default function TermsOfService() {
           deal.
         </p>
         <p className="leading-normal my-2">
-          We have the right (though not the obligation) to, in our sole discretion 
-          (i) refuse or remove any Content; (ii) block uploads, or (iii) temporarily 
-          or permanently suspend access to your account if, in our reasonable opinion, 
-          there has been a breach of this TOS in any way for any reason. Additionally, 
-          we have the right to temporarily or permanently suspend access to accounts 
-          linked to temporary email addressees, email addresses created 
-          programmatically such as via bots, or hacked email addresses if we suspect 
-          these user accounts will be used in a manner that violates this TOS.
+          We have the right (though not the obligation) to, in our sole
+          discretion (i) refuse or remove any Content; (ii) block uploads, or
+          (iii) temporarily or permanently suspend access to your account if, in
+          our reasonable opinion, there has been a breach of this TOS in any way
+          for any reason. Additionally, we have the right to temporarily or
+          permanently suspend access to accounts linked to temporary email
+          addressees, email addresses created programmatically such as via bots,
+          or hacked email addresses if we suspect these user accounts will be
+          used in a manner that violates this TOS.
         </p>
 
         <h2 className="chicagoflf">
@@ -142,29 +147,6 @@ export default function TermsOfService() {
             DMCA Policy
           </a>
           .
-        </p>
-
-        <h2 className="chicagoflf">
-          <HashLink id="superhot">SuperHot Caching Service</HashLink>
-        </h2>
-        <p className="leading-normal my-2">
-          Use of the SuperHot caching service (“Superhot”) is also subject to the Terms 
-          of Service of{' '}
-          <a className="black" href="https://discuss.ipfs.io/tos">
-            IPFS.io
-          </a>
-          .
-        </p>
-        <p className="leading-normal my-2">
-          Protocol Labs reserves the right to delete cached content from servers 
-          managed or controlled by Protocol Labs if we determine that the content 
-          violates the Terms of Service of IPFS.io.  For severe violations, or if 
-          we determine you are a repeat infringer of others’ copyrighted content, 
-          we reserve the right to suspend or terminate your use of SuperHot and/or 
-          all Services. Protocol Labs may collect analytics data on the usage of 
-          SuperHot, including data on requests, retrieval speeds, CIDs, and other 
-          performance data. Protocol Labs reserves all rights in and to such 
-          performance data and analytics.
         </p>
       </div>
     </main>

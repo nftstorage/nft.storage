@@ -284,3 +284,27 @@ export class ErrorAgentDIDRequired extends HTTPError {
   }
 }
 ErrorAgentDIDRequired.CODE = 'ERROR_AGENT_DID_REQUIRED'
+
+/**
+ * Error indicating a new user signup was denied and probably will be indefinitely,
+ * and the user should try a new product instead.
+ */
+export class NewUserDeniedTryOtherProductError extends HTTPError {
+  /**
+   * @param {string} message
+   * @param {URL} otherProduct
+   */
+  constructor(message, otherProduct) {
+    super(message, 403)
+    this.code = 'NEW_USER_DENIED_TRY_OTHER_PRODUCT'
+    this.otherProduct = otherProduct
+  }
+
+  toJSON() {
+    return {
+      message: this.message,
+      code: this.code,
+      otherProduct: this.otherProduct.toString(),
+    }
+  }
+}
