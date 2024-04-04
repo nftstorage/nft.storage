@@ -20,6 +20,7 @@ if (globalThis.window) {
       MAGIC_TOKEN = 'pk_live_9363234DECD6F093'
       break
     case 'nft.storage':
+    case 'classic.nft.storage':
       API = 'https://api.nft.storage'
       MAGIC_TOKEN = 'pk_live_20429A8C4CDEDCF7'
       break
