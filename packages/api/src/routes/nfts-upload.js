@@ -117,13 +117,13 @@ export async function nftUpload(event, ctx) {
  * @param {string} event.user.email - email address of user associated with event
  */
 function w3upFeatureSwitchEnabled(context, event) {
-  const { W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS = '[]' } = context
-  const allowedEmails = JSON.parse(W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS)
-  if (!Array.isArray(allowedEmails)) return false
-  const eventHasAllowedEmail = allowedEmails.find(
-    (allowed) => allowed === event.user.email
-  )
-  return eventHasAllowedEmail
+  // const { W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS = '[]' } = context
+  // const allowedEmails = JSON.parse(W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS)
+  // if (!Array.isArray(allowedEmails)) return false
+  // const eventHasAllowedEmail = allowedEmails.find(
+  //   (allowed) => allowed === event.user.email
+  // )
+  return true
 }
 
 /**
