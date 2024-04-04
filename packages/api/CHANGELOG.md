@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.7.0](https://github.com/nftstorage/nft.storage/compare/api-v4.6.0...api-v4.7.0) (2024-04-04)
+
+
+### Features
+
+* NFT.storage changes ([#2560](https://github.com/nftstorage/nft.storage/issues/2560)) ([1903214](https://github.com/nftstorage/nft.storage/commit/19032140691806e07cf3b013e2afaeb01d6d8459))
+
 ## [4.6.0](https://github.com/nftstorage/nft.storage/compare/api-v4.5.0...api-v4.6.0) (2024-04-04)
 
 
