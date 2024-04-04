@@ -554,15 +554,7 @@ export default function Files({ user }) {
               'flex justify-center pt-4',
               status === 'loading' && 'hidden'
             )}
-          >
-            <Button
-              data-tf-popup="OTxv3w2O"
-              className="mx-4 mb-4"
-              variant="dark"
-            >
-              {'Tell us how we are doing'}
-            </Button>
-          </div>
+          ></div>
         </div>
       </main>
     </>
