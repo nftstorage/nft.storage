@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.6.0](https://github.com/nftstorage/nft.storage/compare/api-v4.5.0...api-v4.6.0) (2024-04-04)
+
+
+### Features
+
+* added script to generate ucan for w3up space and docs for how to access the space using console.web3.storage ([#2554](https://github.com/nftstorage/nft.storage/issues/2554)) ([ad33faf](https://github.com/nftstorage/nft.storage/commit/ad33faf83ae1c994f040f6ad1539496b16ad264a))
+* lock w3up uploads feature switch open ([#2556](https://github.com/nftstorage/nft.storage/issues/2556)) ([6eeefeb](https://github.com/nftstorage/nft.storage/commit/6eeefebe8a54f4db9e4826cba4a0847ae8ec2d14))
+
 ## [4.5.0](https://github.com/nftstorage/nft.storage/compare/api-v4.4.3...api-v4.5.0) (2024-04-02)
 
 
