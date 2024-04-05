@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.10.0](https://github.com/nftstorage/nft.storage/compare/website-v2.9.0...website-v2.10.0) (2024-04-04)
+
+
+### Features
+
+* NFT.storage changes ([#2560](https://github.com/nftstorage/nft.storage/issues/2560)) ([1903214](https://github.com/nftstorage/nft.storage/commit/19032140691806e07cf3b013e2afaeb01d6d8459))
+
 ## [2.9.0](https://github.com/nftstorage/nft.storage/compare/website-v2.8.5...website-v2.9.0) (2024-04-04)
 
 
