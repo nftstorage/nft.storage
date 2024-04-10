@@ -1,12 +1,14 @@
 import * as W3UP from '@web3-storage/w3up-client'
 import * as ed25519 from '@ucanto/principal/ed25519'
 import { StoreMemory } from '@web3-storage/access/stores/store-memory'
+import contentClaims from '@web3-storage/content-claims/client'
 import { CID } from 'multiformats/cid'
 import { base64 } from 'multiformats/bases/base64'
 import { identity } from 'multiformats/hashes/identity'
 import { CarReader } from '@ipld/car'
 import { importDAG } from '@ucanto/core/delegation'
 import * as W3upClient from '@web3-storage/w3up-client'
+import { parseLink } from '@ucanto/core'
 import { connect } from '@ucanto/client'
 import { CAR, HTTP } from '@ucanto/transport'
 
@@ -105,4 +107,82 @@ export async function createW3upClientFromConfig(options) {
   })
   await w3up.addSpace(await parseW3Proof(options.proof))
   return w3up
+}
+
+/**
+ *
+ * @param {W3upClient.Client} client
+ * @param {import('@web3-storage/upload-client/types').UploadListItem} upload
+ * @returns {Promise<import('@web3-storage/access').Result<import('@web3-storage/access').FilecoinInfoSuccess>[]>}
+ */
+async function getFilecoinInfos(client, upload) {
+  return await Promise.all(
+    // for each shard of the upload
+    upload.shards
+      ? upload.shards.map(async (shard) => {
+          // find the equivalent piece link
+          const pieceClaims = await contentClaims.read(shard)
+          const pieceClaim =
+            /** @type {import('@web3-storage/content-claims/client/api').EqualsClaim} */ (
+              pieceClaims.find((c) => c.type === 'assert/equals')
+            )
+          if (pieceClaim) {
+            const pieceLink = pieceClaim.equals
+            // and get filecoin info for it
+            const filecoinInfo = await client.capability.filecoin.info(
+              /** @type {import('@web3-storage/access').PieceLink} */ (
+                pieceLink
+              )
+            )
+            return filecoinInfo.out
+          } else {
+            return {
+              error: {
+                name: 'PieceLinkClaimNotFound',
+                message: `could not find piece link equivalent of ${shard}`,
+              },
+            }
+          }
+        })
+      : []
+  )
+}
+
+/**
+ *
+ * @param {W3upClient.Client | undefined} client
+ * @param {string} contentCid
+ * @returns {Promise<import('../bindings').Deal[]>}
+ */
+export async function getW3upDeals(client, contentCid) {
+  if (client) {
+    const link = parseLink(contentCid)
+    // get the upload
+    const upload = await client.capability.upload.get(link)
+    const filecoinInfoResults = await getFilecoinInfos(client, upload)
+    /**
+     * @type {import('../bindings').Deal[]}
+     */
+    const filecoinInfos = []
+    for (const result of filecoinInfoResults) {
+      if (result.ok) {
+        const info = result.ok
+        for (const deal of info.deals) {
+          filecoinInfos.push({
+            pieceCid: info.piece.toString(),
+            status: 'published',
+            // TODO: figure these two out
+            datamodelSelector: '',
+            batchRootCid: deal.aggregate,
+          })
+        }
+      } else {
+        // @ts-expect-error - in practice this will just be undefined if message doesn't exist
+        console.warn(`error getting filecoininfo: ${result.error.message}`)
+      }
+    }
+    return filecoinInfos
+  } else {
+    return []
+  }
 }

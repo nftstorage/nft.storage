@@ -2555,7 +2555,7 @@
     cborg "^1.6.0"
     multiformats "^9.5.4"
 
-"@ipld/dag-cbor@^9.0.0", "@ipld/dag-cbor@^9.0.5", "@ipld/dag-cbor@^9.0.6", "@ipld/dag-cbor@^9.0.7":
+"@ipld/dag-cbor@^9.0.0", "@ipld/dag-cbor@^9.0.3", "@ipld/dag-cbor@^9.0.5", "@ipld/dag-cbor@^9.0.6", "@ipld/dag-cbor@^9.0.7":
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/@ipld/dag-cbor/-/dag-cbor-9.2.0.tgz#3a3f0bee02d7e1c2f15582e896843d5b00fbba9f"
   integrity sha512-N14oMy0q4gM6OuZkIpisKe0JBSjf1Jb39VI+7jMLiWX9124u1Z3Fdj/Tag1NA0cVxxqWDh0CqsjcVfOKtelPDA==
@@ -5496,6 +5496,25 @@
     "@ucanto/core" "^9.0.0"
     "@ucanto/interface" "^9.0.0"
 
+"@ucanto/client@^9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@ucanto/client/-/client-9.0.1.tgz#ecff79d4f1f56915db11cb6be083764b612afe2b"
+  integrity sha512-cV8w3AnaZaYCdUmyFFICj8YhFckDoy2DvWgAzGDMkPz0WbUW4lw9Tjm4hEE8x5kiP47wYej/pHKWCcoELiU0qw==
+  dependencies:
+    "@ucanto/core" "^10.0.0"
+    "@ucanto/interface" "^10.0.0"
+
+"@ucanto/core@^10.0.0":
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/@ucanto/core/-/core-10.0.1.tgz#3df9c875742e8c38461d628878a94b4a1c8a3b4f"
+  integrity sha512-1BfUaJu0/c9Rl/WdZSDbScJJLsPsPe1g4ynl5kubUj3xDD/lyp/Q12PQVQ2X7hDiWwkpwmxCkRMkOxwc70iNKQ==
+  dependencies:
+    "@ipld/car" "^5.1.0"
+    "@ipld/dag-cbor" "^9.0.0"
+    "@ipld/dag-ucan" "^3.4.0"
+    "@ucanto/interface" "^10.0.1"
+    multiformats "^11.0.2"
+
 "@ucanto/core@^9.0.0", "@ucanto/core@^9.0.1":
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/@ucanto/core/-/core-9.0.1.tgz#5de481c5d63acc50e287580ee06ac6f2872036ec"
@@ -5505,6 +5524,14 @@
     "@ipld/dag-cbor" "^9.0.0"
     "@ipld/dag-ucan" "^3.4.0"
     "@ucanto/interface" "^9.0.0"
+    multiformats "^11.0.2"
+
+"@ucanto/interface@^10.0.0", "@ucanto/interface@^10.0.1":
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/@ucanto/interface/-/interface-10.0.1.tgz#939f62237e8b0c1cf0e7f7f2c4753fe3bbfc505b"
+  integrity sha512-+Vr/N4mLsdynV9/bqtdFiq7WsUf3265/Qx2aHJmPtXo9/QvWKthJtpe0g8U4NWkWpVfqIFvyAO2db6D9zWQfQw==
+  dependencies:
+    "@ipld/dag-ucan" "^3.4.0"
     multiformats "^11.0.2"
 
 "@ucanto/interface@^9.0.0":
@@ -5528,6 +5555,16 @@
     multiformats "^11.0.2"
     one-webcrypto "^1.0.3"
 
+"@ucanto/server@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@ucanto/server/-/server-10.0.0.tgz#b3409c38cb792319418d7b7519fa890e89c025dd"
+  integrity sha512-JMDMT3tFRE0S1cdtx/Hhh7v9FizV6IS0fPrh6pcli7AzKvXVy8Xu6EQ/66Fax4AQM2tkGxNNxjj2wHM7P4CqAg==
+  dependencies:
+    "@ucanto/core" "^10.0.0"
+    "@ucanto/interface" "^10.0.0"
+    "@ucanto/principal" "^9.0.0"
+    "@ucanto/validator" "^9.0.1"
+
 "@ucanto/server@^9.0.1":
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/@ucanto/server/-/server-9.0.1.tgz#949d38bd2dad30991220f5839608434d400c0bfc"
@@ -5545,6 +5582,14 @@
   dependencies:
     "@ucanto/core" "^9.0.1"
     "@ucanto/interface" "^9.0.0"
+
+"@ucanto/transport@^9.1.1":
+  version "9.1.1"
+  resolved "https://registry.yarnpkg.com/@ucanto/transport/-/transport-9.1.1.tgz#05f1246982a46365d051242d750948e07be29376"
+  integrity sha512-3CR17nEemOVaTuMZa6waWgVL4sLxSPcxYvpaNeJ6NZo1rfsqdyRXOtbVV/RcI2BtUL0Cao6JM6P9+gdghfc5ng==
+  dependencies:
+    "@ucanto/core" "^10.0.0"
+    "@ucanto/interface" "^10.0.0"
 
 "@ucanto/validator@^9.0.0", "@ucanto/validator@^9.0.1":
   version "9.0.1"
@@ -5690,6 +5735,18 @@
     "@multiformats/sha3" "^2.0.15"
     multiformats "9.9.0"
     uint8arrays "^3.1.1"
+
+"@web3-storage/content-claims@^4.0.4":
+  version "4.0.4"
+  resolved "https://registry.yarnpkg.com/@web3-storage/content-claims/-/content-claims-4.0.4.tgz#f92d74979baa4fdaba0fb6a75d393e1da8fc8843"
+  integrity sha512-zt5psR3SkLbPPHzGzhFXYSJEssDl/ELYbNhEez+tNZLZiagv3Vl0RSt+x3CFFgR5ovO6Zn+pLJJcMjpMiHw0Yw==
+  dependencies:
+    "@ucanto/client" "^9.0.1"
+    "@ucanto/interface" "^10.0.0"
+    "@ucanto/server" "^10.0.0"
+    "@ucanto/transport" "^9.1.1"
+    carstream "^1.0.2"
+    multiformats "^12.0.1"
 
 "@web3-storage/data-segment@^3.2.0":
   version "3.2.0"
@@ -7728,6 +7785,15 @@ cardex@^1.0.0:
     sade "^1.8.1"
     uint8arrays "^3.0.0"
     varint "^6.0.0"
+
+carstream@^1.0.2:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/carstream/-/carstream-1.1.1.tgz#4a088015d0b39436baa9e1afc205c0284bd1d111"
+  integrity sha512-cgn3TqHo6SPsHBTfM5QgXngv6HtwgO1bKCHcdS35vBrweLcYrIG/+UboCbvnIGA0k8NtAYl/DvDdej/9pZGZxQ==
+  dependencies:
+    "@ipld/dag-cbor" "^9.0.3"
+    multiformats "^12.0.1"
+    uint8arraylist "^2.4.3"
 
 case-sensitive-paths-webpack-plugin@^2.3.0:
   version "2.4.0"
@@ -18208,15 +18274,10 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@2.5.1, prettier@^2.5.1:
+prettier@2.5.1, "prettier@>=2.2.1 <=2.3.0", prettier@^2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.5.1.tgz#fff75fa9d519c54cf0fce328c1017d94546bc56a"
   integrity sha512-vBZcPRUR5MZJwoyi3ZoyQlc1rXeEck8KgeC9AwwOn+exuxLxq5toTRDTSaVrXHxelDMHy9zlicw8u66yxoSUFg==
-
-"prettier@>=2.2.1 <=2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.3.0.tgz#b6a5bf1284026ae640f17f7ff5658a7567fc0d18"
-  integrity sha512-kXtO4s0Lz/DW/IJ9QdWhAf7/NmPWQXkFr/r/WkR3vyI+0v8amTDxiaQSLzs8NBlytfLWX/7uQUMIW677yLKl4w==
 
 pretty-error@^2.1.1:
   version "2.1.2"
@@ -21703,6 +21764,13 @@ uglify-js@^3.1.4:
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.17.0.tgz#55bd6e9d19ce5eef0d5ad17cd1f587d85b180a85"
   integrity sha512-aTeNPVmgIMPpm1cxXr2Q/nEbvkmV8yq66F3om7X3P/cvOXQ0TMQ64Wk63iyT1gPlmdmGzjGpyLh1f3y8MZWXGg==
 
+uint8arraylist@^2.4.3:
+  version "2.4.8"
+  resolved "https://registry.yarnpkg.com/uint8arraylist/-/uint8arraylist-2.4.8.tgz#5a4d17f4defd77799cb38e93fd5db0f0dceddc12"
+  integrity sha512-vc1PlGOzglLF0eae1M8mLRTBivsvrGsdmJ5RbK3e+QRvRLOZfZhQROTwH/OfyF3+ZVUg9/8hE8bmKP2CvP9quQ==
+  dependencies:
+    uint8arrays "^5.0.1"
+
 uint8arrays@^2.0.5, uint8arrays@^2.1.3, uint8arrays@^2.1.5:
   version "2.1.10"
   resolved "https://registry.yarnpkg.com/uint8arrays/-/uint8arrays-2.1.10.tgz#34d023c843a327c676e48576295ca373c56e286a"
@@ -21730,6 +21798,13 @@ uint8arrays@^4.0.6:
   integrity sha512-AnJNUGGDJAgFw/eWu/Xb9zrVKEGlwJJCaeInlf3BkecE/zcTobk5YXYIPNQJO1q5Hh1QZrQQHf0JvcHqz2hqoA==
   dependencies:
     multiformats "^12.0.1"
+
+uint8arrays@^5.0.1:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/uint8arrays/-/uint8arrays-5.0.3.tgz#92b894d9c4269ba97c51544d6e1f279fe6f80d1f"
+  integrity sha512-6LBuKji28kHjgPJMkQ6GDaBb1lRwIhyOYq6pDGwYMoDPfImE9SkuYENVmR0yu9yGgs2clHUSY9fKDukR+AXfqQ==
+  dependencies:
+    multiformats "^13.0.0"
 
 unbox-primitive@^1.0.2:
   version "1.0.2"

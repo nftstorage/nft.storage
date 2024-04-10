@@ -5,9 +5,18 @@ import {
   getMiniflareContext,
   setupMiniflareContext,
 } from './scripts/test-context.js'
+import { read } from '@web3-storage/content-claims/client'
+import { parseLink } from '@ucanto/core'
 
 test.before(async (t) => {
   await setupMiniflareContext(t)
+})
+
+test.only('should fetch deal details from w3up', async (t) => {
+  const testCid = 'bafybeiccy35oi3gajocq5bbg7pnaxb3kv5ibtdz3tc3kari53qhbjotzey'
+  const link = parseLink(testCid)
+  const claims = await read(link)
+  console.log('CLAIMS', claims)
 })
 
 test.serial('should return proper response for cid v1', async (t) => {

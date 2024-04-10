@@ -429,7 +429,7 @@ export class DBClient {
 
     const cids = uploads?.map((u) => u.content_cid)
 
-    const deals = await this.getDealsForCids(cids)
+    const deals = await this.getDealsFromDagcargoFDW(cids)
 
     return uploads?.map((u) => {
       return {
@@ -515,7 +515,7 @@ export class DBClient {
    * @returns {Promise<import('./../bindings').Deal[]>}
    */
   async getDeals(cid) {
-    const deals = await this.getDealsForCids([cid])
+    const deals = await this.getDealsFromDagcargoFDW([cid])
 
     return deals[cid] ? deals[cid] : []
   }
@@ -527,7 +527,7 @@ export class DBClient {
    *
    * @param {string[]} cids
    */
-  async getDealsForCids(cids = []) {
+  async getDealsFromDagcargoFDW(cids = []) {
     try {
       const rsp = await this.client.rpc('find_deals_by_content_cids', {
         cids,

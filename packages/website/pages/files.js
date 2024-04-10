@@ -165,6 +165,9 @@ export default function Files({ user }) {
 
     const dealsHidden = deals.splice(3)
 
+    const [w3upDeals, setW3upDeals] = useState([])
+    async function loadW3upDeals() {}
+
     if (!nft.deals.length) {
       deals.push(
         <span
