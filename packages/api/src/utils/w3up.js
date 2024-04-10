@@ -1,7 +1,7 @@
 import * as W3UP from '@web3-storage/w3up-client'
 import * as ed25519 from '@ucanto/principal/ed25519'
 import { StoreMemory } from '@web3-storage/access/stores/store-memory'
-import contentClaims from '@web3-storage/content-claims/client'
+import * as contentClaims from '@web3-storage/content-claims/client'
 import { CID } from 'multiformats/cid'
 import { base64 } from 'multiformats/bases/base64'
 import { identity } from 'multiformats/hashes/identity'
