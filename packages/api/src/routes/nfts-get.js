@@ -16,7 +16,9 @@ export const nftGet = async (event, ctx) => {
   const cid = parseCid(params.cid)
   const [nft, w3upDeals] = await Promise.all([
     db.getUpload(cid.sourceCid, user.id),
-    ctx.w3up ? getW3upDeals(ctx.w3up, cid.contentCid) : [],
+    ctx.w3up && ctx.contentClaims
+      ? getW3upDeals(ctx.w3up, ctx.contentClaims, cid.contentCid)
+      : [],
   ])
   if (nft) {
     // merge deals from dagcargo with deals from w3up

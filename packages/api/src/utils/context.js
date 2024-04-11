@@ -9,6 +9,7 @@ import { Service } from 'ucan-storage/service'
 import { LinkdexApi } from './linkdex.js'
 import { createW3upClientFromConfig } from './w3up.js'
 import { DID } from '@ucanto/core'
+import * as contentClaims from '@web3-storage/content-claims/client'
 
 /**
  * Obtains a route context object.
@@ -105,6 +106,7 @@ export async function getContext(event, params) {
     r2Uploader,
     log,
     ucanService,
+    contentClaims,
     w3up,
   }
 }

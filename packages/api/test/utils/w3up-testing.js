@@ -42,6 +42,8 @@ export async function encodeDelegationAsCid(delegation) {
  * create a RequestListener that can be a mock up.web3.storage
  * @param {object} [options] - options
  * @param {string} options.did
+ * @param {(invocation: import('@ucanto/server').ProviderInput<import('@ucanto/client').InferInvokedCapability<typeof Filecoin.info>>) => Promise<import('@web3-storage/capabilities/types').FilecoinInfoSuccess | undefined>} [options.onHandleFilecoinInfo] - called in the filecoin/info handler and the result is returned
+ * @param {(invocation: import('@ucanto/server').ProviderInput<import('@ucanto/client').InferInvokedCapability<typeof Upload.get>>) => Promise<import('@web3-storage/upload-client/types').UploadGetSuccess | undefined>} [options.onHandleUploadGet] - called in the upload/get handler and the result is returned
  * @param {(invocation: import('@ucanto/server').ProviderInput<import('@ucanto/client').InferInvokedCapability<typeof Store.add>>) => Promise<void>} [options.onHandleStoreAdd] - called at start of store/add handler
  * @param {(invocation: import('@ucanto/server').ProviderInput<import('@ucanto/client').InferInvokedCapability<typeof Upload.add>>) => Promise<void>} [options.onHandleUploadAdd] - called at start of upload/add handler
  */
@@ -53,6 +55,21 @@ export async function createMockW3up(
       offer: Server.provide(Filecoin.offer, async (invocation) => {
         return {
           ok: {},
+        }
+      }),
+      info: Server.provide(Filecoin.info, async (invocation) => {
+        const result = await options.onHandleFilecoinInfo?.(invocation)
+        if (result) {
+          return {
+            ok: result,
+          }
+        } else {
+          return {
+            error: {
+              name: 'UnexpectedError',
+              message: `onUploadGet was not defined or return ${result}`,
+            },
+          }
         }
       }),
     },
@@ -80,6 +97,22 @@ export async function createMockW3up(
         }
         return {
           ok: success,
+        }
+      }),
+
+      get: Server.provide(Upload.get, async (invocation) => {
+        const result = await options.onHandleUploadGet?.(invocation)
+        if (result) {
+          return {
+            ok: result,
+          }
+        } else {
+          return {
+            error: {
+              name: 'UnexpectedError',
+              message: `onUploadGet was not defined or return ${result}`,
+            },
+          }
         }
       }),
     },

@@ -189,7 +189,6 @@ export async function uploadCarWithStat(
 
     if (stat.structure === 'Partial') {
       checkDagStructureTask = async () => {
-        // @ts-expect-error - I'm not sure why this started failing TODO debug further
         const info = await w3up.capability.upload.get(stat.rootCid)
         if (info.shards && info.shards.length > 1) {
           const structure = await ctx.linkdexApi.getDagStructureForCars(

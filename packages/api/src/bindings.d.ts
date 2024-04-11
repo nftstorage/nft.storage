@@ -8,6 +8,7 @@ import { DBClient } from './utils/db-client.js'
 import { LinkdexApi } from './utils/linkdex.js'
 import { Logging } from './utils/logs.js'
 import { Client as W3upClient } from '@web3-storage/w3up-client'
+import * as contentClaims from '@web3-storage/content-claims/client'
 
 export type RuntimeEnvironmentName = 'test' | 'dev' | 'staging' | 'production'
 
@@ -142,6 +143,10 @@ export interface AuthOptions {
   checkHasPsaAccess?: boolean
 }
 
+export interface ContentClaimsClient {
+  read: typeof contentClaims.read
+}
+
 export interface RouteContext {
   params: Record<string, string>
   db: DBClient
@@ -158,6 +163,7 @@ export interface RouteContext {
   W3_NFTSTORAGE_SPACE?: string
   W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS?: string
   w3up?: W3upClient
+  contentClaims?: ContentClaimsClient
 }
 
 export type Handler = (

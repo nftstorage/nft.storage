@@ -35,7 +35,7 @@
     "@web3-storage/car-block-validator": "^1.2.0",
     "@web3-storage/content-claims": "^4.0.4",
     "@web3-storage/upload-client": "^13.2.0",
-    "@web3-storage/w3up-client": "^12.5.0",
+    "@web3-storage/w3up-client": "^12.5.1",
     "cardex": "^1.0.0",
     "ipfs-car": "^0.6.1",
     "it-last": "^2.0.0",

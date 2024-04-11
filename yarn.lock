@@ -5903,26 +5903,6 @@
   resolved "https://registry.yarnpkg.com/@web3-storage/multipart-parser/-/multipart-parser-1.0.0.tgz#6b69dc2a32a5b207ba43e556c25cc136a56659c4"
   integrity sha512-BEO6al7BYqcnfX15W2cnGR+Q566ACXAT9UQykORCWW80lmkpWsnEob6zJS1ZVBKsSJC8+7vJkHwlp+lXG1UCdw==
 
-"@web3-storage/upload-client@^13.1.0":
-  version "13.1.0"
-  resolved "https://registry.yarnpkg.com/@web3-storage/upload-client/-/upload-client-13.1.0.tgz#e29beb5ab0991682c28bcfe8c318aca42e43041c"
-  integrity sha512-RK67hUFviFG7KdupTwbMJCPdIsGEBSzpllybIOzbip3FKVH4fKDq4Sb2kXLptXeeqQfPJ86uRTmFtHTAVGVbZw==
-  dependencies:
-    "@ipld/car" "^5.2.2"
-    "@ipld/dag-cbor" "^9.0.6"
-    "@ipld/dag-ucan" "^3.4.0"
-    "@ipld/unixfs" "^2.1.1"
-    "@ucanto/client" "^9.0.0"
-    "@ucanto/interface" "^9.0.0"
-    "@ucanto/transport" "^9.1.0"
-    "@web3-storage/capabilities" "^13.2.0"
-    "@web3-storage/data-segment" "^5.1.0"
-    "@web3-storage/filecoin-client" "^3.3.0"
-    ipfs-utils "^9.0.14"
-    multiformats "^12.1.2"
-    p-retry "^5.1.2"
-    varint "^6.0.0"
-
 "@web3-storage/upload-client@^13.2.0":
   version "13.2.0"
   resolved "https://registry.yarnpkg.com/@web3-storage/upload-client/-/upload-client-13.2.0.tgz#b6781344f405d84a6575d4880c3abe73e20d8e67"
@@ -5943,10 +5923,10 @@
     p-retry "^5.1.2"
     varint "^6.0.0"
 
-"@web3-storage/w3up-client@^12.5.0":
-  version "12.5.0"
-  resolved "https://registry.yarnpkg.com/@web3-storage/w3up-client/-/w3up-client-12.5.0.tgz#67663f6c024bb7d198b2030f7752b139e5d3f9ae"
-  integrity sha512-SLpXXgA0TZJNSGtLHeq2kF+uwaHYfsH5068utikeRccCXJRrKQnCN1y2FpCe01H4SjLMTIQK13vga6DgSfJiuA==
+"@web3-storage/w3up-client@^12.5.1":
+  version "12.5.1"
+  resolved "https://registry.yarnpkg.com/@web3-storage/w3up-client/-/w3up-client-12.5.1.tgz#a5722c9b8ca0e1ea2c1a2b7c7749512938eda16d"
+  integrity sha512-fv53VEWOcDxNi2qsE5uHvOWDXbXstlYQ505uMN5vcpdetxo3FcxIkVqGBIIQDpsXLyloRNA8+ZXOy8+rKeOPVw==
   dependencies:
     "@ipld/dag-ucan" "^3.4.0"
     "@ucanto/client" "^9.0.0"
@@ -5958,7 +5938,7 @@
     "@web3-storage/capabilities" "^13.2.0"
     "@web3-storage/did-mailto" "^2.1.0"
     "@web3-storage/filecoin-client" "^3.3.0"
-    "@web3-storage/upload-client" "^13.1.0"
+    "@web3-storage/upload-client" "^13.2.0"
 
 "@webassemblyjs/ast@1.11.1":
   version "1.11.1"

@@ -1,22 +1,133 @@
 import test from 'ava'
+import { createServer } from 'node:http'
+import { ed25519 } from '@ucanto/principal'
+import { delegate, parseLink } from '@ucanto/core'
+import { base64 } from 'multiformats/bases/base64'
 import { createClientWithUser } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import {
   getMiniflareContext,
   setupMiniflareContext,
 } from './scripts/test-context.js'
-import { read } from '@web3-storage/content-claims/client'
-import { parseLink } from '@ucanto/core'
+import {
+  createMockW3up,
+  locate,
+  encodeDelegationAsCid,
+} from './utils/w3up-testing.js'
+
+const nftStorageSpace = ed25519.generate()
+const nftStorageApiPrincipal = ed25519.generate()
+const nftStorageAccountEmailAllowListedForW3up = 'test+w3up@dev.nft.storage'
+const mockW3upDID = 'did:web:test.web3.storage'
+/**
+ * @type {import('@web3-storage/access').PieceLink}
+ */
+const mockPieceLink = parseLink(
+  'bafkzcibeslzwmewd4pugjanyiayot5m76a67dvdir25v6ms6kbuozy2sxotplrrrce'
+)
+/**
+ * @type {import('@web3-storage/access').FilecoinInfoAcceptedDeal[]}
+ */
+const mockDeals = [
+  {
+    aggregate: parseLink(
+      'bafkzcibcaapen7lfjgljzi523a5rau2l5pwpwseita6uunqy5otrlxa2l2pouca'
+    ),
+    aux: {
+      dataSource: {
+        dealID: BigInt(1),
+      },
+      dataType: BigInt(1),
+    },
+    provider: 'f01240',
+  },
+]
+const mockW3up = Promise.resolve(
+  (async function () {
+    const server = createServer(
+      await createMockW3up({
+        did: mockW3upDID,
+        // @ts-expect-error not returning a full upload get response for now
+        async onHandleUploadGet(cid) {
+          return {
+            // grabbed this shard CID from staging, it should correspond to a piece named bafkzcibeslzwmewd4pugjanyiayot5m76a67dvdir25v6ms6kbuozy2sxotplrrrce
+            shards: [
+              parseLink(
+                'bagbaieragf62xatg3bqrfafdy3lpk2fte7526kvxnltqsnhjr45cz6jjk7mq'
+              ),
+            ],
+          }
+        },
+        async onHandleFilecoinInfo(invocation) {
+          return {
+            deals: mockDeals,
+            aggregates: [],
+            piece: mockPieceLink,
+          }
+        },
+      })
+    )
+    server.listen(0)
+    await new Promise((resolve) =>
+      server.addListener('listening', () => resolve(undefined))
+    )
+    return {
+      server,
+    }
+  })()
+)
 
 test.before(async (t) => {
-  await setupMiniflareContext(t)
+  await setupMiniflareContext(t, {
+    overrides: {
+      W3UP_URL: locate((await mockW3up).server).url.toString(),
+      W3UP_DID: mockW3upDID,
+      W3_NFTSTORAGE_SPACE: (await nftStorageSpace).did(),
+      W3_NFTSTORAGE_PRINCIPAL: ed25519.format(await nftStorageApiPrincipal),
+      W3_NFTSTORAGE_PROOF: (
+        await encodeDelegationAsCid(
+          await delegate({
+            issuer: await nftStorageSpace,
+            audience: await nftStorageApiPrincipal,
+            capabilities: [
+              { can: 'upload/get', with: (await nftStorageSpace).did() },
+              { can: 'filecoin/info', with: (await nftStorageSpace).did() },
+            ],
+          })
+        )
+      ).toString(base64),
+      W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS: JSON.stringify([
+        nftStorageAccountEmailAllowListedForW3up,
+      ]),
+    },
+  })
 })
 
-test.only('should fetch deal details from w3up', async (t) => {
-  const testCid = 'bafybeiccy35oi3gajocq5bbg7pnaxb3kv5ibtdz3tc3kari53qhbjotzey'
-  const link = parseLink(testCid)
-  const claims = await read(link)
-  console.log('CLAIMS', claims)
+test.serial('should fetch deal details from w3up', async (t) => {
+  const cid = 'bafybeiccy35oi3gajocq5bbg7pnaxb3kv5ibtdz3tc3kari53qhbjotzey'
+  const client = await createClientWithUser(t)
+  const mf = getMiniflareContext(t)
+  await client.addPin({
+    cid,
+    name: 'test-filecoin-info',
+  })
+
+  const res = await mf.dispatchFetch(`http://miniflare.test/${cid}`, {
+    headers: { Authorization: `Bearer ${client.token}` },
+  })
+  const { ok, value } = await res.json()
+  t.assert(ok)
+  t.deepEqual(
+    value.deals,
+    mockDeals.map((deal) => ({
+      pieceCid: mockPieceLink.toString(),
+      status: 'published',
+      datamodelSelector: '',
+      batchRootCid: deal.aggregate.toString(),
+      miner: deal.provider,
+      chainDealID: Number(deal.aux.dataSource.dealID),
+    }))
+  )
 })
 
 test.serial('should return proper response for cid v1', async (t) => {

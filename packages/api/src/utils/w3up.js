@@ -1,7 +1,6 @@
 import * as W3UP from '@web3-storage/w3up-client'
 import * as ed25519 from '@ucanto/principal/ed25519'
 import { StoreMemory } from '@web3-storage/access/stores/store-memory'
-import * as contentClaims from '@web3-storage/content-claims/client'
 import { CID } from 'multiformats/cid'
 import { base64 } from 'multiformats/bases/base64'
 import { identity } from 'multiformats/hashes/identity'
@@ -112,16 +111,17 @@ export async function createW3upClientFromConfig(options) {
 /**
  *
  * @param {W3upClient.Client} client
+ * @param {{read: typeof import('@web3-storage/content-claims/client').read}} contentClaimsClient
  * @param {import('@web3-storage/upload-client/types').UploadListItem} upload
  * @returns {Promise<import('@web3-storage/access').Result<import('@web3-storage/access').FilecoinInfoSuccess>[]>}
  */
-async function getFilecoinInfos(client, upload) {
+async function getFilecoinInfos(client, contentClaimsClient, upload) {
   return await Promise.all(
     // for each shard of the upload
     upload.shards
       ? upload.shards.map(async (shard) => {
           // find the equivalent piece link
-          const pieceClaims = await contentClaims.read(shard)
+          const pieceClaims = await contentClaimsClient.read(shard)
           const pieceClaim =
             /** @type {import('@web3-storage/content-claims/client/api').EqualsClaim} */ (
               pieceClaims.find((c) => c.type === 'assert/equals')
@@ -151,15 +151,26 @@ async function getFilecoinInfos(client, upload) {
 /**
  *
  * @param {W3upClient.Client | undefined} client
+ * @param {{read: typeof import('@web3-storage/content-claims/client').read}} contentClaimsClient
  * @param {string} contentCid
  * @returns {Promise<import('../bindings').Deal[]>}
  */
-export async function getW3upDeals(client, contentCid) {
+export async function getW3upDeals(client, contentClaimsClient, contentCid) {
   if (client) {
     const link = parseLink(contentCid)
     // get the upload
-    const upload = await client.capability.upload.get(link)
-    const filecoinInfoResults = await getFilecoinInfos(client, upload)
+    let upload
+    try {
+      upload = await client.capability.upload.get(link)
+    } catch (e) {
+      console.error('error getting upload', e)
+      return []
+    }
+    const filecoinInfoResults = await getFilecoinInfos(
+      client,
+      contentClaimsClient,
+      upload
+    )
     /**
      * @type {import('../bindings').Deal[]}
      */
@@ -171,9 +182,11 @@ export async function getW3upDeals(client, contentCid) {
           filecoinInfos.push({
             pieceCid: info.piece.toString(),
             status: 'published',
-            // TODO: figure these two out
+            batchRootCid: deal.aggregate.toString(),
+            miner: deal.provider,
+            chainDealID: Number(deal.aux.dataSource.dealID),
+            // TODO: figure this out
             datamodelSelector: '',
-            batchRootCid: deal.aggregate,
           })
         }
       } else {
