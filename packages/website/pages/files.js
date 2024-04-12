@@ -1,7 +1,7 @@
-import { API, getNfts, getToken } from '../lib/api.js'
+import { API, getNft, getNfts, getToken } from '../lib/api.js'
 import { useQuery, useQueryClient } from 'react-query'
 import { CID } from 'multiformats/cid'
-import { VscQuestion } from 'react-icons/vsc'
+import { VscLoading, VscQuestion } from 'react-icons/vsc'
 import Button from '../components/button.js'
 import Tooltip from '../components/tooltip.js'
 import Loading from '../components/loading'
@@ -110,7 +110,19 @@ export default function Files({ user }) {
    */
   const TableItem = ({ nft }) => {
     const [showAllDeals, setShowAllDeals] = useState(false)
-    const deals = nft.deals
+    const [loadW3upDeals, setLoadW3upDeals] = useState(false)
+    const { status: w3upDealsStatus, data: w3upDeals } = useQuery(
+      ['w3updeals', nft.cid],
+      async () => {
+        const fetchedNft = await getNft(nft)
+        return fetchedNft.deals
+      },
+      {
+        enabled: loadW3upDeals,
+        refetchOnWindowFocus: false,
+      }
+    )
+    const deals = [...nft.deals, ...(w3upDeals || [])]
       .filter((/** @type {any} */ d) => d.status !== 'queued')
       .map(
         (
@@ -165,33 +177,65 @@ export default function Files({ user }) {
 
     const dealsHidden = deals.splice(3)
 
-    const [w3upDeals, setW3upDeals] = useState([])
-    async function loadW3upDeals() {}
-
-    if (!nft.deals.length) {
-      deals.push(
-        <span
-          className="queuing flex items-center"
-          key="queuing"
-          aria-describedby="all-deals-queued-tooltip"
-        >
-          Queuing
-          <Tooltip
-            overlay={
-              <span>
-                The content from this upload is being aggregated for redundant
-                storage on Filecoin. Filecoin deals will be active within 48
-                hours of upload. While Queuing, data is still available on the
-                IPFS network.
-              </span>
-            }
-            overlayClassName="ns-tooltip"
-            id="all-deals-queued-tooltip"
+    if (!deals.length) {
+      if (w3upDealsStatus === 'success' || w3upDealsStatus === 'error') {
+        deals.push(
+          <span
+            className="queuing flex items-center"
+            key="queuing"
+            aria-describedby="all-deals-queued-tooltip"
           >
-            <VscQuestion size={16} />
-          </Tooltip>
-        </span>
-      )
+            Queuing
+            <Tooltip
+              overlay={
+                <span>
+                  The content from this upload is being aggregated for redundant
+                  storage on Filecoin. Filecoin deals will be active within 48
+                  hours of upload. While Queuing, data is still available on the
+                  IPFS network.
+                </span>
+              }
+              overlayClassName="ns-tooltip"
+              id="all-deals-queued-tooltip"
+            >
+              <VscQuestion size={16} />
+            </Tooltip>
+          </span>
+        )
+      } else {
+        deals.push(
+          <span
+            className="queuing flex items-center"
+            key="queuing"
+            aria-describedby="load-w3up-deals-tooltip"
+          >
+            {w3upDealsStatus === 'loading' ? (
+              <div className="relative">
+                <VscLoading
+                  size={25}
+                  strokeWidth={0.5}
+                  className="animate-spin"
+                />
+              </div>
+            ) : (
+              <Tooltip
+                overlay={<span>Check for Filecoin deals for this upload.</span>}
+                overlayClassName="ns-tooltip"
+                id="load-w3up-deals-tooltip"
+              >
+                <Button
+                  className="text-sm"
+                  onClick={() => {
+                    setLoadW3upDeals(true)
+                  }}
+                >
+                  Load Deals
+                </Button>
+              </Tooltip>
+            )}
+          </span>
+        )
+      }
     }
 
     return (
