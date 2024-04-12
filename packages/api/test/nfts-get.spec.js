@@ -42,27 +42,40 @@ const mockDeals = [
     provider: 'f01240',
   },
 ]
+const cidWithShards = parseLink(
+  'bafybeiccy35oi3gajocq5bbg7pnaxb3kv5ibtdz3tc3kari53qhbjotzey'
+)
 const mockW3up = Promise.resolve(
   (async function () {
     const server = createServer(
       await createMockW3up({
         did: mockW3upDID,
         // @ts-expect-error not returning a full upload get response for now
-        async onHandleUploadGet(cid) {
-          return {
-            // grabbed this shard CID from staging, it should correspond to a piece named bafkzcibeslzwmewd4pugjanyiayot5m76a67dvdir25v6ms6kbuozy2sxotplrrrce
-            shards: [
-              parseLink(
-                'bagbaieragf62xatg3bqrfafdy3lpk2fte7526kvxnltqsnhjr45cz6jjk7mq'
-              ),
-            ],
+        async onHandleUploadGet(invocation) {
+          if (invocation.capability.nb.root?.equals(cidWithShards)) {
+            return {
+              // grabbed this shard CID from staging, it should correspond to a piece named bafkzcibeslzwmewd4pugjanyiayot5m76a67dvdir25v6ms6kbuozy2sxotplrrrce
+              shards: [
+                parseLink(
+                  'bagbaieragf62xatg3bqrfafdy3lpk2fte7526kvxnltqsnhjr45cz6jjk7mq'
+                ),
+              ],
+            }
+          } else {
+            return {
+              shards: [],
+            }
           }
         },
         async onHandleFilecoinInfo(invocation) {
-          return {
-            deals: mockDeals,
-            aggregates: [],
-            piece: mockPieceLink,
+          if (invocation.capability.nb.piece.equals(mockPieceLink)) {
+            return {
+              deals: mockDeals,
+              aggregates: [],
+              piece: mockPieceLink,
+            }
+          } else {
+            return undefined
           }
         },
       })
@@ -104,7 +117,7 @@ test.before(async (t) => {
 })
 
 test.serial('should fetch deal details from w3up', async (t) => {
-  const cid = 'bafybeiccy35oi3gajocq5bbg7pnaxb3kv5ibtdz3tc3kari53qhbjotzey'
+  const cid = cidWithShards.toString()
   const client = await createClientWithUser(t)
   const mf = getMiniflareContext(t)
   await client.addPin({
