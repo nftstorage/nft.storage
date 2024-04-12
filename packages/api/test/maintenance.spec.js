@@ -10,11 +10,19 @@ import {
   getMiniflareContext,
   setupMiniflareContext,
 } from './scripts/test-context.js'
+import {
+  createMockW3upServer,
+  w3upMiniflareOverrides,
+} from './utils/w3up-testing.js'
 
 /** @typedef {import('../src/middleware/maintenance.js').Mode} Mode */
 
 test.before(async (t) => {
-  await setupMiniflareContext(t)
+  await setupMiniflareContext(t, {
+    overrides: {
+      ...(await w3upMiniflareOverrides(await createMockW3upServer())),
+    },
+  })
 })
 
 /**

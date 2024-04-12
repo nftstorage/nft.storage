@@ -1,13 +1,8 @@
 import test from 'ava'
 import { CID } from 'multiformats/cid'
-import * as Block from 'multiformats/block'
 import { sha256, sha512 } from 'multiformats/hashes/sha2'
 import * as pb from '@ipld/dag-pb'
 import { CarWriter } from '@ipld/car'
-import { packToBlob } from 'ipfs-car/pack/blob'
-import { MultihashIndexSortedReader } from 'cardex'
-import { TreewalkCarSplitter } from 'carbites/treewalk'
-import { equals as uint8ArrayEquals } from 'uint8arrays/equals'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import { createClientWithUser, getRawClient } from './scripts/helpers.js'
 import { createCar } from './scripts/car.js'
@@ -25,75 +20,43 @@ import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { FormData } from 'undici'
-import { createCarCid } from '../src/utils/car.js'
 import { createServer } from 'node:http'
-import { ed25519 } from '@ucanto/principal'
-import { delegate } from '@ucanto/core'
-import { base64 } from 'multiformats/bases/base64'
+
 import {
-  createMockW3up,
-  locate,
-  encodeDelegationAsCid,
+  createMockW3upServer,
+  w3upMiniflareOverrides,
 } from './utils/w3up-testing.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const nftStorageSpace = ed25519.generate()
-const nftStorageApiPrincipal = ed25519.generate()
-const nftStorageAccountEmailAllowListedForW3up = 'test+w3up@dev.nft.storage'
-const mockW3upDID = 'did:web:test.web3.storage'
 let mockW3upStoreAddCount = 0
 let mockW3upUploadAddCount = 0
-const mockW3up = Promise.resolve(
-  (async function () {
-    const server = createServer(
-      await createMockW3up({
-        did: mockW3upDID,
-        async onHandleStoreAdd(invocation) {
-          mockW3upStoreAddCount++
-        },
-        async onHandleUploadAdd(invocation) {
-          mockW3upUploadAddCount++
-        },
-      })
-    )
-    server.listen(0)
-    await new Promise((resolve) =>
-      server.addListener('listening', () => resolve(undefined))
-    )
-    return {
-      server,
-    }
-  })()
-)
 
+/**
+ * @type {import('./bindings.js').MockW3up}
+ */
+let mockW3up
 test.before(async (t) => {
+  mockW3up = await createMockW3upServer({
+    async onHandleStoreAdd(invocation) {
+      mockW3upStoreAddCount++
+    },
+    async onHandleUploadAdd(invocation) {
+      mockW3upUploadAddCount++
+    },
+  })
+
   const linkdexUrl = 'http://fake.api.net'
   await setupMiniflareContext(t, {
     overrides: {
       LINKDEX_URL: linkdexUrl,
-      W3UP_URL: locate((await mockW3up).server).url.toString(),
-      W3UP_DID: mockW3upDID,
-      W3_NFTSTORAGE_SPACE: (await nftStorageSpace).did(),
-      W3_NFTSTORAGE_PRINCIPAL: ed25519.format(await nftStorageApiPrincipal),
-      W3_NFTSTORAGE_PROOF: (
-        await encodeDelegationAsCid(
-          await delegate({
-            issuer: await nftStorageSpace,
-            audience: await nftStorageApiPrincipal,
-            capabilities: [
-              { can: 'store/add', with: (await nftStorageSpace).did() },
-              { can: 'upload/add', with: (await nftStorageSpace).did() },
-            ],
-          })
-        )
-      ).toString(base64),
+      ...(await w3upMiniflareOverrides(mockW3up)),
     },
   })
 })
 
 test.after(async (t) => {
-  ;(await mockW3up).server.close()
+  mockW3up.server.close()
 })
 
 test.serial('should upload a single file', async (t) => {

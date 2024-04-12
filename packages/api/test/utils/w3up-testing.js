@@ -1,12 +1,15 @@
+import { createServer } from 'node:http'
 import { Store, Upload, Filecoin } from '@web3-storage/capabilities'
 import * as Server from '@ucanto/server'
 import * as CAR from '@ucanto/transport/car'
-import * as consumers from 'stream/consumers'
 import { ed25519 } from '@ucanto/principal'
+import { delegate } from '@ucanto/core'
+import * as consumers from 'stream/consumers'
 import { CarWriter } from '@ipld/car'
 import * as ucanto from '@ucanto/core'
 import { CID } from 'multiformats/cid'
 import { identity } from 'multiformats/hashes/identity'
+import { base64 } from 'multiformats/bases/base64'
 
 /**
  * @param {import('@ucanto/interface').Delegation} delegation - delegation to encode
@@ -39,17 +42,62 @@ export async function encodeDelegationAsCid(delegation) {
 }
 
 /**
+ *
+ * @param {import('../bindings').MockW3up} mockW3up
+ * @param {string[]} capabilities
+ */
+export async function w3upMiniflareOverrides(
+  mockW3up,
+  capabilities = ['store/add', 'upload/add']
+) {
+  const nftStorageSpace = await ed25519.generate()
+  const nftStorageSpaceDid = nftStorageSpace.did()
+  const nftStorageApiPrincipal = await ed25519.generate()
+  return {
+    W3UP_URL: locate(mockW3up.server).url.toString(),
+    W3UP_DID: mockW3up.did,
+    W3_NFTSTORAGE_SPACE: nftStorageSpaceDid,
+    W3_NFTSTORAGE_PRINCIPAL: ed25519.format(nftStorageApiPrincipal),
+    W3_NFTSTORAGE_PROOF: (
+      await encodeDelegationAsCid(
+        await delegate({
+          issuer: nftStorageSpace,
+          audience: nftStorageApiPrincipal,
+          // @ts-expect-error not sure why this is failing
+          capabilities: capabilities.map((can) => ({
+            can,
+            with: nftStorageSpaceDid,
+          })),
+        })
+      )
+    ).toString(base64),
+  }
+}
+
+/**
+ * @param {import('../bindings').MockW3upOptions} options
+ */
+export async function createMockW3upServer(options = {}) {
+  const { did, listener } = await createMockW3up(options)
+  const server = createServer(listener)
+  server.listen(0)
+  await new Promise((resolve) =>
+    server.addListener('listening', () => resolve(undefined))
+  )
+  return {
+    did,
+    server,
+  }
+}
+
+/**
  * create a RequestListener that can be a mock up.web3.storage
- * @param {object} [options] - options
- * @param {string} options.did
- * @param {(invocation: import('@ucanto/server').ProviderInput<import('@ucanto/client').InferInvokedCapability<typeof Filecoin.info>>) => Promise<import('@web3-storage/capabilities/types').FilecoinInfoSuccess | undefined>} [options.onHandleFilecoinInfo] - called in the filecoin/info handler and the result is returned
- * @param {(invocation: import('@ucanto/server').ProviderInput<import('@ucanto/client').InferInvokedCapability<typeof Upload.get>>) => Promise<import('@web3-storage/upload-client/types').UploadGetSuccess | undefined>} [options.onHandleUploadGet] - called in the upload/get handler and the result is returned
- * @param {(invocation: import('@ucanto/server').ProviderInput<import('@ucanto/client').InferInvokedCapability<typeof Store.add>>) => Promise<void>} [options.onHandleStoreAdd] - called at start of store/add handler
- * @param {(invocation: import('@ucanto/server').ProviderInput<import('@ucanto/client').InferInvokedCapability<typeof Upload.add>>) => Promise<void>} [options.onHandleUploadAdd] - called at start of upload/add handler
+ * @param {import('../bindings').MockW3upOptions} [options] - options
  */
 export async function createMockW3up(
   options = { did: 'did:web:test.web3.storage' }
 ) {
+  const did = options.did ?? 'did:web:test.web3.storage'
   const service = {
     filecoin: {
       offer: Server.provide(Filecoin.offer, async (invocation) => {
@@ -118,7 +166,7 @@ export async function createMockW3up(
     },
   }
   const serverId = (await ed25519.generate()).withDID(
-    ucanto.DID.parse(options.did).did()
+    ucanto.DID.parse(did).did()
   )
   const server = Server.create({
     id: serverId,
@@ -145,7 +193,10 @@ export async function createMockW3up(
       res.end()
     }
   }
-  return listener
+  return {
+    did,
+    listener,
+  }
 }
 
 /**

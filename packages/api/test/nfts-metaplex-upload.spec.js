@@ -7,12 +7,20 @@ import {
   getTestServiceConfig,
   setupMiniflareContext,
 } from './scripts/test-context.js'
+import {
+  createMockW3upServer,
+  w3upMiniflareOverrides,
+} from './utils/w3up-testing.js'
 
 /** @type {number} */
 let metaplexUserId
 
 test.before(async (t) => {
-  await setupMiniflareContext(t)
+  await setupMiniflareContext(t, {
+    overrides: {
+      ...(await w3upMiniflareOverrides(await createMockW3upServer())),
+    },
+  })
 
   const config = getTestServiceConfig(t)
   const rawClient = getRawClient(config)
