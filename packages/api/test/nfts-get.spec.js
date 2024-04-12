@@ -109,9 +109,6 @@ test.before(async (t) => {
           })
         )
       ).toString(base64),
-      W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS: JSON.stringify([
-        nftStorageAccountEmailAllowListedForW3up,
-      ]),
     },
   })
 })
