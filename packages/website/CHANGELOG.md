@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.11.0](https://github.com/nftstorage/nft.storage/compare/website-v2.10.0...website-v2.11.0) (2024-04-15)
+
+
+### Features
+
+* show deal info from w3up ([#2573](https://github.com/nftstorage/nft.storage/issues/2573)) ([766a7c1](https://github.com/nftstorage/nft.storage/commit/766a7c1dbde4e0efec8424048767f3c9e947a2ab))
+* tweak readme ([#2563](https://github.com/nftstorage/nft.storage/issues/2563)) ([6a6298a](https://github.com/nftstorage/nft.storage/commit/6a6298a642beda6e06940dbb739d78d466a41815))
+
+
+### Bug Fixes
+
+* use correct "nft get" endpoint ([#2589](https://github.com/nftstorage/nft.storage/issues/2589)) ([27632d8](https://github.com/nftstorage/nft.storage/commit/27632d82139399e56fc43248b07723b11ecb84dd))
+
 ## [2.10.0](https://github.com/nftstorage/nft.storage/compare/website-v2.9.0...website-v2.10.0) (2024-04-04)
 
 
