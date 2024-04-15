@@ -117,7 +117,7 @@ export async function getNfts({ limit, before }) {
  * @param {{cid: string }} query
  */
 export async function getNft({ cid }) {
-  const res = await fetch(`${API}/cid/${cid}`, {
+  const res = await fetch(`${API}/${cid}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
