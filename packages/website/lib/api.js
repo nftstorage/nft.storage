@@ -111,6 +111,29 @@ export async function getNfts({ limit, before }) {
   }
 }
 
+/**
+ * Get NFTs
+ *
+ * @param {{cid: string }} query
+ */
+export async function getNft({ cid }) {
+  const res = await fetch(`${API}/cid/${cid}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + (await getToken()),
+    },
+  })
+
+  const body = await res.json()
+
+  if (body.ok) {
+    return body.value
+  } else {
+    throw new Error(body.error.message)
+  }
+}
+
 export async function getUserTags() {
   const res = await fetch(`${API}/user/tags`, {
     method: 'GET',

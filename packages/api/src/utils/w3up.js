@@ -7,6 +7,7 @@ import { identity } from 'multiformats/hashes/identity'
 import { CarReader } from '@ipld/car'
 import { importDAG } from '@ucanto/core/delegation'
 import * as W3upClient from '@web3-storage/w3up-client'
+import { parseLink } from '@ucanto/core'
 import { connect } from '@ucanto/client'
 import { CAR, HTTP } from '@ucanto/transport'
 
@@ -105,4 +106,96 @@ export async function createW3upClientFromConfig(options) {
   })
   await w3up.addSpace(await parseW3Proof(options.proof))
   return w3up
+}
+
+/**
+ *
+ * @param {W3upClient.Client} client
+ * @param {{read: typeof import('@web3-storage/content-claims/client').read}} contentClaimsClient
+ * @param {import('@web3-storage/upload-client/types').UploadListItem} upload
+ * @returns {Promise<import('@web3-storage/access').Result<import('@web3-storage/access').FilecoinInfoSuccess>[]>}
+ */
+async function getFilecoinInfos(client, contentClaimsClient, upload) {
+  return await Promise.all(
+    // for each shard of the upload
+    upload.shards
+      ? upload.shards.map(async (shard) => {
+          // find the equivalent piece link
+          const pieceClaims = await contentClaimsClient.read(shard)
+          const pieceClaim =
+            /** @type {import('@web3-storage/content-claims/client/api').EqualsClaim} */ (
+              pieceClaims.find((c) => c.type === 'assert/equals')
+            )
+          if (pieceClaim) {
+            const pieceLink = pieceClaim.equals
+            // and get filecoin info for it
+            const filecoinInfo = await client.capability.filecoin.info(
+              /** @type {import('@web3-storage/access').PieceLink} */ (
+                pieceLink
+              )
+            )
+            return filecoinInfo.out
+          } else {
+            return {
+              error: {
+                name: 'PieceLinkClaimNotFound',
+                message: `could not find piece link equivalent of ${shard}`,
+              },
+            }
+          }
+        })
+      : []
+  )
+}
+
+/**
+ *
+ * @param {W3upClient.Client | undefined} client
+ * @param {{read: typeof import('@web3-storage/content-claims/client').read}} contentClaimsClient
+ * @param {string} contentCid
+ * @returns {Promise<import('../bindings').Deal[]>}
+ */
+export async function getW3upDeals(client, contentClaimsClient, contentCid) {
+  if (client) {
+    const link = parseLink(contentCid)
+    // get the upload
+    let upload
+    try {
+      upload = await client.capability.upload.get(link)
+    } catch (e) {
+      console.error('error getting upload', e)
+      return []
+    }
+    const filecoinInfoResults = await getFilecoinInfos(
+      client,
+      contentClaimsClient,
+      upload
+    )
+    /**
+     * @type {import('../bindings').Deal[]}
+     */
+    const filecoinInfos = []
+    for (const result of filecoinInfoResults) {
+      if (result.ok) {
+        const info = result.ok
+        for (const deal of info.deals) {
+          filecoinInfos.push({
+            pieceCid: info.piece.toString(),
+            status: 'published',
+            batchRootCid: deal.aggregate.toString(),
+            miner: deal.provider,
+            chainDealID: Number(deal.aux.dataSource.dealID),
+            // TODO: figure this out
+            datamodelSelector: '',
+          })
+        }
+      } else {
+        // @ts-expect-error - in practice this will just be undefined if message doesn't exist
+        console.warn(`error getting filecoininfo: ${result.error.message}`)
+      }
+    }
+    return filecoinInfos
+  } else {
+    return []
+  }
 }
