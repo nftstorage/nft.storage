@@ -24,6 +24,7 @@
     "src/bindings.d.ts",
     "node_modules/@cloudflare/workers-types/index.d.ts",
     "test",
+    "test/bindings.d.ts",
     "scripts"
   ],
   "exclude": ["node_modules/", "dist/"]

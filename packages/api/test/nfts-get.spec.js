@@ -1,8 +1,5 @@
 import test from 'ava'
-import { createServer } from 'node:http'
-import { ed25519 } from '@ucanto/principal'
-import { delegate, parseLink } from '@ucanto/core'
-import { base64 } from 'multiformats/bases/base64'
+import { parseLink } from '@ucanto/core'
 import { createClientWithUser } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import {
@@ -10,15 +7,10 @@ import {
   setupMiniflareContext,
 } from './scripts/test-context.js'
 import {
-  createMockW3up,
-  locate,
-  encodeDelegationAsCid,
+  createMockW3upServer,
+  w3upMiniflareOverrides,
 } from './utils/w3up-testing.js'
 
-const nftStorageSpace = ed25519.generate()
-const nftStorageApiPrincipal = ed25519.generate()
-const nftStorageAccountEmailAllowListedForW3up = 'test+w3up@dev.nft.storage'
-const mockW3upDID = 'did:web:test.web3.storage'
 /**
  * @type {import('@web3-storage/access').PieceLink}
  */
@@ -45,73 +37,43 @@ const mockDeals = [
 const cidWithShards = parseLink(
   'bafybeiccy35oi3gajocq5bbg7pnaxb3kv5ibtdz3tc3kari53qhbjotzey'
 )
-const mockW3up = Promise.resolve(
-  (async function () {
-    const server = createServer(
-      await createMockW3up({
-        did: mockW3upDID,
-        // @ts-expect-error not returning a full upload get response for now
-        async onHandleUploadGet(invocation) {
-          if (invocation.capability.nb.root?.equals(cidWithShards)) {
-            return {
-              // grabbed this shard CID from staging, it should correspond to a piece named bafkzcibeslzwmewd4pugjanyiayot5m76a67dvdir25v6ms6kbuozy2sxotplrrrce
-              shards: [
-                parseLink(
-                  'bagbaieragf62xatg3bqrfafdy3lpk2fte7526kvxnltqsnhjr45cz6jjk7mq'
-                ),
-              ],
-            }
-          } else {
-            return {
-              shards: [],
-            }
-          }
-        },
-        async onHandleFilecoinInfo(invocation) {
-          if (invocation.capability.nb.piece.equals(mockPieceLink)) {
-            return {
-              deals: mockDeals,
-              aggregates: [],
-              piece: mockPieceLink,
-            }
-          } else {
-            return undefined
-          }
-        },
-      })
-    )
-    server.listen(0)
-    await new Promise((resolve) =>
-      server.addListener('listening', () => resolve(undefined))
-    )
-    return {
-      server,
-    }
-  })()
-)
 
 test.before(async (t) => {
+  const mockW3up = await createMockW3upServer({
+    async onHandleUploadGet(invocation) {
+      if (invocation.capability.nb.root?.equals(cidWithShards)) {
+        return {
+          // grabbed this shard CID from staging, it should correspond to a piece named bafkzcibeslzwmewd4pugjanyiayot5m76a67dvdir25v6ms6kbuozy2sxotplrrrce
+          shards: [
+            parseLink(
+              'bagbaieragf62xatg3bqrfafdy3lpk2fte7526kvxnltqsnhjr45cz6jjk7mq'
+            ),
+          ],
+        }
+      } else {
+        return {
+          shards: [],
+        }
+      }
+    },
+    async onHandleFilecoinInfo(invocation) {
+      if (invocation.capability.nb.piece.equals(mockPieceLink)) {
+        return {
+          deals: mockDeals,
+          aggregates: [],
+          piece: mockPieceLink,
+        }
+      } else {
+        return undefined
+      }
+    },
+  })
   await setupMiniflareContext(t, {
     overrides: {
-      W3UP_URL: locate((await mockW3up).server).url.toString(),
-      W3UP_DID: mockW3upDID,
-      W3_NFTSTORAGE_SPACE: (await nftStorageSpace).did(),
-      W3_NFTSTORAGE_PRINCIPAL: ed25519.format(await nftStorageApiPrincipal),
-      W3_NFTSTORAGE_PROOF: (
-        await encodeDelegationAsCid(
-          await delegate({
-            issuer: await nftStorageSpace,
-            audience: await nftStorageApiPrincipal,
-            capabilities: [
-              { can: 'upload/get', with: (await nftStorageSpace).did() },
-              { can: 'filecoin/info', with: (await nftStorageSpace).did() },
-            ],
-          })
-        )
-      ).toString(base64),
-      W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS: JSON.stringify([
-        nftStorageAccountEmailAllowListedForW3up,
-      ]),
+      ...(await w3upMiniflareOverrides(mockW3up, [
+        'upload/get',
+        'filecoin/info',
+      ])),
     },
   })
 })

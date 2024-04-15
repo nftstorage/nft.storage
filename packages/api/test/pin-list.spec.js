@@ -5,9 +5,20 @@ import {
   getTestServiceConfig,
   setupMiniflareContext,
 } from './scripts/test-context.js'
+import {
+  createMockW3upServer,
+  w3upMiniflareOverrides,
+} from './utils/w3up-testing.js'
+
+const overrides = (async () =>
+  await w3upMiniflareOverrides(await createMockW3upServer()))()
 
 test.beforeEach(async (t) => {
-  await setupMiniflareContext(t)
+  await setupMiniflareContext(t, {
+    overrides: {
+      ...(await overrides),
+    },
+  })
 })
 
 test('should pin with just cid', async (t) => {

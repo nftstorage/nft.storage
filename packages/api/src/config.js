@@ -67,8 +67,6 @@ export function serviceConfigFromVariables(vars) {
     W3_NFTSTORAGE_PRINCIPAL: vars.W3_NFTSTORAGE_PRINCIPAL,
     W3_NFTSTORAGE_PROOF: vars.W3_NFTSTORAGE_PROOF,
     W3_NFTSTORAGE_SPACE: vars.W3_NFTSTORAGE_SPACE,
-    W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS:
-      vars.W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS,
   }
 }
 
@@ -136,7 +134,6 @@ export function loadConfigVariables() {
     'W3_NFTSTORAGE_SPACE',
     'W3_NFTSTORAGE_PRINCIPAL',
     'W3_NFTSTORAGE_PROOF',
-    'W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS',
   ]
 
   for (const name of optional) {

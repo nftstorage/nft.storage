@@ -109,24 +109,6 @@ export async function nftUpload(event, ctx) {
 }
 
 /**
- * returns whether w3up uploading feature is enabled given context + event
- * @param {object} context - context of server operation, e.g. including configuration of feature switch
- * @param {string} [context.W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS] - JSON array of allowed emails
- * @param {object} event - specific event for which we should determine whether w3up feature is enabled
- * @param {object} event.user
- * @param {string} event.user.email - email address of user associated with event
- */
-function w3upFeatureSwitchEnabled(context, event) {
-  // const { W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS = '[]' } = context
-  // const allowedEmails = JSON.parse(W3_NFTSTORAGE_ENABLE_W3UP_FOR_EMAILS)
-  // if (!Array.isArray(allowedEmails)) return false
-  // const eventHasAllowedEmail = allowedEmails.find(
-  //   (allowed) => allowed === event.user.email
-  // )
-  return true
-}
-
-/**
  * @typedef {{
  *   event: FetchEvent,
  *   ctx: import('../bindings').RouteContext
@@ -170,10 +152,8 @@ export async function uploadCarWithStat(
   /** @type {(() => Promise<void>)|undefined} */
   let checkDagStructureTask
   const backupUrls = []
-  // @ts-expect-error email is not expected in types
-  if (ctx.w3up && w3upFeatureSwitchEnabled(ctx, { user })) {
-    const { w3up } = ctx
-
+  const { w3up } = ctx
+  if (w3up) {
     // we perform store/add and upload/add concurrently to save time.
     await Promise.all([
       w3up.capability.store.add(car),
@@ -204,32 +184,7 @@ export async function uploadCarWithStat(
       }
     }
   } else {
-    const carBytes = new Uint8Array(await car.arrayBuffer())
-    const [s3Backup, r2Backup] = await Promise.all([
-      ctx.s3Uploader.uploadCar(carBytes, stat.cid, user.id, metadata),
-      ctx.r2Uploader.uploadCar(carBytes, stat.cid, user.id, metadata),
-    ])
-    backupUrls.push(s3Backup.url, r2Backup.url)
-
-    // no need to ask linkdex if it's Complete or Unknown
-    if (stat.structure === 'Partial') {
-      // ask linkdex for the dag structure across the set of CARs in S3 for this upload.
-      checkDagStructureTask = async () => {
-        try {
-          const structure = await ctx.linkdexApi.getDagStructure(s3Backup.key)
-          if (structure === 'Complete') {
-            return ctx.db.updatePinStatus(
-              upload.content_cid,
-              elasticPin(structure)
-            )
-          }
-        } catch (/** @type {any} */ err) {
-          if (err.code !== MissingApiUrlCode) {
-            throw err
-          }
-        }
-      }
-    }
+    throw new Error('w3up not defined, cannot upload')
   }
   const xName = event.request.headers.get('x-name')
   let name = xName && decodeURIComponent(xName)

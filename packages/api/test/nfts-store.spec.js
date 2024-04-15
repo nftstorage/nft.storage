@@ -10,9 +10,20 @@ import {
 } from './scripts/test-context.js'
 import { File, Blob } from 'nft.storage/src/platform.js'
 import { FormData } from 'undici'
+import {
+  createMockW3upServer,
+  w3upMiniflareOverrides,
+} from './utils/w3up-testing.js'
+
+const overrides = (async () =>
+  await w3upMiniflareOverrides(await createMockW3upServer()))()
 
 test.beforeEach(async (t) => {
-  await setupMiniflareContext(t)
+  await setupMiniflareContext(t, {
+    overrides: {
+      ...(await overrides),
+    },
+  })
 })
 
 test('should store image', async (t) => {
