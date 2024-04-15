@@ -115,7 +115,7 @@ export async function createMockW3up(
           return {
             error: {
               name: 'UnexpectedError',
-              message: `onUploadGet was not defined or return ${result}`,
+              message: `onFilecoinInfo was not defined or return ${result}`,
             },
           }
         }

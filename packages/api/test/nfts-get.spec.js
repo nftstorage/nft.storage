@@ -1,8 +1,5 @@
 import test from 'ava'
-import { createServer } from 'node:http'
-import { ed25519 } from '@ucanto/principal'
-import { delegate, parseLink } from '@ucanto/core'
-import { base64 } from 'multiformats/bases/base64'
+import { parseLink } from '@ucanto/core'
 import { createClientWithUser } from './scripts/helpers.js'
 import { fixtures } from './scripts/fixtures.js'
 import {
@@ -10,9 +7,6 @@ import {
   setupMiniflareContext,
 } from './scripts/test-context.js'
 import {
-  createMockW3up,
-  locate,
-  encodeDelegationAsCid,
   createMockW3upServer,
   w3upMiniflareOverrides,
 } from './utils/w3up-testing.js'
