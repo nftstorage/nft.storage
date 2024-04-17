@@ -1,5 +1,25 @@
 # Changelog
 
+## [4.8.0](https://github.com/nftstorage/nft.storage/compare/api-v4.7.0...api-v4.8.0) (2024-04-17)
+
+
+### Features
+
+* show deal info from w3up ([#2573](https://github.com/nftstorage/nft.storage/issues/2573)) ([766a7c1](https://github.com/nftstorage/nft.storage/commit/766a7c1dbde4e0efec8424048767f3c9e947a2ab))
+
+
+### Bug Fixes
+
+* more logging of upload get fail ([#2593](https://github.com/nftstorage/nft.storage/issues/2593)) ([35cc344](https://github.com/nftstorage/nft.storage/commit/35cc34499125ac24292fdfbb61d67569f279f089))
+* one more typo ([de5582e](https://github.com/nftstorage/nft.storage/commit/de5582eac5cb739bc48294a3a0ff95422d8a20e6))
+
+
+### Other Changes
+
+* more deals get debugging ([#2594](https://github.com/nftstorage/nft.storage/issues/2594)) ([36a26f1](https://github.com/nftstorage/nft.storage/commit/36a26f14d7f9dfa9a204f37af7b4fc5fea1aa537))
+* remove debugging ([#2595](https://github.com/nftstorage/nft.storage/issues/2595)) ([3dc7916](https://github.com/nftstorage/nft.storage/commit/3dc7916eb7833b5a267624e07783c05494be5f2f))
+* remove legacy upload codepath ([#2580](https://github.com/nftstorage/nft.storage/issues/2580)) ([88c05a9](https://github.com/nftstorage/nft.storage/commit/88c05a90289a5c702d477723f0e4812f8e62b7f4))
+
 ## [4.7.0](https://github.com/nftstorage/nft.storage/compare/api-v4.6.0...api-v4.7.0) (2024-04-04)
 
 
