@@ -161,6 +161,10 @@ export async function getW3upDeals(client, contentClaimsClient, contentCid) {
     // get the upload
     let upload
     try {
+      console.log(
+        'getting upload from current space',
+        client.currentSpace()?.did
+      )
       upload = await client.capability.upload.get(link)
     } catch (/** @type {any} */ e) {
       console.error('error getting upload', e, e?.cause)

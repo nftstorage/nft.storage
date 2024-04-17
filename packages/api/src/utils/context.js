@@ -90,6 +90,7 @@ export async function getContext(event, params) {
         principal: config.W3_NFTSTORAGE_PRINCIPAL,
         proof: config.W3_NFTSTORAGE_PROOF,
       })
+      console.log('CONFIGGED SPACE', config.W3_NFTSTORAGE_SPACE)
       // @ts-expect-error todo add DID check
       w3upWIP.setCurrentSpace(config.W3_NFTSTORAGE_SPACE)
       w3up = w3upWIP
