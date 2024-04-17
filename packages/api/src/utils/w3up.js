@@ -162,8 +162,8 @@ export async function getW3upDeals(client, contentClaimsClient, contentCid) {
     let upload
     try {
       upload = await client.capability.upload.get(link)
-    } catch (e) {
-      console.error('error getting upload', e)
+    } catch (/** @type {any} */ e) {
+      console.error('error getting upload', e, e?.cause)
       return []
     }
     const filecoinInfoResults = await getFilecoinInfos(
