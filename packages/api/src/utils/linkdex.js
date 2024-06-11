@@ -58,7 +58,6 @@ export class LinkdexApi {
         if (!res || !res.body) throw new Error(`failed to get CAR: ${cid}`)
         const carBlocks = await CarBlockIterator.fromIterable(res.body)
         for await (const block of carBlocks) {
-          // @ts-expect-error block types not match up
           index.decodeAndIndex(block)
         }
       })

@@ -206,6 +206,11 @@ export type NFT = {
    * Date this NFT was created in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: YYYY-MM-DDTHH:MM:SSZ.
    */
   created: string
+  /**
+   * the graph from `cid` can be recreated from the blocks in these parts
+   * @see https://github.com/web3-storage/content-claims#partition-claim
+   */
+  parts: string[]
 }
 
 export type NFTResponse = NFT & {

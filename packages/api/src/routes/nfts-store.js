@@ -111,6 +111,7 @@ async function cborEncode(value, bs) {
   const bytes = CBOR.encode(value)
   const digest = await sha256.digest(bytes)
   const cid = CID.createV1(CBOR.code, digest)
+  // @ts-expect-error different CID versions
   await bs.put(cid, bytes)
   return cid
 }
@@ -160,6 +161,7 @@ async function unixFsEncodeDir(files, bs) {
     const content = new Uint8Array(await f.arrayBuffer())
     input.push({ path: f.name, content })
   }
+  // @ts-expect-error different CID versions
   return unixFsEncode(input, bs, {
     wrapWithDirectory: true,
   })
@@ -174,6 +176,7 @@ async function unixFsEncodeDir(files, bs) {
 async function unixFsEncodeString(str, bs) {
   const content = new TextEncoder().encode(str)
   const ic = { path: '', content }
+  // @ts-expect-error different CID versions
   return unixFsEncode(ic, bs, {
     wrapWithDirectory: false,
   })
