@@ -208,7 +208,6 @@ test.serial('should list nfts with their parts', async (t) => {
   t.true(ok)
   t.is(value.length, 1)
   t.is(value[0].cid, cidv0)
-  console.log('backup', value[0])
   t.truthy(Array.isArray(value[0].parts), 'upload.parts is an array')
   t.deepEqual(value[0].parts, [
     // this corresponds to `exampleCarParkUrl`
