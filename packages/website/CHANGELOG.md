@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.1](https://github.com/nftstorage/nft.storage/compare/website-v2.11.0...website-v2.11.1) (2024-06-12)
+
+
+### Bug Fixes
+
+* change domain to classic-app.nft.storage ([#2677](https://github.com/nftstorage/nft.storage/issues/2677)) ([d8c766c](https://github.com/nftstorage/nft.storage/commit/d8c766cc4fbcfa0696a84dbb4febd476e241b4a8))
+
 ## [2.11.0](https://github.com/nftstorage/nft.storage/compare/website-v2.10.0...website-v2.11.0) (2024-04-15)
 
 
