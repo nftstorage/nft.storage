@@ -5,7 +5,7 @@ import { CarIndexer } from '@ipld/car/indexer'
 import { MultihashIndexSortedWriter } from 'cardex'
 
 /**
- * @typedef {import('multiformats/block').Block<unknown>} Block
+ * @typedef {import('multiformats/block').Block<unknown, number, number, 1>} Block
  */
 
 /**

@@ -14,6 +14,7 @@ export async function createCar(str) {
     hasher: sha256,
   })
   const root = block.cid
+  // @ts-expect-error different CID versions
   const car = await CAR.encode([root], [block])
   return { root, car }
 }

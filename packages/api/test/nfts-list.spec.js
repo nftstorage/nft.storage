@@ -182,3 +182,69 @@ test.serial('should list only active nfts', async (t) => {
   t.is(value.length, 1)
   t.is(value[0].cid, cidv1)
 })
+
+test.serial('should list nfts with their parts', async (t) => {
+  const client = await createClientWithUser(t)
+  const mf = getMiniflareContext(t)
+  const cidv1 = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
+  const cidv0 = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
+  const exampleCarParkUrl =
+    'https://carpark-dev.web3.storage/bagbaiera6xcx7hiicm7sc523axbjf2otuu5nptt6brdzt4a5ulgn6qcfdwea/bagbaiera6xcx7hiicm7sc523axbjf2otuu5nptt6brdzt4a5ulgn6qcfdwea.car'
+  const exampleS3Url = `https://dotstorage-dev-0.s3.us-east-1.amazonaws.com/raw/${cidv1}/2/ciqplrl7tuebgpzbo5nqlqus5hj2kowxzz7ayr4z6ao2ftg7ibcr3ca.car`
+  await client.client.createUpload({
+    content_cid: cidv1,
+    source_cid: cidv0,
+    type: 'Blob',
+    user_id: client.userId,
+    dag_size: 100,
+    backup_urls: [new URL(exampleCarParkUrl), new URL(exampleS3Url)],
+  })
+
+  const res = await mf.dispatchFetch('http://miniflare.test', {
+    headers: { Authorization: `Bearer ${client.token}` },
+  })
+  const { ok, value } = await res.json()
+
+  t.true(ok)
+  t.is(value.length, 1)
+  t.is(value[0].cid, cidv0)
+  t.truthy(Array.isArray(value[0].parts), 'upload.parts is an array')
+  t.deepEqual(value[0].parts, [
+    // this corresponds to `exampleCarParkUrl`
+    'bagbaiera6xcx7hiicm7sc523axbjf2otuu5nptt6brdzt4a5ulgn6qcfdwea',
+  ])
+})
+
+test.serial(
+  'should list nfts with their parts including w3s.link',
+  async (t) => {
+    const client = await createClientWithUser(t)
+    const mf = getMiniflareContext(t)
+    const cidv1 = 'bafybeiaj5yqocsg5cxsuhtvclnh4ulmrgsmnfbhbrfxrc3u2kkh35mts4e'
+    const cidv0 = 'QmP1QyqiRtQLbGBr5hLVX7NCmrJmJbGdp45x6DnPssMB9i'
+    const exampleS3Url = `https://dotstorage-dev-0.s3.us-east-1.amazonaws.com/raw/${cidv1}/2/ciqplrl7tuebgpzbo5nqlqus5hj2kowxzz7ayr4z6ao2ftg7ibcr3ca.car`
+    const exampleW3sUrl = `https://w3s.link/ipfs/bagbaiera6xcx7hiicm7sc523axbjf2otuu5nptt6brdzt4a5ulgn6qcfdwea`
+    await client.client.createUpload({
+      content_cid: cidv1,
+      source_cid: cidv0,
+      type: 'Blob',
+      user_id: client.userId,
+      dag_size: 100,
+      backup_urls: [new URL(exampleW3sUrl), new URL(exampleS3Url)],
+    })
+
+    const res = await mf.dispatchFetch('http://miniflare.test', {
+      headers: { Authorization: `Bearer ${client.token}` },
+    })
+    const { ok, value } = await res.json()
+
+    t.true(ok)
+    t.is(value.length, 1)
+    t.is(value[0].cid, cidv0)
+    t.truthy(Array.isArray(value[0].parts), 'upload.parts is an array')
+    t.deepEqual(value[0].parts, [
+      // this corresponds to `exampleW3sUrl`
+      'bagbaiera6xcx7hiicm7sc523axbjf2otuu5nptt6brdzt4a5ulgn6qcfdwea',
+    ])
+  }
+)
