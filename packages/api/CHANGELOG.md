@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.8.1](https://github.com/nftstorage/nft.storage/compare/api-v4.8.0...api-v4.8.1) (2024-06-13)
+
+
+### Bug Fixes
+
+* add backup url parts to list ([#2675](https://github.com/nftstorage/nft.storage/issues/2675)) ([c1cd467](https://github.com/nftstorage/nft.storage/commit/c1cd467315b3cdeab7a297ebb1d5023494052f18))
+
 ## [4.8.0](https://github.com/nftstorage/nft.storage/compare/api-v4.7.0...api-v4.8.0) (2024-04-17)
 
 
