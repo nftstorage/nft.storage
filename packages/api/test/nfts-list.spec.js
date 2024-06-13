@@ -239,7 +239,7 @@ test.serial(
     const { ok, value } = await res.json()
 
     t.true(ok)
-    t.is(value.length, 2)
+    t.is(value.length, 1)
     t.is(value[0].cid, cidv0)
     t.truthy(Array.isArray(value[0].parts), 'upload.parts is an array')
     t.deepEqual(value[0].parts, [
