@@ -239,13 +239,12 @@ test.serial(
     const { ok, value } = await res.json()
 
     t.true(ok)
-    console.log('value2', value)
-    // t.is(value.length, 2)
-    // t.is(value[0].cid, cidv0)
-    // t.truthy(Array.isArray(value[0].parts), 'upload.parts is an array')
-    // t.deepEqual(value[0].parts, [
-    //   // this corresponds to `exampleW3sUrl`
-    //   'bagbaiera6xcx7hiicm7sc523axbjf2otuu5nptt6brdzt4a5ulgn6qcfdwea',
-    // ])
+    t.is(value.length, 2)
+    t.is(value[0].cid, cidv0)
+    t.truthy(Array.isArray(value[0].parts), 'upload.parts is an array')
+    t.deepEqual(value[0].parts, [
+      // this corresponds to `exampleW3sUrl`
+      'bagbaiera6xcx7hiicm7sc523axbjf2otuu5nptt6brdzt4a5ulgn6qcfdwea',
+    ])
   }
 )
