@@ -46,7 +46,7 @@ For this guide, you'll need an NFT.Storage account to get your API token and man
 <TabItem value="github" label="Sign up using Github">
 1. Go to [nft.storage/login](https://nft.storage/login) to get started.
 1. Click **GitHub** on the Login screen.
-1. **Authorize** Web3.Storage when asked by GitHub.
+1. **Authorize** NFT.Storage when asked by GitHub.
 1. You're all set!
 </TabItem>
 </Tabs>
