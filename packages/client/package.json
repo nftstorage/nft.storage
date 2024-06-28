@@ -13,6 +13,7 @@
     "dist/bundle*"
   ],
   "exports": {
+    "./package.json": "./package.json",
     ".": {
       "browser": "./src/lib.js",
       "require": "./dist/src/lib.cjs",
