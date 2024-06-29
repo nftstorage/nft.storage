@@ -57,6 +57,7 @@ test.serial(
     const res = await mf.dispatchFetch('http://miniflare.test', {
       headers: { Authorization: `Bearer ${client.token}` },
     })
+    t.is(parseInt(res.headers.get('count') || ''), 2)
     const { ok, value } = await res.json()
 
     t.is(value[0].cid, cid2)
@@ -88,6 +89,7 @@ test.serial('should list 1 nft with param limit=1', async (t) => {
   const res = await mf.dispatchFetch('http://miniflare.test/?limit=1', {
     headers: { Authorization: `Bearer ${client.token}` },
   })
+  t.is(parseInt(res.headers.get('count') || ''), 2)
   const { ok, value } = await res.json()
 
   t.is(value.length, 1)
@@ -110,6 +112,7 @@ test.serial('should list the default 10 nfts with no params', async (t) => {
   const res = await mf.dispatchFetch('http://miniflare.test', {
     headers: { Authorization: `Bearer ${client.token}` },
   })
+  t.is(parseInt(res.headers.get('count') || ''), 10)
   const { ok, value } = await res.json()
 
   t.is(value.length, 10)
@@ -176,6 +179,8 @@ test.serial('should list only active nfts', async (t) => {
   const res = await mf.dispatchFetch('http://miniflare.test', {
     headers: { Authorization: `Bearer ${client.token}` },
   })
+  t.is(parseInt(res.headers.get('count') || ''), 1)
+
   const { ok, value } = await res.json()
 
   t.true(ok)
@@ -203,6 +208,7 @@ test.serial('should list nfts with their parts', async (t) => {
   const res = await mf.dispatchFetch('http://miniflare.test', {
     headers: { Authorization: `Bearer ${client.token}` },
   })
+  t.is(parseInt(res.headers.get('count') || ''), 1)
   const { ok, value } = await res.json()
 
   t.true(ok)
@@ -236,6 +242,7 @@ test.serial(
     const res = await mf.dispatchFetch('http://miniflare.test', {
       headers: { Authorization: `Bearer ${client.token}` },
     })
+    t.is(parseInt(res.headers.get('count') || ''), 1)
     const { ok, value } = await res.json()
 
     t.true(ok)
