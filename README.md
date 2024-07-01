@@ -9,6 +9,19 @@
   <a href="https://twitter.com/nft_storage"><img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/nft_storage?color=00aced&label=twitter&logo=twitter&style=for-the-badge"></a>
 </p>
 
+<h4 align="left">April 2024 Update</h3>
+To align our services more closely with our community's needs and ensure the sustainability of our model, we're updating our service offerings. We'll continue to offer the current product under the name NFT.Storage Classic (classic.nft.storage) for existing uploads prior to 30 June 2024 , but no new uploads to the Classic product will be accepted as of 30 June 2024 at 5pm EST. New account registrations will no longer be accepted for:
+* The original NFT.Storage web app, API, and SDK
+* NFTUp
+* Pinning API
+
+Your benefits as an existing account holder:
+* Continue to upload off-chain NFT data using the current products through 30 June 2024, at 5 PM EST
+* Maintain access to your links through the NFT.Storage Gateway 
+* All NFT data you’ve already uploaded and will upload before 30 June 2024, will continue to be safely stored and accessible via IPFS and in the Filecoin Network's long-term storage, though over time latency and availability may degrade.
+
+Try the new version of NFT.Storage, focused on NFT preservation through Filecoin storage here: https://nft.storage
+
 # Table of Contents <!-- omit in toc -->
 
 - [Client Libraries](#client-libraries)
