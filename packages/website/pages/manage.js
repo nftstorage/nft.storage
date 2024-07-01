@@ -6,9 +6,7 @@ import Button from '../components/button.js'
 import Loading from '../components/loading.js'
 import Tooltip from '../components/tooltip.js'
 import countly from '../lib/countly.js'
-import { VscMail } from 'react-icons/vsc'
 import { Popover, ArrowContainer } from 'react-tiny-popover'
-import Link from '../components/link'
 
 /**
  *

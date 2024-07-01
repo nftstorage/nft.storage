@@ -5,7 +5,6 @@ Disallow: /callback
 Disallow: /callback-v0
 Disallow: /files
 Disallow: /manage
-Disallow: /new-file
 Disallow: /new-key
 
 # Host
