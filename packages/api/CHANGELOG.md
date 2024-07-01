@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.9.3](https://github.com/nftstorage/nft.storage/compare/api-v4.9.2...api-v4.9.3) (2024-07-01)
+
+
+### Bug Fixes
+
+* expose count header ([f9468d2](https://github.com/nftstorage/nft.storage/commit/f9468d2a57c7d1e0042ed0ce8279c18e39a023af))
+
 ## [4.9.2](https://github.com/nftstorage/nft.storage/compare/api-v4.9.1...api-v4.9.2) (2024-07-01)
 
 
