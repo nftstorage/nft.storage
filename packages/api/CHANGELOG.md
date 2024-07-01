@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.9.0](https://github.com/nftstorage/nft.storage/compare/api-v4.8.1...api-v4.9.0) (2024-07-01)
+
+
+### Features
+
+* **api:** add count to list nfts api ([#2701](https://github.com/nftstorage/nft.storage/issues/2701)) ([6da5098](https://github.com/nftstorage/nft.storage/commit/6da50981999241660b4b9cd58fd66b16d095ebbe))
+
 ## [4.8.1](https://github.com/nftstorage/nft.storage/compare/api-v4.8.0...api-v4.8.1) (2024-06-13)
 
 
