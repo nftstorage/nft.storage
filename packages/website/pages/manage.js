@@ -118,39 +118,6 @@ export default function ManageKeys({ user }) {
             <div className="flex flex-wrap items-center mb-4">
               <h1 className="flex-auto chicagoflf my-8">API Keys</h1>
               <div className="flex flex-wrap items-center mt-2">
-                {!user?.tags.HasAccountRestriction &&
-                  !user?.tags.HasPsaAccess &&
-                  !user?.pendingTagProposals?.HasPsaAccess && (
-                    <Tooltip
-                      placement="bottom"
-                      overlay={
-                        <span>
-                          NFT.Storage is capable of efficiently ingesting
-                          billions of records. Whether or not your data is
-                          already on PDFS, we have simple APIs for bulk data
-                          import. You do not need to request bulk API access if
-                          you are just looking to upload your data to
-                          NFT.Storage. Check out{' '}
-                          <Link href="/docs/how-to/pinning-service/">
-                            the docs
-                          </Link>{' '}
-                          for more details.
-                        </span>
-                      }
-                      overlayClassName="ns-tooltip"
-                      id="request-api-pinning-info"
-                    >
-                      <Link
-                        href="/pinning-request"
-                        className="items-center mr-4 btn button-reset select-none black py-2 px-4 hologram chicagoflf interactive light"
-                        id="request-api-pinning"
-                      >
-                        <VscMail size={12} className="mr-2" /> Request bulk
-                        pinning API access
-                      </Link>
-                    </Tooltip>
-                  )}
-
                 {user?.tags.HasAccountRestriction ? (
                   <Tooltip
                     id="blocked-new-key-booltip"

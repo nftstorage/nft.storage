@@ -1,5 +1,7 @@
 # nft.storage
 
+### Notice: Uploads have been decommissioned, and upload functionality in this package no longer functions, even with a valid API key. Please visit <a href="https://nft.storage/nft-storage-classic">the product page</a> to learn more and find a new hot storage provider for uploading new assets.
+
 ![ci][ci.icon]
 [![package][version.icon]][package.url]
 [![styled with prettier][prettier.icon]][prettier.url]

@@ -41,7 +41,6 @@ export const ui = {
   NAVBAR: 'navbar',
   LOGIN: 'login',
   FILES: 'files',
-  NEW_FILE: 'new-file',
   NEW_TOKEN: 'new-token',
   PINNING_REQUEST: 'pinning-request',
   TOKENS: 'tokens',

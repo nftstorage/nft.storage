@@ -10,7 +10,6 @@ const routes = [
   { loc: '/callback-v0', exclude: true },
   { loc: '/files', exclude: true },
   { loc: '/manage', exclude: true },
-  { loc: '/new-file', exclude: true },
   { loc: '/new-key', exclude: true },
 ]
 
