@@ -1,5 +1,13 @@
 # Changelog
 
+## [7.2.0](https://github.com/nftstorage/nft.storage/compare/nft.storage-v7.1.1...nft.storage-v7.2.0) (2024-07-01)
+
+
+### Features
+
+* POST /uploads can write uploads to w3up for web3 serving and dagcargoless filecoin deal-making ([#2522](https://github.com/nftstorage/nft.storage/issues/2522)) ([0c77cb3](https://github.com/nftstorage/nft.storage/commit/0c77cb3646586b1a802e8c8ca2e8c54d0a006f56))
+* **website:** update website to remove upload functionality ([#2704](https://github.com/nftstorage/nft.storage/issues/2704)) ([060dfd5](https://github.com/nftstorage/nft.storage/commit/060dfd54df7d6d8fadf856b1d90a92c1b731450d))
+
 ## [7.1.1](https://github.com/nftstorage/nft.storage/compare/nft.storage-v7.1.0...nft.storage-v7.1.1) (2023-07-20)
 
 
