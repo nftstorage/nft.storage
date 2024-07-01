@@ -43,7 +43,7 @@ export async function nftList(event, ctx) {
     data.count != null
       ? {
         headers: {
-          'Access-Control-Allow-Headers': 'Count',
+          'Access-Control-Expose-Headers': 'Count',
           Count: data.count.toString()
         }
       } : {}
