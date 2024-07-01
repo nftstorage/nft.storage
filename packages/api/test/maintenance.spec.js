@@ -1,7 +1,7 @@
 import test from 'ava'
 import {
   READ_ONLY,
-  READ_WRITE,
+  READ_WRITE_ONLY,
   NO_READ_OR_WRITE,
 } from '../src/middleware/maintenance.js'
 import { createClientWithUser } from './scripts/helpers.js'
@@ -46,7 +46,7 @@ test('maintenance middleware should throw error when in maintenance mode', async
 
   const expectedError = { message: /API undergoing maintenance/ }
 
-  await setMode(t, READ_WRITE)
+  await setMode(t, READ_WRITE_ONLY)
   await t.notThrowsAsync(tryRead(t, token))
   await t.notThrowsAsync(tryWrite(t, token))
 
