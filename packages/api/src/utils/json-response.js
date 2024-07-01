@@ -7,6 +7,7 @@ export class JSONResponse extends Response {
   constructor(body, init = {}) {
     const headers = {
       headers: {
+        ...init.headers,
         'content-type': 'application/json;charset=UTF-8',
       },
     }

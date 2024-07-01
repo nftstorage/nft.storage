@@ -45,7 +45,7 @@ export async function pinsList(event, ctx) {
     // Aggregate result into proper output
     let count = 0
     const results = []
-    for (const upload of data) {
+    for (const upload of data.uploads) {
       if (upload.content.pin.length > 0) {
         count++
         results.push(toPinsResponse(upload))

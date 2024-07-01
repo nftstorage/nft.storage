@@ -373,7 +373,7 @@ export class DBClient {
     const from = this.client.from('upload')
     const match = opts.match || 'exact'
     let query = from
-      .select(this.uploadQuery)
+      .select(this.uploadQuery, { count: 'exact' })
       .eq('user_id', userId)
       .is('deleted_at', null)
       .filter(
@@ -422,7 +422,7 @@ export class DBClient {
       query = query.gte('inserted_at', opts.after)
     }
 
-    const { data: uploads, error } = await query
+    const { data: uploads, count, error } = await query
     if (error) {
       throw new DBError(error)
     }
@@ -431,12 +431,15 @@ export class DBClient {
 
     const deals = await this.getDealsFromDagcargoFDW(cids)
 
-    return uploads?.map((u) => {
-      return {
-        ...u,
-        deals: deals[u.content_cid] || [],
-      }
-    })
+    return {
+      count,
+      uploads: uploads?.map((u) => {
+        return {
+          ...u,
+          deals: deals[u.content_cid] || [],
+        }
+      }),
+    }
   }
 
   /**
