@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.0](https://github.com/nftstorage/nft.storage/compare/website-v2.11.1...website-v2.12.0) (2024-07-01)
+
+
+### Features
+
+* **website:** update website to remove upload functionality ([#2704](https://github.com/nftstorage/nft.storage/issues/2704)) ([060dfd5](https://github.com/nftstorage/nft.storage/commit/060dfd54df7d6d8fadf856b1d90a92c1b731450d))
+
 ## [2.11.1](https://github.com/nftstorage/nft.storage/compare/website-v2.11.0...website-v2.11.1) (2024-06-12)
 
 
