@@ -40,6 +40,12 @@ export async function nftList(event, ctx) {
       ok: true,
       value: data.uploads?.map((n) => toNFTResponse(n)),
     },
-    data.count != null ? { headers: { Count: data.count.toString() } } : {}
+    data.count != null
+      ? {
+        headers: {
+          'Access-Control-Allow-Headers': 'Count',
+          Count: data.count.toString()
+        }
+      } : {}
   )
 }
