@@ -32,7 +32,6 @@ if (globalThis.window) {
 const AUTHENTICATED_ROUTES = {
   MANAGE: 'manage',
   FILES: 'files',
-  NEW_FILE: 'new-file',
   NEW_KEY: 'new-key',
   PINNING_REQUEST: 'pinning-request',
 }
