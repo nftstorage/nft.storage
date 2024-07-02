@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.10.0](https://github.com/nftstorage/nft.storage/compare/api-v4.9.3...api-v4.10.0) (2024-07-02)
+
+
+### Features
+
+* **api:** add create aspect to maintainence ([#2708](https://github.com/nftstorage/nft.storage/issues/2708)) ([ec91ae7](https://github.com/nftstorage/nft.storage/commit/ec91ae7ea463a1c3c50b6feaf770a27b6640f1f5))
+
+
+### Bug Fixes
+
+* specify zone_id for production deployment ([dd6a626](https://github.com/nftstorage/nft.storage/commit/dd6a6267174db1be8ac6711d7c1b686ec602d47d))
+* specify zone_id for staging deployment ([1687f8d](https://github.com/nftstorage/nft.storage/commit/1687f8d4fd1cd29f9c9616399fea7553d0048577))
+
 ## [4.9.3](https://github.com/nftstorage/nft.storage/compare/api-v4.9.2...api-v4.9.3) (2024-07-01)
 
 
