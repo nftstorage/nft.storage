@@ -26,7 +26,7 @@ const BASE_CONFIG = {
   DATABASE_TOKEN:
     'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTYwMzk2ODgzNCwiZXhwIjoyNTUwNjUzNjM0LCJyb2xlIjoic2VydmljZV9yb2xlIn0.necIJaiP7X2T2QjGeV-FhpkizcNTX8HjDDBAxpgQTEI',
   DATABASE_CONNECTION: 'postgresql://postgres:postgres@localhost:5432/postgres',
-  MAINTENANCE_MODE: 'rw',
+  MAINTENANCE_MODE: 'rwc',
   S3_REGION: 'us-east-1',
   S3_ACCESS_KEY_ID: 'minioadmin',
   S3_SECRET_ACCESS_KEY: 'minioadmin',
@@ -145,7 +145,7 @@ test.serial(
 test.serial(
   'serviceConfigFromVariables sets MAINTENANCE_MODE if it contains a valid mode string',
   (t) => {
-    const modes = ['--', 'r-', 'rw']
+    const modes = ['---', 'r--', 'rw-', 'rwc']
     for (const m of modes) {
       t.is(
         serviceConfigFromVariables(
@@ -154,6 +154,23 @@ test.serial(
           })
         ).MAINTENANCE_MODE.toString(),
         m
+      )
+    }
+  }
+)
+
+test.serial(
+  'serviceConfigFromVariables sets MAINTENANCE_MODE if it contains a valid legacy mode string',
+  (t) => {
+    const modes = ['--', 'r-', 'rw']
+    for (const m of modes) {
+      t.is(
+        serviceConfigFromVariables(
+          override({
+            MAINTENANCE_MODE: m,
+          })
+        ).MAINTENANCE_MODE.toString(),
+        m + '-'
       )
     }
   }

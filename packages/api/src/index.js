@@ -31,7 +31,8 @@ import { getServiceConfig } from './config.js'
 import {
   withMode,
   READ_ONLY as RO,
-  READ_WRITE as RW,
+  READ_WRITE_ONLY as RW,
+  READ_WRITE_CREATE as RWC,
 } from './middleware/maintenance.js'
 import { getContext } from './utils/context.js'
 import { withAuth } from './middleware/auth.js'
@@ -96,7 +97,7 @@ r.add(
 r.add(
   'post',
   '/pins',
-  withAuth(withMode(pinsAdd, RW), {
+  withAuth(withMode(pinsAdd, RWC), {
     checkHasPsaAccess,
     checkHasAccountRestriction,
   }),
@@ -105,7 +106,7 @@ r.add(
 r.add(
   'post',
   '/pins/:requestid',
-  withAuth(withMode(pinsReplace, RW), {
+  withAuth(withMode(pinsReplace, RWC), {
     checkHasPsaAccess,
     checkHasAccountRestriction,
   }),
@@ -114,7 +115,7 @@ r.add(
 r.add(
   'delete',
   '/pins/:requestid',
-  withAuth(withMode(pinsDelete, RW), {
+  withAuth(withMode(pinsDelete, RWC), {
     checkHasDeleteRestriction,
     checkHasPsaAccess,
   }),
@@ -128,7 +129,7 @@ r.add('get', '/:cid', withAuth(withMode(nftGet, RO)), [postCors])
 r.add(
   'post',
   '/upload',
-  withAuth(withMode(nftUpload, RW), {
+  withAuth(withMode(nftUpload, RWC), {
     checkHasAccountRestriction,
     checkUcan,
   }),
@@ -137,24 +138,24 @@ r.add(
 r.add(
   'patch',
   '/upload/:cid',
-  withAuth(withMode(nftUpdateUpload, RW), { checkHasAccountRestriction }),
+  withAuth(withMode(nftUpdateUpload, RWC), { checkHasAccountRestriction }),
   [postCors]
 )
 r.add(
   'post',
   '/store',
-  withAuth(withMode(nftStore, RW), { checkHasAccountRestriction }),
+  withAuth(withMode(nftStore, RWC), { checkHasAccountRestriction }),
   [postCors]
 )
 r.add(
   'delete',
   '/:cid',
-  withAuth(withMode(nftDelete, RW), { checkHasDeleteRestriction }),
+  withAuth(withMode(nftDelete, RWC), { checkHasDeleteRestriction }),
   [postCors]
 )
 
 // Temporary Metaplex upload route, mapped to metaplex user account.
-r.add('post', '/metaplex/upload', withMode(metaplexUpload, RW), [postCors])
+r.add('post', '/metaplex/upload', withMode(metaplexUpload, RWC), [postCors])
 
 // User
 r.add(
@@ -206,7 +207,7 @@ r.add(
 r.add(
   'post',
   '/api/pins',
-  withAuth(withMode(pinsAdd, RW), {
+  withAuth(withMode(pinsAdd, RWC), {
     checkHasPsaAccess,
     checkHasAccountRestriction,
   }),
@@ -215,7 +216,7 @@ r.add(
 r.add(
   'post',
   '/api/pins/:requestid',
-  withAuth(withMode(pinsReplace, RW), {
+  withAuth(withMode(pinsReplace, RWC), {
     checkHasPsaAccess,
     checkHasAccountRestriction,
   }),
@@ -224,7 +225,7 @@ r.add(
 r.add(
   'delete',
   '/api/pins/:requestid',
-  withAuth(withMode(pinsDelete, RW), {
+  withAuth(withMode(pinsDelete, RWC), {
     checkHasDeleteRestriction,
     checkHasPsaAccess,
   }),
@@ -238,13 +239,13 @@ r.add('get', '/api/:cid', withAuth(withMode(nftGet, RO)), [postCors])
 r.add(
   'post',
   '/api/upload',
-  withAuth(withMode(nftUpload, RW), { checkUcan, checkHasAccountRestriction }),
+  withAuth(withMode(nftUpload, RWC), { checkUcan, checkHasAccountRestriction }),
   [postCors]
 )
 r.add(
   'delete',
   '/api/:cid',
-  withAuth(withMode(nftDelete, RW), { checkHasDeleteRestriction }),
+  withAuth(withMode(nftDelete, RWC), { checkHasDeleteRestriction }),
   [postCors]
 )
 

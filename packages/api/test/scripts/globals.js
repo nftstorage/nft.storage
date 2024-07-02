@@ -17,7 +17,7 @@ globalThis.PICKUP_API_URL = 'http://127.0.0.1:9094'
 // will be used with we can active auth in cluster base64 of test:test
 globalThis.PICKUP_BASIC_AUTH_TOKEN = 'dGVzdDp0ZXN0'
 
-globalThis.MAINTENANCE_MODE = 'rw'
+globalThis.MAINTENANCE_MODE = 'rwc'
 
 globalThis.S3_ENDPOINT = 'http://127.0.0.1:9000'
 globalThis.S3_REGION = 'us-east-1'

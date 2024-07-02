@@ -2,32 +2,42 @@ import { ErrorMaintenance, HTTPError } from '../errors.js'
 import { getServiceConfig } from '../config.js'
 
 /**
- * @typedef {'rw' | 'r-' | '--'} Mode
+ * @typedef {'rwc' | 'rw-' | 'r--' | '---'} Mode
  * @typedef {import('../bindings').Handler} Handler
  */
 
 /**
+ * Read and write and create
+ */
+export const READ_WRITE_CREATE = 'rwc'
+
+/**
  * Read and write.
  */
-export const READ_WRITE = 'rw'
+export const READ_WRITE_ONLY = 'rw-'
 
 /**
  * Read only mode.
  */
-export const READ_ONLY = 'r-'
+export const READ_ONLY = 'r--'
 
 /**
  * No reading or writing.
  */
-export const NO_READ_OR_WRITE = '--'
+export const NO_READ_OR_WRITE = '---'
 
 /** @type {readonly Mode[]} */
-export const modes = Object.freeze([NO_READ_OR_WRITE, READ_ONLY, READ_WRITE])
+export const modes = Object.freeze([
+  NO_READ_OR_WRITE,
+  READ_ONLY,
+  READ_WRITE_ONLY,
+  READ_WRITE_CREATE,
+])
 
 /**
  * The default maintenance mode (normal operation).
  */
-export const DEFAULT_MODE = READ_WRITE
+export const DEFAULT_MODE = READ_WRITE_CREATE
 
 /** @type {() => Mode} */
 let getMaintenanceMode = () => getServiceConfig().MAINTENANCE_MODE
