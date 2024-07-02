@@ -1,6 +1,9 @@
 import {
   modes as MaintenanceModes,
   DEFAULT_MODE,
+  NO_READ_OR_WRITE,
+  READ_ONLY,
+  READ_WRITE_ONLY,
 } from './middleware/maintenance.js'
 
 /**
@@ -191,6 +194,17 @@ function maintenanceModeFromString(s) {
   for (const m of MaintenanceModes) {
     if (s === m) {
       return m
+    }
+  }
+  /** @type {Record<string, import('./middleware/maintenance.js').Mode>} */
+  const legacyModeMappings = {
+    '--': NO_READ_OR_WRITE,
+    'r-': READ_ONLY,
+    rw: READ_WRITE_ONLY,
+  }
+  for (const [key, value] of Object.entries(legacyModeMappings)) {
+    if (s === key) {
+      return value
     }
   }
   throw new Error(
