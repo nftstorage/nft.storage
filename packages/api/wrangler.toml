@@ -63,7 +63,7 @@ format = "service-worker"
 
 [env.production]
 name = "nft-storage"
-route = "api.nft.storage/*"
+route = { pattern = "api.nft.storage/*", zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9" }
 usage_model = "unbound"
 r2_buckets = [
    { binding = "CARPARK", bucket_name = "carpark-prod-0" },
