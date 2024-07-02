@@ -37,7 +37,7 @@ command = "scripts/cli.js build"
 
 [env.staging]
 name = "nft-storage-staging"
-route = "api-staging.nft.storage/*"
+route = { pattern = "api-staging.nft.storage/*", zone_id = "fc6cb51dbc2d0b9a729eae6a302a49c9" }
 usage_model = "unbound"
 r2_buckets = [
    { binding = "CARPARK", bucket_name = "carpark-staging-0" },
