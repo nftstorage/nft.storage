@@ -1,6 +1,6 @@
 {
   "name": "create-nft-storage",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Create a new NFT Storage app.",
   "homepage": "https://nft.storage",
   "license": "(Apache-2.0 OR MIT)",
