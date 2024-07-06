@@ -125,7 +125,9 @@ r.add(
 // Upload
 r.add('get', '/check/:cid', withMode(nftCheck, RO), [postCors])
 r.add('get', '', withAuth(withMode(nftList, RO)), [postCors])
-r.add('get', '/:cid', withAuth(withMode(nftGet, RO)), [postCors])
+r.add('get', /^\/(?<cid>ba\S+|Qm\S+)/i, withAuth(withMode(nftGet, RO)), [
+  postCors,
+])
 r.add(
   'post',
   '/upload',
