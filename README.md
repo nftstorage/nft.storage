@@ -1,12 +1,4 @@
-<h1 align="center">
-  <a href="https://nft.storage"><img width="75%" src="https://user-images.githubusercontent.com/11778450/227269341-b2d804a7-1829-426c-9caa-ec519f98dc9c.png" alt="NFT.Storage logo" /></a>
-</h1>
 
-<h3 align="center">Free decentralized storage and bandwidth for NFTs on IPFS and Filecoin.</h3>
-
-<p align="center">
-  <a href="https://twitter.com/nft_storage"><img alt="Twitter Follow" src="https://img.shields.io/twitter/follow/nft_storage?color=00aced&label=twitter&logo=twitter&style=for-the-badge"></a>
-</p>
 
 ## Product Decommission Notice
 
@@ -14,7 +6,7 @@
 
 Hello from NFT.Storage!
 
-As of June 30, 2024, we have officially decommissioned NFT.Storage Classic uploads. This means that NFT.Storage Classic, including NFTUp, the Classic web app, Classic APIs, Classic SDK, and Pinning API, will no longer accept new uploads/pins.
+As of June 30, 2024, we have officially decommissioned NFT.Storage Classic uploads. This means that NFT.Storage Classic, including NFTUp, the Classic web app, Classic APIs, Classic SDK, and Pinning API, will no longer accept new uploads.
 
 ### What This Means for You
 
